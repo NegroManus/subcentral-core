@@ -1,4 +1,4 @@
-package de.subcentral.core.util;
+package de.subcentral.core.parsing;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,12 +9,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.google.common.collect.ImmutableMap;
 
-public class MappingMatcher
+public class NumericGroupMappingMatcher implements MappingMatcher
 {
 	private final Pattern				pattern;
 	private final Map<Integer, String>	groups;
 
-	public MappingMatcher(Pattern pattern, Map<Integer, String> groups)
+	public NumericGroupMappingMatcher(Pattern pattern, Map<Integer, String> groups)
 	{
 		this.pattern = pattern;
 		this.groups = ImmutableMap.copyOf(groups);
@@ -43,8 +43,10 @@ public class MappingMatcher
 	 * 
 	 * @param input
 	 * @return The mapped groups. If the matcher does no match, null is returned.
-	 * @throws IndexOutOfBoundsException If there is no pattern group for a specified group number.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no pattern group for a specified group number.
 	 */
+	@Override
 	public Map<String, String> map(String input) throws IndexOutOfBoundsException
 	{
 		Matcher m = pattern.matcher(input);

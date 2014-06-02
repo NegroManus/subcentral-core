@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import de.subcentral.core.naming.Nameable;
 import de.subcentral.core.subtitle.SubtitleRelease;
-import de.subcentral.core.util.MappingMatcher;
 
 public class ParsingTest
 {
@@ -44,7 +43,7 @@ public class ParsingTest
 		groups1.put(7, Addic7edSubtitleReleaseMapper.SUBTITLE_RELEASE_TAGS);
 		groups1.put(8, Addic7edSubtitleReleaseMapper.SUBTITLE_RELEASE_GROUP);
 
-		MappingMatcher matcher1 = new MappingMatcher(p1, groups1);
+		NumericGroupMappingMatcher matcher1 = new NumericGroupMappingMatcher(p1, groups1);
 
 		// Movie matcher
 		Pattern p2 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\.([\\w \\(\\)]+)\\.([\\w\\.]+)\\.(Addic7ed.com)");
@@ -67,7 +66,7 @@ public class ParsingTest
 		groups2.put(6, Addic7edSubtitleReleaseMapper.SUBTITLE_RELEASE_TAGS);
 		groups2.put(7, Addic7edSubtitleReleaseMapper.SUBTITLE_RELEASE_GROUP);
 
-		MappingMatcher matcher2 = new MappingMatcher(p2, groups2);
+		NumericGroupMappingMatcher matcher2 = new NumericGroupMappingMatcher(p2, groups2);
 
 		ParsingServiceImpl ps = new ParsingServiceImpl();
 		MappingServiceImpl ms = new MappingServiceImpl();

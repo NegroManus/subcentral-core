@@ -3,8 +3,6 @@ package de.subcentral.core.parsing;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.subcentral.core.util.MappingMatcher;
-
 public class ParsingServiceImpl implements ParsingService
 {
 	private String							domain;
