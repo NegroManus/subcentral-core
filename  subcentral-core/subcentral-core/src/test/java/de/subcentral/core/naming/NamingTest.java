@@ -5,6 +5,9 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.impl.com.addic7ed.Addic7edEpisodeNamer;
+import de.subcentral.core.impl.com.addic7ed.Addic7edMediaReleaseNamer;
+import de.subcentral.core.impl.com.addic7ed.Addic7edSubtitleReleaseNamer;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.media.Medias;
 import de.subcentral.core.release.Group;

@@ -1,4 +1,4 @@
-package de.subcentral.core.parsing;
+package de.subcentral.core.impl.com.addic7ed;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import de.subcentral.core.media.Media;
 import de.subcentral.core.media.Movie;
 import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
+import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.release.Group;
 import de.subcentral.core.release.MediaRelease;
 import de.subcentral.core.release.Releases;
@@ -45,7 +46,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 
 	public final static String	DEFAULT_SUBTITLE_RELEASE_GROUP	= "addic7ed.com";
 
-	private Splitter			tagSplitter						= Splitter.on(Pattern.compile("[^a-zA-Z0-9]"));
+	private Splitter			tagSplitter						= Splitter.on(Pattern.compile("[^a-zA-Z0-9-]"));
 
 	@Override
 	public Class<SubtitleRelease> getType()
@@ -56,8 +57,8 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	@Override
 	public String[] getKnownAttributeNames()
 	{
-		return new String[] { SERIES_TITLE, SEASON_NUMBER, EPISODE_NUMBER, EPISODE_TITLE, MEDIA_RELEASE_TAGS, MEDIA_RELEASE_GROUP, SUBTITLE_LANGUAGE,
-				SUBTITLE_RELEASE_TAGS, SUBTITLE_RELEASE_GROUP };
+		return new String[] { SERIES_TITLE, SEASON_NUMBER, EPISODE_NUMBER, EPISODE_TITLE, MOVIE_TITLE, MOVIE_NAME, MOVIE_YEAR, MEDIA_RELEASE_TAGS,
+				MEDIA_RELEASE_GROUP, SUBTITLE_LANGUAGE, SUBTITLE_RELEASE_TAGS, SUBTITLE_RELEASE_GROUP };
 	}
 
 	@Override

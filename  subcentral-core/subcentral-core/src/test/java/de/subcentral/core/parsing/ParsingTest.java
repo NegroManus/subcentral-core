@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.subcentral.core.impl.com.addic7ed.Addic7edSubtitleReleaseMapper;
 import de.subcentral.core.naming.Nameable;
 import de.subcentral.core.subtitle.SubtitleRelease;
 
@@ -17,9 +18,9 @@ public class ParsingTest
 		name = "24 - 09x05 - Day 9_ 3_00 PM-4_00 PM.LOL.English.C.orig.Addic7ed.com";
 		name = "The Listener - 05x01 - The Wrong Man.KILLERS.English.C.orig.Addic7ed.com";
 
-		name = "Winter's Tale (2014).DVDRip.Bulgarian.orig.Addic7ed.com";
+		name = "Winter's Tale (2014).DVD-Rip.Bulgarian.orig.Addic7ed.com";
 		name = "the house of magic (2014).bdrip.Portuguese.orig.Addic7ed.com";
-		name = "Revenge of the Bridesmaids (2010).Dvdrip.Serbian (Latin).orig.Addic7ed.com";
+		name = "Revenge of the Bridesmaids (2010).Dvd-rip.Serbian (Latin).orig.Addic7ed.com";
 
 		// Episode matcher
 		Pattern p1 = Pattern.compile("(.*?) - (\\d{2})x(\\d{2}) - ([^\\.]+)\\.([\\w-]+)\\.(English)\\.([\\w\\.]+)\\.(Addic7ed.com)");

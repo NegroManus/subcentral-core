@@ -1,7 +1,9 @@
-package de.subcentral.core.naming;
+package de.subcentral.core.impl.com.addic7ed;
 
 import com.google.common.base.Joiner;
 
+import de.subcentral.core.naming.Namer;
+import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.release.MediaRelease;
 
 public class Addic7edMediaReleaseNamer implements Namer<MediaRelease> {

@@ -1,7 +1,9 @@
-package de.subcentral.core.naming;
+package de.subcentral.core.impl.com.addic7ed;
 
 import com.google.common.base.Joiner;
 
+import de.subcentral.core.naming.Namer;
+import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.subtitle.SubtitleRelease;
 
 public class Addic7edSubtitleReleaseNamer implements Namer<SubtitleRelease>

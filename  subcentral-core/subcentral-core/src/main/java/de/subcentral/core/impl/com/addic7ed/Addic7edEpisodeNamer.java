@@ -1,6 +1,8 @@
-package de.subcentral.core.naming;
+package de.subcentral.core.impl.com.addic7ed;
 
 import de.subcentral.core.media.Episode;
+import de.subcentral.core.naming.Namer;
+import de.subcentral.core.naming.NamingService;
 
 public class Addic7edEpisodeNamer implements Namer<Episode>
 {
