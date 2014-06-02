@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<bean id="movieMatcher1" class="de.subcentral.core.util.MappingMatcher">
+		<constructor-arg value=".*" />
+		<constructor-arg>
+			<map>
+				<entry key="1" value="title" />
+			</map>
+		</constructor-arg>
+	</bean>
+	
+		<bean id="movieReleaseMatcher1" class="de.subcentral.core.util.MappingMatcher">
+		<constructor-arg value="(.*\d{4})(\.*)-(\w+)" />
+		<constructor-arg>
+			<map>
+				<entry key="1" value="media" />
+				<entry key="1" value="tags" />
+				<entry key="1" value="group" />
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean id="movieReleaseParser" class="de.subcentral.core.naming.NameParserImpl">
+		<property name="typeClass" value="de.subcentral.core.release.Release" />
+		<property name="domain" value="com.addic7ed" />
+		<property name="matchers">
+			<list>
+				<ref bean="movieReleaseMatcher1" />
+			</list>
+		</property>
+		<property name="customEditorsForPath">
+			<map>
+				<entry key="media">
+					<bean
+						class="de.subcentral.core.naming.NamingParserImpl$CustomEditorHolder">
+						<property name="typeClass" value="de.subcentral.core.media.Movie" />
+						<property name="editor" value=""/>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+
+	<bean class="de.subcentral.core.naming.NamingServiceImpl">
+		<property name="nameParsers">
+			<list>
+				<ref bean="movieReleaseParser" />
+			</list>
+		</property>
+	</bean>
+</beans>
