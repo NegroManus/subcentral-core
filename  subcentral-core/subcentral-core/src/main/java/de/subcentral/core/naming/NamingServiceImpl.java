@@ -47,6 +47,16 @@ public class NamingServiceImpl implements NamingService
 		return namers.remove(typeClass);
 	}
 
+	@Override
+	public boolean canName(Object obj)
+	{
+		if (obj == null)
+		{
+			return false;
+		}
+		return getNamer(obj.getClass()) != null;
+	}
+
 	/**
 	 * Returns a name for the given object which is calculated as follows:
 	 * <ul>
@@ -68,31 +78,40 @@ public class NamingServiceImpl implements NamingService
 	@Override
 	public <T> String name(T obj)
 	{
-		Class<?> clazz = obj.getClass();
-		while (clazz != Object.class)
+		@SuppressWarnings("unchecked")
+		Namer<? super T> namer = (Namer<? super T>) getNamer(obj.getClass());
+		if (namer != null)
 		{
-			@SuppressWarnings("unchecked")
-			Namer<? super T> namer = (Namer<? super T>) namers.get(clazz);
-			if (namer != null)
-			{
-				return namer.name(obj, this);
-			}
-			clazz = clazz.getSuperclass();
-		}
-		for (Class<?> interfaceClass : ClassUtils.getAllInterfaces(obj.getClass()))
-		{
-			@SuppressWarnings("unchecked")
-			Namer<? super T> namer = (Namer<? super T>) namers.get(interfaceClass);
-			if (namer != null)
-			{
-				return namer.name(obj, this);
-			}
+			return namer.name(obj);
 		}
 		if (obj instanceof Nameable)
 		{
 			return ((Nameable) obj).getName();
 		}
 		return obj.toString();
+	}
+
+	private Namer<?> getNamer(Class<?> clazz)
+	{
+		Class<?> searchClass = clazz;
+		while (searchClass != Object.class)
+		{
+			Namer<?> namer = namers.get(searchClass);
+			if (namer != null)
+			{
+				return namer;
+			}
+			searchClass = searchClass.getSuperclass();
+		}
+		for (Class<?> interfaceClass : ClassUtils.getAllInterfaces(clazz))
+		{
+			Namer<?> namer = namers.get(interfaceClass);
+			if (namer != null)
+			{
+				return namer;
+			}
+		}
+		return null;
 	}
 
 	private void checkNamersMap(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException

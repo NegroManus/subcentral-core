@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import de.subcentral.core.naming.Nameable;
-import de.subcentral.core.naming.Nameables;
+import de.subcentral.core.util.StringUtil;
 
 public abstract class AbstractRelease<M extends Nameable> implements Release<M>
 {
@@ -48,19 +48,19 @@ public abstract class AbstractRelease<M extends Nameable> implements Release<M>
 			sb.append(m.getName());
 			sb.append(' ');
 		}
-		Nameables.deleteTrailingSpaces(sb);
+		StringUtil.deleteTrailing(sb);
 
 		if (tags != null && !tags.isEmpty())
 		{
 			for (Tag tag : tags)
 			{
-				Nameables.appendSpace(sb);
+				StringUtil.append(sb);
 				sb.append(tag.getName());
 			}
 		}
 		if (group != null)
 		{
-			Nameables.appendSpace(sb);
+			StringUtil.append(sb);
 			sb.append(group.getName());
 		}
 		return sb.toString();

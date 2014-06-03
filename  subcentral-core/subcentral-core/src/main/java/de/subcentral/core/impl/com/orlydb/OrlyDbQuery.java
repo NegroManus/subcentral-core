@@ -1,21 +1,15 @@
 package de.subcentral.core.impl.com.orlydb;
 
-import de.subcentral.core.media.Media;
-import de.subcentral.core.release.MediaRelease;
-
 public class OrlyDbQuery
 {
-	private String	section;
-	private String	query;
+	private final String	query;
+	private final String	section;
 
-	public String getSection()
+	OrlyDbQuery(String query, String section)
 	{
-		return section;
-	}
-
-	public void setSection(String section)
-	{
+		// package-visibilty because can only be constructed by OrlyDbLookup
 		this.section = section;
+		this.query = query;
 	}
 
 	public String getQuery()
@@ -23,18 +17,8 @@ public class OrlyDbQuery
 		return query;
 	}
 
-	public void setQuery(String query)
+	public String getSection()
 	{
-		this.query = query;
-	}
-
-	public static String buildQuery(Media media)
-	{
-		return media.getName();
-	}
-
-	public static String buildQuery(MediaRelease release)
-	{
-		return release.getName();
+		return section;
 	}
 }

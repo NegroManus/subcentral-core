@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.impl.com.addic7ed.Addic7edEpisodeNamer;
 import de.subcentral.core.impl.com.addic7ed.Addic7edMediaReleaseNamer;
 import de.subcentral.core.impl.com.addic7ed.Addic7edSubtitleReleaseNamer;
+import de.subcentral.core.impl.scene.Scene;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.media.Medias;
 import de.subcentral.core.release.Group;
@@ -17,9 +18,11 @@ import de.subcentral.core.subtitle.Subtitle;
 import de.subcentral.core.subtitle.SubtitleRelease;
 import de.subcentral.core.util.TimeUtil;
 
-public class NamingTest {
+public class NamingTest
+{
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		// Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com
 
 		NamingServiceImpl ns = new NamingServiceImpl();
@@ -50,16 +53,16 @@ public class NamingTest {
 		subRel.setTags(ImmutableList.of(new Tag("orig")));
 
 		long overallStart = System.nanoTime();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 1000; i++)
+		{
 			epi.setNumberInSeason(i);
 			long start = System.nanoTime();
-			String name = ns.name(subRel);
+			String name = Scene.getSceneNamingService().name(epi);
 			double duration = TimeUtil.durationMillis(start, System.nanoTime());
 			System.out.println(name);
 			System.out.println(duration + " ms");
 		}
-		double overallDuration = TimeUtil.durationMillis(overallStart,
-				System.nanoTime());
+		double overallDuration = TimeUtil.durationMillis(overallStart, System.nanoTime());
 		System.out.println("Overall duration: " + overallDuration + " ms");
 	}
 }

@@ -33,25 +33,6 @@ public class Nameables
 		}
 	}
 
-	public static void appendSpace(StringBuilder sb)
-	{
-		int len = sb.length();
-		if (len > 0 && sb.charAt(len - 1) != ' ')
-		{
-			sb.append(' ');
-		}
-	}
-
-	public static void deleteTrailingSpaces(StringBuilder sb)
-	{
-		int len = sb.length();
-		while (len > 0 && sb.charAt(len - 1) == ' ')
-		{
-			sb.deleteCharAt(len - 1);
-			len = sb.length();
-		}
-	}
-
 	private Nameables()
 	{
 		// utility class

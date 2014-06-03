@@ -8,7 +8,7 @@ import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
 import de.subcentral.core.media.AvMedia;
 import de.subcentral.core.naming.Nameable;
-import de.subcentral.core.naming.Nameables;
+import de.subcentral.core.util.StringUtil;
 
 public class Subtitle implements Nameable, Work
 {
@@ -49,7 +49,7 @@ public class Subtitle implements Nameable, Work
 		{
 			sb.append(media.getName());
 		}
-		Nameables.appendSpace(sb);
+		StringUtil.append(sb);
 		sb.append(language);
 		return sb.toString();
 	}

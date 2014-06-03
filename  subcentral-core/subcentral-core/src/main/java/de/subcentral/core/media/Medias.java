@@ -31,9 +31,13 @@ public class Medias
 		Series series = new Series();
 		series.setTitle(seriesTitle);
 		series.setExplicitName(seriesName);
-		Season season = series.addSeason();
-		season.setNumber(seasonNumber);
-		season.setTitle(seasonTitle);
+		Season season = null;
+		if (seasonNumber != Media.UNNUMBERED && seasonTitle != null)
+		{
+			season = series.addSeason();
+			season.setNumber(seasonNumber);
+			season.setTitle(seasonTitle);
+		}
 		Episode epi = series.addEpisode(season);
 		epi.setNumberInSeason(episodeNumber);
 		epi.setTitle(episodeTitle);

@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.naming.Nameables;
+import de.subcentral.core.util.StringUtil;
 
 public class Episode extends AbstractAvMedia implements Comparable<Episode>
 {
@@ -115,7 +116,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 		}
 		if (includeSeason && isPartOfSeason())
 		{
-			Nameables.appendSpace(sb);
+			StringUtil.append(sb);
 			sb.append(season.getImplicitName(false, alwaysIncludeSeasonTitle));
 		}
 		// if in season, append numberInSeason
@@ -123,7 +124,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 		{
 			if (isNumberedInSeason())
 			{
-				Nameables.appendSpace(sb);
+				StringUtil.append(sb);
 				sb.append('E');
 				sb.append(String.format("%02d", numberInSeason));
 				if (alwaysIncludeTitle && isTitled())
@@ -136,7 +137,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 			{
 				if (isTitled())
 				{
-					Nameables.appendSpace(sb);
+					StringUtil.append(sb);
 					sb.append(title);
 				}
 			}
@@ -145,7 +146,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 		{
 			if (isNumberedInSeries())
 			{
-				Nameables.appendSpace(sb);
+				StringUtil.append(sb);
 				sb.append('E');
 				sb.append(String.format("%02d", numberInSeries));
 				if (alwaysIncludeTitle && isTitled())
@@ -158,7 +159,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 			{
 				if (isTitled())
 				{
-					Nameables.appendSpace(sb);
+					StringUtil.append(sb);
 					sb.append(title);
 				}
 			}

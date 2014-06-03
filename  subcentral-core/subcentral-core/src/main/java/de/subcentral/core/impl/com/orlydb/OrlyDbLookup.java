@@ -21,10 +21,24 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.lookup.AbstractHttpHtmlLookup;
 import de.subcentral.core.lookup.LookupException;
 import de.subcentral.core.lookup.LookupResult;
+import de.subcentral.core.media.Media;
+import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.release.MediaRelease;
 
 public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQuery>
 {
+	private NamingService	namingService	= null;
+
+	public NamingService getNamingService()
+	{
+		return namingService;
+	}
+
+	public void setNamingService(NamingService namingService)
+	{
+		this.namingService = namingService;
+	}
+
 	public OrlyDbLookup()
 	{
 		try
@@ -35,6 +49,21 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public OrlyDbQuery createQuery(String query)
+	{
+		return new OrlyDbQuery(query, null);
+	}
+
+	public OrlyDbQuery createQuery(Media media)
+	{
+		return new OrlyDbQuery(namingService.name(media), null);
+	}
+
+	public OrlyDbQuery createQuery(MediaRelease mediaRelease)
+	{
+		return new OrlyDbQuery(namingService.name(mediaRelease), null);
 	}
 
 	@Override
@@ -74,8 +103,8 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 			path.append("s/");
 			path.append(query.getSection());
 		}
-		String queryStr = buildQuery(query.getQuery());
-		URI uri = new URI("http", null, getHost().getHost(), 80, path.toString(), queryStr, null);
+		String queryStr = encodeQuery(query.getQuery());
+		URI uri = new URI("http", null, getHost().getHost(), -1, path.toString(), queryStr, null);
 		return uri.toURL();
 	}
 
@@ -86,11 +115,11 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		{
 			return null;
 		}
-		URI uri = new URI("http", null, getHost().getHost(), 80, "/", buildQuery(query), null);
+		URI uri = new URI("http", null, getHost().getHost(), -1, "/", encodeQuery(query), null);
 		return uri.toURL();
 	}
 
-	private static String buildQuery(String queryStr) throws UnsupportedEncodingException
+	private static String encodeQuery(String queryStr) throws UnsupportedEncodingException
 	{
 		if (queryStr == null)
 		{

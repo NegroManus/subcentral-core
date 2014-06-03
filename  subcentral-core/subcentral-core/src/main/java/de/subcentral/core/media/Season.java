@@ -3,7 +3,7 @@ package de.subcentral.core.media;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import de.subcentral.core.naming.Nameable;
-import de.subcentral.core.naming.Nameables;
+import de.subcentral.core.util.StringUtil;
 
 public class Season implements Comparable<Season>, Nameable
 {
@@ -112,7 +112,7 @@ public class Season implements Comparable<Season>, Nameable
 		}
 		if (isNumbered())
 		{
-			Nameables.appendSpace(sb);
+			StringUtil.append(sb);
 			sb.append('S');
 			sb.append(String.format("%02d", number));
 			if (alwaysIncludeTitle && isTitled())
@@ -125,7 +125,7 @@ public class Season implements Comparable<Season>, Nameable
 		{
 			if (isTitled())
 			{
-				Nameables.appendSpace(sb);
+				StringUtil.append(sb);
 				sb.append(title);
 			}
 

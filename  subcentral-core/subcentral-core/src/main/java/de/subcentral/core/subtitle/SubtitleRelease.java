@@ -7,10 +7,10 @@ import java.util.Set;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.naming.Nameables;
 import de.subcentral.core.release.AbstractRelease;
 import de.subcentral.core.release.MediaRelease;
 import de.subcentral.core.release.Tag;
+import de.subcentral.core.util.StringUtil;
 
 public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 {
@@ -75,7 +75,7 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 		Subtitle sub = getFirstMaterial();
 		if (sub != null)
 		{
-			Nameables.appendSpace(sb);
+			StringUtil.append(sb);
 			sb.append(sub.getImplicitName(false));
 		}
 
@@ -83,13 +83,13 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 		{
 			for (Tag tag : tags)
 			{
-				Nameables.appendSpace(sb);
+				StringUtil.append(sb);
 				sb.append(tag.getName());
 			}
 		}
 		if (group != null)
 		{
-			Nameables.appendSpace(sb);
+			StringUtil.append(sb);
 			sb.append(group.getName());
 		}
 		return sb.toString();
