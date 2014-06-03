@@ -1,6 +1,11 @@
 package de.subcentral.core.impl.com.orlydb;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -45,40 +50,51 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	}
 
 	@Override
-	public OrlyDbLookupResult lookupByUrl(String subPath) throws LookupException
+	public OrlyDbLookupResult lookupByUrl(URL url) throws LookupException
 	{
-		return (OrlyDbLookupResult) super.lookupByUrl(subPath);
+		return (OrlyDbLookupResult) super.lookupByUrl(url);
 	}
 
 	@Override
-	protected String buildQueryUrl(OrlyDbQuery query)
+	protected URL buildQueryUrl(OrlyDbQuery query) throws URISyntaxException, UnsupportedEncodingException, MalformedURLException
 	{
 		if (query == null)
+		{
+			return null;
+		}
+		StringBuilder path = new StringBuilder("/");
+		if (query.getSection() != null)
+		{
+			path.append("s/");
+			path.append(query.getSection());
+		}
+		String queryStr = buildQuery(query.getQuery());
+		URI uri = new URI("http", null, getHost().getHost(), -1, path.toString(), queryStr, null);
+		return uri.toURL();
+	}
+
+	@Override
+	protected URL buildQueryUrl(String query) throws URISyntaxException, MalformedURLException, UnsupportedEncodingException
+	{
+		if (query == null)
+		{
+			return null;
+		}
+		URI uri = new URI("http", null, getHost().getHost(), -1, "/", buildQuery(query), null);
+		return uri.toURL();
+	}
+
+	private static String buildQuery(String queryStr) throws UnsupportedEncodingException
+	{
+		if (queryStr == null)
 		{
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
-		if (query.getSection() != null)
-		{
-			sb.append("s/");
-			sb.append(query.getSection());
-		}
-		sb.append("?q=");
-		if (query.getQuery() != null)
-		{
-			sb.append(query.getQuery());
-		}
+		sb.append("q=");
+		// URLEncoder is just for encoding queries
+		sb.append(URLEncoder.encode(queryStr, "UTF-8"));
 		return sb.toString();
-	}
-
-	@Override
-	protected String buildQueryUrl(String query)
-	{
-		if (query == null)
-		{
-			return null;
-		}
-		return new StringBuilder("?q=").append(query).toString();
 	}
 
 	@Override

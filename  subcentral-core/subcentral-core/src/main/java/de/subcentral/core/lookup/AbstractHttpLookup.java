@@ -93,9 +93,9 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 		}
 	}
 
-	public abstract LookupResult<R> lookupByUrl(String subPath) throws LookupException;
+	public abstract LookupResult<R> lookupByUrl(URL url) throws LookupException;
 
-	protected abstract String buildQueryUrl(Q query);
+	protected abstract URL buildQueryUrl(Q query) throws Exception;
 
-	protected abstract String buildQueryUrl(String query);
+	protected abstract URL buildQueryUrl(String query) throws Exception;
 }

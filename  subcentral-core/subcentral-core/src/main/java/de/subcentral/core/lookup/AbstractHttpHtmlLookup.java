@@ -9,11 +9,11 @@ import org.jsoup.nodes.Document;
 public abstract class AbstractHttpHtmlLookup<R, Q> extends AbstractHttpLookup<R, Q>
 {
 	@Override
-	public LookupResult<R> lookupByUrl(String subPath) throws LookupException
+	public LookupResult<R> lookupByUrl(URL url) throws LookupException
 	{
 		try
 		{
-			Connection con = setupConnection(subPath);
+			Connection con = setupConnection(url);
 			Document doc = con.get();
 			return parseDocument(doc);
 		}
@@ -28,9 +28,9 @@ public abstract class AbstractHttpHtmlLookup<R, Q> extends AbstractHttpLookup<R,
 	}
 
 	// Sets up a connection without cookies or user-agent info
-	protected Connection setupConnection(String subPath) throws Exception
+	protected Connection setupConnection(URL url) throws Exception
 	{
-		return Jsoup.connect(new URL(getHost(), subPath).getPath());
+		return Jsoup.connect(url.toExternalForm());
 	}
 
 	protected abstract LookupResult<R> parseDocument(Document doc) throws Exception;
