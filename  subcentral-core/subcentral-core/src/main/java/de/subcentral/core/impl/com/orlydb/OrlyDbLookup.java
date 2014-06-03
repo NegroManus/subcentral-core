@@ -1,6 +1,5 @@
 package de.subcentral.core.impl.com.orlydb;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -8,17 +7,18 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.lookup.AbstractHttpLookup;
+import de.subcentral.core.lookup.AbstractHttpHtmlLookup;
+import de.subcentral.core.lookup.LookupException;
+import de.subcentral.core.lookup.LookupResult;
 import de.subcentral.core.release.MediaRelease;
 
-public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbQuery>
+public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQuery>
 {
 	public OrlyDbLookup()
 	{
@@ -33,19 +33,19 @@ public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbQuery>
 	}
 
 	@Override
-	public OrlyDbLookupResult lookup(OrlyDbQuery query) throws IOException
+	public OrlyDbLookupResult lookup(OrlyDbQuery query) throws LookupException
 	{
 		return (OrlyDbLookupResult) super.lookup(query);
 	}
 
 	@Override
-	public OrlyDbLookupResult lookup(String query) throws IOException
+	public OrlyDbLookupResult lookup(String query) throws LookupException
 	{
 		return (OrlyDbLookupResult) super.lookup(query);
 	}
 
 	@Override
-	public OrlyDbLookupResult lookupByUrl(String subPath) throws IOException
+	public OrlyDbLookupResult lookupByUrl(String subPath) throws LookupException
 	{
 		return (OrlyDbLookupResult) super.lookupByUrl(subPath);
 	}
@@ -82,16 +82,9 @@ public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbQuery>
 	}
 
 	@Override
-	protected OrlyDbLookupResult parseResponse(String response)
+	protected LookupResult<MediaRelease> parseDocument(Document doc) throws Exception
 	{
-		if (response == null)
-		{
-			return new OrlyDbLookupResult();
-		}
-
-		Document doc = Jsoup.parse(response);
-		List<MediaRelease> rlss = parseReleases(doc);
-		return new OrlyDbLookupResult(rlss);
+		return new OrlyDbLookupResult(parseReleases(doc));
 	}
 
 	/**

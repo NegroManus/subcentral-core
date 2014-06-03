@@ -6,7 +6,7 @@ public interface Lookup<R, Q>
 
 	public boolean isLookupAvailable();
 
-	public LookupResult<R> lookup(String query) throws Exception;
+	public LookupResult<R> lookup(String query) throws LookupException;
 
-	public LookupResult<R> lookup(Q query) throws Exception;
+	public LookupResult<R> lookup(Q query) throws LookupException;
 }

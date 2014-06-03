@@ -1,12 +1,9 @@
 package de.subcentral.core.lookup;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 {
@@ -63,38 +60,42 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 	}
 
 	@Override
-	public LookupResult<R> lookup(String query) throws IOException
+	public LookupResult<R> lookup(String query) throws LookupException
 	{
-		return lookupByUrl(buildQueryUrl(query));
+		try
+		{
+			return lookupByUrl(buildQueryUrl(query));
+		}
+		catch (Exception e)
+		{
+			if (e instanceof LookupException)
+			{
+				throw (LookupException) e;
+			}
+			throw new LookupException(e);
+		}
 	}
 
 	@Override
-	public LookupResult<R> lookup(Q query) throws IOException
+	public LookupResult<R> lookup(Q query) throws LookupException
 	{
-		return lookupByUrl(buildQueryUrl(query));
+		try
+		{
+			return lookupByUrl(buildQueryUrl(query));
+		}
+		catch (Exception e)
+		{
+			if (e instanceof LookupException)
+			{
+				throw (LookupException) e;
+			}
+			throw new LookupException(e);
+		}
 	}
 
-	public LookupResult<R> lookupByUrl(String subPath) throws IOException
-	{
-		URL url = new URL(host, subPath);
-		URLConnection con = url.openConnection();
-		con.setConnectTimeout(timeout);
-		con.setReadTimeout(timeout);
-		StringBuilder sb = new StringBuilder();
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream())))
-		{
-			String line;
-			while ((line = reader.readLine()) != null)
-			{
-				sb.append(line);
-			}
-		}
-		return parseResponse(sb.toString());
-	}
+	public abstract LookupResult<R> lookupByUrl(String subPath) throws LookupException;
 
 	protected abstract String buildQueryUrl(Q query);
 
 	protected abstract String buildQueryUrl(String query);
-
-	protected abstract LookupResult<R> parseResponse(String response);
 }
