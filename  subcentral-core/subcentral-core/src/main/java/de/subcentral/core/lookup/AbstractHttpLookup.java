@@ -95,6 +95,22 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 
 	public abstract LookupResult<R> lookupByUrl(URL url) throws LookupException;
 
+	public LookupResult<R> lookupByUrl(String url) throws LookupException
+	{
+		try
+		{
+			return lookupByUrl(new URL(getHost(), url));
+		}
+		catch (Exception e)
+		{
+			if (e instanceof LookupException)
+			{
+				throw (LookupException) e;
+			}
+			throw new LookupException(e);
+		}
+	}
+
 	protected abstract URL buildQueryUrl(Q query) throws Exception;
 
 	protected abstract URL buildQueryUrl(String query) throws Exception;

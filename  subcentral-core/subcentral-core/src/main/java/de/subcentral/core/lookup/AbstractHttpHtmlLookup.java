@@ -15,7 +15,7 @@ public abstract class AbstractHttpHtmlLookup<R, Q> extends AbstractHttpLookup<R,
 		{
 			Connection con = setupConnection(url);
 			Document doc = con.get();
-			return parseDocument(doc);
+			return parseDocument(url, doc);
 		}
 		catch (Exception e)
 		{
@@ -33,5 +33,5 @@ public abstract class AbstractHttpHtmlLookup<R, Q> extends AbstractHttpLookup<R,
 		return Jsoup.connect(url.toExternalForm());
 	}
 
-	protected abstract LookupResult<R> parseDocument(Document doc) throws Exception;
+	protected abstract LookupResult<R> parseDocument(URL url, Document doc) throws Exception;
 }

@@ -30,7 +30,7 @@ public class OrlyDbQuery
 
 	public static String buildQuery(Media media)
 	{
-		return media.getName().replace(' ', '.');
+		return media.getName();
 	}
 
 	public static String buildQuery(MediaRelease release)

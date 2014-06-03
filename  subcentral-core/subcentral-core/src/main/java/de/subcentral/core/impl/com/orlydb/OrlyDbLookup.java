@@ -56,6 +56,12 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	}
 
 	@Override
+	public OrlyDbLookupResult lookupByUrl(String url) throws LookupException
+	{
+		return (OrlyDbLookupResult) super.lookupByUrl(url);
+	}
+
+	@Override
 	protected URL buildQueryUrl(OrlyDbQuery query) throws URISyntaxException, UnsupportedEncodingException, MalformedURLException
 	{
 		if (query == null)
@@ -69,7 +75,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 			path.append(query.getSection());
 		}
 		String queryStr = buildQuery(query.getQuery());
-		URI uri = new URI("http", null, getHost().getHost(), -1, path.toString(), queryStr, null);
+		URI uri = new URI("http", null, getHost().getHost(), 80, path.toString(), queryStr, null);
 		return uri.toURL();
 	}
 
@@ -80,7 +86,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		{
 			return null;
 		}
-		URI uri = new URI("http", null, getHost().getHost(), -1, "/", buildQuery(query), null);
+		URI uri = new URI("http", null, getHost().getHost(), 80, "/", buildQuery(query), null);
 		return uri.toURL();
 	}
 
@@ -92,15 +98,15 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		}
 		StringBuilder sb = new StringBuilder();
 		sb.append("q=");
-		// URLEncoder is just for encoding queries
+		// URLEncoder is just for encoding queries, not for the whole URL
 		sb.append(URLEncoder.encode(queryStr, "UTF-8"));
 		return sb.toString();
 	}
 
 	@Override
-	protected LookupResult<MediaRelease> parseDocument(Document doc) throws Exception
+	protected LookupResult<MediaRelease> parseDocument(URL url, Document doc) throws Exception
 	{
-		return new OrlyDbLookupResult(parseReleases(doc));
+		return new OrlyDbLookupResult(url, parseReleases(doc));
 	}
 
 	/**
