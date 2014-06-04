@@ -2,34 +2,34 @@ package de.subcentral.core.lookup;
 
 public class LookupException extends Exception
 {
-	private static final long	serialVersionUID	= 1L;
+	private static final long	serialVersionUID	= -5423474090679019566L;
 
 	public LookupException()
 	{
 		// TODO Auto-generated constructor stub
 	}
 
-	public LookupException(String arg0)
+	public LookupException(String message)
 	{
-		super(arg0);
+		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public LookupException(Throwable arg0)
+	public LookupException(Throwable cause)
 	{
-		super(arg0);
+		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public LookupException(String arg0, Throwable arg1)
+	public LookupException(String message, Throwable cause)
 	{
-		super(arg0, arg1);
+		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public LookupException(String arg0, Throwable arg1, boolean arg2, boolean arg3)
+	public LookupException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
 	{
-		super(arg0, arg1, arg2, arg3);
+		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 

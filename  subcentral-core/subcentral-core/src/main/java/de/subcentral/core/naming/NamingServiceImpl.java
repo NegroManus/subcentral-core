@@ -82,7 +82,7 @@ public class NamingServiceImpl implements NamingService
 		Namer<? super T> namer = (Namer<? super T>) getNamer(obj.getClass());
 		if (namer != null)
 		{
-			return namer.name(obj);
+			return namer.name(obj, this);
 		}
 		if (obj instanceof Nameable)
 		{

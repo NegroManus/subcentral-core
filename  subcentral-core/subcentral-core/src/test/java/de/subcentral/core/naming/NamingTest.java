@@ -1,5 +1,6 @@
 package de.subcentral.core.naming;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,9 +9,9 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.impl.com.addic7ed.Addic7edEpisodeNamer;
 import de.subcentral.core.impl.com.addic7ed.Addic7edMediaReleaseNamer;
 import de.subcentral.core.impl.com.addic7ed.Addic7edSubtitleReleaseNamer;
-import de.subcentral.core.impl.scene.Scene;
 import de.subcentral.core.media.Episode;
-import de.subcentral.core.media.Medias;
+import de.subcentral.core.media.Season;
+import de.subcentral.core.media.Series;
 import de.subcentral.core.release.Group;
 import de.subcentral.core.release.MediaRelease;
 import de.subcentral.core.release.Tag;
@@ -32,7 +33,19 @@ public class NamingTest
 		namers.put(SubtitleRelease.class, new Addic7edSubtitleReleaseNamer());
 		ns.setNamers(namers);
 
-		Episode epi = Medias.newEpisode("Psych", 1, 1, "Pilot");
+		Series psych = new Series();
+		psych.setTitle("How I Met Your Mother");
+		psych.setType(Series.TYPE_SERIES);
+
+		Season s2 = psych.addSeason();
+		s2.setNumber(2);
+		s2.setTitle("Webisodes");
+
+		Episode epi = psych.addEpisode(s2);
+		epi.setNumberInSeason(1);
+		epi.setNumberInSeries(17);
+		epi.setTitle("Weekend at Barney's");
+		epi.setDate(LocalDateTime.now());
 
 		// Media release
 		MediaRelease rel = new MediaRelease();
@@ -55,9 +68,8 @@ public class NamingTest
 		long overallStart = System.nanoTime();
 		for (int i = 0; i < 1000; i++)
 		{
-			epi.setNumberInSeason(i);
 			long start = System.nanoTime();
-			String name = Scene.getSceneNamingService().name(epi);
+			String name = NamingStandards.NAMING_SERVICE.name(epi); // ns.name(epi);//
 			double duration = TimeUtil.durationMillis(start, System.nanoTime());
 			System.out.println(name);
 			System.out.println(duration + " ms");

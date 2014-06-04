@@ -153,6 +153,6 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 
 	private List<Tag> parseTags(String tags)
 	{
-		return Releases.buildTagsFromStringList(tagSplitter.splitToList(tags));
+		return Releases.tagsOf(tagSplitter.splitToList(tags));
 	}
 }

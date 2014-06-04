@@ -60,23 +60,6 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 	}
 
 	@Override
-	public LookupResult<R> lookup(String query) throws LookupException
-	{
-		try
-		{
-			return lookupByUrl(buildQueryUrl(query));
-		}
-		catch (Exception e)
-		{
-			if (e instanceof LookupException)
-			{
-				throw (LookupException) e;
-			}
-			throw new LookupException(e);
-		}
-	}
-
-	@Override
 	public LookupResult<R> lookup(Q query) throws LookupException
 	{
 		try
@@ -112,6 +95,4 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 	}
 
 	protected abstract URL buildQueryUrl(Q query) throws Exception;
-
-	protected abstract URL buildQueryUrl(String query) throws Exception;
 }

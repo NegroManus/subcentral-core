@@ -1,7 +1,10 @@
 package de.subcentral.core.release;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import de.subcentral.core.media.Media;
 
 public class Releases
 {
@@ -11,7 +14,16 @@ public class Releases
 		// utility class
 	}
 
-	public static List<Tag> buildTagsFromStringList(List<String> strings)
+	public static MediaRelease newMediaRelease(Media material, Group group, List<Tag> tags)
+	{
+		MediaRelease rls = new MediaRelease();
+		rls.setMaterial(material);
+		rls.setGroup(group);
+		rls.setTags(tags);
+		return rls;
+	}
+
+	public static List<Tag> tagsOf(Collection<String> strings)
 	{
 		if (strings.isEmpty())
 		{

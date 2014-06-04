@@ -81,11 +81,9 @@ public class StringUtil
 
 	public static void deleteTrailing(StringBuilder sb, CharSequence cs)
 	{
-		int len = sb.length();
-		while (len > 0 && StringUtils.endsWith(sb, cs))
+		while (sb.length() > 0 && StringUtils.endsWith(sb, cs))
 		{
-			sb.delete(len - cs.length() - 1, cs.length());
-			len = sb.length();
+			sb.delete(sb.length() - cs.length(), sb.length());
 		}
 	}
 

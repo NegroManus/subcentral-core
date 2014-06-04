@@ -32,7 +32,7 @@ public class Medias
 		series.setTitle(seriesTitle);
 		series.setExplicitName(seriesName);
 		Season season = null;
-		if (seasonNumber != Media.UNNUMBERED && seasonTitle != null)
+		if (seasonNumber != Media.UNNUMBERED || seasonTitle != null)
 		{
 			season = series.addSeason();
 			season.setNumber(seasonNumber);

@@ -51,19 +51,41 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		}
 	}
 
-	public OrlyDbQuery createQuery(String query)
+	@Override
+	public OrlyDbQuery createQuery(String queryString)
 	{
-		return new OrlyDbQuery(query, null);
+		return createQuery(queryString, null);
+	}
+
+	public OrlyDbQuery createQuery(String query, String section)
+	{
+		return new OrlyDbQuery(query, section);
 	}
 
 	public OrlyDbQuery createQuery(Media media)
 	{
-		return new OrlyDbQuery(namingService.name(media), null);
+		return createQuery(media, null);
+	}
+
+	public OrlyDbQuery createQuery(Media media, String section)
+	{
+		return new OrlyDbQuery(namingService.name(media), section);
 	}
 
 	public OrlyDbQuery createQuery(MediaRelease mediaRelease)
 	{
-		return new OrlyDbQuery(namingService.name(mediaRelease), null);
+		return createQuery(mediaRelease, null);
+	}
+
+	public OrlyDbQuery createQuery(MediaRelease mediaRelease, String section)
+	{
+		return new OrlyDbQuery(namingService.name(mediaRelease), section);
+	}
+
+	@Override
+	public Class<MediaRelease> getResultClass()
+	{
+		return MediaRelease.class;
 	}
 
 	@Override
@@ -105,17 +127,6 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		}
 		String queryStr = encodeQuery(query.getQuery());
 		URI uri = new URI("http", null, getHost().getHost(), -1, path.toString(), queryStr, null);
-		return uri.toURL();
-	}
-
-	@Override
-	protected URL buildQueryUrl(String query) throws URISyntaxException, MalformedURLException, UnsupportedEncodingException
-	{
-		if (query == null)
-		{
-			return null;
-		}
-		URI uri = new URI("http", null, getHost().getHost(), -1, "/", encodeQuery(query), null);
 		return uri.toURL();
 	}
 
