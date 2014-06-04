@@ -20,16 +20,16 @@ public class Nameables
 				// o1 is not null here
 				return 1;
 			}
-			if (o1.getName() == null)
+			if (o1.getNameOrCompute() == null)
 			{
-				return o2.getName() == null ? 0 : -1;
+				return o2.getNameOrCompute() == null ? 0 : -1;
 			}
-			if (o2.getName() == null)
+			if (o2.getNameOrCompute() == null)
 			{
 				// o1.getName() is not null here
 				return 1;
 			}
-			return o1.getName().compareTo(o2.getName());
+			return o1.getNameOrCompute().compareTo(o2.getNameOrCompute());
 		}
 	}
 

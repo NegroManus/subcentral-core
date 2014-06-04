@@ -111,7 +111,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		{
 			Movie movie = new Movie();
 			movie.setTitle(movieTitle);
-			movie.setExplicitName(movieName);
+			movie.setName(movieName);
 			if (movieYear != null)
 			{
 				movie.setDate(Year.parse(movieYear));

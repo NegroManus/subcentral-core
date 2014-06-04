@@ -6,7 +6,6 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.naming.Nameables;
-import de.subcentral.core.util.StringUtil;
 
 public class Episode extends AbstractAvMedia implements Comparable<Episode>
 {
@@ -99,72 +98,6 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	public boolean isTitled()
 	{
 		return title != null;
-	}
-
-	@Override
-	public String getImplicitName()
-	{
-		return getImplicitName(true, true, false, false);
-	}
-
-	public String getImplicitName(boolean includeSeries, boolean includeSeason, boolean alwaysIncludeSeasonTitle, boolean alwaysIncludeTitle)
-	{
-		StringBuilder sb = new StringBuilder();
-		if (includeSeries)
-		{
-			sb.append(series.getName());
-		}
-		if (includeSeason && isPartOfSeason())
-		{
-			StringUtil.append(sb);
-			sb.append(season.getImplicitName(false, alwaysIncludeSeasonTitle));
-		}
-		// if in season, append numberInSeason
-		if (isPartOfSeason())
-		{
-			if (isNumberedInSeason())
-			{
-				StringUtil.append(sb);
-				sb.append('E');
-				sb.append(String.format("%02d", numberInSeason));
-				if (alwaysIncludeTitle && isTitled())
-				{
-					sb.append(' ');
-					sb.append(title);
-				}
-			}
-			else
-			{
-				if (isTitled())
-				{
-					StringUtil.append(sb);
-					sb.append(title);
-				}
-			}
-		}
-		else
-		{
-			if (isNumberedInSeries())
-			{
-				StringUtil.append(sb);
-				sb.append('E');
-				sb.append(String.format("%02d", numberInSeries));
-				if (alwaysIncludeTitle && isTitled())
-				{
-					sb.append(' ');
-					sb.append(title);
-				}
-			}
-			else
-			{
-				if (isTitled())
-				{
-					StringUtil.append(sb);
-					sb.append(title);
-				}
-			}
-		}
-		return sb.toString();
 	}
 
 	@Override

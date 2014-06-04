@@ -2,14 +2,15 @@ package de.subcentral.core.naming;
 
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.util.Replacer;
+import de.subcentral.core.util.StringUtil;
 
 public class SeriesEpisodeNamer extends AbstractEpisodeNamer
 {
-	private String		seasonEpisodeNumberFormat	= ".S%02dE%02d";
-	private String		seasonNumberFormat			= ".S%02d";
-	private Replacer	seasonTitleReplacer			= NamingStandards.STANDARD_REPLACER;
-	private String		seasonTitleFormat			= ".%s";
-	private String		episodeNumberFormat			= ".E%02d";
+	private String		seasonEpisodeNumberFormat	= " S%02dE%02d";
+	private String		seasonNumberFormat			= " S%02d";
+	private Replacer	seasonTitleReplacer			= null;
+	private String		seasonTitleFormat			= " %s";
+	private String		episodeNumberFormat			= " E%02d";
 
 	public String getSeasonEpisodeNumberFormat()
 	{
@@ -70,7 +71,7 @@ public class SeriesEpisodeNamer extends AbstractEpisodeNamer
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(seriesNameFormat, seriesNameReplacer.process(epi.getSeries().getName())));
+		sb.append(String.format(seriesNameFormat, StringUtil.replace(epi.getSeries().getNameOrCompute(), seriesNameReplacer)));
 		// if in season, append numberInSeason
 		if (epi.isPartOfSeason())
 		{
@@ -81,13 +82,13 @@ public class SeriesEpisodeNamer extends AbstractEpisodeNamer
 					sb.append(String.format(seasonEpisodeNumberFormat, epi.getSeason().getNumber(), epi.getNumberInSeason()));
 					if (alwaysIncludeEpisodeTitle)
 					{
-						sb.append(String.format(episodeTitleFormat, episodeTitleReplacer.process(epi.getTitle())));
+						sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
 					}
 				}
 				else if (epi.isTitled())
 				{
 					sb.append(String.format(seasonNumberFormat, epi.getSeason().getNumber()));
-					sb.append(String.format(episodeTitleFormat, episodeTitleReplacer.process(epi.getTitle())));
+					sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
 				}
 				else
 				{
@@ -97,18 +98,18 @@ public class SeriesEpisodeNamer extends AbstractEpisodeNamer
 			}
 			else if (epi.getSeason().isTitled())
 			{
-				sb.append(String.format(seasonTitleFormat, seasonTitleReplacer.process(epi.getSeason().getTitle())));
+				sb.append(String.format(seasonTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
 				if (epi.isNumberedInSeason())
 				{
 					sb.append(String.format(episodeNumberFormat, epi.getNumberInSeason()));
 					if (alwaysIncludeEpisodeTitle)
 					{
-						sb.append(String.format(episodeTitleFormat, episodeTitleReplacer.process(epi.getTitle())));
+						sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
 					}
 				}
 				else if (epi.isTitled())
 				{
-					sb.append(String.format(episodeTitleFormat, episodeTitleReplacer.process(epi.getTitle())));
+					sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
 				}
 				else
 				{

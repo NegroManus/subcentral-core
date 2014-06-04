@@ -8,6 +8,7 @@ import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
 import de.subcentral.core.media.AvMedia;
 import de.subcentral.core.naming.Nameable;
+import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.StringUtil;
 
 public class Subtitle implements Nameable, Work
@@ -27,19 +28,13 @@ public class Subtitle implements Nameable, Work
 	@Override
 	public String getName()
 	{
-		return getImplicitName();
+		return computeName();
 	}
 
 	@Override
-	public String getExplicitName()
+	public String computeName()
 	{
-		return null;
-	}
-
-	@Override
-	public String getImplicitName()
-	{
-		return getImplicitName(true);
+		return NamingStandards.SUBTITLE_NAMER.name(this);
 	}
 
 	public String getImplicitName(boolean includeMedia)
@@ -47,7 +42,7 @@ public class Subtitle implements Nameable, Work
 		StringBuilder sb = new StringBuilder();
 		if (includeMedia)
 		{
-			sb.append(media.getName());
+			sb.append(media.getNameOrCompute());
 		}
 		StringUtil.append(sb);
 		sb.append(language);

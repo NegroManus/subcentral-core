@@ -16,7 +16,7 @@ import de.subcentral.core.util.StringUtil;
 public class DatedEpisodeNamer extends AbstractEpisodeNamer
 {
 	private TemporalQuery<String>	episodeDateQuery	= new DefaultDateQuery();
-	private String					episodeDateFormat	= ".%s";
+	private String					episodeDateFormat	= " %s";
 
 	public TemporalQuery<String> getEpisodeDateQuery()
 	{
@@ -46,7 +46,7 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtil.replace(epi.getSeries().getName(), seriesNameReplacer));
+		sb.append(StringUtil.replace(epi.getSeries().getNameOrCompute(), seriesNameReplacer));
 		if (epi.getDate() != null)
 		{
 			String printedDate = episodeDateQuery.queryFrom(epi.getDate());
@@ -87,7 +87,7 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 				long day = date.getLong(ChronoField.DAY_OF_MONTH);
 				fragments.add(String.format("%02d", day));
 			}
-			return Joiner.on('.').skipNulls().join(fragments);
+			return Joiner.on(' ').skipNulls().join(fragments);
 		}
 	}
 }

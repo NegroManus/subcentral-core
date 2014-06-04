@@ -4,9 +4,14 @@ import com.google.common.base.Joiner;
 
 import de.subcentral.core.media.Media;
 import de.subcentral.core.release.MediaRelease;
+import de.subcentral.core.util.Replacer;
+import de.subcentral.core.util.StringUtil;
 
 public class MediaReleaseNamer extends AbstractReleaseNamer<Media, MediaRelease>
 {
+	private Replacer	mediaReplacer	= NamingStandards.STANDARD_REPLACER;
+	private String		mediaFormat		= "%s";
+
 	@Override
 	public Class<MediaRelease> getType()
 	{
@@ -21,7 +26,7 @@ public class MediaReleaseNamer extends AbstractReleaseNamer<Media, MediaRelease>
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(namingService.name(media));
+		sb.append(String.format(mediaFormat, StringUtil.replace(namingService.name(media), mediaReplacer)));
 		if (!rls.getTags().isEmpty())
 		{
 			sb.append(String.format(tagsFormat, Joiner.on(tagsSeparator).join(rls.getTags())));

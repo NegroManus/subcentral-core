@@ -63,7 +63,7 @@ public class NamingServiceImpl implements NamingService
 	 * <li>1. If a namer is registered for the class of obj (excluding Object), return namer.name(obj).</li>
 	 * <li>2. If a namer is registered for a superclass of obj (excluding Object), return namer.name(obj).</li>
 	 * <li>3. If a namer is registered for an interface of obj, return namer.name(obj).</li>
-	 * <li>4. If obj is instance of Nameable, return {@link Nameable#getName()}.</li>
+	 * <li>4. If obj is instance of Nameable, return {@link Nameable#getNameOrCompute()}.</li>
 	 * <li>5. return obj.toString().</li>
 	 * </ul>
 	 * <p>
@@ -86,7 +86,7 @@ public class NamingServiceImpl implements NamingService
 		}
 		if (obj instanceof Nameable)
 		{
-			return ((Nameable) obj).getName();
+			return ((Nameable) obj).getNameOrCompute();
 		}
 		return obj.toString();
 	}

@@ -7,11 +7,10 @@ import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import de.subcentral.core.naming.Nameable;
-import de.subcentral.core.util.StringUtil;
 
 public abstract class AbstractRelease<M extends Nameable> implements Release<M>
 {
-	protected String	explicitName;
+	protected String	name;
 	protected List<M>	materials	= new ArrayList<>(1);
 	protected Group		group;
 	protected List<Tag>	tags		= new ArrayList<>(4);
@@ -25,45 +24,12 @@ public abstract class AbstractRelease<M extends Nameable> implements Release<M>
 	@Override
 	public String getName()
 	{
-		return explicitName != null ? explicitName : getImplicitName();
+		return name;
 	}
 
-	@Override
-	public String getExplicitName()
+	public void setName(String explicitName)
 	{
-		return explicitName;
-	}
-
-	public void setExplicitName(String explicitName)
-	{
-		this.explicitName = explicitName;
-	}
-
-	@Override
-	public String getImplicitName()
-	{
-		StringBuilder sb = new StringBuilder();
-		for (Nameable m : getMaterials())
-		{
-			sb.append(m.getName());
-			sb.append(' ');
-		}
-		StringUtil.deleteTrailing(sb);
-
-		if (tags != null && !tags.isEmpty())
-		{
-			for (Tag tag : tags)
-			{
-				StringUtil.append(sb);
-				sb.append(tag.getName());
-			}
-		}
-		if (group != null)
-		{
-			StringUtil.append(sb);
-			sb.append(group.getName());
-		}
-		return sb.toString();
+		this.name = explicitName;
 	}
 
 	@Override

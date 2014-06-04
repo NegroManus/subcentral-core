@@ -8,6 +8,8 @@ import de.subcentral.core.naming.Nameable;
 public interface Release<M extends Nameable> extends Nameable
 {
 	// Properties
+	public String getName();
+
 	public List<M> getMaterials();
 
 	public Group getGroup();

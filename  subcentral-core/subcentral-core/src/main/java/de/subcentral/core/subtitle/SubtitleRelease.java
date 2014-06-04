@@ -7,10 +7,9 @@ import java.util.Set;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
+import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.release.AbstractRelease;
 import de.subcentral.core.release.MediaRelease;
-import de.subcentral.core.release.Tag;
-import de.subcentral.core.util.StringUtil;
 
 public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 {
@@ -20,6 +19,12 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	private String				format;
 	private Set<MediaRelease>	compatibleMediaReleases			= new HashSet<>(2);
 	private List<Contribution>	contributions					= new ArrayList<>(2);
+
+	@Override
+	public String computeName()
+	{
+		return NamingStandards.SUBTITLE_RELEASE_NAMER.name(this);
+	}
 
 	public String getFormat()
 	{
@@ -61,37 +66,5 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	public void setContributions(List<Contribution> contributions)
 	{
 		this.contributions = contributions;
-	}
-
-	@Override
-	public String getImplicitName()
-	{
-		StringBuilder sb = new StringBuilder();
-		MediaRelease firstCompatibleRls = getFirstCompatibleMediaRelease();
-		if (firstCompatibleRls != null)
-		{
-			sb.append(firstCompatibleRls.getName());
-		}
-		Subtitle sub = getFirstMaterial();
-		if (sub != null)
-		{
-			StringUtil.append(sb);
-			sb.append(sub.getImplicitName(false));
-		}
-
-		if (tags != null && !tags.isEmpty())
-		{
-			for (Tag tag : tags)
-			{
-				StringUtil.append(sb);
-				sb.append(tag.getName());
-			}
-		}
-		if (group != null)
-		{
-			StringUtil.append(sb);
-			sb.append(group.getName());
-		}
-		return sb.toString();
 	}
 }

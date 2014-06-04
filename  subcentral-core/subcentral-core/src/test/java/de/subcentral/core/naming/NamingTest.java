@@ -1,15 +1,12 @@
 package de.subcentral.core.naming;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.Year;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.impl.com.addic7ed.Addic7edEpisodeNamer;
-import de.subcentral.core.impl.com.addic7ed.Addic7edMediaReleaseNamer;
-import de.subcentral.core.impl.com.addic7ed.Addic7edSubtitleReleaseNamer;
 import de.subcentral.core.media.Episode;
+import de.subcentral.core.media.Movie;
 import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
 import de.subcentral.core.release.Group;
@@ -27,13 +24,6 @@ public class NamingTest
 	{
 		// Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com
 
-		NamingServiceImpl ns = new NamingServiceImpl();
-		Map<Class<?>, Namer<?>> namers = new HashMap<>(3);
-		namers.put(Episode.class, new Addic7edEpisodeNamer());
-		namers.put(MediaRelease.class, new Addic7edMediaReleaseNamer());
-		namers.put(SubtitleRelease.class, new Addic7edSubtitleReleaseNamer());
-		ns.setNamers(namers);
-
 		Series psych = new Series();
 		psych.setTitle("How I Met Your Mother");
 		psych.setType(Series.TYPE_SERIES);
@@ -47,6 +37,10 @@ public class NamingTest
 		epi.setNumberInSeries(17);
 		epi.setTitle("Weekend at Barney's");
 		epi.setDate(LocalDateTime.now());
+
+		Movie movie = new Movie();
+		movie.setTitle("The Lord of the Rings");
+		movie.setDate(Year.of(2002));
 
 		// Media release
 		MediaRelease rel = new MediaRelease();

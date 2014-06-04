@@ -2,6 +2,7 @@ package de.subcentral.core.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -9,10 +10,10 @@ import de.subcentral.core.contribution.Contribution;
 
 public abstract class AbstractMedia implements Media
 {
-	protected String				explicitName;
+	protected String				name;
 	protected String				title;
 	protected Temporal				date;
-	protected Set<String>			genres;
+	protected Set<String>			genres			= new HashSet<>(4);
 	protected String				description;
 	protected String				coverUrl;
 	protected List<Contribution>	contributions	= new ArrayList<>();
@@ -20,22 +21,16 @@ public abstract class AbstractMedia implements Media
 	@Override
 	public String getName()
 	{
-		return explicitName != null ? explicitName : getImplicitName();
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	@Override
-	public String getExplicitName()
-	{
-		return explicitName;
-	}
-
-	public void setExplicitName(String explicitName)
-	{
-		this.explicitName = explicitName;
-	}
-
-	@Override
-	public String getImplicitName()
+	public String computeName()
 	{
 		return title;
 	}
@@ -122,15 +117,15 @@ public abstract class AbstractMedia implements Media
 			return false;
 		}
 		AbstractMedia other = (AbstractMedia) obj;
-		String thisName = getName();
-		String otherName = other.getName();
+		String thisName = getNameOrCompute();
+		String otherName = other.getNameOrCompute();
 		return thisName != null ? thisName.equals(otherName) : otherName == null;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		String name = getName();
+		String name = getNameOrCompute();
 		return name == null ? 0 : name.hashCode();
 	}
 }

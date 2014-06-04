@@ -34,7 +34,7 @@ public class LookupTest
 		System.out.println("Results for: " + result.getUrl());
 		for (MediaRelease foundRls : result.getAllResults())
 		{
-			System.out.println(foundRls.getName());
+			System.out.println(foundRls.getNameOrCompute());
 		}
 	}
 }

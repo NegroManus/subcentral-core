@@ -5,7 +5,7 @@ import de.subcentral.core.util.StringUtil;
 
 public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 {
-	private String	episodeNumberFormat	= ".Part%02d";
+	private String	episodeNumberFormat	= " Part%02d";
 
 	public String getEpisodeNumberFormat()
 	{
@@ -26,7 +26,7 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(seriesNameFormat, StringUtil.replace(epi.getSeries().getName(), seriesNameReplacer)));
+		sb.append(String.format(seriesNameFormat, StringUtil.replace(epi.getSeries().getNameOrCompute(), seriesNameReplacer)));
 		if (epi.isNumberedInSeries())
 		{
 			sb.append(String.format(episodeNumberFormat, epi.getNumberInSeries()));

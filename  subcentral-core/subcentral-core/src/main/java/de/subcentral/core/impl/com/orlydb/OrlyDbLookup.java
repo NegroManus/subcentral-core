@@ -214,7 +214,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		}
 
 		MediaRelease rls = new MediaRelease();
-		rls.setExplicitName(releaseSpan.text());
+		rls.setName(releaseSpan.text());
 		rls.setSection(sectionSpan.text());
 		rls.setDate(ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text().replace(' ', 'T')), ZoneId.of("UTC")));
 		if (infoSpan != null)

@@ -84,6 +84,6 @@ public class ParsingTest
 
 		Nameable obj = (Nameable) ps.parse(name);
 
-		System.out.println(obj.getName());
+		System.out.println(obj.getNameOrCompute());
 	}
 }

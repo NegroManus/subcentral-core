@@ -11,6 +11,8 @@ public interface Media extends Nameable, Work
 	public static final int	UNNUMBERED	= -1;
 
 	// Property accessors
+	public String getName();
+
 	public String getTitle();
 
 	public Temporal getDate();

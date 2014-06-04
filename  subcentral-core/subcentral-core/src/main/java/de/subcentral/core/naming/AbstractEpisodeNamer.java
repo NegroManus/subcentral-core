@@ -5,11 +5,11 @@ import de.subcentral.core.util.Replacer;
 
 public abstract class AbstractEpisodeNamer implements Namer<Episode>
 {
-	protected Replacer	seriesNameReplacer			= NamingStandards.STANDARD_REPLACER;
+	protected Replacer	seriesNameReplacer			= null;
 	protected String	seriesNameFormat			= "%s";
 	protected boolean	alwaysIncludeEpisodeTitle	= false;
-	protected Replacer	episodeTitleReplacer		= NamingStandards.STANDARD_REPLACER;
-	protected String	episodeTitleFormat			= ".%s";
+	protected Replacer	episodeTitleReplacer		= null;
+	protected String	episodeTitleFormat			= " %s";
 
 	public Replacer getSeriesNameReplacer()
 	{

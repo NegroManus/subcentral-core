@@ -25,7 +25,7 @@ public class MediaTest
 		Episode epi2 = psych.addEpisode(season1);
 		epi2.setNumberInSeason(2);
 
-		String name = epi1.getName();
+		String name = epi1.getNameOrCompute();
 		System.out.println(name);
 
 		// Media release
@@ -40,7 +40,7 @@ public class MediaTest
 		hdtv.setName("HDTV");
 		rel.setTags(ImmutableList.of(hdtv, xvid));
 
-		System.out.println(rel.getName());
+		System.out.println(rel.getNameOrCompute());
 
 		// Subtitle release
 		Subtitle sub1 = new Subtitle();
@@ -51,7 +51,7 @@ public class MediaTest
 		sub2.setMedia(epi2);
 		sub2.setLanguage("de");
 
-		System.out.println(sub1.getName());
+		System.out.println(sub1.getNameOrCompute());
 		System.out.println(sub1.isTranslation());
 
 	}

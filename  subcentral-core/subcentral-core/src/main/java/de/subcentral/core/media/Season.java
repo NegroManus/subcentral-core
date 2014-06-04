@@ -3,7 +3,6 @@ package de.subcentral.core.media;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import de.subcentral.core.naming.Nameable;
-import de.subcentral.core.util.StringUtil;
 
 public class Season implements Comparable<Season>, Nameable
 {
@@ -22,6 +21,18 @@ public class Season implements Comparable<Season>, Nameable
 	public Series getSeries()
 	{
 		return series;
+	}
+
+	@Override
+	public String getName()
+	{
+		return computeName();
+	}
+
+	@Override
+	public String computeName()
+	{
+		return isNumbered() ? Integer.toString(number) : title;
 	}
 
 	public int getNumber()
@@ -85,54 +96,6 @@ public class Season implements Comparable<Season>, Nameable
 		return title != null;
 	}
 
-	@Override
-	public String getName()
-	{
-		return getImplicitName();
-	}
-
-	@Override
-	public String getExplicitName()
-	{
-		return getImplicitName();
-	}
-
-	@Override
-	public String getImplicitName()
-	{
-		return getImplicitName(true, false);
-	}
-
-	public String getImplicitName(boolean includeSeries, boolean alwaysIncludeTitle)
-	{
-		StringBuilder sb = new StringBuilder(3);
-		if (includeSeries)
-		{
-			sb.append(series.getName());
-		}
-		if (isNumbered())
-		{
-			StringUtil.append(sb);
-			sb.append('S');
-			sb.append(String.format("%02d", number));
-			if (alwaysIncludeTitle && isTitled())
-			{
-				sb.append(' ');
-				sb.append(title);
-			}
-		}
-		else
-		{
-			if (isTitled())
-			{
-				StringUtil.append(sb);
-				sb.append(title);
-			}
-
-		}
-		return sb.toString();
-	}
-
 	public Episode addEpisode()
 	{
 		return series.addEpisode(this);
@@ -154,15 +117,15 @@ public class Season implements Comparable<Season>, Nameable
 			return false;
 		}
 		Season other = (Season) obj;
-		String thisName = getName();
-		String otherName = other.getName();
+		String thisName = getNameOrCompute();
+		String otherName = other.getNameOrCompute();
 		return thisName != null ? thisName.equals(otherName) : otherName == null;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		String name = getName();
+		String name = getNameOrCompute();
 		return name == null ? 0 : name.hashCode();
 	}
 
