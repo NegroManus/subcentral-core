@@ -2,18 +2,15 @@ package de.subcentral.core.lookup;
 
 import java.net.MalformedURLException;
 
-import com.google.common.collect.ImmutableList;
-
+import de.subcentral.core.impl.com.orlydb.OrlyDb;
 import de.subcentral.core.impl.com.orlydb.OrlyDbLookup;
 import de.subcentral.core.impl.com.orlydb.OrlyDbLookupResult;
 import de.subcentral.core.impl.com.orlydb.OrlyDbQuery;
 import de.subcentral.core.media.Media;
 import de.subcentral.core.media.Medias;
-import de.subcentral.core.naming.NamingStandards;
-import de.subcentral.core.release.Group;
+import de.subcentral.core.media.Movie;
 import de.subcentral.core.release.MediaRelease;
 import de.subcentral.core.release.Releases;
-import de.subcentral.core.release.Tag;
 
 public class LookupTest
 {
@@ -22,12 +19,12 @@ public class LookupTest
 		System.getProperties().put("http.proxyHost", "10.206.247.65");
 		System.getProperties().put("http.proxyPort", "8080");
 
-		Media media = Medias.newEpisode("Psych", 6, 5);
-
-		MediaRelease rls = Releases.newMediaRelease(media, new Group("IMMERSE"), ImmutableList.of(new Tag("720p"), new Tag("HDTV"), new Tag("x264")));
+		Media epi = Medias.newEpisode("Psych", 6, 5);
+		Movie movie = Medias.newMovie("The Lord of the Rings: The Return of the King");
+		MediaRelease rls = Releases.newMediaRelease(movie, null);
 
 		OrlyDbLookup lookup = new OrlyDbLookup();
-		lookup.setNamingService(NamingStandards.NAMING_SERVICE);
+		lookup.setNamingService(OrlyDb.getOrlyDbQueryNamingService());
 		OrlyDbQuery query = lookup.createQuery(rls);
 		OrlyDbLookupResult result = lookup.lookup(query);
 

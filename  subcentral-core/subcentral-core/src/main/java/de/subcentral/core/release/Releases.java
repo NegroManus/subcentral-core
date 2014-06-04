@@ -23,7 +23,19 @@ public class Releases
 		return rls;
 	}
 
-	public static List<Tag> tagsOf(Collection<String> tags)
+	public static MediaRelease newMediaRelease(Media material, String group, String... tags)
+	{
+		MediaRelease rls = new MediaRelease();
+		rls.setMaterial(material);
+		if (group != null)
+		{
+			rls.setGroup(new Group(group));
+		}
+		rls.setTags(tags(tags));
+		return rls;
+	}
+
+	public static List<Tag> tags(Collection<String> tags)
 	{
 		if (tags.isEmpty())
 		{
@@ -37,7 +49,7 @@ public class Releases
 		return tagList;
 	}
 
-	public static List<Tag> tagsOf(String... tags)
+	public static List<Tag> tags(String... tags)
 	{
 		if (tags.length == 0)
 		{

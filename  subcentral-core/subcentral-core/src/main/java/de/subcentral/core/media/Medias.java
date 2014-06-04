@@ -44,6 +44,19 @@ public class Medias
 		return epi;
 	}
 
+	public static Movie newMovie(String title)
+	{
+		return newMovie(title, null);
+	}
+
+	public static Movie newMovie(String title, String name)
+	{
+		Movie movie = new Movie();
+		movie.setName(name);
+		movie.setTitle(title);
+		return movie;
+	}
+
 	private Medias()
 	{
 		// utility class

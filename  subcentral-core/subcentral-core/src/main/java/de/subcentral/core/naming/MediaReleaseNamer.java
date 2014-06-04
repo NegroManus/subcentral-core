@@ -12,6 +12,26 @@ public class MediaReleaseNamer extends AbstractReleaseNamer<Media, MediaRelease>
 	private Replacer	mediaReplacer	= NamingStandards.STANDARD_REPLACER;
 	private String		mediaFormat		= "%s";
 
+	public Replacer getMediaReplacer()
+	{
+		return mediaReplacer;
+	}
+
+	public void setMediaReplacer(Replacer mediaReplacer)
+	{
+		this.mediaReplacer = mediaReplacer;
+	}
+
+	public String getMediaFormat()
+	{
+		return mediaFormat;
+	}
+
+	public void setMediaFormat(String mediaFormat)
+	{
+		this.mediaFormat = mediaFormat;
+	}
+
 	@Override
 	public Class<MediaRelease> getType()
 	{

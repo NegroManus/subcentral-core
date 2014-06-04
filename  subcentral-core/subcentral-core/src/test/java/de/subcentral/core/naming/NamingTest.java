@@ -47,7 +47,7 @@ public class NamingTest
 		// rel.setExplicitName("Psych.S01E01.HDTV.XviD-LOL");
 		rel.setMaterial(epi);
 		rel.setGroup(new Group("DIMENSION"));
-		rel.setTags(Releases.tagsOf("720p", "HDTV", "x264"));
+		rel.setTags(Releases.tags("720p", "HDTV", "x264"));
 
 		// Subtitle
 		Subtitle sub1 = new Subtitle();

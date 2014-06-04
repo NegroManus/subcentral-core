@@ -57,6 +57,29 @@ public class NamingServiceImpl implements NamingService
 		return getNamer(obj.getClass()) != null;
 	}
 
+	public Namer<?> getNamer(Class<?> clazz)
+	{
+		Class<?> searchClass = clazz;
+		while (searchClass != Object.class)
+		{
+			Namer<?> namer = namers.get(searchClass);
+			if (namer != null)
+			{
+				return namer;
+			}
+			searchClass = searchClass.getSuperclass();
+		}
+		for (Class<?> interfaceClass : ClassUtils.getAllInterfaces(clazz))
+		{
+			Namer<?> namer = namers.get(interfaceClass);
+			if (namer != null)
+			{
+				return namer;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Returns a name for the given object which is calculated as follows:
 	 * <ul>
@@ -89,29 +112,6 @@ public class NamingServiceImpl implements NamingService
 			return ((Nameable) obj).getNameOrCompute();
 		}
 		return obj.toString();
-	}
-
-	private Namer<?> getNamer(Class<?> clazz)
-	{
-		Class<?> searchClass = clazz;
-		while (searchClass != Object.class)
-		{
-			Namer<?> namer = namers.get(searchClass);
-			if (namer != null)
-			{
-				return namer;
-			}
-			searchClass = searchClass.getSuperclass();
-		}
-		for (Class<?> interfaceClass : ClassUtils.getAllInterfaces(clazz))
-		{
-			Namer<?> namer = namers.get(interfaceClass);
-			if (namer != null)
-			{
-				return namer;
-			}
-		}
-		return null;
 	}
 
 	private void checkNamersMap(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException
