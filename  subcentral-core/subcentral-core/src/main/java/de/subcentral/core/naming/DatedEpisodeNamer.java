@@ -11,22 +11,31 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.media.Episode;
-import de.subcentral.core.util.Replacer;
 import de.subcentral.core.util.StringUtil;
 
-public class DatedEpisodeNamer implements Namer<Episode>
+public class DatedEpisodeNamer extends AbstractEpisodeNamer
 {
-	private Replacer				seriesNameReplacer			= NamingStandards.STANDARD_REPLACER;
-	private String					episodeDatePrefix			= ".";
-	private TemporalQuery<String>	episodeDateQuery			= new DefaultDateQuery();
-	private boolean					alwaysIncludeEpisodeTitle	= false;
-	private String					episodeTitlePrefix			= ".";
-	private Replacer				episodeTitleReplacer		= NamingStandards.STANDARD_REPLACER;
+	private TemporalQuery<String>	episodeDateQuery	= new DefaultDateQuery();
+	private String					episodeDateFormat	= ".%s";
 
-	@Override
-	public Class<Episode> getType()
+	public TemporalQuery<String> getEpisodeDateQuery()
 	{
-		return Episode.class;
+		return episodeDateQuery;
+	}
+
+	public void setEpisodeDateQuery(TemporalQuery<String> episodeDateQuery)
+	{
+		this.episodeDateQuery = episodeDateQuery;
+	}
+
+	public String getEpisodeDateFormat()
+	{
+		return episodeDateFormat;
+	}
+
+	public void setEpisodeDateFormat(String episodeDateFormat)
+	{
+		this.episodeDateFormat = episodeDateFormat;
 	}
 
 	@Override
@@ -43,14 +52,12 @@ public class DatedEpisodeNamer implements Namer<Episode>
 			String printedDate = episodeDateQuery.queryFrom(epi.getDate());
 			if (!StringUtils.isEmpty(printedDate))
 			{
-				sb.append(episodeDatePrefix);
-				sb.append(printedDate);
+				sb.append(String.format(episodeDateFormat, printedDate));
 			}
 		}
 		if (alwaysIncludeEpisodeTitle && epi.isTitled())
 		{
-			sb.append(episodeTitlePrefix);
-			sb.append(StringUtil.replace(epi.getTitle(), episodeTitleReplacer));
+			sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
 		}
 		return sb.toString();
 	}

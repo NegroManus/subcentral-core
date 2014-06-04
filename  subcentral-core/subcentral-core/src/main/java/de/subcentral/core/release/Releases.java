@@ -23,17 +23,31 @@ public class Releases
 		return rls;
 	}
 
-	public static List<Tag> tagsOf(Collection<String> strings)
+	public static List<Tag> tagsOf(Collection<String> tags)
 	{
-		if (strings.isEmpty())
+		if (tags.isEmpty())
 		{
 			return new ArrayList<>(0);
 		}
-		List<Tag> tags = new ArrayList<>(strings.size());
-		for (String s : strings)
+		List<Tag> tagList = new ArrayList<>(tags.size());
+		for (String s : tags)
 		{
-			tags.add(new Tag(s));
+			tagList.add(new Tag(s));
 		}
-		return tags;
+		return tagList;
+	}
+
+	public static List<Tag> tagsOf(String... tags)
+	{
+		if (tags.length == 0)
+		{
+			return new ArrayList<>(0);
+		}
+		List<Tag> tagList = new ArrayList<>(tags.length);
+		for (String s : tags)
+		{
+			tagList.add(new Tag(s));
+		}
+		return tagList;
 	}
 }

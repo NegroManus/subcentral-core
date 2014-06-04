@@ -2,14 +2,11 @@ package de.subcentral.core.naming;
 
 import com.google.common.base.Joiner;
 
+import de.subcentral.core.media.Media;
 import de.subcentral.core.release.MediaRelease;
 
-public class MediaReleaseNamer implements Namer<MediaRelease>
+public class MediaReleaseNamer extends AbstractReleaseNamer<Media, MediaRelease>
 {
-	private String	tagsPrefix		= ".";
-	private String	tagsSeparator	= ".";
-	private String	groupPrefix		= "-";
-
 	@Override
 	public Class<MediaRelease> getType()
 	{
@@ -17,19 +14,21 @@ public class MediaReleaseNamer implements Namer<MediaRelease>
 	}
 
 	@Override
-	public String name(MediaRelease rls, NamingService namingService)
+	public String name(MediaRelease rls, Media media, NamingService namingService)
 	{
+		if (rls == null)
+		{
+			return null;
+		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(namingService.name(rls.getFirstMaterial()));
+		sb.append(namingService.name(media));
 		if (!rls.getTags().isEmpty())
 		{
-			sb.append(tagsPrefix);
-			sb.append(Joiner.on(tagsSeparator).join(rls.getTags()));
+			sb.append(String.format(tagsFormat, Joiner.on(tagsSeparator).join(rls.getTags())));
 		}
 		if (rls.getGroup() != null)
 		{
-			sb.append(groupPrefix);
-			sb.append(rls.getGroup().getName());
+			sb.append(String.format(groupFormat, rls.getGroup().getName()));
 		}
 		return sb.toString();
 	}

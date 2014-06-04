@@ -1,40 +1,11 @@
 package de.subcentral.core.naming;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import de.subcentral.core.media.Episode;
-import de.subcentral.core.util.Replacer;
 import de.subcentral.core.util.StringUtil;
 
-public class MiniSeriesEpisodeNamer implements Namer<Episode>
+public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 {
-	private Replacer	seriesNameReplacer			= NamingStandards.STANDARD_REPLACER;
-	private String		episodeNumberPrefix			= ".Part";
-	private String		episodeNumberFormat			= "00";
-	private boolean		alwaysIncludeEpisodeTitle	= false;
-	private String		episodeTitlePrefix			= ".";
-	private Replacer	episodeTitleReplacer		= NamingStandards.STANDARD_REPLACER;
-
-	public Replacer getSeriesNameReplacer()
-	{
-		return seriesNameReplacer;
-	}
-
-	public void setSeriesNameReplacer(Replacer seriesNameReplacer)
-	{
-		this.seriesNameReplacer = seriesNameReplacer;
-	}
-
-	public String getEpisodeNumberPrefix()
-	{
-		return episodeNumberPrefix;
-	}
-
-	public void setEpisodeNumberPrefix(String episodeNumberPrefix)
-	{
-		this.episodeNumberPrefix = episodeNumberPrefix;
-	}
+	private String	episodeNumberFormat	= ".Part%02d";
 
 	public String getEpisodeNumberFormat()
 	{
@@ -46,42 +17,6 @@ public class MiniSeriesEpisodeNamer implements Namer<Episode>
 		this.episodeNumberFormat = episodeNumberFormat;
 	}
 
-	public boolean getAlwaysIncludeEpisodeTitle()
-	{
-		return alwaysIncludeEpisodeTitle;
-	}
-
-	public void setAlwaysIncludeEpisodeTitle(boolean alwaysIncludeEpisodeTitle)
-	{
-		this.alwaysIncludeEpisodeTitle = alwaysIncludeEpisodeTitle;
-	}
-
-	public String getEpisodeTitlePrefix()
-	{
-		return episodeTitlePrefix;
-	}
-
-	public void setEpisodeTitlePrefix(String episodeTitlePrefix)
-	{
-		this.episodeTitlePrefix = episodeTitlePrefix;
-	}
-
-	public Replacer getEpisodeTitleReplacer()
-	{
-		return episodeTitleReplacer;
-	}
-
-	public void setEpisodeTitleReplacer(Replacer episodeTitleReplacer)
-	{
-		this.episodeTitleReplacer = episodeTitleReplacer;
-	}
-
-	@Override
-	public Class<Episode> getType()
-	{
-		return Episode.class;
-	}
-
 	@Override
 	public String name(Episode epi, NamingService namingService)
 	{
@@ -90,18 +25,24 @@ public class MiniSeriesEpisodeNamer implements Namer<Episode>
 			return null;
 		}
 
-		NumberFormat episodeNumFormat = new DecimalFormat(episodeNumberFormat);
-
 		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtil.replace(epi.getSeries().getName(), seriesNameReplacer));
-		sb.append(episodeNumberPrefix);
-		sb.append(episodeNumFormat.format(epi.getNumberInSeries()));
-		if (alwaysIncludeEpisodeTitle && epi.isTitled())
+		sb.append(String.format(seriesNameFormat, StringUtil.replace(epi.getSeries().getName(), seriesNameReplacer)));
+		if (epi.isNumberedInSeries())
 		{
-			sb.append(episodeTitlePrefix);
-			sb.append(StringUtil.replace(epi.getTitle(), episodeTitleReplacer));
+			sb.append(String.format(episodeNumberFormat, epi.getNumberInSeries()));
+			if (alwaysIncludeEpisodeTitle && epi.isTitled())
+			{
+				sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
+			}
+		}
+		else if (epi.isTitled())
+		{
+			sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
+		}
+		else
+		{
+			sb.append(String.format(episodeTitleFormat, "xx"));
 		}
 		return sb.toString();
 	}
-
 }

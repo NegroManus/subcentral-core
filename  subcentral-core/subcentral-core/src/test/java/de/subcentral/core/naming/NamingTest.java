@@ -14,6 +14,7 @@ import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
 import de.subcentral.core.release.Group;
 import de.subcentral.core.release.MediaRelease;
+import de.subcentral.core.release.Releases;
 import de.subcentral.core.release.Tag;
 import de.subcentral.core.subtitle.Subtitle;
 import de.subcentral.core.subtitle.SubtitleRelease;
@@ -51,25 +52,26 @@ public class NamingTest
 		MediaRelease rel = new MediaRelease();
 		// rel.setExplicitName("Psych.S01E01.HDTV.XviD-LOL");
 		rel.setMaterial(epi);
-		rel.setGroup(new Group("DiMENSION"));
-		rel.setTags(ImmutableList.of(new Tag("720p")));
+		rel.setGroup(new Group("DIMENSION"));
+		rel.setTags(Releases.tagsOf("720p", "HDTV", "x264"));
 
 		// Subtitle
 		Subtitle sub1 = new Subtitle();
 		sub1.setMedia(epi);
-		sub1.setLanguage("English");
+		sub1.setLanguage("VO");
 
 		// Subtitle release
 		SubtitleRelease subRel = new SubtitleRelease();
 		subRel.setMaterial(sub1);
 		subRel.setCompatibleMediaRelease(rel);
 		subRel.setTags(ImmutableList.of(new Tag("orig")));
+		subRel.setGroup(new Group("SubCentral"));
 
 		long overallStart = System.nanoTime();
 		for (int i = 0; i < 1000; i++)
 		{
 			long start = System.nanoTime();
-			String name = NamingStandards.NAMING_SERVICE.name(epi); // ns.name(epi);//
+			String name = NamingStandards.NAMING_SERVICE.name(subRel); // ns.name(epi);//
 			double duration = TimeUtil.durationMillis(start, System.nanoTime());
 			System.out.println(name);
 			System.out.println(duration + " ms");

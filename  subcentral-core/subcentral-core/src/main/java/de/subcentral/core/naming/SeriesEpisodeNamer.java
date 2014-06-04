@@ -3,23 +3,62 @@ package de.subcentral.core.naming;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.util.Replacer;
 
-public class SeriesEpisodeNamer implements Namer<Episode>
+public class SeriesEpisodeNamer extends AbstractEpisodeNamer
 {
-	private Replacer	seriesNameReplacer			= NamingStandards.STANDARD_REPLACER;
-	private String		seriesFormat				= "%s";
-	private String		seasonNumberFormat			= ".S%02d";
 	private String		seasonEpisodeNumberFormat	= ".S%02dE%02d";
+	private String		seasonNumberFormat			= ".S%02d";
 	private Replacer	seasonTitleReplacer			= NamingStandards.STANDARD_REPLACER;
 	private String		seasonTitleFormat			= ".%s";
 	private String		episodeNumberFormat			= ".E%02d";
-	private boolean		alwaysIncludeEpisodeTitle	= false;
-	private Replacer	episodeTitleReplacer		= NamingStandards.STANDARD_REPLACER;
-	private String		episodeTitleFormat			= ".%s";
 
-	@Override
-	public Class<Episode> getType()
+	public String getSeasonEpisodeNumberFormat()
 	{
-		return Episode.class;
+		return seasonEpisodeNumberFormat;
+	}
+
+	public void setSeasonEpisodeNumberFormat(String seasonEpisodeNumberFormat)
+	{
+		this.seasonEpisodeNumberFormat = seasonEpisodeNumberFormat;
+	}
+
+	public String getSeasonNumberFormat()
+	{
+		return seasonNumberFormat;
+	}
+
+	public void setSeasonNumberFormat(String seasonNumberFormat)
+	{
+		this.seasonNumberFormat = seasonNumberFormat;
+	}
+
+	public Replacer getSeasonTitleReplacer()
+	{
+		return seasonTitleReplacer;
+	}
+
+	public void setSeasonTitleReplacer(Replacer seasonTitleReplacer)
+	{
+		this.seasonTitleReplacer = seasonTitleReplacer;
+	}
+
+	public String getSeasonTitleFormat()
+	{
+		return seasonTitleFormat;
+	}
+
+	public void setSeasonTitleFormat(String seasonTitleFormat)
+	{
+		this.seasonTitleFormat = seasonTitleFormat;
+	}
+
+	public String getEpisodeNumberFormat()
+	{
+		return episodeNumberFormat;
+	}
+
+	public void setEpisodeNumberFormat(String episodeNumberFormat)
+	{
+		this.episodeNumberFormat = episodeNumberFormat;
 	}
 
 	@Override
@@ -31,7 +70,7 @@ public class SeriesEpisodeNamer implements Namer<Episode>
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(seriesFormat, seriesNameReplacer.process(epi.getSeries().getName())));
+		sb.append(String.format(seriesNameFormat, seriesNameReplacer.process(epi.getSeries().getName())));
 		// if in season, append numberInSeason
 		if (epi.isPartOfSeason())
 		{

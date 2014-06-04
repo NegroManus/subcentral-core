@@ -16,6 +16,7 @@ public class NamingStandards
 	public static final DatedEpisodeNamer			DATED_EPISODE_NAMER			= new DatedEpisodeNamer();
 	public static final SeriesTypeAwareEpisodeNamer	EPISODE_NAMER				= new SeriesTypeAwareEpisodeNamer();
 	public static final MediaReleaseNamer			MEDIA_RELEASE_NAMER			= new MediaReleaseNamer();
+	public static final SubtitleReleaseNamer		SUBTITLE_RELEASE_NAMER		= new SubtitleReleaseNamer();
 	public static final NamingServiceImpl			NAMING_SERVICE				= new NamingServiceImpl();
 	static
 	{
@@ -26,6 +27,7 @@ public class NamingStandards
 		NAMING_SERVICE.setDomain(DEFAULT_DOMAIN);
 		NAMING_SERVICE.registerNamer(EPISODE_NAMER);
 		NAMING_SERVICE.registerNamer(MEDIA_RELEASE_NAMER);
+		NAMING_SERVICE.registerNamer(SUBTITLE_RELEASE_NAMER);
 	}
 
 	private NamingStandards()
