@@ -3,7 +3,7 @@ package de.subcentral.core.naming;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.util.Replacer;
 
-public abstract class AbstractEpisodeNamer implements Namer<Episode>
+public abstract class AbstractEpisodeNamer implements EpisodeNamer
 {
 	protected Replacer	seriesNameReplacer			= null;
 	protected String	seriesNameFormat			= "%s";
@@ -66,6 +66,12 @@ public abstract class AbstractEpisodeNamer implements Namer<Episode>
 	public Class<Episode> getType()
 	{
 		return Episode.class;
+	}
+
+	@Override
+	public String name(Episode candidate, NamingService namingService) throws NamingException
+	{
+		return name(candidate, true, true, namingService);
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -32,25 +31,34 @@ public class MultiEpisode extends ArrayList<Episode>
 		return me;
 	}
 
-	// TODO
 	public static List<List<Integer>> splitIntoConsecutiveRanges(List<Integer> nums)
 	{
 		if (nums.isEmpty())
 		{
 			return ImmutableList.of();
 		}
-		Iterator<Integer> iter = nums.iterator();
-		int current = iter.next();
-		while (iter.hasNext())
+		List<List<Integer>> ranges = new ArrayList<>(1);
+		Integer previous = nums.get(0);
+		Integer current = null;
+		List<Integer> range = new ArrayList<>();
+		range.add(previous);
+		for (int i = 1; i < nums.size(); i++)
 		{
-			int next = iter.next();
-			if (next - 1 != current)
+			current = nums.get(i);
+			if (current.intValue() - 1 == previous.intValue())
 			{
-				return false;
+				range.add(current);
 			}
-			current = next;
+			else
+			{
+				ranges.add(range);
+				range = new ArrayList<>();
+				range.add(current);
+			}
+			previous = current;
 		}
-		return true;
+		ranges.add(range);
+		return ranges;
 	}
 
 	public MultiEpisode()
@@ -125,7 +133,7 @@ public class MultiEpisode extends ArrayList<Episode>
 		return season;
 	}
 
-	public boolean areAllNumberedInSeries()
+	public boolean getAllNumberedInSeries()
 	{
 		if (isEmpty())
 		{
@@ -141,7 +149,7 @@ public class MultiEpisode extends ArrayList<Episode>
 		return true;
 	}
 
-	public boolean areAllNumberedInSeason()
+	public boolean getAllNumberedInSeason()
 	{
 		if (isEmpty())
 		{

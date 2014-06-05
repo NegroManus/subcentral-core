@@ -136,10 +136,6 @@ public class Season implements Comparable<Season>, Nameable
 		{
 			return 1;
 		}
-		if (isNumbered())
-		{
-			return new CompareToBuilder().append(number, o.number).toComparison();
-		}
-		return new CompareToBuilder().append(title, o.title).toComparison();
+		return new CompareToBuilder().append(series, o.series).append(number, o.number).append(title, o.title).toComparison();
 	}
 }

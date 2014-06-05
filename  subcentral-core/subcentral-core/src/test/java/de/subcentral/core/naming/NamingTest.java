@@ -71,6 +71,7 @@ public class NamingTest
 		long overallStart = System.nanoTime();
 		for (int i = 0; i < 1000; i++)
 		{
+			System.out.println(NamingStandards.NAMING_SERVICE.name(epis));
 			long start = System.nanoTime();
 			String name = NamingStandards.NAMING_SERVICE.name(subRel); // ns.name(epi);//
 			double duration = TimeUtil.durationMillis(start, System.nanoTime());

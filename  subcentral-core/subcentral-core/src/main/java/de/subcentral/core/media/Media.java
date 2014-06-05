@@ -8,7 +8,7 @@ import de.subcentral.core.naming.Nameable;
 
 public interface Media extends Nameable, Work
 {
-	public static final int	UNNUMBERED	= -1;
+	public static final int	UNNUMBERED	= Integer.MAX_VALUE;
 
 	// Property accessors
 	public String getName();

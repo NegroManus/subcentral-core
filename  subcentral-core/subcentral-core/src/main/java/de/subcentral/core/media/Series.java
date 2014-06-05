@@ -260,6 +260,10 @@ public class Series implements Nameable, Work, Comparable<Series>
 	@Override
 	public int compareTo(Series o)
 	{
-		return o == null ? 1 : new CompareToBuilder().append(getNameOrCompute(), o.getNameOrCompute()).toComparison();
+		if (o == null)
+		{
+			return 1;
+		}
+		return new CompareToBuilder().append(getName(), o.getName()).toComparison();
 	}
 }

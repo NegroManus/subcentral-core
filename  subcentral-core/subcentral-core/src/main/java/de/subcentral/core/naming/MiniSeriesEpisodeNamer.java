@@ -18,7 +18,7 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 	}
 
 	@Override
-	public String name(Episode epi, NamingService namingService)
+	public String name(Episode epi, boolean includeSeries, boolean includeSeason, NamingService namingService)
 	{
 		if (epi == null)
 		{

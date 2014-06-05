@@ -3,9 +3,9 @@ package de.subcentral.core.media;
 import java.util.Collections;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import de.subcentral.core.naming.Nameables;
+import com.google.common.collect.ImmutableSet;
 
 public class Episode extends AbstractAvMedia implements Comparable<Episode>
 {
@@ -103,7 +103,15 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	@Override
 	public int compareTo(Episode o)
 	{
-		return Nameables.NAME_COMPARATOR.compare(this, o);
+		if (o == null)
+		{
+			return 1;
+		}
+		return new CompareToBuilder().append(series, o.series)
+				.append(season, o.season)
+				.append(numberInSeries, o.numberInSeries)
+				.append(numberInSeason, o.numberInSeason)
+				.toComparison();
 	}
 
 	private void ensurePartOfSeries(Season season) throws IllegalArgumentException
