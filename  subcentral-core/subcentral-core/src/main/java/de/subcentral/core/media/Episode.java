@@ -4,8 +4,12 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.collect.ImmutableSet;
+
+import de.subcentral.core.naming.NamingStandards;
 
 public class Episode extends AbstractAvMedia implements Comparable<Episode>
 {
@@ -19,6 +23,18 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	{
 		this.series = series;
 		setSeason(season);
+	}
+
+	@Override
+	public String getName()
+	{
+		return computeName();
+	}
+
+	@Override
+	public String computeName()
+	{
+		return NamingStandards.EPISODE_NAMER.name(this);
 	}
 
 	public Series getSeries()
@@ -101,6 +117,36 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	}
 
 	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+		{
+			return false;
+		}
+		if (this == obj)
+		{
+			return true;
+		}
+		if (Episode.class != obj.getClass())
+		{
+			return false;
+		}
+		Episode o = (Episode) obj;
+		return new EqualsBuilder().append(series, o.series)
+				.append(season, o.season)
+				.append(numberInSeries, o.numberInSeries)
+				.append(numberInSeason, o.numberInSeason)
+				.append(title, o.title)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(7, 15).append(series).append(season).append(numberInSeries).append(numberInSeason).append(title).toHashCode();
+	}
+
+	@Override
 	public int compareTo(Episode o)
 	{
 		if (o == null)
@@ -111,6 +157,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 				.append(season, o.season)
 				.append(numberInSeries, o.numberInSeries)
 				.append(numberInSeason, o.numberInSeason)
+				.append(title, o.title)
 				.toComparison();
 	}
 

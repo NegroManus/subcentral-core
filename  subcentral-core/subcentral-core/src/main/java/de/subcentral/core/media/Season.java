@@ -1,6 +1,8 @@
 package de.subcentral.core.media;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.naming.Nameable;
 
@@ -116,17 +118,14 @@ public class Season implements Comparable<Season>, Nameable
 		{
 			return false;
 		}
-		Season other = (Season) obj;
-		String thisName = getNameOrCompute();
-		String otherName = other.getNameOrCompute();
-		return thisName != null ? thisName.equals(otherName) : otherName == null;
+		Season o = (Season) obj;
+		return new EqualsBuilder().append(series, o.series).append(number, o.number).append(title, o.title).isEquals();
 	}
 
 	@Override
 	public int hashCode()
 	{
-		String name = getNameOrCompute();
-		return name == null ? 0 : name.hashCode();
+		return new HashCodeBuilder(5, 13).append(series).append(number).append(title).toHashCode();
 	}
 
 	@Override

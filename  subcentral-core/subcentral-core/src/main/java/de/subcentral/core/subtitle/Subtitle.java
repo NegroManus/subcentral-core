@@ -7,11 +7,8 @@ import java.util.List;
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
 import de.subcentral.core.media.AvMedia;
-import de.subcentral.core.naming.Nameable;
-import de.subcentral.core.naming.NamingStandards;
-import de.subcentral.core.util.StringUtil;
 
-public class Subtitle implements Nameable, Work
+public class Subtitle implements Work
 {
 	public static final String	CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
 	public static final String	CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
@@ -25,28 +22,9 @@ public class Subtitle implements Nameable, Work
 	private String				description;
 	private List<Contribution>	contributions					= new ArrayList<>();
 
-	@Override
-	public String getName()
-	{
-		return computeName();
-	}
-
-	@Override
 	public String computeName()
 	{
-		return NamingStandards.SUBTITLE_NAMER.name(this);
-	}
 
-	public String getImplicitName(boolean includeMedia)
-	{
-		StringBuilder sb = new StringBuilder();
-		if (includeMedia)
-		{
-			sb.append(media.getNameOrCompute());
-		}
-		StringUtil.append(sb);
-		sb.append(language);
-		return sb.toString();
 	}
 
 	public AvMedia getMedia()
@@ -114,5 +92,4 @@ public class Subtitle implements Nameable, Work
 	{
 		this.contributions = contributions;
 	}
-
 }

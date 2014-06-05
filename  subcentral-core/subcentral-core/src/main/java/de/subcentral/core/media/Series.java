@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
@@ -38,7 +40,7 @@ public class Series implements Nameable, Work, Comparable<Series>
 	@Override
 	public String getName()
 	{
-		return name != null ? name : title;
+		return name;
 	}
 
 	public void setName(String name)
@@ -49,7 +51,7 @@ public class Series implements Nameable, Work, Comparable<Series>
 	@Override
 	public String computeName()
 	{
-		return title;
+		return name;
 	}
 
 	public String getTitle()
@@ -244,17 +246,14 @@ public class Series implements Nameable, Work, Comparable<Series>
 		{
 			return false;
 		}
-		Series other = (Series) obj;
-		String thisName = getNameOrCompute();
-		String otherName = other.getNameOrCompute();
-		return thisName != null ? thisName.equals(otherName) : otherName == null;
+		Series o = (Series) obj;
+		return new EqualsBuilder().append(name, o.name).isEquals();
 	}
 
 	@Override
 	public int hashCode()
 	{
-		String name = getNameOrCompute();
-		return name == null ? 0 : name.hashCode();
+		return new HashCodeBuilder(3, 11).append(name).toHashCode();
 	}
 
 	@Override
@@ -264,6 +263,6 @@ public class Series implements Nameable, Work, Comparable<Series>
 		{
 			return 1;
 		}
-		return new CompareToBuilder().append(getName(), o.getName()).toComparison();
+		return new CompareToBuilder().append(name, o.name).toComparison();
 	}
 }

@@ -11,8 +11,6 @@ public interface Media extends Nameable, Work
 	public static final int	UNNUMBERED	= Integer.MAX_VALUE;
 
 	// Property accessors
-	public String getName();
-
 	public String getTitle();
 
 	public Temporal getDate();

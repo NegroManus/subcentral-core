@@ -10,30 +10,12 @@ import de.subcentral.core.contribution.Contribution;
 
 public abstract class AbstractMedia implements Media
 {
-	protected String				name;
 	protected String				title;
 	protected Temporal				date;
 	protected Set<String>			genres			= new HashSet<>(4);
 	protected String				description;
 	protected String				coverUrl;
 	protected List<Contribution>	contributions	= new ArrayList<>();
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
-	@Override
-	public String computeName()
-	{
-		return title;
-	}
 
 	@Override
 	public String getTitle()
@@ -99,33 +81,5 @@ public abstract class AbstractMedia implements Media
 	public void setContributions(List<Contribution> contributions)
 	{
 		this.contributions = contributions;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null)
-		{
-			return false;
-		}
-		if (this == obj)
-		{
-			return true;
-		}
-		if (this.getClass() != obj.getClass())
-		{
-			return false;
-		}
-		AbstractMedia other = (AbstractMedia) obj;
-		String thisName = getNameOrCompute();
-		String otherName = other.getNameOrCompute();
-		return thisName != null ? thisName.equals(otherName) : otherName == null;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		String name = getNameOrCompute();
-		return name == null ? 0 : name.hashCode();
 	}
 }
