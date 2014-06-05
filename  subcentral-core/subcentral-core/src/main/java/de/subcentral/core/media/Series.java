@@ -38,7 +38,7 @@ public class Series implements Nameable, Work, Comparable<Series>
 	@Override
 	public String getName()
 	{
-		return name;
+		return name != null ? name : title;
 	}
 
 	public void setName(String name)

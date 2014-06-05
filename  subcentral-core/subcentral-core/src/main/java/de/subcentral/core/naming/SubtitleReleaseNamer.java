@@ -39,30 +39,38 @@ public class SubtitleReleaseNamer extends AbstractReleaseNamer<Subtitle, Subtitl
 		return SubtitleRelease.class;
 	}
 
-	public String name(SubtitleRelease rls, Subtitle sub, MediaRelease mediaRelease, NamingService namingService)
+	public String name(SubtitleRelease rls, MediaRelease mediaRelease, NamingService namingService)
 	{
 		if (rls == null)
 		{
 			return null;
 		}
-		StringBuilder sb = new StringBuilder();
-		sb.append(namingService.name(mediaRelease));
-		sb.append(String.format(subtitleLanguageFormat, StringUtil.replace(sub.getLanguage(), subtitleLanguageReplacer)));
-		if (!rls.getTags().isEmpty())
+		try
 		{
-			sb.append(String.format(tagsFormat, Joiner.on(tagsSeparator).join(rls.getTags())));
+			StringBuilder sb = new StringBuilder();
+			sb.append(namingService.name(mediaRelease));
+			Subtitle sub = rls.getFirstMaterial();
+			sb.append(String.format(subtitleLanguageFormat, StringUtil.replace(sub.getLanguage(), subtitleLanguageReplacer)));
+			if (!rls.getTags().isEmpty())
+			{
+				sb.append(String.format(tagsFormat, Joiner.on(tagsSeparator).join(rls.getTags())));
+			}
+			if (rls.getGroup() != null)
+			{
+				sb.append(String.format(groupFormat, rls.getGroup().getName()));
+			}
+			return sb.toString();
 		}
-		if (rls.getGroup() != null)
+		catch (Exception e)
 		{
-			sb.append(String.format(groupFormat, rls.getGroup().getName()));
+			throw new NamingException(rls, e);
 		}
-		return sb.toString();
 	}
 
 	@Override
-	public String name(SubtitleRelease rls, Subtitle sub, NamingService namingService)
+	public String name(SubtitleRelease rls, NamingService namingService)
 	{
-		return name(rls, sub, rls.getFirstCompatibleMediaRelease(), namingService);
+		return name(rls, rls.getFirstCompatibleMediaRelease(), namingService);
 	}
 
 }

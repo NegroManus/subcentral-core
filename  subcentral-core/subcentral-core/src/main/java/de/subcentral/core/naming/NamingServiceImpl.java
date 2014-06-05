@@ -48,13 +48,13 @@ public class NamingServiceImpl implements NamingService
 	}
 
 	@Override
-	public boolean canName(Object obj)
+	public boolean canName(Object candidate)
 	{
-		if (obj == null)
+		if (candidate == null)
 		{
 			return false;
 		}
-		return getNamer(obj.getClass()) != null;
+		return getNamer(candidate.getClass()) != null;
 	}
 
 	public Namer<?> getNamer(Class<?> clazz)
@@ -86,32 +86,27 @@ public class NamingServiceImpl implements NamingService
 	 * <li>1. If a namer is registered for the class of obj (excluding Object), return namer.name(obj).</li>
 	 * <li>2. If a namer is registered for a superclass of obj (excluding Object), return namer.name(obj).</li>
 	 * <li>3. If a namer is registered for an interface of obj, return namer.name(obj).</li>
-	 * <li>4. If obj is instance of Nameable, return {@link Nameable#getNameOrCompute()}.</li>
-	 * <li>5. return obj.toString().</li>
+	 * <li>4. Throw .</li>
 	 * </ul>
 	 * <p>
 	 * <b>So register the Namers to the concrete classes to ensure best performance. Searching for Namers of superclasses or interfaces is costly.
 	 * </b>
 	 * </p>
 	 * 
-	 * @param obj
+	 * @param candidate
 	 *            The object to name.
 	 * @return The name that was determined for the object.
 	 */
 	@Override
-	public <T> String name(T obj)
+	public <T> String name(T candidate) throws NamingException, NoNamerRegisteredException
 	{
 		@SuppressWarnings("unchecked")
-		Namer<? super T> namer = (Namer<? super T>) getNamer(obj.getClass());
+		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
 		if (namer != null)
 		{
-			return namer.name(obj, this);
+			return namer.name(candidate, this);
 		}
-		if (obj instanceof Nameable)
-		{
-			return ((Nameable) obj).getNameOrCompute();
-		}
-		return obj.toString();
+		throw new NoNamerRegisteredException(candidate);
 	}
 
 	private void checkNamersMap(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException

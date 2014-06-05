@@ -6,7 +6,9 @@ import java.time.Year;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.media.Episode;
+import de.subcentral.core.media.Medias;
 import de.subcentral.core.media.Movie;
+import de.subcentral.core.media.MultiEpisode;
 import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
 import de.subcentral.core.release.Group;
@@ -42,10 +44,15 @@ public class NamingTest
 		movie.setTitle("The Lord of the Rings");
 		movie.setDate(Year.of(2002));
 
+		MultiEpisode epis = new MultiEpisode();
+		epis.add(Medias.newEpisode("Psych", 4, 15));
+		epis.add(Medias.newEpisode("Psych", 4, 16));
+
 		// Media release
 		MediaRelease rel = new MediaRelease();
 		// rel.setExplicitName("Psych.S01E01.HDTV.XviD-LOL");
-		rel.setMaterial(epi);
+		// rel.setMaterial(epi);
+		rel.getMaterials().addAll(epis);
 		rel.setGroup(new Group("DIMENSION"));
 		rel.setTags(Releases.tags("720p", "HDTV", "x264"));
 

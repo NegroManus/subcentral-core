@@ -4,7 +4,7 @@ public interface NamingService
 {
 	public String getDomain();
 
-	public boolean canName(Object obj);
+	public boolean canName(Object candidate);
 
-	public <T> String name(T obj);
+	public <T> String name(T candidate) throws NamingException;
 }

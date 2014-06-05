@@ -3,6 +3,7 @@ package de.subcentral.core.naming;
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.media.Media;
+import de.subcentral.core.media.Medias;
 import de.subcentral.core.release.MediaRelease;
 import de.subcentral.core.util.Replacer;
 import de.subcentral.core.util.StringUtil;
@@ -39,14 +40,15 @@ public class MediaReleaseNamer extends AbstractReleaseNamer<Media, MediaRelease>
 	}
 
 	@Override
-	public String name(MediaRelease rls, Media media, NamingService namingService)
+	public String name(MediaRelease rls, NamingService namingService)
 	{
 		if (rls == null)
 		{
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(mediaFormat, StringUtil.replace(namingService.name(media), mediaReplacer)));
+		String mediaName = Medias.name(rls.getMaterials(), namingService, " ");
+		sb.append(String.format(mediaFormat, StringUtil.replace(mediaName, mediaReplacer)));
 		if (!rls.getTags().isEmpty())
 		{
 			sb.append(String.format(tagsFormat, Joiner.on(tagsSeparator).join(rls.getTags())));

@@ -4,10 +4,10 @@ public interface Namer<T>
 {
 	public Class<T> getType();
 
-	public default String name(T obj)
+	public default String name(T candidate) throws NamingException
 	{
-		return name(obj, null);
+		return name(candidate, null);
 	}
 
-	public String name(T obj, NamingService namingService);
+	public String name(T candidate, NamingService namingService) throws NamingException;
 }

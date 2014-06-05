@@ -1,13 +1,57 @@
 package de.subcentral.core.media;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.base.Joiner;
+
+import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.NoNamerRegisteredException;
 
 public class Medias
 {
-	public static String getNameOfMultiEpisodes(List<Episode> episodes)
+	public static MultiEpisode newMultiEpisode(List<? extends Media> media)
 	{
-		// TODO
-		return null;
+		MultiEpisode me = new MultiEpisode(media.size());
+		for (Media m : media)
+		{
+			if (m instanceof Episode)
+			{
+				me.add((Episode) m);
+			}
+			return null;
+		}
+		return me;
+	}
+
+	public static String name(List<? extends Media> media, NamingService namingService, String mediaSeparator)
+	{
+		int numOfMedia = media.size();
+		if (numOfMedia == 0)
+		{
+			return "";
+		}
+		else if (numOfMedia == 1)
+		{
+			return namingService.name(media.get(0));
+		}
+		else
+		{
+			try
+			{
+				MultiEpisode me = MultiEpisode.of(media);
+				return namingService.name(me);
+			}
+			catch (IllegalArgumentException | NoNamerRegisteredException e)
+			{
+				List<String> names = new ArrayList<>(media.size());
+				for (Media m : media)
+				{
+					names.add(namingService.name(m));
+				}
+				return Joiner.on(mediaSeparator).join(names);
+			}
+		}
 	}
 
 	public static Episode newEpisode(String seriesTitle, int seasonNumber, int episodeNumber)
@@ -28,6 +72,10 @@ public class Medias
 	public static Episode newEpisode(String seriesTitle, String seriesName, int seasonNumber, String seasonTitle, int episodeNumber,
 			String episodeTitle)
 	{
+		if (seriesTitle == null && seriesName == null)
+		{
+			throw new IllegalArgumentException("Series title or name must be set");
+		}
 		Series series = new Series();
 		series.setTitle(seriesTitle);
 		series.setName(seriesName);

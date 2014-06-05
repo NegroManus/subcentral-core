@@ -1,6 +1,6 @@
 package de.subcentral.core.lookup;
 
-public class LookupException extends Exception
+public class LookupException extends RuntimeException
 {
 	private static final long	serialVersionUID	= -5423474090679019566L;
 

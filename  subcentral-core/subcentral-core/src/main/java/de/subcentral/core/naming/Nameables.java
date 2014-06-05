@@ -33,6 +33,26 @@ public class Nameables
 		}
 	}
 
+	public static String name(Nameable n, NamingService ns) throws NamingException
+	{
+		if (n.isNameSet())
+		{
+			return n.getName();
+		}
+		if (ns != null)
+		{
+			try
+			{
+				return ns.name(n);
+			}
+			catch (NoNamerRegisteredException e)
+			{
+				// do nothing;
+			}
+		}
+		return n.computeName();
+	}
+
 	private Nameables()
 	{
 		// utility class

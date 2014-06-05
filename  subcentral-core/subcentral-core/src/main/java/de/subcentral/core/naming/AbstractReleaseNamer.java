@@ -37,12 +37,4 @@ public abstract class AbstractReleaseNamer<M extends Nameable, R extends Release
 	{
 		this.groupFormat = groupFormat;
 	}
-
-	@Override
-	public String name(R release, NamingService namingService)
-	{
-		return name(release, release.getFirstMaterial(), namingService);
-	}
-
-	public abstract String name(R release, M material, NamingService namingService);
 }

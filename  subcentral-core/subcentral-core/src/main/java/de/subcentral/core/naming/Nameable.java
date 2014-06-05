@@ -5,6 +5,11 @@ public interface Nameable
 	// Supposed to be unique. e.g. for Dallas 2012 title would be "Dallas", name would be "Dallas (2012)"
 	public String getName();
 
+	public default boolean isNameSet()
+	{
+		return getName() != null;
+	}
+
 	public String computeName();
 
 	public default String getNameOrCompute()

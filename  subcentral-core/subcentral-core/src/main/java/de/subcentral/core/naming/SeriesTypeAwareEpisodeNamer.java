@@ -58,10 +58,6 @@ public class SeriesTypeAwareEpisodeNamer implements Namer<Episode>
 	@Override
 	public String name(Episode epi, NamingService namingService)
 	{
-		if (epi == null)
-		{
-			return null;
-		}
 		String type = assumedSeriesType != null ? assumedSeriesType : epi.getSeries().getType();
 		Namer<Episode> namer = typeSpecificNamers.get(type);
 		if (namer != null)
