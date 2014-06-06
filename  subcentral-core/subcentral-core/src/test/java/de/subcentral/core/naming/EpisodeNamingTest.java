@@ -185,7 +185,10 @@ public class EpisodeNamingTest
 		namer.setAlwaysIncludeEpisodeTitle(false);
 		namer.setAlwaysIncludeSeasonTitle(false);
 
-		names.forEach(element -> System.out.println(element));
-		Assert.assertEquals(expectedNames, names);
+		for (int i = 0; i < expectedNames.size(); i++)
+		{
+			System.out.println(names.get(i));
+			Assert.assertEquals(expectedNames.get(i), names.get(i));
+		}
 	}
 }
