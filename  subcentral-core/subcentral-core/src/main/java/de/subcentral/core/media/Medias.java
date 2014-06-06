@@ -54,27 +54,27 @@ public class Medias
 		}
 	}
 
-	public static Episode newEpisode(String seriesTitle, int seasonNumber, int episodeNumber)
+	public static Episode newEpisode(String seriesName, int seasonNumber, int episodeNumber)
 	{
-		return newEpisode(seriesTitle, null, seasonNumber, null, episodeNumber, null);
+		return newEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
 	}
 
-	public static Episode newEpisode(String seriesTitle, int seasonNumber, int episodeNumber, String episodeTitle)
+	public static Episode newEpisode(String seriesName, int seasonNumber, int episodeNumber, String episodeTitle)
 	{
-		return newEpisode(seriesTitle, null, seasonNumber, null, episodeNumber, episodeTitle);
+		return newEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newEpisode(String seriesTitle, String seasonTitle, int episodeNumber, String episodeTitle)
+	public static Episode newEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
 	{
-		return newEpisode(seriesTitle, null, Media.UNNUMBERED, seasonTitle, episodeNumber, episodeTitle);
+		return newEpisode(seriesName, null, Media.UNNUMBERED, seasonTitle, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newEpisode(String seriesTitle, String seriesName, int seasonNumber, String seasonTitle, int episodeNumber,
+	public static Episode newEpisode(String seriesName, String seriesTitle, int seasonNumber, String seasonTitle, int episodeNumber,
 			String episodeTitle)
 	{
-		if (seriesTitle == null && seriesName == null)
+		if (seriesName == null)
 		{
-			throw new IllegalArgumentException("Series title or name must be set");
+			throw new IllegalArgumentException("Series name must be set");
 		}
 		Series series = new Series();
 		series.setTitle(seriesTitle);

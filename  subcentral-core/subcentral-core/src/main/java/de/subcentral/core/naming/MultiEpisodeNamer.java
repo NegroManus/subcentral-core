@@ -3,22 +3,10 @@ package de.subcentral.core.naming;
 import de.subcentral.core.media.MultiEpisode;
 import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
-import de.subcentral.core.util.Replacer;
 
 public class MultiEpisodeNamer extends AbstractNamer<MultiEpisode>
 {
 	private EpisodeNamer	episodeNamer				= NamingStandards.SEASONED_EPISODE_NAMER;
-
-	private Replacer		seriesNameReplacer			= null;
-	private String			seriesNameFormat			= "%s";
-	private String			seasonEpisodeNumberFormat	= " S%02dE%02d";
-	private String			seasonNumberFormat			= " S%02d";
-	private Replacer		seasonTitleReplacer			= null;
-	private String			seasonTitleFormat			= " %s";
-	private String			episodeNumberFormat			= " E%02d";
-	private boolean			alwaysIncludeEpisodeTitle	= false;
-	private Replacer		episodeTitleReplacer		= null;
-	private String			episodeTitleFormat			= " %s";
 
 	private String			episodeNumberRangeFormat	= "%s-%s";
 	private String			episodeNumberAdditionFormat	= "%s";
@@ -49,6 +37,10 @@ public class MultiEpisodeNamer extends AbstractNamer<MultiEpisode>
 				{
 					sb.append(String.format(episodeAdditionFormat, episodeNamer.name(me.get(i), false, false)));
 				}
+			}
+			else if (me.getAllNumberedInSeries())
+			{
+
 			}
 			else
 			{

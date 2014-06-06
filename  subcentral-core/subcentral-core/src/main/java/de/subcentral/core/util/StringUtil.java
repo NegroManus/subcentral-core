@@ -98,11 +98,7 @@ public class StringUtil
 		{
 			return null;
 		}
-		if (r == null)
-		{
-			return s;
-		}
-		return r.process(s);
+		return r == null ? s : r.process(s);
 	}
 
 }
