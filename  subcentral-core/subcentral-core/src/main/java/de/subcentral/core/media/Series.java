@@ -16,26 +16,34 @@ import de.subcentral.core.naming.Nameable;
 
 public class Series implements Nameable, Work, Comparable<Series>
 {
-	public static final String	TYPE_SERIES			= "SERIES";
-	public static final String	TYPE_MINI_SERIES	= "MINI_SERIES";
-	public static final String	TYPE_DATED_SHOW		= "DATED_SHOW";
+	public static final String	TYPE_SEASONED_SERIES	= "SEASONED_SERIES";
+	public static final String	TYPE_MINI_SERIES		= "MINI_SERIES";
+	public static final String	TYPE_DATED_SERIES		= "DATED_SERIES";
 
-	public static final String	STATE_CONTINUING	= "CONTINUING";
-	public static final String	STATE_ENDED			= "ENDED";
+	public static final String	STATE_CONTINUING		= "CONTINUING";
+	public static final String	STATE_ENDED				= "ENDED";
 
 	private String				name;
 	private String				title;
 	private String				type;
 	private String				state;
 	private String				originalLanguage;
-	private Set<String>			countriesOfOrigin	= new HashSet<>(1);
+	private Set<String>			countriesOfOrigin		= new HashSet<>(1);
 	private int					runningTime;
 	private Set<String>			genres;
 	private String				description;
 	private String				coverUrl;
-	private List<Contribution>	contributions		= new ArrayList<>();
-	private List<Season>		seasons				= new ArrayList<>();
-	private List<Episode>		episodes			= new ArrayList<>();
+	private List<Contribution>	contributions			= new ArrayList<>();
+	private List<Season>		seasons					= new ArrayList<>();
+	private List<Episode>		episodes				= new ArrayList<>();
+
+	public Series()
+	{}
+
+	public Series(String name)
+	{
+		this.name = name;
+	}
 
 	@Override
 	public String getName()

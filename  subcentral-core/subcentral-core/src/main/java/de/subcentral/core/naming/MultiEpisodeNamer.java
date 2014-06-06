@@ -7,7 +7,7 @@ import de.subcentral.core.util.Replacer;
 
 public class MultiEpisodeNamer extends AbstractNamer<MultiEpisode>
 {
-	private EpisodeNamer	episodeNamer				= NamingStandards.SERIES_EPISODE_NAMER;
+	private EpisodeNamer	episodeNamer				= NamingStandards.SEASONED_EPISODE_NAMER;
 
 	private Replacer		seriesNameReplacer			= null;
 	private String			seriesNameFormat			= "%s";

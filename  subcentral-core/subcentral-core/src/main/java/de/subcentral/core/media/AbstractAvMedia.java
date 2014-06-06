@@ -14,5 +14,4 @@ public abstract class AbstractAvMedia extends AbstractMedia implements AvMedia
 	{
 		this.runningTime = runningTime;
 	}
-
 }

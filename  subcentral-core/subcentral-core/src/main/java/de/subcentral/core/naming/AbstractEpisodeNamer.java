@@ -2,15 +2,18 @@ package de.subcentral.core.naming;
 
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.util.Replacer;
+import de.subcentral.core.util.StringUtil;
 
 public abstract class AbstractEpisodeNamer implements EpisodeNamer
 {
+	protected boolean	alwaysIncludeEpisodeTitle	= false;
+
 	protected Replacer	seriesNameReplacer			= null;
 	protected String	seriesNameFormat			= "%s";
-
-	protected boolean	alwaysIncludeEpisodeTitle	= false;
 	protected Replacer	episodeTitleReplacer		= null;
-	protected String	episodeTitleFormat			= " %s";
+	protected String	episodeTitleFormat			= "%s";
+
+	protected String	separatorSeriesAndAnything	= " ";
 
 	public Replacer getSeriesNameReplacer()
 	{
@@ -30,6 +33,16 @@ public abstract class AbstractEpisodeNamer implements EpisodeNamer
 	public void setSeriesNameFormat(String seriesNameFormat)
 	{
 		this.seriesNameFormat = seriesNameFormat;
+	}
+
+	public String getSeparatorSeriesAndAnything()
+	{
+		return separatorSeriesAndAnything;
+	}
+
+	public void setSeparatorSeriesAndAnything(String separatorSeriesAndAnything)
+	{
+		this.separatorSeriesAndAnything = separatorSeriesAndAnything;
 	}
 
 	public boolean getAlwaysIncludeEpisodeTitle()
@@ -74,4 +87,13 @@ public abstract class AbstractEpisodeNamer implements EpisodeNamer
 		return name(candidate, true, true, namingService);
 	}
 
+	public String formatSeriesName(String seriesName)
+	{
+		return String.format(seriesNameFormat, StringUtil.replace(seriesName, seriesNameReplacer));
+	}
+
+	public String formatEpisodeTitle(String episodeTitle)
+	{
+		return String.format(episodeTitleFormat, StringUtil.replace(episodeTitle, episodeTitleReplacer));
+	}
 }

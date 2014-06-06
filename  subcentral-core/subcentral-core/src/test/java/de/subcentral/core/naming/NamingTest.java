@@ -26,15 +26,15 @@ public class NamingTest
 	{
 		// Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com
 
-		Series psych = new Series();
-		psych.setTitle("How I Met Your Mother");
-		psych.setType(Series.TYPE_SERIES);
+		Series series = new Series();
+		series.setName("How I Met Your Mother");
+		series.setType(Series.TYPE_SEASONED_SERIES);
 
-		Season s2 = psych.addSeason();
+		Season s2 = series.addSeason();
 		s2.setNumber(2);
 		s2.setTitle("Webisodes");
 
-		Episode epi = psych.addEpisode(s2);
+		Episode epi = series.addEpisode(s2);
 		epi.setNumberInSeason(1);
 		epi.setNumberInSeries(17);
 		epi.setTitle("Weekend at Barney's");
@@ -51,8 +51,7 @@ public class NamingTest
 		// Media release
 		MediaRelease rel = new MediaRelease();
 		// rel.setExplicitName("Psych.S01E01.HDTV.XviD-LOL");
-		// rel.setMaterial(epi);
-		rel.getMaterials().addAll(epis);
+		rel.setMaterial(epi);
 		rel.setGroup(new Group("DIMENSION"));
 		rel.setTags(Releases.tags("720p", "HDTV", "x264"));
 
@@ -71,7 +70,7 @@ public class NamingTest
 		long overallStart = System.nanoTime();
 		for (int i = 0; i < 1000; i++)
 		{
-			System.out.println(NamingStandards.NAMING_SERVICE.name(epis));
+			System.out.println(NamingStandards.NAMING_SERVICE.name(epi));
 			long start = System.nanoTime();
 			String name = NamingStandards.NAMING_SERVICE.name(subRel); // ns.name(epi);//
 			double duration = TimeUtil.durationMillis(start, System.nanoTime());

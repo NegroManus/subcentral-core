@@ -1,13 +1,10 @@
 package de.subcentral.core.media;
 
-import java.util.Collections;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.naming.NamingStandards;
 
@@ -86,13 +83,13 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	@Override
 	public String getOriginalLanguage()
 	{
-		return series != null ? series.getOriginalLanguage() : null;
+		return series.getOriginalLanguage();
 	}
 
 	@Override
 	public Set<String> getCountriesOfOrigin()
 	{
-		return series != null ? Collections.unmodifiableSet(series.getCountriesOfOrigin()) : ImmutableSet.<String> of();
+		return series.getCountriesOfOrigin();
 	}
 
 	// Convenience
@@ -136,6 +133,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 				.append(season, o.season)
 				.append(numberInSeries, o.numberInSeries)
 				.append(numberInSeason, o.numberInSeason)
+				.append(date, o.date)
 				.append(title, o.title)
 				.isEquals();
 	}
@@ -143,7 +141,13 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(7, 15).append(series).append(season).append(numberInSeries).append(numberInSeason).append(title).toHashCode();
+		return new HashCodeBuilder(7, 15).append(series)
+				.append(season)
+				.append(numberInSeries)
+				.append(numberInSeason)
+				.append(date)
+				.append(title)
+				.toHashCode();
 	}
 
 	@Override
@@ -154,9 +158,10 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 			return 1;
 		}
 		return new CompareToBuilder().append(series, o.series)
-				.append(season, o.season)
 				.append(numberInSeries, o.numberInSeries)
+				.append(season, o.season)
 				.append(numberInSeason, o.numberInSeason)
+				.append(date, o.date)
 				.append(title, o.title)
 				.toComparison();
 	}

@@ -3,7 +3,7 @@ package de.subcentral.core.impl.com.orlydb;
 import de.subcentral.core.naming.MediaReleaseNamer;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingServiceImpl;
-import de.subcentral.core.naming.SeriesEpisodeNamer;
+import de.subcentral.core.naming.SeasonedEpisodeNamer;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.Replacer;
 
@@ -12,7 +12,7 @@ public class OrlyDb
 	public static NamingService getOrlyDbQueryNamingService()
 	{
 		NamingServiceImpl ns = new NamingServiceImpl();
-		SeriesEpisodeNamer epiNamer = new SeriesEpisodeNamer();
+		SeasonedEpisodeNamer epiNamer = new SeasonedEpisodeNamer();
 		MediaReleaseNamer mediaRlsNamer = new MediaReleaseNamer();
 		mediaRlsNamer.setMediaReplacer(getOrlyDbQueryReplacer());
 		mediaRlsNamer.setMediaFormat("%s");

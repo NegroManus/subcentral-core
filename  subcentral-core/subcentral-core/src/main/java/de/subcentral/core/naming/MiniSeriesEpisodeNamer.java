@@ -1,11 +1,12 @@
 package de.subcentral.core.naming;
 
 import de.subcentral.core.media.Episode;
-import de.subcentral.core.util.StringUtil;
 
 public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 {
-	private String	episodeNumberFormat	= " Part%02d";
+	private String	episodeNumberFormat				= "Part%02d";
+
+	private String	separatorEpisodeNumberAndTitle	= " ";
 
 	public String getEpisodeNumberFormat()
 	{
@@ -17,6 +18,16 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 		this.episodeNumberFormat = episodeNumberFormat;
 	}
 
+	public String getSeparatorEpisodeNumberAndTitle()
+	{
+		return separatorEpisodeNumberAndTitle;
+	}
+
+	public void setSeparatorEpisodeNumberAndTitle(String separatorEpisodeNumberAndTitle)
+	{
+		this.separatorEpisodeNumberAndTitle = separatorEpisodeNumberAndTitle;
+	}
+
 	@Override
 	public String name(Episode epi, boolean includeSeries, boolean includeSeason, NamingService namingService)
 	{
@@ -26,23 +37,33 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(seriesNameFormat, StringUtil.replace(epi.getSeries().getNameOrCompute(), seriesNameReplacer)));
+		if (includeSeries)
+		{
+			sb.append(formatSeriesName(epi.getSeries().getName()));
+			sb.append(separatorSeriesAndAnything);
+		}
 		if (epi.isNumberedInSeries())
 		{
-			sb.append(String.format(episodeNumberFormat, epi.getNumberInSeries()));
+			sb.append(formatEpisodeNumber(epi.getNumberInSeries()));
 			if (alwaysIncludeEpisodeTitle && epi.isTitled())
 			{
-				sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
+				sb.append(separatorEpisodeNumberAndTitle);
+				sb.append(formatEpisodeTitle(epi.getTitle()));
 			}
 		}
 		else if (epi.isTitled())
 		{
-			sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
+			sb.append(formatEpisodeTitle(epi.getTitle()));
 		}
 		else
 		{
-			sb.append(String.format(episodeTitleFormat, "xx"));
+			sb.append(formatEpisodeNumber(0));
 		}
 		return sb.toString();
+	}
+
+	public String formatEpisodeNumber(int episodeNumber)
+	{
+		return String.format(episodeNumberFormat, episodeNumber);
 	}
 }

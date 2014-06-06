@@ -11,7 +11,7 @@ public class NamingStandards
 
 	public static final CharReplacer				STANDARD_REPLACER			= new CharReplacer();
 
-	public static final SeriesEpisodeNamer			SERIES_EPISODE_NAMER		= new SeriesEpisodeNamer();
+	public static final SeasonedEpisodeNamer		SEASONED_EPISODE_NAMER		= new SeasonedEpisodeNamer();
 	public static final MiniSeriesEpisodeNamer		MINI_SERIES_EPISODE_NAMER	= new MiniSeriesEpisodeNamer();
 	public static final DatedEpisodeNamer			DATED_EPISODE_NAMER			= new DatedEpisodeNamer();
 	public static final SeriesTypeAwareEpisodeNamer	EPISODE_NAMER				= new SeriesTypeAwareEpisodeNamer();

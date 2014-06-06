@@ -1,6 +1,8 @@
 package de.subcentral.core.naming;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
 import java.util.ArrayList;
@@ -11,12 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.media.Episode;
-import de.subcentral.core.util.StringUtil;
 
 public class DatedEpisodeNamer extends AbstractEpisodeNamer
 {
 	private TemporalQuery<String>	episodeDateQuery	= new DefaultDateQuery();
-	private String					episodeDateFormat	= " %s";
+	private String					episodeDateFormat	= "%s";
 
 	public TemporalQuery<String> getEpisodeDateQuery()
 	{
@@ -46,18 +47,22 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtil.replace(epi.getSeries().getNameOrCompute(), seriesNameReplacer));
+		if (includeSeries)
+		{
+			sb.append(formatSeriesName(epi.getSeries().getName()));
+			sb.append(separatorSeriesAndAnything);
+		}
 		if (epi.getDate() != null)
 		{
-			String printedDate = episodeDateQuery.queryFrom(epi.getDate());
-			if (!StringUtils.isEmpty(printedDate))
-			{
-				sb.append(String.format(episodeDateFormat, printedDate));
-			}
+			sb.append(formatEpisodeDate(epi.getDate()));
+		}
+		else
+		{
+			sb.append(formatEpisodeDate(LocalDate.of(0, 1, 1)));
 		}
 		if (alwaysIncludeEpisodeTitle && epi.isTitled())
 		{
-			sb.append(String.format(episodeTitleFormat, StringUtil.replace(epi.getTitle(), episodeTitleReplacer)));
+			sb.append(formatEpisodeTitle(epi.getTitle()));
 		}
 		return sb.toString();
 	}
@@ -89,5 +94,15 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 			}
 			return Joiner.on(' ').skipNulls().join(fragments);
 		}
+	}
+
+	public String formatEpisodeDate(Temporal date)
+	{
+		String printedDate = episodeDateQuery.queryFrom(date);
+		if (StringUtils.isEmpty(printedDate))
+		{
+			return null;
+		}
+		return (String.format(episodeDateFormat, printedDate));
 	}
 }

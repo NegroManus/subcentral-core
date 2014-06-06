@@ -9,14 +9,14 @@ import de.subcentral.core.media.Series;
 public class SeriesTypeAwareEpisodeNamer implements Namer<Episode>
 {
 	private String						assumedSeriesType	= null;
-	private Namer<Episode>				standardNamer		= NamingStandards.SERIES_EPISODE_NAMER;
+	private Namer<Episode>				standardNamer		= NamingStandards.SEASONED_EPISODE_NAMER;
 	private Map<String, Namer<Episode>>	typeSpecificNamers	= new HashMap<>(3);
 
 	public SeriesTypeAwareEpisodeNamer()
 	{
-		typeSpecificNamers.put(Series.TYPE_SERIES, NamingStandards.SERIES_EPISODE_NAMER);
+		typeSpecificNamers.put(Series.TYPE_SEASONED_SERIES, NamingStandards.SEASONED_EPISODE_NAMER);
 		typeSpecificNamers.put(Series.TYPE_MINI_SERIES, NamingStandards.MINI_SERIES_EPISODE_NAMER);
-		typeSpecificNamers.put(Series.TYPE_DATED_SHOW, NamingStandards.DATED_EPISODE_NAMER);
+		typeSpecificNamers.put(Series.TYPE_DATED_SERIES, NamingStandards.DATED_EPISODE_NAMER);
 	}
 
 	public String getAssumedSeriesType()
