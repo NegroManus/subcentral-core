@@ -2,7 +2,7 @@ package de.subcentral.core.naming;
 
 import de.subcentral.core.media.Episode;
 
-public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
+public class MiniSeriesEpisodeNamer extends EpisodeNamerBase implements EpisodeNamer
 {
 	private String	episodeNumberFormat				= "Part%02d";
 

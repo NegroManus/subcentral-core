@@ -1,5 +1,6 @@
 package de.subcentral.core.media;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,22 +55,22 @@ public class Medias
 		}
 	}
 
-	public static Episode newEpisode(String seriesName, int seasonNumber, int episodeNumber)
+	public static Episode newSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber)
 	{
-		return newEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
+		return newSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
 	}
 
-	public static Episode newEpisode(String seriesName, int seasonNumber, int episodeNumber, String episodeTitle)
+	public static Episode newSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber, String episodeTitle)
 	{
-		return newEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
+		return newSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
+	public static Episode newSeasonedEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
 	{
-		return newEpisode(seriesName, null, Media.UNNUMBERED, seasonTitle, episodeNumber, episodeTitle);
+		return newSeasonedEpisode(seriesName, null, Media.UNNUMBERED, seasonTitle, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newEpisode(String seriesName, String seriesTitle, int seasonNumber, String seasonTitle, int episodeNumber,
+	public static Episode newSeasonedEpisode(String seriesName, String seriesTitle, int seasonNumber, String seasonTitle, int episodeNumber,
 			String episodeTitle)
 	{
 		if (seriesName == null)
@@ -77,8 +78,9 @@ public class Medias
 			throw new IllegalArgumentException("Series name must be set");
 		}
 		Series series = new Series();
-		series.setTitle(seriesTitle);
+		series.setType(Series.TYPE_SEASONED);
 		series.setName(seriesName);
+		series.setTitle(seriesTitle);
 		Season season = null;
 		if (seasonNumber != Media.UNNUMBERED || seasonTitle != null)
 		{
@@ -88,6 +90,58 @@ public class Medias
 		}
 		Episode epi = series.addEpisode(season);
 		epi.setNumberInSeason(episodeNumber);
+		epi.setTitle(episodeTitle);
+		return epi;
+	}
+
+	public static Episode newMiniSeriesEpisode(String seriesName, int episodeNumber)
+	{
+		return newMiniSeriesEpisode(seriesName, null, episodeNumber, null);
+	}
+
+	public static Episode newMiniSeriesEpisode(String seriesName, int episodeNumber, String episodeTitle)
+	{
+		return newMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
+	}
+
+	public static Episode newMiniSeriesEpisode(String seriesName, String seriesTitle, int episodeNumber, String episodeTitle)
+	{
+		if (seriesName == null)
+		{
+			throw new IllegalArgumentException("Series name must be set");
+		}
+		Series series = new Series();
+		series.setType(Series.TYPE_MINI_SERIES);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = series.addEpisode();
+		epi.setNumberInSeries(episodeNumber);
+		epi.setTitle(episodeTitle);
+		return epi;
+	}
+
+	public static Episode newDatedEpisode(String seriesName, Temporal date)
+	{
+		return newDatedEpisode(seriesName, null, date, null);
+	}
+
+	public static Episode newDatedEpisode(String seriesName, Temporal date, String episodeTitle)
+	{
+		return newDatedEpisode(seriesName, null, date, episodeTitle);
+	}
+
+	public static Episode newDatedEpisode(String seriesName, String seriesTitle, Temporal date, String episodeTitle)
+	{
+		if (seriesName == null)
+		{
+			throw new IllegalArgumentException("Series name must be set");
+		}
+		Series series = new Series();
+		series.setType(Series.TYPE_DATED);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = series.addEpisode();
+		epi.setDate(date);
 		epi.setTitle(episodeTitle);
 		return epi;
 	}

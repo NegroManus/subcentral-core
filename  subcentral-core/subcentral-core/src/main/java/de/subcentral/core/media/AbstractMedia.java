@@ -15,6 +15,7 @@ public abstract class AbstractMedia implements Media
 	protected Set<String>			genres			= new HashSet<>(4);
 	protected String				description;
 	protected String				coverUrl;
+	protected String				contentRating;
 	protected List<Contribution>	contributions	= new ArrayList<>();
 
 	@Override
@@ -70,6 +71,17 @@ public abstract class AbstractMedia implements Media
 	public void setCoverUrl(String coverUrl)
 	{
 		this.coverUrl = coverUrl;
+	}
+
+	@Override
+	public String getContentRating()
+	{
+		return contentRating;
+	}
+
+	public void setContentRating(String contentRating)
+	{
+		this.contentRating = contentRating;
 	}
 
 	@Override

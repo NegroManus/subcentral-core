@@ -28,7 +28,7 @@ public class NamingTest
 
 		Series series = new Series();
 		series.setName("How I Met Your Mother");
-		series.setType(Series.TYPE_SEASONED_SERIES);
+		series.setType(Series.TYPE_SEASONED);
 
 		Season s2 = series.addSeason();
 		s2.setNumber(2);
@@ -45,8 +45,11 @@ public class NamingTest
 		movie.setDate(Year.of(2002));
 
 		MultiEpisode epis = new MultiEpisode();
-		epis.add(Medias.newEpisode("Psych", 4, 15));
-		epis.add(Medias.newEpisode("Psych", 4, 16));
+		Episode epi2 = series.addEpisode();
+		epi2.setNumberInSeries(18);
+
+		epis.add(Medias.newMiniSeriesEpisode("Psych", 1));
+		epis.add(Medias.newMiniSeriesEpisode("Psych", 2));
 
 		// Media release
 		MediaRelease rel = new MediaRelease();

@@ -97,7 +97,7 @@ import de.subcentral.core.util.StringUtil;
  * @author mhertram
  *
  */
-public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
+public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNamer
 {
 	private boolean		alwaysIncludeSeasonTitle				= false;
 

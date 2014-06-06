@@ -14,9 +14,9 @@ public class SeriesTypeAwareEpisodeNamer implements Namer<Episode>
 
 	public SeriesTypeAwareEpisodeNamer()
 	{
-		typeSpecificNamers.put(Series.TYPE_SEASONED_SERIES, NamingStandards.SEASONED_EPISODE_NAMER);
+		typeSpecificNamers.put(Series.TYPE_SEASONED, NamingStandards.SEASONED_EPISODE_NAMER);
 		typeSpecificNamers.put(Series.TYPE_MINI_SERIES, NamingStandards.MINI_SERIES_EPISODE_NAMER);
-		typeSpecificNamers.put(Series.TYPE_DATED_SERIES, NamingStandards.DATED_EPISODE_NAMER);
+		typeSpecificNamers.put(Series.TYPE_DATED, NamingStandards.DATED_EPISODE_NAMER);
 	}
 
 	public String getAssumedSeriesType()

@@ -1,10 +1,9 @@
 package de.subcentral.core.naming;
 
-import de.subcentral.core.media.Episode;
 import de.subcentral.core.util.Replacer;
 import de.subcentral.core.util.StringUtil;
 
-public abstract class AbstractEpisodeNamer implements EpisodeNamer
+public abstract class EpisodeNamerBase
 {
 	protected boolean	alwaysIncludeEpisodeTitle	= false;
 
@@ -73,18 +72,6 @@ public abstract class AbstractEpisodeNamer implements EpisodeNamer
 	public void setEpisodeTitleFormat(String episodeTitleFormat)
 	{
 		this.episodeTitleFormat = episodeTitleFormat;
-	}
-
-	@Override
-	public Class<Episode> getType()
-	{
-		return Episode.class;
-	}
-
-	@Override
-	public String name(Episode candidate, NamingService namingService) throws NamingException
-	{
-		return name(candidate, true, true, namingService);
 	}
 
 	public String formatSeriesName(String seriesName)

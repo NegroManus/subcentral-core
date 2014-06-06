@@ -16,26 +16,47 @@ import de.subcentral.core.naming.Nameable;
 
 public class Series implements Nameable, Work, Comparable<Series>
 {
-	public static final String	TYPE_SEASONED_SERIES	= "SEASONED_SERIES";
-	public static final String	TYPE_MINI_SERIES		= "MINI_SERIES";
-	public static final String	TYPE_DATED_SERIES		= "DATED_SERIES";
+	/**
+	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
+	 * examples are the TV series "Breaking Bad", "Game of Thrones" and "Psych".
+	 */
+	public static final String	TYPE_SEASONED		= "SEASONED";
 
-	public static final String	STATE_CONTINUING		= "CONTINUING";
-	public static final String	STATE_ENDED				= "ENDED";
+	/**
+	 * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. Typical examples are the TV
+	 * mini-series "Band of Brothers" and "In the Flesh".
+	 */
+	public static final String	TYPE_MINI_SERIES	= "MINI_SERIES";
+
+	/**
+	 * A type of series which episodes usually have no numbers. Instead the main identifier is their air date. Typical examples are (daily) shows or
+	 * sports events.
+	 */
+	public static final String	TYPE_DATED			= "DATED";
+
+	/**
+	 * If a series is "continuing", then there will be more episodes to come.
+	 */
+	public static final String	STATE_CONTINUING	= "CONTINUING";
+
+	/**
+	 * If a series has "ended", there will be no more episodes to come. Either because the series was cancelled or it simply is complete.
+	 */
+	public static final String	STATE_ENDED			= "ENDED";
 
 	private String				name;
 	private String				title;
 	private String				type;
 	private String				state;
 	private String				originalLanguage;
-	private Set<String>			countriesOfOrigin		= new HashSet<>(1);
+	private Set<String>			countriesOfOrigin	= new HashSet<>(1);
 	private int					runningTime;
 	private Set<String>			genres;
 	private String				description;
 	private String				coverUrl;
-	private List<Contribution>	contributions			= new ArrayList<>();
-	private List<Season>		seasons					= new ArrayList<>();
-	private List<Episode>		episodes				= new ArrayList<>();
+	private List<Contribution>	contributions		= new ArrayList<>();
+	private List<Season>		seasons				= new ArrayList<>();
+	private List<Episode>		episodes			= new ArrayList<>();
 
 	public Series()
 	{}

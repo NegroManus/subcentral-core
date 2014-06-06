@@ -7,8 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ListMultimap;
 
 public class MultiEpisode extends ArrayList<Episode>
 {
@@ -123,6 +126,10 @@ public class MultiEpisode extends ArrayList<Episode>
 			return null;
 		}
 		Season season = get(0).getSeason();
+		if (season == null)
+		{
+			return null;
+		}
 		for (int i = 1; i < size(); i++)
 		{
 			if (!season.equals(get(i).getSeason()))
@@ -133,7 +140,7 @@ public class MultiEpisode extends ArrayList<Episode>
 		return season;
 	}
 
-	public boolean getAllNumberedInSeries()
+	public boolean areAllNumberedInSeries()
 	{
 		if (isEmpty())
 		{
@@ -149,7 +156,7 @@ public class MultiEpisode extends ArrayList<Episode>
 		return true;
 	}
 
-	public boolean getAllNumberedInSeason()
+	public boolean areAllNumberedInSeason()
 	{
 		if (isEmpty())
 		{
@@ -217,6 +224,34 @@ public class MultiEpisode extends ArrayList<Episode>
 			}
 		}
 		return titles;
+	}
+
+	public ListMultimap<Series, Episode> splitBySeries()
+	{
+		if (isEmpty())
+		{
+			return ImmutableListMultimap.of();
+		}
+		ArrayListMultimap<Series, Episode> multimap = ArrayListMultimap.create();
+		for (Episode epi : this)
+		{
+			multimap.put(epi.getSeries(), epi);
+		}
+		return multimap;
+	}
+
+	public ListMultimap<Season, Episode> splitBySeason()
+	{
+		if (isEmpty())
+		{
+			return ImmutableListMultimap.of();
+		}
+		ArrayListMultimap<Season, Episode> multimap = ArrayListMultimap.create();
+		for (Episode epi : this)
+		{
+			multimap.put(epi.getSeason(), epi);
+		}
+		return multimap;
 	}
 
 	@Override

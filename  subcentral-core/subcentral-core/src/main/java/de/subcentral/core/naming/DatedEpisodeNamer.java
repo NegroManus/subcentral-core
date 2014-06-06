@@ -14,7 +14,7 @@ import com.google.common.base.Joiner;
 
 import de.subcentral.core.media.Episode;
 
-public class DatedEpisodeNamer extends AbstractEpisodeNamer
+public class DatedEpisodeNamer extends EpisodeNamerBase implements EpisodeNamer
 {
 	private TemporalQuery<String>	episodeDateQuery	= new DefaultDateQuery();
 	private String					episodeDateFormat	= "%s";

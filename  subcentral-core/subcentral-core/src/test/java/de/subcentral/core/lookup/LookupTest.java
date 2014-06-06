@@ -19,7 +19,7 @@ public class LookupTest
 		System.getProperties().put("http.proxyHost", "10.206.247.65");
 		System.getProperties().put("http.proxyPort", "8080");
 
-		Media epi = Medias.newEpisode("Psych", 6, 5);
+		Media epi = Medias.newSeasonedEpisode("Psych", 6, 5);
 		Movie movie = Medias.newMovie("The Lord of the Rings: The Return of the King");
 		MediaRelease rls = Releases.newMediaRelease(movie, null);
 
