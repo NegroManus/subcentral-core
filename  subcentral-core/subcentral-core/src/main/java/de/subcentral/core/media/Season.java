@@ -150,6 +150,17 @@ public class Season implements Comparable<Season>, Nameable
 		return false;
 	}
 
+	public void removeEpisodes()
+	{
+		for (Episode epi : getEpisodes())
+		{
+			if (this.equals(epi.getSeason()))
+			{
+				epi.setSeason(null);
+			}
+		}
+	}
+
 	public void removeEpisodes(Iterable<Episode> episodes)
 	{
 		for (Episode epi : episodes)
