@@ -2,9 +2,11 @@ package de.subcentral.core.media;
 
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.naming.NamingStandards;
 
@@ -157,13 +159,37 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 		{
 			return 1;
 		}
-		return new CompareToBuilder().append(series, o.series)
-				.append(numberInSeries, o.numberInSeries)
-				.append(season, o.season)
-				.append(numberInSeason, o.numberInSeason)
-				.append(date, o.date)
-				.append(title, o.title)
-				.toComparison();
+
+		return ComparisonChain.start()
+				.compare(series, o.series)
+				.compare(numberInSeries, o.numberInSeries)
+				.compare(season, o.season)
+				.compare(numberInSeason, o.numberInSeason)
+				// TODO implement Util-Method "public static int[2] compareTemporals(Temporal first, Temporal second)"
+				.compare((Comparable<?>) date, (Comparable<?>) o.date)
+				.compare(title, title)
+				.result();
+	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringHelper(this)
+				.omitNullValues()
+				.add("series", series)
+				.add("numberInSeries", numberInSeries)
+				.add("season", season)
+				.add("numberInSeason", numberInSeason)
+				.add("date", date)
+				.add("title", title)
+				.add("special", special)
+				.add("runningTime", runningTime)
+				.add("genres", genres)
+				.add("description", description)
+				.add("coverUrl", coverUrl)
+				.add("contentRating", contentRating)
+				.add("contributions", contributions)
+				.toString();
 	}
 
 	private void ensurePartOfSeries(Season season) throws IllegalArgumentException

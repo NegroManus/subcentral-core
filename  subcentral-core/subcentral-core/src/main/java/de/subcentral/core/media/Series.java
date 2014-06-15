@@ -1,7 +1,6 @@
 package de.subcentral.core.media;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +8,9 @@ import java.util.Set;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
@@ -23,8 +25,8 @@ public class Series implements Nameable, Work, Comparable<Series>
 	public static final String	TYPE_SEASONED		= "SEASONED";
 
 	/**
-	 * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. Typical examples are the TV
-	 * mini-series "Band of Brothers" and "In the Flesh".
+	 * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. A typical example is the TV
+	 * mini-series "Band of Brothers".
 	 */
 	public static final String	TYPE_MINI_SERIES	= "MINI_SERIES";
 
@@ -54,6 +56,7 @@ public class Series implements Nameable, Work, Comparable<Series>
 	private Set<String>			genres;
 	private String				description;
 	private String				coverUrl;
+	private String				contentRating;
 	private List<Contribution>	contributions		= new ArrayList<>();
 	private List<Season>		seasons				= new ArrayList<>();
 	private List<Episode>		episodes			= new ArrayList<>();
@@ -173,6 +176,16 @@ public class Series implements Nameable, Work, Comparable<Series>
 		this.coverUrl = coverUrl;
 	}
 
+	public String getContentRating()
+	{
+		return contentRating;
+	}
+
+	public void setContentRating(String contentRating)
+	{
+		this.contentRating = contentRating;
+	}
+
 	@Override
 	public List<Contribution> getContributions()
 	{
@@ -184,25 +197,15 @@ public class Series implements Nameable, Work, Comparable<Series>
 		this.contributions = contributions;
 	}
 
+	// Seasons
 	public List<Season> getSeasons()
 	{
-		return Collections.unmodifiableList(seasons);
+		return seasons;
 	}
 
-	public Season getSeason(String name)
+	public boolean containsSeason(Season season)
 	{
-		if (name == null)
-		{
-			return null;
-		}
-		for (Season s : seasons)
-		{
-			if (name.equals(s.getNameOrCompute()))
-			{
-				return s;
-			}
-		}
-		return null;
+		return seasons.contains(season);
 	}
 
 	public Season addSeason()
@@ -212,35 +215,37 @@ public class Series implements Nameable, Work, Comparable<Series>
 		return s;
 	}
 
-	public boolean containsSeason(Season season)
-	{
-		return seasons.contains(season);
-	}
-
 	public boolean removeSeason(Season season)
 	{
 		return seasons.remove(season);
 	}
 
+	// Episodes
 	public List<Episode> getEpisodes()
 	{
-		return Collections.unmodifiableList(episodes);
+		return episodes;
 	}
 
-	public Episode getEpisode(String name)
+	public List<Episode> getEpisodes(Season season)
 	{
-		if (name == null)
+		if (season == null || episodes.isEmpty())
 		{
-			return null;
+			return ImmutableList.of();
 		}
-		for (Episode e : episodes)
+		List<Episode> episInSeason = new ArrayList<>();
+		for (Episode epi : episodes)
 		{
-			if (name.equals(e.getNameOrCompute()))
+			if (season.equals(epi.getSeason()))
 			{
-				return e;
+				episInSeason.add(epi);
 			}
 		}
-		return null;
+		return episInSeason;
+	}
+
+	public boolean containsEpisode(Episode episode)
+	{
+		return episodes.contains(episode);
 	}
 
 	public Episode addEpisode()
@@ -293,5 +298,27 @@ public class Series implements Nameable, Work, Comparable<Series>
 			return 1;
 		}
 		return new CompareToBuilder().append(name, o.name).toComparison();
+	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringHelper(this)
+				.omitNullValues()
+				.add("name", name)
+				.add("title", title)
+				.add("type", type)
+				.add("state", state)
+				.add("originalLanguage", originalLanguage)
+				.add("countriesOfOrigin", countriesOfOrigin)
+				.add("runningTime", runningTime)
+				.add("genres", genres)
+				.add("description", description)
+				.add("coverUrl", coverUrl)
+				.add("contentRating", contentRating)
+				.add("contributions", contributions)
+				.add("seasons.size", seasons.size())
+				.add("episodes.size", episodes.size())
+				.toString();
 	}
 }

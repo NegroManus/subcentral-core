@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.base.Objects;
+
 public class Movie extends AbstractAvMedia implements Comparable<Movie>
 {
 	private String		name;
@@ -84,5 +86,24 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 			return 1;
 		}
 		return new CompareToBuilder().append(name, o.name).toComparison();
+	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringHelper(this)
+				.omitNullValues()
+				.add("name", name)
+				.add("title", title)
+				.add("date", date)
+				.add("originalLanguage", originalLanguage)
+				.add("countriesOfOrigin", countriesOfOrigin)
+				.add("runningTime", runningTime)
+				.add("genres", genres)
+				.add("description", description)
+				.add("coverUrl", coverUrl)
+				.add("contentRating", contentRating)
+				.add("contributions", contributions)
+				.toString();
 	}
 }

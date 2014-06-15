@@ -82,5 +82,7 @@ public class NamingTest
 		}
 		double overallDuration = TimeUtil.durationMillis(overallStart, System.nanoTime());
 		System.out.println("Overall duration: " + overallDuration + " ms");
+
+		System.out.println(epi);
 	}
 }
