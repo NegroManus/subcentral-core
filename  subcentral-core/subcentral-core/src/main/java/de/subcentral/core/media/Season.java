@@ -154,10 +154,7 @@ public class Season implements Comparable<Season>, Nameable
 	{
 		for (Episode epi : getEpisodes())
 		{
-			if (this.equals(epi.getSeason()))
-			{
-				epi.setSeason(null);
-			}
+			epi.setSeason(null);
 		}
 	}
 
