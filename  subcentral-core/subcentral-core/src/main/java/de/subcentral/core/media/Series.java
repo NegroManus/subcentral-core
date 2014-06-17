@@ -1,11 +1,11 @@
 package de.subcentral.core.media;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -14,9 +14,10 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.naming.Nameable;
+import de.subcentral.core.naming.Named;
+import de.subcentral.core.util.Settings;
 
-public class Series implements Nameable, Work, Comparable<Series>
+public class Series implements Named, Work, Comparable<Series>
 {
 	/**
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
@@ -265,6 +266,16 @@ public class Series implements Nameable, Work, Comparable<Series>
 		return episodes.remove(episode);
 	}
 
+	public void removeAllEpisodes(Collection<Episode> episodes)
+	{
+		this.episodes.removeAll(episodes);
+	}
+
+	public void removeAllEpisodes()
+	{
+		this.episodes.clear();
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -295,9 +306,9 @@ public class Series implements Nameable, Work, Comparable<Series>
 	{
 		if (o == null)
 		{
-			return 1;
+			return -1;
 		}
-		return new CompareToBuilder().append(name, o.name).toComparison();
+		return Settings.STRING_ORDERING.compare(name, o.name);
 	}
 
 	@Override

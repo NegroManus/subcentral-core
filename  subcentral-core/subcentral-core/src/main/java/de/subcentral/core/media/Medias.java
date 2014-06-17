@@ -2,15 +2,36 @@ package de.subcentral.core.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NoNamerRegisteredException;
+import de.subcentral.core.util.Settings;
 
 public class Medias
 {
+	public static final Comparator<Media>	MEDIA_NAME_COMPARATOR	= new MediaNameComparator();
+
+	static final class MediaNameComparator implements Comparator<Media>
+	{
+		@Override
+		public int compare(Media o1, Media o2)
+		{
+			if (o1 == null)
+			{
+				return o2 == null ? 0 : 1;
+			}
+			if (o2 == null)
+			{
+				return -1;
+			}
+			return Settings.STRING_ORDERING.compare(o1.getNameOrCompute(), o2.getNameOrCompute());
+		}
+	}
+
 	public static MultiEpisode newMultiEpisode(List<? extends Media> media)
 	{
 		MultiEpisode me = new MultiEpisode(media.size());

@@ -1,5 +1,6 @@
 package de.subcentral.core.media;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -8,9 +9,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.naming.Nameable;
+import de.subcentral.core.naming.Named;
+import de.subcentral.core.util.Settings;
 
-public class Season implements Comparable<Season>, Nameable
+public class Season implements Comparable<Season>, Named
 {
 	private final Series	series;
 	private int				number	= Media.UNNUMBERED;
@@ -128,7 +130,7 @@ public class Season implements Comparable<Season>, Nameable
 		return episode;
 	}
 
-	public void addEpisodes(Iterable<Episode> episodes)
+	public void addEpisodes(Collection<Episode> episodes)
 	{
 		for (Episode epi : episodes)
 		{
@@ -150,15 +152,7 @@ public class Season implements Comparable<Season>, Nameable
 		return false;
 	}
 
-	public void removeEpisodes()
-	{
-		for (Episode epi : getEpisodes())
-		{
-			epi.setSeason(null);
-		}
-	}
-
-	public void removeEpisodes(Iterable<Episode> episodes)
+	public void removeAllEpisodes(Collection<Episode> episodes)
 	{
 		for (Episode epi : episodes)
 		{
@@ -166,6 +160,14 @@ public class Season implements Comparable<Season>, Nameable
 			{
 				epi.setSeason(null);
 			}
+		}
+	}
+
+	public void removeAllEpisodes()
+	{
+		for (Episode epi : getEpisodes())
+		{
+			epi.setSeason(null);
 		}
 	}
 
@@ -199,9 +201,9 @@ public class Season implements Comparable<Season>, Nameable
 	{
 		if (o == null)
 		{
-			return 1;
+			return -1;
 		}
-		return ComparisonChain.start().compare(series, o.series).compare(number, o.number).compare(title, o.title).result();
+		return ComparisonChain.start().compare(series, o.series).compare(number, o.number).compare(title, o.title, Settings.STRING_ORDERING).result();
 	}
 
 	@Override

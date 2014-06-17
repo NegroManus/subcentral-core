@@ -2,7 +2,7 @@ package de.subcentral.core.naming;
 
 import de.subcentral.core.release.Release;
 
-public abstract class AbstractReleaseNamer<M extends Nameable, R extends Release<M>> implements Namer<R>
+public abstract class AbstractReleaseNamer<M extends Named, R extends Release<M>> implements Namer<R>
 {
 	protected String	tagsSeparator	= ".";
 	protected String	tagsFormat		= ".%s";

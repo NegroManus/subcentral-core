@@ -3,13 +3,11 @@ package de.subcentral.core.release;
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import de.subcentral.core.naming.Nameable;
+import de.subcentral.core.naming.Named;
 
-public interface Release<M extends Nameable> extends Nameable
+public interface Release<M extends Named> extends Named, Comparable<Release<?>>
 {
 	// Properties
-	public String getName();
-
 	public List<M> getMaterials();
 
 	public Group getGroup();

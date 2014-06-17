@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Objects;
+
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
 import de.subcentral.core.naming.NamingStandards;
@@ -16,7 +18,6 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	public static final String	CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
 	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
-	private String				format;
 	private Set<MediaRelease>	compatibleMediaReleases			= new HashSet<>(2);
 	private List<Contribution>	contributions					= new ArrayList<>(2);
 
@@ -24,16 +25,6 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	public String computeName()
 	{
 		return NamingStandards.SUBTITLE_RELEASE_NAMER.name(this);
-	}
-
-	public String getFormat()
-	{
-		return format;
-	}
-
-	public void setFormat(String format)
-	{
-		this.format = format;
 	}
 
 	public Set<MediaRelease> getCompatibleMediaReleases()
@@ -66,5 +57,24 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	public void setContributions(List<Contribution> contributions)
 	{
 		this.contributions = contributions;
+	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringHelper(this)
+				.omitNullValues()
+				.add("name", name)
+				.add("materials", materials)
+				.add("compatibleMediaReleases", compatibleMediaReleases)
+				.add("group", group)
+				.add("tags", tags)
+				.add("date", date)
+				.add("nukeReason", nukeReason)
+				.add("section", section)
+				.add("info", info)
+				.add("infoUrl", infoUrl)
+				.add("contributions", contributions)
+				.toString();
 	}
 }

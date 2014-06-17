@@ -4,9 +4,9 @@ import java.time.temporal.Temporal;
 import java.util.Set;
 
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.naming.Nameable;
+import de.subcentral.core.naming.Named;
 
-public interface Media extends Nameable, Work
+public interface Media extends Named, Work
 {
 	public static final int	UNNUMBERED	= Integer.MAX_VALUE;
 

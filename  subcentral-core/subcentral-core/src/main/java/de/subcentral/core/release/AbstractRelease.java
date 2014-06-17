@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import de.subcentral.core.naming.Nameable;
+import de.subcentral.core.naming.Named;
+import de.subcentral.core.util.Settings;
 
-public abstract class AbstractRelease<M extends Nameable> implements Release<M>
+public abstract class AbstractRelease<M extends Named> implements Release<M>
 {
 	protected String	name;
 	protected List<M>	materials	= new ArrayList<>(1);
@@ -173,5 +175,21 @@ public abstract class AbstractRelease<M extends Nameable> implements Release<M>
 		}
 		AbstractRelease<?> other = (AbstractRelease<?>) obj;
 		return new EqualsBuilder().append(getMaterials(), other.getMaterials()).append(group, other.group).append(tags, other.tags).isEquals();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(23, 27).append(getMaterials()).append(group).append(tags).toHashCode();
+	}
+
+	@Override
+	public int compareTo(Release<?> o)
+	{
+		if (o == null)
+		{
+			return -1;
+		}
+		return Settings.STRING_ORDERING.compare(this.getNameOrCompute(), o.getNameOrCompute());
 	}
 }

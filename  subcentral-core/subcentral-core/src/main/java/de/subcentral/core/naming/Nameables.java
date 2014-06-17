@@ -4,12 +4,12 @@ import java.util.Comparator;
 
 public class Nameables
 {
-	public static Comparator<Nameable>	NAME_COMPARATOR	= new NameComparator();
+	public static Comparator<Named>	NAME_COMPARATOR	= new NameComparator();
 
-	private static class NameComparator implements Comparator<Nameable>
+	private static class NameComparator implements Comparator<Named>
 	{
 		@Override
-		public int compare(Nameable o1, Nameable o2)
+		public int compare(Named o1, Named o2)
 		{
 			if (o1 == null)
 			{
@@ -33,7 +33,7 @@ public class Nameables
 		}
 	}
 
-	public static String name(Nameable n, NamingService ns) throws NamingException
+	public static String name(Named n, NamingService ns) throws NamingException
 	{
 		if (n.isNameSet())
 		{

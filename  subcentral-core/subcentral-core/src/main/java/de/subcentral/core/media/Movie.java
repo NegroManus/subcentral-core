@@ -3,11 +3,12 @@ package de.subcentral.core.media;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
+
+import de.subcentral.core.util.Settings;
 
 public class Movie extends AbstractAvMedia implements Comparable<Movie>
 {
@@ -83,9 +84,9 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 	{
 		if (o == null)
 		{
-			return 1;
+			return -1;
 		}
-		return new CompareToBuilder().append(name, o.name).toComparison();
+		return Settings.STRING_ORDERING.compare(name, o.name);
 	}
 
 	@Override

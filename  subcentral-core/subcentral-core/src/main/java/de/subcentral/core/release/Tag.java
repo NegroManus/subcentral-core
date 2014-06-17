@@ -1,6 +1,6 @@
 package de.subcentral.core.release;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import de.subcentral.core.util.Settings;
 
 public class Tag implements Comparable<Tag>
 {
@@ -82,6 +82,10 @@ public class Tag implements Comparable<Tag>
 	@Override
 	public int compareTo(Tag o)
 	{
-		return o == null ? 1 : new CompareToBuilder().append(name, o.name).toComparison();
+		if (o == null)
+		{
+			return -1;
+		}
+		return Settings.STRING_ORDERING.compare(name, o.name);
 	}
 }

@@ -9,6 +9,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.naming.NamingStandards;
+import de.subcentral.core.util.Settings;
 
 public class Episode extends AbstractAvMedia implements Comparable<Episode>
 {
@@ -115,6 +116,9 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 		return title != null;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -132,11 +136,11 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 		}
 		Episode o = (Episode) obj;
 		return new EqualsBuilder().append(series, o.series)
-				.append(season, o.season)
 				.append(numberInSeries, o.numberInSeries)
+				.append(season, o.season)
 				.append(numberInSeason, o.numberInSeason)
 				.append(date, o.date)
-				.append(title, o.title)
+				.append(title, title)
 				.isEquals();
 	}
 
@@ -144,8 +148,8 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	public int hashCode()
 	{
 		return new HashCodeBuilder(7, 15).append(series)
-				.append(season)
 				.append(numberInSeries)
+				.append(season)
 				.append(numberInSeason)
 				.append(date)
 				.append(title)
@@ -157,17 +161,15 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	{
 		if (o == null)
 		{
-			return 1;
+			return -1;
 		}
-
 		return ComparisonChain.start()
 				.compare(series, o.series)
 				.compare(numberInSeries, o.numberInSeries)
 				.compare(season, o.season)
 				.compare(numberInSeason, o.numberInSeason)
-				// TODO implement Util-Method "public static int[2] compareTemporals(Temporal first, Temporal second)"
-				.compare((Comparable<?>) date, (Comparable<?>) o.date)
-				.compare(title, title)
+				.compare(date, o.date, Settings.TEMPORAL_ORDERING)
+				.compare(title, title, Settings.STRING_ORDERING)
 				.result();
 	}
 
