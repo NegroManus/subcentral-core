@@ -15,6 +15,7 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 	private String		originalLanguage;
 	private Set<String>	countriesOfOrigin	= new HashSet<>(1);
 
+	@Override
 	public String getName()
 	{
 		return name;

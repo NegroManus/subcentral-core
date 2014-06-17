@@ -128,8 +128,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return -1;
 		}
 		return ComparisonChain.start()
-		// TODO überlegen, was am sinnvollsten ist
-				.compare(media.hashCode(), o.media.hashCode())
+				.compare(media.getName(), o.media.getName(), Settings.STRING_ORDERING)
 				.compare(language, o.language)
 				.compare(date, o.date, Settings.TEMPORAL_ORDERING)
 				.result();
