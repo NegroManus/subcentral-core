@@ -48,7 +48,7 @@ public class Group implements Comparable<Group>
 	@Override
 	public int hashCode()
 	{
-		return name == null ? 0 : name.hashCode();
+		return name == null ? 0 : name.toLowerCase().hashCode();
 	}
 
 	@Override

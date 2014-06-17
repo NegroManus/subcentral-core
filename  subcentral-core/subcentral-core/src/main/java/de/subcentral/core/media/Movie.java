@@ -3,7 +3,6 @@ package de.subcentral.core.media;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
@@ -70,7 +69,7 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 			return false;
 		}
 		Movie o = (Movie) obj;
-		return new EqualsBuilder().append(name, o.name).isEquals();
+		return Objects.equal(name, o.name);
 	}
 
 	@Override

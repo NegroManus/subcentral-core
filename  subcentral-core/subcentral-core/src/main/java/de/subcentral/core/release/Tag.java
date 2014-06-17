@@ -70,7 +70,7 @@ public class Tag implements Comparable<Tag>
 	@Override
 	public int hashCode()
 	{
-		return name == null ? 0 : getName().hashCode();
+		return name == null ? 0 : name.toLowerCase().hashCode();
 	}
 
 	@Override

@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.collect.ComparisonChain;
+
 import de.subcentral.core.naming.Named;
 import de.subcentral.core.util.Settings;
 
@@ -29,9 +31,9 @@ public abstract class AbstractRelease<M extends Named> implements Release<M>
 		return name;
 	}
 
-	public void setName(String explicitName)
+	public void setName(String name)
 	{
-		this.name = explicitName;
+		this.name = name;
 	}
 
 	@Override
@@ -190,6 +192,10 @@ public abstract class AbstractRelease<M extends Named> implements Release<M>
 		{
 			return -1;
 		}
-		return Settings.STRING_ORDERING.compare(this.getNameOrCompute(), o.getNameOrCompute());
+		return ComparisonChain.start()
+				.compare(getNameOrCompute(), o.getNameOrCompute(), Settings.STRING_ORDERING)
+				.compare(group.getName(), o.getGroup().getName(), Settings.STRING_ORDERING)
+				.compare(tags, o.getTags(), Releases.MEDIA_NAME_COMPARATOR)
+				.result();
 	}
 }

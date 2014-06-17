@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
@@ -292,7 +291,7 @@ public class Series implements Named, Work, Comparable<Series>
 			return false;
 		}
 		Series o = (Series) obj;
-		return new EqualsBuilder().append(name, o.name).isEquals();
+		return Objects.equal(name, o.name);
 	}
 
 	@Override
