@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.subcentral.core.impl.com.addic7ed.Addic7edSubtitleReleaseMapper;
-import de.subcentral.core.naming.Named;
 import de.subcentral.core.subtitle.SubtitleRelease;
 
 public class ParsingTest
@@ -82,8 +81,8 @@ public class ParsingTest
 		matchers.put(matcher2, SubtitleRelease.class);
 		ps.setMatchers(matchers);
 
-		Named obj = (Named) ps.parse(name);
+		Object obj = ps.parse(name);
 
-		System.out.println(obj.getNameOrCompute());
+		System.out.println(obj);
 	}
 }

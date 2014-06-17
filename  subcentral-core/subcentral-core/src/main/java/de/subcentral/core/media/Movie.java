@@ -26,12 +26,6 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 	}
 
 	@Override
-	public String computeName()
-	{
-		return name;
-	}
-
-	@Override
 	public String getOriginalLanguage()
 	{
 		return originalLanguage;

@@ -13,12 +13,9 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
 import de.subcentral.core.media.AvMedia;
-import de.subcentral.core.media.Medias;
-import de.subcentral.core.naming.Named;
-import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.Settings;
 
-public class Subtitle implements Named, Work, Comparable<Subtitle>
+public class Subtitle implements Work, Comparable<Subtitle>
 {
 	public static final String	CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
 	public static final String	CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
@@ -31,18 +28,6 @@ public class Subtitle implements Named, Work, Comparable<Subtitle>
 	private String				productionType;
 	private String				description;
 	private List<Contribution>	contributions					= new ArrayList<>();
-
-	@Override
-	public String getName()
-	{
-		return computeName();
-	}
-
-	@Override
-	public String computeName()
-	{
-		return NamingStandards.SUBTITLE_NAMER.name(this);
-	}
 
 	public AvMedia getMedia()
 	{
@@ -143,7 +128,8 @@ public class Subtitle implements Named, Work, Comparable<Subtitle>
 			return -1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Settings.createDefaultOrdering(Medias.MEDIA_NAME_COMPARATOR))
+		// TODO überlegen, was am sinnvollsten ist
+				.compare(media.hashCode(), o.media.hashCode())
 				.compare(language, o.language)
 				.compare(date, o.date, Settings.TEMPORAL_ORDERING)
 				.result();

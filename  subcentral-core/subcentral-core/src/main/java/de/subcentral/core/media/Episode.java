@@ -8,7 +8,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.Settings;
 
 public class Episode extends AbstractAvMedia implements Comparable<Episode>
@@ -23,18 +22,6 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	{
 		this.series = series;
 		setSeason(season);
-	}
-
-	@Override
-	public String getName()
-	{
-		return computeName();
-	}
-
-	@Override
-	public String computeName()
-	{
-		return NamingStandards.EPISODE_NAMER.name(this);
 	}
 
 	public Series getSeries()

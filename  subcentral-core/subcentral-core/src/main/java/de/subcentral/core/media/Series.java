@@ -13,10 +13,9 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.naming.Named;
 import de.subcentral.core.util.Settings;
 
-public class Series implements Named, Work, Comparable<Series>
+public class Series implements Work, Comparable<Series>
 {
 	/**
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
@@ -69,7 +68,6 @@ public class Series implements Named, Work, Comparable<Series>
 		this.name = name;
 	}
 
-	@Override
 	public String getName()
 	{
 		return name;
@@ -78,12 +76,6 @@ public class Series implements Named, Work, Comparable<Series>
 	public void setName(String name)
 	{
 		this.name = name;
-	}
-
-	@Override
-	public String computeName()
-	{
-		return name;
 	}
 
 	public String getTitle()

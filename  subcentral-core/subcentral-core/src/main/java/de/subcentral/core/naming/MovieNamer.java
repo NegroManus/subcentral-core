@@ -42,6 +42,6 @@ public class MovieNamer implements Namer<Movie>
 		{
 			return null;
 		}
-		return String.format(nameFormat, StringUtil.replace(movie.getNameOrCompute(), nameReplacer));
+		return String.format(nameFormat, StringUtil.replace(movie.getName(), nameReplacer));
 	}
 }

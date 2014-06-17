@@ -9,10 +9,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.naming.Named;
 import de.subcentral.core.util.Settings;
 
-public class Season implements Comparable<Season>, Named
+public class Season implements Comparable<Season>
 {
 	private final Series	series;
 	private int				number	= Media.UNNUMBERED;
@@ -29,18 +28,6 @@ public class Season implements Comparable<Season>, Named
 	public Series getSeries()
 	{
 		return series;
-	}
-
-	@Override
-	public String getName()
-	{
-		return computeName();
-	}
-
-	@Override
-	public String computeName()
-	{
-		return isNumbered() ? Integer.toString(number) : title;
 	}
 
 	public int getNumber()

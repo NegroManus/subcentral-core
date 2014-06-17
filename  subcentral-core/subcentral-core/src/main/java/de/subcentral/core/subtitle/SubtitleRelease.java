@@ -9,7 +9,6 @@ import com.google.common.base.Objects;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.release.AbstractRelease;
 import de.subcentral.core.release.MediaRelease;
 
@@ -20,12 +19,6 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 
 	private Set<MediaRelease>	compatibleMediaReleases			= new HashSet<>(2);
 	private List<Contribution>	contributions					= new ArrayList<>(2);
-
-	@Override
-	public String computeName()
-	{
-		return NamingStandards.SUBTITLE_RELEASE_NAMER.name(this);
-	}
 
 	public Set<MediaRelease> getCompatibleMediaReleases()
 	{

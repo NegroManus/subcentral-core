@@ -9,10 +9,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.naming.Named;
 import de.subcentral.core.util.Settings;
 
-public abstract class AbstractRelease<M extends Named> implements Release<M>
+public abstract class AbstractRelease<M> implements Release<M>
 {
 	protected String	name;
 	protected List<M>	materials	= new ArrayList<>(1);
@@ -193,7 +192,8 @@ public abstract class AbstractRelease<M extends Named> implements Release<M>
 			return -1;
 		}
 		return ComparisonChain.start()
-				.compare(getNameOrCompute(), o.getNameOrCompute(), Settings.STRING_ORDERING)
+		// TODO Comparator for Materials
+		// .compare(getMaterials(), o.getMaterials(), Settings.STRING_ORDERING)
 				.compare(group.getName(), o.getGroup().getName(), Settings.STRING_ORDERING)
 				.compare(tags, o.getTags(), Releases.MEDIA_NAME_COMPARATOR)
 				.result();

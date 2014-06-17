@@ -177,7 +177,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 		StringBuilder sb = new StringBuilder();
 		if (includeSeries)
 		{
-			if (epi.getSeries().isNameSet())
+			if (epi.getSeries().getName() != null)
 			{
 				sb.append(formatSeriesName(epi.getSeries().getName()));
 			}

@@ -8,6 +8,7 @@ import java.util.List;
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.NoNamerRegisteredException;
 import de.subcentral.core.util.Settings;
 
@@ -28,7 +29,7 @@ public class Medias
 			{
 				return -1;
 			}
-			return Settings.STRING_ORDERING.compare(o1.getNameOrCompute(), o2.getNameOrCompute());
+			return Settings.STRING_ORDERING.compare(NamingStandards.NAMING_SERVICE.name(o1), NamingStandards.NAMING_SERVICE.name(o2));
 		}
 	}
 

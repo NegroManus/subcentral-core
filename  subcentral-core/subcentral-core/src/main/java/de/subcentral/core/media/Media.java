@@ -4,9 +4,8 @@ import java.time.temporal.Temporal;
 import java.util.Set;
 
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.naming.Named;
 
-public interface Media extends Named, Work
+public interface Media extends Work
 {
 	public static final int	UNNUMBERED	= Integer.MAX_VALUE;
 
@@ -28,7 +27,7 @@ public interface Media extends Named, Work
 	 * <li>Games: http://en.wikipedia.org/wiki/Video_game_content_rating_system</li>
 	 * </ul>
 	 * 
-	 * @return
+	 * @return the content rating for this media
 	 */
 	public String getContentRating();
 }
