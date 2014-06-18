@@ -2,7 +2,9 @@ package de.subcentral.core.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 
@@ -14,8 +16,9 @@ public abstract class AbstractMedia implements Media
 	protected Temporal				date;
 	protected String				description;
 	protected String				coverUrl;
-	protected String				contentRating;
-	protected List<Contribution>	contributions	= new ArrayList<>();
+	protected String				contentAdvisory;
+	protected List<Contribution>	contributions			= new ArrayList<>();
+	protected Set<String>			furtherInformationUrls	= new HashSet<>(3);
 
 	@Override
 	public String getTitle()
@@ -62,14 +65,14 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public String getContentRating()
+	public String getContentAdvisory()
 	{
-		return contentRating;
+		return contentAdvisory;
 	}
 
-	public void setContentRating(String contentRating)
+	public void setContentAdvisory(String contentAdvisory)
 	{
-		this.contentRating = contentRating;
+		this.contentAdvisory = contentAdvisory;
 	}
 
 	@Override
@@ -82,5 +85,16 @@ public abstract class AbstractMedia implements Media
 	{
 		Validate.notNull(contributions, "contributions cannot be null");
 		this.contributions = contributions;
+	}
+
+	@Override
+	public Set<String> getFurtherInformationUrls()
+	{
+		return furtherInformationUrls;
+	}
+
+	public void setFurtherInformationUrls(Set<String> furtherInformationUrls)
+	{
+		this.furtherInformationUrls = furtherInformationUrls;
 	}
 }

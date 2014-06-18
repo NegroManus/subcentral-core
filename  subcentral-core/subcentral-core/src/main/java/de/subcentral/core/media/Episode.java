@@ -188,8 +188,9 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 				.add("runningTime", runningTime)
 				.add("description", description)
 				.add("coverUrl", coverUrl)
-				.add("contentRating", contentRating)
+				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", contributions)
+				.add("furtherInformationLinks", furtherInformationUrls)
 				.toString();
 	}
 

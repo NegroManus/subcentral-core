@@ -18,11 +18,13 @@ public abstract class AbstractRelease<M> implements Release<M>
 	protected Group		group;
 	protected List<Tag>	tags		= new ArrayList<>(4);
 	protected Temporal	date;
-	protected String	nukeReason;
 	protected String	section;
 	protected long		size;
+	protected String	nukeReason;
 	protected String	info;
 	protected String	infoUrl;
+	protected String	source;
+	protected String	sourceUrl;
 
 	@Override
 	public String getName()
@@ -82,17 +84,6 @@ public abstract class AbstractRelease<M> implements Release<M>
 	}
 
 	@Override
-	public String getNukeReason()
-	{
-		return nukeReason;
-	}
-
-	public void setNukeReason(String nukeReason)
-	{
-		this.nukeReason = nukeReason;
-	}
-
-	@Override
 	public String getSection()
 	{
 		return section;
@@ -115,6 +106,17 @@ public abstract class AbstractRelease<M> implements Release<M>
 	}
 
 	@Override
+	public String getNukeReason()
+	{
+		return nukeReason;
+	}
+
+	public void setNukeReason(String nukeReason)
+	{
+		this.nukeReason = nukeReason;
+	}
+
+	@Override
 	public String getInfo()
 	{
 		return info;
@@ -134,6 +136,28 @@ public abstract class AbstractRelease<M> implements Release<M>
 	public void setInfoUrl(String infoUrl)
 	{
 		this.infoUrl = infoUrl;
+	}
+
+	@Override
+	public String getSource()
+	{
+		return source;
+	}
+
+	public void setSource(String source)
+	{
+		this.source = source;
+	}
+
+	@Override
+	public String getSourceUrl()
+	{
+		return sourceUrl;
+	}
+
+	public void setSourceUrl(String sourceUrl)
+	{
+		this.sourceUrl = sourceUrl;
 	}
 
 	// Convenience

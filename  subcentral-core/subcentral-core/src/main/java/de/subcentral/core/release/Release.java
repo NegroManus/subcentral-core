@@ -16,15 +16,19 @@ public interface Release<M> extends Comparable<Release<?>>
 
 	public Temporal getDate();
 
-	public String getNukeReason();
-
 	public String getSection();
 
 	public long getSize();
 
+	public String getNukeReason();
+
 	public String getInfo();
 
 	public String getInfoUrl();
+
+	public String getSource();
+
+	public String getSourceUrl();
 
 	// Convenience
 	public boolean containsSingleMaterial();

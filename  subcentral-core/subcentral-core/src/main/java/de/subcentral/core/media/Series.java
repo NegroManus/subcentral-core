@@ -1,5 +1,6 @@
 package de.subcentral.core.media;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,53 +14,53 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.contribution.Contribution;
-import de.subcentral.core.contribution.Work;
 import de.subcentral.core.util.Settings;
 
-public class Series implements Work, Comparable<Series>
+public class Series implements AvMedia, MediaCollection<Episode>, Comparable<Series>
 {
 	/**
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
 	 * examples are the TV series "Breaking Bad", "Game of Thrones" and "Psych".
 	 */
-	public static final String	TYPE_SEASONED		= "SEASONED";
+	public static final String	TYPE_SEASONED			= "SEASONED";
 
 	/**
 	 * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. A typical example is the TV
 	 * mini-series "Band of Brothers".
 	 */
-	public static final String	TYPE_MINI_SERIES	= "MINI_SERIES";
+	public static final String	TYPE_MINI_SERIES		= "MINI_SERIES";
 
 	/**
 	 * A type of series which episodes usually have no numbers. Instead the main identifier is their air date. Typical examples are (daily) shows or
 	 * sports events.
 	 */
-	public static final String	TYPE_DATED			= "DATED";
+	public static final String	TYPE_DATED				= "DATED";
 
 	/**
 	 * If a series is "continuing", then there will be more episodes to come.
 	 */
-	public static final String	STATE_CONTINUING	= "CONTINUING";
+	public static final String	STATE_CONTINUING		= "CONTINUING";
 
 	/**
 	 * If a series has "ended", there will be no more episodes to come. Either because the series was cancelled or it simply is complete.
 	 */
-	public static final String	STATE_ENDED			= "ENDED";
+	public static final String	STATE_ENDED				= "ENDED";
 
 	private String				name;
 	private String				title;
 	private String				type;
 	private String				state;
 	private String				originalLanguage;
-	private Set<String>			countriesOfOrigin	= new HashSet<>(1);
-	private int					runningTime;
-	private Set<String>			genres				= new HashSet<>(4);
+	private Set<String>			countriesOfOrigin		= new HashSet<>(1);
+	private int					regularRunningTime;
+	private Set<String>			genres					= new HashSet<>(4);
 	private String				description;
 	private String				coverUrl;
-	private String				contentRating;
-	private List<Contribution>	contributions		= new ArrayList<>();
-	private List<Season>		seasons				= new ArrayList<>();
-	private List<Episode>		episodes			= new ArrayList<>();
+	private String				contentAdvisory;
+	private List<Contribution>	contributions			= new ArrayList<>();
+	private Set<String>			furtherInformationUrls	= new HashSet<>(3);
+	private List<Season>		seasons					= new ArrayList<>();
+	private List<Episode>		episodes				= new ArrayList<>();
 
 	public Series()
 	{}
@@ -69,6 +70,7 @@ public class Series implements Work, Comparable<Series>
 		this.name = name;
 	}
 
+	@Override
 	public String getName()
 	{
 		return name;
@@ -79,6 +81,7 @@ public class Series implements Work, Comparable<Series>
 		this.name = name;
 	}
 
+	@Override
 	public String getTitle()
 	{
 		return title;
@@ -87,6 +90,16 @@ public class Series implements Work, Comparable<Series>
 	public void setTitle(String title)
 	{
 		this.title = title;
+	}
+
+	@Override
+	public Temporal getDate()
+	{
+		if (episodes.isEmpty())
+		{
+			return null;
+		}
+		return episodes.get(0).getDate();
 	}
 
 	public String getType()
@@ -109,6 +122,7 @@ public class Series implements Work, Comparable<Series>
 		this.state = state;
 	}
 
+	@Override
 	public String getOriginalLanguage()
 	{
 		return originalLanguage;
@@ -119,6 +133,7 @@ public class Series implements Work, Comparable<Series>
 		this.originalLanguage = originalLanguage;
 	}
 
+	@Override
 	public Set<String> getCountriesOfOrigin()
 	{
 		return countriesOfOrigin;
@@ -130,16 +145,28 @@ public class Series implements Work, Comparable<Series>
 		this.countriesOfOrigin = countriesOfOrigin;
 	}
 
+	@Override
 	public int getRunningTime()
 	{
+		int runningTime = 0;
+		for (Episode e : episodes)
+		{
+			runningTime += e.getRunningTime();
+		}
 		return runningTime;
 	}
 
-	public void setRunningTime(int runningTime)
+	public int getRegularRunningTime()
 	{
-		this.runningTime = runningTime;
+		return regularRunningTime;
 	}
 
+	public void setRegularRunningTime(int regularRunningTime)
+	{
+		this.regularRunningTime = regularRunningTime;
+	}
+
+	@Override
 	public Set<String> getGenres()
 	{
 		return genres;
@@ -151,6 +178,7 @@ public class Series implements Work, Comparable<Series>
 		this.genres = genres;
 	}
 
+	@Override
 	public String getDescription()
 	{
 		return description;
@@ -161,6 +189,7 @@ public class Series implements Work, Comparable<Series>
 		this.description = description;
 	}
 
+	@Override
 	public String getCoverUrl()
 	{
 		return coverUrl;
@@ -171,14 +200,15 @@ public class Series implements Work, Comparable<Series>
 		this.coverUrl = coverUrl;
 	}
 
-	public String getContentRating()
+	@Override
+	public String getContentAdvisory()
 	{
-		return contentRating;
+		return contentAdvisory;
 	}
 
-	public void setContentRating(String contentRating)
+	public void setContentAdvisory(String contentAdvisory)
 	{
-		this.contentRating = contentRating;
+		this.contentAdvisory = contentAdvisory;
 	}
 
 	@Override
@@ -191,6 +221,17 @@ public class Series implements Work, Comparable<Series>
 	{
 		Validate.notNull(contributions, "contributions cannot be null");
 		this.contributions = contributions;
+	}
+
+	@Override
+	public Set<String> getFurtherInformationUrls()
+	{
+		return furtherInformationUrls;
+	}
+
+	public void setFurtherInformationUrls(Set<String> furtherInformationUrls)
+	{
+		this.furtherInformationUrls = furtherInformationUrls;
 	}
 
 	// Seasons
@@ -217,6 +258,12 @@ public class Series implements Work, Comparable<Series>
 	}
 
 	// Episodes
+	@Override
+	public List<Episode> getMedia()
+	{
+		return getEpisodes();
+	}
+
 	public List<Episode> getEpisodes()
 	{
 		return episodes;
@@ -317,12 +364,13 @@ public class Series implements Work, Comparable<Series>
 				.add("state", state)
 				.add("originalLanguage", originalLanguage)
 				.add("countriesOfOrigin", countriesOfOrigin)
-				.add("runningTime", runningTime)
+				.add("regularRunningTime", regularRunningTime)
 				.add("genres", genres)
 				.add("description", description)
 				.add("coverUrl", coverUrl)
-				.add("contentRating", contentRating)
+				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", contributions)
+				.add("furtherInformationUrls", furtherInformationUrls)
 				.add("seasons.size", seasons.size())
 				.add("episodes.size", episodes.size())
 				.toString();

@@ -13,7 +13,7 @@ import de.subcentral.core.util.Settings;
 public class Movie extends AbstractAvMedia implements Comparable<Movie>
 {
 	private String		name;
-	private Set<String>	genres;
+	private Set<String>	genres				= new HashSet<>(4);
 	private String		originalLanguage;
 	private Set<String>	countriesOfOrigin	= new HashSet<>(1);
 
@@ -121,8 +121,9 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 				.add("genres", genres)
 				.add("description", description)
 				.add("coverUrl", coverUrl)
-				.add("contentRating", contentRating)
+				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", contributions)
+				.add("furtherInformationLinks", furtherInformationUrls)
 				.toString();
 	}
 }

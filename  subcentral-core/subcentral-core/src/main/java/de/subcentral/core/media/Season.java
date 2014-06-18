@@ -1,7 +1,9 @@
 package de.subcentral.core.media;
 
+import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,9 +11,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
+import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.util.Settings;
 
-public class Season implements Comparable<Season>
+public class Season implements AvMedia, MediaCollection<Episode>, Comparable<Season>
 {
 	private final Series	series;
 	private int				number	= Media.UNNUMBERED;
@@ -40,6 +43,7 @@ public class Season implements Comparable<Season>
 		this.number = number;
 	}
 
+	@Override
 	public String getTitle()
 	{
 		return title;
@@ -60,6 +64,7 @@ public class Season implements Comparable<Season>
 		this.special = special;
 	}
 
+	@Override
 	public String getDescription()
 	{
 		return description;
@@ -70,6 +75,7 @@ public class Season implements Comparable<Season>
 		this.description = description;
 	}
 
+	@Override
 	public String getCoverUrl()
 	{
 		return coverUrl;
@@ -92,6 +98,12 @@ public class Season implements Comparable<Season>
 	}
 
 	// Episodes
+	@Override
+	public List<Episode> getMedia()
+	{
+		return getEpisodes();
+	}
+
 	public List<Episode> getEpisodes()
 	{
 		return series.getEpisodes(this);
@@ -206,5 +218,69 @@ public class Season implements Comparable<Season>
 				.add("coverUrl", coverUrl)
 				.add("episodes.size", getEpisodes().size())
 				.toString();
+	}
+
+	@Override
+	public int getRunningTime()
+	{
+		int runningTime = 0;
+		for (Episode e : getEpisodes())
+		{
+			runningTime += e.getRunningTime();
+		}
+		return runningTime;
+	}
+
+	@Override
+	public String getName()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Temporal getDate()
+	{
+		if (getEpisodes().isEmpty())
+		{
+			return null;
+		}
+		return getEpisodes().get(0).getDate();
+	}
+
+	@Override
+	public Set<String> getGenres()
+	{
+		return series.getGenres();
+	}
+
+	@Override
+	public String getOriginalLanguage()
+	{
+		return series.getOriginalLanguage();
+	}
+
+	@Override
+	public Set<String> getCountriesOfOrigin()
+	{
+		return series.getCountriesOfOrigin();
+	}
+
+	@Override
+	public String getContentAdvisory()
+	{
+		return series.getContentAdvisory();
+	}
+
+	@Override
+	public Set<String> getFurtherInformationUrls()
+	{
+		return series.getFurtherInformationUrls();
+	}
+
+	@Override
+	public List<Contribution> getContributions()
+	{
+		return series.getContributions();
 	}
 }
