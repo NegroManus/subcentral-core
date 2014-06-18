@@ -153,7 +153,6 @@ public class Medias
 
 	public static Episode newDatedEpisode(String seriesName, String seriesTitle, ZonedDateTime date, String episodeTitle)
 	{
-		ZonedDateTime.
 		if (seriesName == null)
 		{
 			throw new IllegalArgumentException("Series name must be set");
