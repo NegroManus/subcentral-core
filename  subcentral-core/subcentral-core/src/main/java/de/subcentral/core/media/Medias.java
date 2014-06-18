@@ -1,6 +1,6 @@
 package de.subcentral.core.media;
 
-import java.time.temporal.Temporal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -141,18 +141,19 @@ public class Medias
 		return epi;
 	}
 
-	public static Episode newDatedEpisode(String seriesName, Temporal date)
+	public static Episode newDatedEpisode(String seriesName, ZonedDateTime date)
 	{
 		return newDatedEpisode(seriesName, null, date, null);
 	}
 
-	public static Episode newDatedEpisode(String seriesName, Temporal date, String episodeTitle)
+	public static Episode newDatedEpisode(String seriesName, ZonedDateTime date, String episodeTitle)
 	{
 		return newDatedEpisode(seriesName, null, date, episodeTitle);
 	}
 
-	public static Episode newDatedEpisode(String seriesName, String seriesTitle, Temporal date, String episodeTitle)
+	public static Episode newDatedEpisode(String seriesName, String seriesTitle, ZonedDateTime date, String episodeTitle)
 	{
+		ZonedDateTime.
 		if (seriesName == null)
 		{
 			throw new IllegalArgumentException("Series name must be set");
@@ -165,19 +166,6 @@ public class Medias
 		epi.setDate(date);
 		epi.setTitle(episodeTitle);
 		return epi;
-	}
-
-	public static Movie newMovie(String title)
-	{
-		return newMovie(title, null);
-	}
-
-	public static Movie newMovie(String title, String name)
-	{
-		Movie movie = new Movie();
-		movie.setName(name);
-		movie.setTitle(title);
-		return movie;
 	}
 
 	private Medias()

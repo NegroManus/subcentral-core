@@ -78,6 +78,12 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	}
 
 	@Override
+	public Set<String> getGenres()
+	{
+		return series.getGenres();
+	}
+
+	@Override
 	public String getOriginalLanguage()
 	{
 		return series.getOriginalLanguage();
@@ -180,7 +186,6 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 				.add("title", title)
 				.add("special", special)
 				.add("runningTime", runningTime)
-				.add("genres", genres)
 				.add("description", description)
 				.add("coverUrl", coverUrl)
 				.add("contentRating", contentRating)
@@ -192,7 +197,7 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	{
 		if (season != null && !series.containsSeason(season))
 		{
-			throw new IllegalArgumentException("The season is not part of this episodes series: " + season);
+			throw new IllegalArgumentException("The season is not part of this episode's series: " + season);
 		}
 	}
 }

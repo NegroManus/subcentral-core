@@ -18,6 +18,10 @@ public interface Media extends Work
 
 	public Set<String> getGenres();
 
+	public String getOriginalLanguage();
+
+	public Set<String> getCountriesOfOrigin();
+
 	public String getDescription();
 
 	public String getCoverUrl();

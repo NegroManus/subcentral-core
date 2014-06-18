@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
@@ -52,7 +53,7 @@ public class Series implements Work, Comparable<Series>
 	private String				originalLanguage;
 	private Set<String>			countriesOfOrigin	= new HashSet<>(1);
 	private int					runningTime;
-	private Set<String>			genres;
+	private Set<String>			genres				= new HashSet<>(4);
 	private String				description;
 	private String				coverUrl;
 	private String				contentRating;
@@ -125,6 +126,7 @@ public class Series implements Work, Comparable<Series>
 
 	public void setCountriesOfOrigin(Set<String> countriesOfOrigin)
 	{
+		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
 		this.countriesOfOrigin = countriesOfOrigin;
 	}
 
@@ -145,6 +147,7 @@ public class Series implements Work, Comparable<Series>
 
 	public void setGenres(Set<String> genres)
 	{
+		Validate.notNull(genres, "genres cannot be null");
 		this.genres = genres;
 	}
 
@@ -186,6 +189,7 @@ public class Series implements Work, Comparable<Series>
 
 	public void setContributions(List<Contribution> contributions)
 	{
+		Validate.notNull(contributions, "contributions cannot be null");
 		this.contributions = contributions;
 	}
 

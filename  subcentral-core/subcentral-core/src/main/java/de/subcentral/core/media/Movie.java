@@ -3,6 +3,7 @@ package de.subcentral.core.media;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
@@ -12,8 +13,19 @@ import de.subcentral.core.util.Settings;
 public class Movie extends AbstractAvMedia implements Comparable<Movie>
 {
 	private String		name;
+	private Set<String>	genres;
 	private String		originalLanguage;
 	private Set<String>	countriesOfOrigin	= new HashSet<>(1);
+
+	public Movie()
+	{
+
+	}
+
+	public Movie(String name)
+	{
+		this.name = name;
+	}
 
 	@Override
 	public String getName()
@@ -24,6 +36,17 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	@Override
+	public Set<String> getGenres()
+	{
+		return genres;
+	}
+
+	public void setGenres(Set<String> genres)
+	{
+		this.genres = genres;
 	}
 
 	@Override
@@ -45,6 +68,7 @@ public class Movie extends AbstractAvMedia implements Comparable<Movie>
 
 	public void setCountriesOfOrigin(Set<String> countriesOfOrigin)
 	{
+		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
 		this.countriesOfOrigin = countriesOfOrigin;
 	}
 

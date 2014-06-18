@@ -20,7 +20,7 @@ public class LookupTest
 		System.getProperties().put("http.proxyPort", "8080");
 
 		Media epi = Medias.newSeasonedEpisode("Psych", 6, 5);
-		Movie movie = Medias.newMovie("The Lord of the Rings: The Return of the King");
+		Movie movie = new Movie("The Lord of the Rings: The Return of the King");
 		MediaRelease rls = Releases.newMediaRelease(movie, null);
 
 		OrlyDbLookup lookup = new OrlyDbLookup();

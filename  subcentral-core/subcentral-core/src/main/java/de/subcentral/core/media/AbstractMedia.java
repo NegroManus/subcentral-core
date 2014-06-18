@@ -2,9 +2,9 @@ package de.subcentral.core.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import org.apache.commons.lang3.Validate;
 
 import de.subcentral.core.contribution.Contribution;
 
@@ -12,7 +12,6 @@ public abstract class AbstractMedia implements Media
 {
 	protected String				title;
 	protected Temporal				date;
-	protected Set<String>			genres			= new HashSet<>(4);
 	protected String				description;
 	protected String				coverUrl;
 	protected String				contentRating;
@@ -38,17 +37,6 @@ public abstract class AbstractMedia implements Media
 	public void setDate(Temporal date)
 	{
 		this.date = date;
-	}
-
-	@Override
-	public Set<String> getGenres()
-	{
-		return genres;
-	}
-
-	public void setGenres(Set<String> genres)
-	{
-		this.genres = genres;
 	}
 
 	@Override
@@ -92,6 +80,7 @@ public abstract class AbstractMedia implements Media
 
 	public void setContributions(List<Contribution> contributions)
 	{
+		Validate.notNull(contributions, "contributions cannot be null");
 		this.contributions = contributions;
 	}
 }

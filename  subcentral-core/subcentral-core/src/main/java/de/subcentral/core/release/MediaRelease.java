@@ -1,11 +1,39 @@
 package de.subcentral.core.release;
 
+import java.util.List;
+
 import com.google.common.base.Objects;
 
 import de.subcentral.core.media.Media;
 
 public class MediaRelease extends AbstractRelease<Media>
 {
+	public MediaRelease()
+	{
+
+	}
+
+	public MediaRelease(String name)
+	{
+		this.name = name;
+	}
+
+	public MediaRelease(String name, Media material, Group group, List<Tag> tags)
+	{
+		this.name = name;
+		setMaterial(material);
+		this.group = group;
+		setTags(tags);
+	}
+
+	public MediaRelease(String name, List<Media> materials, Group group, List<Tag> tags)
+	{
+		this.name = name;
+		setMaterials(materials);
+		this.group = group;
+		setTags(tags);
+	}
+
 	@Override
 	public String toString()
 	{

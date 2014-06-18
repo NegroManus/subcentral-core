@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -92,6 +93,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public void setContributions(List<Contribution> contributions)
 	{
+		Validate.notNull(contributions, "contributions cannot be null");
 		this.contributions = contributions;
 	}
 

@@ -5,12 +5,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
+
 import com.google.common.base.Objects;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
 import de.subcentral.core.release.AbstractRelease;
+import de.subcentral.core.release.Group;
 import de.subcentral.core.release.MediaRelease;
+import de.subcentral.core.release.Tag;
 
 public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 {
@@ -19,6 +23,34 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 
 	private Set<MediaRelease>	compatibleMediaReleases			= new HashSet<>(2);
 	private List<Contribution>	contributions					= new ArrayList<>(2);
+
+	public SubtitleRelease()
+	{
+
+	}
+
+	public SubtitleRelease(String name)
+	{
+		this.name = name;
+	}
+
+	public SubtitleRelease(String name, Subtitle material, Group group, List<Tag> tags, Set<MediaRelease> compatibleMediaReleases)
+	{
+		this.name = name;
+		setMaterial(material);
+		this.group = group;
+		setTags(tags);
+		setCompatibleMediaReleases(compatibleMediaReleases);
+	}
+
+	public SubtitleRelease(String name, List<Subtitle> materials, Group group, List<Tag> tags, Set<MediaRelease> compatibleMediaReleases)
+	{
+		this.name = name;
+		setMaterials(materials);
+		this.group = group;
+		setTags(tags);
+		setCompatibleMediaReleases(compatibleMediaReleases);
+	}
 
 	public Set<MediaRelease> getCompatibleMediaReleases()
 	{
@@ -32,13 +64,8 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 
 	public void setCompatibleMediaReleases(Set<MediaRelease> compatibleMediaReleases)
 	{
+		Validate.notNull(compatibleMediaReleases, "compatibleMediaReleases cannot be null");
 		this.compatibleMediaReleases = compatibleMediaReleases;
-	}
-
-	public void setCompatibleMediaRelease(MediaRelease compatibleMediaRelease)
-	{
-		this.compatibleMediaReleases = new HashSet<>(1);
-		this.compatibleMediaReleases.add(compatibleMediaRelease);
 	}
 
 	@Override
@@ -49,7 +76,15 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 
 	public void setContributions(List<Contribution> contributions)
 	{
+		Validate.notNull(contributions, "contributions cannot be null");
 		this.contributions = contributions;
+	}
+
+	// Convenience
+	public void setCompatibleMediaRelease(MediaRelease compatibleMediaRelease)
+	{
+		this.compatibleMediaReleases = new HashSet<>(1);
+		this.compatibleMediaReleases.add(compatibleMediaRelease);
 	}
 
 	@Override

@@ -39,9 +39,9 @@ public class TemporalComparator implements Comparator<Temporal>
 		Long nano2 = getLongOrNull(o2Utc, ChronoField.NANO_OF_DAY);
 
 		return ComparisonChain.start()
-				.compare(year1, year2, Ordering.natural().nullsFirst())
-				.compare(day1, day2, Ordering.natural().nullsFirst())
-				.compare(nano1, nano2, Ordering.natural().nullsFirst())
+				.compare(year1, year2, Ordering.natural().nullsLast())
+				.compare(day1, day2, Ordering.natural().nullsLast())
+				.compare(nano1, nano2, Ordering.natural().nullsLast())
 				.result();
 	}
 

@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
@@ -42,6 +43,7 @@ public abstract class AbstractRelease<M> implements Release<M>
 
 	public void setMaterials(List<M> materials)
 	{
+		Validate.notNull(materials, "materials cannot be null");
 		this.materials = materials;
 	}
 
@@ -64,6 +66,7 @@ public abstract class AbstractRelease<M> implements Release<M>
 
 	public void setTags(List<Tag> tags)
 	{
+		Validate.notNull(tags, "tags cannot be null");
 		this.tags = tags;
 	}
 
@@ -149,7 +152,7 @@ public abstract class AbstractRelease<M> implements Release<M>
 	@Override
 	public M getFirstMaterial()
 	{
-		return !materials.isEmpty() ? materials.get(0) : null;
+		return materials.isEmpty() ? null : materials.get(0);
 	}
 
 	@Override
