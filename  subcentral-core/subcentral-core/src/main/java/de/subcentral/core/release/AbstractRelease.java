@@ -4,10 +4,9 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.collect.ComparisonChain;
+import com.google.common.base.Objects;
 
 import de.subcentral.core.util.Settings;
 
@@ -170,18 +169,18 @@ public abstract class AbstractRelease<M> implements Release<M>
 		{
 			return true;
 		}
-		if (this.getClass() != obj.getClass())
+		if (obj instanceof Release)
 		{
 			return false;
 		}
-		AbstractRelease<?> other = (AbstractRelease<?>) obj;
-		return new EqualsBuilder().append(getMaterials(), other.getMaterials()).append(group, other.group).append(tags, other.tags).isEquals();
+		Release<?> o = (Release<?>) obj;
+		return Objects.equal(name, o.getName());
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(23, 27).append(getMaterials()).append(group).append(tags).toHashCode();
+		return new HashCodeBuilder(45, 3).append(name).toHashCode();
 	}
 
 	@Override
@@ -191,11 +190,6 @@ public abstract class AbstractRelease<M> implements Release<M>
 		{
 			return -1;
 		}
-		return ComparisonChain.start()
-		// TODO Comparator for Materials
-		// .compare(getMaterials(), o.getMaterials(), Settings.STRING_ORDERING)
-				.compare(group.getName(), o.getGroup().getName(), Settings.STRING_ORDERING)
-				.compare(tags, o.getTags(), Releases.MEDIA_NAME_COMPARATOR)
-				.result();
+		return Settings.STRING_ORDERING.compare(name, o.getName());
 	}
 }
