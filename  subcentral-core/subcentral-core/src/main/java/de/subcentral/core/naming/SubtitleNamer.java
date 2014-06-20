@@ -18,7 +18,7 @@ public class SubtitleNamer implements Namer<Subtitle>
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(namingService.name(sub.getMedia()));
+		sb.append(namingService.name(sub.getMediaItem()));
 		sb.append(' ');
 		sb.append(sub.getLanguage());
 		return sb.toString();

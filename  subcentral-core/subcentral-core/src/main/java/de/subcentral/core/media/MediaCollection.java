@@ -2,7 +2,7 @@ package de.subcentral.core.media;
 
 import java.util.List;
 
-public interface MediaCollection<M extends Media>
+public interface MediaCollection<M extends MediaItem>
 {
-	public List<M> getMedia();
+	public List<M> getMediaItems();
 }

@@ -103,7 +103,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 			media.add(epi);
 
 			Subtitle sub = new Subtitle();
-			sub.setMedia(epi);
+			sub.setMediaItem(epi);
 			sub.setLanguage(subLang);
 			subs.add(sub);
 		}
@@ -119,7 +119,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 			media.add(movie);
 
 			Subtitle sub = new Subtitle();
-			sub.setMedia(movie);
+			sub.setMediaItem(movie);
 			sub.setLanguage(subLang);
 			subs.add(sub);
 		}

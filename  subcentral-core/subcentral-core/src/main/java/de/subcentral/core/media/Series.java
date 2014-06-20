@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.util.Settings;
 
-public class Series implements AvMedia, MediaCollection<Episode>, Comparable<Series>
+public class Series implements AvMedia, AvMediaCollection<Episode>, Comparable<Series>
 {
 	/**
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
@@ -90,6 +90,12 @@ public class Series implements AvMedia, MediaCollection<Episode>, Comparable<Ser
 	public void setTitle(String title)
 	{
 		this.title = title;
+	}
+
+	@Override
+	public String getMediaType()
+	{
+		return Media.TYPE_COLLECTION;
 	}
 
 	@Override
@@ -259,7 +265,7 @@ public class Series implements AvMedia, MediaCollection<Episode>, Comparable<Ser
 
 	// Episodes
 	@Override
-	public List<Episode> getMedia()
+	public List<Episode> getMediaItems()
 	{
 		return getEpisodes();
 	}

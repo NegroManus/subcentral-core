@@ -7,24 +7,24 @@ import java.util.Map;
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Contributions;
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.media.AvMedia;
+import de.subcentral.core.media.AvMediaItem;
 import de.subcentral.core.subtitle.Subtitle;
 
 public class Subtitling implements Work
 {
-	private AvMedia				media;
+	private AvMediaItem			mediaItem;
 	private String				language;
 	private String				info;
 	private List<Contribution>	contributions;
 
-	public AvMedia getMedia()
+	public AvMediaItem getMediaItem()
 	{
-		return media;
+		return mediaItem;
 	}
 
-	public void setMedia(AvMedia media)
+	public void setMediaItem(AvMediaItem media)
 	{
-		this.media = media;
+		this.mediaItem = media;
 	}
 
 	public String getLanguage()
@@ -76,7 +76,7 @@ public class Subtitling implements Work
 	public Subtitle toSubtitle()
 	{
 		Subtitle sub = new Subtitle();
-		sub.setMedia(media);
+		sub.setMediaItem(mediaItem);
 		sub.setLanguage(language);
 		sub.setDate(ZonedDateTime.now());
 		sub.setContributions(contributions);

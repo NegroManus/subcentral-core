@@ -60,7 +60,7 @@ public class NamingTest
 
 		// Subtitle
 		Subtitle sub1 = new Subtitle();
-		sub1.setMedia(epi);
+		sub1.setMediaItem(epi);
 		sub1.setLanguage("VO");
 
 		// Subtitle release

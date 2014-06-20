@@ -13,7 +13,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.contribution.Work;
-import de.subcentral.core.media.AvMedia;
+import de.subcentral.core.media.AvMediaItem;
 import de.subcentral.core.util.Settings;
 
 public class Subtitle implements Work, Comparable<Subtitle>
@@ -23,21 +23,21 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String	CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
 	public static final String	CONTRIBUTION_TYPE_REVISION		= "REVISION";
 
-	private AvMedia				media;
+	private AvMediaItem			mediaItem;
 	private String				language;
 	private Temporal			date;
 	private String				productionType;
 	private String				description;
 	private List<Contribution>	contributions					= new ArrayList<>();
 
-	public AvMedia getMedia()
+	public AvMediaItem getMediaItem()
 	{
-		return media;
+		return mediaItem;
 	}
 
-	public void setMedia(AvMedia media)
+	public void setMediaItem(AvMediaItem mediaItem)
 	{
-		this.media = media;
+		this.mediaItem = mediaItem;
 	}
 
 	public String getLanguage()
@@ -82,7 +82,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public boolean isTranslation()
 	{
-		return !language.equals(media.getOriginalLanguage());
+		return !language.equals(mediaItem.getOriginalLanguage());
 	}
 
 	@Override
@@ -113,13 +113,13 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return false;
 		}
 		Subtitle o = (Subtitle) obj;
-		return new EqualsBuilder().append(media, o.media).append(language, o.language).append(date, o.date).isEquals();
+		return new EqualsBuilder().append(mediaItem, o.mediaItem).append(language, o.language).append(date, o.date).isEquals();
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(37, 99).append(media).append(language).append(date).toHashCode();
+		return new HashCodeBuilder(37, 99).append(mediaItem).append(language).append(date).toHashCode();
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return -1;
 		}
 		return ComparisonChain.start()
-				.compare(media.getName(), o.media.getName(), Settings.STRING_ORDERING)
+				.compare(mediaItem.getName(), o.mediaItem.getName(), Settings.STRING_ORDERING)
 				.compare(language, o.language)
 				.compare(date, o.date, Settings.TEMPORAL_ORDERING)
 				.result();
@@ -141,7 +141,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	{
 		return Objects.toStringHelper(this)
 				.omitNullValues()
-				.add("media", media)
+				.add("mediaItem", mediaItem)
 				.add("language", language)
 				.add("date", date)
 				.add("productionType", productionType)

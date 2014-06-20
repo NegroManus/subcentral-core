@@ -48,7 +48,15 @@ import de.subcentral.core.contribution.Work;
  */
 public interface Media extends Work
 {
-	public static final int	UNNUMBERED	= Integer.MAX_VALUE;
+	public static final String	TYPE_TEXT			= "TEXT";
+	public static final String	TYPE_IMAGE			= "IMAGE";
+	public static final String	TYPE_AUDIO			= "AUDIO";
+	public static final String	TYPE_VIDEO			= "VIDEO";
+	public static final String	TYPE_APPLICATION	= "APPLICATION";
+	public static final String	TYPE_MULTI			= "MULTI";
+	public static final String	TYPE_COLLECTION		= "COLLECTION";
+
+	public static final int		UNNUMBERED			= Integer.MAX_VALUE;
 
 	// Property accessors
 	/**
@@ -62,6 +70,14 @@ public interface Media extends Work
 	 */
 	public String getTitle();
 
+	public String getMediaType();
+
+	/**
+	 * The date can be an instance of {@link java.time.ZonedDateTime}, {@link java.time.LocalDateTime}, {@link java.time.LocalDate} or
+	 * {@link java.time.Year}, depending on how precise the information is.
+	 * 
+	 * @return The publishing date of this media.
+	 */
 	public Temporal getDate();
 
 	public Set<String> getGenres();
@@ -81,7 +97,7 @@ public interface Media extends Work
 	 * <li>Games: http://en.wikipedia.org/wiki/Video_game_content_rating_system</li>
 	 * </ul>
 	 * 
-	 * @return the content advisory / content rating for this media
+	 * @return the content advisory / content rating for this media.
 	 */
 	public String getContentAdvisory();
 

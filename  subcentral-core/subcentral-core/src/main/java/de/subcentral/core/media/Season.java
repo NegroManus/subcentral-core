@@ -14,7 +14,7 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.util.Settings;
 
-public class Season implements AvMedia, MediaCollection<Episode>, Comparable<Season>
+public class Season implements AvMedia, AvMediaCollection<Episode>, Comparable<Season>
 {
 	private final Series	series;
 	private int				number	= Media.UNNUMBERED;
@@ -52,6 +52,12 @@ public class Season implements AvMedia, MediaCollection<Episode>, Comparable<Sea
 	public void setTitle(String title)
 	{
 		this.title = title;
+	}
+
+	@Override
+	public String getMediaType()
+	{
+		return Media.TYPE_COLLECTION;
 	}
 
 	public boolean isSpecial()
@@ -99,7 +105,7 @@ public class Season implements AvMedia, MediaCollection<Episode>, Comparable<Sea
 
 	// Episodes
 	@Override
-	public List<Episode> getMedia()
+	public List<Episode> getMediaItems()
 	{
 		return getEpisodes();
 	}

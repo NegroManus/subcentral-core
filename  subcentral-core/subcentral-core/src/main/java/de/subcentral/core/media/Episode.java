@@ -11,7 +11,7 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.Settings;
 
-public class Episode extends AbstractAvMedia implements Comparable<Episode>
+public class Episode extends AbstractAvMedia implements AvMediaItem, Comparable<Episode>
 {
 	private final Series	series;
 	private Season			season;
@@ -29,6 +29,12 @@ public class Episode extends AbstractAvMedia implements Comparable<Episode>
 	public String getName()
 	{
 		return NamingStandards.EPISODE_NAMER.name(this);
+	}
+
+	@Override
+	public String getMediaType()
+	{
+		return Media.TYPE_VIDEO;
 	}
 
 	public Series getSeries()
