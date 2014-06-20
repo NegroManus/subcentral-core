@@ -118,11 +118,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		return series.getEpisodes(this);
 	}
 
-	public boolean containsEpisode(Episode episode)
-	{
-		return getEpisodes().contains(episode);
-	}
-
 	public Episode addEpisode()
 	{
 		return series.addEpisode(this);

@@ -2,7 +2,6 @@ package de.subcentral.core.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -171,21 +170,11 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return seasons;
 	}
 
-	public boolean containsSeason(Season season)
-	{
-		return seasons.contains(season);
-	}
-
 	public Season addSeason()
 	{
 		Season s = new Season(this);
 		seasons.add(s);
 		return s;
-	}
-
-	public boolean removeSeason(Season season)
-	{
-		return seasons.remove(season);
 	}
 
 	// Episodes
@@ -217,11 +206,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return episInSeason;
 	}
 
-	public boolean containsEpisode(Episode episode)
-	{
-		return episodes.contains(episode);
-	}
-
 	public Episode addEpisode()
 	{
 		return addEpisode(null);
@@ -232,21 +216,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		Episode e = new Episode(this, season);
 		episodes.add(e);
 		return e;
-	}
-
-	public boolean removeEpisode(Episode episode)
-	{
-		return episodes.remove(episode);
-	}
-
-	public void removeAllEpisodes(Collection<Episode> episodes)
-	{
-		this.episodes.removeAll(episodes);
-	}
-
-	public void removeAllEpisodes()
-	{
-		this.episodes.clear();
 	}
 
 	// Object methods
