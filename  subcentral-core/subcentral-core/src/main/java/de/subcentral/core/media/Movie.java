@@ -10,7 +10,7 @@ import com.google.common.base.Objects;
 
 import de.subcentral.core.util.Settings;
 
-public class Movie extends AbstractAvMedia implements AvMediaItem, Comparable<Movie>
+public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 {
 	private String		name;
 	private Set<String>	genres				= new HashSet<>(4);
@@ -78,6 +78,7 @@ public class Movie extends AbstractAvMedia implements AvMediaItem, Comparable<Mo
 		this.countriesOfOrigin = countriesOfOrigin;
 	}
 
+	// Object methods
 	@Override
 	public boolean equals(Object obj)
 	{

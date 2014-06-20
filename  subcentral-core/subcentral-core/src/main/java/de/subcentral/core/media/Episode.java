@@ -11,7 +11,7 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.Settings;
 
-public class Episode extends AbstractAvMedia implements AvMediaItem, Comparable<Episode>
+public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 {
 	private final Series	series;
 	private Season			season;

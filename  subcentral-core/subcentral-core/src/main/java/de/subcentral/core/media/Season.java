@@ -11,17 +11,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.contribution.Contribution;
 import de.subcentral.core.util.Settings;
 
-public class Season implements AvMedia, AvMediaCollection<Episode>, Comparable<Season>
+public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
 {
 	private final Series	series;
 	private int				number	= Media.UNNUMBERED;
-	private String			title;
 	private boolean			special;
-	private String			description;
-	private String			coverUrl;
 
 	Season(Series series)
 	{
@@ -33,6 +29,12 @@ public class Season implements AvMedia, AvMediaCollection<Episode>, Comparable<S
 		return series;
 	}
 
+	@Override
+	public String getName()
+	{
+		return isNumbered() ? Integer.toString(number) : title;
+	}
+
 	public int getNumber()
 	{
 		return number;
@@ -41,17 +43,6 @@ public class Season implements AvMedia, AvMediaCollection<Episode>, Comparable<S
 	public void setNumber(int number)
 	{
 		this.number = number;
-	}
-
-	@Override
-	public String getTitle()
-	{
-		return title;
-	}
-
-	public void setTitle(String title)
-	{
-		this.title = title;
 	}
 
 	@Override
@@ -71,25 +62,31 @@ public class Season implements AvMedia, AvMediaCollection<Episode>, Comparable<S
 	}
 
 	@Override
-	public String getDescription()
+	public Temporal getDate()
 	{
-		return description;
-	}
-
-	public void setDescription(String description)
-	{
-		this.description = description;
+		if (getEpisodes().isEmpty())
+		{
+			return null;
+		}
+		return getEpisodes().get(0).getDate();
 	}
 
 	@Override
-	public String getCoverUrl()
+	public Set<String> getGenres()
 	{
-		return coverUrl;
+		return series.getGenres();
 	}
 
-	public void setCoverUrl(String coverUrl)
+	@Override
+	public String getOriginalLanguage()
 	{
-		this.coverUrl = coverUrl;
+		return series.getOriginalLanguage();
+	}
+
+	@Override
+	public Set<String> getCountriesOfOrigin()
+	{
+		return series.getCountriesOfOrigin();
 	}
 
 	// Convenience / Complex
@@ -176,6 +173,7 @@ public class Season implements AvMedia, AvMediaCollection<Episode>, Comparable<S
 		}
 	}
 
+	// Object methods
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -224,69 +222,5 @@ public class Season implements AvMedia, AvMediaCollection<Episode>, Comparable<S
 				.add("coverUrl", coverUrl)
 				.add("episodes.size", getEpisodes().size())
 				.toString();
-	}
-
-	@Override
-	public int getRunningTime()
-	{
-		int runningTime = 0;
-		for (Episode e : getEpisodes())
-		{
-			runningTime += e.getRunningTime();
-		}
-		return runningTime;
-	}
-
-	@Override
-	public String getName()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Temporal getDate()
-	{
-		if (getEpisodes().isEmpty())
-		{
-			return null;
-		}
-		return getEpisodes().get(0).getDate();
-	}
-
-	@Override
-	public Set<String> getGenres()
-	{
-		return series.getGenres();
-	}
-
-	@Override
-	public String getOriginalLanguage()
-	{
-		return series.getOriginalLanguage();
-	}
-
-	@Override
-	public Set<String> getCountriesOfOrigin()
-	{
-		return series.getCountriesOfOrigin();
-	}
-
-	@Override
-	public String getContentAdvisory()
-	{
-		return series.getContentAdvisory();
-	}
-
-	@Override
-	public Set<String> getFurtherInformationUrls()
-	{
-		return series.getFurtherInformationUrls();
-	}
-
-	@Override
-	public List<Contribution> getContributions()
-	{
-		return series.getContributions();
 	}
 }

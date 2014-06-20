@@ -1,6 +1,5 @@
 package de.subcentral.core.media;
 
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +12,6 @@ import de.subcentral.core.contribution.Contribution;
 public abstract class AbstractMedia implements Media
 {
 	protected String				title;
-	protected Temporal				date;
 	protected String				description;
 	protected String				coverUrl;
 	protected String				contentAdvisory;
@@ -29,17 +27,6 @@ public abstract class AbstractMedia implements Media
 	public void setTitle(String title)
 	{
 		this.title = title;
-	}
-
-	@Override
-	public Temporal getDate()
-	{
-		return date;
-	}
-
-	public void setDate(Temporal date)
-	{
-		this.date = date;
 	}
 
 	@Override
@@ -95,6 +82,7 @@ public abstract class AbstractMedia implements Media
 
 	public void setFurtherInformationUrls(Set<String> furtherInformationUrls)
 	{
+		Validate.notNull(furtherInformationUrls, "furtherInformationUrls cannot be null");
 		this.furtherInformationUrls = furtherInformationUrls;
 	}
 }
