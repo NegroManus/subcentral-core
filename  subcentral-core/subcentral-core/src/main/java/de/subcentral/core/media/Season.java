@@ -45,12 +45,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.number = number;
 	}
 
-	@Override
-	public String getMediaType()
-	{
-		return Media.TYPE_COLLECTION;
-	}
-
 	public boolean isSpecial()
 	{
 		return special;

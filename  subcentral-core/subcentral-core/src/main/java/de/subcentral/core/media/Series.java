@@ -75,12 +75,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	@Override
-	public String getMediaType()
-	{
-		return Media.TYPE_COLLECTION;
-	}
-
-	@Override
 	public Temporal getDate()
 	{
 		if (episodes.isEmpty())
