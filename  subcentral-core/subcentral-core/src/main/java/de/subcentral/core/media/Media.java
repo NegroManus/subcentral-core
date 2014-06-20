@@ -109,7 +109,7 @@ public interface Media extends Work
 	public Set<String> getGenres();
 
 	/**
-	 * The description can be for example be facts about this media or a summary (in case of Episodes or Movies).
+	 * The description can for example be facts about this media or a plot summary (in case of Episodes or Movies).
 	 * 
 	 * @return The description of this media.
 	 */
