@@ -128,7 +128,7 @@ public interface Media extends Work
 	 * <li>Games: http://en.wikipedia.org/wiki/Video_game_content_rating_system</li>
 	 * </ul>
 	 * 
-	 * @return the content advisory / content rating for this media.
+	 * @return The parental advisory / content advisory / content rating for this media.
 	 */
 	public String getContentAdvisory();
 
