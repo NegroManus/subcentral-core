@@ -76,15 +76,15 @@ public interface Media extends Work
 	 * The date can be an instance of {@link java.time.ZonedDateTime}, {@link java.time.LocalDateTime}, {@link java.time.LocalDate} or
 	 * {@link java.time.Year}, depending on how precise the information is.
 	 * 
-	 * @return The publishing date of this media.
+	 * @return The publishing / air date of this media.
 	 */
 	public Temporal getDate();
-
-	public Set<String> getGenres();
 
 	public String getOriginalLanguage();
 
 	public Set<String> getCountriesOfOrigin();
+
+	public Set<String> getGenres();
 
 	public String getDescription();
 

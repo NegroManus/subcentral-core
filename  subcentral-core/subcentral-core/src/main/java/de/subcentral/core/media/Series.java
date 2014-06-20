@@ -74,6 +74,9 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.name = name;
 	}
 
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series, <code>null</code> if this series has no episodes.
+	 */
 	@Override
 	public Temporal getDate()
 	{
@@ -147,6 +150,19 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	{
 		Validate.notNull(genres, "genres cannot be null");
 		this.genres = genres;
+	}
+
+	// Convenience
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series, <code>null</code> if this series has no episodes.
+	 */
+	public Temporal getDateOfLastEpisode()
+	{
+		if (episodes.isEmpty())
+		{
+			return null;
+		}
+		return episodes.get(episodes.size() - 1).getDate();
 	}
 
 	// Seasons

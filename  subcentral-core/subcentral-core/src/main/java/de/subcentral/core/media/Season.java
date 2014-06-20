@@ -55,14 +55,18 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.special = special;
 	}
 
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the first episode of this season, <code>null</code> if this season has no episodes.
+	 */
 	@Override
 	public Temporal getDate()
 	{
-		if (getEpisodes().isEmpty())
+		List<Episode> epis = getEpisodes();
+		if (epis.isEmpty())
 		{
 			return null;
 		}
-		return getEpisodes().get(0).getDate();
+		return epis.get(0).getDate();
 	}
 
 	@Override
@@ -92,6 +96,19 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	public boolean isTitled()
 	{
 		return title != null;
+	}
+
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series, <code>null</code> if this series has no episodes.
+	 */
+	public Temporal getDateOfLastEpisode()
+	{
+		List<Episode> epis = getEpisodes();
+		if (epis.isEmpty())
+		{
+			return null;
+		}
+		return epis.get(epis.size() - 1).getDate();
 	}
 
 	// Episodes
