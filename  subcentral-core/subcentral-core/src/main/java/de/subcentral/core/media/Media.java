@@ -10,8 +10,8 @@ import de.subcentral.core.contribution.Work;
  * <ul>
  * <li>The <b>title</b> is given to the media by the author. It has not to be unique.</li>
  * <li>The <b>name</b> is unique for the media in its media class. It often contains more context to identify the media. For example the series and
- * season in case of a episode or the artist in case of a song. If there are two or more media that would have the same name, normally the country of
- * origin or the date is appended to distinguish the names, like in "The Office (UK)" or "Titanic (2002)".</li>
+ * season in case of a episode or the artist in case of a song. If there are two or more media that would have the same name, normally the country
+ * code or the date is appended to distinguish the names, like in "The Office (UK)" or "Titanic (2002)".</li>
  * </ul>
  * Examples:
  * <table>
@@ -56,6 +56,10 @@ public interface Media extends Work
 	public static final String	TYPE_MULTI			= "MULTI";
 	public static final String	TYPE_COLLECTION		= "COLLECTION";
 
+	/**
+	 * Some medias can be numbered (like Episodes in a Series or Season or Songs in an Album). This value indicates that the media instance is not
+	 * numbered.
+	 */
 	public static final int		UNNUMBERED			= Integer.MAX_VALUE;
 
 	// Property accessors
@@ -65,11 +69,18 @@ public interface Media extends Work
 	public String getName();
 
 	/**
+	 * Normally a media only has a {@link #getName() name} which is in fact its title. The title is only set if it differs from the name (like name:
+	 * "The Office (UK)", title: "The Office").<br/>
+	 * In case of numbered Media, like an {@link Episode} or a Song, the title may be optional.
 	 * 
 	 * @return The title of this media.
 	 */
 	public String getTitle();
 
+	/**
+	 * 
+	 * @return The type of this media. One of the <code>TYPE_*</code> constants.
+	 */
 	public String getMediaType();
 
 	/**
@@ -80,14 +91,34 @@ public interface Media extends Work
 	 */
 	public Temporal getDate();
 
+	/**
+	 * 
+	 * @return The language code of the original language of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}.
+	 */
 	public String getOriginalLanguage();
 
+	/**
+	 * 
+	 * @return The country codes of the countries where this media was originally created.
+	 */
 	public Set<String> getCountriesOfOrigin();
 
+	/**
+	 * @return The genres of this media.
+	 */
 	public Set<String> getGenres();
 
+	/**
+	 * The description can be for example be facts about this media or a summary (in case of Episodes or Movies).
+	 * 
+	 * @return The description of this media.
+	 */
 	public String getDescription();
 
+	/**
+	 * 
+	 * @return The URL pointing to a cover image for this media.
+	 */
 	public String getCoverUrl();
 
 	/**
@@ -101,5 +132,16 @@ public interface Media extends Work
 	 */
 	public String getContentAdvisory();
 
+	/**
+	 * 
+	 * @return A set of URLs where further information about this media can be found.
+	 */
 	public Set<String> getFurtherInformationUrls();
+
+	// Convenience
+	/**
+	 * 
+	 * @return Whether this media has a {@link #getTitle() title} or not.
+	 */
+	public boolean isTitled();
 }

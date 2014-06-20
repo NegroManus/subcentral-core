@@ -93,11 +93,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		return number != Media.UNNUMBERED;
 	}
 
-	public boolean isTitled()
-	{
-		return title != null;
-	}
-
 	/**
 	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series, <code>null</code> if this series has no episodes.
 	 */

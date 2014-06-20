@@ -85,4 +85,11 @@ public abstract class AbstractMedia implements Media
 		Validate.notNull(furtherInformationUrls, "furtherInformationUrls cannot be null");
 		this.furtherInformationUrls = furtherInformationUrls;
 	}
+
+	// Convenience / Complex
+	@Override
+	public boolean isTitled()
+	{
+		return title != null;
+	}
 }

@@ -117,11 +117,6 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return numberInSeason != Media.UNNUMBERED;
 	}
 
-	public boolean isTitled()
-	{
-		return title != null;
-	}
-
 	/**
 	 * 
 	 */
