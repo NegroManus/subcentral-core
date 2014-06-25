@@ -20,10 +20,10 @@ public class LookupTest
 
 		Episode epi = Episode.newSeasonedEpisode("Psych", 6, 5);
 		Movie movie = new Movie("The Lord of the Rings: The Return of the King");
-		MediaRelease rls = Releases.newMediaRelease(movie, null);
+		MediaRelease rls = Releases.newMediaRelease(epi, null);
 
 		OrlyDbLookup lookup = new OrlyDbLookup();
-		lookup.setNamingService(OrlyDb.getOrlyDbQueryNamingService());
+		lookup.setQueryNamingService(OrlyDb.getOrlyDbQueryNamingService());
 		OrlyDbQuery query = lookup.createQuery(rls);
 		OrlyDbLookupResult result = lookup.lookup(query);
 

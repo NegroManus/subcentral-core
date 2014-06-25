@@ -305,9 +305,9 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 
 	private void ensurePartOfSeries(Season season) throws IllegalArgumentException
 	{
-		if (season != null && Objects.equal(season.getSeries(), series))
+		if (season != null && !Objects.equal(season.getSeries(), series))
 		{
-			throw new IllegalArgumentException("The season is not part of this episode's series: " + season);
+			throw new IllegalArgumentException("The given season is not part of this episode's series: " + season + " is not part of " + series);
 		}
 	}
 }

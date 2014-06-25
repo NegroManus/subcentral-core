@@ -9,8 +9,11 @@ import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,16 +30,18 @@ import de.subcentral.core.release.MediaRelease;
 
 public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQuery>
 {
-	private NamingService	namingService	= null;
+	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
+	private NamingService					queryNamingService	= null;
 
-	public NamingService getNamingService()
+	public NamingService getQueryNamingService()
 	{
-		return namingService;
+		return queryNamingService;
 	}
 
-	public void setNamingService(NamingService namingService)
+	public void setQueryNamingService(NamingService queryNamingService)
 	{
-		this.namingService = namingService;
+		this.queryNamingService = queryNamingService;
 	}
 
 	public OrlyDbLookup()
@@ -69,7 +74,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 
 	public OrlyDbQuery createQuery(Media media, String section)
 	{
-		return new OrlyDbQuery(namingService.name(media), section);
+		return new OrlyDbQuery(queryNamingService.name(media), section);
 	}
 
 	public OrlyDbQuery createQuery(MediaRelease mediaRelease)
@@ -79,7 +84,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 
 	public OrlyDbQuery createQuery(MediaRelease mediaRelease, String section)
 	{
-		return new OrlyDbQuery(namingService.name(mediaRelease), section);
+		return new OrlyDbQuery(queryNamingService.name(mediaRelease), section);
 	}
 
 	@Override
@@ -146,7 +151,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	@Override
 	protected LookupResult<MediaRelease> parseDocument(URL url, Document doc) throws Exception
 	{
-		return new OrlyDbLookupResult(url, parseReleases(doc));
+		return new OrlyDbLookupResult(url, parseReleases(url, doc));
 	}
 
 	/**
@@ -159,7 +164,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	 * @param doc
 	 * @return
 	 */
-	private static List<MediaRelease> parseReleases(Document doc)
+	private static List<MediaRelease> parseReleases(URL url, Document doc)
 	{
 		Element rlssDiv = doc.getElementById("releases");
 		if (rlssDiv == null)
@@ -172,7 +177,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		List<MediaRelease> rlss = new ArrayList<MediaRelease>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
-			MediaRelease rls = parseRelease(rlsDiv);
+			MediaRelease rls = parseRelease(url, rlsDiv);
 			if (rls != null)
 			{
 				rlss.add(rls);
@@ -200,7 +205,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	 * @param rlsDiv
 	 * @return
 	 */
-	private static MediaRelease parseRelease(Element rlsDiv)
+	private static MediaRelease parseRelease(URL url, Element rlsDiv)
 	{
 		Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
 		Element sectionSpan = rlsDiv.getElementsByClass("section").first();
@@ -215,8 +220,22 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 
 		MediaRelease rls = new MediaRelease();
 		rls.setName(releaseSpan.text());
-		rls.setSection(sectionSpan.text());
-		rls.setDate(ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text().replace(' ', 'T')), ZoneId.of("UTC")));
+		if (sectionSpan != null)
+		{
+			rls.setSection(sectionSpan.text());
+		}
+		if (timestampSpan != null)
+		{
+			try
+			{
+				rls.setDate(ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE));
+			}
+			catch (DateTimeParseException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 		if (infoSpan != null)
 		{
 			rls.setInfo(infoSpan.text());
@@ -225,7 +244,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		{
 			rls.setNukeReason(nukeSpan.text());
 		}
+		rls.setInfoUrl(url.toExternalForm());
 		return rls;
 	}
-
 }
