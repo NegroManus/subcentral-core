@@ -28,7 +28,7 @@ public class LookupTest
 		OrlyDbLookupResult result = lookup.lookup("Psych S06E05");
 
 		System.out.println("Results for: " + result.getUrl());
-		for (MediaRelease foundRls : result.getAllResults())
+		for (MediaRelease foundRls : result.getResults())
 		{
 			System.out.println(foundRls);
 		}

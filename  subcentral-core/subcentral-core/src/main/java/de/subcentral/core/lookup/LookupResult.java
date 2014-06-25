@@ -9,24 +9,5 @@ public interface LookupResult<R>
 		return !getResults().isEmpty();
 	}
 
-	public default List<R> getResults()
-	{
-		return getResults(0);
-	}
-
-	public List<R> getResults(int page);
-
-	public default R getFirstResult()
-	{
-		List<R> results = getResults(0);
-		if (results.isEmpty())
-		{
-			return null;
-		}
-		return results.get(0);
-	}
-
-	public List<R> getAllResults();
-
-	public int getNumberOfResultPages();
+	public List<R> getResults();
 }

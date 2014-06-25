@@ -31,21 +31,9 @@ public class OrlyDbLookupResult implements LookupResult<MediaRelease>
 	}
 
 	@Override
-	public List<MediaRelease> getResults(int page)
+	public List<MediaRelease> getResults()
 	{
 		return results;
-	}
-
-	@Override
-	public List<MediaRelease> getAllResults()
-	{
-		return results;
-	}
-
-	@Override
-	public int getNumberOfResultPages()
-	{
-		return 1;
 	}
 
 }
