@@ -38,18 +38,13 @@ public class NamingException extends RuntimeException
 		return candidate;
 	}
 
-	protected static final String generateMessage(Object candidate)
-	{
-		return generateMessage(candidate, null);
-	}
-
-	protected static final String generateMessage(Object candidate, String additionalMsg)
+	private static final String generateMessage(Object candidate, String additionalMsg)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("Exception while naming ");
 		sb.append(candidate);
 		sb.append(" (class ");
-		sb.append(candidate.getClass());
+		sb.append(candidate == null ? null : candidate.getClass());
 		sb.append(")");
 		if (additionalMsg != null)
 		{
@@ -58,5 +53,4 @@ public class NamingException extends RuntimeException
 		}
 		return sb.toString();
 	}
-
 }

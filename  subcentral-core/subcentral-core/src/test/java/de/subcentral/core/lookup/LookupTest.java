@@ -25,7 +25,7 @@ public class LookupTest
 		OrlyDbLookup lookup = new OrlyDbLookup();
 		lookup.setQueryNamingService(OrlyDb.getOrlyDbQueryNamingService());
 		OrlyDbQuery query = lookup.createQuery(rls);
-		OrlyDbLookupResult result = lookup.lookup(query);
+		OrlyDbLookupResult result = lookup.lookup("Psych S06E05");
 
 		System.out.println("Results for: " + result.getUrl());
 		for (MediaRelease foundRls : result.getAllResults())

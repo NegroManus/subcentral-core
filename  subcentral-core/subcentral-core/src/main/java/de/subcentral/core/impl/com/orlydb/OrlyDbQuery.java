@@ -1,5 +1,7 @@
 package de.subcentral.core.impl.com.orlydb;
 
+import com.google.common.base.Objects;
+
 public class OrlyDbQuery
 {
 	private final String	query;
@@ -20,5 +22,11 @@ public class OrlyDbQuery
 	public String getSection()
 	{
 		return section;
+	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringHelper(this).omitNullValues().add("section", section).add("query", query).toString();
 	}
 }

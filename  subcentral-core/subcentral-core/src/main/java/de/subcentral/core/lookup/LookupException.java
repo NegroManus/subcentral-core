@@ -4,33 +4,49 @@ public class LookupException extends RuntimeException
 {
 	private static final long	serialVersionUID	= -5423474090679019566L;
 
-	public LookupException()
+	private final Object		query;
+
+	public LookupException(Object query)
 	{
-		// TODO Auto-generated constructor stub
+		super(generateMessage(query, null));
+		this.query = query;
 	}
 
-	public LookupException(String message)
+	public LookupException(Object query, String message)
 	{
-		super(message);
-		// TODO Auto-generated constructor stub
+		super(generateMessage(query, message));
+
+		this.query = query;
 	}
 
-	public LookupException(Throwable cause)
+	public LookupException(Object query, Throwable cause)
 	{
-		super(cause);
-		// TODO Auto-generated constructor stub
+		super(generateMessage(query, null), cause);
+		this.query = query;
 	}
 
-	public LookupException(String message, Throwable cause)
+	public LookupException(Object query, String message, Throwable cause)
 	{
-		super(message, cause);
-		// TODO Auto-generated constructor stub
+		super(generateMessage(query, message), cause);
+		this.query = query;
 	}
 
-	public LookupException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+	public Object getQuery()
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
-		// TODO Auto-generated constructor stub
+		return query;
 	}
 
+	private static final String generateMessage(Object query, String additionalMsg)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("Lookup with query ");
+		sb.append(query);
+		sb.append(" failed");
+		if (additionalMsg != null)
+		{
+			sb.append(": ");
+			sb.append(additionalMsg);
+		}
+		return sb.toString();
+	}
 }

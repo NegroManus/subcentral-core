@@ -68,11 +68,7 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 		}
 		catch (Exception e)
 		{
-			if (e instanceof LookupException)
-			{
-				throw (LookupException) e;
-			}
-			throw new LookupException(e);
+			throw new LookupException(query, e);
 		}
 	}
 
@@ -86,11 +82,7 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 		}
 		catch (Exception e)
 		{
-			if (e instanceof LookupException)
-			{
-				throw (LookupException) e;
-			}
-			throw new LookupException(e);
+			throw new LookupException(this, url, e);
 		}
 	}
 

@@ -19,11 +19,7 @@ public abstract class AbstractHttpHtmlLookup<R, Q> extends AbstractHttpLookup<R,
 		}
 		catch (Exception e)
 		{
-			if (e instanceof LookupException)
-			{
-				throw (LookupException) e;
-			}
-			throw new LookupException(e);
+			throw new LookupException(url, e);
 		}
 	}
 
