@@ -88,12 +88,12 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		{
 			Series series = new Series();
 			series.setTitle(seriesTitle);
-			Season season = series.addSeason();
+			Season season = series.newSeason();
 			if (seasonNum != null)
 			{
 				season.setNumber(Integer.parseInt(seasonNum));
 			}
-			Episode epi = season.addEpisode();
+			Episode epi = season.newEpisode();
 			if (epiNum != null)
 			{
 				epi.setNumberInSeason(Integer.parseInt(epiNum));

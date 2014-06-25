@@ -170,11 +170,20 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return seasons;
 	}
 
-	public Season addSeason()
+	/**
+	 * 
+	 * @param seasons
+	 *            This series' seasons. Only filled if the series is the information root.
+	 */
+	public void setSeasons(List<Season> seasons)
 	{
-		Season s = new Season(this);
-		seasons.add(s);
-		return s;
+		Validate.notNull("seasons list cannot be null");
+		this.seasons = seasons;
+	}
+
+	public Season newSeason()
+	{
+		return new Season(this);
 	}
 
 	// Episodes
@@ -189,13 +198,34 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return episodes;
 	}
 
+	/**
+	 * 
+	 * @param episodes
+	 *            This series' episodes. Only filled if the series is the information root.
+	 */
+	public void setEpisodes(List<Episode> episodes)
+	{
+		Validate.notNull("episodes list cannot be null");
+		this.episodes = episodes;
+	}
+
+	public Episode newEpisode()
+	{
+		return newEpisode(null);
+	}
+
+	public Episode newEpisode(Season season)
+	{
+		return new Episode(this, season);
+	}
+
 	public List<Episode> getEpisodes(Season season)
 	{
 		if (season == null || episodes.isEmpty())
 		{
 			return ImmutableList.of();
 		}
-		List<Episode> episInSeason = new ArrayList<>();
+		ImmutableList.Builder<Episode> episInSeason = ImmutableList.builder();
 		for (Episode epi : episodes)
 		{
 			if (season.equals(epi.getSeason()))
@@ -203,19 +233,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				episInSeason.add(epi);
 			}
 		}
-		return episInSeason;
-	}
-
-	public Episode addEpisode()
-	{
-		return addEpisode(null);
-	}
-
-	public Episode addEpisode(Season season)
-	{
-		Episode e = new Episode(this, season);
-		episodes.add(e);
-		return e;
+		return episInSeason.build();
 	}
 
 	// Object methods

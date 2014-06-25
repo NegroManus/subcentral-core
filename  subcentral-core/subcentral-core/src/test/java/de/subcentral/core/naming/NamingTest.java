@@ -6,7 +6,6 @@ import java.time.Year;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.media.Episode;
-import de.subcentral.core.media.Medias;
 import de.subcentral.core.media.Movie;
 import de.subcentral.core.media.MultiEpisode;
 import de.subcentral.core.media.Season;
@@ -30,11 +29,11 @@ public class NamingTest
 		series.setName("How I Met Your Mother");
 		series.setType(Series.TYPE_SEASONED);
 
-		Season s2 = series.addSeason();
+		Season s2 = series.newSeason();
 		s2.setNumber(2);
 		s2.setTitle("Webisodes");
 
-		Episode epi = series.addEpisode(s2);
+		Episode epi = series.newEpisode(s2);
 		epi.setNumberInSeason(1);
 		epi.setNumberInSeries(17);
 		epi.setTitle("Weekend at Barney's");
@@ -45,11 +44,11 @@ public class NamingTest
 		movie.setDate(Year.of(2002));
 
 		MultiEpisode epis = new MultiEpisode();
-		Episode epi2 = series.addEpisode();
+		Episode epi2 = series.newEpisode();
 		epi2.setNumberInSeries(18);
 
-		epis.add(Medias.newMiniSeriesEpisode("Psych", 1));
-		epis.add(Medias.newMiniSeriesEpisode("Psych", 2));
+		epis.add(Episode.newMiniSeriesEpisode("Psych", 1));
+		epis.add(Episode.newMiniSeriesEpisode("Psych", 2));
 
 		// Media release
 		MediaRelease rel = new MediaRelease();

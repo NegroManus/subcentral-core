@@ -1,7 +1,6 @@
 package de.subcentral.core.media;
 
 import java.time.temporal.Temporal;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -10,16 +9,23 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.Settings;
 
 public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
 {
-	private final Series	series;
-	private int				number	= Media.UNNUMBERED;
-	private boolean			special;
+	private Series	series;
+	private int		number	= Media.UNNUMBERED;
+	private boolean	special;
 
-	Season(Series series)
+	public Season()
+	{
+
+	}
+
+	public Season(Series series)
 	{
 		this.series = series;
 	}
@@ -27,6 +33,11 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	public Series getSeries()
 	{
 		return series;
+	}
+
+	public void setSeries(Series series)
+	{
+		this.series = series;
 	}
 
 	@Override
@@ -72,19 +83,19 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public Set<String> getGenres()
 	{
-		return series.getGenres();
+		return series == null ? ImmutableSet.of() : series.getGenres();
 	}
 
 	@Override
 	public String getOriginalLanguage()
 	{
-		return series.getOriginalLanguage();
+		return series == null ? null : series.getOriginalLanguage();
 	}
 
 	@Override
 	public Set<String> getCountriesOfOrigin()
 	{
-		return series.getCountriesOfOrigin();
+		return series == null ? ImmutableSet.of() : series.getCountriesOfOrigin();
 	}
 
 	// Convenience / Complex
@@ -115,63 +126,12 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public List<Episode> getEpisodes()
 	{
-		return series.getEpisodes(this);
+		return series == null ? ImmutableList.of() : series.getEpisodes(this);
 	}
 
-	public Episode addEpisode()
+	public Episode newEpisode()
 	{
-		return series.addEpisode(this);
-	}
-
-	public Episode addEpisode(Episode episode)
-	{
-		if (episode == null)
-		{
-			return null;
-		}
-		episode.setSeason(this);
-		return episode;
-	}
-
-	public void addEpisodes(Collection<Episode> episodes)
-	{
-		for (Episode epi : episodes)
-		{
-			epi.setSeason(this);
-		}
-	}
-
-	public boolean removeEpisode(Episode episode)
-	{
-		if (episode == null)
-		{
-			return false;
-		}
-		if (this.equals(episode.getSeason()))
-		{
-			episode.setSeason(null);
-			return true;
-		}
-		return false;
-	}
-
-	public void removeAllEpisodes(Collection<Episode> episodes)
-	{
-		for (Episode epi : episodes)
-		{
-			if (this.equals(epi.getSeason()))
-			{
-				epi.setSeason(null);
-			}
-		}
-	}
-
-	public void removeAllEpisodes()
-	{
-		for (Episode epi : getEpisodes())
-		{
-			epi.setSeason(null);
-		}
+		return new Episode(series, this);
 	}
 
 	// Object methods
@@ -221,6 +181,9 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("special", special)
 				.add("description", description)
 				.add("coverUrl", coverUrl)
+				.add("contentAdvisory", contentAdvisory)
+				.add("contributions", contributions)
+				.add("furtherInformationUrls", furtherInformationUrls)
 				.add("episodes.size", getEpisodes().size())
 				.toString();
 	}

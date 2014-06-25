@@ -64,8 +64,8 @@ public class EpisodeNamingTest
 		// series epinum
 		// series epinum epititle
 		Series series = new Series("Psych");
-		Season season = series.addSeason();
-		Episode epi = series.addEpisode();
+		Season season = new Season(series);
+		Episode epi = new Episode(series);
 		names.add(namer.name(epi));
 
 		epi.setTitle("Pilot");

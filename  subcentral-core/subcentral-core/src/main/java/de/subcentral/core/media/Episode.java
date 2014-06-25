@@ -1,5 +1,6 @@
 package de.subcentral.core.media;
 
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -7,22 +8,145 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.Settings;
 
 public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 {
-	private final Series	series;
-	private Season			season;
-	private int				numberInSeries	= UNNUMBERED;
-	private int				numberInSeason	= UNNUMBERED;
-	private boolean			special;
+	public static Episode newSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber)
+	{
+		return newSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
+	}
 
-	Episode(Series series, Season season)
+	public static Episode newSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber, String episodeTitle)
+	{
+		return newSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
+	}
+
+	public static Episode newSeasonedEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
+	{
+		return newSeasonedEpisode(seriesName, null, Media.UNNUMBERED, seasonTitle, episodeNumber, episodeTitle);
+	}
+
+	public static Episode newSeasonedEpisode(String seriesName, String seriesTitle, int seasonNumber, String seasonTitle, int episodeNumber,
+			String episodeTitle)
+	{
+		if (seriesName == null)
+		{
+			throw new IllegalArgumentException("Series name must be set");
+		}
+		Series series = new Series();
+		series.setType(Series.TYPE_SEASONED);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = new Episode(series);
+		if (seasonNumber != Media.UNNUMBERED || seasonTitle != null)
+		{
+			Season season = new Season(series);
+			season.setNumber(seasonNumber);
+			season.setTitle(seasonTitle);
+			epi.setSeason(season);
+		}
+		epi.setNumberInSeason(episodeNumber);
+		epi.setTitle(episodeTitle);
+		return epi;
+	}
+
+	public static Episode newMiniSeriesEpisode(String seriesName, int episodeNumber)
+	{
+		return newMiniSeriesEpisode(seriesName, null, episodeNumber, null);
+	}
+
+	public static Episode newMiniSeriesEpisode(String seriesName, int episodeNumber, String episodeTitle)
+	{
+		return newMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
+	}
+
+	public static Episode newMiniSeriesEpisode(String seriesName, String seriesTitle, int episodeNumber, String episodeTitle)
+	{
+		if (seriesName == null)
+		{
+			throw new IllegalArgumentException("Series name must be set");
+		}
+		Series series = new Series();
+		series.setType(Series.TYPE_MINI_SERIES);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = new Episode(series);
+		epi.setNumberInSeries(episodeNumber);
+		epi.setTitle(episodeTitle);
+		return epi;
+	}
+
+	public static Episode newDatedEpisode(String seriesName, ZonedDateTime date)
+	{
+		return newDatedEpisode(seriesName, null, date, null);
+	}
+
+	public static Episode newDatedEpisode(String seriesName, ZonedDateTime date, String episodeTitle)
+	{
+		return newDatedEpisode(seriesName, null, date, episodeTitle);
+	}
+
+	public static Episode newDatedEpisode(String seriesName, String seriesTitle, ZonedDateTime date, String episodeTitle)
+	{
+		if (seriesName == null)
+		{
+			throw new IllegalArgumentException("Series name must be set");
+		}
+		Series series = new Series();
+		series.setType(Series.TYPE_DATED);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = new Episode(series);
+		epi.setDate(date);
+		epi.setTitle(episodeTitle);
+		return epi;
+	}
+
+	private Series	series;
+	private Season	season;
+	private int		numberInSeries	= UNNUMBERED;
+	private int		numberInSeason	= UNNUMBERED;
+	private boolean	special;
+
+	public Episode()
+	{
+
+	}
+
+	public Episode(Series series)
+	{
+		this(series, null);
+	}
+
+	public Episode(Series series, Season season)
+	{
+		setSeries(series);
+		setSeason(season);
+	}
+
+	public Series getSeries()
+	{
+		return series;
+	}
+
+	public void setSeries(Series series)
 	{
 		this.series = series;
-		setSeason(season);
+	}
+
+	public Season getSeason()
+	{
+		return season;
+	}
+
+	public void setSeason(Season season)
+	{
+		ensurePartOfSeries(season);
+		this.season = season;
 	}
 
 	@Override
@@ -35,22 +159,6 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	public String getMediaType()
 	{
 		return Media.TYPE_VIDEO;
-	}
-
-	public Series getSeries()
-	{
-		return series;
-	}
-
-	public Season getSeason()
-	{
-		return season;
-	}
-
-	public void setSeason(Season season)
-	{
-		ensurePartOfSeries(season);
-		this.season = season;
 	}
 
 	public int getNumberInSeries()
@@ -86,19 +194,19 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	@Override
 	public Set<String> getGenres()
 	{
-		return series.getGenres();
+		return series == null ? ImmutableSet.of() : series.getGenres();
 	}
 
 	@Override
 	public String getOriginalLanguage()
 	{
-		return series.getOriginalLanguage();
+		return series == null ? null : series.getOriginalLanguage();
 	}
 
 	@Override
 	public Set<String> getCountriesOfOrigin()
 	{
-		return series.getCountriesOfOrigin();
+		return series == null ? ImmutableSet.of() : series.getCountriesOfOrigin();
 	}
 
 	// Convenience
@@ -197,7 +305,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 
 	private void ensurePartOfSeries(Season season) throws IllegalArgumentException
 	{
-		if (season != null && !series.getSeasons().contains(season))
+		if (season != null && Objects.equal(season.getSeries(), series))
 		{
 			throw new IllegalArgumentException("The season is not part of this episode's series: " + season);
 		}
