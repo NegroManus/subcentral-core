@@ -27,7 +27,19 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public Season(Series series)
 	{
-		this.series = series;
+		setSeries(series);
+	}
+
+	public Season(Series series, int number)
+	{
+		setSeries(series);
+		setNumber(number);
+	}
+
+	public Season(Series series, String title)
+	{
+		setSeries(series);
+		setTitle(title);
 	}
 
 	public Series getSeries()
@@ -130,6 +142,11 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	public Episode newEpisode()
+	{
+		return new Episode(series, this);
+	}
+
+	public Episode newEpisode(int episodeNumber)
 	{
 		return new Episode(series, this);
 	}

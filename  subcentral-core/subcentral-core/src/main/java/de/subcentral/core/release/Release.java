@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface Release<M> extends Comparable<Release<?>>
 {
+	public static final String	UNKNOWN_NUKE_REASON	= "";
+
 	// Properties
 	public String getName();
 

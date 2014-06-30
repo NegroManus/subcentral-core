@@ -186,6 +186,16 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return new Season(this);
 	}
 
+	public Season newSeason(int seasonNumber)
+	{
+		return new Season(this, seasonNumber);
+	}
+
+	public Season newSeason(String seasonTitle)
+	{
+		return new Season(this, seasonTitle);
+	}
+
 	// Episodes
 	@Override
 	public List<Episode> getMediaItems()

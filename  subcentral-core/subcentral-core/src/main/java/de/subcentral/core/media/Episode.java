@@ -1,6 +1,7 @@
 package de.subcentral.core.media;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -119,13 +120,57 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 
 	public Episode(Series series)
 	{
-		this(series, null);
+		setSeries(series);
 	}
 
+	// Mini-series
+	public Episode(Series series, int numberInSeries)
+	{
+		this(series, numberInSeries, null);
+	}
+
+	public Episode(Series series, int numberInSeries, String title)
+	{
+		setSeries(series);
+		setNumberInSeries(numberInSeries);
+		setTitle(title);
+	}
+
+	// Dated
+	public Episode(Series series, Temporal date)
+	{
+		this(series, date, null);
+	}
+
+	public Episode(Series series, Temporal date, String title)
+	{
+		setSeries(series);
+		setDate(date);
+		setTitle(title);
+	}
+
+	// Seasoned
 	public Episode(Series series, Season season)
+	{
+		this(series, season, UNNUMBERED, null);
+	}
+
+	public Episode(Series series, Season season, int numberInSeason)
+	{
+		this(series, season, numberInSeason, null);
+	}
+
+	public Episode(Series series, Season season, String title)
+	{
+		this(series, season, UNNUMBERED, title);
+	}
+
+	public Episode(Series series, Season season, int numberInSeason, String title)
 	{
 		setSeries(series);
 		setSeason(season);
+		setNumberInSeason(numberInSeason);
+		setTitle(title);
 	}
 
 	public Series getSeries()

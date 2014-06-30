@@ -23,9 +23,9 @@ public abstract class AbstractHttpHtmlLookup<R, Q> extends AbstractHttpLookup<R,
 		}
 	}
 
-	// Sets up a connection without cookies or user-agent info
 	protected Connection setupConnection(URL url) throws Exception
 	{
+		// Sets up a connection without cookies or user-agent info
 		return Jsoup.connect(url.toExternalForm());
 	}
 

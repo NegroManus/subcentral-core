@@ -151,7 +151,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	@Override
 	protected LookupResult<MediaRelease> parseDocument(URL url, Document doc) throws Exception
 	{
-		return new OrlyDbLookupResult(url, parseReleases(url, doc));
+		return new OrlyDbLookupResult(parseReleases(url, doc));
 	}
 
 	/**
