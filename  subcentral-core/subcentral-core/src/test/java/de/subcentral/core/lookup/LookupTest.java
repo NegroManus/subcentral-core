@@ -1,8 +1,6 @@
 package de.subcentral.core.lookup;
 
-import de.subcentral.core.impl.com.orlydb.OrlyDb;
-import de.subcentral.core.impl.com.orlydb.OrlyDbLookup;
-import de.subcentral.core.impl.com.orlydb.OrlyDbLookupParameters;
+import de.subcentral.core.impl.to.xrel.XRelLookup;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.media.Movie;
 import de.subcentral.core.release.MediaRelease;
@@ -19,11 +17,17 @@ public class LookupTest
 		Movie movie = new Movie("The Lord of the Rings: The Return of the King");
 		MediaRelease rls = Releases.newMediaRelease(epi, null, "XviD");
 
-		OrlyDbLookup lookup = new OrlyDbLookup();
-		lookup.setQueryEntityNamingService(OrlyDb.getOrlyDbQueryNamingService());
-		LookupQuery<MediaRelease> query = lookup.createQueryFromParameters(new OrlyDbLookupParameters("", "pussy acrobats"));
+		// OrlyDbLookup lookup = new OrlyDbLookup();
+		// lookup.setQueryEntityNamingService(OrlyDb.getOrlyDbQueryNamingService());
+		// LookupQuery<MediaRelease> query = lookup.createQueryFromParameters(new OrlyDbLookupParameters("", "Psych S05E06"));
+		// for (MediaRelease foundRls : query.getResults())
+		// {
+		// System.out.println(foundRls);
+		// }
 
-		for (MediaRelease foundRls : query.getResults())
+		XRelLookup xrelLookup = new XRelLookup();
+		LookupQuery<MediaRelease> xrelQuery = xrelLookup.createQuery("Psych S06E01");
+		for (MediaRelease foundRls : xrelQuery.getResults())
 		{
 			System.out.println(foundRls);
 		}

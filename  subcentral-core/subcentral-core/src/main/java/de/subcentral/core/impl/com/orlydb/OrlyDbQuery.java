@@ -21,7 +21,14 @@ import de.subcentral.core.release.MediaRelease;
 
 public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 {
+	/**
+	 * The release dates are ISO-formatted (without the 'T').
+	 */
 	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+	/**
+	 * The release dates are in UTC.
+	 */
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
 
 	public OrlyDbQuery(URL url)
@@ -38,6 +45,9 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	/**
 	 * <pre>
 	 * <div id="releases">
+	 * 		<div>
+	 * 		...
+	 * 		</div>
 	 * ...
 	 * </div>
 	 * </pre>
@@ -45,7 +55,7 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param doc
 	 * @return
 	 */
-	private static List<MediaRelease> parseReleases(URL url, Document doc)
+	public static List<MediaRelease> parseReleases(URL url, Document doc)
 	{
 		Element rlssDiv = doc.getElementById("releases");
 		if (rlssDiv == null)

@@ -15,8 +15,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.google.common.collect.ImmutableList;
-
 import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.media.Media;
@@ -29,7 +27,8 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	/**
 	 * The date format is a german date and time string. Example: "09.01.14 04:14 Uhr"
 	 */
-	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("dd.MM.yy HH:mm 'Uhr'", Locale.US);
+	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("dd.MM.yy HH:mm 'Uhr'", Locale.GERMANY);
+
 	/**
 	 * The server zime zone is Europe/Berlin.
 	 */
@@ -63,14 +62,9 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 */
 	public static List<MediaRelease> parseReleases(URL url, Document doc)
 	{
-		Element resultFrameDiv = doc.getElementById("search_result_frame");
-		if (resultFrameDiv == null)
-		{
-			return ImmutableList.of();
-		}
-		// Search for elements with tag "div" and class "release_item" on the children list
-		// If searched in resultFrameDiv, the resultFrameDiv itself will be returned too, if it also matches the criteria.
-		Elements rlsDivs = resultFrameDiv.children().select("div.release_item");
+		System.out.println(url);
+		// Search for elements with tag "div" and class "release_item" on the doc
+		Elements rlsDivs = doc.select("div.release_item");
 		List<MediaRelease> rlss = new ArrayList<MediaRelease>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
@@ -133,7 +127,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param rlsDiv
 	 * @return
 	 */
-	public static MediaRelease parseRelease(URL url, Element rlsDiv)
+	private static MediaRelease parseRelease(URL url, Element rlsDiv)
 	{
 		MediaRelease rls = new MediaRelease();
 
@@ -178,6 +172,19 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		 *  	<a href="/tv-nfo/730264/Psych-S08E01-HDTV-x264-EXCELLENCE.html" class="sub_link">
 		 *       	<span id="_title730264">Psych.S08E01.HDTV.x264-EXCELLENCE</span>
 		 * 		</a>
+		 * </div>
+		 * </pre>
+		 * 
+		 * Truncated name
+		 * 
+		 * <pre>
+		 * <div class="release_title">
+		 * 	<img src="//static.xrel.to/static/img/release_state/proper.png" alt="" />
+		 * 	<a href="/tv/21258/Psych.html">Psych</a>
+		 * 	<span class="sub">(S06 E05)</span> <br />
+		 * 	<a href="/tv-nfo/416710/Psych-S06E05-Dead-Mans-Curveball-PROPER-HDTV-XviD-FQM.html" class="sub_link">
+		 * 		<span class="truncd" title="Psych.S06E05.Dead.Mans.Curveball.PROPER.HDTV.XviD-FQM" id="_title416710">Psych.S06...ead.Mans.Curveball.PROPER.HDTV.XviD-FQM</span>
+		 * 	</a>
 		 * </div>
 		 * </pre>
 		 */
@@ -228,16 +235,18 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		Media media = parseMedia(category, mediaSection, mediaTitle, seasonNumber, episodeNumber);
 		rls.setMaterial(media);
 
-		// If the title (release name) is too long, the title in the titleIdSpan is cropped
-		// and the uncropped is in the "title" attribute of the nfoAnchor.
-		// second anchor is the nfoAnchor
-		Element nfoAnchor = titleDiv.getElementsByTag("a").get(1);
-		String title = nfoAnchor.attr("title");
-		if (title.isEmpty())
+		Element titleIdSpan = titleDiv.select("span[id^=_title]").first();
+		// If the title is too long, it is truncated and the full title is in tile attribute.
+		String title;
+		if (titleIdSpan.hasClass("truncd"))
 		{
-			Element titleIdSpan = titleDiv.select("span[id^=_title]").first();
+			title = titleIdSpan.attr("title");
+		}
+		else
+		{
 			title = titleIdSpan.text();
 		}
+
 		rls.setName(title);
 
 		/**
@@ -245,22 +254,45 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		 * 
 		 * <pre>
 		 * <div class="release_grp">
+		 * 	<a href="/group-FQM-release-list.html">FQM</a><br />
+		 * 	<span class="sub">350 MB</span>
+		 * </div>
+		 * </pre>
+		 * 
+		 * group (truncated)
+		 * 
+		 * <pre>
+		 * <div class="release_grp">
 		 *  	<a href="/group-EXCELLENCE-release-list.html" title="EXCELLENCE">EXCELLEN...</a><br />
 		 * 	<span class="sub">300 MB</span>
+		 * </div>
+		 * </pre>
+		 * 
+		 * no group
+		 * 
+		 * <pre>
+		 * <div class="release_grp">
+		 *   NOGROUP
+		 *  <br /> 
+		 *  <span class="sub">1364 MB</span> 
 		 * </div>
 		 * </pre>
 		 */
 		Element groupDiv = rlsDiv.select("div.release_grp").first();
 		Element groupAnchor = groupDiv.getElementsByTag("a").first();
-		// If the group name is too long, the text in the groupAnchor is cropped
-		// and the uncropped is in the "title" attribute of the groupAnchor.
-		String groupName = groupAnchor.attr("title");
-		if (groupName.isEmpty())
+		// if no group is specified, there is no anchor
+		if (groupAnchor != null)
 		{
-			groupName = groupAnchor.text();
+			// If the group name is too long, the text in the groupAnchor is cropped
+			// and the uncropped is in the "title" attribute of the groupAnchor.
+			String groupName = groupAnchor.attr("title");
+			if (groupName.isEmpty())
+			{
+				groupName = groupAnchor.text();
+			}
+			Group group = new Group(groupName);
+			rls.setGroup(group);
 		}
-		Group group = new Group(groupName);
-		rls.setGroup(group);
 
 		return rls;
 	}

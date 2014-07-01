@@ -75,6 +75,8 @@ public class XRelLookup extends AbstractHttpLookup<MediaRelease, String>
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
+		// Do not use "mode=rls", because then results are displayed different
+		// and the info url is only available via an ajax call.
 		sb.append("xrel_search_query=");
 		// URLEncoder is just for encoding queries, not for the whole URL
 		sb.append(URLEncoder.encode(queryStr, "UTF-8"));
