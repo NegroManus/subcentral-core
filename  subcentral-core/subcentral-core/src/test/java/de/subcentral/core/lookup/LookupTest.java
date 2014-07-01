@@ -26,7 +26,7 @@ public class LookupTest
 		// }
 
 		XRelLookup xrelLookup = new XRelLookup();
-		LookupQuery<MediaRelease> xrelQuery = xrelLookup.createQuery("Psych S06E01");
+		LookupQuery<MediaRelease> xrelQuery = xrelLookup.createQuery("Psych");
 		for (MediaRelease foundRls : xrelQuery.getResults())
 		{
 			System.out.println(foundRls);

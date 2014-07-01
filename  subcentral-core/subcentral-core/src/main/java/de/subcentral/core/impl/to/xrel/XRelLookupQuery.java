@@ -233,7 +233,10 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		}
 
 		Media media = parseMedia(category, mediaSection, mediaTitle, seasonNumber, episodeNumber);
-		rls.setMaterial(media);
+		if (media != null)
+		{
+			rls.setMaterial(media);
+		}
 
 		Element titleIdSpan = titleDiv.select("span[id^=_title]").first();
 		// If the title is too long, it is truncated and the full title is in tile attribute.

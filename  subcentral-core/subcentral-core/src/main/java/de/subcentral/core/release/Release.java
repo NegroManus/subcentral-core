@@ -22,6 +22,11 @@ public interface Release<M> extends Comparable<Release<?>>
 
 	public long getSize();
 
+	/**
+	 * 
+	 * @return The nuke reason. If <code>null</code>, the release is not nuked. Can be an empty String (<code>""</code>) if the release is nuked, but
+	 *         the reason is unknown.
+	 */
 	public String getNukeReason();
 
 	public String getInfo();
