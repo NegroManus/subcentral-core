@@ -43,9 +43,12 @@ public class NamingException extends RuntimeException
 		StringBuilder sb = new StringBuilder();
 		sb.append("Exception while naming ");
 		sb.append(candidate);
-		sb.append(" (class ");
-		sb.append(candidate == null ? null : candidate.getClass());
-		sb.append(")");
+		if (candidate != null)
+		{
+			sb.append(" of ");
+			sb.append(candidate.getClass());
+			sb.append("");
+		}
 		if (additionalMsg != null)
 		{
 			sb.append(": ");

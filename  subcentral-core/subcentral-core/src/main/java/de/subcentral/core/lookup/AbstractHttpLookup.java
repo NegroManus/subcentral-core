@@ -2,24 +2,12 @@ package de.subcentral.core.lookup;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
-public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
+public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 {
 	public static final int	DEFAULT_TIMEOUT	= 5000;
-	private URL				host;
 	private int				timeout			= DEFAULT_TIMEOUT;
-
-	public URL getHost()
-	{
-		return host;
-	}
-
-	public void setHost(URL host)
-	{
-		this.host = host;
-	}
 
 	public int getTimeout()
 	{
@@ -31,15 +19,10 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 		this.timeout = timeout;
 	}
 
-	public void setHost(String hostname) throws MalformedURLException
-	{
-		setHost(new URL(hostname));
-	}
-
 	@Override
 	public String getDomain()
 	{
-		return host.getHost();
+		return getHost().getHost();
 	}
 
 	@Override
@@ -47,7 +30,7 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 	{
 		try
 		{
-			HttpURLConnection connection = (HttpURLConnection) host.openConnection();
+			HttpURLConnection connection = (HttpURLConnection) getHost().openConnection();
 			connection.setConnectTimeout(timeout);
 			connection.setReadTimeout(timeout);
 			int responseCode = connection.getResponseCode();
@@ -60,11 +43,11 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 	}
 
 	@Override
-	public LookupResult<R> lookup(Q query) throws LookupException
+	public LookupQuery<R> createQuery(String query)
 	{
 		try
 		{
-			return lookupByUrl(buildQueryUrl(query));
+			return createQuery(buildQueryUrl(query));
 		}
 		catch (Exception e)
 		{
@@ -72,19 +55,28 @@ public abstract class AbstractHttpLookup<R, Q> implements Lookup<R, Q>
 		}
 	}
 
-	public abstract LookupResult<R> lookupByUrl(URL url) throws LookupException;
-
-	public LookupResult<R> lookupByUrl(String url) throws LookupException
+	@Override
+	public LookupQuery<R> createQueryFromParameters(P parameterBean)
 	{
 		try
 		{
-			return lookupByUrl(new URL(getHost(), url));
+			return createQuery(buildQueryUrlFromParameters(parameterBean));
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(this, url, e);
+			throw new LookupException(parameterBean, e);
 		}
 	}
 
-	protected abstract URL buildQueryUrl(Q query) throws Exception;
+	public abstract LookupQuery<R> createQuery(URL query);
+
+	/**
+	 * 
+	 * @return The URL of the host of this lookup. Not null.
+	 */
+	protected abstract URL getHost();
+
+	protected abstract URL buildQueryUrl(String query) throws Exception;
+
+	protected abstract URL buildQueryUrlFromParameters(P parameterBean) throws Exception;
 }

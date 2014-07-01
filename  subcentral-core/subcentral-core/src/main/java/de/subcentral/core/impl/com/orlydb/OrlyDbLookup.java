@@ -3,52 +3,23 @@ package de.subcentral.core.impl.com.orlydb;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableList;
-
-import de.subcentral.core.lookup.AbstractHttpHtmlLookup;
-import de.subcentral.core.lookup.LookupException;
-import de.subcentral.core.lookup.LookupResult;
-import de.subcentral.core.media.Media;
-import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.lookup.AbstractHttpLookup;
+import de.subcentral.core.lookup.LookupQuery;
 import de.subcentral.core.release.MediaRelease;
 
-public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQuery>
+public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbLookupParameters>
 {
-	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
-	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
-	private NamingService					queryNamingService	= null;
-
-	public NamingService getQueryNamingService()
-	{
-		return queryNamingService;
-	}
-
-	public void setQueryNamingService(NamingService queryNamingService)
-	{
-		this.queryNamingService = queryNamingService;
-	}
-
-	public OrlyDbLookup()
+	private static URL	host;
+	static
 	{
 		try
 		{
-			setHost("http://orlydb.com/");
+			host = new URL("http://www.orlydb.com/");
 		}
 		catch (MalformedURLException e)
 		{
@@ -57,34 +28,9 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	}
 
 	@Override
-	public OrlyDbQuery createQuery(String queryString)
+	protected URL getHost()
 	{
-		return createQuery(queryString, null);
-	}
-
-	public OrlyDbQuery createQuery(String query, String section)
-	{
-		return new OrlyDbQuery(query, section);
-	}
-
-	public OrlyDbQuery createQuery(Media media)
-	{
-		return createQuery(media, null);
-	}
-
-	public OrlyDbQuery createQuery(Media media, String section)
-	{
-		return new OrlyDbQuery(queryNamingService.name(media), section);
-	}
-
-	public OrlyDbQuery createQuery(MediaRelease mediaRelease)
-	{
-		return createQuery(mediaRelease, null);
-	}
-
-	public OrlyDbQuery createQuery(MediaRelease mediaRelease, String section)
-	{
-		return new OrlyDbQuery(queryNamingService.name(mediaRelease), section);
+		return host;
 	}
 
 	@Override
@@ -94,50 +40,44 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 	}
 
 	@Override
-	public OrlyDbLookupResult lookup(OrlyDbQuery query) throws LookupException
+	public LookupQuery<MediaRelease> createQuery(URL query)
 	{
-		return (OrlyDbLookupResult) super.lookup(query);
+		return new OrlyDbQuery(query);
 	}
 
 	@Override
-	public OrlyDbLookupResult lookup(String query) throws LookupException
+	protected URL buildQueryUrl(String query) throws Exception
 	{
-		return (OrlyDbLookupResult) super.lookup(query);
+		return new URI("http", null, getHost().getHost(), -1, "/", encodeQuery(query), null).toURL();
 	}
 
 	@Override
-	public OrlyDbLookupResult lookupByUrl(URL url) throws LookupException
+	protected URL buildQueryUrlFromParameters(OrlyDbLookupParameters parameterBean) throws Exception
 	{
-		return (OrlyDbLookupResult) super.lookupByUrl(url);
-	}
-
-	@Override
-	public OrlyDbLookupResult lookupByUrl(String url) throws LookupException
-	{
-		return (OrlyDbLookupResult) super.lookupByUrl(url);
-	}
-
-	@Override
-	protected URL buildQueryUrl(OrlyDbQuery query) throws URISyntaxException, UnsupportedEncodingException, MalformedURLException
-	{
-		if (query == null)
+		if (parameterBean == null)
 		{
 			return null;
 		}
 		StringBuilder path = new StringBuilder("/");
-		if (query.getSection() != null)
+		if (!StringUtils.isBlank(parameterBean.getSection()))
 		{
 			path.append("s/");
-			path.append(query.getSection());
+			path.append(parameterBean.getSection());
 		}
-		String queryStr = encodeQuery(query.getQuery());
+		String queryStr = encodeQuery(parameterBean.getQuery());
 		URI uri = new URI("http", null, getHost().getHost(), -1, path.toString(), queryStr, null);
 		return uri.toURL();
 	}
 
+	@Override
+	public Class<OrlyDbLookupParameters> getParameterBeanClass()
+	{
+		return OrlyDbLookupParameters.class;
+	}
+
 	private static String encodeQuery(String queryStr) throws UnsupportedEncodingException
 	{
-		if (queryStr == null)
+		if (StringUtils.isBlank(queryStr))
 		{
 			return null;
 		}
@@ -146,105 +86,5 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<MediaRelease, OrlyDbQue
 		// URLEncoder is just for encoding queries, not for the whole URL
 		sb.append(URLEncoder.encode(queryStr, "UTF-8"));
 		return sb.toString();
-	}
-
-	@Override
-	protected LookupResult<MediaRelease> parseDocument(URL url, Document doc) throws Exception
-	{
-		return new OrlyDbLookupResult(parseReleases(url, doc));
-	}
-
-	/**
-	 * <pre>
-	 * <div id="releases">
-	 * ...
-	 * </div>
-	 * </pre>
-	 * 
-	 * @param doc
-	 * @return
-	 */
-	private static List<MediaRelease> parseReleases(URL url, Document doc)
-	{
-		Element rlssDiv = doc.getElementById("releases");
-		if (rlssDiv == null)
-		{
-			return ImmutableList.of();
-		}
-		// Search for elements with tag "div" on the children list
-		// If searched in rlssDiv, the rlssDiv itself will be returned too.
-		Elements rlsDivs = rlssDiv.children().tagName("div");
-		List<MediaRelease> rlss = new ArrayList<MediaRelease>(rlsDivs.size());
-		for (Element rlsDiv : rlsDivs)
-		{
-			MediaRelease rls = parseRelease(url, rlsDiv);
-			if (rls != null)
-			{
-				rlss.add(rls);
-			}
-		}
-		return rlss;
-	}
-
-	/**
-	 * <pre>
-	 * <div>
-	 * 	<span class="timestamp">2011-11-10 04:16:48</span>
-	 * 	<span class="section"><a href="/s/tv-xvid">TV-XVID</a></span>
-	 * 	<span class="release">Psych.S06E05.HDTV.XviD-P0W4</span>
-	 * 	<a href="/dl/Psych.S06E05.HDTV.XviD-P0W4/" class="dlright"><span class="dl">DL</span></a>
-	 * 	
-	 * 		<span class="inforight"><span class="info">349.3MB | 25F</span></span>
-	 * 	
-	 * 	
-	 * 		<span class="nukeright"><span class="nuke">contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></span>
-	 * 	
-	 * </div>
-	 * </pre>
-	 * 
-	 * @param rlsDiv
-	 * @return
-	 */
-	private static MediaRelease parseRelease(URL url, Element rlsDiv)
-	{
-		Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
-		Element sectionSpan = rlsDiv.getElementsByClass("section").first();
-		Element releaseSpan = rlsDiv.getElementsByClass("release").first();
-		Element infoSpan = rlsDiv.getElementsByClass("info").first();
-		Element nukeSpan = rlsDiv.getElementsByClass("nuke").first();
-
-		if (releaseSpan == null)
-		{
-			return null;
-		}
-
-		MediaRelease rls = new MediaRelease();
-		rls.setName(releaseSpan.text());
-		if (sectionSpan != null)
-		{
-			rls.setSection(sectionSpan.text());
-		}
-		if (timestampSpan != null)
-		{
-			try
-			{
-				rls.setDate(ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE));
-			}
-			catch (DateTimeParseException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		if (infoSpan != null)
-		{
-			rls.setInfo(infoSpan.text());
-		}
-		if (nukeSpan != null)
-		{
-			rls.setNukeReason(nukeSpan.text());
-		}
-		rls.setInfoUrl(url.toExternalForm());
-		return rls;
 	}
 }

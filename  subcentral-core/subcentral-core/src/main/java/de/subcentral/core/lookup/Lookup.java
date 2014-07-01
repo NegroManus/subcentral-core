@@ -1,19 +1,21 @@
 package de.subcentral.core.lookup;
 
-public interface Lookup<R, Q>
+public interface Lookup<R, P>
 {
 	public String getDomain();
 
-	public Class<R> getResultClass();
-
 	public boolean isLookupAvailable();
 
-	public LookupResult<R> lookup(Q query) throws LookupException;
+	public Class<R> getResultClass();
 
-	public default LookupResult<R> lookup(String query) throws LookupException
-	{
-		return lookup(createQuery(query));
-	}
+	public LookupQuery<R> createQuery(String query);
 
-	public Q createQuery(String queryString);
+	public LookupQuery<R> createQueryFromParameters(P parameterBean);
+
+	public Class<P> getParameterBeanClass();
+
+	public LookupQuery<R> createQueryFromEntity(Object queryEntity);
+
+	public boolean isQueryEntitySupported(Object queryEntity);
+
 }
