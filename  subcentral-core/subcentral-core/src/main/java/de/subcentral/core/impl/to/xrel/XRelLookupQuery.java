@@ -250,6 +250,23 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		rls.setName(title);
 
 		/**
+		 * <pre>
+		 * <div class="release_options">
+		 * 	<a href="/tv-nfo/730264/Psych-S08E01-HDTV-x264-EXCELLENCE.html" title="NFO ansehen">
+		 * 		<img src="//static.xrel.to/static/img/icons/nfo.png" alt="NFO ansehen" />
+		 * 	</a>
+		 * </div>
+		 * </pre>
+		 */
+		Element optionsDiv = rlsDiv.select("div.release_options").first();
+		if (optionsDiv != null)
+		{
+			Element nfoAnchor = optionsDiv.getElementsByTag("a").first();
+			String nfoUrl = nfoAnchor.absUrl("href");
+			rls.setInfoUrl(nfoUrl);
+		}
+
+		/**
 		 * group
 		 * 
 		 * <pre>
