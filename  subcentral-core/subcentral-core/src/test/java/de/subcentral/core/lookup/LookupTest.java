@@ -1,6 +1,15 @@
 package de.subcentral.core.lookup;
 
-import de.subcentral.core.impl.to.xrel.XRelLookup;
+import java.io.File;
+import java.net.URL;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import com.google.common.io.Resources;
+
+import de.subcentral.core.impl.to.xrel.XRelLookupQuery;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.media.Movie;
 import de.subcentral.core.release.MediaRelease;
@@ -25,19 +34,19 @@ public class LookupTest
 		// System.out.println(foundRls);
 		// }
 
-		XRelLookup xrelLookup = new XRelLookup();
-		LookupQuery<MediaRelease> xrelQuery = xrelLookup.createQuery("Psych");
-		for (MediaRelease foundRls : xrelQuery.getResults())
-		{
-			System.out.println(foundRls);
-		}
-
-		// URL resource = Resources.getResource("de/subcentral/core/impl/to/xrel/psych.s08e01.html");
-		// Document doc = Jsoup.parse(new File(resource.toURI()), "UTF-8");
-		// List<MediaRelease> results = XRelLookupQuery.parseReleases(new URL("http://xrel.to"), doc);
-		// for (MediaRelease foundRls : results)
+		// XRelLookup xrelLookup = new XRelLookup();
+		// LookupQuery<MediaRelease> xrelQuery = xrelLookup.createQuery("Psych");
+		// for (MediaRelease foundRls : xrelQuery.getResults())
 		// {
 		// System.out.println(foundRls);
 		// }
+
+		URL resource = Resources.getResource("de/subcentral/core/impl/to/xrel/psych.s08e01.html");
+		Document doc = Jsoup.parse(new File(resource.toURI()), "UTF-8");
+		List<MediaRelease> results = XRelLookupQuery.parseReleases(new URL("http://xrel.to"), doc);
+		for (MediaRelease foundRls : results)
+		{
+			System.out.println(foundRls);
+		}
 	}
 }

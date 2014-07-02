@@ -9,6 +9,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,9 +20,12 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.release.MediaRelease;
+import de.subcentral.core.util.ByteUtil;
 
 public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 {
+	public static final String				NAME				= "ORLYDB";
+
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
 	 */
@@ -129,13 +134,28 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 
 		if (infoSpan != null)
 		{
-			rls.setInfo(infoSpan.text());
+			String info = infoSpan.text();
+			rls.setInfo(info);
+			// e.g. "349.3MB | 25F"
+			Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
+			Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
+			if (mSizeAndFiles.matches())
+			{
+				long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
+				System.out.println(ByteUtil.bytesToString(size, true));
+				// ignore number of files
+				// int files = Integer.parseInt(mSizeAndFiles.group(2));
+				rls.setSize(size);
+			}
 		}
+
 		if (nukeSpan != null)
 		{
 			rls.setNukeReason(nukeSpan.text());
 		}
-		rls.setInfoUrl(url.toExternalForm());
+
+		rls.setSource(NAME);
+		rls.setSourceUrl(url.toExternalForm());
 		return rls;
 	}
 }

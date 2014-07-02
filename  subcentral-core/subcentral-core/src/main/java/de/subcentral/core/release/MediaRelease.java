@@ -44,10 +44,13 @@ public class MediaRelease extends AbstractRelease<Media>
 				.add("group", group)
 				.add("tags", tags)
 				.add("date", date)
-				.add("nukeReason", nukeReason)
 				.add("section", section)
+				.add("size", size)
+				.add("nukeReason", nukeReason)
 				.add("info", info)
 				.add("infoUrl", infoUrl)
+				.add("source", source)
+				.add("sourceUrl", sourceUrl)
 				.toString();
 	}
 }

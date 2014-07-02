@@ -13,13 +13,24 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
-public class MultiEpisode extends ArrayList<Episode>
+/**
+ * A helper class for dealing with multiple episodes.
+ * <p>
+ * <code>MultiEpisodeHelper</code> does not implement {@link AvMediaCollection} because it is just a helper class and not an "official", releasable
+ * collection of <code>Media</code>. In contrast to <code>Media</code> collections like <code>Series</code> and <code>Season</code>, a collection of
+ * multiple episodes has no properties of its own. Therefore it is not a valid <code>Media</code> instance. <br/>
+ * If multiple <code>Episodes</code> are released in a single <code>Release</code>, they are released as a set of materials and not as one material
+ * (contrary to whole <code>Series</code> or <code>Seasons</code> which are released as one material).
+ * </p>
+ *
+ */
+public class MultiEpisodeHelper extends ArrayList<Episode>
 {
 	private static final long	serialVersionUID	= 870081295286403057L;
 
-	public static MultiEpisode of(List<? extends Media> media) throws IllegalArgumentException
+	public static MultiEpisodeHelper of(List<? extends Media> media) throws IllegalArgumentException
 	{
-		MultiEpisode me = new MultiEpisode(media.size());
+		MultiEpisodeHelper me = new MultiEpisodeHelper(media.size());
 		for (Media m : media)
 		{
 			if (m instanceof Episode)
@@ -64,22 +75,22 @@ public class MultiEpisode extends ArrayList<Episode>
 		return ranges;
 	}
 
-	public MultiEpisode()
+	public MultiEpisodeHelper()
 	{
 		this(2);
 	}
 
-	public MultiEpisode(int initialCapacity)
+	public MultiEpisodeHelper(int initialCapacity)
 	{
 		super(initialCapacity);
 	}
 
-	public MultiEpisode(Collection<? extends Episode> c)
+	public MultiEpisodeHelper(Collection<? extends Episode> c)
 	{
 		super(c);
 	}
 
-	public MultiEpisode(Episode... episodes)
+	public MultiEpisodeHelper(Episode... episodes)
 	{
 		super(Arrays.asList(episodes));
 	}

@@ -31,9 +31,9 @@ public class Medias
 		}
 	}
 
-	public static MultiEpisode newMultiEpisode(List<? extends Media> media)
+	public static MultiEpisodeHelper newMultiEpisode(List<? extends Media> media)
 	{
-		MultiEpisode me = new MultiEpisode(media.size());
+		MultiEpisodeHelper me = new MultiEpisodeHelper(media.size());
 		for (Media m : media)
 		{
 			if (m instanceof Episode)
@@ -60,7 +60,7 @@ public class Medias
 		{
 			try
 			{
-				MultiEpisode me = MultiEpisode.of(media);
+				MultiEpisodeHelper me = MultiEpisodeHelper.of(media);
 				return namingService.name(me);
 			}
 			catch (IllegalArgumentException | NoNamerRegisteredException e)

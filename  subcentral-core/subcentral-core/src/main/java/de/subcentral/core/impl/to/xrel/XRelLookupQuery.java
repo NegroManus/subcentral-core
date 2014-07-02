@@ -21,9 +21,12 @@ import de.subcentral.core.media.Media;
 import de.subcentral.core.release.Group;
 import de.subcentral.core.release.MediaRelease;
 import de.subcentral.core.release.Release;
+import de.subcentral.core.util.ByteUtil;
 
 public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 {
+	public static final String				NAME				= "xREL";
+
 	/**
 	 * The date format is a german date and time string. Example: "09.01.14 04:14 Uhr"
 	 */
@@ -253,6 +256,8 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		rls.setName(title);
 
 		/**
+		 * info
+		 * 
 		 * <pre>
 		 * <div class="release_options">
 		 * 	<a href="/tv-nfo/730264/Psych-S08E01-HDTV-x264-EXCELLENCE.html" title="NFO ansehen">
@@ -303,8 +308,8 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		// if no group is specified, there is no anchor
 		if (groupAnchor != null)
 		{
-			// If the group name is too long, the text in the groupAnchor is cropped
-			// and the uncropped is in the "title" attribute of the groupAnchor.
+			// If the group name is too long, the text in the groupAnchor is truncated
+			// and the full name is in the "title" attribute of the groupAnchor.
 			String groupName = groupAnchor.attr("title");
 			if (groupName.isEmpty())
 			{
@@ -313,6 +318,19 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 			Group group = new Group(groupName);
 			rls.setGroup(group);
 		}
+		// size
+		Element sizeSpan = groupDiv.getElementsByTag("span").first();
+		try
+		{
+			rls.setSize(ByteUtil.parseBytes(sizeSpan.text()));
+		}
+		catch (NumberFormatException e)
+		{
+			e.printStackTrace();
+		}
+
+		rls.setSource(NAME);
+		rls.setSourceUrl(url.toExternalForm());
 
 		return rls;
 	}

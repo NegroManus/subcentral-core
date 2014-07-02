@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.media.Movie;
-import de.subcentral.core.media.MultiEpisode;
+import de.subcentral.core.media.MultiEpisodeHelper;
 import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
 import de.subcentral.core.release.Group;
@@ -43,7 +43,7 @@ public class NamingTest
 		movie.setTitle("The Lord of the Rings");
 		movie.setDate(Year.of(2002));
 
-		MultiEpisode epis = new MultiEpisode();
+		MultiEpisodeHelper epis = new MultiEpisodeHelper();
 		Episode epi2 = series.newEpisode();
 		epi2.setNumberInSeries(18);
 

@@ -2,11 +2,11 @@ package de.subcentral.core.naming;
 
 import java.util.List;
 
-import de.subcentral.core.media.MultiEpisode;
+import de.subcentral.core.media.MultiEpisodeHelper;
 import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
 
-public class MultiEpisodeNamer implements Namer<MultiEpisode>
+public class MultiEpisodeNamer implements Namer<MultiEpisodeHelper>
 {
 	private SeasonedEpisodeNamer	episodeNamer					= NamingStandards.SEASONED_EPISODE_NAMER;
 
@@ -15,13 +15,13 @@ public class MultiEpisodeNamer implements Namer<MultiEpisode>
 	private String					episodeAdditionSeparator		= " ";
 
 	@Override
-	public Class<MultiEpisode> getType()
+	public Class<MultiEpisodeHelper> getType()
 	{
-		return MultiEpisode.class;
+		return MultiEpisodeHelper.class;
 	}
 
 	@Override
-	public String name(MultiEpisode me, NamingService namingService) throws NamingException
+	public String name(MultiEpisodeHelper me, NamingService namingService) throws NamingException
 	{
 		if (me.isEmpty())
 		{
@@ -37,7 +37,7 @@ public class MultiEpisodeNamer implements Namer<MultiEpisode>
 			{
 				if (me.areAllNumberedInSeason())
 				{
-					List<List<Integer>> numberRanges = MultiEpisode.splitIntoConsecutiveRanges(me.getNumbersInSeason());
+					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeason());
 					List<Integer> firstRange = numberRanges.get(0);
 					appendRange(sb, firstRange, true);
 
@@ -62,7 +62,7 @@ public class MultiEpisodeNamer implements Namer<MultiEpisode>
 				// no seasons at all
 				if (me.areAllNumberedInSeries())
 				{
-					List<List<Integer>> numberRanges = MultiEpisode.splitIntoConsecutiveRanges(me.getNumbersInSeries());
+					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeries());
 					List<Integer> firstRange = numberRanges.get(0);
 					appendRange(sb, firstRange, true);
 
