@@ -38,7 +38,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		{
 			throw new IllegalArgumentException("Series name must be set");
 		}
-		Series series = new Series();
+		Series series = new Series(seriesName);
 		series.setType(Series.TYPE_SEASONED);
 		series.setName(seriesName);
 		series.setTitle(seriesTitle);
@@ -197,7 +197,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	@Override
 	public String getName()
 	{
-		return NamingStandards.EPISODE_NAMER.name(this);
+		return NamingStandards.SEASONED_EPISODE_NAMER.name(this);
 	}
 
 	@Override

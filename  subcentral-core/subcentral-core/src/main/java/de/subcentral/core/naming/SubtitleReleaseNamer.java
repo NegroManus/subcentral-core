@@ -1,17 +1,28 @@
 package de.subcentral.core.naming;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.release.MediaRelease;
+import de.subcentral.core.release.Tag;
 import de.subcentral.core.subtitle.Subtitle;
 import de.subcentral.core.subtitle.SubtitleRelease;
 import de.subcentral.core.util.Replacer;
-import de.subcentral.core.util.StringUtil;
 
-public class SubtitleReleaseNamer extends AbstractReleaseNamer<Subtitle, SubtitleRelease>
+public class SubtitleReleaseNamer extends AbstractReleaseNamer<SubtitleRelease, Subtitle> implements Namer<SubtitleRelease>
 {
-	private Replacer	subtitleLanguageReplacer	= NamingStandards.STANDARD_REPLACER;
-	private String		subtitleLanguageFormat		= ".%s";
+	/**
+	 * The naming setting key for the MediaRelease value "mediaRelease".
+	 */
+	public static final String	PARAM_MEDIA_RELEASE_KEY						= SubtitleReleaseNamer.class.getName() + ".mediaRelease";
+
+	private Replacer			subtitleLanguageReplacer					= NamingStandards.STANDARD_REPLACER;
+	private String				subtitleLanguageFormat						= "%s";
+
+	private String				mediaReleaseAndSubtitleLanguageSeparator	= ".";
 
 	public Replacer getSubtitleLanguageReplacer()
 	{
@@ -39,38 +50,40 @@ public class SubtitleReleaseNamer extends AbstractReleaseNamer<Subtitle, Subtitl
 		return SubtitleRelease.class;
 	}
 
-	public String name(SubtitleRelease rls, MediaRelease mediaRelease, NamingService namingService)
+	@Override
+	public String doName(SubtitleRelease rls, NamingService namingService, Map<String, Object> params)
 	{
-		if (rls == null)
+		// read naming settings
+		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_RELEASE_KEY, MediaRelease.class, rls.getFirstCompatibleMediaRelease());
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(namingService.name(mediaRls));
+		Subtitle sub = rls.getFirstMaterial();
+		if (sub != null)
 		{
-			return null;
+			sb.append(formatSubtitleLanguage(sub.getLanguage()));
 		}
-		try
+		if (!rls.getTags().isEmpty())
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append(namingService.name(mediaRelease));
-			Subtitle sub = rls.getFirstMaterial();
-			sb.append(String.format(subtitleLanguageFormat, StringUtil.replace(sub.getLanguage(), subtitleLanguageReplacer)));
-			if (!rls.getTags().isEmpty())
+			sb.append(mediaReleaseAndSubtitleLanguageSeparator);
+			List<String> formattedTags = new ArrayList<>();
+			for (Tag tag : rls.getTags())
 			{
-				sb.append(String.format(tagsFormat, Joiner.on(tagsSeparator).join(rls.getTags())));
+				formattedTags.add(formatTag(tag.getName()));
 			}
-			if (rls.getGroup() != null)
-			{
-				sb.append(String.format(groupFormat, rls.getGroup().getName()));
-			}
-			return sb.toString();
+			sb.append(Joiner.on(tagsSeparator).join(rls.getTags()));
 		}
-		catch (Exception e)
+		if (rls.getGroup() != null)
 		{
-			throw new NamingException(rls, e);
+			sb.append(tagsAndGroupSeparator);
+			sb.append(formatGroup(rls.getGroup().getName()));
 		}
+		return sb.toString();
 	}
 
-	@Override
-	public String name(SubtitleRelease rls, NamingService namingService)
+	public String formatSubtitleLanguage(String language)
 	{
-		return name(rls, rls.getFirstCompatibleMediaRelease(), namingService);
+		return String.format(subtitleLanguageFormat, Replacer.replace(language, subtitleLanguageReplacer));
 	}
 
 }

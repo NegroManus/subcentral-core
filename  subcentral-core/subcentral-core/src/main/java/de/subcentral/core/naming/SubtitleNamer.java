@@ -1,5 +1,7 @@
 package de.subcentral.core.naming;
 
+import java.util.Map;
+
 import de.subcentral.core.subtitle.Subtitle;
 
 public class SubtitleNamer implements Namer<Subtitle>
@@ -11,7 +13,7 @@ public class SubtitleNamer implements Namer<Subtitle>
 	}
 
 	@Override
-	public String name(Subtitle sub, NamingService namingService)
+	public String name(Subtitle sub, NamingService namingService, Map<String, Object> namingSettings)
 	{
 		if (sub == null)
 		{

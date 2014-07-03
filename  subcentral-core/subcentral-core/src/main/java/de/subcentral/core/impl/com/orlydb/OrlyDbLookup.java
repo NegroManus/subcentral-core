@@ -1,10 +1,6 @@
 package de.subcentral.core.impl.com.orlydb;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,23 +10,21 @@ import de.subcentral.core.release.MediaRelease;
 
 public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbLookupParameters>
 {
-	private static URL	host;
-	static
+	public OrlyDbLookup()
 	{
-		try
-		{
-			host = new URL("http://www.orlydb.com/");
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
+		super(OrlyDb.getOrlyDbQueryEntityNamingService());
+	}
+
+	@Override
+	public String getName()
+	{
+		return OrlyDb.NAME;
 	}
 
 	@Override
 	protected URL getHost()
 	{
-		return host;
+		return OrlyDb.HOST_URL;
 	}
 
 	@Override
@@ -42,13 +36,19 @@ public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbLookupP
 	@Override
 	public LookupQuery<MediaRelease> createQuery(URL query)
 	{
-		return new OrlyDbQuery(query);
+		return new OrlyDbLookupQuery(this, query);
 	}
 
 	@Override
-	protected URL buildQueryUrl(String query) throws Exception
+	protected String getDefaultQueryPath()
 	{
-		return new URI("http", null, getHost().getHost(), -1, "/", encodeQuery(query), null).toURL();
+		return "/";
+	}
+
+	@Override
+	protected String getDefaultQueryPrefix()
+	{
+		return "q=";
 	}
 
 	@Override
@@ -64,27 +64,12 @@ public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbLookupP
 			path.append("s/");
 			path.append(parameterBean.getSection());
 		}
-		String queryStr = encodeQuery(parameterBean.getQuery());
-		URI uri = new URI("http", null, getHost().getHost(), -1, path.toString(), queryStr, null);
-		return uri.toURL();
+		return buildQueryUrl(path.toString(), getDefaultQueryPrefix(), parameterBean.getQuery());
 	}
 
 	@Override
 	public Class<OrlyDbLookupParameters> getParameterBeanClass()
 	{
 		return OrlyDbLookupParameters.class;
-	}
-
-	private static String encodeQuery(String queryStr) throws UnsupportedEncodingException
-	{
-		if (StringUtils.isBlank(queryStr))
-		{
-			return null;
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("q=");
-		// URLEncoder is just for encoding queries, not for the whole URL
-		sb.append(URLEncoder.encode(queryStr, "UTF-8"));
-		return sb.toString();
 	}
 }

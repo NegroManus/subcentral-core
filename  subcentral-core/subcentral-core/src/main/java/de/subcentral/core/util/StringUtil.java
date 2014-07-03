@@ -91,14 +91,4 @@ public class StringUtil
 	{
 		deleteTrailing(sb, ' ');
 	}
-
-	public static String replace(String s, Replacer r)
-	{
-		if (s == null)
-		{
-			return null;
-		}
-		return r == null ? s : r.process(s);
-	}
-
 }

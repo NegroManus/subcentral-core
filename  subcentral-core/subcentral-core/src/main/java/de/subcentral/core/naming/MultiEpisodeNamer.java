@@ -1,12 +1,15 @@
 package de.subcentral.core.naming;
 
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.media.MultiEpisodeHelper;
 import de.subcentral.core.media.Season;
 import de.subcentral.core.media.Series;
 
-public class MultiEpisodeNamer implements Namer<MultiEpisodeHelper>
+public class MultiEpisodeNamer extends AbstractNamer<MultiEpisodeHelper>
 {
 	private SeasonedEpisodeNamer	episodeNamer					= NamingStandards.SEASONED_EPISODE_NAMER;
 
@@ -21,7 +24,7 @@ public class MultiEpisodeNamer implements Namer<MultiEpisodeHelper>
 	}
 
 	@Override
-	public String name(MultiEpisodeHelper me, NamingService namingService) throws NamingException
+	public String doName(MultiEpisodeHelper me, NamingService namingService, Map<String, Object> namingSettings) throws NamingException
 	{
 		if (me.isEmpty())
 		{
@@ -53,7 +56,7 @@ public class MultiEpisodeNamer implements Namer<MultiEpisodeHelper>
 					for (int i = 1; i < me.size(); i++)
 					{
 						sb.append(episodeAdditionSeparator);
-						sb.append(episodeNamer.name(me.get(i), false, false));
+						sb.append(episodeNamer.name(me.get(i), ImmutableMap.of("includeSeries", Boolean.FALSE, "includeSeason", Boolean.FALSE)));
 					}
 				}
 			}
@@ -80,7 +83,7 @@ public class MultiEpisodeNamer implements Namer<MultiEpisodeHelper>
 				for (int i = 1; i < me.size(); i++)
 				{
 					sb.append(episodeAdditionSeparator);
-					sb.append(episodeNamer.name(me.get(i), false, true));
+					sb.append(episodeNamer.name(me.get(i), ImmutableMap.of("includeSeries", Boolean.FALSE, "includeSeason", Boolean.TRUE)));
 				}
 			}
 		}

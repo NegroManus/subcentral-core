@@ -59,7 +59,13 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public Series(String name)
 	{
-		this.name = name;
+		this(name, null);
+	}
+
+	public Series(String name, String title)
+	{
+		setName(name);
+		setTitle(title);
 	}
 
 	@Override

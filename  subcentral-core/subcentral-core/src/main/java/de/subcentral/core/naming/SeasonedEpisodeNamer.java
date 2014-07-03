@@ -1,8 +1,9 @@
 package de.subcentral.core.naming;
 
+import java.util.Map;
+
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.util.Replacer;
-import de.subcentral.core.util.StringUtil;
 
 /**
  * Possible naming combinations:
@@ -97,25 +98,35 @@ import de.subcentral.core.util.StringUtil;
  * @author mhertram
  *
  */
-public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNamer
+public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 {
-	private boolean		alwaysIncludeSeasonTitle				= false;
+	/**
+	 * The naming setting key for the Boolean value "includeSeries".
+	 */
+	public static final String	PARAM_INCLUDE_SERIES_KEY				= SeasonedEpisodeNamer.class.getName() + ".includeSeries";
+	public static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT			= Boolean.TRUE;
 
-	private String		seasonNumberFormat						= "S%02d";
-	private Replacer	seasonTitleReplacer						= null;
-	private String		seasonTitleFormat						= "%s";
-	private String		episodeNumberFormat						= "E%02d";
+	/**
+	 * The naming setting key for the Boolean value "includeSeason".
+	 */
+	public static final String	PARAM_INCLUDE_SEASON_KEY				= SeasonedEpisodeNamer.class.getName() + ".includeSeason";
+	public static final Boolean	PARAM_INCLUDE_SEASON_DEFAULT			= Boolean.TRUE;
 
-	private String		separatorSeriesAndAnything				= " ";
-	private String		separatorSeasonNumberAndTitle			= " ";
-	private String		separatorSeasonNumberAndEpisodeNumber	= "";
-	private String		separatorSeasonAndEpisode				= " ";
-	private String		separatorEpisodeNumberAndTitle			= " ";
+	private boolean				alwaysIncludeSeasonTitle				= false;
 
-	private String		undefinedSeries							= "UNNAMED_SERIES";
-	private String		undefinedSeason							= "Sxx";
-	private String		undefinedEpisode						= "Exx";
+	private String				seasonNumberFormat						= "S%02d";
+	private Replacer			seasonTitleReplacer						= null;
+	private String				seasonTitleFormat						= "%s";
+	private String				episodeNumberFormat						= "E%02d";
 
+	private String				seasonNumberAndTitleSeparator			= " ";
+	private String				seasonNumberAndEpisodeNumberSeparator	= "";
+	private String				seasonAndEpisodeSeparator				= " ";
+	private String				episodeNumberAndTitleSeparator			= " ";
+
+	private String				undefinedSeasonPlaceholder				= "Sxx";
+
+	// booleans
 	public boolean getAlwaysIncludeSeasonTitle()
 	{
 		return alwaysIncludeSeasonTitle;
@@ -126,6 +137,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 		this.alwaysIncludeSeasonTitle = alwaysIncludeSeasonTitle;
 	}
 
+	// formats and replacers
 	public String getSeasonNumberFormat()
 	{
 		return seasonNumberFormat;
@@ -166,13 +178,64 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 		this.episodeNumberFormat = episodeNumberFormat;
 	}
 
-	@Override
-	public String name(Episode epi, boolean includeSeries, boolean includeSeason, NamingService namingService)
+	// separators
+	public String getSeasonNumberAndTitleSeparator()
 	{
-		if (epi == null)
-		{
-			return null;
-		}
+		return seasonNumberAndTitleSeparator;
+	}
+
+	public void setSeasonNumberAndTitleSeparator(String seasonNumberAndTitleSeparator)
+	{
+		this.seasonNumberAndTitleSeparator = seasonNumberAndTitleSeparator;
+	}
+
+	public String getSeasonNumberAndEpisodeNumberSeparator()
+	{
+		return seasonNumberAndEpisodeNumberSeparator;
+	}
+
+	public void setSeasonNumberAndEpisodeNumberSeparator(String seasonNumberAndEpisodeNumberSeparator)
+	{
+		this.seasonNumberAndEpisodeNumberSeparator = seasonNumberAndEpisodeNumberSeparator;
+	}
+
+	public String getSeasonAndEpisodeSeparator()
+	{
+		return seasonAndEpisodeSeparator;
+	}
+
+	public void setSeasonAndEpisodeSeparator(String seasonAndEpisodeSeparator)
+	{
+		this.seasonAndEpisodeSeparator = seasonAndEpisodeSeparator;
+	}
+
+	public String getEpisodeNumberAndTitleSeparator()
+	{
+		return episodeNumberAndTitleSeparator;
+	}
+
+	public void setEpisodeNumberAndTitleSeparator(String episodeNumberAndTitleSeparator)
+	{
+		this.episodeNumberAndTitleSeparator = episodeNumberAndTitleSeparator;
+	}
+
+	// placeholders
+	public String getUndefinedSeasonPlaceholder()
+	{
+		return undefinedSeasonPlaceholder;
+	}
+
+	public void setUndefinedSeasonPlaceholder(String undefinedSeasonPlaceholder)
+	{
+		this.undefinedSeasonPlaceholder = undefinedSeasonPlaceholder;
+	}
+
+	@Override
+	public String doName(Episode epi, NamingService namingService, Map<String, Object> params)
+	{
+		// settings
+		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON_KEY, Boolean.class, PARAM_INCLUDE_SEASON_DEFAULT);
 
 		StringBuilder sb = new StringBuilder();
 		if (includeSeries)
@@ -183,9 +246,9 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 			}
 			else
 			{
-				sb.append(undefinedSeries);
+				sb.append(undefinedSeriesPlaceholder);
 			}
-			sb.append(separatorSeriesAndAnything);
+			sb.append(seriesAndAnythingSeparator);
 		}
 
 		// if in season, append numberInSeason
@@ -200,13 +263,13 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 						sb.append(formatSeasonNumber(epi.getSeason().getNumber()));
 						if (alwaysIncludeSeasonTitle && epi.getSeason().isTitled())
 						{
-							sb.append(separatorSeasonNumberAndTitle);
+							sb.append(seasonNumberAndTitleSeparator);
 							sb.append(formatSeasonTitle(epi.getSeason().getTitle()));
-							sb.append(separatorSeasonAndEpisode);
+							sb.append(seasonAndEpisodeSeparator);
 						}
 						else
 						{
-							sb.append(separatorSeasonNumberAndEpisodeNumber);
+							sb.append(seasonNumberAndEpisodeNumberSeparator);
 						}
 						sb.append(formatEpisodeNumber(epi.getNumberInSeason()));
 					}
@@ -216,7 +279,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 					}
 					if (alwaysIncludeEpisodeTitle)
 					{
-						sb.append(separatorEpisodeNumberAndTitle);
+						sb.append(episodeNumberAndTitleSeparator);
 						sb.append(formatEpisodeTitle(epi.getTitle()));
 					}
 				}
@@ -227,10 +290,10 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 						sb.append(formatSeasonNumber(epi.getSeason().getNumber()));
 						if (alwaysIncludeSeasonTitle && epi.getSeason().isTitled())
 						{
-							sb.append(separatorSeasonNumberAndTitle);
+							sb.append(seasonNumberAndTitleSeparator);
 							sb.append(formatSeasonTitle(epi.getSeason().getTitle()));
 						}
-						sb.append(separatorSeasonAndEpisode);
+						sb.append(seasonAndEpisodeSeparator);
 					}
 					if (epi.isTitled())
 					{
@@ -238,7 +301,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 					}
 					else
 					{
-						sb.append(undefinedEpisode);
+						sb.append(undefinedEpisodePlaceholder);
 					}
 				}
 			}
@@ -247,14 +310,14 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 				if (includeSeason)
 				{
 					sb.append(formatSeasonTitle(epi.getSeason().getTitle()));
-					sb.append(separatorSeasonAndEpisode);
+					sb.append(seasonAndEpisodeSeparator);
 				}
 				if (epi.isNumberedInSeason())
 				{
 					sb.append(formatEpisodeNumber(epi.getNumberInSeason()));
 					if (alwaysIncludeEpisodeTitle)
 					{
-						sb.append(separatorEpisodeNumberAndTitle);
+						sb.append(episodeNumberAndTitleSeparator);
 						sb.append(formatEpisodeTitle(epi.getTitle()));
 					}
 				}
@@ -264,22 +327,22 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 				}
 				else
 				{
-					sb.append(undefinedEpisode);
+					sb.append(undefinedEpisodePlaceholder);
 				}
 			}
 			else
 			{
 				if (includeSeason)
 				{
-					sb.append(undefinedSeason);
-					sb.append(separatorSeasonAndEpisode);
+					sb.append(undefinedSeasonPlaceholder);
+					sb.append(seasonAndEpisodeSeparator);
 				}
 				if (epi.isNumberedInSeason())
 				{
 					sb.append(formatEpisodeNumber(epi.getNumberInSeason()));
 					if (alwaysIncludeEpisodeTitle)
 					{
-						sb.append(separatorEpisodeNumberAndTitle);
+						sb.append(episodeNumberAndTitleSeparator);
 						sb.append(formatEpisodeTitle(epi.getTitle()));
 					}
 				}
@@ -289,7 +352,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 				}
 				else
 				{
-					sb.append(undefinedEpisode);
+					sb.append(undefinedEpisodePlaceholder);
 				}
 			}
 		}
@@ -300,7 +363,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 				sb.append(formatEpisodeNumber(epi.getNumberInSeries()));
 				if (alwaysIncludeEpisodeTitle)
 				{
-					sb.append(separatorEpisodeNumberAndTitle);
+					sb.append(episodeNumberAndTitleSeparator);
 					sb.append(formatEpisodeTitle(epi.getTitle()));
 				}
 			}
@@ -310,7 +373,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 			}
 			else
 			{
-				sb.append(undefinedEpisode);
+				sb.append(undefinedEpisodePlaceholder);
 			}
 		}
 		return sb.toString();
@@ -323,7 +386,7 @@ public class SeasonedEpisodeNamer extends EpisodeNamerBase implements EpisodeNam
 
 	public String formatSeasonTitle(String seasonTitle)
 	{
-		return String.format(seasonTitleFormat, StringUtil.replace(seasonTitle, seasonTitleReplacer));
+		return String.format(seasonTitleFormat, Replacer.replace(seasonTitle, seasonTitleReplacer));
 	}
 
 	// both numberInSeries and numberInSeason

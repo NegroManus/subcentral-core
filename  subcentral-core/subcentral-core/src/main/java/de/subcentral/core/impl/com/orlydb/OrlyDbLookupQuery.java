@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -22,10 +23,8 @@ import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.release.MediaRelease;
 import de.subcentral.core.util.ByteUtil;
 
-public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
+public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 {
-	public static final String				NAME				= "ORLYDB";
-
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
 	 */
@@ -36,15 +35,19 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 */
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
 
-	public OrlyDbQuery(URL url)
+	private final OrlyDbLookup				lookup;
+
+	OrlyDbLookupQuery(OrlyDbLookup lookup, URL url)
 	{
 		super(url);
+		Validate.notNull(lookup, "lookup cannot be null");
+		this.lookup = lookup;
 	}
 
 	@Override
-	public List<MediaRelease> getResults(Document doc)
+	protected List<MediaRelease> getResults(Document doc)
 	{
-		return parseReleases(getUrl(), doc);
+		return parseReleases(doc);
 	}
 
 	/**
@@ -60,7 +63,7 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param doc
 	 * @return
 	 */
-	public static List<MediaRelease> parseReleases(URL url, Document doc)
+	private List<MediaRelease> parseReleases(Document doc)
 	{
 		Element rlssDiv = doc.getElementById("releases");
 		if (rlssDiv == null)
@@ -73,7 +76,7 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		List<MediaRelease> rlss = new ArrayList<MediaRelease>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
-			MediaRelease rls = parseRelease(url, rlsDiv);
+			MediaRelease rls = parseRelease(doc, rlsDiv);
 			if (rls != null)
 			{
 				rlss.add(rls);
@@ -101,7 +104,7 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param rlsDiv
 	 * @return
 	 */
-	private static MediaRelease parseRelease(URL url, Element rlsDiv)
+	private MediaRelease parseRelease(Document doc, Element rlsDiv)
 	{
 		Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
 		Element sectionSpan = rlsDiv.getElementsByClass("section").first();
@@ -142,10 +145,9 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 			if (mSizeAndFiles.matches())
 			{
 				long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
-				System.out.println(ByteUtil.bytesToString(size, true));
+				rls.setSize(size);
 				// ignore number of files
 				// int files = Integer.parseInt(mSizeAndFiles.group(2));
-				rls.setSize(size);
 			}
 		}
 
@@ -154,8 +156,8 @@ public class OrlyDbQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 			rls.setNukeReason(nukeSpan.text());
 		}
 
-		rls.setSource(NAME);
-		rls.setSourceUrl(url.toExternalForm());
+		rls.setSource(lookup.getName());
+		rls.setSourceUrl(doc.location());
 		return rls;
 	}
 }

@@ -14,7 +14,7 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 
 	public AbstractHttpHtmlLookupQuery(URL url)
 	{
-		Validate.notNull("url cannot be null");
+		Validate.notNull(url, "url cannot be null");
 		this.url = url;
 	}
 
@@ -28,6 +28,7 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 	{
 		try
 		{
+			System.out.println(url);
 			Connection con = setupConnection(url);
 			Document doc = con.get();
 			return getResults(doc);
@@ -50,5 +51,5 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 		return Jsoup.connect(url.toExternalForm());
 	}
 
-	public abstract List<R> getResults(Document doc);
+	protected abstract List<R> getResults(Document doc);
 }

@@ -4,16 +4,16 @@ import de.subcentral.core.naming.NamingService;
 
 public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 {
-	private NamingService	queryEntityNamingService;
+	protected final NamingService	queryEntityNamingService;
+
+	public AbstractLookup(NamingService queryEntityNamingService)
+	{
+		this.queryEntityNamingService = queryEntityNamingService;
+	}
 
 	public NamingService getQueryEntityNamingService()
 	{
 		return queryEntityNamingService;
-	}
-
-	public void setQueryEntityNamingService(NamingService queryEntityNamingService)
-	{
-		this.queryEntityNamingService = queryEntityNamingService;
 	}
 
 	@Override

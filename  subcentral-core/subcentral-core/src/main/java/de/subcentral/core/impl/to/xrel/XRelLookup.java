@@ -1,10 +1,12 @@
 package de.subcentral.core.impl.to.xrel;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.net.URLEncoder;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import de.subcentral.core.lookup.AbstractHttpLookup;
 import de.subcentral.core.lookup.LookupQuery;
@@ -12,23 +14,21 @@ import de.subcentral.core.release.MediaRelease;
 
 public class XRelLookup extends AbstractHttpLookup<MediaRelease, String>
 {
-	private static URL	host;
-	static
+	public XRelLookup()
 	{
-		try
-		{
-			host = new URL("http://www.xrel.to/");
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
+		super(XRel.getXRelQueryEntityNamingService());
+	}
+
+	@Override
+	public String getName()
+	{
+		return XRel.NAME;
 	}
 
 	@Override
 	protected URL getHost()
 	{
-		return host;
+		return XRel.HOST_URL;
 	}
 
 	@Override
@@ -37,49 +37,41 @@ public class XRelLookup extends AbstractHttpLookup<MediaRelease, String>
 		return MediaRelease.class;
 	}
 
-	@Override
-	public LookupQuery<MediaRelease> createQuery(URL query)
+	public List<MediaRelease> getResults(File file) throws IOException
 	{
-		return new XRelLookupQuery(query);
+		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
+		return new XRelLookupQuery(this, getHost()).getResults(doc);
 	}
 
 	@Override
-	protected URL buildQueryUrl(String query) throws Exception
+	public LookupQuery<MediaRelease> createQuery(URL query)
 	{
-		if (query == null)
-		{
-			return null;
-		}
-		String path = "/search.html";
-		String queryStr = encodeQuery(query);
-		URI uri = new URI("http", null, getHost().getHost(), -1, path.toString(), queryStr, null);
-		return uri.toURL();
+		return new XRelLookupQuery(this, query);
+	}
+
+	@Override
+	protected String getDefaultQueryPrefix()
+	{
+		// Do not use "mode=rls", because then results are displayed different
+		// and the info url is only available via an ajax call.
+		return "xrel_search_query=";
+	}
+
+	@Override
+	protected String getDefaultQueryPath()
+	{
+		return "/search.html";
 	}
 
 	@Override
 	protected URL buildQueryUrlFromParameters(String parameterBean) throws Exception
 	{
-		return buildQueryUrl(parameterBean);
+		return buildDefaultQueryUrl(parameterBean);
 	}
 
 	@Override
 	public Class<String> getParameterBeanClass()
 	{
 		return String.class;
-	}
-
-	private static String encodeQuery(String queryStr) throws UnsupportedEncodingException
-	{
-		if (queryStr == null)
-		{
-			return null;
-		}
-		StringBuilder sb = new StringBuilder();
-		// Do not use "mode=rls", because then results are displayed different
-		// and the info url is only available via an ajax call.
-		sb.append("xrel_search_query=");
-		// URLEncoder is just for encoding queries, not for the whole URL
-		sb.append(URLEncoder.encode(queryStr, "UTF-8"));
-		return sb.toString();
 	}
 }

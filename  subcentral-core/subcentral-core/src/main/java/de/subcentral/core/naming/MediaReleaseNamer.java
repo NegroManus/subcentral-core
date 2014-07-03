@@ -1,38 +1,18 @@
 package de.subcentral.core.naming;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.media.Media;
 import de.subcentral.core.media.Medias;
 import de.subcentral.core.release.MediaRelease;
-import de.subcentral.core.util.Replacer;
-import de.subcentral.core.util.StringUtil;
+import de.subcentral.core.release.Tag;
 
-public class MediaReleaseNamer extends AbstractReleaseNamer<Media, MediaRelease>
+public class MediaReleaseNamer extends AbstractReleaseNamer<MediaRelease, Media>
 {
-	private Replacer	mediaReplacer	= NamingStandards.STANDARD_REPLACER;
-	private String		mediaFormat		= "%s";
-
-	public Replacer getMediaReplacer()
-	{
-		return mediaReplacer;
-	}
-
-	public void setMediaReplacer(Replacer mediaReplacer)
-	{
-		this.mediaReplacer = mediaReplacer;
-	}
-
-	public String getMediaFormat()
-	{
-		return mediaFormat;
-	}
-
-	public void setMediaFormat(String mediaFormat)
-	{
-		this.mediaFormat = mediaFormat;
-	}
-
 	@Override
 	public Class<MediaRelease> getType()
 	{
@@ -40,22 +20,25 @@ public class MediaReleaseNamer extends AbstractReleaseNamer<Media, MediaRelease>
 	}
 
 	@Override
-	public String name(MediaRelease rls, NamingService namingService)
+	public String doName(MediaRelease rls, NamingService namingService, Map<String, Object> namingSettings)
 	{
-		if (rls == null)
-		{
-			return null;
-		}
 		StringBuilder sb = new StringBuilder();
-		String mediaName = Medias.name(rls.getMaterials(), namingService, " ");
-		sb.append(String.format(mediaFormat, StringUtil.replace(mediaName, mediaReplacer)));
+		String mediaName = Medias.name(rls.getMaterials(), namingService, materialsSeparator);
+		sb.append(formatMaterials(mediaName));
 		if (!rls.getTags().isEmpty())
 		{
-			sb.append(String.format(tagsFormat, Joiner.on(tagsSeparator).join(rls.getTags())));
+			sb.append(materialsAndTagsSeparator);
+			List<String> formattedTags = new ArrayList<>();
+			for (Tag tag : rls.getTags())
+			{
+				formattedTags.add(formatTag(tag.getName()));
+			}
+			sb.append(Joiner.on(tagsSeparator).join(rls.getTags()));
 		}
 		if (rls.getGroup() != null)
 		{
-			sb.append(String.format(groupFormat, rls.getGroup().getName()));
+			sb.append(tagsAndGroupSeparator);
+			sb.append(formatGroup(rls.getGroup().getName()));
 		}
 		return sb.toString();
 	}

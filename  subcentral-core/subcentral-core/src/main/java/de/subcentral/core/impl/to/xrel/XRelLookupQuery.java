@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -25,28 +26,29 @@ import de.subcentral.core.util.ByteUtil;
 
 public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 {
-	public static final String				NAME				= "xREL";
-
 	/**
-	 * The date format is a german date and time string. Example: "09.01.14 04:14 Uhr"
+	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
 	 */
 	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("dd.MM.yy HH:mm 'Uhr'", Locale.GERMANY);
 
 	/**
-	 * The server zime zone is Europe/Berlin.
+	 * The server time zone is Europe/Berlin.
 	 */
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("Europe/Berlin");
 
-	public XRelLookupQuery(URL url)
+	private final XRelLookup				lookup;
+
+	XRelLookupQuery(XRelLookup lookup, URL url)
 	{
 		super(url);
-
+		Validate.notNull(lookup, "lookup cannot be null");
+		this.lookup = lookup;
 	}
 
 	@Override
-	public List<MediaRelease> getResults(Document doc)
+	protected List<MediaRelease> getResults(Document doc)
 	{
-		return parseReleases(getUrl(), doc);
+		return parseReleases(doc);
 	}
 
 	/**
@@ -63,15 +65,14 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param doc
 	 * @return
 	 */
-	public static List<MediaRelease> parseReleases(URL url, Document doc)
+	public List<MediaRelease> parseReleases(Document doc)
 	{
-		System.out.println(url);
 		// Search for elements with tag "div" and class "release_item" on the doc
 		Elements rlsDivs = doc.select("div.release_item");
 		List<MediaRelease> rlss = new ArrayList<MediaRelease>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
-			MediaRelease rls = parseRelease(url, rlsDiv);
+			MediaRelease rls = parseRelease(doc, rlsDiv);
 			if (rls != null)
 			{
 				rlss.add(rls);
@@ -130,7 +131,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param rlsDiv
 	 * @return
 	 */
-	private static MediaRelease parseRelease(URL url, Element rlsDiv)
+	private MediaRelease parseRelease(Document doc, Element rlsDiv)
 	{
 		MediaRelease rls = new MediaRelease();
 
@@ -329,13 +330,13 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 			e.printStackTrace();
 		}
 
-		rls.setSource(NAME);
-		rls.setSourceUrl(url.toExternalForm());
+		rls.setSource(lookup.getName());
+		rls.setSourceUrl(doc.location());
 
 		return rls;
 	}
 
-	private static Media parseMedia(String releaseCategory, String mediaSection, String title, String seasonNumber, String episodeNumber)
+	private Media parseMedia(String releaseCategory, String mediaSection, String title, String seasonNumber, String episodeNumber)
 	{
 		if (seasonNumber != null && episodeNumber != null)
 		{

@@ -1,15 +1,6 @@
 package de.subcentral.core.lookup;
 
-import java.io.File;
-import java.net.URL;
-import java.util.List;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import com.google.common.io.Resources;
-
-import de.subcentral.core.impl.to.xrel.XRelLookupQuery;
+import de.subcentral.core.impl.com.orlydb.OrlyDbLookup;
 import de.subcentral.core.media.Episode;
 import de.subcentral.core.media.Movie;
 import de.subcentral.core.release.MediaRelease;
@@ -23,16 +14,15 @@ public class LookupTest
 		System.getProperties().put("http.proxyPort", "8080");
 
 		Episode epi = Episode.newSeasonedEpisode("Psych", 6, 5);
-		Movie movie = new Movie("The Lord of the Rings: The Return of the King");
-		MediaRelease rls = Releases.newMediaRelease(epi, null, "XviD");
+		Movie movie = new Movie("The Lord of the Rings");
+		MediaRelease rls = Releases.newMediaRelease(movie, null, "720p");
 
-		// OrlyDbLookup lookup = new OrlyDbLookup();
-		// lookup.setQueryEntityNamingService(OrlyDb.getOrlyDbQueryNamingService());
-		// LookupQuery<MediaRelease> query = lookup.createQueryFromParameters(new OrlyDbLookupParameters("", "Psych S05E06"));
-		// for (MediaRelease foundRls : query.getResults())
-		// {
-		// System.out.println(foundRls);
-		// }
+		OrlyDbLookup lookup = new OrlyDbLookup();
+		LookupQuery<MediaRelease> query = lookup.createQueryFromEntity(epi);
+		for (MediaRelease foundRls : query.getResults())
+		{
+			System.out.println(foundRls);
+		}
 
 		// XRelLookup xrelLookup = new XRelLookup();
 		// LookupQuery<MediaRelease> xrelQuery = xrelLookup.createQuery("Psych");
@@ -41,12 +31,11 @@ public class LookupTest
 		// System.out.println(foundRls);
 		// }
 
-		URL resource = Resources.getResource("de/subcentral/core/impl/to/xrel/psych.s08e01.html");
-		Document doc = Jsoup.parse(new File(resource.toURI()), "UTF-8");
-		List<MediaRelease> results = XRelLookupQuery.parseReleases(new URL("http://xrel.to"), doc);
-		for (MediaRelease foundRls : results)
-		{
-			System.out.println(foundRls);
-		}
+		// File resource = new File(Resources.getResource("de/subcentral/core/impl/to/xrel/psych.s05e06.html").toURI());
+		// List<MediaRelease> results = new XRelLookup().getResults(resource);
+		// for (MediaRelease foundRls : results)
+		// {
+		// System.out.println(foundRls);
+		// }
 	}
 }

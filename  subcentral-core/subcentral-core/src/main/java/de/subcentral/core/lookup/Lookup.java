@@ -2,6 +2,8 @@ package de.subcentral.core.lookup;
 
 public interface Lookup<R, P>
 {
+	public String getName();
+
 	public String getDomain();
 
 	public boolean isLookupAvailable();

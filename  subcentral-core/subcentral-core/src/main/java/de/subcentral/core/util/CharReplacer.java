@@ -4,9 +4,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class CharReplacer implements Replacer
 {
-	private char[]	allowedChars	= new char[] {};
-	private String	replacement		= "";
-	private char[]	charsToDelete	= new char[] {};
+	private char[]	allowedChars	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_".toCharArray();
+	private String	replacement		= ".";
+	private char[]	charsToDelete	= "'´`".toCharArray();
 
 	public char[] getAllowedChars()
 	{
