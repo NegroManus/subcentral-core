@@ -126,7 +126,7 @@ public class NamingServiceImpl implements NamingService
 		throw new NoNamerRegisteredException(candidate);
 	}
 
-	private void checkNamersMap(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException
+	private final void checkNamersMap(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException
 	{
 		for (Map.Entry<Class<?>, Namer<?>> entry : namers.entrySet())
 		{
@@ -138,7 +138,7 @@ public class NamingServiceImpl implements NamingService
 		}
 	}
 
-	private Map<String, Object> collectParams(Map<String, Object> params)
+	private final Map<String, Object> collectParams(Map<String, Object> params)
 	{
 		if (params.isEmpty())
 		{
