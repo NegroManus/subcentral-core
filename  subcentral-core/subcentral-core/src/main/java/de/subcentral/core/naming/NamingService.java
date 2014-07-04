@@ -8,10 +8,6 @@ public interface NamingService
 {
 	public String getDomain();
 
-	public Map<String, Object> getDefaultParameters();
-
-	public void setDefaultParameters(Map<String, Object> defaultParameters);
-
 	public boolean canName(Object candidate);
 
 	public default <T> String name(T candidate) throws NamingException

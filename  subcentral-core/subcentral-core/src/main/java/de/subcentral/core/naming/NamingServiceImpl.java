@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.jsoup.helper.Validate;
 
 public class NamingServiceImpl implements NamingService
 {
 	private String					domain;
-	private Map<String, Object>		defaultParameters	= new HashMap<>();
-	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>(6);
+	private Map<Class<?>, Namer<?>>	namers	= new HashMap<>(6);
 
 	@Override
 	public String getDomain()
@@ -21,19 +19,6 @@ public class NamingServiceImpl implements NamingService
 	public void setDomain(String domain)
 	{
 		this.domain = domain;
-	}
-
-	@Override
-	public Map<String, Object> getDefaultParameters()
-	{
-		return defaultParameters;
-	}
-
-	@Override
-	public void setDefaultParameters(Map<String, Object> defaultParameters)
-	{
-		Validate.notNull(defaultParameters, "defaultParameters cannot be null");
-		this.defaultParameters = defaultParameters;
 	}
 
 	public Map<Class<?>, Namer<?>> getNamers()
@@ -98,30 +83,34 @@ public class NamingServiceImpl implements NamingService
 	/**
 	 * Returns a name for the given object which is calculated as follows:
 	 * <ul>
-	 * <li>1. If a namer is registered for the class of obj (excluding Object), return namer.name(obj).</li>
-	 * <li>2. If a namer is registered for a superclass of obj (excluding Object), return namer.name(obj).</li>
-	 * <li>3. If a namer is registered for an interface of obj, return namer.name(obj).</li>
-	 * <li>4. Throw .</li>
+	 * <li>1. If a namer is registered for the class of candidate (excluding Object), return namer.name(obj).</li>
+	 * <li>2. If a namer is registered for a superclass of candidate (excluding Object), return namer.name(obj).</li>
+	 * <li>3. If a namer is registered for an interface of candidate, return namer.name(obj).</li>
+	 * <li>4. Throw NoNamerRegisteredException.</li>
 	 * </ul>
 	 * <p>
-	 * <b>So register the Namers to the concrete classes to ensure best performance. Searching for Namers of superclasses or interfaces is costly.
-	 * </b>
+	 * <b>Note: Register the Namers to the concrete classes to ensure best performance. Searching for Namers of superclasses or interfaces is more
+	 * costly. </b>
 	 * </p>
 	 * 
 	 * @param candidate
-	 *            The object to name.
+	 *            The object to name. May be null.
 	 * @param parameters
 	 *            The naming parameters. Not null.
-	 * @return The name that was determined for the object.
+	 * @return The name that was determined for the object or null if the candidate was null.
 	 */
 	@Override
 	public <T> String name(T candidate, Map<String, Object> parameters) throws NamingException, NoNamerRegisteredException
 	{
+		if (candidate == null)
+		{
+			return null;
+		}
 		@SuppressWarnings("unchecked")
 		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
 		if (namer != null)
 		{
-			return namer.name(candidate, this, collectParams(parameters));
+			return namer.name(candidate, this, parameters);
 		}
 		throw new NoNamerRegisteredException(candidate);
 	}
@@ -136,22 +125,5 @@ public class NamingServiceImpl implements NamingService
 						+ ") is not assignable from the class: " + entry.getKey() + " (not a superclass or implemented interface of).");
 			}
 		}
-	}
-
-	private final Map<String, Object> collectParams(Map<String, Object> params)
-	{
-		if (params.isEmpty())
-		{
-			return defaultParameters;
-		}
-		if (defaultParameters.isEmpty())
-		{
-			return params;
-		}
-		Map<String, Object> collectedParams = new HashMap<>(defaultParameters.size() + params.size());
-		collectedParams.putAll(defaultParameters);
-		// the current parameters may override the default parameters
-		collectedParams.putAll(params);
-		return collectedParams;
 	}
 }

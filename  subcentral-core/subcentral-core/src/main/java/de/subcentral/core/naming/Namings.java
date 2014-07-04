@@ -4,11 +4,11 @@ import java.util.Map;
 
 public class Namings
 {
-	public static final <T> T readParameter(Map<String, Object> namingSettings, String key, Class<T> valueClass, T defaultValue)
+	public static final <T> T readParameter(Map<String, Object> parameters, String key, Class<T> valueClass, T defaultValue)
 	{
-		if (namingSettings.containsKey(key))
+		if (parameters.containsKey(key))
 		{
-			return valueClass.cast(namingSettings.get(key));
+			return valueClass.cast(parameters.get(key));
 		}
 		return defaultValue;
 	}
