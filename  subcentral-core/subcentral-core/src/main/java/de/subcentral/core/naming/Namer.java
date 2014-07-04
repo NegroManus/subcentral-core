@@ -30,7 +30,7 @@ public interface Namer<T>
 	 * @param namingService
 	 *            The NamingService to name objects that are part of the candidate. Can be null if not needed (depends on the Namer implementation).
 	 * @param parameters
-	 *            The parameters for this naming. Never null, can be empty.
+	 *            The parameters for this naming. Not null, can be empty.
 	 * @return The generated name of the candidate or null if the candidate was null.
 	 * @throws NamingException
 	 *             If an Exception occurs while naming. This Exception will be the {@link Exception#getCause() cause} of the thrown NamingException.
