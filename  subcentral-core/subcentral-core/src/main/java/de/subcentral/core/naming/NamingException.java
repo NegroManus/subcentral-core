@@ -4,8 +4,6 @@ public class NamingException extends RuntimeException
 {
 	private static final long	serialVersionUID	= -2678379604002150514L;
 
-	private final Object		candidate;
-
 	public NamingException(Object candidate)
 	{
 		this(candidate, null, null);
@@ -24,18 +22,11 @@ public class NamingException extends RuntimeException
 	public NamingException(Object candidate, String message, Throwable cause)
 	{
 		super(generateMessage(candidate, message), cause);
-		this.candidate = candidate;
 	}
 
 	public NamingException(Object candidate, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
 	{
 		super(generateMessage(candidate, message), cause, enableSuppression, writableStackTrace);
-		this.candidate = candidate;
-	}
-
-	public Object getCandidate()
-	{
-		return candidate;
 	}
 
 	private static final String generateMessage(Object candidate, String additionalMsg)
