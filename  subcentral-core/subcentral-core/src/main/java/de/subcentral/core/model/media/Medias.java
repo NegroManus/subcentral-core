@@ -1,12 +1,11 @@
 package de.subcentral.core.model.media;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import com.google.common.base.Joiner;
+import java.util.Map;
 
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.Namings;
 import de.subcentral.core.naming.NoNamerRegisteredException;
 import de.subcentral.core.util.Settings;
 
@@ -45,7 +44,7 @@ public class Medias
 		return me;
 	}
 
-	public static String name(List<? extends Media> media, NamingService namingService, String mediaSeparator)
+	public static String name(List<? extends Media> media, NamingService namingService, Map<String, Object> parameters, String mediaSeparator)
 	{
 		int numOfMedia = media.size();
 		if (numOfMedia == 0)
@@ -65,12 +64,9 @@ public class Medias
 			}
 			catch (IllegalArgumentException | NoNamerRegisteredException e)
 			{
-				List<String> names = new ArrayList<>(media.size());
-				for (Media m : media)
-				{
-					names.add(namingService.name(m));
-				}
-				return Joiner.on(mediaSeparator).join(names);
+				// IAE if media is not a list of Episodes
+				// NNRE if namingService has no namer registered for MultiEpisodeHelper
+				return Namings.name(media, namingService, parameters, mediaSeparator);
 			}
 		}
 	}

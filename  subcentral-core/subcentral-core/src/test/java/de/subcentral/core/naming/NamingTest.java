@@ -13,10 +13,8 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.release.Releases;
-import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
-import de.subcentral.core.util.TimeUtil;
 
 public class NamingTest
 {
@@ -40,7 +38,7 @@ public class NamingTest
 		epi.setDate(LocalDateTime.now());
 
 		Movie movie = new Movie();
-		movie.setTitle("The Lord of the Rings");
+		movie.setName("The Lord of the Rings");
 		movie.setDate(Year.of(2002));
 
 		MultiEpisodeHelper epis = new MultiEpisodeHelper();
@@ -53,7 +51,7 @@ public class NamingTest
 		// Media release
 		MediaRelease rel = new MediaRelease();
 		// rel.setExplicitName("Psych.S01E01.HDTV.XviD-LOL");
-		rel.setMaterial(epi);
+		rel.setMaterials(ImmutableList.of(movie));
 		rel.setGroup(new Group("DIMENSION"));
 		rel.setTags(Releases.tags("720p", "HDTV", "x264"));
 
@@ -66,22 +64,23 @@ public class NamingTest
 		SubtitleRelease subRel = new SubtitleRelease();
 		subRel.setMaterial(sub1);
 		subRel.setCompatibleMediaRelease(rel);
-		subRel.setTags(ImmutableList.of(new Tag("orig")));
+		subRel.setTags(Releases.tags("orig", "C"));
 		subRel.setGroup(new Group("SubCentral"));
 
-		long overallStart = System.nanoTime();
-		for (int i = 0; i < 1000; i++)
-		{
-			System.out.println(NamingStandards.NAMING_SERVICE.name(epis));
-			long start = System.nanoTime();
-			String name = NamingStandards.NAMING_SERVICE.name(subRel); // ns.name(epi);//
-			double duration = TimeUtil.durationMillis(start, System.nanoTime());
-			System.out.println(name);
-			System.out.println(duration + " ms");
-		}
-		double overallDuration = TimeUtil.durationMillis(overallStart, System.nanoTime());
-		System.out.println("Overall duration: " + overallDuration + " ms");
-
-		System.out.println(epi);
+		System.out.println(NamingStandards.NAMING_SERVICE.name(subRel));
+		// long overallStart = System.nanoTime();
+		// for (int i = 0; i < 1000; i++)
+		// {
+		// System.out.println(NamingStandards.NAMING_SERVICE.name(epis));
+		// long start = System.nanoTime();
+		// String name = NamingStandards.NAMING_SERVICE.name(subRel); // ns.name(epi);//
+		// double duration = TimeUtil.durationMillis(start, System.nanoTime());
+		// System.out.println(name);
+		// System.out.println(duration + " ms");
+		// }
+		// double overallDuration = TimeUtil.durationMillis(overallStart, System.nanoTime());
+		// System.out.println("Overall duration: " + overallDuration + " ms");
+		//
+		// System.out.println(epi);
 	}
 }

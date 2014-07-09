@@ -2,10 +2,13 @@ package de.subcentral.core.naming;
 
 import java.beans.PropertyDescriptor;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+
+import org.jsoup.helper.Validate;
 
 import com.google.common.base.Joiner;
 
@@ -13,25 +16,9 @@ import de.subcentral.core.util.SeparatorDescriptor;
 
 public abstract class AbstractNamer<T> implements Namer<T>
 {
-	protected UnaryOperator<String>							wholeNameOperator			= UnaryOperator.identity();
-	protected Map<PropertyDescriptor, Function<?, String>>	propertyToStringFunctions	= new HashMap<>();
-	protected Set<SeparatorDescriptor>						separators;
-
-	public UnaryOperator<String> getWholeNameOperator()
-	{
-		return wholeNameOperator;
-	}
-
-	/**
-	 * 
-	 * @param wholeNameOperator
-	 *            The operator on the whole name after it was constructed of the properties and separators.
-	 * 
-	 */
-	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
-	{
-		this.wholeNameOperator = wholeNameOperator;
-	}
+	private Map<PropertyDescriptor, Function<?, String>>	propertyToStringFunctions	= new HashMap<>();
+	private Set<SeparatorDescriptor>						separators					= new HashSet<>();
+	private UnaryOperator<String>							wholeNameOperator			= UnaryOperator.identity();
 
 	public Map<PropertyDescriptor, Function<?, String>> getPropertyToStringFunctions()
 	{
@@ -45,6 +32,7 @@ public abstract class AbstractNamer<T> implements Namer<T>
 	 */
 	public void setPropertyToStringFunctions(Map<PropertyDescriptor, Function<?, String>> propertyToStringFunctions)
 	{
+		Validate.notNull(propertyToStringFunctions);
 		this.propertyToStringFunctions = propertyToStringFunctions;
 	}
 
@@ -60,7 +48,25 @@ public abstract class AbstractNamer<T> implements Namer<T>
 	 */
 	public void setSeparators(Set<SeparatorDescriptor> separators)
 	{
+		Validate.notNull(separators);
 		this.separators = separators;
+	}
+
+	public UnaryOperator<String> getWholeNameOperator()
+	{
+		return wholeNameOperator;
+	}
+
+	/**
+	 * 
+	 * @param wholeNameOperator
+	 *            The operator which operates on the whole name after it was constructed of the properties and separators.
+	 * 
+	 */
+	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
+	{
+		Validate.notNull(wholeNameOperator);
+		this.wholeNameOperator = wholeNameOperator;
 	}
 
 	@Override
@@ -106,10 +112,15 @@ public abstract class AbstractNamer<T> implements Namer<T>
 		{
 			if (property instanceof Iterable)
 			{
-				return Joiner.on(' ').join((Iterable<?>) property);
+				return Joiner.on(getSeparatorBetween(propertyDescriptor, propertyDescriptor)).join((Iterable<?>) property);
 			}
 			return property.toString();
 		}
 		return f.apply(property);
+	}
+
+	protected String getSeparatorBetween(PropertyDescriptor firstProperty, PropertyDescriptor secondProperty)
+	{
+		return SeparatorDescriptor.getSeparatorBetween(firstProperty, secondProperty, separators);
 	}
 }

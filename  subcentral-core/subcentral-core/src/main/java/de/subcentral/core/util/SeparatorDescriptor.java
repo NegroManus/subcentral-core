@@ -1,78 +1,90 @@
 package de.subcentral.core.util;
 
 import java.beans.PropertyDescriptor;
+import java.util.Objects;
 import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class SeparatorDescriptor
 {
-	public static String getSeparatorFor(PropertyDescriptor firstProperty, PropertyDescriptor secondProperty,
+	public static final String	DEFAULT_SEPARATOR	= " ";
+
+	public static String getSeparatorBetween(PropertyDescriptor firstProperty, PropertyDescriptor secondProperty,
 			Set<SeparatorDescriptor> separatorDescriptors)
 	{
-		SeparatorDescriptor betweenFirstAndAnything = null;
-		SeparatorDescriptor betweenAnythingAndSecond = null;
-		SeparatorDescriptor betweenAnything = null;
+		SeparatorDescriptor after = null;
+		SeparatorDescriptor before = null;
+		SeparatorDescriptor betweenAny = null;
 		for (SeparatorDescriptor sd : separatorDescriptors)
 		{
-			boolean firstPropEquals = firstProperty.equals(sd.getFirstProperty());
-			boolean secondPropEquals = secondProperty.equals(sd.getSecondProperty());
+			boolean firstPropEquals = Objects.equals(firstProperty, sd.getFirstProperty());
+			boolean secondPropEquals = Objects.equals(secondProperty, sd.getSecondProperty());
 			if (firstPropEquals && secondPropEquals)
 			{
+				// between / in-between
 				return sd.getSeparator();
 			}
 			else if (firstPropEquals && sd.getSecondProperty() == null)
 			{
-				betweenFirstAndAnything = sd;
+				after = sd;
 			}
 			else if (sd.getFirstProperty() == null && secondPropEquals)
 			{
-				betweenAnythingAndSecond = sd;
+				before = sd;
 			}
 			else if (sd.getFirstProperty() == null && sd.getSecondProperty() == null)
 			{
-				betweenAnything = sd;
+				betweenAny = sd;
 			}
 		}
-		if (betweenFirstAndAnything != null)
+		if (after != null)
 		{
-			return betweenFirstAndAnything.getSeparator();
+			return after.getSeparator();
 		}
-		else if (betweenAnythingAndSecond != null)
+		else if (before != null)
 		{
-			return betweenAnythingAndSecond.getSeparator();
+			return before.getSeparator();
 		}
-		else if (betweenAnything != null)
+		else if (betweenAny != null)
 		{
-			return betweenAnything.getSeparator();
+			return betweenAny.getSeparator();
 		}
-		return null;
+		return DEFAULT_SEPARATOR;
 	}
 
-	private String				separator;
 	private PropertyDescriptor	firstProperty;
 	private PropertyDescriptor	secondProperty;
+	private String				separator;
 
-	public SeparatorDescriptor()
+	public static SeparatorDescriptor betweenAny(String separator)
 	{
-		this("", null, null);
+		return new SeparatorDescriptor(null, null, separator);
 	}
 
-	public SeparatorDescriptor(String separator)
+	public static SeparatorDescriptor after(PropertyDescriptor property, String separator)
 	{
-		this(separator, null, null);
+		return new SeparatorDescriptor(property, null, separator);
 	}
 
-	public SeparatorDescriptor(String separator, PropertyDescriptor firstProperty)
+	public static SeparatorDescriptor before(PropertyDescriptor property, String separator)
 	{
-		this(separator, firstProperty, null);
+		return new SeparatorDescriptor(null, property, separator);
 	}
 
-	public SeparatorDescriptor(String separator, PropertyDescriptor firstProperty, PropertyDescriptor secondProperty)
+	public static SeparatorDescriptor inBetween(PropertyDescriptor property, String separator)
 	{
-		this.separator = StringUtils.defaultString(separator);
+		return new SeparatorDescriptor(property, property, separator);
+	}
+
+	public static SeparatorDescriptor between(PropertyDescriptor firstProperty, PropertyDescriptor secondProperty, String separator)
+	{
+		return new SeparatorDescriptor(firstProperty, secondProperty, separator);
+	}
+
+	private SeparatorDescriptor(PropertyDescriptor firstProperty, PropertyDescriptor secondProperty, String separator)
+	{
 		this.firstProperty = firstProperty;
 		this.secondProperty = secondProperty;
+		this.separator = separator == null ? DEFAULT_SEPARATOR : separator;
 	}
 
 	public String getSeparator()

@@ -1,47 +1,38 @@
 package de.subcentral.core.naming;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.Map;
 
-import com.google.common.base.Joiner;
-
 import de.subcentral.core.model.release.MediaRelease;
-import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
-import de.subcentral.core.util.Replacer;
 
-public class SubtitleReleaseNamer extends AbstractReleaseNamer<SubtitleRelease, Subtitle>
+public class SubtitleReleaseNamer extends AbstractNamer<SubtitleRelease>
 {
 	/**
 	 * The naming setting key for the MediaRelease value "mediaRelease".
 	 */
-	public static final String	PARAM_MEDIA_RELEASE_KEY						= "mediaRelease";
+	public static final String	PARAM_MEDIA_RELEASE_KEY	= "mediaRelease";
 
-	private Replacer			subtitleLanguageReplacer					= NamingStandards.STANDARD_REPLACER;
-	private String				subtitleLanguageFormat						= "%s";
+	private PropertyDescriptor	propSubtitleLanguage;
+	private PropertyDescriptor	propCompatibleMediaReleases;
+	private PropertyDescriptor	propTags;
+	private PropertyDescriptor	propGroup;
 
-	private String				mediaReleaseAndSubtitleLanguageSeparator	= ".";
-
-	public Replacer getSubtitleLanguageReplacer()
+	public SubtitleReleaseNamer()
 	{
-		return subtitleLanguageReplacer;
-	}
-
-	public void setSubtitleLanguageReplacer(Replacer subtitleLanguageReplacer)
-	{
-		this.subtitleLanguageReplacer = subtitleLanguageReplacer;
-	}
-
-	public String getSubtitleLanguageFormat()
-	{
-		return subtitleLanguageFormat;
-	}
-
-	public void setSubtitleLanguageFormat(String subtitleLanguageFormat)
-	{
-		this.subtitleLanguageFormat = subtitleLanguageFormat;
+		try
+		{
+			propSubtitleLanguage = new PropertyDescriptor("language", Subtitle.class);
+			propCompatibleMediaReleases = new PropertyDescriptor("compatibleMediaReleases", SubtitleRelease.class);
+			propTags = new PropertyDescriptor("tags", SubtitleRelease.class);
+			propGroup = new PropertyDescriptor("group", SubtitleRelease.class);
+		}
+		catch (IntrospectionException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -61,29 +52,19 @@ public class SubtitleReleaseNamer extends AbstractReleaseNamer<SubtitleRelease, 
 		Subtitle sub = rls.getFirstMaterial();
 		if (sub != null)
 		{
-			sb.append(formatSubtitleLanguage(sub.getLanguage()));
+			sb.append(getSeparatorBetween(propCompatibleMediaReleases, propSubtitleLanguage));
+			sb.append(propToString(propSubtitleLanguage, sub.getLanguage()));
 		}
 		if (!rls.getTags().isEmpty())
 		{
-			sb.append(mediaReleaseAndSubtitleLanguageSeparator);
-			List<String> formattedTags = new ArrayList<>();
-			for (Tag tag : rls.getTags())
-			{
-				formattedTags.add(formatTag(tag.getName()));
-			}
-			sb.append(Joiner.on(tagsSeparator).join(rls.getTags()));
+			sb.append(getSeparatorBetween(null, propTags));
+			sb.append(propToString(propTags, rls.getTags()));
 		}
 		if (rls.getGroup() != null)
 		{
-			sb.append(tagsAndGroupSeparator);
-			sb.append(formatGroup(rls.getGroup().getName()));
+			sb.append(getSeparatorBetween(null, propGroup));
+			sb.append(propToString(propGroup, rls.getGroup()));
 		}
 		return sb.toString();
 	}
-
-	public String formatSubtitleLanguage(String language)
-	{
-		return String.format(subtitleLanguageFormat, Replacer.replace(language, subtitleLanguageReplacer));
-	}
-
 }

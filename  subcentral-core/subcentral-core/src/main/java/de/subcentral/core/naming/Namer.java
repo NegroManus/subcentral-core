@@ -1,10 +1,11 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
-public interface Namer<T>
+public interface Namer<T> extends Function<T, String>
 {
 	public Class<T> getType();
 
@@ -36,4 +37,10 @@ public interface Namer<T>
 	 *             If an Exception occurs while naming. This Exception will be the {@link Exception#getCause() cause} of the thrown NamingException.
 	 */
 	public String name(T candidate, NamingService namingService, Map<String, Object> parameters) throws NamingException;
+
+	@Override
+	public default String apply(T t)
+	{
+		return name(t);
+	}
 }
