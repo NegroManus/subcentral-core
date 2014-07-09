@@ -11,9 +11,9 @@ public class SeparatorDescriptor
 	public static String getSeparatorBetween(PropertyDescriptor firstProperty, PropertyDescriptor secondProperty,
 			Set<SeparatorDescriptor> separatorDescriptors)
 	{
-		SeparatorDescriptor after = null;
-		SeparatorDescriptor before = null;
-		SeparatorDescriptor betweenAny = null;
+		String after = null;
+		String before = null;
+		String betweenAny = null;
 		for (SeparatorDescriptor sd : separatorDescriptors)
 		{
 			boolean firstPropEquals = Objects.equals(firstProperty, sd.getFirstProperty());
@@ -25,28 +25,28 @@ public class SeparatorDescriptor
 			}
 			else if (firstPropEquals && sd.getSecondProperty() == null)
 			{
-				after = sd;
+				after = sd.getSeparator();
 			}
 			else if (sd.getFirstProperty() == null && secondPropEquals)
 			{
-				before = sd;
+				before = sd.getSeparator();
 			}
 			else if (sd.getFirstProperty() == null && sd.getSecondProperty() == null)
 			{
-				betweenAny = sd;
+				betweenAny = sd.getSeparator();
 			}
 		}
 		if (after != null)
 		{
-			return after.getSeparator();
+			return after;
 		}
 		else if (before != null)
 		{
-			return before.getSeparator();
+			return before;
 		}
 		else if (betweenAny != null)
 		{
-			return betweenAny.getSeparator();
+			return betweenAny;
 		}
 		return DEFAULT_SEPARATOR;
 	}
