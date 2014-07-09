@@ -1,6 +1,6 @@
 package de.subcentral.core.naming;
 
-import de.subcentral.core.media.Episode;
+import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.util.Replacer;
 
 public abstract class AbstractEpisodeNamer extends AbstractNamer<Episode>

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.subcentral.core.model.Contribution;
+import de.subcentral.core.model.Contributions;
 import de.subcentral.core.util.TimeUtil;
 
 public class ContributionTest

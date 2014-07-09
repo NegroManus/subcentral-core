@@ -2,7 +2,7 @@ package de.subcentral.core.naming;
 
 import java.util.Map;
 
-import de.subcentral.core.media.Episode;
+import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.util.Replacer;
 
 /**
@@ -103,13 +103,13 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	/**
 	 * The naming setting key for the Boolean value "includeSeries".
 	 */
-	public static final String	PARAM_INCLUDE_SERIES_KEY				= SeasonedEpisodeNamer.class.getName() + ".includeSeries";
+	public static final String	PARAM_INCLUDE_SERIES_KEY				= "includeSeries";
 	public static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT			= Boolean.TRUE;
 
 	/**
 	 * The naming setting key for the Boolean value "includeSeason".
 	 */
-	public static final String	PARAM_INCLUDE_SEASON_KEY				= SeasonedEpisodeNamer.class.getName() + ".includeSeason";
+	public static final String	PARAM_INCLUDE_SEASON_KEY				= "includeSeason";
 	public static final Boolean	PARAM_INCLUDE_SEASON_DEFAULT			= Boolean.TRUE;
 
 	private boolean				alwaysIncludeSeasonTitle				= false;

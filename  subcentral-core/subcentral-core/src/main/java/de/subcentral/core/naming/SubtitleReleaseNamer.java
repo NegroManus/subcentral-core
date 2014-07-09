@@ -6,18 +6,18 @@ import java.util.Map;
 
 import com.google.common.base.Joiner;
 
-import de.subcentral.core.release.MediaRelease;
-import de.subcentral.core.release.Tag;
-import de.subcentral.core.subtitle.Subtitle;
-import de.subcentral.core.subtitle.SubtitleRelease;
+import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.SubtitleRelease;
 import de.subcentral.core.util.Replacer;
 
-public class SubtitleReleaseNamer extends AbstractReleaseNamer<SubtitleRelease, Subtitle> implements Namer<SubtitleRelease>
+public class SubtitleReleaseNamer extends AbstractReleaseNamer<SubtitleRelease, Subtitle>
 {
 	/**
 	 * The naming setting key for the MediaRelease value "mediaRelease".
 	 */
-	public static final String	PARAM_MEDIA_RELEASE_KEY						= SubtitleReleaseNamer.class.getName() + ".mediaRelease";
+	public static final String	PARAM_MEDIA_RELEASE_KEY						= "mediaRelease";
 
 	private Replacer			subtitleLanguageReplacer					= NamingStandards.STANDARD_REPLACER;
 	private String				subtitleLanguageFormat						= "%s";

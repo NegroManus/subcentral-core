@@ -6,10 +6,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.subcentral.core.media.Episode;
-import de.subcentral.core.media.Media;
-import de.subcentral.core.media.Season;
-import de.subcentral.core.media.Series;
+import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Media;
+import de.subcentral.core.model.media.Season;
+import de.subcentral.core.model.media.Series;
 
 public class EpisodeNamingTest
 {

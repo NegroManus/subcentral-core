@@ -1,6 +1,8 @@
 package de.subcentral.core.util;
 
-public interface Replacer
+import java.util.function.UnaryOperator;
+
+public interface Replacer extends UnaryOperator<String>
 {
 	/**
 	 * 
@@ -17,8 +19,13 @@ public interface Replacer
 		{
 			return null;
 		}
-		return r == null ? s : r.process(s);
+		return r == null ? s : r.apply(s);
 	}
 
-	public String process(String s);
+	public static Replacer toEmptyReplacer()
+	{
+		return s -> "";
+	}
+
+	public String apply(String s);
 }

@@ -2,7 +2,7 @@ package de.subcentral.core.naming;
 
 import java.util.Map;
 
-import de.subcentral.core.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.Subtitle;
 
 public class SubtitleNamer implements Namer<Subtitle>
 {

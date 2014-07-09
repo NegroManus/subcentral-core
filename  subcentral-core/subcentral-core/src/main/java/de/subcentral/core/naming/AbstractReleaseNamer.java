@@ -1,6 +1,6 @@
 package de.subcentral.core.naming;
 
-import de.subcentral.core.release.Release;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.Replacer;
 
 public abstract class AbstractReleaseNamer<R extends Release<M>, M> extends AbstractNamer<R>

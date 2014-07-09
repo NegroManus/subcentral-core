@@ -1,32 +1,66 @@
 package de.subcentral.core.naming;
 
+import java.beans.PropertyDescriptor;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
-import de.subcentral.core.util.Replacer;
+import com.google.common.base.Joiner;
+
+import de.subcentral.core.util.SeparatorDescriptor;
 
 public abstract class AbstractNamer<T> implements Namer<T>
 {
-	protected Replacer	wholeNameReplacer	= null;
-	protected String	wholeNameFormat		= "%s";
+	protected UnaryOperator<String>							wholeNameOperator			= UnaryOperator.identity();
+	protected Map<PropertyDescriptor, Function<?, String>>	propertyToStringFunctions	= new HashMap<>();
+	protected Set<SeparatorDescriptor>						separators;
 
-	public Replacer getWholeNameReplacer()
+	public UnaryOperator<String> getWholeNameOperator()
 	{
-		return wholeNameReplacer;
+		return wholeNameOperator;
 	}
 
-	public void setWholeNameReplacer(Replacer wholeNameReplacer)
+	/**
+	 * 
+	 * @param wholeNameOperator
+	 *            The operator on the whole name after it was constructed of the properties and separators.
+	 * 
+	 */
+	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
 	{
-		this.wholeNameReplacer = wholeNameReplacer;
+		this.wholeNameOperator = wholeNameOperator;
 	}
 
-	public String getWholeNameFormat()
+	public Map<PropertyDescriptor, Function<?, String>> getPropertyToStringFunctions()
 	{
-		return wholeNameFormat;
+		return propertyToStringFunctions;
 	}
 
-	public void setWholeNameFormat(String wholeNameFormat)
+	/**
+	 * 
+	 * @param propertyToStringFunctions
+	 *            The toString() functions for the properties. A Map of {property name -> toString() function}.
+	 */
+	public void setPropertyToStringFunctions(Map<PropertyDescriptor, Function<?, String>> propertyToStringFunctions)
 	{
-		this.wholeNameFormat = wholeNameFormat;
+		this.propertyToStringFunctions = propertyToStringFunctions;
+	}
+
+	public Set<SeparatorDescriptor> getSeparators()
+	{
+		return separators;
+	}
+
+	/**
+	 * 
+	 * @param separators
+	 *            The separators between the properties.
+	 */
+	public void setSeparators(Set<SeparatorDescriptor> separators)
+	{
+		this.separators = separators;
 	}
 
 	@Override
@@ -38,7 +72,7 @@ public abstract class AbstractNamer<T> implements Namer<T>
 		}
 		try
 		{
-			return formatWholeName(doName(candidate, namingService, parameters));
+			return wholeNameOperator.apply(doName(candidate, namingService, parameters));
 		}
 		catch (Exception e)
 		{
@@ -58,11 +92,24 @@ public abstract class AbstractNamer<T> implements Namer<T>
 	 * @throws Exception
 	 *             Whatever exception occurs while naming the candidate. Will be wrapped into a NamingException and thrown.
 	 */
-	public abstract String doName(T candidate, NamingService namingService, Map<String, Object> parameters) throws Exception;
+	protected abstract String doName(T candidate, NamingService namingService, Map<String, Object> parameters) throws Exception;
 
-	// format methods
-	public String formatWholeName(String wholeName)
+	protected <P> String propToString(PropertyDescriptor propertyDescriptor, P property)
 	{
-		return String.format(wholeNameFormat, Replacer.replace(wholeName, wholeNameReplacer));
+		if (property == null)
+		{
+			return null;
+		}
+		@SuppressWarnings("unchecked")
+		Function<P, String> f = (Function<P, String>) propertyToStringFunctions.get(propertyDescriptor);
+		if (f == null)
+		{
+			if (property instanceof Iterable)
+			{
+				return Joiner.on(' ').join((Iterable<?>) property);
+			}
+			return property.toString();
+		}
+		return f.apply(property);
 	}
 }

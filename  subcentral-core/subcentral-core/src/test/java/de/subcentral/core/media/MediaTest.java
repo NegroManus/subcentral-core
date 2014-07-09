@@ -1,5 +1,7 @@
 package de.subcentral.core.media;
 
+import de.subcentral.core.model.media.Series;
+
 
 public class MediaTest
 {

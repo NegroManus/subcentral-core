@@ -5,17 +5,17 @@ import java.time.Year;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.media.Episode;
-import de.subcentral.core.media.Movie;
-import de.subcentral.core.media.MultiEpisodeHelper;
-import de.subcentral.core.media.Season;
-import de.subcentral.core.media.Series;
-import de.subcentral.core.release.Group;
-import de.subcentral.core.release.MediaRelease;
-import de.subcentral.core.release.Releases;
-import de.subcentral.core.release.Tag;
-import de.subcentral.core.subtitle.Subtitle;
-import de.subcentral.core.subtitle.SubtitleRelease;
+import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Movie;
+import de.subcentral.core.model.media.MultiEpisodeHelper;
+import de.subcentral.core.model.media.Season;
+import de.subcentral.core.model.media.Series;
+import de.subcentral.core.model.release.Group;
+import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.SubtitleRelease;
 import de.subcentral.core.util.TimeUtil;
 
 public class NamingTest

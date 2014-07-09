@@ -1,10 +1,10 @@
 package de.subcentral.core.lookup;
 
-import de.subcentral.core.impl.com.orlydb.OrlyDbLookup;
-import de.subcentral.core.media.Episode;
-import de.subcentral.core.media.Movie;
-import de.subcentral.core.release.MediaRelease;
-import de.subcentral.core.release.Releases;
+import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Movie;
+import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Releases;
+import de.subcentral.thirdparty.com.orlydb.OrlyDbLookup;
 
 public class LookupTest
 {

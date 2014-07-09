@@ -13,7 +13,7 @@ public class NamingStandards
 	public static final SubtitleNamer				SUBTITLE_NAMER			= new SubtitleNamer();
 	public static final MediaReleaseNamer			MEDIA_RELEASE_NAMER		= new MediaReleaseNamer();
 	public static final SubtitleReleaseNamer	SUBTITLE_RELEASE_NAMER	= new SubtitleReleaseNamer();
-	public static final NamingServiceImpl			NAMING_SERVICE			= new NamingServiceImpl();
+	public static final SimpleNamingService			NAMING_SERVICE			= new SimpleNamingService();
 	static
 	{
 		NAMING_SERVICE.setDomain(DEFAULT_DOMAIN);

@@ -6,10 +6,10 @@ import java.util.Map;
 
 import com.google.common.base.Joiner;
 
-import de.subcentral.core.media.Media;
-import de.subcentral.core.media.Medias;
-import de.subcentral.core.release.MediaRelease;
-import de.subcentral.core.release.Tag;
+import de.subcentral.core.model.media.Media;
+import de.subcentral.core.model.media.Medias;
+import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Tag;
 
 public class MediaReleaseNamer extends AbstractReleaseNamer<MediaRelease, Media>
 {

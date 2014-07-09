@@ -5,9 +5,9 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.media.MultiEpisodeHelper;
-import de.subcentral.core.media.Season;
-import de.subcentral.core.media.Series;
+import de.subcentral.core.model.media.MultiEpisodeHelper;
+import de.subcentral.core.model.media.Season;
+import de.subcentral.core.model.media.Series;
 
 public class MultiEpisodeNamer extends AbstractNamer<MultiEpisodeHelper>
 {
