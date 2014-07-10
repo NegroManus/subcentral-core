@@ -13,15 +13,10 @@ import de.subcentral.core.model.media.Series;
 
 public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpisodeHelper>
 {
-	public static final String		SEPARATION_TYPE_ADDITION		= "addition";
-	public static final String		SEPARATION_TYPE_RANGE			= "range";
+	public static final String		SEPARATION_TYPE_ADDITION	= "addition";
+	public static final String		SEPARATION_TYPE_RANGE		= "range";
 
-	private SeasonedEpisodeNamer	episodeNamer					= NamingStandards.SEASONED_EPISODE_NAMER;
-
-	private String					episodeNumberRangeSeparator		= "-";
-	private String					episodeNumberAdditionSeparator	= "";
-	private String					episodeAdditionSeparator		= " ";
-
+	private SeasonedEpisodeNamer	episodeNamer				= NamingStandards.SEASONED_EPISODE_NAMER;
 	private PropertyDescriptor		propEpisodes;
 
 	public MultiEpisodeNamer()
@@ -61,7 +56,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 				{
 					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeason());
 					List<Integer> firstRange = numberRanges.get(0);
-					appendRange(sb, firstRange, true);
+					appendRange(sb, firstRange, false, true);
 
 					for (int i = 1; i < numberRanges.size(); i++)
 					{
@@ -69,7 +64,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 						sb.append(getSeparatorBetween(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
 								SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
 								SEPARATION_TYPE_ADDITION));
-						appendRange(sb, range, false);
+						appendRange(sb, range, false, false);
 					}
 				}
 				else
@@ -88,15 +83,15 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 				{
 					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeries());
 					List<Integer> firstRange = numberRanges.get(0);
-					appendRange(sb, firstRange, true);
+					appendRange(sb, firstRange, true, true);
 
 					for (int i = 1; i < numberRanges.size(); i++)
 					{
 						List<Integer> range = numberRanges.get(i);
-						sb.append(getSeparatorBetween(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
-								SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
+						sb.append(getSeparatorBetween(SeasonedEpisodeNamer.PROP_NUMBER_IN_SERIES,
+								SeasonedEpisodeNamer.PROP_NUMBER_IN_SERIES,
 								SEPARATION_TYPE_ADDITION));
-						appendRange(sb, range, false);
+						appendRange(sb, range, true, false);
 					}
 				}
 			}
@@ -122,8 +117,9 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 		return sb.toString();
 	}
 
-	private void appendRange(StringBuilder sb, List<Integer> range, boolean omitFirstNumber)
+	private void appendRange(StringBuilder sb, List<Integer> range, boolean numberInSeries, boolean omitFirstNumber)
 	{
+		PropertyDescriptor prop = numberInSeries ? SeasonedEpisodeNamer.PROP_NUMBER_IN_SERIES : SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON;
 		switch (range.size())
 		{
 			case 0:
@@ -131,28 +127,24 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 			case 1:
 				if (!omitFirstNumber)
 				{
-					sb.append(episodeNamer.propToString(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON, range.get(0), SEPARATION_TYPE_ADDITION));
+					sb.append(episodeNamer.propToString(prop, range.get(0), SEPARATION_TYPE_ADDITION));
 				}
 				break;
 			case 2:
 				if (!omitFirstNumber)
 				{
-					sb.append(episodeNamer.propToString(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON, range.get(0), SEPARATION_TYPE_ADDITION));
+					sb.append(episodeNamer.propToString(prop, range.get(0), SEPARATION_TYPE_ADDITION));
 				}
-				sb.append(getSeparatorBetween(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
-						SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
-						SEPARATION_TYPE_ADDITION));
-				sb.append(episodeNamer.propToString(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON, range.get(1), SEPARATION_TYPE_ADDITION));
+				sb.append(getSeparatorBetween(prop, prop, SEPARATION_TYPE_ADDITION));
+				sb.append(episodeNamer.propToString(prop, range.get(1), SEPARATION_TYPE_ADDITION));
 				break;
 			default:
 				if (!omitFirstNumber)
 				{
-					sb.append(episodeNamer.propToString(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON, range.get(0), SEPARATION_TYPE_RANGE));
+					sb.append(episodeNamer.propToString(prop, range.get(0), SEPARATION_TYPE_RANGE));
 				}
-				sb.append(getSeparatorBetween(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
-						SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
-						SEPARATION_TYPE_RANGE));
-				sb.append(episodeNamer.propToString(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON, range.get(range.size() - 1), SEPARATION_TYPE_RANGE));
+				sb.append(getSeparatorBetween(prop, prop, SEPARATION_TYPE_RANGE));
+				sb.append(episodeNamer.propToString(prop, range.get(range.size() - 1), SEPARATION_TYPE_RANGE));
 				break;
 		}
 	}
