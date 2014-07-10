@@ -11,9 +11,12 @@ import com.google.common.base.Objects;
 
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Work;
+import de.subcentral.core.model.media.AvMediaItem;
+import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.AbstractRelease;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 
 public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
@@ -21,8 +24,32 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	public static final String	CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
 	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
-	private Set<MediaRelease>	compatibleMediaReleases			= new HashSet<>(2);
-	private List<Contribution>	contributions					= new ArrayList<>(2);
+	public static SubtitleRelease create(MediaRelease compatibleMediaRelease, String subtitleLanguage, String group, String... tags)
+	{
+		return create(null, compatibleMediaRelease, subtitleLanguage, group, tags);
+	}
+
+	public static SubtitleRelease create(String name, MediaRelease compatibleMediaRelease, String subtitleLanguage, String group, String... tags)
+	{
+		SubtitleRelease rls = new SubtitleRelease();
+		rls.setName(name);
+		rls.setCompatibleMediaRelease(compatibleMediaRelease);
+		List<Subtitle> subs = new ArrayList<>(compatibleMediaRelease.getMaterials().size());
+		for (Media media : compatibleMediaRelease.getMaterials())
+		{
+			subs.add(new Subtitle((AvMediaItem) media, subtitleLanguage));
+		}
+		rls.setMaterials(subs);
+		if (group != null)
+		{
+			rls.setGroup(new Group(group));
+		}
+		rls.setTags(Releases.tags(tags));
+		return rls;
+	}
+
+	private Set<MediaRelease>	compatibleMediaReleases	= new HashSet<>(2);
+	private List<Contribution>	contributions			= new ArrayList<>(2);
 
 	public SubtitleRelease()
 	{
@@ -34,22 +61,24 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 		this.name = name;
 	}
 
-	public SubtitleRelease(String name, Subtitle material, Group group, List<Tag> tags, Set<MediaRelease> compatibleMediaReleases)
+	public SubtitleRelease(String name, Set<MediaRelease> compatibleMediaReleases, Subtitle material, Group group, List<Tag> tags)
 	{
 		this.name = name;
+		setCompatibleMediaReleases(compatibleMediaReleases);
 		setMaterial(material);
 		this.group = group;
 		setTags(tags);
-		setCompatibleMediaReleases(compatibleMediaReleases);
+
 	}
 
-	public SubtitleRelease(String name, List<Subtitle> materials, Group group, List<Tag> tags, Set<MediaRelease> compatibleMediaReleases)
+	public SubtitleRelease(String name, Set<MediaRelease> compatibleMediaReleases, List<Subtitle> materials, Group group, List<Tag> tags)
 	{
 		this.name = name;
+		setCompatibleMediaReleases(compatibleMediaReleases);
 		setMaterials(materials);
 		this.group = group;
 		setTags(tags);
-		setCompatibleMediaReleases(compatibleMediaReleases);
+
 	}
 
 	public Set<MediaRelease> getCompatibleMediaReleases()

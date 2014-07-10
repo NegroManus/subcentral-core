@@ -142,18 +142,18 @@ public abstract class AbstractSeparatedPropertiesNamer<T> implements Namer<T>
 			sb = new StringBuilder();
 		}
 
-		protected Builder appendIterable(PropertyDescriptor propertyDescriptor, Iterable<?> propertyIterable)
-		{
-			propertyIterable.forEach(p -> append(propertyDescriptor, p));
-			return this;
-		}
-
-		protected Builder appendCollectionIfNotEmpty(PropertyDescriptor propertyDescriptor, Collection<?> propertyCollection)
+		protected Builder appendAllIfNotEmpty(PropertyDescriptor propertyDescriptor, Collection<?> propertyCollection)
 		{
 			if (!propertyCollection.isEmpty())
 			{
-				appendIterable(propertyDescriptor, propertyCollection);
+				appendAll(propertyDescriptor, propertyCollection);
 			}
+			return this;
+		}
+
+		protected Builder appendAll(PropertyDescriptor propertyDescriptor, Iterable<?> propertyIterable)
+		{
+			propertyIterable.forEach(p -> append(propertyDescriptor, p));
 			return this;
 		}
 

@@ -3,7 +3,6 @@ package de.subcentral.core.lookup;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.release.MediaRelease;
-import de.subcentral.core.model.release.Releases;
 import de.subcentral.thirdparty.com.orlydb.OrlyDbLookup;
 
 public class LookupTest
@@ -13,9 +12,9 @@ public class LookupTest
 		System.getProperties().put("http.proxyHost", "10.206.247.65");
 		System.getProperties().put("http.proxyPort", "8080");
 
-		Episode epi = Episode.newSeasonedEpisode("Psych", 6, 5);
+		Episode epi = Episode.createSeasonedEpisode("Psych", 6, 5);
 		Movie movie = new Movie("The Lord of the Rings");
-		MediaRelease rls = Releases.newMediaRelease(movie, null, "720p");
+		MediaRelease rls = MediaRelease.create(movie, null, "720p");
 
 		OrlyDbLookup lookup = new OrlyDbLookup();
 		LookupQuery<MediaRelease> query = lookup.createQueryFromEntity(epi);

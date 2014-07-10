@@ -340,7 +340,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	{
 		if (seasonNumber != null && episodeNumber != null)
 		{
-			return Episode.newSeasonedEpisode(title, Integer.parseInt(seasonNumber), Integer.parseInt(episodeNumber));
+			return Episode.createSeasonedEpisode(title, Integer.parseInt(seasonNumber), Integer.parseInt(episodeNumber));
 		}
 		return null;
 	}

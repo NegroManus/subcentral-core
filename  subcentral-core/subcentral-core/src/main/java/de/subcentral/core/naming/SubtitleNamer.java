@@ -4,6 +4,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.Map;
 
+import org.jsoup.helper.Validate;
+
 import de.subcentral.core.model.subtitle.Subtitle;
 
 public class SubtitleNamer extends AbstractSeparatedPropertiesNamer<Subtitle>
@@ -33,6 +35,7 @@ public class SubtitleNamer extends AbstractSeparatedPropertiesNamer<Subtitle>
 	@Override
 	public String doName(Subtitle sub, NamingService namingService, Map<String, Object> params)
 	{
+		Validate.notNull(namingService, "namingService cannot be null");
 		Builder b = new Builder();
 		b.appendString(propMediaItem, namingService.name(sub.getMediaItem(), params));
 		b.append(propLanguage, sub.getLanguage());

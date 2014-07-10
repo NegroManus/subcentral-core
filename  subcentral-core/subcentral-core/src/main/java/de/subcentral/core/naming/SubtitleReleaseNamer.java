@@ -4,6 +4,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.Map;
 
+import org.jsoup.helper.Validate;
+
 import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
@@ -44,6 +46,7 @@ public class SubtitleReleaseNamer extends AbstractSeparatedPropertiesNamer<Subti
 	@Override
 	public String doName(SubtitleRelease rls, NamingService namingService, Map<String, Object> params)
 	{
+		Validate.notNull(namingService, "namingService cannot be null");
 		// read naming settings
 		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_RELEASE_KEY, MediaRelease.class, rls.getFirstCompatibleMediaRelease());
 
@@ -54,7 +57,7 @@ public class SubtitleReleaseNamer extends AbstractSeparatedPropertiesNamer<Subti
 		{
 			b.append(propSubtitleLanguage, sub.getLanguage());
 		}
-		b.appendCollectionIfNotEmpty(propTags, rls.getTags());
+		b.appendAllIfNotEmpty(propTags, rls.getTags());
 		b.appendIfNotNull(propGroup, rls.getGroup());
 		return b.build();
 	}

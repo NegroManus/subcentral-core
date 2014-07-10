@@ -16,22 +16,22 @@ import de.subcentral.core.util.Settings;
 
 public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 {
-	public static Episode newSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber)
+	public static Episode createSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber)
 	{
-		return newSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
+		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
 	}
 
-	public static Episode newSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber, String episodeTitle)
+	public static Episode createSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber, String episodeTitle)
 	{
-		return newSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
+		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newSeasonedEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
+	public static Episode createSeasonedEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
 	{
-		return newSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
+		return createSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, int episodeNumber,
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, int episodeNumber,
 			String episodeTitle)
 	{
 		if (seriesName == null)
@@ -55,17 +55,17 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return epi;
 	}
 
-	public static Episode newMiniSeriesEpisode(String seriesName, Integer episodeNumber)
+	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber)
 	{
-		return newMiniSeriesEpisode(seriesName, null, episodeNumber, null);
+		return createMiniSeriesEpisode(seriesName, null, episodeNumber, null);
 	}
 
-	public static Episode newMiniSeriesEpisode(String seriesName, Integer episodeNumber, String episodeTitle)
+	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber, String episodeTitle)
 	{
-		return newMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
+		return createMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newMiniSeriesEpisode(String seriesName, String seriesTitle, int episodeNumber, String episodeTitle)
+	public static Episode createMiniSeriesEpisode(String seriesName, String seriesTitle, int episodeNumber, String episodeTitle)
 	{
 		if (seriesName == null)
 		{
@@ -81,17 +81,17 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return epi;
 	}
 
-	public static Episode newDatedEpisode(String seriesName, ZonedDateTime date)
+	public static Episode createDatedEpisode(String seriesName, ZonedDateTime date)
 	{
-		return newDatedEpisode(seriesName, null, date, null);
+		return createDatedEpisode(seriesName, null, date, null);
 	}
 
-	public static Episode newDatedEpisode(String seriesName, ZonedDateTime date, String episodeTitle)
+	public static Episode createDatedEpisode(String seriesName, ZonedDateTime date, String episodeTitle)
 	{
-		return newDatedEpisode(seriesName, null, date, episodeTitle);
+		return createDatedEpisode(seriesName, null, date, episodeTitle);
 	}
 
-	public static Episode newDatedEpisode(String seriesName, String seriesTitle, ZonedDateTime date, String episodeTitle)
+	public static Episode createDatedEpisode(String seriesName, String seriesTitle, ZonedDateTime date, String episodeTitle)
 	{
 		if (seriesName == null)
 		{

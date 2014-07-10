@@ -8,6 +8,24 @@ import de.subcentral.core.model.media.Media;
 
 public class MediaRelease extends AbstractRelease<Media>
 {
+	public static MediaRelease create(Media media, String group, String... tags)
+	{
+		return create(null, media, group, tags);
+	}
+
+	public static MediaRelease create(String name, Media media, String group, String... tags)
+	{
+		MediaRelease rls = new MediaRelease();
+		rls.setName(name);
+		rls.setMaterial(media);
+		if (group != null)
+		{
+			rls.setGroup(new Group(group));
+		}
+		rls.setTags(Releases.tags(tags));
+		return rls;
+	}
+
 	public MediaRelease()
 	{
 

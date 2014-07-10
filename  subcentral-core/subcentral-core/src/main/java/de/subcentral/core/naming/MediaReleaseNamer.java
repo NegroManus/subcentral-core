@@ -4,6 +4,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.Map;
 
+import org.jsoup.helper.Validate;
+
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.MediaRelease;
 
@@ -36,9 +38,10 @@ public class MediaReleaseNamer extends AbstractSeparatedPropertiesNamer<MediaRel
 	@Override
 	public String doName(MediaRelease rls, NamingService namingService, Map<String, Object> params) throws IntrospectionException
 	{
+		Validate.notNull(namingService, "namingService cannot be null");
 		Builder b = new Builder();
 		b.appendString(propMaterials, Medias.name(rls.getMaterials(), namingService, params, getSeparatorBetween(propMaterials, propMaterials, null)));
-		b.appendCollectionIfNotEmpty(propTags, rls.getTags());
+		b.appendAllIfNotEmpty(propTags, rls.getTags());
 		b.appendIfNotNull(propGroup, rls.getGroup());
 		return b.build();
 	}

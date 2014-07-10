@@ -31,6 +31,22 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private String				description;
 	private List<Contribution>	contributions					= new ArrayList<>();
 
+	public Subtitle()
+	{
+
+	}
+
+	public Subtitle(AvMediaItem mediaItem)
+	{
+		this(mediaItem, null);
+	}
+
+	public Subtitle(AvMediaItem mediaItem, String language)
+	{
+		setMediaItem(mediaItem);
+		setLanguage(language);
+	}
+
 	public AvMediaItem getMediaItem()
 	{
 		return mediaItem;
