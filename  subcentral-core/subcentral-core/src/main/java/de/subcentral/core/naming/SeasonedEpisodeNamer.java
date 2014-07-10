@@ -116,7 +116,6 @@ public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episo
 	public static final Boolean			PARAM_INCLUDE_SEASON_DEFAULT	= Boolean.TRUE;
 
 	public static PropertyDescriptor	PROP_SERIES;
-	public static PropertyDescriptor	PROP_SERIES_NAME;
 	public static PropertyDescriptor	PROP_SEASON_NUMBER;
 	public static PropertyDescriptor	PROP_SEASON_TITLE;
 	public static PropertyDescriptor	PROP_NUMBER_IN_SEASON;
@@ -128,12 +127,10 @@ public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episo
 		try
 		{
 			PROP_SERIES = new PropertyDescriptor("series", Episode.class);
-			PROP_SERIES_NAME = new PropertyDescriptor("name", Series.class);
 			PROP_SEASON_NUMBER = new PropertyDescriptor("number", Season.class);
 			PROP_SEASON_TITLE = new PropertyDescriptor("title", Season.class);
 			PROP_NUMBER_IN_SEASON = new PropertyDescriptor("numberInSeason", Episode.class);
 			PROP_TITLE = new PropertyDescriptor("title", Episode.class);
-			PROP_NUMBER_IN_SEASON = new PropertyDescriptor("numberInSeason", Episode.class);
 			PROP_NUMBER_IN_SERIES = new PropertyDescriptor("numberInSeries", Episode.class);
 		}
 		catch (IntrospectionException e)
@@ -226,17 +223,17 @@ public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episo
 			Series series = epi.getSeries();
 			if (series.getName() == null)
 			{
-				b.appendString(PROP_SERIES_NAME, undefinedSeriesPlaceholder);
+				b.appendString(PROP_SERIES, undefinedSeriesPlaceholder);
 			}
 			else
 			{
 				if (namingService != null && namingService.canName(epi.getSeries()))
 				{
-					b.appendString(PROP_SERIES_NAME, namingService.name(epi.getSeries(), params));
+					b.appendString(PROP_SERIES, namingService.name(epi.getSeries(), params));
 				}
 				else
 				{
-					b.appendString(PROP_SERIES_NAME, epi.getSeries().getName());
+					b.appendString(PROP_SERIES, epi.getSeries().getName());
 				}
 			}
 		}
@@ -252,7 +249,7 @@ public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episo
 			else
 			{
 				b.appendIf(PROP_SEASON_NUMBER, season.getNumber(), season.isNumbered());
-				b.appendIf(PROP_SEASON_TITLE, season.getTitle(), (alwaysIncludeSeasonTitle || !season.isNumbered()) && season.isTitled());
+				b.appendIf(PROP_SEASON_TITLE, season.getTitle(), alwaysIncludeSeasonTitle || !season.isNumbered());
 			}
 		}
 
