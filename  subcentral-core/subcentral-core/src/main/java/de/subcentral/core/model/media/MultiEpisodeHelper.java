@@ -95,6 +95,18 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		super(Arrays.asList(episodes));
 	}
 
+	// to have getter and setter for the property "episodes"
+	public List<Episode> getEpisodes()
+	{
+		return this;
+	}
+
+	public void setEpisodes(List<Episode> episodes)
+	{
+		clear();
+		addAll(episodes);
+	}
+
 	public Series getCommonSeries()
 	{
 		if (isEmpty())
@@ -192,8 +204,8 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		List<Integer> nums = new ArrayList<>(size());
 		for (Episode epi : this)
 		{
-			int numInSeries = epi.getNumberInSeries();
-			if (numInSeries != Media.UNNUMBERED)
+			Integer numInSeries = epi.getNumberInSeries();
+			if (numInSeries != null)
 			{
 				nums.add(numInSeries);
 			}
@@ -210,8 +222,8 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		List<Integer> nums = new ArrayList<>(size());
 		for (Episode epi : this)
 		{
-			int numInSeason = epi.getNumberInSeason();
-			if (numInSeason != Media.UNNUMBERED)
+			Integer numInSeason = epi.getNumberInSeason();
+			if (numInSeason != null)
 			{
 				nums.add(numInSeason);
 			}

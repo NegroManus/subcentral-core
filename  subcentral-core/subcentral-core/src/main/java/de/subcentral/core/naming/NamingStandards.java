@@ -2,16 +2,18 @@ package de.subcentral.core.naming;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.model.release.Group;
+import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
 import de.subcentral.core.util.CharReplacer;
-import de.subcentral.core.util.SeparatorDescriptor;
+import de.subcentral.core.util.SeparationDefinition;
 
 public class NamingStandards
 {
@@ -29,13 +31,25 @@ public class NamingStandards
 	{
 		try
 		{
-			Function<Group, String> groupToString = g -> g.getName().replaceAll("DIMENSION", "DiMENSION");
+			Function<Integer, String> episodeNumberToString = n -> String.format("E%02d", n);
+			Function<Integer, String> seasonNumberToString = n -> String.format("S%02d", n);
+			Map<PropertyDescriptor, Function<?, String>> epiToStringFuncts = new HashMap<>();
+			epiToStringFuncts.put(new PropertyDescriptor("numberInSeries", Episode.class), episodeNumberToString);
+			epiToStringFuncts.put(new PropertyDescriptor("numberInSeason", Episode.class), episodeNumberToString);
+			epiToStringFuncts.put(new PropertyDescriptor("number", Season.class), seasonNumberToString);
+			SEASONED_EPISODE_NAMER.setPropertyToStringFunctions(epiToStringFuncts);
+			SEASONED_EPISODE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.between(new PropertyDescriptor("number", Season.class),
+					new PropertyDescriptor("numberInSeason", Episode.class),
+					"")));
 
-			MEDIA_RELEASE_NAMER.setPropertyToStringFunctions(ImmutableMap.of(new PropertyDescriptor("group", MediaRelease.class), groupToString));
-			MEDIA_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparatorDescriptor.before(new PropertyDescriptor("group", MediaRelease.class), "-")));
+			MULTI_EPISODE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.inBetween(new PropertyDescriptor("numberInSeason", Episode.class),
+					MultiEpisodeNamer.SEPARATION_TYPE_ADDITION,
+					""), SeparationDefinition.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-")));
+
+			MEDIA_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(new PropertyDescriptor("group", MediaRelease.class), "-")));
 			MEDIA_RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
 
-			SUBTITLE_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparatorDescriptor.before(new PropertyDescriptor("group", SubtitleRelease.class),
+			SUBTITLE_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(new PropertyDescriptor("group", SubtitleRelease.class),
 					"-")));
 			SUBTITLE_RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
 

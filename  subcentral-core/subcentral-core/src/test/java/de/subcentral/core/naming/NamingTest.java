@@ -37,20 +37,21 @@ public class NamingTest
 		epi.setTitle("Weekend at Barney's");
 		epi.setDate(LocalDateTime.now());
 
+		Episode epi2 = series.newEpisode();
+		epi2.setNumberInSeries(18);
+
 		Movie movie = new Movie();
 		movie.setName("The Lord of the Rings");
 		movie.setDate(Year.of(2002));
 
 		MultiEpisodeHelper epis = new MultiEpisodeHelper();
-		Episode epi2 = series.newEpisode();
-		epi2.setNumberInSeries(18);
-
 		epis.add(Episode.newMiniSeriesEpisode("Psych", 1));
-		epis.add(Episode.newMiniSeriesEpisode("Psych", 2));
+		epis.add(Episode.newMiniSeriesEpisode("HIMYM", 2));
+		epis.add(Episode.newMiniSeriesEpisode("Psych", 3));
 
 		// Media release
 		MediaRelease rel = new MediaRelease();
-		// rel.setExplicitName("Psych.S01E01.HDTV.XviD-LOL");
+		rel.setName("Psych.S01E01.HDTV.XviD-LOL");
 		rel.setMaterials(ImmutableList.of(movie));
 		rel.setGroup(new Group("DIMENSION"));
 		rel.setTags(Releases.tags("720p", "HDTV", "x264"));

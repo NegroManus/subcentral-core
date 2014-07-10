@@ -68,12 +68,6 @@ public interface Media extends Work
 	public static final String	TYPE_MULTI						= "MULTI";
 	public static final String	TYPE_COLLECTION					= "COLLECTION";
 
-	/**
-	 * Some medias can be numbered (like Episodes in a Series or Season or Songs in an Album). This value indicates that the media instance is not
-	 * numbered.
-	 */
-	public static final int		UNNUMBERED						= Integer.MAX_VALUE;
-
 	// Property accessors
 	/**
 	 * @return The unique name of this media.

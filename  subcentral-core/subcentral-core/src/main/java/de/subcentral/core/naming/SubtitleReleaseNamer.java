@@ -8,10 +8,10 @@ import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
 
-public class SubtitleReleaseNamer extends AbstractNamer<SubtitleRelease>
+public class SubtitleReleaseNamer extends AbstractSeparatedPropertiesNamer<SubtitleRelease>
 {
 	/**
-	 * The naming setting key for the MediaRelease value "mediaRelease".
+	 * The parameter key for the MediaRelease value "mediaRelease".
 	 */
 	public static final String	PARAM_MEDIA_RELEASE_KEY	= "mediaRelease";
 
@@ -47,24 +47,15 @@ public class SubtitleReleaseNamer extends AbstractNamer<SubtitleRelease>
 		// read naming settings
 		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_RELEASE_KEY, MediaRelease.class, rls.getFirstCompatibleMediaRelease());
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(namingService.name(mediaRls));
+		Builder b = new Builder();
+		b.appendString(propCompatibleMediaReleases, namingService.name(mediaRls, params));
 		Subtitle sub = rls.getFirstMaterial();
 		if (sub != null)
 		{
-			sb.append(getSeparatorBetween(propCompatibleMediaReleases, propSubtitleLanguage));
-			sb.append(propToString(propSubtitleLanguage, sub.getLanguage()));
+			b.append(propSubtitleLanguage, sub.getLanguage());
 		}
-		if (!rls.getTags().isEmpty())
-		{
-			sb.append(getSeparatorBetween(null, propTags));
-			sb.append(propToString(propTags, rls.getTags()));
-		}
-		if (rls.getGroup() != null)
-		{
-			sb.append(getSeparatorBetween(null, propGroup));
-			sb.append(propToString(propGroup, rls.getGroup()));
-		}
-		return sb.toString();
+		b.appendCollectionIfNotEmpty(propTags, rls.getTags());
+		b.appendIfNotNull(propGroup, rls.getGroup());
+		return b.build();
 	}
 }

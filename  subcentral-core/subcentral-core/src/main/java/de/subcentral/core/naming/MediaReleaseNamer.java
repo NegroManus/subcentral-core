@@ -7,7 +7,7 @@ import java.util.Map;
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.MediaRelease;
 
-public class MediaReleaseNamer extends AbstractNamer<MediaRelease>
+public class MediaReleaseNamer extends AbstractSeparatedPropertiesNamer<MediaRelease>
 {
 	private PropertyDescriptor	propMaterials;
 	private PropertyDescriptor	propTags;
@@ -34,21 +34,12 @@ public class MediaReleaseNamer extends AbstractNamer<MediaRelease>
 	}
 
 	@Override
-	public String doName(MediaRelease rls, NamingService namingService, Map<String, Object> parameters) throws IntrospectionException
+	public String doName(MediaRelease rls, NamingService namingService, Map<String, Object> params) throws IntrospectionException
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(propToString(propMaterials,
-				Medias.name(rls.getMaterials(), namingService, parameters, getSeparatorBetween(propMaterials, propMaterials))));
-		if (!rls.getTags().isEmpty())
-		{
-			sb.append(getSeparatorBetween(propMaterials, propTags));
-			sb.append(propToString(propTags, rls.getTags()));
-		}
-		if (rls.getGroup() != null)
-		{
-			sb.append(getSeparatorBetween(null, propGroup));
-			sb.append(propToString(propGroup, rls.getGroup()));
-		}
-		return sb.toString();
+		Builder b = new Builder();
+		b.appendString(propMaterials, Medias.name(rls.getMaterials(), namingService, params, getSeparatorBetween(propMaterials, propMaterials, null)));
+		b.appendCollectionIfNotEmpty(propTags, rls.getTags());
+		b.appendIfNotNull(propGroup, rls.getGroup());
+		return b.build();
 	}
 }

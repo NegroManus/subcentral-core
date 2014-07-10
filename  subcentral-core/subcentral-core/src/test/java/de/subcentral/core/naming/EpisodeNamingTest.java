@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 
@@ -86,7 +85,7 @@ public class EpisodeNamingTest
 		// series Sxx epinum
 		// series Sxx epinum epititle
 		epi.setSeason(season);
-		epi.setNumberInSeries(Media.UNNUMBERED);
+		epi.setNumberInSeries(null);
 		epi.setTitle(null);
 		names.add(namer.name(epi));
 
@@ -108,7 +107,7 @@ public class EpisodeNamingTest
 		// series seasontitle epinum
 		// series seasontitle epinum epititle
 		season.setTitle("Webisodes");
-		epi.setNumberInSeason(Media.UNNUMBERED);
+		epi.setNumberInSeason(null);
 		epi.setTitle(null);
 		names.add(namer.name(epi));
 
@@ -131,7 +130,7 @@ public class EpisodeNamingTest
 		// series {seasonnum epinum} epititle
 		season.setNumber(1);
 		season.setTitle(null);
-		epi.setNumberInSeason(Media.UNNUMBERED);
+		epi.setNumberInSeason(null);
 		epi.setTitle(null);
 		names.add(namer.name(epi));
 
@@ -153,7 +152,7 @@ public class EpisodeNamingTest
 		// series seasonnum seasontitle epinum
 		// series seasonnum seasontitle epinum epititle
 		season.setTitle("Webisodes");
-		epi.setNumberInSeason(Media.UNNUMBERED);
+		epi.setNumberInSeason(null);
 		epi.setTitle(null);
 		names.add(namer.name(epi));
 		namer.setAlwaysIncludeSeasonTitle(true);
@@ -185,9 +184,12 @@ public class EpisodeNamingTest
 		namer.setAlwaysIncludeEpisodeTitle(false);
 		namer.setAlwaysIncludeSeasonTitle(false);
 
+		for (String name : names)
+		{
+			System.out.println(name);
+		}
 		for (int i = 0; i < expectedNames.size(); i++)
 		{
-			System.out.println(names.get(i));
 			Assert.assertEquals(expectedNames.get(i), names.get(i));
 		}
 	}

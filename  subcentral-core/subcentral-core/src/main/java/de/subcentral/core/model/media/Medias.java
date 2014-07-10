@@ -13,7 +13,7 @@ public class Medias
 {
 	public static final Comparator<Media>	MEDIA_NAME_COMPARATOR	= new MediaNameComparator();
 
-	static final class MediaNameComparator implements Comparator<Media>
+	private static final class MediaNameComparator implements Comparator<Media>
 	{
 		@Override
 		public int compare(Media o1, Media o2)

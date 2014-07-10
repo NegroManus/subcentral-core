@@ -17,7 +17,7 @@ import de.subcentral.core.util.Settings;
 public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
 {
 	private Series	series;
-	private int		number	= Media.UNNUMBERED;
+	private Integer	number	= null;
 	private boolean	special;
 
 	public Season()
@@ -58,12 +58,12 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		return isNumbered() ? Integer.toString(number) : title;
 	}
 
-	public int getNumber()
+	public Integer getNumber()
 	{
 		return number;
 	}
 
-	public void setNumber(int number)
+	public void setNumber(Integer number)
 	{
 		this.number = number;
 	}
@@ -113,7 +113,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	// Convenience / Complex
 	public boolean isNumbered()
 	{
-		return number != Media.UNNUMBERED;
+		return number != null;
 	}
 
 	/**
@@ -184,7 +184,11 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		{
 			return -1;
 		}
-		return ComparisonChain.start().compare(series, o.series).compare(number, o.number).compare(title, o.title, Settings.STRING_ORDERING).result();
+		return ComparisonChain.start()
+				.compare(series, o.series, Settings.createDefaultOrdering())
+				.compare(number, o.number, Settings.createDefaultOrdering())
+				.compare(title, o.title, Settings.STRING_ORDERING)
+				.result();
 	}
 
 	@Override

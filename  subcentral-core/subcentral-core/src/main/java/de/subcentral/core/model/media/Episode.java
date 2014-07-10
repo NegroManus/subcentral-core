@@ -28,10 +28,10 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 
 	public static Episode newSeasonedEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
 	{
-		return newSeasonedEpisode(seriesName, null, Media.UNNUMBERED, seasonTitle, episodeNumber, episodeTitle);
+		return newSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
 	}
 
-	public static Episode newSeasonedEpisode(String seriesName, String seriesTitle, int seasonNumber, String seasonTitle, int episodeNumber,
+	public static Episode newSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, int episodeNumber,
 			String episodeTitle)
 	{
 		if (seriesName == null)
@@ -43,7 +43,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		series.setName(seriesName);
 		series.setTitle(seriesTitle);
 		Episode epi = new Episode(series);
-		if (seasonNumber != Media.UNNUMBERED || seasonTitle != null)
+		if (seasonNumber != null || seasonTitle != null)
 		{
 			Season season = new Season(series);
 			season.setNumber(seasonNumber);
@@ -55,12 +55,12 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return epi;
 	}
 
-	public static Episode newMiniSeriesEpisode(String seriesName, int episodeNumber)
+	public static Episode newMiniSeriesEpisode(String seriesName, Integer episodeNumber)
 	{
 		return newMiniSeriesEpisode(seriesName, null, episodeNumber, null);
 	}
 
-	public static Episode newMiniSeriesEpisode(String seriesName, int episodeNumber, String episodeTitle)
+	public static Episode newMiniSeriesEpisode(String seriesName, Integer episodeNumber, String episodeTitle)
 	{
 		return newMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
 	}
@@ -109,8 +109,8 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 
 	private Series	series;
 	private Season	season;
-	private int		numberInSeries	= UNNUMBERED;
-	private int		numberInSeason	= UNNUMBERED;
+	private Integer	numberInSeries;
+	private Integer	numberInSeason;
 	private boolean	special;
 
 	public Episode()
@@ -124,12 +124,12 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	}
 
 	// Mini-series
-	public Episode(Series series, int numberInSeries)
+	public Episode(Series series, Integer numberInSeries)
 	{
 		this(series, numberInSeries, null);
 	}
 
-	public Episode(Series series, int numberInSeries, String title)
+	public Episode(Series series, Integer numberInSeries, String title)
 	{
 		setSeries(series);
 		setNumberInSeries(numberInSeries);
@@ -152,7 +152,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	// Seasoned
 	public Episode(Series series, Season season)
 	{
-		this(series, season, UNNUMBERED, null);
+		this(series, season, null, null);
 	}
 
 	public Episode(Series series, Season season, int numberInSeason)
@@ -162,10 +162,10 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 
 	public Episode(Series series, Season season, String title)
 	{
-		this(series, season, UNNUMBERED, title);
+		this(series, season, null, title);
 	}
 
-	public Episode(Series series, Season season, int numberInSeason, String title)
+	public Episode(Series series, Season season, Integer numberInSeason, String title)
 	{
 		setSeries(series);
 		setSeason(season);
@@ -206,22 +206,22 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return Media.TYPE_VIDEO;
 	}
 
-	public int getNumberInSeries()
+	public Integer getNumberInSeries()
 	{
 		return numberInSeries;
 	}
 
-	public void setNumberInSeries(int numberInSeries)
+	public void setNumberInSeries(Integer numberInSeries)
 	{
 		this.numberInSeries = numberInSeries;
 	}
 
-	public int getNumberInSeason()
+	public Integer getNumberInSeason()
 	{
 		return numberInSeason;
 	}
 
-	public void setNumberInSeason(int numberInSeason)
+	public void setNumberInSeason(Integer numberInSeason)
 	{
 		this.numberInSeason = numberInSeason;
 	}
@@ -262,12 +262,12 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 
 	public boolean isNumberedInSeries()
 	{
-		return numberInSeries != Media.UNNUMBERED;
+		return numberInSeries != null;
 	}
 
 	public boolean isNumberedInSeason()
 	{
-		return numberInSeason != Media.UNNUMBERED;
+		return numberInSeason != null;
 	}
 
 	/**
@@ -318,10 +318,10 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 			return -1;
 		}
 		return ComparisonChain.start()
-				.compare(series, o.series)
-				.compare(numberInSeries, o.numberInSeries)
-				.compare(season, o.season)
-				.compare(numberInSeason, o.numberInSeason)
+				.compare(series, o.series, Settings.createDefaultOrdering())
+				.compare(numberInSeries, o.numberInSeries, Settings.createDefaultOrdering())
+				.compare(season, o.season, Settings.createDefaultOrdering())
+				.compare(numberInSeason, o.numberInSeason, Settings.createDefaultOrdering())
 				.compare(date, o.date, Settings.TEMPORAL_ORDERING)
 				.compare(title, title, Settings.STRING_ORDERING)
 				.result();

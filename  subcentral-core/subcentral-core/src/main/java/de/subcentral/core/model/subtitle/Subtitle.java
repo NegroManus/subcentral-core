@@ -14,6 +14,7 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
+import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.util.Settings;
 
 public class Subtitle implements Work, Comparable<Subtitle>
@@ -130,7 +131,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return -1;
 		}
 		return ComparisonChain.start()
-				.compare(mediaItem.getName(), o.mediaItem.getName(), Settings.STRING_ORDERING)
+				.compare(mediaItem, o.mediaItem, Medias.MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language)
 				.compare(date, o.date, Settings.TEMPORAL_ORDERING)
 				.result();

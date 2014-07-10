@@ -1,9 +1,12 @@
 package de.subcentral.core.naming;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.Map;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.util.Replacer;
+import de.subcentral.core.model.media.Season;
+import de.subcentral.core.model.media.Series;
 
 /**
  * Possible naming combinations:
@@ -98,33 +101,57 @@ import de.subcentral.core.util.Replacer;
  * @author mhertram
  *
  */
-public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
+public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episode>
 {
 	/**
-	 * The naming setting key for the Boolean value "includeSeries".
+	 * The parameter key for the Boolean value "includeSeries".
 	 */
-	public static final String	PARAM_INCLUDE_SERIES_KEY				= "includeSeries";
-	public static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT			= Boolean.TRUE;
+	public static final String			PARAM_INCLUDE_SERIES_KEY		= "includeSeries";
+	public static final Boolean			PARAM_INCLUDE_SERIES_DEFAULT	= Boolean.TRUE;
 
 	/**
-	 * The naming setting key for the Boolean value "includeSeason".
+	 * The parameter key for the Boolean value "includeSeason".
 	 */
-	public static final String	PARAM_INCLUDE_SEASON_KEY				= "includeSeason";
-	public static final Boolean	PARAM_INCLUDE_SEASON_DEFAULT			= Boolean.TRUE;
+	public static final String			PARAM_INCLUDE_SEASON_KEY		= "includeSeason";
+	public static final Boolean			PARAM_INCLUDE_SEASON_DEFAULT	= Boolean.TRUE;
 
-	private boolean				alwaysIncludeSeasonTitle				= false;
+	public static PropertyDescriptor	PROP_SERIES;
+	public static PropertyDescriptor	PROP_SERIES_NAME;
+	public static PropertyDescriptor	PROP_SEASON_NUMBER;
+	public static PropertyDescriptor	PROP_SEASON_TITLE;
+	public static PropertyDescriptor	PROP_NUMBER_IN_SEASON;
+	public static PropertyDescriptor	PROP_TITLE;
+	public static PropertyDescriptor	PROP_NUMBER_IN_SERIES;
 
-	private String				seasonNumberFormat						= "S%02d";
-	private Replacer			seasonTitleReplacer						= null;
-	private String				seasonTitleFormat						= "%s";
-	private String				episodeNumberFormat						= "E%02d";
+	static
+	{
+		try
+		{
+			PROP_SERIES = new PropertyDescriptor("series", Episode.class);
+			PROP_SERIES_NAME = new PropertyDescriptor("name", Series.class);
+			PROP_SEASON_NUMBER = new PropertyDescriptor("number", Season.class);
+			PROP_SEASON_TITLE = new PropertyDescriptor("title", Season.class);
+			PROP_NUMBER_IN_SEASON = new PropertyDescriptor("numberInSeason", Episode.class);
+			PROP_TITLE = new PropertyDescriptor("title", Episode.class);
+			PROP_NUMBER_IN_SEASON = new PropertyDescriptor("numberInSeason", Episode.class);
+			PROP_NUMBER_IN_SERIES = new PropertyDescriptor("numberInSeries", Episode.class);
+		}
+		catch (IntrospectionException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	private boolean						alwaysIncludeSeasonTitle		= false;
+	private boolean						alwaysIncludeEpisodeTitle		= false;
 
-	private String				seasonNumberAndTitleSeparator			= " ";
-	private String				seasonNumberAndEpisodeNumberSeparator	= "";
-	private String				seasonAndEpisodeSeparator				= " ";
-	private String				episodeNumberAndTitleSeparator			= " ";
+	private String						undefinedSeriesPlaceholder		= "UNNAMED_SERIES";
+	private String						undefinedSeasonPlaceholder		= "Sxx";
+	private String						undefinedEpisodePlaceholder		= "Exx";
 
-	private String				undefinedSeasonPlaceholder				= "Sxx";
+	public SeasonedEpisodeNamer()
+	{
+
+	}
 
 	// booleans
 	public boolean getAlwaysIncludeSeasonTitle()
@@ -137,89 +164,27 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		this.alwaysIncludeSeasonTitle = alwaysIncludeSeasonTitle;
 	}
 
-	// formats and replacers
-	public String getSeasonNumberFormat()
+	public boolean getAlwaysIncludeEpisodeTitle()
 	{
-		return seasonNumberFormat;
+		return alwaysIncludeEpisodeTitle;
 	}
 
-	public void setSeasonNumberFormat(String seasonNumberFormat)
+	public void setAlwaysIncludeEpisodeTitle(boolean alwaysIncludeEpisodeTitle)
 	{
-		this.seasonNumberFormat = seasonNumberFormat;
-	}
-
-	public Replacer getSeasonTitleReplacer()
-	{
-		return seasonTitleReplacer;
-	}
-
-	public void setSeasonTitleReplacer(Replacer seasonTitleReplacer)
-	{
-		this.seasonTitleReplacer = seasonTitleReplacer;
-	}
-
-	public String getSeasonTitleFormat()
-	{
-		return seasonTitleFormat;
-	}
-
-	public void setSeasonTitleFormat(String seasonTitleFormat)
-	{
-		this.seasonTitleFormat = seasonTitleFormat;
-	}
-
-	public String getEpisodeNumberFormat()
-	{
-		return episodeNumberFormat;
-	}
-
-	public void setEpisodeNumberFormat(String episodeNumberFormat)
-	{
-		this.episodeNumberFormat = episodeNumberFormat;
-	}
-
-	// separators
-	public String getSeasonNumberAndTitleSeparator()
-	{
-		return seasonNumberAndTitleSeparator;
-	}
-
-	public void setSeasonNumberAndTitleSeparator(String seasonNumberAndTitleSeparator)
-	{
-		this.seasonNumberAndTitleSeparator = seasonNumberAndTitleSeparator;
-	}
-
-	public String getSeasonNumberAndEpisodeNumberSeparator()
-	{
-		return seasonNumberAndEpisodeNumberSeparator;
-	}
-
-	public void setSeasonNumberAndEpisodeNumberSeparator(String seasonNumberAndEpisodeNumberSeparator)
-	{
-		this.seasonNumberAndEpisodeNumberSeparator = seasonNumberAndEpisodeNumberSeparator;
-	}
-
-	public String getSeasonAndEpisodeSeparator()
-	{
-		return seasonAndEpisodeSeparator;
-	}
-
-	public void setSeasonAndEpisodeSeparator(String seasonAndEpisodeSeparator)
-	{
-		this.seasonAndEpisodeSeparator = seasonAndEpisodeSeparator;
-	}
-
-	public String getEpisodeNumberAndTitleSeparator()
-	{
-		return episodeNumberAndTitleSeparator;
-	}
-
-	public void setEpisodeNumberAndTitleSeparator(String episodeNumberAndTitleSeparator)
-	{
-		this.episodeNumberAndTitleSeparator = episodeNumberAndTitleSeparator;
+		this.alwaysIncludeEpisodeTitle = alwaysIncludeEpisodeTitle;
 	}
 
 	// placeholders
+	public String getUndefinedSeriesPlaceholder()
+	{
+		return undefinedSeriesPlaceholder;
+	}
+
+	public void setUndefinedSeriesPlaceholder(String undefinedSeriesPlaceholder)
+	{
+		this.undefinedSeriesPlaceholder = undefinedSeriesPlaceholder;
+	}
+
 	public String getUndefinedSeasonPlaceholder()
 	{
 		return undefinedSeasonPlaceholder;
@@ -230,6 +195,22 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		this.undefinedSeasonPlaceholder = undefinedSeasonPlaceholder;
 	}
 
+	public String getUndefinedEpisodePlaceholder()
+	{
+		return undefinedEpisodePlaceholder;
+	}
+
+	public void setUndefinedEpisodePlaceholder(String undefinedEpisodePlaceholder)
+	{
+		this.undefinedEpisodePlaceholder = undefinedEpisodePlaceholder;
+	}
+
+	@Override
+	public Class<Episode> getType()
+	{
+		return Episode.class;
+	}
+
 	@Override
 	public String doName(Episode epi, NamingService namingService, Map<String, Object> params)
 	{
@@ -237,161 +218,63 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
 		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON_KEY, Boolean.class, PARAM_INCLUDE_SEASON_DEFAULT);
 
-		StringBuilder sb = new StringBuilder();
-		if (includeSeries)
+		Builder b = new Builder();
+
+		// add series
+		if (includeSeries && epi.getSeries() != null)
 		{
-			if (epi.getSeries().getName() != null)
+			Series series = epi.getSeries();
+			if (series.getName() == null)
 			{
-				sb.append(formatSeriesName(epi.getSeries().getName()));
+				b.appendString(PROP_SERIES_NAME, undefinedSeriesPlaceholder);
 			}
 			else
 			{
-				sb.append(undefinedSeriesPlaceholder);
+				if (namingService != null && namingService.canName(epi.getSeries()))
+				{
+					b.appendString(PROP_SERIES_NAME, namingService.name(epi.getSeries(), params));
+				}
+				else
+				{
+					b.appendString(PROP_SERIES_NAME, epi.getSeries().getName());
+				}
 			}
-			sb.append(seriesAndAnythingSeparator);
 		}
 
-		// if in season, append numberInSeason
-		if (epi.isPartOfSeason())
+		// add season
+		if (includeSeason && epi.isPartOfSeason())
 		{
-			if (epi.getSeason().isNumbered())
+			Season season = epi.getSeason();
+			if (!season.isNumbered() && !season.isTitled())
 			{
-				if (epi.isNumberedInSeason())
-				{
-					if (includeSeason)
-					{
-						sb.append(formatSeasonNumber(epi.getSeason().getNumber()));
-						if (alwaysIncludeSeasonTitle && epi.getSeason().isTitled())
-						{
-							sb.append(seasonNumberAndTitleSeparator);
-							sb.append(formatSeasonTitle(epi.getSeason().getTitle()));
-							sb.append(seasonAndEpisodeSeparator);
-						}
-						else
-						{
-							sb.append(seasonNumberAndEpisodeNumberSeparator);
-						}
-						sb.append(formatEpisodeNumber(epi.getNumberInSeason()));
-					}
-					else
-					{
-						sb.append(formatEpisodeNumber(epi.getNumberInSeason()));
-					}
-					if (alwaysIncludeEpisodeTitle)
-					{
-						sb.append(episodeNumberAndTitleSeparator);
-						sb.append(formatEpisodeTitle(epi.getTitle()));
-					}
-				}
-				else
-				{
-					if (includeSeason)
-					{
-						sb.append(formatSeasonNumber(epi.getSeason().getNumber()));
-						if (alwaysIncludeSeasonTitle && epi.getSeason().isTitled())
-						{
-							sb.append(seasonNumberAndTitleSeparator);
-							sb.append(formatSeasonTitle(epi.getSeason().getTitle()));
-						}
-						sb.append(seasonAndEpisodeSeparator);
-					}
-					if (epi.isTitled())
-					{
-						sb.append(formatEpisodeTitle(epi.getTitle()));
-					}
-					else
-					{
-						sb.append(undefinedEpisodePlaceholder);
-					}
-				}
-			}
-			else if (epi.getSeason().isTitled())
-			{
-				if (includeSeason)
-				{
-					sb.append(formatSeasonTitle(epi.getSeason().getTitle()));
-					sb.append(seasonAndEpisodeSeparator);
-				}
-				if (epi.isNumberedInSeason())
-				{
-					sb.append(formatEpisodeNumber(epi.getNumberInSeason()));
-					if (alwaysIncludeEpisodeTitle)
-					{
-						sb.append(episodeNumberAndTitleSeparator);
-						sb.append(formatEpisodeTitle(epi.getTitle()));
-					}
-				}
-				else if (epi.isTitled())
-				{
-					sb.append(formatEpisodeTitle(epi.getTitle()));
-				}
-				else
-				{
-					sb.append(undefinedEpisodePlaceholder);
-				}
+				b.appendString(PROP_SEASON_TITLE, undefinedSeasonPlaceholder);
 			}
 			else
 			{
-				if (includeSeason)
-				{
-					sb.append(undefinedSeasonPlaceholder);
-					sb.append(seasonAndEpisodeSeparator);
-				}
-				if (epi.isNumberedInSeason())
-				{
-					sb.append(formatEpisodeNumber(epi.getNumberInSeason()));
-					if (alwaysIncludeEpisodeTitle)
-					{
-						sb.append(episodeNumberAndTitleSeparator);
-						sb.append(formatEpisodeTitle(epi.getTitle()));
-					}
-				}
-				else if (epi.isTitled())
-				{
-					sb.append(formatEpisodeTitle(epi.getTitle()));
-				}
-				else
-				{
-					sb.append(undefinedEpisodePlaceholder);
-				}
+				b.appendIf(PROP_SEASON_NUMBER, season.getNumber(), season.isNumbered());
+				b.appendIf(PROP_SEASON_TITLE, season.getTitle(), (alwaysIncludeSeasonTitle || !season.isNumbered()) && season.isTitled());
 			}
+		}
+
+		// add episode
+		if (!epi.isNumberedInSeries() && !epi.isNumberedInSeason() && !epi.isTitled())
+		{
+			b.appendString(PROP_TITLE, undefinedEpisodePlaceholder);
 		}
 		else
 		{
-			if (epi.isNumberedInSeries())
+			if (epi.isPartOfSeason())
 			{
-				sb.append(formatEpisodeNumber(epi.getNumberInSeries()));
-				if (alwaysIncludeEpisodeTitle)
-				{
-					sb.append(episodeNumberAndTitleSeparator);
-					sb.append(formatEpisodeTitle(epi.getTitle()));
-				}
-			}
-			else if (epi.isTitled())
-			{
-				sb.append(formatEpisodeTitle(epi.getTitle()));
+				b.appendIf(PROP_NUMBER_IN_SEASON, epi.getNumberInSeason(), epi.isNumberedInSeason());
+				b.appendIf(PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle || !epi.isNumberedInSeason());
 			}
 			else
 			{
-				sb.append(undefinedEpisodePlaceholder);
+				b.appendIf(PROP_NUMBER_IN_SERIES, epi.getNumberInSeries(), epi.isNumberedInSeries());
+				b.appendIf(PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle || !epi.isNumberedInSeries());
 			}
 		}
-		return sb.toString();
-	}
 
-	public String formatSeasonNumber(int seasonNumber)
-	{
-		return String.format(seasonNumberFormat, seasonNumber);
-	}
-
-	public String formatSeasonTitle(String seasonTitle)
-	{
-		return String.format(seasonTitleFormat, Replacer.replace(seasonTitle, seasonTitleReplacer));
-	}
-
-	// both numberInSeries and numberInSeason
-	public String formatEpisodeNumber(int episodeNumber)
-	{
-		return String.format(episodeNumberFormat, episodeNumber);
+		return b.build();
 	}
 }
