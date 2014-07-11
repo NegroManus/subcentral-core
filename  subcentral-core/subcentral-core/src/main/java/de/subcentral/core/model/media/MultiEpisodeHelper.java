@@ -13,6 +13,8 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
+import de.subcentral.core.util.SimplePropertyDescriptor;
+
 /**
  * A helper class for dealing with multiple episodes.
  * <p>
@@ -26,7 +28,11 @@ import com.google.common.collect.ListMultimap;
  */
 public class MultiEpisodeHelper extends ArrayList<Episode>
 {
-	private static final long	serialVersionUID	= 870081295286403057L;
+	public static final String						PROP_NAME_EPISODES	= "episodes";
+
+	public static final SimplePropertyDescriptor	PROP_EPISODES		= new SimplePropertyDescriptor(MultiEpisodeHelper.class, PROP_NAME_EPISODES);
+
+	private static final long						serialVersionUID	= 870081295286403057L;
 
 	public static MultiEpisodeHelper of(List<? extends Media> media) throws IllegalArgumentException
 	{

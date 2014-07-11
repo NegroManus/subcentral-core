@@ -1,7 +1,5 @@
 package de.subcentral.core.naming;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.util.Map;
 
 import de.subcentral.core.model.media.Episode;
@@ -101,49 +99,26 @@ import de.subcentral.core.model.media.Series;
  * @author mhertram
  *
  */
-public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episode>
+public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 {
 	/**
 	 * The parameter key for the Boolean value "includeSeries".
 	 */
-	public static final String			PARAM_INCLUDE_SERIES_KEY		= "includeSeries";
-	public static final Boolean			PARAM_INCLUDE_SERIES_DEFAULT	= Boolean.TRUE;
+	public static final String	PARAM_INCLUDE_SERIES_KEY		= "includeSeries";
+	public static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT	= Boolean.TRUE;
 
 	/**
 	 * The parameter key for the Boolean value "includeSeason".
 	 */
-	public static final String			PARAM_INCLUDE_SEASON_KEY		= "includeSeason";
-	public static final Boolean			PARAM_INCLUDE_SEASON_DEFAULT	= Boolean.TRUE;
+	public static final String	PARAM_INCLUDE_SEASON_KEY		= "includeSeason";
+	public static final Boolean	PARAM_INCLUDE_SEASON_DEFAULT	= Boolean.TRUE;
 
-	public static PropertyDescriptor	PROP_SERIES;
-	public static PropertyDescriptor	PROP_SEASON_NUMBER;
-	public static PropertyDescriptor	PROP_SEASON_TITLE;
-	public static PropertyDescriptor	PROP_NUMBER_IN_SEASON;
-	public static PropertyDescriptor	PROP_TITLE;
-	public static PropertyDescriptor	PROP_NUMBER_IN_SERIES;
+	private boolean				alwaysIncludeSeasonTitle		= false;
+	private boolean				alwaysIncludeEpisodeTitle		= false;
 
-	static
-	{
-		try
-		{
-			PROP_SERIES = new PropertyDescriptor("series", Episode.class);
-			PROP_SEASON_NUMBER = new PropertyDescriptor("number", Season.class);
-			PROP_SEASON_TITLE = new PropertyDescriptor("title", Season.class);
-			PROP_NUMBER_IN_SEASON = new PropertyDescriptor("numberInSeason", Episode.class);
-			PROP_TITLE = new PropertyDescriptor("title", Episode.class);
-			PROP_NUMBER_IN_SERIES = new PropertyDescriptor("numberInSeries", Episode.class);
-		}
-		catch (IntrospectionException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	private boolean						alwaysIncludeSeasonTitle		= false;
-	private boolean						alwaysIncludeEpisodeTitle		= false;
-
-	private String						undefinedSeriesPlaceholder		= "UNNAMED_SERIES";
-	private String						undefinedSeasonPlaceholder		= "Sxx";
-	private String						undefinedEpisodePlaceholder		= "Exx";
+	private String				undefinedSeriesPlaceholder		= "UNNAMED_SERIES";
+	private String				undefinedSeasonPlaceholder		= "Sxx";
+	private String				undefinedEpisodePlaceholder		= "Exx";
 
 	public SeasonedEpisodeNamer()
 	{
@@ -223,17 +198,17 @@ public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episo
 			Series series = epi.getSeries();
 			if (series.getName() == null)
 			{
-				b.appendString(PROP_SERIES, undefinedSeriesPlaceholder);
+				b.appendString(Episode.PROP_SERIES, undefinedSeriesPlaceholder);
 			}
 			else
 			{
 				if (namingService != null && namingService.canName(epi.getSeries()))
 				{
-					b.appendString(PROP_SERIES, namingService.name(epi.getSeries(), params));
+					b.appendString(Episode.PROP_SERIES, namingService.name(epi.getSeries(), params));
 				}
 				else
 				{
-					b.appendString(PROP_SERIES, epi.getSeries().getName());
+					b.appendString(Episode.PROP_SERIES, epi.getSeries().getName());
 				}
 			}
 		}
@@ -244,31 +219,31 @@ public class SeasonedEpisodeNamer extends AbstractSeparatedPropertiesNamer<Episo
 			Season season = epi.getSeason();
 			if (!season.isNumbered() && !season.isTitled())
 			{
-				b.appendString(PROP_SEASON_TITLE, undefinedSeasonPlaceholder);
+				b.appendString(Season.PROP_TITLE, undefinedSeasonPlaceholder);
 			}
 			else
 			{
-				b.appendIf(PROP_SEASON_NUMBER, season.getNumber(), season.isNumbered());
-				b.appendIf(PROP_SEASON_TITLE, season.getTitle(), alwaysIncludeSeasonTitle || !season.isNumbered());
+				b.appendIf(Season.PROP_NUMBER, season.getNumber(), season.isNumbered());
+				b.appendIf(Season.PROP_TITLE, season.getTitle(), alwaysIncludeSeasonTitle || !season.isNumbered());
 			}
 		}
 
 		// add episode
 		if (!epi.isNumberedInSeries() && !epi.isNumberedInSeason() && !epi.isTitled())
 		{
-			b.appendString(PROP_TITLE, undefinedEpisodePlaceholder);
+			b.appendString(Episode.PROP_TITLE, undefinedEpisodePlaceholder);
 		}
 		else
 		{
 			if (epi.isPartOfSeason())
 			{
-				b.appendIf(PROP_NUMBER_IN_SEASON, epi.getNumberInSeason(), epi.isNumberedInSeason());
-				b.appendIf(PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle || !epi.isNumberedInSeason());
+				b.appendIf(Episode.PROP_NUMBER_IN_SEASON, epi.getNumberInSeason(), epi.isNumberedInSeason());
+				b.appendIf(Episode.PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle || !epi.isNumberedInSeason());
 			}
 			else
 			{
-				b.appendIf(PROP_NUMBER_IN_SERIES, epi.getNumberInSeries(), epi.isNumberedInSeries());
-				b.appendIf(PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle || !epi.isNumberedInSeries());
+				b.appendIf(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries(), epi.isNumberedInSeries());
+				b.appendIf(Episode.PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle || !epi.isNumberedInSeries());
 			}
 		}
 

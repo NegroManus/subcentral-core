@@ -5,9 +5,23 @@ import java.util.List;
 import com.google.common.base.Objects;
 
 import de.subcentral.core.model.media.Media;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
 public class MediaRelease extends AbstractRelease<Media>
 {
+	public static final SimplePropertyDescriptor	PROP_NAME			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_NAME);
+	public static final SimplePropertyDescriptor	PROP_MATERIALS		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_MATERIALS);
+	public static final SimplePropertyDescriptor	PROP_GROUP			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_GROUP);
+	public static final SimplePropertyDescriptor	PROP_TAGS			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_TAGS);
+	public static final SimplePropertyDescriptor	PROP_DATE			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_DATE);
+	public static final SimplePropertyDescriptor	PROP_SECTION		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SECTION);
+	public static final SimplePropertyDescriptor	PROP_SIZE			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SIZE);
+	public static final SimplePropertyDescriptor	PROP_NUKE_REASON	= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_NUKE_REASON);
+	public static final SimplePropertyDescriptor	PROP_INFO			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_INFO);
+	public static final SimplePropertyDescriptor	PROP_INFO_URL		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_INFO_URL);
+	public static final SimplePropertyDescriptor	PROP_SOURCE			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SOURCE);
+	public static final SimplePropertyDescriptor	PROP_SOURCE_URL		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SOURCE_URL);
+
 	public static MediaRelease create(Media media, String group, String... tags)
 	{
 		return create(null, media, group, tags);

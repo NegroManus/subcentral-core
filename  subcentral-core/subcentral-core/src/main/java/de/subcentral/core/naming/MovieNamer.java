@@ -4,7 +4,7 @@ import java.util.Map;
 
 import de.subcentral.core.model.media.Movie;
 
-public class MovieNamer extends AbstractSeparatedPropertiesNamer<Movie>
+public class MovieNamer extends AbstractPropertySequenceNamer<Movie>
 {
 	@Override
 	public Class<Movie> getType()

@@ -39,7 +39,7 @@ public class CharReplacer implements Replacer
 	}
 
 	@Override
-	public String apply(String s)
+	public String replace(String s)
 	{
 		if (s == null)
 		{

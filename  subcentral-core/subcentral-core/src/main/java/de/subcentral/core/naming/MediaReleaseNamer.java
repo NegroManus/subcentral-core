@@ -1,7 +1,6 @@
 package de.subcentral.core.naming;
 
 import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.util.Map;
 
 import org.jsoup.helper.Validate;
@@ -9,26 +8,8 @@ import org.jsoup.helper.Validate;
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.MediaRelease;
 
-public class MediaReleaseNamer extends AbstractSeparatedPropertiesNamer<MediaRelease>
+public class MediaReleaseNamer extends AbstractPropertySequenceNamer<MediaRelease>
 {
-	private PropertyDescriptor	propMaterials;
-	private PropertyDescriptor	propTags;
-	private PropertyDescriptor	propGroup;
-
-	public MediaReleaseNamer()
-	{
-		try
-		{
-			propMaterials = new PropertyDescriptor("materials", MediaRelease.class);
-			propTags = new PropertyDescriptor("tags", MediaRelease.class);
-			propGroup = new PropertyDescriptor("group", MediaRelease.class);
-		}
-		catch (IntrospectionException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 	@Override
 	public Class<MediaRelease> getType()
 	{
@@ -40,9 +21,13 @@ public class MediaReleaseNamer extends AbstractSeparatedPropertiesNamer<MediaRel
 	{
 		Validate.notNull(namingService, "namingService cannot be null");
 		Builder b = new Builder();
-		b.appendString(propMaterials, Medias.name(rls.getMaterials(), namingService, params, getSeparatorBetween(propMaterials, propMaterials, null)));
-		b.appendAllIfNotEmpty(propTags, rls.getTags());
-		b.appendIfNotNull(propGroup, rls.getGroup());
+		b.appendString(MediaRelease.PROP_MATERIALS,
+				Medias.name(rls.getMaterials(),
+						namingService,
+						params,
+						getSeparatorBetween(MediaRelease.PROP_MATERIALS, MediaRelease.PROP_MATERIALS, null)));
+		b.appendAllIfNotEmpty(MediaRelease.PROP_TAGS, rls.getTags());
+		b.appendIfNotNull(MediaRelease.PROP_GROUP, rls.getGroup());
 		return b.build();
 	}
 }

@@ -13,9 +13,41 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.Settings;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
 public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 {
+	public static final String						PROP_NAME_SERIES				= "series";
+	public static final String						PROP_NAME_NUMBER_IN_SERIES		= "numberInSeries";
+	public static final String						PROP_NAME_SEASON				= "season";
+	public static final String						PROP_NAME_NUMBER_IN_SEASON		= "numberInSeason";
+	public static final String						PROP_NAME_SPECIAL				= "special";
+
+	public static final SimplePropertyDescriptor	PROP_NAME						= new SimplePropertyDescriptor(Episode.class, PROP_NAME_NAME);
+	public static final SimplePropertyDescriptor	PROP_SERIES						= new SimplePropertyDescriptor(Episode.class, PROP_NAME_SERIES);
+	public static final SimplePropertyDescriptor	PROP_NUMBER_IN_SERIES			= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_NUMBER_IN_SERIES);
+	public static final SimplePropertyDescriptor	PROP_SEASON						= new SimplePropertyDescriptor(Episode.class, PROP_NAME_SEASON);
+	public static final SimplePropertyDescriptor	PROP_NUMBER_IN_SEASON			= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_NUMBER_IN_SEASON);
+	public static final SimplePropertyDescriptor	PROP_TITLE						= new SimplePropertyDescriptor(Episode.class, PROP_NAME_TITLE);
+	public static final SimplePropertyDescriptor	PROP_MEDIA_TYPE					= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_MEDIA_TYPE);
+	public static final SimplePropertyDescriptor	PROP_DATE						= new SimplePropertyDescriptor(Episode.class, PROP_NAME_DATE);
+	public static final SimplePropertyDescriptor	PROP_SPECIAL					= new SimplePropertyDescriptor(Episode.class, PROP_NAME_SPECIAL);
+	public static final SimplePropertyDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_ORIGINAL_LANGUAGE);
+	public static final SimplePropertyDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_COUNTRIES_OF_ORIGIN);
+	public static final SimplePropertyDescriptor	PROP_GENRES						= new SimplePropertyDescriptor(Episode.class, PROP_NAME_GENRES);
+	public static final SimplePropertyDescriptor	PROP_DESCRIPTION				= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_DESCRIPTION);
+	public static final SimplePropertyDescriptor	PROP_COVER_URL					= new SimplePropertyDescriptor(Episode.class, PROP_NAME_COVER_URL);
+	public static final SimplePropertyDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_CONTENT_ADVISORY);
+	public static final SimplePropertyDescriptor	PROP_FURHTER_INFORMATION_URLS	= new SimplePropertyDescriptor(Episode.class,
+																							PROP_NAME_FURHTER_INFORMATION_URLS);
+
 	public static Episode createSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber)
 	{
 		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
@@ -336,8 +368,8 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 				.add("numberInSeries", numberInSeries)
 				.add("season", season)
 				.add("numberInSeason", numberInSeason)
-				.add("date", date)
 				.add("title", title)
+				.add("date", date)
 				.add("special", special)
 				.add("runningTime", runningTime)
 				.add("description", description)

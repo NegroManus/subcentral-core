@@ -18,11 +18,44 @@ import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
 public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 {
-	public static final String	CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
-	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
+	public static final String						PROP_NAME_COMPATIBLE_MEDIA_RELEASES	= "compatibleMediaReleases";
+	public static final String						PROP_NAME_CONTRIBUTIONS				= "contributions";
+
+	public static final SimplePropertyDescriptor	PROP_NAME							= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_NAME);
+	public static final SimplePropertyDescriptor	PROP_MATERIALS						= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_MATERIALS);
+	public static final SimplePropertyDescriptor	PROP_GROUP							= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_GROUP);
+	public static final SimplePropertyDescriptor	PROP_TAGS							= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_TAGS);
+	public static final SimplePropertyDescriptor	PROP_COMPATIBLE_MEDIA_RELEASES		= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_COMPATIBLE_MEDIA_RELEASES);
+	public static final SimplePropertyDescriptor	PROP_DATE							= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_DATE);
+	public static final SimplePropertyDescriptor	PROP_SECTION						= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_SECTION);
+	public static final SimplePropertyDescriptor	PROP_SIZE							= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_SIZE);
+	public static final SimplePropertyDescriptor	PROP_NUKE_REASON					= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_NUKE_REASON);
+	public static final SimplePropertyDescriptor	PROP_INFO							= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_INFO);
+	public static final SimplePropertyDescriptor	PROP_INFO_URL						= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_INFO_URL);
+	public static final SimplePropertyDescriptor	PROP_SOURCE							= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_SOURCE);
+	public static final SimplePropertyDescriptor	PROP_SOURCE_URL						= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_SOURCE_URL);
+	public static final SimplePropertyDescriptor	PROP_CONTRIBUTIONS					= new SimplePropertyDescriptor(SubtitleRelease.class,
+																								PROP_NAME_CONTRIBUTIONS);
+
+	public static final String						CONTRIBUTION_TYPE_ADJUSTMENT		= "ADJUSTMENT";
+	public static final String						CONTRIBUTION_TYPE_CUSTOMIZATION		= "CUSTOMIZATION";
 
 	public static SubtitleRelease create(MediaRelease compatibleMediaRelease, String subtitleLanguage, String group, String... tags)
 	{

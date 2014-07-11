@@ -1,6 +1,5 @@
 package de.subcentral.core.naming;
 
-import java.beans.PropertyDescriptor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,14 +11,15 @@ import java.util.function.UnaryOperator;
 import org.jsoup.helper.Validate;
 
 import de.subcentral.core.util.SeparationDefinition;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
-public abstract class AbstractSeparatedPropertiesNamer<T> implements Namer<T>
+public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 {
-	private Map<PropertyDescriptor, Function<?, String>>	propertyToStringFunctions	= new HashMap<>();
-	private Set<SeparationDefinition>						separators					= new HashSet<>();
-	private UnaryOperator<String>							wholeNameOperator			= UnaryOperator.identity();
+	private Map<SimplePropertyDescriptor, Function<?, String>>	propertyToStringFunctions	= new HashMap<>();
+	private Set<SeparationDefinition>							separators					= new HashSet<>();
+	private UnaryOperator<String>								wholeNameOperator			= UnaryOperator.identity();
 
-	public Map<PropertyDescriptor, Function<?, String>> getPropertyToStringFunctions()
+	public Map<SimplePropertyDescriptor, Function<?, String>> getPropertyToStringFunctions()
 	{
 		return propertyToStringFunctions;
 	}
@@ -29,7 +29,7 @@ public abstract class AbstractSeparatedPropertiesNamer<T> implements Namer<T>
 	 * @param propertyToStringFunctions
 	 *            The toString() functions for the properties. A Map of {property name -> toString() function}.
 	 */
-	public void setPropertyToStringFunctions(Map<PropertyDescriptor, Function<?, String>> propertyToStringFunctions)
+	public void setPropertyToStringFunctions(Map<SimplePropertyDescriptor, Function<?, String>> propertyToStringFunctions)
 	{
 		Validate.notNull(propertyToStringFunctions);
 		this.propertyToStringFunctions = propertyToStringFunctions;
@@ -99,12 +99,12 @@ public abstract class AbstractSeparatedPropertiesNamer<T> implements Namer<T>
 	 */
 	protected abstract String doName(T candidate, NamingService namingService, Map<String, Object> parameters) throws Exception;
 
-	protected String getSeparatorBetween(PropertyDescriptor firstProperty, PropertyDescriptor secondProperty, String separationType)
+	protected String getSeparatorBetween(SimplePropertyDescriptor firstProperty, SimplePropertyDescriptor secondProperty, String separationType)
 	{
 		return SeparationDefinition.getSeparatorBetween(firstProperty, secondProperty, separationType, separators);
 	}
 
-	protected <P> String propToString(PropertyDescriptor propDescriptor, P propValue) throws ClassCastException
+	protected <P> String propToString(SimplePropertyDescriptor propDescriptor, P propValue) throws ClassCastException
 	{
 		return propToString(propDescriptor, propValue, null);
 	}
@@ -117,7 +117,7 @@ public abstract class AbstractSeparatedPropertiesNamer<T> implements Namer<T>
 	 * @throws ClassCastException
 	 *             If the actual input type of the registered Function cannot be casted to the property type.
 	 */
-	protected <P> String propToString(PropertyDescriptor propDescriptor, P propValue, String separationType) throws ClassCastException
+	protected <P> String propToString(SimplePropertyDescriptor propDescriptor, P propValue, String separationType) throws ClassCastException
 	{
 		if (propValue == null)
 		{
@@ -134,66 +134,66 @@ public abstract class AbstractSeparatedPropertiesNamer<T> implements Namer<T>
 
 	protected class Builder
 	{
-		private final StringBuilder	sb;
-		private PropertyDescriptor	lastProperty	= null;
+		private final StringBuilder			sb;
+		private SimplePropertyDescriptor	lastProperty	= null;
 
 		protected Builder()
 		{
 			sb = new StringBuilder();
 		}
 
-		protected Builder appendAllIfNotEmpty(PropertyDescriptor propertyDescriptor, Collection<?> propertyCollection)
+		protected Builder appendAllIfNotEmpty(SimplePropertyDescriptor SimplePropertyDescriptor, Collection<?> propertyCollection)
 		{
 			if (!propertyCollection.isEmpty())
 			{
-				appendAll(propertyDescriptor, propertyCollection);
+				appendAll(SimplePropertyDescriptor, propertyCollection);
 			}
 			return this;
 		}
 
-		protected Builder appendAll(PropertyDescriptor propertyDescriptor, Iterable<?> propertyIterable)
+		protected Builder appendAll(SimplePropertyDescriptor SimplePropertyDescriptor, Iterable<?> propertyIterable)
 		{
-			propertyIterable.forEach(p -> append(propertyDescriptor, p));
+			propertyIterable.forEach(p -> append(SimplePropertyDescriptor, p));
 			return this;
 		}
 
-		protected Builder appendIfNotNull(PropertyDescriptor propertyDescriptor, Object propertyValue)
+		protected Builder appendIfNotNull(SimplePropertyDescriptor SimplePropertyDescriptor, Object propertyValue)
 		{
-			return appendIf(propertyDescriptor, propertyValue, propertyValue != null);
+			return appendIf(SimplePropertyDescriptor, propertyValue, propertyValue != null);
 		}
 
-		protected Builder appendIf(PropertyDescriptor propertyDescriptor, Object propertyValue, boolean condition)
+		protected Builder appendIf(SimplePropertyDescriptor SimplePropertyDescriptor, Object propertyValue, boolean condition)
 		{
 			if (condition)
 			{
-				return append(propertyDescriptor, propertyValue, null);
+				return append(SimplePropertyDescriptor, propertyValue, null);
 			}
 			return this;
 		}
 
-		protected Builder append(PropertyDescriptor propertyDescriptor, Object propertyValue)
+		protected Builder append(SimplePropertyDescriptor SimplePropertyDescriptor, Object propertyValue)
 		{
-			return append(propertyDescriptor, propertyValue, null);
+			return append(SimplePropertyDescriptor, propertyValue, null);
 		}
 
-		protected Builder append(PropertyDescriptor propertyDescriptor, Object propertyValue, String separationType)
+		protected Builder append(SimplePropertyDescriptor SimplePropertyDescriptor, Object propertyValue, String separationType)
 		{
-			return appendString(propertyDescriptor, propToString(propertyDescriptor, propertyValue, separationType), separationType);
+			return appendString(SimplePropertyDescriptor, propToString(SimplePropertyDescriptor, propertyValue, separationType), separationType);
 		}
 
-		protected Builder appendString(PropertyDescriptor propertyDescriptor, String propertyValue)
+		protected Builder appendString(SimplePropertyDescriptor SimplePropertyDescriptor, String propertyValue)
 		{
-			return appendString(propertyDescriptor, propertyValue, null);
+			return appendString(SimplePropertyDescriptor, propertyValue, null);
 		}
 
-		protected Builder appendString(PropertyDescriptor propertyDescriptor, String propertyValue, String separationType)
+		protected Builder appendString(SimplePropertyDescriptor SimplePropertyDescriptor, String propertyValue, String separationType)
 		{
 			if (lastProperty != null)
 			{
-				sb.append(SeparationDefinition.getSeparatorBetween(lastProperty, propertyDescriptor, separationType, separators));
+				sb.append(SeparationDefinition.getSeparatorBetween(lastProperty, SimplePropertyDescriptor, separationType, separators));
 			}
 			sb.append(propertyValue);
-			lastProperty = propertyDescriptor;
+			lastProperty = SimplePropertyDescriptor;
 			return this;
 		}
 

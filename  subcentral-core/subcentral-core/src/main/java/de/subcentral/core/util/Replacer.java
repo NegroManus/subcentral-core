@@ -19,7 +19,7 @@ public interface Replacer extends UnaryOperator<String>
 		{
 			return null;
 		}
-		return r == null ? s : r.apply(s);
+		return r == null ? s : r.replace(s);
 	}
 
 	public static Replacer toEmptyReplacer()
@@ -27,5 +27,10 @@ public interface Replacer extends UnaryOperator<String>
 		return s -> "";
 	}
 
-	public String apply(String s);
+	public default String apply(String s)
+	{
+		return replace(s);
+	}
+
+	public String replace(String s);
 }

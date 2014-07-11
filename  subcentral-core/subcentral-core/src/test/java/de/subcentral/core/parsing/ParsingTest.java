@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.subcentral.core.model.subtitle.SubtitleRelease;
-import de.subcentral.thirdparty.com.addic7ed.Addic7edSubtitleReleaseMapper;
+import de.subcentral.impl.addic7ed.Addic7edSubtitleReleaseMapper;
 
 public class ParsingTest
 {

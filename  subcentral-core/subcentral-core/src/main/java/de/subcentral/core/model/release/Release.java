@@ -20,7 +20,20 @@ import java.util.List;
  */
 public interface Release<M> extends Comparable<Release<?>>
 {
-	public static final String	UNKNOWN_NUKE_REASON	= "";
+	public static final String	PROP_NAME_NAME			= "name";
+	public static final String	PROP_NAME_MATERIALS		= "materials";
+	public static final String	PROP_NAME_GROUP			= "group";
+	public static final String	PROP_NAME_TAGS			= "tags";
+	public static final String	PROP_NAME_DATE			= "date";
+	public static final String	PROP_NAME_SECTION		= "section";
+	public static final String	PROP_NAME_SIZE			= "size";
+	public static final String	PROP_NAME_NUKE_REASON	= "nukeReason";
+	public static final String	PROP_NAME_INFO			= "info";
+	public static final String	PROP_NAME_INFO_URL		= "infoUrl";
+	public static final String	PROP_NAME_SOURCE		= "source";
+	public static final String	PROP_NAME_SOURCE_URL	= "sourceUrl";
+
+	public static final String	UNKNOWN_NUKE_REASON		= "";
 
 	// Properties
 	/**

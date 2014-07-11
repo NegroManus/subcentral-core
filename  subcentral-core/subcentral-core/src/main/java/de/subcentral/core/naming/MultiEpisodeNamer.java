@@ -1,35 +1,22 @@
 package de.subcentral.core.naming;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.MultiEpisodeHelper;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
-public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpisodeHelper>
+public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<MultiEpisodeHelper>
 {
 	public static final String		SEPARATION_TYPE_ADDITION	= "addition";
 	public static final String		SEPARATION_TYPE_RANGE		= "range";
 
 	private SeasonedEpisodeNamer	episodeNamer				= NamingStandards.SEASONED_EPISODE_NAMER;
-	private PropertyDescriptor		propEpisodes;
-
-	public MultiEpisodeNamer()
-	{
-		try
-		{
-			propEpisodes = new PropertyDescriptor("episodes", MultiEpisodeHelper.class);
-		}
-		catch (IntrospectionException e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public Class<MultiEpisodeHelper> getType()
@@ -61,9 +48,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 					for (int i = 1; i < numberRanges.size(); i++)
 					{
 						List<Integer> range = numberRanges.get(i);
-						sb.append(getSeparatorBetween(SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
-								SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON,
-								SEPARATION_TYPE_ADDITION));
+						sb.append(getSeparatorBetween(Episode.PROP_NUMBER_IN_SEASON, Episode.PROP_NUMBER_IN_SEASON, SEPARATION_TYPE_ADDITION));
 						appendRange(sb, range, false, false);
 					}
 				}
@@ -71,7 +56,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 				{
 					for (int i = 1; i < me.size(); i++)
 					{
-						sb.append(getSeparatorBetween(propEpisodes, propEpisodes, SEPARATION_TYPE_ADDITION));
+						sb.append(getSeparatorBetween(MultiEpisodeHelper.PROP_EPISODES, MultiEpisodeHelper.PROP_EPISODES, SEPARATION_TYPE_ADDITION));
 						sb.append(episodeNamer.name(me.get(i), ImmutableMap.of("includeSeries", Boolean.FALSE, "includeSeason", Boolean.FALSE)));
 					}
 				}
@@ -88,9 +73,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 					for (int i = 1; i < numberRanges.size(); i++)
 					{
 						List<Integer> range = numberRanges.get(i);
-						sb.append(getSeparatorBetween(SeasonedEpisodeNamer.PROP_NUMBER_IN_SERIES,
-								SeasonedEpisodeNamer.PROP_NUMBER_IN_SERIES,
-								SEPARATION_TYPE_ADDITION));
+						sb.append(getSeparatorBetween(Episode.PROP_NUMBER_IN_SERIES, Episode.PROP_NUMBER_IN_SERIES, SEPARATION_TYPE_ADDITION));
 						appendRange(sb, range, true, false);
 					}
 				}
@@ -100,7 +83,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 				// different seasons
 				for (int i = 1; i < me.size(); i++)
 				{
-					sb.append(getSeparatorBetween(propEpisodes, propEpisodes, SEPARATION_TYPE_ADDITION));
+					sb.append(getSeparatorBetween(MultiEpisodeHelper.PROP_EPISODES, MultiEpisodeHelper.PROP_EPISODES, SEPARATION_TYPE_ADDITION));
 					sb.append(episodeNamer.name(me.get(i), ImmutableMap.of("includeSeries", Boolean.FALSE, "includeSeason", Boolean.TRUE)));
 				}
 			}
@@ -110,7 +93,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 			// no common series
 			for (int i = 1; i < me.size(); i++)
 			{
-				sb.append(getSeparatorBetween(propEpisodes, propEpisodes, SEPARATION_TYPE_ADDITION));
+				sb.append(getSeparatorBetween(MultiEpisodeHelper.PROP_EPISODES, MultiEpisodeHelper.PROP_EPISODES, SEPARATION_TYPE_ADDITION));
 				sb.append(episodeNamer.name(me.get(i)));
 			}
 		}
@@ -119,7 +102,7 @@ public class MultiEpisodeNamer extends AbstractSeparatedPropertiesNamer<MultiEpi
 
 	private void appendRange(StringBuilder sb, List<Integer> range, boolean numberInSeries, boolean omitFirstNumber)
 	{
-		PropertyDescriptor prop = numberInSeries ? SeasonedEpisodeNamer.PROP_NUMBER_IN_SERIES : SeasonedEpisodeNamer.PROP_NUMBER_IN_SEASON;
+		SimplePropertyDescriptor prop = numberInSeries ? Episode.PROP_NUMBER_IN_SERIES : Episode.PROP_NUMBER_IN_SEASON;
 		switch (range.size())
 		{
 			case 0:

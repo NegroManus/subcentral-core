@@ -13,12 +13,37 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.Settings;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
 public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
 {
-	private Series	series;
-	private Integer	number	= null;
-	private boolean	special;
+	public static final String						PROP_NAME_SERIES				= "series";
+	public static final String						PROP_NAME_NUMBER				= "number";
+	public static final String						PROP_NAME_SPECIAL				= "special";
+
+	public static final SimplePropertyDescriptor	PROP_NAME						= new SimplePropertyDescriptor(Season.class, PROP_NAME_NAME);
+	public static final SimplePropertyDescriptor	PROP_SERIES						= new SimplePropertyDescriptor(Season.class, PROP_NAME_SERIES);
+	public static final SimplePropertyDescriptor	PROP_NUMBER						= new SimplePropertyDescriptor(Season.class, PROP_NAME_NUMBER);
+	public static final SimplePropertyDescriptor	PROP_TITLE						= new SimplePropertyDescriptor(Season.class, PROP_NAME_TITLE);
+	public static final SimplePropertyDescriptor	PROP_SPECIAL					= new SimplePropertyDescriptor(Season.class, PROP_NAME_SPECIAL);
+	public static final SimplePropertyDescriptor	PROP_MEDIA_TYPE					= new SimplePropertyDescriptor(Season.class, PROP_NAME_MEDIA_TYPE);
+	public static final SimplePropertyDescriptor	PROP_DATE						= new SimplePropertyDescriptor(Season.class, PROP_NAME_DATE);
+	public static final SimplePropertyDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropertyDescriptor(Season.class,
+																							PROP_NAME_ORIGINAL_LANGUAGE);
+	public static final SimplePropertyDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropertyDescriptor(Season.class,
+																							PROP_NAME_COUNTRIES_OF_ORIGIN);
+	public static final SimplePropertyDescriptor	PROP_GENRES						= new SimplePropertyDescriptor(Season.class, PROP_NAME_GENRES);
+	public static final SimplePropertyDescriptor	PROP_DESCRIPTION				= new SimplePropertyDescriptor(Season.class,
+																							PROP_NAME_DESCRIPTION);
+	public static final SimplePropertyDescriptor	PROP_COVER_URL					= new SimplePropertyDescriptor(Season.class, PROP_NAME_COVER_URL);
+	public static final SimplePropertyDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropertyDescriptor(Season.class,
+																							PROP_NAME_CONTENT_ADVISORY);
+	public static final SimplePropertyDescriptor	PROP_FURHTER_INFORMATION_URLS	= new SimplePropertyDescriptor(Season.class,
+																							PROP_NAME_FURHTER_INFORMATION_URLS);
+
+	private Series									series;
+	private Integer									number;
+	private boolean									special;
 
 	public Season()
 	{

@@ -1,9 +1,7 @@
 package de.subcentral.core.model.media;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 
@@ -16,7 +14,7 @@ public abstract class AbstractMedia implements Media
 	protected String				coverUrl;
 	protected String				contentAdvisory;
 	protected List<Contribution>	contributions			= new ArrayList<>();
-	protected Set<String>			furtherInformationUrls	= new HashSet<>(3);
+	protected List<String>			furtherInformationUrls	= new ArrayList<>(3);
 
 	@Override
 	public String getTitle()
@@ -75,12 +73,12 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public Set<String> getFurtherInformationUrls()
+	public List<String> getFurtherInformationUrls()
 	{
 		return furtherInformationUrls;
 	}
 
-	public void setFurtherInformationUrls(Set<String> furtherInformationUrls)
+	public void setFurtherInformationUrls(List<String> furtherInformationUrls)
 	{
 		Validate.notNull(furtherInformationUrls, "furtherInformationUrls cannot be null");
 		this.furtherInformationUrls = furtherInformationUrls;

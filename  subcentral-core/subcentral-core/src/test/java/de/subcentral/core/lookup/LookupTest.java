@@ -3,7 +3,7 @@ package de.subcentral.core.lookup;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.release.MediaRelease;
-import de.subcentral.thirdparty.com.orlydb.OrlyDbLookup;
+import de.subcentral.impl.orlydb.OrlyDbLookup;
 
 public class LookupTest
 {

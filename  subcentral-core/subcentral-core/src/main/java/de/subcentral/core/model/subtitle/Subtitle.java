@@ -16,20 +16,39 @@ import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.util.Settings;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
 {
-	public static final String	CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
-	public static final String	CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
-	public static final String	CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
-	public static final String	CONTRIBUTION_TYPE_REVISION		= "REVISION";
+	public static final String						PROP_NAME_MEDIA_ITEM			= "mediaItem";
+	public static final String						PROP_NAME_LANGUAGE				= "language";
+	public static final String						PROP_NAME_DATE					= "date";
+	public static final String						PROP_NAME_PRODUCTION_TYPE		= "productionType";
+	public static final String						PROP_NAME_DESCRIPTION			= "description";
+	public static final String						PROP_NAME_CONTRIBUTIONS			= "contributions";
 
-	private AvMediaItem			mediaItem;
-	private String				language;
-	private Temporal			date;
-	private String				productionType;
-	private String				description;
-	private List<Contribution>	contributions					= new ArrayList<>();
+	public static final SimplePropertyDescriptor	PROP_MEDIA_ITEM					= new SimplePropertyDescriptor(Subtitle.class,
+																							PROP_NAME_MEDIA_ITEM);
+	public static final SimplePropertyDescriptor	PROP_LANGUAGE					= new SimplePropertyDescriptor(Subtitle.class, PROP_NAME_LANGUAGE);
+	public static final SimplePropertyDescriptor	PROP_DATE						= new SimplePropertyDescriptor(Subtitle.class, PROP_NAME_DATE);
+	public static final SimplePropertyDescriptor	PROP_PRODUCTION_TYPE			= new SimplePropertyDescriptor(Subtitle.class,
+																							PROP_NAME_PRODUCTION_TYPE);
+	public static final SimplePropertyDescriptor	PROP_DESCRIPTION				= new SimplePropertyDescriptor(Subtitle.class,
+																							PROP_NAME_DESCRIPTION);
+	public static final SimplePropertyDescriptor	PROP_CONTRIBUTIONS				= new SimplePropertyDescriptor(Subtitle.class,
+																							PROP_NAME_CONTRIBUTIONS);
+
+	public static final String						CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
+	public static final String						CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
+	public static final String						CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
+	public static final String						CONTRIBUTION_TYPE_REVISION		= "REVISION";
+
+	private AvMediaItem								mediaItem;
+	private String									language;
+	private Temporal								date;
+	private String									productionType;
+	private String									description;
+	private List<Contribution>						contributions					= new ArrayList<>();
 
 	public Subtitle()
 	{
