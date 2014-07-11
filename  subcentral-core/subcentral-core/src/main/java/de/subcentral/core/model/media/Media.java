@@ -1,7 +1,6 @@
 package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
-import java.util.List;
 import java.util.Set;
 
 import de.subcentral.core.model.Work;
@@ -100,13 +99,14 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The language code of the original language of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}.
+	 * @return The language code of the original language of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}, except if
+	 *         there is text in the picture.
 	 */
 	public String getOriginalLanguage();
 
 	/**
 	 * 
-	 * @return The country codes of the countries where this media was originally created.
+	 * @return The country codes of the countries where this media was originally created. Can be multiple if it was a co production.
 	 */
 	public Set<String> getCountriesOfOrigin();
 
@@ -141,9 +141,9 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return A set of URLs where further information about this media can be found.
+	 * @return An ordered list of URLs where further information about this media can be found.
 	 */
-	public List<String> getFurtherInformationUrls();
+	public Set<String> getFurtherInformationUrls();
 
 	// public ListMultimap<String, String> getAttributes();
 
