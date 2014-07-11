@@ -1,4 +1,4 @@
-package de.subcentral.thirdparty.com.orlydb;
+package de.subcentral.impl.orlydb;
 
 import java.net.URL;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package de.subcentral.thirdparty.com.orlydb;
+package de.subcentral.impl.orlydb;
 
 public class OrlyDbLookupParameters
 {

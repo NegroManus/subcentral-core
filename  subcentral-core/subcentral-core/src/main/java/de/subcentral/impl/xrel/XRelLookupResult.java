@@ -1,4 +1,4 @@
-package de.subcentral.thirdparty.to.xrel;
+package de.subcentral.impl.xrel;
 
 import java.util.List;
 

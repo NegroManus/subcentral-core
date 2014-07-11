@@ -1,4 +1,4 @@
-package de.subcentral.thirdparty.to.xrel;
+package de.subcentral.impl.xrel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -6,17 +6,17 @@ import java.net.URL;
 import de.subcentral.core.naming.MediaReleaseNamer;
 import de.subcentral.core.naming.MovieNamer;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.SimpleNamingService;
 import de.subcentral.core.naming.SeasonedEpisodeNamer;
+import de.subcentral.core.naming.SimpleNamingService;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.Replacer;
 
 public class XRel
 {
-	public static final String				NAME								= "xREL";
-	public static URL						HOST_URL;
+	public static final String					NAME								= "xREL";
+	public static URL							HOST_URL;
 
-	private static final CharReplacer		XREL_QUERY_ENTITY_REPLACER			= new CharReplacer();
+	private static final CharReplacer			XREL_QUERY_ENTITY_REPLACER			= new CharReplacer();
 	private static final SimpleNamingService	XREL_QUERY_ENTITY_NAMING_SERVICE	= new SimpleNamingService();
 	static
 	{

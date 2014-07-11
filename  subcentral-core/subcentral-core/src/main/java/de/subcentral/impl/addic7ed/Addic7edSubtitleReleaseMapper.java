@@ -1,4 +1,4 @@
-package de.subcentral.thirdparty.com.addic7ed;
+package de.subcentral.impl.addic7ed;
 
 import java.time.Year;
 import java.util.ArrayList;
