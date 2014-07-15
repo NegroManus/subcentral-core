@@ -9,13 +9,30 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 
 import de.subcentral.core.util.Settings;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
 public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 {
-	private String		name;
-	private Set<String>	genres				= new HashSet<>(4);
-	private String		originalLanguage;
-	private Set<String>	countriesOfOrigin	= new HashSet<>(1);
+	public static final SimplePropertyDescriptor	PROP_NAME						= new SimplePropertyDescriptor(Movie.class, PROP_NAME_NAME);
+	public static final SimplePropertyDescriptor	PROP_TITLE						= new SimplePropertyDescriptor(Movie.class, PROP_NAME_TITLE);
+	public static final SimplePropertyDescriptor	PROP_MEDIA_TYPE					= new SimplePropertyDescriptor(Movie.class, PROP_NAME_MEDIA_TYPE);
+	public static final SimplePropertyDescriptor	PROP_DATE						= new SimplePropertyDescriptor(Movie.class, PROP_NAME_DATE);
+	public static final SimplePropertyDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropertyDescriptor(Movie.class,
+																							PROP_NAME_ORIGINAL_LANGUAGE);
+	public static final SimplePropertyDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropertyDescriptor(Movie.class,
+																							PROP_NAME_COUNTRIES_OF_ORIGIN);
+	public static final SimplePropertyDescriptor	PROP_GENRES						= new SimplePropertyDescriptor(Movie.class, PROP_NAME_GENRES);
+	public static final SimplePropertyDescriptor	PROP_DESCRIPTION				= new SimplePropertyDescriptor(Movie.class, PROP_NAME_DESCRIPTION);
+	public static final SimplePropertyDescriptor	PROP_COVER_URL					= new SimplePropertyDescriptor(Movie.class, PROP_NAME_COVER_URL);
+	public static final SimplePropertyDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropertyDescriptor(Movie.class,
+																							PROP_NAME_CONTENT_ADVISORY);
+	public static final SimplePropertyDescriptor	PROP_FURHTER_INFORMATION_URLS	= new SimplePropertyDescriptor(Movie.class,
+																							PROP_NAME_FURHTER_INFORMATION_URLS);
+
+	private String									name;
+	private Set<String>								genres							= new HashSet<>(4);
+	private String									originalLanguage;
+	private Set<String>								countriesOfOrigin				= new HashSet<>(1);
 
 	public Movie()
 	{

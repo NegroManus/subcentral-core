@@ -2,7 +2,9 @@ package de.subcentral.core.parsing;
 
 import java.util.Map;
 
+import de.subcentral.core.util.SimplePropertyDescriptor;
+
 public interface MappingMatcher
 {
-	public Map<String, String> map(String input);
+	public Map<SimplePropertyDescriptor, String> map(String input);
 }

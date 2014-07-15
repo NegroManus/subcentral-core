@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.util.SimplePropertyDescriptor;
+
 public interface ParsingService
 {
 	public String getDomain();
@@ -13,5 +15,5 @@ public interface ParsingService
 		return parse(name, ImmutableMap.of());
 	}
 
-	public Object parse(String name, Map<String, String> additionalInfo);
+	public Object parse(String name, Map<SimplePropertyDescriptor, String> additionalInfo);
 }

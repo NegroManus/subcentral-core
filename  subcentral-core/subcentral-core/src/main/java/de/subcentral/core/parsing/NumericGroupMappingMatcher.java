@@ -9,12 +9,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.util.SimplePropertyDescriptor;
+
 public class NumericGroupMappingMatcher implements MappingMatcher
 {
-	private final Pattern				pattern;
-	private final Map<Integer, String>	groups;
+	private final Pattern									pattern;
+	private final Map<Integer, SimplePropertyDescriptor>	groups;
 
-	public NumericGroupMappingMatcher(Pattern pattern, Map<Integer, String> groups)
+	public NumericGroupMappingMatcher(Pattern pattern, Map<Integer, SimplePropertyDescriptor> groups)
 	{
 		this.pattern = pattern;
 		this.groups = ImmutableMap.copyOf(groups);
@@ -34,7 +36,7 @@ public class NumericGroupMappingMatcher implements MappingMatcher
 	 * 
 	 * @return
 	 */
-	public Map<Integer, String> getGroups()
+	public Map<Integer, SimplePropertyDescriptor> getGroups()
 	{
 		return groups;
 	}
@@ -47,15 +49,15 @@ public class NumericGroupMappingMatcher implements MappingMatcher
 	 *             If there is no pattern group for a specified group number.
 	 */
 	@Override
-	public Map<String, String> map(String input) throws IndexOutOfBoundsException
+	public Map<SimplePropertyDescriptor, String> map(String input) throws IndexOutOfBoundsException
 	{
 		Matcher m = pattern.matcher(input);
 		if (m.matches())
 		{
-			Map<String, String> mappedGroups = new HashMap<>(groups.size());
-			for (Map.Entry<Integer, String> entry : groups.entrySet())
+			Map<SimplePropertyDescriptor, String> mappedGroups = new HashMap<>(groups.size());
+			for (Map.Entry<Integer, SimplePropertyDescriptor> entry : groups.entrySet())
 			{
-				String groupName = entry.getValue();
+				SimplePropertyDescriptor groupName = entry.getValue();
 				String groupValue = m.group(entry.getKey());
 				// concat the values if multiple groups have the same name
 				String storedValue = mappedGroups.get(groupName);

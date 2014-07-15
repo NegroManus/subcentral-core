@@ -3,6 +3,8 @@ package de.subcentral.core.parsing;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.subcentral.core.util.SimplePropertyDescriptor;
+
 public class MappingServiceImpl implements MappingService
 {
 	private String						domain;
@@ -41,7 +43,7 @@ public class MappingServiceImpl implements MappingService
 	}
 
 	@Override
-	public <T> T map(Map<String, String> info, Class<T> typeClass)
+	public <T> T map(Map<SimplePropertyDescriptor, String> info, Class<T> typeClass)
 	{
 		@SuppressWarnings("unchecked")
 		Mapper<T> mapper = (Mapper<T>) mappers.get(typeClass);

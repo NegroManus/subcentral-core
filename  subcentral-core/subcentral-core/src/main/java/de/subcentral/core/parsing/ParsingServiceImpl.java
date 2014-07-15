@@ -3,6 +3,8 @@ package de.subcentral.core.parsing;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.subcentral.core.util.SimplePropertyDescriptor;
+
 public class ParsingServiceImpl implements ParsingService
 {
 	private String							domain;
@@ -51,11 +53,11 @@ public class ParsingServiceImpl implements ParsingService
 	}
 
 	@Override
-	public Object parse(String name, Map<String, String> additionalInfo)
+	public Object parse(String name, Map<SimplePropertyDescriptor, String> additionalInfo)
 	{
 		for (Map.Entry<MappingMatcher, Class<?>> entry : matchers.entrySet())
 		{
-			Map<String, String> matchResult = entry.getKey().map(name);
+			Map<SimplePropertyDescriptor, String> matchResult = entry.getKey().map(name);
 			if (matchResult != null)
 			{
 				return mappingService.map(combineInfo(matchResult, additionalInfo), entry.getValue());
@@ -64,9 +66,10 @@ public class ParsingServiceImpl implements ParsingService
 		return null;
 	}
 
-	private Map<String, String> combineInfo(Map<String, String> matchResult, Map<String, String> additionalInfo)
+	private Map<SimplePropertyDescriptor, String> combineInfo(Map<SimplePropertyDescriptor, String> matchResult,
+			Map<SimplePropertyDescriptor, String> additionalInfo)
 	{
-		Map<String, String> combinedInfo = new HashMap<>(matchResult.size() + additionalInfo.size());
+		Map<SimplePropertyDescriptor, String> combinedInfo = new HashMap<>(matchResult.size() + additionalInfo.size());
 		combinedInfo.putAll(matchResult);
 		combinedInfo.putAll(additionalInfo);
 		return combinedInfo;

@@ -4,9 +4,11 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
@@ -20,6 +22,7 @@ import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
 import de.subcentral.core.parsing.Mapper;
+import de.subcentral.core.util.SimplePropertyDescriptor;
 
 /**
  * Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com
@@ -30,20 +33,6 @@ import de.subcentral.core.parsing.Mapper;
 public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 {
 	// Episode
-	public final static String	SERIES_TITLE					= "series.title";
-	public final static String	SEASON_NUMBER					= "season.number";
-	public final static String	EPISODE_NUMBER					= "episode.number";
-	public final static String	EPISODE_TITLE					= "episode.title";
-	// Movie
-	public final static String	MOVIE_TITLE						= "movie.title";
-	public final static String	MOVIE_NAME						= "movie.name";
-	public final static String	MOVIE_YEAR						= "movie.year";
-	public final static String	MEDIA_RELEASE_TAGS				= "mediaRelease.tags";
-	public final static String	MEDIA_RELEASE_GROUP				= "mediaRelease.group";
-	public final static String	SUBTITLE_LANGUAGE				= "subtitle.language";
-	public final static String	SUBTITLE_RELEASE_TAGS			= "subtitleRelease.tags";
-	public final static String	SUBTITLE_RELEASE_GROUP			= "subtitleRelease.group";
-
 	public final static String	DEFAULT_SUBTITLE_RELEASE_GROUP	= "addic7ed.com";
 
 	private Splitter			tagSplitter						= Splitter.on(Pattern.compile("[^a-zA-Z0-9-]"));
@@ -55,39 +44,40 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	}
 
 	@Override
-	public String[] getKnownAttributeNames()
+	public Set<SimplePropertyDescriptor> getKnownProperties()
 	{
-		return new String[] { SERIES_TITLE, SEASON_NUMBER, EPISODE_NUMBER, EPISODE_TITLE, MOVIE_TITLE, MOVIE_NAME, MOVIE_YEAR, MEDIA_RELEASE_TAGS,
-				MEDIA_RELEASE_GROUP, SUBTITLE_LANGUAGE, SUBTITLE_RELEASE_TAGS, SUBTITLE_RELEASE_GROUP };
+		return ImmutableSet.copyOf(new SimplePropertyDescriptor[] { Series.PROP_NAME, Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON,
+				Episode.PROP_TITLE, Movie.PROP_NAME, Movie.PROP_TITLE, Movie.PROP_DATE, MediaRelease.PROP_TAGS, MediaRelease.PROP_GROUP,
+				Subtitle.PROP_LANGUAGE, SubtitleRelease.PROP_TAGS, SubtitleRelease.PROP_GROUP });
 	}
 
 	@Override
-	public SubtitleRelease map(Map<String, String> info)
+	public SubtitleRelease map(Map<SimplePropertyDescriptor, String> info)
 	{
-		String seriesTitle = info.get(SERIES_TITLE);
-		String seasonNum = info.get(SEASON_NUMBER);
-		String epiNum = info.get(EPISODE_NUMBER);
-		String epiTitle = info.get(EPISODE_TITLE);
+		String seriesName = info.get(Series.PROP_NAME);
+		String seasonNum = info.get(Season.PROP_NUMBER);
+		String epiNum = info.get(Episode.PROP_NUMBER_IN_SEASON);
+		String epiTitle = info.get(Episode.PROP_TITLE);
 
-		String movieTitle = info.get(MOVIE_TITLE);
-		String movieName = info.get(MOVIE_NAME);
-		String movieYear = info.get(MOVIE_YEAR);
+		String movieName = info.get(Movie.PROP_NAME);
+		String movieTitle = info.get(Movie.PROP_TITLE);
+		String movieYear = info.get(Movie.PROP_DATE);
 
-		String mediaRlsTags = info.get(MEDIA_RELEASE_TAGS);
-		String mediaRlsGroup = info.get(MEDIA_RELEASE_GROUP);
-		String subLang = info.get(SUBTITLE_LANGUAGE);
-		String subRlsTags = info.get(SUBTITLE_RELEASE_TAGS);
-		String subRlsGroup = info.get(SUBTITLE_RELEASE_GROUP);
+		String mediaRlsTags = info.get(MediaRelease.PROP_TAGS);
+		String mediaRlsGroup = info.get(MediaRelease.PROP_GROUP);
+		String subLang = info.get(Subtitle.PROP_LANGUAGE);
+		String subRlsTags = info.get(SubtitleRelease.PROP_TAGS);
+		String subRlsGroup = info.get(SubtitleRelease.PROP_GROUP);
 
 		MediaRelease mediaRls = new MediaRelease();
 		List<Media> media = new ArrayList<>();
 		List<Subtitle> subs = new ArrayList<>();
 
 		// If episode info is contained
-		if (seriesTitle != null && (epiNum != null || epiTitle != null))
+		if (seriesName != null && (epiNum != null || epiTitle != null))
 		{
 			Series series = new Series();
-			series.setTitle(seriesTitle);
+			series.setName(seriesName);
 			Season season = series.newSeason();
 			if (seasonNum != null)
 			{
@@ -110,8 +100,8 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		if (movieTitle != null || movieName != null)
 		{
 			Movie movie = new Movie();
-			movie.setTitle(movieTitle);
 			movie.setName(movieName);
+			movie.setTitle(movieTitle);
 			if (movieYear != null)
 			{
 				movie.setDate(Year.parse(movieYear));
