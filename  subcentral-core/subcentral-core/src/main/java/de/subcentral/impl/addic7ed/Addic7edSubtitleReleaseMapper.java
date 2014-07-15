@@ -1,7 +1,6 @@
 package de.subcentral.impl.addic7ed;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,8 +9,8 @@ import java.util.regex.Pattern;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
@@ -48,7 +47,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	{
 		return ImmutableSet.copyOf(new SimplePropertyDescriptor[] { Series.PROP_NAME, Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON,
 				Episode.PROP_TITLE, Movie.PROP_NAME, Movie.PROP_TITLE, Movie.PROP_DATE, MediaRelease.PROP_TAGS, MediaRelease.PROP_GROUP,
-				Subtitle.PROP_LANGUAGE, SubtitleRelease.PROP_TAGS, SubtitleRelease.PROP_GROUP });
+				Subtitle.PROP_LANGUAGE, SubtitleRelease.PROP_NAME, SubtitleRelease.PROP_TAGS, SubtitleRelease.PROP_GROUP });
 	}
 
 	@Override
@@ -66,13 +65,12 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		String mediaRlsTags = info.get(MediaRelease.PROP_TAGS);
 		String mediaRlsGroup = info.get(MediaRelease.PROP_GROUP);
 		String subLang = info.get(Subtitle.PROP_LANGUAGE);
+		String subRlsName = info.get(SubtitleRelease.PROP_NAME);
 		String subRlsTags = info.get(SubtitleRelease.PROP_TAGS);
 		String subRlsGroup = info.get(SubtitleRelease.PROP_GROUP);
 
-		MediaRelease mediaRls = new MediaRelease();
-		List<Media> media = new ArrayList<>();
-		List<Subtitle> subs = new ArrayList<>();
-
+		// Media
+		AvMediaItem mediaItem = null;
 		// If episode info is contained
 		if (seriesName != null && (epiNum != null || epiTitle != null))
 		{
@@ -89,13 +87,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 				epi.setNumberInSeason(Integer.parseInt(epiNum));
 			}
 			epi.setTitle(epiTitle);
-
-			media.add(epi);
-
-			Subtitle sub = new Subtitle();
-			sub.setMediaItem(epi);
-			sub.setLanguage(subLang);
-			subs.add(sub);
+			mediaItem = epi;
 		}
 		if (movieTitle != null || movieName != null)
 		{
@@ -106,16 +98,12 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 			{
 				movie.setDate(Year.parse(movieYear));
 			}
-			media.add(movie);
-
-			Subtitle sub = new Subtitle();
-			sub.setMediaItem(movie);
-			sub.setLanguage(subLang);
-			subs.add(sub);
+			mediaItem = movie;
 		}
 
-		mediaRls.setMaterials(media);
-
+		// MediaRelease
+		MediaRelease mediaRls = new MediaRelease();
+		mediaRls.setMaterial(mediaItem);
 		if (mediaRlsTags != null)
 		{
 			mediaRls.setTags(parseTags(mediaRlsTags));
@@ -125,8 +113,15 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 			mediaRls.setGroup(new Group(mediaRlsGroup));
 		}
 
+		// Subtitle
+		Subtitle sub = new Subtitle();
+		sub.setMediaItem(mediaItem);
+		sub.setLanguage(subLang);
+
+		// SubtitleRelease
 		SubtitleRelease subRls = new SubtitleRelease();
-		subRls.setMaterials(subs);
+		subRls.setName(subRlsName);
+		subRls.setMaterial(sub);
 		subRls.setCompatibleMediaRelease(mediaRls);
 		if (subRlsTags != null)
 		{

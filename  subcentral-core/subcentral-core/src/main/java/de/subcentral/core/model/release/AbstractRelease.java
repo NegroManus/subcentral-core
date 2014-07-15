@@ -164,7 +164,10 @@ public abstract class AbstractRelease<M> implements Release<M>
 	public void setMaterial(M material)
 	{
 		this.materials = new ArrayList<>(1);
-		this.materials.add(material);
+		if (materials != null)
+		{
+			this.materials.add(material);
+		}
 	}
 
 	@Override

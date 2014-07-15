@@ -146,7 +146,10 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	public void setCompatibleMediaRelease(MediaRelease compatibleMediaRelease)
 	{
 		this.compatibleMediaReleases = new HashSet<>(1);
-		this.compatibleMediaReleases.add(compatibleMediaRelease);
+		if (compatibleMediaRelease != null)
+		{
+			this.compatibleMediaReleases.add(compatibleMediaRelease);
+		}
 	}
 
 	@Override
