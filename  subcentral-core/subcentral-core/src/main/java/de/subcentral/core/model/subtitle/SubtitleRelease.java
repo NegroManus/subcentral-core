@@ -22,6 +22,11 @@ import de.subcentral.core.util.SimplePropertyDescriptor;
 
 public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 {
+	public static enum ForeignParts
+	{
+		NOT_INCLUDED, INCLUDED, ONLY
+	}
+
 	public static final String						PROP_NAME_COMPATIBLE_MEDIA_RELEASES	= "compatibleMediaReleases";
 	public static final String						PROP_NAME_CONTRIBUTIONS				= "contributions";
 
@@ -57,6 +62,8 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	public static final String						CONTRIBUTION_TYPE_ADJUSTMENT		= "ADJUSTMENT";
 	public static final String						CONTRIBUTION_TYPE_CUSTOMIZATION		= "CUSTOMIZATION";
 
+	public static final Tag							TAG_HEARING_IMPAIRED				= new Tag("HI", Tag.CATEGORY_FORMAT, "Hearing Impaired");
+
 	public static SubtitleRelease create(MediaRelease compatibleMediaRelease, String subtitleLanguage, String group, String... tags)
 	{
 		return create(null, compatibleMediaRelease, subtitleLanguage, group, tags);
@@ -82,6 +89,7 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	}
 
 	private Set<MediaRelease>	compatibleMediaReleases	= new HashSet<>(2);
+	private ForeignParts		foreignParts;
 	private List<Contribution>	contributions			= new ArrayList<>(2);
 
 	public SubtitleRelease()
@@ -150,6 +158,11 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 		{
 			this.compatibleMediaReleases.add(compatibleMediaRelease);
 		}
+	}
+
+	public boolean isHearingImpaired()
+	{
+		return tags.contains(TAG_HEARING_IMPAIRED);
 	}
 
 	@Override

@@ -4,9 +4,13 @@ import de.subcentral.core.util.Settings;
 
 public class Tag implements Comparable<Tag>
 {
-	private String	name;
-	private String	category;
-	private String	info;
+	public static final String	CATEGORY_SOURCE	= "SOURCE";
+	public static final String	CATEGORY_FORMAT	= "FORMAT";
+	public static final String	CATEGORY_META	= "META";
+
+	private String				name;
+	private String				category;
+	private String				info;
 
 	public Tag()
 	{
@@ -16,6 +20,13 @@ public class Tag implements Comparable<Tag>
 	public Tag(String name)
 	{
 		this.name = name;
+	}
+
+	public Tag(String name, String category, String info)
+	{
+		this.name = name;
+		this.category = category;
+		this.info = info;
 	}
 
 	public String getName()
