@@ -65,20 +65,20 @@ public class MediaRelease extends AbstractRelease<Media>
 		this.name = name;
 	}
 
-	public MediaRelease(String name, Media material, Group group, List<Tag> tags)
+	public MediaRelease(String name, Media material, List<Tag> tags, Group group)
 	{
 		this.name = name;
 		setMaterial(material);
-		this.group = group;
 		setTags(tags);
+		this.group = group;
 	}
 
-	public MediaRelease(String name, List<Media> materials, Group group, List<Tag> tags)
+	public MediaRelease(String name, List<Media> materials, List<Tag> tags, Group group)
 	{
 		this.name = name;
 		setMaterials(materials);
-		this.group = group;
 		setTags(tags);
+		this.group = group;
 	}
 
 	@Override
@@ -93,20 +93,6 @@ public class MediaRelease extends AbstractRelease<Media>
 	}
 
 	/**
-	 * 
-	 * @return The release group.
-	 */
-	public Group getGroup()
-	{
-		return group;
-	}
-
-	public void setGroup(Group group)
-	{
-		this.group = group;
-	}
-
-	/**
 	 * @return The release tags (XviD, WEB-DL, DD5.1, 720p, ...).
 	 */
 	public List<Tag> getTags()
@@ -118,6 +104,20 @@ public class MediaRelease extends AbstractRelease<Media>
 	{
 		Validate.notNull(tags, "tags cannot be null");
 		this.tags = tags;
+	}
+
+	/**
+	 * 
+	 * @return The release group.
+	 */
+	public Group getGroup()
+	{
+		return group;
+	}
+
+	public void setGroup(Group group)
+	{
+		this.group = group;
 	}
 
 	/**
@@ -197,8 +197,8 @@ public class MediaRelease extends AbstractRelease<Media>
 				.omitNullValues()
 				.add("name", name)
 				.add("materials", materials)
-				.add("group", group)
 				.add("tags", tags)
+				.add("group", group)
 				.add("date", date)
 				.add("section", section)
 				.add("size", size)

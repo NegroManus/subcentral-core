@@ -9,6 +9,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Prop;
@@ -56,7 +59,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String					PRODUCTION_TYPE_RETAIL		= "RETAIL";
 
 	/**
-	 * If the subtitle is an improvement of another subtitle.
+	 * If the subtitle is an improvement or modification of another subtitle.
 	 */
 	public static final String					PRODUCTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
 
@@ -72,19 +75,20 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public static enum ForeignParts
 	{
-		INCLUDED(new Tag("WITH FOREIGN PARTS")), NOT_INCLUDED(new Tag("WITHOUT FOREIGN PARTS")), ONLY(new Tag("ONLY FOREIGN PARTS"));
+		/**
+		 * Foreign parts are included (typically the case for translated subtitles or VO subtitles where the foreign parts are not hard coded).
+		 */
+		INCLUDED,
 
-		private final Tag	tag;
+		/**
+		 * Foreign parts are not included (typically the case for VO subtitles).
+		 */
+		NOT_INCLUDED,
 
-		private ForeignParts(Tag tag)
-		{
-			this.tag = tag;
-		}
-
-		public Tag getTag()
-		{
-			return tag;
-		}
+		/**
+		 * Only foreign parts are included (typically the case for special versions of VO subtitles).
+		 */
+		ONLY;
 	}
 
 	public static final String	CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
@@ -143,16 +147,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.language = language;
 	}
 
-	public Group getGroup()
-	{
-		return group;
-	}
-
-	public void setGroup(Group group)
-	{
-		this.group = group;
-	}
-
 	public List<Tag> getTags()
 	{
 		return tags;
@@ -162,6 +156,16 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	{
 		Validate.notNull(tags, "tags cannot be null");
 		this.tags = tags;
+	}
+
+	public Group getGroup()
+	{
+		return group;
+	}
+
+	public void setGroup(Group group)
+	{
+		this.group = group;
 	}
 
 	public int getVersion()
@@ -281,6 +285,30 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		return basis != null;
 	}
 
+	public List<Contribution> getAllContributions()
+	{
+		if (isBasedOnOther())
+		{
+			ImmutableList.Builder<Contribution> cList = ImmutableList.builder();
+			cList.addAll(basis.getAllContributions());
+			cList.addAll(contributions);
+			return cList.build();
+		}
+		return contributions;
+	}
+
+	public ListMultimap<Subtitle, Contribution> getAllContributionsAsMap()
+	{
+		if (isBasedOnOther())
+		{
+			ImmutableListMultimap.Builder<Subtitle, Contribution> cMap = ImmutableListMultimap.builder();
+			cMap.putAll(basis.getAllContributionsAsMap());
+			cMap.putAll(this, contributions);
+			return cMap.build();
+		}
+		return ImmutableListMultimap.<Subtitle, Contribution> builder().putAll(this, contributions).build();
+	}
+
 	// Object methods
 	@Override
 	public boolean equals(Object obj)
@@ -300,8 +328,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		Subtitle o = (Subtitle) obj;
 		return new EqualsBuilder().append(mediaItem, o.mediaItem)
 				.append(language, o.language)
-				.append(group, o.group)
 				.append(tags, o.tags)
+				.append(group, o.group)
 				.append(version, o.version)
 				.isEquals();
 	}
@@ -309,7 +337,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(37, 99).append(mediaItem).append(language).append(group).append(tags).append(version).toHashCode();
+		return new HashCodeBuilder(37, 99).append(mediaItem).append(language).append(tags).append(group).append(version).toHashCode();
 	}
 
 	@Override
@@ -322,8 +350,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		return ComparisonChain.start()
 				.compare(mediaItem, o.mediaItem, Medias.MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
-				.compare(group, o.group)
 				.compare(tags, o.tags, Releases.TAGS_COMPARATOR)
+				.compare(group, o.group)
 				.compare(version, version)
 				.result();
 	}
@@ -335,8 +363,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.omitNullValues()
 				.add("mediaItem", mediaItem)
 				.add("language", language)
-				.add("group", group)
 				.add("tags", tags)
+				.add("group", group)
 				.add("version", version)
 				.add("productionType", productionType)
 				.add("basis", basis)

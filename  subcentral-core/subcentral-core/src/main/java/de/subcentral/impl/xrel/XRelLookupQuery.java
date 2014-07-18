@@ -21,7 +21,6 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.MediaRelease;
-import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.util.ByteUtil;
 
 public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
