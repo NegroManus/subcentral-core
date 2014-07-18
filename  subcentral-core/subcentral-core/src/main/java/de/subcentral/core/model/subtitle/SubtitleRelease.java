@@ -19,11 +19,11 @@ import de.subcentral.core.model.release.AbstractRelease;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(SubtitleRelease.class, Prop.NAME);
 	public static final SimplePropDescriptor	PROP_MATERIALS					= new SimplePropDescriptor(SubtitleRelease.class, Prop.MATERIALS);
 	public static final SimplePropDescriptor	PROP_MATCHING_MEDIA_RELEASES	= new SimplePropDescriptor(SubtitleRelease.class,
 																						Prop.MATCHING_MEDIA_RELEASES);
@@ -39,10 +39,9 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	private Set<MediaRelease>					matchingMediaReleases			= new HashSet<>(2);
 	private List<Contribution>					contributions					= new ArrayList<>();
 
-	public static SubtitleRelease create(String name, MediaRelease matchingMediaRelease, String language, String group)
+	public static SubtitleRelease create(MediaRelease matchingMediaRelease, String language, String group)
 	{
 		SubtitleRelease subRls = new SubtitleRelease();
-		subRls.setName(name);
 		List<Subtitle> subs = new ArrayList<>(matchingMediaRelease.getMaterials().size());
 		for (Media media : matchingMediaRelease.getMaterials())
 		{
@@ -64,9 +63,10 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 
 	}
 
-	public SubtitleRelease(String name)
+	@Override
+	public String getName()
 	{
-		this.name = name;
+		return NamingStandards.SUBTITLE_RELEASE_NAMER.name(this, NamingStandards.NAMING_SERVICE);
 	}
 
 	// Properties
@@ -258,8 +258,7 @@ public class SubtitleRelease extends AbstractRelease<Subtitle> implements Work
 	{
 		return Objects.toStringHelper(this)
 				.omitNullValues()
-				.add("name", name)
-				.add("subtitles", materials)
+				.add("materials", materials)
 				.add("matchingMediaReleases", matchingMediaReleases)
 				.add("date", date)
 				.add("size", size)

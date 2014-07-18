@@ -14,22 +14,10 @@ import de.subcentral.core.util.Settings;
 
 public abstract class AbstractRelease<M> implements Release<M>
 {
-	protected String	name;
 	protected List<M>	materials	= new ArrayList<>(1);
 	protected Temporal	date;
 	protected long		size;
 	protected String	nukeReason;
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
 
 	@Override
 	public List<M> getMaterials()
@@ -114,7 +102,7 @@ public abstract class AbstractRelease<M> implements Release<M>
 		if (obj != null && this.getClass().equals(obj.getClass()))
 		{
 			Release<?> o = (Release<?>) obj;
-			return Objects.equal(name, o.getName());
+			return Objects.equal(getName(), o.getName());
 		}
 		return false;
 	}
@@ -122,7 +110,7 @@ public abstract class AbstractRelease<M> implements Release<M>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(45, 3).append(getClass()).append(name).toHashCode();
+		return new HashCodeBuilder(45, 3).append(getClass()).append(getName()).toHashCode();
 	}
 
 	@Override
@@ -134,7 +122,7 @@ public abstract class AbstractRelease<M> implements Release<M>
 		}
 		return ComparisonChain.start()
 				.compare(getClass().getName(), o.getClass().getName(), Settings.STRING_ORDERING)
-				.compare(name, o.getName(), Settings.STRING_ORDERING)
+				.compare(getName(), o.getName(), Settings.STRING_ORDERING)
 				.result();
 	}
 }

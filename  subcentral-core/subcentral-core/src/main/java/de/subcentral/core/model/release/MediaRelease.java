@@ -28,8 +28,9 @@ public class MediaRelease extends AbstractRelease<Media>
 
 	public static final String					UNKNOWN_NUKE_REASON	= "";
 
-	private Group								group;
+	private String								name;
 	private List<Tag>							tags				= new ArrayList<>(5);
+	private Group								group;
 	private String								section;
 	private String								info;
 	private String								infoUrl;
@@ -78,6 +79,17 @@ public class MediaRelease extends AbstractRelease<Media>
 		setMaterials(materials);
 		this.group = group;
 		setTags(tags);
+	}
+
+	@Override
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	/**

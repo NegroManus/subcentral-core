@@ -41,7 +41,6 @@ public class ParsingTest
 			}
 		}
 		Map<Integer, SimplePropDescriptor> groups1 = new HashMap<>();
-		groups1.put(0, SubtitleRelease.PROP_NAME);
 		groups1.put(1, Series.PROP_NAME);
 		groups1.put(2, Season.PROP_NUMBER);
 		groups1.put(3, Episode.PROP_NUMBER_IN_SEASON);
@@ -65,7 +64,6 @@ public class ParsingTest
 			}
 		}
 		Map<Integer, SimplePropDescriptor> groups2 = new HashMap<>();
-		groups2.put(0, SubtitleRelease.PROP_NAME);
 		groups2.put(1, Movie.PROP_TITLE);
 		groups2.put(2, Movie.PROP_NAME);
 		groups2.put(3, Movie.PROP_DATE);

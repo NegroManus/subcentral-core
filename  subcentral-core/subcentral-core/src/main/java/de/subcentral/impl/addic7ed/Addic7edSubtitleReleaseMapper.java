@@ -47,7 +47,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	{
 		return ImmutableSet.copyOf(new SimplePropDescriptor[] { Series.PROP_NAME, Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON,
 				Episode.PROP_TITLE, Movie.PROP_NAME, Movie.PROP_TITLE, Movie.PROP_DATE, MediaRelease.PROP_TAGS, MediaRelease.PROP_GROUP,
-				Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, Subtitle.PROP_TAGS, SubtitleRelease.PROP_NAME });
+				Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, Subtitle.PROP_TAGS });
 	}
 
 	@Override
@@ -67,7 +67,6 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		String subLang = info.get(Subtitle.PROP_LANGUAGE);
 		String subGroup = info.get(Subtitle.PROP_GROUP);
 		String subTags = info.get(Subtitle.PROP_TAGS);
-		String subRlsName = info.get(SubtitleRelease.PROP_NAME);
 
 		// Media
 		AvMediaItem mediaItem = null;
@@ -129,7 +128,6 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 
 		// SubtitleRelease
 		SubtitleRelease subRls = new SubtitleRelease();
-		subRls.setName(subRlsName);
 		subRls.setMaterial(sub);
 		subRls.setMatchingMediaRelease(mediaRls);
 

@@ -37,15 +37,15 @@ public interface Release<M> extends Comparable<Release<?>>
 	public List<M> getMaterials();
 
 	/**
+	 * @return The release tags (XviD, WEB-DL, DD5.1, 720p, ...).
+	 */
+	public List<Tag> getTags();
+
+	/**
 	 * 
 	 * @return The release group.
 	 */
 	public Group getGroup();
-
-	/**
-	 * @return The release tags (XviD, WEB-DL, DD5.1, 720p, ...).
-	 */
-	public List<Tag> getTags();
 
 	/**
 	 * 

@@ -56,7 +56,7 @@ public class NamingTest
 	public void testSubtitleReleaseNaming()
 	{
 		MediaRelease mediaRel = MediaRelease.create(MOVIE_REL_NAME, new Movie(MOVIE_NAME), "USL", "BDRip", "x264", "2001", "SP");
-		SubtitleRelease rel = SubtitleRelease.create(MOVIE_SUB_REL_NAME, mediaRel, "de", "SubCentral");
+		SubtitleRelease rel = SubtitleRelease.create(mediaRel, "de", "SubCentral");
 		String name = NamingStandards.SUBTITLE_RELEASE_NAMER.name(rel, NamingStandards.NAMING_SERVICE);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
