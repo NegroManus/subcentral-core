@@ -11,6 +11,8 @@ import com.google.common.collect.ListMultimap;
 
 public class Contributions
 {
+	public static final String	PROP_NAME_CONTRIBUTIONS	= "contributions";
+
 	public static ListMultimap<String, Contribution> sortByType(Collection<Contribution> contributions)
 	{
 		if (contributions.isEmpty())

@@ -21,7 +21,7 @@ import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
 import de.subcentral.core.parsing.Mapper;
-import de.subcentral.core.util.SimplePropertyDescriptor;
+import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
  * Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com
@@ -43,15 +43,15 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	}
 
 	@Override
-	public Set<SimplePropertyDescriptor> getKnownProperties()
+	public Set<SimplePropDescriptor> getKnownProperties()
 	{
-		return ImmutableSet.copyOf(new SimplePropertyDescriptor[] { Series.PROP_NAME, Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON,
+		return ImmutableSet.copyOf(new SimplePropDescriptor[] { Series.PROP_NAME, Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON,
 				Episode.PROP_TITLE, Movie.PROP_NAME, Movie.PROP_TITLE, Movie.PROP_DATE, MediaRelease.PROP_TAGS, MediaRelease.PROP_GROUP,
-				Subtitle.PROP_LANGUAGE, SubtitleRelease.PROP_NAME, SubtitleRelease.PROP_TAGS, SubtitleRelease.PROP_GROUP });
+				Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, Subtitle.PROP_TAGS, SubtitleRelease.PROP_NAME });
 	}
 
 	@Override
-	public SubtitleRelease map(Map<SimplePropertyDescriptor, String> info)
+	public SubtitleRelease map(Map<SimplePropDescriptor, String> info)
 	{
 		String seriesName = info.get(Series.PROP_NAME);
 		String seasonNum = info.get(Season.PROP_NUMBER);
@@ -65,9 +65,9 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		String mediaRlsTags = info.get(MediaRelease.PROP_TAGS);
 		String mediaRlsGroup = info.get(MediaRelease.PROP_GROUP);
 		String subLang = info.get(Subtitle.PROP_LANGUAGE);
+		String subGroup = info.get(Subtitle.PROP_GROUP);
+		String subTags = info.get(Subtitle.PROP_TAGS);
 		String subRlsName = info.get(SubtitleRelease.PROP_NAME);
-		String subRlsTags = info.get(SubtitleRelease.PROP_TAGS);
-		String subRlsGroup = info.get(SubtitleRelease.PROP_GROUP);
 
 		// Media
 		AvMediaItem mediaItem = null;
@@ -117,21 +117,21 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		Subtitle sub = new Subtitle();
 		sub.setMediaItem(mediaItem);
 		sub.setLanguage(subLang);
+		if (subTags != null)
+		{
+			sub.setTags(parseTags(subTags));
+		}
+		if (subGroup == null)
+		{
+			subGroup = DEFAULT_SUBTITLE_RELEASE_GROUP;
+		}
+		sub.setGroup(new Group(subGroup));
 
 		// SubtitleRelease
 		SubtitleRelease subRls = new SubtitleRelease();
 		subRls.setName(subRlsName);
 		subRls.setMaterial(sub);
-		subRls.setCompatibleMediaRelease(mediaRls);
-		if (subRlsTags != null)
-		{
-			subRls.setTags(parseTags(subRlsTags));
-		}
-		if (subRlsGroup == null)
-		{
-			subRlsGroup = DEFAULT_SUBTITLE_RELEASE_GROUP;
-		}
-		subRls.setGroup(new Group(subRlsGroup));
+		subRls.setMatchingMediaRelease(mediaRls);
 
 		return subRls;
 	}

@@ -52,7 +52,7 @@ public class ListComparator<T> implements Comparator<List<T>>
 			// if item1 or item2 is null, then the corresponding list is shorter
 			// and if all values before were equal, the shorter list is considered less.
 			// Therefore, "nullsFirst()".
-			chain.compare(item1, item2, Ordering.from(comparator).nullsFirst());
+			chain.compare(item1, item2, Settings.createDefaultOrdering(comparator));
 
 			// if one of the list has ended, no more comparison is needed
 			if (item1 == null || item2 == null)

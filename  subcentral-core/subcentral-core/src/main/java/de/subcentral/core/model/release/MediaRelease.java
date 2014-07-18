@@ -1,26 +1,40 @@
 package de.subcentral.core.model.release;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.Validate;
 
 import com.google.common.base.Objects;
 
+import de.subcentral.core.model.Prop;
 import de.subcentral.core.model.media.Media;
-import de.subcentral.core.util.SimplePropertyDescriptor;
+import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MediaRelease extends AbstractRelease<Media>
 {
-	public static final SimplePropertyDescriptor	PROP_NAME			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_NAME);
-	public static final SimplePropertyDescriptor	PROP_MATERIALS		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_MATERIALS);
-	public static final SimplePropertyDescriptor	PROP_GROUP			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_GROUP);
-	public static final SimplePropertyDescriptor	PROP_TAGS			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_TAGS);
-	public static final SimplePropertyDescriptor	PROP_DATE			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_DATE);
-	public static final SimplePropertyDescriptor	PROP_SECTION		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SECTION);
-	public static final SimplePropertyDescriptor	PROP_SIZE			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SIZE);
-	public static final SimplePropertyDescriptor	PROP_NUKE_REASON	= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_NUKE_REASON);
-	public static final SimplePropertyDescriptor	PROP_INFO			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_INFO);
-	public static final SimplePropertyDescriptor	PROP_INFO_URL		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_INFO_URL);
-	public static final SimplePropertyDescriptor	PROP_SOURCE			= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SOURCE);
-	public static final SimplePropertyDescriptor	PROP_SOURCE_URL		= new SimplePropertyDescriptor(MediaRelease.class, PROP_NAME_SOURCE_URL);
+	public static final SimplePropDescriptor	PROP_NAME			= new SimplePropDescriptor(MediaRelease.class, Prop.NAME);
+	public static final SimplePropDescriptor	PROP_MATERIALS		= new SimplePropDescriptor(MediaRelease.class, Prop.MATERIALS);
+	public static final SimplePropDescriptor	PROP_GROUP			= new SimplePropDescriptor(MediaRelease.class, Prop.GROUP);
+	public static final SimplePropDescriptor	PROP_TAGS			= new SimplePropDescriptor(MediaRelease.class, Prop.TAGS);
+	public static final SimplePropDescriptor	PROP_DATE			= new SimplePropDescriptor(MediaRelease.class, Prop.DATE);
+	public static final SimplePropDescriptor	PROP_SECTION		= new SimplePropDescriptor(MediaRelease.class, Prop.SECTION);
+	public static final SimplePropDescriptor	PROP_SIZE			= new SimplePropDescriptor(MediaRelease.class, Prop.SIZE);
+	public static final SimplePropDescriptor	PROP_NUKE_REASON	= new SimplePropDescriptor(MediaRelease.class, Prop.NUKE_REASON);
+	public static final SimplePropDescriptor	PROP_INFO			= new SimplePropDescriptor(MediaRelease.class, Prop.INFO);
+	public static final SimplePropDescriptor	PROP_INFO_URL		= new SimplePropDescriptor(MediaRelease.class, Prop.INFO_URL);
+	public static final SimplePropDescriptor	PROP_SOURCE			= new SimplePropDescriptor(MediaRelease.class, Prop.SOURCE);
+	public static final SimplePropDescriptor	PROP_SOURCE_URL		= new SimplePropDescriptor(MediaRelease.class, Prop.SOURCE_URL);
+
+	public static final String					UNKNOWN_NUKE_REASON	= "";
+
+	private Group								group;
+	private List<Tag>							tags				= new ArrayList<>(5);
+	private String								section;
+	private String								info;
+	private String								infoUrl;
+	private String								source;
+	private String								sourceUrl;
 
 	public static MediaRelease create(Media media, String group, String... tags)
 	{
@@ -64,6 +78,104 @@ public class MediaRelease extends AbstractRelease<Media>
 		setMaterials(materials);
 		this.group = group;
 		setTags(tags);
+	}
+
+	/**
+	 * 
+	 * @return The release group.
+	 */
+	public Group getGroup()
+	{
+		return group;
+	}
+
+	public void setGroup(Group group)
+	{
+		this.group = group;
+	}
+
+	/**
+	 * @return The release tags (XviD, WEB-DL, DD5.1, 720p, ...).
+	 */
+	public List<Tag> getTags()
+	{
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags)
+	{
+		Validate.notNull(tags, "tags cannot be null");
+		this.tags = tags;
+	}
+
+	/**
+	 * 
+	 * @return The release section.
+	 */
+	public String getSection()
+	{
+		return section;
+	}
+
+	public void setSection(String section)
+	{
+		this.section = section;
+	}
+
+	/**
+	 * 
+	 * @return Information about this release (typically, the text of the nfo file).
+	 */
+	public String getInfo()
+	{
+		return info;
+	}
+
+	public void setInfo(String info)
+	{
+		this.info = info;
+	}
+
+	/**
+	 * 
+	 * @return The URL of the nfo file.
+	 */
+	public String getInfoUrl()
+	{
+		return infoUrl;
+	}
+
+	public void setInfoUrl(String infoUrl)
+	{
+		this.infoUrl = infoUrl;
+	}
+
+	/**
+	 * 
+	 * @return The name of the source of the information about this release.
+	 */
+	public String getSource()
+	{
+		return source;
+	}
+
+	public void setSource(String source)
+	{
+		this.source = source;
+	}
+
+	/**
+	 * 
+	 * @return The URL of the source of the information about this release.
+	 */
+	public String getSourceUrl()
+	{
+		return sourceUrl;
+	}
+
+	public void setSourceUrl(String sourceUrl)
+	{
+		this.sourceUrl = sourceUrl;
 	}
 
 	@Override

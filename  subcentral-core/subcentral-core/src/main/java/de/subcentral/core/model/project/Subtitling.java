@@ -1,6 +1,5 @@
 package de.subcentral.core.model.project;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +77,6 @@ public class Subtitling implements Work
 		Subtitle sub = new Subtitle();
 		sub.setMediaItem(mediaItem);
 		sub.setLanguage(language);
-		sub.setDate(ZonedDateTime.now());
 		sub.setContributions(contributions);
 		return sub;
 	}

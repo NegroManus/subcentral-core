@@ -1,6 +1,5 @@
 package de.subcentral.core.naming;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +46,6 @@ public class NamingTest
 	{
 		Subtitle sub = new Subtitle(new Movie(MOVIE_NAME));
 		sub.setLanguage("de");
-		sub.setDate(ZonedDateTime.now());
 		String name = NamingStandards.SUBTITLE_NAMER.name(sub, NamingStandards.NAMING_SERVICE);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_NAME, name);

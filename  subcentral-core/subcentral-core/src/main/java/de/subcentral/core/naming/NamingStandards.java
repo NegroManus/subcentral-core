@@ -12,7 +12,7 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.SeparationDefinition;
-import de.subcentral.core.util.SimplePropertyDescriptor;
+import de.subcentral.core.util.SimplePropDescriptor;
 
 public class NamingStandards
 {
@@ -35,7 +35,7 @@ public class NamingStandards
 
 		SEASON_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Season.PROP_NUMBER, seasonNumberToString));
 
-		Map<SimplePropertyDescriptor, Function<?, String>> epiToStringFuncts = new HashMap<>();
+		Map<SimplePropDescriptor, Function<?, String>> epiToStringFuncts = new HashMap<>();
 		epiToStringFuncts.put(Episode.PROP_NUMBER_IN_SERIES, episodeNumberToString);
 		epiToStringFuncts.put(Episode.PROP_NUMBER_IN_SEASON, episodeNumberToString);
 		epiToStringFuncts.put(Season.PROP_NUMBER, seasonNumberToString);

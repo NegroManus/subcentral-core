@@ -26,17 +26,17 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	{
 		Validate.notNull(namingService, "namingService cannot be null");
 		// read naming settings
-		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_RELEASE_KEY, MediaRelease.class, rls.getFirstCompatibleMediaRelease());
+		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_RELEASE_KEY, MediaRelease.class, rls.getFirstMatchingMediaRelease());
 
 		Builder b = new Builder();
-		b.appendString(SubtitleRelease.PROP_COMPATIBLE_MEDIA_RELEASES, namingService.name(mediaRls, params));
+		b.appendString(SubtitleRelease.PROP_MATCHING_MEDIA_RELEASES, namingService.name(mediaRls, params));
 		Subtitle sub = rls.getFirstMaterial();
 		if (sub != null)
 		{
 			b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
+			b.appendAllIfNotEmpty(Subtitle.PROP_TAGS, sub.getTags());
+			b.appendIfNotNull(Subtitle.PROP_GROUP, sub.getGroup());
 		}
-		b.appendAllIfNotEmpty(SubtitleRelease.PROP_TAGS, rls.getTags());
-		b.appendIfNotNull(SubtitleRelease.PROP_GROUP, rls.getGroup());
 		return b.build();
 	}
 }

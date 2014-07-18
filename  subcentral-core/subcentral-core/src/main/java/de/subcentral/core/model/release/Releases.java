@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.util.ListComparator;
 
 public class Releases
@@ -43,16 +42,5 @@ public class Releases
 			tagList.add(new Tag(s));
 		}
 		return tagList;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <R extends Release<?>> R parse(R release, ParsingService parsingService)
-	{
-		if (release == null)
-		{
-			return null;
-		}
-
-		return (R) parsingService.parse(release.getName());
 	}
 }

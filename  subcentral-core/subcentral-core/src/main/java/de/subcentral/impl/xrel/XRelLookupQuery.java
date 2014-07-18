@@ -21,7 +21,7 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.MediaRelease;
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.util.ByteUtil;
 
 public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
@@ -200,7 +200,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		Element nukeImg = titleDiv.select("img._nuke_icon").first();
 		if (nukeImg != null)
 		{
-			rls.setNukeReason(Release.UNKNOWN_NUKE_REASON);
+			rls.setNukeReason(MediaRelease.UNKNOWN_NUKE_REASON);
 		}
 		Element nukeReasonSpan = titleDiv.select("span._nuke_icon_dummy").first();
 		if (nukeReasonSpan != null)

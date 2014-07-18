@@ -9,7 +9,7 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.MultiEpisodeHelper;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.util.SimplePropertyDescriptor;
+import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<MultiEpisodeHelper>
 {
@@ -102,7 +102,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<MultiEpisod
 
 	private void appendRange(StringBuilder sb, List<Integer> range, boolean numberInSeries, boolean omitFirstNumber)
 	{
-		SimplePropertyDescriptor prop = numberInSeries ? Episode.PROP_NUMBER_IN_SERIES : Episode.PROP_NUMBER_IN_SEASON;
+		SimplePropDescriptor prop = numberInSeries ? Episode.PROP_NUMBER_IN_SERIES : Episode.PROP_NUMBER_IN_SEASON;
 		switch (range.size())
 		{
 			case 0:

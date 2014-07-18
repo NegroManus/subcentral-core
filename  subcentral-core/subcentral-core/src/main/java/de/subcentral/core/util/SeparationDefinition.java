@@ -7,13 +7,13 @@ public class SeparationDefinition
 {
 	public static final String	DEFAULT_SEPARATOR	= " ";
 
-	public static String getSeparatorBetween(SimplePropertyDescriptor firstProperty, SimplePropertyDescriptor secondProperty,
+	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty,
 			Set<SeparationDefinition> separationDefinitions)
 	{
 		return getSeparatorBetween(firstProperty, secondProperty, null, separationDefinitions);
 	}
 
-	public static String getSeparatorBetween(SimplePropertyDescriptor firstProperty, SimplePropertyDescriptor secondProperty, String separationType,
+	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separationType,
 			Set<SeparationDefinition> separationDefinitions)
 	{
 		String after = null;
@@ -61,8 +61,8 @@ public class SeparationDefinition
 		return DEFAULT_SEPARATOR;
 	}
 
-	private final SimplePropertyDescriptor	firstProperty;
-	private final SimplePropertyDescriptor	secondProperty;
+	private final SimplePropDescriptor	firstProperty;
+	private final SimplePropDescriptor	secondProperty;
 	private final String					type;
 	private final String					separator;
 
@@ -76,48 +76,48 @@ public class SeparationDefinition
 		return new SeparationDefinition(null, null, type, separator);
 	}
 
-	public static SeparationDefinition after(SimplePropertyDescriptor property, String separator)
+	public static SeparationDefinition after(SimplePropDescriptor property, String separator)
 	{
 		return new SeparationDefinition(property, null, null, separator);
 	}
 
-	public static SeparationDefinition after(SimplePropertyDescriptor property, String type, String separator)
+	public static SeparationDefinition after(SimplePropDescriptor property, String type, String separator)
 	{
 		return new SeparationDefinition(property, null, type, separator);
 	}
 
-	public static SeparationDefinition before(SimplePropertyDescriptor property, String separator)
+	public static SeparationDefinition before(SimplePropDescriptor property, String separator)
 	{
 		return new SeparationDefinition(null, property, null, separator);
 	}
 
-	public static SeparationDefinition before(SimplePropertyDescriptor property, String type, String separator)
+	public static SeparationDefinition before(SimplePropDescriptor property, String type, String separator)
 	{
 		return new SeparationDefinition(null, property, type, separator);
 	}
 
-	public static SeparationDefinition inBetween(SimplePropertyDescriptor property, String separator)
+	public static SeparationDefinition inBetween(SimplePropDescriptor property, String separator)
 	{
 		return new SeparationDefinition(property, property, null, separator);
 	}
 
-	public static SeparationDefinition inBetween(SimplePropertyDescriptor property, String type, String separator)
+	public static SeparationDefinition inBetween(SimplePropDescriptor property, String type, String separator)
 	{
 		return new SeparationDefinition(property, property, type, separator);
 	}
 
-	public static SeparationDefinition between(SimplePropertyDescriptor firstProperty, SimplePropertyDescriptor secondProperty, String separator)
+	public static SeparationDefinition between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separator)
 	{
 		return new SeparationDefinition(firstProperty, secondProperty, null, separator);
 	}
 
-	public static SeparationDefinition between(SimplePropertyDescriptor firstProperty, SimplePropertyDescriptor secondProperty, String type,
+	public static SeparationDefinition between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type,
 			String separator)
 	{
 		return new SeparationDefinition(firstProperty, secondProperty, type, separator);
 	}
 
-	private SeparationDefinition(SimplePropertyDescriptor firstProperty, SimplePropertyDescriptor secondProperty, String type, String separator)
+	private SeparationDefinition(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type, String separator)
 	{
 		this.firstProperty = firstProperty;
 		this.secondProperty = secondProperty;
@@ -125,12 +125,12 @@ public class SeparationDefinition
 		this.separator = separator == null ? DEFAULT_SEPARATOR : separator;
 	}
 
-	public SimplePropertyDescriptor getFirstProperty()
+	public SimplePropDescriptor getFirstProperty()
 	{
 		return firstProperty;
 	}
 
-	public SimplePropertyDescriptor getSecondProperty()
+	public SimplePropDescriptor getSecondProperty()
 	{
 		return secondProperty;
 	}

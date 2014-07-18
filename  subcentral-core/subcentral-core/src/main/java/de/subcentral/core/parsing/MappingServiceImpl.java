@@ -3,7 +3,7 @@ package de.subcentral.core.parsing;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.subcentral.core.util.SimplePropertyDescriptor;
+import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MappingServiceImpl implements MappingService
 {
@@ -43,7 +43,7 @@ public class MappingServiceImpl implements MappingService
 	}
 
 	@Override
-	public <T> T map(Map<SimplePropertyDescriptor, String> info, Class<T> typeClass)
+	public <T> T map(Map<SimplePropDescriptor, String> info, Class<T> typeClass)
 	{
 		@SuppressWarnings("unchecked")
 		Mapper<T> mapper = (Mapper<T>) mappers.get(typeClass);

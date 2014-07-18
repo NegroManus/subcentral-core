@@ -12,7 +12,7 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
-import de.subcentral.core.util.SimplePropertyDescriptor;
+import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.impl.addic7ed.Addic7edSubtitleReleaseMapper;
 
 public class ParsingTest
@@ -40,7 +40,7 @@ public class ParsingTest
 				System.out.println(i + "=" + m.group(i));
 			}
 		}
-		Map<Integer, SimplePropertyDescriptor> groups1 = new HashMap<>();
+		Map<Integer, SimplePropDescriptor> groups1 = new HashMap<>();
 		groups1.put(0, SubtitleRelease.PROP_NAME);
 		groups1.put(1, Series.PROP_NAME);
 		groups1.put(2, Season.PROP_NUMBER);
@@ -48,8 +48,8 @@ public class ParsingTest
 		groups1.put(4, Episode.PROP_TITLE);
 		groups1.put(5, MediaRelease.PROP_GROUP);
 		groups1.put(6, Subtitle.PROP_LANGUAGE);
-		groups1.put(7, SubtitleRelease.PROP_TAGS);
-		groups1.put(8, SubtitleRelease.PROP_GROUP);
+		groups1.put(7, Subtitle.PROP_TAGS);
+		groups1.put(8, Subtitle.PROP_GROUP);
 		NumericGroupMappingMatcher matcher1 = new NumericGroupMappingMatcher(p1, groups1);
 
 		// Movie matcher
@@ -64,15 +64,15 @@ public class ParsingTest
 				System.out.println(i + "=" + m2.group(i));
 			}
 		}
-		Map<Integer, SimplePropertyDescriptor> groups2 = new HashMap<>();
+		Map<Integer, SimplePropDescriptor> groups2 = new HashMap<>();
 		groups2.put(0, SubtitleRelease.PROP_NAME);
 		groups2.put(1, Movie.PROP_TITLE);
 		groups2.put(2, Movie.PROP_NAME);
 		groups2.put(3, Movie.PROP_DATE);
 		groups2.put(4, MediaRelease.PROP_GROUP);
 		groups2.put(5, Subtitle.PROP_LANGUAGE);
-		groups2.put(6, SubtitleRelease.PROP_TAGS);
-		groups2.put(7, SubtitleRelease.PROP_GROUP);
+		groups2.put(6, Subtitle.PROP_TAGS);
+		groups2.put(7, Subtitle.PROP_GROUP);
 
 		NumericGroupMappingMatcher matcher2 = new NumericGroupMappingMatcher(p2, groups2);
 

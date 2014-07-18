@@ -8,6 +8,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.util.Settings;
 
@@ -15,16 +16,9 @@ public abstract class AbstractRelease<M> implements Release<M>
 {
 	protected String	name;
 	protected List<M>	materials	= new ArrayList<>(1);
-	protected Group		group;
-	protected List<Tag>	tags		= new ArrayList<>(4);
 	protected Temporal	date;
-	protected String	section;
 	protected long		size;
 	protected String	nukeReason;
-	protected String	info;
-	protected String	infoUrl;
-	protected String	source;
-	protected String	sourceUrl;
 
 	@Override
 	public String getName()
@@ -50,29 +44,6 @@ public abstract class AbstractRelease<M> implements Release<M>
 	}
 
 	@Override
-	public Group getGroup()
-	{
-		return group;
-	}
-
-	public void setGroup(Group group)
-	{
-		this.group = group;
-	}
-
-	@Override
-	public List<Tag> getTags()
-	{
-		return tags;
-	}
-
-	public void setTags(List<Tag> tags)
-	{
-		Validate.notNull(tags, "tags cannot be null");
-		this.tags = tags;
-	}
-
-	@Override
 	public Temporal getDate()
 	{
 		return date;
@@ -81,17 +52,6 @@ public abstract class AbstractRelease<M> implements Release<M>
 	public void setDate(Temporal date)
 	{
 		this.date = date;
-	}
-
-	@Override
-	public String getSection()
-	{
-		return section;
-	}
-
-	public void setSection(String section)
-	{
-		this.section = section;
 	}
 
 	@Override
@@ -116,55 +76,11 @@ public abstract class AbstractRelease<M> implements Release<M>
 		this.nukeReason = nukeReason;
 	}
 
-	@Override
-	public String getInfo()
-	{
-		return info;
-	}
-
-	public void setInfo(String info)
-	{
-		this.info = info;
-	}
-
-	@Override
-	public String getInfoUrl()
-	{
-		return infoUrl;
-	}
-
-	public void setInfoUrl(String infoUrl)
-	{
-		this.infoUrl = infoUrl;
-	}
-
-	@Override
-	public String getSource()
-	{
-		return source;
-	}
-
-	public void setSource(String source)
-	{
-		this.source = source;
-	}
-
-	@Override
-	public String getSourceUrl()
-	{
-		return sourceUrl;
-	}
-
-	public void setSourceUrl(String sourceUrl)
-	{
-		this.sourceUrl = sourceUrl;
-	}
-
 	// Convenience
 	public void setMaterial(M material)
 	{
 		this.materials = new ArrayList<>(1);
-		if (materials != null)
+		if (material != null)
 		{
 			this.materials.add(material);
 		}
@@ -191,26 +107,22 @@ public abstract class AbstractRelease<M> implements Release<M>
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
-		{
-			return false;
-		}
 		if (this == obj)
 		{
 			return true;
 		}
-		if (obj instanceof Release)
+		if (obj != null && this.getClass().equals(obj.getClass()))
 		{
-			return false;
+			Release<?> o = (Release<?>) obj;
+			return Objects.equal(name, o.getName());
 		}
-		Release<?> o = (Release<?>) obj;
-		return Objects.equal(name, o.getName());
+		return false;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(45, 3).append(name).toHashCode();
+		return new HashCodeBuilder(45, 3).append(getClass()).append(name).toHashCode();
 	}
 
 	@Override
@@ -220,6 +132,9 @@ public abstract class AbstractRelease<M> implements Release<M>
 		{
 			return -1;
 		}
-		return Settings.STRING_ORDERING.compare(name, o.getName());
+		return ComparisonChain.start()
+				.compare(getClass().getName(), o.getClass().getName(), Settings.STRING_ORDERING)
+				.compare(name, o.getName(), Settings.STRING_ORDERING)
+				.result();
 	}
 }

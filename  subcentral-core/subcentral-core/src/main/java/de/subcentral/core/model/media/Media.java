@@ -1,6 +1,7 @@
 package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.Set;
 
 import de.subcentral.core.model.Work;
@@ -48,25 +49,13 @@ import de.subcentral.core.model.Work;
  */
 public interface Media extends Work
 {
-	public static final String	PROP_NAME_NAME						= "name";
-	public static final String	PROP_NAME_TITLE						= "title";
-	public static final String	PROP_NAME_MEDIA_TYPE				= "mediaType";
-	public static final String	PROP_NAME_DATE						= "date";
-	public static final String	PROP_NAME_ORIGINAL_LANGUAGE			= "originalLanguage";
-	public static final String	PROP_NAME_COUNTRIES_OF_ORIGIN		= "countriesOfOrigin";
-	public static final String	PROP_NAME_GENRES					= "genres";
-	public static final String	PROP_NAME_DESCRIPTION				= "description";
-	public static final String	PROP_NAME_COVER_URL					= "coverUrl";
-	public static final String	PROP_NAME_CONTENT_ADVISORY			= "contentAdvisory";
-	public static final String	PROP_NAME_FURHTER_INFORMATION_URLS	= "furtherInformationUrls";
-
-	public static final String	TYPE_TEXT							= "TEXT";
-	public static final String	TYPE_IMAGE							= "IMAGE";
-	public static final String	TYPE_AUDIO							= "AUDIO";
-	public static final String	TYPE_VIDEO							= "VIDEO";
-	public static final String	TYPE_APPLICATION					= "APPLICATION";
-	public static final String	TYPE_MULTI							= "MULTI";
-	public static final String	TYPE_COLLECTION						= "COLLECTION";
+	public static final String	TYPE_TEXT			= "TEXT";
+	public static final String	TYPE_IMAGE			= "IMAGE";
+	public static final String	TYPE_AUDIO			= "AUDIO";
+	public static final String	TYPE_VIDEO			= "VIDEO";
+	public static final String	TYPE_APPLICATION	= "APPLICATION";
+	public static final String	TYPE_MULTI			= "MULTI";
+	public static final String	TYPE_COLLECTION		= "COLLECTION";
 
 	// Property accessors
 	/**
@@ -99,8 +88,8 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The language code of the original language of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}, except if
-	 *         there is text in the picture.
+	 * @return The language code of the (primary) original language of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE},
+	 *         except if there is text in the picture.
 	 */
 	public String getOriginalLanguage();
 
@@ -124,9 +113,9 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The URL pointing to a cover image for this media.
+	 * @return A List of URLs each pointing to a cover image for this media.
 	 */
-	public String getCoverUrl();
+	public List<String> getCoverUrls();
 
 	/**
 	 * <ul>

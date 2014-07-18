@@ -9,17 +9,17 @@ import org.jsoup.helper.Validate;
 import com.google.common.collect.ComparisonChain;
 
 /**
- * Class for defining a bean / entity property. Unlike to {@link PropertyDescriptor} no further checks are conducted. This class is simply a container
+ * Class for defining a bean / entity property. Unlike {@link PropertyDescriptor} no further checks are conducted. This class is simply a container
  * for a Class value and a String value. <code>SimplePropertyDescriptor</code> instances are not equal just because their write and read methods are
  * equal due to inheritance - like it is the case with <code>PropertyDescriptor</code>.
  *
  */
-public class SimplePropertyDescriptor implements Comparable<SimplePropertyDescriptor>
+public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 {
 	private final Class<?>	beanClass;
 	private final String	propertyName;
 
-	public SimplePropertyDescriptor(Class<?> beanClass, String propertyName)
+	public SimplePropDescriptor(Class<?> beanClass, String propertyName)
 	{
 		Validate.notNull(beanClass, "beanClass cannot be null");
 		Validate.notNull(propertyName, "propertyName cannot be null");
@@ -60,9 +60,9 @@ public class SimplePropertyDescriptor implements Comparable<SimplePropertyDescri
 		{
 			return true;
 		}
-		if (obj != null && SimplePropertyDescriptor.class == obj.getClass())
+		if (obj != null && SimplePropDescriptor.class == obj.getClass())
 		{
-			SimplePropertyDescriptor o = (SimplePropertyDescriptor) obj;
+			SimplePropDescriptor o = (SimplePropDescriptor) obj;
 			return beanClass.equals(o.beanClass) && propertyName.equals(o.propertyName);
 		}
 		return false;
@@ -75,7 +75,7 @@ public class SimplePropertyDescriptor implements Comparable<SimplePropertyDescri
 	}
 
 	@Override
-	public int compareTo(SimplePropertyDescriptor o)
+	public int compareTo(SimplePropDescriptor o)
 	{
 		if (o == null)
 		{

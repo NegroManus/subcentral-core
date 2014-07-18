@@ -9,14 +9,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.util.SimplePropertyDescriptor;
+import de.subcentral.core.util.SimplePropDescriptor;
 
 public class NumericGroupMappingMatcher implements MappingMatcher
 {
 	private final Pattern									pattern;
-	private final Map<Integer, SimplePropertyDescriptor>	groups;
+	private final Map<Integer, SimplePropDescriptor>	groups;
 
-	public NumericGroupMappingMatcher(Pattern pattern, Map<Integer, SimplePropertyDescriptor> groups)
+	public NumericGroupMappingMatcher(Pattern pattern, Map<Integer, SimplePropDescriptor> groups)
 	{
 		this.pattern = pattern;
 		this.groups = ImmutableMap.copyOf(groups);
@@ -36,7 +36,7 @@ public class NumericGroupMappingMatcher implements MappingMatcher
 	 * 
 	 * @return
 	 */
-	public Map<Integer, SimplePropertyDescriptor> getGroups()
+	public Map<Integer, SimplePropDescriptor> getGroups()
 	{
 		return groups;
 	}
@@ -49,15 +49,15 @@ public class NumericGroupMappingMatcher implements MappingMatcher
 	 *             If there is no pattern group for a specified group number.
 	 */
 	@Override
-	public Map<SimplePropertyDescriptor, String> map(String input) throws IndexOutOfBoundsException
+	public Map<SimplePropDescriptor, String> map(String input) throws IndexOutOfBoundsException
 	{
 		Matcher m = pattern.matcher(input);
 		if (m.matches())
 		{
-			Map<SimplePropertyDescriptor, String> mappedGroups = new HashMap<>(groups.size());
-			for (Map.Entry<Integer, SimplePropertyDescriptor> entry : groups.entrySet())
+			Map<SimplePropDescriptor, String> mappedGroups = new HashMap<>(groups.size());
+			for (Map.Entry<Integer, SimplePropDescriptor> entry : groups.entrySet())
 			{
-				SimplePropertyDescriptor groupName = entry.getValue();
+				SimplePropDescriptor groupName = entry.getValue();
 				String groupValue = m.group(entry.getKey());
 				// concat the values if multiple groups have the same name
 				String storedValue = mappedGroups.get(groupName);
