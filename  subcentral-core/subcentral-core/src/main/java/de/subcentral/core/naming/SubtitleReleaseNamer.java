@@ -13,7 +13,7 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	/**
 	 * The parameter key for the MediaRelease value "mediaRelease".
 	 */
-	public static final String	PARAM_MEDIA_RELEASE_KEY	= "mediaRelease";
+	public static final String	PARAM_MEDIA_KEY_RELEASE	= "mediaRelease";
 
 	@Override
 	public Class<SubtitleRelease> getType()
@@ -26,7 +26,7 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	{
 		Validate.notNull(namingService, "namingService cannot be null");
 		// read naming settings
-		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_RELEASE_KEY, MediaRelease.class, rls.getFirstMatchingMediaRelease());
+		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_KEY_RELEASE, MediaRelease.class, rls.getFirstMatchingMediaRelease());
 
 		Builder b = new Builder();
 		b.appendString(SubtitleRelease.PROP_MATCHING_MEDIA_RELEASES, namingService.name(mediaRls, params));
