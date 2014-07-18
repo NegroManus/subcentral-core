@@ -9,8 +9,8 @@ public class Tag implements Comparable<Tag>
 	public static final String	CATEGORY_META	= "META";
 
 	private String				name;
+	private String				longName;
 	private String				category;
-	private String				info;
 
 	public Tag()
 	{
@@ -22,11 +22,11 @@ public class Tag implements Comparable<Tag>
 		this.name = name;
 	}
 
-	public Tag(String name, String category, String info)
+	public Tag(String name, String longName, String category)
 	{
 		this.name = name;
+		this.longName = longName;
 		this.category = category;
-		this.info = info;
 	}
 
 	public String getName()
@@ -39,6 +39,16 @@ public class Tag implements Comparable<Tag>
 		this.name = name;
 	}
 
+	public String getLongName()
+	{
+		return longName;
+	}
+
+	public void setLongName(String longName)
+	{
+		this.longName = longName;
+	}
+
 	public String getCategory()
 	{
 		return category;
@@ -47,16 +57,6 @@ public class Tag implements Comparable<Tag>
 	public void setCategory(String category)
 	{
 		this.category = category;
-	}
-
-	public String getInfo()
-	{
-		return info;
-	}
-
-	public void setInfo(String info)
-	{
-		this.info = info;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final SimplePropDescriptor	PROP_SOURCE_URL				= new SimplePropDescriptor(Subtitle.class, Prop.SOURCE_URL);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Subtitle.class, Prop.CONTRIBUTIONS);
 
-	public static final Tag						TAG_HEARING_IMPAIRED		= new Tag("HI", Tag.CATEGORY_FORMAT, "Hearing Impaired");
+	public static final Tag						TAG_HEARING_IMPAIRED		= new Tag("HI", "Hearing Impaired", Tag.CATEGORY_FORMAT);
 
 	/**
 	 * If a transcript was the source of the subtitle.
@@ -74,23 +74,43 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public static enum TranslationType
 	{
-		TRANSLATION, ORIGINAL_VERSION
+		/**
+		 * It is unknown whether the subtitle is an original version or a translation.
+		 */
+		UNKNOWN,
+
+		/**
+		 * The subtitle's language is the original language. The language of this subtitle is equal to the primary original language of the subtitled
+		 * media item (also French <code>"version originale [VO]"</code>)
+		 */
+		ORIGINAL,
+
+		/**
+		 * The subtitle is a translation. This language of this subtitle differs from the primary original language of the subtitled media item.
+		 */
+		TRANSLATION
 	}
 
 	public static enum ForeignParts
 	{
+		/**
+		 * Unknown. Or irrelevant because media item contains no foreign parts to include.
+		 */
+		UNKNOWN,
+
 		/**
 		 * Foreign parts are included (typically the case for translated subtitles or VO subtitles where the foreign parts are not hard coded).
 		 */
 		INCLUDED,
 
 		/**
-		 * Foreign parts are not included (typically the case for VO subtitles).
+		 * Foreign parts are not included (typically the case for original subtitles).
 		 */
 		NOT_INCLUDED,
 
 		/**
-		 * Only foreign parts are included (typically the case for special versions of VO subtitles).
+		 * Only foreign parts are included (typically the case for special versions of original subtitles for people who only need subtitles for the
+		 * foreign parts).
 		 */
 		ONLY;
 	}
@@ -109,7 +129,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private int					version							= 1;
 	private String				productionType;
 	private Subtitle			basis;
-	private ForeignParts		foreignParts;
+	private ForeignParts		foreignParts					= ForeignParts.UNKNOWN;
 	private String				info;
 	private String				infoUrl;
 	private String				source;
@@ -277,22 +297,18 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	// convenience / complex
-	/**
-	 * 
-	 * @return null if unknown.
-	 */
 	public TranslationType getTranslationType()
 	{
 		if (mediaItem == null || language == null)
 		{
-			return null;
+			return TranslationType.UNKNOWN;
 		}
 		String primaryLangOfMedia = mediaItem.getPrimaryOriginalLanguage();
 		if (primaryLangOfMedia == null)
 		{
-			return null;
+			return TranslationType.UNKNOWN;
 		}
-		return language.equals(primaryLangOfMedia) ? TranslationType.ORIGINAL_VERSION : TranslationType.TRANSLATION;
+		return language.equals(primaryLangOfMedia) ? TranslationType.ORIGINAL : TranslationType.TRANSLATION;
 	}
 
 	public boolean isHearingImpaired()
