@@ -18,60 +18,59 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Series extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Series>
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(Series.class, Prop.NAME);
-	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(Series.class, Prop.TITLE);
-	public static final SimplePropDescriptor	PROP_TYPE						= new SimplePropDescriptor(Series.class, Prop.TYPE);
-	public static final SimplePropDescriptor	PROP_STATE						= new SimplePropDescriptor(Series.class, Prop.STATE);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(Series.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropDescriptor(Series.class, Prop.ORIGINAL_LANGUAGE);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Series.class,
-																						Prop.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(Series.class, Prop.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(Series.class, Prop.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(Series.class, Prop.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(Series.class, Prop.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_FURHTER_INFORMATION_URLS	= new SimplePropDescriptor(Series.class,
-																						Prop.FURHTER_INFORMATION_URLS);
-	public static final SimplePropDescriptor	PROP_SEASONS					= new SimplePropDescriptor(Series.class, Prop.SEASONS);
-	public static final SimplePropDescriptor	PROP_EPISODES					= new SimplePropDescriptor(Series.class, Prop.EPISODES);
+	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, Prop.NAME);
+	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Series.class, Prop.TITLE);
+	public static final SimplePropDescriptor	PROP_TYPE					= new SimplePropDescriptor(Series.class, Prop.TYPE);
+	public static final SimplePropDescriptor	PROP_STATE					= new SimplePropDescriptor(Series.class, Prop.STATE);
+	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(Series.class, Prop.DATE);
+	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(Series.class, Prop.ORIGINAL_LANGUAGES);
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Series.class, Prop.COUNTRIES_OF_ORIGIN);
+	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Series.class, Prop.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, Prop.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(Series.class, Prop.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(Series.class, Prop.CONTENT_ADVISORY);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Series.class, Prop.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FINFO_URLS				= new SimplePropDescriptor(Series.class, Prop.FURTHER_INFO_URLS);
+	public static final SimplePropDescriptor	PROP_SEASONS				= new SimplePropDescriptor(Series.class, Prop.SEASONS);
+	public static final SimplePropDescriptor	PROP_EPISODES				= new SimplePropDescriptor(Series.class, Prop.EPISODES);
 
 	/**
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
 	 * examples are the TV series "Breaking Bad", "Game of Thrones" and "Psych".
 	 */
-	public static final String					TYPE_SEASONED					= "SEASONED";
+	public static final String					TYPE_SEASONED				= "SEASONED";
 
 	/**
 	 * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. A typical example is the TV
 	 * mini-series "Band of Brothers".
 	 */
-	public static final String					TYPE_MINI_SERIES				= "MINI_SERIES";
+	public static final String					TYPE_MINI_SERIES			= "MINI_SERIES";
 
 	/**
 	 * A type of series which episodes usually have no numbers. Instead the main identifier is their air date. Typical examples are (daily) shows or
 	 * sports events.
 	 */
-	public static final String					TYPE_DATED						= "DATED";
+	public static final String					TYPE_DATED					= "DATED";
 
 	/**
 	 * If a series is "continuing", then there will be more episodes to come.
 	 */
-	public static final String					STATE_CONTINUING				= "CONTINUING";
+	public static final String					STATE_CONTINUING			= "CONTINUING";
 
 	/**
 	 * If a series has "ended", there will be no more episodes to come. Either because the series was cancelled or it simply is complete.
 	 */
-	public static final String					STATE_ENDED						= "ENDED";
+	public static final String					STATE_ENDED					= "ENDED";
 
 	private String								name;
 	private String								type;
 	private String								state;
-	private String								originalLanguage;
-	private Set<String>							countriesOfOrigin				= new HashSet<>(1);
+	private List<String>						originalLanguages			= new ArrayList<>(1);
+	private Set<String>							countriesOfOrigin			= new HashSet<>(1);
 	private int									regularRunningTime;
-	private Set<String>							genres							= new HashSet<>(4);
-	private List<Season>						seasons							= new ArrayList<>();
-	private List<Episode>						episodes						= new ArrayList<>();
+	private Set<String>							genres						= new HashSet<>(4);
+	private List<Season>						seasons						= new ArrayList<>(0);
+	private List<Episode>						episodes					= new ArrayList<>(0);
 
 	public Series()
 	{}
@@ -132,14 +131,14 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	@Override
-	public String getOriginalLanguage()
+	public List<String> getOriginalLanguages()
 	{
-		return originalLanguage;
+		return originalLanguages;
 	}
 
-	public void setOriginalLanguage(String originalLanguage)
+	public void setOriginalLanguages(List<String> originalLanguages)
 	{
-		this.originalLanguage = originalLanguage;
+		this.originalLanguages = originalLanguages;
 	}
 
 	@Override
@@ -177,6 +176,11 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	// Convenience
+	public String getPrimaryOriginalLanguage()
+	{
+		return !originalLanguages.isEmpty() ? originalLanguages.get(0) : null;
+	}
+
 	/**
 	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series, <code>null</code> if this series has no episodes.
 	 */
@@ -316,7 +320,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("title", title)
 				.add("type", type)
 				.add("state", state)
-				.add("originalLanguage", originalLanguage)
+				.add("originalLanguages", originalLanguages)
 				.add("countriesOfOrigin", countriesOfOrigin)
 				.add("regularRunningTime", regularRunningTime)
 				.add("genres", genres)
@@ -324,7 +328,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("coverUrls", coverUrls)
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", contributions)
-				.add("furtherInformationUrls", furtherInformationUrls)
+				.add("furtherInfoUrls", furtherInfoUrls)
 				.add("seasons.size", seasons.size())
 				.add("episodes.size", episodes.size())
 				.toString();

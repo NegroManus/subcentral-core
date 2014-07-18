@@ -2,7 +2,7 @@ package de.subcentral.core.lookup;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.impl.orlydb.OrlyDbLookup;
 
 public class LookupTest
@@ -14,11 +14,11 @@ public class LookupTest
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 6, 5);
 		Movie movie = new Movie("The Lord of the Rings");
-		MediaRelease rls = MediaRelease.create(movie, null, "720p");
+		Release rls = Release.create(movie, null, "720p");
 
 		OrlyDbLookup lookup = new OrlyDbLookup();
-		LookupQuery<MediaRelease> query = lookup.createQueryFromEntity(epi);
-		for (MediaRelease foundRls : query.getResults())
+		LookupQuery<Release> query = lookup.createQueryFromEntity(epi);
+		for (Release foundRls : query.getResults())
 		{
 			System.out.println(foundRls);
 		}

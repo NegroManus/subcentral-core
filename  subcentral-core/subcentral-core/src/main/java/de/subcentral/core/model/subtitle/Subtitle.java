@@ -72,6 +72,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 */
 	public static final String					PRODUCTION_TYPE_MACHINE		= "MACHINE";
 
+	public static enum TranslationType
+	{
+		TRANSLATION, ORIGINAL_VERSION
+	}
+
 	public static enum ForeignParts
 	{
 		/**
@@ -99,7 +104,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private AvMediaItem			mediaItem;
 	private String				language;
 	private Group				group;
-	private List<Tag>			tags							= new ArrayList<>(5);
+	// Normally there are 1 to 3 Tags per Subtitle
+	private List<Tag>			tags							= new ArrayList<>(3);
 	private int					version							= 1;
 	private String				productionType;
 	private Subtitle			basis;
@@ -108,7 +114,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private String				infoUrl;
 	private String				source;
 	private String				sourceUrl;
-	private List<Contribution>	contributions					= new ArrayList<>();
+	// More than 5 contributions per subtitle is very rare
+	private List<Contribution>	contributions					= new ArrayList<>(5);
 
 	public Subtitle()
 	{
@@ -177,6 +184,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.version = version;
 	}
 
+	/**
+	 * See the <code>PRODUCTION_TYPE_*</code> constants.
+	 * 
+	 * @return The production type. How this subtitles was produced.
+	 */
 	public String getProductionType()
 	{
 		return productionType;
@@ -265,13 +277,22 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	// convenience / complex
-	public boolean isTranslation()
+	/**
+	 * 
+	 * @return null if unknown.
+	 */
+	public TranslationType getTranslationType()
 	{
 		if (mediaItem == null || language == null)
 		{
-			return false;
+			return null;
 		}
-		return !language.equals(mediaItem.getOriginalLanguage());
+		String primaryLangOfMedia = mediaItem.getPrimaryOriginalLanguage();
+		if (primaryLangOfMedia == null)
+		{
+			return null;
+		}
+		return language.equals(primaryLangOfMedia) ? TranslationType.ORIGINAL_VERSION : TranslationType.TRANSLATION;
 	}
 
 	public boolean isHearingImpaired()
@@ -312,25 +333,21 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
-		{
-			return false;
-		}
 		if (this == obj)
 		{
 			return true;
 		}
-		if (Subtitle.class != obj.getClass())
+		if (obj != null && Subtitle.class.equals(obj.getClass()))
 		{
-			return false;
+			Subtitle o = (Subtitle) obj;
+			return new EqualsBuilder().append(mediaItem, o.mediaItem)
+					.append(language, o.language)
+					.append(tags, o.tags)
+					.append(group, o.group)
+					.append(version, o.version)
+					.isEquals();
 		}
-		Subtitle o = (Subtitle) obj;
-		return new EqualsBuilder().append(mediaItem, o.mediaItem)
-				.append(language, o.language)
-				.append(tags, o.tags)
-				.append(group, o.group)
-				.append(version, o.version)
-				.isEquals();
+		return false;
 	}
 
 	@Override

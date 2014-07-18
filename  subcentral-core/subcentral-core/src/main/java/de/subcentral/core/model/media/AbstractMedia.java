@@ -15,8 +15,8 @@ public abstract class AbstractMedia implements Media
 	protected String				description;
 	protected List<String>			coverUrls;
 	protected String				contentAdvisory;
-	protected List<Contribution>	contributions			= new ArrayList<>();
-	protected Set<String>			furtherInformationUrls	= new HashSet<>();
+	protected List<Contribution>	contributions	= new ArrayList<>();
+	protected Set<String>			furtherInfoUrls	= new HashSet<>();
 
 	@Override
 	public String getTitle()
@@ -76,15 +76,15 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public Set<String> getFurtherInformationUrls()
+	public Set<String> getFurtherInfoUrls()
 	{
-		return furtherInformationUrls;
+		return furtherInfoUrls;
 	}
 
-	public void setFurtherInformationUrls(Set<String> furtherInformationUrls)
+	public void setFurtherInfoUrls(Set<String> furtherInfoUrls)
 	{
-		Validate.notNull(furtherInformationUrls, "furtherInformationUrls cannot be null");
-		this.furtherInformationUrls = furtherInformationUrls;
+		Validate.notNull(furtherInfoUrls, "furtherInfoUrls cannot be null");
+		this.furtherInfoUrls = furtherInfoUrls;
 	}
 
 	// Convenience / Complex

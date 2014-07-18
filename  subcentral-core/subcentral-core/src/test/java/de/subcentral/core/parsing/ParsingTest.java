@@ -9,7 +9,7 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -45,7 +45,7 @@ public class ParsingTest
 		groups1.put(2, Season.PROP_NUMBER);
 		groups1.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		groups1.put(4, Episode.PROP_TITLE);
-		groups1.put(5, MediaRelease.PROP_GROUP);
+		groups1.put(5, Release.PROP_GROUP);
 		groups1.put(6, Subtitle.PROP_LANGUAGE);
 		groups1.put(7, Subtitle.PROP_TAGS);
 		groups1.put(8, Subtitle.PROP_GROUP);
@@ -67,7 +67,7 @@ public class ParsingTest
 		groups2.put(1, Movie.PROP_TITLE);
 		groups2.put(2, Movie.PROP_NAME);
 		groups2.put(3, Movie.PROP_DATE);
-		groups2.put(4, MediaRelease.PROP_GROUP);
+		groups2.put(4, Release.PROP_GROUP);
 		groups2.put(5, Subtitle.PROP_LANGUAGE);
 		groups2.put(6, Subtitle.PROP_TAGS);
 		groups2.put(7, Subtitle.PROP_GROUP);

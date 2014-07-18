@@ -15,7 +15,7 @@ import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -46,7 +46,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	public Set<SimplePropDescriptor> getKnownProperties()
 	{
 		return ImmutableSet.copyOf(new SimplePropDescriptor[] { Series.PROP_NAME, Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON,
-				Episode.PROP_TITLE, Movie.PROP_NAME, Movie.PROP_TITLE, Movie.PROP_DATE, MediaRelease.PROP_TAGS, MediaRelease.PROP_GROUP,
+				Episode.PROP_TITLE, Movie.PROP_NAME, Movie.PROP_TITLE, Movie.PROP_DATE, Release.PROP_TAGS, Release.PROP_GROUP,
 				Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, Subtitle.PROP_TAGS });
 	}
 
@@ -62,8 +62,8 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		String movieTitle = info.get(Movie.PROP_TITLE);
 		String movieYear = info.get(Movie.PROP_DATE);
 
-		String mediaRlsTags = info.get(MediaRelease.PROP_TAGS);
-		String mediaRlsGroup = info.get(MediaRelease.PROP_GROUP);
+		String mediaRlsTags = info.get(Release.PROP_TAGS);
+		String mediaRlsGroup = info.get(Release.PROP_GROUP);
 		String subLang = info.get(Subtitle.PROP_LANGUAGE);
 		String subGroup = info.get(Subtitle.PROP_GROUP);
 		String subTags = info.get(Subtitle.PROP_TAGS);
@@ -101,8 +101,8 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		}
 
 		// MediaRelease
-		MediaRelease mediaRls = new MediaRelease();
-		mediaRls.setMaterial(mediaItem);
+		Release mediaRls = new Release();
+		mediaRls.setSingleMedia(mediaItem);
 		if (mediaRlsTags != null)
 		{
 			mediaRls.setTags(parseTags(mediaRlsTags));
@@ -128,8 +128,8 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 
 		// SubtitleRelease
 		SubtitleRelease subRls = new SubtitleRelease();
-		subRls.setMaterial(sub);
-		subRls.setMatchingMediaRelease(mediaRls);
+		subRls.setSingleSubtitle(sub);
+		subRls.setSingleMatchingRelease(mediaRls);
 
 		return subRls;
 	}

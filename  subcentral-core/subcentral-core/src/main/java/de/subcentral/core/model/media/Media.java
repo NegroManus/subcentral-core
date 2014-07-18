@@ -88,10 +88,10 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The language code of the (primary) original language of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE},
-	 *         except if there is text in the picture.
+	 * @return The language code of the original language(s) of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}, except if
+	 *         there is text in the picture.
 	 */
-	public String getOriginalLanguage();
+	public List<String> getOriginalLanguages();
 
 	/**
 	 * 
@@ -132,7 +132,7 @@ public interface Media extends Work
 	 * 
 	 * @return An ordered list of URLs where further information about this media can be found.
 	 */
-	public Set<String> getFurtherInformationUrls();
+	public Set<String> getFurtherInfoUrls();
 
 	// public ListMultimap<String, String> getAttributes();
 
@@ -142,4 +142,6 @@ public interface Media extends Work
 	 * @return Whether this media has a {@link #getTitle() title} or not.
 	 */
 	public boolean isTitled();
+
+	public String getPrimaryOriginalLanguage();
 }

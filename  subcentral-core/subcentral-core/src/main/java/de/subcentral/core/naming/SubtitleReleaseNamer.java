@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.jsoup.helper.Validate;
 
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
 
@@ -26,11 +26,11 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	{
 		Validate.notNull(namingService, "namingService cannot be null");
 		// read naming settings
-		MediaRelease mediaRls = Namings.readParameter(params, PARAM_MEDIA_KEY_RELEASE, MediaRelease.class, rls.getFirstMatchingMediaRelease());
+		Release mediaRls = Namings.readParameter(params, PARAM_MEDIA_KEY_RELEASE, Release.class, rls.getFirstMatchingRelease());
 
 		Builder b = new Builder();
-		b.appendString(SubtitleRelease.PROP_MATCHING_MEDIA_RELEASES, namingService.name(mediaRls, params));
-		Subtitle sub = rls.getFirstMaterial();
+		b.appendString(SubtitleRelease.PROP_MATCHING_RELEASES, namingService.name(mediaRls, params));
+		Subtitle sub = rls.getFirstSubtitle();
 		if (sub != null)
 		{
 			b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());

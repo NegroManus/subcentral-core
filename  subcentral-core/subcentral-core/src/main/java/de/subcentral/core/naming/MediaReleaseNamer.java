@@ -6,28 +6,28 @@ import java.util.Map;
 import org.jsoup.helper.Validate;
 
 import de.subcentral.core.model.media.Medias;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 
-public class MediaReleaseNamer extends AbstractPropertySequenceNamer<MediaRelease>
+public class MediaReleaseNamer extends AbstractPropertySequenceNamer<Release>
 {
 	@Override
-	public Class<MediaRelease> getType()
+	public Class<Release> getType()
 	{
-		return MediaRelease.class;
+		return Release.class;
 	}
 
 	@Override
-	public String doName(MediaRelease rls, NamingService namingService, Map<String, Object> params) throws IntrospectionException
+	public String doName(Release rls, NamingService namingService, Map<String, Object> params) throws IntrospectionException
 	{
 		Validate.notNull(namingService, "namingService cannot be null");
 		Builder b = new Builder();
-		b.appendString(MediaRelease.PROP_MATERIALS,
-				Medias.name(rls.getMaterials(),
+		b.appendString(Release.PROP_MEDIA,
+				Medias.name(rls.getMedia(),
 						namingService,
 						params,
-						getSeparatorBetween(MediaRelease.PROP_MATERIALS, MediaRelease.PROP_MATERIALS, null)));
-		b.appendAllIfNotEmpty(MediaRelease.PROP_TAGS, rls.getTags());
-		b.appendIfNotNull(MediaRelease.PROP_GROUP, rls.getGroup());
+						getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null)));
+		b.appendAllIfNotEmpty(Release.PROP_TAGS, rls.getTags());
+		b.appendIfNotNull(Release.PROP_GROUP, rls.getGroup());
 		return b.build();
 	}
 }

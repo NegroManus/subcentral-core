@@ -19,21 +19,15 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(Season.class, Prop.NAME);
-	public static final SimplePropDescriptor	PROP_SERIES						= new SimplePropDescriptor(Season.class, Prop.SERIES);
-	public static final SimplePropDescriptor	PROP_NUMBER						= new SimplePropDescriptor(Season.class, Prop.NUMBER);
-	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(Season.class, Prop.TITLE);
-	public static final SimplePropDescriptor	PROP_SPECIAL					= new SimplePropDescriptor(Season.class, Prop.SPECIAL);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(Season.class, Prop.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(Season.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropDescriptor(Season.class, Prop.ORIGINAL_LANGUAGE);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Season.class, Prop.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(Season.class, Prop.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(Season.class, Prop.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(Season.class, Prop.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(Season.class, Prop.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_FURHTER_INFORMATION_URLS	= new SimplePropDescriptor(Season.class,
-																						Prop.FURHTER_INFORMATION_URLS);
+	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, Prop.SERIES);
+	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, Prop.NUMBER);
+	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Season.class, Prop.TITLE);
+	public static final SimplePropDescriptor	PROP_SPECIAL			= new SimplePropDescriptor(Season.class, Prop.SPECIAL);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(Season.class, Prop.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS			= new SimplePropDescriptor(Season.class, Prop.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY	= new SimplePropDescriptor(Season.class, Prop.CONTENT_ADVISORY);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(Season.class, Prop.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS	= new SimplePropDescriptor(Season.class, Prop.FURTHER_INFO_URLS);
 
 	private Series								series;
 	private Integer								number;
@@ -118,9 +112,9 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	@Override
-	public String getOriginalLanguage()
+	public List<String> getOriginalLanguages()
 	{
-		return series != null ? series.getOriginalLanguage() : null;
+		return series != null ? series.getOriginalLanguages() : ImmutableList.of();
 	}
 
 	@Override
@@ -146,6 +140,12 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 			return null;
 		}
 		return epis.get(epis.size() - 1).getDate();
+	}
+
+	@Override
+	public String getPrimaryOriginalLanguage()
+	{
+		return !getOriginalLanguages().isEmpty() ? getOriginalLanguages().get(0) : null;
 	}
 
 	// Episodes
@@ -174,20 +174,16 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
-		{
-			return false;
-		}
 		if (this == obj)
 		{
 			return true;
 		}
-		if (Season.class != obj.getClass())
+		if (obj != null && Season.class.equals(obj.getClass()))
 		{
-			return false;
+			Season o = (Season) obj;
+			return new EqualsBuilder().append(series, o.series).append(number, o.number).append(title, o.title).isEquals();
 		}
-		Season o = (Season) obj;
-		return new EqualsBuilder().append(series, o.series).append(number, o.number).append(title, o.title).isEquals();
+		return false;
 	}
 
 	@Override
@@ -223,7 +219,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("coverUrls", coverUrls)
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", contributions)
-				.add("furtherInformationUrls", furtherInformationUrls)
+				.add("furtherInfoUrls", furtherInfoUrls)
 				.add("episodes.size", getEpisodes().size())
 				.toString();
 	}

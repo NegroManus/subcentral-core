@@ -5,7 +5,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.SubtitleReleaseNamer;
 
@@ -14,7 +14,7 @@ public class Subtitles
 	public Set<String> generateNames(SubtitleRelease subRls, NamingService namingService)
 	{
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
-		for (MediaRelease rls : subRls.getMatchingMediaReleases())
+		for (Release rls : subRls.getMatchingReleases())
 		{
 			names.add(namingService.name(subRls, ImmutableMap.of(SubtitleReleaseNamer.PARAM_MEDIA_KEY_RELEASE, rls)));
 		}

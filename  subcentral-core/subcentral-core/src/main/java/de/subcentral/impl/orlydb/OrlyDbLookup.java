@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.subcentral.core.lookup.AbstractHttpLookup;
 import de.subcentral.core.lookup.LookupQuery;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 
-public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbLookupParameters>
+public class OrlyDbLookup extends AbstractHttpLookup<Release, OrlyDbLookupParameters>
 {
 	public OrlyDbLookup()
 	{
@@ -28,13 +28,13 @@ public class OrlyDbLookup extends AbstractHttpLookup<MediaRelease, OrlyDbLookupP
 	}
 
 	@Override
-	public Class<MediaRelease> getResultClass()
+	public Class<Release> getResultClass()
 	{
-		return MediaRelease.class;
+		return Release.class;
 	}
 
 	@Override
-	public LookupQuery<MediaRelease> createQuery(URL query)
+	public LookupQuery<Release> createQuery(URL query)
 	{
 		return new OrlyDbLookupQuery(this, query);
 	}

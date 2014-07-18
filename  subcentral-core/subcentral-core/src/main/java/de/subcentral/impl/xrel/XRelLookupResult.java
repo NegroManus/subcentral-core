@@ -3,19 +3,19 @@ package de.subcentral.impl.xrel;
 import java.util.List;
 
 import de.subcentral.core.lookup.LookupResult;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 
-public class XRelLookupResult implements LookupResult<MediaRelease>
+public class XRelLookupResult implements LookupResult<Release>
 {
-	private final List<MediaRelease>	results;
+	private final List<Release>	results;
 
-	public XRelLookupResult(List<MediaRelease> results)
+	public XRelLookupResult(List<Release> results)
 	{
 		this.results = results;
 	}
 
 	@Override
-	public List<MediaRelease> getResults()
+	public List<Release> getResults()
 	{
 		return results;
 	}

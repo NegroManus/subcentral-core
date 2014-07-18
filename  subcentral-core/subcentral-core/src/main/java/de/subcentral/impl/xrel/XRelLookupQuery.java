@@ -20,10 +20,10 @@ import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
+public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 {
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
@@ -45,7 +45,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	}
 
 	@Override
-	protected List<MediaRelease> getResults(Document doc)
+	protected List<Release> getResults(Document doc)
 	{
 		return parseReleases(doc);
 	}
@@ -64,14 +64,14 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param doc
 	 * @return
 	 */
-	public List<MediaRelease> parseReleases(Document doc)
+	public List<Release> parseReleases(Document doc)
 	{
 		// Search for elements with tag "div" and class "release_item" on the doc
 		Elements rlsDivs = doc.select("div.release_item");
-		List<MediaRelease> rlss = new ArrayList<MediaRelease>(rlsDivs.size());
+		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
-			MediaRelease rls = parseRelease(doc, rlsDiv);
+			Release rls = parseRelease(doc, rlsDiv);
 			if (rls != null)
 			{
 				rlss.add(rls);
@@ -130,9 +130,9 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param rlsDiv
 	 * @return
 	 */
-	private MediaRelease parseRelease(Document doc, Element rlsDiv)
+	private Release parseRelease(Document doc, Element rlsDiv)
 	{
-		MediaRelease rls = new MediaRelease();
+		Release rls = new Release();
 
 		/**
 		 * media
@@ -199,7 +199,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		Element nukeImg = titleDiv.select("img._nuke_icon").first();
 		if (nukeImg != null)
 		{
-			rls.setNukeReason(MediaRelease.UNKNOWN_NUKE_REASON);
+			rls.setNukeReason(Release.UNKNOWN_NUKE_REASON);
 		}
 		Element nukeReasonSpan = titleDiv.select("span._nuke_icon_dummy").first();
 		if (nukeReasonSpan != null)
@@ -238,7 +238,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		Media media = parseMedia(category, mediaSection, mediaTitle, seasonNumber, episodeNumber);
 		if (media != null)
 		{
-			rls.setMaterial(media);
+			rls.setSingleMedia(media);
 		}
 
 		Element titleIdSpan = titleDiv.select("span[id^=_title]").first();

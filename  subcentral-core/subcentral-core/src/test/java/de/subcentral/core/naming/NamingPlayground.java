@@ -11,7 +11,7 @@ import de.subcentral.core.model.media.MultiEpisodeHelper;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleRelease;
@@ -50,9 +50,9 @@ public class NamingPlayground
 		epis.add(Episode.createMiniSeriesEpisode("Psych", 3));
 
 		// Media release
-		MediaRelease rel = new MediaRelease();
+		Release rel = new Release();
 		rel.setName("Psych.S01E01.HDTV.XviD-LOL");
-		rel.setMaterials(ImmutableList.of(movie));
+		rel.setMedia(ImmutableList.of(movie));
 		rel.setGroup(new Group("DIMENSION"));
 		rel.setTags(Releases.tags("720p", "HDTV", "x264"));
 
@@ -65,8 +65,8 @@ public class NamingPlayground
 
 		// Subtitle release
 		SubtitleRelease subRel = new SubtitleRelease();
-		subRel.setMaterial(sub1);
-		subRel.setMatchingMediaRelease(rel);
+		subRel.setSingleSubtitle(sub1);
+		subRel.setSingleMatchingRelease(rel);
 
 		System.out.println(NamingStandards.NAMING_SERVICE.name(epis));
 		// long overallStart = System.nanoTime();

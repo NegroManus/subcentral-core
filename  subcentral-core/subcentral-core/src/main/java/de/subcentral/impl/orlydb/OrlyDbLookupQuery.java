@@ -20,10 +20,10 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
+public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 {
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
@@ -45,7 +45,7 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	}
 
 	@Override
-	protected List<MediaRelease> getResults(Document doc)
+	protected List<Release> getResults(Document doc)
 	{
 		return parseReleases(doc);
 	}
@@ -63,7 +63,7 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param doc
 	 * @return
 	 */
-	private List<MediaRelease> parseReleases(Document doc)
+	private List<Release> parseReleases(Document doc)
 	{
 		Element rlssDiv = doc.getElementById("releases");
 		if (rlssDiv == null)
@@ -73,10 +73,10 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 		// Search for elements with tag "div" on the children list
 		// If searched in rlssDiv, the rlssDiv itself will be returned too.
 		Elements rlsDivs = rlssDiv.children().tagName("div");
-		List<MediaRelease> rlss = new ArrayList<MediaRelease>(rlsDivs.size());
+		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
-			MediaRelease rls = parseRelease(doc, rlsDiv);
+			Release rls = parseRelease(doc, rlsDiv);
 			if (rls != null)
 			{
 				rlss.add(rls);
@@ -104,7 +104,7 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 	 * @param rlsDiv
 	 * @return
 	 */
-	private MediaRelease parseRelease(Document doc, Element rlsDiv)
+	private Release parseRelease(Document doc, Element rlsDiv)
 	{
 		Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
 		Element sectionSpan = rlsDiv.getElementsByClass("section").first();
@@ -117,7 +117,7 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<MediaRelease>
 			return null;
 		}
 
-		MediaRelease rls = new MediaRelease();
+		Release rls = new Release();
 		rls.setName(releaseSpan.text());
 		if (sectionSpan != null)
 		{

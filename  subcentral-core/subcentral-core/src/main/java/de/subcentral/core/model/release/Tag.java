@@ -62,20 +62,16 @@ public class Tag implements Comparable<Tag>
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
-		{
-			return false;
-		}
 		if (this == obj)
 		{
 			return true;
 		}
-		if (Tag.class != obj.getClass())
+		if (obj != null && Tag.class.equals(obj.getClass()))
 		{
-			return false;
+			Tag other = (Tag) obj;
+			return name != null ? name.equalsIgnoreCase(other.name) : other.name == null;
 		}
-		Tag other = (Tag) obj;
-		return name == null ? other.name == null : name.equalsIgnoreCase(other.name);
+		return false;
 	}
 
 	@Override

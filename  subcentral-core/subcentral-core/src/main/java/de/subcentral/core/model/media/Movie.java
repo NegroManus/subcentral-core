@@ -1,6 +1,8 @@
 package de.subcentral.core.model.media;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
@@ -18,18 +20,18 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(Movie.class, Prop.TITLE);
 	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(Movie.class, Prop.MEDIA_TYPE);
 	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(Movie.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropDescriptor(Movie.class, Prop.ORIGINAL_LANGUAGE);
+	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(Movie.class, Prop.ORIGINAL_LANGUAGES);
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Movie.class, Prop.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(Movie.class, Prop.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(Movie.class, Prop.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(Movie.class, Prop.COVER_URLS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(Movie.class, Prop.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_FURHTER_INFORMATION_URLS	= new SimplePropDescriptor(Movie.class,
-																						Prop.FURHTER_INFORMATION_URLS);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Movie.class, Prop.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(Movie.class, Prop.FURTHER_INFO_URLS);
 
 	private String								name;
 	private Set<String>							genres							= new HashSet<>(4);
-	private String								originalLanguage;
+	private List<String>						originalLanguages				= new ArrayList<>(1);
 	private Set<String>							countriesOfOrigin				= new HashSet<>(1);
 
 	public Movie()
@@ -71,14 +73,14 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	}
 
 	@Override
-	public String getOriginalLanguage()
+	public List<String> getOriginalLanguages()
 	{
-		return originalLanguage;
+		return originalLanguages;
 	}
 
-	public void setOriginalLanguage(String originalLanguage)
+	public void setOriginalLanguages(List<String> originalLanguages)
 	{
-		this.originalLanguage = originalLanguage;
+		this.originalLanguages = originalLanguages;
 	}
 
 	@Override
@@ -93,24 +95,27 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 		this.countriesOfOrigin = countriesOfOrigin;
 	}
 
+	// convenience
+	@Override
+	public String getPrimaryOriginalLanguage()
+	{
+		return !originalLanguages.isEmpty() ? originalLanguages.get(0) : null;
+	}
+
 	// Object methods
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
-		{
-			return false;
-		}
 		if (this == obj)
 		{
 			return true;
 		}
-		if (Movie.class != obj.getClass())
+		if (obj != null && Movie.class.equals(obj.getClass()))
 		{
-			return false;
+			Movie o = (Movie) obj;
+			return Objects.equal(name, o.name);
 		}
-		Movie o = (Movie) obj;
-		return Objects.equal(name, o.name);
+		return false;
 	}
 
 	@Override
@@ -137,7 +142,7 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 				.add("name", name)
 				.add("title", title)
 				.add("date", date)
-				.add("originalLanguage", originalLanguage)
+				.add("originalLanguages", originalLanguages)
 				.add("countriesOfOrigin", countriesOfOrigin)
 				.add("runningTime", runningTime)
 				.add("genres", genres)
@@ -145,7 +150,7 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 				.add("coverUrls", coverUrls)
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", contributions)
-				.add("furtherInformationLinks", furtherInformationUrls)
+				.add("furtherInfoUrls", furtherInfoUrls)
 				.toString();
 	}
 }

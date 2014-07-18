@@ -10,9 +10,9 @@ import org.jsoup.nodes.Document;
 
 import de.subcentral.core.lookup.AbstractHttpLookup;
 import de.subcentral.core.lookup.LookupQuery;
-import de.subcentral.core.model.release.MediaRelease;
+import de.subcentral.core.model.release.Release;
 
-public class XRelLookup extends AbstractHttpLookup<MediaRelease, String>
+public class XRelLookup extends AbstractHttpLookup<Release, String>
 {
 	public XRelLookup()
 	{
@@ -32,19 +32,19 @@ public class XRelLookup extends AbstractHttpLookup<MediaRelease, String>
 	}
 
 	@Override
-	public Class<MediaRelease> getResultClass()
+	public Class<Release> getResultClass()
 	{
-		return MediaRelease.class;
+		return Release.class;
 	}
 
-	public List<MediaRelease> getResults(File file) throws IOException
+	public List<Release> getResults(File file) throws IOException
 	{
 		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
 		return new XRelLookupQuery(this, getHost()).getResults(doc);
 	}
 
 	@Override
-	public LookupQuery<MediaRelease> createQuery(URL query)
+	public LookupQuery<Release> createQuery(URL query)
 	{
 		return new XRelLookupQuery(this, query);
 	}

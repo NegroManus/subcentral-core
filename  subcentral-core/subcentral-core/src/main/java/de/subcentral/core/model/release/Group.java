@@ -29,20 +29,16 @@ public class Group implements Comparable<Group>
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
-		{
-			return false;
-		}
 		if (this == obj)
 		{
 			return true;
 		}
-		if (Group.class != obj.getClass())
+		if (obj != null && Group.class.equals(obj.getClass()))
 		{
-			return false;
+			Group other = (Group) obj;
+			return name != null ? name.equalsIgnoreCase(other.name) : other.name == null;
 		}
-		Group other = (Group) obj;
-		return name == null ? other.name == null : name.equalsIgnoreCase(other.name);
+		return false;
 	}
 
 	@Override
