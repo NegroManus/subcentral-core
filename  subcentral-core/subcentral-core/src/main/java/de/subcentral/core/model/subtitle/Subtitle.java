@@ -19,7 +19,6 @@ import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.MediaRelease;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.Settings;
@@ -29,16 +28,16 @@ public class Subtitle implements Work, Comparable<Subtitle>
 {
 	public static final SimplePropDescriptor	PROP_MEDIA_ITEM				= new SimplePropDescriptor(Subtitle.class, Prop.MEDIA_ITEM);
 	public static final SimplePropDescriptor	PROP_LANGUAGE				= new SimplePropDescriptor(Subtitle.class, Prop.LANGUAGE);
-	public static final SimplePropDescriptor	PROP_GROUP					= new SimplePropDescriptor(MediaRelease.class, Prop.GROUP);
-	public static final SimplePropDescriptor	PROP_TAGS					= new SimplePropDescriptor(MediaRelease.class, Prop.TAGS);
+	public static final SimplePropDescriptor	PROP_GROUP					= new SimplePropDescriptor(Subtitle.class, Prop.GROUP);
+	public static final SimplePropDescriptor	PROP_TAGS					= new SimplePropDescriptor(Subtitle.class, Prop.TAGS);
 	public static final SimplePropDescriptor	PROP_VERSION				= new SimplePropDescriptor(Subtitle.class, Prop.VERSION);
 	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE		= new SimplePropDescriptor(Subtitle.class, Prop.PRODUCTION_TYPE);
 	public static final SimplePropDescriptor	PROP_BASIS					= new SimplePropDescriptor(Subtitle.class, Prop.BASIS);
 	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS			= new SimplePropDescriptor(Subtitle.class, Prop.FOREIGN_PARTS);
-	public static final SimplePropDescriptor	PROP_INFO					= new SimplePropDescriptor(MediaRelease.class, Prop.INFO);
-	public static final SimplePropDescriptor	PROP_INFO_URL				= new SimplePropDescriptor(MediaRelease.class, Prop.INFO_URL);
-	public static final SimplePropDescriptor	PROP_SOURCE					= new SimplePropDescriptor(MediaRelease.class, Prop.SOURCE);
-	public static final SimplePropDescriptor	PROP_SOURCE_URL				= new SimplePropDescriptor(MediaRelease.class, Prop.SOURCE_URL);
+	public static final SimplePropDescriptor	PROP_INFO					= new SimplePropDescriptor(Subtitle.class, Prop.INFO);
+	public static final SimplePropDescriptor	PROP_INFO_URL				= new SimplePropDescriptor(Subtitle.class, Prop.INFO_URL);
+	public static final SimplePropDescriptor	PROP_SOURCE					= new SimplePropDescriptor(Subtitle.class, Prop.SOURCE);
+	public static final SimplePropDescriptor	PROP_SOURCE_URL				= new SimplePropDescriptor(Subtitle.class, Prop.SOURCE_URL);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Subtitle.class, Prop.CONTRIBUTIONS);
 
 	public static final Tag						TAG_HEARING_IMPAIRED		= new Tag("HI", Tag.CATEGORY_FORMAT, "Hearing Impaired");
