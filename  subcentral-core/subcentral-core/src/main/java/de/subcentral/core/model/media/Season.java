@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.model.Prop;
+import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -26,8 +27,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(Season.class, Prop.MEDIA_TYPE);
 	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(Season.class, Prop.DATE);
 	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropDescriptor(Season.class, Prop.ORIGINAL_LANGUAGE);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Season.class,
-																						Prop.COUNTRIES_OF_ORIGIN);
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Season.class, Prop.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(Season.class, Prop.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(Season.class, Prop.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(Season.class, Prop.COVER_URLS);
@@ -74,7 +74,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String getName()
 	{
-		return isNumbered() ? Integer.toString(number) : title;
+		return NamingStandards.SEASON_NAMER.name(this);
 	}
 
 	public Integer getNumber()
@@ -114,19 +114,19 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public Set<String> getGenres()
 	{
-		return series == null ? ImmutableSet.of() : series.getGenres();
+		return series != null ? series.getGenres() : ImmutableSet.of();
 	}
 
 	@Override
 	public String getOriginalLanguage()
 	{
-		return series == null ? null : series.getOriginalLanguage();
+		return series != null ? series.getOriginalLanguage() : null;
 	}
 
 	@Override
 	public Set<String> getCountriesOfOrigin()
 	{
-		return series == null ? ImmutableSet.of() : series.getCountriesOfOrigin();
+		return series != null ? series.getCountriesOfOrigin() : ImmutableSet.of();
 	}
 
 	// Convenience / Complex
@@ -157,7 +157,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public List<Episode> getEpisodes()
 	{
-		return series == null ? ImmutableList.of() : series.getEpisodes(this);
+		return series != null ? series.getEpisodes(this) : ImmutableList.of();
 	}
 
 	public Episode newEpisode()

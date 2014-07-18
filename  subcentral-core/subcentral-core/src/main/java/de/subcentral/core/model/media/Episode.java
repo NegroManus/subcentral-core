@@ -28,8 +28,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(Episode.class, Prop.DATE);
 	public static final SimplePropDescriptor	PROP_SPECIAL					= new SimplePropDescriptor(Episode.class, Prop.SPECIAL);
 	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGE			= new SimplePropDescriptor(Episode.class, Prop.ORIGINAL_LANGUAGE);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Episode.class,
-																						Prop.COUNTRIES_OF_ORIGIN);
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Episode.class, Prop.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(Episode.class, Prop.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(Episode.class, Prop.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(Episode.class, Prop.COVER_URLS);
@@ -260,19 +259,19 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	@Override
 	public Set<String> getGenres()
 	{
-		return series == null ? ImmutableSet.of() : series.getGenres();
+		return series != null ? series.getGenres() : ImmutableSet.of();
 	}
 
 	@Override
 	public String getOriginalLanguage()
 	{
-		return series == null ? null : series.getOriginalLanguage();
+		return series != null ? series.getOriginalLanguage() : null;
 	}
 
 	@Override
 	public Set<String> getCountriesOfOrigin()
 	{
-		return series == null ? ImmutableSet.of() : series.getCountriesOfOrigin();
+		return series != null ? series.getCountriesOfOrigin() : ImmutableSet.of();
 	}
 
 	// Convenience
