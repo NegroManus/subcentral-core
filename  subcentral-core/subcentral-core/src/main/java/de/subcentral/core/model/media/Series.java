@@ -12,8 +12,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.Settings;
 import de.subcentral.core.model.Prop;
-import de.subcentral.core.util.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Series extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Series>

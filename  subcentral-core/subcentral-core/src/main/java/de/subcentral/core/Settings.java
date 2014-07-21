@@ -1,9 +1,11 @@
-package de.subcentral.core.util;
+package de.subcentral.core;
 
 import java.time.temporal.Temporal;
 import java.util.Comparator;
 
 import com.google.common.collect.Ordering;
+
+import de.subcentral.core.util.TemporalComparator;
 
 public class Settings
 {

@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import de.subcentral.core.Settings;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.model.Work;
@@ -21,7 +22,6 @@ import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
-import de.subcentral.core.util.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
@@ -124,19 +124,19 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	private AvMediaItem			mediaItem;
 	private String				language;
-	private Group				group;
-	// Normally there are 1 to 3 Tags per Subtitle (like "HI", "FOREIGN PARTS", "V2")
+	private ForeignParts		foreignParts					= ForeignParts.NONE;
+	// Normally there are 1 to 3 Tags per Subtitle
 	private List<Tag>			tags							= new ArrayList<>(3);
 	private int					version							= 1;
+	private Group				group;
 	private String				productionType;
-	private Subtitle			basis;
-	private ForeignParts		foreignParts					= ForeignParts.NONE;
 	private String				info;
 	private String				infoUrl;
 	private String				source;
 	private String				sourceUrl;
 	// More than 5 contributions per subtitle is very rare
 	private List<Contribution>	contributions					= new ArrayList<>(5);
+	private Subtitle			basis;
 
 	public Subtitle()
 	{
@@ -174,6 +174,22 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.language = language;
 	}
 
+	public ForeignParts getForeignParts()
+	{
+		return foreignParts;
+	}
+
+	public void setForeignParts(ForeignParts foreignParts)
+	{
+		this.foreignParts = foreignParts;
+	}
+
+	/**
+	 * 
+	 * @return The tags of this subtitle. The tag list must not contain the <code>language</code> (which is stored separately in
+	 *         {@link #getLanguage()}) neither the <code>foreign parts information</code> (which is stored separetely in {@link #getForeignParts()}).
+	 *         The tag list may contain the {@link #TAG_HEARING_IMPAIRED HI tag} if the subtitle contains annotations for the hearing impaired.
+	 */
 	public List<Tag> getTags()
 	{
 		return tags;
@@ -185,16 +201,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.tags = tags;
 	}
 
-	public Group getGroup()
-	{
-		return group;
-	}
-
-	public void setGroup(Group group)
-	{
-		this.group = group;
-	}
-
 	public int getVersion()
 	{
 		return version;
@@ -203,6 +209,16 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public void setVersion(int version)
 	{
 		this.version = version;
+	}
+
+	public Group getGroup()
+	{
+		return group;
+	}
+
+	public void setGroup(Group group)
+	{
+		this.group = group;
 	}
 
 	/**
@@ -218,31 +234,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public void setProductionType(String productionType)
 	{
 		this.productionType = productionType;
-	}
-
-	/**
-	 * 
-	 * @return The subtitle on which this subtitle was based on (only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and
-	 *         {@link #PRODUCTION_TYPE_TRANSLATION}.
-	 */
-	public Subtitle getBasedOn()
-	{
-		return basis;
-	}
-
-	public void setBasedOn(Subtitle basedOn)
-	{
-		this.basis = basedOn;
-	}
-
-	public ForeignParts getForeignParts()
-	{
-		return foreignParts;
-	}
-
-	public void setForeignParts(ForeignParts foreignParts)
-	{
-		this.foreignParts = foreignParts;
 	}
 
 	public String getInfo()
@@ -295,6 +286,21 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	{
 		Validate.notNull(contributions, "contributions cannot be null");
 		this.contributions = contributions;
+	}
+
+	/**
+	 * 
+	 * @return The subtitle on which this subtitle was based on (only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and
+	 *         {@link #PRODUCTION_TYPE_TRANSLATION}.
+	 */
+	public Subtitle getBasis()
+	{
+		return basis;
+	}
+
+	public void setBasis(Subtitle basis)
+	{
+		this.basis = basis;
 	}
 
 	// convenience / complex
@@ -359,6 +365,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			Subtitle o = (Subtitle) obj;
 			return new EqualsBuilder().append(mediaItem, o.mediaItem)
 					.append(language, o.language)
+					.append(foreignParts, o.foreignParts)
 					.append(tags, o.tags)
 					.append(group, o.group)
 					.append(version, o.version)
@@ -370,7 +377,13 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(37, 99).append(mediaItem).append(language).append(tags).append(group).append(version).toHashCode();
+		return new HashCodeBuilder(37, 99).append(mediaItem)
+				.append(language)
+				.append(foreignParts)
+				.append(tags)
+				.append(group)
+				.append(version)
+				.toHashCode();
 	}
 
 	@Override
@@ -383,6 +396,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		return ComparisonChain.start()
 				.compare(mediaItem, o.mediaItem, Medias.MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
+				.compare(foreignParts, o.foreignParts)
 				.compare(tags, o.tags, Releases.TAGS_COMPARATOR)
 				.compare(group, o.group)
 				.compare(version, version)

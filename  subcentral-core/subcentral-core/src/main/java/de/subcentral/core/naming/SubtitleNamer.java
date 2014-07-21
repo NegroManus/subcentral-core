@@ -21,6 +21,24 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 		Builder b = new Builder();
 		b.appendString(Subtitle.PROP_MEDIA_ITEM, namingService.name(sub.getMediaItem(), params));
 		b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
+		switch (sub.getForeignParts())
+		{
+			case NONE:
+				break;
+			case INCLUDED:
+				b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS INCL");
+				break;
+			case EXCLUDED:
+				b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS EXCL");
+				break;
+			case ONLY:
+				b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS ONLY");
+				break;
+			default:
+				break;
+		}
+		b.appendAllIfNotEmpty(Subtitle.PROP_TAGS, sub.getTags());
+		b.appendIfNotNull(Subtitle.PROP_GROUP, sub.getGroup());
 		return b.build();
 	}
 }

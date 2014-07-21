@@ -1,6 +1,6 @@
 package de.subcentral.core.model.release;
 
-import de.subcentral.core.util.Settings;
+import de.subcentral.core.Settings;
 
 public class Group implements Comparable<Group>
 {

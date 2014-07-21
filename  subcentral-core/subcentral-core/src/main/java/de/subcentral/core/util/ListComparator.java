@@ -6,6 +6,8 @@ import java.util.List;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
+import de.subcentral.core.Settings;
+
 public class ListComparator<T> implements Comparator<List<T>>
 {
 	public static <T> ListComparator<T> create(Comparator<T> comparator)

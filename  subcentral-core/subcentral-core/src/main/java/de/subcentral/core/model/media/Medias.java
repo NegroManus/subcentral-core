@@ -4,10 +4,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import de.subcentral.core.Settings;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.Namings;
 import de.subcentral.core.naming.NoNamerRegisteredException;
-import de.subcentral.core.util.Settings;
 
 public class Medias
 {
@@ -18,6 +18,7 @@ public class Medias
 		@Override
 		public int compare(Media o1, Media o2)
 		{
+			// nulls last
 			if (o1 == null)
 			{
 				return o2 == null ? 0 : 1;
@@ -38,6 +39,7 @@ public class Medias
 			if (m instanceof Episode)
 			{
 				me.add((Episode) m);
+				continue;
 			}
 			return null;
 		}

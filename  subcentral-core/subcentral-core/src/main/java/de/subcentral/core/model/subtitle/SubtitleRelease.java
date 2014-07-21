@@ -55,6 +55,7 @@ public class SubtitleRelease implements Work
 			{
 				sub.setGroup(new Group(group));
 			}
+			subs.add(sub);
 		}
 		subRls.setSingleMatchingRelease(matchingReleases);
 		subRls.setSubtitles(subs);

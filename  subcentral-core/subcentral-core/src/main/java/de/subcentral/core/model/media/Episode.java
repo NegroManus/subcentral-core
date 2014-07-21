@@ -13,9 +13,9 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.Settings;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.naming.NamingStandards;
-import de.subcentral.core.util.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Episode extends AbstractAvMediaItem implements Comparable<Episode>

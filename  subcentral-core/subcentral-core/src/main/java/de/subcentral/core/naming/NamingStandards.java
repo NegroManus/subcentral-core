@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.SeparationDefinition;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -51,7 +52,7 @@ public class NamingStandards
 		MEDIA_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
 		MEDIA_RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
 
-		SUBTITLE_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
+		SUBTITLE_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-")));
 		SUBTITLE_RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
 
 		NAMING_SERVICE.setDomain(DEFAULT_DOMAIN);

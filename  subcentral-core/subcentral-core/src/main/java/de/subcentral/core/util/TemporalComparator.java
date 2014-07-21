@@ -9,7 +9,8 @@ import java.time.temporal.TemporalField;
 import java.util.Comparator;
 
 import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Ordering;
+
+import de.subcentral.core.Settings;
 
 public class TemporalComparator implements Comparator<Temporal>
 {
@@ -39,13 +40,13 @@ public class TemporalComparator implements Comparator<Temporal>
 		Long nano2 = getLongOrNull(o2Utc, ChronoField.NANO_OF_DAY);
 
 		return ComparisonChain.start()
-				.compare(year1, year2, Ordering.natural().nullsLast())
-				.compare(day1, day2, Ordering.natural().nullsLast())
-				.compare(nano1, nano2, Ordering.natural().nullsLast())
+				.compare(year1, year2, Settings.createDefaultOrdering())
+				.compare(day1, day2, Settings.createDefaultOrdering())
+				.compare(nano1, nano2, Settings.createDefaultOrdering())
 				.result();
 	}
 
-	private static Temporal toSystemDefaultZonedDateTimeIfInstant(Temporal t)
+	private static final Temporal toSystemDefaultZonedDateTimeIfInstant(Temporal t)
 	{
 		if (Instant.class == t.getClass())
 		{
@@ -54,7 +55,7 @@ public class TemporalComparator implements Comparator<Temporal>
 		return t;
 	}
 
-	private static Temporal toUtc(Temporal t)
+	private static final Temporal toUtc(Temporal t)
 	{
 		Long offset = getLongOrNull(t, ChronoField.OFFSET_SECONDS);
 		if (offset == null)
@@ -64,7 +65,7 @@ public class TemporalComparator implements Comparator<Temporal>
 		return t.minus(offset, ChronoUnit.SECONDS);
 	}
 
-	private static Integer getOrNull(Temporal t, TemporalField field)
+	private static final Integer getOrNull(Temporal t, TemporalField field)
 	{
 		if (t.isSupported(field))
 		{
@@ -73,7 +74,7 @@ public class TemporalComparator implements Comparator<Temporal>
 		return null;
 	}
 
-	private static Long getLongOrNull(Temporal t, TemporalField field)
+	private static final Long getLongOrNull(Temporal t, TemporalField field)
 	{
 		if (t.isSupported(field))
 		{
