@@ -6,9 +6,9 @@ import org.jsoup.helper.Validate;
 
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleRelease;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 
-public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<SubtitleRelease>
+public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<SubtitleAdjustment>
 {
 	/**
 	 * The parameter key for the MediaRelease value "mediaRelease".
@@ -16,20 +16,20 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	public static final String	PARAM_MEDIA_KEY_RELEASE	= "mediaRelease";
 
 	@Override
-	public Class<SubtitleRelease> getType()
+	public Class<SubtitleAdjustment> getType()
 	{
-		return SubtitleRelease.class;
+		return SubtitleAdjustment.class;
 	}
 
 	@Override
-	public String doName(SubtitleRelease rls, NamingService namingService, Map<String, Object> params)
+	public String doName(SubtitleAdjustment rls, NamingService namingService, Map<String, Object> params)
 	{
 		Validate.notNull(namingService, "namingService cannot be null");
 		// read naming settings
 		Release mediaRls = Namings.readParameter(params, PARAM_MEDIA_KEY_RELEASE, Release.class, rls.getFirstMatchingRelease());
 
 		Builder b = new Builder();
-		b.appendString(SubtitleRelease.PROP_MATCHING_RELEASES, namingService.name(mediaRls, params));
+		b.appendString(SubtitleAdjustment.PROP_MATCHING_RELEASES, namingService.name(mediaRls, params));
 		Subtitle sub = rls.getFirstSubtitle();
 		if (sub != null)
 		{

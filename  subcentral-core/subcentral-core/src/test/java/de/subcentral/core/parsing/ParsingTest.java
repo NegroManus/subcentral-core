@@ -11,7 +11,7 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleRelease;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.impl.addic7ed.Addic7edSubtitleReleaseMapper;
 
@@ -77,12 +77,12 @@ public class ParsingTest
 		ParsingServiceImpl ps = new ParsingServiceImpl();
 		MappingServiceImpl ms = new MappingServiceImpl();
 		Map<Class<?>, Mapper<?>> mappers = new HashMap<>(1);
-		mappers.put(SubtitleRelease.class, new Addic7edSubtitleReleaseMapper());
+		mappers.put(SubtitleAdjustment.class, new Addic7edSubtitleReleaseMapper());
 		ms.setMappers(mappers);
 
 		ps.setMappingService(ms);
-		ps.registerMatcher(matcher1, SubtitleRelease.class);
-		ps.registerMatcher(matcher2, SubtitleRelease.class);
+		ps.registerMatcher(matcher1, SubtitleAdjustment.class);
+		ps.registerMatcher(matcher2, SubtitleAdjustment.class);
 
 		Object obj = ps.parse(name);
 

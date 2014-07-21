@@ -20,6 +20,7 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
+import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
@@ -153,7 +154,9 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 
 		if (nukeSpan != null)
 		{
-			rls.setNukeReason(nukeSpan.text());
+			Nuke nuke = new Nuke();
+			nuke.setReason(nukeSpan.text());
+			rls.getNukes().add(nuke);
 		}
 
 		rls.setSource(lookup.getName());

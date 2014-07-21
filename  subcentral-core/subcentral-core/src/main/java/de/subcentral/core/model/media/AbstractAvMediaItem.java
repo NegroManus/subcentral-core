@@ -7,7 +7,7 @@ import de.subcentral.core.model.Models;
 public abstract class AbstractAvMediaItem extends AbstractMedia implements AvMediaItem
 {
 	protected Temporal	date;
-	protected int		runningTime;
+	protected int		runningTime	= 0;
 
 	@Override
 	public Temporal getDate()

@@ -28,12 +28,13 @@ public class Subtitle implements Work, Comparable<Subtitle>
 {
 	public static final SimplePropDescriptor	PROP_MEDIA_ITEM				= new SimplePropDescriptor(Subtitle.class, Prop.MEDIA_ITEM);
 	public static final SimplePropDescriptor	PROP_LANGUAGE				= new SimplePropDescriptor(Subtitle.class, Prop.LANGUAGE);
-	public static final SimplePropDescriptor	PROP_GROUP					= new SimplePropDescriptor(Subtitle.class, Prop.GROUP);
+	public static final SimplePropDescriptor	PROP_HEARING_IMPAIRED		= new SimplePropDescriptor(Subtitle.class, Prop.HEARING_IMPAIRED);
+	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS			= new SimplePropDescriptor(Subtitle.class, Prop.FOREIGN_PARTS);
 	public static final SimplePropDescriptor	PROP_TAGS					= new SimplePropDescriptor(Subtitle.class, Prop.TAGS);
+	public static final SimplePropDescriptor	PROP_GROUP					= new SimplePropDescriptor(Subtitle.class, Prop.GROUP);
 	public static final SimplePropDescriptor	PROP_VERSION				= new SimplePropDescriptor(Subtitle.class, Prop.VERSION);
 	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE		= new SimplePropDescriptor(Subtitle.class, Prop.PRODUCTION_TYPE);
 	public static final SimplePropDescriptor	PROP_BASIS					= new SimplePropDescriptor(Subtitle.class, Prop.BASIS);
-	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS			= new SimplePropDescriptor(Subtitle.class, Prop.FOREIGN_PARTS);
 	public static final SimplePropDescriptor	PROP_INFO					= new SimplePropDescriptor(Subtitle.class, Prop.INFO);
 	public static final SimplePropDescriptor	PROP_INFO_URL				= new SimplePropDescriptor(Subtitle.class, Prop.INFO_URL);
 	public static final SimplePropDescriptor	PROP_SOURCE					= new SimplePropDescriptor(Subtitle.class, Prop.SOURCE);
@@ -124,6 +125,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	private AvMediaItem			mediaItem;
 	private String				language;
+	private boolean				hearingImpaired					= false;
 	private ForeignParts		foreignParts					= ForeignParts.NONE;
 	// Normally there are 1 to 3 Tags per Subtitle
 	private List<Tag>			tags							= new ArrayList<>(3);
@@ -174,6 +176,20 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.language = language;
 	}
 
+	/**
+	 * 
+	 * @return Whether the subtitle contains annotations for the hearing impaired.
+	 */
+	public boolean isHearingImpaired()
+	{
+		return hearingImpaired;
+	}
+
+	public void setHearingImpaired(boolean hearingImpaired)
+	{
+		this.hearingImpaired = hearingImpaired;
+	}
+
 	public ForeignParts getForeignParts()
 	{
 		return foreignParts;
@@ -186,9 +202,16 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	/**
 	 * 
-	 * @return The tags of this subtitle. The tag list must not contain the <code>language</code> (which is stored separately in
-	 *         {@link #getLanguage()}) neither the <code>foreign parts information</code> (which is stored separetely in {@link #getForeignParts()}).
-	 *         The tag list may contain the {@link #TAG_HEARING_IMPAIRED HI tag} if the subtitle contains annotations for the hearing impaired.
+	 * @return The tags of this subtitle. The tag list must not contain the following tags / information:
+	 *         <ul>
+	 *         <li><b>Language tags</b> like "German", "de" (the language is stored separately in {@link #getLanguage()})</li>
+	 *         <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in
+	 *         {@link #getForeignParts()})</li>
+	 *         <li><b>Hearing Impaired tags</b> like "HI" (whether the subtitle contains annotations for the hearing impaired is stored separately in
+	 *         {@link #isHearingImpaired()})</li>
+	 *         <li><b>Version tags</b> like "V2" (the version is stored separately in {@link #getVersion()})
+	 *         </ul>
+	 *         All other important information may be stored in the tag list.
 	 */
 	public List<Tag> getTags()
 	{
@@ -318,11 +341,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		return language.equals(primaryLangOfMedia) ? TranslationType.ORIGINAL : TranslationType.TRANSLATION;
 	}
 
-	public boolean isHearingImpaired()
-	{
-		return tags.contains(TAG_HEARING_IMPAIRED);
-	}
-
 	public boolean isBasedOnOther()
 	{
 		return basis != null;
@@ -365,6 +383,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			Subtitle o = (Subtitle) obj;
 			return new EqualsBuilder().append(mediaItem, o.mediaItem)
 					.append(language, o.language)
+					.append(hearingImpaired, o.hearingImpaired)
 					.append(foreignParts, o.foreignParts)
 					.append(tags, o.tags)
 					.append(group, o.group)
@@ -379,6 +398,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	{
 		return new HashCodeBuilder(37, 99).append(mediaItem)
 				.append(language)
+				.append(hearingImpaired)
 				.append(foreignParts)
 				.append(tags)
 				.append(group)
@@ -396,6 +416,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		return ComparisonChain.start()
 				.compare(mediaItem, o.mediaItem, Medias.MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
+				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)
 				.compare(tags, o.tags, Releases.TAGS_COMPARATOR)
 				.compare(group, o.group)
@@ -410,12 +431,13 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.omitNullValues()
 				.add("mediaItem", mediaItem)
 				.add("language", language)
+				.add("hearingImpaired", hearingImpaired)
+				.add("foreignParts", foreignParts)
 				.add("tags", tags)
 				.add("group", group)
 				.add("version", version)
 				.add("productionType", productionType)
 				.add("basis", basis)
-				.add("foreignParts", foreignParts)
 				.add("info", info)
 				.add("infoUrl", infoUrl)
 				.add("source", source)

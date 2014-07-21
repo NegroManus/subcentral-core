@@ -19,7 +19,7 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleRelease;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -29,7 +29,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * @author mhertram
  *
  */
-public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
+public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleAdjustment>
 {
 	// Episode
 	public final static String	DEFAULT_SUBTITLE_RELEASE_GROUP	= "addic7ed.com";
@@ -37,9 +37,9 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	private Splitter			tagSplitter						= Splitter.on(Pattern.compile("[^a-zA-Z0-9-]"));
 
 	@Override
-	public Class<SubtitleRelease> getType()
+	public Class<SubtitleAdjustment> getType()
 	{
-		return SubtitleRelease.class;
+		return SubtitleAdjustment.class;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 	}
 
 	@Override
-	public SubtitleRelease map(Map<SimplePropDescriptor, String> info)
+	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> info)
 	{
 		String seriesName = info.get(Series.PROP_NAME);
 		String seasonNum = info.get(Season.PROP_NUMBER);
@@ -127,7 +127,7 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleRelease>
 		sub.setGroup(new Group(subGroup));
 
 		// SubtitleRelease
-		SubtitleRelease subRls = new SubtitleRelease();
+		SubtitleAdjustment subRls = new SubtitleAdjustment();
 		subRls.setSingleSubtitle(sub);
 		subRls.setSingleMatchingRelease(mediaRls);
 

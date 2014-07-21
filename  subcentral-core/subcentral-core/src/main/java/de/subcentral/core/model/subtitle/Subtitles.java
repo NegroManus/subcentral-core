@@ -11,7 +11,7 @@ import de.subcentral.core.naming.SubtitleReleaseNamer;
 
 public class Subtitles
 {
-	public Set<String> generateNames(SubtitleRelease subRls, NamingService namingService)
+	public Set<String> generateNames(SubtitleAdjustment subRls, NamingService namingService)
 	{
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
 		for (Release rls : subRls.getMatchingReleases())

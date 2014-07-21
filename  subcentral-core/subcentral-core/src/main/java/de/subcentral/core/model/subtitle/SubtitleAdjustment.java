@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
@@ -17,34 +20,39 @@ import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
+import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.util.ListComparator;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleRelease implements Work
+public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 {
-	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleRelease.class, Prop.SUBTITLES);
-	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES			= new SimplePropDescriptor(SubtitleRelease.class,
+	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.SUBTITLES);
+	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES			= new SimplePropDescriptor(SubtitleAdjustment.class,
 																						Prop.MATCHING_RELEASES);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(SubtitleRelease.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_SIZE						= new SimplePropDescriptor(SubtitleRelease.class, Prop.SIZE);
-	public static final SimplePropDescriptor	PROP_NUKE_REASON				= new SimplePropDescriptor(SubtitleRelease.class, Prop.NUKE_REASON);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SubtitleRelease.class, Prop.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.DATE);
+	public static final SimplePropDescriptor	PROP_SIZE						= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.SIZE);
+	public static final SimplePropDescriptor	PROP_FILECOUNT					= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.FILE_COUNT);
+	public static final SimplePropDescriptor	PROP_NUKES						= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.NUKES);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SubtitleAdjustment.class,
+																						Prop.CONTRIBUTIONS);
 
 	public static final String					CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
 
 	// In 99,9% of the cases, there is only one subtitle
 	private List<Subtitle>						subtitles						= new ArrayList<>(1);
-	// Most SubtitleReleases match 1 to 5 releases.
+	// Most adjustments are compatible to 1 to 5 releases.
 	private Set<Release>						matchingReleases				= new HashSet<>(5);
 	private Temporal							date;
-	private long								size;
-	private String								nukeReason;
+	private long								size							= 0L;
+	private int									fileCount						= 0;
+	private List<Nuke>							nukes							= new ArrayList<>(0);
 	// In 99,9% of the cases, there is only one adjustment contribution
 	private List<Contribution>					contributions					= new ArrayList<>(1);
 
-	public static SubtitleRelease create(Release matchingReleases, String language, String group)
+	public static SubtitleAdjustment create(Release matchingReleases, String language, String group)
 	{
-		SubtitleRelease subRls = new SubtitleRelease();
+		SubtitleAdjustment subRls = new SubtitleAdjustment();
 		List<Subtitle> subs = new ArrayList<>(matchingReleases.getMedia().size());
 		for (Media media : matchingReleases.getMedia())
 		{
@@ -62,7 +70,7 @@ public class SubtitleRelease implements Work
 		return subRls;
 	}
 
-	public SubtitleRelease()
+	public SubtitleAdjustment()
 	{
 
 	}
@@ -111,14 +119,25 @@ public class SubtitleRelease implements Work
 		this.size = size;
 	}
 
-	public String getNukeReason()
+	public int getFileCount()
 	{
-		return nukeReason;
+		return fileCount;
 	}
 
-	public void setNukeReason(String nukeReason)
+	public void setFileCount(int fileCount)
 	{
-		this.nukeReason = nukeReason;
+		this.fileCount = fileCount;
+	}
+
+	public List<Nuke> getNukes()
+	{
+		return nukes;
+	}
+
+	public void setNukes(List<Nuke> nukes)
+	{
+		Validate.notNull(nukes, "nukes cannot be null");
+		this.nukes = nukes;
 	}
 
 	@Override
@@ -174,10 +193,44 @@ public class SubtitleRelease implements Work
 
 	public boolean isNuked()
 	{
-		return nukeReason != null;
+		return !nukes.isEmpty();
 	}
 
 	// Object methods
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj != null && SubtitleAdjustment.class.equals(obj.getClass()))
+		{
+			SubtitleAdjustment o = (SubtitleAdjustment) obj;
+			return new EqualsBuilder().append(subtitles, o.subtitles).append(matchingReleases, o.matchingReleases).isEquals();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(33, 51).append(subtitles).append(matchingReleases).toHashCode();
+	}
+
+	@Override
+	public int compareTo(SubtitleAdjustment o)
+	{
+		if (o == null)
+		{
+			return -1;
+		}
+		return ComparisonChain.start()
+				.compare(subtitles, o.subtitles, ListComparator.<Subtitle> create())
+				.compare(getFirstMatchingRelease(), o.getFirstMatchingRelease())
+				.result();
+	}
+
 	@Override
 	public String toString()
 	{
@@ -187,7 +240,8 @@ public class SubtitleRelease implements Work
 				.add("matchingReleases", matchingReleases)
 				.add("date", date)
 				.add("size", size)
-				.add("nukeReason", nukeReason)
+				.add("fileCount", fileCount)
+				.add("nukes", nukes)
 				.add("contributions", contributions)
 				.toString();
 	}

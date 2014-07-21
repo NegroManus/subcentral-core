@@ -29,31 +29,33 @@ import de.subcentral.core.util.SimplePropDescriptor;
  */
 public class Release implements Comparable<Release>
 {
-	public static final SimplePropDescriptor	PROP_NAME			= new SimplePropDescriptor(Release.class, Prop.NAME);
-	public static final SimplePropDescriptor	PROP_MEDIA			= new SimplePropDescriptor(Release.class, Prop.MEDIA);
-	public static final SimplePropDescriptor	PROP_TAGS			= new SimplePropDescriptor(Release.class, Prop.TAGS);
-	public static final SimplePropDescriptor	PROP_GROUP			= new SimplePropDescriptor(Release.class, Prop.GROUP);
-	public static final SimplePropDescriptor	PROP_SECTION		= new SimplePropDescriptor(Release.class, Prop.SECTION);
-	public static final SimplePropDescriptor	PROP_DATE			= new SimplePropDescriptor(Release.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_SIZE			= new SimplePropDescriptor(Release.class, Prop.SIZE);
-	public static final SimplePropDescriptor	PROP_NUKE_REASON	= new SimplePropDescriptor(Release.class, Prop.NUKE_REASON);
-	public static final SimplePropDescriptor	PROP_INFO			= new SimplePropDescriptor(Release.class, Prop.INFO);
-	public static final SimplePropDescriptor	PROP_INFO_URL		= new SimplePropDescriptor(Release.class, Prop.INFO_URL);
-	public static final SimplePropDescriptor	PROP_SOURCE			= new SimplePropDescriptor(Release.class, Prop.SOURCE);
-	public static final SimplePropDescriptor	PROP_SOURCE_URL		= new SimplePropDescriptor(Release.class, Prop.SOURCE_URL);
-
-	public static final String					UNKNOWN_NUKE_REASON	= "";
+	public static final SimplePropDescriptor	PROP_NAME		= new SimplePropDescriptor(Release.class, Prop.NAME);
+	public static final SimplePropDescriptor	PROP_MEDIA		= new SimplePropDescriptor(Release.class, Prop.MEDIA);
+	public static final SimplePropDescriptor	PROP_TAGS		= new SimplePropDescriptor(Release.class, Prop.TAGS);
+	public static final SimplePropDescriptor	PROP_LANGUAGES	= new SimplePropDescriptor(Release.class, Prop.LANGUAGES);
+	public static final SimplePropDescriptor	PROP_GROUP		= new SimplePropDescriptor(Release.class, Prop.GROUP);
+	public static final SimplePropDescriptor	PROP_SECTION	= new SimplePropDescriptor(Release.class, Prop.SECTION);
+	public static final SimplePropDescriptor	PROP_DATE		= new SimplePropDescriptor(Release.class, Prop.DATE);
+	public static final SimplePropDescriptor	PROP_SIZE		= new SimplePropDescriptor(Release.class, Prop.SIZE);
+	public static final SimplePropDescriptor	PROP_FILE_COUNT	= new SimplePropDescriptor(Release.class, Prop.FILE_COUNT);
+	public static final SimplePropDescriptor	PROP_NUKES		= new SimplePropDescriptor(Release.class, Prop.NUKES);
+	public static final SimplePropDescriptor	PROP_INFO		= new SimplePropDescriptor(Release.class, Prop.INFO);
+	public static final SimplePropDescriptor	PROP_INFO_URL	= new SimplePropDescriptor(Release.class, Prop.INFO_URL);
+	public static final SimplePropDescriptor	PROP_SOURCE		= new SimplePropDescriptor(Release.class, Prop.SOURCE);
+	public static final SimplePropDescriptor	PROP_SOURCE_URL	= new SimplePropDescriptor(Release.class, Prop.SOURCE_URL);
 
 	private String								name;
 	// In 99,9% of the cases, there is only one Media per Release
-	private List<Media>							media				= new ArrayList<>(1);
+	private List<Media>							media			= new ArrayList<>(1);
 	// Normally there are 1 to 5 Tags per Release
-	private List<Tag>							tags				= new ArrayList<>(5);
+	private List<Tag>							tags			= new ArrayList<>(5);
+	private List<String>						languages		= new ArrayList<>(1);
 	private Group								group;
 	private String								section;
 	private Temporal							date;
 	private long								size;
-	private String								nukeReason;
+	private int									fileCount;
+	private List<Nuke>							nukes			= new ArrayList<>(0);
 	private String								info;
 	private String								infoUrl;
 	private String								source;
@@ -135,8 +137,19 @@ public class Release implements Comparable<Release>
 		this.media = media;
 	}
 
+	public List<String> getLanguages()
+	{
+		return languages;
+	}
+
+	public void setLanguages(List<String> languages)
+	{
+		this.languages = languages;
+	}
+
 	/**
-	 * @return The release tags (XviD, WEB-DL, DD5.1, 720p, ...).
+	 * @return The release tags (XviD, WEB-DL, DD5.1, 720p, HDTV, PROPER, REPACK, GERMAN CUSTOM SUBBED, FRENCH, NLSUBBED ...). May contain language
+	 *         tags.
 	 */
 	public List<Tag> getTags()
 	{
@@ -208,20 +221,25 @@ public class Release implements Comparable<Release>
 		this.size = size;
 	}
 
-	/**
-	 * 
-	 * @return The nuke reason. If <code>null</code>, the release is not nuked. Can be an empty String (<code>""</code>) if the release is nuked, but
-	 *         the reason is unknown.
-	 */
-
-	public String getNukeReason()
+	public int getFileCount()
 	{
-		return nukeReason;
+		return fileCount;
 	}
 
-	public void setNukeReason(String nukeReason)
+	public void setFileCount(int fileCount)
 	{
-		this.nukeReason = nukeReason;
+		this.fileCount = fileCount;
+	}
+
+	public List<Nuke> getNukes()
+	{
+		return nukes;
+	}
+
+	public void setNukes(List<Nuke> nukes)
+	{
+		Validate.notNull(nukes, "nukes cannot be null");
+		this.nukes = nukes;
 	}
 
 	/**
@@ -302,7 +320,7 @@ public class Release implements Comparable<Release>
 
 	public boolean isNuked()
 	{
-		return nukeReason != null;
+		return !nukes.isEmpty();
 	}
 
 	// Object methods
@@ -344,12 +362,14 @@ public class Release implements Comparable<Release>
 				.omitNullValues()
 				.add("name", name)
 				.add("media", media)
+				.add("languages", languages)
 				.add("tags", tags)
 				.add("group", group)
 				.add("date", date)
 				.add("section", section)
 				.add("size", size)
-				.add("nukeReason", nukeReason)
+				.add("fileCount", fileCount)
+				.add("nukes", nukes)
 				.add("info", info)
 				.add("infoUrl", infoUrl)
 				.add("source", source)

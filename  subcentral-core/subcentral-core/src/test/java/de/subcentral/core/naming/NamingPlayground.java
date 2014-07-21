@@ -14,7 +14,7 @@ import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleRelease;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 
 public class NamingPlayground
 {
@@ -64,7 +64,7 @@ public class NamingPlayground
 		sub1.setGroup(new Group("SubCentral"));
 
 		// Subtitle release
-		SubtitleRelease subRel = new SubtitleRelease();
+		SubtitleAdjustment subRel = new SubtitleAdjustment();
 		subRel.setSingleSubtitle(sub1);
 		subRel.setSingleMatchingRelease(rel);
 

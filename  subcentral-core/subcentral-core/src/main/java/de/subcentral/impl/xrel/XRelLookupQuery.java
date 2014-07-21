@@ -20,6 +20,7 @@ import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
+import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
@@ -197,14 +198,16 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 
 		// if nuked, a nuke icon is present
 		Element nukeImg = titleDiv.select("img._nuke_icon").first();
+
 		if (nukeImg != null)
 		{
-			rls.setNukeReason(Release.UNKNOWN_NUKE_REASON);
-		}
-		Element nukeReasonSpan = titleDiv.select("span._nuke_icon_dummy").first();
-		if (nukeReasonSpan != null)
-		{
-			rls.setNukeReason(nukeReasonSpan.attr("title"));
+			Nuke nuke = new Nuke();
+			Element nukeReasonSpan = titleDiv.select("span._nuke_icon_dummy").first();
+			if (nukeReasonSpan != null)
+			{
+				nuke.setReason(nukeReasonSpan.attr("title"));
+			}
+			rls.getNukes().add(nuke);
 		}
 
 		// Get the info about the media

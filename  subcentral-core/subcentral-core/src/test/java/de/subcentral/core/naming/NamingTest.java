@@ -12,7 +12,7 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleRelease;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 
 public class NamingTest
 {
@@ -56,7 +56,7 @@ public class NamingTest
 	public void testSubtitleReleaseNaming()
 	{
 		Release mediaRel = Release.create(MOVIE_REL_NAME, new Movie(MOVIE_NAME), "USL", "BDRip", "x264", "2001", "SP");
-		SubtitleRelease rel = SubtitleRelease.create(mediaRel, "de", "SubCentral");
+		SubtitleAdjustment rel = SubtitleAdjustment.create(mediaRel, "de", "SubCentral");
 		String name = NamingStandards.SUBTITLE_RELEASE_NAMER.name(rel, NamingStandards.NAMING_SERVICE);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
