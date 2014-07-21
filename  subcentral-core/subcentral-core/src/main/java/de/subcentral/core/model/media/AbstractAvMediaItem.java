@@ -2,6 +2,8 @@ package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
 
+import de.subcentral.core.model.Models;
+
 public abstract class AbstractAvMediaItem extends AbstractMedia implements AvMediaItem
 {
 	protected Temporal	date;
@@ -15,6 +17,7 @@ public abstract class AbstractAvMediaItem extends AbstractMedia implements AvMed
 
 	public void setDate(Temporal date)
 	{
+		Models.validateDateClass(date);
 		this.date = date;
 	}
 

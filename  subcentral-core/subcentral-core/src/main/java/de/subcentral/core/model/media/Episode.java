@@ -271,9 +271,9 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	}
 
 	@Override
-	public Set<String> getCountriesOfOrigin()
+	public List<String> getCountriesOfOrigin()
 	{
-		return series != null ? series.getCountriesOfOrigin() : ImmutableSet.of();
+		return series != null ? series.getCountriesOfOrigin() : ImmutableList.of();
 	}
 
 	// Convenience
@@ -290,12 +290,6 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	public boolean isNumberedInSeason()
 	{
 		return numberInSeason != null;
-	}
-
-	@Override
-	public String getPrimaryOriginalLanguage()
-	{
-		return !getOriginalLanguages().isEmpty() ? getOriginalLanguages().get(0) : null;
 	}
 
 	/**

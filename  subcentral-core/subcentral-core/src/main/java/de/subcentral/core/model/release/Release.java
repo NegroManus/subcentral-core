@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
 
+import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.util.Settings;
@@ -188,6 +189,7 @@ public class Release implements Comparable<Release>
 
 	public void setDate(Temporal date)
 	{
+		Models.validateDateClass(date);
 		this.date = date;
 	}
 

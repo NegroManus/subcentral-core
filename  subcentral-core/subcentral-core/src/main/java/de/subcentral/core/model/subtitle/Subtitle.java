@@ -58,7 +58,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String					PRODUCTION_TYPE_RETAIL		= "RETAIL";
 
 	/**
-	 * If the subtitle is an improvement or modification of another subtitle.
+	 * If the subtitle is an improvement or modification / customization of another subtitle.
 	 */
 	public static final String					PRODUCTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
 
@@ -81,7 +81,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 		/**
 		 * The subtitle's language is the original language. The language of this subtitle is equal to the primary original language of the subtitled
-		 * media item (also French <code>"version originale [VO]"</code>)
+		 * media item (in French <code>"version originale" (VO)</code>)
 		 */
 		ORIGINAL,
 
@@ -94,23 +94,24 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static enum ForeignParts
 	{
 		/**
-		 * Unknown. Or irrelevant because media item contains no foreign parts to include.
+		 * No foreign parts in the media item. Therefore none can be included or excluded. Foreign parts are irrelevant.
 		 */
-		UNKNOWN,
+		NONE,
 
 		/**
-		 * Foreign parts are included (typically the case for translated subtitles or VO subtitles where the foreign parts are not hard coded).
+		 * Foreign parts exist in the media item and are included in the subtitle (typically the case for translated subtitles or VO subtitles where
+		 * the foreign parts are not hard coded in the media release).
 		 */
 		INCLUDED,
 
 		/**
-		 * Foreign parts are not included (typically the case for original subtitles).
+		 * Foreign parts exist in the media item but are not included (typically the case for original subtitles).
 		 */
-		NOT_INCLUDED,
+		EXCLUDED,
 
 		/**
-		 * Only foreign parts are included (typically the case for special versions of original subtitles for people who only need subtitles for the
-		 * foreign parts).
+		 * Foreign parts exist in the media item and only foreign parts are included (typically the case for special versions of original subtitles
+		 * for people who only need subtitles for the foreign parts).
 		 */
 		ONLY;
 	}
@@ -119,17 +120,17 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String	CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
 	public static final String	CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
 	public static final String	CONTRIBUTION_TYPE_REVISION		= "REVISION";
-	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
+	public static final String	CONTRIBUTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
 
 	private AvMediaItem			mediaItem;
 	private String				language;
 	private Group				group;
-	// Normally there are 1 to 3 Tags per Subtitle
+	// Normally there are 1 to 3 Tags per Subtitle (like "HI", "FOREIGN PARTS", "V2")
 	private List<Tag>			tags							= new ArrayList<>(3);
 	private int					version							= 1;
 	private String				productionType;
 	private Subtitle			basis;
-	private ForeignParts		foreignParts					= ForeignParts.UNKNOWN;
+	private ForeignParts		foreignParts					= ForeignParts.NONE;
 	private String				info;
 	private String				infoUrl;
 	private String				source;
@@ -297,7 +298,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	// convenience / complex
-	public TranslationType getTranslationType()
+	public TranslationType determineTranslationType()
 	{
 		if (mediaItem == null || language == null)
 		{

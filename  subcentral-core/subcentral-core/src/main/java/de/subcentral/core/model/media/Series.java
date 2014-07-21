@@ -66,8 +66,8 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	private String								type;
 	private String								state;
 	private List<String>						originalLanguages			= new ArrayList<>(1);
-	private Set<String>							countriesOfOrigin			= new HashSet<>(1);
-	private int									regularRunningTime;
+	private List<String>						countriesOfOrigin			= new ArrayList<>(1);
+	private int									regularRunningTime			= 0;
 	private Set<String>							genres						= new HashSet<>(4);
 	private List<Season>						seasons						= new ArrayList<>(0);
 	private List<Episode>						episodes					= new ArrayList<>(0);
@@ -142,12 +142,12 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	@Override
-	public Set<String> getCountriesOfOrigin()
+	public List<String> getCountriesOfOrigin()
 	{
 		return countriesOfOrigin;
 	}
 
-	public void setCountriesOfOrigin(Set<String> countriesOfOrigin)
+	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
 		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
 		this.countriesOfOrigin = countriesOfOrigin;
@@ -179,6 +179,12 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	public String getPrimaryOriginalLanguage()
 	{
 		return !originalLanguages.isEmpty() ? originalLanguages.get(0) : null;
+	}
+
+	@Override
+	public String getPrimaryCountryOfOrigin()
+	{
+		return !countriesOfOrigin.isEmpty() ? countriesOfOrigin.get(0) : null;
 	}
 
 	/**

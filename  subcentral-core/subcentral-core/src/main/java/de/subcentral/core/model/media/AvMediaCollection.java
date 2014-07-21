@@ -1,6 +1,6 @@
 package de.subcentral.core.model.media;
 
-public interface AvMediaCollection<M extends AvMediaItem> extends MediaCollection<M>, AvMedia
+public interface AvMediaCollection<M extends AvMediaItem> extends AvMedia, MediaCollection<M>
 {
 	@Override
 	public default int getRunningTime()

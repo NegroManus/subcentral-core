@@ -30,9 +30,9 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(Movie.class, Prop.FURTHER_INFO_URLS);
 
 	private String								name;
-	private Set<String>							genres							= new HashSet<>(4);
 	private List<String>						originalLanguages				= new ArrayList<>(1);
-	private Set<String>							countriesOfOrigin				= new HashSet<>(1);
+	private List<String>						countriesOfOrigin				= new ArrayList<>(1);
+	private Set<String>							genres							= new HashSet<>(4);
 
 	public Movie()
 	{
@@ -84,12 +84,12 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	}
 
 	@Override
-	public Set<String> getCountriesOfOrigin()
+	public List<String> getCountriesOfOrigin()
 	{
 		return countriesOfOrigin;
 	}
 
-	public void setCountriesOfOrigin(Set<String> countriesOfOrigin)
+	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
 		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
 		this.countriesOfOrigin = countriesOfOrigin;
@@ -100,6 +100,12 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	public String getPrimaryOriginalLanguage()
 	{
 		return !originalLanguages.isEmpty() ? originalLanguages.get(0) : null;
+	}
+
+	@Override
+	public String getPrimaryCountryOfOrigin()
+	{
+		return !countriesOfOrigin.isEmpty() ? countriesOfOrigin.get(0) : null;
 	}
 
 	// Object methods

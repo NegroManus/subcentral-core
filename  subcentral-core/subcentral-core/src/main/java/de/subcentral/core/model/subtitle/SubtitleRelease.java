@@ -11,6 +11,7 @@ import org.apache.commons.lang3.Validate;
 import com.google.common.base.Objects;
 
 import de.subcentral.core.model.Contribution;
+import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
@@ -95,6 +96,7 @@ public class SubtitleRelease implements Work
 
 	public void setDate(Temporal date)
 	{
+		Models.validateDateClass(date);
 		this.date = date;
 	}
 
@@ -167,6 +169,11 @@ public class SubtitleRelease implements Work
 		{
 			this.matchingReleases.add(matchingRelease);
 		}
+	}
+
+	public boolean isNuked()
+	{
+		return nukeReason != null;
 	}
 
 	// Object methods

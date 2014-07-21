@@ -118,9 +118,9 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	@Override
-	public Set<String> getCountriesOfOrigin()
+	public List<String> getCountriesOfOrigin()
 	{
-		return series != null ? series.getCountriesOfOrigin() : ImmutableSet.of();
+		return series != null ? series.getCountriesOfOrigin() : ImmutableList.of();
 	}
 
 	// Convenience / Complex
@@ -140,12 +140,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 			return null;
 		}
 		return epis.get(epis.size() - 1).getDate();
-	}
-
-	@Override
-	public String getPrimaryOriginalLanguage()
-	{
-		return !getOriginalLanguages().isEmpty() ? getOriginalLanguages().get(0) : null;
 	}
 
 	// Episodes

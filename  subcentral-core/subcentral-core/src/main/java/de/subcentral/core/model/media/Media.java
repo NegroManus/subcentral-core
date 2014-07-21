@@ -88,16 +88,16 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The language code of the original language(s) of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}, except if
+	 * @return The language codes of the original languages of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}, except if
 	 *         there is text in the picture.
 	 */
 	public List<String> getOriginalLanguages();
 
 	/**
 	 * 
-	 * @return The country codes of the countries where this media was originally created. Can be multiple if it was a co production.
+	 * @return The country codes of the countries where this media was originally created. Can be multiple if it was a co-production.
 	 */
-	public Set<String> getCountriesOfOrigin();
+	public List<String> getCountriesOfOrigin();
 
 	/**
 	 * @return The genres of this media.
@@ -113,7 +113,7 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return A List of URLs each pointing to a cover image for this media.
+	 * @return A list of URLs each pointing to a cover image for this media. The first URL points to the primary cover.
 	 */
 	public List<String> getCoverUrls();
 
@@ -130,7 +130,7 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return An ordered list of URLs where further information about this media can be found.
+	 * @return A set of URLs where further information about this media can be found.
 	 */
 	public Set<String> getFurtherInfoUrls();
 
@@ -143,5 +143,13 @@ public interface Media extends Work
 	 */
 	public boolean isTitled();
 
-	public String getPrimaryOriginalLanguage();
+	public default String getPrimaryOriginalLanguage()
+	{
+		return !getOriginalLanguages().isEmpty() ? getOriginalLanguages().get(0) : null;
+	}
+
+	public default String getPrimaryCountryOfOrigin()
+	{
+		return !getCountriesOfOrigin().isEmpty() ? getCountriesOfOrigin().get(0) : null;
+	}
 }
