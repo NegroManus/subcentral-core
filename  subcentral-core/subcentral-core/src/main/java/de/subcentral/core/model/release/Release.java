@@ -122,7 +122,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The contained media. For the most cases, a Release contains only one media. But, for example, multiple
+	 * @return The contained media. For the most cases, a Release contains only one media. But, for example, multi-part
 	 *         {@link de.subcentral.core.model.media.Episode Episodes} are sometimes packed into one Release.
 	 */
 
@@ -137,6 +137,10 @@ public class Release implements Comparable<Release>
 		this.media = media;
 	}
 
+	/**
+	 * 
+	 * @return The (spoken or written) languages of the media of this release. The languages may also appear in the tags.
+	 */
 	public List<String> getLanguages()
 	{
 		return languages;
@@ -148,8 +152,8 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * @return The release tags (XviD, WEB-DL, DD5.1, 720p, HDTV, PROPER, REPACK, GERMAN CUSTOM SUBBED, FRENCH, NLSUBBED ...). May contain language
-	 *         tags.
+	 * @return The release tags (like XviD, WEB-DL, DD5.1, 720p, HDTV, PROPER, REPACK, GERMAN CUSTOM SUBBED, FRENCH, NLSUBBED ...). May contain
+	 *         language tags.
 	 */
 	public List<Tag> getTags()
 	{
@@ -194,7 +198,6 @@ public class Release implements Comparable<Release>
 	 * 
 	 * @return The release date.
 	 */
-
 	public Temporal getDate()
 	{
 		return date;
@@ -208,7 +211,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The file size in bytes.
+	 * @return The total file size in bytes.
 	 */
 
 	public long getSize()
@@ -221,6 +224,10 @@ public class Release implements Comparable<Release>
 		this.size = size;
 	}
 
+	/**
+	 * 
+	 * @return The number of files which form this release. Typically the number of archive files in which the release is split.
+	 */
 	public int getFileCount()
 	{
 		return fileCount;
@@ -231,6 +238,10 @@ public class Release implements Comparable<Release>
 		this.fileCount = fileCount;
 	}
 
+	/**
+	 * 
+	 * @return The nukes. If a Release violates the rules, it gets nuked. Then, a Nuke instance is associated with it.
+	 */
 	public List<Nuke> getNukes()
 	{
 		return nukes;
@@ -272,7 +283,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The name of the source of the information about this release.
+	 * @return The name of the source of this release.
 	 */
 	public String getSource()
 	{
@@ -286,7 +297,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The URL of the source of the information about this release.
+	 * @return The URL of the source of this release.
 	 */
 	public String getSourceUrl()
 	{

@@ -51,11 +51,11 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	// In 99,9% of the cases, there is only one adjustment contribution
 	private List<Contribution>					contributions					= new ArrayList<>(1);
 
-	public static SubtitleAdjustment create(Release matchingReleases, String language, String group)
+	public static SubtitleAdjustment create(Release matchingRelease, String language, String group)
 	{
 		SubtitleAdjustment subRls = new SubtitleAdjustment();
-		List<Subtitle> subs = new ArrayList<>(matchingReleases.getMedia().size());
-		for (Media media : matchingReleases.getMedia())
+		List<Subtitle> subs = new ArrayList<>(matchingRelease.getMedia().size());
+		for (Media media : matchingRelease.getMedia())
 		{
 			Subtitle sub = new Subtitle();
 			sub.setMediaItem((AvMediaItem) media);
@@ -66,7 +66,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 			}
 			subs.add(sub);
 		}
-		subRls.setSingleMatchingRelease(matchingReleases);
+		subRls.setSingleMatchingRelease(matchingRelease);
 		subRls.setSubtitles(subs);
 		return subRls;
 	}
