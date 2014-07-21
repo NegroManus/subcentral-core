@@ -13,6 +13,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
+import de.subcentral.core.Settings;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
@@ -227,7 +228,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		}
 		return ComparisonChain.start()
 				.compare(subtitles, o.subtitles, ListComparator.<Subtitle> create())
-				.compare(getFirstMatchingRelease(), o.getFirstMatchingRelease())
+				.compare(getFirstMatchingRelease(), o.getFirstMatchingRelease(), Settings.createDefaultOrdering())
 				.result();
 	}
 
