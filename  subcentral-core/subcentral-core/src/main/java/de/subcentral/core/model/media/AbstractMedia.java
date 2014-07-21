@@ -16,7 +16,7 @@ public abstract class AbstractMedia implements Media
 	protected List<String>			coverUrls;
 	protected String				contentAdvisory;
 	protected List<Contribution>	contributions	= new ArrayList<>();
-	protected Set<String>			furtherInfoUrls	= new HashSet<>();
+	protected Set<String>			furtherInfoUrls	= new HashSet<>(4);
 
 	@Override
 	public String getTitle()

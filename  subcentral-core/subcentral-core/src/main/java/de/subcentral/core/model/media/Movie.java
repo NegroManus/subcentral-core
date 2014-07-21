@@ -32,7 +32,7 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	private String								name;
 	private List<String>						originalLanguages				= new ArrayList<>(1);
 	private List<String>						countriesOfOrigin				= new ArrayList<>(1);
-	private Set<String>							genres							= new HashSet<>(4);
+	private Set<String>							genres							= new HashSet<>(3);
 
 	public Movie()
 	{

@@ -47,8 +47,8 @@ public class Release implements Comparable<Release>
 	private String								name;
 	// In 99,9% of the cases, there is only one Media per Release
 	private List<Media>							media			= new ArrayList<>(1);
-	// Normally there are 1 to 5 Tags per Release
-	private List<Tag>							tags			= new ArrayList<>(5);
+	// Normally there are 2 to 4 Tags per Release
+	private List<Tag>							tags			= new ArrayList<>(4);
 	private List<String>						languages		= new ArrayList<>(1);
 	private Group								group;
 	private String								section;

@@ -42,8 +42,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	// In 99,9% of the cases, there is only one subtitle
 	private List<Subtitle>						subtitles						= new ArrayList<>(1);
-	// Most adjustments are compatible to 1 to 5 releases.
-	private Set<Release>						matchingReleases				= new HashSet<>(5);
+	// Most adjustments are compatible to 1-2 releases. Maybe 5-6 sometimes
+	private Set<Release>						matchingReleases				= new HashSet<>(2);
 	private Temporal							date;
 	private long								size							= 0L;
 	private int									fileCount						= 0;

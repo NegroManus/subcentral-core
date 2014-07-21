@@ -127,8 +127,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private String				language;
 	private boolean				hearingImpaired					= false;
 	private ForeignParts		foreignParts					= ForeignParts.NONE;
-	// Normally there are 1 to 3 Tags per Subtitle
-	private List<Tag>			tags							= new ArrayList<>(3);
+	// Normally there are 0 extra tags per Subtitle
+	private List<Tag>			tags							= new ArrayList<>(0);
 	private int					version							= 1;
 	private Group				group;
 	private String				productionType;
