@@ -154,9 +154,7 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 
 		if (nukeSpan != null)
 		{
-			Nuke nuke = new Nuke();
-			nuke.setReason(nukeSpan.text());
-			rls.getNukes().add(nuke);
+			rls.getNukes().add(new Nuke(nukeSpan.text()));
 		}
 
 		rls.setSource(lookup.getName());

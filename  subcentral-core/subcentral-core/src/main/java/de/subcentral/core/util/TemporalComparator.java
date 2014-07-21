@@ -17,6 +17,7 @@ public class TemporalComparator implements Comparator<Temporal>
 	@Override
 	public int compare(Temporal o1, Temporal o2)
 	{
+		// nulls last
 		if (o1 == null)
 		{
 			return o2 == null ? 0 : 1;

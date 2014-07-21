@@ -13,17 +13,22 @@ import de.subcentral.core.model.Models;
 
 public class Nuke implements Comparable<Nuke>
 {
-	private Temporal	date;
 	private String		reason;
+	private Temporal	date;
 
-	public Temporal getDate()
+	public Nuke()
 	{
-		return date;
+
 	}
 
-	public void setDate(Temporal date)
+	public Nuke(String reason)
 	{
-		Models.validateDateClass(date);
+		this.reason = reason;
+	}
+
+	public Nuke(String reason, Temporal date)
+	{
+		this.reason = reason;
 		this.date = date;
 	}
 
@@ -37,6 +42,17 @@ public class Nuke implements Comparable<Nuke>
 		this.reason = reason;
 	}
 
+	public Temporal getDate()
+	{
+		return date;
+	}
+
+	public void setDate(Temporal date)
+	{
+		Models.validateDateClass(date);
+		this.date = date;
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -47,7 +63,7 @@ public class Nuke implements Comparable<Nuke>
 		if (obj != null && Nuke.class.equals(obj.getClass()))
 		{
 			Nuke o = (Nuke) obj;
-			return new EqualsBuilder().append(date, o.date).append(reason, o.reason).isEquals();
+			return new EqualsBuilder().append(reason, o.reason).append(date, o.date).isEquals();
 		}
 		return false;
 	}
@@ -55,13 +71,13 @@ public class Nuke implements Comparable<Nuke>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(9, 77).append(date).append(reason).toHashCode();
+		return new HashCodeBuilder(9, 77).append(reason).append(date).toHashCode();
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this).omitNullValues().add("date", date).add("reason", reason).toString();
+		return Objects.toStringHelper(this).omitNullValues().add("reason", reason).add("date", date).toString();
 	}
 
 	@Override
@@ -72,6 +88,7 @@ public class Nuke implements Comparable<Nuke>
 		{
 			return -1;
 		}
+		// sort by date, then reason
 		return ComparisonChain.start().compare(date, o.date, Settings.TEMPORAL_ORDERING).compare(reason, o.reason, Settings.STRING_ORDERING).result();
 	}
 }
