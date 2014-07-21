@@ -178,7 +178,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The release section.
+	 * @return The release section / category.
 	 */
 	public String getSection()
 	{

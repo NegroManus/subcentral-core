@@ -4,8 +4,19 @@ import de.subcentral.core.Settings;
 
 public class Tag implements Comparable<Tag>
 {
+	/**
+	 * Tags describing the source. Like HDTV, BluRay, BDRip, DVDRip, ...
+	 */
 	public static final String	CATEGORY_SOURCE	= "SOURCE";
+
+	/**
+	 * Tags describing the format. Like x264, XviD, DD5.1, AC3, 720p, 1080p, (subtitle tags), (language tags), ...
+	 */
 	public static final String	CATEGORY_FORMAT	= "FORMAT";
+
+	/**
+	 * Tags for meta information about the release itself. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
+	 */
 	public static final String	CATEGORY_META	= "META";
 
 	private String				name;
