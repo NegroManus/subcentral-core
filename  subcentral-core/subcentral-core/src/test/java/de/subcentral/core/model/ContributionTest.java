@@ -1,4 +1,4 @@
-package de.subcentral.core.contribution;
+package de.subcentral.core.model;
 
 import java.util.ArrayList;
 import java.util.List;

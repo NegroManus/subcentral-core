@@ -48,13 +48,13 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, String seasonTitle, int episodeNumber, String episodeTitle)
+	public static Episode createSeasonedEpisode(String seriesName, String seasonTitle, Integer episodeNumber, String episodeTitle)
 	{
 		return createSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, int episodeNumber,
-			String episodeTitle)
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle,
+			Integer episodeNumber, String episodeTitle)
 	{
 		if (seriesName == null)
 		{
@@ -64,7 +64,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		series.setType(Series.TYPE_SEASONED);
 		series.setName(seriesName);
 		series.setTitle(seriesTitle);
-		Episode epi = new Episode(series);
+		Episode epi = series.newEpisode();
 		if (seasonNumber != null || seasonTitle != null)
 		{
 			Season season = new Season(series);

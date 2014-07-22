@@ -1,4 +1,4 @@
-package de.subcentral.core.media;
+package de.subcentral.core.model.media;
 
 import java.util.concurrent.CompletableFuture;
 

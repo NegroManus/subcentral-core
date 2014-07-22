@@ -147,8 +147,8 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			{
 				long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
 				rls.setSize(size);
-				// ignore number of files
-				// int files = Integer.parseInt(mSizeAndFiles.group(2));
+				int files = Integer.parseInt(mSizeAndFiles.group(2));
+				rls.setFileCount(files);
 			}
 		}
 
