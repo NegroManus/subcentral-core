@@ -39,11 +39,15 @@ public class Contributions
 			return 0.0f;
 		}
 		long totalAmount = 0;
-		double amountDone = 0.0d;
+		double amountDone = 0d;
 		for (Contribution c : contributions)
 		{
 			totalAmount += c.getAmount();
 			amountDone += c.getAmount() * c.getProgress();
+		}
+		if (totalAmount == 0L)
+		{
+			return 0d;
 		}
 		return amountDone / totalAmount;
 	}

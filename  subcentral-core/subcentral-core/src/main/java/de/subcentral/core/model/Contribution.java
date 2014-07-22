@@ -1,5 +1,7 @@
 package de.subcentral.core.model;
 
+import org.apache.commons.lang3.Validate;
+
 public class Contribution
 {
 	private String		type;
@@ -22,6 +24,10 @@ public class Contribution
 		this.description = description;
 	}
 
+	/**
+	 * 
+	 * @return The type of the contribution.
+	 */
 	public String getType()
 	{
 		return type;
@@ -32,6 +38,10 @@ public class Contribution
 		this.type = type;
 	}
 
+	/**
+	 * 
+	 * @return The person / company / etc that contributed.
+	 */
 	public Contributor getContributor()
 	{
 		return contributor;
@@ -42,6 +52,11 @@ public class Contribution
 		this.contributor = contributor;
 	}
 
+	/**
+	 * 
+	 * @return The amount of the contribution. This is a relative value. How big that amount is, can only be determined when knowing the other
+	 *         contributions. The default value is 0L.
+	 */
 	public long getAmount()
 	{
 		return amount;
@@ -49,9 +64,14 @@ public class Contribution
 
 	public void setAmount(long amount)
 	{
+		Validate.inclusiveBetween(0L, Long.MAX_VALUE, amount);
 		this.amount = amount;
 	}
 
+	/**
+	 * 
+	 * @return The progress of the contribution. A percentage value (0.0d - 1.0d). The default value is 1.0d.
+	 */
 	public double getProgress()
 	{
 		return progress;
@@ -59,6 +79,7 @@ public class Contribution
 
 	public void setProgress(double progress)
 	{
+		Validate.inclusiveBetween(0d, 1d, progress);
 		this.progress = progress;
 	}
 
