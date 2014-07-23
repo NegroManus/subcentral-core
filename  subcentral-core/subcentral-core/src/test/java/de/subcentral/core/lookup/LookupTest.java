@@ -1,7 +1,6 @@
 package de.subcentral.core.lookup;
 
 import java.io.File;
-import java.util.List;
 
 import com.google.common.io.Resources;
 
@@ -37,11 +36,15 @@ public class LookupTest
 
 		PreDbLookup preDbLookup = new PreDbLookup();
 
-		File resource = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05.html").toURI());
-		List<Release> results = preDbLookup.getResults(resource);
-		for (Release foundRls : results)
-		{
-			System.out.println(foundRls);
-		}
+		// File resource = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05.html").toURI());
+		// List<Release> results = preDbLookup.getResults(resource);
+		// for (Release foundRls : results)
+		// {
+		// System.out.println(foundRls);
+		// }
+
+		File detailsRes = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05_p0w4.html").toURI());
+		Release detailsRls = preDbLookup.parseReleaseDetails(detailsRes);
+		System.out.println(detailsRls);
 	}
 }

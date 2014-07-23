@@ -37,10 +37,16 @@ public class PreDbLookup extends AbstractHttpLookup<Release, String>
 		return Release.class;
 	}
 
-	public List<Release> getResults(File file) throws IOException
+	public List<Release> parseReleases(File file) throws IOException
 	{
 		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
 		return new PreDbLookupQuery(getHost()).getResults(doc);
+	}
+
+	public Release parseReleaseDetails(File file) throws IOException
+	{
+		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
+		return new PreDbLookupQuery(getHost()).parseReleaseDetails(doc, new Release());
 	}
 
 	@Override

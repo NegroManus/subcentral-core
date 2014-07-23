@@ -37,7 +37,7 @@ public class XRelLookup extends AbstractHttpLookup<Release, String>
 		return Release.class;
 	}
 
-	public List<Release> getResults(File file) throws IOException
+	public List<Release> parseReleases(File file) throws IOException
 	{
 		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
 		return new XRelLookupQuery(getHost()).getResults(doc);

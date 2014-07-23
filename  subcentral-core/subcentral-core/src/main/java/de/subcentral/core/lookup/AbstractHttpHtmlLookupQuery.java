@@ -1,5 +1,6 @@
 package de.subcentral.core.lookup;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -28,15 +29,18 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 	{
 		try
 		{
-			System.out.println(url);
-			Connection con = setupConnection(url);
-			Document doc = con.get();
-			return getResults(doc);
+			return getResults(getDocument(url));
 		}
 		catch (Exception e)
 		{
 			throw new LookupException(url, e);
 		}
+	}
+
+	protected Document getDocument(URL url) throws IOException
+	{
+		Connection con = setupConnection(url);
+		return con.get();
 	}
 
 	/**
@@ -46,7 +50,7 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 	 * @return
 	 * @throws Exception
 	 */
-	protected Connection setupConnection(URL url) throws Exception
+	protected Connection setupConnection(URL url)
 	{
 		return Jsoup.connect(url.toExternalForm());
 	}
