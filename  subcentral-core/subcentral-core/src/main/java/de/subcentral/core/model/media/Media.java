@@ -49,13 +49,28 @@ import de.subcentral.core.model.Work;
  */
 public interface Media extends Work
 {
-	public static final String	TYPE_TEXT			= "TEXT";
-	public static final String	TYPE_IMAGE			= "IMAGE";
-	public static final String	TYPE_AUDIO			= "AUDIO";
-	public static final String	TYPE_VIDEO			= "VIDEO";
-	public static final String	TYPE_APPLICATION	= "APPLICATION";
-	public static final String	TYPE_MULTI			= "MULTI";
-	public static final String	TYPE_COLLECTION		= "COLLECTION";
+	public static final String	CONTENT_TYPE_TEXT			= "TEXT";
+	public static final String	CONTENT_TYPE_IMAGE			= "IMAGE";
+	public static final String	CONTENT_TYPE_AUDIO			= "AUDIO";
+	public static final String	CONTENT_TYPE_VIDEO			= "VIDEO";
+	public static final String	CONTENT_TYPE_APPLICATION	= "APPLICATION";
+	public static final String	CONTENT_TYPE_MULTI			= "MULTI";
+	public static final String	CONTENT_TYPE_COLLECTION		= "COLLECTION";
+
+	public static final String	TYPE_EPISODE				= "EPISODE";
+	public static final String	TYPE_SERIES					= "SERIES";
+	public static final String	TYPE_SEASON					= "SEASON";
+	public static final String	TYPE_MOVIE					= "MOVIE";
+	public static final String	TYPE_GAME					= "GAME";
+	public static final String	TYPE_SOFTWARE				= "SOFTWARE";
+	public static final String	TYPE_DOCUMENTATION			= "DOCUMENTATION";
+	public static final String	TYPE_SHOW					= "SHOW";
+	public static final String	TYPE_CONCERT				= "CONCERT";
+	public static final String	TYPE_SONG					= "SONG";
+	public static final String	TYPE_ALBUM					= "ALBUM";
+	public static final String	TYPE_MUSIC_VIDEO			= "MUSIC_VIDEO";
+	public static final String	TYPE_IMAGE					= "IMAGE";
+	public static final String	TYPE_BOOK					= "BOOK";
 
 	// Property accessors
 	/**
@@ -74,7 +89,13 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The type of this media. One of the <code>TYPE_*</code> constants.
+	 * @return The content type of this media. One of the <code>CONTENT_TYPE_*</code> constants.
+	 */
+	public String getMediaContentType();
+
+	/**
+	 * 
+	 * @return The exact type of the media. Typically the class name. But it makes no sense to use a own class for every single media type.
 	 */
 	public String getMediaType();
 
@@ -88,8 +109,8 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The language codes of the original languages of this media. Typically, not available on medias of {@link Media#TYPE_IMAGE}, except if
-	 *         there is text in the picture.
+	 * @return The language codes of the original languages of this media. Typically, not available on medias of {@link Media#CONTENT_TYPE_IMAGE},
+	 *         except if there is text in the picture.
 	 */
 	public List<String> getOriginalLanguages();
 

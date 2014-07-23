@@ -98,6 +98,12 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.name = name;
 	}
 
+	@Override
+	public String getMediaType()
+	{
+		return Media.TYPE_SERIES;
+	}
+
 	/**
 	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series, <code>null</code> if this series has no episodes.
 	 */

@@ -23,6 +23,7 @@ import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
+import de.subcentral.core.model.media.GenericAvMediaItem;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
@@ -383,6 +384,11 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			if (section.startsWith("Movies"))
 			{
 				media = new Movie(mediaTitle);
+			}
+			else
+			{
+				GenericAvMediaItem avMedia = new GenericAvMediaItem(mediaTitle);
+				media = avMedia;
 			}
 		}
 

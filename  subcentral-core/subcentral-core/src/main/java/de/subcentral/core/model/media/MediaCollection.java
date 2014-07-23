@@ -5,9 +5,9 @@ import java.util.List;
 public interface MediaCollection<M extends MediaItem> extends Media
 {
 	@Override
-	public default String getMediaType()
+	public default String getMediaContentType()
 	{
-		return Media.TYPE_COLLECTION;
+		return Media.CONTENT_TYPE_COLLECTION;
 	}
 
 	public List<M> getMediaItems();
