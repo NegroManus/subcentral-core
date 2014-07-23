@@ -1,4 +1,4 @@
-package de.subcentral.impl.xrel;
+package de.subcentral.impl.predb;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,23 +12,23 @@ import de.subcentral.core.lookup.AbstractHttpLookup;
 import de.subcentral.core.lookup.LookupQuery;
 import de.subcentral.core.model.release.Release;
 
-public class XRelLookup extends AbstractHttpLookup<Release, String>
+public class PreDbLookup extends AbstractHttpLookup<Release, PreDbLookupParameters>
 {
-	public XRelLookup()
+	public PreDbLookup()
 	{
-		super(XRel.getXRelQueryEntityNamingService());
+		super(PreDb.getPreDbQueryEntityNamingService());
 	}
 
 	@Override
 	public String getName()
 	{
-		return XRel.NAME;
+		return PreDb.NAME;
 	}
 
 	@Override
 	protected URL getHost()
 	{
-		return XRel.HOST_URL;
+		return PreDb.HOST_URL;
 	}
 
 	@Override
@@ -40,38 +40,37 @@ public class XRelLookup extends AbstractHttpLookup<Release, String>
 	public List<Release> getResults(File file) throws IOException
 	{
 		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
-		return new XRelLookupQuery(getHost()).getResults(doc);
+		return new PreDbLookupQuery(getHost()).getResults(doc);
 	}
 
 	@Override
 	public LookupQuery<Release> createQuery(URL query)
 	{
-		return new XRelLookupQuery(query);
-	}
-
-	@Override
-	protected String getDefaultQueryPrefix()
-	{
-		// Do not use "mode=rls", because then results are displayed different
-		// and the info url is only available via an ajax call.
-		return "xrel_search_query=";
+		return new PreDbLookupQuery(query);
 	}
 
 	@Override
 	protected String getDefaultQueryPath()
 	{
-		return "/search.html";
+		return "/";
 	}
 
 	@Override
-	protected URL buildQueryUrlFromParameters(String parameterBean) throws Exception
+	protected String getDefaultQueryPrefix()
 	{
-		return buildDefaultQueryUrl(parameterBean);
+		return "search=";
 	}
 
 	@Override
-	public Class<String> getParameterBeanClass()
+	protected URL buildQueryUrlFromParameters(PreDbLookupParameters parameterBean) throws Exception
 	{
-		return String.class;
+		// TODO
+		return null;
+	}
+
+	@Override
+	public Class<PreDbLookupParameters> getParameterBeanClass()
+	{
+		return PreDbLookupParameters.class;
 	}
 }

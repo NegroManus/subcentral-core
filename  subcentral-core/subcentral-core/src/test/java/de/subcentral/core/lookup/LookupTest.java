@@ -1,9 +1,14 @@
 package de.subcentral.core.lookup;
 
+import java.io.File;
+import java.util.List;
+
+import com.google.common.io.Resources;
+
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.impl.orlydb.OrlyDbLookup;
+import de.subcentral.impl.predb.PreDbLookup;
 
 public class LookupTest
 {
@@ -16,12 +21,12 @@ public class LookupTest
 		Movie movie = new Movie("The Lord of the Rings");
 		Release rls = Release.create(movie, null, "720p");
 
-		OrlyDbLookup lookup = new OrlyDbLookup();
-		LookupQuery<Release> query = lookup.createQueryFromEntity(epi);
-		for (Release foundRls : query.getResults())
-		{
-			System.out.println(foundRls);
-		}
+		// OrlyDbLookup lookup = new OrlyDbLookup();
+		// LookupQuery<Release> query = lookup.createQueryFromEntity(epi);
+		// for (Release foundRls : query.getResults())
+		// {
+		// System.out.println(foundRls);
+		// }
 
 		// XRelLookup xrelLookup = new XRelLookup();
 		// LookupQuery<MediaRelease> xrelQuery = xrelLookup.createQuery("Psych");
@@ -30,11 +35,13 @@ public class LookupTest
 		// System.out.println(foundRls);
 		// }
 
-		// File resource = new File(Resources.getResource("de/subcentral/core/impl/to/xrel/psych.s05e06.html").toURI());
-		// List<MediaRelease> results = new XRelLookup().getResults(resource);
-		// for (MediaRelease foundRls : results)
-		// {
-		// System.out.println(foundRls);
-		// }
+		PreDbLookup preDbLookup = new PreDbLookup();
+
+		File resource = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05.html").toURI());
+		List<Release> results = preDbLookup.getResults(resource);
+		for (Release foundRls : results)
+		{
+			System.out.println(foundRls);
+		}
 	}
 }

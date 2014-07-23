@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -20,8 +19,8 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
-import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.util.ByteUtil;
 
 public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
@@ -36,13 +35,9 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 	 */
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
 
-	private final OrlyDbLookup				lookup;
-
-	OrlyDbLookupQuery(OrlyDbLookup lookup, URL url)
+	OrlyDbLookupQuery(URL url)
 	{
 		super(url);
-		Validate.notNull(lookup, "lookup cannot be null");
-		this.lookup = lookup;
 	}
 
 	@Override
@@ -154,11 +149,8 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 
 		if (nukeSpan != null)
 		{
-			rls.getNukes().add(new Nuke(nukeSpan.text()));
+			Releases.nuke(rls, nukeSpan.text());
 		}
-
-		rls.setSource(lookup.getName());
-		rls.setSourceUrl(doc.location());
 		return rls;
 	}
 }

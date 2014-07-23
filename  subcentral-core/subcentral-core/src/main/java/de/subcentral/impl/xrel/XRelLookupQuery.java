@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -20,8 +19,8 @@ import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.util.ByteUtil;
 
 public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
@@ -36,13 +35,9 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 	 */
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("Europe/Berlin");
 
-	private final XRelLookup				lookup;
-
-	XRelLookupQuery(XRelLookup lookup, URL url)
+	XRelLookupQuery(URL url)
 	{
 		super(url);
-		Validate.notNull(lookup, "lookup cannot be null");
-		this.lookup = lookup;
 	}
 
 	@Override
@@ -201,13 +196,13 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 
 		if (nukeImg != null)
 		{
-			Nuke nuke = new Nuke();
+			String nukeReason = null;
 			Element nukeReasonSpan = titleDiv.select("span._nuke_icon_dummy").first();
 			if (nukeReasonSpan != null)
 			{
-				nuke.setReason(nukeReasonSpan.attr("title"));
+				nukeReason = nukeReasonSpan.attr("title");
 			}
-			rls.getNukes().add(nuke);
+			Releases.nuke(rls, nukeReason);
 		}
 
 		// Get the info about the media
@@ -331,9 +326,6 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		{
 			e.printStackTrace();
 		}
-
-		rls.setSource(lookup.getName());
-		rls.setSourceUrl(doc.location());
 
 		return rls;
 	}

@@ -36,7 +36,7 @@ public class OrlyDbLookup extends AbstractHttpLookup<Release, OrlyDbLookupParame
 	@Override
 	public LookupQuery<Release> createQuery(URL query)
 	{
-		return new OrlyDbLookupQuery(this, query);
+		return new OrlyDbLookupQuery(query);
 	}
 
 	@Override

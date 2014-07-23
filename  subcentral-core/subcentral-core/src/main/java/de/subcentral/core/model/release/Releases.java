@@ -43,4 +43,9 @@ public class Releases
 		}
 		return tagList;
 	}
+
+	public static void nuke(Release rls, String nukeReason)
+	{
+		rls.getNukes().add(new Nuke(nukeReason));
+	}
 }
