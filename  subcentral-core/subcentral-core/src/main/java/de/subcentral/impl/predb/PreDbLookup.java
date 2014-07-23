@@ -12,7 +12,7 @@ import de.subcentral.core.lookup.AbstractHttpLookup;
 import de.subcentral.core.lookup.LookupQuery;
 import de.subcentral.core.model.release.Release;
 
-public class PreDbLookup extends AbstractHttpLookup<Release, PreDbLookupParameters>
+public class PreDbLookup extends AbstractHttpLookup<Release, String>
 {
 	public PreDbLookup()
 	{
@@ -62,15 +62,14 @@ public class PreDbLookup extends AbstractHttpLookup<Release, PreDbLookupParamete
 	}
 
 	@Override
-	protected URL buildQueryUrlFromParameters(PreDbLookupParameters parameterBean) throws Exception
+	protected URL buildQueryUrlFromParameters(String parameterBean) throws Exception
 	{
-		// TODO
-		return null;
+		return buildDefaultQueryUrl(parameterBean);
 	}
 
 	@Override
-	public Class<PreDbLookupParameters> getParameterBeanClass()
+	public Class<String> getParameterBeanClass()
 	{
-		return PreDbLookupParameters.class;
+		return String.class;
 	}
 }
