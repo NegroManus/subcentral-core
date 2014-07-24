@@ -32,9 +32,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleAdjustment>
 {
 	// Episode
-	public final static String	DEFAULT_SUBTITLE_RELEASE_GROUP	= "addic7ed.com";
+	public final static String	DEFAULT_SUBTITLE_SOURCE	= "Addic7ed.com";
 
-	private Splitter			tagSplitter						= Splitter.on(Pattern.compile("[^a-zA-Z0-9-]"));
+	private Splitter			tagSplitter				= Splitter.on(Pattern.compile("[^a-zA-Z0-9-]"));
 
 	@Override
 	public Class<SubtitleAdjustment> getType()
@@ -62,10 +62,10 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleAdjustment>
 		String movieTitle = info.get(Movie.PROP_TITLE);
 		String movieYear = info.get(Movie.PROP_DATE);
 
-		String mediaRlsTags = info.get(Release.PROP_TAGS);
-		String mediaRlsGroup = info.get(Release.PROP_GROUP);
+		String rlsTags = info.get(Release.PROP_TAGS);
+		String rlsGroup = info.get(Release.PROP_GROUP);
 		String subLang = info.get(Subtitle.PROP_LANGUAGE);
-		String subGroup = info.get(Subtitle.PROP_GROUP);
+		String subSrc = info.get(Subtitle.PROP_SOURCE);
 		String subTags = info.get(Subtitle.PROP_TAGS);
 
 		// Media
@@ -101,15 +101,15 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleAdjustment>
 		}
 
 		// MediaRelease
-		Release mediaRls = new Release();
-		mediaRls.setSingleMedia(mediaItem);
-		if (mediaRlsTags != null)
+		Release rls = new Release();
+		rls.setSingleMedia(mediaItem);
+		if (rlsTags != null)
 		{
-			mediaRls.setTags(parseTags(mediaRlsTags));
+			rls.setTags(parseTags(rlsTags));
 		}
-		if (mediaRlsGroup != null)
+		if (rlsGroup != null)
 		{
-			mediaRls.setGroup(new Group(mediaRlsGroup));
+			rls.setGroup(new Group(rlsGroup));
 		}
 
 		// Subtitle
@@ -118,18 +118,18 @@ public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleAdjustment>
 		sub.setLanguage(subLang);
 		if (subTags != null)
 		{
-			sub.setTags(parseTags(subTags));
+			sub.getTags().addAll(parseTags(subTags));
 		}
-		if (subGroup == null)
+		if (subSrc == null)
 		{
-			subGroup = DEFAULT_SUBTITLE_RELEASE_GROUP;
+			subSrc = DEFAULT_SUBTITLE_SOURCE;
 		}
-		sub.setGroup(new Group(subGroup));
+		sub.setSource(subSrc);
 
 		// SubtitleRelease
 		SubtitleAdjustment subRls = new SubtitleAdjustment();
-		subRls.setSingleSubtitle(sub);
-		subRls.setSingleMatchingRelease(mediaRls);
+		subRls.getSubtitles().add(sub);
+		subRls.getMatchingReleases().add(rls);
 
 		return subRls;
 	}

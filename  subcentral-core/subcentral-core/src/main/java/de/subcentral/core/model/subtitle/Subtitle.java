@@ -221,7 +221,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public void setTags(List<Tag> tags)
 	{
 		Validate.notNull(tags, "tags cannot be null");
-		this.tags = tags;
+		this.tags.clear();
+		this.tags.addAll(tags);
 	}
 
 	/**
@@ -244,7 +245,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 * 
 	 * @return The group which released this subtitle.
 	 * @see #getSource()
-	 * @see #getSourceUrl()
 	 */
 	public Group getGroup()
 	{
@@ -336,7 +336,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public void setContributions(List<Contribution> contributions)
 	{
 		Validate.notNull(contributions, "contributions cannot be null");
-		this.contributions = contributions;
+		this.contributions.clear();
+		this.contributions.addAll(contributions);
 	}
 
 	/**

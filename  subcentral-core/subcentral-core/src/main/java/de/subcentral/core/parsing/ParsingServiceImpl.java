@@ -2,14 +2,20 @@ package de.subcentral.core.parsing;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.jsoup.helper.Validate;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ParsingServiceImpl implements ParsingService
 {
-	private String							domain;
-	private Map<MappingMatcher, Class<?>>	matchers	= new HashMap<>();
-	private MappingService					mappingService;
+	private String								domain;
+	private Multimap<Class<?>, MappingMatcher>	matchers	= HashMultimap.create();
+	private MappingService						mappingService;
 
 	@Override
 	public String getDomain()
@@ -22,24 +28,32 @@ public class ParsingServiceImpl implements ParsingService
 		this.domain = domain;
 	}
 
-	public Map<MappingMatcher, Class<?>> getMatchers()
+	public Multimap<Class<?>, MappingMatcher> getMatchers()
 	{
 		return matchers;
 	}
 
-	public void setMatchers(Map<MappingMatcher, Class<?>> matchers)
+	public void setMatchers(Multimap<Class<?>, MappingMatcher> matchers)
 	{
 		this.matchers = matchers;
 	}
 
-	public Class<?> registerMatcher(MappingMatcher matcher, Class<?> typeClass)
+	public boolean registerMatcher(Class<?> typeClass, MappingMatcher matcher)
 	{
-		return this.matchers.put(matcher, typeClass);
+		return this.matchers.put(typeClass, matcher);
 	}
 
-	public Class<?> unregisterMatcher(MappingMatcher matcher)
+	public boolean unregisterMatcher(MappingMatcher matcher)
 	{
-		return matchers.remove(matcher);
+		boolean existed = false;
+		for (Entry<Class<?>, MappingMatcher> entry : matchers.entries())
+		{
+			if (matcher.equals(entry.getValue()))
+			{
+				existed = matchers.remove(entry.getKey(), entry.getValue());
+			}
+		}
+		return existed;
 	}
 
 	public MappingService getMappingService()
@@ -55,12 +69,12 @@ public class ParsingServiceImpl implements ParsingService
 	@Override
 	public Object parse(String name, Map<SimplePropDescriptor, String> additionalInfo)
 	{
-		for (Map.Entry<MappingMatcher, Class<?>> entry : matchers.entrySet())
+		for (Entry<Class<?>, MappingMatcher> entry : matchers.entries())
 		{
-			Map<SimplePropDescriptor, String> matchResult = entry.getKey().map(name);
+			Map<SimplePropDescriptor, String> matchResult = entry.getValue().match(name);
 			if (matchResult != null)
 			{
-				return mappingService.map(combineInfo(matchResult, additionalInfo), entry.getValue());
+				return mappingService.map(combineInfo(matchResult, additionalInfo), entry.getKey());
 			}
 		}
 		return null;
@@ -73,5 +87,20 @@ public class ParsingServiceImpl implements ParsingService
 		combinedInfo.putAll(matchResult);
 		combinedInfo.putAll(additionalInfo);
 		return combinedInfo;
+	}
+
+	@Override
+	public <T> T parse(String name, Class<T> type, Map<SimplePropDescriptor, String> additionalInfo)
+	{
+		Validate.notNull(type, "type cannot be null");
+		for (MappingMatcher matcher : matchers.get(type))
+		{
+			Map<SimplePropDescriptor, String> matchResult = matcher.match(name);
+			if (matchResult != null)
+			{
+				return (T) mappingService.map(combineInfo(matchResult, additionalInfo), type);
+			}
+		}
+		return null;
 	}
 }

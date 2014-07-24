@@ -12,6 +12,7 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.impl.addic7ed.Addic7edSubtitleReleaseMapper;
 
@@ -48,7 +49,7 @@ public class ParsingTest
 		groups1.put(5, Release.PROP_GROUP);
 		groups1.put(6, Subtitle.PROP_LANGUAGE);
 		groups1.put(7, Subtitle.PROP_TAGS);
-		groups1.put(8, Subtitle.PROP_GROUP);
+		groups1.put(8, Subtitle.PROP_SOURCE);
 		NumericGroupMappingMatcher matcher1 = new NumericGroupMappingMatcher(p1, groups1);
 
 		// Movie matcher
@@ -70,7 +71,7 @@ public class ParsingTest
 		groups2.put(4, Release.PROP_GROUP);
 		groups2.put(5, Subtitle.PROP_LANGUAGE);
 		groups2.put(6, Subtitle.PROP_TAGS);
-		groups2.put(7, Subtitle.PROP_GROUP);
+		groups2.put(7, Subtitle.PROP_SOURCE);
 
 		NumericGroupMappingMatcher matcher2 = new NumericGroupMappingMatcher(p2, groups2);
 
@@ -81,11 +82,12 @@ public class ParsingTest
 		ms.setMappers(mappers);
 
 		ps.setMappingService(ms);
-		ps.registerMatcher(matcher1, SubtitleAdjustment.class);
-		ps.registerMatcher(matcher2, SubtitleAdjustment.class);
+		ps.registerMatcher(SubtitleAdjustment.class, matcher1);
+		ps.registerMatcher(SubtitleAdjustment.class, matcher2);
 
 		Object obj = ps.parse(name);
 
 		System.out.println(obj);
+		System.out.println(NamingStandards.NAMING_SERVICE.name(obj));
 	}
 }

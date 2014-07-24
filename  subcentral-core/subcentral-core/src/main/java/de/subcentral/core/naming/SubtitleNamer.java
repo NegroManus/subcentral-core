@@ -42,7 +42,14 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 				break;
 		}
 		b.appendAllIfNotEmpty(Subtitle.PROP_TAGS, sub.getTags());
-		b.appendIfNotNull(Subtitle.PROP_GROUP, sub.getGroup());
+		if (sub.getGroup() != null)
+		{
+			b.append(Subtitle.PROP_GROUP, sub.getGroup());
+		}
+		else if (sub.getSource() != null)
+		{
+			b.append(Subtitle.PROP_SOURCE, sub.getSource());
+		}
 		return b.build();
 	}
 }

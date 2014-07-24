@@ -15,5 +15,12 @@ public interface ParsingService
 		return parse(name, ImmutableMap.of());
 	}
 
+	public default <T> T parse(String name, Class<T> type)
+	{
+		return parse(name, type, ImmutableMap.of());
+	}
+
 	public Object parse(String name, Map<SimplePropDescriptor, String> additionalInfo);
+
+	public <T> T parse(String name, Class<T> type, Map<SimplePropDescriptor, String> additionalInfo);
 }

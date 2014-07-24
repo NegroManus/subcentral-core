@@ -145,7 +145,9 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setOriginalLanguages(List<String> originalLanguages)
 	{
-		this.originalLanguages = originalLanguages;
+		Validate.notNull(originalLanguages, "originalLanguages cannot be null");
+		this.originalLanguages.clear();
+		this.originalLanguages.addAll(originalLanguages);
 	}
 
 	@Override
@@ -157,7 +159,8 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
 		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
-		this.countriesOfOrigin = countriesOfOrigin;
+		this.countriesOfOrigin.clear();
+		this.countriesOfOrigin.addAll(countriesOfOrigin);
 	}
 
 	public int getRegularRunningTime()
@@ -179,7 +182,8 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	public void setGenres(Set<String> genres)
 	{
 		Validate.notNull(genres, "genres cannot be null");
-		this.genres = genres;
+		this.genres.clear();
+		this.genres.addAll(genres);
 	}
 
 	// Convenience
@@ -207,20 +211,20 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	// Seasons
+	/**
+	 * 
+	 * @return This series' seasons. Only filled if the series is the information root.
+	 */
 	public List<Season> getSeasons()
 	{
 		return seasons;
 	}
 
-	/**
-	 * 
-	 * @param seasons
-	 *            This series' seasons. Only filled if the series is the information root.
-	 */
 	public void setSeasons(List<Season> seasons)
 	{
 		Validate.notNull("seasons list cannot be null");
-		this.seasons = seasons;
+		this.seasons.clear();
+		this.seasons.addAll(seasons);
 	}
 
 	public Season newSeason()
@@ -245,20 +249,20 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return getEpisodes();
 	}
 
+	/**
+	 * 
+	 * @return This series' episodes. Only filled if the series is the information root.
+	 */
 	public List<Episode> getEpisodes()
 	{
 		return episodes;
 	}
 
-	/**
-	 * 
-	 * @param episodes
-	 *            This series' episodes. Only filled if the series is the information root.
-	 */
 	public void setEpisodes(List<Episode> episodes)
 	{
 		Validate.notNull("episodes list cannot be null");
-		this.episodes = episodes;
+		this.episodes.clear();
+		this.episodes.addAll(episodes);
 	}
 
 	public Episode newEpisode()

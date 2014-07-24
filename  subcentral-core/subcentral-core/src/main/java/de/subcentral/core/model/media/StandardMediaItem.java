@@ -113,7 +113,9 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 
 	public void setGenres(Set<String> genres)
 	{
-		this.genres = genres;
+		Validate.notNull(genres, "genres cannot be null");
+		this.genres.clear();
+		this.genres.addAll(genres);
 	}
 
 	@Override
@@ -124,7 +126,9 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 
 	public void setOriginalLanguages(List<String> originalLanguages)
 	{
-		this.originalLanguages = originalLanguages;
+		Validate.notNull(originalLanguages, "originalLanguages cannot be null");
+		this.originalLanguages.clear();
+		this.originalLanguages.addAll(originalLanguages);
 	}
 
 	@Override

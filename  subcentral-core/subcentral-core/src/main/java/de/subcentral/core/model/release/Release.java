@@ -1,5 +1,6 @@
 package de.subcentral.core.model.release;
 
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +136,8 @@ public class Release implements Comparable<Release>
 	public void setMedia(List<Media> media)
 	{
 		Validate.notNull(media, "media cannot be null");
-		this.media = media;
+		this.media.clear();
+		this.media.addAll(media);
 	}
 
 	/**
@@ -164,12 +166,14 @@ public class Release implements Comparable<Release>
 	public void setTags(List<Tag> tags)
 	{
 		Validate.notNull(tags, "tags cannot be null");
-		this.tags = tags;
+		this.tags.clear();
+		this.tags.addAll(tags);
 	}
 
 	/**
 	 * 
 	 * @return The release group.
+	 * @see #getSource()
 	 */
 	public Group getGroup()
 	{
@@ -251,7 +255,8 @@ public class Release implements Comparable<Release>
 	public void setNukes(List<Nuke> nukes)
 	{
 		Validate.notNull(nukes, "nukes cannot be null");
-		this.nukes = nukes;
+		this.nukes.clear();
+		this.nukes.addAll(nukes);
 	}
 
 	/**
@@ -323,16 +328,29 @@ public class Release implements Comparable<Release>
 
 	public void setSingleMedia(Media media)
 	{
-		this.media = new ArrayList<>(1);
-		if (media != null)
-		{
-			this.media.add(media);
-		}
+		Validate.notNull(media, "media cannot be null");
+		this.media.clear();
+		this.media.add(media);
 	}
 
 	public boolean isNuked()
 	{
 		return !nukes.isEmpty();
+	}
+
+	public void nuke(String nukeReason)
+	{
+		nukes.add(new Nuke(nukeReason));
+	}
+
+	public void nuke(String nukeReason, Temporal date)
+	{
+		nukes.add(new Nuke(nukeReason, date));
+	}
+
+	public void nukeNow(String nukeReason)
+	{
+		nukes.add(new Nuke(nukeReason, ZonedDateTime.now()));
 	}
 
 	// Object methods

@@ -6,5 +6,5 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public interface MappingMatcher
 {
-	public Map<SimplePropDescriptor, String> map(String input);
+	public Map<SimplePropDescriptor, String> match(String input);
 }

@@ -27,7 +27,6 @@ import de.subcentral.core.model.media.StandardAvMediaItem;
 import de.subcentral.core.model.media.StandardMediaItem;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.util.ByteUtil;
 
 public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
@@ -191,7 +190,7 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			Matcher mNukeReason = nukeReasonPattern.matcher(nukeSpanTitle);
 			if (mNukeReason.matches())
 			{
-				Releases.nuke(rls, mNukeReason.group(1));
+				rls.nuke(mNukeReason.group(1));
 			}
 		}
 

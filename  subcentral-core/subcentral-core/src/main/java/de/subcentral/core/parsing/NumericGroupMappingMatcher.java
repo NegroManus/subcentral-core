@@ -5,15 +5,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class NumericGroupMappingMatcher implements MappingMatcher
 {
-	private final Pattern									pattern;
+	private final Pattern								pattern;
 	private final Map<Integer, SimplePropDescriptor>	groups;
 
 	public NumericGroupMappingMatcher(Pattern pattern, Map<Integer, SimplePropDescriptor> groups)
@@ -49,7 +48,7 @@ public class NumericGroupMappingMatcher implements MappingMatcher
 	 *             If there is no pattern group for a specified group number.
 	 */
 	@Override
-	public Map<SimplePropDescriptor, String> map(String input) throws IndexOutOfBoundsException
+	public Map<SimplePropDescriptor, String> match(String input) throws IndexOutOfBoundsException
 	{
 		Matcher m = pattern.matcher(input);
 		if (m.matches())
@@ -75,6 +74,6 @@ public class NumericGroupMappingMatcher implements MappingMatcher
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).append("pattern", pattern).append("groups", groups).build();
+		return Objects.toStringHelper(this).omitNullValues().add("pattern", pattern).add("groups", groups).toString();
 	}
 }

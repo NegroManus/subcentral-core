@@ -24,7 +24,15 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 		b.appendString(Release.PROP_MEDIA,
 				Medias.name(rls.getMedia(), namingService, params, getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null)));
 		b.appendAllIfNotEmpty(Release.PROP_TAGS, rls.getTags());
-		b.appendIfNotNull(Release.PROP_GROUP, rls.getGroup());
+		if (rls.getGroup() != null)
+		{
+			b.append(Release.PROP_GROUP, rls.getGroup());
+		}
+		else if (rls.getSource() != null)
+		{
+			b.append(Release.PROP_SOURCE, rls.getSource());
+		}
+
 		return b.build();
 	}
 }

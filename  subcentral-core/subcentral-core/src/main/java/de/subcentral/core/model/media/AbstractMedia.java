@@ -49,7 +49,8 @@ public abstract class AbstractMedia implements Media
 	public void setCoverUrls(List<String> coverUrls)
 	{
 		Validate.notNull(coverUrls, "contributions cannot be null");
-		this.coverUrls = coverUrls;
+		this.coverUrls.clear();
+		this.coverUrls.addAll(coverUrls);
 	}
 
 	@Override
@@ -72,7 +73,8 @@ public abstract class AbstractMedia implements Media
 	public void setContributions(List<Contribution> contributions)
 	{
 		Validate.notNull(contributions, "contributions cannot be null");
-		this.contributions = contributions;
+		this.contributions.clear();
+		this.contributions.addAll(contributions);
 	}
 
 	@Override

@@ -150,7 +150,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public void setContributions(List<Contribution> contributions)
 	{
 		Validate.notNull(contributions, "contributions cannot be null");
-		this.contributions = contributions;
+		this.contributions.clear();
+		this.contributions.addAll(contributions);
 	}
 
 	// Convenience
@@ -166,11 +167,9 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setSingleSubtitle(Subtitle subtitle)
 	{
-		subtitles = new ArrayList<>(1);
-		if (subtitle != null)
-		{
-			subtitles.add(subtitle);
-		}
+		Validate.notNull(subtitle, "subtitle cannot be null");
+		this.subtitles.clear();
+		this.subtitles.add(subtitle);
 	}
 
 	public boolean matchesSingleRelease()
@@ -185,11 +184,9 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setSingleMatchingRelease(Release matchingRelease)
 	{
-		this.matchingReleases = new HashSet<>(1);
-		if (matchingRelease != null)
-		{
-			this.matchingReleases.add(matchingRelease);
-		}
+		Validate.notNull(matchingRelease, "matchingRelease cannot be null");
+		this.matchingReleases.clear();
+		this.matchingReleases.add(matchingRelease);
 	}
 
 	public boolean isNuked()

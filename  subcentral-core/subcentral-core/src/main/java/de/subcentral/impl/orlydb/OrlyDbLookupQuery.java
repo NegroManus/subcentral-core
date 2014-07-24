@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.util.ByteUtil;
 
 public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
@@ -149,7 +148,7 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 
 		if (nukeSpan != null)
 		{
-			Releases.nuke(rls, nukeSpan.text());
+			rls.nuke(nukeSpan.text());
 		}
 		return rls;
 	}
