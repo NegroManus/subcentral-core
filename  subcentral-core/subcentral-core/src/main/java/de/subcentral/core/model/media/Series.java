@@ -110,11 +110,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public Temporal getDate()
 	{
-		if (episodes.isEmpty())
-		{
-			return null;
-		}
-		return episodes.get(0).getDate();
+		return episodes.isEmpty() ? null : episodes.get(0).getDate();
 	}
 
 	public String getType()
@@ -203,11 +199,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	 */
 	public Temporal getDateOfLastEpisode()
 	{
-		if (episodes.isEmpty())
-		{
-			return null;
-		}
-		return episodes.get(episodes.size() - 1).getDate();
+		return episodes.isEmpty() ? null : episodes.get(episodes.size() - 1).getDate();
 	}
 
 	// Seasons

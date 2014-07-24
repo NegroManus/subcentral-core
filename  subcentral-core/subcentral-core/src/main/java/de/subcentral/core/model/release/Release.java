@@ -71,7 +71,7 @@ public class Release implements Comparable<Release>
 	{
 		Release rls = new Release();
 		rls.setName(name);
-		rls.setSingleMedia(media);
+		rls.getMedia().add(media);
 		if (group != null)
 		{
 			rls.setGroup(new Group(group));
@@ -364,7 +364,7 @@ public class Release implements Comparable<Release>
 		if (obj != null && Release.class.equals(obj.getClass()))
 		{
 			Release o = (Release) obj;
-			return Objects.equal(getName(), o.getName());
+			return Objects.equal(name, o.name);
 		}
 		return false;
 	}
@@ -372,7 +372,7 @@ public class Release implements Comparable<Release>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(45, 3).append(getName()).toHashCode();
+		return new HashCodeBuilder(45, 3).append(name).toHashCode();
 	}
 
 	@Override

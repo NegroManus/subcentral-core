@@ -59,11 +59,11 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		{
 			throw new IllegalArgumentException("Series name must be set");
 		}
-		Series series = new Series(seriesName);
+		Series series = new Series();
 		series.setType(Series.TYPE_SEASONED);
 		series.setName(seriesName);
 		series.setTitle(seriesTitle);
-		Episode epi = series.newEpisode();
+		Episode epi = new Episode(series);
 		if (seasonNumber != null || seasonTitle != null)
 		{
 			Season season = new Season(series);

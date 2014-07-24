@@ -53,22 +53,25 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public static SubtitleAdjustment create(Release matchingRelease, String language, String group)
 	{
-		SubtitleAdjustment subRls = new SubtitleAdjustment();
-		List<Subtitle> subs = new ArrayList<>(matchingRelease.getMedia().size());
+		SubtitleAdjustment subAdjustment = new SubtitleAdjustment();
+		Group grp = null;
+		if (group != null)
+		{
+			grp = new Group(group);
+		}
 		for (Media media : matchingRelease.getMedia())
 		{
 			Subtitle sub = new Subtitle();
 			sub.setMediaItem((AvMediaItem) media);
 			sub.setLanguage(language);
-			if (group != null)
+			if (grp != null)
 			{
-				sub.setGroup(new Group(group));
+				sub.setGroup(grp);
 			}
-			subs.add(sub);
+			subAdjustment.getSubtitles().add(sub);
 		}
-		subRls.setSingleMatchingRelease(matchingRelease);
-		subRls.setSubtitles(subs);
-		return subRls;
+		subAdjustment.getMatchingReleases().add(matchingRelease);
+		return subAdjustment;
 	}
 
 	public SubtitleAdjustment()
@@ -85,7 +88,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public void setSubtitles(List<Subtitle> subtitles)
 	{
 		Validate.notNull(subtitles, "subtitles cannot be null");
-		this.subtitles = subtitles;
+		this.subtitles.clear();
+		this.subtitles.addAll(subtitles);
 	}
 
 	public Set<Release> getMatchingReleases()
@@ -96,7 +100,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public void setMatchingReleases(Set<Release> matchingReleases)
 	{
 		Validate.notNull(matchingReleases, "matchingReleases cannot be null");
-		this.matchingReleases = matchingReleases;
+		this.matchingReleases.clear();
+		this.matchingReleases.addAll(matchingReleases);
 	}
 
 	public Temporal getDate()
@@ -138,7 +143,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public void setNukes(List<Nuke> nukes)
 	{
 		Validate.notNull(nukes, "nukes cannot be null");
-		this.nukes = nukes;
+		this.nukes.clear();
+		this.nukes.addAll(nukes);
 	}
 
 	@Override

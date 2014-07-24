@@ -104,11 +104,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	public Temporal getDate()
 	{
 		List<Episode> epis = getEpisodes();
-		if (epis.isEmpty())
-		{
-			return null;
-		}
-		return epis.get(0).getDate();
+		return epis.isEmpty() ? null : epis.get(0).getDate();
 	}
 
 	@Override
@@ -141,11 +137,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	public Temporal getDateOfLastEpisode()
 	{
 		List<Episode> epis = getEpisodes();
-		if (epis.isEmpty())
-		{
-			return null;
-		}
-		return epis.get(epis.size() - 1).getDate();
+		return epis.isEmpty() ? null : epis.get(epis.size() - 1).getDate();
 	}
 
 	// Episodes
@@ -165,9 +157,14 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		return new Episode(series, this);
 	}
 
-	public Episode newEpisode(int episodeNumber)
+	public Episode newEpisode(Integer numberInSeason)
 	{
-		return new Episode(series, this);
+		return new Episode(series, this, numberInSeason);
+	}
+
+	public Episode newEpisode(Integer numberInSeason, String title)
+	{
+		return new Episode(series, this, numberInSeason, title);
 	}
 
 	// Object methods
