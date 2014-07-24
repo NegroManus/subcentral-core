@@ -43,7 +43,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		setSeries(series);
 	}
 
-	public Season(Series series, int number)
+	public Season(Series series, Integer number)
 	{
 		setSeries(series);
 		setNumber(number);

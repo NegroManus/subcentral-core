@@ -1,6 +1,5 @@
 package de.subcentral.core.model.media;
 
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Set;
@@ -38,12 +37,12 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Episode.class, Prop.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS		= new SimplePropDescriptor(Episode.class, Prop.FURTHER_INFO_URLS);
 
-	public static Episode createSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber)
+	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
 	{
 		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, int seasonNumber, int episodeNumber, String episodeTitle)
+	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber, String episodeTitle)
 	{
 		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
 	}
@@ -87,7 +86,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return createMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode createMiniSeriesEpisode(String seriesName, String seriesTitle, int episodeNumber, String episodeTitle)
+	public static Episode createMiniSeriesEpisode(String seriesName, String seriesTitle, Integer episodeNumber, String episodeTitle)
 	{
 		if (seriesName == null)
 		{
@@ -103,17 +102,17 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return epi;
 	}
 
-	public static Episode createDatedEpisode(String seriesName, ZonedDateTime date)
+	public static Episode createDatedEpisode(String seriesName, Temporal date)
 	{
 		return createDatedEpisode(seriesName, null, date, null);
 	}
 
-	public static Episode createDatedEpisode(String seriesName, ZonedDateTime date, String episodeTitle)
+	public static Episode createDatedEpisode(String seriesName, Temporal date, String episodeTitle)
 	{
 		return createDatedEpisode(seriesName, null, date, episodeTitle);
 	}
 
-	public static Episode createDatedEpisode(String seriesName, String seriesTitle, ZonedDateTime date, String episodeTitle)
+	public static Episode createDatedEpisode(String seriesName, String seriesTitle, Temporal date, String episodeTitle)
 	{
 		if (seriesName == null)
 		{

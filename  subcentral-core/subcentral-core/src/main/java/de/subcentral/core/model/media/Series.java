@@ -232,7 +232,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return new Season(this);
 	}
 
-	public Season newSeason(int seasonNumber)
+	public Season newSeason(Integer seasonNumber)
 	{
 		return new Season(this, seasonNumber);
 	}
@@ -267,12 +267,45 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public Episode newEpisode()
 	{
-		return newEpisode(null);
+		return new Episode();
 	}
 
+	// Mini-series
+	public Episode newEpisode(Integer numberInSeries)
+	{
+		return new Episode(this, numberInSeries);
+	}
+
+	public Episode newEpisode(Integer numberInSeries, String title)
+	{
+		return new Episode(this, numberInSeries, title);
+	}
+
+	// Dated
+	public Episode newEpisode(Temporal date)
+	{
+		return new Episode(this, date);
+	}
+
+	public Episode newEpisode(Temporal date, String title)
+	{
+		return new Episode(this, date, title);
+	}
+
+	// Seasoned
 	public Episode newEpisode(Season season)
 	{
 		return new Episode(this, season);
+	}
+
+	public Episode newEpisode(Season season, Integer numberInSeason)
+	{
+		return new Episode(this, season, numberInSeason);
+	}
+
+	public Episode newEpisode(Season season, Integer numberInSeason, String title)
+	{
+		return new Episode(this, season, numberInSeason, title);
 	}
 
 	public List<Episode> getEpisodes(Season season)
