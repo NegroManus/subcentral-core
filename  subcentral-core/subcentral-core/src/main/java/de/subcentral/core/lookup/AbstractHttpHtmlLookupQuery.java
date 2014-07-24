@@ -39,8 +39,11 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 
 	protected Document getDocument(URL url) throws IOException
 	{
+		System.out.println(url);
 		Connection con = setupConnection(url);
-		return con.get();
+		Document doc = con.get();
+		System.out.println(doc);
+		return doc;
 	}
 
 	/**

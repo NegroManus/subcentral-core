@@ -13,7 +13,7 @@ public abstract class AbstractMedia implements Media
 {
 	protected String				title;
 	protected String				description;
-	protected List<String>			coverUrls;
+	protected List<String>			coverUrls		= new ArrayList<>(1);
 	protected String				contentAdvisory;
 	protected List<Contribution>	contributions	= new ArrayList<>();
 	protected Set<String>			furtherInfoUrls	= new HashSet<>(4);
@@ -48,7 +48,7 @@ public abstract class AbstractMedia implements Media
 
 	public void setCoverUrls(List<String> coverUrls)
 	{
-		Validate.notNull(coverUrls, "contributions cannot be null");
+		Validate.notNull(coverUrls, "coverUrls cannot be null");
 		this.coverUrls.clear();
 		this.coverUrls.addAll(coverUrls);
 	}

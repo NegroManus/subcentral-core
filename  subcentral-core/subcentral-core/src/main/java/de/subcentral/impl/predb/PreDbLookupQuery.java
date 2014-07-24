@@ -3,6 +3,7 @@ package de.subcentral.impl.predb;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.media.StandardAvMediaItem;
 import de.subcentral.core.model.media.StandardMediaItem;
 import de.subcentral.core.model.release.Group;
+import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
@@ -139,6 +141,8 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 	 */
 	private Release parseRelease(Document doc, Element rlsDiv)
 	{
+		// the url where more details can be retrieved. Filled and used later
+		String detailsUrl = null;
 		Release rls = new Release();
 
 		// select span that class attribute contains "time"
@@ -170,16 +174,7 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			String title = titleAnchor.text();
 			rls.setName(title);
 
-			String detailsUrl = titleAnchor.attr("abs:href");
-			try
-			{
-				Document detailsDoc = getDocument(new URL(detailsUrl));
-				parseReleaseDetails(detailsDoc, rls);
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			detailsUrl = titleAnchor.attr("abs:href");
 		}
 
 		Element nukedSpan = rlsDiv.select("span[class*=nuked]").first();
@@ -191,6 +186,20 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			if (mNukeReason.matches())
 			{
 				rls.nuke(mNukeReason.group(1));
+			}
+		}
+
+		// Parse details
+		if (detailsUrl != null)
+		{
+			try
+			{
+				Document detailsDoc = getDocument(new URL(detailsUrl));
+				parseReleaseDetails(detailsDoc, rls);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
 			}
 		}
 
@@ -304,6 +313,9 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		Elements keyValueDivs = doc.getElementsByClass("pb-r");
 		Media media = null;
 		String mediaTitle = null;
+		String plot = null;
+		List<String> genres = null;
+		List<String> furtherInfoUrls = null;
 		for (Element keyValueDiv : keyValueDivs)
 		{
 			Element keyDiv = keyValueDiv.getElementsByClass("pb-l").first();
@@ -334,12 +346,59 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 						rls.setFileCount(files);
 					}
 				}
+				else if ("Nukes".equals(key))
+				{
+					/**
+					 * <pre>
+					 * <div class="pb-r ">
+					 * 	<div class="pb-c  pb-l">Nukes</div>
+					 * 	<div class="pb-c  pb-d">
+					 * 		<ol class='nuke-list'>
+					 * 				<li value='2'><span class='nuked'>get.dirfix</span> <small class='nuke-time' data='1405980397.037'>- <span class='t-n-d'>2.8</span> <span class='t-u'>days</span></small></li>
+					 * 				<li value='1'><span class='nuked'>mislabeled.2014</span> <small class='nuke-time' data='1405980000.098'>- <span class='t-n-d'>2.8</span> <span class='t-u'>days</span></small></li>
+					 * 			</ol>
+					 * 		</div>
+					 * 	</div>
+					 * </div>
+					 * </pre>
+					 */
+
+					Element nukeListOl = valueDiv.getElementsByClass("nuke-list").first();
+					if (nukeListOl != null)
+					{
+						Elements nukeLis = nukeListOl.getElementsByTag("li");
+						List<Nuke> nukes = new ArrayList<>(nukeLis.size());
+						for (Element nukeLi : nukeLis)
+						{
+							String nukeReason = nukeLi.getElementsByClass("nuked").first().text();
+							Nuke nuke = new Nuke(nukeReason);
+							Element nukeTimeSpan = nukeLi.getElementsByClass("nuke-time").first();
+							if (nukeTimeSpan != null)
+							{
+								double nukeTimeEpochSeconds = Double.parseDouble(nukeTimeSpan.attr("data"));
+								long nukeTimeEpochMillis = (long) nukeTimeEpochSeconds * 1000L;
+								nuke.setDate(ZonedDateTime.ofInstant(Instant.ofEpochMilli(nukeTimeEpochMillis), TIME_ZONE));
+							}
+							nukes.add(nuke);
+						}
+						rls.setNukes(nukes);
+					}
+				}
 				else if ("Title".equals(key))
 				{
 					mediaTitle = value;
 				}
 				else if ("Episode".equals(key))
 				{
+					/**
+					 * <pre>
+					 * <div class="pb-c  pb-l">Episode</div>
+					 * 	<div class="pb-c  pb-d">
+					 * 			( <a class='term t-s' href='http://predb.me/?season=1&title=icarly'>S01</a> - <a class='term t-e' href='http://predb.me/?episode=10&season=1&title=icarly'>E10</a> ) - <a rel='nofollow'
+					 * 											target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly/episodes/626951'>iWant a World Record</a> - <small class='airdate'>2007-11-17</small>
+					 * 	</div>
+					 * </pre>
+					 */
 					Series series = new Series(mediaTitle);
 					Episode epi = series.newEpisode();
 					String seasonEpisodeTxt = value;
@@ -356,21 +415,58 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 					{
 						epi.setNumberInSeason(Integer.parseInt(mEpi.group(1)));
 					}
+					// Episode title and furtherInfoUrl
+					Element episodeTitleAnchor = valueDiv.select("a.ext-link").first();
+					if (episodeTitleAnchor != null)
+					{
+						epi.setTitle(episodeTitleAnchor.text());
+						epi.getFurtherInfoUrls().add(episodeTitleAnchor.attr("href"));
+					}
+					Element airdateElement = valueDiv.getElementsByClass("airdate").first();
+					if (airdateElement != null)
+					{
+						epi.setDate(LocalDate.parse(airdateElement.text()));
+					}
 					media = epi;
 				}
 				else if ("Plot".equals(key))
 				{
-					if (media == null)
+					plot = value;
+				}
+				else if ("Genres".equals(key))
+				{
+					/**
+					 * <pre>
+					 * <div class="pb-c  pb-l">Genres</div>
+					 * 		<div class="pb-c  pb-d">
+					 * 			<a class='term t-gn' href='http://predb.me/?genre=trance'>Trance</a>
+					 * 		</div>
+					 * 	</div>
+					 * </pre>
+					 */
+					Elements genreAnchors = valueDiv.getElementsByTag("a");
+					genres = new ArrayList<>(genreAnchors.size());
+					for (Element genreAnchor : genreAnchors)
 					{
-						// do nothing
+						genres.add(genreAnchor.text());
 					}
-					else if (media instanceof Episode)
+				}
+				else if ("Links".equals(key))
+				{
+					/**
+					 * <pre>
+					 * <div class="pb-c  pb-l">Links</div>
+					 * 	<div class="pb-c  pb-d">
+					 * 			<a rel='nofollow' target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly'>TVRage</a>, <a rel='nofollow' target='_blank' class='ext-link'
+					 * 			href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a>
+					 * 		</div>
+					 * </pre>
+					 */
+					Elements extLinksAnchors = valueDiv.select("a.ext-link");
+					furtherInfoUrls = new ArrayList<>(extLinksAnchors.size());
+					for (Element extLinkAnchor : extLinksAnchors)
 					{
-						((Episode) media).setDescription(value);
-					}
-					else if (media instanceof Movie)
-					{
-						((Movie) media).setDescription(value);
+						furtherInfoUrls.add(extLinkAnchor.attr("href"));
 					}
 				}
 			}
@@ -389,6 +485,7 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			{
 				StandardAvMediaItem avMediaItem = new StandardAvMediaItem(mediaTitle);
 				avMediaItem.setMediaContentType(Media.CONTENT_TYPE_AUDIO);
+				media = avMediaItem;
 			}
 			else if (section.startsWith("TV"))
 			{
@@ -397,6 +494,58 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			else
 			{
 				media = new StandardMediaItem(mediaTitle);
+			}
+		}
+
+		// set plot, genres and furtherInfoUrls if available
+		if (media instanceof Episode)
+		{
+			Episode epi = (Episode) media;
+			if (plot != null)
+			{
+				epi.setDescription(plot);
+			}
+			if (genres != null)
+			{
+				epi.getSeries().getGenres().addAll(genres);
+			}
+			if (furtherInfoUrls != null)
+			{
+				// the ext-links for episode releases belong to the series
+				epi.getSeries().getFurtherInfoUrls().addAll(furtherInfoUrls);
+			}
+		}
+		else if (media instanceof Movie)
+		{
+			Movie movie = (Movie) media;
+			if (plot != null)
+			{
+				movie.setDescription(plot);
+			}
+			if (genres != null)
+			{
+				movie.getGenres().addAll(genres);
+			}
+			if (furtherInfoUrls != null)
+			{
+				movie.getFurtherInfoUrls().addAll(furtherInfoUrls);
+			}
+		}
+		else if (media instanceof StandardMediaItem)
+		{
+			StandardMediaItem stdMediaItem = (StandardMediaItem) media;
+			// also for StandardAvMediaItem
+			if (plot != null)
+			{
+				stdMediaItem.setDescription(plot);
+			}
+			if (genres != null)
+			{
+				stdMediaItem.getGenres().addAll(genres);
+			}
+			if (furtherInfoUrls != null)
+			{
+				stdMediaItem.getFurtherInfoUrls().addAll(furtherInfoUrls);
 			}
 		}
 

@@ -13,6 +13,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.Settings;
+import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -259,7 +260,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public Episode newEpisode()
 	{
-		return new Episode();
+		return new Episode(this);
 	}
 
 	// Mini-series
@@ -358,15 +359,15 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("title", title)
 				.add("type", type)
 				.add("state", state)
-				.add("originalLanguages", originalLanguages)
-				.add("countriesOfOrigin", countriesOfOrigin)
+				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
+				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
 				.add("regularRunningTime", regularRunningTime)
-				.add("genres", genres)
+				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverUrls", coverUrls)
+				.add("coverUrls", Models.nullIfEmpty(coverUrls))
 				.add("contentAdvisory", contentAdvisory)
-				.add("contributions", contributions)
-				.add("furtherInfoUrls", furtherInfoUrls)
+				.add("contributions", Models.nullIfEmpty(contributions))
+				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
 				.add("seasons.size", seasons.size())
 				.add("episodes.size", episodes.size())
 				.toString();

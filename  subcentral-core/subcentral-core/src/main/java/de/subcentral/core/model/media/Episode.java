@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.Settings;
+import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -364,10 +365,10 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 				.add("special", special)
 				.add("runningTime", runningTime)
 				.add("description", description)
-				.add("coverUrls", coverUrls)
+				.add("coverUrls", Models.nullIfEmpty(coverUrls))
 				.add("contentAdvisory", contentAdvisory)
-				.add("contributions", contributions)
-				.add("furtherInfoUrls", furtherInfoUrls)
+				.add("contributions", Models.nullIfEmpty(contributions))
+				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
 				.toString();
 	}
 

@@ -3,9 +3,10 @@ package de.subcentral.impl.predb;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.MovieNamer;
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.NamingStandards;
+import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SeasonedEpisodeNamer;
 import de.subcentral.core.naming.SimpleNamingService;
 import de.subcentral.core.util.CharReplacer;
@@ -16,7 +17,7 @@ public class PreDb
 	public static final String					NAME								= "PreDB.me";
 	public static URL							HOST_URL;
 
-	private static final CharReplacer			PREDB_QUERY_ENTITY_REPLACER		= new CharReplacer();
+	private static final CharReplacer			PREDB_QUERY_ENTITY_REPLACER			= new CharReplacer();
 	private static final SimpleNamingService	PREDB_QUERY_ENTITY_NAMING_SERVICE	= new SimpleNamingService();
 	static
 	{
@@ -36,7 +37,7 @@ public class PreDb
 		PREDB_QUERY_ENTITY_REPLACER.setCharsToDelete("'´`".toCharArray());
 
 		// initialize the naming service
-		SeasonedEpisodeNamer epiNamer = new SeasonedEpisodeNamer();
+		SeasonedEpisodeNamer epiNamer = NamingStandards.SEASONED_EPISODE_NAMER;
 		epiNamer.setWholeNameOperator(PREDB_QUERY_ENTITY_REPLACER);
 
 		MovieNamer movieNamer = new MovieNamer();

@@ -1,8 +1,6 @@
 package de.subcentral.core.lookup;
 
-import java.io.File;
-
-import com.google.common.io.Resources;
+import java.util.List;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
@@ -35,6 +33,10 @@ public class LookupTest
 		// }
 
 		PreDbLookup preDbLookup = new PreDbLookup();
+		LookupQuery<Release> preDbQuery = preDbLookup.createQuery("iCarly S01E10");
+		// LookupQuery<Release> preDbQuery = preDbLookup.createQueryFromEntity(epi);
+		List<Release> results = preDbQuery.getResults();
+		results.forEach(r -> System.out.println(r));
 
 		// File resource = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05.html").toURI());
 		// List<Release> results = preDbLookup.getResults(resource);
@@ -43,8 +45,8 @@ public class LookupTest
 		// System.out.println(foundRls);
 		// }
 
-		File detailsRes = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05_p0w4.html").toURI());
-		Release detailsRls = preDbLookup.parseReleaseDetails(detailsRes);
-		System.out.println(detailsRls);
+		// File detailsRes = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05_p0w4.html").toURI());
+		// Release detailsRls = preDbLookup.parseReleaseDetails(detailsRes);
+		// System.out.println(detailsRls);
 	}
 }

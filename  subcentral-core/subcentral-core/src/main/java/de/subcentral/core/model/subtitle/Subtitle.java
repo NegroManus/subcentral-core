@@ -15,6 +15,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Contribution;
+import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
@@ -462,7 +463,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("language", language)
 				.add("hearingImpaired", hearingImpaired)
 				.add("foreignParts", foreignParts)
-				.add("tags", tags)
+				.add("tags", Models.nullIfEmpty(tags))
 				.add("group", group)
 				.add("version", version)
 				.add("productionType", productionType)
@@ -471,7 +472,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("infoUrl", infoUrl)
 				.add("source", source)
 				.add("sourceUrl", sourceUrl)
-				.add("contributions", contributions)
+				.add("contributions", Models.nullIfEmpty(contributions))
 				.toString();
 	}
 }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Collection;
 
 public class Models
 {
@@ -16,6 +17,11 @@ public class Models
 			return;
 		}
 		throw new IllegalArgumentException("The date has to be an instance of java.time.ZonedDateTime, java.time.LocalDateTime, java.time.LocalDate or java.time.Year.");
+	}
+
+	public static final Collection<?> nullIfEmpty(Collection<?> c)
+	{
+		return c.isEmpty() ? null : c;
 	}
 
 	public Models()

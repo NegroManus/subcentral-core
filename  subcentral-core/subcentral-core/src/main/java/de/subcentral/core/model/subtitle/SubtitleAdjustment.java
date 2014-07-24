@@ -240,13 +240,13 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	{
 		return Objects.toStringHelper(this)
 				.omitNullValues()
-				.add("subtitles", subtitles)
-				.add("matchingReleases", matchingReleases)
+				.add("subtitles", Models.nullIfEmpty(subtitles))
+				.add("matchingReleases", Models.nullIfEmpty(matchingReleases))
 				.add("date", date)
 				.add("size", size)
 				.add("fileCount", fileCount)
 				.add("nukes", nukes)
-				.add("contributions", contributions)
+				.add("contributions", Models.nullIfEmpty(contributions))
 				.toString();
 	}
 }

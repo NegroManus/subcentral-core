@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 
 import de.subcentral.core.Settings;
+import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -93,15 +94,15 @@ public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 				.add("name", name)
 				.add("title", title)
 				.add("date", date)
-				.add("originalLanguages", originalLanguages)
-				.add("countriesOfOrigin", countriesOfOrigin)
+				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
+				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
 				.add("runningTime", runningTime)
-				.add("genres", genres)
+				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverUrls", coverUrls)
+				.add("coverUrls", Models.nullIfEmpty(coverUrls))
 				.add("contentAdvisory", contentAdvisory)
-				.add("contributions", contributions)
-				.add("furtherInfoUrls", furtherInfoUrls)
+				.add("contributions", Models.nullIfEmpty(contributions))
+				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
 				.toString();
 	}
 }
