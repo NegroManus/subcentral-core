@@ -214,7 +214,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setSeasons(List<Season> seasons)
 	{
-		Validate.notNull("seasons list cannot be null");
+		Validate.notNull("seasons cannot be null");
 		this.seasons.clear();
 		this.seasons.addAll(seasons);
 	}
@@ -252,7 +252,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setEpisodes(List<Episode> episodes)
 	{
-		Validate.notNull("episodes list cannot be null");
+		Validate.notNull("episodes cannot be null");
 		this.episodes.clear();
 		this.episodes.addAll(episodes);
 	}
