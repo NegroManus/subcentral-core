@@ -321,20 +321,16 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == null)
-		{
-			return false;
-		}
 		if (this == obj)
 		{
 			return true;
 		}
-		if (Series.class != obj.getClass())
+		if (obj != null && Series.class.equals(obj.getClass()))
 		{
-			return false;
+			Series o = (Series) obj;
+			return Objects.equal(name, o.name);
 		}
-		Series o = (Series) obj;
-		return Objects.equal(name, o.name);
+		return false;
 	}
 
 	@Override
