@@ -185,13 +185,13 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	// Convenience
 	public String getPrimaryOriginalLanguage()
 	{
-		return !originalLanguages.isEmpty() ? originalLanguages.get(0) : null;
+		return originalLanguages.isEmpty() ? null : originalLanguages.get(0);
 	}
 
 	@Override
 	public String getPrimaryCountryOfOrigin()
 	{
-		return !countriesOfOrigin.isEmpty() ? countriesOfOrigin.get(0) : null;
+		return countriesOfOrigin.isEmpty() ? null : countriesOfOrigin.get(0);
 	}
 
 	/**
