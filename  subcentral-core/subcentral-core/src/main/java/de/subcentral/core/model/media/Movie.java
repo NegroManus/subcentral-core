@@ -1,11 +1,7 @@
 package de.subcentral.core.model.media;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.Year;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
@@ -14,7 +10,7 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
+public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 {
 	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(Movie.class, Prop.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(Movie.class, Prop.TITLE);
@@ -29,11 +25,6 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Movie.class, Prop.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(Movie.class, Prop.FURTHER_INFO_URLS);
 
-	private String								name;
-	private List<String>						originalLanguages				= new ArrayList<>(1);
-	private List<String>						countriesOfOrigin				= new ArrayList<>(1);
-	private Set<String>							genres							= new HashSet<>(3);
-
 	public Movie()
 	{
 
@@ -44,21 +35,10 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 		this.name = name;
 	}
 
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
+	public Movie(String name, Year year)
 	{
 		this.name = name;
-	}
-
-	@Override
-	public String getMediaContentType()
-	{
-		return Media.CONTENT_TYPE_VIDEO;
+		this.date = year;
 	}
 
 	@Override
@@ -68,50 +48,9 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	}
 
 	@Override
-	public Set<String> getGenres()
+	public String getMediaContentType()
 	{
-		return genres;
-	}
-
-	public void setGenres(Set<String> genres)
-	{
-		this.genres = genres;
-	}
-
-	@Override
-	public List<String> getOriginalLanguages()
-	{
-		return originalLanguages;
-	}
-
-	public void setOriginalLanguages(List<String> originalLanguages)
-	{
-		this.originalLanguages = originalLanguages;
-	}
-
-	@Override
-	public List<String> getCountriesOfOrigin()
-	{
-		return countriesOfOrigin;
-	}
-
-	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
-	{
-		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
-		this.countriesOfOrigin = countriesOfOrigin;
-	}
-
-	// convenience
-	@Override
-	public String getPrimaryOriginalLanguage()
-	{
-		return !originalLanguages.isEmpty() ? originalLanguages.get(0) : null;
-	}
-
-	@Override
-	public String getPrimaryCountryOfOrigin()
-	{
-		return !countriesOfOrigin.isEmpty() ? countriesOfOrigin.get(0) : null;
+		return Media.CONTENT_TYPE_VIDEO;
 	}
 
 	// Object methods
@@ -133,7 +72,7 @@ public class Movie extends AbstractAvMediaItem implements Comparable<Movie>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(17, 23).append(name).toHashCode();
+		return new HashCodeBuilder(43, 91).append(name).toHashCode();
 	}
 
 	@Override

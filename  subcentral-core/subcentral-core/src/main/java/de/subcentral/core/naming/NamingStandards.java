@@ -1,5 +1,6 @@
 package de.subcentral.core.naming;
 
+import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -8,6 +9,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -17,23 +19,27 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class NamingStandards
 {
-	public static final String					DEFAULT_DOMAIN			= "scene";
-	public static final CharReplacer			STANDARD_REPLACER		= new CharReplacer();
+	public static final String					DEFAULT_DOMAIN				= "scene";
+	public static final CharReplacer			STANDARD_REPLACER			= new CharReplacer();
 
-	public static final SeriesNamer				SERIES_NAMER			= new SeriesNamer();
-	public static final SeasonNamer				SEASON_NAMER			= new SeasonNamer();
-	public static final SeasonedEpisodeNamer	SEASONED_EPISODE_NAMER	= new SeasonedEpisodeNamer();
-	public static final MultiEpisodeNamer		MULTI_EPISODE_NAMER		= new MultiEpisodeNamer();
-	public static final MovieNamer				MOVIE_NAMER				= new MovieNamer();
-	public static final SubtitleNamer			SUBTITLE_NAMER			= new SubtitleNamer();
-	public static final MediaReleaseNamer		MEDIA_RELEASE_NAMER		= new MediaReleaseNamer();
-	public static final SubtitleReleaseNamer	SUBTITLE_RELEASE_NAMER	= new SubtitleReleaseNamer();
-	public static final SimpleNamingService		NAMING_SERVICE			= new SimpleNamingService();
+	public static final MediaNamer				MEDIA_NAMER					= new MediaNamer();
+	public static final SeriesNamer				SERIES_NAMER				= new SeriesNamer();
+	public static final SeasonNamer				SEASON_NAMER				= new SeasonNamer();
+	public static final SeasonedEpisodeNamer	SEASONED_EPISODE_NAMER		= new SeasonedEpisodeNamer();
+	public static final MultiEpisodeNamer		MULTI_EPISODE_NAMER			= new MultiEpisodeNamer();
+	public static final MovieNamer				MOVIE_NAMER					= new MovieNamer();
+	public static final SubtitleNamer			SUBTITLE_NAMER				= new SubtitleNamer();
+	public static final ReleaseNamer			RELEASE_NAMER				= new ReleaseNamer();
+	public static final SubtitleAdjustmentNamer	SUBTITLE_ADJUSTMENT_NAMER	= new SubtitleAdjustmentNamer();
+	public static final SimpleNamingService		NAMING_SERVICE				= new SimpleNamingService();
 	static
 	{
+		// Configure namers
 		Function<Integer, String> episodeNumberToString = n -> String.format("E%02d", n);
 		Function<Integer, String> seasonNumberToString = n -> String.format("S%02d", n);
+		Function<Temporal, String> dateToString = d -> String.format("(%s)", d);
 
+		// SeasonedEpisodeNamer
 		SEASON_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Season.PROP_NUMBER, seasonNumberToString));
 
 		Map<SimplePropDescriptor, Function<?, String>> epiToStringFuncts = new HashMap<>();
@@ -43,27 +49,35 @@ public class NamingStandards
 		SEASONED_EPISODE_NAMER.setPropertyToStringFunctions(epiToStringFuncts);
 		SEASONED_EPISODE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, "")));
 
+		// MultiEpisodeNamer
 		MULTI_EPISODE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.inBetween(Episode.PROP_NUMBER_IN_SEASON,
 				MultiEpisodeNamer.SEPARATION_TYPE_ADDITION,
 				""),
 				SeparationDefinition.inBetween(Episode.PROP_NUMBER_IN_SERIES, MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, ""),
 				SeparationDefinition.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-")));
 
-		MEDIA_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
-		MEDIA_RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
+		// MovieNamer
+		MOVIE_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Movie.PROP_DATE, dateToString));
 
-		SUBTITLE_RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-")));
-		SUBTITLE_RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
+		// ReleaseNamer
+		RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
+		RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
 
+		// SubtitleReleaseNamer
+		SUBTITLE_ADJUSTMENT_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-")));
+		SUBTITLE_ADJUSTMENT_NAMER.setWholeNameOperator(STANDARD_REPLACER);
+
+		// Add namers to the NamingService
 		NAMING_SERVICE.setDomain(DEFAULT_DOMAIN);
+		NAMING_SERVICE.registerNamer(MEDIA_NAMER);
 		NAMING_SERVICE.registerNamer(SERIES_NAMER);
-		NAMING_SERVICE.registerNamer(SEASONED_EPISODE_NAMER);
 		NAMING_SERVICE.registerNamer(SEASON_NAMER);
+		NAMING_SERVICE.registerNamer(SEASONED_EPISODE_NAMER);
 		NAMING_SERVICE.registerNamer(MULTI_EPISODE_NAMER);
 		NAMING_SERVICE.registerNamer(MOVIE_NAMER);
 		NAMING_SERVICE.registerNamer(SUBTITLE_NAMER);
-		NAMING_SERVICE.registerNamer(MEDIA_RELEASE_NAMER);
-		NAMING_SERVICE.registerNamer(SUBTITLE_RELEASE_NAMER);
+		NAMING_SERVICE.registerNamer(RELEASE_NAMER);
+		NAMING_SERVICE.registerNamer(SUBTITLE_ADJUSTMENT_NAMER);
 	}
 
 	private NamingStandards()

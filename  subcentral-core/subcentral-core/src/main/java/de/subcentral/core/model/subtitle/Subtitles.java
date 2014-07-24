@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.SubtitleReleaseNamer;
+import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 
 public class Subtitles
 {
@@ -16,7 +16,7 @@ public class Subtitles
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
 		for (Release rls : subRls.getMatchingReleases())
 		{
-			names.add(namingService.name(subRls, ImmutableMap.of(SubtitleReleaseNamer.PARAM_MEDIA_KEY_RELEASE, rls)));
+			names.add(namingService.name(subRls, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, rls)));
 		}
 		return names.build();
 	}

@@ -1,5 +1,7 @@
 package de.subcentral.core.model.media;
 
+import java.time.Year;
+import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Set;
@@ -7,6 +9,7 @@ import java.util.Set;
 import de.subcentral.core.model.Work;
 
 /**
+ * <p>
  * <b>Difference between title and name</b> <br/>
  * <ul>
  * <li>The <b>title</b> is given to the media by the author. It has not to be unique.</li>
@@ -14,6 +17,8 @@ import de.subcentral.core.model.Work;
  * season in case of a episode or the artist in case of a song. If there are two or more media that would have the same name, normally the country
  * code or the date is appended to distinguish the names, like in "The Office (UK)" or "Titanic (2002)".</li>
  * </ul>
+ * The name of a media should never be null. The title should only be non-null if it differs from the name. <br/>
+ * <br/>
  * Examples:
  * <table>
  * <tr>
@@ -32,9 +37,19 @@ import de.subcentral.core.model.Work;
  * <td>Gladiator (2002)</td>
  * </tr>
  * <tr>
+ * <td>Movie</td>
+ * <td>null</td>
+ * <td>Transformers</td>
+ * </tr>
+ * <tr>
  * <td>Series</td>
  * <td>The Office</td>
  * <td>The Office (UK)</td>
+ * </tr>
+ * <tr>
+ * <td>Series</td>
+ * <td>null</td>
+ * <td>Psych</td>
  * </tr>
  * <tr>
  * <td>Episode</td>
@@ -42,21 +57,13 @@ import de.subcentral.core.model.Work;
  * <td>Psych S01E01 Pilot</td>
  * </tr>
  * </table>
+ * </p>
  * 
- * 
- * @implSpec All implementations should implement {@link Comparable}.
+ * @implSpec All (non-standard) implementations should implement {@link Comparable}.
  *
  */
 public interface Media extends Work
 {
-	public static final String	CONTENT_TYPE_TEXT			= "TEXT";
-	public static final String	CONTENT_TYPE_IMAGE			= "IMAGE";
-	public static final String	CONTENT_TYPE_AUDIO			= "AUDIO";
-	public static final String	CONTENT_TYPE_VIDEO			= "VIDEO";
-	public static final String	CONTENT_TYPE_APPLICATION	= "APPLICATION";
-	public static final String	CONTENT_TYPE_MULTI			= "MULTI";
-	public static final String	CONTENT_TYPE_COLLECTION		= "COLLECTION";
-
 	public static final String	TYPE_EPISODE				= "EPISODE";
 	public static final String	TYPE_SERIES					= "SERIES";
 	public static final String	TYPE_SEASON					= "SEASON";
@@ -68,9 +75,19 @@ public interface Media extends Work
 	public static final String	TYPE_CONCERT				= "CONCERT";
 	public static final String	TYPE_SONG					= "SONG";
 	public static final String	TYPE_ALBUM					= "ALBUM";
+	public static final String	TYPE_IMG_SET				= "IMG_SET";
 	public static final String	TYPE_MUSIC_VIDEO			= "MUSIC_VIDEO";
 	public static final String	TYPE_IMAGE					= "IMAGE";
-	public static final String	TYPE_BOOK					= "BOOK";
+	public static final String	TYPE_EBOOK					= "EBOOK";
+	public static final String	TYPE_AUDIOBOOK				= "AUDIOBOOK";
+
+	public static final String	CONTENT_TYPE_TEXT			= "TEXT";
+	public static final String	CONTENT_TYPE_IMAGE			= "IMAGE";
+	public static final String	CONTENT_TYPE_AUDIO			= "AUDIO";
+	public static final String	CONTENT_TYPE_VIDEO			= "VIDEO";
+	public static final String	CONTENT_TYPE_APPLICATION	= "APPLICATION";
+	public static final String	CONTENT_TYPE_MULTI			= "MULTI";
+	public static final String	CONTENT_TYPE_COLLECTION		= "COLLECTION";
 
 	// Property accessors
 	/**
@@ -88,20 +105,21 @@ public interface Media extends Work
 	public String getTitle();
 
 	/**
+	 * The media type is useful to distinguish media instances that have no own class but are different. One of the <code>TYPE_*</code> constants.
+	 * 
+	 * @return The exact type of the media.
+	 */
+	public String getMediaType();
+
+	/**
 	 * 
 	 * @return The content type of this media. One of the <code>CONTENT_TYPE_*</code> constants.
 	 */
 	public String getMediaContentType();
 
 	/**
-	 * 
-	 * @return The exact type of the media. Typically the class name. But it makes no sense to use a own class for every single media type.
-	 */
-	public String getMediaType();
-
-	/**
 	 * The date can be an instance of {@link java.time.ZonedDateTime}, {@link java.time.LocalDateTime}, {@link java.time.LocalDate} or
-	 * {@link java.time.Year}, depending on how precise the information is.
+	 * {@link java.time.Year}, depending on how precise the information is. Other <code>Temporal</code> implementations are not allowed.
 	 * 
 	 * @return The publishing / air date of this media.
 	 */
@@ -162,13 +180,54 @@ public interface Media extends Work
 	 * 
 	 * @return Whether this media has a {@link #getTitle() title} or not.
 	 */
-	public boolean isTitled();
+	public default boolean isTitled()
+	{
+		return getTitle() != null;
+	}
 
+	/**
+	 * 
+	 * @return The {@link #getTitle() title} if this media {@link #isTitled() is titled}, else the {@link #getName() name}.
+	 */
+	public default String getTitleElseName()
+	{
+		return isTitled() ? getTitle() : getName();
+	}
+
+	/**
+	 * 
+	 * @return Returns the year of the {@link #getDate() date} or <code>null</code> if the date is <code>null</code> or the year cannot be retrieved.
+	 */
+	public default Year getYear()
+	{
+		if (getDate() == null)
+		{
+			return null;
+		}
+		try
+		{
+			return Year.of(getDate().get(ChronoField.YEAR));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @return Returns the primary language or <code>null</code> if no languages.
+	 */
 	public default String getPrimaryOriginalLanguage()
 	{
 		return !getOriginalLanguages().isEmpty() ? getOriginalLanguages().get(0) : null;
 	}
 
+	/**
+	 * 
+	 * @return Returns the primary country or <code>null</code> if no countries.
+	 */
 	public default String getPrimaryCountryOfOrigin()
 	{
 		return !getCountriesOfOrigin().isEmpty() ? getCountriesOfOrigin().get(0) : null;

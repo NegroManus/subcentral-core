@@ -22,6 +22,7 @@ public interface Prop
 	public static final String	LANGUAGES			= "languages";
 	public static final String	MATCHING_RELEASES	= "matchingReleases";
 	public static final String	MEDIA				= "media";
+	public static final String	MEDIA_CONTENT_TYPE	= "mediaContentType";
 	public static final String	MEDIA_ITEM			= "mediaItem";
 	public static final String	MEDIA_TYPE			= "mediaType";
 	public static final String	NAME				= "name";

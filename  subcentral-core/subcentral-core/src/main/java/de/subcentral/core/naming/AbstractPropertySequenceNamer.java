@@ -16,8 +16,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 {
 	private Map<SimplePropDescriptor, Function<?, String>>	propertyToStringFunctions	= new HashMap<>();
-	private Set<SeparationDefinition>							separators					= new HashSet<>();
-	private UnaryOperator<String>								wholeNameOperator			= UnaryOperator.identity();
+	private Set<SeparationDefinition>						separators					= new HashSet<>();
+	private UnaryOperator<String>							wholeNameOperator			= UnaryOperator.identity();
 
 	public Map<SimplePropDescriptor, Function<?, String>> getPropertyToStringFunctions()
 	{
@@ -134,7 +134,7 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 
 	protected class Builder
 	{
-		private final StringBuilder			sb;
+		private final StringBuilder		sb;
 		private SimplePropDescriptor	lastProperty	= null;
 
 		protected Builder()
@@ -198,6 +198,12 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 		}
 
 		protected String build()
+		{
+			return sb.toString();
+		}
+
+		@Override
+		public String toString()
 		{
 			return sb.toString();
 		}

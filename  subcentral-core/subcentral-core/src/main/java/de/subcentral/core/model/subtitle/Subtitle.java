@@ -201,17 +201,17 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * The tag list must not contain the following tags / information:
+	 * <ul>
+	 * <li><b>Language tags</b> like "German", "de" (the language is stored separately in {@link #getLanguage()})</li>
+	 * <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in {@link #getForeignParts()})</li>
+	 * <li><b>Hearing Impaired tags</b> like "HI" (whether the subtitle contains annotations for the hearing impaired is stored separately in
+	 * {@link #isHearingImpaired()})</li>
+	 * <li><b>Version tags</b> like "V2" (the version is stored separately in {@link #getVersion()})
+	 * </ul>
+	 * All other important information about this subtitle may be stored in the tag list.
 	 * 
-	 * @return The tags of this subtitle. The tag list must not contain the following tags / information:
-	 *         <ul>
-	 *         <li><b>Language tags</b> like "German", "de" (the language is stored separately in {@link #getLanguage()})</li>
-	 *         <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in
-	 *         {@link #getForeignParts()})</li>
-	 *         <li><b>Hearing Impaired tags</b> like "HI" (whether the subtitle contains annotations for the hearing impaired is stored separately in
-	 *         {@link #isHearingImpaired()})</li>
-	 *         <li><b>Version tags</b> like "V2" (the version is stored separately in {@link #getVersion()})
-	 *         </ul>
-	 *         All other important information may be stored in the tag list.
+	 * @return The tags of this subtitle.
 	 */
 	public List<Tag> getTags()
 	{
@@ -224,6 +224,12 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.tags = tags;
 	}
 
+	/**
+	 * The version gets incremented whenever this subtitle is changed by its contributors. If someone other than its original contributors improves a
+	 * subtitle, this leads to a new Subtitle which is {@link #getBasis() based on} the old one.
+	 * 
+	 * @return The version of this subtitle. Initially <code>1</code>.
+	 */
 	public int getVersion()
 	{
 		return version;
@@ -234,6 +240,12 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.version = version;
 	}
 
+	/**
+	 * 
+	 * @return The group which released this subtitle.
+	 * @see #getSource()
+	 * @see #getSourceUrl()
+	 */
 	public Group getGroup()
 	{
 		return group;
@@ -259,6 +271,10 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.productionType = productionType;
 	}
 
+	/**
+	 * 
+	 * @return The information (description) about this subtitle. Like release notes.
+	 */
 	public String getInfo()
 	{
 		return info;
@@ -269,6 +285,10 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.info = info;
 	}
 
+	/**
+	 * 
+	 * @return An URL pointing to a file or a website providing the information about this subtitle.
+	 */
 	public String getInfoUrl()
 	{
 		return infoUrl;
@@ -279,6 +299,10 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.infoUrl = infoUrl;
 	}
 
+	/**
+	 * 
+	 * @return The source of this subtitle. Typically the site which released this Subtitle.
+	 */
 	public String getSource()
 	{
 		return source;
@@ -289,6 +313,10 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.source = source;
 	}
 
+	/**
+	 * 
+	 * @return An URL pointing to the website of the source of this subtitle. Typically the site which released this Subtitle.
+	 */
 	public String getSourceUrl()
 	{
 		return sourceUrl;

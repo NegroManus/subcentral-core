@@ -55,14 +55,14 @@ public class Medias
 		}
 		else if (numOfMedia == 1)
 		{
-			return namingService.name(media.get(0));
+			return namingService.name(media.get(0), parameters);
 		}
 		else
 		{
 			try
 			{
 				MultiEpisodeHelper me = MultiEpisodeHelper.of(media);
-				return namingService.name(me);
+				return namingService.name(me, parameters);
 			}
 			catch (IllegalArgumentException | NoNamerRegisteredException e)
 			{

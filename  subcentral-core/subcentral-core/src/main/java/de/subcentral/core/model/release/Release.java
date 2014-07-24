@@ -107,7 +107,8 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The unique name of this release (e.g. "Psych.S08E01.HDTV.x264-EXCELLENCE").
+	 * @return The unique name of this release (e.g. "Psych.S08E01.HDTV.x264-EXCELLENCE"). Consisting of the name of the {@link #getMedia() media}
+	 *         ("Psych S08E01"), the {@link #getTags() tags} (HDTV, x264) and the {@link #getGroup() group} ("EXCELLENCE").
 	 */
 
 	public String getName()
@@ -211,7 +212,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The total file size in bytes.
+	 * @return The total file size of the release in bytes.
 	 */
 
 	public long getSize()
@@ -255,7 +256,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return Information about this release (typically, the text of the nfo file).
+	 * @return Information about this release / the release notes (typically, the text of the nfo file).
 	 */
 	public String getInfo()
 	{
@@ -283,7 +284,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The name of the source of this release.
+	 * @return The name of the source of this release. Typically the site which released this Release.
 	 */
 	public String getSource()
 	{
@@ -297,7 +298,7 @@ public class Release implements Comparable<Release>
 
 	/**
 	 * 
-	 * @return The URL of the source of this release.
+	 * @return The URL of the source of this release. Typically the site which released this Release.
 	 */
 	public String getSourceUrl()
 	{

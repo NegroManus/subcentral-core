@@ -3,7 +3,7 @@ package de.subcentral.impl.xrel;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import de.subcentral.core.naming.MediaReleaseNamer;
+import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.MovieNamer;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.SeasonedEpisodeNamer;
@@ -42,7 +42,7 @@ public class XRel
 		MovieNamer movieNamer = new MovieNamer();
 		movieNamer.setWholeNameOperator(XREL_QUERY_ENTITY_REPLACER);
 
-		MediaReleaseNamer mediaRlsNamer = new MediaReleaseNamer();
+		ReleaseNamer mediaRlsNamer = new ReleaseNamer();
 		mediaRlsNamer.setWholeNameOperator(XREL_QUERY_ENTITY_REPLACER);
 
 		XREL_QUERY_ENTITY_NAMING_SERVICE.registerNamer(epiNamer);
