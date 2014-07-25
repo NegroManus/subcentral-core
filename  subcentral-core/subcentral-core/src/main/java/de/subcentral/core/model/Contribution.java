@@ -63,7 +63,7 @@ public class Contribution implements Comparable<Contribution>
 
 	/**
 	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined when knowing the other contributions.
-	 * The default value is 0L.
+	 * The default value is 0L (not measurable).
 	 * 
 	 * @return the amount (a zero or positive long)
 	 */
@@ -79,7 +79,7 @@ public class Contribution implements Comparable<Contribution>
 	}
 
 	/**
-	 * The progress of the contribution. A percentage value between 0.0d and 1.0d inclusively. The default value is 1.0d.
+	 * The progress of the contribution. A percentage value between 0.0d and 1.0d inclusively. The default value is 1.0d (complete).
 	 * 
 	 * @return the progress (0.0d - 1.0d)
 	 */
