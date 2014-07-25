@@ -80,6 +80,18 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	}
 
+	public SubtitleAdjustment(Subtitle subtitle, Set<Release> matchingReleases)
+	{
+		this.subtitles.add(subtitle);
+		this.matchingReleases.addAll(matchingReleases);
+	}
+
+	public SubtitleAdjustment(List<Subtitle> subtitles, Set<Release> matchingReleases)
+	{
+		this.subtitles.addAll(subtitles);
+		this.matchingReleases.addAll(matchingReleases);
+	}
+
 	// Properties
 	public List<Subtitle> getSubtitles()
 	{

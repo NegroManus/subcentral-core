@@ -25,8 +25,9 @@ public class Contribution
 	}
 
 	/**
+	 * The type of the contribution.
 	 * 
-	 * @return The type of the contribution.
+	 * @return the contribution type
 	 */
 	public String getType()
 	{
@@ -39,8 +40,9 @@ public class Contribution
 	}
 
 	/**
+	 * The person / company / etc that contributed.
 	 * 
-	 * @return The person / company / etc that contributed.
+	 * @return the contributor
 	 */
 	public Contributor getContributor()
 	{
@@ -53,9 +55,10 @@ public class Contribution
 	}
 
 	/**
+	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined when knowing the other contributions.
+	 * The default value is 0L.
 	 * 
-	 * @return The amount of the contribution. This is a relative value. How big that amount is, can only be determined when knowing the other
-	 *         contributions. The default value is 0L.
+	 * @return the amount (a zero or positive long)
 	 */
 	public long getAmount()
 	{
@@ -69,8 +72,9 @@ public class Contribution
 	}
 
 	/**
+	 * The progress of the contribution. A percentage value between 0.0d and 1.0d inclusively. The default value is 1.0d.
 	 * 
-	 * @return The progress of the contribution. A percentage value (0.0d - 1.0d). The default value is 1.0d.
+	 * @return the progress (0.0d - 1.0d)
 	 */
 	public double getProgress()
 	{
@@ -83,6 +87,11 @@ public class Contribution
 		this.progress = progress;
 	}
 
+	/**
+	 * Further description / specification of the contribution.
+	 * 
+	 * @return the description
+	 */
 	public String getDescription()
 	{
 		return description;

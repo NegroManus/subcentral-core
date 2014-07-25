@@ -11,8 +11,6 @@ import com.google.common.collect.ListMultimap;
 
 public class Contributions
 {
-	public static final String	PROP_NAME_CONTRIBUTIONS	= "contributions";
-
 	public static ListMultimap<String, Contribution> sortByType(Collection<Contribution> contributions)
 	{
 		if (contributions.isEmpty())
@@ -47,6 +45,7 @@ public class Contributions
 		}
 		if (totalAmount == 0L)
 		{
+			// return zero if no amount at all
 			return 0d;
 		}
 		return amountDone / totalAmount;

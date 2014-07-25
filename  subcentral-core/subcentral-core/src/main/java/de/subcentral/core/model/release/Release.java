@@ -76,7 +76,7 @@ public class Release implements Comparable<Release>
 		{
 			rls.setGroup(new Group(group));
 		}
-		rls.setTags(Releases.tags(tags));
+		rls.getTags().addAll(Releases.tags(tags));
 		return rls;
 	}
 
@@ -93,16 +93,16 @@ public class Release implements Comparable<Release>
 	public Release(String name, Media media, List<Tag> tags, Group group)
 	{
 		this.name = name;
-		setSingleMedia(media);
-		setTags(tags);
+		this.media.add(media);
+		this.tags.addAll(tags);
 		this.group = group;
 	}
 
 	public Release(String name, List<Media> media, List<Tag> tags, Group group)
 	{
 		this.name = name;
-		setMedia(media);
-		setTags(tags);
+		this.media.addAll(media);
+		this.tags.addAll(tags);
 		this.group = group;
 	}
 

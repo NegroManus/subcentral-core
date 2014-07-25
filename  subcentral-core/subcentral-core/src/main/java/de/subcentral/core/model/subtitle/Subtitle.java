@@ -153,8 +153,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public Subtitle(AvMediaItem mediaItem, String language)
 	{
-		setMediaItem(mediaItem);
-		setLanguage(language);
+		this.mediaItem = mediaItem;
+		this.language = language;
 	}
 
 	public AvMediaItem getMediaItem()
