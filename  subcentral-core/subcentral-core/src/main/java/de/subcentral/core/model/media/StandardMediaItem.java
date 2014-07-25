@@ -167,8 +167,7 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 		}
 		if (obj != null && obj instanceof StandardMediaItem)
 		{
-			StandardMediaItem o = (StandardMediaItem) obj;
-			return Objects.equal(name, o.name);
+			return Objects.equal(name, ((StandardMediaItem) obj).name);
 		}
 		return false;
 	}

@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class Models
 {
-	public static final void validateDateClass(Temporal date) throws IllegalArgumentException
+	public static final void validateTemporalClass(Temporal date) throws IllegalArgumentException
 	{
 		if (date == null || ZonedDateTime.class.equals(date.getClass()) || LocalDateTime.class.equals(date.getClass())
 				|| LocalDate.class.equals(date.getClass()) || Year.class.equals(date.getClass()))

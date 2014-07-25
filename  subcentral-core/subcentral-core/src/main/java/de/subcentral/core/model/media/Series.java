@@ -69,7 +69,8 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	private List<String>						originalLanguages			= new ArrayList<>(1);
 	private List<String>						countriesOfOrigin			= new ArrayList<>(1);
 	private int									regularRunningTime			= 0;
-	private Set<String>							genres						= new HashSet<>(3);
+	// HashMa / HashSet initial capacities should be a power of 2
+	private Set<String>							genres						= new HashSet<>(4);
 	// Normally, the Seasons and Episodes are not stored in the Series
 	private List<Season>						seasons						= new ArrayList<>(0);
 	private List<Episode>						episodes					= new ArrayList<>(0);
@@ -328,8 +329,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		}
 		if (obj != null && Series.class.equals(obj.getClass()))
 		{
-			Series o = (Series) obj;
-			return Objects.equal(name, o.name);
+			return Objects.equal(name, ((Series) obj).name);
 		}
 		return false;
 	}

@@ -43,6 +43,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	// In 99,9% of the cases, there is only one subtitle
 	private List<Subtitle>						subtitles						= new ArrayList<>(1);
 	// Most adjustments are compatible to 1-2 releases. Maybe 5-6 sometimes
+	// HashMa / HashSet initial capacities should be a power of 2
 	private Set<Release>						matchingReleases				= new HashSet<>(2);
 	private Temporal							date;
 	private long								size							= 0L;
@@ -111,7 +112,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setDate(Temporal date)
 	{
-		Models.validateDateClass(date);
+		Models.validateTemporalClass(date);
 		this.date = date;
 	}
 

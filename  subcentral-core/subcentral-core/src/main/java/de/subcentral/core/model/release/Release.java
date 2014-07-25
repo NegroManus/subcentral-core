@@ -210,7 +210,7 @@ public class Release implements Comparable<Release>
 
 	public void setDate(Temporal date)
 	{
-		Models.validateDateClass(date);
+		Models.validateTemporalClass(date);
 		this.date = date;
 	}
 
@@ -363,8 +363,7 @@ public class Release implements Comparable<Release>
 		}
 		if (obj != null && Release.class.equals(obj.getClass()))
 		{
-			Release o = (Release) obj;
-			return Objects.equal(name, o.name);
+			return Objects.equal(name, ((Release) obj).name);
 		}
 		return false;
 	}

@@ -16,6 +16,7 @@ public abstract class AbstractMedia implements Media
 	protected List<String>			coverUrls		= new ArrayList<>(1);
 	protected String				contentAdvisory;
 	protected List<Contribution>	contributions	= new ArrayList<>();
+	// HashMa / HashSet initial capacities should be a power of 2
 	protected Set<String>			furtherInfoUrls	= new HashSet<>(4);
 
 	@Override

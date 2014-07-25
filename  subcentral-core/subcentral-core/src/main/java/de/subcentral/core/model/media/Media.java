@@ -173,7 +173,7 @@ public interface Media extends Work
 	 */
 	public Set<String> getFurtherInfoUrls();
 
-	// public ListMultimap<String, String> getAttributes();
+	// public ListMultimap<String, Object> getAttributes();
 
 	// Convenience
 	/**

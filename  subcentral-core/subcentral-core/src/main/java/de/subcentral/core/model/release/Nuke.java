@@ -49,7 +49,7 @@ public class Nuke implements Comparable<Nuke>
 
 	public void setDate(Temporal date)
 	{
-		Models.validateDateClass(date);
+		Models.validateTemporalClass(date);
 		this.date = date;
 	}
 

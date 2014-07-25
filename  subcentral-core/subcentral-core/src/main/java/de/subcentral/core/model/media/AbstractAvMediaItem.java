@@ -17,7 +17,7 @@ public abstract class AbstractAvMediaItem extends AbstractMedia implements AvMed
 
 	public void setDate(Temporal date)
 	{
-		Models.validateDateClass(date);
+		Models.validateTemporalClass(date);
 		this.date = date;
 	}
 

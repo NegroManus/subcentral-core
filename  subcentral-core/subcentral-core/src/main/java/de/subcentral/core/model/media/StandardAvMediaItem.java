@@ -76,8 +76,7 @@ public class StandardAvMediaItem extends StandardMediaItem implements AvMediaIte
 		}
 		if (obj != null && obj instanceof StandardAvMediaItem)
 		{
-			StandardMediaItem o = (StandardAvMediaItem) obj;
-			return Objects.equal(name, o.name);
+			return Objects.equal(name, ((StandardAvMediaItem) obj).name);
 		}
 		return false;
 	}
