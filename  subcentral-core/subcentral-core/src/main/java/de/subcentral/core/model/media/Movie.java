@@ -88,7 +88,7 @@ public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(Movie.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

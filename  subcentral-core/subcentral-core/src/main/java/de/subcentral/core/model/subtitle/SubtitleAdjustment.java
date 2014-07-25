@@ -251,7 +251,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(SubtitleAdjustment.class)
 				.omitNullValues()
 				.add("subtitles", Models.nullIfEmpty(subtitles))
 				.add("matchingReleases", Models.nullIfEmpty(matchingReleases))

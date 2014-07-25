@@ -77,7 +77,7 @@ public class Nuke implements Comparable<Nuke>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this).omitNullValues().add("reason", reason).add("date", date).toString();
+		return Objects.toStringHelper(Nuke.class).omitNullValues().add("reason", reason).add("date", date).toString();
 	}
 
 	@Override

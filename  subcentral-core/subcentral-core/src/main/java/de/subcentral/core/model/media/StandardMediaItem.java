@@ -181,7 +181,7 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(StandardMediaItem.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

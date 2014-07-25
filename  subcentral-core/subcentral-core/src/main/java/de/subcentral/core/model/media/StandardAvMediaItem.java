@@ -90,7 +90,7 @@ public class StandardAvMediaItem extends StandardMediaItem implements AvMediaIte
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(StandardAvMediaItem.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

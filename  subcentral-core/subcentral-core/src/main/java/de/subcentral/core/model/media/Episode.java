@@ -354,7 +354,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(Episode.class)
 				.omitNullValues()
 				.add("series", series)
 				.add("numberInSeries", numberInSeries)

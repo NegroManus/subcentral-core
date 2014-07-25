@@ -387,7 +387,7 @@ public class Release implements Comparable<Release>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(Release.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("media", media)

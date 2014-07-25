@@ -457,7 +457,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(Subtitle.class)
 				.omitNullValues()
 				.add("mediaItem", mediaItem)
 				.add("language", language)

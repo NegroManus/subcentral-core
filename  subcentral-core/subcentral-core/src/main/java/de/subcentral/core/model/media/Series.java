@@ -353,7 +353,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(Series.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

@@ -207,7 +207,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this)
+		return Objects.toStringHelper(Season.class)
 				.omitNullValues()
 				.add("series", series)
 				.add("number", number)
