@@ -14,13 +14,12 @@ import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
-import de.subcentral.impl.addic7ed.Addic7edSubtitleAdjustmentMapper;
 
 public class ParsingTest
 {
 	public static void main(String[] args)
 	{
-		String name = "Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com";
+		String name = "Psych - 01x01 - Pilot.DiMENSION.English.HI.orig.Addic7ed.com";
 		// name = "Robot Chicken - 07x07 - Snarfer Image.x264-KILLERS.English.C.orig.Addic7ed.com";
 		// name = "24 - 09x05 - Day 9_ 3_00 PM-4_00 PM.LOL.English.C.orig.Addic7ed.com";
 		// name = "The Listener - 05x01 - The Wrong Man.KILLERS.English.C.orig.Addic7ed.com";
@@ -78,7 +77,7 @@ public class ParsingTest
 		ParsingServiceImpl ps = new ParsingServiceImpl();
 		MappingServiceImpl ms = new MappingServiceImpl();
 		Map<Class<?>, Mapper<?>> mappers = new HashMap<>(1);
-		mappers.put(SubtitleAdjustment.class, new Addic7edSubtitleAdjustmentMapper());
+		mappers.put(SubtitleAdjustment.class, new SubtitleAdjustmentMapper());
 		ms.setMappers(mappers);
 
 		ps.setMappingService(ms);

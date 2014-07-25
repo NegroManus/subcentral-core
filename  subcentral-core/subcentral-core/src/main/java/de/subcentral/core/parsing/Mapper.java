@@ -9,7 +9,7 @@ public interface Mapper<T>
 {
 	public Class<T> getType();
 
-	public Set<SimplePropDescriptor> getKnownProperties();
+	public Set<SimplePropDescriptor> getSupportedProperties();
 
 	public T map(Map<SimplePropDescriptor, String> info);
 }

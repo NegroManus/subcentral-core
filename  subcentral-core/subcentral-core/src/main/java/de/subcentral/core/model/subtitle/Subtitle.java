@@ -2,6 +2,7 @@ package de.subcentral.core.model.subtitle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -21,6 +22,7 @@ import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.Group;
+import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -398,6 +400,17 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return cMap.build();
 		}
 		return ImmutableListMultimap.<Subtitle, Contribution> builder().putAll(this, contributions).build();
+	}
+
+	// SubtitleAdjustment convenience
+	public SubtitleAdjustment newAdjustment(Set<Release> matchingReleases)
+	{
+		return new SubtitleAdjustment(this, matchingReleases);
+	}
+
+	public SubtitleAdjustment newAdjustment(Release matchingRelease)
+	{
+		return new SubtitleAdjustment(this, matchingRelease);
 	}
 
 	// Object methods

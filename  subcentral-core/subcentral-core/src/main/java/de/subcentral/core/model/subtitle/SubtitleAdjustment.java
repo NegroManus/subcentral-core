@@ -15,6 +15,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Contribution;
+import de.subcentral.core.model.Contributor;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.Prop;
 import de.subcentral.core.model.Work;
@@ -80,10 +81,22 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	}
 
+	public SubtitleAdjustment(Subtitle subtitle, Release matchingRelease)
+	{
+		this.subtitles.add(subtitle);
+		this.matchingReleases.add(matchingRelease);
+	}
+
 	public SubtitleAdjustment(Subtitle subtitle, Set<Release> matchingReleases)
 	{
 		this.subtitles.add(subtitle);
 		this.matchingReleases.addAll(matchingReleases);
+	}
+
+	public SubtitleAdjustment(List<Subtitle> subtitles, Release matchingRelease)
+	{
+		this.subtitles.addAll(subtitles);
+		this.matchingReleases.add(matchingRelease);
 	}
 
 	public SubtitleAdjustment(List<Subtitle> subtitles, Set<Release> matchingReleases)
@@ -211,6 +224,11 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public boolean isNuked()
 	{
 		return !nukes.isEmpty();
+	}
+
+	public void addAdjuster(Contributor contributor)
+	{
+		contributions.add(new Contribution(CONTRIBUTION_TYPE_ADJUSTMENT, contributor, 1L, 1d, null));
 	}
 
 	// Object methods

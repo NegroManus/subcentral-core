@@ -58,10 +58,10 @@ public class MappingServiceImpl implements MappingService
 	{
 		for (Map.Entry<Class<?>, Mapper<?>> entry : mappers.entrySet())
 		{
-			if (entry.getKey().equals(entry.getValue().getType()))
+			if (!entry.getKey().equals(entry.getValue().getType()))
 			{
 				throw new IllegalArgumentException("The map contains an invalid entry: The class (" + entry.getKey()
-						+ ") is not equal to the mapper's type class " + entry.getValue().getType() + ".");
+						+ ") is not equal to the mapper's type " + entry.getValue().getType() + ".");
 			}
 		}
 	}
