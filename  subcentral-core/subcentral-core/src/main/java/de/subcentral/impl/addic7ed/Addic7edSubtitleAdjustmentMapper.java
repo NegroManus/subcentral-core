@@ -29,7 +29,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * @author mhertram
  *
  */
-public class Addic7edSubtitleReleaseMapper implements Mapper<SubtitleAdjustment>
+public class Addic7edSubtitleAdjustmentMapper implements Mapper<SubtitleAdjustment>
 {
 	// Episode
 	public final static String	DEFAULT_SUBTITLE_SOURCE	= "Addic7ed.com";

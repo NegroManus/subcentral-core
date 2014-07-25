@@ -14,7 +14,7 @@ import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
-import de.subcentral.impl.addic7ed.Addic7edSubtitleReleaseMapper;
+import de.subcentral.impl.addic7ed.Addic7edSubtitleAdjustmentMapper;
 
 public class ParsingTest
 {
@@ -78,7 +78,7 @@ public class ParsingTest
 		ParsingServiceImpl ps = new ParsingServiceImpl();
 		MappingServiceImpl ms = new MappingServiceImpl();
 		Map<Class<?>, Mapper<?>> mappers = new HashMap<>(1);
-		mappers.put(SubtitleAdjustment.class, new Addic7edSubtitleReleaseMapper());
+		mappers.put(SubtitleAdjustment.class, new Addic7edSubtitleAdjustmentMapper());
 		ms.setMappers(mappers);
 
 		ps.setMappingService(ms);

@@ -118,28 +118,28 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		ONLY;
 	}
 
-	public static final String	CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
-	public static final String	CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
-	public static final String	CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
-	public static final String	CONTRIBUTION_TYPE_REVISION		= "REVISION";
-	public static final String	CONTRIBUTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
+	public static final String			CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
+	public static final String			CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
+	public static final String			CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
+	public static final String			CONTRIBUTION_TYPE_REVISION		= "REVISION";
+	public static final String			CONTRIBUTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
 
-	private AvMediaItem			mediaItem;
-	private String				language;
-	private boolean				hearingImpaired					= false;
-	private ForeignParts		foreignParts					= ForeignParts.NONE;
+	private AvMediaItem					mediaItem;
+	private String						language;
+	private boolean						hearingImpaired					= false;
+	private ForeignParts				foreignParts					= ForeignParts.NONE;
 	// Normally there are 0 extra tags per Subtitle
-	private List<Tag>			tags							= new ArrayList<>(0);
-	private int					version							= 1;
-	private Group				group;
-	private String				productionType;
-	private String				info;
-	private String				infoUrl;
-	private String				source;
-	private String				sourceUrl;
+	private final List<Tag>				tags							= new ArrayList<>(0);
+	private int							version							= 1;
+	private Group						group;
+	private String						productionType;
+	private String						info;
+	private String						infoUrl;
+	private String						source;
+	private String						sourceUrl;
 	// More than 5 contributions per subtitle is very rare
-	private List<Contribution>	contributions					= new ArrayList<>(5);
-	private Subtitle			basis;
+	private final List<Contribution>	contributions					= new ArrayList<>(5);
+	private Subtitle					basis;
 
 	public Subtitle()
 	{

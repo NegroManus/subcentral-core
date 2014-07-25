@@ -11,13 +11,13 @@ import de.subcentral.core.model.Contribution;
 
 public abstract class AbstractMedia implements Media
 {
-	protected String				title;
-	protected String				description;
-	protected List<String>			coverUrls		= new ArrayList<>(1);
-	protected String				contentAdvisory;
-	protected List<Contribution>	contributions	= new ArrayList<>();
+	protected String					title;
+	protected String					description;
+	protected final List<String>		coverUrls		= new ArrayList<>(1);
+	protected String					contentAdvisory;
+	protected final List<Contribution>	contributions	= new ArrayList<>();
 	// HashMa / HashSet initial capacities should be a power of 2
-	protected Set<String>			furtherInfoUrls	= new HashSet<>(4);
+	protected final Set<String>			furtherInfoUrls	= new HashSet<>(4);
 
 	@Override
 	public String getTitle()
@@ -87,7 +87,8 @@ public abstract class AbstractMedia implements Media
 	public void setFurtherInfoUrls(Set<String> furtherInfoUrls)
 	{
 		Validate.notNull(furtherInfoUrls, "furtherInfoUrls cannot be null");
-		this.furtherInfoUrls = furtherInfoUrls;
+		this.furtherInfoUrls.clear();
+		this.furtherInfoUrls.addAll(furtherInfoUrls);
 	}
 
 	// Convenience / Complex

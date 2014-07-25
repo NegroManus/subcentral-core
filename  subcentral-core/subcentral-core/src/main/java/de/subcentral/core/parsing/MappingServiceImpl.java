@@ -8,7 +8,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class MappingServiceImpl implements MappingService
 {
 	private String						domain;
-	private Map<Class<?>, Mapper<?>>	mappers	= new HashMap<>(6);
+	private Map<Class<?>, Mapper<?>>	mappers	= new HashMap<>();
 
 	@Override
 	public String getDomain()
@@ -58,7 +58,7 @@ public class MappingServiceImpl implements MappingService
 	{
 		for (Map.Entry<Class<?>, Mapper<?>> entry : mappers.entrySet())
 		{
-			if (entry.getKey() != entry.getValue().getType())
+			if (entry.getKey().equals(entry.getValue().getType()))
 			{
 				throw new IllegalArgumentException("The map contains an invalid entry: The class (" + entry.getKey()
 						+ ") is not equal to the mapper's type class " + entry.getValue().getType() + ".");

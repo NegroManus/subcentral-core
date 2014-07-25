@@ -66,14 +66,14 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	private String								name;
 	private String								type;
 	private String								state;
-	private List<String>						originalLanguages			= new ArrayList<>(1);
-	private List<String>						countriesOfOrigin			= new ArrayList<>(1);
+	private final List<String>					originalLanguages			= new ArrayList<>(1);
+	private final List<String>					countriesOfOrigin			= new ArrayList<>(1);
 	private int									regularRunningTime			= 0;
 	// HashMa / HashSet initial capacities should be a power of 2
-	private Set<String>							genres						= new HashSet<>(4);
+	private final Set<String>					genres						= new HashSet<>(4);
 	// Normally, the Seasons and Episodes are not stored in the Series
-	private List<Season>						seasons						= new ArrayList<>(0);
-	private List<Episode>						episodes					= new ArrayList<>(0);
+	private final List<Season>					seasons						= new ArrayList<>(0);
+	private final List<Episode>					episodes					= new ArrayList<>(0);
 
 	public Series()
 	{}

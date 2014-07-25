@@ -45,9 +45,9 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 	protected String							mediaType;
 	protected String							mediaContentType;
 	protected Temporal							date;
-	protected List<String>						originalLanguages				= new ArrayList<>(1);
-	protected List<String>						countriesOfOrigin				= new ArrayList<>(1);
-	protected Set<String>						genres							= new HashSet<>(3);
+	protected final List<String>				originalLanguages				= new ArrayList<>(1);
+	protected final List<String>				countriesOfOrigin				= new ArrayList<>(1);
+	protected final Set<String>					genres							= new HashSet<>(3);
 
 	public StandardMediaItem()
 	{
@@ -141,7 +141,8 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
 		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
-		this.countriesOfOrigin = countriesOfOrigin;
+		this.countriesOfOrigin.clear();
+		this.countriesOfOrigin.addAll(countriesOfOrigin);
 	}
 
 	// convenience
