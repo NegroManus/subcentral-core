@@ -33,7 +33,7 @@ public class LookupTest
 		// }
 
 		PreDbLookup preDbLookup = new PreDbLookup();
-		LookupQuery<Release> preDbQuery = preDbLookup.createQuery("iCarly S01E10");
+		LookupQuery<Release> preDbQuery = preDbLookup.createQuery("pacific rim 3d spa eng");
 		// LookupQuery<Release> preDbQuery = preDbLookup.createQueryFromEntity(epi);
 		List<Release> results = preDbQuery.getResults();
 		results.forEach(r -> System.out.println(r));

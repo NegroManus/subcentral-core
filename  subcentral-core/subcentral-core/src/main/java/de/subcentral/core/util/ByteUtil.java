@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class ByteUtil
 {
-	private static final Pattern	BYTE_PATTERN	= Pattern.compile("(\\d+(\\.\\d+)?)\\s*(K|M|G|T|P|E|Z|Y)?(i)?B(ytes)?", Pattern.CASE_INSENSITIVE);
+	private static final Pattern	BYTE_PATTERN	= Pattern.compile("(\\d+(\\.\\d*)?)\\s*(K|M|G|T|P|E|Z|Y)?(i)?B(ytes)?", Pattern.CASE_INSENSITIVE);
 
 	public static String bytesToString(long bytes, boolean si)
 	{
