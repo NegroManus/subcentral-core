@@ -63,18 +63,24 @@ public class Addic7ed
 		// Expecting no dots in the episode title, then a dot, then "WEB-DL" or a group
 		// Examples:
 		// "Psych - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com"
-		Pattern p102 = Pattern.compile("(.*?) - (\\d{2})x(\\d{2}) - ([^\\.]+?)\\.((WEB-DL)|(\\w+))\\." + langPattern + "\\.(.+)\\.(Addic7ed\\.com)");
+		Pattern p102 = Pattern.compile("((.*?)(\\s+\\(((\\d{4})|(\\p{Upper}{2}))\\))?) - (\\d{2})x(\\d{2}) - ([^\\.]+?)\\.((WEB-DL)|(\\w+))\\."
+				+ langPattern + "\\.(.+)\\.(Addic7ed\\.com)");
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
 		grps102.put(1, Series.PROP_NAME);
-		grps102.put(2, Season.PROP_NUMBER);
-		grps102.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		grps102.put(4, Episode.PROP_TITLE);
-		// 5 is (...|...)
-		grps102.put(6, Release.PROP_TAGS);
-		grps102.put(7, Release.PROP_GROUP);
-		grps102.put(8, Subtitle.PROP_LANGUAGE);
-		grps102.put(9, Subtitle.PROP_TAGS);
-		grps102.put(10, Subtitle.PROP_SOURCE);
+		grps102.put(2, Series.PROP_TITLE);
+		// 3 is the optional group
+		// 4 is (...|...)
+		grps102.put(5, Series.PROP_DATE); // e.g. "2004"
+		grps102.put(6, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps102.put(7, Season.PROP_NUMBER);
+		grps102.put(8, Episode.PROP_NUMBER_IN_SEASON);
+		grps102.put(9, Episode.PROP_TITLE);
+		// 10 is (...|...)
+		grps102.put(11, Release.PROP_TAGS); // WEB-DL
+		grps102.put(12, Release.PROP_GROUP);
+		grps102.put(13, Subtitle.PROP_LANGUAGE);
+		grps102.put(14, Subtitle.PROP_TAGS);
+		grps102.put(15, Subtitle.PROP_SOURCE);
 		NumericGroupMappingMatcher matcher102 = new NumericGroupMappingMatcher(p102, grps102.build());
 
 		// Expecting no dots in the episode title, then a dot, then release tags, then a non-wordchar delimiter, then "WEB-DL" or a group.
@@ -142,8 +148,8 @@ public class Addic7ed
 		NumericGroupMappingMatcher matcher105 = new NumericGroupMappingMatcher(p105, grps105.build());
 
 		// FOR TESTING
-		matcher105.match("10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264.DIMENSION.English.HI.Addic7ed.com")
-				.forEach((k, v) -> System.out.println(k + " = " + v));
+		// matcher102.match("Psych (UK) - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k
+		// + " = " + v));
 
 		// --------------
 		// Movie matchers

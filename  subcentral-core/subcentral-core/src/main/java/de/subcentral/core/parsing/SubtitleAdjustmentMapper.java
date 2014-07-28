@@ -2,6 +2,7 @@ package de.subcentral.core.parsing;
 
 import java.time.Year;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -43,8 +44,17 @@ public class SubtitleAdjustmentMapper extends GenericMapper<SubtitleAdjustment>
 		// If episode info is contained
 		if (info.containsKey(Series.PROP_NAME))
 		{
-			Series series = new Series(info.get(Series.PROP_NAME));
+			Series series = new Series();
 			series.setType(Series.TYPE_SEASONED);
+			String name = info.get(Series.PROP_NAME);
+			String title = info.get(Series.PROP_TITLE);
+			series.setName(name);
+			if (!Objects.equals(name, title))
+			{
+				series.setTitle(title);
+			}
+			// series.setDate(); maybe?
+			series.setCountriesOfOrigin(parsePropList(info, Series.PROP_COUNTRIES_OF_ORIGIN, String.class));
 			Season season = series.newSeason();
 			season.setNumber(parseProp(info, Season.PROP_NUMBER, Integer.class));
 			Episode epi = season.newEpisode();
