@@ -1,4 +1,4 @@
-package de.subcentral.core.parsing;
+package de.subcentral.core.impl.addic7ed;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.impl.addic7ed.Addic7ed;
 
-public class ParsingTest
+public class Addic7edParsingTest
 {
 	String	name	= "Psych - 01x01 - Pilot.DiMENSION.English.HI.orig.Addic7ed.com";
 
