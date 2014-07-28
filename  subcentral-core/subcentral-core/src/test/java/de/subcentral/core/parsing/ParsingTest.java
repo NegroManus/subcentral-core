@@ -1,92 +1,242 @@
 package de.subcentral.core.parsing;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.junit.Assert;
+import org.junit.Test;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Movie;
-import de.subcentral.core.model.media.Season;
-import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.core.naming.NamingStandards;
-import de.subcentral.core.util.SimplePropDescriptor;
+import de.subcentral.impl.addic7ed.Addic7ed;
 
 public class ParsingTest
 {
-	public static void main(String[] args)
+	String	name	= "Psych - 01x01 - Pilot.DiMENSION.English.HI.orig.Addic7ed.com";
+
+	// name = "Robot Chicken - 07x07 - Snarfer Image.x264-KILLERS.English.C.orig.Addic7ed.com";
+	// name = "24 - 09x05 - Day 9_ 3_00 PM-4_00 PM.LOL.English.C.orig.Addic7ed.com";
+	// name = "The Listener - 05x01 - The Wrong Man.KILLERS.English.C.orig.Addic7ed.com";
+	//
+	// name = "Winter's Tale (2014).DVD-Rip.Bulgarian.orig.Addic7ed.com";
+	// name = "the house of magic (2014).bdrip.Portuguese.orig.Addic7ed.com";
+	// name = "Revenge of the Bridesmaids (2010).Dvd-rip.Serbian (Latin).orig.Addic7ed.com";
+	@Test
+	public void testEpisode01()
 	{
-		String name = "Psych - 01x01 - Pilot.DiMENSION.English.HI.orig.Addic7ed.com";
-		// name = "Robot Chicken - 07x07 - Snarfer Image.x264-KILLERS.English.C.orig.Addic7ed.com";
-		// name = "24 - 09x05 - Day 9_ 3_00 PM-4_00 PM.LOL.English.C.orig.Addic7ed.com";
-		// name = "The Listener - 05x01 - The Wrong Man.KILLERS.English.C.orig.Addic7ed.com";
-		//
-		// name = "Winter's Tale (2014).DVD-Rip.Bulgarian.orig.Addic7ed.com";
-		// name = "the house of magic (2014).bdrip.Portuguese.orig.Addic7ed.com";
-		// name = "Revenge of the Bridesmaids (2010).Dvd-rip.Serbian (Latin).orig.Addic7ed.com";
+		String name = "Ben 10_ Omniverse - 01x26 - The Frogs of War, Part 1.WEB-DL.x264.AAC.English.C.orig.Addic7ed.com";
 
-		// Episode matcher
-		Pattern p1 = Pattern.compile("(.*?) - (\\d{2})x(\\d{2}) - ([^\\.]+)\\.([\\w-]+)\\.(English)\\.([\\w\\.]+)\\.(Addic7ed.com)");
-		//
-		Matcher m = p1.matcher(name);
-		if (m.matches())
-		{
-			System.out.println("match");
-			for (int i = 0; i < m.groupCount() + 1; i++)
-			{
-				System.out.println(i + "=" + m.group(i));
-			}
-		}
-		Map<Integer, SimplePropDescriptor> groups1 = new HashMap<>();
-		groups1.put(1, Series.PROP_NAME);
-		groups1.put(2, Season.PROP_NUMBER);
-		groups1.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		groups1.put(4, Episode.PROP_TITLE);
-		groups1.put(5, Release.PROP_GROUP);
-		groups1.put(6, Subtitle.PROP_LANGUAGE);
-		groups1.put(7, Subtitle.PROP_TAGS);
-		groups1.put(8, Subtitle.PROP_SOURCE);
-		NumericGroupMappingMatcher matcher1 = new NumericGroupMappingMatcher(p1, groups1);
+		Episode epi = Episode.createSeasonedEpisode("Ben 10_ Omniverse", 1, 26, "The Frogs of War, Part 1");
+		Release rls = Release.create(epi, null, "WEB-DL", "x264", "AAC");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("C", "orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
 
-		// Movie matcher
-		Pattern p2 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\.([\\w \\(\\)]+)\\.([\\w\\.]+)\\.(Addic7ed.com)");
-		//
-		Matcher m2 = p2.matcher(name);
-		if (m2.matches())
-		{
-			System.out.println("match");
-			for (int i = 0; i < m2.groupCount() + 1; i++)
-			{
-				System.out.println(i + "=" + m2.group(i));
-			}
-		}
-		Map<Integer, SimplePropDescriptor> groups2 = new HashMap<>();
-		groups2.put(1, Movie.PROP_TITLE);
-		groups2.put(2, Movie.PROP_NAME);
-		groups2.put(3, Movie.PROP_DATE);
-		groups2.put(4, Release.PROP_GROUP);
-		groups2.put(5, Subtitle.PROP_LANGUAGE);
-		groups2.put(6, Subtitle.PROP_TAGS);
-		groups2.put(7, Subtitle.PROP_SOURCE);
+		compare("testEpisode01", adj, name);
+	}
 
-		NumericGroupMappingMatcher matcher2 = new NumericGroupMappingMatcher(p2, groups2);
+	@Test
+	public void testEpisode02()
+	{
+		String name = "Psych - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com";
 
-		ParsingServiceImpl ps = new ParsingServiceImpl();
-		MappingServiceImpl ms = new MappingServiceImpl();
-		Map<Class<?>, Mapper<?>> mappers = new HashMap<>(1);
-		mappers.put(SubtitleAdjustment.class, new SubtitleAdjustmentMapper());
-		ms.setMappers(mappers);
+		Episode epi = Episode.createSeasonedEpisode("Psych", 7, 2, "Juliet Takes a Luvvah");
+		Release rls = Release.create(epi, "EVOLVE");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("C", "orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
 
-		ps.setMappingService(ms);
-		ps.registerMatcher(SubtitleAdjustment.class, matcher1);
-		ps.registerMatcher(SubtitleAdjustment.class, matcher2);
+		compare("testEpisode02", adj, name);
+	}
 
-		Object obj = ps.parse(name);
+	@Test
+	public void testEpisode03()
+	{
+		String name = "10 Things I Hate About You - 01x01 - Pilot.720p.HDTV.x264-DIMENSION.English.HI.Addic7ed.com";
 
-		System.out.println(obj);
-		System.out.println(NamingStandards.NAMING_SERVICE.name(obj));
+		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot");
+		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode03", adj, name);
+	}
+
+	@Test
+	public void testEpisode04()
+	{
+		String name = "Switched At Birth - 03x04 - It Hurts to Wait With Love If Love Is Somewhere Else.HDTV.x264-EXCELLENCE.Dutch.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Switched At Birth", 3, 4, "It Hurts to Wait With Love If Love Is Somewhere Else");
+		Release rls = Release.create(epi, "EXCELLENCE", "HDTV", "x264");
+		Subtitle sub = new Subtitle(epi, "Dutch");
+		sub.setTags(Tag.tags("orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode04", adj, name);
+	}
+
+	@Test
+	public void testEpisode05()
+	{
+		String name = "Vikings - 01x08 - Sacrifice.x264.2HD.English.C.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Vikings", 1, 8, "Sacrifice");
+		Release rls = Release.create(epi, "2HD", "x264");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("C", "orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode05", adj, name);
+	}
+
+	@Test
+	public void testEpisode06()
+	{
+		String name = "Out There (2013) - 01x09 - Viking Days.480p.WEB-DL.x264-mSD.English.C.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Out There (2013)", 1, 9, "Viking Days");
+		Release rls = Release.create(epi, "mSD", "480p", "WEB-DL", "x264");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("C", "orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode06", adj, name);
+	}
+
+	@Test
+	public void testEpisode07()
+	{
+		String name = "Psych - 01x01 - Pilot.DVDRip TOPAZ.French.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Psych", 1, 1, "Pilot");
+		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
+		Subtitle sub = new Subtitle(epi, "French");
+		sub.setTags(Tag.tags("orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode07", adj, name);
+	}
+
+	@Test
+	public void testEpisode08()
+	{
+		String name = "Psych - 05x04 - Chivalry Is Not Dead...But Someone Is.FQM.English.C.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Psych", 5, 4, "Chivalry Is Not Dead...But Someone Is");
+		Release rls = Release.create(epi, "FQM");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("C", "orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode08", adj, name);
+	}
+
+	@Test
+	public void testEpisode09()
+	{
+		String name = "Dallas (2012) - 02x08 - J.R.'s Masterpiece.LOL.English.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Dallas (2012)", 2, 8, "J.R.'s Masterpiece");
+		Release rls = Release.create(epi, "LOL");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode09", adj, name);
+	}
+
+	@Test
+	public void testEpisode10()
+	{
+		String name = "Dallas (2012) - 02x08 - J.R.'s Masterpiece.LOL.German.C.updated.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Dallas (2012)", 2, 8, "J.R.'s Masterpiece");
+		Release rls = Release.create(epi, "LOL");
+		Subtitle sub = new Subtitle(epi, "German");
+		sub.setTags(Tag.tags("C", "updated"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode10", adj, name);
+	}
+
+	@Test
+	public void testEpisode11()
+	{
+		String name = "Psych - 07x03 - Lassie Jerky.WEB-DL.English.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Psych", 7, 3, "Lassie Jerky");
+		Release rls = Release.create(epi, null, "WEB-DL");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode11", adj, name);
+	}
+
+	@Test
+	public void testEpisode12()
+	{
+		String name = "10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264-DIMENSION.English.HI.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
+		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode12", adj, name);
+	}
+
+	@Test
+	public void testEpisode13()
+	{
+		String name = "10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264.DIMENSION.English.HI.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
+		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode13", adj, name);
+	}
+
+	@Test
+	public void testEpisode14()
+	{
+		String name = "10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.WEB-DL.English.HI.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
+		Release rls = Release.create(epi, null, "720p", "WEB-DL");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(rls);
+
+		compare("testEpisode14", adj, name);
+	}
+
+	private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
+	{
+		Object parsed = Addic7ed.getAddi7edParsingService().parse(nameToParse);
+		System.out.println("Results for test: " + testName);
+		System.out.println("Expected: " + expected);
+		System.out.println("Parsed  : " + parsed);
+		Assert.assertEquals(expected.toString(), parsed.toString());
 	}
 }

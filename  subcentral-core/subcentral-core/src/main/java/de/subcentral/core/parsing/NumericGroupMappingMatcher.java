@@ -62,7 +62,7 @@ public class NumericGroupMappingMatcher implements MappingMatcher
 				String storedValue = mappedGroups.get(groupName);
 				if (storedValue != null)
 				{
-					groupValue = groupValue + storedValue;
+					groupValue = storedValue + (groupValue != null ? " " + groupValue : "");
 				}
 				mappedGroups.put(groupName, groupValue);
 			}

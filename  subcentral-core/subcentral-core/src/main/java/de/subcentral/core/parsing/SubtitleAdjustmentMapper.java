@@ -44,6 +44,7 @@ public class SubtitleAdjustmentMapper extends GenericMapper<SubtitleAdjustment>
 		if (info.containsKey(Series.PROP_NAME))
 		{
 			Series series = new Series(info.get(Series.PROP_NAME));
+			series.setType(Series.TYPE_SEASONED);
 			Season season = series.newSeason();
 			season.setNumber(parseProp(info, Season.PROP_NUMBER, Integer.class));
 			Episode epi = season.newEpisode();
@@ -69,6 +70,7 @@ public class SubtitleAdjustmentMapper extends GenericMapper<SubtitleAdjustment>
 
 		// Subtitle
 		Subtitle sub = new Subtitle();
+		sub.setMediaItem(mediaItem);
 		sub.setLanguage(info.get(Subtitle.PROP_LANGUAGE));
 		sub.setGroup(parseProp(info, Subtitle.PROP_GROUP, Group.class));
 		sub.getTags().addAll(parsePropList(info, Subtitle.PROP_TAGS, Tag.class));

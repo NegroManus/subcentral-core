@@ -23,7 +23,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class GenericMapper<T> implements Mapper<T>
 {
-	public static final Splitter							DEFAULT_ITEM_SPLITTER		= Splitter.onPattern("\\W+");
+	public static final Splitter							DEFAULT_ITEM_SPLITTER		= Splitter.onPattern("[^\\w-]+");
 
 	private Splitter										itemSplitter				= DEFAULT_ITEM_SPLITTER;
 	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions		= new HashMap<>();

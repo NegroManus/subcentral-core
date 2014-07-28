@@ -12,7 +12,7 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 
@@ -54,13 +54,13 @@ public class NamingPlayground
 		rel.setName("Psych.S01E01.HDTV.XviD-LOL");
 		rel.setMedia(ImmutableList.of(movie));
 		rel.setGroup(new Group("DIMENSION"));
-		rel.setTags(Releases.tags("720p", "HDTV", "x264"));
+		rel.setTags(Tag.tags("720p", "HDTV", "x264"));
 
 		// Subtitle
 		Subtitle sub1 = new Subtitle();
 		sub1.setMediaItem(epi);
 		sub1.setLanguage("VO");
-		sub1.setTags(Releases.tags("orig", "C"));
+		sub1.setTags(Tag.tags("orig", "C"));
 		sub1.setGroup(new Group("SubCentral"));
 
 		// Subtitle release

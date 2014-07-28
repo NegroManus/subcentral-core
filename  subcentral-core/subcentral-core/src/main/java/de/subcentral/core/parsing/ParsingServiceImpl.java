@@ -6,16 +6,17 @@ import java.util.Map.Entry;
 
 import org.jsoup.helper.Validate;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ParsingServiceImpl implements ParsingService
 {
-	private String								domain;
-	private Multimap<Class<?>, MappingMatcher>	matchers	= HashMultimap.create();
-	private MappingService						mappingService;
+	private String									domain;
+	private ListMultimap<Class<?>, MappingMatcher>	matchers	= LinkedListMultimap.create();
+	private MappingService							mappingService;
 
 	@Override
 	public String getDomain()
@@ -33,7 +34,7 @@ public class ParsingServiceImpl implements ParsingService
 		return matchers;
 	}
 
-	public void setMatchers(Multimap<Class<?>, MappingMatcher> matchers)
+	public void setMatchers(ListMultimap<Class<?>, MappingMatcher> matchers)
 	{
 		this.matchers = matchers;
 	}
