@@ -53,7 +53,7 @@ public class SubtitleAdjustmentMapper extends GenericMapper<SubtitleAdjustment>
 			{
 				series.setTitle(title);
 			}
-			// series.setDate(); maybe?
+			series.setDate(parseProp(info, Series.PROP_DATE, Year.class));
 			series.setCountriesOfOrigin(parsePropList(info, Series.PROP_COUNTRIES_OF_ORIGIN, String.class));
 			Season season = series.newSeason();
 			season.setNumber(parseProp(info, Season.PROP_NUMBER, Integer.class));

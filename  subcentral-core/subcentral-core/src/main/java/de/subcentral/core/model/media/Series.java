@@ -64,6 +64,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	public static final String					STATE_ENDED					= "ENDED";
 
 	private String								name;
+	private Temporal							date;
 	private String								type;
 	private String								state;
 	private final List<String>					originalLanguages			= new ArrayList<>(1);
@@ -106,13 +107,16 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return Media.TYPE_SERIES;
 	}
 
-	/**
-	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series, <code>null</code> if this series has no episodes.
-	 */
 	@Override
 	public Temporal getDate()
 	{
-		return episodes.isEmpty() ? null : episodes.get(0).getDate();
+		return date;
+	}
+
+	public void setDate(Temporal date)
+	{
+		Models.validateTemporalClass(date);
+		this.date = date;
 	}
 
 	public String getType()
@@ -194,6 +198,14 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	public String getPrimaryCountryOfOrigin()
 	{
 		return countriesOfOrigin.isEmpty() ? null : countriesOfOrigin.get(0);
+	}
+
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series, <code>null</code> if this series has no episodes.
+	 */
+	public Temporal getDateOfFirstEpisode()
+	{
+		return episodes.isEmpty() ? null : episodes.get(0).getDate();
 	}
 
 	/**
@@ -357,6 +369,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)
+				.add("date", date)
 				.add("type", type)
 				.add("state", state)
 				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
