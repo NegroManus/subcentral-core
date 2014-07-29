@@ -35,7 +35,7 @@ public class LookupTest
 		PreDbLookup preDbLookup = new PreDbLookup();
 		LookupQuery<Release> preDbQuery = preDbLookup.createQuery("^pacific rim 720p");
 		// LookupQuery<Release> preDbQuery = preDbLookup.createQueryFromEntity(epi);
-		List<Release> results = preDbQuery.getResults();
+		List<Release> results = preDbQuery.execute();
 		results.forEach(r -> System.out.println(r));
 
 		// File resource = new File(Resources.getResource("de/subcentral/core/impl/predb/psych.s06e05.html").toURI());

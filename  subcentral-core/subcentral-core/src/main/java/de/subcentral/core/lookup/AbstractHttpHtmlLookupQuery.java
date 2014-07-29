@@ -25,7 +25,7 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 	}
 
 	@Override
-	public List<R> getResults() throws LookupException
+	public List<R> execute() throws LookupException
 	{
 		try
 		{

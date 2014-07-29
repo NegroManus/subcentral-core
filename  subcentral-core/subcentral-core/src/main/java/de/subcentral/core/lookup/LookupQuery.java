@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface LookupQuery<T>
 {
-	public List<T> getResults() throws LookupException;
+	public List<T> execute() throws LookupException;
 }

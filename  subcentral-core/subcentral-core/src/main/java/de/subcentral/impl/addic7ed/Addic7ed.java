@@ -39,17 +39,19 @@ public class Addic7ed
 
 	private static ListMultimap<Class<?>, MappingMatcher> initMatchers()
 	{
-		final String seriesSeasonEpiNumsPattern = Parsings.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
-		// final String tagsPattern = "((HI|C|orig|updated)+)";
-		final String langPattern = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian \\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
-		final String langTagsSourcePattern = langPattern + "\\.(.+)\\.(Addic7ed\\.com)";
+		String seriesSeasonEpiNumsPattern = Parsings.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
+		// String tagsPattern = "((HI|C|orig|updated)+)";
+		String langPattern = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian \\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
+		String langTagsSourcePattern = langPattern + "\\.(.+)\\.(Addic7ed\\.com)";
 
 		ImmutableListMultimap.Builder<Class<?>, MappingMatcher> map = ImmutableListMultimap.builder();
 
 		// init the matchers
+		// --------------
 		// Episode matchers
 
 		// WEB-DL but then no "-" after that (which would indicate a group)
+		// Examples:
 		// Ben 10_ Omniverse - 01x26 - The Frogs of War, Part 1.WEB-DL.x264.AAC.English.C.orig.Addic7ed.com
 		Pattern p101 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(WEB-DL\\.[\\w\\.]+)\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
@@ -189,6 +191,7 @@ public class Addic7ed
 		grps201.put(7, Subtitle.PROP_SOURCE);
 		NumericGroupMappingMatcher matcher201 = new NumericGroupMappingMatcher(p201, grps201.build());
 
+		// --------------
 		// add all the matchers to the map
 		map.put(SubtitleAdjustment.class, matcher101);
 		map.put(SubtitleAdjustment.class, matcher102);
