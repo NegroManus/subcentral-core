@@ -21,7 +21,7 @@ import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public abstract class GenericMapper<T> implements Mapper<T>
+public class PropParsingService
 {
 	public static final Splitter							DEFAULT_ITEM_SPLITTER		= Splitter.onPattern("[^\\w-]+");
 
@@ -29,45 +29,27 @@ public abstract class GenericMapper<T> implements Mapper<T>
 	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions		= new HashMap<>();
 	private Map<SimplePropDescriptor, Function<String, ?>>	propertyFromStringFunctions	= new HashMap<>();
 
-	public GenericMapper()
+	public PropParsingService()
 	{
 		// add the default type fromString functions
 		// Boolean
-		Function<String, Boolean> boolFn = s -> Boolean.parseBoolean(s);
-
+		typeFromStringFunctions.put(Boolean.class, Boolean::parseBoolean);
 		// Numbers
-		Function<String, Integer> intFn = s -> Integer.parseInt(s);
-		Function<String, Long> longFn = s -> Long.parseLong(s);
-		Function<String, Float> floatFn = s -> Float.parseFloat(s);
-		Function<String, Double> doubleFn = s -> Double.parseDouble(s);
-		Function<String, BigInteger> biFn = s -> new BigInteger(s);
-		Function<String, BigDecimal> bdFn = s -> new BigDecimal(s);
-
+		typeFromStringFunctions.put(Integer.class, Integer::parseInt);
+		typeFromStringFunctions.put(Long.class, Long::parseLong);
+		typeFromStringFunctions.put(Float.class, Float::parseFloat);
+		typeFromStringFunctions.put(Double.class, Double::parseDouble);
+		typeFromStringFunctions.put(BigInteger.class, s -> new BigInteger(s));
+		typeFromStringFunctions.put(BigDecimal.class, s -> new BigDecimal(s));
 		// Temporals
-		Function<String, Year> yearFn = s -> Year.parse(s);
-		Function<String, LocalDate> dateFn = s -> LocalDate.parse(s);
-		Function<String, LocalDateTime> dateTimeFn = s -> LocalDateTime.parse(s);
-		Function<String, ZonedDateTime> zonedDateTimeFn = s -> ZonedDateTime.parse(s);
-
+		typeFromStringFunctions.put(Year.class, Year::parse);
+		typeFromStringFunctions.put(LocalDate.class, LocalDate::parse);
+		typeFromStringFunctions.put(LocalDateTime.class, LocalDateTime::parse);
+		typeFromStringFunctions.put(ZonedDateTime.class, ZonedDateTime::parse);
 		// Model specific types
-		Function<String, Tag> tagFn = s -> new Tag(s);
-		Function<String, Group> grpFn = s -> new Group(s);
-		Function<String, Nuke> nukeFn = s -> new Nuke(s);
-
-		typeFromStringFunctions.put(Boolean.class, boolFn);
-		typeFromStringFunctions.put(Integer.class, intFn);
-		typeFromStringFunctions.put(Long.class, longFn);
-		typeFromStringFunctions.put(Float.class, floatFn);
-		typeFromStringFunctions.put(Double.class, doubleFn);
-		typeFromStringFunctions.put(BigInteger.class, biFn);
-		typeFromStringFunctions.put(BigDecimal.class, bdFn);
-		typeFromStringFunctions.put(Year.class, yearFn);
-		typeFromStringFunctions.put(LocalDate.class, dateFn);
-		typeFromStringFunctions.put(LocalDateTime.class, dateTimeFn);
-		typeFromStringFunctions.put(ZonedDateTime.class, zonedDateTimeFn);
-		typeFromStringFunctions.put(Tag.class, tagFn);
-		typeFromStringFunctions.put(Group.class, grpFn);
-		typeFromStringFunctions.put(Nuke.class, nukeFn);
+		typeFromStringFunctions.put(Tag.class, s -> new Tag(s));
+		typeFromStringFunctions.put(Group.class, s -> new Group(s));
+		typeFromStringFunctions.put(Nuke.class, s -> new Nuke(s));
 	}
 
 	public Splitter getItemSplitter()
@@ -100,7 +82,7 @@ public abstract class GenericMapper<T> implements Mapper<T>
 		this.propertyFromStringFunctions = propertyFromStringFunctions;
 	}
 
-	protected <P> P parseProp(Map<SimplePropDescriptor, String> info, SimplePropDescriptor propDescriptor, Class<P> propClass)
+	public <P> P parseProp(Map<SimplePropDescriptor, String> info, SimplePropDescriptor propDescriptor, Class<P> propClass)
 	{
 		String prop = info.get(propDescriptor);
 		if (StringUtils.isBlank(prop))
@@ -110,7 +92,7 @@ public abstract class GenericMapper<T> implements Mapper<T>
 		return doParseProp(prop, propDescriptor, propClass);
 	}
 
-	protected <P> List<P> parsePropList(Map<SimplePropDescriptor, String> info, SimplePropDescriptor propDescriptor, Class<P> propClass)
+	public <P> List<P> parsePropList(Map<SimplePropDescriptor, String> info, SimplePropDescriptor propDescriptor, Class<P> propClass)
 	{
 		String propList = info.get(propDescriptor);
 		if (StringUtils.isBlank(propList))
