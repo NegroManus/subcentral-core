@@ -107,9 +107,10 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The unique name of this release. E.g. "Psych.S08E01.HDTV.x264-EXCELLENCE". Consisting of the name of the {@link #getMedia() media}
+	 * ("Psych S08E01"), the {@link #getTags() tags} (HDTV, x264) and the {@link #getGroup() group} ("EXCELLENCE").
 	 * 
-	 * @return The unique name of this release (e.g. "Psych.S08E01.HDTV.x264-EXCELLENCE"). Consisting of the name of the {@link #getMedia() media}
-	 *         ("Psych S08E01"), the {@link #getTags() tags} (HDTV, x264) and the {@link #getGroup() group} ("EXCELLENCE").
+	 * @return the name
 	 */
 
 	public String getName()
@@ -123,9 +124,10 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The contained media. For the most cases, a Release contains only one media. But, for example, multi-part
+	 * {@link de.subcentral.core.model.media.Episode Episodes} are sometimes packed into one Release.
 	 * 
-	 * @return The contained media. For the most cases, a Release contains only one media. But, for example, multi-part
-	 *         {@link de.subcentral.core.model.media.Episode Episodes} are sometimes packed into one Release.
+	 * @return the contained media
 	 */
 
 	public List<Media> getMedia()
@@ -141,8 +143,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The (spoken or written) languages of the media of this release. The languages may also appear in the tags.
 	 * 
-	 * @return The (spoken or written) languages of the media of this release. The languages may also appear in the tags.
+	 * @return the languages.
 	 */
 	public List<String> getLanguages()
 	{
@@ -155,8 +158,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * @return The release tags (like XviD, WEB-DL, DD5.1, 720p, HDTV, PROPER, REPACK, GERMAN CUSTOM SUBBED, FRENCH, NLSUBBED ...). May contain
-	 *         language tags.
+	 * The release tags. Like XviD, WEB-DL, DD5.1, 720p, HDTV, PROPER, REPACK, GERMAN CUSTOM SUBBED, FRENCH, NLSUBBED, etc. May contain language tags.
+	 * 
+	 * @return the tags
 	 */
 	public List<Tag> getTags()
 	{
@@ -171,8 +175,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The group which released this release.
 	 * 
-	 * @return The release group.
+	 * @return the release group
 	 * @see #getSource()
 	 */
 	public Group getGroup()
@@ -186,8 +191,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The release section / category.
 	 * 
-	 * @return The release section / category.
+	 * @return the section
 	 */
 	public String getSection()
 	{
@@ -200,8 +206,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The release date.
 	 * 
-	 * @return The release date.
+	 * @return the date.
 	 */
 	public Temporal getDate()
 	{
@@ -215,8 +222,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The total file size of the release in bytes.
 	 * 
-	 * @return The total file size of the release in bytes.
+	 * @return the file size
 	 */
 
 	public long getSize()
@@ -230,8 +238,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The number of files which form this release. Typically the number of archive files in which the release is split.
 	 * 
-	 * @return The number of files which form this release. Typically the number of archive files in which the release is split.
+	 * @return the file count
 	 */
 	public int getFileCount()
 	{
@@ -244,8 +253,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The nukes. If a Release violates the rules, it gets nuked. Then, a Nuke instance is associated with it.
 	 * 
-	 * @return The nukes. If a Release violates the rules, it gets nuked. Then, a Nuke instance is associated with it.
+	 * @return the nukes
 	 */
 	public List<Nuke> getNukes()
 	{
@@ -260,8 +270,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * Information about this release / the release notes (typically, the text of the nfo file).
 	 * 
-	 * @return Information about this release / the release notes (typically, the text of the nfo file).
+	 * @return the information
 	 */
 	public String getInfo()
 	{
@@ -274,8 +285,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The URL of the nfo file.
 	 * 
-	 * @return The URL of the nfo file.
+	 * @return the information URL
 	 */
 	public String getInfoUrl()
 	{
@@ -288,8 +300,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The name of the source of this release. Typically the site which released this Release.
 	 * 
-	 * @return The name of the source of this release. Typically the site which released this Release.
+	 * @return the source
 	 */
 	public String getSource()
 	{
@@ -302,8 +315,9 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The URL of the source of this release. Typically the site which released this Release.
 	 * 
-	 * @return The URL of the source of this release. Typically the site which released this Release.
+	 * @return the source URL
 	 */
 	public String getSourceUrl()
 	{

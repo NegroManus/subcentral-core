@@ -1,5 +1,6 @@
 package de.subcentral.core.model.subtitle;
 
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,7 +45,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	// In 99,9% of the cases, there is only one subtitle
 	private final List<Subtitle>				subtitles						= new ArrayList<>(1);
 	// Most adjustments are compatible to 1-2 releases. Maybe 5-6 sometimes
-	// HashMa / HashSet initial capacities should be a power of 2
+	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<Release>					matchingReleases				= new HashSet<>(2);
 	private Temporal							date;
 	private long								size							= 0L;
@@ -224,6 +225,21 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public boolean isNuked()
 	{
 		return !nukes.isEmpty();
+	}
+
+	public void nuke(String nukeReason)
+	{
+		nukes.add(new Nuke(nukeReason));
+	}
+
+	public void nuke(String nukeReason, Temporal date)
+	{
+		nukes.add(new Nuke(nukeReason, date));
+	}
+
+	public void nukeNow(String nukeReason)
+	{
+		nukes.add(new Nuke(nukeReason, ZonedDateTime.now()));
 	}
 
 	public void addAdjuster(Contributor contributor)

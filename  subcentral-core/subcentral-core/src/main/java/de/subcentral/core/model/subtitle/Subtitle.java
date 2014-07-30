@@ -180,8 +180,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * Whether the subtitle contains annotations for the hearing impaired.
 	 * 
-	 * @return Whether the subtitle contains annotations for the hearing impaired.
+	 * @return whether or not hearing impaired
 	 */
 	public boolean isHearingImpaired()
 	{
@@ -204,7 +205,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The tag list must not contain the following tags / information:
+	 * The tags of this subtitle. The tag list must not contain the following tags / information:
 	 * <ul>
 	 * <li><b>Language tags</b> like "German", "de" (the language is stored separately in {@link #getLanguage()})</li>
 	 * <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in {@link #getForeignParts()})</li>
@@ -214,7 +215,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 * </ul>
 	 * All other important information about this subtitle may be stored in the tag list.
 	 * 
-	 * @return The tags of this subtitle.
+	 * @return the tags
 	 */
 	public List<Tag> getTags()
 	{
@@ -229,10 +230,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The version gets incremented whenever this subtitle is changed by its contributors. If someone other than its original contributors improves a
-	 * subtitle, this leads to a new Subtitle which is {@link #getBasis() based on} the old one.
+	 * The version of this subtitle. Initially <code>1</code>. The version gets incremented whenever this subtitle is changed by its contributors. If
+	 * someone other than its original contributors improves a subtitle, this leads to a new Subtitle which is {@link #getBasis() based on} the old
+	 * one.
 	 * 
-	 * @return The version of this subtitle. Initially <code>1</code>.
+	 * @return the version
 	 */
 	public int getVersion()
 	{
@@ -245,8 +247,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * The group which released this subtitle.
 	 * 
-	 * @return The group which released this subtitle.
+	 * @return the release group
 	 * @see #getSource()
 	 */
 	public Group getGroup()
@@ -260,9 +263,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * See the <code>PRODUCTION_TYPE_*</code> constants.
+	 * How this subtitles was produced. See the <code>PRODUCTION_TYPE_*</code> constants.
 	 * 
-	 * @return The production type. How this subtitles was produced.
+	 * @return the production type
 	 */
 	public String getProductionType()
 	{
@@ -275,8 +278,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * The information (description) about this subtitle. Like release notes.
 	 * 
-	 * @return The information (description) about this subtitle. Like release notes.
+	 * @return the information
 	 */
 	public String getInfo()
 	{
@@ -289,8 +293,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * An URL pointing to a file or a website providing the information about this subtitle.
 	 * 
-	 * @return An URL pointing to a file or a website providing the information about this subtitle.
+	 * @return the information URL
 	 */
 	public String getInfoUrl()
 	{
@@ -303,8 +308,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * The source of this subtitle. Typically the site which released this Subtitle.
 	 * 
-	 * @return The source of this subtitle. Typically the site which released this Subtitle.
+	 * @return the source
 	 */
 	public String getSource()
 	{
@@ -317,8 +323,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * An URL pointing to the website of the source of this subtitle. Typically the site which released this Subtitle.
 	 * 
-	 * @return An URL pointing to the website of the source of this subtitle. Typically the site which released this Subtitle.
+	 * @return the source URL
 	 */
 	public String getSourceUrl()
 	{
@@ -344,9 +351,10 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * The subtitle on which this subtitle was based on. Only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and
+	 * {@link #PRODUCTION_TYPE_TRANSLATION}.
 	 * 
-	 * @return The subtitle on which this subtitle was based on (only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and
-	 *         {@link #PRODUCTION_TYPE_TRANSLATION}.
+	 * @return the basis
 	 */
 	public Subtitle getBasis()
 	{
