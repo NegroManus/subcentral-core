@@ -1,6 +1,5 @@
 package de.subcentral.core.model.media;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Objects;
@@ -48,11 +47,9 @@ public class StandardAvMediaItem extends StandardMediaItem implements AvMediaIte
 	}
 
 	@Override
-	public void setMediaContentType(String mediaContentType)
+	public void setMediaContentType(String mediaContentType) throws IllegalArgumentException
 	{
-		Validate.validState(mediaContentType == null || Media.CONTENT_TYPE_AUDIO.equals(mediaContentType)
-				|| Media.CONTENT_TYPE_VIDEO.equals(mediaContentType),
-				"mediaContentType must be " + Media.CONTENT_TYPE_AUDIO + " or " + Media.CONTENT_TYPE_VIDEO);
+		Medias.validateMediaContentType(new String[] { Media.MEDIA_CONTENT_TYPE_AUDIO, Media.MEDIA_CONTENT_TYPE_VIDEO }, mediaContentType);
 		super.setMediaContentType(mediaContentType);
 	}
 

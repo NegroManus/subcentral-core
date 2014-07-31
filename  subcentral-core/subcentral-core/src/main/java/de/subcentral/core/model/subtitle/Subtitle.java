@@ -23,7 +23,6 @@ import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -469,7 +468,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.compare(language, o.language, Settings.STRING_ORDERING)
 				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)
-				.compare(tags, o.tags, Releases.TAGS_COMPARATOR)
+				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group)
 				.compare(version, version)
 				.result();

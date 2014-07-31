@@ -70,7 +70,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	private final List<String>					originalLanguages			= new ArrayList<>(1);
 	private final List<String>					countriesOfOrigin			= new ArrayList<>(1);
 	private int									regularRunningTime			= 0;
-	// HashMa / HashSet initial capacities should be a power of 2
+	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<String>					genres						= new HashSet<>(4);
 	// Normally, the Seasons and Episodes are not stored in the Series
 	private final List<Season>					seasons						= new ArrayList<>(0);
@@ -104,7 +104,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String getMediaType()
 	{
-		return Media.TYPE_SERIES;
+		return Media.MEDIA_TYPE_SERIES;
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return date;
 	}
 
-	public void setDate(Temporal date)
+	public void setDate(Temporal date) throws IllegalArgumentException
 	{
 		Models.validateTemporalClass(date);
 		this.date = date;

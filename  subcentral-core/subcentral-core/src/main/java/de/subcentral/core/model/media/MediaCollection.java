@@ -7,7 +7,7 @@ public interface MediaCollection<M extends MediaItem> extends Media
 	@Override
 	public default String getMediaContentType()
 	{
-		return Media.CONTENT_TYPE_COLLECTION;
+		return Media.MEDIA_CONTENT_TYPE_COLLECTION;
 	}
 
 	public List<M> getMediaItems();

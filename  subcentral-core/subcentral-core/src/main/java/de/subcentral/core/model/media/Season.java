@@ -75,7 +75,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String getMediaType()
 	{
-		return Media.TYPE_SEASON;
+		return Media.MEDIA_TYPE_SEASON;
 	}
 
 	public Integer getNumber()

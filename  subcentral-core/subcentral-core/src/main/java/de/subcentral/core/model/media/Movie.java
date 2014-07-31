@@ -45,13 +45,13 @@ public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 	@Override
 	public String getMediaType()
 	{
-		return Media.TYPE_MOVIE;
+		return Media.MEDIA_TYPE_MOVIE;
 	}
 
 	@Override
 	public String getMediaContentType()
 	{
-		return Media.CONTENT_TYPE_VIDEO;
+		return Media.MEDIA_CONTENT_TYPE_VIDEO;
 	}
 
 	// Object methods

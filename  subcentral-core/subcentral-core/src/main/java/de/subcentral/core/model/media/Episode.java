@@ -231,13 +231,13 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	@Override
 	public String getMediaType()
 	{
-		return Media.TYPE_EPISODE;
+		return Media.MEDIA_TYPE_EPISODE;
 	}
 
 	@Override
 	public String getMediaContentType()
 	{
-		return Media.CONTENT_TYPE_VIDEO;
+		return Media.MEDIA_CONTENT_TYPE_VIDEO;
 	}
 
 	public Integer getNumberInSeries()

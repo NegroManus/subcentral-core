@@ -121,7 +121,7 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 	{
 		if (propValue == null)
 		{
-			return null;
+			return "";
 		}
 		@SuppressWarnings("unchecked")
 		Function<P, String> f = (Function<P, String>) propertyToStringFunctions.get(propDescriptor);

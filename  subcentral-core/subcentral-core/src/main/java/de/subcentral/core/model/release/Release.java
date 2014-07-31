@@ -215,7 +215,7 @@ public class Release implements Comparable<Release>
 		return date;
 	}
 
-	public void setDate(Temporal date)
+	public void setDate(Temporal date) throws IllegalArgumentException
 	{
 		Models.validateTemporalClass(date);
 		this.date = date;

@@ -3,6 +3,7 @@ package de.subcentral.core.model.subtitle;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,19 +17,19 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 
 public class Subtitles
 {
-	public Set<String> generateNames(SubtitleAdjustment subRls, NamingService namingService)
+	public Set<String> generateNames(SubtitleAdjustment subAdj, NamingService namingService)
 	{
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
-		for (Release rls : subRls.getMatchingReleases())
+		for (Release rls : subAdj.getMatchingReleases())
 		{
-			names.add(namingService.name(subRls, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, rls)));
+			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, rls)));
 		}
 		return names.build();
 	}
 
-	private Subtitles()
+	public static Consumer<Subtitle> getSubtitleTagsNormalizer()
 	{
-		// utility class
+		return Subtitles::normalizeTags;
 	}
 
 	public static Subtitle normalizeTags(Subtitle subtitle)
@@ -59,4 +60,10 @@ public class Subtitles
 	{
 		return tags.contains(Subtitle.TAG_HEARING_IMPAIRED);
 	}
+
+	private Subtitles()
+	{
+		// utility class
+	}
+
 }

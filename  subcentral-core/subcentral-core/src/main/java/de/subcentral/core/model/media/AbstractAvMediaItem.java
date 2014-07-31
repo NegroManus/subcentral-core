@@ -15,7 +15,7 @@ public abstract class AbstractAvMediaItem extends AbstractMedia implements AvMed
 		return date;
 	}
 
-	public void setDate(Temporal date)
+	public void setDate(Temporal date) throws IllegalArgumentException
 	{
 		Models.validateTemporalClass(date);
 		this.date = date;

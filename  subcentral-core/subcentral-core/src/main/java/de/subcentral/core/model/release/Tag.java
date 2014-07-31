@@ -2,26 +2,30 @@ package de.subcentral.core.model.release;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import de.subcentral.core.Settings;
+import de.subcentral.core.util.ListComparator;
 
 public class Tag implements Comparable<Tag>
 {
+	public static final Comparator<List<Tag>>	TAGS_COMPARATOR	= ListComparator.create();
+
 	/**
 	 * Tags describing the source. Like HDTV, BluRay, BDRip, DVDRip, ...
 	 */
-	public static final String	CATEGORY_SOURCE	= "SOURCE";
+	public static final String					CATEGORY_SOURCE	= "SOURCE";
 
 	/**
 	 * Tags describing the format. Like x264, XviD, DD5.1, AC3, 720p, 1080p, (subtitle tags), (language tags), ...
 	 */
-	public static final String	CATEGORY_FORMAT	= "FORMAT";
+	public static final String					CATEGORY_FORMAT	= "FORMAT";
 
 	/**
 	 * Tags for meta information about the release itself. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
 	 */
-	public static final String	CATEGORY_META	= "META";
+	public static final String					CATEGORY_META	= "META";
 
 	public static List<Tag> tags(Collection<String> tags)
 	{

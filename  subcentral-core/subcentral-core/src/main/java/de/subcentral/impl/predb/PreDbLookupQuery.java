@@ -155,7 +155,7 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			rls.setDate(date);
 		}
 
-		// If parent cat = TV, and child cat = SD -> section=TV-SD
+		// Example: If parent cat = TV, and child cat = SD -> section=TV-SD
 		Element catSpan = rlsDiv.select("span[class*=cat]").first();
 		if (catSpan != null)
 		{
@@ -484,12 +484,14 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			else if (section.startsWith("Music"))
 			{
 				StandardAvMediaItem avMediaItem = new StandardAvMediaItem(mediaTitle);
-				avMediaItem.setMediaContentType(Media.CONTENT_TYPE_AUDIO);
+				avMediaItem.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
 				media = avMediaItem;
 			}
 			else if (section.startsWith("TV"))
 			{
-				media = new StandardAvMediaItem(mediaTitle);
+				StandardAvMediaItem avMediaItem = new StandardAvMediaItem(mediaTitle);
+				avMediaItem.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+				media = avMediaItem;
 			}
 			else
 			{
@@ -533,8 +535,8 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		}
 		else if (media instanceof StandardMediaItem)
 		{
-			StandardMediaItem stdMediaItem = (StandardMediaItem) media;
 			// also for StandardAvMediaItem
+			StandardMediaItem stdMediaItem = (StandardMediaItem) media;
 			if (plot != null)
 			{
 				stdMediaItem.setDescription(plot);

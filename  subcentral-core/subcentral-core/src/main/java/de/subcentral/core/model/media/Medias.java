@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import de.subcentral.core.Settings;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.Namings;
@@ -71,6 +73,15 @@ public class Medias
 				return Namings.name(media, namingService, parameters, mediaSeparator);
 			}
 		}
+	}
+
+	public static void validateMediaContentType(String[] allowedTypes, String mediaContentType) throws IllegalArgumentException
+	{
+		if (mediaContentType == null || ArrayUtils.contains(allowedTypes, mediaContentType))
+		{
+			return;
+		}
+		throw new IllegalArgumentException("mediaContentType must be null or one of " + allowedTypes);
 	}
 
 	private Medias()

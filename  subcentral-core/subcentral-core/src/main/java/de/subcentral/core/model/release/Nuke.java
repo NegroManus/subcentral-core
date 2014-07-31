@@ -47,7 +47,7 @@ public class Nuke implements Comparable<Nuke>
 		return date;
 	}
 
-	public void setDate(Temporal date)
+	public void setDate(Temporal date) throws IllegalArgumentException
 	{
 		Models.validateTemporalClass(date);
 		this.date = date;

@@ -89,9 +89,6 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 
 	public void setMediaContentType(String mediaContentType)
 	{
-		Validate.validState(mediaContentType == null || Media.CONTENT_TYPE_AUDIO.equals(mediaContentType)
-				|| Media.CONTENT_TYPE_VIDEO.equals(mediaContentType),
-				"mediaContentType must be " + Media.CONTENT_TYPE_AUDIO + " or " + Media.CONTENT_TYPE_VIDEO);
 		this.mediaContentType = mediaContentType;
 	}
 

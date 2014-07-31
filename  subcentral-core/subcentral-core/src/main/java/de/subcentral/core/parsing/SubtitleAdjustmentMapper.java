@@ -68,12 +68,12 @@ public class SubtitleAdjustmentMapper implements Mapper<SubtitleAdjustment>
 			{
 				series.setTitle(title);
 			}
-			series.setDate(pps.parseProp(info, Series.PROP_DATE, Year.class));
-			series.setCountriesOfOrigin(pps.parsePropList(info, Series.PROP_COUNTRIES_OF_ORIGIN, String.class));
+			series.setDate(pps.parse(info, Series.PROP_DATE, Year.class));
+			series.setCountriesOfOrigin(pps.parseList(info, Series.PROP_COUNTRIES_OF_ORIGIN, String.class));
 			Season season = series.newSeason();
-			season.setNumber(pps.parseProp(info, Season.PROP_NUMBER, Integer.class));
+			season.setNumber(pps.parse(info, Season.PROP_NUMBER, Integer.class));
 			Episode epi = season.newEpisode();
-			epi.setNumberInSeason(pps.parseProp(info, Episode.PROP_NUMBER_IN_SEASON, Integer.class));
+			epi.setNumberInSeason(pps.parse(info, Episode.PROP_NUMBER_IN_SEASON, Integer.class));
 			epi.setTitle(info.get(Episode.PROP_TITLE));
 			mediaItem = epi;
 		}
@@ -83,22 +83,22 @@ public class SubtitleAdjustmentMapper implements Mapper<SubtitleAdjustment>
 			Movie mov = new Movie();
 			mov.setName(info.get(Movie.PROP_NAME));
 			mov.setTitle(info.get(Movie.PROP_TITLE));
-			mov.setDate(pps.parseProp(info, Movie.PROP_DATE, Year.class));
+			mov.setDate(pps.parse(info, Movie.PROP_DATE, Year.class));
 			mediaItem = mov;
 		}
 
 		// Release
 		Release rls = new Release();
 		rls.getMedia().add(mediaItem);
-		rls.setGroup(pps.parseProp(info, Release.PROP_GROUP, Group.class));
-		rls.getTags().addAll(pps.parsePropList(info, Release.PROP_TAGS, Tag.class));
+		rls.setGroup(pps.parse(info, Release.PROP_GROUP, Group.class));
+		rls.getTags().addAll(pps.parseList(info, Release.PROP_TAGS, Tag.class));
 
 		// Subtitle
 		Subtitle sub = new Subtitle();
 		sub.setMediaItem(mediaItem);
 		sub.setLanguage(info.get(Subtitle.PROP_LANGUAGE));
-		sub.setGroup(pps.parseProp(info, Subtitle.PROP_GROUP, Group.class));
-		sub.getTags().addAll(pps.parsePropList(info, Subtitle.PROP_TAGS, Tag.class));
+		sub.setGroup(pps.parse(info, Subtitle.PROP_GROUP, Group.class));
+		sub.getTags().addAll(pps.parseList(info, Subtitle.PROP_TAGS, Tag.class));
 		Subtitles.normalizeTags(sub);
 		sub.setSource(info.get(Subtitle.PROP_SOURCE));
 

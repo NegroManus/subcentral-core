@@ -106,7 +106,7 @@ public class NameBuilder
 	{
 		if (propValue == null)
 		{
-			return null;
+			return "";
 		}
 		@SuppressWarnings("unchecked")
 		Function<P, String> f = (Function<P, String>) propertyToStringFunctions.get(propDescriptor);
