@@ -33,7 +33,7 @@ public class ParsingPlayground
 					System.out.println(fileName);
 					String name = fileName.toString().substring(0, fileName.toString().length() - 4);
 					System.out.println(name);
-					SubtitleAdjustment parsed = ps.parse(name, null, SubtitleAdjustment.class);
+					SubtitleAdjustment parsed = ps.parseTyped(name, null, SubtitleAdjustment.class);
 					System.out.println("Parsed to ... ");
 					System.out.println(parsed);
 					String nameOfParsed = NamingStandards.NAMING_SERVICE.name(parsed);

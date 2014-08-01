@@ -2,7 +2,7 @@ package de.subcentral.core.parsing;
 
 import java.util.List;
 
-public class ParsingServiceImpl implements ParsingService
+public class SimpleParsingService implements ParsingService
 {
 	private List<Parser<?>>	parsers;
 
@@ -34,19 +34,19 @@ public class ParsingServiceImpl implements ParsingService
 				}
 			}
 		}
-		throw new ParsingException("No parser in domain " + domain + " could parse input string '" + name + "'");
+		throw new ParsingException("No parser " + (domain == null ? "" : "with domain '" + domain + "'") + " could parse input string '" + name + "'");
 	}
 
 	@Override
-	public <T> T parse(String name, String domain, Class<T> targetClass)
+	public <T> T parseTyped(String name, String domain, Class<T> targetType)
 	{
 		for (Parser<?> p : parsers)
 		{
-			if ((domain == null || domain.equals(p.getDomain())) && (targetClass == null || targetClass.equals(p.getTargetClass())))
+			if ((domain == null || domain.equals(p.getDomain())) && (targetType == null || targetType.equals(p.getTargetType())))
 			{
 				try
 				{
-					return targetClass.cast(p.parse(name));
+					return targetType.cast(p.parse(name));
 				}
 				catch (ParsingException e)
 				{
@@ -55,6 +55,7 @@ public class ParsingServiceImpl implements ParsingService
 				}
 			}
 		}
-		throw new ParsingException("No parser in domain " + domain + " could parse input string '" + name + "'");
+		throw new ParsingException("No parser with " + (domain == null ? "" : "domain '" + domain + "' and ") + "target type " + targetType.getName()
+				+ " could parse input string '" + name + "'");
 	}
 }

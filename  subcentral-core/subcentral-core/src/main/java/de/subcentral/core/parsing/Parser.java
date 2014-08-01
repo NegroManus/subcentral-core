@@ -4,7 +4,7 @@ public interface Parser<T>
 {
 	public String getDomain();
 
-	public Class<T> getTargetClass();
+	public Class<T> getTargetType();
 
 	public T parse(String name) throws ParsingException;
 }

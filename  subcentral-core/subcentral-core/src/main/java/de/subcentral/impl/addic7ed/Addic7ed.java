@@ -14,7 +14,7 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ParsingServiceImpl;
+import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
@@ -22,7 +22,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7ed
 {
-	private static final ParsingServiceImpl	PARSING_SERVICE	= new ParsingServiceImpl();
+	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService();
 
 	static
 	{
