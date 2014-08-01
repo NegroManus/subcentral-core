@@ -1,6 +1,6 @@
 package de.subcentral.core.parsing;
 
-import java.time.Year;
+import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -68,7 +68,7 @@ public class SubtitleAdjustmentMapper implements Mapper<SubtitleAdjustment>
 			{
 				series.setTitle(title);
 			}
-			series.setDate(pps.parse(info, Series.PROP_DATE, Year.class));
+			series.setDate(pps.parse(info, Series.PROP_DATE, Temporal.class));
 			series.setCountriesOfOrigin(pps.parseList(info, Series.PROP_COUNTRIES_OF_ORIGIN, String.class));
 			Season season = series.newSeason();
 			season.setNumber(pps.parse(info, Season.PROP_NUMBER, Integer.class));
@@ -83,7 +83,7 @@ public class SubtitleAdjustmentMapper implements Mapper<SubtitleAdjustment>
 			Movie mov = new Movie();
 			mov.setName(info.get(Movie.PROP_NAME));
 			mov.setTitle(info.get(Movie.PROP_TITLE));
-			mov.setDate(pps.parse(info, Movie.PROP_DATE, Year.class));
+			mov.setDate(pps.parse(info, Movie.PROP_DATE, Temporal.class));
 			mediaItem = mov;
 		}
 

@@ -12,7 +12,7 @@ import com.google.common.base.Objects;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
-import de.subcentral.core.model.Prop;
+import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -30,20 +30,20 @@ import de.subcentral.core.util.SimplePropDescriptor;
  */
 public class Release implements Comparable<Release>
 {
-	public static final SimplePropDescriptor	PROP_NAME		= new SimplePropDescriptor(Release.class, Prop.NAME);
-	public static final SimplePropDescriptor	PROP_MEDIA		= new SimplePropDescriptor(Release.class, Prop.MEDIA);
-	public static final SimplePropDescriptor	PROP_TAGS		= new SimplePropDescriptor(Release.class, Prop.TAGS);
-	public static final SimplePropDescriptor	PROP_LANGUAGES	= new SimplePropDescriptor(Release.class, Prop.LANGUAGES);
-	public static final SimplePropDescriptor	PROP_GROUP		= new SimplePropDescriptor(Release.class, Prop.GROUP);
-	public static final SimplePropDescriptor	PROP_SECTION	= new SimplePropDescriptor(Release.class, Prop.SECTION);
-	public static final SimplePropDescriptor	PROP_DATE		= new SimplePropDescriptor(Release.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_SIZE		= new SimplePropDescriptor(Release.class, Prop.SIZE);
-	public static final SimplePropDescriptor	PROP_FILE_COUNT	= new SimplePropDescriptor(Release.class, Prop.FILE_COUNT);
-	public static final SimplePropDescriptor	PROP_NUKES		= new SimplePropDescriptor(Release.class, Prop.NUKES);
-	public static final SimplePropDescriptor	PROP_INFO		= new SimplePropDescriptor(Release.class, Prop.INFO);
-	public static final SimplePropDescriptor	PROP_INFO_URL	= new SimplePropDescriptor(Release.class, Prop.INFO_URL);
-	public static final SimplePropDescriptor	PROP_SOURCE		= new SimplePropDescriptor(Release.class, Prop.SOURCE);
-	public static final SimplePropDescriptor	PROP_SOURCE_URL	= new SimplePropDescriptor(Release.class, Prop.SOURCE_URL);
+	public static final SimplePropDescriptor	PROP_NAME		= new SimplePropDescriptor(Release.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_MEDIA		= new SimplePropDescriptor(Release.class, PropNames.MEDIA);
+	public static final SimplePropDescriptor	PROP_TAGS		= new SimplePropDescriptor(Release.class, PropNames.TAGS);
+	public static final SimplePropDescriptor	PROP_LANGUAGES	= new SimplePropDescriptor(Release.class, PropNames.LANGUAGES);
+	public static final SimplePropDescriptor	PROP_GROUP		= new SimplePropDescriptor(Release.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_SECTION	= new SimplePropDescriptor(Release.class, PropNames.SECTION);
+	public static final SimplePropDescriptor	PROP_DATE		= new SimplePropDescriptor(Release.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_SIZE		= new SimplePropDescriptor(Release.class, PropNames.SIZE);
+	public static final SimplePropDescriptor	PROP_FILE_COUNT	= new SimplePropDescriptor(Release.class, PropNames.FILE_COUNT);
+	public static final SimplePropDescriptor	PROP_NUKES		= new SimplePropDescriptor(Release.class, PropNames.NUKES);
+	public static final SimplePropDescriptor	PROP_INFO		= new SimplePropDescriptor(Release.class, PropNames.INFO);
+	public static final SimplePropDescriptor	PROP_INFO_URL	= new SimplePropDescriptor(Release.class, PropNames.INFO_URL);
+	public static final SimplePropDescriptor	PROP_SOURCE		= new SimplePropDescriptor(Release.class, PropNames.SOURCE);
+	public static final SimplePropDescriptor	PROP_SOURCE_URL	= new SimplePropDescriptor(Release.class, PropNames.SOURCE_URL);
 
 	private String								name;
 	// In 99,9% of the cases, there is only one Media per Release

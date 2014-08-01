@@ -25,7 +25,7 @@ public class MovieNamer extends AbstractPropertySequenceNamer<Movie>
 		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR_KEY, Boolean.class, PARAM_INCLUDE_YEAR_DEFAULT);
 
 		Builder b = new Builder();
-		b.append(Movie.PROP_NAME, movie.getTitleElseName());
+		b.append(Movie.PROP_NAME, movie.getTitleOrName());
 		if (includeYear)
 		{
 			b.appendIfNotNull(Movie.PROP_DATE, movie.getYear());

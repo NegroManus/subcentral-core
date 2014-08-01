@@ -14,21 +14,21 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
-import de.subcentral.core.model.Prop;
+import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
 {
-	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, Prop.SERIES);
-	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, Prop.NUMBER);
-	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Season.class, Prop.TITLE);
-	public static final SimplePropDescriptor	PROP_SPECIAL			= new SimplePropDescriptor(Season.class, Prop.SPECIAL);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(Season.class, Prop.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS			= new SimplePropDescriptor(Season.class, Prop.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY	= new SimplePropDescriptor(Season.class, Prop.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(Season.class, Prop.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS	= new SimplePropDescriptor(Season.class, Prop.FURTHER_INFO_URLS);
+	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
+	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
+	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Season.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_SPECIAL			= new SimplePropDescriptor(Season.class, PropNames.SPECIAL);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS			= new SimplePropDescriptor(Season.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY	= new SimplePropDescriptor(Season.class, PropNames.CONTENT_ADVISORY);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(Season.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO_URLS);
 
 	private Series								series;
 	private Integer								number;

@@ -18,7 +18,7 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Contributor;
 import de.subcentral.core.model.Models;
-import de.subcentral.core.model.Prop;
+import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Media;
@@ -30,15 +30,15 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 {
-	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.SUBTITLES);
+	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SUBTITLES);
 	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES			= new SimplePropDescriptor(SubtitleAdjustment.class,
-																						Prop.MATCHING_RELEASES);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_SIZE						= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.SIZE);
-	public static final SimplePropDescriptor	PROP_FILECOUNT					= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.FILE_COUNT);
-	public static final SimplePropDescriptor	PROP_NUKES						= new SimplePropDescriptor(SubtitleAdjustment.class, Prop.NUKES);
+																						PropNames.MATCHING_RELEASES);
+	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_SIZE						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SIZE);
+	public static final SimplePropDescriptor	PROP_FILECOUNT					= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.FILE_COUNT);
+	public static final SimplePropDescriptor	PROP_NUKES						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NUKES);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SubtitleAdjustment.class,
-																						Prop.CONTRIBUTIONS);
+																						PropNames.CONTRIBUTIONS);
 
 	public static final String					CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
 

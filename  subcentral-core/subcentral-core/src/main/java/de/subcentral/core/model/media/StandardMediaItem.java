@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.Objects;
 
 import de.subcentral.core.model.Models;
-import de.subcentral.core.model.Prop;
+import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -21,25 +21,25 @@ import de.subcentral.core.util.SimplePropDescriptor;
  */
 public class StandardMediaItem extends AbstractMedia implements MediaItem
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(StandardMediaItem.class, Prop.NAME);
-	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMediaItem.class, Prop.TITLE);
+	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.TITLE);
 	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE			= new SimplePropDescriptor(StandardMediaItem.class,
-																						Prop.MEDIA_CONTENT_TYPE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMediaItem.class, Prop.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(StandardMediaItem.class, Prop.DATE);
+																						PropNames.MEDIA_CONTENT_TYPE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMediaItem.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(StandardMediaItem.class,
-																						Prop.ORIGINAL_LANGUAGES);
+																						PropNames.ORIGINAL_LANGUAGES);
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(StandardMediaItem.class,
-																						Prop.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(StandardMediaItem.class, Prop.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMediaItem.class, Prop.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMediaItem.class, Prop.COVER_URLS);
+																						PropNames.COUNTRIES_OF_ORIGIN);
+	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMediaItem.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMediaItem.class, PropNames.COVER_URLS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(StandardMediaItem.class,
-																						Prop.CONTENT_ADVISORY);
+																						PropNames.CONTENT_ADVISORY);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(StandardMediaItem.class,
-																						Prop.CONTRIBUTIONS);
+																						PropNames.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(StandardMediaItem.class,
-																						Prop.FURTHER_INFO_URLS);
+																						PropNames.FURTHER_INFO_URLS);
 
 	protected String							name;
 	protected String							mediaType;

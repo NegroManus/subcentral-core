@@ -1,6 +1,6 @@
 package de.subcentral.core.model;
 
-public interface Prop
+public interface PropNames
 {
 	public static final String	BASIS				= "basis";
 	public static final String	CONTENT_ADVISORY	= "contentAdvisory";

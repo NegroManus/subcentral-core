@@ -19,14 +19,14 @@ import de.subcentral.core.Settings;
 public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 {
 	private final Class<?>	beanClass;
-	private final String	propertyName;
+	private final String	propName;
 
-	public SimplePropDescriptor(Class<?> beanClass, String propertyName)
+	public SimplePropDescriptor(Class<?> beanClass, String propName)
 	{
 		Validate.notNull(beanClass, "beanClass cannot be null");
-		Validate.notNull(propertyName, "propertyName cannot be null");
+		Validate.notNull(propName, "propName cannot be null");
 		this.beanClass = beanClass;
-		this.propertyName = propertyName;
+		this.propName = propName;
 	}
 
 	public Class<?> getBeanClass()
@@ -34,24 +34,25 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 		return beanClass;
 	}
 
-	public String getPropertyName()
+	public String getPropName()
 	{
-		return propertyName;
+		return propName;
 	}
 
+	// Convenience
 	public String getName()
 	{
-		return beanClass.getName() + "." + propertyName;
+		return beanClass.getName() + "." + propName;
 	}
 
 	public String getSimpleName()
 	{
-		return beanClass.getSimpleName() + "." + propertyName;
+		return beanClass.getSimpleName() + "." + propName;
 	}
 
 	public PropertyDescriptor toPropertyDescriptor() throws IntrospectionException
 	{
-		return new PropertyDescriptor(propertyName, beanClass);
+		return new PropertyDescriptor(propName, beanClass);
 	}
 
 	// Object methods
@@ -65,7 +66,7 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 		if (obj != null && SimplePropDescriptor.class == obj.getClass())
 		{
 			SimplePropDescriptor o = (SimplePropDescriptor) obj;
-			return beanClass.equals(o.beanClass) && propertyName.equals(o.propertyName);
+			return beanClass.equals(o.beanClass) && propName.equals(o.propName);
 		}
 		return false;
 	}
@@ -73,7 +74,7 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(11, 3).append(beanClass).append(propertyName).toHashCode();
+		return new HashCodeBuilder(11, 3).append(beanClass).append(propName).toHashCode();
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 		}
 		return ComparisonChain.start()
 				.compare(beanClass.getName(), o.beanClass.getName(), Settings.STRING_ORDERING)
-				.compare(propertyName, o.propertyName, Settings.STRING_ORDERING)
+				.compare(propName, o.propName, Settings.STRING_ORDERING)
 				.result();
 	}
 

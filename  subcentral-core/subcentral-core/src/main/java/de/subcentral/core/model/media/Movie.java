@@ -8,23 +8,23 @@ import com.google.common.base.Objects;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
-import de.subcentral.core.model.Prop;
+import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(Movie.class, Prop.NAME);
-	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(Movie.class, Prop.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(Movie.class, Prop.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(Movie.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(Movie.class, Prop.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Movie.class, Prop.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(Movie.class, Prop.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(Movie.class, Prop.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(Movie.class, Prop.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(Movie.class, Prop.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Movie.class, Prop.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(Movie.class, Prop.FURTHER_INFO_URLS);
+	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(Movie.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(Movie.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(Movie.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(Movie.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(Movie.class, PropNames.ORIGINAL_LANGUAGES);
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(Movie.class, PropNames.COUNTRIES_OF_ORIGIN);
+	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(Movie.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(Movie.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(Movie.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(Movie.class, PropNames.CONTENT_ADVISORY);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Movie.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(Movie.class, PropNames.FURTHER_INFO_URLS);
 
 	public Movie()
 	{

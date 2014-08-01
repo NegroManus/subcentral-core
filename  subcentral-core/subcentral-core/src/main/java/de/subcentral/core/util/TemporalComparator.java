@@ -35,6 +35,8 @@ public class TemporalComparator implements Comparator<Temporal>
 
 		Integer year1 = getOrNull(o1Utc, ChronoField.YEAR);
 		Integer year2 = getOrNull(o2Utc, ChronoField.YEAR);
+		Integer month1 = getOrNull(o1Utc, ChronoField.MONTH_OF_YEAR);
+		Integer month2 = getOrNull(o2Utc, ChronoField.MONTH_OF_YEAR);
 		Integer day1 = getOrNull(o1Utc, ChronoField.DAY_OF_YEAR);
 		Integer day2 = getOrNull(o2Utc, ChronoField.DAY_OF_YEAR);
 		Long nano1 = getLongOrNull(o1Utc, ChronoField.NANO_OF_DAY);
@@ -42,6 +44,7 @@ public class TemporalComparator implements Comparator<Temporal>
 
 		return ComparisonChain.start()
 				.compare(year1, year2, Settings.createDefaultOrdering())
+				.compare(month1, month2, Settings.createDefaultOrdering())
 				.compare(day1, day2, Settings.createDefaultOrdering())
 				.compare(nano1, nano2, Settings.createDefaultOrdering())
 				.result();

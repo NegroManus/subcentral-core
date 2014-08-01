@@ -17,7 +17,7 @@ import com.google.common.collect.ListMultimap;
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
-import de.subcentral.core.model.Prop;
+import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Medias;
@@ -28,20 +28,20 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
 {
-	public static final SimplePropDescriptor	PROP_MEDIA_ITEM				= new SimplePropDescriptor(Subtitle.class, Prop.MEDIA_ITEM);
-	public static final SimplePropDescriptor	PROP_LANGUAGE				= new SimplePropDescriptor(Subtitle.class, Prop.LANGUAGE);
-	public static final SimplePropDescriptor	PROP_HEARING_IMPAIRED		= new SimplePropDescriptor(Subtitle.class, Prop.HEARING_IMPAIRED);
-	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS			= new SimplePropDescriptor(Subtitle.class, Prop.FOREIGN_PARTS);
-	public static final SimplePropDescriptor	PROP_TAGS					= new SimplePropDescriptor(Subtitle.class, Prop.TAGS);
-	public static final SimplePropDescriptor	PROP_GROUP					= new SimplePropDescriptor(Subtitle.class, Prop.GROUP);
-	public static final SimplePropDescriptor	PROP_VERSION				= new SimplePropDescriptor(Subtitle.class, Prop.VERSION);
-	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE		= new SimplePropDescriptor(Subtitle.class, Prop.PRODUCTION_TYPE);
-	public static final SimplePropDescriptor	PROP_BASIS					= new SimplePropDescriptor(Subtitle.class, Prop.BASIS);
-	public static final SimplePropDescriptor	PROP_INFO					= new SimplePropDescriptor(Subtitle.class, Prop.INFO);
-	public static final SimplePropDescriptor	PROP_INFO_URL				= new SimplePropDescriptor(Subtitle.class, Prop.INFO_URL);
-	public static final SimplePropDescriptor	PROP_SOURCE					= new SimplePropDescriptor(Subtitle.class, Prop.SOURCE);
-	public static final SimplePropDescriptor	PROP_SOURCE_URL				= new SimplePropDescriptor(Subtitle.class, Prop.SOURCE_URL);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Subtitle.class, Prop.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_MEDIA_ITEM				= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA_ITEM);
+	public static final SimplePropDescriptor	PROP_LANGUAGE				= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
+	public static final SimplePropDescriptor	PROP_HEARING_IMPAIRED		= new SimplePropDescriptor(Subtitle.class, PropNames.HEARING_IMPAIRED);
+	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS			= new SimplePropDescriptor(Subtitle.class, PropNames.FOREIGN_PARTS);
+	public static final SimplePropDescriptor	PROP_TAGS					= new SimplePropDescriptor(Subtitle.class, PropNames.TAGS);
+	public static final SimplePropDescriptor	PROP_GROUP					= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_VERSION				= new SimplePropDescriptor(Subtitle.class, PropNames.VERSION);
+	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE		= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
+	public static final SimplePropDescriptor	PROP_BASIS					= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
+	public static final SimplePropDescriptor	PROP_INFO					= new SimplePropDescriptor(Subtitle.class, PropNames.INFO);
+	public static final SimplePropDescriptor	PROP_INFO_URL				= new SimplePropDescriptor(Subtitle.class, PropNames.INFO_URL);
+	public static final SimplePropDescriptor	PROP_SOURCE					= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
+	public static final SimplePropDescriptor	PROP_SOURCE_URL				= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE_URL);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
 
 	public static final Tag						TAG_HEARING_IMPAIRED		= new Tag("HI", "Hearing Impaired", Tag.CATEGORY_FORMAT);
 

@@ -14,29 +14,29 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
-import de.subcentral.core.model.Prop;
+import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 {
-	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Episode.class, Prop.NAME);
-	public static final SimplePropDescriptor	PROP_SERIES					= new SimplePropDescriptor(Episode.class, Prop.SERIES);
-	public static final SimplePropDescriptor	PROP_NUMBER_IN_SERIES		= new SimplePropDescriptor(Episode.class, Prop.NUMBER_IN_SERIES);
-	public static final SimplePropDescriptor	PROP_SEASON					= new SimplePropDescriptor(Episode.class, Prop.SEASON);
-	public static final SimplePropDescriptor	PROP_NUMBER_IN_SEASON		= new SimplePropDescriptor(Episode.class, Prop.NUMBER_IN_SEASON);
-	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Episode.class, Prop.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(Episode.class, Prop.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(Episode.class, Prop.DATE);
-	public static final SimplePropDescriptor	PROP_SPECIAL				= new SimplePropDescriptor(Episode.class, Prop.SPECIAL);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(Episode.class, Prop.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Episode.class, Prop.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Episode.class, Prop.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Episode.class, Prop.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(Episode.class, Prop.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(Episode.class, Prop.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Episode.class, Prop.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS		= new SimplePropDescriptor(Episode.class, Prop.FURTHER_INFO_URLS);
+	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Episode.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_SERIES					= new SimplePropDescriptor(Episode.class, PropNames.SERIES);
+	public static final SimplePropDescriptor	PROP_NUMBER_IN_SERIES		= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SERIES);
+	public static final SimplePropDescriptor	PROP_SEASON					= new SimplePropDescriptor(Episode.class, PropNames.SEASON);
+	public static final SimplePropDescriptor	PROP_NUMBER_IN_SEASON		= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SEASON);
+	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Episode.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(Episode.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(Episode.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_SPECIAL				= new SimplePropDescriptor(Episode.class, PropNames.SPECIAL);
+	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(Episode.class, PropNames.ORIGINAL_LANGUAGES);
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Episode.class, PropNames.COUNTRIES_OF_ORIGIN);
+	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Episode.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Episode.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(Episode.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(Episode.class, PropNames.CONTENT_ADVISORY);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Episode.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS		= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO_URLS);
 
 	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
 	{

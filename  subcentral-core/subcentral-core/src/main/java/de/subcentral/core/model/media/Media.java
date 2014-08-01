@@ -118,8 +118,9 @@ public interface Media extends Work
 	public String getMediaContentType();
 
 	/**
-	 * The date can be an instance of {@link java.time.ZonedDateTime}, {@link java.time.LocalDateTime}, {@link java.time.LocalDate} or
-	 * {@link java.time.Year}, depending on how precise the information is. Other <code>Temporal</code> implementations are not allowed.
+	 * The date can be an instance of {@link java.time.ZonedDateTime}, {@link java.time.LocalDateTime}, {@link java.time.LocalDate},
+	 * {@link java.time.YearMonth} or {@link java.time.Year}, depending on how precise the information is. Other <code>Temporal</code> implementations
+	 * are not allowed.
 	 * 
 	 * @return The publishing / air date of this media.
 	 */
@@ -178,7 +179,7 @@ public interface Media extends Work
 	// Convenience
 	/**
 	 * 
-	 * @return Whether this media has a {@link #getTitle() title} or not.
+	 * @return {@code true} if this media has a title, {@code false} otherwise
 	 */
 	public default boolean isTitled()
 	{
@@ -187,16 +188,16 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return The {@link #getTitle() title} if this media {@link #isTitled() is titled}, else the {@link #getName() name}.
+	 * @return the {@link #getTitle() title} if this media {@link #isTitled() is titled}, else the {@link #getName() name}
 	 */
-	public default String getTitleElseName()
+	public default String getTitleOrName()
 	{
 		return isTitled() ? getTitle() : getName();
 	}
 
 	/**
 	 * 
-	 * @return Returns the year of the {@link #getDate() date} or <code>null</code> if the date is <code>null</code> or the year cannot be retrieved.
+	 * @return the year of the {@link #getDate() date} or <code>null</code> if the date is <code>null</code> or the year cannot be retrieved
 	 */
 	public default Year getYear()
 	{
@@ -217,7 +218,7 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return Returns the primary language or <code>null</code> if no languages.
+	 * @return the primary language or <code>null</code> if no languages
 	 */
 	public default String getPrimaryOriginalLanguage()
 	{
@@ -226,7 +227,7 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return Returns the primary country or <code>null</code> if no countries.
+	 * @return the primary country or <code>null</code> if no countries
 	 */
 	public default String getPrimaryCountryOfOrigin()
 	{
