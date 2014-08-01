@@ -1,10 +1,10 @@
 package de.subcentral.impl.addic7ed;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
@@ -12,15 +12,12 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.parsing.MappingMatcher;
-import de.subcentral.core.parsing.MappingServiceImpl;
-import de.subcentral.core.parsing.NumericGroupMappingMatcher;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingServiceImpl;
 import de.subcentral.core.parsing.Parsings;
-import de.subcentral.core.parsing.SubtitleAdjustmentMapper;
+import de.subcentral.core.parsing.PropParsingService;
+import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7ed
@@ -29,22 +26,18 @@ public class Addic7ed
 
 	static
 	{
-		MappingServiceImpl ms = new MappingServiceImpl();
-		ImmutableMap<Class<?>, Mapper<?>> mappers = ImmutableMap.of(SubtitleAdjustment.class, new SubtitleAdjustmentMapper());
-		ms.setMappers(mappers);
-
-		PARSING_SERVICE.setMappingService(ms);
-		PARSING_SERVICE.setMatchers(initMatchers());
+		SubtitleAdjustmentParser subAdjParser = new SubtitleAdjustmentParser("addic7ed.com", initMatchers(), PropParsingService.DEFAULT);
+		PARSING_SERVICE.setParsers(ImmutableList.of(subAdjParser));
 	}
 
-	private static ListMultimap<Class<?>, MappingMatcher> initMatchers()
+	private static List<MappingMatcher<SimplePropDescriptor>> initMatchers()
 	{
 		String seriesSeasonEpiNumsPattern = Parsings.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
 		// String tagsPattern = "((HI|C|orig|updated)+)";
 		String langPattern = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian \\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 		String langTagsSourcePattern = langPattern + "\\.(.+)\\.(Addic7ed\\.com)";
 
-		ImmutableListMultimap.Builder<Class<?>, MappingMatcher> map = ImmutableListMultimap.builder();
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> list = ImmutableList.builder();
 
 		// init the matchers
 		// --------------
@@ -69,7 +62,7 @@ public class Addic7ed
 		grps101.put(11, Subtitle.PROP_LANGUAGE);
 		grps101.put(12, Subtitle.PROP_TAGS);
 		grps101.put(13, Subtitle.PROP_SOURCE);
-		NumericGroupMappingMatcher matcher101 = new NumericGroupMappingMatcher(p101, grps101.build());
+		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<>(p101, grps101.build());
 
 		// Expecting no dots in the episode title, then a dot, then "WEB-DL" or a group
 		// Examples:
@@ -92,7 +85,7 @@ public class Addic7ed
 		grps102.put(13, Subtitle.PROP_LANGUAGE);
 		grps102.put(14, Subtitle.PROP_TAGS);
 		grps102.put(15, Subtitle.PROP_SOURCE);
-		NumericGroupMappingMatcher matcher102 = new NumericGroupMappingMatcher(p102, grps102.build());
+		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<>(p102, grps102.build());
 
 		// Expecting no dots in the episode title, then a dot, then release tags, then a non-wordchar delimiter, then "WEB-DL" or a group.
 		// Examples:
@@ -120,7 +113,7 @@ public class Addic7ed
 		grps103.put(14, Subtitle.PROP_LANGUAGE);
 		grps103.put(15, Subtitle.PROP_TAGS);
 		grps103.put(16, Subtitle.PROP_SOURCE);
-		NumericGroupMappingMatcher matcher103 = new NumericGroupMappingMatcher(p103, grps103.build());
+		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<>(p103, grps103.build());
 
 		// Episode title may contain dots, then a dot, then release tags, then a non-wordchar delimiter, then "WEB-DL" or a group
 		// Examples:
@@ -146,7 +139,7 @@ public class Addic7ed
 		grps104.put(14, Subtitle.PROP_LANGUAGE);
 		grps104.put(15, Subtitle.PROP_TAGS);
 		grps104.put(16, Subtitle.PROP_SOURCE);
-		NumericGroupMappingMatcher matcher104 = new NumericGroupMappingMatcher(p104, grps104.build());
+		MappingMatcher<SimplePropDescriptor> matcher104 = new MappingMatcher<>(p104, grps104.build());
 
 		// Episode title may contain dots, then a dot, then "WEB-DL" or a group
 		// Examples:
@@ -171,7 +164,7 @@ public class Addic7ed
 		grps105.put(13, Subtitle.PROP_LANGUAGE);
 		grps105.put(14, Subtitle.PROP_TAGS);
 		grps105.put(15, Subtitle.PROP_SOURCE);
-		NumericGroupMappingMatcher matcher105 = new NumericGroupMappingMatcher(p105, grps105.build());
+		MappingMatcher<SimplePropDescriptor> matcher105 = new MappingMatcher<>(p105, grps105.build());
 
 		// FOR TESTING
 		// matcher102.match("Psych (UK) - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k
@@ -189,18 +182,18 @@ public class Addic7ed
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, Subtitle.PROP_TAGS);
 		grps201.put(7, Subtitle.PROP_SOURCE);
-		NumericGroupMappingMatcher matcher201 = new NumericGroupMappingMatcher(p201, grps201.build());
+		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build());
 
 		// --------------
 		// add all the matchers to the map
-		map.put(SubtitleAdjustment.class, matcher101);
-		map.put(SubtitleAdjustment.class, matcher102);
-		map.put(SubtitleAdjustment.class, matcher103);
-		map.put(SubtitleAdjustment.class, matcher104);
-		map.put(SubtitleAdjustment.class, matcher105);
-		map.put(SubtitleAdjustment.class, matcher201);
+		list.add(matcher101);
+		list.add(matcher102);
+		list.add(matcher103);
+		list.add(matcher104);
+		list.add(matcher105);
+		list.add(matcher201);
 
-		return map.build();
+		return list.build();
 	}
 
 	public static final ParsingService getAddi7edParsingService()

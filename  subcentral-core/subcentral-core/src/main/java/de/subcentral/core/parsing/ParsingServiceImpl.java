@@ -1,107 +1,60 @@
 package de.subcentral.core.parsing;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.jsoup.helper.Validate;
-
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
-
-import de.subcentral.core.util.SimplePropDescriptor;
+import java.util.List;
 
 public class ParsingServiceImpl implements ParsingService
 {
-	private String									domain;
-	private ListMultimap<Class<?>, MappingMatcher>	matchers	= LinkedListMultimap.create();
-	private MappingService							mappingService;
+	private List<Parser<?>>	parsers;
 
-	@Override
-	public String getDomain()
+	public List<Parser<?>> getParsers()
 	{
-		return domain;
+		return parsers;
 	}
 
-	public void setDomain(String domain)
+	public void setParsers(List<Parser<?>> parsers)
 	{
-		this.domain = domain;
-	}
-
-	public Multimap<Class<?>, MappingMatcher> getMatchers()
-	{
-		return matchers;
-	}
-
-	public void setMatchers(ListMultimap<Class<?>, MappingMatcher> matchers)
-	{
-		this.matchers = matchers;
-	}
-
-	public boolean registerMatcher(Class<?> typeClass, MappingMatcher matcher)
-	{
-		return this.matchers.put(typeClass, matcher);
-	}
-
-	public boolean unregisterMatcher(MappingMatcher matcher)
-	{
-		boolean existed = false;
-		for (Entry<Class<?>, MappingMatcher> entry : matchers.entries())
-		{
-			if (matcher.equals(entry.getValue()))
-			{
-				existed = matchers.remove(entry.getKey(), entry.getValue());
-			}
-		}
-		return existed;
-	}
-
-	public MappingService getMappingService()
-	{
-		return mappingService;
-	}
-
-	public void setMappingService(MappingService mappingService)
-	{
-		this.mappingService = mappingService;
+		this.parsers = parsers;
 	}
 
 	@Override
-	public Object parse(String name, Map<SimplePropDescriptor, String> additionalInfo)
+	public Object parse(String name, String domain)
 	{
-		for (Entry<Class<?>, MappingMatcher> entry : matchers.entries())
+		for (Parser<?> p : parsers)
 		{
-			Map<SimplePropDescriptor, String> matchResult = entry.getValue().match(name);
-			if (matchResult != null)
+			if (domain == null || domain.equals(p.getDomain()))
 			{
-				return mappingService.map(combineInfo(matchResult, additionalInfo), entry.getKey());
+				try
+				{
+					return p.parse(name);
+				}
+				catch (ParsingException e)
+				{
+					// this parser failed
+					// ignore and move on to the next
+				}
 			}
 		}
-		return null;
-	}
-
-	private Map<SimplePropDescriptor, String> combineInfo(Map<SimplePropDescriptor, String> matchResult,
-			Map<SimplePropDescriptor, String> additionalInfo)
-	{
-		Map<SimplePropDescriptor, String> combinedInfo = new HashMap<>(matchResult.size() + additionalInfo.size());
-		combinedInfo.putAll(matchResult);
-		combinedInfo.putAll(additionalInfo);
-		return combinedInfo;
+		throw new ParsingException("No parser in domain " + domain + " could parse input string '" + name + "'");
 	}
 
 	@Override
-	public <T> T parse(String name, Class<T> type, Map<SimplePropDescriptor, String> additionalInfo)
+	public <T> T parse(String name, String domain, Class<T> targetClass)
 	{
-		Validate.notNull(type, "type cannot be null");
-		for (MappingMatcher matcher : matchers.get(type))
+		for (Parser<?> p : parsers)
 		{
-			Map<SimplePropDescriptor, String> matchResult = matcher.match(name);
-			if (matchResult != null)
+			if ((domain == null || domain.equals(p.getDomain())) && (targetClass == null || targetClass.equals(p.getTargetClass())))
 			{
-				return (T) mappingService.map(combineInfo(matchResult, additionalInfo), type);
+				try
+				{
+					return targetClass.cast(p.parse(name));
+				}
+				catch (ParsingException e)
+				{
+					// this parser failed
+					// ignore and move on to the next
+				}
 			}
 		}
-		return null;
+		throw new ParsingException("No parser in domain " + domain + " could parse input string '" + name + "'");
 	}
 }

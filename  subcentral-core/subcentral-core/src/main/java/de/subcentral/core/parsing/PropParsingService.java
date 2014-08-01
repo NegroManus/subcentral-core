@@ -26,6 +26,7 @@ import de.subcentral.core.util.TimeUtil;
 
 public class PropParsingService
 {
+	public static final PropParsingService					DEFAULT								= new PropParsingService();
 	/**
 	 * The default item splitter. Splits the string into words (pattern {@code "[^\\w-]+"}). Is used by PropParsingService instances if no specific
 	 * item splitter is defined. Common to all instances to save memory.
