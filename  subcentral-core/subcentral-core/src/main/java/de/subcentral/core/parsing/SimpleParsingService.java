@@ -34,7 +34,7 @@ public class SimpleParsingService implements ParsingService
 				}
 			}
 		}
-		throw new ParsingException("No parser " + (domain == null ? "" : "with domain '" + domain + "'") + " could parse input string '" + name + "'");
+		throw new ParsingException("No parser " + (domain == null ? "" : "with domain '" + domain + "'") + " could parse the name '" + name + "'");
 	}
 
 	@Override
@@ -56,6 +56,6 @@ public class SimpleParsingService implements ParsingService
 			}
 		}
 		throw new ParsingException("No parser with " + (domain == null ? "" : "domain '" + domain + "' and ") + "target type " + targetType.getName()
-				+ " could parse input string '" + name + "'");
+				+ " could parse the name '" + name + "'");
 	}
 }

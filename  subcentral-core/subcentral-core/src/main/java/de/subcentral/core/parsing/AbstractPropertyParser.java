@@ -25,17 +25,17 @@ public abstract class AbstractPropertyParser<T> implements Parser<T>
 	}
 
 	@Override
-	public T parse(String s) throws ParsingException
+	public T parse(String name) throws ParsingException
 	{
 		for (MappingMatcher<SimplePropDescriptor> matcher : matchers)
 		{
-			Map<SimplePropDescriptor, String> matchResult = matcher.match(s);
+			Map<SimplePropDescriptor, String> matchResult = matcher.match(name);
 			if (matchResult != null)
 			{
 				return map(matchResult);
 			}
 		}
-		throw new ParsingException("Now matcher could parse input string '" + s + "'");
+		throw new ParsingException("No matcher could parse the name '" + name + "'");
 	}
 
 	protected abstract T map(Map<SimplePropDescriptor, String> props);
