@@ -1,5 +1,6 @@
 package de.subcentral.core.model.media;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,10 +9,12 @@ import java.util.Set;
 import org.apache.commons.lang3.Validate;
 
 import de.subcentral.core.model.Contribution;
+import de.subcentral.core.model.Models;
 
 public abstract class AbstractMedia implements Media
 {
 	protected String					title;
+	protected Temporal					date;
 	protected String					description;
 	protected final List<String>		coverUrls		= new ArrayList<>(1);
 	protected String					contentAdvisory;
@@ -28,6 +31,18 @@ public abstract class AbstractMedia implements Media
 	public void setTitle(String title)
 	{
 		this.title = title;
+	}
+
+	@Override
+	public Temporal getDate()
+	{
+		return date;
+	}
+
+	public void setDate(Temporal date) throws IllegalArgumentException
+	{
+		Models.validateTemporalClass(date);
+		this.date = date;
 	}
 
 	@Override

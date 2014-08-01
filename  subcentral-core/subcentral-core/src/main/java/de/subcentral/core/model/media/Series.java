@@ -39,42 +39,41 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
 	 * examples are the TV series "Breaking Bad", "Game of Thrones" and "Psych".
 	 */
-	public static final String	TYPE_SEASONED				= "SEASONED";
+	public static final String					TYPE_SEASONED				= "SEASONED";
 
 	/**
 	 * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. A typical example is the TV
 	 * mini-series "Band of Brothers".
 	 */
-	public static final String	TYPE_MINI_SERIES			= "MINI_SERIES";
+	public static final String					TYPE_MINI_SERIES			= "MINI_SERIES";
 
 	/**
 	 * A type of series which episodes usually have no numbers. Instead the main identifier is their air date. Typical examples are (daily) shows or
 	 * sports events.
 	 */
-	public static final String	TYPE_DATED					= "DATED";
+	public static final String					TYPE_DATED					= "DATED";
 
 	/**
 	 * If a series is "continuing", then there will be more episodes to come.
 	 */
-	public static final String	STATE_CONTINUING			= "CONTINUING";
+	public static final String					STATE_CONTINUING			= "CONTINUING";
 
 	/**
 	 * If a series has "ended", there will be no more episodes to come. Either because the series was cancelled or it simply is complete.
 	 */
-	public static final String	STATE_ENDED					= "ENDED";
+	public static final String					STATE_ENDED					= "ENDED";
 
-	private String				name;
-	private Temporal			date;
-	private String				type;
-	private String				state;
-	private final List<String>	originalLanguages			= new ArrayList<>(1);
-	private final List<String>	countriesOfOrigin			= new ArrayList<>(1);
-	private int					regularRunningTime			= 0;
+	private String								name;
+	private String								type;
+	private String								state;
+	private final List<String>					originalLanguages			= new ArrayList<>(1);
+	private final List<String>					countriesOfOrigin			= new ArrayList<>(1);
+	private int									regularRunningTime			= 0;
 	// HashMap / HashSet initial capacities should be a power of 2
-	private final Set<String>	genres						= new HashSet<>(4);
+	private final Set<String>					genres						= new HashSet<>(4);
 	// Normally, the Seasons and Episodes are not stored in the Series
-	private final List<Season>	seasons						= new ArrayList<>(0);
-	private final List<Episode>	episodes					= new ArrayList<>(0);
+	private final List<Season>					seasons						= new ArrayList<>(0);
+	private final List<Episode>					episodes					= new ArrayList<>(0);
 
 	public Series()
 	{}
@@ -105,18 +104,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	public String getMediaType()
 	{
 		return Media.MEDIA_TYPE_SERIES;
-	}
-
-	@Override
-	public Temporal getDate()
-	{
-		return date;
-	}
-
-	public void setDate(Temporal date) throws IllegalArgumentException
-	{
-		Models.validateTemporalClass(date);
-		this.date = date;
 	}
 
 	public String getType()

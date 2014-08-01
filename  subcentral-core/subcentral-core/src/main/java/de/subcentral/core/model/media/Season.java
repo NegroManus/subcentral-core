@@ -212,6 +212,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("series", series)
 				.add("number", number)
 				.add("title", title)
+				.add("date", date)
 				.add("special", special)
 				.add("description", description)
 				.add("coverUrls", Models.nullIfEmpty(coverUrls))

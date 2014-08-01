@@ -1,6 +1,5 @@
 package de.subcentral.core.model.media;
 
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,15 +24,18 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.TITLE);
 	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE			= new SimplePropDescriptor(StandardMediaItem.class,
 																						PropNames.MEDIA_CONTENT_TYPE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMediaItem.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMediaItem.class,
+																						PropNames.MEDIA_TYPE);
 	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(StandardMediaItem.class,
 																						PropNames.ORIGINAL_LANGUAGES);
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(StandardMediaItem.class,
 																						PropNames.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMediaItem.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMediaItem.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMediaItem.class,
+																						PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMediaItem.class,
+																						PropNames.COVER_URLS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(StandardMediaItem.class,
 																						PropNames.CONTENT_ADVISORY);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(StandardMediaItem.class,
@@ -44,7 +46,6 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 	protected String							name;
 	protected String							mediaType;
 	protected String							mediaContentType;
-	protected Temporal							date;
 	protected final List<String>				originalLanguages				= new ArrayList<>(1);
 	protected final List<String>				countriesOfOrigin				= new ArrayList<>(1);
 	protected final Set<String>					genres							= new HashSet<>(3);
@@ -90,17 +91,6 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 	public void setMediaContentType(String mediaContentType)
 	{
 		this.mediaContentType = mediaContentType;
-	}
-
-	@Override
-	public Temporal getDate()
-	{
-		return date;
-	}
-
-	public void setDate(Temporal date)
-	{
-		this.date = date;
 	}
 
 	@Override
