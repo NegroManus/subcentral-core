@@ -285,7 +285,7 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * The URL of the nfo file.
+	 * An URL pointing to a file or a website providing the information about this release.
 	 * 
 	 * @return the information URL
 	 */
@@ -300,7 +300,7 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * The name of the source of this release. Typically the site which released this Release.
+	 * The name of the source of this release. Typically the site which released this release.
 	 * 
 	 * @return the source
 	 */
@@ -315,7 +315,7 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * The URL of the source of this release. Typically the site which released this Release.
+	 * An URL pointing to the source of this release. Typically the site which released this release.
 	 * 
 	 * @return the source URL
 	 */
@@ -404,7 +404,7 @@ public class Release implements Comparable<Release>
 		return Objects.toStringHelper(Release.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("media", media)
+				.add("media", Models.nullIfEmpty(media))
 				.add("languages", Models.nullIfEmpty(languages))
 				.add("tags", Models.nullIfEmpty(tags))
 				.add("group", group)

@@ -322,7 +322,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * An URL pointing to the website of the source of this subtitle. Typically the site which released this Subtitle.
+	 * An URL pointing to the source of this subtitle. Typically the site which released this Subtitle.
 	 * 
 	 * @return the source URL
 	 */

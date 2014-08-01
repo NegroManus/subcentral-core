@@ -23,6 +23,8 @@ public class ParsingPlayground
 		final Lookup<Release, OrlyDbLookupParameters> lookup = new OrlyDbLookup();
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
+		dlFolder = Paths.get("D:\\Downloads");
+		System.out.println(dlFolder);
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dlFolder))
 		{
 			for (Path path : directoryStream)
@@ -38,11 +40,10 @@ public class ParsingPlayground
 					System.out.println(parsed);
 					String nameOfParsed = NamingStandards.NAMING_SERVICE.name(parsed);
 					System.out.println(nameOfParsed);
-					// System.out.println("Looked up ...");
-					// lookup.createQuery("Psych S01E01").execute().forEach(r -> System.out.println(r));
+					System.out.println("Looked up ...");
+					lookup.createQuery("Defiance S02E07 KILLERS").execute().forEach(r -> System.out.println(r));
 					System.out.println();
 					System.out.println();
-
 				}
 			}
 		}

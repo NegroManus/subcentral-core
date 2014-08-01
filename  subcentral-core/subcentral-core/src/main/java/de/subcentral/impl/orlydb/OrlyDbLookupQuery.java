@@ -150,6 +150,9 @@ public class OrlyDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		{
 			rls.nuke(nukeSpan.text());
 		}
+
+		rls.setInfoUrl(doc.baseUri());
+
 		return rls;
 	}
 }

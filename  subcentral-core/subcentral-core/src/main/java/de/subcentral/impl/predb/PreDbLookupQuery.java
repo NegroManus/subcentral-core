@@ -552,6 +552,9 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		}
 
 		rls.setSingleMedia(media);
+
+		rls.setInfoUrl(doc.baseUri());
+
 		return rls;
 	}
 }
