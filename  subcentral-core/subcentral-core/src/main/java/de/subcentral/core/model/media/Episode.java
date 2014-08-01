@@ -216,7 +216,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return season;
 	}
 
-	public void setSeason(Season season)
+	public void setSeason(Season season) throws IllegalArgumentException
 	{
 		ensurePartOfSeries(season);
 		this.season = season;
