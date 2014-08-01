@@ -12,15 +12,14 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.impl.addic7ed.Addic7ed;
-import de.subcentral.impl.orlydb.OrlyDbLookup;
-import de.subcentral.impl.orlydb.OrlyDbLookupParameters;
+import de.subcentral.impl.predb.PreDbLookup;
 
 public class ParsingPlayground
 {
 	public static void main(String[] args)
 	{
 		final ParsingService ps = Addic7ed.getAddi7edParsingService();
-		final Lookup<Release, OrlyDbLookupParameters> lookup = new OrlyDbLookup();
+		final Lookup<Release, String> lookup = new PreDbLookup();
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
 		dlFolder = Paths.get("D:\\Downloads");

@@ -189,6 +189,8 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			}
 		}
 
+		rls.setInfoUrl(detailsUrl);
+
 		// Parse details
 		if (detailsUrl != null)
 		{
