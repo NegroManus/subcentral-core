@@ -64,7 +64,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	{
 		if (seriesName == null)
 		{
-			throw new IllegalArgumentException("Series name must be set");
+			throw new IllegalArgumentException("Series' name must be set");
 		}
 		Series series = new Series();
 		series.setType(Series.TYPE_SEASONED);
@@ -97,7 +97,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	{
 		if (seriesName == null)
 		{
-			throw new IllegalArgumentException("Series name must be set");
+			throw new IllegalArgumentException("Series' name must be set");
 		}
 		Series series = new Series();
 		series.setType(Series.TYPE_MINI_SERIES);
@@ -123,7 +123,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	{
 		if (seriesName == null)
 		{
-			throw new IllegalArgumentException("Series name must be set");
+			throw new IllegalArgumentException("Series' name must be set");
 		}
 		Series series = new Series();
 		series.setType(Series.TYPE_DATED);
@@ -304,9 +304,6 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 		return numberInSeason != null;
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
