@@ -6,6 +6,7 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 
 public class TimeUtil
@@ -18,6 +19,23 @@ public class TimeUtil
 	public static double durationMillis(long startNanos, long endNanos)
 	{
 		return (endNanos - startNanos) / 1_000_000d;
+	}
+
+	public static Year getYear(Temporal t)
+	{
+		if (t == null)
+		{
+			return null;
+		}
+		try
+		{
+			return Year.of(t.get(ChronoField.YEAR));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static Temporal parseTemporal(String s) throws DateTimeParseException

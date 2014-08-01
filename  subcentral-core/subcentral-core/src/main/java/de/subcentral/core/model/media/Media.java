@@ -1,12 +1,12 @@
 package de.subcentral.core.model.media;
 
 import java.time.Year;
-import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Set;
 
 import de.subcentral.core.model.Work;
+import de.subcentral.core.util.TimeUtil;
 
 /**
  * <p>
@@ -201,19 +201,7 @@ public interface Media extends Work
 	 */
 	public default Year getYear()
 	{
-		if (getDate() == null)
-		{
-			return null;
-		}
-		try
-		{
-			return Year.of(getDate().get(ChronoField.YEAR));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		return TimeUtil.getYear(getDate());
 	}
 
 	/**
