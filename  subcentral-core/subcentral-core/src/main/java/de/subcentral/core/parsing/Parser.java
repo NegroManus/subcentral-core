@@ -6,5 +6,5 @@ public interface Parser<T>
 
 	public Class<T> getTargetType();
 
-	public T parse(String name) throws ParsingException;
+	public T parse(String name) throws NoMatchException, ParsingException;
 }

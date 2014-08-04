@@ -1,6 +1,5 @@
 package de.subcentral.core.parsing;
 
-import java.time.LocalDate;
 import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +53,7 @@ public class ReleaseParser extends AbstractPropertyParser<Release>
 			epi.setNumberInSeries(pps.parse(props, Episode.PROP_NUMBER_IN_SERIES, Integer.class));
 			epi.setNumberInSeason(pps.parse(props, Episode.PROP_NUMBER_IN_SEASON, Integer.class));
 			epi.setTitle(props.get(Episode.PROP_TITLE));
-			epi.setDate(pps.parse(props, Episode.PROP_DATE, LocalDate.class));
+			epi.setDate(pps.parse(props, Episode.PROP_DATE, Temporal.class));
 
 			if (props.containsKey(Season.PROP_NUMBER))
 			{

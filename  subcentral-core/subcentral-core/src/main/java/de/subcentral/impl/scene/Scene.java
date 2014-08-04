@@ -74,9 +74,9 @@ public class Scene
 		rlsParser.setMatchers(matchers.build());
 
 		PropParsingService pps = new PropParsingService();
-		ImmutableMap.Builder<Class<?>, Function<String, ?>> typeFromStringFns = ImmutableMap.builder();
-		typeFromStringFns.put(LocalDate.class, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
-		pps.setTypeFromStringFunctions(typeFromStringFns.build());
+		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
+		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
+		pps.setPropFromStringFunctions(propFromStringFns.build());
 		rlsParser.setPps(pps);
 		return rlsParser;
 	}

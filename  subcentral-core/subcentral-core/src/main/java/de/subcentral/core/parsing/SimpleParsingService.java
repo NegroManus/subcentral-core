@@ -27,8 +27,14 @@ public class SimpleParsingService implements ParsingService
 				{
 					return p.parse(name);
 				}
+				catch (NoMatchException e)
+				{
+					// this parser could no match
+					// ignore and move on to the next
+				}
 				catch (ParsingException e)
 				{
+					e.printStackTrace();
 					// this parser failed
 					// ignore and move on to the next
 				}
@@ -47,6 +53,11 @@ public class SimpleParsingService implements ParsingService
 				try
 				{
 					return targetType.cast(p.parse(name));
+				}
+				catch (NoMatchException e)
+				{
+					// this parser could no match
+					// ignore and move on to the next
 				}
 				catch (ParsingException e)
 				{
