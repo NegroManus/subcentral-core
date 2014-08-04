@@ -437,6 +437,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 					.append(foreignParts, o.foreignParts)
 					.append(tags, o.tags)
 					.append(group, o.group)
+					.append(source, o.source)
 					.append(version, o.version)
 					.isEquals();
 		}
@@ -452,6 +453,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.append(foreignParts)
 				.append(tags)
 				.append(group)
+				.append(source)
 				.append(version)
 				.toHashCode();
 	}
@@ -470,6 +472,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.compare(foreignParts, o.foreignParts)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group)
+				.compare(source, o.source)
 				.compare(version, version)
 				.result();
 	}
