@@ -14,11 +14,18 @@ public class MappingMatcher<K>
 {
 	private final Pattern			pattern;
 	private final Map<Integer, K>	groups;
+	private final Map<K, String>	predefinedMatches;
 
 	public MappingMatcher(Pattern pattern, Map<Integer, K> groups)
 	{
+		this(pattern, groups, ImmutableMap.of());
+	}
+
+	public MappingMatcher(Pattern pattern, Map<Integer, K> groups, Map<K, String> predefinedMatches)
+	{
 		this.pattern = pattern;
 		this.groups = ImmutableMap.copyOf(groups);
+		this.predefinedMatches = predefinedMatches;
 	}
 
 	public Pattern getPattern()
@@ -40,6 +47,11 @@ public class MappingMatcher<K>
 		return groups;
 	}
 
+	public Map<K, String> getPredefinedMatches()
+	{
+		return predefinedMatches;
+	}
+
 	/**
 	 * 
 	 * @param input
@@ -57,6 +69,7 @@ public class MappingMatcher<K>
 		if (m.matches())
 		{
 			Map<K, String> mappedGroups = new HashMap<>(groups.size());
+			mappedGroups.putAll(predefinedMatches);
 			for (Map.Entry<Integer, K> entry : groups.entrySet())
 			{
 				K groupKey = entry.getValue();

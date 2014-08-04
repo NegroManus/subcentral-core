@@ -12,27 +12,26 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.core.model.subtitle.Subtitles;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdjustment>
+public class ReleaseParser extends AbstractPropertyParser<Release>
 {
-	public SubtitleAdjustmentParser(String domain)
+
+	public ReleaseParser(String domain)
 	{
 		super(domain);
 	}
 
 	@Override
-	public Class<SubtitleAdjustment> getTargetType()
+	public Class<Release> getTargetType()
 	{
-		return SubtitleAdjustment.class;
+		return Release.class;
 	}
 
 	@Override
-	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
+	protected Release map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
 		AvMediaItem mediaItem = null;
@@ -84,18 +83,9 @@ public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdj
 		rls.setSource(props.get(Release.PROP_SOURCE));
 		rls.setSourceUrl(props.get(Release.PROP_SOURCE_URL));
 
-		// Subtitle
-		Subtitle sub = new Subtitle();
-		sub.setMediaItem(mediaItem);
-		sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));
-		sub.setGroup(pps.parse(props, Subtitle.PROP_GROUP, Group.class));
-		sub.getTags().addAll(pps.parseList(props, Subtitle.PROP_TAGS, Tag.class));
-		sub.setSource(props.get(Subtitle.PROP_SOURCE));
-		sub.setSourceUrl(props.get(Subtitle.PROP_SOURCE_URL));
+		Releases.normalizeTags(rls);
 
-		Subtitles.normalizeTags(sub);
-
-		// SubtitleAdjustment
-		return sub.newAdjustment(rls);
+		return rls;
 	}
+
 }

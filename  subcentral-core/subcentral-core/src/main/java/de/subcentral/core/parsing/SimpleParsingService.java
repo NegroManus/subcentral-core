@@ -50,6 +50,7 @@ public class SimpleParsingService implements ParsingService
 				}
 				catch (ParsingException e)
 				{
+					e.printStackTrace();
 					// this parser failed
 					// ignore and move on to the next
 				}

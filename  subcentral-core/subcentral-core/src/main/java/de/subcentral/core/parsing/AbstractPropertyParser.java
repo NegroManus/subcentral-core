@@ -7,21 +7,39 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractPropertyParser<T> implements Parser<T>
 {
-	protected final String										domain;
-	protected final List<MappingMatcher<SimplePropDescriptor>>	matchers;
-	protected final PropParsingService							pps;
+	protected final String									domain;
+	protected List<MappingMatcher<SimplePropDescriptor>>	matchers;
+	protected PropParsingService							pps;
 
-	protected AbstractPropertyParser(String domain, List<MappingMatcher<SimplePropDescriptor>> matchers, PropParsingService pps)
+	protected AbstractPropertyParser(String domain)
 	{
 		this.domain = domain;
-		this.matchers = matchers;
-		this.pps = pps;
 	}
 
 	@Override
 	public String getDomain()
 	{
 		return domain;
+	}
+
+	public List<MappingMatcher<SimplePropDescriptor>> getMatchers()
+	{
+		return matchers;
+	}
+
+	public void setMatchers(List<MappingMatcher<SimplePropDescriptor>> matchers)
+	{
+		this.matchers = matchers;
+	}
+
+	public PropParsingService getPps()
+	{
+		return pps;
+	}
+
+	public void setPps(PropParsingService pps)
+	{
+		this.pps = pps;
 	}
 
 	@Override
