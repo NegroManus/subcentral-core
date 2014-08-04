@@ -30,12 +30,14 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 {
-	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SUBTITLES);
+	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleAdjustment.class,
+																						PropNames.SUBTITLES);
 	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES			= new SimplePropDescriptor(SubtitleAdjustment.class,
 																						PropNames.MATCHING_RELEASES);
 	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_SIZE						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SIZE);
-	public static final SimplePropDescriptor	PROP_FILECOUNT					= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.FILE_COUNT);
+	public static final SimplePropDescriptor	PROP_FILECOUNT					= new SimplePropDescriptor(SubtitleAdjustment.class,
+																						PropNames.FILE_COUNT);
 	public static final SimplePropDescriptor	PROP_NUKES						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NUKES);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SubtitleAdjustment.class,
 																						PropNames.CONTRIBUTIONS);
@@ -292,7 +294,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 				.add("date", date)
 				.add("size", size)
 				.add("fileCount", fileCount)
-				.add("nukes", nukes)
+				.add("nukes", Models.nullIfEmpty(nukes))
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.toString();
 	}
