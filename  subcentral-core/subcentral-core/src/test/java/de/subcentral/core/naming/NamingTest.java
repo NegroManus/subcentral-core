@@ -18,6 +18,10 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.naming.MovieNamer;
+import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.NamingStandards;
+import de.subcentral.core.naming.SeasonedEpisodeNamer;
 
 public class NamingTest
 {

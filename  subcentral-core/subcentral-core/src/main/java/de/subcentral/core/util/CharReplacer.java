@@ -1,8 +1,10 @@
 package de.subcentral.core.util;
 
+import java.util.function.UnaryOperator;
+
 import org.apache.commons.lang3.ArrayUtils;
 
-public class CharReplacer implements Replacer
+public class CharReplacer implements UnaryOperator<String>
 {
 	private char[]	allowedChars	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_".toCharArray();
 	private String	replacement		= ".";
@@ -39,7 +41,7 @@ public class CharReplacer implements Replacer
 	}
 
 	@Override
-	public String replace(String s)
+	public String apply(String s)
 	{
 		if (s == null)
 		{

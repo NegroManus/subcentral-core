@@ -1,11 +1,18 @@
 package de.subcentral.core.parsing;
 
+import java.util.function.Function;
 
-public interface Parser<T>
+public interface Parser<T> extends Function<String, T>
 {
 	public String getDomain();
 
 	public Class<T> getTargetType();
 
-	public T parse(String name) throws NoMatchException, ParsingException;
+	public T parse(String text) throws NoMatchException, ParsingException;
+
+	@Override
+	public default T apply(String text)
+	{
+		return parse(text);
+	}
 }
