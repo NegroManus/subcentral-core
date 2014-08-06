@@ -217,7 +217,12 @@ public class Addic7ed
 		return PARSING_SERVICE;
 	}
 
-	public Addic7ed()
+	public static List<Parser<?>> getParsers()
+	{
+		return PARSING_SERVICE.getParsers();
+	}
+
+	private Addic7ed()
 	{
 		// utility class
 	}

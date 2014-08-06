@@ -15,7 +15,7 @@ public class LambdaPerfTest
 		}
 	};
 	
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{
 		String[] strings = new String[] { "Boardwalk.Empire.S04E01.MULTi.1080p.BluRay.x264-SODAPOP", "iCarly.S06E06.iBattle.Chip.720p.HDTV.x264-W4F" };
 
