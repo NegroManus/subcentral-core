@@ -1,10 +1,11 @@
 package de.subcentral.core.parsing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleParsingService implements ParsingService
 {
-	private List<Parser<?>>	parsers;
+	private List<Parser<?>>	parsers	= new ArrayList<>(0);
 
 	public List<Parser<?>> getParsers()
 	{
@@ -17,7 +18,7 @@ public class SimpleParsingService implements ParsingService
 	}
 
 	@Override
-	public Object parse(String name, String domain)
+	public Object parse(String text, String domain) throws NoMatchException, ParsingException
 	{
 		for (Parser<?> p : parsers)
 		{
@@ -25,49 +26,37 @@ public class SimpleParsingService implements ParsingService
 			{
 				try
 				{
-					return p.parse(name);
+					return p.parse(text);
 				}
 				catch (NoMatchException e)
 				{
 					// this parser could no match
 					// ignore and move on to the next
 				}
-				catch (ParsingException e)
-				{
-					e.printStackTrace();
-					// this parser failed
-					// ignore and move on to the next
-				}
 			}
 		}
-		throw new ParsingException("No parser " + (domain == null ? "" : "with domain '" + domain + "'") + " could parse the name '" + name + "'");
+		throw new NoMatchException("No parser " + (domain == null ? "" : "with domain '" + domain + "'") + " could parse the text '" + text + "'");
 	}
 
 	@Override
-	public <T> T parseTyped(String name, String domain, Class<T> targetType)
+	public <T> T parseTyped(String text, String domain, Class<T> entityType) throws NoMatchException, ParsingException
 	{
 		for (Parser<?> p : parsers)
 		{
-			if ((domain == null || domain.equals(p.getDomain())) && (targetType == null || targetType.equals(p.getEntityType())))
+			if ((domain == null || domain.equals(p.getDomain())) && (entityType == null || entityType.equals(p.getEntityType())))
 			{
 				try
 				{
-					return targetType.cast(p.parse(name));
+					return entityType.cast(p.parse(text));
 				}
 				catch (NoMatchException e)
 				{
 					// this parser could no match
 					// ignore and move on to the next
 				}
-				catch (ParsingException e)
-				{
-					e.printStackTrace();
-					// this parser failed
-					// ignore and move on to the next
-				}
 			}
 		}
-		throw new ParsingException("No parser with " + (domain == null ? "" : "domain '" + domain + "' and ") + "target type " + targetType.getName()
-				+ " could parse the name '" + name + "'");
+		throw new NoMatchException("No parser with " + (domain == null ? "" : "domain '" + domain + "' and ") + "entity type " + entityType.getName()
+				+ " could parse the text '" + text + "'");
 	}
 }

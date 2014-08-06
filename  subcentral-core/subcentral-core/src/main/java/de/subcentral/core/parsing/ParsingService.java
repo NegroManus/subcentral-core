@@ -1,18 +1,26 @@
 package de.subcentral.core.parsing;
 
-public interface ParsingService
+import java.util.function.Function;
+
+public interface ParsingService extends Function<String, Object>
 {
-	public default Object parse(String name) throws ParsingException
+	public default Object parse(String text) throws ParsingException
 	{
-		return parse(name, null);
+		return parse(text, null);
 	}
 
-	public Object parse(String name, String domain) throws ParsingException;
+	public Object parse(String text, String domain) throws NoMatchException, ParsingException;
 
-	public default <T> T parseTyped(String name, Class<T> targetType) throws ParsingException
+	public default <T> T parseTyped(String text, Class<T> targetType) throws NoMatchException, ParsingException
 	{
-		return parseTyped(name, null, targetType);
+		return parseTyped(text, null, targetType);
 	}
 
-	public <T> T parseTyped(String name, String domain, Class<T> targetType) throws ParsingException;
+	public <T> T parseTyped(String text, String domain, Class<T> targetType) throws NoMatchException, ParsingException;
+
+	@Override
+	public default Object apply(String text)
+	{
+		return parse(text);
+	}
 }

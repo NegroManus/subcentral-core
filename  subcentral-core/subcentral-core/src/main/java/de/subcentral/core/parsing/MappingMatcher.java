@@ -54,18 +54,18 @@ public class MappingMatcher<K>
 
 	/**
 	 * 
-	 * @param input
+	 * @param text
 	 * @return The mapped groups. If the matcher does no match, null is returned.
 	 * @throws IndexOutOfBoundsException
 	 *             If there is no pattern group for a specified group number.
 	 */
-	public Map<K, String> match(String input) throws IndexOutOfBoundsException
+	public Map<K, String> match(String text) throws IndexOutOfBoundsException
 	{
-		if (StringUtils.isBlank(input))
+		if (StringUtils.isBlank(text))
 		{
 			return null;
 		}
-		Matcher m = pattern.matcher(input);
+		Matcher m = pattern.matcher(text);
 		if (m.matches())
 		{
 			Map<K, String> mappedGroups = new HashMap<>(groups.size());

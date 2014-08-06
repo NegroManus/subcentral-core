@@ -9,7 +9,7 @@ import org.apache.commons.lang3.ClassUtils;
 public class SimpleNamingService implements NamingService
 {
 	private String					domain;
-	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>(6);
+	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>(0);
 	private UnaryOperator<String>	wholeNameOperator	= UnaryOperator.identity();
 
 	@Override
@@ -112,7 +112,7 @@ public class SimpleNamingService implements NamingService
 	 * @return The name that was determined for the object or null if the entity was null.
 	 */
 	@Override
-	public <T> String name(T entity, Map<String, Object> parameters) throws NamingException, NoNamerRegisteredException
+	public <T> String name(T entity, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
 	{
 		if (entity == null)
 		{

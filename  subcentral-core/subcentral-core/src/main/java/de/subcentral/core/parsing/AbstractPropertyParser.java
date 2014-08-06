@@ -58,9 +58,9 @@ public abstract class AbstractPropertyParser<T> implements Parser<T>
 		}
 		catch (Exception e)
 		{
-			throw new ParsingException("Could not parse input string '" + text + "'", e);
+			throw new ParsingException("Could not parse text '" + text + "'", e);
 		}
-		throw new NoMatchException("No matcher could parse the name '" + text + "'");
+		throw new NoMatchException("No matcher matched the text '" + text + "'");
 	}
 
 	protected abstract T map(Map<SimplePropDescriptor, String> props);
