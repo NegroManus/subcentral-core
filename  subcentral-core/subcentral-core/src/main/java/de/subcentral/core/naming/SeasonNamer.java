@@ -8,7 +8,7 @@ import de.subcentral.core.model.media.Series;
 public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 {
 	@Override
-	public Class<Season> getType()
+	public Class<Season> getEntityType()
 	{
 		return Season.class;
 	}

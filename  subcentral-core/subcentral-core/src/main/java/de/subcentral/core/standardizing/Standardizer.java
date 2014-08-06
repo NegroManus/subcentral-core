@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 public interface Standardizer<T> extends Consumer<T>
 {
-	public Class<T> getType();
+	public Class<T> getEntityType();
 
 	public void standardize(T entity);
 

@@ -55,7 +55,7 @@ public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	}
 
 	@Override
-	public Class<Episode> getType()
+	public Class<Episode> getEntityType()
 	{
 		return Episode.class;
 	}

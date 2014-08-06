@@ -48,7 +48,7 @@ public class SimpleParsingService implements ParsingService
 	{
 		for (Parser<?> p : parsers)
 		{
-			if ((domain == null || domain.equals(p.getDomain())) && (targetType == null || targetType.equals(p.getTargetType())))
+			if ((domain == null || domain.equals(p.getDomain())) && (targetType == null || targetType.equals(p.getEntityType())))
 			{
 				try
 				{

@@ -26,7 +26,7 @@ public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdj
 	}
 
 	@Override
-	public Class<SubtitleAdjustment> getTargetType()
+	public Class<SubtitleAdjustment> getEntityType()
 	{
 		return SubtitleAdjustment.class;
 	}

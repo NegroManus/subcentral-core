@@ -34,7 +34,7 @@ public class EpisodeNamer implements Namer<Episode>
 	}
 
 	@Override
-	public Class<Episode> getType()
+	public Class<Episode> getEntityType()
 	{
 		return Episode.class;
 	}

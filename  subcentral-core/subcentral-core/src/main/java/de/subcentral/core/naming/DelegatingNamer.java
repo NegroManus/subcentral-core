@@ -19,9 +19,9 @@ public class DelegatingNamer<T> implements Namer<T>
 	}
 
 	@Override
-	public Class<T> getType()
+	public Class<T> getEntityType()
 	{
-		return delegate.getType();
+		return delegate.getEntityType();
 	}
 
 	@Override

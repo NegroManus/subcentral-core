@@ -29,7 +29,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	}
 
 	@Override
-	public Class<Release> getType()
+	public Class<Release> getEntityType()
 	{
 		return Release.class;
 	}

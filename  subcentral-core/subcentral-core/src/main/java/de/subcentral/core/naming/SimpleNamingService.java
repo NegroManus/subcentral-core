@@ -36,7 +36,7 @@ public class SimpleNamingService implements NamingService
 
 	public <T> Namer<?> registerNamer(Namer<T> namer)
 	{
-		return registerNamer(namer.getType(), namer);
+		return registerNamer(namer.getEntityType(), namer);
 	}
 
 	public <T> Namer<?> registerNamer(Class<T> typeClass, Namer<? super T> namer)
@@ -131,9 +131,9 @@ public class SimpleNamingService implements NamingService
 	{
 		for (Map.Entry<Class<?>, Namer<?>> entry : namers.entrySet())
 		{
-			if (!entry.getValue().getType().isAssignableFrom(entry.getKey()))
+			if (!entry.getValue().getEntityType().isAssignableFrom(entry.getKey()))
 			{
-				throw new IllegalArgumentException("The map contains an invalid entry: The namer's type class (" + entry.getValue().getType()
+				throw new IllegalArgumentException("The map contains an invalid entry: The namer's type class (" + entry.getValue().getEntityType()
 						+ ") is not assignable from the class: " + entry.getKey() + " (not a superclass or implemented interface of).");
 			}
 		}

@@ -7,11 +7,11 @@ import com.google.common.collect.ImmutableMap;
 
 public interface Namer<T> extends Function<T, String>
 {
-	public Class<T> getType();
+	public Class<T> getEntityType();
 
-	public default String name(T candidate) throws NamingException
+	public default String name(T entity) throws NamingException
 	{
-		return name(candidate, ImmutableMap.of());
+		return name(entity, ImmutableMap.of());
 	}
 
 	/**
@@ -27,8 +27,8 @@ public interface Namer<T> extends Function<T, String>
 	public String name(T candidate, Map<String, Object> parameters) throws NamingException;
 
 	@Override
-	public default String apply(T t)
+	public default String apply(T entity)
 	{
-		return name(t);
+		return name(entity);
 	}
 }

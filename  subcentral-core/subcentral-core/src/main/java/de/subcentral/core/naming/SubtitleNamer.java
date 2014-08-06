@@ -22,7 +22,7 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	}
 
 	@Override
-	public Class<Subtitle> getType()
+	public Class<Subtitle> getEntityType()
 	{
 		return Subtitle.class;
 	}

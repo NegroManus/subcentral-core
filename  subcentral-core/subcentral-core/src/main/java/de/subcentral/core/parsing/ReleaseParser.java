@@ -24,7 +24,7 @@ public class ReleaseParser extends AbstractPropertyParser<Release>
 	}
 
 	@Override
-	public Class<Release> getTargetType()
+	public Class<Release> getEntityType()
 	{
 		return Release.class;
 	}
