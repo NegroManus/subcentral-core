@@ -60,13 +60,13 @@ public class SimpleNamingService implements NamingService
 	}
 
 	@Override
-	public boolean canName(Object candidate)
+	public boolean canName(Object entity)
 	{
-		if (candidate == null)
+		if (entity == null)
 		{
 			return false;
 		}
-		return getNamer(candidate.getClass()) != null;
+		return getNamer(entity.getClass()) != null;
 	}
 
 	public Namer<?> getNamer(Class<?> clazz)
@@ -95,9 +95,9 @@ public class SimpleNamingService implements NamingService
 	/**
 	 * Returns a name for the given object which is calculated as follows:
 	 * <ul>
-	 * <li>1. If a namer is registered for the class of candidate (excluding Object), return namer.name(obj).</li>
-	 * <li>2. If a namer is registered for a superclass of candidate (excluding Object), return namer.name(obj).</li>
-	 * <li>3. If a namer is registered for an interface of candidate, return namer.name(obj).</li>
+	 * <li>1. If a namer is registered for the class of entity (excluding Object), return namer.name(obj).</li>
+	 * <li>2. If a namer is registered for a superclass of entity (excluding Object), return namer.name(obj).</li>
+	 * <li>3. If a namer is registered for an interface of entity, return namer.name(obj).</li>
 	 * <li>4. Throw NoNamerRegisteredException.</li>
 	 * </ul>
 	 * <p>
@@ -105,26 +105,26 @@ public class SimpleNamingService implements NamingService
 	 * costly. </b>
 	 * </p>
 	 * 
-	 * @param candidate
+	 * @param entity
 	 *            The object to name. May be null.
 	 * @param parameters
 	 *            The naming parameters. Not null.
-	 * @return The name that was determined for the object or null if the candidate was null.
+	 * @return The name that was determined for the object or null if the entity was null.
 	 */
 	@Override
-	public <T> String name(T candidate, Map<String, Object> parameters) throws NamingException, NoNamerRegisteredException
+	public <T> String name(T entity, Map<String, Object> parameters) throws NamingException, NoNamerRegisteredException
 	{
-		if (candidate == null)
+		if (entity == null)
 		{
 			return null;
 		}
 		@SuppressWarnings("unchecked")
-		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
+		Namer<? super T> namer = (Namer<? super T>) getNamer(entity.getClass());
 		if (namer != null)
 		{
-			return wholeNameOperator.apply(namer.name(candidate, parameters));
+			return wholeNameOperator.apply(namer.name(entity, parameters));
 		}
-		throw new NoNamerRegisteredException(candidate);
+		throw new NoNamerRegisteredException(entity);
 	}
 
 	private final void checkNamersMap(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException
