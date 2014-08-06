@@ -16,6 +16,7 @@ import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.impl.addic7ed.Addic7ed;
 import de.subcentral.impl.orlydb.OrlyDbLookup;
 import de.subcentral.impl.scene.Scene;
+import de.subcentral.impl.subcentral.SubCentral;
 
 public class ParsingPlayground
 {
@@ -23,6 +24,7 @@ public class ParsingPlayground
 	{
 		final SimpleParsingService ps = new SimpleParsingService();
 		List<Parser<?>> parsers = new ArrayList<>();
+		parsers.addAll(SubCentral.getParsers());
 		parsers.addAll(Addic7ed.getParsers());
 		parsers.addAll(Scene.getParsers());
 		ps.setParsers(parsers);
