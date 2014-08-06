@@ -14,7 +14,7 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 	}
 
 	@Override
-	protected String doName(Season season, NamingService namingService, Map<String, Object> parameters) throws Exception
+	protected String doName(Season season, Map<String, Object> parameters) throws Exception
 	{
 		Builder b = new Builder();
 		if (season.getSeries() != null)

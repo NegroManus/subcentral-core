@@ -13,7 +13,7 @@ public class SeriesNamer extends AbstractPropertySequenceNamer<Series>
 	}
 
 	@Override
-	protected String doName(Series candidate, NamingService namingService, Map<String, Object> parameters) throws Exception
+	protected String doName(Series candidate, Map<String, Object> parameters) throws Exception
 	{
 		return propToString(Series.PROP_NAME, candidate.getName());
 	}

@@ -22,6 +22,8 @@ public class NamingStandards
 	public static final String					DEFAULT_DOMAIN				= "scene";
 	public static final CharReplacer			STANDARD_REPLACER			= new CharReplacer();
 
+	// NamingService has to be instantiated first because it is referenced in some namers
+	public static final SimpleNamingService		NAMING_SERVICE				= new SimpleNamingService();
 	public static final MediaNamer				MEDIA_NAMER					= new MediaNamer();
 	public static final SeriesNamer				SERIES_NAMER				= new SeriesNamer();
 	public static final SeasonNamer				SEASON_NAMER				= new SeasonNamer();
@@ -31,7 +33,6 @@ public class NamingStandards
 	public static final SubtitleNamer			SUBTITLE_NAMER				= new SubtitleNamer();
 	public static final ReleaseNamer			RELEASE_NAMER				= new ReleaseNamer();
 	public static final SubtitleAdjustmentNamer	SUBTITLE_ADJUSTMENT_NAMER	= new SubtitleAdjustmentNamer();
-	public static final SimpleNamingService		NAMING_SERVICE				= new SimpleNamingService();
 	static
 	{
 		// Configure namers

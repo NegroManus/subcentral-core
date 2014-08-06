@@ -2,13 +2,15 @@ package de.subcentral.core.naming;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ClassUtils;
 
 public class SimpleNamingService implements NamingService
 {
 	private String					domain;
-	private Map<Class<?>, Namer<?>>	namers	= new HashMap<>(6);
+	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>(6);
+	private UnaryOperator<String>	wholeNameOperator	= UnaryOperator.identity();
 
 	@Override
 	public String getDomain()
@@ -45,6 +47,16 @@ public class SimpleNamingService implements NamingService
 	public Namer<?> unregisterNamer(Class<?> typeClass)
 	{
 		return namers.remove(typeClass);
+	}
+
+	public UnaryOperator<String> getWholeNameOperator()
+	{
+		return wholeNameOperator;
+	}
+
+	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
+	{
+		this.wholeNameOperator = wholeNameOperator;
 	}
 
 	@Override
@@ -110,7 +122,7 @@ public class SimpleNamingService implements NamingService
 		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
 		if (namer != null)
 		{
-			return namer.name(candidate, this, parameters);
+			return wholeNameOperator.apply(namer.name(candidate, parameters));
 		}
 		throw new NoNamerRegisteredException(candidate);
 	}

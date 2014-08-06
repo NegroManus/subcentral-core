@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -24,6 +26,20 @@ public class NamingTest
 	private static final String	MOVIE_SUB_NAME		= "The Lord of the Rings: The Fellowship of the Ring de";
 	private static final String	MOVIE_SUB_REL_NAME	= "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.EXTENDED.PL.1080p.BluRay.X264-AiHD.de-SubCentral";
 
+	@BeforeClass
+	public static void beforeClass()
+	{
+		NamingService ns = NamingStandards.NAMING_SERVICE;
+		System.out.println(ns);
+	}
+
+	@Before
+	public void before()
+	{
+		NamingService ns = NamingStandards.NAMING_SERVICE;
+		System.out.println(ns);
+	}
+
 	@Test
 	public void testMovieNaming()
 	{
@@ -37,9 +53,7 @@ public class NamingTest
 	public void testMediaReleaseNaming()
 	{
 		Release rel = Release.create(MOVIE_REL_NAME, new Movie(MOVIE_NAME, Year.of(2001)), "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
-		String name = NamingStandards.RELEASE_NAMER.name(rel,
-				NamingStandards.NAMING_SERVICE,
-				ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
+		String name = NamingStandards.RELEASE_NAMER.name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_REL_NAME, name);
 		Assert.assertEquals(MOVIE_REL_NAME,
@@ -51,7 +65,7 @@ public class NamingTest
 	{
 		Subtitle sub = new Subtitle(new Movie(MOVIE_NAME, Year.of(2001)));
 		sub.setLanguage("de");
-		String name = NamingStandards.SUBTITLE_NAMER.name(sub, NamingStandards.NAMING_SERVICE);
+		String name = NamingStandards.SUBTITLE_NAMER.name(sub);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_NAME, name);
 		Assert.assertEquals(MOVIE_SUB_NAME, NamingStandards.NAMING_SERVICE.name(sub));
@@ -62,9 +76,7 @@ public class NamingTest
 	{
 		Release mediaRel = Release.create(MOVIE_REL_NAME, new Movie(MOVIE_NAME, Year.of(2001)), "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		SubtitleAdjustment rel = SubtitleAdjustment.create(mediaRel, "de", "SubCentral");
-		String name = NamingStandards.SUBTITLE_ADJUSTMENT_NAMER.name(rel,
-				NamingStandards.NAMING_SERVICE,
-				ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
+		String name = NamingStandards.SUBTITLE_ADJUSTMENT_NAMER.name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME,

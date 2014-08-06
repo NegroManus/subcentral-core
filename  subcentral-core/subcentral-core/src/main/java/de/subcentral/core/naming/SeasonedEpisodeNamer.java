@@ -184,7 +184,7 @@ public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	}
 
 	@Override
-	public String doName(Episode epi, NamingService namingService, Map<String, Object> params)
+	public String doName(Episode epi, Map<String, Object> params)
 	{
 		// settings
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
@@ -202,14 +202,7 @@ public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 			}
 			else
 			{
-				if (namingService != null && namingService.canName(epi.getSeries()))
-				{
-					b.appendString(Episode.PROP_SERIES, namingService.name(epi.getSeries(), params));
-				}
-				else
-				{
-					b.appendString(Episode.PROP_SERIES, epi.getSeries().getName());
-				}
+				b.appendString(Episode.PROP_SERIES, epi.getSeries().getName());
 			}
 		}
 

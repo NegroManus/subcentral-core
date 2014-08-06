@@ -19,7 +19,7 @@ public class MovieNamer extends AbstractPropertySequenceNamer<Movie>
 	}
 
 	@Override
-	public String doName(Movie movie, NamingService namingService, Map<String, Object> params)
+	public String doName(Movie movie, Map<String, Object> params)
 	{
 		// settings
 		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR_KEY, Boolean.class, PARAM_INCLUDE_YEAR_DEFAULT);

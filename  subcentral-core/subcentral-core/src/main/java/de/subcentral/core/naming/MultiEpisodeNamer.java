@@ -25,7 +25,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<MultiEpisod
 	}
 
 	@Override
-	public String doName(MultiEpisodeHelper me, NamingService namingService, Map<String, Object> namingSettings) throws NamingException
+	public String doName(MultiEpisodeHelper me, Map<String, Object> namingSettings) throws NamingException
 	{
 		if (me.isEmpty())
 		{

@@ -16,6 +16,19 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	public static final String	PARAM_USE_NAME_KEY		= "useName";
 	public static final Boolean	PARAM_USE_NAME_DEFAULT	= Boolean.FALSE;
 
+	private NamingService		mediaNamingService		= NamingStandards.NAMING_SERVICE;
+
+	public NamingService getMediaNamingService()
+	{
+		return mediaNamingService;
+	}
+
+	public void setMediaNamingService(NamingService mediaNamingService)
+	{
+		Validate.notNull(mediaNamingService, "mediaNamingService cannot be null");
+		this.mediaNamingService = mediaNamingService;
+	}
+
 	@Override
 	public Class<Release> getType()
 	{
@@ -23,9 +36,8 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	}
 
 	@Override
-	public String doName(Release rls, NamingService namingService, Map<String, Object> params) throws IntrospectionException
+	public String doName(Release rls, Map<String, Object> params) throws IntrospectionException
 	{
-		Validate.notNull(namingService, "namingService cannot be null");
 		boolean useName = Namings.readParameter(params, PARAM_USE_NAME_KEY, Boolean.class, PARAM_USE_NAME_DEFAULT);
 
 		if (useName)
@@ -36,7 +48,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 		{
 			Builder b = new Builder();
 			b.appendString(Release.PROP_MEDIA,
-					Medias.name(rls.getMedia(), namingService, params, getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null)));
+					Medias.name(rls.getMedia(), mediaNamingService, params, getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null)));
 			b.appendAllIfNotEmpty(Release.PROP_TAGS, rls.getTags());
 			if (rls.getGroup() != null)
 			{

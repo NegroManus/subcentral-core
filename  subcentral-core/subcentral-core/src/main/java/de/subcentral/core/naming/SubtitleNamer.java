@@ -8,6 +8,19 @@ import de.subcentral.core.model.subtitle.Subtitle;
 
 public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 {
+	private NamingService	mediaNamingService	= NamingStandards.NAMING_SERVICE;
+
+	public NamingService getMediaNamingService()
+	{
+		return mediaNamingService;
+	}
+
+	public void setMediaNamingService(NamingService mediaNamingService)
+	{
+		Validate.notNull(mediaNamingService, "mediaNamingService cannot be null");
+		this.mediaNamingService = mediaNamingService;
+	}
+
 	@Override
 	public Class<Subtitle> getType()
 	{
@@ -15,11 +28,10 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	}
 
 	@Override
-	public String doName(Subtitle sub, NamingService namingService, Map<String, Object> params)
+	public String doName(Subtitle sub, Map<String, Object> params)
 	{
-		Validate.notNull(namingService, "namingService cannot be null");
 		Builder b = new Builder();
-		b.appendString(Subtitle.PROP_MEDIA_ITEM, namingService.name(sub.getMediaItem(), params));
+		b.appendString(Subtitle.PROP_MEDIA_ITEM, mediaNamingService.name(sub.getMediaItem(), params));
 		b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
 		if (sub.isHearingImpaired())
 		{

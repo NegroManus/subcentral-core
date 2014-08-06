@@ -2,6 +2,7 @@ package de.subcentral.impl.xrel;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -14,21 +15,24 @@ import de.subcentral.core.model.release.Release;
 
 public class XRelLookup extends AbstractHttpLookup<Release, String>
 {
-	public XRelLookup()
-	{
-		super(XRel.getXRelQueryEntityNamingService());
-	}
-
 	@Override
 	public String getName()
 	{
-		return XRel.NAME;
+		return "xREL";
 	}
 
 	@Override
-	protected URL getHost()
+	protected URL initHost()
 	{
-		return XRel.HOST_URL;
+		try
+		{
+			return new URL("http://www.xrel.to/");
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -37,10 +41,16 @@ public class XRelLookup extends AbstractHttpLookup<Release, String>
 		return Release.class;
 	}
 
+	@Override
+	public Class<String> getParameterBeanClass()
+	{
+		return String.class;
+	}
+
 	public List<Release> parseReleases(File file) throws IOException
 	{
-		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
-		return new XRelLookupQuery(getHost()).getResults(doc);
+		Document doc = Jsoup.parse(file, "UTF-8", initHost().toExternalForm());
+		return new XRelLookupQuery(initHost()).getResults(doc);
 	}
 
 	@Override
@@ -67,11 +77,5 @@ public class XRelLookup extends AbstractHttpLookup<Release, String>
 	protected URL buildQueryUrlFromParameters(String parameterBean) throws Exception
 	{
 		return buildDefaultQueryUrl(parameterBean);
-	}
-
-	@Override
-	public Class<String> getParameterBeanClass()
-	{
-		return String.class;
 	}
 }

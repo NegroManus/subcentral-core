@@ -1,7 +1,8 @@
-package de.subcentral.impl.predb;
+package de.subcentral.impl.predbme;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -12,23 +13,26 @@ import de.subcentral.core.lookup.AbstractHttpLookup;
 import de.subcentral.core.lookup.LookupQuery;
 import de.subcentral.core.model.release.Release;
 
-public class PreDbLookup extends AbstractHttpLookup<Release, String>
+public class PreDbMeLookup extends AbstractHttpLookup<Release, String>
 {
-	public PreDbLookup()
-	{
-		super(PreDb.getPreDbQueryEntityNamingService());
-	}
-
 	@Override
 	public String getName()
 	{
-		return PreDb.NAME;
+		return "PreDB.me";
 	}
 
 	@Override
-	protected URL getHost()
+	protected URL initHost()
 	{
-		return PreDb.HOST_URL;
+		try
+		{
+			return new URL("http://www.predb.me/");
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -37,22 +41,28 @@ public class PreDbLookup extends AbstractHttpLookup<Release, String>
 		return Release.class;
 	}
 
+	@Override
+	public Class<String> getParameterBeanClass()
+	{
+		return String.class;
+	}
+
 	public List<Release> parseReleases(File file) throws IOException
 	{
-		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
-		return new PreDbLookupQuery(getHost()).getResults(doc);
+		Document doc = Jsoup.parse(file, "UTF-8", initHost().toExternalForm());
+		return new PreDbMeLookupQuery(initHost()).getResults(doc);
 	}
 
 	public Release parseReleaseDetails(File file) throws IOException
 	{
-		Document doc = Jsoup.parse(file, "UTF-8", getHost().toExternalForm());
-		return new PreDbLookupQuery(getHost()).parseReleaseDetails(doc, new Release());
+		Document doc = Jsoup.parse(file, "UTF-8", initHost().toExternalForm());
+		return new PreDbMeLookupQuery(initHost()).parseReleaseDetails(doc, new Release());
 	}
 
 	@Override
 	public LookupQuery<Release> createQuery(URL query)
 	{
-		return new PreDbLookupQuery(query);
+		return new PreDbMeLookupQuery(query);
 	}
 
 	@Override
@@ -73,9 +83,4 @@ public class PreDbLookup extends AbstractHttpLookup<Release, String>
 		return buildDefaultQueryUrl(parameterBean);
 	}
 
-	@Override
-	public Class<String> getParameterBeanClass()
-	{
-		return String.class;
-	}
 }

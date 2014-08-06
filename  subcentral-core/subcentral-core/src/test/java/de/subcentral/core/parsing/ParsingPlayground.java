@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.naming.NamingStandards;
-import de.subcentral.impl.predb.PreDbLookup;
+import de.subcentral.impl.orlydb.OrlyDbLookup;
 import de.subcentral.impl.scene.Scene;
 
 public class ParsingPlayground
@@ -18,7 +18,7 @@ public class ParsingPlayground
 	public static void main(String[] args)
 	{
 		final ParsingService ps = Scene.getParsingService();
-		final Lookup<Release, String> lookup = new PreDbLookup();
+		final Lookup<Release, ?> lookup = new OrlyDbLookup();
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
 		// dlFolder = Paths.get("D:\\Downloads");
@@ -41,7 +41,7 @@ public class ParsingPlayground
 						String nameOfParsed = NamingStandards.NAMING_SERVICE.name(parsed);
 						System.out.println(nameOfParsed);
 						System.out.println("Looked up ...");
-						// lookup.createQuery("Defiance S02E07 KILLERS").execute().forEach(r -> System.out.println(r));
+						lookup.createQueryFromEntity(parsed.getFirstMedia()).execute().forEach(r -> System.out.println(r));
 						System.out.println();
 						System.out.println();
 					}

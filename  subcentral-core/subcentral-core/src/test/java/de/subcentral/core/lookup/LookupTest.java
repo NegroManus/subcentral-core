@@ -5,7 +5,7 @@ import java.util.List;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.impl.predb.PreDbLookup;
+import de.subcentral.impl.predbme.PreDbMeLookup;
 
 public class LookupTest
 {
@@ -32,7 +32,7 @@ public class LookupTest
 		// System.out.println(foundRls);
 		// }
 
-		PreDbLookup preDbLookup = new PreDbLookup();
+		PreDbMeLookup preDbLookup = new PreDbMeLookup();
 		LookupQuery<Release> preDbQuery = preDbLookup.createQuery("^pacific rim 720p");
 		// LookupQuery<Release> preDbQuery = preDbLookup.createQueryFromEntity(epi);
 		List<Release> results = preDbQuery.execute();

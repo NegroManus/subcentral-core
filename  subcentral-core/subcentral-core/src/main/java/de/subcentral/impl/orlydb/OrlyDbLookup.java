@@ -1,5 +1,6 @@
 package de.subcentral.impl.orlydb;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,27 +11,36 @@ import de.subcentral.core.model.release.Release;
 
 public class OrlyDbLookup extends AbstractHttpLookup<Release, OrlyDbLookupParameters>
 {
-	public OrlyDbLookup()
-	{
-		super(OrlyDb.getOrlyDbQueryEntityNamingService());
-	}
-
 	@Override
 	public String getName()
 	{
-		return OrlyDb.NAME;
+		return "ORLYDB";
 	}
 
 	@Override
-	protected URL getHost()
+	protected URL initHost()
 	{
-		return OrlyDb.HOST_URL;
+		try
+		{
+			return new URL("http://www.orlydb.com/");
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
 	public Class<Release> getResultClass()
 	{
 		return Release.class;
+	}
+
+	@Override
+	public Class<OrlyDbLookupParameters> getParameterBeanClass()
+	{
+		return OrlyDbLookupParameters.class;
 	}
 
 	@Override
@@ -67,9 +77,4 @@ public class OrlyDbLookup extends AbstractHttpLookup<Release, OrlyDbLookupParame
 		return buildQueryUrl(path.toString(), getDefaultQueryPrefix(), parameterBean.getQuery());
 	}
 
-	@Override
-	public Class<OrlyDbLookupParameters> getParameterBeanClass()
-	{
-		return OrlyDbLookupParameters.class;
-	}
 }

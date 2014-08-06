@@ -1,4 +1,4 @@
-package de.subcentral.impl.predb;
+package de.subcentral.impl.predbme;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +31,7 @@ import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
+public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 {
 	// DateTimeFormatter not needed because using the epoch seconds
 	// /**
@@ -44,7 +44,7 @@ public class PreDbLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 	 */
 	private static final ZoneId	TIME_ZONE	= ZoneId.of("UTC");
 
-	PreDbLookupQuery(URL url)
+	PreDbMeLookupQuery(URL url)
 	{
 		super(url);
 	}

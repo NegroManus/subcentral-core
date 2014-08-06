@@ -7,17 +7,27 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import de.subcentral.core.naming.NamingService;
-
 public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 {
 	public static final int	DEFAULT_TIMEOUT	= 5000;
 
+	protected final URL		host;
 	private int				timeout			= DEFAULT_TIMEOUT;
 
-	public AbstractHttpLookup(NamingService queryEntityNamingService)
+	public AbstractHttpLookup()
 	{
-		super(queryEntityNamingService);
+		this.host = initHost();
+	}
+
+	/**
+	 * 
+	 * @return the URL of the host of this lookup. Not null
+	 */
+	protected abstract URL initHost();
+
+	public URL getHost()
+	{
+		return host;
 	}
 
 	public int getTimeout()
@@ -33,7 +43,7 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	@Override
 	public String getDomain()
 	{
-		return getHost().getHost();
+		return host.getHost();
 	}
 
 	@Override
@@ -41,7 +51,7 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	{
 		try
 		{
-			HttpURLConnection connection = (HttpURLConnection) getHost().openConnection();
+			HttpURLConnection connection = (HttpURLConnection) initHost().openConnection();
 			connection.setConnectTimeout(timeout);
 			connection.setReadTimeout(timeout);
 			int responseCode = connection.getResponseCode();
@@ -82,12 +92,6 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	public abstract LookupQuery<R> createQuery(URL query);
 
 	/**
-	 * 
-	 * @return The URL of the host of this lookup. Not null.
-	 */
-	protected abstract URL getHost();
-
-	/**
 	 * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.
 	 * 
 	 * @param queryString
@@ -117,7 +121,7 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 		{
 			return null;
 		}
-		URI uri = new URI("http", null, getHost().getHost(), -1, path, buildQuery(queryPrefix, queryString), null);
+		URI uri = new URI("http", null, initHost().getHost(), -1, path, buildQuery(queryPrefix, queryString), null);
 		return uri.toURL();
 	}
 

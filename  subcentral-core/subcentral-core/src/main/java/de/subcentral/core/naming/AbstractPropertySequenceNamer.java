@@ -69,15 +69,15 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 	}
 
 	@Override
-	public String name(T candidate, NamingService namingService, Map<String, Object> parameters) throws NamingException
+	public String name(T candidate, Map<String, Object> parameters) throws NamingException
 	{
 		if (candidate == null)
 		{
-			return null;
+			return "";
 		}
 		try
 		{
-			return wholeNameOperator.apply(doName(candidate, namingService, parameters));
+			return wholeNameOperator.apply(doName(candidate, parameters));
 		}
 		catch (Exception e)
 		{
@@ -89,15 +89,13 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 	 * 
 	 * @param candidate
 	 *            The candidate. Never null.
-	 * @param namingService
-	 *            The NamingService. May null.
 	 * @param parameters
 	 *            The parameters. Not null, may empty.
 	 * @return The name of the candidate. Will be processed by {@link #formatWholeName(String)}.
 	 * @throws Exception
 	 *             Whatever exception occurs while naming the candidate. Will be wrapped into a NamingException and thrown.
 	 */
-	protected abstract String doName(T candidate, NamingService namingService, Map<String, Object> parameters) throws Exception;
+	protected abstract String doName(T candidate, Map<String, Object> parameters) throws Exception;
 
 	protected String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separationType)
 	{

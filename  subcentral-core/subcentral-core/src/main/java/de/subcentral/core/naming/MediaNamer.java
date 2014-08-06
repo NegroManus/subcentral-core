@@ -13,8 +13,12 @@ public class MediaNamer implements Namer<Media>
 	}
 
 	@Override
-	public String name(Media media, NamingService namingService, Map<String, Object> parameters) throws NamingException
+	public String name(Media media, Map<String, Object> parameters) throws NamingException
 	{
+		if (media == null)
+		{
+			return "";
+		}
 		return media.getName();
 	}
 
