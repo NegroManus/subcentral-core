@@ -212,7 +212,7 @@ public class Addic7ed
 		return ImmutableList.of(episodeSubParser, movieSubParser);
 	}
 
-	public static final ParsingService getAddi7edParsingService()
+	public static final ParsingService getParsingService()
 	{
 		return PARSING_SERVICE;
 	}

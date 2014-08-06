@@ -254,7 +254,7 @@ public class Addic7edParsingTest
 
 	private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
 	{
-		Object parsed = Addic7ed.getAddi7edParsingService().parse(nameToParse);
+		Object parsed = Addic7ed.getParsingService().parse(nameToParse);
 		System.out.println("Results for test: " + testName);
 		System.out.println("Expected: " + expected);
 		System.out.println("Parsed  : " + parsed);

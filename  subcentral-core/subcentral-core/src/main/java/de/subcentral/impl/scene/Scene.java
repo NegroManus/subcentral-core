@@ -2,10 +2,15 @@ package de.subcentral.impl.scene;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -32,44 +37,86 @@ public class Scene
 
 	private static Parser<Release> initReleaseParser()
 	{
+		String tagsPattern = buildFirstTagPattern();
+
 		ReleaseParser rlsParser = new ReleaseParser("scene");
 
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
 
-		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		// Seasoned
+		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
 		grps101.put(1, Series.PROP_NAME);
 		grps101.put(2, Season.PROP_NUMBER);
 		grps101.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		grps101.put(4, Release.PROP_TAGS);
-		grps101.put(5, Release.PROP_GROUP);
+		grps101.put(4, Episode.PROP_TITLE);
+		grps101.put(5, Release.PROP_TAGS);
+		grps101.put(6, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<SimplePropDescriptor>(p101,
 				grps101.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
-		Pattern p102 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		Pattern p102 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
 		grps102.put(1, Series.PROP_NAME);
-		grps102.put(2, Episode.PROP_NUMBER_IN_SERIES);
-		grps102.put(3, Release.PROP_TAGS);
-		grps102.put(4, Release.PROP_GROUP);
+		grps102.put(2, Season.PROP_NUMBER);
+		grps102.put(3, Episode.PROP_NUMBER_IN_SEASON);
+		grps102.put(4, Release.PROP_TAGS);
+		grps102.put(5, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<SimplePropDescriptor>(p102,
 				grps102.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
+
+		// Mini-series
+		Pattern p201 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
+		grps201.put(1, Series.PROP_NAME);
+		grps201.put(2, Episode.PROP_NUMBER_IN_SERIES);
+		grps201.put(3, Episode.PROP_TITLE);
+		grps201.put(4, Release.PROP_TAGS);
+		grps201.put(5, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<SimplePropDescriptor>(p201,
+				grps201.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_MINI_SERIES));
 
-		Pattern p103 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
-		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps103 = ImmutableMap.builder();
-		grps103.put(1, Series.PROP_NAME);
-		grps103.put(2, Episode.PROP_DATE);
-		grps103.put(3, Release.PROP_TAGS);
-		grps103.put(4, Release.PROP_GROUP);
-		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<SimplePropDescriptor>(p103,
-				grps103.build(),
+		Pattern p202 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps202 = ImmutableMap.builder();
+		grps202.put(1, Series.PROP_NAME);
+		grps202.put(2, Episode.PROP_NUMBER_IN_SERIES);
+		grps202.put(3, Release.PROP_TAGS);
+		grps202.put(4, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher202 = new MappingMatcher<SimplePropDescriptor>(p202,
+				grps202.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_MINI_SERIES));
+
+		// Dated
+		Pattern p301 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps301 = ImmutableMap.builder();
+		grps301.put(1, Series.PROP_NAME);
+		grps301.put(2, Episode.PROP_DATE);
+		grps301.put(3, Episode.PROP_TITLE);
+		grps301.put(4, Release.PROP_TAGS);
+		grps301.put(5, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher301 = new MappingMatcher<SimplePropDescriptor>(p301,
+				grps301.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_DATED));
+
+		Pattern p302 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps302 = ImmutableMap.builder();
+		grps302.put(1, Series.PROP_NAME);
+		grps302.put(2, Episode.PROP_DATE);
+		grps302.put(3, Release.PROP_TAGS);
+		grps302.put(4, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher302 = new MappingMatcher<SimplePropDescriptor>(p302,
+				grps302.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_DATED));
 
 		matchers.add(matcher101);
 		matchers.add(matcher102);
-		matchers.add(matcher103);
+		matchers.add(matcher201);
+		matchers.add(matcher202);
+		matchers.add(matcher301);
+		matchers.add(matcher302);
 
 		rlsParser.setMatchers(matchers.build());
 
@@ -79,6 +126,45 @@ public class Scene
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 		rlsParser.setPps(pps);
 		return rlsParser;
+	}
+
+	private static String buildFirstTagPattern()
+	{
+		StringBuilder knownTag = new StringBuilder();
+		knownTag.append("(?:PROPER|REPACK|DiRFIX|");
+		knownTag.append(Joiner.on('|').join(getAllLanguageTags()));
+		knownTag.append("|720p|1080p|HDTV|PDTV|WS|HR|WebHD|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
+		knownTag.append("|iNTERNAL)");
+
+		StringBuilder tagPattern = new StringBuilder();
+		// add a negative look-behind for a tag
+		// so that the pattern does not match releases without a title
+		tagPattern.append("(?<!");
+		tagPattern.append(knownTag);
+		// the dot after the tag
+		tagPattern.append("\\.)");
+		// first recognized tag
+		tagPattern.append(knownTag);
+
+		System.out.println(tagPattern);
+		return tagPattern.toString();
+	}
+
+	private static Set<String> getAllLanguageTags()
+	{
+		Locale[] allLocales = Locale.getAvailableLocales();
+		Set<String> allLangs = new HashSet<>(allLocales.length / 4);
+		allLangs.add("MULTi");
+		allLangs.add("FLEMISH");
+		for (Locale l : allLocales)
+		{
+			String displayLang = l.getDisplayLanguage(Locale.ENGLISH);
+			if (!StringUtils.isEmpty(displayLang))
+			{
+				allLangs.add(displayLang);
+			}
+		}
+		return allLangs;
 	}
 
 	public static ParsingService getParsingService()

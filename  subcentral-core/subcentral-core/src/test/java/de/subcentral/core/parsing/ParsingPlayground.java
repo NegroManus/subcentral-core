@@ -10,14 +10,14 @@ import java.nio.file.Paths;
 import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.naming.NamingStandards;
-import de.subcentral.impl.addic7ed.Addic7ed;
 import de.subcentral.impl.orlydb.OrlyDbLookup;
+import de.subcentral.impl.scene.Scene;
 
 public class ParsingPlayground
 {
 	public static void main(String[] args)
 	{
-		final ParsingService ps = Addic7ed.getAddi7edParsingService();
+		final ParsingService ps = Scene.getParsingService();
 		final Lookup<Release, ?> lookup = new OrlyDbLookup();
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
@@ -40,8 +40,8 @@ public class ParsingPlayground
 						System.out.println(parsed);
 						String nameOfParsed = NamingStandards.NAMING_SERVICE.name(parsed);
 						System.out.println(nameOfParsed);
-						System.out.println("Looked up ...");
-						lookup.createQueryFromEntity(parsed).execute().forEach(r -> System.out.println(r));
+						// System.out.println("Looked up ...");
+						// lookup.createQueryFromEntity(parsed).execute().forEach(r -> System.out.println(r));
 						System.out.println();
 						System.out.println();
 					}
