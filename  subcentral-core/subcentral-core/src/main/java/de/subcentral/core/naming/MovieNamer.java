@@ -7,10 +7,9 @@ import de.subcentral.core.model.media.Movie;
 public class MovieNamer extends AbstractPropertySequenceNamer<Movie>
 {
 	/**
-	 * The parameter key for the Boolean value "includeYear".
+	 * The parameter key for the Boolean value "includeYear". The default value is {@code true}.
 	 */
-	public static final String	PARAM_INCLUDE_YEAR_KEY		= "includeYear";
-	public static final Boolean	PARAM_INCLUDE_YEAR_DEFAULT	= Boolean.FALSE;
+	public static final String	PARAM_INCLUDE_YEAR_KEY	= "includeYear";
 
 	@Override
 	public Class<Movie> getType()
@@ -22,7 +21,7 @@ public class MovieNamer extends AbstractPropertySequenceNamer<Movie>
 	public String doName(Movie movie, Map<String, Object> params)
 	{
 		// settings
-		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR_KEY, Boolean.class, PARAM_INCLUDE_YEAR_DEFAULT);
+		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR_KEY, Boolean.class, Boolean.TRUE);
 
 		Builder b = new Builder();
 		b.append(Movie.PROP_NAME, movie.getTitleOrName());

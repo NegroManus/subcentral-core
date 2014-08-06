@@ -45,7 +45,7 @@ public class NamingStandards
 		Function<Integer, String> episodeNumberToString = n -> String.format("E%02d", n);
 		Function<Integer, String> seasonNumberToString = n -> String.format("S%02d", n);
 		Function<Temporal, String> yearToString = d -> DateTimeFormatter.ofPattern("'('uuuu')'", Locale.US).format(d);
-		Function<Temporal, String> dateToString = d -> DateTimeFormatter.ofPattern("'('uuuu-MM-dd')'", Locale.US).format(d);
+		Function<Temporal, String> dateToString = d -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd')'", Locale.US).format(d);
 
 		// Season
 		SEASON_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Season.PROP_NUMBER, seasonNumberToString));

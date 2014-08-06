@@ -102,23 +102,21 @@ import de.subcentral.core.model.media.Series;
 public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 {
 	/**
-	 * The parameter key for the Boolean value "includeSeries".
+	 * The parameter key for the Boolean value "includeSeries". The default value is {@code true}.
 	 */
-	public static final String	PARAM_INCLUDE_SERIES_KEY		= "includeSeries";
-	public static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT	= Boolean.TRUE;
+	public static final String	PARAM_INCLUDE_SERIES_KEY	= "includeSeries";
 
 	/**
-	 * The parameter key for the Boolean value "includeSeason".
+	 * The parameter key for the Boolean value "includeSeason". The default value is {@code true}.
 	 */
-	public static final String	PARAM_INCLUDE_SEASON_KEY		= "includeSeason";
-	public static final Boolean	PARAM_INCLUDE_SEASON_DEFAULT	= Boolean.TRUE;
+	public static final String	PARAM_INCLUDE_SEASON_KEY	= "includeSeason";
 
-	private boolean				alwaysIncludeSeasonTitle		= false;
-	private boolean				alwaysIncludeEpisodeTitle		= false;
+	private boolean				alwaysIncludeSeasonTitle	= false;
+	private boolean				alwaysIncludeEpisodeTitle	= false;
 
-	private String				undefinedSeriesPlaceholder		= "UNNAMED_SERIES";
-	private String				undefinedSeasonPlaceholder		= "Sxx";
-	private String				undefinedEpisodePlaceholder		= "Exx";
+	private String				undefinedSeriesPlaceholder	= "UNNAMED_SERIES";
+	private String				undefinedSeasonPlaceholder	= "Sxx";
+	private String				undefinedEpisodePlaceholder	= "Exx";
 
 	public SeasonedEpisodeNamer()
 	{
@@ -187,8 +185,8 @@ public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	public String doName(Episode epi, Map<String, Object> params)
 	{
 		// settings
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
-		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON_KEY, Boolean.class, PARAM_INCLUDE_SEASON_DEFAULT);
+		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
+		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON_KEY, Boolean.class, Boolean.TRUE);
 
 		Builder b = new Builder();
 

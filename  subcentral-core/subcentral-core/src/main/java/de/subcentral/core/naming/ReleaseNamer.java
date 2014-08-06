@@ -11,12 +11,11 @@ import de.subcentral.core.model.release.Release;
 public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 {
 	/**
-	 * The parameter key for the Boolean value "useName".
+	 * The parameter key for the Boolean value "useName". The default value is {@code false}.
 	 */
-	public static final String	PARAM_USE_NAME_KEY		= "useName";
-	public static final Boolean	PARAM_USE_NAME_DEFAULT	= Boolean.FALSE;
+	public static final String	PARAM_USE_NAME_KEY	= "useName";
 
-	private NamingService		mediaNamingService		= NamingStandards.NAMING_SERVICE;
+	private NamingService		mediaNamingService	= NamingStandards.NAMING_SERVICE;
 
 	public NamingService getMediaNamingService()
 	{
@@ -38,7 +37,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	@Override
 	public String doName(Release rls, Map<String, Object> params) throws IntrospectionException
 	{
-		boolean useName = Namings.readParameter(params, PARAM_USE_NAME_KEY, Boolean.class, PARAM_USE_NAME_DEFAULT);
+		boolean useName = Namings.readParameter(params, PARAM_USE_NAME_KEY, Boolean.class, Boolean.FALSE);
 
 		if (useName)
 		{

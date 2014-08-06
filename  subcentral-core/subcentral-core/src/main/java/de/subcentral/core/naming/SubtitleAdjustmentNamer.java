@@ -11,7 +11,7 @@ import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<SubtitleAdjustment>
 {
 	/**
-	 * The parameter key for the Release value.
+	 * The parameter key for the Release value. The default value is {@link SubtitleAdjustment#getFirstMatchingRelease()}.
 	 */
 	public static final String	PARAM_KEY_RELEASE	= "release";
 

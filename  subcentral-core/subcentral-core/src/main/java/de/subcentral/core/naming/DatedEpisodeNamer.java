@@ -8,15 +8,14 @@ import de.subcentral.core.model.media.Series;
 public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 {
 	/**
-	 * The parameter key for the Boolean value "includeSeries".
+	 * The parameter key for the Boolean value "includeSeries". The default value is {@code true}.
 	 */
-	public static final String	PARAM_INCLUDE_SERIES_KEY		= "includeSeries";
-	public static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT	= Boolean.TRUE;
+	public static final String	PARAM_INCLUDE_SERIES_KEY	= "includeSeries";
 
-	private boolean				alwaysIncludeEpisodeTitle		= false;
+	private boolean				alwaysIncludeEpisodeTitle	= false;
 
-	private String				undefinedSeriesPlaceholder		= "UNNAMED_SERIES";
-	private String				undefinedEpisodePlaceholder		= "xxxx.xx.xx";
+	private String				undefinedSeriesPlaceholder	= "UNNAMED_SERIES";
+	private String				undefinedEpisodePlaceholder	= "xxxx.xx.xx";
 
 	public DatedEpisodeNamer()
 	{
@@ -65,7 +64,7 @@ public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	public String doName(Episode epi, Map<String, Object> params)
 	{
 		// settings
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
 
 		Builder b = new Builder();
 
