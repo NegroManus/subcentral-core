@@ -225,7 +225,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	@Override
 	public String getName()
 	{
-		return NamingStandards.SEASONED_EPISODE_NAMER.name(this);
+		return NamingStandards.EPISODE_NAMER.name(this);
 	}
 
 	@Override
