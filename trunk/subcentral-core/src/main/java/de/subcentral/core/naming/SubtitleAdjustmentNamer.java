@@ -29,12 +29,6 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	}
 
 	@Override
-	public Class<SubtitleAdjustment> getEntityType()
-	{
-		return SubtitleAdjustment.class;
-	}
-
-	@Override
 	public String doName(SubtitleAdjustment adjustment, Map<String, Object> params)
 	{
 		// read naming settings

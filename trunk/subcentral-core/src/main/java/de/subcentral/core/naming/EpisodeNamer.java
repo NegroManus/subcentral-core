@@ -9,8 +9,13 @@ import de.subcentral.core.model.media.Episode;
 
 public class EpisodeNamer implements Namer<Episode>
 {
-	private Map<String, Namer<Episode>>	seriesTypeNamers	= new HashMap<>(4);
+	private Map<String, Namer<Episode>>	seriesTypeNamers	= new HashMap<>(3);
 	private Namer<Episode>				defaultNamer		= NamingStandards.SEASONED_EPISODE_NAMER;
+
+	public EpisodeNamer()
+	{
+
+	}
 
 	public Namer<Episode> registerSeriesTypeNamer(String seriesType, Namer<Episode> namer)
 	{
@@ -31,12 +36,6 @@ public class EpisodeNamer implements Namer<Episode>
 	{
 		Validate.notNull(defaultNamer, "defaultNamer");
 		this.defaultNamer = defaultNamer;
-	}
-
-	@Override
-	public Class<Episode> getEntityType()
-	{
-		return Episode.class;
 	}
 
 	@Override

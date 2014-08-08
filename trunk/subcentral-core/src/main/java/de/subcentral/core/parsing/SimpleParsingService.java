@@ -1,18 +1,18 @@
 package de.subcentral.core.parsing;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 
 public class SimpleParsingService implements ParsingService
 {
-	private List<Parser<?>>	parsers	= new ArrayList<>(0);
+	private ListMultimap<Class<?>, Parser<?>>	parsers	= LinkedListMultimap.create();
 
-	public List<Parser<?>> getParsers()
+	public ListMultimap<Class<?>, Parser<?>> getParsers()
 	{
 		return parsers;
 	}
 
-	public void setParsers(List<Parser<?>> parsers)
+	public void setParsers(ListMultimap<Class<?>, Parser<?>> parsers)
 	{
 		this.parsers = parsers;
 	}
@@ -20,7 +20,26 @@ public class SimpleParsingService implements ParsingService
 	@Override
 	public Object parse(String text, String domain) throws NoMatchException, ParsingException
 	{
-		for (Parser<?> p : parsers)
+		return doParse(text, domain, null);
+	}
+
+	@Override
+	public <T> T parseTyped(String text, String domain, Class<T> entityType) throws NoMatchException, ParsingException
+	{
+		try
+		{
+			return entityType.cast(doParse(text, domain, entityType));
+		}
+		catch (ClassCastException e)
+		{
+			throw new ParsingException(e);
+		}
+	}
+
+	private Object doParse(String text, String domain, Class<?> entityType) throws NoMatchException
+	{
+		Parsings.requireTextNotBlank(text);
+		for (Parser<?> p : entityType == null ? parsers.values() : parsers.get(entityType))
 		{
 			if (domain == null || domain.equals(p.getDomain()))
 			{
@@ -35,28 +54,34 @@ public class SimpleParsingService implements ParsingService
 				}
 			}
 		}
-		throw new NoMatchException("No parser " + (domain == null ? "" : "with domain '" + domain + "'") + " could parse the text '" + text + "'");
-	}
 
-	@Override
-	public <T> T parseTyped(String text, String domain, Class<T> entityType) throws NoMatchException, ParsingException
-	{
-		for (Parser<?> p : parsers)
+		// build Exception message
+		StringBuilder msg = new StringBuilder();
+		msg.append("No parser ");
+		if (domain != null)
 		{
-			if ((domain == null || domain.equals(p.getDomain())) && (entityType == null || entityType.equals(p.getEntityType())))
-			{
-				try
-				{
-					return entityType.cast(p.parse(text));
-				}
-				catch (NoMatchException e)
-				{
-					// this parser could no match
-					// ignore and move on to the next
-				}
-			}
+			msg.append("with domain '");
+			msg.append(domain);
+			msg.append("' ");
 		}
-		throw new NoMatchException("No parser with " + (domain == null ? "" : "domain '" + domain + "' and ") + "entity type " + entityType.getName()
-				+ " could parse the text '" + text + "'");
+		if (entityType != null)
+		{
+			if (domain != null)
+			{
+				msg.append("and ");
+			}
+			else
+			{
+				msg.append("with ");
+			}
+			msg.append("entity type");
+			msg.append(entityType);
+			msg.append(' ');
+		}
+		msg.append("could parse the text '");
+		msg.append(text);
+		msg.append('\'');
+
+		throw new NoMatchException(msg.toString());
 	}
 }

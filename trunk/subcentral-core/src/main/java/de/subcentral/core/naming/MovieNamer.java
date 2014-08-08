@@ -12,12 +12,6 @@ public class MovieNamer extends AbstractPropertySequenceNamer<Movie>
 	public static final String	PARAM_INCLUDE_YEAR_KEY	= "includeYear";
 
 	@Override
-	public Class<Movie> getEntityType()
-	{
-		return Movie.class;
-	}
-
-	@Override
 	public String doName(Movie movie, Map<String, Object> params)
 	{
 		// settings

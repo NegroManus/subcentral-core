@@ -11,7 +11,6 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -21,12 +20,6 @@ public class ReleaseParser extends AbstractPropertyParser<Release>
 	public ReleaseParser(String domain)
 	{
 		super(domain);
-	}
-
-	@Override
-	public Class<Release> getEntityType()
-	{
-		return Release.class;
 	}
 
 	@Override
@@ -82,9 +75,6 @@ public class ReleaseParser extends AbstractPropertyParser<Release>
 		rls.setSource(props.get(Release.PROP_SOURCE));
 		rls.setSourceUrl(props.get(Release.PROP_SOURCE_URL));
 
-		Releases.normalizeTags(rls);
-
 		return rls;
 	}
-
 }

@@ -11,11 +11,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.Movie;
+import de.subcentral.core.model.media.MultiEpisodeHelper;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.SeparationDefinition;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -27,7 +30,7 @@ public class NamingStandards
 
 	// NamingService has to be instantiated first because it is referenced in some namers
 	public static final SimpleNamingService		NAMING_SERVICE				= new SimpleNamingService();
-	public static final MediaNamer				MEDIA_NAMER					= new MediaNamer();
+	public static final Namer<Media>			MEDIA_NAMER					= (m, params) -> m == null ? "" : m.getName();
 	public static final SeriesNamer				SERIES_NAMER				= new SeriesNamer();
 	public static final SeasonNamer				SEASON_NAMER				= new SeasonNamer();
 	public static final SeasonedEpisodeNamer	SEASONED_EPISODE_NAMER		= new SeasonedEpisodeNamer();
@@ -89,15 +92,15 @@ public class NamingStandards
 
 		// Add namers to the NamingService
 		NAMING_SERVICE.setDomain(DEFAULT_DOMAIN);
-		NAMING_SERVICE.registerNamer(MEDIA_NAMER);
-		NAMING_SERVICE.registerNamer(SERIES_NAMER);
-		NAMING_SERVICE.registerNamer(SEASON_NAMER);
-		NAMING_SERVICE.registerNamer(EPISODE_NAMER);
-		NAMING_SERVICE.registerNamer(MULTI_EPISODE_NAMER);
-		NAMING_SERVICE.registerNamer(MOVIE_NAMER);
-		NAMING_SERVICE.registerNamer(SUBTITLE_NAMER);
-		NAMING_SERVICE.registerNamer(RELEASE_NAMER);
-		NAMING_SERVICE.registerNamer(SUBTITLE_ADJUSTMENT_NAMER);
+		NAMING_SERVICE.registerNamer(Media.class, MEDIA_NAMER);
+		NAMING_SERVICE.registerNamer(Series.class, SERIES_NAMER);
+		NAMING_SERVICE.registerNamer(Season.class, SEASON_NAMER);
+		NAMING_SERVICE.registerNamer(Episode.class, EPISODE_NAMER);
+		NAMING_SERVICE.registerNamer(MultiEpisodeHelper.class, MULTI_EPISODE_NAMER);
+		NAMING_SERVICE.registerNamer(Movie.class, MOVIE_NAMER);
+		NAMING_SERVICE.registerNamer(Subtitle.class, SUBTITLE_NAMER);
+		NAMING_SERVICE.registerNamer(Release.class, RELEASE_NAMER);
+		NAMING_SERVICE.registerNamer(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER);
 	}
 
 	private NamingStandards()

@@ -29,12 +29,6 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	}
 
 	@Override
-	public Class<Release> getEntityType()
-	{
-		return Release.class;
-	}
-
-	@Override
 	public String doName(Release rls, Map<String, Object> params) throws IntrospectionException
 	{
 		boolean useName = Namings.readParameter(params, PARAM_USE_NAME_KEY, Boolean.class, Boolean.FALSE);

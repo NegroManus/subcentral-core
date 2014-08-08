@@ -22,12 +22,6 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	}
 
 	@Override
-	public Class<Subtitle> getEntityType()
-	{
-		return Subtitle.class;
-	}
-
-	@Override
 	public String doName(Subtitle sub, Map<String, Object> params)
 	{
 		Builder b = new Builder();

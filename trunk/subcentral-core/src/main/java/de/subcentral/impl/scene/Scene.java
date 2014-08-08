@@ -3,7 +3,6 @@ package de.subcentral.impl.scene;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.Function;
@@ -13,7 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Season;
@@ -33,10 +34,10 @@ public class Scene
 
 	static
 	{
-		PARSING_SERVICE.setParsers(ImmutableList.of(initReleaseParser()));
+		PARSING_SERVICE.setParsers(initParsers());
 	}
 
-	private static Parser<Release> initReleaseParser()
+	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
 		String tagsPattern = buildFirstTagPattern();
 
@@ -126,7 +127,8 @@ public class Scene
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 		rlsParser.setPps(pps);
-		return rlsParser;
+
+		return ImmutableListMultimap.of(Release.class, rlsParser);
 	}
 
 	private static String buildFirstTagPattern()
@@ -173,7 +175,7 @@ public class Scene
 		return PARSING_SERVICE;
 	}
 
-	public static List<Parser<?>> getParsers()
+	public static ListMultimap<Class<?>, Parser<?>> getParsers()
 	{
 		return PARSING_SERVICE.getParsers();
 	}

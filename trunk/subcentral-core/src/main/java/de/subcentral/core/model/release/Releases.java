@@ -9,7 +9,7 @@ public class Releases
 		// utility class
 	}
 
-	public static void normalizeTags(Release rls)
+	public static Release standardizeTags(Release rls)
 	{
 		ListIterator<Tag> iter = rls.getTags().listIterator();
 		Tag lastTag = null;
@@ -33,5 +33,6 @@ public class Releases
 			}
 			lastTag = tag;
 		}
+		return rls;
 	}
 }
