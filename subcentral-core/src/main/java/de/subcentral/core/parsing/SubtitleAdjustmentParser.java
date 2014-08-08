@@ -15,7 +15,6 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.core.model.subtitle.Subtitles;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdjustment>
@@ -23,12 +22,6 @@ public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdj
 	public SubtitleAdjustmentParser(String domain)
 	{
 		super(domain);
-	}
-
-	@Override
-	public Class<SubtitleAdjustment> getEntityType()
-	{
-		return SubtitleAdjustment.class;
 	}
 
 	@Override
@@ -92,8 +85,6 @@ public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdj
 		sub.getTags().addAll(pps.parseList(props, Subtitle.PROP_TAGS, Tag.class));
 		sub.setSource(props.get(Subtitle.PROP_SOURCE));
 		sub.setSourceUrl(props.get(Subtitle.PROP_SOURCE_URL));
-
-		Subtitles.normalizeTags(sub);
 
 		// SubtitleAdjustment
 		return sub.newAdjustment(rls);

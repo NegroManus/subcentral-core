@@ -8,12 +8,6 @@ import de.subcentral.core.model.media.Series;
 public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 {
 	@Override
-	public Class<Season> getEntityType()
-	{
-		return Season.class;
-	}
-
-	@Override
 	protected String doName(Season season, Map<String, Object> parameters) throws Exception
 	{
 		Builder b = new Builder();

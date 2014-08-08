@@ -1,10 +1,11 @@
 package de.subcentral.impl.addic7ed;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
@@ -30,7 +31,7 @@ public class Addic7ed
 		PARSING_SERVICE.setParsers(initParsers());
 	}
 
-	private static List<Parser<?>> initParsers()
+	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
 		String seriesSeasonEpiNumsPattern = Parsings.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
 		// String tagsPattern = "((HI|C|orig|updated)+)";
@@ -209,7 +210,7 @@ public class Addic7ed
 		movieSubParser.setMatchers(movieMatchers.build());
 		movieSubParser.setPps(PropParsingService.DEFAULT);
 
-		return ImmutableList.of(episodeSubParser, movieSubParser);
+		return ImmutableListMultimap.of(Episode.class, episodeSubParser, Episode.class, movieSubParser);
 	}
 
 	public static final ParsingService getParsingService()
@@ -217,7 +218,7 @@ public class Addic7ed
 		return PARSING_SERVICE;
 	}
 
-	public static List<Parser<?>> getParsers()
+	public static ListMultimap<Class<?>, Parser<?>> getParsers()
 	{
 		return PARSING_SERVICE.getParsers();
 	}

@@ -1,16 +1,18 @@
 package de.subcentral.impl.subcentral;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
@@ -27,9 +29,8 @@ public class SubCentral
 		PARSING_SERVICE.setParsers(initParsers());
 	}
 
-	private static List<Parser<?>> initParsers()
+	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
-		ImmutableList.Builder<Parser<?>> parsers = ImmutableList.builder();
 		SubtitleAdjustmentParser epiParser = new SubtitleAdjustmentParser("subcentral.de");
 
 		// Episode matchers
@@ -51,9 +52,7 @@ public class SubCentral
 		epiParser.setMatchers(ImmutableList.of(matcher101));
 		epiParser.setPps(PropParsingService.DEFAULT);
 
-		parsers.add(epiParser);
-
-		return parsers.build();
+		return ImmutableListMultimap.of(SubtitleAdjustment.class, epiParser);
 	}
 
 	public static ParsingService getParsingService()
@@ -61,7 +60,7 @@ public class SubCentral
 		return PARSING_SERVICE;
 	}
 
-	public static List<Parser<?>> getParsers()
+	public static ListMultimap<Class<?>, Parser<?>> getParsers()
 	{
 		return PARSING_SERVICE.getParsers();
 	}

@@ -19,12 +19,6 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<MultiEpisod
 	private SeasonedEpisodeNamer	episodeNamer				= NamingStandards.SEASONED_EPISODE_NAMER;
 
 	@Override
-	public Class<MultiEpisodeHelper> getEntityType()
-	{
-		return MultiEpisodeHelper.class;
-	}
-
-	@Override
 	public String doName(MultiEpisodeHelper me, Map<String, Object> namingSettings) throws NamingException
 	{
 		if (me.isEmpty())

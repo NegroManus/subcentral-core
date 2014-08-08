@@ -19,12 +19,6 @@ public class DelegatingNamer<T> implements Namer<T>
 	}
 
 	@Override
-	public Class<T> getEntityType()
-	{
-		return delegate.getEntityType();
-	}
-
-	@Override
 	public String name(T candidate, Map<String, Object> parameters) throws NamingException
 	{
 		return wholeNameOperator.apply(delegate.name(candidate, parameters));

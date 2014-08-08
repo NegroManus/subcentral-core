@@ -29,10 +29,10 @@ public class Subtitles
 
 	public static Consumer<Subtitle> getSubtitleTagsNormalizer()
 	{
-		return Subtitles::normalizeTags;
+		return Subtitles::standardizeTags;
 	}
 
-	public static Subtitle normalizeTags(Subtitle subtitle)
+	public static Subtitle standardizeTags(Subtitle subtitle)
 	{
 		Pattern pVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE);
 		Matcher mVersion = pVersion.matcher("");

@@ -1,16 +1,14 @@
 package de.subcentral.core.standardizing;
 
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
-public interface Standardizer<T> extends Consumer<T>
+public interface Standardizer<T> extends UnaryOperator<T>
 {
-	public Class<T> getEntityType();
-
-	public void standardize(T entity);
+	public T standardize(T entity);
 
 	@Override
-	public default void accept(T entity)
+	public default T apply(T entity)
 	{
-		standardize(entity);
+		return standardize(entity);
 	}
 }

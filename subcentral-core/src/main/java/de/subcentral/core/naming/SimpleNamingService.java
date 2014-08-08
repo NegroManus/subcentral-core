@@ -30,13 +30,7 @@ public class SimpleNamingService implements NamingService
 
 	public void setNamers(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException
 	{
-		checkNamersMap(namers);
 		this.namers = namers;
-	}
-
-	public <T> Namer<?> registerNamer(Namer<T> namer)
-	{
-		return registerNamer(namer.getEntityType(), namer);
 	}
 
 	public <T> Namer<?> registerNamer(Class<T> typeClass, Namer<? super T> namer)
@@ -125,17 +119,5 @@ public class SimpleNamingService implements NamingService
 			return wholeNameOperator.apply(namer.name(entity, parameters));
 		}
 		throw new NoNamerRegisteredException(entity);
-	}
-
-	private final void checkNamersMap(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException
-	{
-		for (Map.Entry<Class<?>, Namer<?>> entry : namers.entrySet())
-		{
-			if (!entry.getValue().getEntityType().isAssignableFrom(entry.getKey()))
-			{
-				throw new IllegalArgumentException("The map contains an invalid entry: The namer's type class (" + entry.getValue().getEntityType()
-						+ ") is not assignable from the class: " + entry.getKey() + " (not a superclass or implemented interface of).");
-			}
-		}
 	}
 }

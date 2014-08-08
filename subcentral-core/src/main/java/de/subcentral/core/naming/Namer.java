@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 
 public interface Namer<T> extends Function<T, String>
 {
-	public Class<T> getEntityType();
+	// public Class<T> getEntityType();
 
 	public default String name(T entity) throws NamingException
 	{

@@ -56,12 +56,6 @@ public class MiniSeriesEpisodeNamer extends AbstractPropertySequenceNamer<Episod
 	}
 
 	@Override
-	public Class<Episode> getEntityType()
-	{
-		return Episode.class;
-	}
-
-	@Override
 	public String doName(Episode epi, Map<String, Object> params)
 	{
 		// settings

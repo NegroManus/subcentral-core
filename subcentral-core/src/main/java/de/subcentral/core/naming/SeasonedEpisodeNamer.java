@@ -176,12 +176,6 @@ public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	}
 
 	@Override
-	public Class<Episode> getEntityType()
-	{
-		return Episode.class;
-	}
-
-	@Override
 	public String doName(Episode epi, Map<String, Object> params)
 	{
 		// settings
