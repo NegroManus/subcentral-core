@@ -1,5 +1,7 @@
 package de.subcentral.core.parsing;
 
+import java.util.List;
+
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -15,6 +17,26 @@ public class SimpleParsingService implements ParsingService
 	public void setParsers(ListMultimap<Class<?>, Parser<?>> parsers)
 	{
 		this.parsers = parsers;
+	}
+
+	public <T> boolean registerParser(Class<T> entityType, Parser<T> standardizer)
+	{
+		return parsers.put(entityType, standardizer);
+	}
+
+	public <T> boolean registerAllParsers(Class<T> entityType, Iterable<Parser<T>> standardizers)
+	{
+		return this.parsers.putAll(entityType, standardizers);
+	}
+
+	public <T> boolean unregisterParser(Class<T> entityType, Parser<T> standardizer)
+	{
+		return parsers.remove(entityType, standardizer);
+	}
+
+	public <T> List<Parser<?>> unregisterAllParsers(Class<T> entityType)
+	{
+		return parsers.removeAll(entityType);
 	}
 
 	@Override
@@ -36,7 +58,7 @@ public class SimpleParsingService implements ParsingService
 		}
 	}
 
-	private Object doParse(String text, String domain, Class<?> entityType) throws NoMatchException
+	private Object doParse(String text, String domain, Class<?> entityType) throws NoMatchException, ParsingException
 	{
 		Parsings.requireTextNotBlank(text);
 		for (Parser<?> p : entityType == null ? parsers.values() : parsers.get(entityType))

@@ -15,6 +15,7 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdjustment>
@@ -68,6 +69,7 @@ public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdj
 			mov.setDate(pps.parse(props, Movie.PROP_DATE, Temporal.class));
 			mediaItem = mov;
 		}
+		Standardizings.mayStandardize(mediaItem, ss);
 
 		// Release
 		Release rls = new Release();
@@ -76,6 +78,7 @@ public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdj
 		rls.getTags().addAll(pps.parseList(props, Release.PROP_TAGS, Tag.class));
 		rls.setSource(props.get(Release.PROP_SOURCE));
 		rls.setSourceUrl(props.get(Release.PROP_SOURCE_URL));
+		Standardizings.mayStandardize(rls, ss);
 
 		// Subtitle
 		Subtitle sub = new Subtitle();
@@ -85,8 +88,9 @@ public class SubtitleAdjustmentParser extends AbstractPropertyParser<SubtitleAdj
 		sub.getTags().addAll(pps.parseList(props, Subtitle.PROP_TAGS, Tag.class));
 		sub.setSource(props.get(Subtitle.PROP_SOURCE));
 		sub.setSourceUrl(props.get(Subtitle.PROP_SOURCE_URL));
+		Standardizings.mayStandardize(sub, ss);
 
 		// SubtitleAdjustment
-		return sub.newAdjustment(rls);
+		return Standardizings.mayStandardize(sub.newAdjustment(rls), ss);
 	}
 }

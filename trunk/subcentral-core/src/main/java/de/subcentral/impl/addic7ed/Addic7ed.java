@@ -20,6 +20,7 @@ import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7ed
@@ -184,6 +185,7 @@ public class Addic7ed
 		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode");
 		episodeSubParser.setMatchers(episodeMatchers.build());
 		episodeSubParser.setPps(PropParsingService.DEFAULT);
+		episodeSubParser.setSs(Standardizings.getDefaultStandardizingService());
 
 		// --------------
 		// Movie matchers
@@ -209,6 +211,7 @@ public class Addic7ed
 		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser("addic7ed.com:movie");
 		movieSubParser.setMatchers(movieMatchers.build());
 		movieSubParser.setPps(PropParsingService.DEFAULT);
+		movieSubParser.setSs(Standardizings.getDefaultStandardizingService());
 
 		return ImmutableListMultimap.of(Episode.class, episodeSubParser, Episode.class, movieSubParser);
 	}

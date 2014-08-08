@@ -19,6 +19,7 @@ import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubCentral
@@ -51,6 +52,7 @@ public class SubCentral
 
 		epiParser.setMatchers(ImmutableList.of(matcher101));
 		epiParser.setPps(PropParsingService.DEFAULT);
+		epiParser.setSs(Standardizings.getDefaultStandardizingService());
 
 		return ImmutableListMultimap.of(SubtitleAdjustment.class, epiParser);
 	}
