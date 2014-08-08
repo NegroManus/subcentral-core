@@ -3,6 +3,7 @@ package de.subcentral.core.parsing;
 import java.util.List;
 import java.util.Map;
 
+import de.subcentral.core.standardizing.StandardizingService;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractPropertyParser<T> implements Parser<T>
@@ -10,6 +11,7 @@ public abstract class AbstractPropertyParser<T> implements Parser<T>
 	protected final String									domain;
 	protected List<MappingMatcher<SimplePropDescriptor>>	matchers;
 	protected PropParsingService							pps;
+	protected StandardizingService							ss;
 
 	protected AbstractPropertyParser(String domain)
 	{
@@ -40,6 +42,16 @@ public abstract class AbstractPropertyParser<T> implements Parser<T>
 	public void setPps(PropParsingService pps)
 	{
 		this.pps = pps;
+	}
+
+	public StandardizingService getSs()
+	{
+		return ss;
+	}
+
+	public void setSs(StandardizingService ss)
+	{
+		this.ss = ss;
 	}
 
 	@Override

@@ -11,12 +11,8 @@ import com.google.common.collect.ImmutableListMultimap;
 
 import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.Subtitles;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
-import de.subcentral.core.standardizing.SimpleStandardizingService;
 import de.subcentral.impl.addic7ed.Addic7ed;
 import de.subcentral.impl.orlydb.OrlyDbLookup;
 import de.subcentral.impl.scene.Scene;
@@ -32,9 +28,6 @@ public class ParsingPlayground
 		parsers.putAll(Addic7ed.getParsers());
 		parsers.putAll(Scene.getParsers());
 		ps.setParsers(parsers.build());
-		final SimpleStandardizingService ss = new SimpleStandardizingService();
-		ss.registerStandardizer(Subtitle.class, Subtitles::standardizeTags);
-		ss.registerStandardizer(Release.class, Releases::standardizeTags);
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		final Lookup<Release, ?> lookup = new OrlyDbLookup();
 
@@ -55,9 +48,6 @@ public class ParsingPlayground
 						System.out.println(name);
 						System.out.println("Parsed to ... ");
 						Object parsed = ps.parse(name);
-						System.out.println(parsed);
-						System.out.println("Standardized to ...");
-						ss.standardize(parsed);
 						System.out.println(parsed);
 						System.out.println("Named to ...");
 						String nameOfParsed = ns.name(parsed);

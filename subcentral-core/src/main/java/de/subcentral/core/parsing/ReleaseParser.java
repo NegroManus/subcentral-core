@@ -12,11 +12,11 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseParser extends AbstractPropertyParser<Release>
 {
-
 	public ReleaseParser(String domain)
 	{
 		super(domain);
@@ -66,6 +66,7 @@ public class ReleaseParser extends AbstractPropertyParser<Release>
 			mov.setDate(pps.parse(props, Movie.PROP_DATE, Temporal.class));
 			mediaItem = mov;
 		}
+		Standardizings.mayStandardize(mediaItem, ss);
 
 		// Release
 		Release rls = new Release();
@@ -74,7 +75,7 @@ public class ReleaseParser extends AbstractPropertyParser<Release>
 		rls.getTags().addAll(pps.parseList(props, Release.PROP_TAGS, Tag.class));
 		rls.setSource(props.get(Release.PROP_SOURCE));
 		rls.setSourceUrl(props.get(Release.PROP_SOURCE_URL));
-
+		Standardizings.mayStandardize(rls, ss);
 		return rls;
 	}
 }

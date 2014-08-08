@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 public interface StandardizingService extends Consumer<Object>
 {
-	public <T> void standardize(T entity);
+	public <T> T standardize(T entity);
 
 	@Override
 	public default void accept(Object entity)
