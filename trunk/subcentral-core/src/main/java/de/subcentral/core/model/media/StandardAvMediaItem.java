@@ -1,8 +1,10 @@
 package de.subcentral.core.model.media;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
@@ -16,7 +18,8 @@ public class StandardAvMediaItem extends StandardMediaItem implements AvMediaIte
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(StandardAvMediaItem.class,
+																					PropNames.MEDIA_TYPE);
 	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE		= new SimplePropDescriptor(StandardAvMediaItem.class,
 																					PropNames.MEDIA_CONTENT_TYPE);
 	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.DATE);
@@ -24,13 +27,17 @@ public class StandardAvMediaItem extends StandardMediaItem implements AvMediaIte
 																					PropNames.ORIGINAL_LANGUAGES);
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(StandardAvMediaItem.class,
 																					PropNames.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_RUNNING_TIME			= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.RUNNING_TIME);
+	public static final SimplePropDescriptor	PROP_RUNNING_TIME			= new SimplePropDescriptor(StandardAvMediaItem.class,
+																					PropNames.RUNNING_TIME);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(StandardAvMediaItem.class,
+																					PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(StandardAvMediaItem.class,
+																					PropNames.COVER_URLS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(StandardAvMediaItem.class,
 																					PropNames.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(StandardAvMediaItem.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(StandardAvMediaItem.class,
+																					PropNames.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS		= new SimplePropDescriptor(StandardAvMediaItem.class,
 																					PropNames.FURTHER_INFO_URLS);
 
@@ -73,7 +80,7 @@ public class StandardAvMediaItem extends StandardMediaItem implements AvMediaIte
 		}
 		if (obj != null && obj instanceof StandardAvMediaItem)
 		{
-			return Objects.equal(name, ((StandardAvMediaItem) obj).name);
+			return Objects.equals(name, ((StandardAvMediaItem) obj).name);
 		}
 		return false;
 	}
@@ -87,7 +94,7 @@ public class StandardAvMediaItem extends StandardMediaItem implements AvMediaIte
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(StandardAvMediaItem.class)
+		return MoreObjects.toStringHelper(StandardAvMediaItem.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

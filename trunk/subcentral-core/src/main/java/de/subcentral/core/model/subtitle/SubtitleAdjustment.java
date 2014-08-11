@@ -11,7 +11,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
@@ -86,26 +86,26 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public SubtitleAdjustment(Subtitle subtitle, Release matchingRelease)
 	{
-		this.subtitles.add(subtitle);
-		this.matchingReleases.add(matchingRelease);
+		setSingleSubtitle(subtitle);
+		setSingleMatchingRelease(matchingRelease);
 	}
 
 	public SubtitleAdjustment(Subtitle subtitle, Set<Release> matchingReleases)
 	{
-		this.subtitles.add(subtitle);
-		this.matchingReleases.addAll(matchingReleases);
+		setSingleSubtitle(subtitle);
+		setMatchingReleases(matchingReleases);
 	}
 
 	public SubtitleAdjustment(List<Subtitle> subtitles, Release matchingRelease)
 	{
-		this.subtitles.addAll(subtitles);
-		this.matchingReleases.add(matchingRelease);
+		setSubtitles(subtitles);
+		setSingleMatchingRelease(matchingRelease);
 	}
 
 	public SubtitleAdjustment(List<Subtitle> subtitles, Set<Release> matchingReleases)
 	{
-		this.subtitles.addAll(subtitles);
-		this.matchingReleases.addAll(matchingReleases);
+		setSubtitles(subtitles);
+		setMatchingReleases(matchingReleases);
 	}
 
 	// Properties
@@ -116,7 +116,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setSubtitles(List<Subtitle> subtitles)
 	{
-		Validate.notNull(subtitles, "subtitles cannot be null");
+		Validate.noNullElements(subtitles);
 		this.subtitles.clear();
 		this.subtitles.addAll(subtitles);
 	}
@@ -128,7 +128,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setMatchingReleases(Set<Release> matchingReleases)
 	{
-		Validate.notNull(matchingReleases, "matchingReleases cannot be null");
+		Validate.noNullElements(matchingReleases);
 		this.matchingReleases.clear();
 		this.matchingReleases.addAll(matchingReleases);
 	}
@@ -171,7 +171,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setNukes(List<Nuke> nukes)
 	{
-		Validate.notNull(nukes, "nukes cannot be null");
+		Validate.noNullElements(nukes);
 		this.nukes.clear();
 		this.nukes.addAll(nukes);
 	}
@@ -184,7 +184,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setContributions(List<Contribution> contributions)
 	{
-		Validate.notNull(contributions, "contributions cannot be null");
+		Validate.noNullElements(contributions);
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}
@@ -202,9 +202,11 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setSingleSubtitle(Subtitle subtitle)
 	{
-		Validate.notNull(subtitle, "subtitle cannot be null");
 		this.subtitles.clear();
-		this.subtitles.add(subtitle);
+		if (subtitle != null)
+		{
+			this.subtitles.add(subtitle);
+		}
 	}
 
 	public boolean matchesSingleRelease()
@@ -219,9 +221,11 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setSingleMatchingRelease(Release matchingRelease)
 	{
-		Validate.notNull(matchingRelease, "matchingRelease cannot be null");
 		this.matchingReleases.clear();
-		this.matchingReleases.add(matchingRelease);
+		if (matchingRelease != null)
+		{
+			this.matchingReleases.add(matchingRelease);
+		}
 	}
 
 	public boolean isNuked()
@@ -287,7 +291,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(SubtitleAdjustment.class)
+		return MoreObjects.toStringHelper(SubtitleAdjustment.class)
 				.omitNullValues()
 				.add("subtitles", Models.nullIfEmpty(subtitles))
 				.add("matchingReleases", Models.nullIfEmpty(matchingReleases))

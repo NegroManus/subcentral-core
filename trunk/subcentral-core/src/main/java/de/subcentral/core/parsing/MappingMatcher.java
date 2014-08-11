@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 public class MappingMatcher<K>
@@ -90,6 +90,6 @@ public class MappingMatcher<K>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this).omitNullValues().add("pattern", pattern).add("groups", groups).toString();
+		return MoreObjects.toStringHelper(this).omitNullValues().add("pattern", pattern).add("groups", groups).toString();
 	}
 }

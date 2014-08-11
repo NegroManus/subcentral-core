@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
@@ -357,7 +358,7 @@ public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(Episode.class)
+		return MoreObjects.toStringHelper(Episode.class)
 				.omitNullValues()
 				.add("series", series)
 				.add("numberInSeries", numberInSeries)
