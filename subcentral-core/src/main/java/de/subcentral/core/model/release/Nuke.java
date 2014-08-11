@@ -5,7 +5,7 @@ import java.time.temporal.Temporal;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
@@ -77,7 +77,7 @@ public class Nuke implements Comparable<Nuke>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(Nuke.class).omitNullValues().add("reason", reason).add("date", date).toString();
+		return MoreObjects.toStringHelper(Nuke.class).omitNullValues().add("reason", reason).add("date", date).toString();
 	}
 
 	@Override

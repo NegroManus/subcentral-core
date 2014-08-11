@@ -8,7 +8,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
@@ -223,7 +223,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public void setTags(List<Tag> tags)
 	{
-		Validate.notNull(tags, "tags cannot be null");
+		Validate.noNullElements(tags);
 		this.tags.clear();
 		this.tags.addAll(tags);
 	}
@@ -344,7 +344,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public void setContributions(List<Contribution> contributions)
 	{
-		Validate.notNull(contributions, "contributions cannot be null");
+		Validate.noNullElements(contributions);
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}
@@ -480,7 +480,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(Subtitle.class)
+		return MoreObjects.toStringHelper(Subtitle.class)
 				.omitNullValues()
 				.add("mediaItem", mediaItem)
 				.add("language", language)

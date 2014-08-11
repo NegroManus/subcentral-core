@@ -4,7 +4,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
@@ -150,7 +150,7 @@ public class Contribution implements Comparable<Contribution>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(Contribution.class)
+		return MoreObjects.toStringHelper(Contribution.class)
 				.omitNullValues()
 				.add("type", type)
 				.add("contributor", contributor)

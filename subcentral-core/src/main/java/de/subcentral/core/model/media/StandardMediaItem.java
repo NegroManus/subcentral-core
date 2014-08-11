@@ -3,12 +3,13 @@ package de.subcentral.core.model.media;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
@@ -101,7 +102,7 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 
 	public void setGenres(Set<String> genres)
 	{
-		Validate.notNull(genres, "genres cannot be null");
+		Validate.noNullElements(genres);
 		this.genres.clear();
 		this.genres.addAll(genres);
 	}
@@ -114,7 +115,7 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 
 	public void setOriginalLanguages(List<String> originalLanguages)
 	{
-		Validate.notNull(originalLanguages, "originalLanguages cannot be null");
+		Validate.noNullElements(originalLanguages);
 		this.originalLanguages.clear();
 		this.originalLanguages.addAll(originalLanguages);
 	}
@@ -127,7 +128,7 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 
 	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
-		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
+		Validate.noNullElements(countriesOfOrigin);
 		this.countriesOfOrigin.clear();
 		this.countriesOfOrigin.addAll(countriesOfOrigin);
 	}
@@ -155,7 +156,7 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 		}
 		if (obj != null && obj instanceof StandardMediaItem)
 		{
-			return Objects.equal(name, ((StandardMediaItem) obj).name);
+			return Objects.equals(name, ((StandardMediaItem) obj).name);
 		}
 		return false;
 	}
@@ -169,7 +170,7 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(StandardMediaItem.class)
+		return MoreObjects.toStringHelper(StandardMediaItem.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)
@@ -186,5 +187,4 @@ public class StandardMediaItem extends AbstractMedia implements MediaItem
 				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
 				.toString();
 	}
-
 }

@@ -4,12 +4,13 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.Settings;
@@ -147,7 +148,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
-		Validate.notNull(countriesOfOrigin, "countriesOfOrigin cannot be null");
+		Validate.noNullElements(countriesOfOrigin);
 		this.countriesOfOrigin.clear();
 		this.countriesOfOrigin.addAll(countriesOfOrigin);
 	}
@@ -170,7 +171,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setGenres(Set<String> genres)
 	{
-		Validate.notNull(genres, "genres cannot be null");
+		Validate.noNullElements(genres);
 		this.genres.clear();
 		this.genres.addAll(genres);
 	}
@@ -215,7 +216,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setSeasons(List<Season> seasons)
 	{
-		Validate.notNull("seasons cannot be null");
+		Validate.notNull(seasons);
 		this.seasons.clear();
 		this.seasons.addAll(seasons);
 	}
@@ -253,7 +254,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setEpisodes(List<Episode> episodes)
 	{
-		Validate.notNull("episodes cannot be null");
+		Validate.noNullElements(episodes);
 		this.episodes.clear();
 		this.episodes.addAll(episodes);
 	}
@@ -328,7 +329,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		}
 		if (obj != null && Series.class.equals(obj.getClass()))
 		{
-			return Objects.equal(name, ((Series) obj).name);
+			return Objects.equals(name, ((Series) obj).name);
 		}
 		return false;
 	}
@@ -352,7 +353,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(Series.class)
+		return MoreObjects.toStringHelper(Series.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

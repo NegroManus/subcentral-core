@@ -1,10 +1,11 @@
 package de.subcentral.core.model.media;
 
 import java.time.Year;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
@@ -64,7 +65,7 @@ public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 		}
 		if (obj != null && Movie.class.equals(obj.getClass()))
 		{
-			return Objects.equal(name, ((Movie) obj).name);
+			return Objects.equals(name, ((Movie) obj).name);
 		}
 		return false;
 	}
@@ -88,7 +89,7 @@ public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(Movie.class)
+		return MoreObjects.toStringHelper(Movie.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

@@ -4,11 +4,12 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
@@ -71,12 +72,12 @@ public class Release implements Comparable<Release>
 	{
 		Release rls = new Release();
 		rls.setName(name);
-		rls.getMedia().add(media);
+		rls.setSingleMedia(media);
 		if (group != null)
 		{
 			rls.setGroup(new Group(group));
 		}
-		rls.getTags().addAll(Tag.tags(tags));
+		rls.setTags(Tag.tags(tags));
 		return rls;
 	}
 
@@ -93,16 +94,16 @@ public class Release implements Comparable<Release>
 	public Release(String name, Media media, List<Tag> tags, Group group)
 	{
 		this.name = name;
-		this.media.add(media);
-		this.tags.addAll(tags);
+		setSingleMedia(media);
+		setTags(tags);
 		this.group = group;
 	}
 
 	public Release(String name, List<Media> media, List<Tag> tags, Group group)
 	{
 		this.name = name;
-		this.media.addAll(media);
-		this.tags.addAll(tags);
+		setMedia(media);
+		setTags(tags);
 		this.group = group;
 	}
 
@@ -137,7 +138,7 @@ public class Release implements Comparable<Release>
 
 	public void setMedia(List<Media> media)
 	{
-		Validate.notNull(media, "media cannot be null");
+		Validate.noNullElements(media);
 		this.media.clear();
 		this.media.addAll(media);
 	}
@@ -154,7 +155,9 @@ public class Release implements Comparable<Release>
 
 	public void setLanguages(List<String> languages)
 	{
-		this.languages = languages;
+		Validate.noNullElements(languages);
+		this.languages.clear();
+		this.languages.addAll(languages);
 	}
 
 	/**
@@ -169,7 +172,7 @@ public class Release implements Comparable<Release>
 
 	public void setTags(List<Tag> tags)
 	{
-		Validate.notNull(tags, "tags cannot be null");
+		Validate.noNullElements(tags);
 		this.tags.clear();
 		this.tags.addAll(tags);
 	}
@@ -264,7 +267,7 @@ public class Release implements Comparable<Release>
 
 	public void setNukes(List<Nuke> nukes)
 	{
-		Validate.notNull(nukes, "nukes cannot be null");
+		Validate.noNullElements(nukes);
 		this.nukes.clear();
 		this.nukes.addAll(nukes);
 	}
@@ -342,9 +345,11 @@ public class Release implements Comparable<Release>
 
 	public void setSingleMedia(Media media)
 	{
-		Validate.notNull(media, "media cannot be null");
 		this.media.clear();
-		this.media.add(media);
+		if (media != null)
+		{
+			this.media.add(media);
+		}
 	}
 
 	public boolean isNuked()
@@ -377,7 +382,7 @@ public class Release implements Comparable<Release>
 		}
 		if (obj != null && Release.class.equals(obj.getClass()))
 		{
-			return Objects.equal(name, ((Release) obj).name);
+			return Objects.equals(name, ((Release) obj).name);
 		}
 		return false;
 	}
@@ -401,7 +406,7 @@ public class Release implements Comparable<Release>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(Release.class)
+		return MoreObjects.toStringHelper(Release.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("media", Models.nullIfEmpty(media))
