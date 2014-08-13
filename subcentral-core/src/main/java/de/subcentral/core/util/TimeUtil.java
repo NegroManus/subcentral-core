@@ -11,6 +11,11 @@ import java.time.temporal.Temporal;
 
 public class TimeUtil
 {
+	public static void printDurationMillis(long startNanos)
+	{
+		System.out.println(durationMillis(startNanos));
+	}
+
 	public static double durationMillis(long startNanos)
 	{
 		return durationMillis(startNanos, System.nanoTime());

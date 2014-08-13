@@ -18,7 +18,7 @@ import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
+public class Season extends MediaBase implements AvMediaCollection<Episode>, Comparable<Season>
 {
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
 	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);

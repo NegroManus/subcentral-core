@@ -19,7 +19,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For any media item that has no own class. For audio / video media items see {@link StandardAvMediaItem}.
  *
  */
-public class StandardMediaItem extends AbstractMedia implements MediaItem
+public class StandardMediaItem extends MediaBase implements MediaItem
 {
 	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.TITLE);
