@@ -15,7 +15,7 @@ import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class ReleaseParser extends AbstractPropertyParser<Release>
+public class ReleaseParser extends AbstractMappingParser<Release>
 {
 	public ReleaseParser(String domain)
 	{

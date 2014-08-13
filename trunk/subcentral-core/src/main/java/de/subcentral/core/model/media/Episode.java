@@ -19,7 +19,7 @@ import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Episode extends AbstractAvMediaItem implements Comparable<Episode>
+public class Episode extends AvMediaItemBase implements Comparable<Episode>
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Episode.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_SERIES					= new SimplePropDescriptor(Episode.class, PropNames.SERIES);

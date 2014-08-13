@@ -6,14 +6,14 @@ import java.util.Map;
 import de.subcentral.core.standardizing.StandardizingService;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public abstract class AbstractPropertyParser<T> implements Parser<T>
+public abstract class AbstractMappingParser<T> implements Parser<T>
 {
 	protected final String									domain;
 	protected List<MappingMatcher<SimplePropDescriptor>>	matchers;
 	protected PropParsingService							pps;
 	protected StandardizingService							ss;
 
-	protected AbstractPropertyParser(String domain)
+	protected AbstractMappingParser(String domain)
 	{
 		this.domain = domain;
 	}

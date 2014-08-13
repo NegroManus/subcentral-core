@@ -1,7 +1,7 @@
 package de.subcentral.core.model.media;
 
 
-public abstract class AbstractAvMediaItem extends AbstractMedia implements AvMediaItem
+public abstract class AvMediaItemBase extends MediaBase implements AvMediaItem
 {
 	protected int	runningTime	= 0;
 

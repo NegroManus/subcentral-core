@@ -11,7 +11,7 @@ import org.apache.commons.lang3.Validate;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 
-public abstract class AbstractMedia implements Media
+public abstract class MediaBase implements Media
 {
 	protected String					title;
 	protected Temporal					date;
