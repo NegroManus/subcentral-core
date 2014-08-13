@@ -12,7 +12,6 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class EpisodeMapper extends AbstractMapper<Episode>
 {
-
 	@Override
 	public Episode doMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{

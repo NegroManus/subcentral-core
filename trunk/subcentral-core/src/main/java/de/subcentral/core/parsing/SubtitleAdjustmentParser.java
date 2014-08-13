@@ -16,14 +16,14 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
 {
 	private List<ConditionalMapper<AvMediaItem>>	mediaItemMappers	= new ArrayList<>(2);
-	private Mapper<Release>							releaseMapper		= new ReleaseMapper();
-	private Mapper<Subtitle>						subtitleMapper		= new SubtitleMapper();
+	private Mapper<Release>							releaseMapper		= Parsings.getDefaultReleaseMapper();
+	private Mapper<Subtitle>						subtitleMapper		= Parsings.getDefaultSubtitleMapper();
 
 	public SubtitleAdjustmentParser(String domain)
 	{
 		super(domain);
-		mediaItemMappers.add(new ConditionalMapper<AvMediaItem>(props -> props.containsKey(Series.PROP_NAME), new EpisodeMapper()));
-		mediaItemMappers.add(new ConditionalMapper<AvMediaItem>(props -> props.containsKey(Movie.PROP_NAME), new MovieMapper()));
+		mediaItemMappers.add(new ConditionalMapper<AvMediaItem>(props -> props.containsKey(Series.PROP_NAME), Parsings.getDefaultEpisodeMapper()));
+		mediaItemMappers.add(new ConditionalMapper<AvMediaItem>(props -> props.containsKey(Movie.PROP_NAME), Parsings.getDefaultMovieMapper()));
 	}
 
 	public List<ConditionalMapper<AvMediaItem>> getMediaItemMappers()

@@ -2,9 +2,7 @@ package de.subcentral.core.naming;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
@@ -54,11 +52,11 @@ public class NamingStandards
 		SEASON_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Season.PROP_NUMBER, seasonNumberToString));
 
 		// SeasonedEpisodeNamer
-		Map<SimplePropDescriptor, Function<?, String>> epiToStringFuncts = new HashMap<>();
-		epiToStringFuncts.put(Episode.PROP_NUMBER_IN_SERIES, episodeNumberToString);
-		epiToStringFuncts.put(Episode.PROP_NUMBER_IN_SEASON, episodeNumberToString);
-		epiToStringFuncts.put(Season.PROP_NUMBER, seasonNumberToString);
-		SEASONED_EPISODE_NAMER.setPropertyToStringFunctions(epiToStringFuncts);
+		ImmutableMap.Builder<SimplePropDescriptor, Function<?, String>> seasonedEpiToStringFns = ImmutableMap.builder();
+		seasonedEpiToStringFns.put(Episode.PROP_NUMBER_IN_SERIES, episodeNumberToString);
+		seasonedEpiToStringFns.put(Episode.PROP_NUMBER_IN_SEASON, episodeNumberToString);
+		seasonedEpiToStringFns.put(Season.PROP_NUMBER, seasonNumberToString);
+		SEASONED_EPISODE_NAMER.setPropertyToStringFunctions(seasonedEpiToStringFns.build());
 		SEASONED_EPISODE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, "")));
 
 		// MiniSeriesEpisodeNamer
@@ -68,9 +66,11 @@ public class NamingStandards
 		DATED_EPISODE_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Episode.PROP_DATE, dateToString));
 
 		// EpisodeNamer
-		EPISODE_NAMER.registerSeriesTypeNamer(Series.TYPE_SEASONED, SEASONED_EPISODE_NAMER);
-		EPISODE_NAMER.registerSeriesTypeNamer(Series.TYPE_MINI_SERIES, MINI_SERIES_EPISODE_NAMER);
-		EPISODE_NAMER.registerSeriesTypeNamer(Series.TYPE_DATED, DATED_EPISODE_NAMER);
+		ImmutableMap.Builder<String, Namer<Episode>> seriesTypeNamers = ImmutableMap.builder();
+		seriesTypeNamers.put(Series.TYPE_SEASONED, SEASONED_EPISODE_NAMER);
+		seriesTypeNamers.put(Series.TYPE_MINI_SERIES, MINI_SERIES_EPISODE_NAMER);
+		seriesTypeNamers.put(Series.TYPE_DATED, DATED_EPISODE_NAMER);
+		EPISODE_NAMER.setSeriesTypeNamers(seriesTypeNamers.build());
 
 		// MultiEpisodeNamer
 		MULTI_EPISODE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.inBetween(Episode.PROP_NUMBER_IN_SEASON,
@@ -92,15 +92,17 @@ public class NamingStandards
 
 		// Add namers to the NamingService
 		NAMING_SERVICE.setDomain(DEFAULT_DOMAIN);
-		NAMING_SERVICE.registerNamer(Media.class, MEDIA_NAMER);
-		NAMING_SERVICE.registerNamer(Series.class, SERIES_NAMER);
-		NAMING_SERVICE.registerNamer(Season.class, SEASON_NAMER);
-		NAMING_SERVICE.registerNamer(Episode.class, EPISODE_NAMER);
-		NAMING_SERVICE.registerNamer(MultiEpisodeHelper.class, MULTI_EPISODE_NAMER);
-		NAMING_SERVICE.registerNamer(Movie.class, MOVIE_NAMER);
-		NAMING_SERVICE.registerNamer(Subtitle.class, SUBTITLE_NAMER);
-		NAMING_SERVICE.registerNamer(Release.class, RELEASE_NAMER);
-		NAMING_SERVICE.registerNamer(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER);
+		ImmutableMap.Builder<Class<?>, Namer<?>> allNamers = ImmutableMap.builder();
+		allNamers.put(Media.class, MEDIA_NAMER);
+		allNamers.put(Series.class, SERIES_NAMER);
+		allNamers.put(Season.class, SEASON_NAMER);
+		allNamers.put(Episode.class, EPISODE_NAMER);
+		allNamers.put(MultiEpisodeHelper.class, MULTI_EPISODE_NAMER);
+		allNamers.put(Movie.class, MOVIE_NAMER);
+		allNamers.put(Subtitle.class, SUBTITLE_NAMER);
+		allNamers.put(Release.class, RELEASE_NAMER);
+		allNamers.put(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER);
+		NAMING_SERVICE.setNamers(allNamers.build());
 	}
 
 	private NamingStandards()

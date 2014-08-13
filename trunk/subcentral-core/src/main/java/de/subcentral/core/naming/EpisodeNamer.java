@@ -17,6 +17,16 @@ public class EpisodeNamer implements Namer<Episode>
 
 	}
 
+	public Map<String, Namer<Episode>> getSeriesTypeNamers()
+	{
+		return seriesTypeNamers;
+	}
+
+	public void setSeriesTypeNamers(Map<String, Namer<Episode>> seriesTypeNamers)
+	{
+		this.seriesTypeNamers = seriesTypeNamers;
+	}
+
 	public Namer<Episode> registerSeriesTypeNamer(String seriesType, Namer<Episode> namer)
 	{
 		return seriesTypeNamers.put(seriesType, namer);
