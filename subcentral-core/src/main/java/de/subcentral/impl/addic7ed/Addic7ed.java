@@ -207,7 +207,7 @@ public class Addic7ed
 		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser("addic7ed.com:movie");
 		movieSubParser.setMatchers(movieMatchers.build());
 
-		return ImmutableListMultimap.of(Episode.class, episodeSubParser, Episode.class, movieSubParser);
+		return ImmutableListMultimap.of(Episode.class, episodeSubParser, Movie.class, movieSubParser);
 	}
 
 	public static final ParsingService getParsingService()
