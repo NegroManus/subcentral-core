@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Nuke;
@@ -26,47 +27,50 @@ import de.subcentral.core.util.TimeUtil;
 
 public class PropParsingService
 {
-	public static final PropParsingService					DEFAULT								= new PropParsingService();
+	public static final PropParsingService					DEFAULT					= new PropParsingService();
 	/**
 	 * The default item splitter. Splits the string into words (pattern {@code "[^\\w-]+"}). Is used by PropParsingService instances if no specific
 	 * item splitter is defined. Common to all instances to save memory.
 	 */
-	public static Splitter									DEFAULT_ITEM_SPLITTER				= Splitter.onPattern("[^\\w-]+");
+	public static Splitter									DEFAULT_ITEM_SPLITTER	= Splitter.onPattern("[^\\w-]+");
 
 	/**
 	 * The default map of fromString() functions. If a PropParsingService defines no specific fromString() function for a property or its type, the
 	 * default map is searched. Common to all instances to save memory.
 	 */
-	public static final Map<Class<?>, Function<String, ?>>	DEFAULT_TYPE_FROM_STRING_FUNCTIONS	= new HashMap<>(16);
+	private static Map<Class<?>, Function<String, ?>>		DEFAULT_TYPE_FROM_STRING_FUNCTIONS;
 	static
 	{
+		ImmutableMap.Builder<Class<?>, Function<String, ?>> typeFns = ImmutableMap.builder();
 		// add the default type fromString functions
 		// Boolean
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Boolean.class, Boolean::parseBoolean);
+		typeFns.put(Boolean.class, Boolean::parseBoolean);
 		// Numbers
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Integer.class, Integer::parseInt);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Long.class, Long::parseLong);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Float.class, Float::parseFloat);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Double.class, Double::parseDouble);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(BigInteger.class, s -> new BigInteger(s));
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(BigDecimal.class, s -> new BigDecimal(s));
+		typeFns.put(Integer.class, Integer::parseInt);
+		typeFns.put(Long.class, Long::parseLong);
+		typeFns.put(Float.class, Float::parseFloat);
+		typeFns.put(Double.class, Double::parseDouble);
+		typeFns.put(BigInteger.class, s -> new BigInteger(s));
+		typeFns.put(BigDecimal.class, s -> new BigDecimal(s));
 		// Temporals
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Year.class, Year::parse);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(YearMonth.class, YearMonth::parse);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(LocalDate.class, LocalDate::parse);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(LocalDateTime.class, LocalDateTime::parse);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(ZonedDateTime.class, ZonedDateTime::parse);
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Temporal.class, TimeUtil::parseTemporal);
+		typeFns.put(Year.class, Year::parse);
+		typeFns.put(YearMonth.class, YearMonth::parse);
+		typeFns.put(LocalDate.class, LocalDate::parse);
+		typeFns.put(LocalDateTime.class, LocalDateTime::parse);
+		typeFns.put(ZonedDateTime.class, ZonedDateTime::parse);
+		typeFns.put(Temporal.class, TimeUtil::parseTemporal);
 		// Model specific types
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Tag.class, s -> new Tag(s));
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Group.class, s -> new Group(s));
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS.put(Nuke.class, s -> new Nuke(s));
+		typeFns.put(Tag.class, s -> new Tag(s));
+		typeFns.put(Group.class, s -> new Group(s));
+		typeFns.put(Nuke.class, s -> new Nuke(s));
+
+		DEFAULT_TYPE_FROM_STRING_FUNCTIONS = typeFns.build();
 	}
 
-	private Splitter										itemSplitter						= null;
-	private Map<SimplePropDescriptor, Splitter>				propItemSplitter					= new HashMap<>(0);
-	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions				= new HashMap<>(0);
-	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions				= new HashMap<>(0);
+	private Splitter										itemSplitter			= null;
+	private Map<SimplePropDescriptor, Splitter>				propItemSplitter		= new HashMap<>(0);
+	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions	= new HashMap<>(0);
+	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions	= new HashMap<>(0);
 
 	public PropParsingService()
 	{
