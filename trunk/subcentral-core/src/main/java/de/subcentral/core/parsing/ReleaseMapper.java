@@ -7,15 +7,10 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class ReleaseMapper extends AbstractMapper<Release>
+public class ReleaseMapper implements Mapper<Release>
 {
-	public ReleaseMapper(PropParsingService propParsingService)
-	{
-		super(propParsingService);
-	}
-
 	@Override
-	public Release map(Map<SimplePropDescriptor, String> props)
+	public Release map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
 		Release rls = new Release();
 		rls.setGroup(propParsingService.parse(props, Release.PROP_GROUP, Group.class));

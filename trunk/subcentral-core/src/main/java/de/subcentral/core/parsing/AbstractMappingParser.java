@@ -1,17 +1,20 @@
 package de.subcentral.core.parsing;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import de.subcentral.core.standardizing.StandardizingService;
+import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMappingParser<T> implements Parser<T>
 {
 	protected final String									domain;
-	protected List<MappingMatcher<SimplePropDescriptor>>	matchers;
-	protected PropParsingService							pps;
-	protected StandardizingService							ss;
+	protected List<MappingMatcher<SimplePropDescriptor>>	matchers				= new ArrayList<>();
+	protected PropParsingService							propParsingService		= PropParsingService.DEFAULT;
+	protected StandardizingService							standardizingService	= Standardizings.getDefaultStandardizingService();
 
 	protected AbstractMappingParser(String domain)
 	{
@@ -31,27 +34,29 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 
 	public void setMatchers(List<MappingMatcher<SimplePropDescriptor>> matchers)
 	{
+		Objects.requireNonNull(matchers);
 		this.matchers = matchers;
 	}
 
-	public PropParsingService getPps()
+	public PropParsingService getPropParsingService()
 	{
-		return pps;
+		return propParsingService;
 	}
 
-	public void setPps(PropParsingService pps)
+	public void setPropParsingService(PropParsingService propParsingService)
 	{
-		this.pps = pps;
+		Objects.requireNonNull(propParsingService);
+		this.propParsingService = propParsingService;
 	}
 
-	public StandardizingService getSs()
+	public StandardizingService getStandardizingService()
 	{
-		return ss;
+		return standardizingService;
 	}
 
-	public void setSs(StandardizingService ss)
+	public void setStandardizingService(StandardizingService StandardizingService)
 	{
-		this.ss = ss;
+		this.standardizingService = StandardizingService;
 	}
 
 	@Override

@@ -1,17 +1,17 @@
 package de.subcentral.core.parsing;
 
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public interface Mapper<T> extends Function<Map<SimplePropDescriptor, String>, T>
+public interface Mapper<T> extends BiFunction<Map<SimplePropDescriptor, String>, PropParsingService, T>
 {
-	public T map(Map<SimplePropDescriptor, String> props) throws MappingException;
+	public T map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService) throws MappingException;
 
 	@Override
-	public default T apply(Map<SimplePropDescriptor, String> props)
+	public default T apply(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
-		return map(props);
+		return map(props, propParsingService);
 	}
 }

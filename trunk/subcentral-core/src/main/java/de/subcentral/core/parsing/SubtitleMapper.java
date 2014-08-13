@@ -7,15 +7,10 @@ import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleMapper extends AbstractMapper<Subtitle>
+public class SubtitleMapper implements Mapper<Subtitle>
 {
-	public SubtitleMapper(PropParsingService propParsingService)
-	{
-		super(propParsingService);
-	}
-
 	@Override
-	public Subtitle map(Map<SimplePropDescriptor, String> props)
+	public Subtitle map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
 		Subtitle sub = new Subtitle();
 		sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));

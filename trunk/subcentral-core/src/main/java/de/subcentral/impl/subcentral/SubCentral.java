@@ -16,10 +16,8 @@ import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
-import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubCentral
@@ -51,8 +49,6 @@ public class SubCentral
 		System.out.println(matcher101.match("The.Last.Ship.S01E06.HDTV.x264-LOL.de-SCuTV4U"));
 
 		epiParser.setMatchers(ImmutableList.of(matcher101));
-		epiParser.setPps(PropParsingService.DEFAULT);
-		epiParser.setSs(Standardizings.getDefaultStandardizingService());
 
 		return ImmutableListMultimap.of(SubtitleAdjustment.class, epiParser);
 	}

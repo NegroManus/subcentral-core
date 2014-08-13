@@ -8,9 +8,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class ConditionalMapper<T> implements Mapper<T>
 {
 	private final Predicate<Map<SimplePropDescriptor, String>>	condition;
-	private final Mapper<T>										mapper;
+	private final Mapper<? extends T>							mapper;
 
-	public ConditionalMapper(Predicate<Map<SimplePropDescriptor, String>> condition, Mapper<T> mapper)
+	public ConditionalMapper(Predicate<Map<SimplePropDescriptor, String>> condition, Mapper<? extends T> mapper)
 	{
 		this.condition = condition;
 		this.mapper = mapper;
@@ -21,17 +21,17 @@ public class ConditionalMapper<T> implements Mapper<T>
 		return condition;
 	}
 
-	public Mapper<T> getMapper()
+	public Mapper<? extends T> getMapper()
 	{
 		return mapper;
 	}
 
 	@Override
-	public T map(Map<SimplePropDescriptor, String> props) throws MappingException
+	public T map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService) throws MappingException
 	{
 		if (condition.test(props))
 		{
-			return mapper.map(props);
+			return mapper.map(props, propParsingService);
 		}
 		throw new MappingException("Could not map: Condition tested false");
 	}
