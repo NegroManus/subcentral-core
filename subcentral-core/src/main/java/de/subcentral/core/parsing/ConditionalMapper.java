@@ -1,6 +1,7 @@
 package de.subcentral.core.parsing;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -12,6 +13,8 @@ public class ConditionalMapper<T> implements Mapper<T>
 
 	public ConditionalMapper(Predicate<Map<SimplePropDescriptor, String>> condition, Mapper<? extends T> mapper)
 	{
+		Objects.requireNonNull(condition, "condition");
+		Objects.requireNonNull(mapper, "mapper");
 		this.condition = condition;
 		this.mapper = mapper;
 	}
@@ -33,6 +36,6 @@ public class ConditionalMapper<T> implements Mapper<T>
 		{
 			return mapper.map(props, propParsingService);
 		}
-		throw new MappingException("Could not map: Condition tested false");
+		return null;
 	}
 }

@@ -35,7 +35,7 @@ public class Parsings
 	{
 		if (StringUtils.isBlank(text))
 		{
-			throw new ParsingException("Could not parse text because it is blank: " + (text == null ? "null" : "'" + text + "'"));
+			throw new ParsingException("Text is blank", text, null);
 		}
 	}
 
@@ -80,16 +80,9 @@ public class Parsings
 	{
 		for (ConditionalMapper<T> m : mappers)
 		{
-			try
-			{
-				return m.map(props, propParsingService);
-			}
-			catch (MappingException e)
-			{
-				// ignore and move on
-			}
+			return m.map(props, propParsingService);
 		}
-		throw new MappingException("No conditional mapper could map the properties: " + props);
+		throw new MappingException("No conditional mapper could map", props, null);
 	}
 
 	private Parsings()

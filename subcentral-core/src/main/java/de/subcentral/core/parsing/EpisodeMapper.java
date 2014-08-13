@@ -10,11 +10,11 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class EpisodeMapper implements Mapper<Episode>
+public class EpisodeMapper extends AbstractMapper<Episode>
 {
 
 	@Override
-	public Episode map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
+	public Episode doMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
 		Series series = new Series();
 		series.setType(propParsingService.parse(props, Series.PROP_TYPE, String.class));

@@ -75,9 +75,9 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 		}
 		catch (Exception e)
 		{
-			throw new ParsingException("Could not parse text '" + text + "'", e);
+			throw new ParsingException("Parsing failed while mapping", e, text, null);
 		}
-		throw new NoMatchException("No matcher matched the text '" + text + "'");
+		throw new NoMatchException("No matcher could match", text, null);
 	}
 
 	protected abstract T map(Map<SimplePropDescriptor, String> props);

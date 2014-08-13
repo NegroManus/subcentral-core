@@ -17,10 +17,8 @@ import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.Parsings;
-import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
-import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7ed
@@ -184,8 +182,6 @@ public class Addic7ed
 		episodeMatchers.add(matcher105);
 		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode");
 		episodeSubParser.setMatchers(episodeMatchers.build());
-		episodeSubParser.setPropParsingService(PropParsingService.DEFAULT);
-		episodeSubParser.setStandardizingService(Standardizings.getDefaultStandardizingService());
 
 		// --------------
 		// Movie matchers

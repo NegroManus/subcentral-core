@@ -149,7 +149,6 @@ public class Scene
 		// first recognized tag
 		tagPattern.append(knownTag);
 
-		System.out.println(tagPattern);
 		return tagPattern.toString();
 	}
 

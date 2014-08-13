@@ -25,7 +25,7 @@ public class ReflectiveMapper<T> implements Mapper<T>
 		}
 		catch (InstantiationException | IllegalAccessException e)
 		{
-			throw new ParsingException(e);
+			throw new MappingException(e, props, entityType);
 		}
 	}
 }

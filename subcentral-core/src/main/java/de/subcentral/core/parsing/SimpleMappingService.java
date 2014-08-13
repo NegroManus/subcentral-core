@@ -27,6 +27,6 @@ public class SimpleMappingService implements MappingService
 		{
 			return m.map(props, propParsingService);
 		}
-		throw new ParsingException("No mapper registered for entity type " + entityType);
+		throw new MappingException("No mapper registered for entity type ", props, entityType);
 	}
 }

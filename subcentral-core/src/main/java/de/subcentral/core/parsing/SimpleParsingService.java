@@ -54,7 +54,7 @@ public class SimpleParsingService implements ParsingService
 		}
 		catch (ClassCastException e)
 		{
-			throw new ParsingException(e);
+			throw new ParsingException(e, text, entityType);
 		}
 	}
 
@@ -100,10 +100,8 @@ public class SimpleParsingService implements ParsingService
 			msg.append(entityType);
 			msg.append(' ');
 		}
-		msg.append("could parse the text '");
-		msg.append(text);
-		msg.append('\'');
+		msg.append("could parse the text");
 
-		throw new NoMatchException(msg.toString());
+		throw new NoMatchException(msg.toString(), text, entityType);
 	}
 }
