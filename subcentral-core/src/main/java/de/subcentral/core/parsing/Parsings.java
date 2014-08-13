@@ -75,13 +75,14 @@ public class Parsings
 		}
 	}
 
-	public static <T> T tryMap(Map<SimplePropDescriptor, String> props, List<ConditionalMapper<T>> mappers) throws MappingException
+	public static <T> T tryMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService, List<ConditionalMapper<T>> mappers)
+			throws MappingException
 	{
 		for (ConditionalMapper<T> m : mappers)
 		{
 			try
 			{
-				return m.map(props);
+				return m.map(props, propParsingService);
 			}
 			catch (MappingException e)
 			{

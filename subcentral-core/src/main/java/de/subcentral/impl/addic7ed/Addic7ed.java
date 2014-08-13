@@ -184,8 +184,8 @@ public class Addic7ed
 		episodeMatchers.add(matcher105);
 		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode");
 		episodeSubParser.setMatchers(episodeMatchers.build());
-		episodeSubParser.setPps(PropParsingService.DEFAULT);
-		episodeSubParser.setSs(Standardizings.getDefaultStandardizingService());
+		episodeSubParser.setPropParsingService(PropParsingService.DEFAULT);
+		episodeSubParser.setStandardizingService(Standardizings.getDefaultStandardizingService());
 
 		// --------------
 		// Movie matchers
@@ -210,8 +210,6 @@ public class Addic7ed
 		movieMatchers.add(matcher201);
 		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser("addic7ed.com:movie");
 		movieSubParser.setMatchers(movieMatchers.build());
-		movieSubParser.setPps(PropParsingService.DEFAULT);
-		movieSubParser.setSs(Standardizings.getDefaultStandardizingService());
 
 		return ImmutableListMultimap.of(Episode.class, episodeSubParser, Episode.class, movieSubParser);
 	}

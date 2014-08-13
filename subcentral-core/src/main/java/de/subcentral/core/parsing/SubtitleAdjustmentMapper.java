@@ -5,17 +5,11 @@ import java.util.Map;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleAdjustment>
+public class SubtitleAdjustmentMapper implements Mapper<SubtitleAdjustment>
 {
-	public SubtitleAdjustmentMapper(PropParsingService propParsingService)
-	{
-		super(propParsingService);
-	}
-
 	@Override
-	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
+	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
-		SubtitleAdjustment subAdj = new SubtitleAdjustment();
-		return subAdj;
+		return new SubtitleAdjustment();
 	}
 }

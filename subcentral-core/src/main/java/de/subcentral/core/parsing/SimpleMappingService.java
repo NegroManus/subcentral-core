@@ -20,12 +20,12 @@ public class SimpleMappingService implements MappingService
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T map(Map<SimplePropDescriptor, String> props, Class<T> entityType)
+	public <T> T map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService, Class<T> entityType)
 	{
 		Mapper<T> m = (Mapper<T>) mappers.get(entityType);
 		if (m != null)
 		{
-			return m.map(props);
+			return m.map(props, propParsingService);
 		}
 		throw new ParsingException("No mapper registered for entity type " + entityType);
 	}

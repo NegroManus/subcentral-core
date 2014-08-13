@@ -6,23 +6,21 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReflectiveMapper<T> implements Mapper<T>
 {
-	private final Class<T>				entityType;
-	private final PropParsingService	pps;
+	private final Class<T>	entityType;
 
-	public ReflectiveMapper(Class<T> entityType, PropParsingService pps)
+	public ReflectiveMapper(Class<T> entityType)
 	{
 		this.entityType = entityType;
-		this.pps = pps;
 	}
 
 	@Override
-	public T map(Map<SimplePropDescriptor, String> props)
+	public T map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
 		T entity;
 		try
 		{
 			entity = entityType.newInstance();
-			Parsings.reflectiveMapping(entity, props, pps);
+			Parsings.reflectiveMapping(entity, props, propParsingService);
 			return entity;
 		}
 		catch (InstantiationException | IllegalAccessException e)

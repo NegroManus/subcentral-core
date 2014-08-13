@@ -6,15 +6,10 @@ import java.util.Map;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class MovieMapper extends AbstractMapper<Movie>
+public class MovieMapper implements Mapper<Movie>
 {
-	public MovieMapper(PropParsingService propParsingService)
-	{
-		super(propParsingService);
-	}
-
 	@Override
-	public Movie map(Map<SimplePropDescriptor, String> props)
+	public Movie map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
 		Movie mov = new Movie();
 		mov.setName(props.get(Movie.PROP_NAME));

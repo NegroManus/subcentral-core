@@ -26,7 +26,6 @@ import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimpleParsingService;
-import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Scene
@@ -127,8 +126,7 @@ public class Scene
 		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
-		rlsParser.setPps(pps);
-		rlsParser.setSs(Standardizings.getDefaultStandardizingService());
+		rlsParser.setPropParsingService(pps);
 
 		return ImmutableListMultimap.of(Release.class, rlsParser);
 	}
