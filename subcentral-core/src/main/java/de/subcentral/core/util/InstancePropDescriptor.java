@@ -1,18 +1,23 @@
 package de.subcentral.core.util;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jsoup.helper.Validate;
 
 public class InstancePropDescriptor extends SimplePropDescriptor
 {
 	private final int[]	instanceIds;
 
+	public InstancePropDescriptor(SimplePropDescriptor propDescriptor, int[] instanceIds)
+	{
+		this(propDescriptor.getBeanClass(), propDescriptor.getPropName(), instanceIds);
+	}
+
 	public InstancePropDescriptor(Class<?> beanClass, String propName, int[] instanceIds)
 	{
 		super(beanClass, propName);
-		Validate.notNull(instanceIds, "instanceIds cannot be null");
+		Objects.requireNonNull(instanceIds, "instanceIds");
 		this.instanceIds = instanceIds;
 	}
 
