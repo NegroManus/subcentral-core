@@ -28,13 +28,11 @@ public class Parsings
 	 * <ol>
 	 * <li>name</li>
 	 * <li>title (may be equal to name)</li>
-	 * <li>(optional year / country group)</li>
-	 * <li>(either year or country group)</li>
 	 * <li>year (or null)</li>
 	 * <li>country code (or null)</li>
 	 * </ol>
 	 */
-	public static final String						PATTERN_MEDIA_NAME			= "((.*?)(\\s+\\(((\\d{4})|(\\p{Upper}{2}))\\))?)";
+	public static final String						PATTERN_MEDIA_NAME			= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
 	private final static EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
 	private final static MovieMapper				MOVIE_MAPPER				= new MovieMapper();
