@@ -2,9 +2,9 @@ package de.subcentral.core.util;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jsoup.helper.Validate;
 
 import com.google.common.collect.ComparisonChain;
 
@@ -23,8 +23,8 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 
 	public SimplePropDescriptor(Class<?> beanClass, String propName)
 	{
-		Validate.notNull(beanClass, "beanClass cannot be null");
-		Validate.notNull(propName, "propName cannot be null");
+		Objects.requireNonNull(beanClass, "beanClass");
+		Objects.requireNonNull(propName, "propName");
 		this.beanClass = beanClass;
 		this.propName = propName;
 	}
