@@ -10,10 +10,12 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.Namings;
 import de.subcentral.core.naming.NoNamerRegisteredException;
+import de.subcentral.core.util.ListComparator;
 
 public class Medias
 {
-	public static final Comparator<Media>	MEDIA_NAME_COMPARATOR	= new MediaNameComparator();
+	public static final Comparator<Media>		MEDIA_NAME_COMPARATOR	= new MediaNameComparator();
+	public static final Comparator<List<Media>>	MEDIA_LIST_NAME_COMPARATOR	= ListComparator.create(Medias.MEDIA_NAME_COMPARATOR);
 
 	private static final class MediaNameComparator implements Comparator<Media>
 	{
