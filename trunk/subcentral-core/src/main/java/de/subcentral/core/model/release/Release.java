@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -376,6 +375,10 @@ public class Release implements Comparable<Release>
 	}
 
 	// Object methods
+	/**
+	 * Comparison of two releases: If they both have a {@link #getName() name}, they are compared by that {@code name}. If they both are not named,
+	 * they are compared by their {@link #getMedia() media}, {@link #getGroup() group} and {@link #getTags() tags}.
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -388,13 +391,17 @@ public class Release implements Comparable<Release>
 			Release o = (Release) obj;
 			if (name != null && o.name != null)
 			{
-				return Objects.equals(name, ((Release) obj).name);
+				return name.equals(o.name);
 			}
 			return new EqualsBuilder().append(media, o.media).append(group, o.group).append(tags, o.tags).isEquals();
 		}
 		return false;
 	}
 
+	/**
+	 * Calculation of the hash code: If the release has a {@link #getName() name}, the hash code is calculated from that {@code name}. Otherwise the
+	 * hash code is calculated from its {@link #getMedia() media}, {@link #getGroup() group} and {@link #getTags() tags}.
+	 */
 	@Override
 	public int hashCode()
 	{
@@ -405,6 +412,9 @@ public class Release implements Comparable<Release>
 		return new HashCodeBuilder(45, 7).append(media).append(group).append(tags).toHashCode();
 	}
 
+	/**
+	 * Two releases are compared first by their name. If both names are equal, by their media, then by by their tags and then their groups.
+	 */
 	@Override
 	public int compareTo(Release o)
 	{
@@ -414,12 +424,12 @@ public class Release implements Comparable<Release>
 		}
 		if (name != null && o.name != null)
 		{
-			return Settings.STRING_ORDERING.compare(name, o.name);
+			return Settings.STRING_ORDERING.compare(name, name);
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, Medias.MEDIA_LIST_NAME_COMPARATOR)
-				.compare(group, o.group)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.compare(group, o.group, Settings.createDefaultOrdering())
 				.result();
 	}
 
