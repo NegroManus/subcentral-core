@@ -1,8 +1,14 @@
 package de.subcentral.core.parsing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import com.google.common.base.Splitter;
 
 import de.subcentral.core.model.media.AvMediaItem;
 import de.subcentral.core.model.media.Movie;
@@ -64,9 +70,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		Standardizings.mayStandardize(mediaItem, standardizingService);
 
 		// Release
-		Release rls = releaseMapper.map(props, propParsingService);
-		rls.getMedia().add(mediaItem);
-		Standardizings.mayStandardize(rls, standardizingService);
+		Set<Release> matchingRlss = parseMatchingReleases(props, mediaItem);
 
 		// Subtitle
 		Subtitle sub = subtitleMapper.map(props, propParsingService);
@@ -74,6 +78,41 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		Standardizings.mayStandardize(sub, standardizingService);
 
 		// SubtitleAdjustment
-		return Standardizings.mayStandardize(sub.newAdjustment(rls), standardizingService);
+		return Standardizings.mayStandardize(sub.newAdjustment(matchingRlss), standardizingService);
+	}
+
+	private Set<Release> parseMatchingReleases(Map<SimplePropDescriptor, String> props, AvMediaItem mediaItem)
+	{
+		Set<Release> matchingReleases;
+		String groupStr = props.get(Release.PROP_GROUP);
+		if (groupStr != null)
+		{
+			// if the group string contains several groups separated by comma (e.g. "KILLERS, MSD")
+			List<String> groups = Splitter.on(Pattern.compile("[\\s,]+")).splitToList(groupStr);
+			if (groups.size() > 1)
+			{
+				matchingReleases = new HashSet<>(groups.size());
+				for (String group : groups)
+				{
+					Map<SimplePropDescriptor, String> propsForRls = new HashMap<>(props);
+					// overwrite the group value with the current group
+					propsForRls.put(Release.PROP_GROUP, group);
+					Release rlsForGroup = releaseMapper.map(propsForRls, propParsingService);
+					rlsForGroup.getMedia().add(mediaItem);
+					Standardizings.mayStandardize(rlsForGroup, standardizingService);
+					matchingReleases.add(rlsForGroup);
+				}
+				return matchingReleases;
+			}
+		}
+
+		Release singleRelease = releaseMapper.map(props, propParsingService);
+		singleRelease.getMedia().add(mediaItem);
+		Standardizings.mayStandardize(singleRelease, standardizingService);
+
+		matchingReleases = new HashSet<>(1);
+		matchingReleases.add(singleRelease);
+
+		return matchingReleases;
 	}
 }

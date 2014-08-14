@@ -158,6 +158,26 @@ public class Addic7ed
 		MappingMatcher<SimplePropDescriptor> matcher105 = new MappingMatcher<>(p105, grps105.build(), ImmutableMap.of(Series.PROP_TYPE,
 				Series.TYPE_SEASONED));
 
+		// Multiple release groups (and hence matching releases) separated by comma
+		// Examples
+		// "Finding Carter - 01x07 - Throw Momma From the Train.KILLERS, MSD.English.C.orig.Addic7ed.com"
+		Pattern p106 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(\\w+(?:,\\s+\\w+)*)\\." + langTagsSourcePattern,
+				Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps106 = ImmutableMap.builder();
+		grps106.put(1, Series.PROP_NAME);
+		grps106.put(2, Series.PROP_TITLE);
+		grps106.put(3, Series.PROP_DATE); // e.g. "2004"
+		grps106.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps106.put(5, Season.PROP_NUMBER);
+		grps106.put(6, Episode.PROP_NUMBER_IN_SEASON);
+		grps106.put(7, Episode.PROP_TITLE);
+		grps106.put(8, Release.PROP_GROUP);
+		grps106.put(9, Subtitle.PROP_LANGUAGE);
+		grps106.put(10, Subtitle.PROP_TAGS);
+		grps106.put(11, Subtitle.PROP_SOURCE);
+		MappingMatcher<SimplePropDescriptor> matcher106 = new MappingMatcher<>(p106, grps106.build(), ImmutableMap.of(Series.PROP_TYPE,
+				Series.TYPE_SEASONED));
+
 		// FOR TESTING
 		// matcher102.match("Psych (UK) - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k
 		// + " = " + v));
@@ -167,6 +187,7 @@ public class Addic7ed
 		episodeMatchers.add(matcher103);
 		episodeMatchers.add(matcher104);
 		episodeMatchers.add(matcher105);
+		episodeMatchers.add(matcher106);
 		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode");
 		episodeSubParser.setMatchers(episodeMatchers.build());
 
