@@ -13,6 +13,7 @@ public class ReleaseMapper extends AbstractMapper<Release>
 	public Release doMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
 	{
 		Release rls = new Release();
+		rls.setName(props.get(Release.PROP_NAME));
 		rls.setGroup(propParsingService.parse(props, Release.PROP_GROUP, Group.class));
 		rls.getTags().addAll(propParsingService.parseList(props, Release.PROP_TAGS, Tag.class));
 		rls.setSource(propParsingService.parse(props, Release.PROP_SOURCE, String.class));
