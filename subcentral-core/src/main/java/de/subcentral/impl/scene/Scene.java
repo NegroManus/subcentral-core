@@ -48,6 +48,7 @@ public class Scene
 		// Seasoned
 		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
+		grps101.put(0, Release.PROP_NAME);
 		grps101.put(1, Series.PROP_NAME);
 		grps101.put(2, Season.PROP_NUMBER);
 		grps101.put(3, Episode.PROP_NUMBER_IN_SEASON);
@@ -60,6 +61,7 @@ public class Scene
 
 		Pattern p102 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
+		grps102.put(0, Release.PROP_NAME);
 		grps102.put(1, Series.PROP_NAME);
 		grps102.put(2, Season.PROP_NUMBER);
 		grps102.put(3, Episode.PROP_NUMBER_IN_SEASON);
@@ -72,6 +74,7 @@ public class Scene
 		// Mini-series
 		Pattern p201 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
+		grps201.put(0, Release.PROP_NAME);
 		grps201.put(1, Series.PROP_NAME);
 		grps201.put(2, Episode.PROP_NUMBER_IN_SERIES);
 		grps201.put(3, Episode.PROP_TITLE);
@@ -83,6 +86,7 @@ public class Scene
 
 		Pattern p202 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps202 = ImmutableMap.builder();
+		grps202.put(0, Release.PROP_NAME);
 		grps202.put(1, Series.PROP_NAME);
 		grps202.put(2, Episode.PROP_NUMBER_IN_SERIES);
 		grps202.put(3, Release.PROP_TAGS);
@@ -94,6 +98,7 @@ public class Scene
 		// Dated
 		Pattern p301 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps301 = ImmutableMap.builder();
+		grps301.put(0, Release.PROP_NAME);
 		grps301.put(1, Series.PROP_NAME);
 		grps301.put(2, Episode.PROP_DATE);
 		grps301.put(3, Episode.PROP_TITLE);
@@ -105,6 +110,7 @@ public class Scene
 
 		Pattern p302 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps302 = ImmutableMap.builder();
+		grps302.put(0, Release.PROP_NAME);
 		grps302.put(1, Series.PROP_NAME);
 		grps302.put(2, Episode.PROP_DATE);
 		grps302.put(3, Release.PROP_TAGS);
