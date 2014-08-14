@@ -7,14 +7,17 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.media.Media;
+import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -382,7 +385,12 @@ public class Release implements Comparable<Release>
 		}
 		if (obj != null && Release.class.equals(obj.getClass()))
 		{
-			return Objects.equals(name, ((Release) obj).name);
+			Release o = (Release) obj;
+			if (name != null && o.name != null)
+			{
+				return Objects.equals(name, ((Release) obj).name);
+			}
+			return new EqualsBuilder().append(media, o.media).append(group, o.group).append(tags, o.tags).isEquals();
 		}
 		return false;
 	}
@@ -390,7 +398,11 @@ public class Release implements Comparable<Release>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(45, 3).append(name).toHashCode();
+		if (name != null)
+		{
+			return new HashCodeBuilder(45, 3).append(name).toHashCode();
+		}
+		return new HashCodeBuilder(45, 7).append(media).append(group).append(tags).toHashCode();
 	}
 
 	@Override
@@ -400,7 +412,15 @@ public class Release implements Comparable<Release>
 		{
 			return -1;
 		}
-		return Settings.STRING_ORDERING.compare(name, o.name);
+		if (name != null && o.name != null)
+		{
+			return Settings.STRING_ORDERING.compare(name, o.name);
+		}
+		return ComparisonChain.start()
+				.compare(media, o.media, Medias.MEDIA_LIST_NAME_COMPARATOR)
+				.compare(group, o.group)
+				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.result();
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import java.time.Year;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableSet;
+
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
@@ -249,7 +251,23 @@ public class Addic7edParsingTest
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = sub.newAdjustment(rls);
 
-		compare("testEpisode14", adj, name);
+		compare("testEpisode15", adj, name);
+	}
+
+	@Test
+	public void testEpisode16()
+	{
+		String name = "Finding Carter - 01x07 - Throw Momma From the Train.KILLERS, MSD.English.C.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Finding Carter", 1, 7, "Throw Momma From the Train");
+		Release rls1 = Release.create(epi, "KILLERS");
+		Release rls2 = Release.create(epi, "MSD");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setTags(Tag.tags("C", "orig"));
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = sub.newAdjustment(ImmutableSet.of(rls1, rls2));
+
+		compare("testEpisode16", adj, name);
 	}
 
 	private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
