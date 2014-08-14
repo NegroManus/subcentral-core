@@ -51,41 +51,36 @@ public class Addic7ed
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
 		grps101.put(1, Series.PROP_NAME);
 		grps101.put(2, Series.PROP_TITLE);
-		// 3 is the optional group
-		// 4 is (...|...)
-		grps101.put(5, Series.PROP_DATE); // e.g. "2004"
-		grps101.put(6, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
-		grps101.put(7, Season.PROP_NUMBER);
-		grps101.put(8, Episode.PROP_NUMBER_IN_SEASON);
-		grps101.put(9, Episode.PROP_TITLE);
-		grps101.put(10, Release.PROP_TAGS);
-		grps101.put(11, Subtitle.PROP_LANGUAGE);
-		grps101.put(12, Subtitle.PROP_TAGS);
-		grps101.put(13, Subtitle.PROP_SOURCE);
+		grps101.put(3, Series.PROP_DATE); // e.g. "2004"
+		grps101.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps101.put(5, Season.PROP_NUMBER);
+		grps101.put(6, Episode.PROP_NUMBER_IN_SEASON);
+		grps101.put(7, Episode.PROP_TITLE);
+		grps101.put(8, Release.PROP_TAGS);
+		grps101.put(9, Subtitle.PROP_LANGUAGE);
+		grps101.put(10, Subtitle.PROP_TAGS);
+		grps101.put(11, Subtitle.PROP_SOURCE);
 		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<>(p101, grps101.build(), ImmutableMap.of(Series.PROP_TYPE,
 				Series.TYPE_SEASONED));
 
 		// Expecting no dots in the episode title, then a dot, then "WEB-DL" or a group
 		// Examples:
 		// "Psych - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com"
-		Pattern p102 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.((WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+		Pattern p102 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
 		grps102.put(1, Series.PROP_NAME);
 		grps102.put(2, Series.PROP_TITLE);
-		// 3 is the optional group
-		// 4 is (...|...)
-		grps102.put(5, Series.PROP_DATE); // e.g. "2004"
-		grps102.put(6, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
-		grps102.put(7, Season.PROP_NUMBER);
-		grps102.put(8, Episode.PROP_NUMBER_IN_SEASON);
-		grps102.put(9, Episode.PROP_TITLE);
-		// 10 is (...|...)
-		grps102.put(11, Release.PROP_TAGS); // WEB-DL
-		grps102.put(12, Release.PROP_GROUP);
-		grps102.put(13, Subtitle.PROP_LANGUAGE);
-		grps102.put(14, Subtitle.PROP_TAGS);
-		grps102.put(15, Subtitle.PROP_SOURCE);
+		grps102.put(3, Series.PROP_DATE); // e.g. "2004"
+		grps102.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps102.put(5, Season.PROP_NUMBER);
+		grps102.put(6, Episode.PROP_NUMBER_IN_SEASON);
+		grps102.put(7, Episode.PROP_TITLE);
+		grps102.put(8, Release.PROP_TAGS); // WEB-DL
+		grps102.put(9, Release.PROP_GROUP);
+		grps102.put(10, Subtitle.PROP_LANGUAGE);
+		grps102.put(11, Subtitle.PROP_TAGS);
+		grps102.put(12, Subtitle.PROP_SOURCE);
 		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<>(p102, grps102.build(), ImmutableMap.of(Series.PROP_TYPE,
 				Series.TYPE_SEASONED));
 
@@ -96,25 +91,22 @@ public class Addic7ed
 		// "Vikings - 01x08 - Sacrifice.x264.2HD.English.C.orig.Addic7ed.com"
 		// "Out There (2013) - 01x09 - Viking Days.480p.WEB-DL.x264-mSD.English.C.orig.Addic7ed.com"
 		// "Psych - 01x01 - Pilot.DVDRip TOPAZ.French.orig.Addic7ed.com"
-		Pattern p103 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.([\\w+\\.-]+?)\\W((WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+		Pattern p103 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.([\\w+\\.-]+?)\\W(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps103 = ImmutableMap.builder();
 		grps103.put(1, Series.PROP_NAME);
 		grps103.put(2, Series.PROP_TITLE);
-		// 3 is the optional group
-		// 4 is (...|...)
-		grps103.put(5, Series.PROP_DATE); // e.g. "2004"
-		grps103.put(6, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
-		grps103.put(7, Season.PROP_NUMBER);
-		grps103.put(8, Episode.PROP_NUMBER_IN_SEASON);
-		grps103.put(9, Episode.PROP_TITLE);
-		grps103.put(10, Release.PROP_TAGS);
-		// 11 is (..|..)
-		grps103.put(12, Release.PROP_TAGS);
-		grps103.put(13, Release.PROP_GROUP);
-		grps103.put(14, Subtitle.PROP_LANGUAGE);
-		grps103.put(15, Subtitle.PROP_TAGS);
-		grps103.put(16, Subtitle.PROP_SOURCE);
+		grps103.put(3, Series.PROP_DATE); // e.g. "2004"
+		grps103.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps103.put(5, Season.PROP_NUMBER);
+		grps103.put(6, Episode.PROP_NUMBER_IN_SEASON);
+		grps103.put(7, Episode.PROP_TITLE);
+		grps103.put(8, Release.PROP_TAGS);
+		grps103.put(9, Release.PROP_TAGS);
+		grps103.put(10, Release.PROP_GROUP);
+		grps103.put(11, Subtitle.PROP_LANGUAGE);
+		grps103.put(12, Subtitle.PROP_TAGS);
+		grps103.put(13, Subtitle.PROP_SOURCE);
 		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<>(p103, grps103.build(), ImmutableMap.of(Series.PROP_TYPE,
 				Series.TYPE_SEASONED));
 
@@ -123,25 +115,22 @@ public class Addic7ed
 		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264-DIMENSION.English.HI.Addic7ed.com
 		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264.DIMENSION.English.HI.Addic7ed.com
 		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.WEB-DL.English.HI.Addic7ed.com
-		Pattern p104 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.([\\w+\\.-]+?)\\W((WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+		Pattern p104 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.([\\w+\\.-]+?)\\W(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps104 = ImmutableMap.builder();
 		grps104.put(1, Series.PROP_NAME);
 		grps104.put(2, Series.PROP_TITLE);
-		// 3 is the optional group
-		// 4 is (...|...)
-		grps104.put(5, Series.PROP_DATE); // e.g. "2004"
-		grps104.put(6, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
-		grps104.put(7, Season.PROP_NUMBER);
-		grps104.put(8, Episode.PROP_NUMBER_IN_SEASON);
-		grps104.put(9, Episode.PROP_TITLE);
-		grps104.put(10, Release.PROP_TAGS);
-		// 11 is (..|..)
-		grps104.put(12, Release.PROP_TAGS);
-		grps104.put(13, Release.PROP_GROUP);
-		grps104.put(14, Subtitle.PROP_LANGUAGE);
-		grps104.put(15, Subtitle.PROP_TAGS);
-		grps104.put(16, Subtitle.PROP_SOURCE);
+		grps104.put(3, Series.PROP_DATE); // e.g. "2004"
+		grps104.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps104.put(5, Season.PROP_NUMBER);
+		grps104.put(6, Episode.PROP_NUMBER_IN_SEASON);
+		grps104.put(7, Episode.PROP_TITLE);
+		grps104.put(8, Release.PROP_TAGS);
+		grps104.put(9, Release.PROP_TAGS);
+		grps104.put(10, Release.PROP_GROUP);
+		grps104.put(11, Subtitle.PROP_LANGUAGE);
+		grps104.put(12, Subtitle.PROP_TAGS);
+		grps104.put(13, Subtitle.PROP_SOURCE);
 		MappingMatcher<SimplePropDescriptor> matcher104 = new MappingMatcher<>(p104, grps104.build(), ImmutableMap.of(Series.PROP_TYPE,
 				Series.TYPE_SEASONED));
 
@@ -151,23 +140,21 @@ public class Addic7ed
 		// "Dallas (2012) - 02x08 - J.R.'s Masterpiece.LOL.English.orig.Addic7ed.com"
 		// "Dallas (2012) - 02x08 - J.R.'s Masterpiece.LOL.German.C.updated.Addic7ed.com"
 		// "Psych - 07x03 - Lassie Jerky.WEB-DL.English.orig.Addic7ed.com"
-		Pattern p105 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.((WEB-DL)|(\\w+))\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
+		Pattern p105 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps105 = ImmutableMap.builder();
 		grps105.put(1, Series.PROP_NAME);
 		grps105.put(2, Series.PROP_TITLE);
-		// 3 is the optional group
-		// 4 is (...|...)
-		grps105.put(5, Series.PROP_DATE); // e.g. "2004"
-		grps105.put(6, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
-		grps105.put(7, Season.PROP_NUMBER);
-		grps105.put(8, Episode.PROP_NUMBER_IN_SEASON);
-		grps105.put(9, Episode.PROP_TITLE);
-		// 10 is (...|...)
-		grps105.put(11, Release.PROP_TAGS);
-		grps105.put(12, Release.PROP_GROUP);
-		grps105.put(13, Subtitle.PROP_LANGUAGE);
-		grps105.put(14, Subtitle.PROP_TAGS);
-		grps105.put(15, Subtitle.PROP_SOURCE);
+		grps105.put(3, Series.PROP_DATE); // e.g. "2004"
+		grps105.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps105.put(5, Season.PROP_NUMBER);
+		grps105.put(6, Episode.PROP_NUMBER_IN_SEASON);
+		grps105.put(7, Episode.PROP_TITLE);
+		grps105.put(8, Release.PROP_TAGS);
+		grps105.put(9, Release.PROP_GROUP);
+		grps105.put(10, Subtitle.PROP_LANGUAGE);
+		grps105.put(11, Subtitle.PROP_TAGS);
+		grps105.put(12, Subtitle.PROP_SOURCE);
 		MappingMatcher<SimplePropDescriptor> matcher105 = new MappingMatcher<>(p105, grps105.build(), ImmutableMap.of(Series.PROP_TYPE,
 				Series.TYPE_SEASONED));
 
