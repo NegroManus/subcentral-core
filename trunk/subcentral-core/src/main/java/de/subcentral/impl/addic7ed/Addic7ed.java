@@ -13,12 +13,15 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.Subtitles;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.standardizing.SimpleStandardizingService;
+import de.subcentral.core.standardizing.Standardizer;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7ed
@@ -190,6 +193,11 @@ public class Addic7ed
 		episodeMatchers.add(matcher106);
 		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode");
 		episodeSubParser.setMatchers(episodeMatchers.build());
+		SimpleStandardizingService ss = new SimpleStandardizingService();
+		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
+		standardizers.put(Subtitle.class, (Subtitle s) -> Subtitles.standardizeTags(s));
+		ss.setStandardizers(standardizers.build());
+		episodeSubParser.setStandardizingService(ss);
 
 		// --------------
 		// Movie matchers
