@@ -17,15 +17,19 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimpleParsingService;
+import de.subcentral.core.standardizing.SimpleStandardizingService;
+import de.subcentral.core.standardizing.Standardizer;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Scene
@@ -45,7 +49,7 @@ public class Scene
 
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
 
-		// Seasoned
+		// Seasoned episode
 		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
 		grps101.put(0, Release.PROP_NAME);
@@ -71,7 +75,7 @@ public class Scene
 				grps102.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
-		// Mini-series
+		// Mini-series episode
 		Pattern p201 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
 		grps201.put(0, Release.PROP_NAME);
@@ -95,7 +99,7 @@ public class Scene
 				grps202.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_MINI_SERIES));
 
-		// Dated
+		// Dated episode
 		Pattern p301 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps301 = ImmutableMap.builder();
 		grps301.put(0, Release.PROP_NAME);
@@ -133,6 +137,14 @@ public class Scene
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 		rlsParser.setPropParsingService(pps);
+
+		SimpleStandardizingService ss = new SimpleStandardizingService();
+		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
+		standardizers.put(Episode.class, (Episode e) -> removeDotsInEpisode(e));
+		standardizers.put(Movie.class, (Movie m) -> removeDotsInMovie(m));
+		standardizers.put(Release.class, (Release r) -> Releases.standardizeTags(r));
+		ss.setStandardizers(standardizers.build());
+		rlsParser.setStandardizingService(ss);
 
 		return ImmutableListMultimap.of(Release.class, rlsParser);
 	}
@@ -185,9 +197,43 @@ public class Scene
 		return PARSING_SERVICE.getParsers();
 	}
 
+	public static String removeDots(String text)
+	{
+		return text == null ? null : text.replace('.', ' ');
+	}
+
+	public static Movie removeDotsInMovie(Movie mov)
+	{
+		if (mov == null)
+		{
+			return null;
+		}
+		mov.setName(removeDots(mov.getName()));
+		mov.setTitle(removeDots(mov.getTitle()));
+		return mov;
+	}
+
+	public static Episode removeDotsInEpisode(Episode epi)
+	{
+		if (epi == null)
+		{
+			return null;
+		}
+		epi.setTitle(removeDots(epi.getTitle()));
+		if (epi.isPartOfSeason())
+		{
+			epi.getSeason().setTitle(removeDots(epi.getSeason().getTitle()));
+		}
+		if (epi.getSeries() != null)
+		{
+			epi.getSeries().setName(removeDots(epi.getSeries().getName()));
+			epi.getSeries().setTitle(removeDots(epi.getSeries().getTitle()));
+		}
+		return epi;
+	}
+
 	private Scene()
 	{
 
 	}
-
 }
