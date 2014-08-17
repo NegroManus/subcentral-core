@@ -42,7 +42,7 @@ public abstract class AbstractHttpHtmlLookupQuery<R> implements LookupQuery<R>
 		System.out.println(url);
 		Connection con = setupConnection(url);
 		Document doc = con.get();
-		System.out.println(doc);
+		// System.out.println(doc);
 		return doc;
 	}
 
