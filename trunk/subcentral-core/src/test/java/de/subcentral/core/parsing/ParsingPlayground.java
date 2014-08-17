@@ -11,11 +11,12 @@ import com.google.common.collect.ImmutableListMultimap;
 
 import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.impl.addic7ed.Addic7ed;
-import de.subcentral.impl.orlydb.OrlyDbLookup;
+import de.subcentral.impl.predbme.PreDbMeLookup;
 import de.subcentral.impl.scene.Scene;
 import de.subcentral.impl.subcentral.SubCentral;
 
@@ -30,10 +31,10 @@ public class ParsingPlayground
 		parsers.putAll(Scene.getParsers());
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
-		final Lookup<Release, ?> lookup = new OrlyDbLookup();
+		final Lookup<Release, ?> lookup = new PreDbMeLookup();
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
-		// dlFolder = Paths.get("D:\\Downloads");
+		dlFolder = Paths.get("D:\\Downloads");
 		System.out.println(dlFolder);
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dlFolder))
 		{
@@ -57,8 +58,17 @@ public class ParsingPlayground
 						TimeUtil.printDurationMillis(start);
 						System.out.println("Named to ...");
 						System.out.println(nameOfParsed);
-						// System.out.println("Looked up ...");
-						// lookup.createQueryFromEntity(parsed).execute().forEach(r -> System.out.println(r));
+						System.out.println("Looked up ...");
+						if (parsed instanceof SubtitleAdjustment)
+						{
+							SubtitleAdjustment subAdj = (SubtitleAdjustment) parsed;
+							start = System.nanoTime();
+							lookup.createQueryFromEntity(subAdj.getFirstMatchingRelease().getFirstMedia())
+									.execute()
+									.forEach(r -> System.out.println(r));
+							TimeUtil.printDurationMillis(start);
+						}
+
 						System.out.println();
 						System.out.println();
 
