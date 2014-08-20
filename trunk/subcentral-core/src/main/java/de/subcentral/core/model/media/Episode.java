@@ -290,6 +290,11 @@ public class Episode extends AvMediaItemBase implements Comparable<Episode>
 	}
 
 	// Convenience
+	public boolean isPartOfSeries()
+	{
+		return series != null;
+	}
+
 	public boolean isPartOfSeason()
 	{
 		return season != null;
