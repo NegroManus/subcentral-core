@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.util.FunctionUtil;
 
 public class Releases
 {
@@ -17,26 +15,19 @@ public class Releases
 		// utility class
 	}
 
-	public static List<Release> filterReleases(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group)
+	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
-		return rlss.stream()
-				.filter(r -> Releases.filter(r, media, containedTags, group, NamingStandards.NAMING_SERVICE))
-				.collect(Collectors.toList());
+		return rlss.stream().filter(r -> Releases.filter(r, media, containedTags, group, mediaNamingService)).collect(Collectors.toList());
 	}
 
-	private static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
+	public static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
 		if (rls == null)
 		{
 			return false;
 		}
-		List<String> requiredMediaNames = media.stream()
-				.map((Media m) -> FunctionUtil.applyStringOperator(mediaNamingService.name(m), NamingStandards.STANDARD_REPLACER))
-				.collect(Collectors.toList());
-		List<String> actualMediaNames = rls.getMedia()
-				.stream()
-				.map((Media m) -> FunctionUtil.applyStringOperator(mediaNamingService.name(m), NamingStandards.STANDARD_REPLACER))
-				.collect(Collectors.toList());
+		List<String> requiredMediaNames = media.stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
+		List<String> actualMediaNames = rls.getMedia().stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
 
 		return requiredMediaNames.equals(actualMediaNames) && (group == null ? true : group.equals(rls.getGroup()))
 				&& (rls.getTags().containsAll(containedTags));
@@ -63,7 +54,7 @@ public class Releases
 		}
 	}
 
-	public static Release standardizeTags(Release rls)
+	public static void standardizeTags(Release rls)
 	{
 		ListIterator<Tag> iter = rls.getTags().listIterator();
 		Tag lastTag = null;
@@ -72,13 +63,13 @@ public class Releases
 			Tag tag = iter.next();
 			if (lastTag != null)
 			{
-				// DD5.1
+				// DD5, 1 -> DD5.1
 				if ("1".equals(tag.getName()) && "DD5".equals(lastTag.getName()))
 				{
 					lastTag.setName("DD5.1");
 					iter.remove();
 				}
-				// H.264
+				// H, 264 -> H.264
 				else if ("264".equals(tag.getName()) && "H".equals(lastTag.getName()))
 				{
 					lastTag.setName("H.264");
@@ -87,6 +78,5 @@ public class Releases
 			}
 			lastTag = tag;
 		}
-		return rls;
 	}
 }

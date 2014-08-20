@@ -23,13 +23,12 @@ public class Standardizings
 		return DEFAULT_STANDARDIZING_SERVICE;
 	}
 
-	public static <T> T mayStandardize(T entity, StandardizingService standardizingService)
+	public static <T> void mayStandardize(T entity, StandardizingService standardizingService)
 	{
 		if (standardizingService != null)
 		{
-			return standardizingService.standardize(entity);
+			standardizingService.standardize(entity);
 		}
-		return entity;
 	}
 
 	private Standardizings()

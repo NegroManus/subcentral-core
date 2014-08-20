@@ -78,7 +78,9 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		Standardizings.mayStandardize(sub, standardizingService);
 
 		// SubtitleAdjustment
-		return Standardizings.mayStandardize(sub.newAdjustment(matchingRlss), standardizingService);
+		SubtitleAdjustment subAdj = sub.newAdjustment(matchingRlss);
+		Standardizings.mayStandardize(subAdj, standardizingService);
+		return subAdj;
 	}
 
 	private Set<Release> parseMatchingReleases(Map<SimplePropDescriptor, String> props, AvMediaItem mediaItem)

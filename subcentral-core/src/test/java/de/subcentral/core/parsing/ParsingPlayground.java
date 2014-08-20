@@ -17,6 +17,7 @@ import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
@@ -82,10 +83,13 @@ public class ParsingPlayground
 							releases.forEach(r -> Releases.enrichByParsingName(r, ps, false));
 							System.out.println("Parsed releases:");
 							releases.forEach(r -> System.out.println(r));
-							List<Release> filteredReleases = Releases.filterReleases(releases,
+							DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService(NamingStandards.NAMING_SERVICE,
+									NamingStandards.STANDARD_REPLACER);
+							List<Release> filteredReleases = Releases.filter(releases,
 									ImmutableList.of(subAdj.getFirstSubtitle().getMediaItem()),
 									subAdjRls.getTags(),
-									subAdjRls.getGroup());
+									subAdjRls.getGroup(),
+									mediaNsForFiltering);
 							System.out.println("Filtered releases:");
 							filteredReleases.forEach(r -> System.out.println(r));
 

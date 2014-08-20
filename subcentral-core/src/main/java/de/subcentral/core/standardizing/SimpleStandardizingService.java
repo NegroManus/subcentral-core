@@ -41,16 +41,14 @@ public class SimpleStandardizingService implements StandardizingService
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T standardize(T entity)
+	public <T> void standardize(T entity)
 	{
-		if (entity == null)
+		if (entity != null)
 		{
-			return entity;
+			for (Standardizer<?> std : standardizers.get(entity.getClass()))
+			{
+				((Standardizer<T>) std).standardize(entity);
+			}
 		}
-		for (Standardizer<?> std : standardizers.get(entity.getClass()))
-		{
-			((Standardizer<T>) std).standardize(entity);
-		}
-		return entity;
 	}
 }
