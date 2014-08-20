@@ -127,6 +127,11 @@ public class Season extends MediaBase implements AvMediaCollection<Episode>, Com
 	}
 
 	// Convenience / Complex
+	public boolean isPartOfSeries()
+	{
+		return series != null;
+	}
+
 	public boolean isNumbered()
 	{
 		return number != null;

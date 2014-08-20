@@ -3,6 +3,7 @@ package de.subcentral.core.model.subtitle;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,7 +127,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		return matchingReleases;
 	}
 
-	public void setMatchingReleases(Set<Release> matchingReleases)
+	public void setMatchingReleases(Collection<? extends Release> matchingReleases)
 	{
 		Validate.noNullElements(matchingReleases);
 		this.matchingReleases.clear();

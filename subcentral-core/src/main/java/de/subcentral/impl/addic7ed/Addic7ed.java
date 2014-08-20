@@ -196,6 +196,18 @@ public class Addic7ed
 		SimpleStandardizingService ss = new SimpleStandardizingService();
 		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
 		standardizers.put(Subtitle.class, (Subtitle s) -> Subtitles.standardizeTags(s));
+		standardizers.put(Episode.class, (Episode e) -> {
+			if (e.getTitle() != null)
+			{
+				e.setTitle(e.getTitle().replace("&", "and"));
+			}
+
+			if (e.isPartOfSeries() && e.getSeries().getName() != null)
+			{
+				e.getSeries().setName(e.getSeries().getName().replace("&", "and"));
+			}
+			return e;
+		});
 		ss.setStandardizers(standardizers.build());
 		episodeSubParser.setStandardizingService(ss);
 

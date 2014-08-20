@@ -151,7 +151,10 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 
 		protected Builder appendAll(SimplePropDescriptor SimplePropertyDescriptor, Iterable<?> propertyIterable)
 		{
-			propertyIterable.forEach(p -> append(SimplePropertyDescriptor, p));
+			for (Object prop : propertyIterable)
+			{
+				append(SimplePropertyDescriptor, prop);
+			}
 			return this;
 		}
 
