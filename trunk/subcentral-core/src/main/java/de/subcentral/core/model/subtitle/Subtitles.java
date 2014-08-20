@@ -3,7 +3,6 @@ package de.subcentral.core.model.subtitle;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,12 +26,7 @@ public class Subtitles
 		return names.build();
 	}
 
-	public static Consumer<Subtitle> getSubtitleTagsNormalizer()
-	{
-		return Subtitles::standardizeTags;
-	}
-
-	public static Subtitle standardizeTags(Subtitle subtitle)
+	public static void standardizeTags(Subtitle subtitle)
 	{
 		Pattern pVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE);
 		Matcher mVersion = pVersion.matcher("");
@@ -53,7 +47,6 @@ public class Subtitles
 				continue;
 			}
 		}
-		return subtitle;
 	}
 
 	public static boolean containsHearingImpairedTag(List<Tag> tags)

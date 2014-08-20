@@ -206,7 +206,6 @@ public class Addic7ed
 			{
 				e.getSeries().setName(e.getSeries().getName().replace("&", "and"));
 			}
-			return e;
 		});
 		ss.setStandardizers(standardizers.build());
 		episodeSubParser.setStandardizingService(ss);
