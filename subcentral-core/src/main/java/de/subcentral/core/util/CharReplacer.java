@@ -4,11 +4,14 @@ import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.google.common.collect.ImmutableMap;
+
 public class CharReplacer implements UnaryOperator<String>
 {
-	private char[]	allowedChars	= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_".toCharArray();
-	private String	replacement		= ".";
-	private char[]	charsToDelete	= "'´`".toCharArray();
+	private char[]								allowedChars		= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-".toCharArray();
+	private char[]								charsToDelete		= "'´`".toCharArray();
+	private String								defaultReplacement	= ".";
+	private ImmutableMap<Character, Character>	replacements		= ImmutableMap.of('&', '_');
 
 	public char[] getAllowedChars()
 	{
@@ -20,16 +23,6 @@ public class CharReplacer implements UnaryOperator<String>
 		this.allowedChars = allowedChars;
 	}
 
-	public String getReplacement()
-	{
-		return replacement;
-	}
-
-	public void setReplacement(String replacement)
-	{
-		this.replacement = replacement;
-	}
-
 	public char[] getCharsToDelete()
 	{
 		return charsToDelete;
@@ -38,6 +31,26 @@ public class CharReplacer implements UnaryOperator<String>
 	public void setCharsToDelete(char[] charsToDelete)
 	{
 		this.charsToDelete = charsToDelete;
+	}
+
+	public String getDefaultReplacement()
+	{
+		return defaultReplacement;
+	}
+
+	public void setDefaultReplacement(String defaultReplacement)
+	{
+		this.defaultReplacement = defaultReplacement;
+	}
+
+	public ImmutableMap<Character, Character> getReplacements()
+	{
+		return replacements;
+	}
+
+	public void setReplacements(ImmutableMap<Character, Character> replacements)
+	{
+		this.replacements = replacements;
 	}
 
 	@Override
@@ -58,20 +71,26 @@ public class CharReplacer implements UnaryOperator<String>
 			if (ArrayUtils.contains(allowedChars, c))
 			{
 				dest.append(c);
+				continue;
 			}
-			else
+			Character replacingChar = replacements.get(c);
+			if (replacingChar != null)
 			{
-				// do not append replacement at the beginning
-				if (dest.length() > 0)
-				{
-					// do not append replacement at the end
-					// if StringBuilder already ends with replacement
-					StringUtil.appendIfNotEndsWith(dest, replacement);
-				}
+				appendIfNeitherEmptyNorEndsWith(dest, replacingChar.toString());
+				continue;
 			}
+			appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
 		}
 		// strip replacement at the end
-		StringUtil.stripEnd(dest, replacement);
+		StringUtil.stripEnd(dest, defaultReplacement);
 		return dest.toString();
+	}
+
+	private static final void appendIfNeitherEmptyNorEndsWith(StringBuilder sb, String s)
+	{
+		if (sb.length() > 0)
+		{
+			StringUtil.appendIfNotEndsWith(sb, s);
+		}
 	}
 }

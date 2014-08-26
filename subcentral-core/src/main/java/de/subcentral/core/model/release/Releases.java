@@ -61,7 +61,11 @@ public class Releases
 		while (iter.hasNext())
 		{
 			Tag tag = iter.next();
-			if (lastTag != null)
+			if ("X264".equals(tag.getName()))
+			{
+				tag.setName("x264");
+			}
+			else if (lastTag != null)
 			{
 				// DD5, 1 -> DD5.1
 				if ("1".equals(tag.getName()) && "DD5".equals(lastTag.getName()))

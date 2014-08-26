@@ -149,7 +149,7 @@ public class Scene
 		return ImmutableListMultimap.of(Release.class, rlsParser);
 	}
 
-	private static String buildFirstTagPattern()
+	public static String buildFirstTagPattern()
 	{
 		StringBuilder knownTag = new StringBuilder();
 		knownTag.append("(?:REAL|PROPER|REPACK|DiRFIX|");
