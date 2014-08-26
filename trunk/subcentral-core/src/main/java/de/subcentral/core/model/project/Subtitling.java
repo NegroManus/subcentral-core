@@ -6,24 +6,24 @@ import java.util.Map;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Contributions;
 import de.subcentral.core.model.Work;
-import de.subcentral.core.model.media.AvMediaItem;
+import de.subcentral.core.model.media.AvMedia;
 import de.subcentral.core.model.subtitle.Subtitle;
 
 public class Subtitling implements Work
 {
-	private AvMediaItem			mediaItem;
+	private AvMedia				media;
 	private String				language;
 	private String				info;
 	private List<Contribution>	contributions;
 
-	public AvMediaItem getMediaItem()
+	public AvMedia getMedia()
 	{
-		return mediaItem;
+		return media;
 	}
 
-	public void setMediaItem(AvMediaItem media)
+	public void setMedia(AvMedia media)
 	{
-		this.mediaItem = media;
+		this.media = media;
 	}
 
 	public String getLanguage()
@@ -75,7 +75,7 @@ public class Subtitling implements Work
 	public Subtitle toSubtitle()
 	{
 		Subtitle sub = new Subtitle();
-		sub.setMediaItem(mediaItem);
+		sub.setMedia(media);
 		sub.setLanguage(language);
 		sub.setContributions(contributions);
 		return sub;

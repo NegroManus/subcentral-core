@@ -23,7 +23,6 @@ public interface PropNames
 	public static final String	MATCHING_RELEASES	= "matchingReleases";
 	public static final String	MEDIA				= "media";
 	public static final String	MEDIA_CONTENT_TYPE	= "mediaContentType";
-	public static final String	MEDIA_ITEM			= "mediaItem";
 	public static final String	MEDIA_TYPE			= "mediaType";
 	public static final String	NAME				= "name";
 	public static final String	NUKES				= "nukes";

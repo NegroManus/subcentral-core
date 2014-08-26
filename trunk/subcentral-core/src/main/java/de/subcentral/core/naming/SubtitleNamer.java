@@ -25,7 +25,7 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	public String doName(Subtitle sub, Map<String, Object> params)
 	{
 		Builder b = new Builder();
-		b.appendString(Subtitle.PROP_MEDIA_ITEM, mediaNamingService.name(sub.getMediaItem(), params));
+		b.appendString(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));
 		b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
 		if (sub.isHearingImpaired())
 		{

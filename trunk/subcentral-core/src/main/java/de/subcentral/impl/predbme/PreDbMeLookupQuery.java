@@ -24,8 +24,8 @@ import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.media.StandardAvMediaItem;
-import de.subcentral.core.model.media.StandardMediaItem;
+import de.subcentral.core.model.media.StandardAvMedia;
+import de.subcentral.core.model.media.StandardMedia;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
@@ -485,19 +485,19 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			}
 			else if (section.startsWith("Music"))
 			{
-				StandardAvMediaItem avMediaItem = new StandardAvMediaItem(mediaTitle);
+				StandardAvMedia avMediaItem = new StandardAvMedia(mediaTitle);
 				avMediaItem.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
 				media = avMediaItem;
 			}
 			else if (section.startsWith("TV"))
 			{
-				StandardAvMediaItem avMediaItem = new StandardAvMediaItem(mediaTitle);
+				StandardAvMedia avMediaItem = new StandardAvMedia(mediaTitle);
 				avMediaItem.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
 				media = avMediaItem;
 			}
 			else
 			{
-				media = new StandardMediaItem(mediaTitle);
+				media = new StandardMedia(mediaTitle);
 			}
 		}
 
@@ -535,10 +535,10 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 				movie.getFurtherInfoUrls().addAll(furtherInfoUrls);
 			}
 		}
-		else if (media instanceof StandardMediaItem)
+		else if (media instanceof StandardMedia)
 		{
 			// also for StandardAvMediaItem
-			StandardMediaItem stdMediaItem = (StandardMediaItem) media;
+			StandardMedia stdMediaItem = (StandardMedia) media;
 			if (plot != null)
 			{
 				stdMediaItem.setDescription(plot);

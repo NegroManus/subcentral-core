@@ -16,32 +16,32 @@ import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
- * For any media item that has no own class. For audio / video media items see {@link StandardAvMediaItem}.
+ * For any media item that has no own class. For audio / video media items see {@link StandardAvMedia}.
  *
  */
-public class StandardMediaItem extends MediaBase implements MediaItem
+public class StandardMedia extends MediaBase implements Media
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE			= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(StandardMedia.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMedia.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE			= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.MEDIA_CONTENT_TYPE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(StandardMedia.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(StandardMediaItem.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(StandardMedia.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(StandardMediaItem.class,
+	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.FURTHER_INFO_URLS);
 
 	protected String							name;
@@ -51,12 +51,12 @@ public class StandardMediaItem extends MediaBase implements MediaItem
 	protected final List<String>				countriesOfOrigin				= new ArrayList<>(1);
 	protected final Set<String>					genres							= new HashSet<>(3);
 
-	public StandardMediaItem()
+	public StandardMedia()
 	{
 
 	}
 
-	public StandardMediaItem(String name)
+	public StandardMedia(String name)
 	{
 		this.name = name;
 	}
@@ -154,9 +154,9 @@ public class StandardMediaItem extends MediaBase implements MediaItem
 		{
 			return true;
 		}
-		if (obj != null && obj instanceof StandardMediaItem)
+		if (obj != null && obj instanceof StandardMedia)
 		{
-			return Objects.equals(name, ((StandardMediaItem) obj).name);
+			return Objects.equals(name, ((StandardMedia) obj).name);
 		}
 		return false;
 	}
@@ -170,7 +170,7 @@ public class StandardMediaItem extends MediaBase implements MediaItem
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(StandardMediaItem.class)
+		return MoreObjects.toStringHelper(StandardMedia.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)
