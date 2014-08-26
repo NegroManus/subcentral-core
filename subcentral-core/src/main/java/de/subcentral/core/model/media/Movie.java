@@ -12,7 +12,7 @@ import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Movie extends StandardAvMediaItem implements Comparable<Movie>
+public class Movie extends StandardAvMedia implements Comparable<Movie>
 {
 	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(Movie.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(Movie.class, PropNames.TITLE);
@@ -34,13 +34,13 @@ public class Movie extends StandardAvMediaItem implements Comparable<Movie>
 
 	public Movie(String name)
 	{
-		this.name = name;
+		setName(name);
 	}
 
 	public Movie(String name, Year year)
 	{
-		this.name = name;
-		this.date = year;
+		setName(name);
+		setDate(year);
 	}
 
 	@Override

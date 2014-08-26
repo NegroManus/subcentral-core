@@ -86,7 +86,7 @@ public class ParsingPlayground
 							DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService(NamingStandards.NAMING_SERVICE,
 									NamingStandards.STANDARD_REPLACER);
 							List<Release> filteredReleases = Releases.filter(releases,
-									ImmutableList.of(subAdj.getFirstSubtitle().getMediaItem()),
+									ImmutableList.of(subAdj.getFirstSubtitle().getMedia()),
 									subAdjRls.getTags(),
 									subAdjRls.getGroup(),
 									mediaNsForFiltering);

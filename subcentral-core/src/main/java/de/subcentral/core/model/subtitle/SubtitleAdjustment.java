@@ -21,7 +21,7 @@ import de.subcentral.core.model.Contributor;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.Work;
-import de.subcentral.core.model.media.AvMediaItem;
+import de.subcentral.core.model.media.AvMedia;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Nuke;
@@ -68,7 +68,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		for (Media media : matchingRelease.getMedia())
 		{
 			Subtitle sub = new Subtitle();
-			sub.setMediaItem((AvMediaItem) media);
+			sub.setMedia((AvMedia) media);
 			sub.setLanguage(language);
 			if (grp != null)
 			{

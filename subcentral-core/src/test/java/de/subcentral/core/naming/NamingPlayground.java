@@ -59,7 +59,7 @@ public class NamingPlayground
 
 		// Subtitle
 		Subtitle sub1 = new Subtitle();
-		sub1.setMediaItem(epi);
+		sub1.setMedia(epi);
 		sub1.setLanguage("VO");
 		sub1.setTags(Tag.tags("orig", "C"));
 		sub1.setGroup(new Group("SubCentral"));

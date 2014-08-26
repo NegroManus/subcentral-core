@@ -19,7 +19,7 @@ import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.Work;
-import de.subcentral.core.model.media.AvMediaItem;
+import de.subcentral.core.model.media.AvMedia;
 import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
@@ -28,7 +28,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
 {
-	public static final SimplePropDescriptor	PROP_MEDIA_ITEM				= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA_ITEM);
+	public static final SimplePropDescriptor	PROP_MEDIA					= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA);
 	public static final SimplePropDescriptor	PROP_LANGUAGE				= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
 	public static final SimplePropDescriptor	PROP_HEARING_IMPAIRED		= new SimplePropDescriptor(Subtitle.class, PropNames.HEARING_IMPAIRED);
 	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS			= new SimplePropDescriptor(Subtitle.class, PropNames.FOREIGN_PARTS);
@@ -125,7 +125,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String			CONTRIBUTION_TYPE_REVISION		= "REVISION";
 	public static final String			CONTRIBUTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
 
-	private AvMediaItem					mediaItem;
+	private AvMedia						media;
 	private String						language;
 	private boolean						hearingImpaired					= false;
 	private ForeignParts				foreignParts					= ForeignParts.NONE;
@@ -147,25 +147,25 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	}
 
-	public Subtitle(AvMediaItem mediaItem)
+	public Subtitle(AvMedia media)
 	{
-		this(mediaItem, null);
+		this(media, null);
 	}
 
-	public Subtitle(AvMediaItem mediaItem, String language)
+	public Subtitle(AvMedia media, String language)
 	{
-		this.mediaItem = mediaItem;
-		this.language = language;
+		setMedia(media);
+		setLanguage(language);
 	}
 
-	public AvMediaItem getMediaItem()
+	public AvMedia getMedia()
 	{
-		return mediaItem;
+		return media;
 	}
 
-	public void setMediaItem(AvMediaItem mediaItem)
+	public void setMedia(AvMedia media)
 	{
-		this.mediaItem = mediaItem;
+		this.media = media;
 	}
 
 	public String getLanguage()
@@ -368,11 +368,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	// convenience / complex
 	public TranslationType determineTranslationType()
 	{
-		if (mediaItem == null || language == null)
+		if (media == null || language == null)
 		{
 			return TranslationType.UNKNOWN;
 		}
-		String primaryLangOfMedia = mediaItem.getPrimaryOriginalLanguage();
+		String primaryLangOfMedia = media.getPrimaryOriginalLanguage();
 		if (primaryLangOfMedia == null)
 		{
 			return TranslationType.UNKNOWN;
@@ -431,7 +431,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		if (obj != null && Subtitle.class.equals(obj.getClass()))
 		{
 			Subtitle o = (Subtitle) obj;
-			return new EqualsBuilder().append(mediaItem, o.mediaItem)
+			return new EqualsBuilder().append(media, o.media)
 					.append(language, o.language)
 					.append(hearingImpaired, o.hearingImpaired)
 					.append(foreignParts, o.foreignParts)
@@ -447,7 +447,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(37, 99).append(mediaItem)
+		return new HashCodeBuilder(37, 99).append(media)
 				.append(language)
 				.append(hearingImpaired)
 				.append(foreignParts)
@@ -466,7 +466,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return -1;
 		}
 		return ComparisonChain.start()
-				.compare(mediaItem, o.mediaItem, Medias.MEDIA_NAME_COMPARATOR)
+				.compare(media, o.media, Medias.MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
 				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)
@@ -482,7 +482,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	{
 		return MoreObjects.toStringHelper(Subtitle.class)
 				.omitNullValues()
-				.add("mediaItem", mediaItem)
+				.add("media", media)
 				.add("language", language)
 				.add("hearingImpaired", hearingImpaired)
 				.add("foreignParts", foreignParts)

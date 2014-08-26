@@ -19,7 +19,7 @@ import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Episode extends AvMediaItemBase implements Comparable<Episode>
+public class Episode extends MediaBase implements AvMedia, Comparable<Episode>
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Episode.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_SERIES					= new SimplePropDescriptor(Episode.class, PropNames.SERIES);
@@ -141,6 +141,7 @@ public class Episode extends AvMediaItemBase implements Comparable<Episode>
 	private Integer	numberInSeries;
 	private Integer	numberInSeason;
 	private boolean	special;
+	private int		runningTime;
 
 	public Episode()
 	{
@@ -269,6 +270,17 @@ public class Episode extends AvMediaItemBase implements Comparable<Episode>
 	public void setSpecial(boolean special)
 	{
 		this.special = special;
+	}
+
+	@Override
+	public int getRunningTime()
+	{
+		return runningTime;
+	}
+
+	public void setRunningTime(int runningTime)
+	{
+		this.runningTime = runningTime;
 	}
 
 	@Override
