@@ -189,7 +189,7 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 	}
 
 	/**
-	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series, <code>null</code> if this series has no episodes.
+	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series or <code>null</code> if this series has no episodes.
 	 */
 	public Temporal getDateOfFirstEpisode()
 	{
@@ -197,7 +197,7 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 	}
 
 	/**
-	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series, <code>null</code> if this series has no episodes.
+	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series or <code>null</code> if this series has no episodes.
 	 */
 	public Temporal getDateOfLastEpisode()
 	{

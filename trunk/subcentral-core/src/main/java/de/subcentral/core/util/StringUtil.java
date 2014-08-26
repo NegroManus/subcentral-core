@@ -9,7 +9,6 @@ import com.google.common.base.Splitter;
 
 public class StringUtil
 {
-
 	public static final Joiner		COMMA_JOINER		= Joiner.on(',').skipNulls();
 	public static final Splitter	COMMA_SPLITTER		= Splitter.on(',');
 
@@ -22,17 +21,25 @@ public class StringUtil
 
 	public static boolean startsWith(StringBuilder sb, char c)
 	{
-		int len = sb.length();
-		return len > 0 && sb.charAt(0) == c;
+		return sb.length() > 0 && sb.charAt(0) == c;
+	}
+
+	public static boolean startsWith(StringBuilder sb, CharSequence cs)
+	{
+		return cs != null && sb.length() >= cs.length() && sb.substring(0, cs.length()).equals(cs);
 	}
 
 	public static boolean endsWith(StringBuilder sb, char c)
 	{
-		int len = sb.length();
-		return len > 0 && sb.charAt(len - 1) == c;
+		return sb.length() > 0 && sb.charAt(sb.length() - 1) == c;
 	}
 
-	public static void append(StringBuilder sb, char c)
+	public static boolean endsWith(StringBuilder sb, CharSequence cs)
+	{
+		return cs != null && sb.length() >= cs.length() && sb.substring(sb.length() - cs.length()).equals(cs);
+	}
+
+	public static void appendIfNotEndsWith(StringBuilder sb, char c)
 	{
 		if (endsWith(sb, c))
 		{
@@ -40,7 +47,7 @@ public class StringUtil
 		}
 	}
 
-	public static void append(StringBuilder sb, CharSequence cs)
+	public static void appendIfNotEndsWith(StringBuilder sb, CharSequence cs)
 	{
 		if (!StringUtils.endsWith(sb, cs))
 		{
@@ -48,12 +55,12 @@ public class StringUtil
 		}
 	}
 
-	public static void append(StringBuilder sb)
+	public static void appendSpaceIfNotEndsWith(StringBuilder sb)
 	{
-		append(sb, ' ');
+		appendIfNotEndsWith(sb, ' ');
 	}
 
-	public static void deleteLeading(StringBuilder sb, char c)
+	public static void stripStart(StringBuilder sb, char c)
 	{
 		if (startsWith(sb, c))
 		{
@@ -61,34 +68,44 @@ public class StringUtil
 		}
 	}
 
-	public static void deleteLeading(StringBuilder sb, CharSequence cs)
+	public static void stripStart(StringBuilder sb, CharSequence cs)
 	{
-		if (StringUtils.startsWith(sb, cs))
+		while (startsWith(sb, cs))
 		{
-			sb.delete(0, cs.length());
+			sb.deleteCharAt(sb.length() - 1);
 		}
 	}
 
-	public static void deleteTrailing(StringBuilder sb, char c)
+	public static void stripStart(StringBuilder sb)
 	{
-		int len = sb.length();
-		while (len > 0 && sb.charAt(len - 1) == c)
+		stripStart(sb, ' ');
+	}
+
+	public static void stripEnd(StringBuilder sb, char c)
+	{
+		while (endsWith(sb, c))
 		{
-			sb.deleteCharAt(len - 1);
-			len = sb.length();
+			sb.deleteCharAt(sb.length() - 1);
 		}
 	}
 
-	public static void deleteTrailing(StringBuilder sb, CharSequence cs)
+	public static void stripEnd(StringBuilder sb, CharSequence cs)
 	{
-		while (sb.length() > 0 && StringUtils.endsWith(sb, cs))
+		while (endsWith(sb, cs))
 		{
 			sb.delete(sb.length() - cs.length(), sb.length());
 		}
 	}
 
-	public static void deleteTrailing(StringBuilder sb)
+	public static void stripEnd(StringBuilder sb)
 	{
-		deleteTrailing(sb, ' ');
+		stripEnd(sb, ' ');
 	}
+
+	public static void trim(StringBuilder sb)
+	{
+		stripStart(sb);
+		stripEnd(sb);
+	}
+
 }
