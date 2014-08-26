@@ -66,12 +66,12 @@ public class CharReplacer implements UnaryOperator<String>
 				{
 					// do not append replacement at the end
 					// if StringBuilder already ends with replacement
-					StringUtil.append(dest, replacement);
+					StringUtil.appendIfNotEndsWith(dest, replacement);
 				}
 			}
 		}
 		// strip replacement at the end
-		StringUtil.deleteTrailing(dest, replacement);
+		StringUtil.stripEnd(dest, replacement);
 		return dest.toString();
 	}
 }
