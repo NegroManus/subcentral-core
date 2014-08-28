@@ -99,24 +99,24 @@ public class SubCentral
 
 	public static void standardizeSubtitleLanguage(Subtitle sub)
 	{
-		if (sub != null)
+		if (sub == null)
 		{
-			String lang = sub.getLanguage();
-			if (lang == null)
-			{
-				return;
-			}
-			if (lang.equalsIgnoreCase("en") || lang.equalsIgnoreCase("eng") || lang.equalsIgnoreCase("english"))
-			{
-				lang = "VO";
-			}
-			else if (lang.equalsIgnoreCase("ger") || lang.equalsIgnoreCase("german") || lang.equalsIgnoreCase("deu")
-					|| lang.equalsIgnoreCase("deutsch"))
-			{
-				lang = "de";
-			}
-			sub.setLanguage(lang);
+			return;
 		}
+		String lang = sub.getLanguage();
+		if (lang == null)
+		{
+			return;
+		}
+		if (lang.equalsIgnoreCase("en") || lang.equalsIgnoreCase("eng") || lang.equalsIgnoreCase("english"))
+		{
+			lang = "VO";
+		}
+		else if (lang.equalsIgnoreCase("ger") || lang.equalsIgnoreCase("german") || lang.equalsIgnoreCase("deu") || lang.equalsIgnoreCase("deutsch"))
+		{
+			lang = "de";
+		}
+		sub.setLanguage(lang);
 	}
 
 	private SubCentral()
