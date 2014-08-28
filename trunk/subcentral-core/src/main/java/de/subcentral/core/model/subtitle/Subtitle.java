@@ -1,8 +1,8 @@
 package de.subcentral.core.model.subtitle;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -410,7 +410,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	// SubtitleAdjustment convenience
-	public SubtitleAdjustment newAdjustment(Set<Release> matchingReleases)
+	public SubtitleAdjustment newAdjustment(Collection<Release> matchingReleases)
 	{
 		return new SubtitleAdjustment(this, matchingReleases);
 	}
