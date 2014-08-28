@@ -91,7 +91,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		setSingleMatchingRelease(matchingRelease);
 	}
 
-	public SubtitleAdjustment(Subtitle subtitle, Set<Release> matchingReleases)
+	public SubtitleAdjustment(Subtitle subtitle, Collection<Release> matchingReleases)
 	{
 		setSingleSubtitle(subtitle);
 		setMatchingReleases(matchingReleases);
@@ -103,7 +103,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		setSingleMatchingRelease(matchingRelease);
 	}
 
-	public SubtitleAdjustment(List<Subtitle> subtitles, Set<Release> matchingReleases)
+	public SubtitleAdjustment(List<Subtitle> subtitles, Collection<Release> matchingReleases)
 	{
 		setSubtitles(subtitles);
 		setMatchingReleases(matchingReleases);

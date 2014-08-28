@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
@@ -93,14 +94,15 @@ public class ParsingPlayground
 							System.out.println("Filtered releases:");
 							filteredReleases.forEach(r -> System.out.println(r));
 
-							subAdj.getFirstSubtitle().setSource(null);
-							subAdj.getFirstSubtitle().getTags().clear();
-							subAdj.getFirstSubtitle().setLanguage("VO");
-							subAdj.setMatchingReleases(filteredReleases);
+							Subtitle convertedSub = new Subtitle();
+							convertedSub.setHearingImpaired(subAdj.getFirstSubtitle().isHearingImpaired());
+							convertedSub.setLanguage(subAdj.getFirstSubtitle().getLanguage());
+							SubCentral.standardizeSubtitleLanguage(convertedSub);
+							SubtitleAdjustment convertedAdj = convertedSub.newAdjustment(filteredReleases);
 							TimeUtil.printDurationMillis(start);
 							for (Release matchingRls : filteredReleases)
 							{
-								String newName = ns.name(subAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, matchingRls));
+								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, matchingRls));
 								System.out.println("New name:");
 								System.out.println(newName);
 
