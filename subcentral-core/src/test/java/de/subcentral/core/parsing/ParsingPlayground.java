@@ -95,6 +95,7 @@ public class ParsingPlayground
 							filteredReleases.forEach(r -> System.out.println(r));
 
 							Subtitle convertedSub = new Subtitle();
+							convertedSub.setMedia(subAdj.getFirstSubtitle().getMedia());
 							convertedSub.setHearingImpaired(subAdj.getFirstSubtitle().isHearingImpaired());
 							convertedSub.setLanguage(subAdj.getFirstSubtitle().getLanguage());
 							SubCentral.standardizeSubtitleLanguage(convertedSub);
