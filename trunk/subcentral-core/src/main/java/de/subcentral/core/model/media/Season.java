@@ -32,6 +32,7 @@ public class Season extends MediaBase implements AvMediaCollection<Episode>, Com
 
 	private Series								series;
 	private Integer								number;
+	private Temporal							finaleDate;
 	private boolean								special;
 
 	public Season()
@@ -86,6 +87,17 @@ public class Season extends MediaBase implements AvMediaCollection<Episode>, Com
 	public void setNumber(Integer number)
 	{
 		this.number = number;
+	}
+
+	public Temporal getFinaleDate()
+	{
+		return finaleDate;
+	}
+
+	public void setFinaleDate(Temporal finaleDate)
+	{
+		Models.validateTemporalClass(finaleDate);
+		this.finaleDate = finaleDate;
 	}
 
 	public boolean isSpecial()
@@ -218,6 +230,7 @@ public class Season extends MediaBase implements AvMediaCollection<Episode>, Com
 				.add("number", number)
 				.add("title", title)
 				.add("date", date)
+				.add("finaleDate", finaleDate)
 				.add("special", special)
 				.add("description", description)
 				.add("coverUrls", Models.nullIfEmpty(coverUrls))

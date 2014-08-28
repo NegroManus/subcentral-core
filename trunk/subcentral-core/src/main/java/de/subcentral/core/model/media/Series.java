@@ -65,6 +65,7 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 	public static final String					STATE_ENDED					= "ENDED";
 
 	private String								name;
+	private Temporal							finaleDate;
 	private String								type;
 	private String								state;
 	private final List<String>					originalLanguages			= new ArrayList<>(1);
@@ -99,6 +100,17 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public Temporal getFinaleDate()
+	{
+		return finaleDate;
+	}
+
+	public void setFinaleDate(Temporal finaleDate)
+	{
+		Models.validateTemporalClass(finaleDate);
+		this.finaleDate = finaleDate;
 	}
 
 	@Override
@@ -358,6 +370,7 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 				.add("name", name)
 				.add("title", title)
 				.add("date", date)
+				.add("finaleDate", finaleDate)
 				.add("type", type)
 				.add("state", state)
 				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
