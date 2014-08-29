@@ -26,29 +26,32 @@ public abstract class WinRarPackager
 	protected static final String	RESOURCE_FOLDER	= "de/subcentral/support/winrar/";
 	protected final Path			rarExecutable;
 
-	WinRarPackager(RarExeLocation rarExeLocationSpecifier, Path rarExecutable)
+	WinRarPackager(RarExeLocation rarExeLocation, Path rarExecutable)
 	{
 		try
 		{
-			switch (rarExeLocationSpecifier)
+			switch (rarExeLocation)
 			{
 				case SPECIFY:
 					this.rarExecutable = validateRarExecutable(rarExecutable);
 					break;
 				case LOCATE:
 					this.rarExecutable = locateRarExecutable();
+					if (this.rarExecutable == null)
+					{
+						throw new IllegalStateException("Could not locate Rar executable");
+					}
 					break;
 				case RESOURCE:
 					this.rarExecutable = loadRarExecutableAsResource();
 					break;
-
 				default:
-					throw new IllegalArgumentException("Invalid RarExeLocation:" + rarExeLocationSpecifier);
+					throw new IllegalArgumentException("Invalid RarExeLocation value:" + rarExeLocation);
 			}
 		}
 		catch (Exception e)
 		{
-			throw new IllegalArgumentException("Exception while initializing rar executable", e);
+			throw new IllegalArgumentException("Exception while initializing rar executable: " + e, e);
 		}
 	}
 
