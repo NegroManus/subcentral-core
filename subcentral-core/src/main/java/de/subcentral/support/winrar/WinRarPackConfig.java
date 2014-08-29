@@ -27,29 +27,29 @@ public class WinRarPackConfig
 	public static enum CompressionMethod
 	{
 		/**
-		 * Add files to archive without compression.
+		 * Do not compress file when adding to archive.
 		 */
-		STORE(0, "Store", "Add files to archive without compression"),
+		STORE(0, "Store", "Do not compress file when adding to archive."),
 		/**
-		 * Fastest method (least compressive).
+		 * Use fastest method (less compressive).
 		 */
-		FASTEST(1, "Fastest", "Fastest method (least compressive)"),
+		FASTEST(1, "Fastest", "Use fastest method (less compressive)."),
 		/**
-		 * Fast compression method.
+		 * Use fast compression method.
 		 */
-		FAST(2, "Fast", "Fast compression method"),
+		FAST(2, "Fast", "Use fast compression method."),
 		/**
-		 * Normal (default) compression method.
+		 * Use normal (default) compression method.
 		 */
-		NORMAL(3, "Normal", "Normal (default) compression method"),
+		NORMAL(3, "Normal", "Use normal (default) compression method."),
 		/**
-		 * Good compression method (more compressive).
+		 * Use good compression method (more compressive, but slower).
 		 */
-		GOOD(4, "Good", "Good compression method (more compressive)"),
+		GOOD(4, "Good", "Use good compression method (more compressive, but slower)."),
 		/**
-		 * Best compression method (most compressive but also most slow")
+		 * Use best compression method (slightly more compressive, but slowest).
 		 */
-		BEST(5, "Best", "Best compression method (most compressive but also most slow");
+		BEST(5, "Best", "Use best compression method (slightly more compressive, but slowest).");
 
 		private final int		code;
 		private final String	label;
