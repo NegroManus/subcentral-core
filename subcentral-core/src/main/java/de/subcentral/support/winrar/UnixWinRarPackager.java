@@ -14,48 +14,48 @@ import de.subcentral.support.winrar.WinRar.RarExeLocation;
 
 class UnixWinRarPackager extends WinRarPackager
 {
-	private static final String	RAR_EXE						= "rar";
+	private static final String	RAR_EXECUTABLE						= "rar";
 
 	private static final String	RESOURCE_RAR_EXE_LINUX_32	= "rar_5.10_linux_x32";
 	private static final String	RESOURCE_RAR_EXE_LINUX_64	= "rar_5.10_linux_x64";
 	private static final String	RESOURCE_RAR_EXE_MAC_OSX	= "rar_5.10_macosx";
 	private static final String	RESOURCE_RAR_EXE_FREE_BSD	= "rar_5.10_freebsd";
 
-	UnixWinRarPackager(RarExeLocation rarExeLocationSpecifier, Path rarExe)
+	UnixWinRarPackager(RarExeLocation rarExeLocation, Path rarExe)
 	{
-		super(rarExeLocationSpecifier, rarExe);
+		super(rarExeLocation, rarExe);
 	}
 
 	@Override
-	protected Path loadRarResource() throws URISyntaxException
+	protected Path loadRarExecutableAsResource() throws URISyntaxException
 	{
 		if (SystemUtils.IS_OS_LINUX)
 		{
 			if (SystemUtils.OS_ARCH.contains("64"))
 			{
-				return loadRarResource(RESOURCE_RAR_EXE_LINUX_64);
+				return loadResource(RESOURCE_RAR_EXE_LINUX_64);
 			}
 			else
 			{
-				return loadRarResource(RESOURCE_RAR_EXE_LINUX_32);
+				return loadResource(RESOURCE_RAR_EXE_LINUX_32);
 			}
 		}
 		else if (SystemUtils.IS_OS_MAC_OSX)
 		{
-			return loadRarResource(RESOURCE_RAR_EXE_MAC_OSX);
+			return loadResource(RESOURCE_RAR_EXE_MAC_OSX);
 		}
 		else if (SystemUtils.IS_OS_FREE_BSD)
 		{
-			return loadRarResource(RESOURCE_RAR_EXE_FREE_BSD);
+			return loadResource(RESOURCE_RAR_EXE_FREE_BSD);
 		}
 		// default
-		return loadRarResource(RESOURCE_RAR_EXE_LINUX_32);
+		return loadResource(RESOURCE_RAR_EXE_LINUX_32);
 	}
 
 	@Override
 	protected Path locateRarExecutable()
 	{
-		return Paths.get(RAR_EXE);
+		return Paths.get(RAR_EXECUTABLE);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ class UnixWinRarPackager extends WinRarPackager
 		// 1) the executable
 		// 2) the argument(s)
 		List<String> command = new ArrayList<>();
-		command.add(RAR_EXE);
+		command.add(RAR_EXECUTABLE);
 		command.add(Joiner.on(' ').join(args));
 		return command;
 	}

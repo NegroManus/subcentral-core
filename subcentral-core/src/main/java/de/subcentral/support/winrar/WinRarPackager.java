@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
@@ -27,26 +28,27 @@ public abstract class WinRarPackager
 
 	WinRarPackager(RarExeLocation rarExeLocationSpecifier, Path rarExecutable)
 	{
-		switch (rarExeLocationSpecifier)
+		try
 		{
-			case EXPLICIT:
-				this.rarExecutable = rarExecutable;
-				break;
-			case AUTO_LOCATE:
-				this.rarExecutable = locateRarExecutable();
-				break;
-			case RESOURCE:
-				try
-				{
-					this.rarExecutable = loadRarResource();
+			switch (rarExeLocationSpecifier)
+			{
+				case SPECIFY:
+					this.rarExecutable = validateRarExecutable(rarExecutable);
 					break;
-				}
-				catch (URISyntaxException e)
-				{
-					throw new IllegalStateException(e);
-				}
-			default:
-				throw new IllegalArgumentException("Invalid RarExeLocation:" + rarExeLocationSpecifier);
+				case LOCATE:
+					this.rarExecutable = locateRarExecutable();
+					break;
+				case RESOURCE:
+					this.rarExecutable = loadRarExecutableAsResource();
+					break;
+
+				default:
+					throw new IllegalArgumentException("Invalid RarExeLocation:" + rarExeLocationSpecifier);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new IllegalArgumentException("Exception while initializing rar executable", e);
 		}
 	}
 
@@ -55,9 +57,26 @@ public abstract class WinRarPackager
 		return rarExecutable;
 	}
 
-	protected abstract Path loadRarResource() throws URISyntaxException;
+	protected static final Path validateRarExecutable(Path rarExecutable) throws NullPointerException, NoSuchFileException, SecurityException
+	{
+		if (rarExecutable == null)
+		{
+			throw new NullPointerException("Rar executable cannot be null");
+		}
+		if (!Files.isRegularFile(rarExecutable, LinkOption.NOFOLLOW_LINKS))
+		{
+			throw new NoSuchFileException(rarExecutable.toString());
+		}
+		if (!Files.isExecutable(rarExecutable))
+		{
+			throw new SecurityException("Not executable: " + rarExecutable);
+		}
+		return rarExecutable;
+	}
 
-	protected static final Path loadRarResource(String filename) throws URISyntaxException
+	protected abstract Path loadRarExecutableAsResource() throws Exception;
+
+	protected static final Path loadResource(String filename) throws URISyntaxException
 	{
 		return Paths.get(WinRarPackager.class.getClassLoader().getResource(RESOURCE_FOLDER + '/' + filename).toURI());
 	}
