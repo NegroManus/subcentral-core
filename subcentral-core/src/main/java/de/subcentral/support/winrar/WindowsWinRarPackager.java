@@ -215,7 +215,7 @@ class WindowsWinRarPackager extends WinRarPackager
 		args.add("-ep"); // -EP - exclude paths from names
 		args.add("-m" + cfg.getCompressionMethod().getCode()); // -M<n> - set compression method
 		args.add("-y"); // -Y - assume Yes on all queries
-		if (cfg.getReplaceTarget()) // -O[+|-] - set the overwrite mode
+		if (cfg.getOverwriteTarget()) // -O[+|-] - set the overwrite mode
 		{
 			args.add("-o+");
 		}

@@ -50,7 +50,7 @@ public class ParsingPlayground
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
-		packCfg.setReplaceTarget(true);
+		packCfg.setOverwriteTarget(true);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");

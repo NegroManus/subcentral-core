@@ -90,20 +90,20 @@ public class WinRarPackConfig
 		}
 	}
 
-	private boolean				replaceTarget		= true;
+	private boolean				overwriteTarget		= true;
 	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
 	private long				timeoutValue		= 15;
 	private TimeUnit			timeoutUnit			= TimeUnit.SECONDS;
 
-	public boolean getReplaceTarget()
+	public boolean getOverwriteTarget()
 	{
-		return replaceTarget;
+		return overwriteTarget;
 	}
 
-	public void setReplaceTarget(boolean replaceTarget)
+	public void setOverwriteTarget(boolean overwriteTarget)
 	{
-		this.replaceTarget = replaceTarget;
+		this.overwriteTarget = overwriteTarget;
 	}
 
 	public DeletionMode getSourceDeletionMode()
@@ -148,8 +148,8 @@ public class WinRarPackConfig
 	{
 		return MoreObjects.toStringHelper(WinRarPackConfig.class)
 				.omitNullValues()
-				.add("replaceTarget", replaceTarget)
-				.add("sourceDeletion", sourceDeletionMode)
+				.add("overwriteTarget", overwriteTarget)
+				.add("sourceDeletionMode", sourceDeletionMode)
 				.add("compressionMethod", compressionMethod)
 				.add("timeout", timeoutValue)
 				.add("timeoutUnit", timeoutUnit)

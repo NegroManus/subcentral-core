@@ -90,6 +90,7 @@ public abstract class WinRarPackager
 
 	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
 	{
+		log.debug("Packing {} to {} with {}", source, target, cfg);
 		int exitCode = -1;
 		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
 		try
@@ -121,7 +122,7 @@ public abstract class WinRarPackager
 			exitCode = process.exitValue();
 
 			// may add tags
-			if (targetExists && cfg.getReplaceTarget() && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
+			if (targetExists && cfg.getOverwriteTarget() && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
 			{
 				flags.add(Flag.REPLACED);
 			}
