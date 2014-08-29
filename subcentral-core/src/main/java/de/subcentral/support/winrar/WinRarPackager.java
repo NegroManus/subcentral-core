@@ -10,8 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,9 +89,12 @@ public abstract class WinRarPackager
 
 	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
 	{
+		int exitCode = -1;
+		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
+		String errMsg = null;
 		try
 		{
-			EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
+			long startTime = System.currentTimeMillis();
 			boolean targetExists = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
 			if (targetExists)
 			{
@@ -102,22 +106,15 @@ public abstract class WinRarPackager
 			Process process = processBuilder.start();
 			try (InputStream errStream = process.getErrorStream())
 			{
-				String errMsg = IOUtil.readInputStream(errStream);
-				if (!errMsg.isEmpty())
-				{
-					throw new IOException("Executing command " + processBuilder.command() + " resulted in error message: " + errMsg);
-				}
+				errMsg = StringUtils.trim(IOUtil.readInputStream(errStream));
 			}
 			process.getInputStream().close();
 			process.getOutputStream().close();
-			int exitCode = process.waitFor();
-			if (exitCode != WinRarPackResult.EXIT_CODE_SUCCESSFUL && exitCode != WinRarPackResult.EXIT_CODE_NO_FILES_MATCHING_MASK_AND_OPTIONS)
-			{
-				throw new IOException("Executing command \"" + processBuilder.command() + "\" returned code: " + exitCode + " ("
-						+ WinRarPackResult.getExitCodeDescription(exitCode, Locale.ENGLISH) + ")");
-			}
+			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeout(), cfg.getTimeoutUnit());
+			exitCode = process.exitValue();
 
-			if (targetExists && cfg.getReplaceTarget())
+			// may add tags
+			if (targetExists && cfg.getReplaceTarget() && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
 			{
 				flags.add(Flag.REPLACED);
 			}
@@ -125,11 +122,25 @@ public abstract class WinRarPackager
 			{
 				flags.add(Flag.DELETED_SOURCE);
 			}
-			return new WinRarPackResult(flags);
+
+			// return result
+			if (!exitedBeforeTimeout)
+			{
+				return new WinRarPackResult(exitCode, flags, new TimeoutException("Rar process timed out after " + cfg.getTimeout() + " "
+						+ cfg.getTimeoutUnit()));
+			}
+			if (StringUtils.isBlank(errMsg))
+			{
+				return new WinRarPackResult(exitCode, flags);
+			}
+			else
+			{
+				return new WinRarPackResult(exitCode, flags, new IOException(errMsg));
+			}
 		}
 		catch (Exception e)
 		{
-			return new WinRarPackResult(e);
+			return new WinRarPackResult(exitCode, flags, e);
 		}
 	}
 

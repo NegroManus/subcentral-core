@@ -1,6 +1,7 @@
 package de.subcentral.support.winrar;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.MoreObjects;
 
@@ -57,6 +58,8 @@ public class WinRarPackConfig
 	private boolean				replaceTarget		= true;
 	private boolean				deleteSource		= false;
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
+	private long				timeout				= 15;
+	private TimeUnit			timeoutUnit			= TimeUnit.SECONDS;
 
 	public boolean getReplaceTarget()
 	{
@@ -89,6 +92,26 @@ public class WinRarPackConfig
 		this.compressionMethod = compressionMethod;
 	}
 
+	public long getTimeout()
+	{
+		return timeout;
+	}
+
+	public void setTimeout(long timeout)
+	{
+		this.timeout = timeout;
+	}
+
+	public TimeUnit getTimeoutUnit()
+	{
+		return timeoutUnit;
+	}
+
+	public void setTimeoutUnit(TimeUnit timeoutUnit)
+	{
+		this.timeoutUnit = timeoutUnit;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -97,6 +120,8 @@ public class WinRarPackConfig
 				.add("replaceTarget", replaceTarget)
 				.add("deleteSource", deleteSource)
 				.add("compressionMethod", compressionMethod)
+				.add("timeout", timeout)
+				.add("timeoutUnit", timeoutUnit)
 				.toString();
 	}
 }
