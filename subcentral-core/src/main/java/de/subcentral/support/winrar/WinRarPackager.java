@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 
 public abstract class WinRarPackager
@@ -107,6 +108,13 @@ public abstract class WinRarPackager
 			{
 				flags.add(Flag.TARGET_EXISTED);
 			}
+			if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode())
+			{
+				if (Files.deleteIfExists(target))
+				{
+					flags.add(Flag.TARGET_REPLACED);
+				}
+			}
 
 			ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(source, target, cfg));
 			log.debug("Executing {}", processBuilder.command());
@@ -122,13 +130,14 @@ public abstract class WinRarPackager
 			exitCode = process.exitValue();
 
 			// may add tags
-			if (targetExists && cfg.getOverwriteTarget() && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
+			if (targetExists && cfg.getTargetOverwriteMode() == OverwriteMode.UPDATE
+					&& Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
 			{
-				flags.add(Flag.OVERWROTE_TARGET);
+				flags.add(Flag.TARGET_UPDATED);
 			}
 			if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source))
 			{
-				flags.add(Flag.DELETED_SOURCE);
+				flags.add(Flag.SOURCE_DELETED);
 			}
 
 			// return result

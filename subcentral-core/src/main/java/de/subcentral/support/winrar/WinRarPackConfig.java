@@ -7,23 +7,6 @@ import com.google.common.base.MoreObjects;
 
 public class WinRarPackConfig
 {
-	public static enum DeletionMode
-	{
-		/**
-		 * Keep files.
-		 */
-		KEEP,
-		/**
-		 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only.
-		 */
-		RECYCLE,
-
-		/**
-		 * Delete files after archiving. Move files to archive.
-		 */
-		DELETE;
-	}
-
 	public static enum CompressionMethod
 	{
 		/**
@@ -90,31 +73,46 @@ public class WinRarPackConfig
 		}
 	}
 
-	private boolean				overwriteTarget		= true;
-	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
+	public static enum DeletionMode
+	{
+		/**
+		 * Keep files.
+		 */
+		KEEP,
+		/**
+		 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only.
+		 */
+		RECYCLE,
+
+		/**
+		 * Delete files after archiving. Move files to archive.
+		 */
+		DELETE;
+	}
+
+	public static enum OverwriteMode
+	{
+		/**
+		 * Do not add already existing files to the archive.
+		 */
+		SKIP,
+
+		/**
+		 * Overwrite already existing files in the archive. Keep other files that may be in the target archive.
+		 */
+		UPDATE,
+
+		/**
+		 * If the target archive already exists, it is deleted first. So no old files will be in the new archive.
+		 */
+		REPLACE;
+	}
+
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
 	private long				timeoutValue		= 15;
 	private TimeUnit			timeoutUnit			= TimeUnit.SECONDS;
-
-	public boolean getOverwriteTarget()
-	{
-		return overwriteTarget;
-	}
-
-	public void setOverwriteTarget(boolean overwriteTarget)
-	{
-		this.overwriteTarget = overwriteTarget;
-	}
-
-	public DeletionMode getSourceDeletionMode()
-	{
-		return sourceDeletionMode;
-	}
-
-	public void setSourceDeletionMode(DeletionMode sourceDeletionMode)
-	{
-		this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode);
-	}
+	private OverwriteMode		targetOverwriteMode	= OverwriteMode.UPDATE;
+	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
 
 	public CompressionMethod getCompressionMethod()
 	{
@@ -143,16 +141,35 @@ public class WinRarPackConfig
 		this.timeoutUnit = unit;
 	}
 
+	public OverwriteMode getTargetOverwriteMode()
+	{
+		return targetOverwriteMode;
+	}
+
+	public void setTargetOverwriteMode(OverwriteMode targetOverwriteMode)
+	{
+		this.targetOverwriteMode = Objects.requireNonNull(targetOverwriteMode);
+	}
+
+	public DeletionMode getSourceDeletionMode()
+	{
+		return sourceDeletionMode;
+	}
+
+	public void setSourceDeletionMode(DeletionMode sourceDeletionMode)
+	{
+		this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode);
+	}
+
 	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(WinRarPackConfig.class)
 				.omitNullValues()
-				.add("overwriteTarget", overwriteTarget)
-				.add("sourceDeletionMode", sourceDeletionMode)
 				.add("compressionMethod", compressionMethod)
-				.add("timeout", timeoutValue)
-				.add("timeoutUnit", timeoutUnit)
+				.add("timeout", timeoutValue + " " + timeoutUnit)
+				.add("targetOverwriteMode", targetOverwriteMode)
+				.add("sourceDeletionMode", sourceDeletionMode)
 				.toString();
 	}
 }

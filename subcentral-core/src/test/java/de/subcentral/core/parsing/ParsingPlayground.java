@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -30,6 +31,7 @@ import de.subcentral.support.winrar.WinRar.RarExeLocation;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
@@ -38,6 +40,8 @@ public class ParsingPlayground
 	{
 		System.getProperties().put("http.proxyHost", "10.206.247.65");
 		System.getProperties().put("http.proxyPort", "8080");
+
+		long totalStart = System.nanoTime();
 
 		final SimpleParsingService ps = new SimpleParsingService();
 		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
@@ -49,13 +53,14 @@ public class ParsingPlayground
 		final Lookup<Release, ?> lookup = new OrlyDbLookup();
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
-		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
-		packCfg.setOverwriteTarget(true);
+		packCfg.setSourceDeletionMode(DeletionMode.DELETE);
+		packCfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
 		// dlFolder = Paths.get("D:\\Downloads");
 		System.out.println(dlFolder);
+
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dlFolder))
 		{
 			for (Path path : directoryStream)
@@ -116,15 +121,18 @@ public class ParsingPlayground
 								System.out.println("New name:");
 								System.out.println(newName);
 
-								System.out.println("Raring");
+								System.out.println("Copying");
 								start = System.nanoTime();
 								Path voDir = Files.createDirectories(path.resolveSibling("!VO"));
+								Path newPath = Files.copy(path, voDir.resolve(newName + ".srt"), StandardCopyOption.REPLACE_EXISTING);
+								TimeUtil.printDurationMillis(start);
+								System.out.println("Raring");
+								start = System.nanoTime();
 								Path rarTarget = voDir.resolve(newName + ".rar");
 								System.out.println(rarTarget);
-								System.out.println(WinRar.getPackager(RarExeLocation.RESOURCE).pack(path, rarTarget, packCfg));
+								System.out.println(WinRar.getPackager(RarExeLocation.RESOURCE).pack(newPath, rarTarget, packCfg));
 								TimeUtil.printDurationMillis(start);
 							}
-
 						}
 
 						System.out.println();
@@ -143,5 +151,7 @@ public class ParsingPlayground
 		{
 			ex.printStackTrace();
 		}
+		TimeUtil.printDurationMillis(totalStart);
 	}
+
 }
