@@ -22,23 +22,23 @@ public abstract class WinRarPackager
 {
 	private static final Logger		log				= LoggerFactory.getLogger(WinRarPackager.class);
 
-	protected static final String	RESOURCE_FOLDER	= "de/subcentral/core/io/winrar/";
-	protected final Path			rarExe;
+	protected static final String	RESOURCE_FOLDER	= "de/subcentral/support/winrar/";
+	protected final Path			rarExecutable;
 
-	WinRarPackager(RarExeLocation rarExeLocationSpecifier, Path rarExe)
+	WinRarPackager(RarExeLocation rarExeLocationSpecifier, Path rarExecutable)
 	{
 		switch (rarExeLocationSpecifier)
 		{
 			case EXPLICIT:
-				this.rarExe = rarExe;
+				this.rarExecutable = rarExecutable;
 				break;
 			case AUTO_LOCATE:
-				this.rarExe = locateRarExecutable();
+				this.rarExecutable = locateRarExecutable();
 				break;
 			case RESOURCE:
 				try
 				{
-					this.rarExe = loadRarResource();
+					this.rarExecutable = loadRarResource();
 					break;
 				}
 				catch (URISyntaxException e)
@@ -48,6 +48,11 @@ public abstract class WinRarPackager
 			default:
 				throw new IllegalArgumentException("Invalid RarExeLocation:" + rarExeLocationSpecifier);
 		}
+	}
+
+	public Path getRarExecutable()
+	{
+		return rarExecutable;
 	}
 
 	protected abstract Path loadRarResource() throws URISyntaxException;
