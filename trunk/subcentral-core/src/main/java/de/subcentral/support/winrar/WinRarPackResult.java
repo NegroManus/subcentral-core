@@ -1,7 +1,6 @@
 package de.subcentral.support.winrar;
 
 import java.util.EnumSet;
-import java.util.Locale;
 import java.util.Set;
 
 import com.google.common.base.MoreObjects;
@@ -50,7 +49,7 @@ public class WinRarPackResult
 	 * @param exitCode
 	 * @return
 	 */
-	public static String getExitCodeDescription(int exitCode, Locale locale)
+	public static String getExitCodeDescription(int exitCode)
 	{
 		switch (exitCode)
 		{
@@ -129,6 +128,12 @@ public class WinRarPackResult
 	public Exception getException()
 	{
 		return exception;
+	}
+
+	// Convenience
+	public String getExitCodeDescription()
+	{
+		return getExitCodeDescription(exitCode);
 	}
 
 	public boolean failed()

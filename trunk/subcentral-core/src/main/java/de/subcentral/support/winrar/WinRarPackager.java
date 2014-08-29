@@ -91,7 +91,6 @@ public abstract class WinRarPackager
 	{
 		int exitCode = -1;
 		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
-		String errMsg = null;
 		try
 		{
 			long startTime = System.currentTimeMillis();
@@ -104,6 +103,7 @@ public abstract class WinRarPackager
 			ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(source, target, cfg));
 			log.debug("Executing {}", processBuilder.command());
 			Process process = processBuilder.start();
+			String errMsg = null;
 			try (InputStream errStream = process.getErrorStream())
 			{
 				errMsg = StringUtils.trim(IOUtil.readInputStream(errStream));
