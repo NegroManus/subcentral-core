@@ -65,10 +65,6 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 			{
 				b.append(Subtitle.PROP_GROUP, sub.getGroup());
 			}
-			else if (sub.getSource() != null)
-			{
-				b.append(Subtitle.PROP_SOURCE, sub.getSource());
-			}
 		}
 		return b.build();
 	}

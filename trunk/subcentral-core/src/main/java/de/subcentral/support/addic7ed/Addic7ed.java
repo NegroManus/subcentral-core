@@ -36,16 +36,27 @@ public class Addic7ed
 
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
+		// Common Objects
 		String seriesSeasonEpiNumsPattern = Parsings.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
 		// String tagsPattern = "((HI|C|orig|updated)+)";
 		String langPattern = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian \\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
-		String langTagsSourcePattern = langPattern + "\\.(.+)\\.(Addic7ed\\.com)";
+		String langTagsSourcePattern = langPattern + "\\.(.+)\\.Addic7ed\\.com";
+		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE,
+				"Addic7ed.com",
+				Subtitle.PROP_SOURCE_URL,
+				"http://www.addic7ed.com");
 
+		// Matchers
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
 
 		// init the matchers
 		// --------------
 		// Episode matchers
+		// Predefined matches for episodes
+		ImmutableMap.Builder<SimplePropDescriptor, String> predefEpisodeMatchesBuilder = ImmutableMap.builder();
+		predefEpisodeMatchesBuilder.putAll(commonPredefMatches);
+		predefEpisodeMatchesBuilder.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
+		ImmutableMap<SimplePropDescriptor, String> predefEpisodeMatches = predefEpisodeMatchesBuilder.build();
 
 		// WEB-DL but then no "-" after that (which would indicate a group)
 		// Examples:
@@ -64,9 +75,7 @@ public class Addic7ed
 		grps101.put(8, Release.PROP_TAGS);
 		grps101.put(9, Subtitle.PROP_LANGUAGE);
 		grps101.put(10, Subtitle.PROP_TAGS);
-		grps101.put(11, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<>(p101, grps101.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
+		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<>(p101, grps101.build(), predefEpisodeMatches);
 
 		// Expecting no dots in the episode title, then a dot, then "WEB-DL" or a group
 		// Examples:
@@ -86,9 +95,7 @@ public class Addic7ed
 		grps102.put(9, Release.PROP_GROUP);
 		grps102.put(10, Subtitle.PROP_LANGUAGE);
 		grps102.put(11, Subtitle.PROP_TAGS);
-		grps102.put(12, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<>(p102, grps102.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
+		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<>(p102, grps102.build(), predefEpisodeMatches);
 
 		// Expecting no dots in the episode title, then a dot, then release tags, then a non-wordchar delimiter, then "WEB-DL" or a group.
 		// Examples:
@@ -113,9 +120,7 @@ public class Addic7ed
 		grps103.put(10, Release.PROP_GROUP);
 		grps103.put(11, Subtitle.PROP_LANGUAGE);
 		grps103.put(12, Subtitle.PROP_TAGS);
-		grps103.put(13, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<>(p103, grps103.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
+		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
 
 		// Episode title may contain dots, then a dot, then release tags, then a non-wordchar delimiter, then "WEB-DL" or a group
 		// Examples:
@@ -138,9 +143,8 @@ public class Addic7ed
 		grps104.put(10, Release.PROP_GROUP);
 		grps104.put(11, Subtitle.PROP_LANGUAGE);
 		grps104.put(12, Subtitle.PROP_TAGS);
-		grps104.put(13, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher104 = new MappingMatcher<>(p104, grps104.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
+
+		MappingMatcher<SimplePropDescriptor> matcher104 = new MappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
 
 		// Episode title may contain dots, then a dot, then "WEB-DL" or a group
 		// Examples:
@@ -163,9 +167,7 @@ public class Addic7ed
 		grps105.put(9, Release.PROP_GROUP);
 		grps105.put(10, Subtitle.PROP_LANGUAGE);
 		grps105.put(11, Subtitle.PROP_TAGS);
-		grps105.put(12, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher105 = new MappingMatcher<>(p105, grps105.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
+		MappingMatcher<SimplePropDescriptor> matcher105 = new MappingMatcher<>(p105, grps105.build(), predefEpisodeMatches);
 
 		// Multiple release groups (and hence matching releases) separated by comma
 		// Examples
@@ -184,9 +186,7 @@ public class Addic7ed
 		grps106.put(8, Release.PROP_GROUP);
 		grps106.put(9, Subtitle.PROP_LANGUAGE);
 		grps106.put(10, Subtitle.PROP_TAGS);
-		grps106.put(11, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher106 = new MappingMatcher<>(p106, grps106.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
+		MappingMatcher<SimplePropDescriptor> matcher106 = new MappingMatcher<>(p106, grps106.build(), predefEpisodeMatches);
 
 		// FOR TESTING
 		// matcher102.match("Psych (UK) - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k
@@ -219,7 +219,6 @@ public class Addic7ed
 
 		// --------------
 		// Movie matchers
-
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
@@ -233,8 +232,7 @@ public class Addic7ed
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, Subtitle.PROP_TAGS);
 		grps201.put(7, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
+		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), commonPredefMatches);
 
 		// --------------
 		// add all the matchers to the map

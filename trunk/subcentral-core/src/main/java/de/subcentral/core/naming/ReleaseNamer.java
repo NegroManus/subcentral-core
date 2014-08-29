@@ -47,11 +47,6 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 			{
 				b.append(Release.PROP_GROUP, rls.getGroup());
 			}
-			else if (rls.getSource() != null)
-			{
-				b.append(Release.PROP_SOURCE, rls.getSource());
-			}
-
 			return b.build();
 		}
 	}
