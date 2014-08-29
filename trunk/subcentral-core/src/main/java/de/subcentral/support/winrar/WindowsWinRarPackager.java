@@ -258,7 +258,7 @@ class WindowsWinRarPackager extends WinRarPackager
 
 		// COMMAND
 		List<String> command = new ArrayList<>();
-		command.add(rarExe.toString());
+		command.add(rarExecutable.toString());
 		command.addAll(args);
 		return command;
 	}
