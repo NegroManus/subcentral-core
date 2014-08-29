@@ -1,5 +1,8 @@
 package de.subcentral.support.subcentral;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
@@ -9,8 +12,6 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
-import de.subcentral.core.model.media.Season;
-import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -35,45 +36,50 @@ public class SubCentral
 
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
-		String tagsPattern = Scene.buildFirstTagPattern();
+		final String scPatternPrefix = "(";
+		final String scPatternSuffix = ")\\.(de|ger|german|VO|en|english)(?:-|\\.)([\\w&]+)";
 
 		SubtitleAdjustmentParser epiParser = new SubtitleAdjustmentParser("subcentral.de");
 
-		// Seasoned Episode matchers
+		// Building the matchers for SubCentral:
+		// The scene matchers will be the source for the SubCentral matchers
+		// because all SubCentral names consist of the scene name of the release followed by SubCentral tags.
+		// The properties of the SubCentral matchers are constructed as follows:
+		// pattern: "(" + scene pattern + ")" + SubCentral pattern extension
+		// -> the () encapture the release name
+		// groups: scene groups + SubCentral groups
+		// predefinedMatches: scene predefinedMatches
+		List<MappingMatcher<SimplePropDescriptor>> sceneMatchers = Scene.getAllMatchers();
+		List<MappingMatcher<SimplePropDescriptor>> matchers = new ArrayList<>(sceneMatchers.size());
+		for (MappingMatcher<SimplePropDescriptor> sceneMatcher : sceneMatchers)
+		{
+			int highestGroupNum = sceneMatcher.getGroups().keySet().stream().mapToInt(i -> i.intValue()).max().getAsInt();
+			Pattern p = Pattern.compile(scPatternPrefix + sceneMatcher.getPattern() + scPatternSuffix, Pattern.CASE_INSENSITIVE);
+			ImmutableMap.Builder<Integer, SimplePropDescriptor> grps = ImmutableMap.builder();
+			// the release name is now the first group
+			grps.put(1, Release.PROP_NAME);
+			for (Map.Entry<Integer, SimplePropDescriptor> sceneGrp : sceneMatcher.getGroups().entrySet())
+			{
+				if (sceneGrp.getKey() == Integer.valueOf(0))
+				{
+					// the group 0 is removed because it captured the whole string as the release name
+					// not it is the name of the SubtitleAdjustment
+					continue;
+				}
+				// because there is a new group 1 (release name),
+				// all other group numbers have to be increased by 1
+				grps.put(sceneGrp.getKey() + 1, sceneGrp.getValue());
+			}
+			// the additional groups have to continue their count at highestGroupNum + 1 (for new group 1) + 1
+			grps.put(highestGroupNum + 2, Subtitle.PROP_LANGUAGE);
+			grps.put(highestGroupNum + 3, Subtitle.PROP_GROUP);
+			MappingMatcher<SimplePropDescriptor> matcher = new MappingMatcher<SimplePropDescriptor>(p,
+					grps.build(),
+					sceneMatcher.getPredefinedMatches());
+			matchers.add(matcher);
+		}
 
-		// Psych.S08E07.Shawn.and.Gus.Truck.Things.Up.720p.WEB-DL.DD5.1.H.264-ECI.de-SubCentral
-		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + tagsPattern
-				+ "\\..*)-(\\w+)\\.(de|ger|german|VO|en|english)(?:-|\\.)([\\w&]+)", Pattern.CASE_INSENSITIVE);
-		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
-		grps101.put(0, Release.PROP_NAME);
-		grps101.put(1, Series.PROP_NAME);
-		grps101.put(2, Season.PROP_NUMBER);
-		grps101.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		grps101.put(4, Episode.PROP_TITLE);
-		grps101.put(5, Release.PROP_TAGS);
-		grps101.put(6, Release.PROP_GROUP);
-		grps101.put(7, Subtitle.PROP_LANGUAGE);
-		grps101.put(8, Subtitle.PROP_GROUP);
-		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<SimplePropDescriptor>(p101,
-				grps101.build(),
-				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
-
-		// The.Last.Ship.S01E06.HDTV.x264-LOL.de-SCuTV4U
-		Pattern p102 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)-(\\w+)\\.(de|ger|german|VO|en|english)(?:-|\\.)([\\w&]+)");
-		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
-		grps102.put(1, Series.PROP_NAME);
-		grps102.put(2, Season.PROP_NUMBER);
-		grps102.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		grps102.put(4, Release.PROP_TAGS);
-		grps102.put(5, Release.PROP_GROUP);
-		grps102.put(6, Subtitle.PROP_LANGUAGE);
-		grps102.put(7, Subtitle.PROP_GROUP);
-		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<>(p102, grps102.build(), ImmutableMap.of(Series.PROP_TYPE,
-				Series.TYPE_SEASONED));
-
-		// System.out.println(matcher102.match("The.Last.Ship.S01E06.HDTV.x264-LOL.de-SCuTV4U"));
-
-		epiParser.setMatchers(ImmutableList.of(matcher101, matcher102));
+		epiParser.setMatchers(ImmutableList.copyOf(matchers));
 
 		SimpleStandardizingService ss = new SimpleStandardizingService();
 		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();

@@ -2,11 +2,14 @@ package de.subcentral.support.scene;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -230,6 +233,23 @@ public class Scene
 			epi.getSeries().setTitle(removeDots(epi.getSeries().getTitle()));
 		}
 		return epi;
+	}
+
+	public static List<MappingMatcher<SimplePropDescriptor>> getAllMatchers()
+	{
+		return PARSING_SERVICE.getParsers()
+				.get(Release.class)
+				.stream()
+				.filter(p -> p instanceof ReleaseParser)
+				.map((Parser<?> p) -> (ReleaseParser) p)
+				.map((ReleaseParser p) -> p.getMatchers())
+				.collect(Collectors.reducing((list1, list2) -> {
+					List<MappingMatcher<SimplePropDescriptor>> combined = new ArrayList<>(list1.size() + list2.size());
+					combined.addAll(list1);
+					combined.addAll(list2);
+					return combined;
+				}))
+				.get();
 	}
 
 	private Scene()
