@@ -86,7 +86,7 @@ public class WinRarPackResult
 
 	public static enum Flag
 	{
-		ALREADY_EXISTED, REPLACED, DELETED_SOURCE;
+		TARGET_EXISTED, OVERWROTE_TARGET, DELETED_SOURCE;
 	}
 
 	private final int			exitCode;

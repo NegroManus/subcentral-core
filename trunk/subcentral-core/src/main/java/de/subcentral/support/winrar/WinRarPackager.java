@@ -105,7 +105,7 @@ public abstract class WinRarPackager
 			boolean targetExists = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
 			if (targetExists)
 			{
-				flags.add(Flag.ALREADY_EXISTED);
+				flags.add(Flag.TARGET_EXISTED);
 			}
 
 			ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(source, target, cfg));
@@ -124,7 +124,7 @@ public abstract class WinRarPackager
 			// may add tags
 			if (targetExists && cfg.getOverwriteTarget() && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
 			{
-				flags.add(Flag.REPLACED);
+				flags.add(Flag.OVERWROTE_TARGET);
 			}
 			if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source))
 			{
