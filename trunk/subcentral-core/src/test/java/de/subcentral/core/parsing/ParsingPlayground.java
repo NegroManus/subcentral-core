@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -26,6 +25,10 @@ import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7ed.Addic7ed;
 import de.subcentral.support.scene.Scene;
 import de.subcentral.support.subcentral.SubCentral;
+import de.subcentral.support.winrar.WinRar;
+import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRarPackConfig;
+import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
@@ -43,6 +46,11 @@ public class ParsingPlayground
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		final Lookup<Release, ?> lookup = new OrlyDbLookup();
+
+		WinRarPackConfig packCfg = new WinRarPackConfig();
+		packCfg.setDeleteSource(false);
+		packCfg.setReplaceTarget(true);
+		packCfg.setCompressionMethod(CompressionMethod.BEST);
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
 		// dlFolder = Paths.get("D:\\Downloads");
@@ -107,10 +115,12 @@ public class ParsingPlayground
 								System.out.println("New name:");
 								System.out.println(newName);
 
-								System.out.println("Copying");
+								System.out.println("Raring");
 								start = System.nanoTime();
 								Path voDir = Files.createDirectories(path.resolveSibling("!VO"));
-								Files.copy(path, voDir.resolve(newName + ".srt"), StandardCopyOption.REPLACE_EXISTING);
+								Path rarTarget = voDir.resolve(newName + ".rar");
+								System.out.println(rarTarget);
+								System.out.println(WinRar.getPackager(RarExeLocation.RESOURCE).pack(path, rarTarget, packCfg));
 								TimeUtil.printDurationMillis(start);
 							}
 
