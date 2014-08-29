@@ -93,6 +93,12 @@ public abstract class WinRarPackager
 		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
 		try
 		{
+			if (Files.notExists(source, LinkOption.NOFOLLOW_LINKS))
+			{
+				// fail-fast behavior
+				throw new NoSuchFileException(source.toString());
+			}
+
 			long startTime = System.currentTimeMillis();
 			boolean targetExists = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
 			if (targetExists)
@@ -110,7 +116,7 @@ public abstract class WinRarPackager
 			}
 			process.getInputStream().close();
 			process.getOutputStream().close();
-			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeout(), cfg.getTimeoutUnit());
+			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeoutValue(), cfg.getTimeoutUnit());
 			exitCode = process.exitValue();
 
 			// may add tags
@@ -126,7 +132,7 @@ public abstract class WinRarPackager
 			// return result
 			if (!exitedBeforeTimeout)
 			{
-				return new WinRarPackResult(exitCode, flags, new TimeoutException("Rar process timed out after " + cfg.getTimeout() + " "
+				return new WinRarPackResult(exitCode, flags, new TimeoutException("Rar process timed out after " + cfg.getTimeoutValue() + " "
 						+ cfg.getTimeoutUnit()));
 			}
 			if (StringUtils.isBlank(errMsg))

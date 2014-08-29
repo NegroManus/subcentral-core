@@ -13,12 +13,11 @@ public class WinRarPlayGround
 	public static void main(String[] args) throws Exception
 	{
 		WinRarPackConfig cfg = new WinRarPackConfig();
-		cfg.setTimeout(15);
-		cfg.setTimeoutUnit(TimeUnit.SECONDS);
-		cfg.setDeleteSource(false);
-		cfg.setReplaceTarget(false);
+		cfg.setTimeout(15, TimeUnit.SECONDS);
+		cfg.setDeleteSource(true);
+		cfg.setReplaceTarget(true);
 		cfg.setCompressionMethod(CompressionMethod.BEST);
-		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\2012_01rechnung_5612261167.pdf");
+		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\Rush (2014) - 01x05 - Where Is My Mind.KILLERS.English.C.updated.Addic7ed.com.srt");
 		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\2012_01rechnung_5612261167.rar");
 
 		long start = System.nanoTime();
