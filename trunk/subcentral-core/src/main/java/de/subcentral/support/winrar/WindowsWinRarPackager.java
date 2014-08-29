@@ -29,7 +29,7 @@ class WindowsWinRarPackager extends WinRarPackager
 	/**
 	 * The Console Rar can only pack RAR archives, but it does not open a GUI.
 	 */
-	private static final String				RAR_EXECUTABLE_FILENAME				= "Rar.exe";
+	private static final String				RAR_EXECUTABLE_FILENAME			= "Rar.exe";
 
 	/**
 	 * The typical WinRAR installation directories on Windows.
@@ -171,7 +171,7 @@ class WindowsWinRarPackager extends WinRarPackager
 			}
 			catch (Exception e)
 			{
-				log.debug("{} was no valid Rar executable: {}", candidate, e);
+				log.debug("{} was no valid Rar executable: {}", candidate, e.toString());
 			}
 		}
 		log.debug("Could not locate Rar executable in directories {}", possibleWinRarDirectories);

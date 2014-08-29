@@ -19,7 +19,7 @@ public class WinRarPlayGround
 		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\!VO\\Dallas.2012.S03E10.HDTV.x264-LOL.VO.rar");
 
 		long start = System.nanoTime();
-		WinRarPackager packer = WinRar.getPackager(RarExeLocation.SPECIFY, Paths.get("C:\\Program Files\\WinRAR\\WinRar.exe"));
+		WinRarPackager packer = WinRar.getPackager(RarExeLocation.RESOURCE);
 		WinRarPackResult result = packer.pack(src, target, cfg);
 		TimeUtil.printDurationMillis(start);
 		System.out.println(result);
