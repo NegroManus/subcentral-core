@@ -13,6 +13,7 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.model.subtitle.Subtitles;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
@@ -52,6 +53,7 @@ public class Addic7ed
 		Pattern p101 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(WEB-DL\\.[\\w\\.]+)\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
+		grps101.put(0, SubtitleAdjustment.PROP_NAME);
 		grps101.put(1, Series.PROP_NAME);
 		grps101.put(2, Series.PROP_TITLE);
 		grps101.put(3, Series.PROP_DATE); // e.g. "2004"
@@ -72,6 +74,7 @@ public class Addic7ed
 		Pattern p102 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
+		grps102.put(0, SubtitleAdjustment.PROP_NAME);
 		grps102.put(1, Series.PROP_NAME);
 		grps102.put(2, Series.PROP_TITLE);
 		grps102.put(3, Series.PROP_DATE); // e.g. "2004"
@@ -97,6 +100,7 @@ public class Addic7ed
 		Pattern p103 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.([\\w+\\.-]+?)\\W(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps103 = ImmutableMap.builder();
+		grps103.put(0, SubtitleAdjustment.PROP_NAME);
 		grps103.put(1, Series.PROP_NAME);
 		grps103.put(2, Series.PROP_TITLE);
 		grps103.put(3, Series.PROP_DATE); // e.g. "2004"
@@ -121,6 +125,7 @@ public class Addic7ed
 		Pattern p104 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.([\\w+\\.-]+?)\\W(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps104 = ImmutableMap.builder();
+		grps104.put(0, SubtitleAdjustment.PROP_NAME);
 		grps104.put(1, Series.PROP_NAME);
 		grps104.put(2, Series.PROP_TITLE);
 		grps104.put(3, Series.PROP_DATE); // e.g. "2004"
@@ -146,6 +151,7 @@ public class Addic7ed
 		Pattern p105 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps105 = ImmutableMap.builder();
+		grps105.put(0, SubtitleAdjustment.PROP_NAME);
 		grps105.put(1, Series.PROP_NAME);
 		grps105.put(2, Series.PROP_TITLE);
 		grps105.put(3, Series.PROP_DATE); // e.g. "2004"
@@ -167,6 +173,7 @@ public class Addic7ed
 		Pattern p106 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(\\w+(?:,\\s+\\w+)*)\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps106 = ImmutableMap.builder();
+		grps106.put(0, SubtitleAdjustment.PROP_NAME);
 		grps106.put(1, Series.PROP_NAME);
 		grps106.put(2, Series.PROP_TITLE);
 		grps106.put(3, Series.PROP_DATE); // e.g. "2004"
@@ -218,6 +225,7 @@ public class Addic7ed
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
 		Pattern p201 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
+		grps201.put(0, SubtitleAdjustment.PROP_NAME);
 		grps201.put(1, Movie.PROP_NAME);
 		grps201.put(2, Movie.PROP_TITLE);
 		grps201.put(3, Movie.PROP_DATE);

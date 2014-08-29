@@ -31,6 +31,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 {
+	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleAdjustment.class,
 																						PropNames.SUBTITLES);
 	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES			= new SimplePropDescriptor(SubtitleAdjustment.class,
@@ -44,18 +45,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 																						PropNames.CONTRIBUTIONS);
 
 	public static final String					CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
-
-	// In 99,9% of the cases, there is only one subtitle
-	private final List<Subtitle>				subtitles						= new ArrayList<>(1);
-	// Most adjustments are compatible to 1-2 releases. Maybe 5-6 sometimes
-	// HashMap / HashSet initial capacities should be a power of 2
-	private final Set<Release>					matchingReleases				= new HashSet<>(2);
-	private Temporal							date;
-	private long								size							= 0L;
-	private int									fileCount						= 0;
-	private final List<Nuke>					nukes							= new ArrayList<>(0);
-	// In 99,9% of the cases, there is only one adjustment contribution
-	private final List<Contribution>			contributions					= new ArrayList<>(1);
 
 	public static SubtitleAdjustment create(Release matchingRelease, String language, String group)
 	{
@@ -79,6 +68,19 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		subAdjustment.getMatchingReleases().add(matchingRelease);
 		return subAdjustment;
 	}
+
+	private String						name;
+	// In 99,9% of the cases, there is only one subtitle
+	private final List<Subtitle>		subtitles			= new ArrayList<>(1);
+	// Most adjustments are compatible to 1-2 releases. Maybe 5-6 sometimes
+	// HashMap / HashSet initial capacities should be a power of 2
+	private final Set<Release>			matchingReleases	= new HashSet<>(2);
+	private Temporal					date;
+	private long						size				= 0L;
+	private int							fileCount			= 0;
+	private final List<Nuke>			nukes				= new ArrayList<>(0);
+	// In 99,9% of the cases, there is only one adjustment contribution
+	private final List<Contribution>	contributions		= new ArrayList<>(1);
 
 	public SubtitleAdjustment()
 	{
@@ -107,6 +109,16 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	{
 		setSubtitles(subtitles);
 		setMatchingReleases(matchingReleases);
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	// Properties
@@ -265,6 +277,10 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		if (obj != null && SubtitleAdjustment.class.equals(obj.getClass()))
 		{
 			SubtitleAdjustment o = (SubtitleAdjustment) obj;
+			if (name != null && o.name != null)
+			{
+				return name.equals(o.name);
+			}
 			return new EqualsBuilder().append(subtitles, o.subtitles).append(matchingReleases, o.matchingReleases).isEquals();
 		}
 		return false;
@@ -273,6 +289,10 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	@Override
 	public int hashCode()
 	{
+		if (name != null)
+		{
+			return new HashCodeBuilder(33, 55).append(name).toHashCode();
+		}
 		return new HashCodeBuilder(33, 51).append(subtitles).append(matchingReleases).toHashCode();
 	}
 
@@ -282,6 +302,10 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		if (o == null)
 		{
 			return -1;
+		}
+		if (name != null && o.name != null)
+		{
+			return Settings.STRING_ORDERING.compare(name, name);
 		}
 		return ComparisonChain.start()
 				.compare(subtitles, o.subtitles, ListComparator.<Subtitle> create())
@@ -294,6 +318,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	{
 		return MoreObjects.toStringHelper(SubtitleAdjustment.class)
 				.omitNullValues()
+				.add("name", name)
 				.add("subtitles", Models.nullIfEmpty(subtitles))
 				.add("matchingReleases", Models.nullIfEmpty(matchingReleases))
 				.add("date", date)
