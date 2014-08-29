@@ -23,10 +23,10 @@ import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.impl.addic7ed.Addic7ed;
-import de.subcentral.impl.orlydb.OrlyDbLookup;
-import de.subcentral.impl.scene.Scene;
-import de.subcentral.impl.subcentral.SubCentral;
+import de.subcentral.support.addic7ed.Addic7ed;
+import de.subcentral.support.scene.Scene;
+import de.subcentral.support.subcentral.SubCentral;
+import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
 {
