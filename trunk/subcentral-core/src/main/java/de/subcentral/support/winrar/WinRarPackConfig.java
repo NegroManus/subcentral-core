@@ -58,7 +58,7 @@ public class WinRarPackConfig
 	private boolean				replaceTarget		= true;
 	private boolean				deleteSource		= false;
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
-	private long				timeout				= 15;
+	private long				timeoutValue		= 15;
 	private TimeUnit			timeoutUnit			= TimeUnit.SECONDS;
 
 	public boolean getReplaceTarget()
@@ -92,14 +92,9 @@ public class WinRarPackConfig
 		this.compressionMethod = compressionMethod;
 	}
 
-	public long getTimeout()
+	public long getTimeoutValue()
 	{
-		return timeout;
-	}
-
-	public void setTimeout(long timeout)
-	{
-		this.timeout = timeout;
+		return timeoutValue;
 	}
 
 	public TimeUnit getTimeoutUnit()
@@ -107,9 +102,10 @@ public class WinRarPackConfig
 		return timeoutUnit;
 	}
 
-	public void setTimeoutUnit(TimeUnit timeoutUnit)
+	public void setTimeout(long timeout, TimeUnit unit)
 	{
-		this.timeoutUnit = timeoutUnit;
+		this.timeoutValue = timeout;
+		this.timeoutUnit = unit;
 	}
 
 	@Override
@@ -120,7 +116,7 @@ public class WinRarPackConfig
 				.add("replaceTarget", replaceTarget)
 				.add("deleteSource", deleteSource)
 				.add("compressionMethod", compressionMethod)
-				.add("timeout", timeout)
+				.add("timeout", timeoutValue)
 				.add("timeoutUnit", timeoutUnit)
 				.toString();
 	}
