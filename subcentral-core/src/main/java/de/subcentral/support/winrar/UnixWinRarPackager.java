@@ -11,6 +11,7 @@ import org.apache.commons.lang3.SystemUtils;
 import com.google.common.base.Joiner;
 
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 
 class UnixWinRarPackager extends WinRarPackager
 {
@@ -80,7 +81,7 @@ class UnixWinRarPackager extends WinRarPackager
 		{
 			args.add("-o-");
 		}
-		if (cfg.getDeleteSource())
+		if (DeletionMode.DELETE == cfg.getSourceDeletionMode())
 		{
 			args.add("-df"); // -DF - delete files after archiving
 		}

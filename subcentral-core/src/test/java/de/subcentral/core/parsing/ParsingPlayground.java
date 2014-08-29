@@ -29,6 +29,7 @@ import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
+import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
@@ -48,7 +49,7 @@ public class ParsingPlayground
 		final Lookup<Release, ?> lookup = new OrlyDbLookup();
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
-		packCfg.setDeleteSource(false);
+		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
 		packCfg.setReplaceTarget(true);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 

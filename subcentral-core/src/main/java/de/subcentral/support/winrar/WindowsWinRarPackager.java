@@ -21,15 +21,16 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 
 class WindowsWinRarPackager extends WinRarPackager
 {
 	private static final Logger				log								= LoggerFactory.getLogger(WindowsWinRarPackager.class);
 
 	/**
-	 * The Console Rar can only pack RAR archives, but it does not open a GUI.
+	 * The Console RAR can only pack RAR archives, but it does not open a GUI.
 	 */
-	private static final String				RAR_EXECUTABLE_FILENAME			= "Rar.exe";
+	private static final String				RAR_EXECUTABLE_FILENAME			= "RAR.exe";
 
 	/**
 	 * The typical WinRAR installation directories on Windows.
@@ -46,7 +47,7 @@ class WindowsWinRarPackager extends WinRarPackager
 		Path rarExecutable = searchRarExecutableInWellKnownDirectories();
 		if (rarExecutable != null)
 		{
-			log.info("Found valid Rar executable: {}", rarExecutable);
+			log.info("Found valid RAR executable: {}", rarExecutable);
 			return rarExecutable;
 		}
 
@@ -54,11 +55,11 @@ class WindowsWinRarPackager extends WinRarPackager
 		rarExecutable = queryWindowsRegistryForRarExecutable();
 		if (rarExecutable != null)
 		{
-			log.info("Found valid Rar executable: {}", rarExecutable);
+			log.info("Found valid RAR executable: {}", rarExecutable);
 			return rarExecutable;
 		}
 
-		log.warn("Could not find valid Rar executable. Returning null");
+		log.warn("Could not find valid RAR executable. Returning null");
 		return null;
 	}
 
@@ -151,7 +152,7 @@ class WindowsWinRarPackager extends WinRarPackager
 		}
 		catch (Exception e)
 		{
-			log.error("Rar executable in WinRAR installation directory ({}) is invalid: {}", rarExecutable, e);
+			log.error("RAR executable in WinRAR installation directory ({}) is invalid: {}", rarExecutable, e);
 			return null;
 		}
 		return rarExecutable;
@@ -159,22 +160,22 @@ class WindowsWinRarPackager extends WinRarPackager
 
 	private static Path returnFirstValidRarExecutable(Set<Path> possibleWinRarDirectories)
 	{
-		log.debug("Trying to locate Rar executable in directories: {}", possibleWinRarDirectories);
+		log.debug("Trying to locate RAR executable in directories: {}", possibleWinRarDirectories);
 		for (Path path : possibleWinRarDirectories)
 		{
 			Path candidate = path.resolve(RAR_EXECUTABLE_FILENAME);
 			try
 			{
 				validateRarExecutable(candidate);
-				log.debug("Found valid Rar executable: {}", candidate);
+				log.debug("Found valid RAR executable: {}", candidate);
 				return candidate;
 			}
 			catch (Exception e)
 			{
-				log.debug("{} was no valid Rar executable: {}", candidate, e.toString());
+				log.debug("{} was no valid RAR executable: {}", candidate, e.toString());
 			}
 		}
-		log.debug("Could not locate Rar executable in directories {}", possibleWinRarDirectories);
+		log.debug("Could not locate RAR executable in directories {}", possibleWinRarDirectories);
 		return null;
 	}
 
@@ -222,9 +223,16 @@ class WindowsWinRarPackager extends WinRarPackager
 		{
 			args.add("-o-");
 		}
-		if (cfg.getDeleteSource())
+		if (DeletionMode.DELETE == cfg.getSourceDeletionMode())
 		{
 			args.add("-df"); // -DF - delete files after archiving
+		}
+		else if (DeletionMode.RECYCLE == cfg.getSourceDeletionMode())
+		{
+			args.add("-dr");
+			// -dr Delete files to Recycle Bin
+			// Delete files after archiving and place them to Recycle Bin.
+			// Available in Windows version only.
 		}
 
 		// target package
