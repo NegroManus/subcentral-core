@@ -56,6 +56,7 @@ public class SubCentral
 			int highestGroupNum = sceneMatcher.getGroups().keySet().stream().mapToInt(i -> i.intValue()).max().getAsInt();
 			Pattern p = Pattern.compile(scPatternPrefix + sceneMatcher.getPattern() + scPatternSuffix, Pattern.CASE_INSENSITIVE);
 			ImmutableMap.Builder<Integer, SimplePropDescriptor> grps = ImmutableMap.builder();
+			grps.put(0, SubtitleAdjustment.PROP_NAME);
 			// the release name is now the first group
 			grps.put(1, Release.PROP_NAME);
 			for (Map.Entry<Integer, SimplePropDescriptor> sceneGrp : sceneMatcher.getGroups().entrySet())

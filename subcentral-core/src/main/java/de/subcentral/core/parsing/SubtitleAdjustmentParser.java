@@ -21,9 +21,10 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
 {
-	private List<ConditionalMapper<AvMedia>>	mediaMappers	= new ArrayList<>(2);
-	private Mapper<Release>						releaseMapper		= Parsings.getDefaultReleaseMapper();
-	private Mapper<Subtitle>					subtitleMapper		= Parsings.getDefaultSubtitleMapper();
+	private List<ConditionalMapper<AvMedia>>	mediaMappers				= new ArrayList<>(2);
+	private Mapper<Release>						releaseMapper				= Parsings.getDefaultReleaseMapper();
+	private Mapper<Subtitle>					subtitleMapper				= Parsings.getDefaultSubtitleMapper();
+	private Mapper<SubtitleAdjustment>			subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
 
 	public SubtitleAdjustmentParser(String domain)
 	{
@@ -62,6 +63,16 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		this.subtitleMapper = subtitleMapper;
 	}
 
+	public Mapper<SubtitleAdjustment> getSubtitleAdjustmentMapper()
+	{
+		return subtitleAdjustmentMapper;
+	}
+
+	public void setSubtitleAdjustmentMapper(Mapper<SubtitleAdjustment> subtitleAdjustmentMapper)
+	{
+		this.subtitleAdjustmentMapper = subtitleAdjustmentMapper;
+	}
+
 	@Override
 	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
 	{
@@ -78,7 +89,9 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		Standardizings.mayStandardize(sub, standardizingService);
 
 		// SubtitleAdjustment
-		SubtitleAdjustment subAdj = sub.newAdjustment(matchingRlss);
+		SubtitleAdjustment subAdj = subtitleAdjustmentMapper.map(props, propParsingService);
+		subAdj.setSingleSubtitle(sub);
+		subAdj.setMatchingReleases(matchingRlss);
 		Standardizings.mayStandardize(subAdj, standardizingService);
 		return subAdj;
 	}

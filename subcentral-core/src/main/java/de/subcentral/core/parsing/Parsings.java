@@ -17,6 +17,7 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Parsings
@@ -31,12 +32,13 @@ public class Parsings
 	 * <li>country code (or null)</li>
 	 * </ol>
 	 */
-	public static final String			PATTERN_MEDIA_NAME	= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
+	public static final String						PATTERN_MEDIA_NAME			= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
-	private final static EpisodeMapper	EPISODE_MAPPER		= new EpisodeMapper();
-	private final static MovieMapper	MOVIE_MAPPER		= new MovieMapper();
-	private final static ReleaseMapper	RELEASE_MAPPER		= new ReleaseMapper();
-	private final static SubtitleMapper	SUBTITLE_MAPPER		= new SubtitleMapper();
+	private final static EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
+	private final static MovieMapper				MOVIE_MAPPER				= new MovieMapper();
+	private final static ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
+	private final static SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
+	private final static SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
 
 	public static Mapper<Episode> getDefaultEpisodeMapper()
 	{
@@ -56,6 +58,11 @@ public class Parsings
 	public static Mapper<Subtitle> getDefaultSubtitleMapper()
 	{
 		return SUBTITLE_MAPPER;
+	}
+
+	public static Mapper<SubtitleAdjustment> getDefaultSubtitleAdjustmentMapper()
+	{
+		return SUBTITLE_ADJUSTMENT_MAPPER;
 	}
 
 	public static void requireTextNotBlank(String text) throws ParsingException
