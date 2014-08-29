@@ -1,6 +1,5 @@
 package de.subcentral.support.subcentral;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -36,8 +35,8 @@ public class SubCentral
 
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
-		final String scPatternPrefix = "(";
-		final String scPatternSuffix = ")\\.(de|ger|german|VO|en|english)(?:-|\\.)([\\w&]+)";
+		String scPatternPrefix = "(";
+		String scPatternSuffix = ")\\.(de|ger|german|VO|en|english)(?:-|\\.)([\\w&]+)";
 
 		SubtitleAdjustmentParser epiParser = new SubtitleAdjustmentParser("subcentral.de");
 
@@ -50,7 +49,7 @@ public class SubCentral
 		// groups: scene groups + SubCentral groups
 		// predefinedMatches: scene predefinedMatches
 		List<MappingMatcher<SimplePropDescriptor>> sceneMatchers = Scene.getAllMatchers();
-		List<MappingMatcher<SimplePropDescriptor>> matchers = new ArrayList<>(sceneMatchers.size());
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
 		for (MappingMatcher<SimplePropDescriptor> sceneMatcher : sceneMatchers)
 		{
 			int highestGroupNum = sceneMatcher.getGroups().keySet().stream().mapToInt(i -> i.intValue()).max().getAsInt();
@@ -74,13 +73,15 @@ public class SubCentral
 			// the additional groups have to continue their count at highestGroupNum + 1 (for new group 1) + 1
 			grps.put(highestGroupNum + 2, Subtitle.PROP_LANGUAGE);
 			grps.put(highestGroupNum + 3, Subtitle.PROP_GROUP);
-			MappingMatcher<SimplePropDescriptor> matcher = new MappingMatcher<SimplePropDescriptor>(p,
-					grps.build(),
-					sceneMatcher.getPredefinedMatches());
+			ImmutableMap.Builder<SimplePropDescriptor, String> predefinedMatches = ImmutableMap.builder();
+			predefinedMatches.putAll(sceneMatcher.getPredefinedMatches());
+			predefinedMatches.put(Subtitle.PROP_SOURCE, "SubCentral.de");
+			predefinedMatches.put(Subtitle.PROP_SOURCE_URL, "http://www.subcentral.de");
+			MappingMatcher<SimplePropDescriptor> matcher = new MappingMatcher<SimplePropDescriptor>(p, grps.build(), predefinedMatches.build());
 			matchers.add(matcher);
 		}
 
-		epiParser.setMatchers(ImmutableList.copyOf(matchers));
+		epiParser.setMatchers(matchers.build());
 
 		SimpleStandardizingService ss = new SimpleStandardizingService();
 		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();

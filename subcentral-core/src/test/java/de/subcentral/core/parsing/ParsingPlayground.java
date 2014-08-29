@@ -112,6 +112,8 @@ public class ParsingPlayground
 							convertedSub.setMedia(subAdj.getFirstSubtitle().getMedia());
 							convertedSub.setHearingImpaired(subAdj.getFirstSubtitle().isHearingImpaired());
 							convertedSub.setLanguage(subAdj.getFirstSubtitle().getLanguage());
+							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
+							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
 							SubCentral.standardizeSubtitleLanguage(convertedSub);
 							SubtitleAdjustment convertedAdj = convertedSub.newAdjustment(filteredReleases);
 							TimeUtil.printDurationMillis(start);
