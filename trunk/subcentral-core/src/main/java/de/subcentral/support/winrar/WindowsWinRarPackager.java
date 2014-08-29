@@ -3,10 +3,6 @@ package de.subcentral.support.winrar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -33,7 +29,7 @@ class WindowsWinRarPackager extends WinRarPackager
 	/**
 	 * The Console Rar can only pack RAR archives, but it does not open a GUI.
 	 */
-	private static final String				RAR_EXE_FILENAME				= "Rar.exe";
+	private static final String				RAR_EXECUTABLE_FILENAME				= "Rar.exe";
 
 	/**
 	 * The typical WinRAR installation directories on Windows.
@@ -43,6 +39,33 @@ class WindowsWinRarPackager extends WinRarPackager
 
 	private static final String				RESOURCE_RAR_EXE_32				= "rar_5.10_win_x32.exe";
 	private static final String				RESOURCE_RAR_EXE_64				= "rar_5.10_win_x64.exe";
+
+	public static Path tryLocateRarExecutable()
+	{
+		// 1. try the well known WinRAR directories
+		Path rarExecutable = searchRarExecutableInWellKnownDirectories();
+		if (rarExecutable != null)
+		{
+			log.info("Found valid Rar executable: {}", rarExecutable);
+			return rarExecutable;
+		}
+
+		// 2. if that fails, query the registry
+		rarExecutable = queryWindowsRegistryForRarExecutable();
+		if (rarExecutable != null)
+		{
+			log.info("Found valid Rar executable: {}", rarExecutable);
+			return rarExecutable;
+		}
+
+		log.warn("Could not find valid Rar executable. Returning null");
+		return null;
+	}
+
+	public static Path searchRarExecutableInWellKnownDirectories()
+	{
+		return returnFirstValidRarExecutable(WELL_KNOWN_WINRAR_DIRECTORIES);
+	}
 
 	/**
 	 * All entries under a registry node:
@@ -67,35 +90,13 @@ class WindowsWinRarPackager extends WinRarPackager
 	 * 
 	 * @return
 	 */
-	private static Path findWinRarInstallDir()
+	public static Path queryWindowsRegistryForRarExecutable()
 	{
-		// 1. try the well known WinRAR directories
-		Path winRarInstallation = returnFirstValid(WELL_KNOWN_WINRAR_DIRECTORIES);
-		if (winRarInstallation != null)
-		{
-			log.info("Found WinRAR directory: {}", winRarInstallation);
-			return winRarInstallation;
-		}
+		Path rarExecutable = null;
 
-		// 2. If that fails, query the registry
-		winRarInstallation = queryRegistryForWinRarInstallation();
-		if (winRarInstallation != null)
-		{
-			log.info("Found WinRAR directory: {}", winRarInstallation);
-			return winRarInstallation;
-		}
-
-		log.warn("Could not find WinRAR directory. Returning null");
-		return null;
-	}
-
-	private static Path queryRegistryForWinRarInstallation()
-	{
-		Path winRarInstallation = null;
-
-		String[] command = new String[] { "REG", "QUERY", "\"HKEY_LOCAL_MACHINE\\Software\\WinRARs\"" };
+		String[] command = new String[] { "REG", "QUERY", "\"HKEY_LOCAL_MACHINE\\Software\\WinRAR\"" };
 		ProcessBuilder builder = new ProcessBuilder(command);
-		log.debug("Querying Windows registry for WinRAR directory: {}", command, "");
+		log.debug("Querying Windows registry for WinRAR installation directory: {}", command, "");
 		try
 		{
 			Process p = builder.start();
@@ -104,7 +105,9 @@ class WindowsWinRarPackager extends WinRarPackager
 				String errorMsg = IOUtil.readInputStream(es);
 				if (!errorMsg.isEmpty())
 				{
-					log.error("Could not find WinRAR directory: Command {} returned error message. Returning null\n\"{}\"", command, errorMsg);
+					log.error("Could not locate WinRAR installation directory in Windows registry: Command {} returned error message. Returning null\n\"{}\"",
+							command,
+							errorMsg);
 					return null;
 				}
 			}
@@ -123,15 +126,15 @@ class WindowsWinRarPackager extends WinRarPackager
 						String exe = mExeEntry.group(1);
 						String exePath = mExeEntry.group(3);
 						log.debug("Found \"exe*\" entry in registry: \"{}\" -> \"{}\"", exe, exePath);
-						winRarInstallation = Paths.get(exePath).getParent();
+						rarExecutable = Paths.get(exePath).resolveSibling(RAR_EXECUTABLE_FILENAME);
 						break;
 					}
 				}
 				log.debug("Full output of command:\n\"{}\"", Joiner.on('\n').join(outputLines));
 
-				if (winRarInstallation == null)
+				if (rarExecutable == null)
 				{
-					log.warn("Could not find WinRAR directory in the Windows registry. Returning null");
+					log.warn("Could not locate WinRAR installation directory in Windows registry. Returning null");
 					return null;
 				}
 			}
@@ -144,85 +147,59 @@ class WindowsWinRarPackager extends WinRarPackager
 
 		try
 		{
-			validateWinRarInstallation(winRarInstallation);
+			validateRarExecutable(rarExecutable);
 		}
 		catch (Exception e)
 		{
-			log.warn("WinRAR directory {} from registry seems not be valid ({}). Will use it anyway but errors may occur while packaging.",
-					winRarInstallation,
-					e);
+			log.error("Rar executable in WinRAR installation directory ({}) is invalid: {}", rarExecutable, e);
+			return null;
 		}
-		return winRarInstallation;
-	}
-
-	private static Path returnFirstValid(Set<Path> possibleWinRarDirectories)
-	{
-		log.debug("Checking if valid WinRAR directory: {}", possibleWinRarDirectories);
-		for (Path path : possibleWinRarDirectories)
-		{
-			try
-			{
-				validateWinRarInstallation(path);
-				log.info("Returning valid WinRAR directory: {}", path);
-				return path;
-			}
-			catch (Exception e)
-			{
-				log.debug("{} was not a valid WinRAR directory ({})", path, e.toString());
-			}
-		}
-		log.info("Found no valid WinRAR directory (none of {} was valid)", possibleWinRarDirectories);
-		return null;
-	}
-
-	private static Path validateWinRarInstallation(Path winRarDirectory) throws NullPointerException, NotDirectoryException, SecurityException,
-			NoSuchFileException
-	{
-		if (winRarDirectory == null)
-		{
-			throw new NullPointerException("WinRAR directory cannot be null");
-		}
-
-		if (!Files.isDirectory(winRarDirectory))
-		{
-			throw new NotDirectoryException(winRarDirectory.toString());
-		}
-
-		Path rarExecutable = winRarDirectory.resolve(RAR_EXE_FILENAME);
-		if (!Files.isRegularFile(rarExecutable, LinkOption.NOFOLLOW_LINKS))
-		{
-			throw new NoSuchFileException(rarExecutable.toString());
-		}
-		if (!Files.isExecutable(rarExecutable))
-		{
-			throw new SecurityException("Not executable: " + rarExecutable);
-		}
-
 		return rarExecutable;
 	}
 
-	WindowsWinRarPackager(RarExeLocation rarExeLocationSpecifier, Path rarExe)
+	private static Path returnFirstValidRarExecutable(Set<Path> possibleWinRarDirectories)
 	{
-		super(rarExeLocationSpecifier, rarExe);
+		log.debug("Trying to locate Rar executable in directories: {}", possibleWinRarDirectories);
+		for (Path path : possibleWinRarDirectories)
+		{
+			Path candidate = path.resolve(RAR_EXECUTABLE_FILENAME);
+			try
+			{
+				validateRarExecutable(candidate);
+				log.debug("Found valid Rar executable: {}", candidate);
+				return candidate;
+			}
+			catch (Exception e)
+			{
+				log.debug("{} was no valid Rar executable: {}", candidate, e);
+			}
+		}
+		log.debug("Could not locate Rar executable in directories {}", possibleWinRarDirectories);
+		return null;
+	}
+
+	WindowsWinRarPackager(RarExeLocation rarExeLocation, Path rarExe)
+	{
+		super(rarExeLocation, rarExe);
 	}
 
 	@Override
-	protected Path loadRarResource() throws URISyntaxException
+	protected Path loadRarExecutableAsResource() throws URISyntaxException
 	{
 		if (SystemUtils.OS_ARCH.contains("64"))
 		{
-			return loadRarResource(RESOURCE_RAR_EXE_64);
+			return loadResource(RESOURCE_RAR_EXE_64);
 		}
 		else
 		{
-			return loadRarResource(RESOURCE_RAR_EXE_32);
+			return loadResource(RESOURCE_RAR_EXE_32);
 		}
 	}
 
 	@Override
 	protected Path locateRarExecutable()
 	{
-		return findWinRarInstallDir().resolve(RAR_EXE_FILENAME);
+		return tryLocateRarExecutable();
 	}
 
 	@Override
