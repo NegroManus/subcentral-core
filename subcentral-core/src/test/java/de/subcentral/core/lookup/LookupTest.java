@@ -5,7 +5,7 @@ import java.util.List;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.impl.predbme.PreDbMeLookup;
+import de.subcentral.support.predbme.PreDbMeLookup;
 
 public class LookupTest
 {
