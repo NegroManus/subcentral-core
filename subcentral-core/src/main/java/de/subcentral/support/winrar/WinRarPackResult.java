@@ -127,6 +127,11 @@ public class WinRarPackResult
 		return exception;
 	}
 
+	public boolean failed()
+	{
+		return exception != null;
+	}
+
 	@Override
 	public String toString()
 	{

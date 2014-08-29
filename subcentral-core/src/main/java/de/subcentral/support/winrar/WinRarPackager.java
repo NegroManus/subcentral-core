@@ -86,7 +86,7 @@ public abstract class WinRarPackager
 
 	protected abstract Path locateRarExecutable();
 
-	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg) throws IOException, InterruptedException
+	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
 	{
 		try
 		{

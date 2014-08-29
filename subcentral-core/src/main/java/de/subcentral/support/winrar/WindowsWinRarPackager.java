@@ -205,7 +205,7 @@ class WindowsWinRarPackager extends WinRarPackager
 	@Override
 	protected List<String> buildCommand(Path source, Path target, WinRarPackConfig cfg)
 	{
-		List<String> args = new ArrayList<>(9);
+		List<String> args = new ArrayList<>(8);
 
 		// WinRAR command
 		args.add("a"); // A - add to an archive
@@ -230,10 +230,12 @@ class WindowsWinRarPackager extends WinRarPackager
 		// target package
 		args.add(target.toString());
 
-		// sourceFile
+		// source file
 		args.add(source.toString());
 
-		// COMMAND
+		// Windows expects a command list which contains:
+		// 1) the executable as first element
+		// 2)-n) each argument as an element
 		List<String> command = new ArrayList<>();
 		command.add(rarExecutable.toString());
 		command.addAll(args);

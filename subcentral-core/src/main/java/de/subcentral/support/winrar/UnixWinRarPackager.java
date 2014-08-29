@@ -14,7 +14,7 @@ import de.subcentral.support.winrar.WinRar.RarExeLocation;
 
 class UnixWinRarPackager extends WinRarPackager
 {
-	private static final String	RAR_EXECUTABLE						= "rar";
+	private static final String	RAR_EXECUTABLE				= "rar";
 
 	private static final String	RESOURCE_RAR_EXE_LINUX_32	= "rar_5.10_linux_x32";
 	private static final String	RESOURCE_RAR_EXE_LINUX_64	= "rar_5.10_linux_x64";
@@ -80,7 +80,6 @@ class UnixWinRarPackager extends WinRarPackager
 		{
 			args.add("-o-");
 		}
-
 		if (cfg.getDeleteSource())
 		{
 			args.add("-df"); // -DF - delete files after archiving
@@ -92,9 +91,9 @@ class UnixWinRarPackager extends WinRarPackager
 		// source file
 		args.add(source.toString());
 
-		// unit wants a command list containing exact two elements:
+		// Unix expects a command list which contains exactly two elements:
 		// 1) the executable
-		// 2) the argument(s)
+		// 2) the argument(s); separated with whitespace
 		List<String> command = new ArrayList<>();
 		command.add(RAR_EXECUTABLE);
 		command.add(Joiner.on(' ').join(args));
