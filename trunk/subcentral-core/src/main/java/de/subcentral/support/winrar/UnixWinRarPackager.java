@@ -12,6 +12,7 @@ import com.google.common.base.Joiner;
 
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 class UnixWinRarPackager extends WinRarPackager
 {
@@ -73,7 +74,7 @@ class UnixWinRarPackager extends WinRarPackager
 		args.add("-ep"); // -EP - exclude paths from names
 		args.add("-m" + cfg.getCompressionMethod().getCode()); // -M<n> - set compression method
 		args.add("-y"); // -Y - assume Yes on all queries
-		if (cfg.getOverwriteTarget()) // -O[+|-] - set the overwrite mode
+		if (OverwriteMode.UPDATE == cfg.getTargetOverwriteMode()) // -O[+|-] - set the overwrite mode
 		{
 			args.add("-o+");
 		}

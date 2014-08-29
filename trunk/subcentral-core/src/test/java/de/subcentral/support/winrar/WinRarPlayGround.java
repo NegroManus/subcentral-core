@@ -8,6 +8,7 @@ import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 public class WinRarPlayGround
 {
@@ -16,7 +17,7 @@ public class WinRarPlayGround
 		WinRarPackConfig cfg = new WinRarPackConfig();
 		cfg.setTimeout(15, TimeUnit.SECONDS);
 		cfg.setSourceDeletionMode(DeletionMode.KEEP);
-		cfg.setOverwriteTarget(false);
+		cfg.setTargetOverwriteMode(OverwriteMode.UPDATE);
 		cfg.setCompressionMethod(CompressionMethod.BEST);
 		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\Rush (2014) - 01x05 - Where Is My Mind.KILLERS.English.C.updated.Addic7ed.com.srt");
 		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\Rush (2014) - 01x05 - Where Is My Mind.KILLERS.English.C.updated.Addic7ed.com.rar");

@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 class WindowsWinRarPackager extends WinRarPackager
 {
@@ -215,7 +216,7 @@ class WindowsWinRarPackager extends WinRarPackager
 		args.add("-ep"); // -EP - exclude paths from names
 		args.add("-m" + cfg.getCompressionMethod().getCode()); // -M<n> - set compression method
 		args.add("-y"); // -Y - assume Yes on all queries
-		if (cfg.getOverwriteTarget()) // -O[+|-] - set the overwrite mode
+		if (OverwriteMode.UPDATE == cfg.getTargetOverwriteMode()) // -O[+|-] - set the overwrite mode
 		{
 			args.add("-o+");
 		}
