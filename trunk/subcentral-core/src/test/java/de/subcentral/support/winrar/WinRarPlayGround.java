@@ -2,6 +2,7 @@ package de.subcentral.support.winrar;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
@@ -12,11 +13,13 @@ public class WinRarPlayGround
 	public static void main(String[] args) throws Exception
 	{
 		WinRarPackConfig cfg = new WinRarPackConfig();
+		cfg.setTimeout(15);
+		cfg.setTimeoutUnit(TimeUnit.SECONDS);
 		cfg.setDeleteSource(false);
-		cfg.setReplaceTarget(true);
+		cfg.setReplaceTarget(false);
 		cfg.setCompressionMethod(CompressionMethod.BEST);
-		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\!VO\\Dallas.2012.S03E10.HDTV.x264-LOL.VO.srt");
-		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\!VO\\Dallas.2012.S03E10.HDTV.x264-LOL.VO.rar");
+		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\2012_01rechnung_5612261167.pdf");
+		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\2012_01rechnung_5612261167.rar");
 
 		long start = System.nanoTime();
 		WinRarPackager packer = WinRar.getPackager(RarExeLocation.RESOURCE);

@@ -90,31 +90,35 @@ public class WinRarPackResult
 		ALREADY_EXISTED, REPLACED, DELETED_SOURCE;
 	}
 
+	private final int			exitCode;
 	private final EnumSet<Flag>	flags;
 	private final Exception		exception;
 
-	WinRarPackResult()
+	WinRarPackResult(int exitCode)
 	{
-		this.flags = EnumSet.noneOf(Flag.class);
-		this.exception = null;
+		this(exitCode, EnumSet.noneOf(Flag.class));
 	}
 
-	WinRarPackResult(EnumSet<Flag> flags)
+	WinRarPackResult(int exitCode, Flag first, Flag... rest)
 	{
+		this(exitCode, EnumSet.of(first, rest));
+	}
+
+	WinRarPackResult(int exitCode, EnumSet<Flag> flags)
+	{
+		this(exitCode, flags, null);
+	}
+
+	WinRarPackResult(int exitCode, EnumSet<Flag> flags, Exception exception)
+	{
+		this.exitCode = exitCode;
 		this.flags = EnumSet.copyOf(flags);
-		this.exception = null;
-	}
-
-	WinRarPackResult(Flag first, Flag... rest)
-	{
-		this.flags = EnumSet.of(first, rest);
-		this.exception = null;
-	}
-
-	WinRarPackResult(Exception exception)
-	{
-		this.flags = EnumSet.noneOf(Flag.class);
 		this.exception = exception;
+	}
+
+	public int getExitCode()
+	{
+		return exitCode;
 	}
 
 	public Set<Flag> getFlags()
@@ -135,6 +139,11 @@ public class WinRarPackResult
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(WinRarPackResult.class).omitNullValues().add("flags", flags).add("exception", exception).toString();
+		return MoreObjects.toStringHelper(WinRarPackResult.class)
+				.omitNullValues()
+				.add("exitCode", exitCode)
+				.add("flags", flags)
+				.add("exception", exception)
+				.toString();
 	}
 }
