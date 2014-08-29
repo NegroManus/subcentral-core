@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 
 public abstract class WinRarPackager
@@ -40,7 +41,7 @@ public abstract class WinRarPackager
 					this.rarExecutable = locateRarExecutable();
 					if (this.rarExecutable == null)
 					{
-						throw new IllegalStateException("Could not locate Rar executable");
+						throw new IllegalStateException("Could not locate RAR executable");
 					}
 					break;
 				case RESOURCE:
@@ -65,7 +66,7 @@ public abstract class WinRarPackager
 	{
 		if (rarExecutable == null)
 		{
-			throw new NullPointerException("Rar executable cannot be null");
+			throw new NullPointerException("RAR executable cannot be null");
 		}
 		if (!Files.isRegularFile(rarExecutable, LinkOption.NOFOLLOW_LINKS))
 		{
@@ -124,7 +125,7 @@ public abstract class WinRarPackager
 			{
 				flags.add(Flag.REPLACED);
 			}
-			if (cfg.getDeleteSource() && Files.notExists(source))
+			if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source))
 			{
 				flags.add(Flag.DELETED_SOURCE);
 			}
@@ -132,7 +133,7 @@ public abstract class WinRarPackager
 			// return result
 			if (!exitedBeforeTimeout)
 			{
-				return new WinRarPackResult(exitCode, flags, new TimeoutException("Rar process timed out after " + cfg.getTimeoutValue() + " "
+				return new WinRarPackResult(exitCode, flags, new TimeoutException("RAR process timed out after " + cfg.getTimeoutValue() + " "
 						+ cfg.getTimeoutUnit()));
 			}
 			if (StringUtils.isBlank(errMsg))

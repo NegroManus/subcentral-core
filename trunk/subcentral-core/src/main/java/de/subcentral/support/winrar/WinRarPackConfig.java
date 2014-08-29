@@ -7,13 +7,48 @@ import com.google.common.base.MoreObjects;
 
 public class WinRarPackConfig
 {
+	public static enum DeletionMode
+	{
+		/**
+		 * Keep files.
+		 */
+		KEEP,
+		/**
+		 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only.
+		 */
+		RECYCLE,
+
+		/**
+		 * Delete files after archiving. Move files to archive.
+		 */
+		DELETE;
+	}
+
 	public static enum CompressionMethod
 	{
+		/**
+		 * Add files to archive without compression.
+		 */
 		STORE(0, "Store", "Add files to archive without compression"),
+		/**
+		 * Fastest method (least compressive).
+		 */
 		FASTEST(1, "Fastest", "Fastest method (least compressive)"),
+		/**
+		 * Fast compression method.
+		 */
 		FAST(2, "Fast", "Fast compression method"),
+		/**
+		 * Normal (default) compression method.
+		 */
 		NORMAL(3, "Normal", "Normal (default) compression method"),
+		/**
+		 * Good compression method (more compressive).
+		 */
 		GOOD(4, "Good", "Good compression method (more compressive)"),
+		/**
+		 * Best compression method (most compressive but also most slow")
+		 */
 		BEST(5, "Best", "Best compression method (most compressive but also most slow");
 
 		private final int		code;
@@ -56,7 +91,7 @@ public class WinRarPackConfig
 	}
 
 	private boolean				replaceTarget		= true;
-	private boolean				deleteSource		= false;
+	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
 	private long				timeoutValue		= 15;
 	private TimeUnit			timeoutUnit			= TimeUnit.SECONDS;
@@ -71,14 +106,14 @@ public class WinRarPackConfig
 		this.replaceTarget = replaceTarget;
 	}
 
-	public boolean getDeleteSource()
+	public DeletionMode getSourceDeletionMode()
 	{
-		return deleteSource;
+		return sourceDeletionMode;
 	}
 
-	public void setDeleteSource(boolean deleteSource)
+	public void setSourceDeletionMode(DeletionMode sourceDeletionMode)
 	{
-		this.deleteSource = deleteSource;
+		this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode);
 	}
 
 	public CompressionMethod getCompressionMethod()
@@ -114,7 +149,7 @@ public class WinRarPackConfig
 		return MoreObjects.toStringHelper(WinRarPackConfig.class)
 				.omitNullValues()
 				.add("replaceTarget", replaceTarget)
-				.add("deleteSource", deleteSource)
+				.add("sourceDeletion", sourceDeletionMode)
 				.add("compressionMethod", compressionMethod)
 				.add("timeout", timeoutValue)
 				.add("timeoutUnit", timeoutUnit)
