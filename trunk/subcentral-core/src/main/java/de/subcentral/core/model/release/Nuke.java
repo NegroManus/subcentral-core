@@ -60,7 +60,7 @@ public class Nuke implements Comparable<Nuke>
 		{
 			return true;
 		}
-		if (obj != null && Nuke.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Nuke o = (Nuke) obj;
 			return new EqualsBuilder().append(reason, o.reason).append(date, o.date).isEquals();

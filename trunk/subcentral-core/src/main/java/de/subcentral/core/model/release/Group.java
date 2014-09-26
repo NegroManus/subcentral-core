@@ -1,5 +1,7 @@
 package de.subcentral.core.model.release;
 
+import java.util.Locale;
+
 import de.subcentral.core.Settings;
 
 public class Group implements Comparable<Group>
@@ -33,7 +35,7 @@ public class Group implements Comparable<Group>
 		{
 			return true;
 		}
-		if (obj != null && Group.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Group other = (Group) obj;
 			return name != null ? name.equalsIgnoreCase(other.name) : other.name == null;
@@ -44,7 +46,7 @@ public class Group implements Comparable<Group>
 	@Override
 	public int hashCode()
 	{
-		return name == null ? 0 : name.toLowerCase().hashCode();
+		return name == null ? 0 : name.toLowerCase(Locale.getDefault()).hashCode();
 	}
 
 	@Override

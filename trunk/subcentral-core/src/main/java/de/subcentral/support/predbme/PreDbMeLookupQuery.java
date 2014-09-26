@@ -84,10 +84,7 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		for (Element rlsDiv : rlsDivs)
 		{
 			Release rls = parseRelease(doc, rlsDiv);
-			if (rls != null)
-			{
-				rlss.add(rls);
-			}
+			rlss.add(rls);
 		}
 		return rlss;
 	}
@@ -150,7 +147,7 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		if (timeSpan != null)
 		{
 			// Note: attribute "data" stores the seconds since epoch
-			long epochSec = Long.valueOf(timeSpan.attr("data"));
+			long epochSec = Long.parseLong(timeSpan.attr("data"));
 			ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSec), TIME_ZONE);
 			rls.setDate(date);
 		}

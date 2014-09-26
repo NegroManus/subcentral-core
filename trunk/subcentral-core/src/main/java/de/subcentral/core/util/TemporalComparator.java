@@ -1,5 +1,6 @@
 package de.subcentral.core.util;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
@@ -12,8 +13,11 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
 
-public class TemporalComparator implements Comparator<Temporal>
+public class TemporalComparator implements Comparator<Temporal>, Serializable
 {
+	// Comparators shouold be Serializable
+	private static final long	serialVersionUID	= -7918244215818591537L;
+
 	@Override
 	public int compare(Temporal o1, Temporal o2)
 	{

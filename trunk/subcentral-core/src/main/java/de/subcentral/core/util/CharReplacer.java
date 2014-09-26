@@ -15,22 +15,22 @@ public class CharReplacer implements UnaryOperator<String>
 
 	public char[] getAllowedChars()
 	{
-		return allowedChars;
+		return allowedChars.clone();
 	}
 
 	public void setAllowedChars(char[] allowedChars)
 	{
-		this.allowedChars = allowedChars;
+		this.allowedChars = allowedChars.clone();
 	}
 
 	public char[] getCharsToDelete()
 	{
-		return charsToDelete;
+		return charsToDelete.clone();
 	}
 
 	public void setCharsToDelete(char[] charsToDelete)
 	{
-		this.charsToDelete = charsToDelete;
+		this.charsToDelete = charsToDelete.clone();
 	}
 
 	public String getDefaultReplacement()

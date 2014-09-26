@@ -32,7 +32,7 @@ public class PropParsingService
 	 * The default item splitter. Splits the string into words (pattern {@code "[^\\w-]+"}). Is used by PropParsingService instances if no specific
 	 * item splitter is defined. Common to all instances to save memory.
 	 */
-	public static Splitter									DEFAULT_ITEM_SPLITTER	= Splitter.onPattern("[^\\w-]+");
+	public static final Splitter							DEFAULT_ITEM_SPLITTER	= Splitter.onPattern("[^\\w-]+");
 
 	/**
 	 * The default map of fromString() functions. If a PropParsingService defines no specific fromString() function for a property or its type, the

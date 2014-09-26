@@ -386,7 +386,7 @@ public class Release implements Comparable<Release>
 		{
 			return true;
 		}
-		if (obj != null && Release.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Release o = (Release) obj;
 			if (name != null && o.name != null)

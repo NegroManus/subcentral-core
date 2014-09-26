@@ -73,7 +73,7 @@ public class StandardAvMedia extends StandardMedia implements AvMedia
 		{
 			return true;
 		}
-		if (obj != null && StandardAvMedia.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			return Objects.equals(name, ((StandardAvMedia) obj).name);
 		}

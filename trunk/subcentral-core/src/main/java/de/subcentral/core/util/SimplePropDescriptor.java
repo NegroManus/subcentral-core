@@ -63,7 +63,7 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
 		{
 			return true;
 		}
-		if (obj != null && SimplePropDescriptor.class == obj.getClass())
+		if (obj != null && getClass() == obj.getClass())
 		{
 			SimplePropDescriptor o = (SimplePropDescriptor) obj;
 			return beanClass.equals(o.beanClass) && propName.equals(o.propName);

@@ -63,7 +63,7 @@ public class Movie extends StandardAvMedia implements Comparable<Movie>
 		{
 			return true;
 		}
-		if (obj != null && Movie.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			return Objects.equals(name, ((Movie) obj).name);
 		}
