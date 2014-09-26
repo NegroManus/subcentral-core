@@ -60,7 +60,7 @@ public class SubCentral
 			grps.put(1, Release.PROP_NAME);
 			for (Map.Entry<Integer, SimplePropDescriptor> sceneGrp : sceneMatcher.getGroups().entrySet())
 			{
-				if (sceneGrp.getKey() == Integer.valueOf(0))
+				if (Integer.valueOf(0).equals(sceneGrp.getKey()))
 				{
 					// the group 0 is removed because it captured the whole string as the release name
 					// not it is the name of the SubtitleAdjustment

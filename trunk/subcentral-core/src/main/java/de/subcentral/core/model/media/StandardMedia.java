@@ -25,18 +25,15 @@ public class StandardMedia extends MediaBase implements Media
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMedia.class, PropNames.TITLE);
 	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE			= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.MEDIA_CONTENT_TYPE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMedia.class,
-																						PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMedia.class, PropNames.MEDIA_TYPE);
 	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(StandardMedia.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.ORIGINAL_LANGUAGES);
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(StandardMedia.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMedia.class,
-																						PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMedia.class,
-																						PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMedia.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMedia.class, PropNames.COVER_URLS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(StandardMedia.class,
 																						PropNames.CONTENT_ADVISORY);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(StandardMedia.class,
@@ -154,7 +151,7 @@ public class StandardMedia extends MediaBase implements Media
 		{
 			return true;
 		}
-		if (obj != null && obj instanceof StandardMedia)
+		if (obj != null && StandardMedia.class.equals(obj.getClass()))
 		{
 			return Objects.equals(name, ((StandardMedia) obj).name);
 		}
