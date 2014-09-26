@@ -63,7 +63,7 @@ public class SubCentral
 				if (Integer.valueOf(0).equals(sceneGrp.getKey()))
 				{
 					// the group 0 is removed because it captured the whole string as the release name
-					// not it is the name of the SubtitleAdjustment
+					// now it is the name of the SubtitleAdjustment
 					continue;
 				}
 				// because there is a new group 1 (release name),
