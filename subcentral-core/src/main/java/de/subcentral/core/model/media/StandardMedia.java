@@ -19,7 +19,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For any media item that has no own class. For audio / video media items see {@link StandardAvMedia}.
  *
  */
-public class StandardMedia extends MediaBase implements Media
+public class StandardMedia extends MediaBase
 {
 	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(StandardMedia.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMedia.class, PropNames.TITLE);
@@ -151,7 +151,7 @@ public class StandardMedia extends MediaBase implements Media
 		{
 			return true;
 		}
-		if (obj != null && StandardMedia.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			return Objects.equals(name, ((StandardMedia) obj).name);
 		}

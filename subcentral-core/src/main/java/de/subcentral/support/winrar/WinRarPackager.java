@@ -155,7 +155,7 @@ public abstract class WinRarPackager
 				return new WinRarPackResult(exitCode, flags, new IOException(errMsg));
 			}
 		}
-		catch (Exception e)
+		catch (IOException | InterruptedException | RuntimeException e)
 		{
 			return new WinRarPackResult(exitCode, flags, e);
 		}

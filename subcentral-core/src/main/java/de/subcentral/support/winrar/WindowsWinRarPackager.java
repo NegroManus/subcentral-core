@@ -3,6 +3,7 @@ package de.subcentral.support.winrar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ class WindowsWinRarPackager extends WinRarPackager
 					return null;
 				}
 			}
-			try (InputStream is = p.getInputStream(); Scanner scanner = new Scanner(is);)
+			try (InputStream is = p.getInputStream(); Scanner scanner = new Scanner(is, Charset.defaultCharset().name());)
 			{
 				List<String> outputLines = new ArrayList<>();
 				Pattern pExeEntry = Pattern.compile("\\s*(exe(\\d+)?)\\s+REG_SZ\\s+(.*)", Pattern.CASE_INSENSITIVE);

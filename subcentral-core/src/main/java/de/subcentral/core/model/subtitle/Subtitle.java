@@ -428,7 +428,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		{
 			return true;
 		}
-		if (obj != null && Subtitle.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Subtitle o = (Subtitle) obj;
 			return new EqualsBuilder().append(media, o.media)

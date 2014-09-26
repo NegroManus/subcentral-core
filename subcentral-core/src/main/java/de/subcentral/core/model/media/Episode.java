@@ -329,7 +329,7 @@ public class Episode extends MediaBase implements AvMedia, Comparable<Episode>
 		{
 			return true;
 		}
-		if (obj != null && Episode.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Episode o = (Episode) obj;
 			return new EqualsBuilder().append(series, o.series)

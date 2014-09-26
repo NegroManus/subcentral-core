@@ -339,7 +339,7 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 		{
 			return true;
 		}
-		if (obj != null && Series.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			return Objects.equals(name, ((Series) obj).name);
 		}

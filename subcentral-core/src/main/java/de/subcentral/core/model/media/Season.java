@@ -193,7 +193,7 @@ public class Season extends MediaBase implements AvMediaCollection<Episode>, Com
 		{
 			return true;
 		}
-		if (obj != null && Season.class.equals(obj.getClass()))
+		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Season o = (Season) obj;
 			return new EqualsBuilder().append(series, o.series).append(number, o.number).append(title, o.title).isEquals();

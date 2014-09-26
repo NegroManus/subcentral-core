@@ -1,5 +1,6 @@
 package de.subcentral.core.model.media;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -18,8 +19,11 @@ public class Medias
 	public static final Comparator<Media>		MEDIA_NAME_COMPARATOR		= new MediaNameComparator();
 	public static final Comparator<List<Media>>	MEDIA_LIST_NAME_COMPARATOR	= ListComparator.create(Medias.MEDIA_NAME_COMPARATOR);
 
-	private static final class MediaNameComparator implements Comparator<Media>
+	private static final class MediaNameComparator implements Comparator<Media>, Serializable
 	{
+		// Comparators should be Serializable
+		private static final long	serialVersionUID	= -3197188465533525469L;
+
 		@Override
 		public int compare(Media o1, Media o2)
 		{
