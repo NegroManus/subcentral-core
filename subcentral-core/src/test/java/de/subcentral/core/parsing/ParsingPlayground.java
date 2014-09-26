@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
@@ -59,41 +60,46 @@ public class ParsingPlayground
 
 		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
 		// dlFolder = Paths.get("D:\\Downloads");
-		System.out.println(dlFolder);
 
+		TimeUtil.printDurationMillis("Initialization", totalStart);
+
+		System.out.println(dlFolder);
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dlFolder))
 		{
 			for (Path path : directoryStream)
 			{
 				Path fileName = path.getFileName();
-				if (Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && fileName.toString().toLowerCase().endsWith(".srt"))
+				if (Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && fileName.toString().toLowerCase(Locale.getDefault()).endsWith(".srt"))
 				{
 					try
 					{
 						System.out.println(fileName);
 						String name = fileName.toString().substring(0, fileName.toString().length() - 4);
 						System.out.println(name);
+
+						System.out.println("Parsing... ");
 						long start = System.nanoTime();
 						Object parsed = ps.parse(name);
-
-						TimeUtil.printDurationMillis(start);
-						System.out.println("Parsed to ... ");
+						TimeUtil.printDurationMillis("Parsing", start);
 						System.out.println(parsed);
+
+						System.out.println("Naming ...");
 						start = System.nanoTime();
 						String nameOfParsed = ns.name(parsed);
-						TimeUtil.printDurationMillis(start);
-						System.out.println("Named to ...");
+						TimeUtil.printDurationMillis("Naming the parsed", start);
 						System.out.println(nameOfParsed);
-						System.out.println("Looked up ...");
+
+						System.out.println("Looking up ...");
 						if (parsed instanceof SubtitleAdjustment)
 						{
 							SubtitleAdjustment subAdj = (SubtitleAdjustment) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							start = System.nanoTime();
 							List<Release> releases = lookup.createQueryFromEntity(subAdj.getFirstMatchingRelease().getFirstMedia()).execute();
-							TimeUtil.printDurationMillis(start);
+							TimeUtil.printDurationMillis("Lookup", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));
+
 							start = System.nanoTime();
 							releases.forEach(r -> Releases.enrichByParsingName(r, ps, false));
 							System.out.println("Parsed releases:");
@@ -116,24 +122,26 @@ public class ParsingPlayground
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
 							SubCentral.standardizeSubtitleLanguage(convertedSub);
 							SubtitleAdjustment convertedAdj = convertedSub.newAdjustment(filteredReleases);
-							TimeUtil.printDurationMillis(start);
+							TimeUtil.printDurationMillis("Parsing and converting found releases", start);
 							for (Release matchingRls : filteredReleases)
 							{
+								start = System.nanoTime();
 								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, matchingRls));
+								TimeUtil.printDurationMillis("Naming", start);
 								System.out.println("New name:");
 								System.out.println(newName);
 
-								System.out.println("Copying");
+								System.out.println("Copying ...");
 								start = System.nanoTime();
 								Path voDir = Files.createDirectories(path.resolveSibling("!VO"));
 								Path newPath = Files.copy(path, voDir.resolve(newName + ".srt"), StandardCopyOption.REPLACE_EXISTING);
-								TimeUtil.printDurationMillis(start);
-								System.out.println("Raring");
-								start = System.nanoTime();
+								TimeUtil.printDurationMillis("Copying", start);
+								System.out.println("Raring ...");
 								Path rarTarget = voDir.resolve(newName + ".rar");
 								System.out.println(rarTarget);
+								start = System.nanoTime();
 								System.out.println(WinRar.getPackager(RarExeLocation.RESOURCE).pack(newPath, rarTarget, packCfg));
-								TimeUtil.printDurationMillis(start);
+								TimeUtil.printDurationMillis("Raring", start);
 							}
 						}
 
@@ -141,7 +149,7 @@ public class ParsingPlayground
 						System.out.println();
 
 					}
-					catch (Exception e)
+					catch (RuntimeException e)
 					{
 						System.err.println("Exception while processing " + path);
 						e.printStackTrace();
@@ -153,7 +161,7 @@ public class ParsingPlayground
 		{
 			ex.printStackTrace();
 		}
-		TimeUtil.printDurationMillis(totalStart);
+		TimeUtil.printDurationMillis("total", totalStart);
 	}
 
 }
