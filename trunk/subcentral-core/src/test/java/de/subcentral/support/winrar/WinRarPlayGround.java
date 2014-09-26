@@ -25,7 +25,7 @@ public class WinRarPlayGround
 		long start = System.nanoTime();
 		WinRarPackager packer = WinRar.getPackager(RarExeLocation.RESOURCE);
 		WinRarPackResult result = packer.pack(src, target, cfg);
-		TimeUtil.printDurationMillis(start);
+		TimeUtil.printDurationMillis("Packaging", start);
 		System.out.println(result);
 
 		// LOCATE: 365-380

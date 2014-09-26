@@ -11,9 +11,9 @@ import java.time.temporal.Temporal;
 
 public class TimeUtil
 {
-	public static void printDurationMillis(long startNanos)
+	public static void printDurationMillis(String operation, long startNanos)
 	{
-		System.out.println(durationMillis(startNanos));
+		System.out.println("Duration of " + operation + ": " + durationMillis(startNanos) + " ms");
 	}
 
 	public static double durationMillis(long startNanos)
