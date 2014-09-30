@@ -93,16 +93,6 @@ public class WinRarPackResult
 	private final EnumSet<Flag>	flags;
 	private final Exception		exception;
 
-	WinRarPackResult(int exitCode)
-	{
-		this(exitCode, EnumSet.noneOf(Flag.class));
-	}
-
-	WinRarPackResult(int exitCode, Flag first, Flag... rest)
-	{
-		this(exitCode, EnumSet.of(first, rest));
-	}
-
 	WinRarPackResult(int exitCode, EnumSet<Flag> flags)
 	{
 		this(exitCode, flags, null);
