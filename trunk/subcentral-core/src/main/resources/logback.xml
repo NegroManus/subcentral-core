@@ -3,7 +3,7 @@
 <!-- java -Dlogback.configurationFile=/path/to/config.xml de.subcentral.watcher.WatcherMain -->
 <configuration>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>scr.log</file>
+		<file>subcentral-core.log</file>
 		<encoder>
 			<pattern>%date %-5level [%thread] %logger [%file:%line] %msg%n
 			</pattern>
