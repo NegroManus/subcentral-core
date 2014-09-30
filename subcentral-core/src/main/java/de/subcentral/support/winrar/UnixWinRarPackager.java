@@ -90,7 +90,7 @@ class UnixWinRarPackager extends WinRarPackager
 		// Unix expects a command list which contains exactly two elements:
 		// 1) the executable
 		// 2) the argument(s); separated with whitespace
-		List<String> command = new ArrayList<>();
+		List<String> command = new ArrayList<>(2);
 		command.add(RAR_EXECUTABLE);
 		command.add(Joiner.on(' ').join(args));
 		return command;

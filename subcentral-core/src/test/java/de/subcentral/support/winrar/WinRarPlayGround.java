@@ -18,9 +18,9 @@ public class WinRarPlayGround
 		cfg.setTimeout(15, TimeUnit.SECONDS);
 		cfg.setSourceDeletionMode(DeletionMode.KEEP);
 		cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
-		cfg.setCompressionMethod(CompressionMethod.BEST);
-		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\The.Blacklist.S02E01.Lord.Baltimore.No.104.720p.WEB-DL.DD5.1.H.264-NTb.de.TV4User.srt");
-		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\The.Blacklist.S02E01.Lord.Baltimore.No.104.720p.WEB-DL.DD5.1.H.264-NTb.de.TV4User.rar");
+		cfg.setCompressionMethod(CompressionMethod.NORMAL);
+		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\Bescheinigung Austritt aus der evangelischen Kirchen 09-2014.pdf");
+		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\Bescheinigung Austritt aus der evangelischen Kirchen 09-2014.NORMAL.rar");
 
 		long start = System.nanoTime();
 		WinRarPackager packer = WinRar.getPackager(LocateStrategy.RESOURCE);
