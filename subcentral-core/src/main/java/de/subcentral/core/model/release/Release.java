@@ -376,7 +376,7 @@ public class Release implements Comparable<Release>
 
 	// Object methods
 	/**
-	 * Comparison of two releases: If they both have a {@link #getName() name}, they are compared by that {@code name}. If they both are not named,
+	 * Comparison of two releases: If they both have a {@link #getName() name}, they are compared by that {@code name}. If one of them is not named,
 	 * they are compared by their {@link #getMedia() media}, {@link #getGroup() group} and {@link #getTags() tags}.
 	 */
 	@Override
@@ -413,7 +413,7 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * Two releases are compared first by their name. If both names are equal, by their media, then by by their tags and then their groups.
+	 * Two releases are compared first by their name. If both names are {@code null}, by their media, then by by their tags and then their groups.
 	 */
 	@Override
 	public int compareTo(Release o)
