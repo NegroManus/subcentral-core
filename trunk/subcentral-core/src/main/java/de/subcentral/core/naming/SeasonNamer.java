@@ -10,7 +10,7 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 	@Override
 	protected String doName(Season season, Map<String, Object> parameters) throws Exception
 	{
-		Builder b = new Builder();
+		Builder b = newBuilder();
 		if (season.getSeries() != null)
 		{
 			b.append(Series.PROP_NAME, season.getSeries());

@@ -15,7 +15,7 @@ import de.subcentral.core.Settings;
 
 public class TemporalComparator implements Comparator<Temporal>, Serializable
 {
-	// Comparators shouold be Serializable
+	// Comparators should be Serializable
 	private static final long	serialVersionUID	= -7918244215818591537L;
 
 	@Override

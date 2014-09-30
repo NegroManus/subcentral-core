@@ -61,7 +61,7 @@ public class MiniSeriesEpisodeNamer extends AbstractPropertySequenceNamer<Episod
 		// settings
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
 
-		Builder b = new Builder();
+		Builder b = newBuilder();
 
 		// add series
 		if (includeSeries && epi.getSeries() != null)

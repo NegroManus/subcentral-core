@@ -182,7 +182,7 @@ public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
 		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON_KEY, Boolean.class, Boolean.TRUE);
 
-		Builder b = new Builder();
+		Builder b = newBuilder();
 
 		// add series
 		if (includeSeries && epi.getSeries() != null)

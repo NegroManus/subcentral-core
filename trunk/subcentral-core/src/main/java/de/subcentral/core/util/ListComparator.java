@@ -1,15 +1,19 @@
 package de.subcentral.core.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
 import de.subcentral.core.Settings;
 
-public class ListComparator<T> implements Comparator<List<T>>
+public class ListComparator<T> implements Comparator<List<T>>, Serializable
 {
+	private static final long	serialVersionUID	= 6378870942944289614L;
+
 	public static <T> ListComparator<T> create(Comparator<T> comparator)
 	{
 		return new ListComparator<>(comparator);
@@ -24,7 +28,7 @@ public class ListComparator<T> implements Comparator<List<T>>
 
 	private ListComparator(Comparator<T> comparator)
 	{
-		this.comparator = comparator;
+		this.comparator = Objects.requireNonNull(comparator);
 	}
 
 	@Override
