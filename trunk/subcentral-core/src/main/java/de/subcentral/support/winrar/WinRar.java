@@ -6,25 +6,25 @@ import org.apache.commons.lang3.SystemUtils;
 
 public class WinRar
 {
-	public static enum RarExeLocation
+	public static enum LocateStrategy
 	{
 		SPECIFY, LOCATE, RESOURCE;
 	}
 
-	public static final WinRarPackager getPackager(RarExeLocation rarExeLocation)
+	public static final WinRarPackager getPackager(LocateStrategy locateStrategy)
 	{
-		return getPackager(rarExeLocation, null);
+		return getPackager(locateStrategy, null);
 	}
 
-	public static final WinRarPackager getPackager(RarExeLocation rarExeLocation, Path rarExe)
+	public static final WinRarPackager getPackager(LocateStrategy locateStrategy, Path rarExe)
 	{
 		if (SystemUtils.IS_OS_WINDOWS)
 		{
-			return new WindowsWinRarPackager(rarExeLocation, rarExe);
+			return new WindowsWinRarPackager(locateStrategy, rarExe);
 		}
 		else if (SystemUtils.IS_OS_UNIX)
 		{
-			return new UnixWinRarPackager(rarExeLocation, rarExe);
+			return new UnixWinRarPackager(locateStrategy, rarExe);
 		}
 		throw new IllegalStateException("Operating system " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH
 				+ " not supported. Only Windows and Unix like systems are supported.");

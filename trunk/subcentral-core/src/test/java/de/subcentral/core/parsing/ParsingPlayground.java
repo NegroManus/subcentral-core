@@ -28,7 +28,7 @@ import de.subcentral.support.addic7ed.Addic7ed;
 import de.subcentral.support.scene.Scene;
 import de.subcentral.support.subcentral.SubCentral;
 import de.subcentral.support.winrar.WinRar;
-import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
@@ -140,7 +140,7 @@ public class ParsingPlayground
 								Path rarTarget = voDir.resolve(newName + ".rar");
 								System.out.println(rarTarget);
 								start = System.nanoTime();
-								System.out.println(WinRar.getPackager(RarExeLocation.RESOURCE).pack(newPath, rarTarget, packCfg));
+								System.out.println(WinRar.getPackager(LocateStrategy.RESOURCE).pack(newPath, rarTarget, packCfg));
 								TimeUtil.printDurationMillis("Raring", start);
 							}
 						}

@@ -45,16 +45,31 @@ public class WinRarPackConfig
 			this.description = description;
 		}
 
+		/**
+		 * The unique integer code.
+		 * 
+		 * @return the code
+		 */
 		public final int getCode()
 		{
 			return code;
 		}
 
+		/**
+		 * The unique human readable label / name.
+		 * 
+		 * @return the label
+		 */
 		public String getLabel()
 		{
 			return label;
 		}
 
+		/**
+		 * The description text.
+		 * 
+		 * @return the description
+		 */
 		public final String getDescription()
 		{
 			return description;
@@ -111,9 +126,14 @@ public class WinRarPackConfig
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
 	private long				timeoutValue		= 15;
 	private TimeUnit			timeoutUnit			= TimeUnit.SECONDS;
-	private OverwriteMode		targetOverwriteMode	= OverwriteMode.UPDATE;
+	private OverwriteMode		targetOverwriteMode	= OverwriteMode.REPLACE;
 	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
 
+	/**
+	 * The default value is {@link CompressionMethod#NORMAL}.
+	 * 
+	 * @return the compression method
+	 */
 	public CompressionMethod getCompressionMethod()
 	{
 		return compressionMethod;
@@ -125,11 +145,21 @@ public class WinRarPackConfig
 		this.compressionMethod = compressionMethod;
 	}
 
+	/**
+	 * The default value is {@code 15}.
+	 * 
+	 * @return the timeout value
+	 */
 	public long getTimeoutValue()
 	{
 		return timeoutValue;
 	}
 
+	/**
+	 * The default value is {@link TimeUnit#SECONDS}.
+	 * 
+	 * @return the timeout unit
+	 */
 	public TimeUnit getTimeoutUnit()
 	{
 		return timeoutUnit;
@@ -138,9 +168,14 @@ public class WinRarPackConfig
 	public void setTimeout(long timeout, TimeUnit unit)
 	{
 		this.timeoutValue = timeout;
-		this.timeoutUnit = unit;
+		this.timeoutUnit = Objects.requireNonNull(unit, "unit");
 	}
 
+	/**
+	 * The default value is {@link OverwriteMode#REPLACE}.
+	 * 
+	 * @return the overwrite mode for the target package
+	 */
 	public OverwriteMode getTargetOverwriteMode()
 	{
 		return targetOverwriteMode;
@@ -151,6 +186,11 @@ public class WinRarPackConfig
 		this.targetOverwriteMode = Objects.requireNonNull(targetOverwriteMode);
 	}
 
+	/**
+	 * The default value is {@link DeletionMode#KEEP}.
+	 * 
+	 * @return the deletion mode for the source file
+	 */
 	public DeletionMode getSourceDeletionMode()
 	{
 		return sourceDeletionMode;
