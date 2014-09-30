@@ -2,7 +2,6 @@ package de.subcentral.support.winrar;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,27 +20,18 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.IOUtil;
-import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 class WindowsWinRarPackager extends WinRarPackager
 {
-	private static final Logger				log								= LoggerFactory.getLogger(WindowsWinRarPackager.class);
+	private static final Logger	log						= LoggerFactory.getLogger(WindowsWinRarPackager.class);
 
 	/**
 	 * The Console RAR can only pack RAR archives, but it does not open a GUI.
 	 */
-	private static final String				RAR_EXECUTABLE_FILENAME			= "RAR.exe";
-
-	/**
-	 * The typical WinRAR installation directories on Windows.
-	 */
-	private static final ImmutableSet<Path>	WELL_KNOWN_WINRAR_DIRECTORIES	= ImmutableSet.of(Paths.get("C:\\Program Files\\WinRAR"),
-																					Paths.get("C:\\Program Files (x86)\\WinRAR"));
-
-	private static final String				RESOURCE_RAR_EXE_32				= "rar_5.10_win_x32.exe";
-	private static final String				RESOURCE_RAR_EXE_64				= "rar_5.10_win_x64.exe";
+	private static final String	RAR_EXECUTABLE_FILENAME	= "RAR.exe";
 
 	public static Path tryLocateRarExecutable()
 	{
@@ -67,7 +57,8 @@ class WindowsWinRarPackager extends WinRarPackager
 
 	public static Path searchRarExecutableInWellKnownDirectories()
 	{
-		return returnFirstValidRarExecutable(WELL_KNOWN_WINRAR_DIRECTORIES);
+		// The typical WinRAR installation directories on Windows.
+		return returnFirstValidRarExecutable(ImmutableSet.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR")));
 	}
 
 	/**
@@ -129,7 +120,7 @@ class WindowsWinRarPackager extends WinRarPackager
 						String exe = mExeEntry.group(1);
 						String exePath = mExeEntry.group(3);
 						log.debug("Found \"exe*\" entry in registry: \"{}\" -> \"{}\"", exe, exePath);
-						rarExecutable = Paths.get(exePath).resolveSibling(RAR_EXECUTABLE_FILENAME);
+						rarExecutable = Paths.get(exePath);
 						break;
 					}
 				}
@@ -181,21 +172,21 @@ class WindowsWinRarPackager extends WinRarPackager
 		return null;
 	}
 
-	WindowsWinRarPackager(RarExeLocation rarExeLocation, Path rarExe)
+	WindowsWinRarPackager(LocateStrategy locateStrategy, Path rarExe)
 	{
-		super(rarExeLocation, rarExe);
+		super(locateStrategy, rarExe);
 	}
 
 	@Override
-	protected Path loadRarExecutableAsResource() throws URISyntaxException
+	protected String getRarExecutableResourceName()
 	{
 		if (SystemUtils.OS_ARCH.contains("64"))
 		{
-			return loadResource(RESOURCE_RAR_EXE_64);
+			return "rar_5.10_win_x32.exe";
 		}
 		else
 		{
-			return loadResource(RESOURCE_RAR_EXE_32);
+			return "rar_5.10_win_x64.exe";
 		}
 	}
 

@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
@@ -17,13 +17,13 @@ public class WinRarPlayGround
 		WinRarPackConfig cfg = new WinRarPackConfig();
 		cfg.setTimeout(15, TimeUnit.SECONDS);
 		cfg.setSourceDeletionMode(DeletionMode.KEEP);
-		cfg.setTargetOverwriteMode(OverwriteMode.UPDATE);
+		cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		cfg.setCompressionMethod(CompressionMethod.BEST);
-		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\Rush (2014) - 01x05 - Where Is My Mind.KILLERS.English.C.updated.Addic7ed.com.srt");
-		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\Rush (2014) - 01x05 - Where Is My Mind.KILLERS.English.C.updated.Addic7ed.com.rar");
+		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\The.Blacklist.S02E01.Lord.Baltimore.No.104.720p.WEB-DL.DD5.1.H.264-NTb.de.TV4User.srt");
+		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\The.Blacklist.S02E01.Lord.Baltimore.No.104.720p.WEB-DL.DD5.1.H.264-NTb.de.TV4User.rar");
 
 		long start = System.nanoTime();
-		WinRarPackager packer = WinRar.getPackager(RarExeLocation.RESOURCE);
+		WinRarPackager packer = WinRar.getPackager(LocateStrategy.RESOURCE);
 		WinRarPackResult result = packer.pack(src, target, cfg);
 		TimeUtil.printDurationMillis("Packaging", start);
 		System.out.println(result);

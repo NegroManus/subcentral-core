@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,23 +18,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.subcentral.core.util.IOUtil;
-import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 
 public abstract class WinRarPackager
 {
-	private static final Logger		log				= LoggerFactory.getLogger(WinRarPackager.class);
+	private static final Logger	log	= LoggerFactory.getLogger(WinRarPackager.class);
+	protected final Path		rarExecutable;
 
-	protected static final String	RESOURCE_FOLDER	= "de/subcentral/support/winrar/";
-	protected final Path			rarExecutable;
-
-	WinRarPackager(RarExeLocation rarExeLocation, Path rarExecutable)
+	WinRarPackager(LocateStrategy locateStrategy, Path rarExecutable)
 	{
+		Objects.requireNonNull(locateStrategy, "locateStrategy");
 		try
 		{
-			switch (rarExeLocation)
+			switch (locateStrategy)
 			{
 				case SPECIFY:
 					this.rarExecutable = validateRarExecutable(rarExecutable);
@@ -46,13 +46,13 @@ public abstract class WinRarPackager
 					}
 					break;
 				case RESOURCE:
-					this.rarExecutable = loadRarExecutableAsResource();
+					this.rarExecutable = loadResource(getRarExecutableResourceName());
 					break;
 				default:
-					throw new IllegalArgumentException("Invalid RarExeLocation value:" + rarExeLocation);
+					throw new IllegalArgumentException("Invalid LocateStrategy value:" + locateStrategy);
 			}
 		}
-		catch (Exception e)
+		catch (NoSuchFileException | NullPointerException | SecurityException | URISyntaxException e)
 		{
 			throw new IllegalArgumentException("Exception while initializing rar executable: " + e, e);
 		}
@@ -80,15 +80,21 @@ public abstract class WinRarPackager
 		return rarExecutable;
 	}
 
-	protected abstract Path loadRarExecutableAsResource() throws Exception;
-
-	protected static final Path loadResource(String filename) throws URISyntaxException
-	{
-		return Paths.get(WinRarPackager.class.getClassLoader().getResource(RESOURCE_FOLDER + '/' + filename).toURI());
-	}
+	protected abstract String getRarExecutableResourceName();
 
 	protected abstract Path locateRarExecutable();
 
+	/**
+	 * Packs a single file into a single WinRAR package.
+	 * 
+	 * @param source
+	 *            the source file to pack
+	 * @param target
+	 *            the target package (may or not exist yet)
+	 * @param cfg
+	 *            the packaging configuration
+	 * @return the result of the packaging
+	 */
 	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
 	{
 		log.debug("Packing {} to {} with {}", source, target, cfg);
@@ -162,4 +168,9 @@ public abstract class WinRarPackager
 	}
 
 	protected abstract List<String> buildCommand(Path source, Path target, WinRarPackConfig cfg);
+
+	private static final Path loadResource(String filename) throws URISyntaxException
+	{
+		return Paths.get(WinRarPackager.class.getClassLoader().getResource("de/subcentral/support/winrar/" + filename).toURI());
+	}
 }

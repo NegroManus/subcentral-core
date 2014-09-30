@@ -1,6 +1,5 @@
 package de.subcentral.support.winrar;
 
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,48 +9,43 @@ import org.apache.commons.lang3.SystemUtils;
 
 import com.google.common.base.Joiner;
 
-import de.subcentral.support.winrar.WinRar.RarExeLocation;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 class UnixWinRarPackager extends WinRarPackager
 {
-	private static final String	RAR_EXECUTABLE				= "rar";
+	private static final String	RAR_EXECUTABLE	= "rar";
 
-	private static final String	RESOURCE_RAR_EXE_LINUX_32	= "rar_5.10_linux_x32";
-	private static final String	RESOURCE_RAR_EXE_LINUX_64	= "rar_5.10_linux_x64";
-	private static final String	RESOURCE_RAR_EXE_MAC_OSX	= "rar_5.10_macosx";
-	private static final String	RESOURCE_RAR_EXE_FREE_BSD	= "rar_5.10_freebsd";
-
-	UnixWinRarPackager(RarExeLocation rarExeLocation, Path rarExe)
+	UnixWinRarPackager(LocateStrategy locateStrategy, Path rarExe)
 	{
-		super(rarExeLocation, rarExe);
+		super(locateStrategy, rarExe);
 	}
 
 	@Override
-	protected Path loadRarExecutableAsResource() throws URISyntaxException
+	protected String getRarExecutableResourceName()
 	{
 		if (SystemUtils.IS_OS_LINUX)
 		{
 			if (SystemUtils.OS_ARCH.contains("64"))
 			{
-				return loadResource(RESOURCE_RAR_EXE_LINUX_64);
+				return "rar_5.10_linux_x64";
 			}
 			else
 			{
-				return loadResource(RESOURCE_RAR_EXE_LINUX_32);
+				return "rar_5.10_linux_x32";
 			}
 		}
 		else if (SystemUtils.IS_OS_MAC_OSX)
 		{
-			return loadResource(RESOURCE_RAR_EXE_MAC_OSX);
+			return "rar_5.10_macosx";
 		}
 		else if (SystemUtils.IS_OS_FREE_BSD)
 		{
-			return loadResource(RESOURCE_RAR_EXE_FREE_BSD);
+			return "rar_5.10_freebsd";
 		}
 		// default
-		return loadResource(RESOURCE_RAR_EXE_LINUX_32);
+		return "rar_5.10_linux_x32";
 	}
 
 	@Override
