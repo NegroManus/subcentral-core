@@ -2,6 +2,7 @@ package de.subcentral.core.util;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,10 +17,12 @@ import de.subcentral.core.Settings;
  * equal due to inheritance - like it is the case with <code>PropertyDescriptor</code>.
  *
  */
-public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>
+public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, Serializable
 {
-	private final Class<?>	beanClass;
-	private final String	propName;
+	private static final long	serialVersionUID	= 8306594862187006921L;
+
+	private final Class<?>		beanClass;
+	private final String		propName;
 
 	public SimplePropDescriptor(Class<?> beanClass, String propName)
 	{

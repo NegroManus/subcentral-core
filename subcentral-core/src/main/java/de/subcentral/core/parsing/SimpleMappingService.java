@@ -1,12 +1,14 @@
 package de.subcentral.core.parsing;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SimpleMappingService implements MappingService
 {
-	private Map<Class<?>, Mapper<?>>	mappers;
+	private Map<Class<?>, Mapper<?>>	mappers	= new HashMap<>(0);
 
 	public Map<Class<?>, Mapper<?>> getMappers()
 	{
@@ -15,6 +17,7 @@ public class SimpleMappingService implements MappingService
 
 	public void setMappers(Map<Class<?>, Mapper<?>> mappers)
 	{
+		Objects.requireNonNull(mappers);
 		this.mappers = mappers;
 	}
 

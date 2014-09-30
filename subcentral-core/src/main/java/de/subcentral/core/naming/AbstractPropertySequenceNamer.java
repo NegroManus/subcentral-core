@@ -10,6 +10,8 @@ import java.util.function.UnaryOperator;
 
 import org.jsoup.helper.Validate;
 
+import com.google.common.collect.ImmutableSet;
+
 import de.subcentral.core.util.SeparationDefinition;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -130,14 +132,20 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 		return f.apply(propValue);
 	}
 
+	protected Builder newBuilder()
+	{
+		return new Builder(separators);
+	}
+
 	protected class Builder
 	{
-		private final StringBuilder		sb;
-		private SimplePropDescriptor	lastProperty	= null;
+		private final ImmutableSet<SeparationDefinition>	separators;
+		private final StringBuilder							sb				= new StringBuilder();
+		private SimplePropDescriptor						lastProperty	= null;
 
-		protected Builder()
+		private Builder(Set<SeparationDefinition> separators)
 		{
-			sb = new StringBuilder();
+			this.separators = ImmutableSet.copyOf(separators);
 		}
 
 		protected Builder appendAllIfNotEmpty(SimplePropDescriptor SimplePropertyDescriptor, Collection<?> propertyCollection)

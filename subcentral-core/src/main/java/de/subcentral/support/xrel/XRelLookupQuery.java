@@ -67,10 +67,7 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 		for (Element rlsDiv : rlsDivs)
 		{
 			Release rls = parseRelease(doc, rlsDiv);
-			if (rls != null)
-			{
-				rlss.add(rls);
-			}
+			rlss.add(rls);
 		}
 		return rlss;
 	}

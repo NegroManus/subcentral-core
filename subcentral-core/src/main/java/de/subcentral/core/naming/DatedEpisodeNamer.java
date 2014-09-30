@@ -60,7 +60,7 @@ public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		// settings
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
 
-		Builder b = new Builder();
+		Builder b = newBuilder();
 
 		// add series
 		if (includeSeries && epi.getSeries() != null)

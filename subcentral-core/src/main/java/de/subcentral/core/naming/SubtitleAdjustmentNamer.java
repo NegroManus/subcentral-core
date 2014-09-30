@@ -34,7 +34,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 		// read naming settings
 		Release rls = Namings.readParameter(params, PARAM_KEY_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
 
-		Builder b = new Builder();
+		Builder b = newBuilder();
 		b.appendString(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 		Subtitle sub = adjustment.getFirstSubtitle();
 		if (sub != null)
