@@ -237,7 +237,7 @@ class WindowsWinRarPackager extends WinRarPackager
 		// Windows expects a command list which contains:
 		// 1) the executable as first element
 		// 2)-n) each argument as an element
-		List<String> command = new ArrayList<>();
+		List<String> command = new ArrayList<>(1 + args.size());
 		command.add(rarExecutable.toString());
 		command.addAll(args);
 		return command;
