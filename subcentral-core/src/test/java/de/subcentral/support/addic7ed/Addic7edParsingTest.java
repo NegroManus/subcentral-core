@@ -12,12 +12,9 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.support.addic7ed.Addic7ed;
 
 public class Addic7edParsingTest
 {
-	String	name	= "Psych - 01x01 - Pilot.DiMENSION.English.HI.orig.Addic7ed.com";
-
 	// name = "Robot Chicken - 07x07 - Snarfer Image.x264-KILLERS.English.C.orig.Addic7ed.com";
 	// name = "24 - 09x05 - Day 9_ 3_00 PM-4_00 PM.LOL.English.C.orig.Addic7ed.com";
 	// name = "The Listener - 05x01 - The Wrong Man.KILLERS.English.C.orig.Addic7ed.com";
@@ -35,7 +32,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode01", adj, name);
 	}
@@ -50,7 +47,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode02", adj, name);
 	}
@@ -65,7 +62,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode03", adj, name);
 	}
@@ -80,7 +77,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "Dutch");
 		sub.setTags(Tag.tags("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode04", adj, name);
 	}
@@ -95,7 +92,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode05", adj, name);
 	}
@@ -111,7 +108,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode06", adj, name);
 	}
@@ -126,7 +123,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setTags(Tag.tags("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode07", adj, name);
 	}
@@ -141,7 +138,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode08", adj, name);
 	}
@@ -157,7 +154,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode09", adj, name);
 	}
@@ -173,7 +170,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "German");
 		sub.setTags(Tag.tags("C", "updated"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode10", adj, name);
 	}
@@ -188,7 +185,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode11", adj, name);
 	}
@@ -203,7 +200,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode12", adj, name);
 	}
@@ -218,7 +215,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode13", adj, name);
 	}
@@ -233,7 +230,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode14", adj, name);
 	}
@@ -249,7 +246,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setTags(Tag.tags("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(rls);
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
 		compare("testEpisode15", adj, name);
 	}
@@ -265,7 +262,7 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.tags("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = sub.newAdjustment(ImmutableSet.of(rls1, rls2));
+		SubtitleAdjustment adj = new SubtitleAdjustment(sub, ImmutableSet.of(rls1, rls2));
 
 		compare("testEpisode16", adj, name);
 	}

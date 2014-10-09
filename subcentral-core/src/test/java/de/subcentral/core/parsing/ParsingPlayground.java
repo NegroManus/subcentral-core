@@ -121,7 +121,7 @@ public class ParsingPlayground
 							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
 							SubCentral.standardizeSubtitleLanguage(convertedSub);
-							SubtitleAdjustment convertedAdj = convertedSub.newAdjustment(filteredReleases);
+							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, filteredReleases);
 							TimeUtil.printDurationMillis("Parsing and converting found releases", start);
 							for (Release matchingRls : filteredReleases)
 							{

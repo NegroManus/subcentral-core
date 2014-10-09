@@ -1,5 +1,6 @@
 package de.subcentral.core.parsing;
 
+import java.util.Locale;
 import java.util.function.UnaryOperator;
 
 import de.subcentral.core.util.TimeUtil;
@@ -11,7 +12,7 @@ public class LambdaPerfTest
 		@Override
 		public String apply(String t)
 		{
-			return t.toUpperCase().toLowerCase().toUpperCase().replaceAll("\\w", "!");
+			return t.toUpperCase().toLowerCase().toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
 		}
 	};
 	
@@ -37,7 +38,7 @@ public class LambdaPerfTest
 	// 800
 	private static String doItOldFashioned(String string)
 	{
-		return string.toUpperCase().toLowerCase().toUpperCase().replaceAll("\\w", "!");
+		return string.toUpperCase().toLowerCase().toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
 	}
 
 	// 120
@@ -78,7 +79,7 @@ public class LambdaPerfTest
 			@Override
 			public String apply(String t)
 			{
-				return t.toUpperCase().toLowerCase().toUpperCase().replaceAll("\\w", "!");
+				return t.toUpperCase().toLowerCase().toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
 			}
 		};
 		return op.apply(string);
