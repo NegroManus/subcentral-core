@@ -7,16 +7,23 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.lookup.Lookup;
+import de.subcentral.core.model.release.Compatibility;
+import de.subcentral.core.model.release.Compatibility.Scope;
+import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.DelegatingNamingService;
@@ -25,6 +32,7 @@ import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7ed.Addic7ed;
+import de.subcentral.support.predbme.PreDbMeLookup;
 import de.subcentral.support.scene.Scene;
 import de.subcentral.support.subcentral.SubCentral;
 import de.subcentral.support.winrar.WinRar;
@@ -39,8 +47,10 @@ public class ParsingPlayground
 {
 	public static void main(String[] args)
 	{
-		System.getProperties().put("http.proxyHost", "10.206.247.65");
-		System.getProperties().put("http.proxyPort", "8080");
+		// System.getProperties().put("http.proxyHost", "10.206.247.65");
+		// System.getProperties().put("http.proxyPort", "8080");
+		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
+		dlFolder = Paths.get("D:\\Downloads");
 
 		long totalStart = System.nanoTime();
 
@@ -51,15 +61,23 @@ public class ParsingPlayground
 		parsers.putAll(Scene.getParsers());
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
-		final Lookup<Release, ?> lookup = new OrlyDbLookup();
+		Lookup<Release, ?> lookup = new OrlyDbLookup();
+		lookup = new PreDbMeLookup();
+		// lookup = new XRelLookup();
+		// lookup = new OrlyDbLookup();
+
+		List<Compatibility> compatibilities = new ArrayList<>();
+		compatibilities.add(new Compatibility(new Group("LOL"),
+				Tag.tags("HDTV", "x264"),
+				new Group("DIMENSION"),
+				Tag.tags("720p", "HDTV", "x264"),
+				Scope.IF_EXISTS,
+				true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
-		packCfg.setSourceDeletionMode(DeletionMode.DELETE);
+		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
 		packCfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
-
-		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
-		// dlFolder = Paths.get("D:\\Downloads");
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
@@ -111,9 +129,24 @@ public class ParsingPlayground
 									subAdjRls.getTags(),
 									subAdjRls.getGroup(),
 									mediaNsForFiltering);
-							System.out.println("Filtered releases:");
+							TimeUtil.printDurationMillis("Filtering found releases", start);
 							filteredReleases.forEach(r -> System.out.println(r));
 
+							start = System.nanoTime();
+							Map<Release, Compatibility> compatibleRlss = new HashMap<>();
+							for (Release rls : filteredReleases)
+							{
+								Map<Release, Compatibility> rlss = Releases.findCompatibleReleases(rls, compatibilities, releases);
+								compatibleRlss.putAll(rlss);
+							}
+							TimeUtil.printDurationMillis("Build compatibilities", start);
+							compatibleRlss.entrySet().forEach(e -> System.out.println(e));
+
+							List<Release> matchingRlss = new ArrayList<>();
+							matchingRlss.addAll(filteredReleases);
+							matchingRlss.addAll(compatibleRlss.keySet());
+
+							start = System.nanoTime();
 							Subtitle convertedSub = new Subtitle();
 							convertedSub.setMedia(subAdj.getFirstSubtitle().getMedia());
 							convertedSub.setHearingImpaired(subAdj.getFirstSubtitle().isHearingImpaired());
@@ -121,9 +154,9 @@ public class ParsingPlayground
 							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
 							SubCentral.standardizeSubtitleLanguage(convertedSub);
-							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, filteredReleases);
-							TimeUtil.printDurationMillis("Parsing and converting found releases", start);
-							for (Release matchingRls : filteredReleases)
+							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, matchingRlss);
+							TimeUtil.printDurationMillis("Converting releases", start);
+							for (Release matchingRls : matchingRlss)
 							{
 								start = System.nanoTime();
 								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, matchingRls));

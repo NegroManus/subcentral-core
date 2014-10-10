@@ -323,8 +323,6 @@ public class XRelLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			e.printStackTrace();
 		}
 
-		rls.setInfoUrl(doc.baseUri());
-
 		return rls;
 	}
 
