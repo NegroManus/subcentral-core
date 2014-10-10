@@ -24,6 +24,6 @@ public class Settings
 
 	private Settings()
 	{
-		// TODO Auto-generated constructor stub
+		throw new AssertionError(getClass() + " cannot be insantiated. It is an utility class.");
 	}
 }

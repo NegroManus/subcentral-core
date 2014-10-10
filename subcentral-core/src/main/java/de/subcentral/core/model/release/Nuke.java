@@ -71,7 +71,7 @@ public class Nuke implements Comparable<Nuke>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(9, 77).append(reason).append(date).toHashCode();
+		return new HashCodeBuilder(9, 71).append(reason).append(date).toHashCode();
 	}
 
 	@Override

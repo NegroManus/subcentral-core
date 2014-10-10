@@ -1,6 +1,7 @@
 package de.subcentral.core.model.release;
 
-import java.util.Locale;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.Settings;
 
@@ -37,8 +38,7 @@ public class Group implements Comparable<Group>
 		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
-			Group other = (Group) obj;
-			return name != null ? name.equalsIgnoreCase(other.name) : other.name == null;
+			return StringUtils.equalsIgnoreCase(name, ((Group) obj).name);
 		}
 		return false;
 	}
@@ -46,7 +46,7 @@ public class Group implements Comparable<Group>
 	@Override
 	public int hashCode()
 	{
-		return name == null ? 0 : name.toLowerCase(Locale.getDefault()).hashCode();
+		return new HashCodeBuilder(31, 97).append(StringUtils.lowerCase(name)).toHashCode();
 	}
 
 	@Override
