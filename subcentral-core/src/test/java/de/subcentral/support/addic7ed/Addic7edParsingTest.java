@@ -30,7 +30,7 @@ public class Addic7edParsingTest
 		Episode epi = Episode.createSeasonedEpisode("Ben 10_ Omniverse", 1, 26, "The Frogs of War, Part 1");
 		Release rls = Release.create(epi, null, "WEB-DL", "x264", "AAC");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("C", "orig"));
+		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -45,7 +45,7 @@ public class Addic7edParsingTest
 		Episode epi = Episode.createSeasonedEpisode("Psych", 7, 2, "Juliet Takes a Luvvah");
 		Release rls = Release.create(epi, "EVOLVE");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("C", "orig"));
+		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -75,7 +75,7 @@ public class Addic7edParsingTest
 		Episode epi = Episode.createSeasonedEpisode("Switched At Birth", 3, 4, "It Hurts to Wait With Love If Love Is Somewhere Else");
 		Release rls = Release.create(epi, "EXCELLENCE", "HDTV", "x264");
 		Subtitle sub = new Subtitle(epi, "Dutch");
-		sub.setTags(Tag.tags("orig"));
+		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -90,7 +90,7 @@ public class Addic7edParsingTest
 		Episode epi = Episode.createSeasonedEpisode("Vikings", 1, 8, "Sacrifice");
 		Release rls = Release.create(epi, "2HD", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("C", "orig"));
+		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -106,7 +106,7 @@ public class Addic7edParsingTest
 		epi.getSeries().setDate(Year.of(2013));
 		Release rls = Release.create(epi, "mSD", "480p", "WEB-DL", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("C", "orig"));
+		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -121,7 +121,7 @@ public class Addic7edParsingTest
 		Episode epi = Episode.createSeasonedEpisode("Psych", 1, 1, "Pilot");
 		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
 		Subtitle sub = new Subtitle(epi, "French");
-		sub.setTags(Tag.tags("orig"));
+		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -136,7 +136,7 @@ public class Addic7edParsingTest
 		Episode epi = Episode.createSeasonedEpisode("Psych", 5, 4, "Chivalry Is Not Dead...But Someone Is");
 		Release rls = Release.create(epi, "FQM");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("C", "orig"));
+		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -152,7 +152,7 @@ public class Addic7edParsingTest
 		epi.getSeries().setDate(Year.of(2012));
 		Release rls = Release.create(epi, "LOL");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("orig"));
+		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -168,7 +168,7 @@ public class Addic7edParsingTest
 		epi.getSeries().setDate(Year.of(2012));
 		Release rls = Release.create(epi, "LOL");
 		Subtitle sub = new Subtitle(epi, "German");
-		sub.setTags(Tag.tags("C", "updated"));
+		sub.setTags(Tag.list("C", "updated"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -183,7 +183,7 @@ public class Addic7edParsingTest
 		Episode epi = Episode.createSeasonedEpisode("Psych", 7, 3, "Lassie Jerky");
 		Release rls = Release.create(epi, null, "WEB-DL");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("orig"));
+		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -244,7 +244,7 @@ public class Addic7edParsingTest
 		epi.getSeries().getCountriesOfOrigin().add("US");
 		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
 		Subtitle sub = new Subtitle(epi, "French");
-		sub.setTags(Tag.tags("orig"));
+		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
 
@@ -260,7 +260,7 @@ public class Addic7edParsingTest
 		Release rls1 = Release.create(epi, "KILLERS");
 		Release rls2 = Release.create(epi, "MSD");
 		Subtitle sub = new Subtitle(epi, "English");
-		sub.setTags(Tag.tags("C", "orig"));
+		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(sub, ImmutableSet.of(rls1, rls2));
 
