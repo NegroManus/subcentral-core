@@ -68,9 +68,9 @@ public class ParsingPlayground
 
 		List<Compatibility> compatibilities = new ArrayList<>();
 		compatibilities.add(new Compatibility(new Group("LOL"),
-				Tag.tags("HDTV", "x264"),
+				Tag.list("HDTV", "x264"),
 				new Group("DIMENSION"),
-				Tag.tags("720p", "HDTV", "x264"),
+				Tag.list("720p", "HDTV", "x264"),
 				Scope.IF_EXISTS,
 				true));
 

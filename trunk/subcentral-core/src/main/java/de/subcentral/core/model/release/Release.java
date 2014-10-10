@@ -79,7 +79,7 @@ public class Release implements Comparable<Release>
 		{
 			rls.setGroup(new Group(group));
 		}
-		rls.setTags(Tag.tags(tags));
+		rls.setTags(Tag.list(tags));
 		return rls;
 	}
 

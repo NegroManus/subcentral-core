@@ -30,7 +30,7 @@ public class Tag implements Comparable<Tag>
 	 */
 	public static final String					CATEGORY_META	= "META";
 
-	public static List<Tag> tags(Collection<String> tags)
+	public static List<Tag> list(Collection<String> tags)
 	{
 		if (tags.isEmpty())
 		{
@@ -44,7 +44,7 @@ public class Tag implements Comparable<Tag>
 		return tagList;
 	}
 
-	public static List<Tag> tags(String... tags)
+	public static List<Tag> list(String... tags)
 	{
 		if (tags.length == 0)
 		{
