@@ -41,6 +41,7 @@ import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
+import de.subcentral.support.xrel.XRelLookup;
 import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
@@ -63,16 +64,13 @@ public class ParsingPlayground
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
 		lookup = new PreDbMeLookup();
-		// lookup = new XRelLookup();
+		lookup = new XRelLookup();
 		// lookup = new OrlyDbLookup();
 
 		List<Compatibility> compatibilities = new ArrayList<>();
-		compatibilities.add(new Compatibility(new Group("LOL"),
-				Tag.list("HDTV", "x264"),
-				new Group("DIMENSION"),
-				Tag.list("720p", "HDTV", "x264"),
-				Scope.IF_EXISTS,
-				true));
+		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",
+				"HDTV",
+				"x264"), Scope.IF_EXISTS, true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
