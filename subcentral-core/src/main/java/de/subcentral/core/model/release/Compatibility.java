@@ -2,11 +2,14 @@ package de.subcentral.core.model.release;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
+
+import de.subcentral.core.model.media.Media;
 
 public class Compatibility
 {
@@ -20,14 +23,16 @@ public class Compatibility
 		NONE, FORWARD, BACKWARD;
 	}
 
-	private final Group		sourceGroup;
-	private final List<Tag>	sourceTags;
-	private final Group		compatibleGroup;
-	private final List<Tag>	compatibleTags;
-	private final Scope		scope;
-	private final boolean	bidirectional;
+	private final Predicate<List<Media>>	mediaFilter;
+	private final Group						sourceGroup;
+	private final List<Tag>					sourceTags;
+	private final Group						compatibleGroup;
+	private final List<Tag>					compatibleTags;
+	private final Scope						scope;
+	private final boolean					bidirectional;
 
-	public Compatibility(Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup, List<Tag> compatibleTags, Scope scope, boolean bidirectional)
+	public Compatibility(Predicate<List<Media>> mediaFilter, Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup,
+			List<Tag> compatibleTags, Scope scope, boolean bidirectional)
 	{
 		if (sourceGroup == null && sourceTags == null)
 		{
@@ -37,12 +42,18 @@ public class Compatibility
 		{
 			throw new IllegalArgumentException("Either compatibleGroup or compatibleTags must not be null");
 		}
+		this.mediaFilter = mediaFilter;
 		this.sourceGroup = sourceGroup;
 		this.sourceTags = sourceTags;
 		this.compatibleGroup = compatibleGroup;
 		this.compatibleTags = compatibleTags;
 		this.scope = Objects.requireNonNull(scope, "scope");
 		this.bidirectional = bidirectional;
+	}
+
+	public Predicate<List<Media>> getMediaFilter()
+	{
+		return mediaFilter;
 	}
 
 	public Group getSourceGroup()
@@ -81,14 +92,17 @@ public class Compatibility
 		{
 			return MatchDirection.NONE;
 		}
-		if ((sourceGroup == null || sourceGroup.equals(rls.getGroup())) && (sourceTags == null || sourceTags.equals(rls.getTags())))
+		if (mediaFilter == null || mediaFilter.test(rls.getMedia()))
 		{
-			return MatchDirection.FORWARD;
-		}
-		if (bidirectional && (compatibleGroup == null || compatibleGroup.equals(rls.getGroup()))
-				&& (compatibleTags == null || compatibleTags.equals(rls.getTags())))
-		{
-			return MatchDirection.BACKWARD;
+			if ((sourceGroup == null || sourceGroup.equals(rls.getGroup())) && (sourceTags == null || sourceTags.equals(rls.getTags())))
+			{
+				return MatchDirection.FORWARD;
+			}
+			if (bidirectional && (compatibleGroup == null || compatibleGroup.equals(rls.getGroup()))
+					&& (compatibleTags == null || compatibleTags.equals(rls.getTags())))
+			{
+				return MatchDirection.BACKWARD;
+			}
 		}
 		return MatchDirection.NONE;
 	}
@@ -124,7 +138,8 @@ public class Compatibility
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Compatibility o = (Compatibility) obj;
-			return new EqualsBuilder().append(sourceGroup, o.sourceGroup)
+			return new EqualsBuilder().append(mediaFilter, o.mediaFilter)
+					.append(sourceGroup, o.sourceGroup)
 					.append(sourceTags, o.sourceTags)
 					.append(compatibleGroup, o.compatibleGroup)
 					.append(compatibleTags, o.compatibleTags)
@@ -138,7 +153,8 @@ public class Compatibility
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(13, 67).append(sourceGroup)
+		return new HashCodeBuilder(13, 67).append(mediaFilter)
+				.append(sourceGroup)
 				.append(sourceTags)
 				.append(compatibleGroup)
 				.append(compatibleTags)
@@ -152,6 +168,7 @@ public class Compatibility
 	{
 		return MoreObjects.toStringHelper(Compatibility.class)
 				.omitNullValues()
+				.add("mediaFilter", mediaFilter)
 				.add("sourceGroup", sourceGroup)
 				.add("sourceTags", sourceTags)
 				.add("compatibleGroup", compatibleGroup)
