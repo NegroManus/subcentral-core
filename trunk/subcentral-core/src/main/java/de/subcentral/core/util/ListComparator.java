@@ -5,67 +5,66 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
-
-import de.subcentral.core.Settings;
 
 public class ListComparator<T> implements Comparator<List<T>>, Serializable
 {
 	private static final long	serialVersionUID	= 6378870942944289614L;
 
-	public static <T> ListComparator<T> create(Comparator<T> comparator)
+	public static final <T> ListComparator<T> create(Comparator<T> comparator)
 	{
-		return new ListComparator<>(comparator);
+		// if item1 or item2 is null, then the corresponding list is shorter
+		// and if all values before were equal, the shorter list is considered less.
+		// Therefore, "nullsFirst()".
+		return new ListComparator<T>(Ordering.from(Objects.requireNonNull(comparator, "comparator")).nullsFirst());
 	}
 
-	public static <T extends Comparable<T>> ListComparator<T> create()
+	public static final <T extends Comparable<T>> ListComparator<T> create()
 	{
-		return new ListComparator<>(Ordering.natural());
+		return new ListComparator<T>(Ordering.natural().nullsFirst());
 	}
 
-	private final Comparator<T>	comparator;
+	private final Ordering<T>	ordering;
 
-	private ListComparator(Comparator<T> comparator)
+	private ListComparator(Ordering<T> ordering)
 	{
-		this.comparator = Objects.requireNonNull(comparator);
+		this.ordering = ordering;
 	}
 
 	@Override
-	public int compare(List<T> o1, List<T> o2)
+	public int compare(List<T> list1, List<T> list2)
 	{
-		ComparisonChain chain = ComparisonChain.start();
-		for (int i = 0; i < Math.max(o1.size(), o2.size()); i++)
+		if (list1.isEmpty() && list2.isEmpty())
 		{
-			T item1;
+			return 0;
+		}
+		int result = 0;
+		T item1;
+		T item2;
+		for (int i = 0; i < Math.max(list1.size(), list2.size()); i++)
+		{
 			try
 			{
-				item1 = o1.get(i);
+				item1 = list1.get(i);
 			}
 			catch (IndexOutOfBoundsException e)
 			{
 				item1 = null;
 			}
-			T item2;
 			try
 			{
-				item2 = o2.get(i);
+				item2 = list2.get(i);
 			}
 			catch (IndexOutOfBoundsException e)
 			{
 				item2 = null;
 			}
-			// if item1 or item2 is null, then the corresponding list is shorter
-			// and if all values before were equal, the shorter list is considered less.
-			// Therefore, "nullsFirst()".
-			chain.compare(item1, item2, Settings.createDefaultOrdering(comparator));
-
-			// if one of the list has ended, no more comparison is needed
-			if (item1 == null || item2 == null)
+			result = ordering.compare(item1, item2);
+			if (result != 0)
 			{
-				break;
+				return result;
 			}
 		}
-		return chain.result();
+		return 0;
 	}
 }
