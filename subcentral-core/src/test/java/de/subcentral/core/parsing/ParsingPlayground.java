@@ -32,7 +32,6 @@ import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7ed.Addic7ed;
-import de.subcentral.support.predbme.PreDbMeLookup;
 import de.subcentral.support.scene.Scene;
 import de.subcentral.support.subcentral.SubCentral;
 import de.subcentral.support.winrar.WinRar;
@@ -41,17 +40,37 @@ import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
-import de.subcentral.support.xrel.XRelLookup;
 import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
 {
+	/**
+	 * To specify other watch folder than "<user.home>/Downloads", add argument "watchFolder="D:\Downloads".
+	 * 
+	 * If behind proxy, add VM args:
+	 * 
+	 * <pre>
+	 * -Dhttp.proxyHost=10.206.247.65
+	 * -Dhttp.proxyHost=10.206.247.65
+	 * </pre>
+	 * 
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args)
 	{
-		// System.getProperties().put("http.proxyHost", "10.206.247.65");
-		// System.getProperties().put("http.proxyPort", "8080");
-		Path dlFolder = Paths.get(System.getProperty("user.home"), "Downloads");
-		dlFolder = Paths.get("D:\\Downloads");
+		Path watchFolder = null;
+		for (String arg : args)
+		{
+			if (arg.startsWith("watchFolder="))
+			{
+				watchFolder = Paths.get(arg.substring(12));
+			}
+		}
+		if (watchFolder == null)
+		{
+			watchFolder = Paths.get(System.getProperty("user.home"), "Downloads");
+		}
 
 		long totalStart = System.nanoTime();
 
@@ -63,8 +82,6 @@ public class ParsingPlayground
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
-		lookup = new PreDbMeLookup();
-		lookup = new XRelLookup();
 		// lookup = new OrlyDbLookup();
 
 		List<Compatibility> compatibilities = new ArrayList<>();
@@ -79,8 +96,8 @@ public class ParsingPlayground
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
-		System.out.println(dlFolder);
-		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dlFolder))
+		System.out.println(watchFolder);
+		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(watchFolder))
 		{
 			for (Path path : directoryStream)
 			{
