@@ -104,6 +104,7 @@ public class ParsingPlayground
 				Path fileName = path.getFileName();
 				if (Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && fileName.toString().toLowerCase(Locale.getDefault()).endsWith(".srt"))
 				{
+					long startTotalFile = System.nanoTime();
 					try
 					{
 						System.out.println(fileName);
@@ -193,15 +194,15 @@ public class ParsingPlayground
 							}
 						}
 
-						System.out.println();
-						System.out.println();
-
 					}
 					catch (RuntimeException e)
 					{
 						System.err.println("Exception while processing " + path);
 						e.printStackTrace();
 					}
+					TimeUtil.printDurationMillis("Processing a file", startTotalFile);
+					System.out.println();
+					System.out.println();
 				}
 			}
 		}
