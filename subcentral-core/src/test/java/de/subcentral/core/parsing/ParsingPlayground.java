@@ -193,7 +193,6 @@ public class ParsingPlayground
 								TimeUtil.printDurationMillis("Raring", start);
 							}
 						}
-
 					}
 					catch (RuntimeException e)
 					{
