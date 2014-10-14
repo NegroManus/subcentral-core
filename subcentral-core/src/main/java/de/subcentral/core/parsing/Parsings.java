@@ -35,7 +35,7 @@ public class Parsings
 	public static final String						PATTERN_MEDIA_NAME			= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
 	private final static EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
-	private final static SingleMediaMapper		STANDARD_MEDIA_MAPPER		= new SingleMediaMapper();
+	private final static SingleMediaMapper			STANDARD_MEDIA_MAPPER		= new SingleMediaMapper();
 	private final static ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
 	private final static SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
 	private final static SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
@@ -114,7 +114,11 @@ public class Parsings
 	{
 		for (ConditionalMapper<T> m : mappers)
 		{
-			return m.map(props, propParsingService);
+			T result = m.map(props, propParsingService);
+			if (result != null)
+			{
+				return result;
+			}
 		}
 		throw new MappingException("No conditional mapper could map", props, null);
 	}

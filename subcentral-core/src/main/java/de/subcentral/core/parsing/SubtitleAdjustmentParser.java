@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import com.google.common.base.Splitter;
 
@@ -101,7 +100,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		if (groupStr != null)
 		{
 			// if the group string contains several groups separated by comma (e.g. "KILLERS, MSD")
-			List<String> groups = Splitter.on(Pattern.compile("[\\s,]+")).splitToList(groupStr);
+			List<String> groups = Splitter.on(',').omitEmptyStrings().trimResults().splitToList(groupStr);
 			if (groups.size() > 1)
 			{
 				matchingReleases = new HashSet<>(groups.size());
