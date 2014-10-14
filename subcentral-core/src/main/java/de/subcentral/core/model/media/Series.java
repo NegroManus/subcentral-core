@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -109,8 +108,7 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 
 	public void setFinaleDate(Temporal finaleDate)
 	{
-		Models.validateTemporalClass(finaleDate);
-		this.finaleDate = finaleDate;
+		this.finaleDate = Models.validateTemporalClass(finaleDate);
 	}
 
 	@Override
@@ -147,7 +145,6 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 
 	public void setOriginalLanguages(List<String> originalLanguages)
 	{
-		Validate.notNull(originalLanguages, "originalLanguages cannot be null");
 		this.originalLanguages.clear();
 		this.originalLanguages.addAll(originalLanguages);
 	}
@@ -160,7 +157,6 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 
 	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
-		Validate.noNullElements(countriesOfOrigin);
 		this.countriesOfOrigin.clear();
 		this.countriesOfOrigin.addAll(countriesOfOrigin);
 	}
@@ -183,7 +179,6 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 
 	public void setGenres(Set<String> genres)
 	{
-		Validate.noNullElements(genres);
 		this.genres.clear();
 		this.genres.addAll(genres);
 	}
@@ -228,7 +223,6 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 
 	public void setSeasons(List<Season> seasons)
 	{
-		Validate.notNull(seasons);
 		this.seasons.clear();
 		this.seasons.addAll(seasons);
 	}
@@ -266,7 +260,6 @@ public class Series extends MediaBase implements AvMediaCollection<Episode>, Com
 
 	public void setEpisodes(List<Episode> episodes)
 	{
-		Validate.noNullElements(episodes);
 		this.episodes.clear();
 		this.episodes.addAll(episodes);
 	}

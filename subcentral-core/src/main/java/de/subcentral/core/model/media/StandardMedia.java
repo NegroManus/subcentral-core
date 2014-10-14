@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -99,7 +98,6 @@ public class StandardMedia extends MediaBase
 
 	public void setGenres(Set<String> genres)
 	{
-		Validate.noNullElements(genres);
 		this.genres.clear();
 		this.genres.addAll(genres);
 	}
@@ -112,7 +110,6 @@ public class StandardMedia extends MediaBase
 
 	public void setOriginalLanguages(List<String> originalLanguages)
 	{
-		Validate.noNullElements(originalLanguages);
 		this.originalLanguages.clear();
 		this.originalLanguages.addAll(originalLanguages);
 	}
@@ -125,7 +122,6 @@ public class StandardMedia extends MediaBase
 
 	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
 	{
-		Validate.noNullElements(countriesOfOrigin);
 		this.countriesOfOrigin.clear();
 		this.countriesOfOrigin.addAll(countriesOfOrigin);
 	}

@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.Validate;
-
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 
@@ -41,8 +39,7 @@ public abstract class MediaBase implements Media
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		Models.validateTemporalClass(date);
-		this.date = date;
+		this.date = Models.validateTemporalClass(date);
 	}
 
 	@Override
@@ -64,7 +61,6 @@ public abstract class MediaBase implements Media
 
 	public void setCoverUrls(List<String> coverUrls)
 	{
-		Validate.noNullElements(coverUrls);
 		this.coverUrls.clear();
 		this.coverUrls.addAll(coverUrls);
 	}
@@ -88,7 +84,6 @@ public abstract class MediaBase implements Media
 
 	public void setContributions(List<Contribution> contributions)
 	{
-		Validate.noNullElements(contributions);
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}
@@ -101,7 +96,6 @@ public abstract class MediaBase implements Media
 
 	public void setFurtherInfoUrls(Set<String> furtherInfoUrls)
 	{
-		Validate.noNullElements(furtherInfoUrls);
 		this.furtherInfoUrls.clear();
 		this.furtherInfoUrls.addAll(furtherInfoUrls);
 	}
