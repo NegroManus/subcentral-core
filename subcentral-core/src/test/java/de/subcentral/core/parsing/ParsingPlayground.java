@@ -82,7 +82,6 @@ public class ParsingPlayground
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
-		// lookup = new OrlyDbLookup();
 
 		List<Compatibility> compatibilities = new ArrayList<>();
 		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",

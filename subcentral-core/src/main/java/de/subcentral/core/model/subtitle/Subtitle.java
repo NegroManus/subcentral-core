@@ -3,6 +3,7 @@ package de.subcentral.core.model.subtitle;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -416,7 +417,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		{
 			Subtitle o = (Subtitle) obj;
 			return new EqualsBuilder().append(media, o.media)
-					.append(language, o.language)
+					.append(StringUtils.lowerCase(language), StringUtils.lowerCase(o.language))
 					.append(hearingImpaired, o.hearingImpaired)
 					.append(foreignParts, o.foreignParts)
 					.append(tags, o.tags)
@@ -432,12 +433,12 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public int hashCode()
 	{
 		return new HashCodeBuilder(37, 99).append(media)
-				.append(language)
+				.append(StringUtils.lowerCase(language))
 				.append(hearingImpaired)
 				.append(foreignParts)
 				.append(tags)
 				.append(group)
-				.append(source)
+				.append(StringUtils.lowerCase(source))
 				.append(version)
 				.toHashCode();
 	}
@@ -456,7 +457,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.compare(foreignParts, o.foreignParts)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group)
-				.compare(source, o.source)
+				.compare(StringUtils.lowerCase(source), StringUtils.lowerCase(o.source))
 				.compare(version, version)
 				.result();
 	}

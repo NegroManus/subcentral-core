@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -423,7 +424,7 @@ public class Release implements Comparable<Release>
 	{
 		if (name != null)
 		{
-			return new HashCodeBuilder(45, 3).append(name).toHashCode();
+			return new HashCodeBuilder(45, 3).append(name.toLowerCase(Locale.getDefault())).toHashCode();
 		}
 		return new HashCodeBuilder(45, 7).append(media).append(group).append(tags).toHashCode();
 	}

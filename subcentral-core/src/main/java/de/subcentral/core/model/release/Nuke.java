@@ -2,6 +2,7 @@ package de.subcentral.core.model.release;
 
 import java.time.temporal.Temporal;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -47,7 +48,7 @@ public class Nuke implements Comparable<Nuke>
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Nuke o = (Nuke) obj;
-			return new EqualsBuilder().append(reason, o.reason).append(date, o.date).isEquals();
+			return new EqualsBuilder().append(StringUtils.lowerCase(reason), StringUtils.lowerCase(o.reason)).append(date, o.date).isEquals();
 		}
 		return false;
 	}
@@ -55,7 +56,7 @@ public class Nuke implements Comparable<Nuke>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(9, 71).append(reason).append(date).toHashCode();
+		return new HashCodeBuilder(9, 71).append(StringUtils.lowerCase(reason)).append(date).toHashCode();
 	}
 
 	@Override

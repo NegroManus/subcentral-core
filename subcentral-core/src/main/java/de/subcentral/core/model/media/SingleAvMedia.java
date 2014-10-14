@@ -1,7 +1,6 @@
 package de.subcentral.core.model.media;
 
-import java.util.Objects;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -74,7 +73,7 @@ public class SingleAvMedia extends SingleMedia implements AvMedia
 		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
-			return Objects.equals(name, ((SingleAvMedia) obj).name);
+			return StringUtils.equalsIgnoreCase(name, ((SingleAvMedia) obj).name);
 		}
 		return false;
 	}
@@ -82,7 +81,7 @@ public class SingleAvMedia extends SingleMedia implements AvMedia
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(67, 65).append(name).toHashCode();
+		return new HashCodeBuilder(67, 65).append(StringUtils.lowerCase(name)).toHashCode();
 	}
 
 	@Override

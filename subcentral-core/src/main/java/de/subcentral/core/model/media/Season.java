@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -196,7 +197,10 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Season o = (Season) obj;
-			return new EqualsBuilder().append(series, o.series).append(number, o.number).append(title, o.title).isEquals();
+			return new EqualsBuilder().append(series, o.series)
+					.append(number, o.number)
+					.append(StringUtils.lowerCase(title), StringUtils.lowerCase(o.title))
+					.isEquals();
 		}
 		return false;
 	}
@@ -204,7 +208,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(5, 13).append(series).append(number).append(title).toHashCode();
+		return new HashCodeBuilder(5, 13).append(series).append(number).append(StringUtils.lowerCase(title)).toHashCode();
 	}
 
 	@Override

@@ -3,9 +3,9 @@ package de.subcentral.core.model.media;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -35,8 +35,7 @@ public class SingleMedia extends AbstractMedia
 	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(SingleMedia.class, PropNames.COVER_URLS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SingleMedia.class,
-																						PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SingleMedia.class, PropNames.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.FURTHER_INFO_URLS);
 
@@ -149,7 +148,7 @@ public class SingleMedia extends AbstractMedia
 		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
-			return Objects.equals(name, ((SingleMedia) obj).name);
+			return StringUtils.equalsIgnoreCase(name, ((SingleMedia) obj).name);
 		}
 		return false;
 	}
@@ -157,7 +156,7 @@ public class SingleMedia extends AbstractMedia
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(17, 23).append(name).toHashCode();
+		return new HashCodeBuilder(17, 23).append(StringUtils.lowerCase(name)).toHashCode();
 	}
 
 	@Override
