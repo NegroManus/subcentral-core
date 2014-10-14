@@ -7,12 +7,7 @@ import de.subcentral.core.Settings;
 
 public class Group implements Comparable<Group>
 {
-	private String	name;
-
-	public Group()
-	{
-
-	}
+	private final String	name;
 
 	public Group(String name)
 	{
@@ -22,11 +17,6 @@ public class Group implements Comparable<Group>
 	public String getName()
 	{
 		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
 	}
 
 	@Override

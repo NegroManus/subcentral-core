@@ -370,15 +370,15 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 						for (Element nukeLi : nukeLis)
 						{
 							String nukeReason = nukeLi.getElementsByClass("nuked").first().text();
-							Nuke nuke = new Nuke(nukeReason);
+							ZonedDateTime nukeDate = null;
 							Element nukeTimeSpan = nukeLi.getElementsByClass("nuke-time").first();
 							if (nukeTimeSpan != null)
 							{
 								double nukeTimeEpochSeconds = Double.parseDouble(nukeTimeSpan.attr("data"));
 								long nukeTimeEpochMillis = (long) nukeTimeEpochSeconds * 1000L;
-								nuke.setDate(ZonedDateTime.ofInstant(Instant.ofEpochMilli(nukeTimeEpochMillis), TIME_ZONE));
+								nukeDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(nukeTimeEpochMillis), TIME_ZONE);
 							}
-							nukes.add(nuke);
+							nukes.add(new Nuke(nukeReason, nukeDate));
 						}
 						rls.setNukes(nukes);
 					}

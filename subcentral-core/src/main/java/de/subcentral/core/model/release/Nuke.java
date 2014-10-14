@@ -13,23 +13,18 @@ import de.subcentral.core.model.Models;
 
 public class Nuke implements Comparable<Nuke>
 {
-	private String		reason;
-	private Temporal	date;
-
-	public Nuke()
-	{
-
-	}
+	private final String	reason;
+	private final Temporal	date;
 
 	public Nuke(String reason)
 	{
-		this.reason = reason;
+		this(reason, null);
 	}
 
-	public Nuke(String reason, Temporal date)
+	public Nuke(String reason, Temporal date) throws IllegalArgumentException
 	{
 		this.reason = reason;
-		this.date = date;
+		this.date = Models.validateTemporalClass(date);
 	}
 
 	public String getReason()
@@ -37,20 +32,9 @@ public class Nuke implements Comparable<Nuke>
 		return reason;
 	}
 
-	public void setReason(String reason)
-	{
-		this.reason = reason;
-	}
-
 	public Temporal getDate()
 	{
 		return date;
-	}
-
-	public void setDate(Temporal date) throws IllegalArgumentException
-	{
-		Models.validateTemporalClass(date);
-		this.date = date;
 	}
 
 	@Override

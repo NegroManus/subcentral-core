@@ -63,21 +63,24 @@ public class Releases
 			Tag tag = iter.next();
 			if ("X264".equals(tag.getName()))
 			{
-				tag.setName("x264");
+				iter.set(new Tag("x264"));
 			}
 			else if (lastTag != null)
 			{
 				// DD5, 1 -> DD5.1
 				if ("1".equals(tag.getName()) && "DD5".equals(lastTag.getName()))
 				{
-					lastTag.setName("DD5.1");
 					iter.remove();
+					iter.previous();
+					iter.set(new Tag("DD5.1"));
+
 				}
 				// H, 264 -> H.264
 				else if ("264".equals(tag.getName()) && "H".equals(lastTag.getName()))
 				{
-					lastTag.setName("H.264");
 					iter.remove();
+					iter.previous();
+					iter.set(new Tag("H.264"));
 				}
 			}
 			lastTag = tag;
