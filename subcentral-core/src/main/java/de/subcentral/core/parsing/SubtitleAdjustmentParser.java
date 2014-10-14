@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 import com.google.common.base.Splitter;
 
 import de.subcentral.core.model.media.AvMedia;
-import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -30,7 +29,6 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 	{
 		super(domain);
 		mediaMappers.add(new ConditionalMapper<AvMedia>(props -> props.containsKey(Series.PROP_NAME), Parsings.getDefaultEpisodeMapper()));
-		mediaMappers.add(new ConditionalMapper<AvMedia>(props -> props.containsKey(Movie.PROP_NAME), Parsings.getDefaultMovieMapper()));
 	}
 
 	public List<ConditionalMapper<AvMedia>> getMediaMappers()

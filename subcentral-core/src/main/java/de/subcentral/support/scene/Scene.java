@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
@@ -143,8 +142,6 @@ public class Scene
 
 		SimpleStandardizingService ss = new SimpleStandardizingService();
 		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
-		standardizers.put(Episode.class, (Episode e) -> removeDotsInEpisode(e));
-		standardizers.put(Movie.class, (Movie m) -> removeDotsInMovie(m));
 		standardizers.put(Release.class, (Release r) -> Releases.standardizeTags(r));
 		ss.setStandardizers(standardizers.build());
 		rlsParser.setStandardizingService(ss);
@@ -198,41 +195,6 @@ public class Scene
 	public static ListMultimap<Class<?>, Parser<?>> getParsers()
 	{
 		return PARSING_SERVICE.getParsers();
-	}
-
-	public static String removeDots(String text)
-	{
-		return text == null ? null : text.replace('.', ' ');
-	}
-
-	public static Movie removeDotsInMovie(Movie mov)
-	{
-		if (mov == null)
-		{
-			return null;
-		}
-		mov.setName(removeDots(mov.getName()));
-		mov.setTitle(removeDots(mov.getTitle()));
-		return mov;
-	}
-
-	public static Episode removeDotsInEpisode(Episode epi)
-	{
-		if (epi == null)
-		{
-			return null;
-		}
-		epi.setTitle(removeDots(epi.getTitle()));
-		if (epi.isPartOfSeason())
-		{
-			epi.getSeason().setTitle(removeDots(epi.getSeason().getTitle()));
-		}
-		if (epi.getSeries() != null)
-		{
-			epi.getSeries().setName(removeDots(epi.getSeries().getName()));
-			epi.getSeries().setTitle(removeDots(epi.getSeries().getTitle()));
-		}
-		return epi;
 	}
 
 	public static List<MappingMatcher<SimplePropDescriptor>> getAllMatchers()

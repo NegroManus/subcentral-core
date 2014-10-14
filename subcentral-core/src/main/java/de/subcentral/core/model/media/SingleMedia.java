@@ -15,29 +15,29 @@ import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
- * For any media item that has no own class. For audio / video media items see {@link StandardAvMedia}.
+ * For any media item that has no own class. For audio / video media items see {@link SingleAvMedia}.
  *
  */
-public class StandardMedia extends MediaBase
+public class SingleMedia extends AbstractMedia
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(StandardMedia.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(StandardMedia.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE			= new SimplePropDescriptor(StandardMedia.class,
+	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(SingleMedia.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(SingleMedia.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE			= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.MEDIA_CONTENT_TYPE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(StandardMedia.class, PropNames.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(StandardMedia.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(StandardMedia.class,
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE					= new SimplePropDescriptor(SingleMedia.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(SingleMedia.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES			= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(StandardMedia.class,
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN		= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(StandardMedia.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(StandardMedia.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(StandardMedia.class, PropNames.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(StandardMedia.class,
+	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(SingleMedia.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(SingleMedia.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(SingleMedia.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(StandardMedia.class,
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(StandardMedia.class,
+	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(SingleMedia.class,
 																						PropNames.FURTHER_INFO_URLS);
 
 	protected String							name;
@@ -47,12 +47,12 @@ public class StandardMedia extends MediaBase
 	protected final List<String>				countriesOfOrigin				= new ArrayList<>(1);
 	protected final Set<String>					genres							= new HashSet<>(3);
 
-	public StandardMedia()
+	public SingleMedia()
 	{
 
 	}
 
-	public StandardMedia(String name)
+	public SingleMedia(String name)
 	{
 		this.name = name;
 	}
@@ -149,7 +149,7 @@ public class StandardMedia extends MediaBase
 		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
-			return Objects.equals(name, ((StandardMedia) obj).name);
+			return Objects.equals(name, ((SingleMedia) obj).name);
 		}
 		return false;
 	}
@@ -163,7 +163,7 @@ public class StandardMedia extends MediaBase
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(StandardMedia.class)
+		return MoreObjects.toStringHelper(SingleMedia.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

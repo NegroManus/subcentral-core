@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Series;
+import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -20,7 +20,7 @@ public class ReleaseParser extends AbstractMappingParser<Release>
 	{
 		super(domain);
 		mediaMappers.add(new ConditionalMapper<Media>(props -> props.containsKey(Series.PROP_NAME), Parsings.getDefaultEpisodeMapper()));
-		mediaMappers.add(new ConditionalMapper<Media>(props -> props.containsKey(Movie.PROP_NAME), Parsings.getDefaultMovieMapper()));
+		mediaMappers.add(new ConditionalMapper<Media>(props -> props.containsKey(SingleMedia.PROP_NAME), Parsings.getDefaultStandardMediaMapper()));
 	}
 
 	@Override

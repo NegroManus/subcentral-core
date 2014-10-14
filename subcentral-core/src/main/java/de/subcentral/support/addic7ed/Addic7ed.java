@@ -8,9 +8,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
+import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
@@ -225,9 +225,9 @@ public class Addic7ed
 		Pattern p201 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
 		grps201.put(0, SubtitleAdjustment.PROP_NAME);
-		grps201.put(1, Movie.PROP_NAME);
-		grps201.put(2, Movie.PROP_TITLE);
-		grps201.put(3, Movie.PROP_DATE);
+		grps201.put(1, SingleMedia.PROP_NAME);
+		grps201.put(2, SingleMedia.PROP_TITLE);
+		grps201.put(3, SingleMedia.PROP_DATE);
 		grps201.put(4, Release.PROP_TAGS);
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, Subtitle.PROP_TAGS);
@@ -240,7 +240,7 @@ public class Addic7ed
 		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser("addic7ed.com:movie");
 		movieSubParser.setMatchers(movieMatchers.build());
 
-		return ImmutableListMultimap.of(Episode.class, episodeSubParser, Movie.class, movieSubParser);
+		return ImmutableListMultimap.of(Episode.class, episodeSubParser, SingleMedia.class, movieSubParser);
 	}
 
 	public static final ParsingService getParsingService()

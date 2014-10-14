@@ -10,10 +10,10 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.MultiEpisodeHelper;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
+import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
@@ -28,7 +28,7 @@ public class NamingStandards
 
 	// NamingService has to be instantiated first because it is referenced in some namers
 	public static final SimpleNamingService		NAMING_SERVICE				= new SimpleNamingService();
-	public static final Namer<Media>			MEDIA_NAMER					= (m, params) -> m == null ? "" : m.getName();
+	public static final MediaNamer				MEDIA_NAMER					= new MediaNamer();
 	public static final SeriesNamer				SERIES_NAMER				= new SeriesNamer();
 	public static final SeasonNamer				SEASON_NAMER				= new SeasonNamer();
 	public static final SeasonedEpisodeNamer	SEASONED_EPISODE_NAMER		= new SeasonedEpisodeNamer();
@@ -36,7 +36,6 @@ public class NamingStandards
 	public static final DatedEpisodeNamer		DATED_EPISODE_NAMER			= new DatedEpisodeNamer();
 	public static final EpisodeNamer			EPISODE_NAMER				= new EpisodeNamer();
 	public static final MultiEpisodeNamer		MULTI_EPISODE_NAMER			= new MultiEpisodeNamer();
-	public static final MovieNamer				MOVIE_NAMER					= new MovieNamer();
 	public static final SubtitleNamer			SUBTITLE_NAMER				= new SubtitleNamer();
 	public static final ReleaseNamer			RELEASE_NAMER				= new ReleaseNamer();
 	public static final SubtitleAdjustmentNamer	SUBTITLE_ADJUSTMENT_NAMER	= new SubtitleAdjustmentNamer();
@@ -47,6 +46,9 @@ public class NamingStandards
 		Function<Integer, String> seasonNumberToString = n -> String.format("S%02d", n);
 		Function<Temporal, String> yearToString = d -> DateTimeFormatter.ofPattern("'('uuuu')'", Locale.US).format(d);
 		Function<Temporal, String> dateToString = d -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd')'", Locale.US).format(d);
+
+		// MediaNamer
+		MEDIA_NAMER.setPropertyToStringFunctions(ImmutableMap.of(SingleMedia.PROP_DATE, yearToString));
 
 		// Season
 		SEASON_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Season.PROP_NUMBER, seasonNumberToString));
@@ -79,9 +81,6 @@ public class NamingStandards
 				SeparationDefinition.inBetween(Episode.PROP_NUMBER_IN_SERIES, MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, ""),
 				SeparationDefinition.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-")));
 
-		// MovieNamer
-		MOVIE_NAMER.setPropertyToStringFunctions(ImmutableMap.of(Movie.PROP_DATE, yearToString));
-
 		// ReleaseNamer
 		RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
 		RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
@@ -98,7 +97,6 @@ public class NamingStandards
 		allNamers.put(Season.class, SEASON_NAMER);
 		allNamers.put(Episode.class, EPISODE_NAMER);
 		allNamers.put(MultiEpisodeHelper.class, MULTI_EPISODE_NAMER);
-		allNamers.put(Movie.class, MOVIE_NAMER);
 		allNamers.put(Subtitle.class, SUBTITLE_NAMER);
 		allNamers.put(Release.class, RELEASE_NAMER);
 		allNamers.put(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER);

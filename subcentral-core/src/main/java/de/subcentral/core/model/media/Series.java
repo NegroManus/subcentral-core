@@ -17,7 +17,7 @@ import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Series extends MediaBase implements AvMediaCollection<Episode>, Comparable<Series>
+public class Series extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Series>
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Series.class, PropNames.TITLE);
