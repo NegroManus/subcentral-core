@@ -82,11 +82,11 @@ public class Medias
 		}
 	}
 
-	public static void validateMediaContentType(String[] allowedTypes, String mediaContentType) throws IllegalArgumentException
+	public static String validateMediaContentType(String mediaContentType, String... allowedTypes) throws IllegalArgumentException
 	{
 		if (mediaContentType == null || ArrayUtils.contains(allowedTypes, mediaContentType))
 		{
-			return;
+			return mediaContentType;
 		}
 		throw new IllegalArgumentException("mediaContentType must be null or one of " + Arrays.toString(allowedTypes));
 	}
