@@ -50,16 +50,16 @@ public class Release implements Comparable<Release>
 
 	private String								name;
 	// In 99,9% of the cases, there is only one Media per Release
-	private List<Media>							media			= new ArrayList<>(1);
+	private final List<Media>					media			= new ArrayList<>(1);
 	// Normally there are 2 to 4 Tags per Release
-	private List<Tag>							tags			= new ArrayList<>(4);
-	private List<String>						languages		= new ArrayList<>(1);
+	private final List<Tag>						tags			= new ArrayList<>(4);
+	private final List<String>					languages		= new ArrayList<>(1);
 	private Group								group;
 	private String								section;
 	private Temporal							date;
 	private long								size;
 	private int									fileCount;
-	private List<Nuke>							nukes			= new ArrayList<>(0);
+	private final List<Nuke>					nukes			= new ArrayList<>(0);
 	private String								info;
 	private String								infoUrl;
 	private String								source;
@@ -115,15 +115,16 @@ public class Release implements Comparable<Release>
 	public Release(Release rls)
 	{
 		this.name = rls.name;
-		this.media = new ArrayList<>(rls.media);
-		this.languages = new ArrayList<>(rls.languages);
-		this.tags = new ArrayList<>(rls.tags);
+		// just the media references are copied into the new list, no deep copy
+		this.setMedia(rls.media);
+		this.setLanguages(rls.languages);
+		this.setTags(rls.tags);
 		this.group = rls.group;
 		this.date = rls.date;
 		this.section = rls.section;
 		this.size = rls.size;
 		this.fileCount = rls.fileCount;
-		this.nukes = new ArrayList<>(rls.nukes);
+		this.setNukes(rls.nukes);
 		this.info = rls.info;
 		this.infoUrl = rls.infoUrl;
 		this.source = rls.source;
@@ -136,7 +137,6 @@ public class Release implements Comparable<Release>
 	 * 
 	 * @return the name
 	 */
-
 	public String getName()
 	{
 		return name;

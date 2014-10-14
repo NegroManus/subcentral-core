@@ -51,8 +51,7 @@ public class StandardAvMedia extends StandardMedia implements AvMedia
 	@Override
 	public void setMediaContentType(String mediaContentType) throws IllegalArgumentException
 	{
-		Medias.validateMediaContentType(new String[] { Media.MEDIA_CONTENT_TYPE_AUDIO, Media.MEDIA_CONTENT_TYPE_VIDEO }, mediaContentType);
-		super.setMediaContentType(mediaContentType);
+		super.setMediaContentType(Medias.validateMediaContentType(mediaContentType, Media.MEDIA_CONTENT_TYPE_AUDIO, Media.MEDIA_CONTENT_TYPE_VIDEO));
 	}
 
 	@Override
