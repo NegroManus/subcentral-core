@@ -32,7 +32,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode01", adj, name);
 	}
@@ -47,7 +48,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode02", adj, name);
 	}
@@ -62,7 +64,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode03", adj, name);
 	}
@@ -77,7 +80,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "Dutch");
 		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode04", adj, name);
 	}
@@ -92,7 +96,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode05", adj, name);
 	}
@@ -108,7 +113,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode06", adj, name);
 	}
@@ -123,7 +129,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode07", adj, name);
 	}
@@ -138,7 +145,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode08", adj, name);
 	}
@@ -154,7 +162,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode09", adj, name);
 	}
@@ -170,7 +179,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "German");
 		sub.setTags(Tag.list("C", "updated"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode10", adj, name);
 	}
@@ -185,7 +195,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode11", adj, name);
 	}
@@ -200,7 +211,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode12", adj, name);
 	}
@@ -215,7 +227,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode13", adj, name);
 	}
@@ -230,7 +243,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode14", adj, name);
 	}
@@ -246,7 +260,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setTags(Tag.list("orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, rls);
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
 		compare("testEpisode15", adj, name);
 	}
@@ -262,7 +277,8 @@ public class Addic7edParsingTest
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setTags(Tag.list("C", "orig"));
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(sub, ImmutableSet.of(rls1, rls2));
+		sub.setSourceUrl("http://www.addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, ImmutableSet.of(rls1, rls2));
 
 		compare("testEpisode16", adj, name);
 	}
