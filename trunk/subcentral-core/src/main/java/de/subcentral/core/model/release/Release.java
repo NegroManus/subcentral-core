@@ -5,7 +5,6 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -73,7 +72,7 @@ public class Release implements Comparable<Release>
 	public static Release create(String name, Media media, String group, String... tags)
 	{
 		Release rls = new Release();
-		rls.setName(name);
+		rls.name = name;
 		rls.setSingleMedia(media);
 		if (group != null)
 		{
@@ -81,7 +80,8 @@ public class Release implements Comparable<Release>
 		}
 		if (tags.length > 0)
 		{
-			rls.setTags(Tag.list(tags));
+			// use addAll and do not add separately so that the list is trimmed to the right size
+			rls.getTags().addAll(Tag.list(tags));
 		}
 		return rls;
 	}
@@ -161,7 +161,6 @@ public class Release implements Comparable<Release>
 
 	public void setMedia(List<Media> media)
 	{
-		Validate.noNullElements(media);
 		this.media.clear();
 		this.media.addAll(media);
 	}
@@ -178,7 +177,6 @@ public class Release implements Comparable<Release>
 
 	public void setLanguages(List<String> languages)
 	{
-		Validate.noNullElements(languages);
 		this.languages.clear();
 		this.languages.addAll(languages);
 	}
@@ -195,7 +193,6 @@ public class Release implements Comparable<Release>
 
 	public void setTags(List<Tag> tags)
 	{
-		Validate.noNullElements(tags);
 		this.tags.clear();
 		this.tags.addAll(tags);
 	}
@@ -243,8 +240,7 @@ public class Release implements Comparable<Release>
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		Models.validateTemporalClass(date);
-		this.date = date;
+		this.date = Models.validateTemporalClass(date);
 	}
 
 	/**
@@ -290,7 +286,6 @@ public class Release implements Comparable<Release>
 
 	public void setNukes(List<Nuke> nukes)
 	{
-		Validate.noNullElements(nukes);
 		this.nukes.clear();
 		this.nukes.addAll(nukes);
 	}

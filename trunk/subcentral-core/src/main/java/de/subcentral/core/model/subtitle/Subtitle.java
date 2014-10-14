@@ -3,7 +3,6 @@ package de.subcentral.core.model.subtitle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -221,7 +220,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public void setTags(List<Tag> tags)
 	{
-		Validate.noNullElements(tags);
 		this.tags.clear();
 		this.tags.addAll(tags);
 	}
@@ -342,7 +340,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public void setContributions(List<Contribution> contributions)
 	{
-		Validate.noNullElements(contributions);
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}

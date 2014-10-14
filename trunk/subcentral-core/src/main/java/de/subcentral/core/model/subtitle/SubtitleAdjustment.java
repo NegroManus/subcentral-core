@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -129,7 +128,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setSubtitles(List<Subtitle> subtitles)
 	{
-		Validate.noNullElements(subtitles);
 		this.subtitles.clear();
 		this.subtitles.addAll(subtitles);
 	}
@@ -141,7 +139,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setMatchingReleases(Collection<? extends Release> matchingReleases)
 	{
-		Validate.noNullElements(matchingReleases);
 		this.matchingReleases.clear();
 		this.matchingReleases.addAll(matchingReleases);
 	}
@@ -153,8 +150,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		Models.validateTemporalClass(date);
-		this.date = date;
+		this.date = Models.validateTemporalClass(date);
 	}
 
 	public long getSize()
@@ -184,7 +180,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setNukes(List<Nuke> nukes)
 	{
-		Validate.noNullElements(nukes);
 		this.nukes.clear();
 		this.nukes.addAll(nukes);
 	}
@@ -197,7 +192,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setContributions(List<Contribution> contributions)
 	{
-		Validate.noNullElements(contributions);
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}
