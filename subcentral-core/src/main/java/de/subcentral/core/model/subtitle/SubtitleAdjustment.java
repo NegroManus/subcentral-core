@@ -328,8 +328,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 				.add("subtitles", Models.nullIfEmpty(subtitles))
 				.add("matchingReleases", Models.nullIfEmpty(matchingReleases))
 				.add("date", date)
-				.add("size", size)
-				.add("fileCount", fileCount)
+				.add("size", Models.nullIfZero(size))
+				.add("fileCount", Models.nullIfZero(fileCount))
 				.add("nukes", Models.nullIfEmpty(nukes))
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.toString();

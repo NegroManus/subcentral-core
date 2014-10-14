@@ -237,7 +237,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
-				.add("episodes.size", getEpisodes().size())
 				.toString();
 	}
 }
