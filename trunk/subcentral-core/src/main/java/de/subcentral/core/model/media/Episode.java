@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -337,7 +338,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 					.append(season, o.season)
 					.append(numberInSeason, o.numberInSeason)
 					.append(date, o.date)
-					.append(title, title)
+					.append(StringUtils.lowerCase(title), StringUtils.lowerCase(title))
 					.isEquals();
 		}
 		return false;
@@ -351,7 +352,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 				.append(season)
 				.append(numberInSeason)
 				.append(date)
-				.append(title)
+				.append(StringUtils.lowerCase(title))
 				.toHashCode();
 	}
 

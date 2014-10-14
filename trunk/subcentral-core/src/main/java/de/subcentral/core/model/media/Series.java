@@ -4,9 +4,9 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -334,7 +334,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
-			return Objects.equals(name, ((Series) obj).name);
+			return StringUtils.equalsIgnoreCase(name, ((Series) obj).name);
 		}
 		return false;
 	}
@@ -342,7 +342,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(3, 11).append(name).toHashCode();
+		return new HashCodeBuilder(3, 11).append(StringUtils.lowerCase(name)).toHashCode();
 	}
 
 	@Override
