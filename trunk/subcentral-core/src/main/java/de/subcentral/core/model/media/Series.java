@@ -368,15 +368,15 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("state", state)
 				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
 				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
-				.add("regularRunningTime", regularRunningTime)
+				.add("regularRunningTime", Models.nullIfZero(regularRunningTime))
 				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
 				.add("coverUrls", Models.nullIfEmpty(coverUrls))
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
-				.add("seasons.size", seasons.size())
-				.add("episodes.size", episodes.size())
+				.add("seasons.size", Models.nullIfZero(seasons.size()))
+				.add("episodes.size", Models.nullIfZero(episodes.size()))
 				.toString();
 	}
 }

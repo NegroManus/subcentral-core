@@ -27,6 +27,16 @@ public class Models
 		return c.isEmpty() ? null : c;
 	}
 
+	public static final Integer nullIfZero(int num)
+	{
+		return num == 0 ? null : Integer.valueOf(num);
+	}
+
+	public static final Long nullIfZero(long num)
+	{
+		return num == 0L ? null : Long.valueOf(num);
+	}
+
 	public static final <T> ArrayList<T> copyToArrayList(Collection<T> c, UnaryOperator<T> elementCopier)
 	{
 		if (c.isEmpty())
