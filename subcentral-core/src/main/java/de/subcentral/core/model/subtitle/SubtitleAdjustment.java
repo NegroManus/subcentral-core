@@ -88,26 +88,38 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public SubtitleAdjustment(Subtitle subtitle, Release matchingRelease)
 	{
-		setSingleSubtitle(subtitle);
-		setSingleMatchingRelease(matchingRelease);
+		this(null, subtitle, matchingRelease);
+	}
+
+	public SubtitleAdjustment(String name, Subtitle subtitle, Release matchingRelease)
+	{
+		this.name = name;
+		this.subtitles.add(subtitle);
+		this.matchingReleases.add(matchingRelease);
 	}
 
 	public SubtitleAdjustment(Subtitle subtitle, Collection<Release> matchingReleases)
 	{
-		setSingleSubtitle(subtitle);
-		setMatchingReleases(matchingReleases);
+		this(null, subtitle, matchingReleases);
+	}
+
+	public SubtitleAdjustment(String name, Subtitle subtitle, Collection<Release> matchingReleases)
+	{
+		this.name = name;
+		this.subtitles.add(subtitle);
+		this.matchingReleases.addAll(matchingReleases);
 	}
 
 	public SubtitleAdjustment(List<Subtitle> subtitles, Release matchingRelease)
 	{
-		setSubtitles(subtitles);
-		setSingleMatchingRelease(matchingRelease);
+		this.subtitles.addAll(subtitles);
+		this.matchingReleases.add(matchingRelease);
 	}
 
 	public SubtitleAdjustment(List<Subtitle> subtitles, Collection<Release> matchingReleases)
 	{
-		setSubtitles(subtitles);
-		setMatchingReleases(matchingReleases);
+		this.subtitles.addAll(subtitles);
+		this.matchingReleases.addAll(matchingReleases);
 	}
 
 	public String getName()
