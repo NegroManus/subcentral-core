@@ -9,8 +9,6 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -85,8 +83,6 @@ public class SubCentral
 
 		SimpleStandardizingService ss = new SimpleStandardizingService();
 		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
-		standardizers.put(Episode.class, (Episode e) -> Scene.removeDotsInEpisode(e));
-		standardizers.put(Movie.class, (Movie m) -> Scene.removeDotsInMovie(m));
 		standardizers.put(Release.class, (Release r) -> Releases.standardizeTags(r));
 		standardizers.put(Subtitle.class, (Subtitle s) -> standardizeSubtitleLanguage(s));
 		ss.setStandardizers(standardizers.build());

@@ -21,11 +21,10 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.lookup.AbstractHttpHtmlLookupQuery;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.media.Movie;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.media.StandardAvMedia;
-import de.subcentral.core.model.media.StandardMedia;
+import de.subcentral.core.model.media.SingleAvMedia;
+import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
@@ -478,23 +477,26 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			String section = rls.getSection();
 			if (section.startsWith("Movies"))
 			{
-				media = new Movie(mediaTitle);
+				SingleAvMedia movie = new SingleAvMedia(mediaTitle);
+				movie.setMediaType(Media.MEDIA_TYPE_MOVIE);
+				movie.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+				media = movie;
 			}
 			else if (section.startsWith("Music"))
 			{
-				StandardAvMedia avMediaItem = new StandardAvMedia(mediaTitle);
-				avMediaItem.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
-				media = avMediaItem;
+				SingleAvMedia avMedia = new SingleAvMedia(mediaTitle);
+				avMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
+				media = avMedia;
 			}
 			else if (section.startsWith("TV"))
 			{
-				StandardAvMedia avMediaItem = new StandardAvMedia(mediaTitle);
-				avMediaItem.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
-				media = avMediaItem;
+				SingleAvMedia avMedia = new SingleAvMedia(mediaTitle);
+				avMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+				media = avMedia;
 			}
 			else
 			{
-				media = new StandardMedia(mediaTitle);
+				media = new SingleMedia(mediaTitle);
 			}
 		}
 
@@ -516,26 +518,10 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 				epi.getSeries().getFurtherInfoUrls().addAll(furtherInfoUrls);
 			}
 		}
-		else if (media instanceof Movie)
-		{
-			Movie movie = (Movie) media;
-			if (plot != null)
-			{
-				movie.setDescription(plot);
-			}
-			if (genres != null)
-			{
-				movie.getGenres().addAll(genres);
-			}
-			if (furtherInfoUrls != null)
-			{
-				movie.getFurtherInfoUrls().addAll(furtherInfoUrls);
-			}
-		}
-		else if (media instanceof StandardMedia)
+		else if (media instanceof SingleMedia)
 		{
 			// also for StandardAvMediaItem
-			StandardMedia stdMediaItem = (StandardMedia) media;
+			SingleMedia stdMediaItem = (SingleMedia) media;
 			if (plot != null)
 			{
 				stdMediaItem.setDescription(plot);

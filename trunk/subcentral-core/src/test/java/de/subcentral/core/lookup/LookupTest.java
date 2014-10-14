@@ -3,7 +3,7 @@ package de.subcentral.core.lookup;
 import java.util.List;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Movie;
+import de.subcentral.core.model.media.SingleAvMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.support.predbme.PreDbMeLookup;
 
@@ -15,7 +15,7 @@ public class LookupTest
 		System.getProperties().put("http.proxyPort", "8080");
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 6, 5);
-		Movie movie = new Movie("The Lord of the Rings");
+		SingleAvMedia movie = new SingleAvMedia("The Lord of the Rings");
 		Release rls = Release.create(movie, null, "720p");
 
 		// OrlyDbLookup lookup = new OrlyDbLookup();

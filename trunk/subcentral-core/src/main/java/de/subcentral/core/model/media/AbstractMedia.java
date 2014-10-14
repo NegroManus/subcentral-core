@@ -9,7 +9,7 @@ import java.util.Set;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 
-public abstract class MediaBase implements Media
+public abstract class AbstractMedia implements Media
 {
 	protected String					title;
 	protected Temporal					date;
