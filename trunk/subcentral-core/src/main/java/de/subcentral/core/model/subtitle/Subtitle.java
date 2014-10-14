@@ -41,7 +41,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final SimplePropDescriptor	PROP_SOURCE_URL				= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE_URL);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
 
-	public static final Tag						TAG_HEARING_IMPAIRED		= new Tag("HI", "Hearing Impaired", Tag.CATEGORY_FORMAT);
+	public static final Tag						TAG_HEARING_IMPAIRED		= new Tag("HI", "Hearing Impaired");
 
 	/**
 	 * If a transcript was the source of the subtitle.

@@ -79,7 +79,10 @@ public class Release implements Comparable<Release>
 		{
 			rls.setGroup(new Group(group));
 		}
-		rls.setTags(Tag.list(tags));
+		if (tags.length > 0)
+		{
+			rls.setTags(Tag.list(tags));
+		}
 		return rls;
 	}
 
@@ -107,6 +110,24 @@ public class Release implements Comparable<Release>
 		setMedia(media);
 		setTags(tags);
 		this.group = group;
+	}
+
+	public Release(Release rls)
+	{
+		this.name = rls.name;
+		this.media = new ArrayList<>(rls.media);
+		this.languages = new ArrayList<>(rls.languages);
+		this.tags = new ArrayList<>(rls.tags);
+		this.group = rls.group;
+		this.date = rls.date;
+		this.section = rls.section;
+		this.size = rls.size;
+		this.fileCount = rls.fileCount;
+		this.nukes = new ArrayList<>(rls.nukes);
+		this.info = rls.info;
+		this.infoUrl = rls.infoUrl;
+		this.source = rls.source;
+		this.sourceUrl = rls.sourceUrl;
 	}
 
 	/**
@@ -391,7 +412,7 @@ public class Release implements Comparable<Release>
 			Release o = (Release) obj;
 			if (name != null && o.name != null)
 			{
-				return name.equals(o.name);
+				return name.equalsIgnoreCase(o.name);
 			}
 			return new EqualsBuilder().append(media, o.media).append(group, o.group).append(tags, o.tags).isEquals();
 		}

@@ -13,22 +13,27 @@ import de.subcentral.core.util.ListComparator;
 
 public class Tag implements Comparable<Tag>
 {
-	public static final Comparator<List<Tag>>	TAGS_COMPARATOR	= ListComparator.create();
+	public static final Comparator<List<Tag>>	TAGS_COMPARATOR		= ListComparator.create();
 
 	/**
 	 * Tags describing the source. Like HDTV, BluRay, BDRip, DVDRip, ...
 	 */
-	public static final String					CATEGORY_SOURCE	= "SOURCE";
+	public static final String					CATEGORY_SOURCE		= "SOURCE";
 
 	/**
-	 * Tags describing the format. Like x264, XviD, DD5.1, AC3, 720p, 1080p, (subtitle tags), (language tags), ...
+	 * Tags describing the format. Like x264, XviD, DD5.1, AC3, 720p, 1080p, (subtitle tags), ... Not including the language tags.
 	 */
-	public static final String					CATEGORY_FORMAT	= "FORMAT";
+	public static final String					CATEGORY_FORMAT		= "FORMAT";
+
+	/**
+	 * Language tags. Like German, GERMAN.CUSTOM.SUBBED, NLSUBBED, ...
+	 */
+	public static final String					CATEGORY_LANGUAGE	= "LANGUAGE";
 
 	/**
 	 * Tags for meta information about the release itself. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
 	 */
-	public static final String					CATEGORY_META	= "META";
+	public static final String					CATEGORY_META		= "META";
 
 	public static List<Tag> list(Collection<String> tags)
 	{
@@ -58,25 +63,18 @@ public class Tag implements Comparable<Tag>
 		return tagList;
 	}
 
-	private String	name;
-	private String	longName;
-	private String	category;
-
-	public Tag()
-	{
-
-	}
+	private final String	name;
+	private final String	longName;
 
 	public Tag(String name)
 	{
-		this.name = name;
+		this(name, null);
 	}
 
-	public Tag(String name, String longName, String category)
+	public Tag(String name, String longName)
 	{
 		this.name = name;
 		this.longName = longName;
-		this.category = category;
 	}
 
 	public String getName()
@@ -84,29 +82,9 @@ public class Tag implements Comparable<Tag>
 		return name;
 	}
 
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
 	public String getLongName()
 	{
 		return longName;
-	}
-
-	public void setLongName(String longName)
-	{
-		this.longName = longName;
-	}
-
-	public String getCategory()
-	{
-		return category;
-	}
-
-	public void setCategory(String category)
-	{
-		this.category = category;
 	}
 
 	@Override
