@@ -417,7 +417,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		{
 			Subtitle o = (Subtitle) obj;
 			return new EqualsBuilder().append(media, o.media)
-					.append(StringUtils.lowerCase(language), StringUtils.lowerCase(o.language))
+					.append(StringUtils.equalsIgnoreCase(language, o.language), true)
 					.append(hearingImpaired, o.hearingImpaired)
 					.append(foreignParts, o.foreignParts)
 					.append(tags, o.tags)
