@@ -338,7 +338,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 					.append(season, o.season)
 					.append(numberInSeason, o.numberInSeason)
 					.append(date, o.date)
-					.append(StringUtils.lowerCase(title), StringUtils.lowerCase(title))
+					.append(StringUtils.equalsIgnoreCase(title, o.title), true)
 					.isEquals();
 		}
 		return false;

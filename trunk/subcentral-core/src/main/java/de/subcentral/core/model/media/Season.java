@@ -199,7 +199,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 			Season o = (Season) obj;
 			return new EqualsBuilder().append(series, o.series)
 					.append(number, o.number)
-					.append(StringUtils.lowerCase(title), StringUtils.lowerCase(o.title))
+					.append(StringUtils.equalsIgnoreCase(title, o.title), true)
 					.isEquals();
 		}
 		return false;
