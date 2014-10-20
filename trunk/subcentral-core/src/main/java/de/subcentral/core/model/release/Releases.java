@@ -6,6 +6,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.model.media.Media;
@@ -17,7 +18,14 @@ public class Releases
 {
 	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
-		return rlss.stream().filter(r -> Releases.filter(r, media, containedTags, group, mediaNamingService)).collect(Collectors.toList());
+		if (rlss.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		List<String> requiredMediaNames = media.stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
+		return rlss.stream()
+				.filter(r -> Releases.doFilter(r, requiredMediaNames, containedTags, group, mediaNamingService))
+				.collect(Collectors.toList());
 	}
 
 	public static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
@@ -27,6 +35,16 @@ public class Releases
 			return false;
 		}
 		List<String> requiredMediaNames = media.stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
+		return doFilter(rls, requiredMediaNames, containedTags, group, mediaNamingService);
+	}
+
+	private static boolean doFilter(Release rls, List<String> requiredMediaNames, List<Tag> containedTags, Group group,
+			NamingService mediaNamingService)
+	{
+		if (rls == null)
+		{
+			return false;
+		}
 		List<String> actualMediaNames = rls.getMedia().stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
 
 		return requiredMediaNames.equals(actualMediaNames) && (group == null ? true : group.equals(rls.getGroup()))
