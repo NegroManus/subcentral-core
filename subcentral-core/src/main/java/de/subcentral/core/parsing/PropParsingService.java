@@ -196,13 +196,12 @@ public class PropParsingService
 			{
 				return propClass.cast(propString);
 			}
-			throw new ParsingException("Could not parse property " + propDescriptor + ": no appropriate fromString function registered",
-					propString,
-					propClass);
+			throw new ParsingException(propString, propClass, "Could not parse property " + propDescriptor
+					+ ": no appropriate fromString function registered");
 		}
 		catch (Exception e)
 		{
-			throw new ParsingException("Could not parse property " + propDescriptor, e, propString, propClass);
+			throw new ParsingException(propString, propClass, "Could not parse property " + propDescriptor, e);
 		}
 	}
 }

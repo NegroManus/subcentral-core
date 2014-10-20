@@ -43,7 +43,6 @@ public class Parsings
 	private static final ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
 	private static final SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
 	private static final SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
-	private static final ReleaseParser				RELEASE_PARSER				= new ReleaseParser("default");
 
 	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<? extends E> elementMapper)
 	{
@@ -84,7 +83,7 @@ public class Parsings
 	{
 		if (StringUtils.isBlank(text))
 		{
-			throw new ParsingException("Text is blank", text, null);
+			throw new ParsingException(text, null, "text is blank");
 		}
 	}
 
@@ -141,7 +140,7 @@ public class Parsings
 				return result;
 			}
 		}
-		throw new MappingException("No conditional mapper could map", props, null);
+		throw new MappingException(props, null, "No conditional mapper could map");
 	}
 
 	private Parsings()
