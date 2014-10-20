@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 
@@ -26,6 +25,7 @@ import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.model.subtitle.Subtitles;
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
@@ -141,7 +141,7 @@ public class ParsingPlayground
 
 							start = System.nanoTime();
 							List<Release> filteredReleases = Releases.filter(releases,
-									ImmutableList.of(subAdj.getFirstSubtitle().getMedia()),
+									Subtitles.getMediaFromSubtitles(subAdj),
 									subAdjRls.getTags(),
 									subAdjRls.getGroup(),
 									mediaNsForFiltering);

@@ -6,9 +6,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.naming.NamingService;
@@ -16,14 +18,32 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 
 public class Subtitles
 {
-	public Set<String> generateNames(SubtitleAdjustment subAdj, NamingService namingService)
+	public static Set<String> generateNames(SubtitleAdjustment subAdj, NamingService namingService)
 	{
+		if (subAdj == null || subAdj.getMatchingReleases().isEmpty())
+		{
+			return ImmutableSet.of();
+		}
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
 		for (Release rls : subAdj.getMatchingReleases())
 		{
 			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, rls)));
 		}
 		return names.build();
+	}
+
+	public static List<Media> getMediaFromSubtitles(SubtitleAdjustment subAdj)
+	{
+		if (subAdj == null || subAdj.getSubtitles().isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<Media> media = ImmutableList.builder();
+		for (Subtitle sub : subAdj.getSubtitles())
+		{
+			media.add(sub.getMedia());
+		}
+		return media.build();
 	}
 
 	public static void standardizeTags(Subtitle subtitle)
