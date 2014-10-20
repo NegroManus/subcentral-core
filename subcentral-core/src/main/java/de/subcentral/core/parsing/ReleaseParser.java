@@ -30,7 +30,7 @@ public class ReleaseParser extends AbstractMappingParser<Release>
 	protected Release map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends Media> media = Parsings.tryMap(props, propParsingService, mediaMappers);
+		List<? extends Media> media = Parsings.mapConditionally(mediaMappers, props, propParsingService);
 
 		// Release
 		Release rls = releaseMapper.map(props, propParsingService);

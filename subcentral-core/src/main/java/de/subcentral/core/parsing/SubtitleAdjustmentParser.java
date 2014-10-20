@@ -18,7 +18,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
 {
-	private List<ConditionalMapper<List<? extends AvMedia>>>	mediaMappers				= new ArrayList<>(3);
+	private List<ConditionalMapper<List<? extends AvMedia>>>	mediaMappers				= new ArrayList<>(2);
 	private Mapper<Release>										releaseMapper				= Parsings.getDefaultReleaseMapper();
 	private Mapper<Subtitle>									subtitleMapper				= Parsings.getDefaultSubtitleMapper();
 	private Mapper<SubtitleAdjustment>							subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
@@ -76,7 +76,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends AvMedia> media = Parsings.tryMap(props, propParsingService, mediaMappers);
+		List<? extends AvMedia> media = Parsings.mapConditionally(mediaMappers, props, propParsingService);
 
 		// Release
 		Set<Release> matchingRlss = parseMatchingReleases(props, media);

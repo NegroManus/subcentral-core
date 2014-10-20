@@ -37,12 +37,13 @@ public class Parsings
 	 */
 	public static final String						PATTERN_MEDIA_NAME			= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
-	private final static EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
-	private final static MultiEpisodeMapper			MULTI_EPISODE_MAPPER		= new MultiEpisodeMapper(EPISODE_MAPPER);
-	private final static SingleMediaMapper			SINGLE_MEDIA_MAPPER			= new SingleMediaMapper();
-	private final static ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
-	private final static SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
-	private final static SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
+	private static final EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
+	private static final MultiEpisodeMapper			MULTI_EPISODE_MAPPER		= new MultiEpisodeMapper(EPISODE_MAPPER);
+	private static final SingleMediaMapper			SINGLE_MEDIA_MAPPER			= new SingleMediaMapper();
+	private static final ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
+	private static final SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
+	private static final SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
+	private static final ReleaseParser				RELEASE_PARSER				= new ReleaseParser("default");
 
 	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<? extends E> elementMapper)
 	{
@@ -129,8 +130,8 @@ public class Parsings
 		}
 	}
 
-	public static final <T> T tryMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService,
-			List<ConditionalMapper<T>> conditionalMappers) throws MappingException
+	public static final <T> T mapConditionally(List<ConditionalMapper<T>> conditionalMappers, Map<SimplePropDescriptor, String> props,
+			PropParsingService propParsingService) throws MappingException
 	{
 		for (ConditionalMapper<T> m : conditionalMappers)
 		{
