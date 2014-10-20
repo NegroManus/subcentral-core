@@ -19,23 +19,26 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
 {
-	private List<ConditionalMapper<AvMedia>>	mediaMappers				= new ArrayList<>(2);
-	private Mapper<Release>						releaseMapper				= Parsings.getDefaultReleaseMapper();
-	private Mapper<Subtitle>					subtitleMapper				= Parsings.getDefaultSubtitleMapper();
-	private Mapper<SubtitleAdjustment>			subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
+	private List<ConditionalMapper<List<? extends AvMedia>>>	mediaMappers				= new ArrayList<>(3);
+	private Mapper<Release>										releaseMapper				= Parsings.getDefaultReleaseMapper();
+	private Mapper<Subtitle>									subtitleMapper				= Parsings.getDefaultSubtitleMapper();
+	private Mapper<SubtitleAdjustment>							subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
 
 	public SubtitleAdjustmentParser(String domain)
 	{
 		super(domain);
-		mediaMappers.add(new ConditionalMapper<AvMedia>(props -> props.containsKey(Series.PROP_NAME), Parsings.getDefaultEpisodeMapper()));
+		mediaMappers.add(new ConditionalMapper<List<? extends AvMedia>>(MultiEpisodeMapper::containsMultiEpisode,
+				Parsings.getDefaultMultiEpisodeMapper()));
+		mediaMappers.add(new ConditionalMapper<List<? extends AvMedia>>(props -> props.containsKey(Series.PROP_NAME),
+				Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper())));
 	}
 
-	public List<ConditionalMapper<AvMedia>> getMediaMappers()
+	public List<ConditionalMapper<List<? extends AvMedia>>> getMediaMappers()
 	{
 		return mediaMappers;
 	}
 
-	public void setMediaItemMappers(List<ConditionalMapper<AvMedia>> mediaMappers)
+	public void setMediaMappers(List<ConditionalMapper<List<? extends AvMedia>>> mediaMappers)
 	{
 		this.mediaMappers = mediaMappers;
 	}
@@ -74,26 +77,28 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		AvMedia mediaItem = Parsings.tryMap(props, propParsingService, mediaMappers);
-		Standardizings.mayStandardize(mediaItem, standardizingService);
+		List<? extends AvMedia> media = Parsings.tryMap(props, propParsingService, mediaMappers);
 
 		// Release
-		Set<Release> matchingRlss = parseMatchingReleases(props, mediaItem);
+		Set<Release> matchingRlss = parseMatchingReleases(props, media);
 
 		// Subtitle
-		Subtitle sub = subtitleMapper.map(props, propParsingService);
-		sub.setMedia(mediaItem);
-		Standardizings.mayStandardize(sub, standardizingService);
+		List<Subtitle> subs = new ArrayList<>(media.size());
+		for (AvMedia m : media)
+		{
+			Subtitle sub = subtitleMapper.map(props, propParsingService);
+			sub.setMedia(m);
+			subs.add(sub);
+		}
 
 		// SubtitleAdjustment
 		SubtitleAdjustment subAdj = subtitleAdjustmentMapper.map(props, propParsingService);
-		subAdj.setSingleSubtitle(sub);
-		subAdj.setMatchingReleases(matchingRlss);
-		Standardizings.mayStandardize(subAdj, standardizingService);
+		subAdj.getSubtitles().addAll(subs);
+		subAdj.getMatchingReleases().addAll(matchingRlss);
 		return subAdj;
 	}
 
-	private Set<Release> parseMatchingReleases(Map<SimplePropDescriptor, String> props, AvMedia mediaItem)
+	private Set<Release> parseMatchingReleases(Map<SimplePropDescriptor, String> props, List<? extends AvMedia> media)
 	{
 		Set<Release> matchingReleases;
 		String groupStr = props.get(Release.PROP_GROUP);
@@ -110,7 +115,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 					// overwrite the group value with the current group
 					propsForRls.put(Release.PROP_GROUP, group);
 					Release rlsForGroup = releaseMapper.map(propsForRls, propParsingService);
-					rlsForGroup.getMedia().add(mediaItem);
+					rlsForGroup.getMedia().addAll(media);
 					Standardizings.mayStandardize(rlsForGroup, standardizingService);
 					matchingReleases.add(rlsForGroup);
 				}
@@ -119,7 +124,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		}
 
 		Release singleRelease = releaseMapper.map(props, propParsingService);
-		singleRelease.getMedia().add(mediaItem);
+		singleRelease.getMedia().addAll(media);
 		Standardizings.mayStandardize(singleRelease, standardizingService);
 
 		matchingReleases = new HashSet<>(1);

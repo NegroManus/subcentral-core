@@ -82,6 +82,7 @@ public class ParsingPlayground
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
+		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService(NamingStandards.NAMING_SERVICE, NamingStandards.STANDARD_REPLACER);
 
 		List<Compatibility> compatibilities = new ArrayList<>();
 		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",
@@ -135,10 +136,10 @@ public class ParsingPlayground
 
 							start = System.nanoTime();
 							releases.forEach(r -> Releases.enrichByParsingName(r, ps, false));
-							System.out.println("Parsed releases:");
+							TimeUtil.printDurationMillis("Enriched by parsing", start);
 							releases.forEach(r -> System.out.println(r));
-							DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService(NamingStandards.NAMING_SERVICE,
-									NamingStandards.STANDARD_REPLACER);
+
+							start = System.nanoTime();
 							List<Release> filteredReleases = Releases.filter(releases,
 									ImmutableList.of(subAdj.getFirstSubtitle().getMedia()),
 									subAdjRls.getTags(),

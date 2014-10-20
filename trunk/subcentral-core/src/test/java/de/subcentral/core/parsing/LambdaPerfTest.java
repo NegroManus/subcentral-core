@@ -7,12 +7,12 @@ import de.subcentral.core.util.TimeUtil;
 
 public class LambdaPerfTest
 {
-	public static UnaryOperator<String> STATIC_OP = new UnaryOperator<String>()
+	public static final UnaryOperator<String> STATIC_OP = new UnaryOperator<String>()
 			{
 		@Override
 		public String apply(String t)
 		{
-			return t.toUpperCase().toLowerCase().toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
+			return t.toUpperCase(Locale.getDefault()).toLowerCase(Locale.getDefault()).toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
 		}
 	};
 	
@@ -26,7 +26,7 @@ public class LambdaPerfTest
 			for (String s : strings)
 			{
 				String newStr = doItWithLambdaCapturing(s);
-				//System.out.println(newStr);
+				System.out.println(newStr);
 			}
 		}
 
@@ -38,7 +38,7 @@ public class LambdaPerfTest
 	// 800
 	private static String doItOldFashioned(String string)
 	{
-		return string.toUpperCase().toLowerCase().toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
+		return string.toUpperCase(Locale.getDefault()).toLowerCase(Locale.getDefault()).toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
 	}
 
 	// 120
@@ -46,7 +46,7 @@ public class LambdaPerfTest
 	// 1000
 	private static String doItWithLambda(String string)
 	{
-		UnaryOperator<String> op = s -> s.toUpperCase().toLowerCase().toUpperCase().replaceAll("\\w", "!");
+		UnaryOperator<String> op = s -> s.toUpperCase(Locale.getDefault()).toLowerCase(Locale.getDefault()).toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
 		return op.apply(string);
 	}
 
@@ -65,7 +65,7 @@ public class LambdaPerfTest
 	private static String doItWithLambdaCapturing(String string)
 	{
 		String replacement = "!";
-		UnaryOperator<String> op = s -> s.toUpperCase().toLowerCase().toUpperCase().replaceAll("\\w", replacement);
+		UnaryOperator<String> op = s -> s.toUpperCase(Locale.getDefault()).toLowerCase(Locale.getDefault()).toUpperCase(Locale.getDefault()).replaceAll("\\w", replacement);
 		return op.apply(string);
 	}
 
@@ -79,7 +79,7 @@ public class LambdaPerfTest
 			@Override
 			public String apply(String t)
 			{
-				return t.toUpperCase().toLowerCase().toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
+				return t.toUpperCase(Locale.getDefault()).toLowerCase(Locale.getDefault()).toUpperCase(Locale.getDefault()).replaceAll("\\w", "!");
 			}
 		};
 		return op.apply(string);

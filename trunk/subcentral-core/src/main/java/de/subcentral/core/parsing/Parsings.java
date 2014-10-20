@@ -8,9 +8,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 
 import de.subcentral.core.model.media.Episode;
@@ -35,37 +38,48 @@ public class Parsings
 	public static final String						PATTERN_MEDIA_NAME			= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
 	private final static EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
-	private final static SingleMediaMapper			STANDARD_MEDIA_MAPPER		= new SingleMediaMapper();
+	private final static MultiEpisodeMapper			MULTI_EPISODE_MAPPER		= new MultiEpisodeMapper(EPISODE_MAPPER);
+	private final static SingleMediaMapper			SINGLE_MEDIA_MAPPER			= new SingleMediaMapper();
 	private final static ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
 	private final static SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
 	private final static SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
 
-	public static Mapper<Episode> getDefaultEpisodeMapper()
+	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<? extends E> elementMapper)
+	{
+		return (props, pps) -> ImmutableList.of(elementMapper.map(props, pps));
+	}
+
+	public static final Mapper<Episode> getDefaultEpisodeMapper()
 	{
 		return EPISODE_MAPPER;
 	}
 
-	public static Mapper<SingleMedia> getDefaultStandardMediaMapper()
+	public static MultiEpisodeMapper getDefaultMultiEpisodeMapper()
 	{
-		return STANDARD_MEDIA_MAPPER;
+		return MULTI_EPISODE_MAPPER;
 	}
 
-	public static Mapper<Release> getDefaultReleaseMapper()
+	public static final Mapper<SingleMedia> getDefaultSingleMediaMapper()
+	{
+		return SINGLE_MEDIA_MAPPER;
+	}
+
+	public static final Mapper<Release> getDefaultReleaseMapper()
 	{
 		return RELEASE_MAPPER;
 	}
 
-	public static Mapper<Subtitle> getDefaultSubtitleMapper()
+	public static final Mapper<Subtitle> getDefaultSubtitleMapper()
 	{
 		return SUBTITLE_MAPPER;
 	}
 
-	public static Mapper<SubtitleAdjustment> getDefaultSubtitleAdjustmentMapper()
+	public static final Mapper<SubtitleAdjustment> getDefaultSubtitleAdjustmentMapper()
 	{
 		return SUBTITLE_ADJUSTMENT_MAPPER;
 	}
 
-	public static void requireTextNotBlank(String text) throws ParsingException
+	public static final void requireTextNotBlank(String text) throws ParsingException
 	{
 		if (StringUtils.isBlank(text))
 		{
@@ -73,7 +87,7 @@ public class Parsings
 		}
 	}
 
-	public static <T> void reflectiveMapping(T entity, Map<SimplePropDescriptor, String> props, PropParsingService pps)
+	public static final <T> void reflectiveMapping(T entity, Map<SimplePropDescriptor, String> props, PropParsingService pps)
 	{
 		Objects.requireNonNull(entity, "entity");
 		for (Map.Entry<SimplePropDescriptor, String> p : props.entrySet())
@@ -84,14 +98,20 @@ public class Parsings
 				try
 				{
 					PropertyDescriptor propDescr = simplePropDescr.toPropertyDescriptor();
-					TypeToken<?> type = TypeToken.of(propDescr.getReadMethod().getGenericReturnType());
+					TypeToken<?> type = TypeToken.of(propDescr.getReadMethod().getGenericParameterTypes()[0]);
 					if (Collection.class.isAssignableFrom(type.getRawType()))
 					{
 						ParameterizedType genericType = (ParameterizedType) type.getType();
 						Class<?> itemClass = ((Class<?>) genericType.getActualTypeArguments()[0]);
-						simplePropDescr.toPropertyDescriptor()
-								.getWriteMethod()
-								.invoke(entity, pps.parseList(p.getValue(), simplePropDescr, itemClass));
+						List<?> value = pps.parseList(p.getValue(), simplePropDescr, itemClass);
+						if (Set.class.isAssignableFrom(type.getRawType()))
+						{
+							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(entity, ImmutableSet.copyOf(value));
+						}
+						else
+						{
+							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(value);
+						}
 					}
 					else
 					{
@@ -109,10 +129,10 @@ public class Parsings
 		}
 	}
 
-	public static <T> T tryMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService, List<ConditionalMapper<T>> mappers)
-			throws MappingException
+	public static final <T> T tryMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService,
+			List<ConditionalMapper<T>> conditionalMappers) throws MappingException
 	{
-		for (ConditionalMapper<T> m : mappers)
+		for (ConditionalMapper<T> m : conditionalMappers)
 		{
 			T result = m.map(props, propParsingService);
 			if (result != null)

@@ -27,29 +27,35 @@ import de.subcentral.core.util.TimeUtil;
 
 public class PropParsingService
 {
-	public static final PropParsingService					DEFAULT					= new PropParsingService();
+	public static final PropParsingService					DEFAULT								= new PropParsingService();
 	/**
 	 * The default item splitter. Splits the string into words (pattern {@code "[^\\w-]+"}). Is used by PropParsingService instances if no specific
 	 * item splitter is defined. Common to all instances to save memory.
 	 */
-	public static final Splitter							DEFAULT_ITEM_SPLITTER	= Splitter.onPattern("[^\\w-]+");
+	public static final Splitter							DEFAULT_ITEM_SPLITTER				= Splitter.onPattern("[^\\w-]+");
 
 	/**
 	 * The default map of fromString() functions. If a PropParsingService defines no specific fromString() function for a property or its type, the
 	 * default map is searched. Common to all instances to save memory.
 	 */
-	private static Map<Class<?>, Function<String, ?>>		DEFAULT_TYPE_FROM_STRING_FUNCTIONS;
-	static
+	private static final Map<Class<?>, Function<String, ?>>	DEFAULT_TYPE_FROM_STRING_FUNCTIONS	= initDefaultTypeFromStringFunctions();
+
+	private static final Map<Class<?>, Function<String, ?>> initDefaultTypeFromStringFunctions()
 	{
 		ImmutableMap.Builder<Class<?>, Function<String, ?>> typeFns = ImmutableMap.builder();
 		// add the default type fromString functions
 		// Boolean
-		typeFns.put(Boolean.class, Boolean::parseBoolean);
+		typeFns.put(boolean.class, Boolean::parseBoolean);
+		typeFns.put(Boolean.class, Boolean::valueOf);
 		// Numbers
-		typeFns.put(Integer.class, Integer::parseInt);
-		typeFns.put(Long.class, Long::parseLong);
-		typeFns.put(Float.class, Float::parseFloat);
-		typeFns.put(Double.class, Double::parseDouble);
+		typeFns.put(int.class, Integer::parseInt);
+		typeFns.put(long.class, Long::parseLong);
+		typeFns.put(float.class, Float::parseFloat);
+		typeFns.put(double.class, Double::parseDouble);
+		typeFns.put(Integer.class, Integer::valueOf);
+		typeFns.put(Long.class, Long::valueOf);
+		typeFns.put(Float.class, Float::valueOf);
+		typeFns.put(Double.class, Double::valueOf);
 		typeFns.put(BigInteger.class, s -> new BigInteger(s));
 		typeFns.put(BigDecimal.class, s -> new BigDecimal(s));
 		// Temporals
@@ -64,7 +70,7 @@ public class PropParsingService
 		typeFns.put(Group.class, s -> new Group(s));
 		typeFns.put(Nuke.class, s -> new Nuke(s));
 
-		DEFAULT_TYPE_FROM_STRING_FUNCTIONS = typeFns.build();
+		return typeFns.build();
 	}
 
 	private Splitter										itemSplitter			= null;
