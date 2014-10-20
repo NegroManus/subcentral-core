@@ -125,12 +125,69 @@ public class Scene
 				grps302.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_DATED));
 
+		// Multi-episode (seasoned, range)
+		Pattern p401 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps401 = ImmutableMap.builder();
+		grps401.put(0, Release.PROP_NAME);
+		grps401.put(1, Series.PROP_NAME);
+		grps401.put(2, Season.PROP_NUMBER);
+		grps401.put(3, Episode.PROP_NUMBER_IN_SEASON);
+		grps401.put(4, Episode.PROP_TITLE);
+		grps401.put(5, Release.PROP_TAGS);
+		grps401.put(6, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher401 = new MappingMatcher<SimplePropDescriptor>(p401,
+				grps401.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
+
+		Pattern p402 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps402 = ImmutableMap.builder();
+		grps402.put(0, Release.PROP_NAME);
+		grps402.put(1, Series.PROP_NAME);
+		grps402.put(2, Season.PROP_NUMBER);
+		grps402.put(3, Episode.PROP_NUMBER_IN_SEASON);
+		grps402.put(4, Release.PROP_TAGS);
+		grps402.put(5, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher402 = new MappingMatcher<SimplePropDescriptor>(p402,
+				grps402.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
+
+		// Multi-episode (seasoned, addition)
+		Pattern p451 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}(?:\\+?E\\d{2})+)\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)",
+				Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps451 = ImmutableMap.builder();
+		grps451.put(0, Release.PROP_NAME);
+		grps451.put(1, Series.PROP_NAME);
+		grps451.put(2, Season.PROP_NUMBER);
+		grps451.put(3, Episode.PROP_NUMBER_IN_SEASON);
+		grps451.put(4, Episode.PROP_TITLE);
+		grps451.put(5, Release.PROP_TAGS);
+		grps451.put(6, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher451 = new MappingMatcher<SimplePropDescriptor>(p451,
+				grps451.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
+
+		Pattern p452 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}(?:\\+?E\\d{2})+)\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps452 = ImmutableMap.builder();
+		grps452.put(0, Release.PROP_NAME);
+		grps452.put(1, Series.PROP_NAME);
+		grps452.put(2, Season.PROP_NUMBER);
+		grps452.put(3, Episode.PROP_NUMBER_IN_SEASON);
+		grps452.put(4, Release.PROP_TAGS);
+		grps452.put(5, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher452 = new MappingMatcher<SimplePropDescriptor>(p452,
+				grps452.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
+
 		matchers.add(matcher101);
 		matchers.add(matcher102);
 		matchers.add(matcher201);
 		matchers.add(matcher202);
 		matchers.add(matcher301);
 		matchers.add(matcher302);
+		matchers.add(matcher401);
+		matchers.add(matcher402);
+		matchers.add(matcher451);
+		matchers.add(matcher452);
 
 		rlsParser.setMatchers(matchers.build());
 

@@ -75,7 +75,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 		}
 		catch (Exception e)
 		{
-			throw new ParsingException("Parsing failed while mapping", e, text, null);
+			throw new ParsingException("Parsing failed", e, text, null);
 		}
 		throw new NoMatchException("No matcher could match", text, null);
 	}
