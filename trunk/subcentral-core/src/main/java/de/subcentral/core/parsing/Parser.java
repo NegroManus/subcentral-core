@@ -6,8 +6,6 @@ public interface Parser<T> extends Function<String, T>
 {
 	public String getDomain();
 
-	// public Class<T> getEntityType();
-
 	public T parse(String text) throws NoMatchException, ParsingException;
 
 	@Override

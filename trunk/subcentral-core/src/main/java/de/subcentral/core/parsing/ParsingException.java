@@ -9,20 +9,20 @@ public class ParsingException extends RuntimeException
 
 	public ParsingException(String text, Class<?> entityClass)
 	{
-		this("", null, text, entityClass);
+		this(text, entityClass, "", null);
 	}
 
-	public ParsingException(String message, String text, Class<?> entityClass)
+	public ParsingException(String text, Class<?> entityClass, String message)
 	{
-		this(message, null, text, entityClass);
+		this(text, entityClass, message, null);
 	}
 
-	public ParsingException(Throwable cause, String text, Class<?> entityClass)
+	public ParsingException(String text, Class<?> entityClass, Throwable cause)
 	{
-		this("", cause, text, entityClass);
+		this(text, entityClass, "", cause);
 	}
 
-	public ParsingException(String message, Throwable cause, String text, Class<?> entityClass)
+	public ParsingException(String text, Class<?> entityClass, String message, Throwable cause)
 	{
 		super(message, cause);
 		this.text = text;
@@ -44,8 +44,7 @@ public class ParsingException extends RuntimeException
 	{
 		StringBuilder msg = new StringBuilder();
 		msg.append(super.getMessage());
-		msg.append("; ");
-		msg.append("text=");
+		msg.append("; text=");
 		if (text != null)
 		{
 			msg.append('"');
@@ -58,8 +57,7 @@ public class ParsingException extends RuntimeException
 		}
 		if (entityClass != null)
 		{
-			msg.append("; ");
-			msg.append("entityClass=");
+			msg.append("; entityClass=");
 			msg.append(entityClass);
 		}
 		return msg.toString();

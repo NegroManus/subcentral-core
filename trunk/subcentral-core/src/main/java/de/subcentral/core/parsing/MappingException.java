@@ -14,17 +14,17 @@ public class MappingException extends RuntimeException
 	private final Map<SimplePropDescriptor, String>	props;
 	private final Class<?>							entityClass;
 
-	public MappingException(String message, Map<SimplePropDescriptor, String> props, Class<?> entityClass)
+	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> entityClass, String message)
 	{
-		this(message, null, props, entityClass);
+		this(props, entityClass, message, null);
 	}
 
-	public MappingException(Throwable cause, Map<SimplePropDescriptor, String> props, Class<?> entityClass)
+	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> entityClass, Throwable cause)
 	{
-		this("", cause, props, entityClass);
+		this(props, entityClass, "", cause);
 	}
 
-	public MappingException(String message, Throwable cause, Map<SimplePropDescriptor, String> props, Class<?> entityClass)
+	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> entityClass, String message, Throwable cause)
 	{
 		super(message, cause);
 		this.props = props;
@@ -48,14 +48,12 @@ public class MappingException extends RuntimeException
 		msg.append(super.getMessage());
 		if (props != null)
 		{
-			msg.append("; ");
-			msg.append("properties=");
+			msg.append("; properties=");
 			msg.append(props);
 		}
 		if (entityClass != null)
 		{
-			msg.append("; ");
-			msg.append("entityClass=");
+			msg.append("; entityClass=");
 			msg.append(entityClass);
 		}
 		return msg.toString();
