@@ -106,7 +106,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 			String[] nums = new String[end - start + 1];
 			for (int i = 0, epiNum = start; epiNum < end + 1; i++, epiNum++)
 			{
-				nums[i] = String.valueOf(epiNum);
+				nums[i] = Integer.toString(epiNum);
 			}
 			return nums;
 		}
