@@ -23,15 +23,12 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimpleParsingService;
-import de.subcentral.core.standardizing.SimpleStandardizingService;
-import de.subcentral.core.standardizing.Standardizer;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Scene
@@ -196,12 +193,6 @@ public class Scene
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 		rlsParser.setPropParsingService(pps);
-
-		SimpleStandardizingService ss = new SimpleStandardizingService();
-		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
-		standardizers.put(Release.class, (Release r) -> Releases.standardizeTags(r));
-		ss.setStandardizers(standardizers.build());
-		rlsParser.setStandardizingService(ss);
 
 		return ImmutableListMultimap.of(Release.class, rlsParser);
 	}

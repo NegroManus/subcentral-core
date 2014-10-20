@@ -5,16 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import de.subcentral.core.standardizing.StandardizingService;
-import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMappingParser<T> implements Parser<T>
 {
 	protected final String									domain;
-	protected List<MappingMatcher<SimplePropDescriptor>>	matchers				= new ArrayList<>();
-	protected PropParsingService							propParsingService		= PropParsingService.DEFAULT;
-	protected StandardizingService							standardizingService	= Standardizings.getDefaultStandardizingService();
+	protected List<MappingMatcher<SimplePropDescriptor>>	matchers			= new ArrayList<>();
+	protected PropParsingService							propParsingService	= PropParsingService.DEFAULT;
 
 	protected AbstractMappingParser(String domain)
 	{
@@ -47,16 +44,6 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 	{
 		Objects.requireNonNull(propParsingService);
 		this.propParsingService = propParsingService;
-	}
-
-	public StandardizingService getStandardizingService()
-	{
-		return standardizingService;
-	}
-
-	public void setStandardizingService(StandardizingService StandardizingService)
-	{
-		this.standardizingService = StandardizingService;
 	}
 
 	@Override
