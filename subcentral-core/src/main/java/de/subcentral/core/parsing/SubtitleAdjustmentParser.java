@@ -14,7 +14,6 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
@@ -116,7 +115,6 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 					propsForRls.put(Release.PROP_GROUP, group);
 					Release rlsForGroup = releaseMapper.map(propsForRls, propParsingService);
 					rlsForGroup.getMedia().addAll(media);
-					Standardizings.mayStandardize(rlsForGroup, standardizingService);
 					matchingReleases.add(rlsForGroup);
 				}
 				return matchingReleases;
@@ -125,7 +123,6 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 
 		Release singleRelease = releaseMapper.map(props, propParsingService);
 		singleRelease.getMedia().addAll(media);
-		Standardizings.mayStandardize(singleRelease, standardizingService);
 
 		matchingReleases = new HashSet<>(1);
 		matchingReleases.add(singleRelease);

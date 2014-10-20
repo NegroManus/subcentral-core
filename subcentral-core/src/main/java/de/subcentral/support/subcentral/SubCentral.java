@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.MappingMatcher;
@@ -18,8 +17,6 @@ import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
-import de.subcentral.core.standardizing.SimpleStandardizingService;
-import de.subcentral.core.standardizing.Standardizer;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.scene.Scene;
 
@@ -80,13 +77,6 @@ public class SubCentral
 		}
 
 		epiParser.setMatchers(matchers.build());
-
-		SimpleStandardizingService ss = new SimpleStandardizingService();
-		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
-		standardizers.put(Release.class, (Release r) -> Releases.standardizeTags(r));
-		standardizers.put(Subtitle.class, (Subtitle s) -> standardizeSubtitleLanguage(s));
-		ss.setStandardizers(standardizers.build());
-		epiParser.setStandardizingService(ss);
 
 		return ImmutableListMultimap.of(SubtitleAdjustment.class, epiParser);
 	}
