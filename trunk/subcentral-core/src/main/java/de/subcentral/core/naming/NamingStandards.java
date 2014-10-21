@@ -103,6 +103,16 @@ public class NamingStandards
 		NAMING_SERVICE.setNamers(allNamers.build());
 	}
 
+	public static Namer<Episode> getDefaultEpisodeNamer()
+	{
+		return EPISODE_NAMER;
+	}
+
+	public static Namer<Season> getDefaultSeasonNamer()
+	{
+		return SEASON_NAMER;
+	}
+
 	private NamingStandards()
 	{
 		// utility class

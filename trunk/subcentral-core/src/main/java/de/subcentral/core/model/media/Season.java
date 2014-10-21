@@ -71,7 +71,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String getName()
 	{
-		return NamingStandards.SEASON_NAMER.name(this);
+		return NamingStandards.getDefaultSeasonNamer().name(this);
 	}
 
 	@Override
