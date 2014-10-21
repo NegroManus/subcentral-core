@@ -1,10 +1,12 @@
 package de.subcentral.core.naming;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 
 public class Namings
 {
@@ -17,8 +19,26 @@ public class Namings
 		return defaultValue;
 	}
 
-	public static final String name(Iterable<?> candidates, NamingService namingService, Map<String, Object> parameters, String separator)
+	public static final List<String> nameEach(Collection<?> candidates, NamingService namingService, Map<String, Object> parameters)
 	{
+		if (candidates.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<String> names = ImmutableList.builder();
+		for (Object o : candidates)
+		{
+			names.add(namingService.name(o, parameters));
+		}
+		return names.build();
+	}
+
+	public static final String nameAll(Collection<?> candidates, NamingService namingService, Map<String, Object> parameters, String separator)
+	{
+		if (candidates.isEmpty())
+		{
+			return "";
+		}
 		List<String> names = new ArrayList<>();
 		for (Object candidate : candidates)
 		{

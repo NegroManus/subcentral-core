@@ -77,7 +77,7 @@ public class Medias
 			{
 				// IAE if media is not a list of Episodes
 				// NNRE if namingService has no namer registered for MultiEpisodeHelper
-				return Namings.name(media, namingService, parameters, mediaSeparator);
+				return Namings.nameAll(media, namingService, parameters, mediaSeparator);
 			}
 		}
 	}

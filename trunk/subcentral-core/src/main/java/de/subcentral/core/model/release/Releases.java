@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -12,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Compatibility.MatchDirection;
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.Namings;
 import de.subcentral.core.parsing.ParsingService;
 
 public class Releases
@@ -22,10 +22,16 @@ public class Releases
 		{
 			return ImmutableList.of();
 		}
-		List<String> requiredMediaNames = media.stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
-		return rlss.stream()
-				.filter(r -> Releases.doFilter(r, requiredMediaNames, containedTags, group, mediaNamingService))
-				.collect(Collectors.toList());
+		List<String> requiredMediaNames = Namings.nameEach(media, mediaNamingService, ImmutableMap.of());
+		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
+		for (Release rls : rlss)
+		{
+			if (Releases.doFilter(rls, requiredMediaNames, containedTags, group, mediaNamingService))
+			{
+				filteredRlss.add(rls);
+			}
+		}
+		return filteredRlss.build();
 	}
 
 	public static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
@@ -34,7 +40,7 @@ public class Releases
 		{
 			return false;
 		}
-		List<String> requiredMediaNames = media.stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
+		List<String> requiredMediaNames = Namings.nameEach(media, mediaNamingService, ImmutableMap.of());
 		return doFilter(rls, requiredMediaNames, containedTags, group, mediaNamingService);
 	}
 
@@ -45,7 +51,7 @@ public class Releases
 		{
 			return false;
 		}
-		List<String> actualMediaNames = rls.getMedia().stream().map((Media m) -> mediaNamingService.name(m)).collect(Collectors.toList());
+		List<String> actualMediaNames = Namings.nameEach(rls.getMedia(), mediaNamingService, ImmutableMap.of());
 
 		return requiredMediaNames.equals(actualMediaNames) && (group == null ? true : group.equals(rls.getGroup()))
 				&& (rls.getTags().containsAll(containedTags));
