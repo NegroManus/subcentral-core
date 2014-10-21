@@ -228,7 +228,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 	@Override
 	public String getName()
 	{
-		return NamingStandards.EPISODE_NAMER.name(this);
+		return NamingStandards.getDefaultEpisodeNamer().name(this);
 	}
 
 	@Override
