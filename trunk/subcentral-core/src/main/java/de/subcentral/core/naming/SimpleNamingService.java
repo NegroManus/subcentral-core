@@ -63,7 +63,8 @@ public class SimpleNamingService implements NamingService
 		return getNamer(entity.getClass()) != null;
 	}
 
-	public Namer<?> getNamer(Class<?> clazz)
+	@SuppressWarnings("unchecked")
+	public <T> Namer<? super T> getNamer(Class<T> clazz)
 	{
 		Class<?> searchClass = clazz;
 		while (searchClass != Object.class)
@@ -71,7 +72,7 @@ public class SimpleNamingService implements NamingService
 			Namer<?> namer = namers.get(searchClass);
 			if (namer != null)
 			{
-				return namer;
+				return (Namer<? super T>) namer;
 			}
 			searchClass = searchClass.getSuperclass();
 		}
@@ -80,7 +81,7 @@ public class SimpleNamingService implements NamingService
 			Namer<?> namer = namers.get(interfaceClass);
 			if (namer != null)
 			{
-				return namer;
+				return (Namer<? super T>) namer;
 			}
 		}
 		return null;
@@ -104,6 +105,10 @@ public class SimpleNamingService implements NamingService
 	 * @param parameters
 	 *            The naming parameters. Not null.
 	 * @return The name that was determined for the object or null if the entity was null.
+	 * @throws NoNamerRegisteredException
+	 *             if no namer is registered for the entity
+	 * @throws NamingException
+	 *             if an exception occurs while naming
 	 */
 	@Override
 	public <T> String name(T entity, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
