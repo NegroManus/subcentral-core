@@ -18,7 +18,7 @@ public abstract class AbstractMapper<T> implements Mapper<T>
 		}
 		catch (Exception e)
 		{
-			throw new MappingException(props, null, e);
+			throw new MappingException(props, null, "Exception while mapping", e);
 		}
 	}
 

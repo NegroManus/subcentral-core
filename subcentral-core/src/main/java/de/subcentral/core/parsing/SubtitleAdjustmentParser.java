@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.base.Splitter;
 
 import de.subcentral.core.model.media.AvMedia;
-import de.subcentral.core.model.media.Series;
+import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
@@ -18,28 +19,20 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
 {
-	private List<ConditionalMapper<List<? extends AvMedia>>>	mediaMappers				= new ArrayList<>(2);
-	private Mapper<Release>										releaseMapper				= Parsings.getDefaultReleaseMapper();
-	private Mapper<Subtitle>									subtitleMapper				= Parsings.getDefaultSubtitleMapper();
-	private Mapper<SubtitleAdjustment>							subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
+	private final Mapper<? extends List<? extends AvMedia>>	mediaMapper;
+	private final Mapper<Release>							releaseMapper				= Parsings.getDefaultReleaseMapper();
+	private final Mapper<Subtitle>							subtitleMapper				= Parsings.getDefaultSubtitleMapper();
+	private final Mapper<SubtitleAdjustment>				subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
 
-	public SubtitleAdjustmentParser(String domain)
+	public SubtitleAdjustmentParser(String domain, Mapper<? extends List<? extends AvMedia>> mediaMapper)
 	{
 		super(domain);
-		mediaMappers.add(new ConditionalMapper<List<? extends AvMedia>>(MultiEpisodeMapper::containsMultiEpisode,
-				Parsings.getDefaultMultiEpisodeMapper()));
-		mediaMappers.add(new ConditionalMapper<List<? extends AvMedia>>(props -> props.containsKey(Series.PROP_NAME),
-				Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper())));
+		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
 	}
 
-	public List<ConditionalMapper<List<? extends AvMedia>>> getMediaMappers()
+	public Mapper<? extends List<? extends Media>> getMediaMapper()
 	{
-		return mediaMappers;
-	}
-
-	public void setMediaMappers(List<ConditionalMapper<List<? extends AvMedia>>> mediaMappers)
-	{
-		this.mediaMappers = mediaMappers;
+		return mediaMapper;
 	}
 
 	public Mapper<Release> getReleaseMapper()
@@ -47,19 +40,9 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		return releaseMapper;
 	}
 
-	public void setReleaseMapper(Mapper<Release> releaseMapper)
-	{
-		this.releaseMapper = releaseMapper;
-	}
-
 	public Mapper<Subtitle> getSubtitleMapper()
 	{
 		return subtitleMapper;
-	}
-
-	public void setSubtitleMapper(Mapper<Subtitle> subtitleMapper)
-	{
-		this.subtitleMapper = subtitleMapper;
 	}
 
 	public Mapper<SubtitleAdjustment> getSubtitleAdjustmentMapper()
@@ -67,16 +50,11 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		return subtitleAdjustmentMapper;
 	}
 
-	public void setSubtitleAdjustmentMapper(Mapper<SubtitleAdjustment> subtitleAdjustmentMapper)
-	{
-		this.subtitleAdjustmentMapper = subtitleAdjustmentMapper;
-	}
-
 	@Override
 	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends AvMedia> media = Parsings.mapConditionally(mediaMappers, props, propParsingService);
+		List<? extends AvMedia> media = mediaMapper.map(props, propParsingService);
 
 		// Release
 		Set<Release> matchingRlss = parseMatchingReleases(props, media);

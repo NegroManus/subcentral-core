@@ -1,36 +1,39 @@
 package de.subcentral.core.parsing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseParser extends AbstractMappingParser<Release>
 {
-	private List<ConditionalMapper<List<? extends Media>>>	mediaMappers	= new ArrayList<>(3);
-	private Mapper<Release>									releaseMapper	= Parsings.getDefaultReleaseMapper();
+	private final Mapper<? extends List<? extends Media>>	mediaMapper;
+	private final Mapper<Release>							releaseMapper	= Parsings.getDefaultReleaseMapper();
 
-	public ReleaseParser(String domain)
+	public ReleaseParser(String domain, Mapper<? extends List<? extends Media>> mediaMapper)
 	{
 		super(domain);
-		mediaMappers.add(new ConditionalMapper<List<? extends Media>>(MultiEpisodeMapper::containsMultiEpisode,
-				Parsings.getDefaultMultiEpisodeMapper()));
-		mediaMappers.add(new ConditionalMapper<List<? extends Media>>(props -> props.containsKey(Series.PROP_NAME),
-				Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper())));
-		mediaMappers.add(new ConditionalMapper<List<? extends Media>>(props -> props.containsKey(SingleMedia.PROP_NAME),
-				Parsings.createSingletonListMapper(Parsings.getDefaultSingleMediaMapper())));
+		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
+	}
+
+	public Mapper<? extends List<? extends Media>> getMediaMapper()
+	{
+		return mediaMapper;
+	}
+
+	public Mapper<Release> getReleaseMapper()
+	{
+		return releaseMapper;
 	}
 
 	@Override
 	protected Release map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends Media> media = Parsings.mapConditionally(mediaMappers, props, propParsingService);
+		List<? extends Media> media = mediaMapper.map(props, propParsingService);
 
 		// Release
 		Release rls = releaseMapper.map(props, propParsingService);

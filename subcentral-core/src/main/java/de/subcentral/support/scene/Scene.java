@@ -2,14 +2,11 @@ package de.subcentral.support.scene;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +23,7 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.PropParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimpleParsingService;
@@ -33,6 +31,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Scene
 {
+	public static final String					DOMAIN			= "scene";
 	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService();
 
 	static
@@ -44,9 +43,14 @@ public class Scene
 	{
 		String tagsPattern = buildFirstTagPattern();
 
-		ReleaseParser rlsParser = new ReleaseParser("scene");
+		PropParsingService pps = new PropParsingService();
+		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
+		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
+		pps.setPropFromStringFunctions(propFromStringFns.build());
 
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
+		// SINGLE EPISODES
+		ReleaseParser epiRlsParser = new ReleaseParser("scene:episode", Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> epiRlsMatchers = ImmutableList.builder();
 
 		// Seasoned episode
 		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
@@ -122,6 +126,19 @@ public class Scene
 				grps302.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_DATED));
 
+		epiRlsMatchers.add(matcher101);
+		epiRlsMatchers.add(matcher102);
+		epiRlsMatchers.add(matcher201);
+		epiRlsMatchers.add(matcher202);
+		epiRlsMatchers.add(matcher301);
+		epiRlsMatchers.add(matcher302);
+		epiRlsParser.setMatchers(epiRlsMatchers.build());
+		epiRlsParser.setPropParsingService(pps);
+
+		// MULTI-EPISODES
+		ReleaseParser multiEpiRlsParser = new ReleaseParser("scene:multiEpisode", Parsings.getDefaultMultiEpisodeMapper());
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpiRlsMatchers = ImmutableList.builder();
+
 		// Multi-episode (seasoned, range)
 		Pattern p401 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps401 = ImmutableMap.builder();
@@ -175,26 +192,14 @@ public class Scene
 				grps452.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
-		matchers.add(matcher101);
-		matchers.add(matcher102);
-		matchers.add(matcher201);
-		matchers.add(matcher202);
-		matchers.add(matcher301);
-		matchers.add(matcher302);
-		matchers.add(matcher401);
-		matchers.add(matcher402);
-		matchers.add(matcher451);
-		matchers.add(matcher452);
+		multiEpiRlsMatchers.add(matcher401);
+		multiEpiRlsMatchers.add(matcher402);
+		multiEpiRlsMatchers.add(matcher451);
+		multiEpiRlsMatchers.add(matcher452);
+		multiEpiRlsParser.setMatchers(multiEpiRlsMatchers.build());
+		multiEpiRlsParser.setPropParsingService(pps);
 
-		rlsParser.setMatchers(matchers.build());
-
-		PropParsingService pps = new PropParsingService();
-		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
-		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
-		pps.setPropFromStringFunctions(propFromStringFns.build());
-		rlsParser.setPropParsingService(pps);
-
-		return ImmutableListMultimap.of(Release.class, rlsParser);
+		return ImmutableListMultimap.of(Release.class, epiRlsParser, Release.class, multiEpiRlsParser);
 	}
 
 	public static String buildFirstTagPattern()
@@ -240,26 +245,9 @@ public class Scene
 		return PARSING_SERVICE;
 	}
 
-	public static ListMultimap<Class<?>, Parser<?>> getParsers()
+	public static ListMultimap<Class<?>, Parser<?>> getAllParsers()
 	{
 		return PARSING_SERVICE.getParsers();
-	}
-
-	public static List<MappingMatcher<SimplePropDescriptor>> getAllMatchers()
-	{
-		return PARSING_SERVICE.getParsers()
-				.get(Release.class)
-				.stream()
-				.filter(p -> p instanceof ReleaseParser)
-				.map((Parser<?> p) -> (ReleaseParser) p)
-				.map((ReleaseParser p) -> p.getMatchers())
-				.collect(Collectors.reducing((list1, list2) -> {
-					List<MappingMatcher<SimplePropDescriptor>> combined = new ArrayList<>(list1.size() + list2.size());
-					combined.addAll(list1);
-					combined.addAll(list2);
-					return combined;
-				}))
-				.get();
 	}
 
 	private Scene()

@@ -81,9 +81,9 @@ public class ParsingPlayground
 
 		final SimpleParsingService ps = new SimpleParsingService();
 		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
-		parsers.putAll(SubCentral.getParsers());
-		parsers.putAll(Addic7ed.getParsers());
-		parsers.putAll(Scene.getParsers());
+		parsers.putAll(Addic7ed.getAllParsers());
+		parsers.putAll(SubCentral.getAllParsers());
+		parsers.putAll(Scene.getAllParsers());
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		Lookup<Release, ?> lookup = new OrlyDbLookup();

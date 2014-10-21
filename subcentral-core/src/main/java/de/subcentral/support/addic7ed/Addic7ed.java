@@ -50,6 +50,9 @@ public class Addic7ed
 		// --------------
 		// Episode matchers
 		// Predefined matches for episodes
+		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode",
+				Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
+
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefEpisodeMatchesBuilder = ImmutableMap.builder();
 		predefEpisodeMatchesBuilder.putAll(commonPredefMatches);
 		predefEpisodeMatchesBuilder.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
@@ -195,11 +198,12 @@ public class Addic7ed
 		episodeMatchers.add(matcher104);
 		episodeMatchers.add(matcher105);
 		episodeMatchers.add(matcher106);
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode");
 		episodeSubParser.setMatchers(episodeMatchers.build());
 
 		// --------------
 		// Movie matchers
+		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser("addic7ed.com:movie",
+				Parsings.createSingletonListMapper(Parsings.getDefaultSingleAvMediaMapper()));
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
@@ -218,7 +222,7 @@ public class Addic7ed
 		// --------------
 		// add all the matchers to the map
 		movieMatchers.add(matcher201);
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser("addic7ed.com:movie");
+
 		movieSubParser.setMatchers(movieMatchers.build());
 
 		return ImmutableListMultimap.of(Episode.class, episodeSubParser, SingleMedia.class, movieSubParser);
@@ -229,7 +233,7 @@ public class Addic7ed
 		return PARSING_SERVICE;
 	}
 
-	public static ListMultimap<Class<?>, Parser<?>> getParsers()
+	public static ListMultimap<Class<?>, Parser<?>> getAllParsers()
 	{
 		return PARSING_SERVICE.getParsers();
 	}

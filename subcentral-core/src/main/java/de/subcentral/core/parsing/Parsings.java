@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.SingleAvMedia;
 import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -40,11 +41,12 @@ public class Parsings
 	private static final EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
 	private static final MultiEpisodeMapper			MULTI_EPISODE_MAPPER		= new MultiEpisodeMapper(EPISODE_MAPPER);
 	private static final SingleMediaMapper			SINGLE_MEDIA_MAPPER			= new SingleMediaMapper();
+	private static final SingleAvMediaMapper		SINGLE_AV_MEDIA_MAPPER		= new SingleAvMediaMapper();
 	private static final ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
 	private static final SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
 	private static final SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
 
-	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<? extends E> elementMapper)
+	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
 	{
 		return (props, pps) -> ImmutableList.of(elementMapper.map(props, pps));
 	}
@@ -54,7 +56,7 @@ public class Parsings
 		return EPISODE_MAPPER;
 	}
 
-	public static MultiEpisodeMapper getDefaultMultiEpisodeMapper()
+	public static Mapper<List<Episode>> getDefaultMultiEpisodeMapper()
 	{
 		return MULTI_EPISODE_MAPPER;
 	}
@@ -62,6 +64,11 @@ public class Parsings
 	public static final Mapper<SingleMedia> getDefaultSingleMediaMapper()
 	{
 		return SINGLE_MEDIA_MAPPER;
+	}
+
+	public static Mapper<SingleAvMedia> getDefaultSingleAvMediaMapper()
+	{
+		return SINGLE_AV_MEDIA_MAPPER;
 	}
 
 	public static final Mapper<Release> getDefaultReleaseMapper()

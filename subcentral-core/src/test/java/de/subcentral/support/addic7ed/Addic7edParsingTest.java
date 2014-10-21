@@ -61,8 +61,7 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot");
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
-		Subtitle sub = new Subtitle(epi, "English");
-		sub.setHearingImpaired(true);
+		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
 		sub.setSource("Addic7ed.com");
 		sub.setSourceUrl("http://www.addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
@@ -208,8 +207,7 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
-		Subtitle sub = new Subtitle(epi, "English");
-		sub.setHearingImpaired(true);
+		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
 		sub.setSource("Addic7ed.com");
 		sub.setSourceUrl("http://www.addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
@@ -224,8 +222,7 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
-		Subtitle sub = new Subtitle(epi, "English");
-		sub.setHearingImpaired(true);
+		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
 		sub.setSource("Addic7ed.com");
 		sub.setSourceUrl("http://www.addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
@@ -240,8 +237,7 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
 		Release rls = Release.create(epi, null, "720p", "WEB-DL");
-		Subtitle sub = new Subtitle(epi, "English");
-		sub.setHearingImpaired(true);
+		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
 		sub.setSource("Addic7ed.com");
 		sub.setSourceUrl("http://www.addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
