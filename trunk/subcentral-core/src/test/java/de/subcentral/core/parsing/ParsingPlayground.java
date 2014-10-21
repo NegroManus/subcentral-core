@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 
@@ -44,6 +47,8 @@ import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
 {
+	private static final Logger	log	= LogManager.getLogger(ParsingPlayground.class.getName());
+
 	/**
 	 * To specify other watch folder than "<user.home>/Downloads", add argument "watchFolder="D:\Downloads".
 	 * 
@@ -96,7 +101,7 @@ public class ParsingPlayground
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
-		System.out.println(watchFolder);
+		log.debug(watchFolder);
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(watchFolder))
 		{
 			for (Path path : directoryStream)

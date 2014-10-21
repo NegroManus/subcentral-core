@@ -14,8 +14,8 @@ import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
@@ -25,7 +25,7 @@ import de.subcentral.support.winrar.WinRarPackResult.Flag;
 
 public abstract class WinRarPackager
 {
-	private static final Logger	log	= LoggerFactory.getLogger(WinRarPackager.class);
+	private static final Logger	log	= LogManager.getLogger(WinRarPackager.class.getName());
 	protected final Path		rarExecutable;
 
 	WinRarPackager(LocateStrategy locateStrategy, Path rarExecutable)
