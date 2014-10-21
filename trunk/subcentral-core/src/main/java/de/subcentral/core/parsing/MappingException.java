@@ -12,23 +12,23 @@ public class MappingException extends RuntimeException
 	private static final long						serialVersionUID	= -7524198648124655458L;
 
 	private final Map<SimplePropDescriptor, String>	props;
-	private final Class<?>							entityClass;
+	private final Class<?>							targetClass;
 
-	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> entityClass, String message)
+	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> targetClass, String message)
 	{
-		this(props, entityClass, message, null);
+		this(props, targetClass, message, null);
 	}
 
-	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> entityClass, Throwable cause)
+	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> targetClass, Throwable cause)
 	{
-		this(props, entityClass, "", cause);
+		this(props, targetClass, "", cause);
 	}
 
-	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> entityClass, String message, Throwable cause)
+	public MappingException(Map<SimplePropDescriptor, String> props, Class<?> targetClass, String message, Throwable cause)
 	{
 		super(message, cause);
 		this.props = props;
-		this.entityClass = entityClass;
+		this.targetClass = targetClass;
 	}
 
 	public Map<SimplePropDescriptor, String> getProps()
@@ -38,7 +38,7 @@ public class MappingException extends RuntimeException
 
 	public Class<?> getEntityClass()
 	{
-		return entityClass;
+		return targetClass;
 	}
 
 	@Override
@@ -46,15 +46,23 @@ public class MappingException extends RuntimeException
 	{
 		StringBuilder msg = new StringBuilder();
 		msg.append(super.getMessage());
+		if (msg.length() > 0)
+		{
+			msg.append("; ");
+		}
 		if (props != null)
 		{
-			msg.append("; properties=");
+			msg.append("properties=");
 			msg.append(props);
 		}
-		if (entityClass != null)
+		if (msg.length() > 0)
 		{
-			msg.append("; entityClass=");
-			msg.append(entityClass);
+			msg.append("; ");
+		}
+		if (targetClass != null)
+		{
+			msg.append("targetClass=");
+			msg.append(targetClass);
 		}
 		return msg.toString();
 	}

@@ -147,13 +147,28 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public Subtitle(AvMedia media)
 	{
-		this(media, null);
+		this.media = media;
 	}
 
 	public Subtitle(AvMedia media, String language)
 	{
-		setMedia(media);
-		setLanguage(language);
+		this.media = media;
+		this.language = language;
+	}
+
+	public Subtitle(AvMedia media, String language, List<Tag> tags)
+	{
+		this.media = media;
+		this.language = language;
+		this.tags.addAll(tags);
+	}
+
+	public Subtitle(AvMedia media, String language, List<Tag> tags, Group group)
+	{
+		this.media = media;
+		this.language = language;
+		this.tags.addAll(tags);
+		this.group = group;
 	}
 
 	public AvMedia getMedia()

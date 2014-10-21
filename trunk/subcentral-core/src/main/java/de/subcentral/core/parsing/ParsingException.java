@@ -5,28 +5,28 @@ public class ParsingException extends RuntimeException
 	private static final long	serialVersionUID	= -1790109092415797792L;
 
 	private final String		text;
-	private final Class<?>		entityClass;
+	private final Class<?>		targetClass;
 
-	public ParsingException(String text, Class<?> entityClass)
+	public ParsingException(String text, Class<?> targetClass)
 	{
-		this(text, entityClass, "", null);
+		this(text, targetClass, "", null);
 	}
 
-	public ParsingException(String text, Class<?> entityClass, String message)
+	public ParsingException(String text, Class<?> targetClass, String message)
 	{
-		this(text, entityClass, message, null);
+		this(text, targetClass, message, null);
 	}
 
-	public ParsingException(String text, Class<?> entityClass, Throwable cause)
+	public ParsingException(String text, Class<?> targetClass, Throwable cause)
 	{
-		this(text, entityClass, "", cause);
+		this(text, targetClass, "", cause);
 	}
 
-	public ParsingException(String text, Class<?> entityClass, String message, Throwable cause)
+	public ParsingException(String text, Class<?> targetClass, String message, Throwable cause)
 	{
 		super(message, cause);
 		this.text = text;
-		this.entityClass = entityClass;
+		this.targetClass = targetClass;
 	}
 
 	public String getText()
@@ -36,7 +36,7 @@ public class ParsingException extends RuntimeException
 
 	public Class<?> getEntityClass()
 	{
-		return entityClass;
+		return targetClass;
 	}
 
 	@Override
@@ -44,7 +44,11 @@ public class ParsingException extends RuntimeException
 	{
 		StringBuilder msg = new StringBuilder();
 		msg.append(super.getMessage());
-		msg.append("; text=");
+		if (msg.length() > 0)
+		{
+			msg.append("; ");
+		}
+		msg.append("text=");
 		if (text != null)
 		{
 			msg.append('"');
@@ -55,10 +59,10 @@ public class ParsingException extends RuntimeException
 		{
 			msg.append("null");
 		}
-		if (entityClass != null)
+		if (targetClass != null)
 		{
-			msg.append("; entityClass=");
-			msg.append(entityClass);
+			msg.append("; targetClass=");
+			msg.append(targetClass);
 		}
 		return msg.toString();
 	}

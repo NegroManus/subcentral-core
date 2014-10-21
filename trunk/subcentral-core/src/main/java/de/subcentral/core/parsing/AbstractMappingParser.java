@@ -15,7 +15,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 
 	protected AbstractMappingParser(String domain)
 	{
-		this.domain = domain;
+		this.domain = Objects.requireNonNull(domain);
 	}
 
 	@Override
@@ -31,8 +31,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 
 	public void setMatchers(List<MappingMatcher<SimplePropDescriptor>> matchers)
 	{
-		Objects.requireNonNull(matchers);
-		this.matchers = matchers;
+		this.matchers = Objects.requireNonNull(matchers);
 	}
 
 	public PropParsingService getPropParsingService()
@@ -42,8 +41,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 
 	public void setPropParsingService(PropParsingService propParsingService)
 	{
-		Objects.requireNonNull(propParsingService);
-		this.propParsingService = propParsingService;
+		this.propParsingService = Objects.requireNonNull(propParsingService);
 	}
 
 	@Override
@@ -62,7 +60,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 		}
 		catch (Exception e)
 		{
-			throw new ParsingException(text, null, e);
+			throw new ParsingException(text, null, "Exception while parsing", e);
 		}
 		throw new NoMatchException(text, null, "No matcher could match");
 	}
