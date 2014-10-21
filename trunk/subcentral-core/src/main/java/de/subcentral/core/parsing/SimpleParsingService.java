@@ -63,7 +63,7 @@ public class SimpleParsingService implements ParsingService
 		Parsings.requireTextNotBlank(text);
 		for (Parser<?> p : entityType == null ? parsers.values() : parsers.get(entityType))
 		{
-			if (domain == null || domain.equals(p.getDomain()))
+			if (domain == null || p.getDomain().startsWith(domain))
 			{
 				try
 				{
