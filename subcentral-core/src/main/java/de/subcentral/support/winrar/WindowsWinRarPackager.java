@@ -13,8 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
@@ -26,7 +26,7 @@ import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 class WindowsWinRarPackager extends WinRarPackager
 {
-	private static final Logger	log						= LoggerFactory.getLogger(WindowsWinRarPackager.class);
+	private static final Logger	log						= LogManager.getLogger(WindowsWinRarPackager.class.getName());
 
 	/**
 	 * The Console RAR can only pack RAR archives, but it does not open a GUI.
