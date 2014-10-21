@@ -8,7 +8,7 @@ import de.subcentral.core.util.TimeUtil;
 public class LambdaPerfTest
 {
 	public static final UnaryOperator<String> STATIC_OP = new UnaryOperator<String>()
-			{
+	{
 		@Override
 		public String apply(String t)
 		{
