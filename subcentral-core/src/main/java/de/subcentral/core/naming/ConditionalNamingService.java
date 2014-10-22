@@ -2,11 +2,13 @@ package de.subcentral.core.naming;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ClassUtils;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
 public class ConditionalNamingService implements NamingService
@@ -26,9 +28,19 @@ public class ConditionalNamingService implements NamingService
 		return domain;
 	}
 
-	public ListMultimap<Class<?>, ConditionalNamer<?>> getNamers()
+	public ImmutableListMultimap<Class<?>, ConditionalNamer<?>> getNamers()
 	{
-		return namers;
+		return ImmutableListMultimap.copyOf(namers);
+	}
+
+	public <T> void registerNamer(Class<? extends T> clazz, Namer<T> namer)
+	{
+		namers.put(clazz, ConditionalNamer.of(namer));
+	}
+
+	public <T> void registerNamer(Class<? extends T> clazz, Namer<T> namer, Predicate<T> condition)
+	{
+		namers.put(clazz, ConditionalNamer.of(namer, condition));
 	}
 
 	@Override
