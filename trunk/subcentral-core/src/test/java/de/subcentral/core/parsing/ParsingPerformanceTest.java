@@ -1,7 +1,5 @@
 package de.subcentral.core.parsing;
 
-import com.google.common.collect.ImmutableListMultimap;
-
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7ed.Addic7ed;
 import de.subcentral.support.scene.Scene;
@@ -13,11 +11,9 @@ public class ParsingPerformanceTest
 	public static void main(String[] args)
 	{
 		final SimpleParsingService ps = new SimpleParsingService("default");
-		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
-		parsers.putAll(Addic7ed.getAllParsers());
-		parsers.putAll(SubCentral.getAllParsers());
-		parsers.putAll(Scene.getAllParsers());
-		ps.setParsers(parsers.build());
+		ps.getParsers().putAll(Addic7ed.getAllParsers());
+		ps.getParsers().putAll(SubCentral.getAllParsers());
+		ps.getParsers().putAll(Scene.getAllParsers());
 
 		String name = "Psych - 05x04 - Chivalry Is Not Dead...But Someone Is.FQM.English.C.orig.Addic7ed.com";
 		String name2 = "The.Blacklist.S02E05.720p.HDTV.X264-DIMENSION";

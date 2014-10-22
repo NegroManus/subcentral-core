@@ -16,7 +16,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.lookup.Lookup;
@@ -80,12 +79,12 @@ public class ParsingPlayground
 		long totalStart = System.nanoTime();
 
 		final SimpleParsingService ps = new SimpleParsingService("default");
-		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
-		parsers.putAll(Addic7ed.getAllParsers());
-		parsers.putAll(SubCentral.getAllParsers());
-		parsers.putAll(Scene.getAllParsers());
-		ps.setParsers(parsers.build());
+		ps.getParsers().putAll(Addic7ed.getAllParsers());
+		ps.getParsers().putAll(SubCentral.getAllParsers());
+		ps.getParsers().putAll(Scene.getAllParsers());
+
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
+
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
 		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService("orlydb",
 				NamingStandards.NAMING_SERVICE,

@@ -8,8 +8,8 @@ import com.google.common.collect.ListMultimap;
 
 public class SimpleParsingService implements ParsingService
 {
-	private final String						domain;
-	private ListMultimap<Class<?>, Parser<?>>	parsers	= LinkedListMultimap.create();
+	private final String							domain;
+	private final ListMultimap<Class<?>, Parser<?>>	parsers	= LinkedListMultimap.create();
 
 	public SimpleParsingService(String domain)
 	{
@@ -27,70 +27,75 @@ public class SimpleParsingService implements ParsingService
 		return parsers;
 	}
 
-	public void setParsers(ListMultimap<Class<?>, Parser<?>> parsers)
+	public <T> boolean registerParser(Class<T> targetClass, Parser<T> standardizer)
 	{
-		this.parsers = parsers;
+		return parsers.put(targetClass, standardizer);
 	}
 
-	public <T> boolean registerParser(Class<T> entityType, Parser<T> standardizer)
+	public <T> boolean registerAllParsers(Class<T> targetClass, Iterable<Parser<T>> standardizers)
 	{
-		return parsers.put(entityType, standardizer);
+		return this.parsers.putAll(targetClass, standardizers);
 	}
 
-	public <T> boolean registerAllParsers(Class<T> entityType, Iterable<Parser<T>> standardizers)
+	public <T> boolean unregisterParser(Class<T> targetClass, Parser<T> standardizer)
 	{
-		return this.parsers.putAll(entityType, standardizers);
+		return parsers.remove(targetClass, standardizer);
 	}
 
-	public <T> boolean unregisterParser(Class<T> entityType, Parser<T> standardizer)
+	public <T> List<Parser<?>> unregisterAllParsers(Class<T> targetClass)
 	{
-		return parsers.remove(entityType, standardizer);
-	}
-
-	public <T> List<Parser<?>> unregisterAllParsers(Class<T> entityType)
-	{
-		return parsers.removeAll(entityType);
+		return parsers.removeAll(targetClass);
 	}
 
 	@Override
 	public Object parse(String text) throws NoMatchException, ParsingException
 	{
-		return parseTyped(text, null);
+		return doParse(text, null);
 	}
 
 	@Override
-	public <T> T parseTyped(String text, Class<T> entityType) throws NoMatchException, ParsingException
+	public <T> T parse(String text, Class<T> targetClass) throws NoMatchException, ParsingException
 	{
-		Parsings.requireTextNotBlank(text);
-		for (Parser<?> p : entityType == null ? parsers.values() : parsers.get(entityType))
+		Objects.requireNonNull(targetClass, "targetClass");
+		try
+		{
+			return targetClass.cast(doParse(text, targetClass));
+		}
+		catch (ClassCastException e)
+		{
+			throw new ParsingException(text, targetClass, e);
+		}
+	}
+
+	private Object doParse(String text, Class<?> targetClass) throws NoMatchException, ParsingException
+	{
+		Parsings.requireTextNotBlank(text, targetClass);
+		for (Parser<?> p : (targetClass == null ? parsers.values() : parsers.get(targetClass)))
 		{
 			try
 			{
-				return entityType.cast(p.parse(text));
+				return p.parse(text);
 			}
 			catch (NoMatchException e)
 			{
 				// this parser could no match
 				// ignore and move on to the next
-			}
-			catch (ClassCastException e)
-			{
-				throw new ParsingException(text, entityType, e);
+				continue;
 			}
 		}
 
 		// build Exception message
 		StringBuilder msg = new StringBuilder();
 		msg.append("No parser ");
-		if (entityType != null)
+		if (targetClass != null)
 		{
 			msg.append("with ");
 			msg.append("entity type");
-			msg.append(entityType);
+			msg.append(targetClass);
 			msg.append(' ');
 		}
 		msg.append("could parse the text");
 
-		throw new NoMatchException(text, entityType, msg.toString());
+		throw new NoMatchException(text, targetClass, msg.toString());
 	}
 }
