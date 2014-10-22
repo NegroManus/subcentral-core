@@ -24,9 +24,8 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 	private final Mapper<Subtitle>							subtitleMapper				= Parsings.getDefaultSubtitleMapper();
 	private final Mapper<SubtitleAdjustment>				subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
 
-	public SubtitleAdjustmentParser(String domain, Mapper<? extends List<? extends AvMedia>> mediaMapper)
+	public SubtitleAdjustmentParser(Mapper<? extends List<? extends AvMedia>> mediaMapper)
 	{
-		super(domain);
 		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
 	}
 

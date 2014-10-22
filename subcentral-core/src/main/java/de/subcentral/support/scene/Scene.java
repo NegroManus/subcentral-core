@@ -32,7 +32,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class Scene
 {
 	public static final String					DOMAIN			= "scene";
-	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService();
+	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
 
 	static
 	{
@@ -49,7 +49,7 @@ public class Scene
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 
 		// SINGLE EPISODES
-		ReleaseParser epiRlsParser = new ReleaseParser("scene:episode", Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
+		ReleaseParser epiRlsParser = new ReleaseParser(Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> epiRlsMatchers = ImmutableList.builder();
 
 		// Seasoned episode
@@ -136,7 +136,7 @@ public class Scene
 		epiRlsParser.setPropParsingService(pps);
 
 		// MULTI-EPISODES
-		ReleaseParser multiEpiRlsParser = new ReleaseParser("scene:multiEpisode", Parsings.getDefaultMultiEpisodeMapper());
+		ReleaseParser multiEpiRlsParser = new ReleaseParser(Parsings.getDefaultMultiEpisodeMapper());
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpiRlsMatchers = ImmutableList.builder();
 
 		// Multi-episode (seasoned, range)

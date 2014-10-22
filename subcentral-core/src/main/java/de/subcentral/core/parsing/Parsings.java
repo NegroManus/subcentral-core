@@ -136,23 +136,8 @@ public class Parsings
 		}
 	}
 
-	public static final <T> T mapConditionally(List<ConditionalMapper<T>> conditionalMappers, Map<SimplePropDescriptor, String> props,
-			PropParsingService propParsingService) throws MappingException
-	{
-		for (ConditionalMapper<T> m : conditionalMappers)
-		{
-			T result = m.map(props, propParsingService);
-			if (result != null)
-			{
-				return result;
-			}
-		}
-		throw new MappingException(props, null, "No conditional mapper could map");
-	}
-
 	private Parsings()
 	{
 		// util class
 	}
-
 }

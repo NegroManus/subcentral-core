@@ -24,8 +24,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7ed
 {
-	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService();
+	public static final String					DOMAIN			= "addic7ed.com";
 
+	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
 	static
 	{
 		PARSING_SERVICE.setParsers(initParsers());
@@ -50,8 +51,7 @@ public class Addic7ed
 		// --------------
 		// Episode matchers
 		// Predefined matches for episodes
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser("addic7ed.com:episode",
-				Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
+		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefEpisodeMatchesBuilder = ImmutableMap.builder();
 		predefEpisodeMatchesBuilder.putAll(commonPredefMatches);
@@ -202,8 +202,7 @@ public class Addic7ed
 
 		// --------------
 		// Movie matchers
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser("addic7ed.com:movie",
-				Parsings.createSingletonListMapper(Parsings.getDefaultSingleAvMediaMapper()));
+		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(Parsings.createSingletonListMapper(Parsings.getDefaultSingleAvMediaMapper()));
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"

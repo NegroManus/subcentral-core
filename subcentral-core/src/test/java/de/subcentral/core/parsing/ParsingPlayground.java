@@ -79,7 +79,7 @@ public class ParsingPlayground
 
 		long totalStart = System.nanoTime();
 
-		final SimpleParsingService ps = new SimpleParsingService();
+		final SimpleParsingService ps = new SimpleParsingService("default");
 		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
 		parsers.putAll(Addic7ed.getAllParsers());
 		parsers.putAll(SubCentral.getAllParsers());
@@ -87,7 +87,9 @@ public class ParsingPlayground
 		ps.setParsers(parsers.build());
 		final NamingService ns = NamingStandards.NAMING_SERVICE;
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
-		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService(NamingStandards.NAMING_SERVICE, NamingStandards.STANDARD_REPLACER);
+		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService("orlydb",
+				NamingStandards.NAMING_SERVICE,
+				NamingStandards.STANDARD_REPLACER);
 
 		List<Compatibility> compatibilities = new ArrayList<>();
 		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",
