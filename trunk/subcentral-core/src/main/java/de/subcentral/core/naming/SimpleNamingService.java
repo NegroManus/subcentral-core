@@ -9,7 +9,7 @@ import org.apache.commons.lang3.ClassUtils;
 public class SimpleNamingService implements NamingService
 {
 	private String					domain;
-	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>(0);
+	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>();
 	private UnaryOperator<String>	wholeNameOperator	= UnaryOperator.identity();
 
 	@Override
@@ -54,13 +54,9 @@ public class SimpleNamingService implements NamingService
 	}
 
 	@Override
-	public boolean canName(Object entity)
+	public boolean canName(Object candidate)
 	{
-		if (entity == null)
-		{
-			return false;
-		}
-		return getNamer(entity.getClass()) != null;
+		return candidate != null && getNamer(candidate.getClass()) != null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -90,9 +86,9 @@ public class SimpleNamingService implements NamingService
 	/**
 	 * Returns a name for the given object which is calculated as follows:
 	 * <ul>
-	 * <li>1. If a namer is registered for the class of entity (excluding Object), return namer.name(obj).</li>
-	 * <li>2. If a namer is registered for a superclass of entity (excluding Object), return namer.name(obj).</li>
-	 * <li>3. If a namer is registered for an interface of entity, return namer.name(obj).</li>
+	 * <li>1. If a namer is registered for the class of candidate (excluding Object), return namer.name(obj).</li>
+	 * <li>2. If a namer is registered for a superclass of candidate (excluding Object), return namer.name(obj).</li>
+	 * <li>3. If a namer is registered for an interface of candidate, return namer.name(obj).</li>
 	 * <li>4. Throw NoNamerRegisteredException.</li>
 	 * </ul>
 	 * <p>
@@ -100,29 +96,34 @@ public class SimpleNamingService implements NamingService
 	 * costly. </b>
 	 * </p>
 	 * 
-	 * @param entity
+	 * @param candidate
 	 *            The object to name. May be null.
 	 * @param parameters
 	 *            The naming parameters. Not null.
-	 * @return The name that was determined for the object or null if the entity was null.
+	 * @return The name that was determined for the object or null if the candidate was null.
 	 * @throws NoNamerRegisteredException
-	 *             if no namer is registered for the entity
+	 *             if no namer is registered for the candidate
 	 * @throws NamingException
 	 *             if an exception occurs while naming
 	 */
 	@Override
-	public <T> String name(T entity, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
+	public String name(Object candidate, Map<String, Object> parameters) throws NamingException
 	{
-		if (entity == null)
+		return doName(candidate, parameters);
+	}
+
+	private final <T> String doName(T candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
+	{
+		if (candidate == null)
 		{
 			return null;
 		}
 		@SuppressWarnings("unchecked")
-		Namer<? super T> namer = (Namer<? super T>) getNamer(entity.getClass());
+		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
 		if (namer != null)
 		{
-			return wholeNameOperator.apply(namer.name(entity, parameters));
+			return wholeNameOperator.apply(namer.name(candidate, parameters));
 		}
-		throw new NoNamerRegisteredException(entity);
+		throw new NoNamerRegisteredException(candidate);
 	}
 }

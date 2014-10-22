@@ -13,9 +13,8 @@ public class ReleaseParser extends AbstractMappingParser<Release>
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
 	private final Mapper<Release>							releaseMapper	= Parsings.getDefaultReleaseMapper();
 
-	public ReleaseParser(String domain, Mapper<? extends List<? extends Media>> mediaMapper)
+	public ReleaseParser(Mapper<? extends List<? extends Media>> mediaMapper)
 	{
-		super(domain);
 		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
 	}
 

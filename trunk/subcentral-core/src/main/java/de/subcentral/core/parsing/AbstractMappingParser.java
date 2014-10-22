@@ -9,20 +9,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMappingParser<T> implements Parser<T>
 {
-	protected final String									domain;
 	protected List<MappingMatcher<SimplePropDescriptor>>	matchers			= new ArrayList<>();
 	protected PropParsingService							propParsingService	= PropParsingService.DEFAULT;
-
-	protected AbstractMappingParser(String domain)
-	{
-		this.domain = Objects.requireNonNull(domain);
-	}
-
-	@Override
-	public String getDomain()
-	{
-		return domain;
-	}
 
 	public List<MappingMatcher<SimplePropDescriptor>> getMatchers()
 	{

@@ -12,7 +12,7 @@ public class ParsingPerformanceTest
 
 	public static void main(String[] args)
 	{
-		final SimpleParsingService ps = new SimpleParsingService();
+		final SimpleParsingService ps = new SimpleParsingService("default");
 		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
 		parsers.putAll(Addic7ed.getAllParsers());
 		parsers.putAll(SubCentral.getAllParsers());

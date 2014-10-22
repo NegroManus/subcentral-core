@@ -1,21 +1,20 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
-
-import org.apache.commons.lang3.Validate;
 
 public class DelegatingNamingService implements NamingService
 {
+	private final String				domain;
 	private final NamingService			delegate;
 	private final UnaryOperator<String>	wholeNameOperator;
 
-	public DelegatingNamingService(NamingService delegate, UnaryOperator<String> wholeNameOperator)
+	public DelegatingNamingService(String domain, NamingService delegate, UnaryOperator<String> wholeNameOperator)
 	{
-		Validate.notNull(delegate, "delegate");
-		Validate.notNull(wholeNameOperator, "wholeNameOperator");
-		this.delegate = delegate;
-		this.wholeNameOperator = wholeNameOperator;
+		this.domain = Objects.requireNonNull(domain, "domain");
+		this.delegate = Objects.requireNonNull(delegate, "delegate");
+		this.wholeNameOperator = Objects.requireNonNull(wholeNameOperator, "wholeNameOperator");
 	}
 
 	public NamingService getDelegate()
@@ -31,7 +30,7 @@ public class DelegatingNamingService implements NamingService
 	@Override
 	public String getDomain()
 	{
-		return delegate.getDomain();
+		return domain;
 	}
 
 	@Override
@@ -41,9 +40,8 @@ public class DelegatingNamingService implements NamingService
 	}
 
 	@Override
-	public <T> String name(T candidate, Map<String, Object> parameters) throws NamingException
+	public String name(Object candidate, Map<String, Object> parameters) throws NamingException
 	{
 		return wholeNameOperator.apply(delegate.name(candidate, parameters));
 	}
-
 }

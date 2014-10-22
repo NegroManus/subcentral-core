@@ -31,7 +31,7 @@ public class SubCentral
 	public static final String					DOMAIN			= "subcentral.de";
 
 	private static final Logger					log				= LogManager.getLogger(SubCentral.class.getName());
-	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService();
+	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
 	static
 	{
 		PARSING_SERVICE.setParsers(initParsers());
@@ -65,7 +65,7 @@ public class SubCentral
 				continue;
 			}
 
-			SubtitleAdjustmentParser parser = new SubtitleAdjustmentParser(sceneRlsParser.getDomain().replace(Scene.DOMAIN, DOMAIN), mediaMapper);
+			SubtitleAdjustmentParser parser = new SubtitleAdjustmentParser(mediaMapper);
 
 			// Building the matchers for SubCentral:
 			// The scene matchers will be the source for the SubCentral matchers
