@@ -27,7 +27,7 @@ public class NamingStandards
 	public static final CharReplacer			STANDARD_REPLACER			= new CharReplacer();
 
 	// NamingService has to be instantiated first because it is referenced in some namers
-	public static final SimpleNamingService		NAMING_SERVICE				= new SimpleNamingService();
+	public static final ClassBasedNamingService		NAMING_SERVICE				= new ClassBasedNamingService();
 	public static final MediaNamer				MEDIA_NAMER					= new MediaNamer();
 	public static final SeriesNamer				SERIES_NAMER				= new SeriesNamer();
 	public static final SeasonNamer				SEASON_NAMER				= new SeasonNamer();

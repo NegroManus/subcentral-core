@@ -63,7 +63,7 @@ public class Releases
 		{
 			return;
 		}
-		Release parsedName = ps.parseTyped(rls.getName(), Release.class);
+		Release parsedName = ps.parse(rls.getName(), Release.class);
 		if (overwrite || rls.getMedia().isEmpty())
 		{
 			rls.setMedia(parsedName.getMedia());

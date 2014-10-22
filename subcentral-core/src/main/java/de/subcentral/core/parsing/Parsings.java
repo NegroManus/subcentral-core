@@ -86,11 +86,11 @@ public class Parsings
 		return SUBTITLE_ADJUSTMENT_MAPPER;
 	}
 
-	public static final void requireTextNotBlank(String text) throws ParsingException
+	public static final void requireTextNotBlank(String text, Class<?> targetClass) throws ParsingException
 	{
 		if (StringUtils.isBlank(text))
 		{
-			throw new ParsingException(text, null, "text is blank");
+			throw new ParsingException(text, targetClass, "text is blank");
 		}
 	}
 

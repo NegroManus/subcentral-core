@@ -6,7 +6,7 @@ import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ClassUtils;
 
-public class SimpleNamingService implements NamingService
+public class ClassBasedNamingService implements NamingService
 {
 	private String					domain;
 	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>();

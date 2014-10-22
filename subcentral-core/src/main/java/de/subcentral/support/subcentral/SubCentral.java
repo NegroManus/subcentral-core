@@ -34,7 +34,7 @@ public class SubCentral
 	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
 	static
 	{
-		PARSING_SERVICE.setParsers(initParsers());
+		PARSING_SERVICE.getParsers().putAll(initParsers());
 	}
 
 	@SuppressWarnings("unchecked")
