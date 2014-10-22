@@ -1,16 +1,19 @@
 package de.subcentral.core.naming;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
+import org.apache.commons.lang3.ClassUtils;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 public class ConditionalNamingService implements NamingService
 {
-	private final String							domain;
-	private final Map<Predicate<Object>, Namer<?>>	namers				= new HashMap<>(8);
-	private UnaryOperator<String>					wholeNameOperator	= UnaryOperator.identity();
+	private final String										domain;
+	private final ListMultimap<Class<?>, ConditionalNamer<?>>	namers				= ArrayListMultimap.create();
+	private UnaryOperator<String>								wholeNameOperator	= UnaryOperator.identity();
 
 	public ConditionalNamingService(String domain)
 	{
@@ -23,7 +26,7 @@ public class ConditionalNamingService implements NamingService
 		return domain;
 	}
 
-	public Map<Predicate<Object>, Namer<?>> getNamers()
+	public ListMultimap<Class<?>, ConditionalNamer<?>> getNamers()
 	{
 		return namers;
 	}
@@ -34,17 +37,35 @@ public class ConditionalNamingService implements NamingService
 		return getNamer(candidate) != null;
 	}
 
-	public Namer<?> getNamer(Object candidate)
+	@SuppressWarnings("unchecked")
+	public <T> Namer<? super T> getNamer(T candidate)
 	{
 		if (candidate == null)
 		{
 			return null;
 		}
-		for (Map.Entry<Predicate<Object>, Namer<?>> entry : namers.entrySet())
+		Class<?> searchClass = candidate.getClass();
+		while (searchClass != Object.class)
 		{
-			if (entry.getKey().test(candidate))
+			for (ConditionalNamer<?> conditionalNamer : namers.get(searchClass))
 			{
-				return entry.getValue();
+				ConditionalNamer<? super T> castedNamer = (ConditionalNamer<? super T>) conditionalNamer;
+				if (castedNamer.test((T) candidate))
+				{
+					return castedNamer;
+				}
+			}
+			searchClass = searchClass.getSuperclass();
+		}
+		for (Class<?> interfaceClass : ClassUtils.getAllInterfaces(candidate.getClass()))
+		{
+			for (ConditionalNamer<?> conditionalNamer : namers.get(interfaceClass))
+			{
+				ConditionalNamer<? super T> castedNamer = (ConditionalNamer<? super T>) conditionalNamer;
+				if (castedNamer.test((T) candidate))
+				{
+					return castedNamer;
+				}
 			}
 		}
 		return null;
@@ -58,8 +79,7 @@ public class ConditionalNamingService implements NamingService
 
 	private final <T> String doName(T candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
 	{
-		@SuppressWarnings("unchecked")
-		Namer<T> namer = (Namer<T>) getNamer(candidate);
+		Namer<? super T> namer = getNamer(candidate);
 		if (namer != null)
 		{
 			return wholeNameOperator.apply(namer.name(candidate, parameters));

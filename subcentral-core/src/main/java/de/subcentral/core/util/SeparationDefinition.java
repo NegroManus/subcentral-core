@@ -63,8 +63,8 @@ public class SeparationDefinition
 
 	private final SimplePropDescriptor	firstProperty;
 	private final SimplePropDescriptor	secondProperty;
-	private final String					type;
-	private final String					separator;
+	private final String				type;
+	private final String				separator;
 
 	public static SeparationDefinition betweenAny(String separator)
 	{
@@ -111,8 +111,7 @@ public class SeparationDefinition
 		return new SeparationDefinition(firstProperty, secondProperty, null, separator);
 	}
 
-	public static SeparationDefinition between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type,
-			String separator)
+	public static SeparationDefinition between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type, String separator)
 	{
 		return new SeparationDefinition(firstProperty, secondProperty, type, separator);
 	}
