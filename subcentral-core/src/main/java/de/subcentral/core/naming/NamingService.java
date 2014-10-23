@@ -10,7 +10,7 @@ public interface NamingService extends Namer<Object>
 
 	public boolean canName(Object candidate);
 
-	public default String nameMulti(Iterable<?> candidates, String separator, Map<String, Object> parameters)
+	public default String nameIterable(Iterable<?> candidates, String separator, Map<String, Object> parameters)
 	{
 		try
 		{

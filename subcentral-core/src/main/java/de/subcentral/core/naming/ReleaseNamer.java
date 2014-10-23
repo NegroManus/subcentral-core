@@ -40,7 +40,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 		{
 			Builder b = newBuilder();
 			b.appendString(Release.PROP_MEDIA,
-					mediaNamingService.nameMulti(rls.getMedia(), getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null), params));
+					mediaNamingService.nameIterable(rls.getMedia(), getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null), params));
 			b.appendAllIfNotEmpty(Release.PROP_TAGS, rls.getTags());
 			if (rls.getGroup() != null)
 			{
