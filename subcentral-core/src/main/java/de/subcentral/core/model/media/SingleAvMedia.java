@@ -50,7 +50,10 @@ public class SingleAvMedia extends SingleMedia implements AvMedia
 	@Override
 	public void setMediaContentType(String mediaContentType) throws IllegalArgumentException
 	{
-		super.setMediaContentType(Medias.validateMediaContentType(mediaContentType, Media.MEDIA_CONTENT_TYPE_AUDIO, Media.MEDIA_CONTENT_TYPE_VIDEO));
+		super.setMediaContentType(Models.validateString(mediaContentType,
+				"mediaContentType",
+				Media.MEDIA_CONTENT_TYPE_AUDIO,
+				Media.MEDIA_CONTENT_TYPE_VIDEO));
 	}
 
 	@Override
