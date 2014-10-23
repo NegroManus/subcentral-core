@@ -4,30 +4,84 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public class ConditionalNamer<T> implements Namer<T>, Predicate<Object>
+import com.google.common.base.MoreObjects;
+
+public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<Object>
 {
-	private final Namer<T>			namer;
-	private final Predicate<Object>	condition;
-
-	private ConditionalNamer(Namer<T> namer, Predicate<Object> condition)
+	public String mayName(V candidate, Map<String, Object> parameters) throws NamingException
 	{
-		this.namer = Objects.requireNonNull(namer, "namer");
-		this.condition = Objects.requireNonNull(condition, "condition");
+		if (test(candidate))
+		{
+			return name(candidate, parameters);
+		}
+		return null;
 	}
 
-	@Override
-	public boolean test(Object candidate)
+	public static final <T> ConditionalNamer<T> withInstanceOf(Namer<T> namer, Class<? extends T> requiredClass)
 	{
-		return condition.test(candidate);
+		return new InstanceOfConditionalNamer<T>(namer, requiredClass);
 	}
 
-	@Override
-	public String name(T candidate, Map<String, Object> parameters) throws NamingException
+	public static final <T> ConditionalNamer<T> with(Namer<T> namer, Predicate<Object> condition)
 	{
-		if (condition.test(candidate))
+		return new RegularConditionalNamer<T>(namer, condition);
+	}
+
+	private static class InstanceOfConditionalNamer<U> extends ConditionalNamer<U>
+	{
+		private final Namer<U>				namer;
+		private final Class<? extends U>	requiredClass;
+
+		private InstanceOfConditionalNamer(Namer<U> namer, Class<? extends U> requiredClass)
+		{
+			this.namer = Objects.requireNonNull(namer, "namer");
+			this.requiredClass = Objects.requireNonNull(requiredClass, "requiredClass");
+		}
+
+		@Override
+		public boolean test(Object candidate)
+		{
+			return requiredClass.isInstance(candidate);
+		}
+
+		@Override
+		public String name(U candidate, Map<String, Object> parameters) throws NamingException
 		{
 			return namer.name(candidate, parameters);
 		}
-		return null;
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(InstanceOfConditionalNamer.class)
+					.omitNullValues()
+					.add("namer", namer)
+					.add("requiredClass", requiredClass)
+					.toString();
+		}
+	}
+
+	private static class RegularConditionalNamer<U> extends ConditionalNamer<U>
+	{
+		private final Namer<U>			namer;
+		private final Predicate<Object>	condition;
+
+		private RegularConditionalNamer(Namer<U> namer, Predicate<Object> condition)
+		{
+			this.namer = Objects.requireNonNull(namer, "namer");
+			this.condition = Objects.requireNonNull(condition, "condition");
+		}
+
+		@Override
+		public boolean test(Object candidate)
+		{
+			return condition.test(candidate);
+		}
+
+		@Override
+		public String name(U candidate, Map<String, Object> parameters) throws NamingException
+		{
+			return namer.name(candidate, parameters);
+		}
 	}
 }

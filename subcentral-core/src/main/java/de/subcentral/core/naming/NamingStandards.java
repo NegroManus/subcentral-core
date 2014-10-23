@@ -2,6 +2,8 @@ package de.subcentral.core.naming;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -23,22 +25,22 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class NamingStandards
 {
-	public static final String					DEFAULT_DOMAIN				= "scene";
-	public static final CharReplacer			STANDARD_REPLACER			= new CharReplacer();
+	public static final String						DEFAULT_DOMAIN				= "default";
+	public static final CharReplacer				STANDARD_REPLACER			= new CharReplacer();
 
 	// NamingService has to be instantiated first because it is referenced in some namers
-	public static final ClassBasedNamingService	NAMING_SERVICE				= new ClassBasedNamingService();
-	public static final MediaNamer				MEDIA_NAMER					= new MediaNamer();
-	public static final SeriesNamer				SERIES_NAMER				= new SeriesNamer();
-	public static final SeasonNamer				SEASON_NAMER				= new SeasonNamer();
-	public static final SeasonedEpisodeNamer	SEASONED_EPISODE_NAMER		= new SeasonedEpisodeNamer();
-	public static final MiniSeriesEpisodeNamer	MINI_SERIES_EPISODE_NAMER	= new MiniSeriesEpisodeNamer();
-	public static final DatedEpisodeNamer		DATED_EPISODE_NAMER			= new DatedEpisodeNamer();
-	public static final EpisodeNamer			EPISODE_NAMER				= new EpisodeNamer();
-	public static final MultiEpisodeNamer		MULTI_EPISODE_NAMER			= new MultiEpisodeNamer();
-	public static final SubtitleNamer			SUBTITLE_NAMER				= new SubtitleNamer();
-	public static final ReleaseNamer			RELEASE_NAMER				= new ReleaseNamer();
-	public static final SubtitleAdjustmentNamer	SUBTITLE_ADJUSTMENT_NAMER	= new SubtitleAdjustmentNamer();
+	public static final ConditionalNamingService	NAMING_SERVICE				= new ConditionalNamingService(DEFAULT_DOMAIN);
+	public static final MediaNamer					MEDIA_NAMER					= new MediaNamer();
+	public static final SeriesNamer					SERIES_NAMER				= new SeriesNamer();
+	public static final SeasonNamer					SEASON_NAMER				= new SeasonNamer();
+	public static final SeasonedEpisodeNamer		SEASONED_EPISODE_NAMER		= new SeasonedEpisodeNamer();
+	public static final MiniSeriesEpisodeNamer		MINI_SERIES_EPISODE_NAMER	= new MiniSeriesEpisodeNamer();
+	public static final DatedEpisodeNamer			DATED_EPISODE_NAMER			= new DatedEpisodeNamer();
+	public static final EpisodeNamer				EPISODE_NAMER				= new EpisodeNamer();
+	public static final MultiEpisodeNamer			MULTI_EPISODE_NAMER			= new MultiEpisodeNamer();
+	public static final SubtitleNamer				SUBTITLE_NAMER				= new SubtitleNamer();
+	public static final ReleaseNamer				RELEASE_NAMER				= new ReleaseNamer();
+	public static final SubtitleAdjustmentNamer		SUBTITLE_ADJUSTMENT_NAMER	= new SubtitleAdjustmentNamer();
 	static
 	{
 		// Configure namers
@@ -90,17 +92,16 @@ public class NamingStandards
 		SUBTITLE_ADJUSTMENT_NAMER.setWholeNameOperator(STANDARD_REPLACER);
 
 		// Add namers to the NamingService
-		NAMING_SERVICE.setDomain(DEFAULT_DOMAIN);
-		ImmutableMap.Builder<Class<?>, Namer<?>> allNamers = ImmutableMap.builder();
-		allNamers.put(Media.class, MEDIA_NAMER);
-		allNamers.put(Series.class, SERIES_NAMER);
-		allNamers.put(Season.class, SEASON_NAMER);
-		allNamers.put(Episode.class, EPISODE_NAMER);
-		allNamers.put(MultiEpisodeHelper.class, MULTI_EPISODE_NAMER);
-		allNamers.put(Subtitle.class, SUBTITLE_NAMER);
-		allNamers.put(Release.class, RELEASE_NAMER);
-		allNamers.put(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER);
-		NAMING_SERVICE.setNamers(allNamers.build());
+		List<ConditionalNamer<?>> namers = new ArrayList<>(8);
+		namers.add(ConditionalNamer.withInstanceOf(RELEASE_NAMER, Release.class));
+		namers.add(ConditionalNamer.withInstanceOf(SUBTITLE_ADJUSTMENT_NAMER, SubtitleAdjustment.class));
+		namers.add(ConditionalNamer.withInstanceOf(EPISODE_NAMER, Episode.class));
+		namers.add(ConditionalNamer.withInstanceOf(SERIES_NAMER, Series.class));
+		namers.add(ConditionalNamer.withInstanceOf(SEASON_NAMER, Season.class));
+		namers.add(ConditionalNamer.with(MULTI_EPISODE_NAMER, MultiEpisodeHelper::isMultiEpisode));
+		namers.add(ConditionalNamer.withInstanceOf(MEDIA_NAMER, Media.class));
+		namers.add(ConditionalNamer.withInstanceOf(SUBTITLE_NAMER, Subtitle.class));
+		NAMING_SERVICE.getNamers().addAll(namers);
 	}
 
 	public static Namer<Episode> getDefaultEpisodeNamer()

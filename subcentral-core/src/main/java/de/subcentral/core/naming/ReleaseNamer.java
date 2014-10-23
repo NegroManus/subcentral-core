@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.jsoup.helper.Validate;
 
-import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.release.Release;
 
 public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
@@ -41,7 +40,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 		{
 			Builder b = newBuilder();
 			b.appendString(Release.PROP_MEDIA,
-					Medias.name(rls.getMedia(), mediaNamingService, params, getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null)));
+					mediaNamingService.nameMulti(rls.getMedia(), getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null), params));
 			b.appendAllIfNotEmpty(Release.PROP_TAGS, rls.getTags());
 			if (rls.getGroup() != null)
 			{
