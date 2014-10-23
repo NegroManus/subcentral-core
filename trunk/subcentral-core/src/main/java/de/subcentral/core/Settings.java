@@ -7,6 +7,11 @@ import com.google.common.collect.Ordering;
 
 import de.subcentral.core.util.TemporalComparator;
 
+/**
+ * 
+ * TODO: make all Namers and Parsers immutable (safe to use concurrently and faster).
+ *
+ */
 public class Settings
 {
 	public static final Ordering<String>	STRING_ORDERING		= Ordering.from(String.CASE_INSENSITIVE_ORDER).nullsLast();
