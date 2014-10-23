@@ -136,5 +136,4 @@ public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<Object>
 					.toString();
 		}
 	}
-
 }
