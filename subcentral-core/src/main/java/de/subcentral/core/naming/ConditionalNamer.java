@@ -4,66 +4,30 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<V>
+public class ConditionalNamer<T> implements Namer<T>, Predicate<Object>
 {
-	public static final <T> ConditionalNamer<T> of(Namer<T> namer)
+	private final Namer<T>			namer;
+	private final Predicate<Object>	condition;
+
+	private ConditionalNamer(Namer<T> namer, Predicate<Object> condition)
 	{
-		return new AlwaysTrueConditionalNamer<T>(namer);
+		this.namer = Objects.requireNonNull(namer, "namer");
+		this.condition = Objects.requireNonNull(condition, "condition");
 	}
 
-	public static final <T> ConditionalNamer<T> of(Namer<T> namer, Predicate<T> condition)
+	@Override
+	public boolean test(Object candidate)
 	{
-		return new RegularConditionalNamer<T>(namer, condition);
+		return condition.test(candidate);
 	}
 
-	private static class AlwaysTrueConditionalNamer<U> extends ConditionalNamer<U>
+	@Override
+	public String name(T candidate, Map<String, Object> parameters) throws NamingException
 	{
-		private final Namer<U>	namer;
-
-		private AlwaysTrueConditionalNamer(Namer<U> namer)
-		{
-			this.namer = Objects.requireNonNull(namer, "namer");
-		}
-
-		@Override
-		public boolean test(U candidate)
-		{
-			return true;
-		}
-
-		@Override
-		public String name(U candidate, Map<String, Object> parameters) throws NamingException
+		if (condition.test(candidate))
 		{
 			return namer.name(candidate, parameters);
 		}
+		return null;
 	}
-
-	private static class RegularConditionalNamer<U> extends ConditionalNamer<U>
-	{
-		private final Namer<U>		namer;
-		private final Predicate<U>	condition;
-
-		private RegularConditionalNamer(Namer<U> namer, Predicate<U> condition)
-		{
-			this.namer = Objects.requireNonNull(namer, "namer");
-			this.condition = Objects.requireNonNull(condition, "condition");
-		}
-
-		@Override
-		public boolean test(U candidate)
-		{
-			return condition.test(candidate);
-		}
-
-		@Override
-		public String name(U candidate, Map<String, Object> parameters) throws NamingException
-		{
-			if (condition.test(candidate))
-			{
-				return namer.name(candidate, parameters);
-			}
-			return null;
-		}
-	}
-
 }

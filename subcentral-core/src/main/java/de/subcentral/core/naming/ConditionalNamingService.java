@@ -1,21 +1,16 @@
 package de.subcentral.core.naming;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.UnaryOperator;
-
-import org.apache.commons.lang3.ClassUtils;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ListMultimap;
 
 public class ConditionalNamingService implements NamingService
 {
-	private final String										domain;
-	private final ListMultimap<Class<?>, ConditionalNamer<?>>	namers				= ArrayListMultimap.create();
-	private UnaryOperator<String>								wholeNameOperator	= UnaryOperator.identity();
+	private final String					domain;
+	private final List<ConditionalNamer<?>>	namers				= new CopyOnWriteArrayList<>();
+	private UnaryOperator<String>			wholeNameOperator	= UnaryOperator.identity();
 
 	public ConditionalNamingService(String domain)
 	{
@@ -28,19 +23,9 @@ public class ConditionalNamingService implements NamingService
 		return domain;
 	}
 
-	public ImmutableListMultimap<Class<?>, ConditionalNamer<?>> getNamers()
+	public List<ConditionalNamer<?>> getNamers()
 	{
-		return ImmutableListMultimap.copyOf(namers);
-	}
-
-	public <T> void registerNamer(Class<? extends T> clazz, Namer<T> namer)
-	{
-		namers.put(clazz, ConditionalNamer.of(namer));
-	}
-
-	public <T> void registerNamer(Class<? extends T> clazz, Namer<T> namer, Predicate<T> condition)
-	{
-		namers.put(clazz, ConditionalNamer.of(namer, condition));
+		return namers;
 	}
 
 	@Override
@@ -56,28 +41,11 @@ public class ConditionalNamingService implements NamingService
 		{
 			return null;
 		}
-		Class<?> searchClass = candidate.getClass();
-		while (searchClass != Object.class)
+		for (ConditionalNamer<?> namer : namers)
 		{
-			for (ConditionalNamer<?> conditionalNamer : namers.get(searchClass))
+			if (namer.test(candidate))
 			{
-				ConditionalNamer<? super T> castedNamer = (ConditionalNamer<? super T>) conditionalNamer;
-				if (castedNamer.test((T) candidate))
-				{
-					return castedNamer;
-				}
-			}
-			searchClass = searchClass.getSuperclass();
-		}
-		for (Class<?> interfaceClass : ClassUtils.getAllInterfaces(candidate.getClass()))
-		{
-			for (ConditionalNamer<?> conditionalNamer : namers.get(interfaceClass))
-			{
-				ConditionalNamer<? super T> castedNamer = (ConditionalNamer<? super T>) conditionalNamer;
-				if (castedNamer.test((T) candidate))
-				{
-					return castedNamer;
-				}
+				return (Namer<? super T>) namer;
 			}
 		}
 		return null;
