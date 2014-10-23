@@ -1,16 +1,27 @@
 package de.subcentral.core.naming;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ClassUtils;
 
+/**
+ * {@code Thread-safe}
+ *
+ */
 public class ClassBasedNamingService implements NamingService
 {
-	private String					domain;
-	private Map<Class<?>, Namer<?>>	namers				= new HashMap<>();
-	private UnaryOperator<String>	wholeNameOperator	= UnaryOperator.identity();
+	private final String									domain;
+	private final Map<Class<?>, Namer<?>>					namers				= new ConcurrentHashMap<>();
+	private final AtomicReference<UnaryOperator<String>>	wholeNameOperator	= new AtomicReference<UnaryOperator<String>>(UnaryOperator.identity());
+
+	public ClassBasedNamingService(String domain)
+	{
+		this.domain = Objects.requireNonNull(domain, "domain");
+	}
 
 	@Override
 	public String getDomain()
@@ -18,39 +29,19 @@ public class ClassBasedNamingService implements NamingService
 		return domain;
 	}
 
-	public void setDomain(String domain)
-	{
-		this.domain = domain;
-	}
-
 	public Map<Class<?>, Namer<?>> getNamers()
 	{
 		return namers;
 	}
 
-	public void setNamers(Map<Class<?>, Namer<?>> namers) throws IllegalArgumentException
-	{
-		this.namers = namers;
-	}
-
-	public <T> Namer<?> registerNamer(Class<T> typeClass, Namer<? super T> namer)
-	{
-		return namers.put(typeClass, namer);
-	}
-
-	public Namer<?> unregisterNamer(Class<?> typeClass)
-	{
-		return namers.remove(typeClass);
-	}
-
 	public UnaryOperator<String> getWholeNameOperator()
 	{
-		return wholeNameOperator;
+		return wholeNameOperator.get();
 	}
 
 	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
 	{
-		this.wholeNameOperator = wholeNameOperator;
+		this.wholeNameOperator.set(wholeNameOperator);
 	}
 
 	@Override
@@ -122,7 +113,7 @@ public class ClassBasedNamingService implements NamingService
 		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
 		if (namer != null)
 		{
-			return wholeNameOperator.apply(namer.name(candidate, parameters));
+			return wholeNameOperator.get().apply(namer.name(candidate, parameters));
 		}
 		throw new NoNamerRegisteredException(candidate);
 	}

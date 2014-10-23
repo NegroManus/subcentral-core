@@ -1,5 +1,6 @@
 package de.subcentral.core.naming;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<MultiEpisodeHelper>
+public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<Episode>>
 {
 	public static final String		SEPARATION_TYPE_ADDITION	= "addition";
 	public static final String		SEPARATION_TYPE_RANGE		= "range";
@@ -19,12 +20,13 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<MultiEpisod
 	private SeasonedEpisodeNamer	episodeNamer				= NamingStandards.SEASONED_EPISODE_NAMER;
 
 	@Override
-	public String doName(MultiEpisodeHelper me, Map<String, Object> namingSettings) throws NamingException
+	public String doName(Collection<Episode> episodes, Map<String, Object> namingSettings) throws NamingException
 	{
-		if (me.isEmpty())
+		if (episodes.isEmpty())
 		{
 			return "";
 		}
+		MultiEpisodeHelper me = new MultiEpisodeHelper(episodes);
 		StringBuilder sb = new StringBuilder();
 		sb.append(episodeNamer.name(me.get(0)));
 		Series commonSeries = me.getCommonSeries();

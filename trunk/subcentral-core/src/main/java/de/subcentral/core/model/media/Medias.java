@@ -4,14 +4,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.Namings;
-import de.subcentral.core.naming.NoNamerRegisteredException;
 import de.subcentral.core.util.ListComparator;
 
 public class Medias
@@ -53,33 +49,6 @@ public class Medias
 			return null;
 		}
 		return me;
-	}
-
-	public static String name(List<? extends Media> media, NamingService namingService, Map<String, Object> parameters, String mediaSeparator)
-	{
-		int numOfMedia = media.size();
-		if (numOfMedia == 0)
-		{
-			return "";
-		}
-		else if (numOfMedia == 1)
-		{
-			return namingService.name(media.get(0), parameters);
-		}
-		else
-		{
-			try
-			{
-				MultiEpisodeHelper me = MultiEpisodeHelper.of(media);
-				return namingService.name(me, parameters);
-			}
-			catch (IllegalArgumentException | NoNamerRegisteredException e)
-			{
-				// IAE if media is not a list of Episodes
-				// NNRE if namingService has no namer registered for MultiEpisodeHelper
-				return Namings.nameAll(media, namingService, parameters, mediaSeparator);
-			}
-		}
 	}
 
 	public static String validateMediaContentType(String mediaContentType, String... allowedTypes) throws IllegalArgumentException

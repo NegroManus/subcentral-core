@@ -33,6 +33,23 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 
 	private static final long					serialVersionUID	= 870081295286403057L;
 
+	public static boolean isMultiEpisode(Object obj)
+	{
+		if (obj != null && obj instanceof Iterable)
+		{
+			for (Object o : (Iterable<?>) obj)
+			{
+				if (o instanceof Episode)
+				{
+					continue;
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public static MultiEpisodeHelper of(List<? extends Media> media) throws IllegalArgumentException
 	{
 		MultiEpisodeHelper me = new MultiEpisodeHelper(media.size());
