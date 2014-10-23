@@ -26,7 +26,7 @@ public class Releases
 		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
 		for (Release rls : rlss)
 		{
-			if (Releases.doFilter(rls, requiredMediaNames, containedTags, group, mediaNamingService))
+			if (Releases.filterInternal(rls, requiredMediaNames, containedTags, group, mediaNamingService))
 			{
 				filteredRlss.add(rls);
 			}
@@ -41,10 +41,10 @@ public class Releases
 			return false;
 		}
 		List<String> requiredMediaNames = Namings.nameEach(media, mediaNamingService, ImmutableMap.of());
-		return doFilter(rls, requiredMediaNames, containedTags, group, mediaNamingService);
+		return filterInternal(rls, requiredMediaNames, containedTags, group, mediaNamingService);
 	}
 
-	private static boolean doFilter(Release rls, List<String> requiredMediaNames, List<Tag> containedTags, Group group,
+	private static boolean filterInternal(Release rls, List<String> requiredMediaNames, List<Tag> containedTags, Group group,
 			NamingService mediaNamingService)
 	{
 		if (rls == null)

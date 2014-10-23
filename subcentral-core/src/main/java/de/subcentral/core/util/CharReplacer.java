@@ -11,7 +11,7 @@ public class CharReplacer implements UnaryOperator<String>
 	private char[]								allowedChars		= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-".toCharArray();
 	private char[]								charsToDelete		= "'´`".toCharArray();
 	private String								defaultReplacement	= ".";
-	private ImmutableMap<Character, Character>	replacements		= ImmutableMap.of('&', '_');
+	private ImmutableMap<Character, Character>	replacements		= ImmutableMap.of();
 
 	public char[] getAllowedChars()
 	{

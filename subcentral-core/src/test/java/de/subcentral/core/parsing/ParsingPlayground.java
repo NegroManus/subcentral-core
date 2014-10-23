@@ -94,6 +94,9 @@ public class ParsingPlayground
 		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",
 				"HDTV",
 				"x264"), Scope.IF_EXISTS, true));
+		compatibilities.add(new Compatibility(null, new Group("EXCELLENCE"), Tag.list("HDTV", "x264"), new Group("REMARKABLE"), Tag.list("720p",
+				"HDTV",
+				"x264"), Scope.IF_EXISTS, true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
