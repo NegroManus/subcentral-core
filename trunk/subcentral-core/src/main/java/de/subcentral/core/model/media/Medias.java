@@ -1,11 +1,8 @@
 package de.subcentral.core.model.media;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.util.ListComparator;
@@ -34,30 +31,6 @@ public class Medias
 			}
 			return Settings.STRING_ORDERING.compare(o1.getName(), o2.getName());
 		}
-	}
-
-	public static MultiEpisodeHelper newMultiEpisode(List<? extends Media> media)
-	{
-		MultiEpisodeHelper me = new MultiEpisodeHelper(media.size());
-		for (Media m : media)
-		{
-			if (m instanceof Episode)
-			{
-				me.add((Episode) m);
-				continue;
-			}
-			return null;
-		}
-		return me;
-	}
-
-	public static String validateMediaContentType(String mediaContentType, String... allowedTypes) throws IllegalArgumentException
-	{
-		if (mediaContentType == null || ArrayUtils.contains(allowedTypes, mediaContentType))
-		{
-			return mediaContentType;
-		}
-		throw new IllegalArgumentException("mediaContentType must be null or one of " + Arrays.toString(allowedTypes));
 	}
 
 	private Medias()

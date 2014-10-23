@@ -7,8 +7,11 @@ import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 public class Models
 {
@@ -20,6 +23,15 @@ public class Models
 			return date;
 		}
 		throw new IllegalArgumentException("The date has to be an instance of java.time.ZonedDateTime, java.time.LocalDateTime, java.time.LocalDate, java.time.YearMonth or java.time.Year.");
+	}
+
+	public static String validateString(String str, String propertyName, String... allowedStrings) throws IllegalArgumentException
+	{
+		if (str == null || ArrayUtils.contains(allowedStrings, str))
+		{
+			return str;
+		}
+		throw new IllegalArgumentException(propertyName + " must be null or one of " + Arrays.toString(allowedStrings));
 	}
 
 	public static final Collection<?> nullIfEmpty(Collection<?> c)
