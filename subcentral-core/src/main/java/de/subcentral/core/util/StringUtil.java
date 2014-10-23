@@ -39,73 +39,79 @@ public class StringUtil
 		return cs != null && sb.length() >= cs.length() && sb.substring(sb.length() - cs.length()).equals(cs);
 	}
 
-	public static void appendIfNotEndsWith(StringBuilder sb, char c)
+	public static StringBuilder appendIfNotEndsWith(StringBuilder sb, char c)
 	{
 		if (endsWith(sb, c))
 		{
 			sb.append(c);
 		}
+		return sb;
 	}
 
-	public static void appendIfNotEndsWith(StringBuilder sb, CharSequence cs)
+	public static StringBuilder appendIfNotEndsWith(StringBuilder sb, CharSequence cs)
 	{
 		if (!StringUtils.endsWith(sb, cs))
 		{
 			sb.append(cs);
 		}
+		return sb;
 	}
 
-	public static void appendSpaceIfNotEndsWith(StringBuilder sb)
+	public static StringBuilder appendSpaceIfNotEndsWith(StringBuilder sb)
 	{
-		appendIfNotEndsWith(sb, ' ');
+		return appendIfNotEndsWith(sb, ' ');
 	}
 
-	public static void stripStart(StringBuilder sb, char c)
+	public static StringBuilder stripStart(StringBuilder sb, char c)
 	{
 		if (startsWith(sb, c))
 		{
 			sb.deleteCharAt(0);
 		}
+		return sb;
 	}
 
-	public static void stripStart(StringBuilder sb, CharSequence cs)
+	public static StringBuilder stripStart(StringBuilder sb, CharSequence cs)
 	{
 		while (startsWith(sb, cs))
 		{
 			sb.deleteCharAt(sb.length() - 1);
 		}
+		return sb;
 	}
 
-	public static void stripStart(StringBuilder sb)
+	public static StringBuilder stripStart(StringBuilder sb)
 	{
-		stripStart(sb, ' ');
+		return stripStart(sb, ' ');
 	}
 
-	public static void stripEnd(StringBuilder sb, char c)
+	public static StringBuilder stripEnd(StringBuilder sb, char c)
 	{
 		while (endsWith(sb, c))
 		{
 			sb.deleteCharAt(sb.length() - 1);
 		}
+		return sb;
 	}
 
-	public static void stripEnd(StringBuilder sb, CharSequence cs)
+	public static StringBuilder stripEnd(StringBuilder sb, CharSequence cs)
 	{
 		while (endsWith(sb, cs))
 		{
 			sb.delete(sb.length() - cs.length(), sb.length());
 		}
+		return sb;
 	}
 
-	public static void stripEnd(StringBuilder sb)
+	public static StringBuilder stripEnd(StringBuilder sb)
 	{
-		stripEnd(sb, ' ');
+		return stripEnd(sb, ' ');
 	}
 
-	public static void trim(StringBuilder sb)
+	public static StringBuilder trim(StringBuilder sb)
 	{
 		stripStart(sb);
-		stripEnd(sb);
+		return stripEnd(sb);
 	}
 
 }
