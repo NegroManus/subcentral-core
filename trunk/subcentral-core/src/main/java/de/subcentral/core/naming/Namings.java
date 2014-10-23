@@ -1,12 +1,12 @@
 package de.subcentral.core.naming;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+
+import de.subcentral.core.util.StringUtil;
 
 public class Namings
 {
@@ -39,12 +39,13 @@ public class Namings
 		{
 			return "";
 		}
-		List<String> names = new ArrayList<>();
+		StringBuilder name = new StringBuilder();
 		for (Object candidate : candidates)
 		{
-			names.add(namingService.name(candidate, parameters));
+			name.append(namingService.name(candidate, parameters));
+			name.append(separator);
 		}
-		return Joiner.on(separator).join(names);
+		return StringUtil.stripEnd(name, separator).toString();
 	}
 
 	private Namings()

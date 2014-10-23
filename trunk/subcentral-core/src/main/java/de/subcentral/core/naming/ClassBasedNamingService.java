@@ -115,6 +115,6 @@ public class ClassBasedNamingService implements NamingService
 		{
 			return wholeNameOperator.get().apply(namer.name(candidate, parameters));
 		}
-		throw new NoNamerRegisteredException(candidate);
+		throw new NoNamerRegisteredException(candidate, "No Namer registered for candidate's type");
 	}
 }

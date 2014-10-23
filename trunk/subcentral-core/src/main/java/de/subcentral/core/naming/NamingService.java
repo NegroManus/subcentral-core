@@ -24,8 +24,7 @@ public interface NamingService extends Namer<Object>
 				name.append(name(candidate, parameters));
 				name.append(separator);
 			}
-			StringUtil.stripEnd(name, separator);
-			return name.toString();
+			return StringUtil.stripEnd(name, separator).toString();
 		}
 	}
 }
