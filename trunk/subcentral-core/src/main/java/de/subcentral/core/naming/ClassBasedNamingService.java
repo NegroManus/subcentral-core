@@ -91,7 +91,7 @@ public class ClassBasedNamingService implements NamingService
 	 *            The object to name. May be null.
 	 * @param parameters
 	 *            The naming parameters. Not null.
-	 * @return The name that was determined for the object or null if the candidate was null.
+	 * @return The name that was determined for the object or "" if the candidate was null.
 	 * @throws NoNamerRegisteredException
 	 *             if no namer is registered for the candidate
 	 * @throws NamingException
@@ -100,15 +100,15 @@ public class ClassBasedNamingService implements NamingService
 	@Override
 	public String name(Object candidate, Map<String, Object> parameters) throws NamingException
 	{
+		if (candidate == null)
+		{
+			return "";
+		}
 		return doName(candidate, parameters);
 	}
 
 	private final <T> String doName(T candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
 	{
-		if (candidate == null)
-		{
-			return null;
-		}
 		@SuppressWarnings("unchecked")
 		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
 		if (namer != null)

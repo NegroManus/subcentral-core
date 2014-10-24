@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Compatibility.MatchDirection;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.Namings;
 import de.subcentral.core.parsing.ParsingService;
 
 public class Releases
@@ -22,11 +21,11 @@ public class Releases
 		{
 			return ImmutableList.of();
 		}
-		List<String> requiredMediaNames = Namings.nameEach(media, mediaNamingService, ImmutableMap.of());
+		String requiredMediaName = mediaNamingService.nameIterable(media, " ", ImmutableMap.of());
 		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
 		for (Release rls : rlss)
 		{
-			if (rls != null && Releases.filterInternal(rls, requiredMediaNames, containedTags, group, mediaNamingService))
+			if (rls != null && Releases.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService))
 			{
 				filteredRlss.add(rls);
 			}
@@ -40,15 +39,15 @@ public class Releases
 		{
 			return false;
 		}
-		List<String> requiredMediaNames = Namings.nameEach(media, mediaNamingService, ImmutableMap.of());
-		return filterInternal(rls, requiredMediaNames, containedTags, group, mediaNamingService);
+		String requiredMediaName = mediaNamingService.nameIterable(media, " ", ImmutableMap.of());
+		return filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService);
 	}
 
-	private static boolean filterInternal(Release rls, List<String> requiredMediaNames, List<Tag> containedTags, Group group,
+	private static boolean filterInternal(Release rls, String requiredMediaName, List<Tag> containedTags, Group group,
 			NamingService mediaNamingService)
 	{
-		List<String> actualMediaNames = Namings.nameEach(rls.getMedia(), mediaNamingService, ImmutableMap.of());
-		return requiredMediaNames.equals(actualMediaNames) && (group == null ? true : group.equals(rls.getGroup()))
+		String actualMediaName = mediaNamingService.nameIterable(rls.getMedia(), " ", ImmutableMap.of());
+		return requiredMediaName.equalsIgnoreCase(actualMediaName) && (group == null ? true : group.equals(rls.getGroup()))
 				&& (rls.getTags().containsAll(containedTags));
 	}
 
