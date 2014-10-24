@@ -1,6 +1,5 @@
 package de.subcentral.core.naming;
 
-import java.beans.IntrospectionException;
 import java.util.Map;
 
 import org.jsoup.helper.Validate;
@@ -14,7 +13,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	 */
 	public static final String	PARAM_USE_NAME_KEY	= "useName";
 
-	private NamingService		mediaNamingService	= NamingStandards.NAMING_SERVICE;
+	private NamingService		mediaNamingService	= NamingStandards.getDefaultNamingService();
 
 	public NamingService getMediaNamingService()
 	{
@@ -28,25 +27,22 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	}
 
 	@Override
-	public String doName(Release rls, Map<String, Object> params) throws IntrospectionException
+	public void buildName(PropSequenceNameBuilder b, Release rls, Map<String, Object> params)
 	{
 		boolean useName = Namings.readParameter(params, PARAM_USE_NAME_KEY, Boolean.class, Boolean.FALSE);
 
 		if (useName)
 		{
-			return rls.getName();
+			b.appendString(Release.PROP_NAME, rls.getName());
 		}
 		else
 		{
-			Builder b = newBuilder();
-			b.appendString(Release.PROP_MEDIA,
-					mediaNamingService.nameIterable(rls.getMedia(), getSeparatorBetween(Release.PROP_MEDIA, Release.PROP_MEDIA, null), params));
+			b.append(Release.PROP_MEDIA, mediaNamingService.nameIterable(rls.getMedia(), " ", params));
 			b.appendAllIfNotEmpty(Release.PROP_TAGS, rls.getTags());
 			if (rls.getGroup() != null)
 			{
 				b.append(Release.PROP_GROUP, rls.getGroup());
 			}
-			return b.build();
 		}
 	}
 }

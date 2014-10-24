@@ -83,11 +83,11 @@ public class ParsingPlayground
 		ps.getParsers().putAll(SubCentral.getAllParsers());
 		ps.getParsers().putAll(Scene.getAllParsers());
 
-		final NamingService ns = NamingStandards.NAMING_SERVICE;
+		final NamingService ns = NamingStandards.getDefaultNamingService();
 
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
 		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService("orlydb",
-				NamingStandards.NAMING_SERVICE,
+				NamingStandards.getDefaultNamingService(),
 				NamingStandards.STANDARD_REPLACER);
 
 		List<Compatibility> compatibilities = new ArrayList<>();

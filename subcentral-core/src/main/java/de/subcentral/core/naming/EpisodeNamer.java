@@ -10,7 +10,7 @@ import de.subcentral.core.model.media.Episode;
 public class EpisodeNamer implements Namer<Episode>
 {
 	private Map<String, Namer<Episode>>	seriesTypeNamers	= new HashMap<>(3);
-	private Namer<Episode>				defaultNamer		= NamingStandards.SEASONED_EPISODE_NAMER;
+	private Namer<Episode>				defaultNamer		= NamingStandards.getDefaultSeasonedEpisodeNamer();
 
 	public EpisodeNamer()
 	{
@@ -48,20 +48,23 @@ public class EpisodeNamer implements Namer<Episode>
 		this.defaultNamer = defaultNamer;
 	}
 
-	@Override
-	public String name(Episode epi, Map<String, Object> parameters) throws NamingException
+	public Namer<Episode> getNamer(Episode epi)
 	{
 		String type;
-		Namer<Episode> namer;
 		if (epi.getSeries() != null && (type = epi.getSeries().getType()) != null)
 		{
-			namer = seriesTypeNamers.getOrDefault(type, defaultNamer);
+			return seriesTypeNamers.getOrDefault(type, defaultNamer);
 		}
 		else
 		{
-			namer = defaultNamer;
+			return defaultNamer;
 		}
-		return namer.name(epi, parameters);
+	}
+
+	@Override
+	public String name(Episode epi, Map<String, Object> parameters) throws NamingException
+	{
+		return getNamer(epi).name(epi, parameters);
 	}
 
 }

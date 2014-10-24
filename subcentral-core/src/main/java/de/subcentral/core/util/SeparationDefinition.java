@@ -3,6 +3,8 @@ package de.subcentral.core.util;
 import java.util.Objects;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
+
 public class SeparationDefinition
 {
 	public static final String	DEFAULT_SEPARATOR	= " ";
@@ -142,5 +144,17 @@ public class SeparationDefinition
 	public String getSeparator()
 	{
 		return separator;
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(SeparationDefinition.class)
+				.omitNullValues()
+				.add("firstProperty", firstProperty)
+				.add("secondProperty", secondProperty)
+				.add("type", type)
+				.add("separator", separator)
+				.toString();
 	}
 }

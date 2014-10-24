@@ -25,7 +25,7 @@ public class MediaTest
 			media.sort(Settings.createDefaultOrdering());
 			System.out.println(TimeUtil.durationMillis(start, System.nanoTime()));
 
-			media.forEach(s -> System.out.println(NamingStandards.SEASONED_EPISODE_NAMER.name(s)));
+			media.forEach(s -> System.out.println(NamingStandards.getDefaultSeasonedEpisodeNamer().name(s)));
 			System.out.println(TimeUtil.durationMillis(start, System.nanoTime()));
 		}
 	}

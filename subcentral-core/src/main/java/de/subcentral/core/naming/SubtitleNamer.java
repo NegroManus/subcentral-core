@@ -8,7 +8,7 @@ import de.subcentral.core.model.subtitle.Subtitle;
 
 public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 {
-	private NamingService	mediaNamingService	= NamingStandards.NAMING_SERVICE;
+	private NamingService	mediaNamingService	= NamingStandards.getDefaultNamingService();
 
 	public NamingService getMediaNamingService()
 	{
@@ -22,9 +22,8 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	}
 
 	@Override
-	public String doName(Subtitle sub, Map<String, Object> params)
+	public void buildName(PropSequenceNameBuilder b, Subtitle sub, Map<String, Object> params)
 	{
-		Builder b = newBuilder();
 		b.appendString(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));
 		b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
 		if (sub.isHearingImpaired())
@@ -56,6 +55,5 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 		{
 			b.append(Subtitle.PROP_SOURCE, sub.getSource());
 		}
-		return b.build();
 	}
 }

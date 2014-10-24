@@ -55,12 +55,10 @@ public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	}
 
 	@Override
-	public String doName(Episode epi, Map<String, Object> params)
+	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// settings
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
-
-		Builder b = newBuilder();
 
 		// add series
 		if (includeSeries && epi.getSeries() != null)
@@ -96,7 +94,5 @@ public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 				b.appendString(Episode.PROP_TITLE, undefinedEpisodePlaceholder);
 			}
 		}
-
-		return b.build();
 	}
 }
