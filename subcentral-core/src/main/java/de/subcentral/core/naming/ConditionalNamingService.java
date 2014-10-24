@@ -79,6 +79,10 @@ public class ConditionalNamingService implements NamingService
 	@Override
 	public String name(Object candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
 	{
+		if (candidate == null)
+		{
+			return "";
+		}
 		return doName(candidate, parameters);
 	}
 

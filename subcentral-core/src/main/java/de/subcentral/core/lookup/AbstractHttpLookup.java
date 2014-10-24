@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 
 public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 {
-	public static final int	DEFAULT_TIMEOUT	= 5000;
+	public static final int	DEFAULT_TIMEOUT	= 10000;
 
 	protected final URL		host;
 	private int				timeout			= DEFAULT_TIMEOUT;
