@@ -7,8 +7,8 @@ import de.subcentral.core.model.media.Series;
 public class SeriesNamer extends AbstractPropertySequenceNamer<Series>
 {
 	@Override
-	protected String doName(Series candidate, Map<String, Object> parameters) throws Exception
+	public void buildName(PropSequenceNameBuilder b, Series candidate, Map<String, Object> parameters)
 	{
-		return propToString(Series.PROP_NAME, candidate.getName());
+		b.append(Series.PROP_NAME, candidate.getName());
 	}
 }

@@ -14,17 +14,15 @@ public class MediaNamer extends AbstractPropertySequenceNamer<Media>
 	public static final String	PARAM_INCLUDE_YEAR_KEY	= "includeYear";
 
 	@Override
-	public String doName(Media media, Map<String, Object> params)
+	public void buildName(PropSequenceNameBuilder b, Media media, Map<String, Object> params)
 	{
 		// settings
 		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR_KEY, Boolean.class, Boolean.FALSE);
 
-		Builder b = newBuilder();
 		b.append(new SimplePropDescriptor(Media.class, PropNames.NAME), media.getTitleOrName());
 		if (includeYear)
 		{
 			b.appendIfNotNull(new SimplePropDescriptor(Media.class, PropNames.DATE), media.getYear());
 		}
-		return b.build();
 	}
 }

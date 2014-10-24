@@ -15,7 +15,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	 */
 	public static final String	PARAM_KEY_RELEASE	= "release";
 
-	private Namer<Release>		releaseNamer		= NamingStandards.RELEASE_NAMER;
+	private Namer<Release>		releaseNamer		= NamingStandards.getDefaultReleaseNamer();
 
 	public Namer<Release> getReleaseNamer()
 	{
@@ -29,12 +29,11 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	}
 
 	@Override
-	public String doName(SubtitleAdjustment adjustment, Map<String, Object> params)
+	public void buildName(PropSequenceNameBuilder b, SubtitleAdjustment adjustment, Map<String, Object> params)
 	{
 		// read naming settings
 		Release rls = Namings.readParameter(params, PARAM_KEY_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
 
-		Builder b = newBuilder();
 		b.appendString(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 		Subtitle sub = adjustment.getFirstSubtitle();
 		if (sub != null)
@@ -66,6 +65,5 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 				b.append(Subtitle.PROP_GROUP, sub.getGroup());
 			}
 		}
-		return b.build();
 	}
 }
