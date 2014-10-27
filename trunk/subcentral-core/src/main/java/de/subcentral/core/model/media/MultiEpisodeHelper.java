@@ -28,6 +28,14 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 {
 	private static final long	serialVersionUID	= 870081295286403057L;
 
+	/**
+	 * Determines whether the objecto to test is a multi-episode. Returns true only if {@code obj} is an Iterable of more than one Episode. Otherwise
+	 * returns false.
+	 * 
+	 * @param obj
+	 *            the object to test
+	 * @return whether {@code obj} is a multi-episode.
+	 */
 	public static boolean isMultiEpisode(Object obj)
 	{
 		if (obj != null && obj instanceof Iterable)
