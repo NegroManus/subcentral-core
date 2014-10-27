@@ -77,6 +77,9 @@ public class NamingStandards
 		EPISODE_NAMER.setSeriesTypeNamers(seriesTypeNamers.build());
 
 		// MultiEpisodeNamer
+		MULTI_EPISODE_NAMER.registerSeriesTypeNamer(Series.TYPE_SEASONED, SEASONED_EPISODE_NAMER);
+		MULTI_EPISODE_NAMER.registerSeriesTypeNamer(Series.TYPE_MINI_SERIES, MINI_SERIES_EPISODE_NAMER);
+		MULTI_EPISODE_NAMER.registerSeriesTypeNamer(Series.TYPE_DATED, DATED_EPISODE_NAMER);
 		MULTI_EPISODE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""),
 				SeparationDefinition.inBetween(Episode.PROP_NUMBER_IN_SEASON, MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, ""),
 				SeparationDefinition.inBetween(Episode.PROP_NUMBER_IN_SERIES, MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, ""),

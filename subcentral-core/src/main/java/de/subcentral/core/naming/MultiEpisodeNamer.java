@@ -1,8 +1,11 @@
 package de.subcentral.core.naming;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.Validate;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -12,11 +15,53 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<Episode>>
 {
-	public static final String		SEPARATION_TYPE_ADDITION	= "addition";
-	public static final String		SEPARATION_TYPE_RANGE		= "range";
+	public static final String									PROP_NAME_EPISODES			= "episodes";
+	public static final SimplePropDescriptor					PROP_EPISODES				= new SimplePropDescriptor(MultiEpisodeHelper.class,
+																									PROP_NAME_EPISODES);
 
-	private SeasonedEpisodeNamer	seasonedEpiNamer			= (SeasonedEpisodeNamer) NamingStandards.getDefaultSeasonedEpisodeNamer();
-	private Namer<Episode>			episodeNamer				= NamingStandards.getDefaultEpisodeNamer();
+	public static final String									SEPARATION_TYPE_ADDITION	= "addition";
+	public static final String									SEPARATION_TYPE_RANGE		= "range";
+
+	private Map<String, AbstractPropertySequenceNamer<Episode>>	seriesTypeNamers			= new HashMap<>(3);
+	private AbstractPropertySequenceNamer<Episode>				defaultNamer				= (AbstractPropertySequenceNamer<Episode>) NamingStandards.getDefaultSeasonedEpisodeNamer();
+
+	public Map<String, AbstractPropertySequenceNamer<Episode>> getSeriesTypeNamers()
+	{
+		return seriesTypeNamers;
+	}
+
+	public AbstractPropertySequenceNamer<Episode> registerSeriesTypeNamer(String seriesType, AbstractPropertySequenceNamer<Episode> namer)
+	{
+		return seriesTypeNamers.put(seriesType, namer);
+	}
+
+	public AbstractPropertySequenceNamer<Episode> unregisterSeriesTypeNamer(String seriesType)
+	{
+		return seriesTypeNamers.remove(seriesType);
+	}
+
+	public Namer<Episode> getDefaultNamer()
+	{
+		return defaultNamer;
+	}
+
+	public void setDefaultNamer(AbstractPropertySequenceNamer<Episode> defaultNamer)
+	{
+		Validate.notNull(defaultNamer, "defaultNamer");
+		this.defaultNamer = defaultNamer;
+	}
+
+	public AbstractPropertySequenceNamer<Episode> getNamer(Episode epi)
+	{
+		if (epi.getSeries() != null && epi.getSeries().getType() != null)
+		{
+			return seriesTypeNamers.getOrDefault(epi.getSeries().getType(), defaultNamer);
+		}
+		else
+		{
+			return defaultNamer;
+		}
+	}
 
 	@Override
 	public void buildName(PropSequenceNameBuilder b, Collection<Episode> episodes, Map<String, Object> namingSettings) throws NamingException
@@ -26,9 +71,9 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 			return;
 		}
 		MultiEpisodeHelper me = new MultiEpisodeHelper(episodes);
-
-		String firstEpiName = episodeNamer.name(me.get(0), ImmutableMap.of());
-		b.appendString(MultiEpisodeHelper.PROP_EPISODES, firstEpiName);
+		Episode firstEpi = me.get(0);
+		String firstEpiName = getNamer(firstEpi).name(firstEpi, ImmutableMap.of());
+		b.appendString(PROP_EPISODES, firstEpiName);
 
 		if (me.getCommonSeries() != null)
 		{
@@ -51,7 +96,8 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 				{
 					for (int i = 1; i < me.size(); i++)
 					{
-						seasonedEpiNamer.buildName(b, me.get(i), ImmutableMap.of("includeSeries", Boolean.FALSE, "includeSeason", Boolean.FALSE));
+						Episode epi = me.get(i);
+						getNamer(epi).buildName(b, epi, ImmutableMap.of("includeSeries", Boolean.FALSE, "includeSeason", Boolean.FALSE));
 					}
 				}
 			}
@@ -71,13 +117,22 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 						appendRange(b, numberRanges.get(i), true, false);
 					}
 				}
+				else
+				{
+					for (int i = 1; i < me.size(); i++)
+					{
+						Episode epi = me.get(i);
+						getNamer(epi).buildName(b, epi, ImmutableMap.of("includeSeries", Boolean.FALSE));
+					}
+				}
 			}
 			else
 			{
 				// different seasons
 				for (int i = 1; i < me.size(); i++)
 				{
-					seasonedEpiNamer.buildName(b, me.get(i), ImmutableMap.of("includeSeries", Boolean.FALSE));
+					Episode epi = me.get(i);
+					getNamer(epi).buildName(b, epi, ImmutableMap.of("includeSeries", Boolean.FALSE));
 				}
 			}
 		}
@@ -86,8 +141,10 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 			// no common series
 			for (int i = 1; i < me.size(); i++)
 			{
-				String epiName = episodeNamer.name(me.get(i), ImmutableMap.of());
-				b.appendString(MultiEpisodeHelper.PROP_EPISODES, epiName);
+				Episode epi = me.get(i);
+				getNamer(epi);
+				String epiName = getNamer(epi).name(epi, ImmutableMap.of());
+				b.appendString(PROP_EPISODES, epiName);
 			}
 		}
 	}

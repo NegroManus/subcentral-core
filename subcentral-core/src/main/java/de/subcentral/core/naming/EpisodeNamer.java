@@ -50,10 +50,9 @@ public class EpisodeNamer implements Namer<Episode>
 
 	public Namer<Episode> getNamer(Episode epi)
 	{
-		String type;
-		if (epi.getSeries() != null && (type = epi.getSeries().getType()) != null)
+		if (epi.getSeries() != null && epi.getSeries().getType() != null)
 		{
-			return seriesTypeNamers.getOrDefault(type, defaultNamer);
+			return seriesTypeNamers.getOrDefault(epi.getSeries().getType(), defaultNamer);
 		}
 		else
 		{

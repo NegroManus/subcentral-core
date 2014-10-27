@@ -34,6 +34,12 @@ public class DelegatingNamingService implements NamingService
 	}
 
 	@Override
+	public String getDefaultSeparator()
+	{
+		return delegate.getDefaultSeparator();
+	}
+
+	@Override
 	public boolean canName(Object candidate)
 	{
 		return delegate.canName(candidate);
@@ -44,4 +50,5 @@ public class DelegatingNamingService implements NamingService
 	{
 		return wholeNameOperator.apply(delegate.name(candidate, parameters));
 	}
+
 }

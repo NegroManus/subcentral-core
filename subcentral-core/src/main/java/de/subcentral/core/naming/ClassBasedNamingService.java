@@ -16,6 +16,7 @@ public class ClassBasedNamingService implements NamingService
 {
 	private final String									domain;
 	private final Map<Class<?>, Namer<?>>					namers				= new ConcurrentHashMap<>();
+	private final AtomicReference<String>					defaultSeparator	= new AtomicReference<>(" ");
 	private final AtomicReference<UnaryOperator<String>>	wholeNameOperator	= new AtomicReference<UnaryOperator<String>>(UnaryOperator.identity());
 
 	public ClassBasedNamingService(String domain)
@@ -32,6 +33,17 @@ public class ClassBasedNamingService implements NamingService
 	public Map<Class<?>, Namer<?>> getNamers()
 	{
 		return namers;
+	}
+
+	@Override
+	public String getDefaultSeparator()
+	{
+		return defaultSeparator.get();
+	}
+
+	public void setDefaultSeparator(String defaultSeparator)
+	{
+		this.defaultSeparator.set(defaultSeparator);
 	}
 
 	public UnaryOperator<String> getWholeNameOperator()
@@ -114,6 +126,10 @@ public class ClassBasedNamingService implements NamingService
 		if (namer != null)
 		{
 			return wholeNameOperator.get().apply(namer.name(candidate, parameters));
+		}
+		if (candidate instanceof Iterable)
+		{
+			return wholeNameOperator.get().apply(nameAll((Iterable<?>) candidate, defaultSeparator.get(), parameters));
 		}
 		throw new NoNamerRegisteredException(candidate, "No Namer registered for candidate's type");
 	}

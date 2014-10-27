@@ -21,7 +21,7 @@ public class Releases
 		{
 			return ImmutableList.of();
 		}
-		String requiredMediaName = mediaNamingService.nameIterable(media, " ", ImmutableMap.of());
+		String requiredMediaName = mediaNamingService.name(media, ImmutableMap.of());
 		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
 		for (Release rls : rlss)
 		{
@@ -39,14 +39,14 @@ public class Releases
 		{
 			return false;
 		}
-		String requiredMediaName = mediaNamingService.nameIterable(media, " ", ImmutableMap.of());
+		String requiredMediaName = mediaNamingService.name(media, ImmutableMap.of());
 		return filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService);
 	}
 
 	private static boolean filterInternal(Release rls, String requiredMediaName, List<Tag> containedTags, Group group,
 			NamingService mediaNamingService)
 	{
-		String actualMediaName = mediaNamingService.nameIterable(rls.getMedia(), " ", ImmutableMap.of());
+		String actualMediaName = mediaNamingService.name(rls.getMedia(), ImmutableMap.of());
 		return requiredMediaName.equalsIgnoreCase(actualMediaName) && (group == null ? true : group.equals(rls.getGroup()))
 				&& (rls.getTags().containsAll(containedTags));
 	}

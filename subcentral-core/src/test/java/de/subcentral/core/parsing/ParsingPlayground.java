@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.lookup.JavaLookup;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -63,6 +64,13 @@ public class ParsingPlayground
 	 */
 	public static void main(String[] args)
 	{
+		JavaLookup debugJavaLookup = new JavaLookup();
+		log.info("Runtime: {}", debugJavaLookup.getRuntime());
+		log.info("Virtual machine: {}", debugJavaLookup.getVirtualMachine());
+		log.info("Locale: {}", debugJavaLookup.getLocale());
+		log.info("Operating system: {}", debugJavaLookup.getOperatingSystem());
+		log.info("Hardware: {}", debugJavaLookup.getHardware());
+
 		Path watchFolder = null;
 		for (String arg : args)
 		{
@@ -138,7 +146,7 @@ public class ParsingPlayground
 							SubtitleAdjustment subAdj = (SubtitleAdjustment) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							start = System.nanoTime();
-							List<Release> releases = lookup.createQueryFromEntity(subAdj.getFirstMatchingRelease().getFirstMedia()).execute();
+							List<Release> releases = lookup.createQueryFromEntity(subAdj.getFirstMatchingRelease().getMedia()).execute();
 							TimeUtil.printDurationMillis("Lookup", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));

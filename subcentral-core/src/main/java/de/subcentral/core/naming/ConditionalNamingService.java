@@ -14,7 +14,8 @@ public class ConditionalNamingService implements NamingService
 {
 	private final String									domain;
 	private final List<ConditionalNamer<?>>					namers				= new CopyOnWriteArrayList<>();
-	private final AtomicReference<UnaryOperator<String>>	wholeNameOperator	= new AtomicReference<UnaryOperator<String>>(UnaryOperator.identity());
+	private final AtomicReference<String>					defaultSeparator	= new AtomicReference<>(" ");
+	private final AtomicReference<UnaryOperator<String>>	wholeNameOperator	= new AtomicReference<>(UnaryOperator.identity());
 
 	public ConditionalNamingService(String domain)
 	{
@@ -41,6 +42,17 @@ public class ConditionalNamingService implements NamingService
 	public List<ConditionalNamer<?>> getNamers()
 	{
 		return namers;
+	}
+
+	@Override
+	public String getDefaultSeparator()
+	{
+		return defaultSeparator.get();
+	}
+
+	public void setDefaultSeparator(String defaultSeparator)
+	{
+		this.defaultSeparator.set(defaultSeparator);
 	}
 
 	public UnaryOperator<String> getWholeNameOperator()
@@ -92,6 +104,10 @@ public class ConditionalNamingService implements NamingService
 		if (namer != null)
 		{
 			return wholeNameOperator.get().apply(namer.name(candidate, parameters));
+		}
+		if (candidate instanceof Iterable)
+		{
+			return wholeNameOperator.get().apply(nameAll((Iterable<?>) candidate, defaultSeparator.get(), parameters));
 		}
 		throw new NoNamerRegisteredException(candidate, "No ConditionalNamer's condition returned true for the candidate");
 	}
