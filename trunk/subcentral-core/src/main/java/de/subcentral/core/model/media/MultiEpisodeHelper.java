@@ -34,7 +34,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 	 * 
 	 * @param obj
 	 *            the object to test
-	 * @return whether {@code obj} is a multi-episode.
+	 * @return whether {@code obj} is a multi-episode
 	 */
 	public static boolean isMultiEpisode(Object obj)
 	{
