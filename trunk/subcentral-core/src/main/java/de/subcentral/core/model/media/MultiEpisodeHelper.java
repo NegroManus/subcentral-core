@@ -35,9 +35,9 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 			int size = 0;
 			for (Object o : (Iterable<?>) obj)
 			{
-				size++;
 				if (o instanceof Episode)
 				{
+					size++;
 					continue;
 				}
 				return false;
