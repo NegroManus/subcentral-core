@@ -30,17 +30,19 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 
 	public static boolean isMultiEpisode(Object obj)
 	{
-		if (obj != null && obj instanceof Collection)
+		if (obj != null && obj instanceof Iterable)
 		{
-			for (Object o : (Collection<?>) obj)
+			int size = 0;
+			for (Object o : (Iterable<?>) obj)
 			{
+				size++;
 				if (o instanceof Episode)
 				{
 					continue;
 				}
 				return false;
 			}
-			return true;
+			return size > 1;
 		}
 		return false;
 	}
