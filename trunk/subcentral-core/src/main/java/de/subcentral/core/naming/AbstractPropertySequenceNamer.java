@@ -63,16 +63,6 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 		}
 	}
 
-	/**
-	 * 
-	 * @param candidate
-	 *            The candidate. Never null.
-	 * @param parameters
-	 *            The parameters. Not null, may empty.
-	 * @return The name of the candidate. Will be processed by {@link #formatWholeName(String)}.
-	 * @throws Exception
-	 *             Whatever exception occurs while naming the candidate. Will be wrapped into a NamingException and thrown.
-	 */
 	public abstract void buildName(PropSequenceNameBuilder b, T candidate, Map<String, Object> parameters);
 
 	private PropSequenceNameBuilder builder()

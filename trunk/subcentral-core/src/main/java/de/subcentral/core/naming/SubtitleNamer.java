@@ -26,10 +26,7 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	{
 		b.appendString(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));
 		b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
-		if (sub.isHearingImpaired())
-		{
-			b.append(Subtitle.PROP_HEARING_IMPAIRED, Subtitle.TAG_HEARING_IMPAIRED.getName());
-		}
+		b.appendIf(Subtitle.PROP_HEARING_IMPAIRED, Subtitle.TAG_HEARING_IMPAIRED.getName(), sub.isHearingImpaired());
 		switch (sub.getForeignParts())
 		{
 			case NONE:
@@ -47,13 +44,7 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 				break;
 		}
 		b.appendAllIfNotEmpty(Subtitle.PROP_TAGS, sub.getTags());
-		if (sub.getGroup() != null)
-		{
-			b.append(Subtitle.PROP_GROUP, sub.getGroup());
-		}
-		else if (sub.getSource() != null)
-		{
-			b.append(Subtitle.PROP_SOURCE, sub.getSource());
-		}
+		b.appendIfNotNull(Subtitle.PROP_GROUP, sub.getGroup());
+		b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
 	}
 }

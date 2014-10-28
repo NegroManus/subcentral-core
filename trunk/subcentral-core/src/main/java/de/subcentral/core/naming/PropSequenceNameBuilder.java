@@ -61,6 +61,15 @@ public class PropSequenceNameBuilder
 		return this;
 	}
 
+	public PropSequenceNameBuilder appendIfElse(SimplePropDescriptor propDescriptor, Object ifValue, Object elseValue, boolean condition)
+	{
+		if (condition)
+		{
+			return append(propDescriptor, ifValue, null);
+		}
+		return append(propDescriptor, elseValue, null);
+	}
+
 	public PropSequenceNameBuilder append(SimplePropDescriptor propDescriptor, Object propValue)
 	{
 		return append(propDescriptor, propValue, null);

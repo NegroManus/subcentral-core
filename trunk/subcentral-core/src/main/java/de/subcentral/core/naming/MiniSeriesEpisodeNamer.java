@@ -71,7 +71,7 @@ public class MiniSeriesEpisodeNamer extends AbstractPropertySequenceNamer<Episod
 			}
 			else
 			{
-				b.appendString(Episode.PROP_SERIES, epi.getSeries().getName());
+				b.append(Episode.PROP_SERIES, epi.getSeries().getName());
 			}
 		}
 
@@ -79,10 +79,7 @@ public class MiniSeriesEpisodeNamer extends AbstractPropertySequenceNamer<Episod
 		if (epi.isNumberedInSeries())
 		{
 			b.append(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries());
-			if (alwaysIncludeEpisodeTitle)
-			{
-				b.append(Episode.PROP_TITLE, epi.getTitle());
-			}
+			b.appendIf(Episode.PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle);
 		}
 		else
 		{

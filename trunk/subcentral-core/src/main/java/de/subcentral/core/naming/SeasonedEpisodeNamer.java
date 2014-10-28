@@ -192,7 +192,7 @@ public class SeasonedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 			}
 			else
 			{
-				b.appendString(Episode.PROP_SERIES, epi.getSeries().getName());
+				b.append(Episode.PROP_SERIES, epi.getSeries().getName());
 			}
 		}
 
