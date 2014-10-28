@@ -252,6 +252,6 @@ public class Scene
 
 	private Scene()
 	{
-
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
 }
