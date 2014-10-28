@@ -117,6 +117,10 @@ public class Releases
 		for (Compatibility c : compatibilities)
 		{
 			MatchDirection md = c.match(rls);
+			if (MatchDirection.NONE == md)
+			{
+				continue;
+			}
 			switch (c.getScope())
 			{
 				case IF_EXISTS:
@@ -130,10 +134,7 @@ public class Releases
 					break;
 				case ALWAYS:
 					Release compatibleRls = buildCompatible(rls, c, md);
-					if (compatibleRls != null)
-					{
-						compatibleRlss.put(compatibleRls, c);
-					}
+					compatibleRlss.put(compatibleRls, c);
 					break;
 				default:
 					break;
@@ -144,10 +145,6 @@ public class Releases
 
 	private static final Release buildCompatible(Release sourceRls, Compatibility c, MatchDirection md)
 	{
-		if (MatchDirection.NONE == md)
-		{
-			return null;
-		}
 		Release compatibleRls = new Release();
 		compatibleRls.setMedia(sourceRls.getMedia());
 		if (MatchDirection.FORWARD == md)

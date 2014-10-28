@@ -1,11 +1,8 @@
 package de.subcentral.core;
 
-import java.time.temporal.Temporal;
 import java.util.Comparator;
 
 import com.google.common.collect.Ordering;
-
-import de.subcentral.core.util.TemporalComparator;
 
 /**
  * 
@@ -15,8 +12,7 @@ import de.subcentral.core.util.TemporalComparator;
 public class Settings
 {
 	// nulls first
-	public static final Ordering<String>	STRING_ORDERING		= Ordering.from(String.CASE_INSENSITIVE_ORDER).nullsFirst();
-	public static final Ordering<Temporal>	TEMPORAL_ORDERING	= Ordering.from(new TemporalComparator());
+	public static final Ordering<String>	STRING_ORDERING	= Ordering.from(String.CASE_INSENSITIVE_ORDER).nullsFirst();
 
 	public static <T extends Comparable<T>> Ordering<T> createDefaultOrdering()
 	{

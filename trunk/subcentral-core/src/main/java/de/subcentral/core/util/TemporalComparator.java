@@ -14,8 +14,10 @@ import com.google.common.collect.Ordering;
 
 public class TemporalComparator implements Comparator<Temporal>, Serializable
 {
+	public static final Comparator<Temporal>	INSTANCE	= new TemporalComparator();
+
 	// Comparators should be Serializable
-	private static final long	serialVersionUID	= -7918244215818591537L;
+	private static final long					serialVersionUID	= -7918244215818591537L;
 
 	@Override
 	public int compare(Temporal o1, Temporal o2)
