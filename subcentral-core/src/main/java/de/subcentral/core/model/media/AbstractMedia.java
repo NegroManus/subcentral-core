@@ -17,7 +17,7 @@ public abstract class AbstractMedia implements Media
 	protected final List<String>		coverUrls		= new ArrayList<>(1);
 	protected String					contentAdvisory;
 	protected final List<Contribution>	contributions	= new ArrayList<>();
-	// HashMa / HashSet initial capacities should be a power of 2
+	// HashMap / HashSet initial capacities should be a power of 2
 	protected final Set<String>			furtherInfoUrls	= new HashSet<>(4);
 
 	@Override
@@ -98,12 +98,5 @@ public abstract class AbstractMedia implements Media
 	{
 		this.furtherInfoUrls.clear();
 		this.furtherInfoUrls.addAll(furtherInfoUrls);
-	}
-
-	// Convenience / Complex
-	@Override
-	public boolean isTitled()
-	{
-		return title != null;
 	}
 }
