@@ -56,12 +56,13 @@ public class SimpleParsingService implements ParsingService
 	@Override
 	public <T> T parse(String text, Class<T> targetClass) throws NoMatchException, ParsingException
 	{
-		Objects.requireNonNull(targetClass, "targetClass");
+		Parsings.requireNotBlank(text, targetClass);
 		try
 		{
+			Objects.requireNonNull(targetClass, "targetClass cannot be null. For untyped parsing use " + getClass() + ".parse(String).");
 			return targetClass.cast(doParse(text, targetClass));
 		}
-		catch (ClassCastException e)
+		catch (ClassCastException | NullPointerException e)
 		{
 			throw new ParsingException(text, targetClass, e);
 		}
@@ -69,7 +70,6 @@ public class SimpleParsingService implements ParsingService
 
 	private Object doParse(String text, Class<?> targetClass) throws NoMatchException, ParsingException
 	{
-		Parsings.requireTextNotBlank(text, targetClass);
 		for (Parser<?> p : (targetClass == null ? parsers.values() : parsers.get(targetClass)))
 		{
 			try
