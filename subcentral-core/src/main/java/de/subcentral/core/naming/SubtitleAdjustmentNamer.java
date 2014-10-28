@@ -35,14 +35,12 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 		Release rls = Namings.readParameter(params, PARAM_KEY_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
 
 		b.appendString(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
+
 		Subtitle sub = adjustment.getFirstSubtitle();
 		if (sub != null)
 		{
 			b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
-			if (sub.isHearingImpaired())
-			{
-				b.append(Subtitle.PROP_HEARING_IMPAIRED, Subtitle.TAG_HEARING_IMPAIRED.getName());
-			}
+			b.appendIf(Subtitle.PROP_HEARING_IMPAIRED, Subtitle.TAG_HEARING_IMPAIRED.getName(), sub.isHearingImpaired());
 			switch (sub.getForeignParts())
 			{
 				case NONE:
@@ -60,10 +58,8 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 					break;
 			}
 			b.appendAllIfNotEmpty(Subtitle.PROP_TAGS, sub.getTags());
-			if (sub.getGroup() != null)
-			{
-				b.append(Subtitle.PROP_GROUP, sub.getGroup());
-			}
+			b.appendIfNotNull(Subtitle.PROP_GROUP, sub.getGroup());
+			b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
 		}
 	}
 }
