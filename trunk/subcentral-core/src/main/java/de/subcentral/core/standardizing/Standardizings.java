@@ -9,12 +9,14 @@ import de.subcentral.core.model.subtitle.Subtitles;
 
 public class Standardizings
 {
-	private static final SimpleStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new SimpleStandardizingService();
+	private static final SimpleStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new SimpleStandardizingService("default");
 	static
 	{
 		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
-		standardizers.put(Subtitle.class, (Subtitle s) -> Subtitles.standardizeTags(s));
-		standardizers.put(Release.class, (Release r) -> Releases.standardizeTags(r));
+		Standardizer<Subtitle> subStdzer = Subtitles::standardizeTags;
+		Standardizer<Release> rlsStdzer = Releases::standardizeTags;
+		standardizers.put(Subtitle.class, subStdzer);
+		standardizers.put(Release.class, rlsStdzer);
 		DEFAULT_STANDARDIZING_SERVICE.setStandardizers(standardizers.build());
 	}
 
