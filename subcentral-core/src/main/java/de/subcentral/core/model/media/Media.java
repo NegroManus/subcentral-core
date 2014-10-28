@@ -93,7 +93,7 @@ public interface Media extends Work
 
 	// Property accessors
 	/**
-	 * @return The unique name of this media.
+	 * @return the unique name of this media
 	 */
 	public String getName();
 
@@ -102,20 +102,20 @@ public interface Media extends Work
 	 * "The Office (UK)", title: "The Office").<br/>
 	 * In case of numbered Media, like an {@link Episode} or a Song, the title may be optional.
 	 * 
-	 * @return The title of this media.
+	 * @return the title of this media
 	 */
 	public String getTitle();
 
 	/**
 	 * The media type is useful to distinguish media instances that have no own class but are different. One of the <code>TYPE_*</code> constants.
 	 * 
-	 * @return The exact type of the media.
+	 * @return the exact type of the media
 	 */
 	public String getMediaType();
 
 	/**
 	 * 
-	 * @return The content type of this media. One of the <code>CONTENT_TYPE_*</code> constants.
+	 * @return the content type of this media. One of the <code>CONTENT_TYPE_*</code> constants
 	 */
 	public String getMediaContentType();
 
@@ -124,30 +124,30 @@ public interface Media extends Work
 	 * {@link java.time.YearMonth} or {@link java.time.Year}, depending on how precise the information is. Other <code>Temporal</code> implementations
 	 * are not allowed.
 	 * 
-	 * @return The publishing / air date of this media.
+	 * @return the publishing / air date of this media
 	 */
 	public Temporal getDate();
 
 	/**
 	 * 
-	 * @return The language codes of the original languages of this media. Typically, not available on medias of {@link Media#CONTENT_TYPE_IMAGE},
-	 *         except if there is text in the picture.
+	 * @return the language codes of the original languages of this media. Typically, not available on medias of {@link Media#CONTENT_TYPE_IMAGE},
+	 *         except if there is text in the picture
 	 */
 	public List<String> getOriginalLanguages();
 
 	/**
 	 * 
-	 * @return The country codes of the countries where this media was originally created. Can be multiple if it was a co-production.
+	 * @return the country codes of the countries where this media was originally created. Can be multiple if it was a co-production
 	 */
 	public List<String> getCountriesOfOrigin();
 
 	/**
-	 * @return The genres of this media.
+	 * @return the genres of this media
 	 */
 	public Set<String> getGenres();
 
 	/**
-	 * The description can for example be facts about this media or a plot summary (in case of Episodes or Movies).
+	 * the description can for example be facts about this media or a plot summary (in case of Episodes or Movies)
 	 * 
 	 * @return The description of this media.
 	 */
@@ -155,7 +155,7 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return A list of URLs each pointing to a cover image for this media. The first URL points to the primary cover.
+	 * @return a list of URLs each pointing to a cover image for this media. The first URL points to the primary cover
 	 */
 	public List<String> getCoverUrls();
 
@@ -166,16 +166,21 @@ public interface Media extends Work
 	 * <li>Games: http://en.wikipedia.org/wiki/Video_game_content_rating_system</li>
 	 * </ul>
 	 * 
-	 * @return The parental advisory / content advisory / content rating for this media.
+	 * @return the parental advisory / content advisory / content rating for this media
 	 */
 	public String getContentAdvisory();
 
 	/**
 	 * 
-	 * @return A set of URLs where further information about this media can be found.
+	 * @return a set of URLs where further information about this media can be found
 	 */
 	public Set<String> getFurtherInfoUrls();
 
+	/**
+	 * Additional attributes that have designated property can be stored in the ListMultimap of getAttributes().
+	 * 
+	 * @return the additional attributes of this media
+	 */
 	public ListMultimap<String, Object> getAttributes();
 
 	// Convenience
