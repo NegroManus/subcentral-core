@@ -35,6 +35,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 	@Override
 	public T parse(String text) throws NoMatchException, ParsingException
 	{
+		Parsings.requireNotBlank(text, null);
 		try
 		{
 			for (MappingMatcher<SimplePropDescriptor> matcher : matchers)
