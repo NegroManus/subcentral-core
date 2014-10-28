@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -24,12 +26,13 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.CharReplacer;
+import de.subcentral.core.util.PatternReplacer;
 import de.subcentral.core.util.SeparationDefinition;
 
 public class NamingStandards
 {
 	public static final String						DEFAULT_DOMAIN				= "default";
-	public static final CharReplacer				STANDARD_REPLACER			= new CharReplacer();
+	private static final UnaryOperator<String>		WHOLE_NAME_OPERATOR			= initDefaultWholeNameOperator();
 	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE		= new SimplePropToStringService();
 
 	// NamingService has to be instantiated first because it is referenced in some namers
@@ -50,7 +53,7 @@ public class NamingStandards
 		// Configure namers
 
 		// PropToStringService
-		Function<Integer, String> episodeNumberToString = n -> String.format("E%02d", n);
+		Function<Integer, String> epiNumToString = n -> String.format("E%02d", n);
 
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("'('uuuu')'", Locale.US).format(y));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(YearMonth.class,
@@ -62,8 +65,8 @@ public class NamingStandards
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(ZonedDateTime.class,
 				(ZonedDateTime d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd.HH.mm.ss')'", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, episodeNumberToString);
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, episodeNumberToString);
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, epiNumToString);
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, epiNumToString);
 
 		// SeasonedEpisodeNamer
 		SEASONED_EPISODE_NAMER.setPropToStringService(PROP_TO_STRING_SERVICE);
@@ -87,14 +90,15 @@ public class NamingStandards
 
 		// ReleaseNamer
 		RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
-		RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
+		RELEASE_NAMER.setWholeNameOperator(WHOLE_NAME_OPERATOR);
 
 		// SubtitleNamer
-		SUBTITLE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-")));
+		ImmutableSet<SeparationDefinition> dashBeforeSubGroupSeparation = ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-"));
+		SUBTITLE_NAMER.setSeparators(dashBeforeSubGroupSeparation);
 
 		// SubtitleReleaseNamer
-		SUBTITLE_ADJUSTMENT_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-")));
-		SUBTITLE_ADJUSTMENT_NAMER.setWholeNameOperator(STANDARD_REPLACER);
+		SUBTITLE_ADJUSTMENT_NAMER.setSeparators(dashBeforeSubGroupSeparation);
+		SUBTITLE_ADJUSTMENT_NAMER.setWholeNameOperator(WHOLE_NAME_OPERATOR);
 
 		// Add namers to the NamingService
 		List<ConditionalNamer<?>> namers = new ArrayList<>(8);
@@ -109,14 +113,26 @@ public class NamingStandards
 		NAMING_SERVICE.getNamers().addAll(namers);
 	}
 
-	public static NamingService getDefaultNamingService()
+	private static UnaryOperator<String> initDefaultWholeNameOperator()
 	{
-		return NAMING_SERVICE;
+		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
+		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-", "'´`", ".");
+		return (UnaryOperator<String>) pr.andThen(cr);
+	}
+
+	public static UnaryOperator<String> getDefaultWholeNameOperator()
+	{
+		return WHOLE_NAME_OPERATOR;
 	}
 
 	public static PropToStringService getDefaultPropToStringService()
 	{
 		return PROP_TO_STRING_SERVICE;
+	}
+
+	public static NamingService getDefaultNamingService()
+	{
+		return NAMING_SERVICE;
 	}
 
 	public static Namer<Media> getDefaultMediaNamer()
