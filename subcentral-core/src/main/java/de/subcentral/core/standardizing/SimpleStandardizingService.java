@@ -1,13 +1,26 @@
 package de.subcentral.core.standardizing;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
 public class SimpleStandardizingService implements StandardizingService
 {
+	private final String							domain;
 	private ListMultimap<Class<?>, Standardizer<?>>	standardizers	= LinkedListMultimap.create();
+
+	public SimpleStandardizingService(String domain)
+	{
+		this.domain = Objects.requireNonNull(domain, "domain");
+	}
+
+	@Override
+	public String getDomain()
+	{
+		return domain;
+	}
 
 	public void setStandardizers(ListMultimap<Class<?>, Standardizer<?>> standardizers)
 	{
@@ -39,9 +52,14 @@ public class SimpleStandardizingService implements StandardizingService
 		return standardizers.removeAll(entityType);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T> void standardize(T entity)
+	public void standardize(Object entity)
+	{
+		doStandardize(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> void doStandardize(T entity)
 	{
 		if (entity != null)
 		{
