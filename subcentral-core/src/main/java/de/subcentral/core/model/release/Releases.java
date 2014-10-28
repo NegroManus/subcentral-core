@@ -136,8 +136,6 @@ public class Releases
 					Release compatibleRls = buildCompatible(rls, c, md);
 					compatibleRlss.put(compatibleRls, c);
 					break;
-				default:
-					break;
 			}
 		}
 		return compatibleRlss.build();
@@ -147,16 +145,20 @@ public class Releases
 	{
 		Release compatibleRls = new Release();
 		compatibleRls.setMedia(sourceRls.getMedia());
-		if (MatchDirection.FORWARD == md)
+		switch (md)
 		{
-			compatibleRls.setGroup(c.getCompatibleGroup() == null ? sourceRls.getGroup() : c.getCompatibleGroup());
-			compatibleRls.setTags(c.getCompatibleTags() == null ? sourceRls.getTags() : c.getCompatibleTags());
+			case FORWARD:
+				compatibleRls.setGroup(c.getCompatibleGroup() == null ? sourceRls.getGroup() : c.getCompatibleGroup());
+				compatibleRls.setTags(c.getCompatibleTags() == null ? sourceRls.getTags() : c.getCompatibleTags());
+				break;
+			case BACKWARD:
+				compatibleRls.setGroup(c.getSourceGroup() == null ? sourceRls.getGroup() : c.getSourceGroup());
+				compatibleRls.setTags(c.getSourceTags() == null ? sourceRls.getTags() : c.getSourceTags());
+				break;
+			case NONE:
+				break;
 		}
-		else if (MatchDirection.BACKWARD == md)
-		{
-			compatibleRls.setGroup(c.getSourceGroup() == null ? sourceRls.getGroup() : c.getSourceGroup());
-			compatibleRls.setTags(c.getSourceTags() == null ? sourceRls.getTags() : c.getSourceTags());
-		}
+
 		return compatibleRls;
 	}
 
