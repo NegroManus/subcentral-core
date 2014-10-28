@@ -9,10 +9,10 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
+import de.subcentral.core.model.media.RegularAvMedia;
+import de.subcentral.core.model.media.RegularMedia;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.media.SingleAvMedia;
-import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
@@ -45,7 +45,7 @@ public class Addic7ed
 				"Addic7ed.com",
 				Subtitle.PROP_SOURCE_URL,
 				"http://www.addic7ed.com",
-				SingleAvMedia.PROP_MEDIA_CONTENT_TYPE,
+				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,
 				Media.MEDIA_CONTENT_TYPE_VIDEO);
 
 		// Matchers
@@ -55,7 +55,7 @@ public class Addic7ed
 		// --------------
 		// Episode matchers
 		// Predefined matches for episodes
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
+		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultSingletonListEpisodeMapper());
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefEpisodeMatchesBuilder = ImmutableMap.builder();
 		predefEpisodeMatchesBuilder.putAll(commonPredefMatches);
@@ -206,21 +206,21 @@ public class Addic7ed
 
 		// --------------
 		// Movie matchers
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(Parsings.createSingletonListMapper(Parsings.getDefaultSingleAvMediaMapper()));
+		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultSingletonListRegularAvMediaMapper());
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);
-		predefMovieMatchesBuilder.put(SingleAvMedia.PROP_MEDIA_TYPE, Media.MEDIA_TYPE_MOVIE);
+		predefMovieMatchesBuilder.put(RegularAvMedia.PROP_MEDIA_TYPE, Media.MEDIA_TYPE_MOVIE);
 		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefEpisodeMatchesBuilder.build();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
 		Pattern p201 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
 		grps201.put(0, SubtitleAdjustment.PROP_NAME);
-		grps201.put(1, SingleMedia.PROP_NAME);
-		grps201.put(2, SingleMedia.PROP_TITLE);
-		grps201.put(3, SingleMedia.PROP_DATE);
+		grps201.put(1, RegularAvMedia.PROP_NAME);
+		grps201.put(2, RegularAvMedia.PROP_TITLE);
+		grps201.put(3, RegularAvMedia.PROP_DATE);
 		grps201.put(4, Release.PROP_TAGS);
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, Subtitle.PROP_TAGS);
@@ -233,7 +233,7 @@ public class Addic7ed
 
 		movieSubParser.setMatchers(movieMatchers.build());
 
-		return ImmutableListMultimap.of(Episode.class, episodeSubParser, SingleMedia.class, movieSubParser);
+		return ImmutableListMultimap.of(Episode.class, episodeSubParser, RegularMedia.class, movieSubParser);
 	}
 
 	public static final ParsingService getParsingService()

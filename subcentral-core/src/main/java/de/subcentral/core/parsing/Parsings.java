@@ -17,8 +17,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.SingleAvMedia;
-import de.subcentral.core.model.media.SingleMedia;
+import de.subcentral.core.model.media.RegularAvMedia;
+import de.subcentral.core.model.media.RegularMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
@@ -36,24 +36,32 @@ public class Parsings
 	 * <li>country code (or null)</li>
 	 * </ol>
 	 */
-	public static final String						PATTERN_MEDIA_NAME			= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
+	public static final String							PATTERN_MEDIA_NAME						= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
-	private static final EpisodeMapper				EPISODE_MAPPER				= new EpisodeMapper();
-	private static final MultiEpisodeMapper			MULTI_EPISODE_MAPPER		= new MultiEpisodeMapper(EPISODE_MAPPER);
-	private static final SingleMediaMapper			SINGLE_MEDIA_MAPPER			= new SingleMediaMapper();
-	private static final SingleAvMediaMapper		SINGLE_AV_MEDIA_MAPPER		= new SingleAvMediaMapper();
-	private static final ReleaseMapper				RELEASE_MAPPER				= new ReleaseMapper();
-	private static final SubtitleMapper				SUBTITLE_MAPPER				= new SubtitleMapper();
-	private static final SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER	= new SubtitleAdjustmentMapper();
+	private static final EpisodeMapper					EPISODE_MAPPER							= new EpisodeMapper();
+	private static final Mapper<List<Episode>>			SINGLETON_LIST_EPISODE_MAPPER			= createSingletonListMapper(EPISODE_MAPPER);
+	private static final MultiEpisodeMapper				MULTI_EPISODE_MAPPER					= new MultiEpisodeMapper(EPISODE_MAPPER);
+	private static final RegularMediaMapper				REGULAR_MEDIA_MAPPER					= new RegularMediaMapper();
+	private static final Mapper<List<RegularMedia>>		SINGLETON_LIST_REGULAR_MEDIA_MAPPER		= createSingletonListMapper(REGULAR_MEDIA_MAPPER);
+	private static final RegularAvMediaMapper			REGULAR_AV_MEDIA_MAPPER					= new RegularAvMediaMapper();
+	private static final Mapper<List<RegularAvMedia>>	SINGLETON_LIST_REGULAR_AV_MEDIA_MAPPER	= createSingletonListMapper(REGULAR_AV_MEDIA_MAPPER);
+	private static final ReleaseMapper					RELEASE_MAPPER							= new ReleaseMapper();
+	private static final SubtitleMapper					SUBTITLE_MAPPER							= new SubtitleMapper();
+	private static final SubtitleAdjustmentMapper		SUBTITLE_ADJUSTMENT_MAPPER				= new SubtitleAdjustmentMapper();
 
-	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
+	private static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
 	{
 		return (props, pps) -> ImmutableList.of(elementMapper.map(props, pps));
 	}
 
-	public static final Mapper<Episode> getDefaultEpisodeMapper()
+	public static Mapper<Episode> getDefaultEpisodeMapper()
 	{
 		return EPISODE_MAPPER;
+	}
+
+	public static Mapper<List<Episode>> getDefaultSingletonListEpisodeMapper()
+	{
+		return SINGLETON_LIST_EPISODE_MAPPER;
 	}
 
 	public static Mapper<List<Episode>> getDefaultMultiEpisodeMapper()
@@ -61,14 +69,24 @@ public class Parsings
 		return MULTI_EPISODE_MAPPER;
 	}
 
-	public static final Mapper<SingleMedia> getDefaultSingleMediaMapper()
+	public static final Mapper<RegularMedia> getDefaultRegularMediaMapper()
 	{
-		return SINGLE_MEDIA_MAPPER;
+		return REGULAR_MEDIA_MAPPER;
 	}
 
-	public static Mapper<SingleAvMedia> getDefaultSingleAvMediaMapper()
+	public static Mapper<List<RegularMedia>> getDefaultSingletonListRegularMediaMapper()
 	{
-		return SINGLE_AV_MEDIA_MAPPER;
+		return SINGLETON_LIST_REGULAR_MEDIA_MAPPER;
+	}
+
+	public static Mapper<RegularAvMedia> getDefaultRegularAvMediaMapper()
+	{
+		return REGULAR_AV_MEDIA_MAPPER;
+	}
+
+	public static Mapper<List<RegularAvMedia>> getDefaultSingletonListRegularAvMediaMapper()
+	{
+		return SINGLETON_LIST_REGULAR_AV_MEDIA_MAPPER;
 	}
 
 	public static final Mapper<Release> getDefaultReleaseMapper()
