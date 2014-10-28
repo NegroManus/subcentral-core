@@ -8,8 +8,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
+import de.subcentral.core.model.media.SingleAvMedia;
 import de.subcentral.core.model.media.SingleMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -42,7 +44,9 @@ public class Addic7ed
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE,
 				"Addic7ed.com",
 				Subtitle.PROP_SOURCE_URL,
-				"http://www.addic7ed.com");
+				"http://www.addic7ed.com",
+				SingleAvMedia.PROP_MEDIA_CONTENT_TYPE,
+				Media.MEDIA_CONTENT_TYPE_VIDEO);
 
 		// Matchers
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
@@ -205,6 +209,11 @@ public class Addic7ed
 		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(Parsings.createSingletonListMapper(Parsings.getDefaultSingleAvMediaMapper()));
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 
+		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
+		predefMovieMatchesBuilder.putAll(commonPredefMatches);
+		predefMovieMatchesBuilder.put(SingleAvMedia.PROP_MEDIA_TYPE, Media.MEDIA_TYPE_MOVIE);
+		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefEpisodeMatchesBuilder.build();
+
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
 		Pattern p201 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
@@ -216,7 +225,7 @@ public class Addic7ed
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, Subtitle.PROP_TAGS);
 		grps201.put(7, Subtitle.PROP_SOURCE);
-		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), predefMovieMatches);
 
 		// --------------
 		// add all the matchers to the map
