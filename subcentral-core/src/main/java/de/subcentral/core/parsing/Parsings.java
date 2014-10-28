@@ -117,7 +117,7 @@ public class Parsings
 						}
 						else
 						{
-							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(value);
+							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(entity, value);
 						}
 					}
 					else
