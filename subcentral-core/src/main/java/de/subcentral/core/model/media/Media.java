@@ -88,8 +88,6 @@ public interface Media extends Work
 	public static final String	MEDIA_CONTENT_TYPE_AUDIO		= "AUDIO";
 	public static final String	MEDIA_CONTENT_TYPE_VIDEO		= "VIDEO";
 	public static final String	MEDIA_CONTENT_TYPE_APPLICATION	= "APPLICATION";
-	public static final String	MEDIA_CONTENT_TYPE_MULTI		= "MULTI";
-	public static final String	MEDIA_CONTENT_TYPE_COLLECTION	= "COLLECTION";
 
 	// Property accessors
 	/**
