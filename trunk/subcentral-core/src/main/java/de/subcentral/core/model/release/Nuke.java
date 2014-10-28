@@ -68,10 +68,10 @@ public class Nuke implements Comparable<Nuke>
 	@Override
 	public int compareTo(Nuke o)
 	{
-		// nulls last
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		// sort by date, then reason
 		return ComparisonChain.start().compare(date, o.date, Settings.TEMPORAL_ORDERING).compare(reason, o.reason, Settings.STRING_ORDERING).result();

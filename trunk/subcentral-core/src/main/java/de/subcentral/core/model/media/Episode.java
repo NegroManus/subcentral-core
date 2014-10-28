@@ -359,9 +359,10 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 	@Override
 	public int compareTo(Episode o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		return ComparisonChain.start()
 				.compare(series, o.series, Settings.createDefaultOrdering())

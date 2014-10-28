@@ -461,9 +461,10 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	@Override
 	public int compareTo(Subtitle o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, Medias.MEDIA_NAME_COMPARATOR)

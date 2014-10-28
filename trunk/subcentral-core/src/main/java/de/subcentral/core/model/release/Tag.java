@@ -116,9 +116,10 @@ public class Tag implements Comparable<Tag>
 	@Override
 	public int compareTo(Tag o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		return Settings.STRING_ORDERING.compare(name, o.name);
 	}

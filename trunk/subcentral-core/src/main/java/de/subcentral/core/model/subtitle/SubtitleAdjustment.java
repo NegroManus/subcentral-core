@@ -306,9 +306,10 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	@Override
 	public int compareTo(SubtitleAdjustment o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		if (name != null && o.name != null)
 		{
