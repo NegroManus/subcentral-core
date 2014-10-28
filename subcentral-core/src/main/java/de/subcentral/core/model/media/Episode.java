@@ -19,6 +19,7 @@ import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
+import de.subcentral.core.util.TemporalComparator;
 
 public class Episode extends AbstractMedia implements AvMedia, Comparable<Episode>
 {
@@ -369,7 +370,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 				.compare(numberInSeries, o.numberInSeries, Settings.createDefaultOrdering())
 				.compare(season, o.season, Settings.createDefaultOrdering())
 				.compare(numberInSeason, o.numberInSeason, Settings.createDefaultOrdering())
-				.compare(date, o.date, Settings.TEMPORAL_ORDERING)
+				.compare(date, o.date, TemporalComparator.INSTANCE)
 				.compare(title, title, Settings.STRING_ORDERING)
 				.result();
 	}

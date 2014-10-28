@@ -11,6 +11,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
+import de.subcentral.core.util.TemporalComparator;
 
 public class Nuke implements Comparable<Nuke>
 {
@@ -74,6 +75,9 @@ public class Nuke implements Comparable<Nuke>
 			return 1;
 		}
 		// sort by date, then reason
-		return ComparisonChain.start().compare(date, o.date, Settings.TEMPORAL_ORDERING).compare(reason, o.reason, Settings.STRING_ORDERING).result();
+		return ComparisonChain.start()
+				.compare(date, o.date, TemporalComparator.INSTANCE)
+				.compare(reason, o.reason, Settings.STRING_ORDERING)
+				.result();
 	}
 }
