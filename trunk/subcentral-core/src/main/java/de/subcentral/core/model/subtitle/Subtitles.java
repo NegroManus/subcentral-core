@@ -18,7 +18,7 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 
 public class Subtitles
 {
-	public static Set<String> generateNames(SubtitleAdjustment subAdj, NamingService namingService)
+	public static Set<String> buildNamesForMatchingReleases(SubtitleAdjustment subAdj, NamingService namingService)
 	{
 		if (subAdj == null || subAdj.getMatchingReleases().isEmpty())
 		{
