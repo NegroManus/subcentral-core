@@ -5,6 +5,8 @@ import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ListMultimap;
+
 import de.subcentral.core.model.Work;
 import de.subcentral.core.util.TimeUtil;
 
@@ -174,7 +176,7 @@ public interface Media extends Work
 	 */
 	public Set<String> getFurtherInfoUrls();
 
-	// public ListMultimap<String, Object> getAttributes();
+	public ListMultimap<String, Object> getAttributes();
 
 	// Convenience
 	/**

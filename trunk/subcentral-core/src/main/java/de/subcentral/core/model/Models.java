@@ -13,6 +13,8 @@ import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.google.common.collect.Multimap;
+
 public class Models
 {
 	public static final Temporal validateTemporalClass(Temporal date) throws IllegalArgumentException
@@ -37,6 +39,11 @@ public class Models
 	public static final Collection<?> nullIfEmpty(Collection<?> c)
 	{
 		return c.isEmpty() ? null : c;
+	}
+
+	public static final Multimap<?, ?> nullIfEmpty(Multimap<?, ?> m)
+	{
+		return m.isEmpty() ? null : m;
 	}
 
 	public static final Integer nullIfZero(int num)

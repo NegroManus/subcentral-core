@@ -6,19 +6,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
+
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 
 public abstract class AbstractMedia implements Media
 {
-	protected String					title;
-	protected Temporal					date;
-	protected String					description;
-	protected final List<String>		coverUrls		= new ArrayList<>(1);
-	protected String					contentAdvisory;
-	protected final List<Contribution>	contributions	= new ArrayList<>();
+	protected String								title;
+	protected Temporal								date;
+	protected String								description;
+	protected final List<String>					coverUrls		= new ArrayList<>(1);
+	protected String								contentAdvisory;
+	protected final List<Contribution>				contributions	= new ArrayList<>();
 	// HashMap / HashSet initial capacities should be a power of 2
-	protected final Set<String>			furtherInfoUrls	= new HashSet<>(4);
+	protected final Set<String>						furtherInfoUrls	= new HashSet<>(4);
+	protected final ListMultimap<String, Object>	attributes		= LinkedListMultimap.create(0);
 
 	@Override
 	public String getTitle()
@@ -98,5 +102,17 @@ public abstract class AbstractMedia implements Media
 	{
 		this.furtherInfoUrls.clear();
 		this.furtherInfoUrls.addAll(furtherInfoUrls);
+	}
+
+	@Override
+	public ListMultimap<String, Object> getAttributes()
+	{
+		return attributes;
+	}
+
+	public void setAttributes(ListMultimap<String, Object> attributes)
+	{
+		this.attributes.clear();
+		this.attributes.putAll(attributes);
 	}
 }
