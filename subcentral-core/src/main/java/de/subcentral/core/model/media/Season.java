@@ -220,9 +220,10 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public int compareTo(Season o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		return ComparisonChain.start()
 				.compare(series, o.series, Settings.createDefaultOrdering())

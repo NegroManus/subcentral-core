@@ -20,14 +20,14 @@ public class Medias
 		@Override
 		public int compare(Media o1, Media o2)
 		{
-			// nulls last
+			// nulls first
 			if (o1 == null)
 			{
-				return o2 == null ? 0 : 1;
+				return o2 == null ? 0 : -1;
 			}
 			if (o2 == null)
 			{
-				return -1;
+				return 1;
 			}
 			return Settings.STRING_ORDERING.compare(o1.getName(), o2.getName());
 		}

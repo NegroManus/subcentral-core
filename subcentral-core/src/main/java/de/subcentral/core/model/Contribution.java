@@ -134,9 +134,10 @@ public class Contribution implements Comparable<Contribution>
 	@Override
 	public int compareTo(Contribution o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		return ComparisonChain.start()
 				.compare(type, o.type, Settings.STRING_ORDERING)

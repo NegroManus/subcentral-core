@@ -20,14 +20,14 @@ public class TemporalComparator implements Comparator<Temporal>, Serializable
 	@Override
 	public int compare(Temporal o1, Temporal o2)
 	{
-		// nulls last
+		// nulls first
 		if (o1 == null)
 		{
-			return o2 == null ? 0 : 1;
+			return o2 == null ? 0 : -1;
 		}
 		if (o2 == null)
 		{
-			return -1;
+			return 1;
 		}
 
 		Temporal converted1 = toSystemDefaultZonedDateTimeIfInstant(o1);

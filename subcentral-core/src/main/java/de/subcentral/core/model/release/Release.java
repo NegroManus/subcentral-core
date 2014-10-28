@@ -435,9 +435,10 @@ public class Release implements Comparable<Release>
 	@Override
 	public int compareTo(Release o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		if (name != null && o.name != null)
 		{

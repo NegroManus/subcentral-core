@@ -354,9 +354,10 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public int compareTo(Series o)
 	{
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
 		return Settings.STRING_ORDERING.compare(name, o.name);
 	}
