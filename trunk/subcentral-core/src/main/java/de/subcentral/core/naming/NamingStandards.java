@@ -42,8 +42,8 @@ public class NamingStandards
 	private static final DatedEpisodeNamer			DATED_EPISODE_NAMER			= new DatedEpisodeNamer();
 	private static final EpisodeNamer				EPISODE_NAMER				= new EpisodeNamer();
 	private static final MultiEpisodeNamer			MULTI_EPISODE_NAMER			= new MultiEpisodeNamer();
-	private static final SubtitleNamer				SUBTITLE_NAMER				= new SubtitleNamer();
 	private static final ReleaseNamer				RELEASE_NAMER				= new ReleaseNamer();
+	private static final SubtitleNamer				SUBTITLE_NAMER				= new SubtitleNamer();
 	private static final SubtitleAdjustmentNamer	SUBTITLE_ADJUSTMENT_NAMER	= new SubtitleAdjustmentNamer();
 	static
 	{
@@ -88,6 +88,9 @@ public class NamingStandards
 		// ReleaseNamer
 		RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
 		RELEASE_NAMER.setWholeNameOperator(STANDARD_REPLACER);
+
+		// SubtitleNamer
+		SUBTITLE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-")));
 
 		// SubtitleReleaseNamer
 		SUBTITLE_ADJUSTMENT_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-")));
