@@ -16,7 +16,7 @@ public class SeparationDefinition
 	}
 
 	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separationType,
-			Set<SeparationDefinition> separationDefinitions)
+			Iterable<SeparationDefinition> separationDefinitions)
 	{
 		String after = null;
 		String before = null;
@@ -35,18 +35,26 @@ public class SeparationDefinition
 				}
 				else if (firstPropEquals && sd.secondProperty == null)
 				{
-					after = sd.separator;
+					if (after == null)
+					{
+						after = sd.separator;
+					}
 				}
 				else if (sd.firstProperty == null && secondPropEquals)
 				{
-					before = sd.separator;
+					if (before == null)
+					{
+						before = sd.separator;
+					}
 				}
 				else if (sd.firstProperty == null && sd.secondProperty == null)
 				{
-					betweenAny = sd.separator;
+					if (betweenAny == null)
+					{
+						betweenAny = sd.separator;
+					}
 				}
 			}
-
 		}
 		if (after != null)
 		{
