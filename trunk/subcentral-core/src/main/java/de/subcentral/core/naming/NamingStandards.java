@@ -93,11 +93,11 @@ public class NamingStandards
 		RELEASE_NAMER.setWholeNameOperator(WHOLE_NAME_OPERATOR);
 
 		// SubtitleNamer
-		ImmutableSet<SeparationDefinition> dashBeforeSubGroupSeparation = ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-"));
-		SUBTITLE_NAMER.setSeparators(dashBeforeSubGroupSeparation);
+		ImmutableSet<SeparationDefinition> subtitleSeparations = ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-"));
+		SUBTITLE_NAMER.setSeparators(subtitleSeparations);
 
 		// SubtitleReleaseNamer
-		SUBTITLE_ADJUSTMENT_NAMER.setSeparators(dashBeforeSubGroupSeparation);
+		SUBTITLE_ADJUSTMENT_NAMER.setSeparators(subtitleSeparations);
 		SUBTITLE_ADJUSTMENT_NAMER.setWholeNameOperator(WHOLE_NAME_OPERATOR);
 
 		// Add namers to the NamingService
