@@ -8,15 +8,6 @@ import com.google.common.base.MoreObjects;
 
 public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<Object>
 {
-	public String mayName(V candidate, Map<String, Object> parameters) throws NamingException
-	{
-		if (test(candidate))
-		{
-			return name(candidate, parameters);
-		}
-		return null;
-	}
-
 	public static final <T> ConditionalNamer<T> create(Namer<T> namer, Predicate<Object> condition)
 	{
 		return new RegularConditionalNamer<T>(namer, condition);
@@ -32,14 +23,35 @@ public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<Object>
 		return new InstanceOfAndConditionConditionalNamer<T>(namer, requiredClass, condition);
 	}
 
+	protected final Namer<V>	namer;
+
+	protected ConditionalNamer(Namer<V> namer)
+	{
+		this.namer = Objects.requireNonNull(namer, "namer");
+	}
+
+	@Override
+	public String name(V candidate, Map<String, Object> parameters) throws NamingException
+	{
+		return namer.name(candidate, parameters);
+	}
+
+	public String mayName(V candidate, Map<String, Object> parameters) throws NamingException
+	{
+		if (test(candidate))
+		{
+			return name(candidate, parameters);
+		}
+		return null;
+	}
+
 	private static class RegularConditionalNamer<U> extends ConditionalNamer<U>
 	{
-		private final Namer<U>			namer;
 		private final Predicate<Object>	condition;
 
 		private RegularConditionalNamer(Namer<U> namer, Predicate<Object> condition)
 		{
-			this.namer = Objects.requireNonNull(namer, "namer");
+			super(namer);
 			this.condition = Objects.requireNonNull(condition, "condition");
 		}
 
@@ -47,12 +59,6 @@ public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<Object>
 		public boolean test(Object candidate)
 		{
 			return condition.test(candidate);
-		}
-
-		@Override
-		public String name(U candidate, Map<String, Object> parameters) throws NamingException
-		{
-			return namer.name(candidate, parameters);
 		}
 
 		@Override
@@ -68,12 +74,11 @@ public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<Object>
 
 	private static class InstanceOfConditionalNamer<U> extends ConditionalNamer<U>
 	{
-		private final Namer<U>				namer;
 		private final Class<? extends U>	requiredClass;
 
 		private InstanceOfConditionalNamer(Namer<U> namer, Class<? extends U> requiredClass)
 		{
-			this.namer = Objects.requireNonNull(namer, "namer");
+			super(namer);
 			this.requiredClass = Objects.requireNonNull(requiredClass, "requiredClass");
 		}
 
@@ -102,13 +107,12 @@ public abstract class ConditionalNamer<V> implements Namer<V>, Predicate<Object>
 
 	private static class InstanceOfAndConditionConditionalNamer<U> extends ConditionalNamer<U>
 	{
-		private final Namer<U>				namer;
 		private final Class<? extends U>	requiredClass;
 		private final Predicate<U>			condition;
 
 		private InstanceOfAndConditionConditionalNamer(Namer<U> namer, Class<? extends U> requiredClass, Predicate<U> condition)
 		{
-			this.namer = Objects.requireNonNull(namer, "namer");
+			super(namer);
 			this.requiredClass = Objects.requireNonNull(requiredClass, "requiredClass");
 			this.condition = Objects.requireNonNull(condition, "condition");
 		}

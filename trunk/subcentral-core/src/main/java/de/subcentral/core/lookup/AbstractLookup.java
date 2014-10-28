@@ -16,10 +16,7 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 
 	protected NamingService initQueryEntityNamingService()
 	{
-		CharReplacer queryEntityCharReplacer = new CharReplacer();
-		queryEntityCharReplacer.setAllowedChars("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray());
-		queryEntityCharReplacer.setDefaultReplacement(" ");
-		queryEntityCharReplacer.setCharsToDelete("'´`".toCharArray());
+		CharReplacer queryEntityCharReplacer = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", " ");
 		return new DelegatingNamingService("QueryEntityNamingService", NamingStandards.getDefaultNamingService(), queryEntityCharReplacer);
 	}
 

@@ -96,7 +96,7 @@ public class ParsingPlayground
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
 		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService("orlydb",
 				NamingStandards.getDefaultNamingService(),
-				NamingStandards.STANDARD_REPLACER);
+				NamingStandards.getDefaultWholeNameOperator());
 
 		List<Compatibility> compatibilities = new ArrayList<>();
 		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",
