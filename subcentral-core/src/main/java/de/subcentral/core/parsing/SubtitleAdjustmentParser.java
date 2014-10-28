@@ -53,7 +53,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends AvMedia> media = mediaMapper.map(props, propParsingService);
+		List<? extends AvMedia> media = mediaMapper.map(props, propFromStringService);
 
 		// Release
 		Set<Release> matchingRlss = parseMatchingReleases(props, media);
@@ -62,13 +62,13 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		List<Subtitle> subs = new ArrayList<>(media.size());
 		for (AvMedia m : media)
 		{
-			Subtitle sub = subtitleMapper.map(props, propParsingService);
+			Subtitle sub = subtitleMapper.map(props, propFromStringService);
 			sub.setMedia(m);
 			subs.add(sub);
 		}
 
 		// SubtitleAdjustment
-		SubtitleAdjustment subAdj = subtitleAdjustmentMapper.map(props, propParsingService);
+		SubtitleAdjustment subAdj = subtitleAdjustmentMapper.map(props, propFromStringService);
 		subAdj.getSubtitles().addAll(subs);
 		subAdj.getMatchingReleases().addAll(matchingRlss);
 		return subAdj;
@@ -90,7 +90,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 					Map<SimplePropDescriptor, String> propsForRls = new HashMap<>(props);
 					// overwrite the group value with the current group
 					propsForRls.put(Release.PROP_GROUP, group);
-					Release rlsForGroup = releaseMapper.map(propsForRls, propParsingService);
+					Release rlsForGroup = releaseMapper.map(propsForRls, propFromStringService);
 					rlsForGroup.getMedia().addAll(media);
 					matchingReleases.add(rlsForGroup);
 				}
@@ -98,7 +98,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 			}
 		}
 
-		Release singleRelease = releaseMapper.map(props, propParsingService);
+		Release singleRelease = releaseMapper.map(props, propFromStringService);
 		singleRelease.getMedia().addAll(media);
 
 		matchingReleases = new HashSet<>(1);

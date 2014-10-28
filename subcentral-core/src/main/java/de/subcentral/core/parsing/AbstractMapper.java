@@ -1,20 +1,17 @@
 package de.subcentral.core.parsing;
 
 import java.util.Map;
-import java.util.Objects;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMapper<T> implements Mapper<T>
 {
 	@Override
-	public T map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService) throws MappingException
+	public T map(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService) throws MappingException
 	{
 		try
 		{
-			Objects.requireNonNull(props, "props");
-			Objects.requireNonNull(propParsingService, "propParsingService");
-			return doMap(props, propParsingService);
+			return doMap(props, propFromStringService);
 		}
 		catch (Exception e)
 		{
@@ -22,5 +19,5 @@ public abstract class AbstractMapper<T> implements Mapper<T>
 		}
 	}
 
-	protected abstract T doMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService);
+	protected abstract T doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService);
 }

@@ -9,8 +9,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMappingParser<T> implements Parser<T>
 {
-	protected List<MappingMatcher<SimplePropDescriptor>>	matchers			= new ArrayList<>();
-	protected PropParsingService							propParsingService	= PropParsingService.DEFAULT;
+	protected List<MappingMatcher<SimplePropDescriptor>>	matchers				= new ArrayList<>();
+	protected SimplePropFromStringService					propFromStringService	= SimplePropFromStringService.DEFAULT;
 
 	public List<MappingMatcher<SimplePropDescriptor>> getMatchers()
 	{
@@ -22,14 +22,14 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 		this.matchers = Objects.requireNonNull(matchers);
 	}
 
-	public PropParsingService getPropParsingService()
+	public SimplePropFromStringService getPropFromStringService()
 	{
-		return propParsingService;
+		return propFromStringService;
 	}
 
-	public void setPropParsingService(PropParsingService propParsingService)
+	public void setPropFromStringService(SimplePropFromStringService propFromStringService)
 	{
-		this.propParsingService = Objects.requireNonNull(propParsingService);
+		this.propFromStringService = Objects.requireNonNull(propFromStringService);
 	}
 
 	@Override

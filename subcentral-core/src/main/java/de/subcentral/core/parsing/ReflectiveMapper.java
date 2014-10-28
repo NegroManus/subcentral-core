@@ -1,6 +1,7 @@
 package de.subcentral.core.parsing;
 
 import java.util.Map;
+import java.util.Objects;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -10,11 +11,11 @@ public class ReflectiveMapper<T> implements Mapper<T>
 
 	public ReflectiveMapper(Class<T> entityType)
 	{
-		this.entityType = entityType;
+		this.entityType = Objects.requireNonNull(entityType, "entityType");
 	}
 
 	@Override
-	public T map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
+	public T map(Map<SimplePropDescriptor, String> props, PropFromStringService propParsingService)
 	{
 		T entity;
 		try

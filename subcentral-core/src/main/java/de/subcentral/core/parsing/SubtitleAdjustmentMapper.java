@@ -8,7 +8,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleAdjustment>
 {
 	@Override
-	public SubtitleAdjustment doMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
+	public SubtitleAdjustment doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
 		SubtitleAdjustment subAdj = new SubtitleAdjustment();
 		subAdj.setName(props.get(SubtitleAdjustment.PROP_NAME));
