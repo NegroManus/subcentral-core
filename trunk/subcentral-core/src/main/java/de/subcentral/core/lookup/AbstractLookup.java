@@ -1,9 +1,14 @@
 package de.subcentral.core.lookup;
 
+import java.util.regex.Pattern;
+
+import com.google.common.collect.ImmutableMap;
+
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.CharReplacer;
+import de.subcentral.core.util.PatternReplacer;
 
 public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 {
@@ -16,8 +21,9 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 
 	protected NamingService initQueryEntityNamingService()
 	{
-		CharReplacer queryEntityCharReplacer = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", " ");
-		return new DelegatingNamingService("QueryEntityNamingService", NamingStandards.getDefaultNamingService(), queryEntityCharReplacer);
+		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
+		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", " ");
+		return new DelegatingNamingService("QueryEntityNamingService", NamingStandards.getDefaultNamingService(), pr.andThen(cr));
 	}
 
 	public NamingService getQueryEntityNamingService()

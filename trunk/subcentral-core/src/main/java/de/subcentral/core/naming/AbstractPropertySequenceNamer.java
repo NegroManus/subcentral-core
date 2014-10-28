@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 import de.subcentral.core.util.SeparationDefinition;
 
@@ -12,7 +12,7 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 {
 	protected PropToStringService		propToStringService	= NamingStandards.getDefaultPropToStringService();
 	protected Set<SeparationDefinition>	separators			= new HashSet<>(0);
-	protected UnaryOperator<String>		wholeNameOperator;
+	protected Function<String, String>	finalFormatter;
 
 	public PropToStringService getPropToStringService()
 	{
@@ -34,14 +34,14 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 		this.separators = Objects.requireNonNull(separators, "separators");
 	}
 
-	public UnaryOperator<String> getWholeNameOperator()
+	public Function<String, String> getFinalFormatter()
 	{
-		return wholeNameOperator;
+		return finalFormatter;
 	}
 
-	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
+	public void setFinalFormatter(Function<String, String> finalFormatter)
 	{
-		this.wholeNameOperator = wholeNameOperator;
+		this.finalFormatter = finalFormatter;
 	}
 
 	@Override
@@ -67,6 +67,6 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 
 	private PropSequenceNameBuilder builder()
 	{
-		return new PropSequenceNameBuilder(propToStringService, separators, wholeNameOperator);
+		return new PropSequenceNameBuilder(propToStringService, separators, finalFormatter);
 	}
 }

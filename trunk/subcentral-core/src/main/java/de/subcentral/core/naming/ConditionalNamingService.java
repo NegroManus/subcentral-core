@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 /**
  * {@code Thread-safe}
@@ -15,7 +15,7 @@ public class ConditionalNamingService implements NamingService
 	private final String									domain;
 	private final List<ConditionalNamer<?>>					namers				= new CopyOnWriteArrayList<>();
 	private final AtomicReference<String>					defaultSeparator	= new AtomicReference<>(" ");
-	private final AtomicReference<UnaryOperator<String>>	wholeNameOperator	= new AtomicReference<>(UnaryOperator.identity());
+	private final AtomicReference<Function<String, String>>	finalFormatter		= new AtomicReference<>(Function.identity());
 
 	public ConditionalNamingService(String domain)
 	{
@@ -55,14 +55,14 @@ public class ConditionalNamingService implements NamingService
 		this.defaultSeparator.set(defaultSeparator);
 	}
 
-	public UnaryOperator<String> getWholeNameOperator()
+	public Function<String, String> getFinalFormatter()
 	{
-		return wholeNameOperator.get();
+		return finalFormatter.get();
 	}
 
-	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
+	public void setFinalFormatter(Function<String, String> finalFormatter)
 	{
-		this.wholeNameOperator.set(wholeNameOperator);
+		this.finalFormatter.set(finalFormatter);
 	}
 
 	@Override
@@ -103,11 +103,11 @@ public class ConditionalNamingService implements NamingService
 		Namer<? super T> namer = getNamer(candidate);
 		if (namer != null)
 		{
-			return wholeNameOperator.get().apply(namer.name(candidate, parameters));
+			return finalFormatter.get().apply(namer.name(candidate, parameters));
 		}
 		if (candidate instanceof Iterable)
 		{
-			return wholeNameOperator.get().apply(nameAll((Iterable<?>) candidate, defaultSeparator.get(), parameters));
+			return finalFormatter.get().apply(nameAll((Iterable<?>) candidate, defaultSeparator.get(), parameters));
 		}
 		throw new NoNamerRegisteredException(candidate, "No ConditionalNamer's condition returned true for the candidate");
 	}
