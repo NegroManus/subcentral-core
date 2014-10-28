@@ -13,36 +13,36 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For any audio/video media item that has no own class. Like shows, documentations, concerts ...
  *
  */
-public class SingleAvMedia extends SingleMedia implements AvMedia
+public class RegularAvMedia extends RegularMedia implements AvMedia
 {
-	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(SingleAvMedia.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(SingleAvMedia.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(SingleAvMedia.class, PropNames.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE		= new SimplePropDescriptor(SingleAvMedia.class,
+	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(RegularAvMedia.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(RegularAvMedia.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(RegularAvMedia.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE		= new SimplePropDescriptor(RegularAvMedia.class,
 																					PropNames.MEDIA_CONTENT_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(SingleAvMedia.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(SingleAvMedia.class,
+	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(RegularAvMedia.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(RegularAvMedia.class,
 																					PropNames.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(SingleAvMedia.class,
+	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(RegularAvMedia.class,
 																					PropNames.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_RUNNING_TIME			= new SimplePropDescriptor(SingleAvMedia.class, PropNames.RUNNING_TIME);
-	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(SingleAvMedia.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(SingleAvMedia.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(SingleAvMedia.class, PropNames.COVER_URLS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(SingleAvMedia.class,
+	public static final SimplePropDescriptor	PROP_RUNNING_TIME			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.RUNNING_TIME);
+	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(RegularAvMedia.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(RegularAvMedia.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(RegularAvMedia.class,
 																					PropNames.CONTENT_ADVISORY);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(SingleAvMedia.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS		= new SimplePropDescriptor(SingleAvMedia.class,
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS		= new SimplePropDescriptor(RegularAvMedia.class,
 																					PropNames.FURTHER_INFO_URLS);
 
 	protected int								runningTime					= 0;
 
-	public SingleAvMedia()
+	public RegularAvMedia()
 	{
 
 	}
 
-	public SingleAvMedia(String name)
+	public RegularAvMedia(String name)
 	{
 		this.name = name;
 	}
@@ -76,7 +76,7 @@ public class SingleAvMedia extends SingleMedia implements AvMedia
 		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
-			return StringUtils.equalsIgnoreCase(name, ((SingleAvMedia) obj).name);
+			return StringUtils.equalsIgnoreCase(name, ((RegularAvMedia) obj).name);
 		}
 		return false;
 	}
@@ -90,7 +90,7 @@ public class SingleAvMedia extends SingleMedia implements AvMedia
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(SingleAvMedia.class)
+		return MoreObjects.toStringHelper(RegularAvMedia.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)

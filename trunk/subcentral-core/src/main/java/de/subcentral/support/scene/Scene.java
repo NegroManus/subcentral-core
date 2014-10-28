@@ -24,9 +24,9 @@ import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.Parsings;
-import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimpleParsingService;
+import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Scene
@@ -49,7 +49,7 @@ public class Scene
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 
 		// SINGLE EPISODES
-		ReleaseParser epiRlsParser = new ReleaseParser(Parsings.createSingletonListMapper(Parsings.getDefaultEpisodeMapper()));
+		ReleaseParser epiRlsParser = new ReleaseParser(Parsings.getDefaultSingletonListEpisodeMapper());
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> epiRlsMatchers = ImmutableList.builder();
 
 		// Seasoned episode

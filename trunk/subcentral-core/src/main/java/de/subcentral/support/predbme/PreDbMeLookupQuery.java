@@ -23,8 +23,8 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.media.SingleAvMedia;
-import de.subcentral.core.model.media.SingleMedia;
+import de.subcentral.core.model.media.RegularAvMedia;
+import de.subcentral.core.model.media.RegularMedia;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
@@ -477,26 +477,26 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 			String section = rls.getSection();
 			if (section.startsWith("Movies"))
 			{
-				SingleAvMedia movie = new SingleAvMedia(mediaTitle);
+				RegularAvMedia movie = new RegularAvMedia(mediaTitle);
 				movie.setMediaType(Media.MEDIA_TYPE_MOVIE);
 				movie.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
 				media = movie;
 			}
 			else if (section.startsWith("Music"))
 			{
-				SingleAvMedia avMedia = new SingleAvMedia(mediaTitle);
+				RegularAvMedia avMedia = new RegularAvMedia(mediaTitle);
 				avMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
 				media = avMedia;
 			}
 			else if (section.startsWith("TV"))
 			{
-				SingleAvMedia avMedia = new SingleAvMedia(mediaTitle);
+				RegularAvMedia avMedia = new RegularAvMedia(mediaTitle);
 				avMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
 				media = avMedia;
 			}
 			else
 			{
-				media = new SingleMedia(mediaTitle);
+				media = new RegularMedia(mediaTitle);
 			}
 		}
 
@@ -518,10 +518,10 @@ public class PreDbMeLookupQuery extends AbstractHttpHtmlLookupQuery<Release>
 				epi.getSeries().getFurtherInfoUrls().addAll(furtherInfoUrls);
 			}
 		}
-		else if (media instanceof SingleMedia)
+		else if (media instanceof RegularMedia)
 		{
 			// also for StandardAvMediaItem
-			SingleMedia stdMediaItem = (SingleMedia) media;
+			RegularMedia stdMediaItem = (RegularMedia) media;
 			if (plot != null)
 			{
 				stdMediaItem.setDescription(plot);

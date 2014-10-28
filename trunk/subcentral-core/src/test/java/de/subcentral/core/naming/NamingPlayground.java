@@ -9,7 +9,7 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.MultiEpisodeHelper;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.media.SingleAvMedia;
+import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
@@ -40,7 +40,7 @@ public class NamingPlayground
 		Episode epi2 = series.newEpisode();
 		epi2.setNumberInSeries(18);
 
-		SingleAvMedia movie = new SingleAvMedia();
+		RegularAvMedia movie = new RegularAvMedia();
 		movie.setName("The Lord of the Rings");
 		movie.setDate(Year.of(2002));
 
