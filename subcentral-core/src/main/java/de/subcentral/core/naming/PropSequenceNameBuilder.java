@@ -2,7 +2,7 @@ package de.subcentral.core.naming;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 import de.subcentral.core.util.SeparationDefinition;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -11,16 +11,16 @@ public class PropSequenceNameBuilder
 {
 	private final PropToStringService		propToStringService;
 	private final Set<SeparationDefinition>	separators;
-	private final UnaryOperator<String>		wholeNameOperator;
+	private final Function<String, String>	finalFormatter;
 	private final StringBuilder				sb	= new StringBuilder();
 	private SimplePropDescriptor			lastProp;
 
 	public PropSequenceNameBuilder(PropToStringService propToStringService, Set<SeparationDefinition> separators,
-			UnaryOperator<String> wholeNameOperator)
+			Function<String, String> finalFormatter)
 	{
 		this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
 		this.separators = Objects.requireNonNull(separators, "separators");
-		this.wholeNameOperator = wholeNameOperator;
+		this.finalFormatter = finalFormatter;
 	}
 
 	public void overwriteLastProperty(SimplePropDescriptor lastProp)
@@ -89,10 +89,10 @@ public class PropSequenceNameBuilder
 	@Override
 	public String toString()
 	{
-		if (wholeNameOperator == null)
+		if (finalFormatter == null)
 		{
 			return sb.toString();
 		}
-		return wholeNameOperator.apply(sb.toString());
+		return finalFormatter.apply(sb.toString());
 	}
 }

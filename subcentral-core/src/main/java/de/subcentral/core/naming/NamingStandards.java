@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableMap;
@@ -32,7 +31,7 @@ import de.subcentral.core.util.SeparationDefinition;
 public class NamingStandards
 {
 	public static final String						DEFAULT_DOMAIN				= "default";
-	private static final UnaryOperator<String>		WHOLE_NAME_OPERATOR			= initDefaultWholeNameOperator();
+	private static final Function<String, String>	FINAL_FORMATTER				= initDefaultFinalFormatter();
 	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE		= new SimplePropToStringService();
 
 	// NamingService has to be instantiated first because it is referenced in some namers
@@ -90,7 +89,7 @@ public class NamingStandards
 
 		// ReleaseNamer
 		RELEASE_NAMER.setSeparators(ImmutableSet.of(SeparationDefinition.before(Release.PROP_GROUP, "-")));
-		RELEASE_NAMER.setWholeNameOperator(WHOLE_NAME_OPERATOR);
+		RELEASE_NAMER.setFinalFormatter(FINAL_FORMATTER);
 
 		// SubtitleNamer
 		ImmutableSet<SeparationDefinition> subtitleSeparations = ImmutableSet.of(SeparationDefinition.before(Subtitle.PROP_GROUP, "-"));
@@ -98,7 +97,7 @@ public class NamingStandards
 
 		// SubtitleReleaseNamer
 		SUBTITLE_ADJUSTMENT_NAMER.setSeparators(subtitleSeparations);
-		SUBTITLE_ADJUSTMENT_NAMER.setWholeNameOperator(WHOLE_NAME_OPERATOR);
+		SUBTITLE_ADJUSTMENT_NAMER.setFinalFormatter(FINAL_FORMATTER);
 
 		// Add namers to the NamingService
 		List<ConditionalNamer<?>> namers = new ArrayList<>(8);
@@ -113,16 +112,16 @@ public class NamingStandards
 		NAMING_SERVICE.getNamers().addAll(namers);
 	}
 
-	private static UnaryOperator<String> initDefaultWholeNameOperator()
+	private static Function<String, String> initDefaultFinalFormatter()
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
 		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-", "'´`", ".");
-		return s -> s == null ? null : cr.apply(pr.apply(s));
+		return pr.andThen(cr);
 	}
 
-	public static UnaryOperator<String> getDefaultWholeNameOperator()
+	public static Function<String, String> getDefaultWholeNameOperator()
 	{
-		return WHOLE_NAME_OPERATOR;
+		return FINAL_FORMATTER;
 	}
 
 	public static PropToStringService getDefaultPropToStringService()

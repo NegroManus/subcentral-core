@@ -2,19 +2,19 @@ package de.subcentral.core.naming;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 public class DelegatingNamingService implements NamingService
 {
-	private final String				domain;
-	private final NamingService			delegate;
-	private final UnaryOperator<String>	wholeNameOperator;
+	private final String					domain;
+	private final NamingService				delegate;
+	private final Function<String, String>	finalFormatter;
 
-	public DelegatingNamingService(String domain, NamingService delegate, UnaryOperator<String> wholeNameOperator)
+	public DelegatingNamingService(String domain, NamingService delegate, Function<String, String> finalFormatter)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 		this.delegate = Objects.requireNonNull(delegate, "delegate");
-		this.wholeNameOperator = Objects.requireNonNull(wholeNameOperator, "wholeNameOperator");
+		this.finalFormatter = Objects.requireNonNull(finalFormatter, "finalFormatter");
 	}
 
 	public NamingService getDelegate()
@@ -22,9 +22,9 @@ public class DelegatingNamingService implements NamingService
 		return delegate;
 	}
 
-	public UnaryOperator<String> getWholeNameOperator()
+	public Function<String, String> getFinalFormatter()
 	{
-		return wholeNameOperator;
+		return finalFormatter;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class DelegatingNamingService implements NamingService
 	@Override
 	public String name(Object candidate, Map<String, Object> parameters) throws NamingException
 	{
-		return wholeNameOperator.apply(delegate.name(candidate, parameters));
+		return finalFormatter.apply(delegate.name(candidate, parameters));
 	}
 
 }
