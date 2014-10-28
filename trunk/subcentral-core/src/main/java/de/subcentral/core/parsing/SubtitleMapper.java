@@ -10,12 +10,12 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class SubtitleMapper extends AbstractMapper<Subtitle>
 {
 	@Override
-	public Subtitle doMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
+	public Subtitle doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
 		Subtitle sub = new Subtitle();
 		sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));
-		sub.setGroup(propParsingService.parse(props, Subtitle.PROP_GROUP, Group.class));
-		sub.getTags().addAll(propParsingService.parseList(props, Subtitle.PROP_TAGS, Tag.class));
+		sub.setGroup(propFromStringService.parse(props, Subtitle.PROP_GROUP, Group.class));
+		sub.getTags().addAll(propFromStringService.parseList(props, Subtitle.PROP_TAGS, Tag.class));
 		sub.setSource(props.get(Subtitle.PROP_SOURCE));
 		sub.setSourceUrl(props.get(Subtitle.PROP_SOURCE_URL));
 		return sub;

@@ -5,12 +5,12 @@ import java.util.function.BiFunction;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public interface Mapper<T> extends BiFunction<Map<SimplePropDescriptor, String>, PropParsingService, T>
+public interface Mapper<T> extends BiFunction<Map<SimplePropDescriptor, String>, PropFromStringService, T>
 {
-	public T map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService) throws MappingException;
+	public T map(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService) throws MappingException;
 
 	@Override
-	public default T apply(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
+	public default T apply(Map<SimplePropDescriptor, String> props, PropFromStringService propParsingService)
 	{
 		return map(props, propParsingService);
 	}

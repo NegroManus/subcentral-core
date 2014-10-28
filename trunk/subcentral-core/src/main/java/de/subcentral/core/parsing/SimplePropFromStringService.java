@@ -25,9 +25,9 @@ import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TimeUtil;
 
-public class PropParsingService
+public class SimplePropFromStringService implements PropFromStringService
 {
-	public static final PropParsingService					DEFAULT								= new PropParsingService();
+	public static final SimplePropFromStringService			DEFAULT								= new SimplePropFromStringService();
 	/**
 	 * The default item splitter. Splits the string into words (pattern {@code "[^\\w-]+"}). Is used by PropParsingService instances if no specific
 	 * item splitter is defined. Common to all instances to save memory.
@@ -78,7 +78,7 @@ public class PropParsingService
 	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions	= new HashMap<>(0);
 	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions	= new HashMap<>(0);
 
-	public PropParsingService()
+	public SimplePropFromStringService()
 	{
 
 	}
@@ -128,27 +128,6 @@ public class PropParsingService
 		this.propFromStringFunctions = propFromStringFunctions;
 	}
 
-	public <P> P parse(Map<SimplePropDescriptor, String> info, SimplePropDescriptor propDescriptor, Class<P> propClass) throws ParsingException
-	{
-		String prop = info.get(propDescriptor);
-		if (StringUtils.isBlank(prop))
-		{
-			return null;
-		}
-		return parse(prop, propDescriptor, propClass);
-	}
-
-	public <P> List<P> parseList(Map<SimplePropDescriptor, String> info, SimplePropDescriptor propDescriptor, Class<P> itemClass)
-			throws ParsingException
-	{
-		String propListString = info.get(propDescriptor);
-		if (StringUtils.isBlank(propListString))
-		{
-			return ImmutableList.of();
-		}
-		return parseList(propListString, propDescriptor, itemClass);
-	}
-
 	public <P> List<P> parseList(String propListString, SimplePropDescriptor propDescriptor, Class<P> itemClass) throws ParsingException
 	{
 		if (StringUtils.isBlank(propListString))
@@ -171,7 +150,7 @@ public class PropParsingService
 
 	public <P> P parse(String propString, SimplePropDescriptor propDescriptor, Class<P> propClass) throws ParsingException
 	{
-		if (propString == null)
+		if (StringUtils.isBlank(propString))
 		{
 			return null;
 		}

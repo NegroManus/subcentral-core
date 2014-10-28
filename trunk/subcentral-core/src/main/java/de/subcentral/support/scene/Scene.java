@@ -24,7 +24,7 @@ import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.Parsings;
-import de.subcentral.core.parsing.PropParsingService;
+import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -43,7 +43,7 @@ public class Scene
 	{
 		String tagsPattern = buildFirstTagPattern();
 
-		PropParsingService pps = new PropParsingService();
+		SimplePropFromStringService pps = new SimplePropFromStringService();
 		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
@@ -133,7 +133,7 @@ public class Scene
 		epiRlsMatchers.add(matcher301);
 		epiRlsMatchers.add(matcher302);
 		epiRlsParser.setMatchers(epiRlsMatchers.build());
-		epiRlsParser.setPropParsingService(pps);
+		epiRlsParser.setPropFromStringService(pps);
 
 		// MULTI-EPISODES
 		ReleaseParser multiEpiRlsParser = new ReleaseParser(Parsings.getDefaultMultiEpisodeMapper());
@@ -197,7 +197,7 @@ public class Scene
 		multiEpiRlsMatchers.add(matcher451);
 		multiEpiRlsMatchers.add(matcher452);
 		multiEpiRlsParser.setMatchers(multiEpiRlsMatchers.build());
-		multiEpiRlsParser.setPropParsingService(pps);
+		multiEpiRlsParser.setPropFromStringService(pps);
 
 		return ImmutableListMultimap.of(Release.class, epiRlsParser, Release.class, multiEpiRlsParser);
 	}

@@ -26,7 +26,7 @@ public class SimplePropToStringService implements PropToStringService
 	{
 		try
 		{
-			return doToString(propDescriptor, propValue);
+			return doConversion(propDescriptor, propValue);
 		}
 		catch (Exception e)
 		{
@@ -35,7 +35,7 @@ public class SimplePropToStringService implements PropToStringService
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> String doToString(SimplePropDescriptor propDescriptor, T propValue) throws ClassCastException
+	private <T> String doConversion(SimplePropDescriptor propDescriptor, T propValue) throws ClassCastException
 	{
 		Function<?, String> toStringFn = propToStringFns.get(propDescriptor);
 		if (toStringFn != null)

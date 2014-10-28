@@ -9,12 +9,12 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class SingleMediaMapper implements Mapper<SingleMedia>
 {
 	@Override
-	public SingleMedia map(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
+	public SingleMedia map(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
 		SingleMedia media = new SingleMedia();
 		media.setName(props.get(SingleMedia.PROP_NAME));
 		media.setTitle(props.get(SingleMedia.PROP_TITLE));
-		media.setDate(propParsingService.parse(props, SingleMedia.PROP_DATE, Temporal.class));
+		media.setDate(propFromStringService.parse(props, SingleMedia.PROP_DATE, Temporal.class));
 		return media;
 	}
 }

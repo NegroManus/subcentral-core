@@ -94,7 +94,7 @@ public class Parsings
 		}
 	}
 
-	public static final <T> void reflectiveMapping(T entity, Map<SimplePropDescriptor, String> props, PropParsingService pps)
+	public static final <T> void reflectiveMapping(T entity, Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
 		Objects.requireNonNull(entity, "entity");
 		for (Map.Entry<SimplePropDescriptor, String> p : props.entrySet())
@@ -110,7 +110,7 @@ public class Parsings
 					{
 						ParameterizedType genericType = (ParameterizedType) type.getType();
 						Class<?> itemClass = ((Class<?>) genericType.getActualTypeArguments()[0]);
-						List<?> value = pps.parseList(p.getValue(), simplePropDescr, itemClass);
+						List<?> value = propFromStringService.parseList(p.getValue(), simplePropDescr, itemClass);
 						if (Set.class.isAssignableFrom(type.getRawType()))
 						{
 							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(entity, ImmutableSet.copyOf(value));
@@ -124,7 +124,7 @@ public class Parsings
 					{
 						simplePropDescr.toPropertyDescriptor()
 								.getWriteMethod()
-								.invoke(entity, pps.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
+								.invoke(entity, propFromStringService.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
 					}
 
 				}

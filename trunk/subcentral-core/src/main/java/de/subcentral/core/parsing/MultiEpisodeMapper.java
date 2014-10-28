@@ -32,14 +32,14 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 	}
 
 	@Override
-	protected List<Episode> doMap(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService)
+	protected List<Episode> doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
-		List<Episode> media = parseMultiEpisode(props, propParsingService, Episode.PROP_NUMBER_IN_SERIES);
+		List<Episode> media = parseMultiEpisode(props, propFromStringService, Episode.PROP_NUMBER_IN_SERIES);
 		if (!media.isEmpty())
 		{
 			return media;
 		}
-		media = parseMultiEpisode(props, propParsingService, Episode.PROP_NUMBER_IN_SEASON);
+		media = parseMultiEpisode(props, propFromStringService, Episode.PROP_NUMBER_IN_SEASON);
 		if (!media.isEmpty())
 		{
 			return media;
@@ -47,7 +47,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 		return ImmutableList.of();
 	}
 
-	private List<Episode> parseMultiEpisode(Map<SimplePropDescriptor, String> props, PropParsingService propParsingService,
+	private List<Episode> parseMultiEpisode(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService,
 			SimplePropDescriptor epiNumProp)
 	{
 		String numString = props.get(epiNumProp);
@@ -61,7 +61,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 			case 0:
 				return ImmutableList.of();
 			case 1:
-				return ImmutableList.of(episodeMapper.map(props, propParsingService));
+				return ImmutableList.of(episodeMapper.map(props, propFromStringService));
 			default:
 				List<Episode> episodes = new ArrayList<>(epiNums.length);
 				for (String epiNum : epiNums)
@@ -69,7 +69,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 					Map<SimplePropDescriptor, String> propsForEpi = new HashMap<>(props);
 					// overwrite episode num
 					propsForEpi.put(epiNumProp, epiNum);
-					episodes.add(episodeMapper.map(propsForEpi, propParsingService));
+					episodes.add(episodeMapper.map(propsForEpi, propFromStringService));
 				}
 				return episodes;
 		}
@@ -98,7 +98,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 			int end = Integer.parseInt(matcher.group(2));
 			if (end < start)
 			{
-				// switch
+				// swap start and end
 				int helper = start;
 				start = end;
 				end = helper;
