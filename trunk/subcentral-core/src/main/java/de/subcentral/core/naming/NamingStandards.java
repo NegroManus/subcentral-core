@@ -117,7 +117,7 @@ public class NamingStandards
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
 		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-", "'´`", ".");
-		return (UnaryOperator<String>) pr.andThen(cr);
+		return s -> s == null ? null : cr.apply(pr.apply(s));
 	}
 
 	public static UnaryOperator<String> getDefaultWholeNameOperator()
