@@ -33,7 +33,6 @@ public class Standardizings
 
 	private Standardizings()
 	{
-		// utility class
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
-
 }

@@ -239,7 +239,6 @@ public class Addic7ed
 
 	private Addic7ed()
 	{
-		// utility class
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
-
 }

@@ -165,6 +165,6 @@ public class Releases
 
 	private Releases()
 	{
-		throw new AssertionError(getClass() + " cannot be insantiated. It is an utility class.");
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
 }

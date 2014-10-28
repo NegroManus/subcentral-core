@@ -138,6 +138,6 @@ public class Parsings
 
 	private Parsings()
 	{
-		// util class
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
 }
