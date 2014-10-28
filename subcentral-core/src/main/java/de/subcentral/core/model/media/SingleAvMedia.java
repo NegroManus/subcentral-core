@@ -106,6 +106,7 @@ public class SingleAvMedia extends SingleMedia implements AvMedia
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
+				.add("attributes", Models.nullIfEmpty(attributes))
 				.toString();
 	}
 }
