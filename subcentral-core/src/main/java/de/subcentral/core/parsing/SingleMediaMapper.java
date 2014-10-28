@@ -15,6 +15,8 @@ public class SingleMediaMapper implements Mapper<SingleMedia>
 		media.setName(props.get(SingleMedia.PROP_NAME));
 		media.setTitle(props.get(SingleMedia.PROP_TITLE));
 		media.setDate(propFromStringService.parse(props, SingleMedia.PROP_DATE, Temporal.class));
+		media.setMediaType(props.get(SingleMedia.PROP_MEDIA_TYPE));
+		media.setMediaContentType(props.get(SingleMedia.PROP_MEDIA_CONTENT_TYPE));
 		return media;
 	}
 }

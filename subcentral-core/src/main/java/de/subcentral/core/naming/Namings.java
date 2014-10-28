@@ -6,7 +6,7 @@ public class Namings
 {
 	public static final <T> T readParameter(Map<String, Object> parameters, String key, Class<T> valueClass, T defaultValue)
 	{
-		return valueClass.cast(parameters.getOrDefault(parameters.get(key), defaultValue));
+		return valueClass.cast(parameters.getOrDefault(key, defaultValue));
 	}
 
 	private Namings()
