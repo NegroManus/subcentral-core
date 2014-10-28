@@ -117,6 +117,12 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return Media.MEDIA_TYPE_SERIES;
 	}
 
+	@Override
+	public String getMediaContentType()
+	{
+		return Media.MEDIA_CONTENT_TYPE_VIDEO;
+	}
+
 	public String getType()
 	{
 		return type;
