@@ -1,6 +1,5 @@
 package de.subcentral.core.naming;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.UnaryOperator;
@@ -27,15 +26,6 @@ public class PropSequenceNameBuilder
 	public void overwriteLastProperty(SimplePropDescriptor lastProp)
 	{
 		this.lastProp = lastProp;
-	}
-
-	public PropSequenceNameBuilder appendAllIfNotEmpty(SimplePropDescriptor propDescriptor, Collection<?> propCollection)
-	{
-		if (!propCollection.isEmpty())
-		{
-			appendAll(propDescriptor, propCollection);
-		}
-		return this;
 	}
 
 	public PropSequenceNameBuilder appendAll(SimplePropDescriptor propDescriptor, Iterable<?> propertyIterable)
