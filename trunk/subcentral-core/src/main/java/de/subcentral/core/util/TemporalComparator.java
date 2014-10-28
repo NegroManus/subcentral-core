@@ -10,8 +10,7 @@ import java.time.temporal.TemporalField;
 import java.util.Comparator;
 
 import com.google.common.collect.ComparisonChain;
-
-import de.subcentral.core.Settings;
+import com.google.common.collect.Ordering;
 
 public class TemporalComparator implements Comparator<Temporal>, Serializable
 {
@@ -46,11 +45,12 @@ public class TemporalComparator implements Comparator<Temporal>, Serializable
 		Long nano1 = getLongOrNull(o1Utc, ChronoField.NANO_OF_DAY);
 		Long nano2 = getLongOrNull(o2Utc, ChronoField.NANO_OF_DAY);
 
+		Ordering<Integer> intOrdering = Ordering.natural().nullsFirst();
 		return ComparisonChain.start()
-				.compare(year1, year2, Settings.createDefaultOrdering())
-				.compare(month1, month2, Settings.createDefaultOrdering())
-				.compare(day1, day2, Settings.createDefaultOrdering())
-				.compare(nano1, nano2, Settings.createDefaultOrdering())
+				.compare(year1, year2, intOrdering)
+				.compare(month1, month2, intOrdering)
+				.compare(day1, day2, intOrdering)
+				.compare(nano1, nano2, Ordering.natural().nullsFirst())
 				.result();
 	}
 
