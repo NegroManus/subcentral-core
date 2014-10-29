@@ -42,7 +42,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 		Subtitle sub = adjustment.getFirstSubtitle();
 		if (sub != null)
 		{
-			b.append(Subtitle.PROP_LANGUAGE, sub.getLanguage());
+			b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());
 			b.appendIf(Subtitle.PROP_HEARING_IMPAIRED, Subtitle.TAG_HEARING_IMPAIRED.getName(), sub.isHearingImpaired());
 			switch (sub.getForeignParts())
 			{
