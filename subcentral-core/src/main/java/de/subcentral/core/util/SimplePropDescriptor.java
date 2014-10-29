@@ -26,10 +26,8 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 
 	public SimplePropDescriptor(Class<?> beanClass, String propName)
 	{
-		Objects.requireNonNull(beanClass, "beanClass");
-		Objects.requireNonNull(propName, "propName");
-		this.beanClass = beanClass;
-		this.propName = propName;
+		this.beanClass = Objects.requireNonNull(beanClass, "beanClass");
+		this.propName = Objects.requireNonNull(propName, "propName");
 	}
 
 	public Class<?> getBeanClass()
