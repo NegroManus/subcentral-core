@@ -12,23 +12,30 @@ import de.subcentral.core.util.Separation;
 public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 {
 	protected final PropToStringService			propToStringService;
+	protected final String						defaultSeparator;
 	protected final ImmutableSet<Separation>	separations;
 	protected final Function<String, String>	finalFormatter;
 
 	protected AbstractPropertySequenceNamer(PropToStringService propToStringService)
 	{
-		this(propToStringService, ImmutableSet.of(), null);
+		this(propToStringService, null, ImmutableSet.of(), null);
 	}
 
-	protected AbstractPropertySequenceNamer(PropToStringService propToStringService, Set<Separation> separations)
+	protected AbstractPropertySequenceNamer(PropToStringService propToStringService, String defaultSeparator)
 	{
-		this(propToStringService, separations, null);
+		this(propToStringService, defaultSeparator, ImmutableSet.of(), null);
 	}
 
-	protected AbstractPropertySequenceNamer(PropToStringService propToStringService, Set<Separation> separations,
+	protected AbstractPropertySequenceNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations)
+	{
+		this(propToStringService, defaultSeparator, separations, null);
+	}
+
+	protected AbstractPropertySequenceNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)
 	{
 		this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
+		this.defaultSeparator = (defaultSeparator == null ? Separation.DEFAULT_SEPARATOR : defaultSeparator);
 		this.separations = ImmutableSet.copyOf(separations); // includes null check
 		this.finalFormatter = finalFormatter;
 	}
@@ -41,6 +48,11 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 	public ImmutableSet<Separation> getSeparations()
 	{
 		return separations;
+	}
+
+	public String getDefaultSeparator()
+	{
+		return defaultSeparator;
 	}
 
 	public Function<String, String> getFinalFormatter()
@@ -71,6 +83,6 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 
 	private PropSequenceNameBuilder builder()
 	{
-		return new PropSequenceNameBuilder(propToStringService, separations, finalFormatter);
+		return new PropSequenceNameBuilder(propToStringService, separations, defaultSeparator, finalFormatter);
 	}
 }

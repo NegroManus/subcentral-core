@@ -5,17 +5,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+
+import de.subcentral.core.util.Separation;
 
 /**
  * {@code Thread-safe}
  */
 public class ConditionalNamingService implements NamingService
 {
-	private final String									domain;
-	private final List<ConditionalNamer<?>>					namers				= new CopyOnWriteArrayList<>();
-	private final AtomicReference<String>					defaultSeparator	= new AtomicReference<>(" ");
-	private final AtomicReference<Function<String, String>>	finalFormatter		= new AtomicReference<>(Function.identity());
+	private final String					domain;
+	private final List<ConditionalNamer<?>>	namers				= new CopyOnWriteArrayList<>();
+	private final AtomicReference<String>	defaultSeparator	= new AtomicReference<>(Separation.DEFAULT_SEPARATOR);
 
 	public ConditionalNamingService(String domain)
 	{
@@ -52,17 +52,7 @@ public class ConditionalNamingService implements NamingService
 
 	public void setDefaultSeparator(String defaultSeparator)
 	{
-		this.defaultSeparator.set(defaultSeparator);
-	}
-
-	public Function<String, String> getFinalFormatter()
-	{
-		return finalFormatter.get();
-	}
-
-	public void setFinalFormatter(Function<String, String> finalFormatter)
-	{
-		this.finalFormatter.set(finalFormatter);
+		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator));
 	}
 
 	@Override
@@ -103,11 +93,11 @@ public class ConditionalNamingService implements NamingService
 		Namer<? super T> namer = getNamer(candidate);
 		if (namer != null)
 		{
-			return finalFormatter.get().apply(namer.name(candidate, parameters));
+			return namer.name(candidate, parameters);
 		}
 		if (candidate instanceof Iterable)
 		{
-			return finalFormatter.get().apply(nameAll((Iterable<?>) candidate, defaultSeparator.get(), parameters));
+			return nameAll((Iterable<?>) candidate, parameters);
 		}
 		throw new NoNamerRegisteredException(candidate, "No ConditionalNamer's condition returned true for the candidate");
 	}

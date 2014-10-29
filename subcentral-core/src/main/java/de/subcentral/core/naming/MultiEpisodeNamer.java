@@ -26,10 +26,10 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 	private final ImmutableMap<String, AbstractEpisodeNamer>	seriesTypeNamers;
 	private final AbstractEpisodeNamer							defaultNamer;
 
-	protected MultiEpisodeNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter,
-			Map<String, AbstractEpisodeNamer> seriesTypeNamers, AbstractEpisodeNamer defaultNamer)
+	protected MultiEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter, Map<String, AbstractEpisodeNamer> seriesTypeNamers, AbstractEpisodeNamer defaultNamer)
 	{
-		super(propToStringService, separations, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 		this.seriesTypeNamers = ImmutableMap.copyOf(seriesTypeNamers); // includes null check
 		this.defaultNamer = Objects.requireNonNull(defaultNamer, "defaultNamer");
 	}

@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ClassUtils;
 
@@ -14,10 +13,9 @@ import org.apache.commons.lang3.ClassUtils;
  */
 public class ClassBasedNamingService implements NamingService
 {
-	private final String									domain;
-	private final Map<Class<?>, Namer<?>>					namers				= new ConcurrentHashMap<>();
-	private final AtomicReference<String>					defaultSeparator	= new AtomicReference<>(" ");
-	private final AtomicReference<UnaryOperator<String>>	wholeNameOperator	= new AtomicReference<UnaryOperator<String>>(UnaryOperator.identity());
+	private final String					domain;
+	private final Map<Class<?>, Namer<?>>	namers				= new ConcurrentHashMap<>();
+	private final AtomicReference<String>	defaultSeparator	= new AtomicReference<>(" ");
 
 	public ClassBasedNamingService(String domain)
 	{
@@ -43,17 +41,7 @@ public class ClassBasedNamingService implements NamingService
 
 	public void setDefaultSeparator(String defaultSeparator)
 	{
-		this.defaultSeparator.set(defaultSeparator);
-	}
-
-	public UnaryOperator<String> getWholeNameOperator()
-	{
-		return wholeNameOperator.get();
-	}
-
-	public void setWholeNameOperator(UnaryOperator<String> wholeNameOperator)
-	{
-		this.wholeNameOperator.set(wholeNameOperator);
+		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator));
 	}
 
 	@Override
@@ -125,11 +113,11 @@ public class ClassBasedNamingService implements NamingService
 		Namer<? super T> namer = (Namer<? super T>) getNamer(candidate.getClass());
 		if (namer != null)
 		{
-			return wholeNameOperator.get().apply(namer.name(candidate, parameters));
+			return namer.name(candidate, parameters);
 		}
 		if (candidate instanceof Iterable)
 		{
-			return wholeNameOperator.get().apply(nameAll((Iterable<?>) candidate, defaultSeparator.get(), parameters));
+			return nameAll((Iterable<?>) candidate, parameters);
 		}
 		throw new NoNamerRegisteredException(candidate, "No Namer registered for candidate's type");
 	}

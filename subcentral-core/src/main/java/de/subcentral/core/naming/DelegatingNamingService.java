@@ -14,7 +14,7 @@ public class DelegatingNamingService implements NamingService
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 		this.delegate = Objects.requireNonNull(delegate, "delegate");
-		this.finalFormatter = Objects.requireNonNull(finalFormatter, "finalFormatter");
+		this.finalFormatter = Objects.requireNonNull(finalFormatter);
 	}
 
 	public NamingService getDelegate()

@@ -12,10 +12,10 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 {
 	private final NamingService	mediaNamingService;
 
-	protected SubtitleNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter,
-			NamingService mediaNamingService)
+	protected SubtitleNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter, NamingService mediaNamingService)
 	{
-		super(propToStringService, separations, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 		this.mediaNamingService = Objects.requireNonNull(mediaNamingService, "mediaNamingService");
 	}
 

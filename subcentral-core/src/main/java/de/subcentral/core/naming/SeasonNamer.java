@@ -10,9 +10,10 @@ import de.subcentral.core.util.Separation;
 
 public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 {
-	protected SeasonNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter)
+	protected SeasonNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter)
 	{
-		super(propToStringService, separations, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 	}
 
 	@Override

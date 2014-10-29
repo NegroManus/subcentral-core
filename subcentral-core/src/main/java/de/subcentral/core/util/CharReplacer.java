@@ -75,13 +75,13 @@ public class CharReplacer implements UnaryOperator<String>
 		StringBuilder dest = new StringBuilder(src.length);
 		for (char c : src)
 		{
-			if (ArrayUtils.contains(charsToDelete, c))
-			{
-				continue;
-			}
 			if (ArrayUtils.contains(allowedChars, c))
 			{
 				dest.append(c);
+				continue;
+			}
+			if (ArrayUtils.contains(charsToDelete, c))
+			{
 				continue;
 			}
 			Character replacingChar = replacements.get(c);

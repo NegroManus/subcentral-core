@@ -11,14 +11,17 @@ public class PropSequenceNameBuilder
 {
 	private final PropToStringService		propToStringService;
 	private final Set<Separation>			separations;
+	private final String					defaultSeparator;
 	private final Function<String, String>	finalFormatter;
 	private final StringBuilder				sb	= new StringBuilder();
 	private SimplePropDescriptor			lastProp;
 
-	public PropSequenceNameBuilder(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter)
+	public PropSequenceNameBuilder(PropToStringService propToStringService, Set<Separation> separations, String defaultSeparator,
+			Function<String, String> finalFormatter)
 	{
 		this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
 		this.separations = Objects.requireNonNull(separations, "separations");
+		this.defaultSeparator = (defaultSeparator == null ? Separation.DEFAULT_SEPARATOR : defaultSeparator);
 		this.finalFormatter = finalFormatter;
 	}
 
@@ -78,7 +81,7 @@ public class PropSequenceNameBuilder
 	{
 		if (lastProp != null)
 		{
-			sb.append(Separation.getSeparatorBetween(lastProp, propDescr, separationType, separations));
+			sb.append(Separation.getSeparatorBetween(lastProp, propDescr, separationType, separations, defaultSeparator));
 		}
 		sb.append(propValue);
 		lastProp = propDescr;

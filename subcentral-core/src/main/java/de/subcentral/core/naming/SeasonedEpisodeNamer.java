@@ -114,9 +114,10 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE_KEY		= "alwaysIncludeSeasonTitle";
 	public static final Boolean	PARAM_ALWAYS_INCLUDE_SEASON_TITLE_DEFAULT	= Boolean.FALSE;
 
-	protected SeasonedEpisodeNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter)
+	protected SeasonedEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter)
 	{
-		super(propToStringService, separations, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 	}
 
 	@Override

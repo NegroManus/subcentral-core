@@ -19,10 +19,10 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 
 	private final Namer<Release>	releaseNamer;
 
-	protected SubtitleAdjustmentNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter,
-			Namer<Release> releaseNamer)
+	protected SubtitleAdjustmentNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter, Namer<Release> releaseNamer)
 	{
-		super(propToStringService, separations, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 		this.releaseNamer = Objects.requireNonNull(releaseNamer, "releaseNamer");
 	}
 
