@@ -1,6 +1,7 @@
 package de.subcentral.core.util;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -19,34 +20,28 @@ public class CharReplacer implements UnaryOperator<String>
 
 	public CharReplacer(String allowedChars, String charsToDelete, String defaultReplacement)
 	{
-		this.allowedChars = allowedChars.toCharArray();
-		this.charsToDelete = charsToDelete.toCharArray();
-		this.defaultReplacement = defaultReplacement;
-		this.replacements = ImmutableMap.of();
+		this(allowedChars, charsToDelete, defaultReplacement, ImmutableMap.of());
 	}
 
 	public CharReplacer(String allowedChars, String charsToDelete, String defaultReplacement, Map<Character, Character> replacements)
 	{
-		this.allowedChars = allowedChars.toCharArray();
-		this.charsToDelete = charsToDelete.toCharArray();
-		this.defaultReplacement = defaultReplacement;
-		this.replacements = ImmutableMap.copyOf(replacements);
+		this.allowedChars = Objects.requireNonNull(allowedChars, "allowedChars").toCharArray();
+		this.charsToDelete = Objects.requireNonNull(charsToDelete, "charsToDelete").toCharArray();
+		this.defaultReplacement = Objects.requireNonNull(defaultReplacement, "defaultReplacement");
+		this.replacements = ImmutableMap.copyOf(replacements); // null check included
 	}
 
 	public CharReplacer(char[] allowedChars, char[] charsToDelete, String defaultReplacement)
 	{
-		this.allowedChars = allowedChars.clone();
-		this.charsToDelete = charsToDelete.clone();
-		this.defaultReplacement = defaultReplacement;
-		this.replacements = ImmutableMap.of();
+		this(allowedChars, charsToDelete, defaultReplacement, ImmutableMap.of());
 	}
 
 	public CharReplacer(char[] allowedChars, char[] charsToDelete, String defaultReplacement, Map<Character, Character> replacements)
 	{
-		this.allowedChars = allowedChars.clone();
-		this.charsToDelete = charsToDelete.clone();
-		this.defaultReplacement = defaultReplacement;
-		this.replacements = ImmutableMap.copyOf(replacements);
+		this.allowedChars = Objects.requireNonNull(allowedChars, "allowedChars").clone();
+		this.charsToDelete = Objects.requireNonNull(charsToDelete, "charsToDelete").clone();
+		this.defaultReplacement = Objects.requireNonNull(defaultReplacement, "defaultReplacement");
+		this.replacements = ImmutableMap.copyOf(replacements); // null check included
 	}
 
 	public char[] getAllowedChars()

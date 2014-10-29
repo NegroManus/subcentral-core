@@ -4,22 +4,21 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import de.subcentral.core.util.SeparationDefinition;
+import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class PropSequenceNameBuilder
 {
 	private final PropToStringService		propToStringService;
-	private final Set<SeparationDefinition>	separators;
+	private final Set<Separation>			separations;
 	private final Function<String, String>	finalFormatter;
 	private final StringBuilder				sb	= new StringBuilder();
 	private SimplePropDescriptor			lastProp;
 
-	public PropSequenceNameBuilder(PropToStringService propToStringService, Set<SeparationDefinition> separators,
-			Function<String, String> finalFormatter)
+	public PropSequenceNameBuilder(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter)
 	{
 		this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
-		this.separators = Objects.requireNonNull(separators, "separators");
+		this.separations = Objects.requireNonNull(separations, "separations");
 		this.finalFormatter = finalFormatter;
 	}
 
@@ -79,7 +78,7 @@ public class PropSequenceNameBuilder
 	{
 		if (lastProp != null)
 		{
-			sb.append(SeparationDefinition.getSeparatorBetween(lastProp, propDescr, separationType, separators));
+			sb.append(Separation.getSeparatorBetween(lastProp, propDescr, separationType, separations));
 		}
 		sb.append(propValue);
 		lastProp = propDescr;

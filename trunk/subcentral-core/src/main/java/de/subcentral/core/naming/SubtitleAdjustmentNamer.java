@@ -1,31 +1,34 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
-
-import org.jsoup.helper.Validate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.util.Separation;
 
 public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<SubtitleAdjustment>
 {
 	/**
 	 * The parameter key for the Release value. The default value is {@link SubtitleAdjustment#getFirstMatchingRelease()}.
 	 */
-	public static final String	PARAM_KEY_RELEASE	= "release";
+	public static final String		PARAM_KEY_RELEASE	= "release";
 
-	private Namer<Release>		releaseNamer		= NamingStandards.getDefaultReleaseNamer();
+	private final Namer<Release>	releaseNamer;
+
+	protected SubtitleAdjustmentNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter,
+			Namer<Release> releaseNamer)
+	{
+		super(propToStringService, separations, finalFormatter);
+		this.releaseNamer = Objects.requireNonNull(releaseNamer, "releaseNamer");
+	}
 
 	public Namer<Release> getReleaseNamer()
 	{
 		return releaseNamer;
-	}
-
-	public void setReleaseNamer(Namer<Release> releaseNamer)
-	{
-		Validate.notNull(releaseNamer, "releaseNamer cannot be null");
-		this.releaseNamer = releaseNamer;
 	}
 
 	@Override

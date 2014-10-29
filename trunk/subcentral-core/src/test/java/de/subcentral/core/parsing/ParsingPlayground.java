@@ -94,9 +94,7 @@ public class ParsingPlayground
 		final NamingService ns = NamingStandards.getDefaultNamingService();
 
 		Lookup<Release, ?> lookup = new OrlyDbLookup();
-		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService("orlydb",
-				NamingStandards.getDefaultNamingService(),
-				NamingStandards.getDefaultWholeNameOperator());
+		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService("orlydb", NamingStandards.getDefaultNamingService(), null);
 
 		List<Compatibility> compatibilities = new ArrayList<>();
 		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",
