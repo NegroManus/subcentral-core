@@ -14,7 +14,13 @@ public class DelegatingNamingService implements NamingService
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 		this.delegate = Objects.requireNonNull(delegate, "delegate");
-		this.finalFormatter = Objects.requireNonNull(finalFormatter);
+		this.finalFormatter = Objects.requireNonNull(finalFormatter, "finalFormatter");
+	}
+
+	@Override
+	public String getDomain()
+	{
+		return domain;
 	}
 
 	public NamingService getDelegate()
@@ -25,12 +31,6 @@ public class DelegatingNamingService implements NamingService
 	public Function<String, String> getFinalFormatter()
 	{
 		return finalFormatter;
-	}
-
-	@Override
-	public String getDomain()
-	{
-		return domain;
 	}
 
 	@Override

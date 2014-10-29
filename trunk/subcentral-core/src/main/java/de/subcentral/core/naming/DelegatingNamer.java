@@ -1,26 +1,33 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
-import java.util.function.UnaryOperator;
-
-import org.apache.commons.lang3.Validate;
+import java.util.Objects;
+import java.util.function.Function;
 
 public class DelegatingNamer<T> implements Namer<T>
 {
-	private final Namer<T>				delegate;
-	private final UnaryOperator<String>	wholeNameOperator;
+	private final Namer<T>					delegate;
+	private final Function<String, String>	finalFormatter;
 
-	public DelegatingNamer(Namer<T> delegate, UnaryOperator<String> wholeNameOperator)
+	public DelegatingNamer(Namer<T> delegate, Function<String, String> finalFormatter)
 	{
-		Validate.notNull(delegate, "delegate");
-		Validate.notNull(wholeNameOperator, "wholeNameOperator");
-		this.delegate = delegate;
-		this.wholeNameOperator = wholeNameOperator;
+		this.delegate = Objects.requireNonNull(delegate, "delegate");
+		this.finalFormatter = Objects.requireNonNull(finalFormatter, "finalFormatter");
+	}
+
+	public Namer<T> getDelegate()
+	{
+		return delegate;
+	}
+
+	public Function<String, String> getFinalFormatter()
+	{
+		return finalFormatter;
 	}
 
 	@Override
 	public String name(T candidate, Map<String, Object> parameters) throws NamingException
 	{
-		return wholeNameOperator.apply(delegate.name(candidate, parameters));
+		return finalFormatter.apply(delegate.name(candidate, parameters));
 	}
 }
