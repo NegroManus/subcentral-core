@@ -29,7 +29,6 @@ import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.model.subtitle.Subtitles;
-import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
@@ -93,8 +92,8 @@ public class ParsingPlayground
 
 		final NamingService ns = NamingStandards.getDefaultNamingService();
 
-		Lookup<Release, ?> lookup = new OrlyDbLookup();
-		DelegatingNamingService mediaNsForFiltering = new DelegatingNamingService("orlydb", NamingStandards.getDefaultNamingService(), null);
+		final Lookup<Release, ?> lookup = new OrlyDbLookup();
+		final NamingService mediaNsForFiltering = ns;
 
 		List<Compatibility> compatibilities = new ArrayList<>();
 		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",

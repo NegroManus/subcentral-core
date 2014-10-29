@@ -17,10 +17,10 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 
 	private final NamingService	mediaNamingService;
 
-	protected ReleaseNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter,
-			NamingService mediaNamingService)
+	protected ReleaseNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter, NamingService mediaNamingService)
 	{
-		super(propToStringService, separations, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 		this.mediaNamingService = Objects.requireNonNull(mediaNamingService, "mediaNamingService");
 	}
 

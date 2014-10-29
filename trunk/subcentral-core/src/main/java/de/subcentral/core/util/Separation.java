@@ -9,19 +9,30 @@ public class Separation
 {
 	public static final String	DEFAULT_SEPARATOR	= " ";
 
-	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty,
-			Set<Separation> separationDefinitions)
+	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, Set<Separation> separations)
 	{
-		return getSeparatorBetween(firstProperty, secondProperty, null, separationDefinitions);
+		return getSeparatorBetween(firstProperty, secondProperty, null, separations, DEFAULT_SEPARATOR);
+	}
+
+	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, Set<Separation> separations,
+			String defaultSeparator)
+	{
+		return getSeparatorBetween(firstProperty, secondProperty, null, separations, defaultSeparator);
 	}
 
 	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separationType,
-			Set<Separation> separationDefinitions)
+			Set<Separation> separations)
+	{
+		return getSeparatorBetween(firstProperty, secondProperty, separationType, separations, DEFAULT_SEPARATOR);
+	}
+
+	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separationType,
+			Set<Separation> separations, String defaultSeparator)
 	{
 		String after = null;
 		String before = null;
 		String betweenAny = null;
-		for (Separation sd : separationDefinitions)
+		for (Separation sd : separations)
 		{
 			boolean firstPropEquals = Objects.equals(firstProperty, sd.firstProperty);
 			boolean secondPropEquals = Objects.equals(secondProperty, sd.secondProperty);
@@ -59,7 +70,7 @@ public class Separation
 		{
 			return betweenAny;
 		}
-		return DEFAULT_SEPARATOR;
+		return defaultSeparator;
 	}
 
 	private final SimplePropDescriptor	firstProperty;

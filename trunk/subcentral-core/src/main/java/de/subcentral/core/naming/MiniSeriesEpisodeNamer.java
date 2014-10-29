@@ -9,9 +9,10 @@ import de.subcentral.core.util.Separation;
 
 public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 {
-	protected MiniSeriesEpisodeNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter)
+	protected MiniSeriesEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter)
 	{
-		super(propToStringService, separations, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 	}
 
 	@Override

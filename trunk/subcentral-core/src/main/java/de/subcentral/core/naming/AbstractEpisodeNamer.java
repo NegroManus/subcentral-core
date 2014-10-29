@@ -20,8 +20,9 @@ public abstract class AbstractEpisodeNamer extends AbstractPropertySequenceNamer
 	public static final String	PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_KEY		= "alwaysIncludeEpisodeTitle";
 	public static final Boolean	PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT	= Boolean.FALSE;
 
-	protected AbstractEpisodeNamer(PropToStringService propToStringService, Set<Separation> separators, Function<String, String> finalFormatter)
+	protected AbstractEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+			Function<String, String> finalFormatter)
 	{
-		super(propToStringService, separators, finalFormatter);
+		super(propToStringService, defaultSeparator, separations, finalFormatter);
 	}
 }
