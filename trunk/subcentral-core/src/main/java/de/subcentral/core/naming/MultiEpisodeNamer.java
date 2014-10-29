@@ -45,7 +45,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Collection<Episode> episodes, Map<String, Object> namingSettings) throws NamingException
+	public void buildName(PropSequenceNameBuilder b, Collection<Episode> episodes, Map<String, Object> parameters) throws NamingException
 	{
 		if (episodes.isEmpty())
 		{
@@ -53,8 +53,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 		}
 		MultiEpisodeHelper me = new MultiEpisodeHelper(episodes);
 		Episode firstEpi = me.get(0);
-		String firstEpiName = getNamer(firstEpi).name(firstEpi, ImmutableMap.of());
-		b.appendString(PROP_EPISODES, firstEpiName);
+		getNamer(firstEpi).buildName(b, firstEpi, parameters);
 
 		if (me.getCommonSeries() != null)
 		{
@@ -128,7 +127,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 		}
 	}
 
-	private AbstractPropertySequenceNamer<Episode> getNamer(Episode epi)
+	private AbstractEpisodeNamer getNamer(Episode epi)
 	{
 		if (epi.getSeries() != null && epi.getSeries().getType() != null)
 		{

@@ -28,11 +28,18 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 		// add series
 		if (includeSeries && epi.getSeries() != null)
 		{
-			b.append(Episode.PROP_SERIES, epi.getSeries().getName());
+			b.appendIfNotNull(Episode.PROP_SERIES, epi.getSeries().getName());
 		}
 
 		// add episode
-		b.appendIf(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries(), epi.isNumberedInSeries());
-		b.appendIf(Episode.PROP_TITLE, epi.getTitle(), (alwaysIncludeEpisodeTitle || !epi.isNumberedInSeries()) && epi.isTitled());
+		if (epi.isNumberedInSeries())
+		{
+			b.append(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries());
+			b.appendIf(Episode.PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle && epi.isTitled());
+		}
+		else
+		{
+			b.appendIfNotNull(Episode.PROP_TITLE, epi.getTitle());
+		}
 	}
 }

@@ -138,27 +138,48 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		// add series
 		if (includeSeries && epi.getSeries() != null)
 		{
-			b.append(Episode.PROP_SERIES, epi.getSeries().getName());
+			b.appendIfNotNull(Episode.PROP_SERIES, epi.getSeries().getName());
 		}
 
 		// add season
 		if (includeSeason && epi.isPartOfSeason())
 		{
 			Season season = epi.getSeason();
-			b.appendIf(Season.PROP_NUMBER, season.getNumber(), season.isNumbered());
-			b.appendIf(Season.PROP_TITLE, season.getTitle(), (alwaysIncludeSeasonTitle || !season.isNumbered()) && season.isTitled());
+			if (season.isNumbered())
+			{
+				b.append(Season.PROP_NUMBER, season.getNumber());
+				b.appendIf(Season.PROP_TITLE, season.getTitle(), alwaysIncludeSeasonTitle && season.isTitled());
+			}
+			else
+			{
+				b.appendIfNotNull(Season.PROP_TITLE, season.getTitle());
+			}
 		}
 
 		// add episode
 		if (epi.isPartOfSeason())
 		{
-			b.appendIf(Episode.PROP_NUMBER_IN_SEASON, epi.getNumberInSeason(), epi.isNumberedInSeason());
-			b.appendIf(Episode.PROP_TITLE, epi.getTitle(), (alwaysIncludeEpisodeTitle || !epi.isNumberedInSeason()) && epi.isTitled());
+			if (epi.isNumberedInSeason())
+			{
+				b.append(Episode.PROP_NUMBER_IN_SEASON, epi.getNumberInSeason());
+				b.appendIf(Episode.PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle && epi.isTitled());
+			}
+			else
+			{
+				b.appendIfNotNull(Episode.PROP_TITLE, epi.getTitle());
+			}
 		}
 		else
 		{
-			b.appendIf(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries(), epi.isNumberedInSeries());
-			b.appendIf(Episode.PROP_TITLE, epi.getTitle(), (alwaysIncludeEpisodeTitle || !epi.isNumberedInSeries()) && epi.isTitled());
+			if (epi.isNumberedInSeries())
+			{
+				b.append(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries());
+				b.appendIf(Episode.PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle && epi.isTitled());
+			}
+			else
+			{
+				b.appendIfNotNull(Episode.PROP_TITLE, epi.getTitle());
+			}
 		}
 	}
 }

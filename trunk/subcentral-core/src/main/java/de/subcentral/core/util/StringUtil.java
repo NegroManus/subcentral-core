@@ -41,7 +41,7 @@ public class StringUtil
 
 	public static StringBuilder appendIfNotEndsWith(StringBuilder sb, char c)
 	{
-		if (endsWith(sb, c))
+		if (!endsWith(sb, c))
 		{
 			sb.append(c);
 		}
