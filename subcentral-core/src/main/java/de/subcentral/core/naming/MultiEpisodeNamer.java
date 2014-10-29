@@ -62,7 +62,6 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 			{
 				if (me.areAllNumberedInSeason())
 				{
-					b.overwriteLastProperty(Episode.PROP_NUMBER_IN_SEASON);
 					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeason());
 					// append first
 					appendRange(b, numberRanges.get(0), false, true);
@@ -87,7 +86,6 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 				// no seasons at all
 				if (me.areAllNumberedInSeries())
 				{
-					b.overwriteLastProperty(Episode.PROP_NUMBER_IN_SERIES);
 					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeries());
 					// append first
 					appendRange(b, numberRanges.get(0), true, true);

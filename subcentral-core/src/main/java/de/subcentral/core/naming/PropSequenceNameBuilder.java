@@ -27,11 +27,6 @@ public class PropSequenceNameBuilder
 		this.finalFormatter = finalFormatter;
 	}
 
-	public void overwriteLastProperty(SimplePropDescriptor lastProp)
-	{
-		this.lastProp = lastProp;
-	}
-
 	public PropSequenceNameBuilder appendAll(SimplePropDescriptor propDescriptor, Iterable<?> propertyIterable)
 	{
 		for (Object prop : propertyIterable)
