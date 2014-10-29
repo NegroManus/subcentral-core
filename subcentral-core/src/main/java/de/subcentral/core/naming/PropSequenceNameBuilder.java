@@ -4,6 +4,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -42,6 +44,11 @@ public class PropSequenceNameBuilder
 	public PropSequenceNameBuilder appendIfNotNull(SimplePropDescriptor propDescriptor, Object propValue)
 	{
 		return appendIf(propDescriptor, propValue, propValue != null);
+	}
+
+	public PropSequenceNameBuilder appendIfNotBlank(SimplePropDescriptor propDescriptor, CharSequence propValue)
+	{
+		return appendIf(propDescriptor, propValue, !StringUtils.isBlank(propValue));
 	}
 
 	public PropSequenceNameBuilder appendIf(SimplePropDescriptor propDescriptor, Object propValue, boolean condition)
