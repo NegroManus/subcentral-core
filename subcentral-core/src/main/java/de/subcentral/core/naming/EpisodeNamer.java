@@ -1,51 +1,31 @@
 package de.subcentral.core.naming;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang3.Validate;
+import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.model.media.Episode;
 
 public class EpisodeNamer implements Namer<Episode>
 {
-	private Map<String, Namer<Episode>>	seriesTypeNamers	= new HashMap<>(3);
-	private Namer<Episode>				defaultNamer		= NamingStandards.getDefaultSeasonedEpisodeNamer();
+	private final ImmutableMap<String, Namer<Episode>>	seriesTypeNamers;
+	private final Namer<Episode>						defaultNamer;
 
-	public EpisodeNamer()
+	public EpisodeNamer(Map<String, Namer<Episode>> seriesTypeNamers, Namer<Episode> defaultNamer)
 	{
-
+		this.seriesTypeNamers = ImmutableMap.copyOf(seriesTypeNamers); // includes null check
+		this.defaultNamer = Objects.requireNonNull(defaultNamer, "defaultNamer");
 	}
 
-	public Map<String, Namer<Episode>> getSeriesTypeNamers()
+	public ImmutableMap<String, ? extends Namer<Episode>> getSeriesTypeNamers()
 	{
 		return seriesTypeNamers;
-	}
-
-	public void setSeriesTypeNamers(Map<String, Namer<Episode>> seriesTypeNamers)
-	{
-		this.seriesTypeNamers = seriesTypeNamers;
-	}
-
-	public Namer<Episode> registerSeriesTypeNamer(String seriesType, Namer<Episode> namer)
-	{
-		return seriesTypeNamers.put(seriesType, namer);
-	}
-
-	public Namer<Episode> unregisterSeriesTypeNamer(String seriesType)
-	{
-		return seriesTypeNamers.remove(seriesType);
 	}
 
 	public Namer<Episode> getDefaultNamer()
 	{
 		return defaultNamer;
-	}
-
-	public void setDefaultNamer(Namer<Episode> defaultNamer)
-	{
-		Validate.notNull(defaultNamer, "defaultNamer");
-		this.defaultNamer = defaultNamer;
 	}
 
 	public Namer<Episode> getNamer(Episode epi)
@@ -65,5 +45,4 @@ public class EpisodeNamer implements Namer<Episode>
 	{
 		return getNamer(epi).name(epi, parameters);
 	}
-
 }

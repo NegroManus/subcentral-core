@@ -1,77 +1,33 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Series;
+import de.subcentral.core.util.Separation;
 
-public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
+public class DatedEpisodeNamer extends AbstractEpisodeNamer
 {
-	/**
-	 * The parameter key for the Boolean value "includeSeries". The default value is {@code true}.
-	 */
-	public static final String	PARAM_INCLUDE_SERIES_KEY	= "includeSeries";
-
-	private boolean				alwaysIncludeEpisodeTitle	= false;
-
-	private String				undefinedSeriesPlaceholder	= "UNNAMED_SERIES";
-	private String				undefinedEpisodePlaceholder	= "xxxx.xx.xx";
-
-	public DatedEpisodeNamer()
+	protected DatedEpisodeNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter)
 	{
-
-	}
-
-	// booleans
-	public boolean getAlwaysIncludeEpisodeTitle()
-	{
-		return alwaysIncludeEpisodeTitle;
-	}
-
-	public void setAlwaysIncludeEpisodeTitle(boolean alwaysIncludeEpisodeTitle)
-	{
-		this.alwaysIncludeEpisodeTitle = alwaysIncludeEpisodeTitle;
-	}
-
-	// placeholders
-	public String getUndefinedSeriesPlaceholder()
-	{
-		return undefinedSeriesPlaceholder;
-	}
-
-	public void setUndefinedSeriesPlaceholder(String undefinedSeriesPlaceholder)
-	{
-		this.undefinedSeriesPlaceholder = undefinedSeriesPlaceholder;
-	}
-
-	public String getUndefinedEpisodePlaceholder()
-	{
-		return undefinedEpisodePlaceholder;
-	}
-
-	public void setUndefinedEpisodePlaceholder(String undefinedEpisodePlaceholder)
-	{
-		this.undefinedEpisodePlaceholder = undefinedEpisodePlaceholder;
+		super(propToStringService, separations, finalFormatter);
 	}
 
 	@Override
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// settings
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
+		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
+				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_KEY,
+				Boolean.class,
+				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT);
 
 		// add series
 		if (includeSeries && epi.getSeries() != null)
 		{
-			Series series = epi.getSeries();
-			if (series.getName() == null)
-			{
-				b.appendString(Episode.PROP_SERIES, undefinedSeriesPlaceholder);
-			}
-			else
-			{
-				b.append(Episode.PROP_SERIES, epi.getSeries().getName());
-			}
+			b.append(Episode.PROP_SERIES, epi.getSeries().getName());
 		}
 
 		// add episode
@@ -85,14 +41,7 @@ public class DatedEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		}
 		else
 		{
-			if (epi.isTitled())
-			{
-				b.append(Episode.PROP_TITLE, epi.getTitle());
-			}
-			else
-			{
-				b.appendString(Episode.PROP_TITLE, undefinedEpisodePlaceholder);
-			}
+			b.append(Episode.PROP_TITLE, epi.getTitle());
 		}
 	}
 }

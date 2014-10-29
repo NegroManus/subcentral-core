@@ -1,13 +1,21 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.media.Media;
+import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MediaNamer extends AbstractPropertySequenceNamer<Media>
 {
+	protected MediaNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter)
+	{
+		super(propToStringService, separations, finalFormatter);
+	}
+
 	/**
 	 * The parameter key for the Boolean value "includeYear". The default value is {@code true}.
 	 */

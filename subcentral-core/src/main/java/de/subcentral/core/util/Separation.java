@@ -5,23 +5,23 @@ import java.util.Set;
 
 import com.google.common.base.MoreObjects;
 
-public class SeparationDefinition
+public class Separation
 {
 	public static final String	DEFAULT_SEPARATOR	= " ";
 
 	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty,
-			Set<SeparationDefinition> separationDefinitions)
+			Set<Separation> separationDefinitions)
 	{
 		return getSeparatorBetween(firstProperty, secondProperty, null, separationDefinitions);
 	}
 
 	public static String getSeparatorBetween(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separationType,
-			Set<SeparationDefinition> separationDefinitions)
+			Set<Separation> separationDefinitions)
 	{
 		String after = null;
 		String before = null;
 		String betweenAny = null;
-		for (SeparationDefinition sd : separationDefinitions)
+		for (Separation sd : separationDefinitions)
 		{
 			boolean firstPropEquals = Objects.equals(firstProperty, sd.firstProperty);
 			boolean secondPropEquals = Objects.equals(secondProperty, sd.secondProperty);
@@ -67,57 +67,57 @@ public class SeparationDefinition
 	private final String				type;
 	private final String				separator;
 
-	public static SeparationDefinition betweenAny(String separator)
+	public static Separation betweenAny(String separator)
 	{
-		return new SeparationDefinition(null, null, null, separator);
+		return new Separation(null, null, null, separator);
 	}
 
-	public static SeparationDefinition betweenAny(String type, String separator)
+	public static Separation betweenAny(String type, String separator)
 	{
-		return new SeparationDefinition(null, null, type, separator);
+		return new Separation(null, null, type, separator);
 	}
 
-	public static SeparationDefinition after(SimplePropDescriptor property, String separator)
+	public static Separation after(SimplePropDescriptor property, String separator)
 	{
-		return new SeparationDefinition(property, null, null, separator);
+		return new Separation(property, null, null, separator);
 	}
 
-	public static SeparationDefinition after(SimplePropDescriptor property, String type, String separator)
+	public static Separation after(SimplePropDescriptor property, String type, String separator)
 	{
-		return new SeparationDefinition(property, null, type, separator);
+		return new Separation(property, null, type, separator);
 	}
 
-	public static SeparationDefinition before(SimplePropDescriptor property, String separator)
+	public static Separation before(SimplePropDescriptor property, String separator)
 	{
-		return new SeparationDefinition(null, property, null, separator);
+		return new Separation(null, property, null, separator);
 	}
 
-	public static SeparationDefinition before(SimplePropDescriptor property, String type, String separator)
+	public static Separation before(SimplePropDescriptor property, String type, String separator)
 	{
-		return new SeparationDefinition(null, property, type, separator);
+		return new Separation(null, property, type, separator);
 	}
 
-	public static SeparationDefinition inBetween(SimplePropDescriptor property, String separator)
+	public static Separation inBetween(SimplePropDescriptor property, String separator)
 	{
-		return new SeparationDefinition(property, property, null, separator);
+		return new Separation(property, property, null, separator);
 	}
 
-	public static SeparationDefinition inBetween(SimplePropDescriptor property, String type, String separator)
+	public static Separation inBetween(SimplePropDescriptor property, String type, String separator)
 	{
-		return new SeparationDefinition(property, property, type, separator);
+		return new Separation(property, property, type, separator);
 	}
 
-	public static SeparationDefinition between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separator)
+	public static Separation between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String separator)
 	{
-		return new SeparationDefinition(firstProperty, secondProperty, null, separator);
+		return new Separation(firstProperty, secondProperty, null, separator);
 	}
 
-	public static SeparationDefinition between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type, String separator)
+	public static Separation between(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type, String separator)
 	{
-		return new SeparationDefinition(firstProperty, secondProperty, type, separator);
+		return new Separation(firstProperty, secondProperty, type, separator);
 	}
 
-	private SeparationDefinition(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type, String separator)
+	private Separation(SimplePropDescriptor firstProperty, SimplePropDescriptor secondProperty, String type, String separator)
 	{
 		this.firstProperty = firstProperty;
 		this.secondProperty = secondProperty;
@@ -148,7 +148,7 @@ public class SeparationDefinition
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(SeparationDefinition.class)
+		return MoreObjects.toStringHelper(Separation.class)
 				.omitNullValues()
 				.add("firstProperty", firstProperty)
 				.add("secondProperty", secondProperty)

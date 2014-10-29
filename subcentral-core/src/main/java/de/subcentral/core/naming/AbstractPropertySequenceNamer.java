@@ -1,47 +1,51 @@
 package de.subcentral.core.naming;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import de.subcentral.core.util.SeparationDefinition;
+import com.google.common.collect.ImmutableSet;
+
+import de.subcentral.core.util.Separation;
 
 public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 {
-	protected PropToStringService		propToStringService	= NamingStandards.getDefaultPropToStringService();
-	protected Set<SeparationDefinition>	separators			= new HashSet<>(0);
-	protected Function<String, String>	finalFormatter;
+	protected final PropToStringService			propToStringService;
+	protected final ImmutableSet<Separation>	separations;
+	protected final Function<String, String>	finalFormatter;
+
+	protected AbstractPropertySequenceNamer(PropToStringService propToStringService)
+	{
+		this(propToStringService, ImmutableSet.of(), null);
+	}
+
+	protected AbstractPropertySequenceNamer(PropToStringService propToStringService, Set<Separation> separations)
+	{
+		this(propToStringService, separations, null);
+	}
+
+	protected AbstractPropertySequenceNamer(PropToStringService propToStringService, Set<Separation> separations,
+			Function<String, String> finalFormatter)
+	{
+		this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
+		this.separations = ImmutableSet.copyOf(separations); // includes null check
+		this.finalFormatter = finalFormatter;
+	}
 
 	public PropToStringService getPropToStringService()
 	{
 		return propToStringService;
 	}
 
-	public void setPropToStringService(PropToStringService propToStringService)
+	public ImmutableSet<Separation> getSeparations()
 	{
-		this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
-	}
-
-	public Set<SeparationDefinition> getSeparators()
-	{
-		return separators;
-	}
-
-	public void setSeparators(Set<SeparationDefinition> separators)
-	{
-		this.separators = Objects.requireNonNull(separators, "separators");
+		return separations;
 	}
 
 	public Function<String, String> getFinalFormatter()
 	{
 		return finalFormatter;
-	}
-
-	public void setFinalFormatter(Function<String, String> finalFormatter)
-	{
-		this.finalFormatter = finalFormatter;
 	}
 
 	@Override
@@ -67,6 +71,6 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 
 	private PropSequenceNameBuilder builder()
 	{
-		return new PropSequenceNameBuilder(propToStringService, separators, finalFormatter);
+		return new PropSequenceNameBuilder(propToStringService, separations, finalFormatter);
 	}
 }

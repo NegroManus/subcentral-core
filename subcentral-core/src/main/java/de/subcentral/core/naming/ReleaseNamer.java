@@ -1,10 +1,12 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
-
-import org.jsoup.helper.Validate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.util.Separation;
 
 public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 {
@@ -13,17 +15,18 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	 */
 	public static final String	PARAM_USE_NAME_KEY	= "useName";
 
-	private NamingService		mediaNamingService	= NamingStandards.getDefaultNamingService();
+	private final NamingService	mediaNamingService;
+
+	protected ReleaseNamer(PropToStringService propToStringService, Set<Separation> separations, Function<String, String> finalFormatter,
+			NamingService mediaNamingService)
+	{
+		super(propToStringService, separations, finalFormatter);
+		this.mediaNamingService = Objects.requireNonNull(mediaNamingService, "mediaNamingService");
+	}
 
 	public NamingService getMediaNamingService()
 	{
 		return mediaNamingService;
-	}
-
-	public void setMediaNamingService(NamingService mediaNamingService)
-	{
-		Validate.notNull(mediaNamingService, "mediaNamingService cannot be null");
-		this.mediaNamingService = mediaNamingService;
 	}
 
 	@Override
