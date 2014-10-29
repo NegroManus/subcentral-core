@@ -137,7 +137,7 @@ public class NamingStandards
 	private static Function<String, String> initReleaseNameFormatter()
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
-		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-", "'´`", ".");
+		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-", "'´`", '.');
 		return pr.andThen(cr);
 	}
 

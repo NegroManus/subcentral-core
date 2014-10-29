@@ -28,21 +28,18 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 		// add series
 		if (includeSeries && epi.getSeries() != null)
 		{
-			b.append(Episode.PROP_SERIES, epi.getSeries().getName());
+			b.appendIfNotNull(Episode.PROP_SERIES, epi.getSeries().getName());
 		}
 
 		// add episode
 		if (epi.getDate() != null)
 		{
 			b.append(Episode.PROP_DATE, epi.getDate());
-			if (alwaysIncludeEpisodeTitle)
-			{
-				b.append(Episode.PROP_TITLE, epi.getTitle());
-			}
+			b.appendIf(Episode.PROP_TITLE, epi.getTitle(), alwaysIncludeEpisodeTitle && epi.isTitled());
 		}
 		else
 		{
-			b.append(Episode.PROP_TITLE, epi.getTitle());
+			b.appendIfNotNull(Episode.PROP_TITLE, epi.getTitle());
 		}
 	}
 }

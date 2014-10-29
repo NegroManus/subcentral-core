@@ -15,32 +15,32 @@ public class CharReplacer implements UnaryOperator<String>
 {
 	private final char[]								allowedChars;
 	private final char[]								charsToDelete;
-	private final String								defaultReplacement;
+	private final char									defaultReplacement;
 	private final ImmutableMap<Character, Character>	replacements;
 
-	public CharReplacer(String allowedChars, String charsToDelete, String defaultReplacement)
+	public CharReplacer(String allowedChars, String charsToDelete, char defaultReplacement)
 	{
 		this(allowedChars, charsToDelete, defaultReplacement, ImmutableMap.of());
 	}
 
-	public CharReplacer(String allowedChars, String charsToDelete, String defaultReplacement, Map<Character, Character> replacements)
+	public CharReplacer(String allowedChars, String charsToDelete, char defaultReplacement, Map<Character, Character> replacements)
 	{
 		this.allowedChars = Objects.requireNonNull(allowedChars, "allowedChars").toCharArray();
 		this.charsToDelete = Objects.requireNonNull(charsToDelete, "charsToDelete").toCharArray();
-		this.defaultReplacement = Objects.requireNonNull(defaultReplacement, "defaultReplacement");
+		this.defaultReplacement = defaultReplacement;
 		this.replacements = ImmutableMap.copyOf(replacements); // null check included
 	}
 
-	public CharReplacer(char[] allowedChars, char[] charsToDelete, String defaultReplacement)
+	public CharReplacer(char[] allowedChars, char[] charsToDelete, char defaultReplacement)
 	{
 		this(allowedChars, charsToDelete, defaultReplacement, ImmutableMap.of());
 	}
 
-	public CharReplacer(char[] allowedChars, char[] charsToDelete, String defaultReplacement, Map<Character, Character> replacements)
+	public CharReplacer(char[] allowedChars, char[] charsToDelete, char defaultReplacement, Map<Character, Character> replacements)
 	{
 		this.allowedChars = Objects.requireNonNull(allowedChars, "allowedChars").clone();
 		this.charsToDelete = Objects.requireNonNull(charsToDelete, "charsToDelete").clone();
-		this.defaultReplacement = Objects.requireNonNull(defaultReplacement, "defaultReplacement");
+		this.defaultReplacement = defaultReplacement;
 		this.replacements = ImmutableMap.copyOf(replacements); // null check included
 	}
 
@@ -54,7 +54,7 @@ public class CharReplacer implements UnaryOperator<String>
 		return charsToDelete.clone();
 	}
 
-	public String getDefaultReplacement()
+	public char getDefaultReplacement()
 	{
 		return defaultReplacement;
 	}
@@ -75,6 +75,11 @@ public class CharReplacer implements UnaryOperator<String>
 		StringBuilder dest = new StringBuilder(src.length);
 		for (char c : src)
 		{
+			if (c == defaultReplacement)
+			{
+				appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
+				continue;
+			}
 			if (ArrayUtils.contains(allowedChars, c))
 			{
 				dest.append(c);
@@ -87,7 +92,7 @@ public class CharReplacer implements UnaryOperator<String>
 			Character replacingChar = replacements.get(c);
 			if (replacingChar != null)
 			{
-				appendIfNeitherEmptyNorEndsWith(dest, replacingChar.toString());
+				dest.append(replacingChar.charValue());
 			}
 			else
 			{
@@ -99,7 +104,7 @@ public class CharReplacer implements UnaryOperator<String>
 		return dest.toString();
 	}
 
-	private static final void appendIfNeitherEmptyNorEndsWith(StringBuilder sb, String s)
+	private static final void appendIfNeitherEmptyNorEndsWith(StringBuilder sb, char s)
 	{
 		if (sb.length() > 0)
 		{

@@ -98,17 +98,17 @@ public class NamingTest
 	public void testSeasonedEpisodeNamingSeriesSeasonEpisode()
 	{
 		List<String> expectedNames = new ArrayList<>();
-		expectedNames.add("Psych Exx");
+		expectedNames.add("Psych");
 		expectedNames.add("Psych Pilot");
 		expectedNames.add("Psych E01");
 		expectedNames.add("Psych E01");
 		expectedNames.add("Psych E01 Pilot");
-		expectedNames.add("Psych Sxx Exx");
-		expectedNames.add("Psych Sxx Pilot");
-		expectedNames.add("Psych Sxx E01");
-		expectedNames.add("Psych Sxx E01");
-		expectedNames.add("Psych Sxx E01 Pilot");
-		expectedNames.add("Psych Webisodes Exx");
+		expectedNames.add("Psych");
+		expectedNames.add("Psych Pilot");
+		expectedNames.add("Psych E01");
+		expectedNames.add("Psych E01");
+		expectedNames.add("Psych E01 Pilot");
+		expectedNames.add("Psych Webisodes");
 		expectedNames.add("Psych Webisodes Pilot");
 		expectedNames.add("Psych Webisodes E01");
 		expectedNames.add("Psych Webisodes E01");
@@ -118,8 +118,8 @@ public class NamingTest
 		expectedNames.add("Psych S01E01");
 		expectedNames.add("Psych S01E01");
 		expectedNames.add("Psych S01E01 Pilot");
-		expectedNames.add("Psych S01 Exx");
-		expectedNames.add("Psych S01 Webisodes Exx");
+		expectedNames.add("Psych S01");
+		expectedNames.add("Psych S01 Webisodes");
 		expectedNames.add("Psych S01 Pilot");
 		expectedNames.add("Psych S01 Webisodes Pilot");
 		expectedNames.add("Psych S01E01");
