@@ -123,14 +123,14 @@ public class NamingStandards
 
 		// Add namers to the NamingService
 		List<ConditionalNamer<?>> namers = new ArrayList<>(8);
-		namers.add(ConditionalNamer.create(SUBTITLE_ADJUSTMENT_NAMER, SubtitleAdjustment.class));
-		namers.add(ConditionalNamer.create(RELEASE_NAMER, Release.class));
 		namers.add(ConditionalNamer.create(EPISODE_NAMER, Episode.class));
-		namers.add(ConditionalNamer.create(MULTI_EPISODE_NAMER, MultiEpisodeHelper::isMultiEpisode));
 		namers.add(ConditionalNamer.create(SERIES_NAMER, Series.class));
 		namers.add(ConditionalNamer.create(SEASON_NAMER, Season.class));
 		namers.add(ConditionalNamer.create(MEDIA_NAMER, Media.class));
+		namers.add(ConditionalNamer.create(SUBTITLE_ADJUSTMENT_NAMER, SubtitleAdjustment.class));
+		namers.add(ConditionalNamer.create(RELEASE_NAMER, Release.class));
 		namers.add(ConditionalNamer.create(SUBTITLE_NAMER, Subtitle.class));
+		namers.add(ConditionalNamer.create(MULTI_EPISODE_NAMER, MultiEpisodeHelper::isMultiEpisode));
 		NAMING_SERVICE.getNamers().addAll(namers);
 	}
 
