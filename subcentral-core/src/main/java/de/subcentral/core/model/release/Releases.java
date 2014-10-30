@@ -115,19 +115,14 @@ public class Releases
 		{
 			return ImmutableMap.of();
 		}
-		ImmutableMap.Builder<Release, Compatibility> allCompatibleRlss = ImmutableMap.builder();
+		Map<Release, Compatibility> allCompatibleRlss = new HashMap<>();
 		addCompatibleReleases(rls, compatibilities, existingReleases, allCompatibleRlss, new HashSet<>(4), rls);
-		return allCompatibleRlss.build();
+		return ImmutableMap.copyOf(allCompatibleRlss);
 	}
 
 	private static final void addCompatibleReleases(Release rls, Collection<Compatibility> compatibilities, Collection<Release> existingReleases,
-			ImmutableMap.Builder<Release, Compatibility> allCompatibleRlss, Set<Release> alreadyCheckedRlss, Release sourceRls)
+			Map<Release, Compatibility> allCompatibleRlss, Set<Release> alreadyCheckedRlss, Release sourceRls)
 	{
-		if (alreadyCheckedRlss.contains(rls))
-		{
-			// already checked the Release for compatibilities
-			return;
-		}
 		Map<Release, Compatibility> compatibleRlss = new HashMap<>(4);
 		for (Compatibility c : compatibilities)
 		{
@@ -160,11 +155,18 @@ public class Releases
 		// add the previously checked Release to the checked Releases
 		alreadyCheckedRlss.add(rls);
 		// add the previously found compatible Releases to the total list
-		allCompatibleRlss.putAll(compatibleRlss);
+		for (Map.Entry<Release, Compatibility> entry : compatibleRlss.entrySet())
+		{
+			allCompatibleRlss.putIfAbsent(entry.getKey(), entry.getValue());
+		}
 		// Check if any compatible Releases has compatibilities of its own
 		for (Release newCompatibleRls : compatibleRlss.keySet())
 		{
-			addCompatibleReleases(newCompatibleRls, compatibilities, existingReleases, allCompatibleRlss, alreadyCheckedRlss, sourceRls);
+			if (!alreadyCheckedRlss.contains(newCompatibleRls))
+			{
+				// skip if already checked for compatibilities for this Release
+				addCompatibleReleases(newCompatibleRls, compatibilities, existingReleases, allCompatibleRlss, alreadyCheckedRlss, sourceRls);
+			}
 		}
 	}
 

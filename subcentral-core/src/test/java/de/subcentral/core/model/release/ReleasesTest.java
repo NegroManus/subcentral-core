@@ -49,6 +49,7 @@ public class ReleasesTest
 		Set<Release> expectedCompatibleRlss = new HashSet<>();
 		expectedCompatibleRlss.add(existingRlss.get(1)); // DIMENSION
 		expectedCompatibleRlss.add(Release.create(epi, "AFG", "HDTV", "XviD")); // AFG
+		compatibleRlss.entrySet().forEach(e -> System.out.println(e));
 		assertEquals(expectedCompatibleRlss, compatibleRlss.keySet());
 	}
 }
