@@ -97,15 +97,21 @@ public class ParsingPlayground
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
 		List<Compatibility> compatibilities = new ArrayList<>();
-		compatibilities.add(new Compatibility(null, new Group("LOL"), Tag.list("HDTV", "x264"), new Group("DIMENSION"), Tag.list("720p",
+		compatibilities.add(new Compatibility(new Group("LOL"),
+				Tag.list("HDTV", "x264"),
+				new Group("DIMENSION"),
+				Tag.list("720p", "HDTV", "x264"),
+				Scope.IF_EXISTS,
+				true));
+		compatibilities.add(new Compatibility(new Group("EXCELLENCE"), Tag.list("HDTV", "x264"), new Group("REMARKABLE"), Tag.list("720p",
 				"HDTV",
 				"x264"), Scope.IF_EXISTS, true));
-		compatibilities.add(new Compatibility(null, new Group("EXCELLENCE"), Tag.list("HDTV", "x264"), new Group("REMARKABLE"), Tag.list("720p",
-				"HDTV",
-				"x264"), Scope.IF_EXISTS, true));
-		compatibilities.add(new Compatibility(null, new Group("ASAP"), Tag.list("HDTV", "x264"), new Group("IMMERSE"), Tag.list("720p",
-				"HDTV",
-				"x264"), Scope.IF_EXISTS, true));
+		compatibilities.add(new Compatibility(new Group("ASAP"),
+				Tag.list("HDTV", "x264"),
+				new Group("IMMERSE"),
+				Tag.list("720p", "HDTV", "x264"),
+				Scope.IF_EXISTS,
+				true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);

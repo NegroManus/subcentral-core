@@ -1,9 +1,12 @@
 package de.subcentral.core.model.release;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -112,8 +115,20 @@ public class Releases
 		{
 			return ImmutableMap.of();
 		}
+		ImmutableMap.Builder<Release, Compatibility> allCompatibleRlss = ImmutableMap.builder();
+		addCompatibleReleases(rls, compatibilities, existingReleases, allCompatibleRlss, new HashSet<>(4), rls);
+		return allCompatibleRlss.build();
+	}
 
-		ImmutableMap.Builder<Release, Compatibility> compatibleRlss = ImmutableMap.builder();
+	private static final void addCompatibleReleases(Release rls, Collection<Compatibility> compatibilities, Collection<Release> existingReleases,
+			ImmutableMap.Builder<Release, Compatibility> allCompatibleRlss, Set<Release> alreadyCheckedRlss, Release sourceRls)
+	{
+		if (alreadyCheckedRlss.contains(rls))
+		{
+			// already checked the Release for compatibilities
+			return;
+		}
+		Map<Release, Compatibility> compatibleRlss = new HashMap<>(4);
 		for (Compatibility c : compatibilities)
 		{
 			MatchDirection md = c.match(rls);
@@ -126,7 +141,7 @@ public class Releases
 				case IF_EXISTS:
 					for (Release existingRls : existingReleases)
 					{
-						if (c.matchesCompatible(existingRls, md))
+						if (c.matchesCompatible(existingRls, md) && !sourceRls.equals(existingRls))
 						{
 							compatibleRlss.put(existingRls, c);
 						}
@@ -134,11 +149,23 @@ public class Releases
 					break;
 				case ALWAYS:
 					Release compatibleRls = buildCompatible(rls, c, md);
-					compatibleRlss.put(compatibleRls, c);
+					if (!sourceRls.equals(compatibleRls))
+					{
+						compatibleRlss.put(compatibleRls, c);
+					}
 					break;
 			}
 		}
-		return compatibleRlss.build();
+
+		// add the previously checked Release to the checked Releases
+		alreadyCheckedRlss.add(rls);
+		// add the previously found compatible Releases to the total list
+		allCompatibleRlss.putAll(compatibleRlss);
+		// Check if any compatible Releases has compatibilities of its own
+		for (Release newCompatibleRls : compatibleRlss.keySet())
+		{
+			addCompatibleReleases(newCompatibleRls, compatibilities, existingReleases, allCompatibleRlss, alreadyCheckedRlss, sourceRls);
+		}
 	}
 
 	private static final Release buildCompatible(Release sourceRls, Compatibility c, MatchDirection md)
