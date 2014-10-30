@@ -153,8 +153,10 @@ public class Releases
 		}
 
 		// add the previously checked Release to the checked Releases
+		// so they are not checked again
 		alreadyCheckedRlss.add(rls);
 		// add the previously found compatible Releases to the total list
+		// but just if they were not found before (not overriding entries)
 		for (Map.Entry<Release, Compatibility> entry : compatibleRlss.entrySet())
 		{
 			allCompatibleRlss.putIfAbsent(entry.getKey(), entry.getValue());
@@ -164,7 +166,7 @@ public class Releases
 		{
 			if (!alreadyCheckedRlss.contains(newCompatibleRls))
 			{
-				// skip if already checked for compatibilities for this Release
+				// skip if already checked for compatibilities of newCompatibleRls
 				addCompatibleReleases(newCompatibleRls, compatibilities, existingReleases, allCompatibleRlss, alreadyCheckedRlss, sourceRls);
 			}
 		}
