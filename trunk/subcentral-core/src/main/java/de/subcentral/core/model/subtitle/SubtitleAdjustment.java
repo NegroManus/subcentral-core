@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -284,10 +283,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			SubtitleAdjustment o = (SubtitleAdjustment) obj;
-			if (name != null && o.name != null)
-			{
-				return name.equalsIgnoreCase(o.name);
-			}
 			return new EqualsBuilder().append(subtitles, o.subtitles).append(matchingReleases, o.matchingReleases).isEquals();
 		}
 		return false;
@@ -296,10 +291,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	@Override
 	public int hashCode()
 	{
-		if (name != null)
-		{
-			return new HashCodeBuilder(33, 55).append(name.toLowerCase(Locale.getDefault())).toHashCode();
-		}
 		return new HashCodeBuilder(33, 51).append(subtitles).append(matchingReleases).toHashCode();
 	}
 
@@ -310,10 +301,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		if (o == null)
 		{
 			return 1;
-		}
-		if (name != null && o.name != null)
-		{
-			return Settings.STRING_ORDERING.compare(name, name);
 		}
 		return ComparisonChain.start()
 				.compare(subtitles, o.subtitles, ListComparator.<Subtitle> create())
