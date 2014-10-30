@@ -14,7 +14,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.Settings;
 import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Contributor;
 import de.subcentral.core.model.Models;
@@ -25,7 +24,7 @@ import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.util.ListComparator;
+import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
@@ -303,8 +302,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(subtitles, o.subtitles, ListComparator.<Subtitle> create())
-				.compare(getFirstMatchingRelease(), o.getFirstMatchingRelease(), Settings.createDefaultOrdering())
+				.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
+				.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
 				.result();
 	}
 

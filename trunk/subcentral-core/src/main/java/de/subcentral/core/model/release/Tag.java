@@ -9,31 +9,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.util.ListComparator;
+import de.subcentral.core.util.IterableComparator;
 
 public class Tag implements Comparable<Tag>
 {
-	public static final Comparator<List<Tag>>	TAGS_COMPARATOR		= ListComparator.create();
+	public static final Comparator<Iterable<Tag>>	TAGS_COMPARATOR		= IterableComparator.create();
 
 	/**
 	 * Tags describing the source. Like HDTV, BluRay, BDRip, DVDRip, ...
 	 */
-	public static final String					CATEGORY_SOURCE		= "SOURCE";
+	public static final String						CATEGORY_SOURCE		= "SOURCE";
 
 	/**
 	 * Tags describing the format. Like x264, XviD, DD5.1, AC3, 720p, 1080p, (subtitle tags), ... Not including the language tags.
 	 */
-	public static final String					CATEGORY_FORMAT		= "FORMAT";
+	public static final String						CATEGORY_FORMAT		= "FORMAT";
 
 	/**
 	 * Language tags. Like German, GERMAN.CUSTOM.SUBBED, NLSUBBED, ...
 	 */
-	public static final String					CATEGORY_LANGUAGE	= "LANGUAGE";
+	public static final String						CATEGORY_LANGUAGE	= "LANGUAGE";
 
 	/**
 	 * Tags for meta information about the release itself. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
 	 */
-	public static final String					CATEGORY_META		= "META";
+	public static final String						CATEGORY_META		= "META";
 
 	public static List<Tag> list(Collection<String> tags)
 	{

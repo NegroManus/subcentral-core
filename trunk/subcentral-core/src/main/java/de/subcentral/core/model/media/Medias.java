@@ -2,15 +2,14 @@ package de.subcentral.core.model.media;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.List;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.util.ListComparator;
+import de.subcentral.core.util.IterableComparator;
 
 public class Medias
 {
-	public static final Comparator<Media>		MEDIA_NAME_COMPARATOR		= new MediaNameComparator();
-	public static final Comparator<List<Media>>	MEDIA_LIST_NAME_COMPARATOR	= ListComparator.create(Medias.MEDIA_NAME_COMPARATOR);
+	public static final Comparator<Media>			MEDIA_NAME_COMPARATOR			= new MediaNameComparator();
+	public static final Comparator<Iterable<Media>>	MEDIA_ITERABLE_NAME_COMPARATOR	= IterableComparator.create(Medias.MEDIA_NAME_COMPARATOR);
 
 	private static final class MediaNameComparator implements Comparator<Media>, Serializable
 	{
