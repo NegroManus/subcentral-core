@@ -9,12 +9,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class ListComparatorTest
+public class IterableComparatorTest
 {
 	@Test
-	public void testListComparator()
+	public void testIterableComparator()
 	{
-		Comparator<List<Integer>> c = ListComparator.create();
+		Comparator<Iterable<Integer>> c = IterableComparator.create();
 
 		List<Integer> list1 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6 });
 		List<Integer> list2 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6, 7 });
@@ -22,6 +22,10 @@ public class ListComparatorTest
 
 		list1 = Arrays.asList(new Integer[] { 1, 2, 4, 4, 5, 6 });
 		list2 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6 });
+		assertTrue(c.compare(list1, list2) > 0);
+
+		list1 = Arrays.asList(new Integer[] { 1 });
+		list2 = new ArrayList<>(0);
 		assertTrue(c.compare(list1, list2) > 0);
 
 		list1 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6 });

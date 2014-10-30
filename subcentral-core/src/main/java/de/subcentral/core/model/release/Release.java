@@ -419,7 +419,7 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * Two releases are compared first by their name. If both names are {@code null}, by their media, then by by their tags and then their groups.
+	 * Two releases are compared by their media, then by by their tags and then their groups.
 	 */
 	@Override
 	public int compareTo(Release o)
@@ -430,7 +430,7 @@ public class Release implements Comparable<Release>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Medias.MEDIA_LIST_NAME_COMPARATOR)
+				.compare(media, o.media, Medias.MEDIA_ITERABLE_NAME_COMPARATOR)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group, Settings.createDefaultOrdering())
 				.result();
