@@ -62,7 +62,7 @@ public class ConditionalNamingService implements NamingService
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Namer<? super T> getNamer(T candidate)
+	public <T> Namer<? super T> getNamer(T candidate) throws ClassCastException
 	{
 		if (candidate == null)
 		{
