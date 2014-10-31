@@ -1,5 +1,6 @@
 package de.subcentral.core.naming;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,26 +29,16 @@ public class ClassBasedNamingService implements NamingService
 		return domain;
 	}
 
-	public Map<Class<?>, Namer<?>> getNamers()
+	@SuppressWarnings("unchecked")
+	public <T> Namer<? super T> registerNamer(Class<T> type, Namer<? super T> namer)
 	{
-		return namers;
+		return (Namer<? super T>) namers.put(type, namer);
 	}
 
-	@Override
-	public String getDefaultSeparator()
+	@SuppressWarnings("unchecked")
+	public <T> Namer<? super T> unregisterNamer(Class<T> type)
 	{
-		return defaultSeparator.get();
-	}
-
-	public void setDefaultSeparator(String defaultSeparator)
-	{
-		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator));
-	}
-
-	@Override
-	public boolean canName(Object candidate)
-	{
-		return candidate != null && getNamer(candidate.getClass()) != null;
+		return (Namer<? super T>) namers.remove(type);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -72,6 +63,28 @@ public class ClassBasedNamingService implements NamingService
 			}
 		}
 		return null;
+	}
+
+	public Map<Class<?>, Namer<?>> getNamers()
+	{
+		return Collections.unmodifiableMap(namers);
+	}
+
+	@Override
+	public String getDefaultSeparator()
+	{
+		return defaultSeparator.get();
+	}
+
+	public void setDefaultSeparator(String defaultSeparator)
+	{
+		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator));
+	}
+
+	@Override
+	public boolean canName(Object candidate)
+	{
+		return candidate != null && getNamer(candidate.getClass()) != null;
 	}
 
 	/**
