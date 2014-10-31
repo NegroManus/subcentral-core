@@ -156,7 +156,7 @@ public class Releases
 		// so they are not checked again
 		alreadyCheckedRlss.add(rls);
 		// add the previously found compatible Releases to the total list
-		// but just if they were not found before (not overriding entries)
+		// but just if they were not found before (putIfAbsent(): not overriding entries)
 		for (Map.Entry<Release, Compatibility> entry : compatibleRlss.entrySet())
 		{
 			allCompatibleRlss.putIfAbsent(entry.getKey(), entry.getValue());
@@ -164,9 +164,10 @@ public class Releases
 		// Check if any compatible Releases has compatibilities of its own
 		for (Release newCompatibleRls : compatibleRlss.keySet())
 		{
+			// skip if already checked for compatibilities of newCompatibleRls
+			// For example: If LOL -> DIM, DIM -> LOL. Then don't check for LOL compatibilities again (would only bring up DIM again).
 			if (!alreadyCheckedRlss.contains(newCompatibleRls))
 			{
-				// skip if already checked for compatibilities of newCompatibleRls
 				addCompatibleReleases(newCompatibleRls, compatibilities, existingReleases, allCompatibleRlss, alreadyCheckedRlss, sourceRls);
 			}
 		}
