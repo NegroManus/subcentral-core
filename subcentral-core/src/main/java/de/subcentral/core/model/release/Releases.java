@@ -82,6 +82,7 @@ public class Releases
 		while (iter.hasNext())
 		{
 			Tag tag = iter.next();
+			// X264 -> x264
 			if ("X264".equals(tag.getName()))
 			{
 				iter.set(new Tag("x264"));
@@ -89,7 +90,7 @@ public class Releases
 			else if (lastTag != null)
 			{
 				// DD5, 1 -> DD5.1
-				if ("1".equals(tag.getName()) && "DD5".equals(lastTag.getName()))
+				if ("DD5".equals(lastTag.getName()) && "1".equals(tag.getName()))
 				{
 					iter.remove();
 					iter.previous();
@@ -97,11 +98,18 @@ public class Releases
 
 				}
 				// H, 264 -> H.264
-				else if ("264".equals(tag.getName()) && "H".equals(lastTag.getName()))
+				else if ("H".equals(lastTag.getName()) && "264".equals(tag.getName()))
 				{
 					iter.remove();
 					iter.previous();
 					iter.set(new Tag("H.264"));
+				}
+				// WEB, DL -> WEB-DL
+				else if ("WEB".equals(lastTag.getName()) && "DL".equals(tag.getName()))
+				{
+					iter.remove();
+					iter.previous();
+					iter.set(new Tag("WEB-DL"));
 				}
 			}
 			lastTag = tag;
@@ -111,11 +119,12 @@ public class Releases
 	public static Map<Release, Compatibility> findCompatibleReleases(Release rls, Collection<Compatibility> compatibilities,
 			Collection<Release> existingReleases)
 	{
-		if (rls == null || compatibilities.isEmpty())
+		if (rls == null)
 		{
 			return ImmutableMap.of();
 		}
 		Map<Release, Compatibility> allCompatibleRlss = new HashMap<>();
+
 		addCompatibleReleases(rls, compatibilities, existingReleases, allCompatibleRlss, new HashSet<>(4), rls);
 		return ImmutableMap.copyOf(allCompatibleRlss);
 	}
