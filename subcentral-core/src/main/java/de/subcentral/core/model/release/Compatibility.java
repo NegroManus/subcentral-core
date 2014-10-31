@@ -12,7 +12,7 @@ public class Compatibility
 {
 	public static enum Scope
 	{
-		ALWAYS, IF_EXISTS;
+		IF_EXISTS, ALWAYS;
 	}
 
 	public static enum MatchDirection
@@ -27,15 +27,20 @@ public class Compatibility
 	private final Scope		scope;
 	private final boolean	bidirectional;
 
+	public Compatibility(Group sourceGroup, Group compatibleGroup, Scope scope, boolean bidirectional)
+	{
+		this(sourceGroup, null, compatibleGroup, null, scope, bidirectional);
+	}
+
 	public Compatibility(Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup, List<Tag> compatibleTags, Scope scope, boolean bidirectional)
 	{
 		if (sourceGroup == null && sourceTags == null)
 		{
-			throw new IllegalArgumentException("Either sourceGroup or sourceTags must not be null");
+			throw new IllegalArgumentException("either sourceGroup or sourceTags must be non-null");
 		}
 		if (compatibleGroup == null && compatibleTags == null)
 		{
-			throw new IllegalArgumentException("Either compatibleGroup or compatibleTags must not be null");
+			throw new IllegalArgumentException("either compatibleGroup or compatibleTags must be non-null");
 		}
 		this.sourceGroup = sourceGroup;
 		this.sourceTags = sourceTags;
@@ -93,13 +98,13 @@ public class Compatibility
 		return MatchDirection.NONE;
 	}
 
-	public boolean matchesCompatible(Release compatibleRls, MatchDirection applicability)
+	public boolean matchesCompatible(Release compatibleRls, MatchDirection matchDirection)
 	{
 		if (compatibleRls == null)
 		{
 			return false;
 		}
-		switch (applicability)
+		switch (matchDirection)
 		{
 			case FORWARD:
 				return (compatibleGroup == null || compatibleGroup.equals(compatibleRls.getGroup()))

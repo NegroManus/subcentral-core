@@ -32,12 +32,7 @@ public class ReleasesTest
 		Release sourceRls = Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264");
 
 		Set<Compatibility> compatibilities = new HashSet<>(2);
-		compatibilities.add(new Compatibility(new Group("LOL"),
-				Tag.list("HDTV", "x264"),
-				new Group("DIMENSION"),
-				Tag.list("720p", "HDTV", "x264"),
-				Scope.IF_EXISTS,
-				true));
+		compatibilities.add(new Compatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
 		compatibilities.add(new Compatibility(null, Tag.list("720p", "HDTV", "x264"), new Group("AFG"), Tag.list("HDTV", "XviD"), Scope.ALWAYS, false));
 
 		List<Release> existingRlss = new ArrayList<>(3);
