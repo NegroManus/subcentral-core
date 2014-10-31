@@ -25,7 +25,6 @@ import de.subcentral.core.model.release.Compatibility.Scope;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
-import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.model.subtitle.Subtitles;
@@ -97,21 +96,9 @@ public class ParsingPlayground
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
 		List<Compatibility> compatibilities = new ArrayList<>();
-		compatibilities.add(new Compatibility(new Group("LOL"),
-				Tag.list("HDTV", "x264"),
-				new Group("DIMENSION"),
-				Tag.list("720p", "HDTV", "x264"),
-				Scope.IF_EXISTS,
-				true));
-		compatibilities.add(new Compatibility(new Group("EXCELLENCE"), Tag.list("HDTV", "x264"), new Group("REMARKABLE"), Tag.list("720p",
-				"HDTV",
-				"x264"), Scope.IF_EXISTS, true));
-		compatibilities.add(new Compatibility(new Group("ASAP"),
-				Tag.list("HDTV", "x264"),
-				new Group("IMMERSE"),
-				Tag.list("720p", "HDTV", "x264"),
-				Scope.IF_EXISTS,
-				true));
+		compatibilities.add(new Compatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
+		compatibilities.add(new Compatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
+		compatibilities.add(new Compatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
@@ -235,5 +222,4 @@ public class ParsingPlayground
 		}
 		TimeUtil.printDurationMillis("total", totalStart);
 	}
-
 }
