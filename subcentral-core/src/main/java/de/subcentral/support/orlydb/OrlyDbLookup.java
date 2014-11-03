@@ -1,4 +1,4 @@
-package de.subcentralsupport.orlydb;
+package de.subcentral.support.orlydb;
 
 import java.net.MalformedURLException;
 import java.net.URL;
