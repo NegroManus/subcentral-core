@@ -34,6 +34,7 @@ import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7ed.Addic7ed;
+import de.subcentral.support.orlydb.OrlyDbLookup;
 import de.subcentral.support.scene.Scene;
 import de.subcentral.support.subcentral.SubCentral;
 import de.subcentral.support.winrar.WinRar;
@@ -42,7 +43,6 @@ import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
-import de.subcentralsupport.orlydb.OrlyDbLookup;
 
 public class ParsingPlayground
 {
