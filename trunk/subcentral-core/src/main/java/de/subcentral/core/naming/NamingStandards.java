@@ -53,6 +53,7 @@ public class NamingStandards
 		// Configure namers
 
 		// PropToStringService
+		Function<Object, String> toEmptyString = o -> "";
 		Function<Integer, String> seasonNumToString = n -> String.format("S%02d", n);
 		Function<Integer, String> epiNumToString = n -> String.format("E%02d", n);
 
@@ -68,6 +69,9 @@ public class NamingStandards
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, seasonNumToString);
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, epiNumToString);
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, epiNumToString);
+		// do not mention the Subtitle's /Release's source in the name
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Release.PROP_SOURCE, toEmptyString);
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_SOURCE, toEmptyString);
 
 		// DatedEpisodeNamer
 		DATED_EPISODE_NAMER = new DatedEpisodeNamer(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, ImmutableSet.of(), null);
