@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 
-public class CrossGroupCompatibility implements Compatibility
+public class GroupsCompatibility implements Compatibility
 {
 	public static enum Scope
 	{
@@ -31,12 +31,12 @@ public class CrossGroupCompatibility implements Compatibility
 	private final Scope		scope;
 	private final boolean	bidirectional;
 
-	public CrossGroupCompatibility(Group sourceGroup, Group compatibleGroup, Scope scope, boolean bidirectional)
+	public GroupsCompatibility(Group sourceGroup, Group compatibleGroup, Scope scope, boolean bidirectional)
 	{
 		this(sourceGroup, null, compatibleGroup, null, scope, bidirectional);
 	}
 
-	public CrossGroupCompatibility(Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup, List<Tag> compatibleTags, Scope scope,
+	public GroupsCompatibility(Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup, List<Tag> compatibleTags, Scope scope,
 			boolean bidirectional)
 	{
 		if (sourceGroup == null && sourceTags == null)
@@ -115,53 +115,6 @@ public class CrossGroupCompatibility implements Compatibility
 		return ImmutableSet.of();
 	}
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj != null && getClass().equals(obj.getClass()))
-		{
-			CrossGroupCompatibility o = (CrossGroupCompatibility) obj;
-			return new EqualsBuilder().append(sourceGroup, o.sourceGroup)
-					.append(sourceTags, o.sourceTags)
-					.append(compatibleGroup, o.compatibleGroup)
-					.append(compatibleTags, o.compatibleTags)
-					.append(scope, o.scope)
-					.append(bidirectional, o.bidirectional)
-					.isEquals();
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(13, 67).append(sourceGroup)
-				.append(sourceTags)
-				.append(compatibleGroup)
-				.append(compatibleTags)
-				.append(scope)
-				.append(bidirectional)
-				.toHashCode();
-	}
-
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(CrossGroupCompatibility.class)
-				.omitNullValues()
-				.add("sourceGroup", sourceGroup)
-				.add("sourceTags", sourceTags)
-				.add("compatibleGroup", compatibleGroup)
-				.add("compatibleTags", compatibleTags)
-				.add("scope", scope)
-				.add("bidirectional", bidirectional)
-				.toString();
-	}
-
 	private MatchDirection match(Release rls)
 	{
 		if ((sourceGroup == null || sourceGroup.equals(rls.getGroup())) && (sourceTags == null || sourceTags.equals(rls.getTags())))
@@ -215,5 +168,52 @@ public class CrossGroupCompatibility implements Compatibility
 				break;
 		}
 		return compatibleRls;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj != null && getClass().equals(obj.getClass()))
+		{
+			GroupsCompatibility o = (GroupsCompatibility) obj;
+			return new EqualsBuilder().append(sourceGroup, o.sourceGroup)
+					.append(sourceTags, o.sourceTags)
+					.append(compatibleGroup, o.compatibleGroup)
+					.append(compatibleTags, o.compatibleTags)
+					.append(scope, o.scope)
+					.append(bidirectional, o.bidirectional)
+					.isEquals();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(13, 67).append(sourceGroup)
+				.append(sourceTags)
+				.append(compatibleGroup)
+				.append(compatibleTags)
+				.append(scope)
+				.append(bidirectional)
+				.toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(GroupsCompatibility.class)
+				.omitNullValues()
+				.add("sourceGroup", sourceGroup)
+				.add("sourceTags", sourceTags)
+				.add("compatibleGroup", compatibleGroup)
+				.add("compatibleTags", compatibleTags)
+				.add("scope", scope)
+				.add("bidirectional", bidirectional)
+				.toString();
 	}
 }

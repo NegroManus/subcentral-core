@@ -11,7 +11,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.release.CrossGroupCompatibility.Scope;
+import de.subcentral.core.model.release.GroupsCompatibility.Scope;
 
 public class CompatibilityServiceTest
 {
@@ -23,8 +23,8 @@ public class CompatibilityServiceTest
 
 		CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(SameGroupCompatibility.getInstance());
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
-		compService.getCompatibilities().add(new CrossGroupCompatibility(null, Tag.list("720p", "HDTV", "x264"), new Group("AFG"), Tag.list("HDTV",
+		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
+		compService.getCompatibilities().add(new GroupsCompatibility(null, Tag.list("720p", "HDTV", "x264"), new Group("AFG"), Tag.list("HDTV",
 				"XviD"), Scope.ALWAYS, false));
 
 		List<Release> existingRlss = new ArrayList<>(4);
