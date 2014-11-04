@@ -93,24 +93,29 @@ public class GroupsCompatibility implements Compatibility
 			return ImmutableSet.of();
 		}
 		MatchDirection md = match(rls);
-		if (MatchDirection.NONE != md)
+		if (MatchDirection.NONE == md)
 		{
-			switch (getScope())
-			{
-				case IF_EXISTS:
-					Set<Release> compatibles = new HashSet<>(2);
-					for (Release existingRls : existingRlss)
+			return ImmutableSet.of();
+		}
+		switch (getScope())
+		{
+			case IF_EXISTS:
+				Set<Release> compatibles = new HashSet<>(4);
+				for (Release existingRls : existingRlss)
+				{
+					if (matchesCompatible(existingRls, md) && !rls.equals(existingRls))
 					{
-						if (matchesCompatible(existingRls, md) && !rls.equals(existingRls))
-						{
-							compatibles.add(existingRls);
-						}
+						compatibles.add(existingRls);
 					}
-					return compatibles;
-				case ALWAYS:
-					Release compatibleRls = buildCompatible(rls, md);
+				}
+				return compatibles;
+			case ALWAYS:
+				Release compatibleRls = buildCompatible(rls, md);
+				if (!rls.equals(compatibleRls))
+				{
 					return ImmutableSet.of(compatibleRls);
-			}
+				}
+				break;
 		}
 		return ImmutableSet.of();
 	}
