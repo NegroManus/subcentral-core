@@ -26,52 +26,52 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
 {
-	public static final SimplePropDescriptor	PROP_MEDIA					= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA);
-	public static final SimplePropDescriptor	PROP_LANGUAGE				= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
-	public static final SimplePropDescriptor	PROP_HEARING_IMPAIRED		= new SimplePropDescriptor(Subtitle.class, PropNames.HEARING_IMPAIRED);
-	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS			= new SimplePropDescriptor(Subtitle.class, PropNames.FOREIGN_PARTS);
-	public static final SimplePropDescriptor	PROP_TAGS					= new SimplePropDescriptor(Subtitle.class, PropNames.TAGS);
-	public static final SimplePropDescriptor	PROP_GROUP					= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
-	public static final SimplePropDescriptor	PROP_VERSION				= new SimplePropDescriptor(Subtitle.class, PropNames.VERSION);
-	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE		= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
-	public static final SimplePropDescriptor	PROP_BASIS					= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
-	public static final SimplePropDescriptor	PROP_INFO					= new SimplePropDescriptor(Subtitle.class, PropNames.INFO);
-	public static final SimplePropDescriptor	PROP_INFO_URL				= new SimplePropDescriptor(Subtitle.class, PropNames.INFO_URL);
-	public static final SimplePropDescriptor	PROP_SOURCE					= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
-	public static final SimplePropDescriptor	PROP_SOURCE_URL				= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE_URL);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_MEDIA						= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA);
+	public static final SimplePropDescriptor	PROP_LANGUAGE					= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
+	public static final SimplePropDescriptor	PROP_HEARING_IMPAIRED			= new SimplePropDescriptor(Subtitle.class, PropNames.HEARING_IMPAIRED);
+	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS				= new SimplePropDescriptor(Subtitle.class, PropNames.FOREIGN_PARTS);
+	public static final SimplePropDescriptor	PROP_TAGS						= new SimplePropDescriptor(Subtitle.class, PropNames.TAGS);
+	public static final SimplePropDescriptor	PROP_GROUP						= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_VERSION					= new SimplePropDescriptor(Subtitle.class, PropNames.VERSION);
+	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE			= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
+	public static final SimplePropDescriptor	PROP_BASIS						= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
+	public static final SimplePropDescriptor	PROP_INFO						= new SimplePropDescriptor(Subtitle.class, PropNames.INFO);
+	public static final SimplePropDescriptor	PROP_INFO_URL					= new SimplePropDescriptor(Subtitle.class, PropNames.INFO_URL);
+	public static final SimplePropDescriptor	PROP_SOURCE						= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
+	public static final SimplePropDescriptor	PROP_SOURCE_URL					= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE_URL);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
 
-	public static final Tag						TAG_HEARING_IMPAIRED		= new Tag("HI", "Hearing Impaired");
+	public static final Tag						TAG_HEARING_IMPAIRED			= new Tag("HI", "Hearing Impaired");
 
 	/**
 	 * If a transcript was the source of the subtitle.
 	 */
-	public static final String					PRODUCTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
+	public static final String					PRODUCTION_TYPE_TRANSCRIPT		= "TRANSCRIPT";
 
 	/**
 	 * If the subtitles was created by hearing what is said.
 	 */
-	public static final String					PRODUCTION_TYPE_LISTENING	= "LISTENING";
+	public static final String					PRODUCTION_TYPE_LISTENING		= "LISTENING";
 
 	/**
 	 * If the subtitle was ripped from a retail source (DVD, BluRay, CD, etc).
 	 */
-	public static final String					PRODUCTION_TYPE_RETAIL		= "RETAIL";
+	public static final String					PRODUCTION_TYPE_RETAIL			= "RETAIL";
 
 	/**
-	 * If the subtitle is an improvement or modification / customization of another subtitle.
+	 * If the subtitle is an modification (improvement or customization) of another subtitle.
 	 */
-	public static final String					PRODUCTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
+	public static final String					PRODUCTION_TYPE_MODIFICATION	= "MODIFICATION";
 
 	/**
 	 * If the subtitle is a translation of another subtitle.
 	 */
-	public static final String					PRODUCTION_TYPE_TRANSLATION	= "TRANSLATION";
+	public static final String					PRODUCTION_TYPE_TRANSLATION		= "TRANSLATION";
 
 	/**
-	 * If the subtitle was produced automatically by a machine.
+	 * If the subtitle was produced automatically by a machine. For example by speech-to-text or translation software.
 	 */
-	public static final String					PRODUCTION_TYPE_MACHINE		= "MACHINE";
+	public static final String					PRODUCTION_TYPE_MACHINE			= "MACHINE";
 
 	public static enum TranslationType
 	{
