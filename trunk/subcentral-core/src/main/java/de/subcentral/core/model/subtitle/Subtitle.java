@@ -136,8 +136,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private String						infoUrl;
 	private String						source;
 	private String						sourceUrl;
-	// More than 5 contributions per subtitle is very rare
-	private final List<Contribution>	contributions					= new ArrayList<>(5);
+	// More than 4 contributions per subtitle is very rare
+	private final List<Contribution>	contributions					= new ArrayList<>(4);
 	private Subtitle					basis;
 
 	public Subtitle()
