@@ -21,10 +21,13 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Compatibility;
-import de.subcentral.core.model.release.Compatibility.Scope;
+import de.subcentral.core.model.release.CompatibilityService;
+import de.subcentral.core.model.release.CrossGroupCompatibility;
+import de.subcentral.core.model.release.CrossGroupCompatibility.Scope;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.release.SameGroupCompatibility;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.model.subtitle.Subtitles;
@@ -95,10 +98,11 @@ public class ParsingPlayground
 		final Lookup<Release, ?> lookup = new OrlyDbLookup();
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
-		List<Compatibility> compatibilities = new ArrayList<>();
-		compatibilities.add(new Compatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
-		compatibilities.add(new Compatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
-		compatibilities.add(new Compatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
+		CompatibilityService compService = new CompatibilityService();
+		compService.getCompatibilities().add(SameGroupCompatibility.getInstance());
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
@@ -163,7 +167,7 @@ public class ParsingPlayground
 							Map<Release, Compatibility> compatibleRlss = new HashMap<>();
 							for (Release rls : filteredReleases)
 							{
-								Map<Release, Compatibility> rlss = Releases.findCompatibleReleases(rls, compatibilities, releases);
+								Map<Release, Compatibility> rlss = compService.findCompatibles(rls, releases);
 								compatibleRlss.putAll(rlss);
 							}
 							TimeUtil.printDurationMillis("Build compatibilities", start);
