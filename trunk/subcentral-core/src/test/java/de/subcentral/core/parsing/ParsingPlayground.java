@@ -22,8 +22,8 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.lookup.Lookup;
 import de.subcentral.core.model.release.Compatibility;
 import de.subcentral.core.model.release.CompatibilityService;
-import de.subcentral.core.model.release.CrossGroupCompatibility;
-import de.subcentral.core.model.release.CrossGroupCompatibility.Scope;
+import de.subcentral.core.model.release.GroupsCompatibility;
+import de.subcentral.core.model.release.GroupsCompatibility.Scope;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
@@ -100,9 +100,9 @@ public class ParsingPlayground
 
 		CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(SameGroupCompatibility.getInstance());
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
+		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
+		compService.getCompatibilities().add(new GroupsCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
+		compService.getCompatibilities().add(new GroupsCompatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
