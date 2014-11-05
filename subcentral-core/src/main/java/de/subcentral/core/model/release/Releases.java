@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.standardizing.StandardizingChange;
 
 public class Releases
 {
@@ -69,8 +70,16 @@ public class Releases
 		}
 	}
 
-	public static void standardizeTags(Release rls)
+	public static List<StandardizingChange> standardizeTags(Release rls)
 	{
+		if (rls == null || rls.getTags().isEmpty())
+		{
+			return ImmutableList.of();
+		}
+
+		boolean changed = false;
+		List<Tag> oldTags = ImmutableList.copyOf(rls.getTags());
+
 		ListIterator<Tag> iter = rls.getTags().listIterator();
 		Tag lastTag = null;
 		while (iter.hasNext())
@@ -80,6 +89,7 @@ public class Releases
 			if ("X264".equals(tag.getName()))
 			{
 				iter.set(new Tag("x264"));
+				changed = true;
 			}
 			else if (lastTag != null)
 			{
@@ -89,7 +99,7 @@ public class Releases
 					iter.remove();
 					iter.previous();
 					iter.set(new Tag("DD5.1"));
-
+					changed = true;
 				}
 				// H, 264 -> H.264
 				else if ("H".equals(lastTag.getName()) && "264".equals(tag.getName()))
@@ -97,6 +107,7 @@ public class Releases
 					iter.remove();
 					iter.previous();
 					iter.set(new Tag("H.264"));
+					changed = true;
 				}
 				// WEB, DL -> WEB-DL
 				else if ("WEB".equals(lastTag.getName()) && "DL".equals(tag.getName()))
@@ -104,10 +115,12 @@ public class Releases
 					iter.remove();
 					iter.previous();
 					iter.set(new Tag("WEB-DL"));
+					changed = true;
 				}
 			}
 			lastTag = tag;
 		}
+		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS, oldTags, rls.getTags())) : ImmutableList.of();
 	}
 
 	private Releases()

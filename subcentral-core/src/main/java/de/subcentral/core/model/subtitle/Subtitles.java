@@ -15,6 +15,7 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
+import de.subcentral.core.standardizing.StandardizingChange;
 
 public class Subtitles
 {
@@ -46,27 +47,35 @@ public class Subtitles
 		return media.build();
 	}
 
-	public static void standardizeTags(Subtitle subtitle)
+	public static List<StandardizingChange> standardizeTags(Subtitle sub)
 	{
+		if (sub == null || sub.getTags().isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		boolean changed = false;
+		List<Tag> oldTags = ImmutableList.copyOf(sub.getTags());
+
 		Pattern pVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE);
 		Matcher mVersion = pVersion.matcher("");
-		ListIterator<Tag> iter = subtitle.getTags().listIterator();
+		ListIterator<Tag> iter = sub.getTags().listIterator();
 		while (iter.hasNext())
 		{
 			Tag tag = iter.next();
 			if (Subtitle.TAG_HEARING_IMPAIRED.equals(tag))
 			{
-				subtitle.setHearingImpaired(true);
+				sub.setHearingImpaired(true);
 				iter.remove();
-				continue;
+				changed = true;
 			}
-			if (mVersion.reset(tag.getName()).matches())
+			else if (mVersion.reset(tag.getName()).matches())
 			{
-				subtitle.setVersion(Integer.parseInt(mVersion.group(1)));
+				sub.setVersion(Integer.parseInt(mVersion.group(1)));
 				iter.remove();
-				continue;
+				changed = true;
 			}
 		}
+		return changed ? ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_TAGS, oldTags, sub.getTags())) : ImmutableList.of();
 	}
 
 	public static boolean containsHearingImpairedTag(List<Tag> tags)
