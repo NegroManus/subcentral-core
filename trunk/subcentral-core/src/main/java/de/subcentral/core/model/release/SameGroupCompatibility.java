@@ -8,13 +8,6 @@ import com.google.common.collect.ImmutableSet;
 
 public class SameGroupCompatibility implements Compatibility
 {
-	private static final SameGroupCompatibility	INSTANCE	= new SameGroupCompatibility();
-
-	public static SameGroupCompatibility getInstance()
-	{
-		return INSTANCE;
-	}
-
 	@Override
 	public Set<Release> findCompatibles(Release rls, Collection<Release> existingRlss)
 	{
@@ -33,10 +26,5 @@ public class SameGroupCompatibility implements Compatibility
 			}
 		}
 		return compatibles;
-	}
-
-	private SameGroupCompatibility()
-	{
-		// only one instance so private
 	}
 }

@@ -99,7 +99,7 @@ public class ParsingPlayground
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
 		CompatibilityService compService = new CompatibilityService();
-		compService.getCompatibilities().add(SameGroupCompatibility.getInstance());
+		compService.getCompatibilities().add(new SameGroupCompatibility());
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));

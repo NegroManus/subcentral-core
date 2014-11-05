@@ -22,7 +22,7 @@ public class CompatibilityServiceTest
 		Release sourceRls = Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264");
 
 		CompatibilityService compService = new CompatibilityService();
-		compService.getCompatibilities().add(SameGroupCompatibility.getInstance());
+		compService.getCompatibilities().add(new SameGroupCompatibility());
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
 		compService.getCompatibilities().add(new GroupsCompatibility(null, Tag.list("720p", "HDTV", "x264"), new Group("AFG"), Tag.list("HDTV",
 				"XviD"), Scope.ALWAYS, false));
