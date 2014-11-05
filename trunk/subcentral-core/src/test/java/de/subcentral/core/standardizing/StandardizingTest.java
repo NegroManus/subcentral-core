@@ -47,7 +47,7 @@ public class StandardizingTest
 			Boolean oldVal = Boolean.valueOf(e.isSpecial());
 			e.setSpecial(true);
 			Boolean newVal = Boolean.valueOf(e.isSpecial());
-			return ImmutableList.of(new StandardizingChange(e, Episode.PROP_SPECIAL, oldVal, newVal));
+			return ImmutableList.of(new StandardizingChange(e, Episode.PROP_SPECIAL.getPropName(), oldVal, newVal));
 		});
 		service.registerStandardizer(Series.class,
 				new SeriesNamerStandardizer(new PatternReplacer(ImmutableMap.<Pattern, String> of(Pattern.compile("Psych"), "Psych (2001)"))));

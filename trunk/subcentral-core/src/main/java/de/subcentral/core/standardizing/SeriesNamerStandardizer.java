@@ -34,7 +34,7 @@ public class SeriesNamerStandardizer implements Standardizer<Series>
 		if (!stdzdName.equals(name))
 		{
 			series.setName(stdzdName);
-			return ImmutableList.of(new StandardizingChange(series, Series.PROP_NAME, name, stdzdName));
+			return ImmutableList.of(new StandardizingChange(series, Series.PROP_NAME.getPropName(), name, stdzdName));
 		}
 		return ImmutableList.of();
 	}
