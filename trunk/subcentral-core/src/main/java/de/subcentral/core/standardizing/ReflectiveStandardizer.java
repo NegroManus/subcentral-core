@@ -15,18 +15,18 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReflectiveStandardizer<T> implements Standardizer<T>
 {
-	private final Class<T>						beanClass;
+	private final Class<T>						beanType;
 	private final Map<String, UnaryOperator<?>>	propStandardizers;
 
-	public ReflectiveStandardizer(Class<T> beanClass, Map<String, UnaryOperator<?>> propStandardizers)
+	public ReflectiveStandardizer(Class<T> beanType, Map<String, UnaryOperator<?>> propStandardizers)
 	{
-		this.beanClass = Objects.requireNonNull(beanClass, "beanClass");
+		this.beanType = Objects.requireNonNull(beanType, "beanType");
 		this.propStandardizers = ImmutableMap.copyOf(propStandardizers); // null check included
 	}
 
-	public Class<T> getBeanClass()
+	public Class<T> getBeanType()
 	{
-		return beanClass;
+		return beanType;
 	}
 
 	public Map<String, UnaryOperator<?>> getPropStandardizers()
@@ -35,7 +35,7 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 	}
 
 	@Override
-	public List<StandardizingChange> standardize(T bean)
+	public List<StandardizingChange> standardize(T bean) throws StandardizingException
 	{
 		if (bean == null)
 		{
@@ -44,34 +44,34 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
 		for (Map.Entry<String, UnaryOperator<?>> entry : propStandardizers.entrySet())
 		{
-			try
+			StandardizingChange change = standardizeProperty(bean, entry.getKey(), entry.getValue());
+			if (change != null)
 			{
-				StandardizingChange change = standardizeProperty(bean, entry.getKey(), entry.getValue());
-				if (change != null)
-				{
-					changes.add(change);
-				}
-			}
-			catch (IntrospectionException | ClassCastException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-			{
-				e.printStackTrace();
+				changes.add(change);
 			}
 		}
 		return changes.build();
 	}
 
 	@SuppressWarnings("unchecked")
-	private <P> StandardizingChange standardizeProperty(Object bean, String prop, UnaryOperator<P> operator) throws IntrospectionException,
-			ClassCastException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	private <P> StandardizingChange standardizeProperty(Object bean, String prop, UnaryOperator<P> operator) throws StandardizingException
 	{
-		PropertyDescriptor propDescr = new PropertyDescriptor(prop, bean.getClass());
-		P oldVal = (P) propDescr.getReadMethod().invoke(bean);
-		P newVal = operator.apply(oldVal);
-		if (Objects.equals(oldVal, newVal))
+		try
 		{
-			return null;
+			PropertyDescriptor propDescr = new PropertyDescriptor(prop, bean.getClass());
+			P oldVal = (P) propDescr.getReadMethod().invoke(bean);
+			P newVal = operator.apply(oldVal);
+			if (Objects.equals(oldVal, newVal))
+			{
+				return null;
+			}
+			propDescr.getWriteMethod().invoke(bean, newVal);
+			return new StandardizingChange(bean, new SimplePropDescriptor(bean.getClass(), prop), oldVal, newVal);
 		}
-		propDescr.getWriteMethod().invoke(bean, newVal);
-		return new StandardizingChange(bean, new SimplePropDescriptor(bean.getClass(), prop), oldVal, newVal);
+		catch (IntrospectionException | IllegalAccessException | InvocationTargetException | RuntimeException e)
+		{
+			throw new StandardizingException("Exception while standardizing property " + bean.getClass().getName() + "." + prop + " of bean " + bean
+					+ " with operator " + operator, e);
+		}
 	}
 }
