@@ -1,14 +1,8 @@
 package de.subcentral.core.standardizing;
 
-import java.util.function.Consumer;
+import java.util.List;
 
-public interface Standardizer<T> extends Consumer<T>
+public interface Standardizer<T>
 {
-	public void standardize(T entity);
-
-	@Override
-	public default void accept(T entity)
-	{
-		standardize(entity);
-	}
+	public List<StandardizingChange> standardize(T entity);
 }

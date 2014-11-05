@@ -1,7 +1,9 @@
 package de.subcentral.core.standardizing;
 
-import com.google.common.collect.ImmutableListMultimap;
+import java.util.ArrayList;
+import java.util.List;
 
+import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.subtitle.Subtitle;
@@ -9,15 +11,25 @@ import de.subcentral.core.model.subtitle.Subtitles;
 
 public class Standardizings
 {
-	private static final SimpleStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new SimpleStandardizingService("default");
+	private static final ClassBasedStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new ClassBasedStandardizingService("default");
 	static
 	{
-		ImmutableListMultimap.Builder<Class<?>, Standardizer<?>> standardizers = ImmutableListMultimap.builder();
-		Standardizer<Subtitle> subStdzer = Subtitles::standardizeTags;
-		Standardizer<Release> rlsStdzer = Releases::standardizeTags;
-		standardizers.put(Subtitle.class, subStdzer);
-		standardizers.put(Release.class, rlsStdzer);
-		DEFAULT_STANDARDIZING_SERVICE.setStandardizers(standardizers.build());
+		DEFAULT_STANDARDIZING_SERVICE.registerStandardizer(Subtitle.class, Subtitles::standardizeTags);
+		DEFAULT_STANDARDIZING_SERVICE.registerStandardizer(Release.class, Releases::standardizeTags);
+
+		DEFAULT_STANDARDIZING_SERVICE.addNestedBeanRetriever(Release.class, r -> r.getMedia());
+		DEFAULT_STANDARDIZING_SERVICE.addNestedBeanRetriever(Episode.class, e -> {
+			List<Object> nestedBeans = new ArrayList<>(2);
+			if (e.getSeries() != null)
+			{
+				nestedBeans.add(e.getSeries());
+			}
+			if (e.getSeason() != null)
+			{
+				nestedBeans.add(e.getSeason());
+			}
+			return nestedBeans;
+		});
 	}
 
 	public static StandardizingService getDefaultStandardizingService()
