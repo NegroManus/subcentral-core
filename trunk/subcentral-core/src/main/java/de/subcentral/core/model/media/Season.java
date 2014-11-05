@@ -43,19 +43,19 @@ public class Season extends AbstractMedia implements Comparable<Season>
 
 	public Season(Series series)
 	{
-		setSeries(series);
+		this.series = series;
 	}
 
 	public Season(Series series, Integer number)
 	{
-		setSeries(series);
-		setNumber(number);
+		this.series = series;
+		this.number = number;
 	}
 
 	public Season(Series series, String title)
 	{
-		setSeries(series);
-		setTitle(title);
+		this.series = series;
+		this.title = title;
 	}
 
 	public Series getSeries()
