@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -59,5 +60,27 @@ public class StandardizingTest
 		changes.stream().forEach(c -> System.out.println(c));
 
 		assertEquals(expectedEpi, epi);
+	}
+
+	@Test
+	public void testReflectiveStandardizing()
+	{
+		ReflectiveStandardizer<Series> stdzer = new ReflectiveStandardizer<Series>(Series.class, ImmutableMap.of("name",
+				(String name) -> StringUtils.upperCase(name)));
+
+		Series series = new Series("Psych");
+		Series expectedSeries = new Series("PSYCH");
+
+		List<StandardizingChange> changes = stdzer.standardize(series);
+		changes.stream().forEach(c -> System.out.println(c));
+
+		assertEquals(expectedSeries, series);
+	}
+
+	@Test(expected = StandardizingException.class)
+	public void testReflectiveStandardizingFail()
+	{
+		ReflectiveStandardizer<Series> stdzer = new ReflectiveStandardizer<Series>(Series.class, ImmutableMap.of("notExistingProp", (String s) -> s));
+		stdzer.standardize(new Series("Psych"));
 	}
 }
