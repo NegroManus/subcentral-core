@@ -1,5 +1,7 @@
 package de.subcentral.core.standardizing;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -19,18 +21,20 @@ import de.subcentral.core.util.PatternReplacer;
 public class StandardizingTest
 {
 	@Test
-	public void testStandardizing()
+	public void testDefaultStandardizingService()
 	{
 		StandardizingService service = Standardizings.getDefaultStandardizingService();
 
 		Release rls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H", "264", "DD5", "1");
+		Release expectedRls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H.264", "DD5.1");
 
 		List<StandardizingChange> changes = service.standardize(rls);
 		changes.stream().forEach(c -> System.out.println(c));
+		assertEquals(expectedRls, rls);
 	}
 
 	@Test
-	public void testReflectiveStandardizing()
+	public void testCustomStandardizingService()
 	{
 		ClassBasedStandardizingService service = new ClassBasedStandardizingService("test");
 		service.registerNestedBeanRetriever(Episode.class, Standardizings::retrieveNestedBeans);
@@ -41,15 +45,19 @@ public class StandardizingTest
 		service.registerStandardizer(Episode.class, e -> {
 			Boolean oldVal = Boolean.valueOf(e.isSpecial());
 			e.setSpecial(true);
-			return ImmutableList.of(new StandardizingChange(e, Episode.PROP_SPECIAL, oldVal, Boolean.TRUE));
+			Boolean newVal = Boolean.valueOf(e.isSpecial());
+			return ImmutableList.of(new StandardizingChange(e, Episode.PROP_SPECIAL, oldVal, newVal));
 		});
 		service.registerStandardizer(Series.class,
 				new SeriesNamerStandardizer(new PatternReplacer(ImmutableMap.<Pattern, String> of(Pattern.compile("Psych"), "Psych (2001)"))));
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 2, 2);
+		Episode expectedEpi = Episode.createSeasonedEpisode("Psych (2001)", 2, 2);
+		expectedEpi.setSpecial(true);
 
 		List<StandardizingChange> changes = service.standardize(epi);
 		changes.stream().forEach(c -> System.out.println(c));
-		System.out.println(epi);
+
+		assertEquals(expectedEpi, epi);
 	}
 }
