@@ -11,8 +11,6 @@ import java.util.function.UnaryOperator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.util.SimplePropDescriptor;
-
 public class ReflectiveStandardizer<T> implements Standardizer<T>
 {
 	private final Class<T>						beanType;
@@ -54,11 +52,11 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 	}
 
 	@SuppressWarnings("unchecked")
-	private <P> StandardizingChange standardizeProperty(Object bean, String prop, UnaryOperator<P> operator) throws StandardizingException
+	private <P> StandardizingChange standardizeProperty(Object bean, String propName, UnaryOperator<P> operator) throws StandardizingException
 	{
 		try
 		{
-			PropertyDescriptor propDescr = new PropertyDescriptor(prop, bean.getClass());
+			PropertyDescriptor propDescr = new PropertyDescriptor(propName, bean.getClass());
 			P oldVal = (P) propDescr.getReadMethod().invoke(bean);
 			P newVal = operator.apply(oldVal);
 			if (Objects.equals(oldVal, newVal))
@@ -66,12 +64,12 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 				return null;
 			}
 			propDescr.getWriteMethod().invoke(bean, newVal);
-			return new StandardizingChange(bean, new SimplePropDescriptor(bean.getClass(), prop), oldVal, newVal);
+			return new StandardizingChange(bean, propName, oldVal, newVal);
 		}
 		catch (IntrospectionException | IllegalAccessException | InvocationTargetException | RuntimeException e)
 		{
-			throw new StandardizingException("Exception while standardizing property " + bean.getClass().getName() + "." + prop + " of bean " + bean
-					+ " with operator " + operator, e);
+			throw new StandardizingException("Exception while standardizing property " + bean.getClass().getName() + "." + propName + " of bean "
+					+ bean + " with operator " + operator, e);
 		}
 	}
 }

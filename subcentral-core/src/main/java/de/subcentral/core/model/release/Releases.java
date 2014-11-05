@@ -120,7 +120,7 @@ public class Releases
 			}
 			lastTag = tag;
 		}
-		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS, oldTags, rls.getTags())) : ImmutableList.of();
+		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, rls.getTags())) : ImmutableList.of();
 	}
 
 	private Releases()

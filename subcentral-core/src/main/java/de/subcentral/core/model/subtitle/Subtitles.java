@@ -75,7 +75,8 @@ public class Subtitles
 				changed = true;
 			}
 		}
-		return changed ? ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_TAGS, oldTags, sub.getTags())) : ImmutableList.of();
+		return changed ? ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_TAGS.getPropName(), oldTags, sub.getTags()))
+				: ImmutableList.of();
 	}
 
 	public static boolean containsHearingImpairedTag(List<Tag> tags)
