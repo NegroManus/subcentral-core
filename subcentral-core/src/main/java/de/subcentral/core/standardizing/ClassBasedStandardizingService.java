@@ -50,7 +50,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return standardizers.removeAll(entityType);
 	}
 
-	public <T> void addNestedBeanRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
+	public <T> void registerNestedBeanRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
 	{
 		nestedBeanRetrievers.put(type, retriever);
 	}
@@ -106,11 +106,14 @@ public class ClassBasedStandardizingService implements StandardizingService
 	private <T> void addNestedBeans(T bean, Queue<Object> queue)
 	{
 		Function<? super T, List<? extends Object>> nestedBeanRetriever = getNestedBeanRetriever(bean);
-		for (Object nestedBean : nestedBeanRetriever.apply(bean))
+		if (nestedBeanRetriever != null)
 		{
-			if (nestedBean != null)
+			for (Object nestedBean : nestedBeanRetriever.apply(bean))
 			{
-				queue.add(nestedBean);
+				if (nestedBean != null)
+				{
+					queue.add(nestedBean);
+				}
 			}
 		}
 	}
