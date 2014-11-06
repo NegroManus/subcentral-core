@@ -221,8 +221,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 
 	public void setSeason(Season season) throws IllegalArgumentException
 	{
-		ensurePartOfSeries(season);
-		this.season = season;
+		this.season = requireSameSeries(season);
 	}
 
 	@Override
@@ -392,11 +391,12 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 				.toString();
 	}
 
-	private void ensurePartOfSeries(Season season) throws IllegalArgumentException
+	private Season requireSameSeries(Season season) throws IllegalArgumentException
 	{
 		if (season != null && !Objects.equals(season.getSeries(), series))
 		{
 			throw new IllegalArgumentException("The given season is not part of this episode's series: " + season + " is not part of " + series);
 		}
+		return season;
 	}
 }
