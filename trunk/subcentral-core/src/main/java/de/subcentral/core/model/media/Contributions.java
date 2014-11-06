@@ -52,7 +52,7 @@ public class Contributions
 
 	public static double calcProgress(Collection<Contribution> contributions, String type)
 	{
-		return calcProgress(Contributions.getOfType(contributions, type));
+		return calcProgress(getOfType(contributions, type));
 	}
 
 	public static Map<String, Double> calcProgresses(Collection<Contribution> contributions)
