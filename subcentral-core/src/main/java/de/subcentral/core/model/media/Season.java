@@ -2,6 +2,7 @@ package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -211,7 +212,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(5, 13).append(series).append(number).append(StringUtils.lowerCase(title)).toHashCode();
+		return new HashCodeBuilder(5, 13).append(series).append(number).append(StringUtils.lowerCase(title, Locale.ENGLISH)).toHashCode();
 	}
 
 	@Override

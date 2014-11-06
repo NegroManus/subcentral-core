@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -348,7 +349,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(3, 11).append(StringUtils.lowerCase(name)).toHashCode();
+		return new HashCodeBuilder(3, 11).append(StringUtils.lowerCase(name, Locale.ENGLISH)).toHashCode();
 	}
 
 	@Override

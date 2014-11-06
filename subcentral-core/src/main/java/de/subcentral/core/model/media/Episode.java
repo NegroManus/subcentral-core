@@ -2,6 +2,7 @@ package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -347,7 +348,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 				.append(season)
 				.append(numberInSeason)
 				.append(date)
-				.append(StringUtils.lowerCase(title))
+				.append(StringUtils.lowerCase(title, Locale.ENGLISH))
 				.toHashCode();
 	}
 
