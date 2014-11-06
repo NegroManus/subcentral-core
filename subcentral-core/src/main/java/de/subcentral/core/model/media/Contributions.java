@@ -60,7 +60,7 @@ public class Contributions
 		{
 			return ImmutableMap.of();
 		}
-		ListMultimap<String, Contribution> sortedContributions = Contributions.sortByType(contributions);
+		ListMultimap<String, Contribution> sortedContributions = sortByType(contributions);
 		ImmutableMap.Builder<String, Double> progresses = ImmutableMap.builder();
 		for (Map.Entry<String, Collection<Contribution>> entry : sortedContributions.asMap().entrySet())
 		{
