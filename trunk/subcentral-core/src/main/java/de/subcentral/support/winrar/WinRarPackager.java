@@ -102,24 +102,15 @@ public abstract class WinRarPackager
 		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
 		try
 		{
-			if (Files.notExists(source, LinkOption.NOFOLLOW_LINKS))
-			{
-				// fail-fast behavior
-				throw new NoSuchFileException(source.toString());
-			}
-
 			long startTime = System.currentTimeMillis();
 			boolean targetExists = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
 			if (targetExists)
 			{
 				flags.add(Flag.TARGET_EXISTED);
 			}
-			if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode())
+			if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode() && Files.deleteIfExists(target))
 			{
-				if (Files.deleteIfExists(target))
-				{
-					flags.add(Flag.TARGET_REPLACED);
-				}
+				flags.add(Flag.TARGET_REPLACED);
 			}
 
 			ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(source, target, cfg));
@@ -134,6 +125,7 @@ public abstract class WinRarPackager
 			process.getOutputStream().close();
 			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeoutValue(), cfg.getTimeoutUnit());
 			exitCode = process.exitValue();
+			log.debug("Execution exited with {}: {}", exitCode, processBuilder.command());
 
 			// may add tags
 			if (targetExists && cfg.getTargetOverwriteMode() == OverwriteMode.UPDATE
