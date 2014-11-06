@@ -19,15 +19,15 @@ public class Contribution implements Comparable<Contribution>
 
 	public Contribution(Contributor contributor)
 	{
-		this.contributor = Objects.requireNonNull(contributor, "contributor");
+		setContributor(contributor);
 	}
 
 	public Contribution(Contributor contributor, String type, long amount, double progress, String description)
 	{
-		this.contributor = Objects.requireNonNull(contributor, "contributor");
+		setContributor(contributor);
 		this.type = type;
-		this.amount = amount;
-		this.progress = progress;
+		setAmount(amount);
+		setProgress(progress);
 		this.description = description;
 	}
 
