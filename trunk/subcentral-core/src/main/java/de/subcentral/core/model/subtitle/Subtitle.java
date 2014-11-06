@@ -15,12 +15,12 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
-import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMedia;
+import de.subcentral.core.model.media.Contribution;
 import de.subcentral.core.model.media.Medias;
+import de.subcentral.core.model.media.Work;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
