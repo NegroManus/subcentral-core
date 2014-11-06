@@ -31,7 +31,6 @@ import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.SameGroupCompatibility;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.core.model.subtitle.Subtitles;
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
@@ -157,7 +156,7 @@ public class ParsingPlayground
 
 							start = System.nanoTime();
 							List<Release> filteredReleases = Releases.filter(releases,
-									Subtitles.getMediaFromSubtitles(subAdj),
+									subAdjRls.getMedia(),
 									subAdjRls.getTags(),
 									subAdjRls.getGroup(),
 									mediaNsForFiltering);
