@@ -50,10 +50,10 @@ public class Release implements Comparable<Release>
 	private String								name;
 	// In 99,9% of the cases, there is only one Media per Release
 	private final List<Media>					media			= new ArrayList<>(1);
+	private Group								group;
 	// Normally there are 2 to 4 Tags per Release
 	private final List<Tag>						tags			= new ArrayList<>(4);
 	private final List<String>					languages		= new ArrayList<>(1);
-	private Group								group;
 	private String								section;
 	private Temporal							date;
 	private long								size;
@@ -73,15 +73,15 @@ public class Release implements Comparable<Release>
 	{
 		Release rls = new Release();
 		rls.name = name;
-		rls.setSingleMedia(media);
+		rls.media.add(media);
 		if (group != null)
 		{
-			rls.setGroup(new Group(group));
+			rls.group = new Group(group);
 		}
 		if (tags.length > 0)
 		{
 			// use addAll and do not add separately so that the list is trimmed to the right size
-			rls.getTags().addAll(Tag.list(tags));
+			rls.tags.addAll(Tag.list(tags));
 		}
 		return rls;
 	}
@@ -96,35 +96,35 @@ public class Release implements Comparable<Release>
 		this.name = name;
 	}
 
-	public Release(String name, Media media, List<Tag> tags, Group group)
+	public Release(String name, Media media, Group group, List<Tag> tags)
 	{
 		this.name = name;
-		setSingleMedia(media);
-		setTags(tags);
+		this.media.add(media);
 		this.group = group;
+		this.tags.addAll(tags);
 	}
 
-	public Release(String name, List<Media> media, List<Tag> tags, Group group)
+	public Release(String name, List<Media> media, Group group, List<Tag> tags)
 	{
 		this.name = name;
-		setMedia(media);
-		setTags(tags);
+		this.media.addAll(media);
 		this.group = group;
+		this.tags.addAll(tags);
 	}
 
 	public Release(Release rls)
 	{
 		this.name = rls.name;
 		// just the media references are copied into the new list, no deep copy
-		this.setMedia(rls.media);
-		this.setLanguages(rls.languages);
-		this.setTags(rls.tags);
+		this.media.addAll(rls.media);
 		this.group = rls.group;
+		this.tags.addAll(rls.tags);
+		this.languages.addAll(rls.languages);
 		this.date = rls.date;
 		this.section = rls.section;
 		this.size = rls.size;
 		this.fileCount = rls.fileCount;
-		this.setNukes(rls.nukes);
+		this.nukes.addAll(rls.nukes);
 		this.info = rls.info;
 		this.infoUrl = rls.infoUrl;
 		this.source = rls.source;
@@ -166,19 +166,19 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * The (spoken or written) languages of the media of this release. The languages may also appear in the tags.
+	 * The group which released this release.
 	 * 
-	 * @return the languages.
+	 * @return the release group
+	 * @see #getSource()
 	 */
-	public List<String> getLanguages()
+	public Group getGroup()
 	{
-		return languages;
+		return group;
 	}
 
-	public void setLanguages(List<String> languages)
+	public void setGroup(Group group)
 	{
-		this.languages.clear();
-		this.languages.addAll(languages);
+		this.group = group;
 	}
 
 	/**
@@ -198,19 +198,19 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * The group which released this release.
+	 * The (spoken or written) languages of the media of this release. The languages may also appear in the tags.
 	 * 
-	 * @return the release group
-	 * @see #getSource()
+	 * @return the languages.
 	 */
-	public Group getGroup()
+	public List<String> getLanguages()
 	{
-		return group;
+		return languages;
 	}
 
-	public void setGroup(Group group)
+	public void setLanguages(List<String> languages)
 	{
-		this.group = group;
+		this.languages.clear();
+		this.languages.addAll(languages);
 	}
 
 	/**
@@ -419,7 +419,7 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * Two releases are compared by their media, then by by their tags and then their groups.
+	 * Two releases are compared by their media, then by their groups and then their tags.
 	 */
 	@Override
 	public int compareTo(Release o)
@@ -431,8 +431,8 @@ public class Release implements Comparable<Release>
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, Medias.MEDIA_ITERABLE_NAME_COMPARATOR)
-				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group, Settings.createDefaultOrdering())
+				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.result();
 	}
 
@@ -443,9 +443,9 @@ public class Release implements Comparable<Release>
 				.omitNullValues()
 				.add("name", name)
 				.add("media", Models.nullIfEmpty(media))
-				.add("languages", Models.nullIfEmpty(languages))
-				.add("tags", Models.nullIfEmpty(tags))
 				.add("group", group)
+				.add("tags", Models.nullIfEmpty(tags))
+				.add("languages", Models.nullIfEmpty(languages))
 				.add("date", date)
 				.add("section", section)
 				.add("size", Models.nullIfZero(size))

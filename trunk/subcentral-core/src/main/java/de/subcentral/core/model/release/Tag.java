@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.Settings;
@@ -73,7 +74,7 @@ public class Tag implements Comparable<Tag>
 
 	public Tag(String name, String longName)
 	{
-		this.name = name;
+		this.name = Objects.requireNonNull(name, "name");
 		this.longName = longName;
 	}
 
@@ -96,7 +97,7 @@ public class Tag implements Comparable<Tag>
 		}
 		if (obj instanceof Tag)
 		{
-			return StringUtils.equalsIgnoreCase(name, ((Tag) obj).name);
+			return name.equalsIgnoreCase(((Tag) obj).name);
 		}
 		return false;
 	}
@@ -104,7 +105,7 @@ public class Tag implements Comparable<Tag>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(21, 47).append(StringUtils.lowerCase(name)).toHashCode();
+		return new HashCodeBuilder(21, 47).append(name.toLowerCase(Locale.ENGLISH)).toHashCode();
 	}
 
 	@Override

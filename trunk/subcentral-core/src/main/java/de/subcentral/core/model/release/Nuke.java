@@ -1,6 +1,7 @@
 package de.subcentral.core.model.release;
 
 import java.time.temporal.Temporal;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,7 +58,7 @@ public class Nuke implements Comparable<Nuke>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(9, 71).append(StringUtils.lowerCase(reason)).append(date).toHashCode();
+		return new HashCodeBuilder(9, 71).append(StringUtils.lowerCase(reason, Locale.ENGLISH)).append(date).toHashCode();
 	}
 
 	@Override

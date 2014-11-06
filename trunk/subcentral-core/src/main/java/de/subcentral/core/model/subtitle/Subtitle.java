@@ -2,6 +2,7 @@ package de.subcentral.core.model.subtitle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -442,12 +443,12 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public int hashCode()
 	{
 		return new HashCodeBuilder(37, 99).append(media)
-				.append(StringUtils.lowerCase(language))
+				.append(StringUtils.lowerCase(language, Locale.ENGLISH))
 				.append(hearingImpaired)
 				.append(foreignParts)
 				.append(tags)
 				.append(group)
-				.append(StringUtils.lowerCase(source))
+				.append(StringUtils.lowerCase(source, Locale.ENGLISH))
 				.append(version)
 				.toHashCode();
 	}
