@@ -15,9 +15,9 @@ import com.google.common.collect.ListMultimap;
 
 public class ClassBasedStandardizingService implements StandardizingService
 {
-	private final String										domain;
-	private ListMultimap<Class<?>, Standardizer<?>>				standardizers			= LinkedListMultimap.create();
-	private Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new HashMap<>();
+	private final String												domain;
+	private final ListMultimap<Class<?>, Standardizer<?>>				standardizers			= LinkedListMultimap.create();
+	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new HashMap<>(8);
 
 	public ClassBasedStandardizingService(String domain)
 	{
@@ -56,7 +56,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> Function<? super T, List<? extends Object>> getNestedBeanRetriever(T bean)
+	private <T> Function<? super T, List<? extends Object>> getNestedBeansRetriever(T bean)
 	{
 		return (Function<? super T, List<? extends Object>>) nestedBeansRetrievers.get(bean.getClass());
 	}
@@ -105,7 +105,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 
 	private <T> void addNestedBeans(T bean, Queue<Object> queue)
 	{
-		Function<? super T, List<? extends Object>> nestedBeanRetriever = getNestedBeanRetriever(bean);
+		Function<? super T, List<? extends Object>> nestedBeanRetriever = getNestedBeansRetriever(bean);
 		if (nestedBeanRetriever != null)
 		{
 			for (Object nestedBean : nestedBeanRetriever.apply(bean))
