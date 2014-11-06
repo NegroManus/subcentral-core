@@ -1,6 +1,7 @@
 package de.subcentral.core.model.media;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableListMultimap;
@@ -23,7 +24,7 @@ public class Contributions
 		return sorted.build();
 	}
 
-	public static Collection<Contribution> getOfType(Collection<Contribution> contributions, String type)
+	public static List<Contribution> getOfType(Collection<Contribution> contributions, String type)
 	{
 		return sortByType(contributions).get(type);
 	}
