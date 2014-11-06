@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.subcentral.core.model.media.Contribution;
+import de.subcentral.core.model.media.Contributions;
+import de.subcentral.core.model.media.Contributor;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.util.TimeUtil;
 

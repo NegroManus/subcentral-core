@@ -14,13 +14,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.model.Contribution;
-import de.subcentral.core.model.Contributor;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
-import de.subcentral.core.model.Work;
 import de.subcentral.core.model.media.AvMedia;
+import de.subcentral.core.model.media.Contribution;
+import de.subcentral.core.model.media.Contributor;
 import de.subcentral.core.model.media.Media;
+import de.subcentral.core.model.media.Work;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;

@@ -7,7 +7,6 @@ import java.util.Set;
 
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.model.Work;
 import de.subcentral.core.util.TimeUtil;
 
 /**

@@ -9,7 +9,6 @@ import java.util.Set;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.model.Contribution;
 import de.subcentral.core.model.Models;
 
 public abstract class AbstractMedia implements Media
