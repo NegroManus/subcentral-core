@@ -17,7 +17,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 {
 	private final String										domain;
 	private ListMultimap<Class<?>, Standardizer<?>>				standardizers			= LinkedListMultimap.create();
-	private Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeanRetrievers	= new HashMap<>();
+	private Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new HashMap<>();
 
 	public ClassBasedStandardizingService(String domain)
 	{
@@ -50,15 +50,15 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return standardizers.removeAll(entityType);
 	}
 
-	public <T> void registerNestedBeanRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
+	public <T> void registerNestedBeansRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
 	{
-		nestedBeanRetrievers.put(type, retriever);
+		nestedBeansRetrievers.put(type, retriever);
 	}
 
 	@SuppressWarnings("unchecked")
 	private <T> Function<? super T, List<? extends Object>> getNestedBeanRetriever(T bean)
 	{
-		return (Function<? super T, List<? extends Object>>) nestedBeanRetrievers.get(bean.getClass());
+		return (Function<? super T, List<? extends Object>>) nestedBeansRetrievers.get(bean.getClass());
 	}
 
 	@Override

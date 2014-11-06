@@ -18,14 +18,8 @@ public class Standardizings
 	private static final ClassBasedStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new ClassBasedStandardizingService("default");
 	static
 	{
-		DEFAULT_STANDARDIZING_SERVICE.registerStandardizer(Subtitle.class, Subtitles::standardizeTags);
-		DEFAULT_STANDARDIZING_SERVICE.registerStandardizer(Release.class, Releases::standardizeTags);
-
-		DEFAULT_STANDARDIZING_SERVICE.registerNestedBeanRetriever(Episode.class, Standardizings::retrieveNestedBeans);
-		DEFAULT_STANDARDIZING_SERVICE.registerNestedBeanRetriever(Season.class, Standardizings::retrieveNestedBeans);
-		DEFAULT_STANDARDIZING_SERVICE.registerNestedBeanRetriever(Release.class, Standardizings::retrieveNestedBeans);
-		DEFAULT_STANDARDIZING_SERVICE.registerNestedBeanRetriever(Subtitle.class, Standardizings::retrieveNestedBeans);
-		DEFAULT_STANDARDIZING_SERVICE.registerNestedBeanRetriever(SubtitleAdjustment.class, Standardizings::retrieveNestedBeans);
+		registerAllDefaultNestedBeansRetrievers(DEFAULT_STANDARDIZING_SERVICE);
+		registerAllDefaulStandardizers(DEFAULT_STANDARDIZING_SERVICE);
 	}
 
 	public static StandardizingService getDefaultStandardizingService()
@@ -84,6 +78,21 @@ public class Standardizings
 		nestedBeans.addAll(subAdj.getSubtitles());
 		nestedBeans.addAll(subAdj.getMatchingReleases());
 		return nestedBeans;
+	}
+
+	public static void registerAllDefaultNestedBeansRetrievers(ClassBasedStandardizingService service)
+	{
+		service.registerNestedBeansRetriever(Episode.class, Standardizings::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Season.class, Standardizings::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Release.class, Standardizings::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Subtitle.class, Standardizings::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(SubtitleAdjustment.class, Standardizings::retrieveNestedBeans);
+	}
+
+	public static void registerAllDefaulStandardizers(ClassBasedStandardizingService service)
+	{
+		service.registerStandardizer(Subtitle.class, Subtitles::standardizeTags);
+		service.registerStandardizer(Release.class, Releases::standardizeTags);
 	}
 
 	private Standardizings()

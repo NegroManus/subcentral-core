@@ -12,11 +12,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.PatternReplacer;
 
 public class StandardizingTest
@@ -38,11 +35,7 @@ public class StandardizingTest
 	public void testCustomStandardizingService()
 	{
 		ClassBasedStandardizingService service = new ClassBasedStandardizingService("test");
-		service.registerNestedBeanRetriever(Episode.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeanRetriever(Season.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeanRetriever(Release.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeanRetriever(Subtitle.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeanRetriever(SubtitleAdjustment.class, Standardizings::retrieveNestedBeans);
+		Standardizings.registerAllDefaultNestedBeansRetrievers(service);
 		service.registerStandardizer(Episode.class, e -> {
 			Boolean oldVal = Boolean.valueOf(e.isSpecial());
 			e.setSpecial(true);
