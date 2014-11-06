@@ -74,7 +74,7 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof RegularAvMedia)
 		{
 			return StringUtils.equalsIgnoreCase(name, ((RegularAvMedia) obj).name);
 		}

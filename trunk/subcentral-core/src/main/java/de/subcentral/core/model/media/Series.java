@@ -338,7 +338,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Series)
 		{
 			return StringUtils.equalsIgnoreCase(name, ((Series) obj).name);
 		}

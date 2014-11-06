@@ -118,7 +118,7 @@ public class Contribution implements Comparable<Contribution>
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Contribution)
 		{
 			Contribution o = (Contribution) obj;
 			return Objects.equals(type, o.type) && Objects.equals(contributor, o.contributor) && Objects.equals(description, o.description);

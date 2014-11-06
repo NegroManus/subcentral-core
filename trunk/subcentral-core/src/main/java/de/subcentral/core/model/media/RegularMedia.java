@@ -147,7 +147,7 @@ public class RegularMedia extends AbstractMedia
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof RegularMedia)
 		{
 			return StringUtils.equalsIgnoreCase(name, ((RegularMedia) obj).name);
 		}

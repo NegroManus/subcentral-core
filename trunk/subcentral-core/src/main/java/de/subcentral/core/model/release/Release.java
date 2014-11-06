@@ -401,7 +401,7 @@ public class Release implements Comparable<Release>
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Release)
 		{
 			Release o = (Release) obj;
 			return Objects.equals(media, o.media) && Objects.equals(group, o.group) && Objects.equals(tags, o.tags);

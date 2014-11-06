@@ -279,7 +279,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof SubtitleAdjustment)
 		{
 			SubtitleAdjustment o = (SubtitleAdjustment) obj;
 			return Objects.equals(subtitles, o.subtitles) && Objects.equals(matchingReleases, o.matchingReleases);
