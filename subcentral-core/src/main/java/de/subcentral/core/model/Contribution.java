@@ -1,7 +1,8 @@
 package de.subcentral.core.model;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -120,7 +121,7 @@ public class Contribution implements Comparable<Contribution>
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Contribution o = (Contribution) obj;
-			return new EqualsBuilder().append(type, o.type).append(contributor, o.contributor).append(description, o.description).isEquals();
+			return Objects.equals(type, o.type) && Objects.equals(contributor, o.contributor) && Objects.equals(description, o.description);
 		}
 		return false;
 	}

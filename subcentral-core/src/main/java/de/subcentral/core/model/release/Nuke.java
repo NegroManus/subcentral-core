@@ -1,9 +1,9 @@
 package de.subcentral.core.model.release;
 
 import java.time.temporal.Temporal;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -49,7 +49,7 @@ public class Nuke implements Comparable<Nuke>
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Nuke o = (Nuke) obj;
-			return new EqualsBuilder().append(StringUtils.equalsIgnoreCase(reason, o.reason), true).append(date, o.date).isEquals();
+			return StringUtils.equalsIgnoreCase(reason, o.reason) && Objects.equals(date, o.date);
 		}
 		return false;
 	}
