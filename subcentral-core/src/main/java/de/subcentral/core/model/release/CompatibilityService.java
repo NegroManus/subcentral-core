@@ -3,16 +3,16 @@ package de.subcentral.core.model.release;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.google.common.collect.ImmutableMap;
 
 public class CompatibilityService
 {
-	private Set<Compatibility>	compatibilities	= new HashSet<>();
+	private Set<Compatibility>	compatibilities	= new CopyOnWriteArraySet<>();
 
 	public Set<Compatibility> getCompatibilities()
 	{
