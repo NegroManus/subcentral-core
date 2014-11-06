@@ -10,13 +10,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Series extends AbstractMedia implements Comparable<Series>
+public class Series extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Series>
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Series.class, PropNames.TITLE);
@@ -71,6 +72,9 @@ public class Series extends AbstractMedia implements Comparable<Series>
 	private int									regularRunningTime			= 0;
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<String>					genres						= new HashSet<>(4);
+	// Normally, the Seasons and Episodes are not stored in the Series
+	private final List<Season>					seasons						= new ArrayList<>(0);
+	private final List<Episode>					episodes					= new ArrayList<>(0);
 
 	public Series()
 	{}
@@ -197,6 +201,38 @@ public class Series extends AbstractMedia implements Comparable<Series>
 		return countriesOfOrigin.isEmpty() ? null : countriesOfOrigin.get(0);
 	}
 
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series or <code>null</code> if this series has no episodes.
+	 */
+	public Temporal getDateOfFirstEpisode()
+	{
+		return episodes.isEmpty() ? null : episodes.get(0).getDate();
+	}
+
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series or <code>null</code> if this series has no episodes.
+	 */
+	public Temporal getDateOfLastEpisode()
+	{
+		return episodes.isEmpty() ? null : episodes.get(episodes.size() - 1).getDate();
+	}
+
+	// Seasons
+	/**
+	 * 
+	 * @return This series' seasons. Only filled if the series is the information root.
+	 */
+	public List<Season> getSeasons()
+	{
+		return seasons;
+	}
+
+	public void setSeasons(List<Season> seasons)
+	{
+		this.seasons.clear();
+		this.seasons.addAll(seasons);
+	}
+
 	public Season newSeason()
 	{
 		return new Season(this);
@@ -213,6 +249,27 @@ public class Series extends AbstractMedia implements Comparable<Series>
 	}
 
 	// Episodes
+	@Override
+	public List<Episode> getMediaItems()
+	{
+		return getEpisodes();
+	}
+
+	/**
+	 * 
+	 * @return This series' episodes. Only filled if the series is the information root.
+	 */
+	public List<Episode> getEpisodes()
+	{
+		return episodes;
+	}
+
+	public void setEpisodes(List<Episode> episodes)
+	{
+		this.episodes.clear();
+		this.episodes.addAll(episodes);
+	}
+
 	public Episode newEpisode()
 	{
 		return new Episode(this);
@@ -254,6 +311,23 @@ public class Series extends AbstractMedia implements Comparable<Series>
 	public Episode newEpisode(Season season, Integer numberInSeason, String title)
 	{
 		return new Episode(this, season, numberInSeason, title);
+	}
+
+	public List<Episode> getEpisodes(Season season)
+	{
+		if (season == null || episodes.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<Episode> episInSeason = ImmutableList.builder();
+		for (Episode epi : episodes)
+		{
+			if (season.equals(epi.getSeason()))
+			{
+				episInSeason.add(epi);
+			}
+		}
+		return episInSeason.build();
 	}
 
 	// Object methods
@@ -309,6 +383,8 @@ public class Series extends AbstractMedia implements Comparable<Series>
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
 				.add("attributes", Models.nullIfEmpty(attributes))
+				.add("seasons.size", Models.nullIfZero(seasons.size()))
+				.add("episodes.size", Models.nullIfZero(episodes.size()))
 				.toString();
 	}
 }

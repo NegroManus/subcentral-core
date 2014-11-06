@@ -19,7 +19,7 @@ import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Season extends AbstractMedia implements Comparable<Season>
+public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
 {
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
 	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
@@ -43,19 +43,19 @@ public class Season extends AbstractMedia implements Comparable<Season>
 
 	public Season(Series series)
 	{
-		this.series = series;
+		setSeries(series);
 	}
 
 	public Season(Series series, Integer number)
 	{
-		this.series = series;
-		this.number = number;
+		setSeries(series);
+		setNumber(number);
 	}
 
 	public Season(Series series, String title)
 	{
-		this.series = series;
-		this.title = title;
+		setSeries(series);
+		setTitle(title);
 	}
 
 	public Series getSeries()
@@ -117,6 +117,16 @@ public class Season extends AbstractMedia implements Comparable<Season>
 		this.special = special;
 	}
 
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the first episode of this season, <code>null</code> if this season has no episodes.
+	 */
+	@Override
+	public Temporal getDate()
+	{
+		List<Episode> epis = getEpisodes();
+		return epis.isEmpty() ? null : epis.get(0).getDate();
+	}
+
 	@Override
 	public Set<String> getGenres()
 	{
@@ -146,7 +156,27 @@ public class Season extends AbstractMedia implements Comparable<Season>
 		return number != null;
 	}
 
+	/**
+	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series, <code>null</code> if this series has no episodes.
+	 */
+	public Temporal getDateOfLastEpisode()
+	{
+		List<Episode> epis = getEpisodes();
+		return epis.isEmpty() ? null : epis.get(epis.size() - 1).getDate();
+	}
+
 	// Episodes
+	@Override
+	public List<Episode> getMediaItems()
+	{
+		return getEpisodes();
+	}
+
+	public List<Episode> getEpisodes()
+	{
+		return series != null ? series.getEpisodes(this) : ImmutableList.of();
+	}
+
 	public Episode newEpisode()
 	{
 		return new Episode(series, this);
