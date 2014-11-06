@@ -1,12 +1,10 @@
 package de.subcentral.core.model.media;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
 public class Contributions
@@ -17,12 +15,12 @@ public class Contributions
 		{
 			return ImmutableListMultimap.of();
 		}
-		ListMultimap<String, Contribution> map = LinkedListMultimap.create();
+		ImmutableListMultimap.Builder<String, Contribution> sorted = ImmutableListMultimap.builder();
 		for (Contribution c : contributions)
 		{
-			map.put(c.getType(), c);
+			sorted.put(c.getType(), c);
 		}
-		return map;
+		return sorted.build();
 	}
 
 	public static Collection<Contribution> getOfType(Collection<Contribution> contributions, String type)
@@ -53,7 +51,7 @@ public class Contributions
 
 	public static double calcProgress(Collection<Contribution> contributions, String type)
 	{
-		return Contributions.calcProgress(Contributions.getOfType(contributions, type));
+		return calcProgress(Contributions.getOfType(contributions, type));
 	}
 
 	public static Map<String, Double> calcProgresses(Collection<Contribution> contributions)
@@ -63,16 +61,16 @@ public class Contributions
 			return ImmutableMap.of();
 		}
 		ListMultimap<String, Contribution> sortedContributions = Contributions.sortByType(contributions);
-		Map<String, Double> progresses = new HashMap<>();
+		ImmutableMap.Builder<String, Double> progresses = ImmutableMap.builder();
 		for (Map.Entry<String, Collection<Contribution>> entry : sortedContributions.asMap().entrySet())
 		{
-			progresses.put(entry.getKey(), Contributions.calcProgress(entry.getValue()));
+			progresses.put(entry.getKey(), calcProgress(entry.getValue()));
 		}
-		return progresses;
+		return progresses.build();
 	}
 
 	private Contributions()
 	{
-		// utility class
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
 }
