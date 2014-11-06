@@ -32,7 +32,7 @@ public class Contributions
 	{
 		if (contributions.isEmpty())
 		{
-			return 0.0f;
+			return 0d;
 		}
 		long totalAmount = 0;
 		double amountDone = 0d;
