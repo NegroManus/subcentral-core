@@ -428,12 +428,12 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Subtitle)
 		{
 			Subtitle o = (Subtitle) obj;
 			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && hearingImpaired == o.hearingImpaired
 					&& foreignParts.equals(o.foreignParts) && Objects.equals(tags, o.tags) && Objects.equals(group, o.group)
-					&& Objects.equals(source, o.source) && version == o.version;
+					&& StringUtils.equalsIgnoreCase(source, o.source) && version == o.version;
 		}
 		return false;
 	}

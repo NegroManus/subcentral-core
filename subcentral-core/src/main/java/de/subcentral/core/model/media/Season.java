@@ -200,7 +200,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Season)
 		{
 			Season o = (Season) obj;
 			return Objects.equals(series, o.series) && Objects.equals(number, o.number) && StringUtils.equalsIgnoreCase(title, o.title);

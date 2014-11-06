@@ -26,7 +26,7 @@ public class Group implements Comparable<Group>
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Group)
 		{
 			return StringUtils.equalsIgnoreCase(name, ((Group) obj).name);
 		}

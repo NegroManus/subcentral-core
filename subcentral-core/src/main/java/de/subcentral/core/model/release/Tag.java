@@ -94,7 +94,7 @@ public class Tag implements Comparable<Tag>
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Tag)
 		{
 			return StringUtils.equalsIgnoreCase(name, ((Tag) obj).name);
 		}

@@ -329,7 +329,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof Episode)
 		{
 			Episode o = (Episode) obj;
 			return Objects.equals(series, o.series) && Objects.equals(numberInSeries, o.numberInSeries) && Objects.equals(season, o.season)

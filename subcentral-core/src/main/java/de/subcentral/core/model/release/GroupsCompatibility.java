@@ -181,7 +181,7 @@ public class GroupsCompatibility implements Compatibility
 		{
 			return true;
 		}
-		if (obj != null && getClass().equals(obj.getClass()))
+		if (obj instanceof GroupsCompatibility)
 		{
 			GroupsCompatibility o = (GroupsCompatibility) obj;
 			return Objects.equals(sourceGroup, o.sourceGroup) && Objects.equals(sourceTags, o.sourceTags)
