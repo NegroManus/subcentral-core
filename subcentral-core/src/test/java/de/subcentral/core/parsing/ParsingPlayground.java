@@ -7,11 +7,12 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -173,9 +174,9 @@ public class ParsingPlayground
 							TimeUtil.printDurationMillis("Build compatibilities", start);
 							compatibleRlss.entrySet().forEach(e -> System.out.println(e));
 
-							List<Release> matchingRlss = new ArrayList<>();
-							matchingRlss.addAll(filteredReleases);
-							matchingRlss.addAll(compatibleRlss.keySet());
+							Set<Release> allMatchingRlss = new HashSet<>();
+							allMatchingRlss.addAll(filteredReleases);
+							allMatchingRlss.addAll(compatibleRlss.keySet());
 
 							start = System.nanoTime();
 							Subtitle convertedSub = new Subtitle();
@@ -185,9 +186,9 @@ public class ParsingPlayground
 							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
 							SubCentral.standardizeSubtitleLanguage(convertedSub);
-							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, matchingRlss);
+							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, allMatchingRlss);
 							TimeUtil.printDurationMillis("Converting releases", start);
-							for (Release matchingRls : matchingRlss)
+							for (Release matchingRls : allMatchingRlss)
 							{
 								start = System.nanoTime();
 								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, matchingRls));
