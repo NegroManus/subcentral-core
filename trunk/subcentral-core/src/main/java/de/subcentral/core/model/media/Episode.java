@@ -2,14 +2,13 @@ package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -334,13 +333,9 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Episode o = (Episode) obj;
-			return new EqualsBuilder().append(series, o.series)
-					.append(numberInSeries, o.numberInSeries)
-					.append(season, o.season)
-					.append(numberInSeason, o.numberInSeason)
-					.append(date, o.date)
-					.append(StringUtils.equalsIgnoreCase(title, o.title), true)
-					.isEquals();
+			return Objects.equals(series, o.series) && Objects.equals(numberInSeries, o.numberInSeries) && Objects.equals(season, o.season)
+					&& Objects.equals(numberInSeason, o.numberInSeason) && Objects.equals(date, o.date)
+					&& StringUtils.equalsIgnoreCase(title, o.title);
 		}
 		return false;
 	}
@@ -399,7 +394,7 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 
 	private void ensurePartOfSeries(Season season) throws IllegalArgumentException
 	{
-		if (season != null && !Objects.equal(season.getSeries(), series))
+		if (season != null && !Objects.equals(season.getSeries(), series))
 		{
 			throw new IllegalArgumentException("The given season is not part of this episode's series: " + season + " is not part of " + series);
 		}

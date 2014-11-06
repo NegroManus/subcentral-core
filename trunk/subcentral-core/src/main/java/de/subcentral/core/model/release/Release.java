@@ -4,8 +4,8 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -404,7 +404,7 @@ public class Release implements Comparable<Release>
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Release o = (Release) obj;
-			return new EqualsBuilder().append(media, o.media).append(group, o.group).append(tags, o.tags).isEquals();
+			return Objects.equals(media, o.media) && Objects.equals(group, o.group) && Objects.equals(tags, o.tags);
 		}
 		return false;
 	}

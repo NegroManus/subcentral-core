@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -282,7 +282,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			SubtitleAdjustment o = (SubtitleAdjustment) obj;
-			return new EqualsBuilder().append(subtitles, o.subtitles).append(matchingReleases, o.matchingReleases).isEquals();
+			return Objects.equals(subtitles, o.subtitles) && Objects.equals(matchingReleases, o.matchingReleases);
 		}
 		return false;
 	}

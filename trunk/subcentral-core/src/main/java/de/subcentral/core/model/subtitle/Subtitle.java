@@ -2,9 +2,9 @@ package de.subcentral.core.model.subtitle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -431,15 +431,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Subtitle o = (Subtitle) obj;
-			return new EqualsBuilder().append(media, o.media)
-					.append(StringUtils.equalsIgnoreCase(language, o.language), true)
-					.append(hearingImpaired, o.hearingImpaired)
-					.append(foreignParts, o.foreignParts)
-					.append(tags, o.tags)
-					.append(group, o.group)
-					.append(source, o.source)
-					.append(version, o.version)
-					.isEquals();
+			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && hearingImpaired == o.hearingImpaired
+					&& foreignParts.equals(o.foreignParts) && Objects.equals(tags, o.tags) && Objects.equals(group, o.group)
+					&& Objects.equals(source, o.source) && version == o.version;
 		}
 		return false;
 	}

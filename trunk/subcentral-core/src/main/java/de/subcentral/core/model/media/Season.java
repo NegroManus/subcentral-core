@@ -2,10 +2,10 @@ package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -203,10 +203,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			Season o = (Season) obj;
-			return new EqualsBuilder().append(series, o.series)
-					.append(number, o.number)
-					.append(StringUtils.equalsIgnoreCase(title, o.title), true)
-					.isEquals();
+			return Objects.equals(series, o.series) && Objects.equals(number, o.number) && StringUtils.equalsIgnoreCase(title, o.title);
 		}
 		return false;
 	}

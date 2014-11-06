@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -185,13 +184,9 @@ public class GroupsCompatibility implements Compatibility
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			GroupsCompatibility o = (GroupsCompatibility) obj;
-			return new EqualsBuilder().append(sourceGroup, o.sourceGroup)
-					.append(sourceTags, o.sourceTags)
-					.append(compatibleGroup, o.compatibleGroup)
-					.append(compatibleTags, o.compatibleTags)
-					.append(scope, o.scope)
-					.append(bidirectional, o.bidirectional)
-					.isEquals();
+			return Objects.equals(sourceGroup, o.sourceGroup) && Objects.equals(sourceTags, o.sourceTags)
+					&& Objects.equals(compatibleGroup, o.compatibleGroup) && Objects.equals(compatibleTags, o.compatibleTags)
+					&& scope.equals(o.scope) && bidirectional == o.bidirectional;
 		}
 		return false;
 	}
