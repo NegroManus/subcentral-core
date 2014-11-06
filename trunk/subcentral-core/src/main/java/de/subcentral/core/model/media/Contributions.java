@@ -3,14 +3,16 @@ package de.subcentral.core.model.media;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 public class Contributions
 {
-	public static ListMultimap<String, Contribution> sortByType(Collection<Contribution> contributions)
+	public static ListMultimap<String, Contribution> groupByType(Collection<Contribution> contributions)
 	{
 		if (contributions.isEmpty())
 		{
@@ -24,9 +26,21 @@ public class Contributions
 		return sorted.build();
 	}
 
-	public static List<Contribution> getOfType(Collection<Contribution> contributions, String type)
+	public static List<Contribution> filterByType(Collection<Contribution> contributions, String type)
 	{
-		return sortByType(contributions).get(type);
+		if (contributions.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<Contribution> matchingContributions = ImmutableList.builder();
+		for (Contribution c : contributions)
+		{
+			if (Objects.equals(type, c.getType()))
+			{
+				matchingContributions.add(c);
+			}
+		}
+		return matchingContributions.build();
 	}
 
 	public static double calcProgress(Collection<Contribution> contributions)
@@ -52,7 +66,7 @@ public class Contributions
 
 	public static double calcProgress(Collection<Contribution> contributions, String type)
 	{
-		return calcProgress(getOfType(contributions, type));
+		return calcProgress(filterByType(contributions, type));
 	}
 
 	public static Map<String, Double> calcProgresses(Collection<Contribution> contributions)
@@ -61,7 +75,7 @@ public class Contributions
 		{
 			return ImmutableMap.of();
 		}
-		ListMultimap<String, Contribution> sortedContributions = sortByType(contributions);
+		ListMultimap<String, Contribution> sortedContributions = groupByType(contributions);
 		ImmutableMap.Builder<String, Double> progresses = ImmutableMap.builder();
 		for (Map.Entry<String, Collection<Contribution>> entry : sortedContributions.asMap().entrySet())
 		{
