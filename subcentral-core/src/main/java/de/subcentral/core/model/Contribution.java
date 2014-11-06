@@ -62,8 +62,8 @@ public class Contribution implements Comparable<Contribution>
 	}
 
 	/**
-	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined when knowing the other contributions.
-	 * The default value is 0L (not measurable).
+	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined by knowing the amount of the other
+	 * contributions. The default value is 0L (not measurable).
 	 * 
 	 * @return the amount (a zero or positive long)
 	 */
@@ -76,7 +76,7 @@ public class Contribution implements Comparable<Contribution>
 	{
 		if (amount < 0L)
 		{
-			throw new IllegalArgumentException("amount must be 0 or positive");
+			throw new IllegalArgumentException("amount must be zero or positive");
 		}
 		this.amount = amount;
 	}
