@@ -2,7 +2,6 @@ package de.subcentral.core.model;
 
 import java.util.Objects;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -12,24 +11,39 @@ import de.subcentral.core.Settings;
 
 public class Contribution implements Comparable<Contribution>
 {
-	private String		type;
 	private Contributor	contributor;
+	private String		type;
 	private long		amount		= 0L;
 	private double		progress	= 1.0d;
 	private String		description;
 
-	public Contribution()
+	public Contribution(Contributor contributor)
 	{
-
+		this.contributor = Objects.requireNonNull(contributor, "contributor");
 	}
 
-	public Contribution(String type, Contributor contributor, long amount, double progress, String description)
+	public Contribution(Contributor contributor, String type, long amount, double progress, String description)
 	{
+		this.contributor = Objects.requireNonNull(contributor, "contributor");
 		this.type = type;
-		this.contributor = contributor;
 		this.amount = amount;
 		this.progress = progress;
 		this.description = description;
+	}
+
+	/**
+	 * The person / company / etc that contributed.
+	 * 
+	 * @return the contributor
+	 */
+	public Contributor getContributor()
+	{
+		return contributor;
+	}
+
+	public void setContributor(Contributor contributor) throws NullPointerException
+	{
+		this.contributor = Objects.requireNonNull(contributor);
 	}
 
 	/**
@@ -48,21 +62,6 @@ public class Contribution implements Comparable<Contribution>
 	}
 
 	/**
-	 * The person / company / etc that contributed.
-	 * 
-	 * @return the contributor
-	 */
-	public Contributor getContributor()
-	{
-		return contributor;
-	}
-
-	public void setContributor(Contributor contributor)
-	{
-		this.contributor = contributor;
-	}
-
-	/**
 	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined when knowing the other contributions.
 	 * The default value is 0L (not measurable).
 	 * 
@@ -73,9 +72,12 @@ public class Contribution implements Comparable<Contribution>
 		return amount;
 	}
 
-	public void setAmount(long amount)
+	public void setAmount(long amount) throws IllegalArgumentException
 	{
-		Validate.inclusiveBetween(0L, Long.MAX_VALUE, amount);
+		if (amount < 0L)
+		{
+			throw new IllegalArgumentException("amount must be 0 or positive");
+		}
 		this.amount = amount;
 	}
 
@@ -89,9 +91,12 @@ public class Contribution implements Comparable<Contribution>
 		return progress;
 	}
 
-	public void setProgress(double progress)
+	public void setProgress(double progress) throws IllegalArgumentException
 	{
-		Validate.inclusiveBetween(0d, 1d, progress);
+		if (progress < 0.0d || progress > 1.0d)
+		{
+			throw new IllegalArgumentException("progress must be inclusively between 0.0 and 1.0");
+		}
 		this.progress = progress;
 	}
 
@@ -121,7 +126,7 @@ public class Contribution implements Comparable<Contribution>
 		if (obj instanceof Contribution)
 		{
 			Contribution o = (Contribution) obj;
-			return Objects.equals(type, o.type) && Objects.equals(contributor, o.contributor) && Objects.equals(description, o.description);
+			return contributor.equals(o.contributor) && Objects.equals(type, o.type) && Objects.equals(description, o.description);
 		}
 		return false;
 	}
@@ -129,7 +134,7 @@ public class Contribution implements Comparable<Contribution>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(63, 19).append(type).append(contributor).append(description).toHashCode();
+		return new HashCodeBuilder(63, 19).append(contributor).append(type).append(description).toHashCode();
 	}
 
 	@Override
@@ -141,10 +146,8 @@ public class Contribution implements Comparable<Contribution>
 			return 1;
 		}
 		return ComparisonChain.start()
+				.compare(contributor.getName(), o.contributor.getName(), Settings.STRING_ORDERING)
 				.compare(type, o.type, Settings.STRING_ORDERING)
-				.compare(contributor != null ? contributor.getName() : null,
-						o.contributor != null ? o.contributor.getName() : null,
-						Settings.STRING_ORDERING)
 				.compare(description, o.description, Settings.STRING_ORDERING)
 				.result();
 	}
@@ -154,8 +157,8 @@ public class Contribution implements Comparable<Contribution>
 	{
 		return MoreObjects.toStringHelper(Contribution.class)
 				.omitNullValues()
-				.add("type", type)
 				.add("contributor", contributor)
+				.add("type", type)
 				.add("amount", amount)
 				.add("progress", progress)
 				.add("description", description)
