@@ -13,22 +13,29 @@ public class Contribution implements Comparable<Contribution>
 {
 	private Contributor	contributor;
 	private String		type;
-	private long		amount		= 0L;
-	private double		progress	= 1.0d;
 	private String		description;
+	private int			amount		= 0;
+	private float		progress	= 1.0f;
 
-	public Contribution(Contributor contributor)
+	public Contribution()
 	{
-		setContributor(contributor);
+
 	}
 
-	public Contribution(Contributor contributor, String type, long amount, double progress, String description)
+	public Contribution(Contributor contributor, String type, String description)
 	{
-		setContributor(contributor);
+		this.contributor = contributor;
 		this.type = type;
+		this.description = description;
+	}
+
+	public Contribution(Contributor contributor, String type, String description, int amount, float progress)
+	{
+		this.contributor = contributor;
+		this.type = type;
+		this.description = description;
 		setAmount(amount);
 		setProgress(progress);
-		this.description = description;
 	}
 
 	/**
@@ -41,9 +48,9 @@ public class Contribution implements Comparable<Contribution>
 		return contributor;
 	}
 
-	public void setContributor(Contributor contributor) throws NullPointerException
+	public void setContributor(Contributor contributor)
 	{
-		this.contributor = Objects.requireNonNull(contributor);
+		this.contributor = contributor;
 	}
 
 	/**
@@ -65,16 +72,16 @@ public class Contribution implements Comparable<Contribution>
 	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined by knowing the amount of the other
 	 * contributions. The default value is 0L (not measurable).
 	 * 
-	 * @return the amount (a zero or positive long)
+	 * @return the amount (a zero or positive int)
 	 */
-	public long getAmount()
+	public int getAmount()
 	{
 		return amount;
 	}
 
-	public void setAmount(long amount) throws IllegalArgumentException
+	public void setAmount(int amount) throws IllegalArgumentException
 	{
-		if (amount < 0L)
+		if (amount < 0)
 		{
 			throw new IllegalArgumentException("amount must be zero or positive");
 		}
@@ -82,18 +89,18 @@ public class Contribution implements Comparable<Contribution>
 	}
 
 	/**
-	 * The progress of the contribution. A percentage value between 0.0d and 1.0d inclusively. The default value is 1.0d (complete).
+	 * The progress of the contribution. A percentage value between 0.0f and 1.0f inclusively. The default value is 1.0f (complete).
 	 * 
-	 * @return the progress (0.0d - 1.0d)
+	 * @return the progress (0.0f - 1.0f)
 	 */
-	public double getProgress()
+	public float getProgress()
 	{
 		return progress;
 	}
 
-	public void setProgress(double progress) throws IllegalArgumentException
+	public void setProgress(float progress) throws IllegalArgumentException
 	{
-		if (progress < 0.0d || progress > 1.0d)
+		if (progress < 0.0f || progress > 1.0f)
 		{
 			throw new IllegalArgumentException("progress must be inclusively between 0.0 and 1.0");
 		}
@@ -126,7 +133,7 @@ public class Contribution implements Comparable<Contribution>
 		if (obj instanceof Contribution)
 		{
 			Contribution o = (Contribution) obj;
-			return contributor.equals(o.contributor) && Objects.equals(type, o.type) && Objects.equals(description, o.description);
+			return Objects.equals(contributor, o.contributor) && Objects.equals(type, o.type) && Objects.equals(description, o.description);
 		}
 		return false;
 	}
@@ -146,7 +153,9 @@ public class Contribution implements Comparable<Contribution>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(contributor.getName(), o.contributor.getName(), Settings.STRING_ORDERING)
+				.compare(contributor != null ? contributor.getName() : null,
+						o.contributor != null ? o.contributor.getName() : null,
+						Settings.STRING_ORDERING)
 				.compare(type, o.type, Settings.STRING_ORDERING)
 				.compare(description, o.description, Settings.STRING_ORDERING)
 				.result();

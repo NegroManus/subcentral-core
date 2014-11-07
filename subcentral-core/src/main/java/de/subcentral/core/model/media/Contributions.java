@@ -43,40 +43,40 @@ public class Contributions
 		return matchingContributions.build();
 	}
 
-	public static double calcProgress(Collection<Contribution> contributions)
+	public static float calcProgress(Collection<Contribution> contributions)
 	{
 		if (contributions.isEmpty())
 		{
-			return 0d;
+			return 0.0f;
 		}
-		long totalAmount = 0;
-		double amountDone = 0d;
+		int totalAmount = 0;
+		float amountDone = 0.0f;
 		for (Contribution c : contributions)
 		{
 			totalAmount += c.getAmount();
 			amountDone += c.getAmount() * c.getProgress();
 		}
-		if (totalAmount == 0L)
+		if (totalAmount == 0)
 		{
 			// return zero if no amount at all
-			return 0d;
+			return 0.0f;
 		}
 		return amountDone / totalAmount;
 	}
 
-	public static double calcProgress(Collection<Contribution> contributions, String type)
+	public static float calcProgress(Collection<Contribution> contributions, String type)
 	{
 		return calcProgress(filterByType(contributions, type));
 	}
 
-	public static Map<String, Double> calcProgresses(Collection<Contribution> contributions)
+	public static Map<String, Float> calcProgresses(Collection<Contribution> contributions)
 	{
 		if (contributions.isEmpty())
 		{
 			return ImmutableMap.of();
 		}
 		ListMultimap<String, Contribution> sortedContributions = groupByType(contributions);
-		ImmutableMap.Builder<String, Double> progresses = ImmutableMap.builder();
+		ImmutableMap.Builder<String, Float> progresses = ImmutableMap.builder();
 		for (Map.Entry<String, Collection<Contribution>> entry : sortedContributions.asMap().entrySet())
 		{
 			progresses.put(entry.getKey(), calcProgress(entry.getValue()));

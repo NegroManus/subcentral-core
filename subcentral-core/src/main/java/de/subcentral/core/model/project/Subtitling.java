@@ -67,7 +67,7 @@ public class Subtitling implements Work
 		return Contributions.calcProgress(contributions, contributionType);
 	}
 
-	public Map<String, Double> getProgresses()
+	public Map<String, Float> getProgresses()
 	{
 		return Contributions.calcProgresses(contributions);
 	}
