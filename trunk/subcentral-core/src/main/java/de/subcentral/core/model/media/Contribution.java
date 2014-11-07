@@ -102,7 +102,7 @@ public class Contribution implements Comparable<Contribution>
 	{
 		if (progress < 0.0f || progress > 1.0f)
 		{
-			throw new IllegalArgumentException("progress must be inclusively between 0.0 and 1.0");
+			throw new IllegalArgumentException("progress must be between 0.0 and 1.0 inclusively");
 		}
 		this.progress = progress;
 	}
