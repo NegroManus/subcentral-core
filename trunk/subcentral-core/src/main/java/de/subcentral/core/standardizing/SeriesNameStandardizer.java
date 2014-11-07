@@ -8,11 +8,11 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.util.PatternReplacer;
 
-public class SeriesNamerStandardizer implements Standardizer<Series>
+public class SeriesNameStandardizer implements Standardizer<Series>
 {
 	private final PatternReplacer	patternReplacer;
 
-	public SeriesNamerStandardizer(PatternReplacer patternReplacer)
+	public SeriesNameStandardizer(PatternReplacer patternReplacer)
 	{
 		this.patternReplacer = Objects.requireNonNull(patternReplacer, "patternReplacer");
 	}

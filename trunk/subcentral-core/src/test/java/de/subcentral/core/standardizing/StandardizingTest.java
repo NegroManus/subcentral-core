@@ -43,7 +43,7 @@ public class StandardizingTest
 			return ImmutableList.of(new StandardizingChange(e, Episode.PROP_SPECIAL.getPropName(), oldVal, newVal));
 		});
 		service.registerStandardizer(Series.class,
-				new SeriesNamerStandardizer(new PatternReplacer(ImmutableMap.<Pattern, String> of(Pattern.compile("Psych"), "Psych (2001)"))));
+				new SeriesNameStandardizer(new PatternReplacer(ImmutableMap.<Pattern, String> of(Pattern.compile("Psych"), "Psych (2001)"))));
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 2, 2);
 		Episode expectedEpi = Episode.createSeasonedEpisode("Psych (2001)", 2, 2);
