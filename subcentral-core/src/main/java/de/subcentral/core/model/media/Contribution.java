@@ -69,6 +69,21 @@ public class Contribution implements Comparable<Contribution>
 	}
 
 	/**
+	 * Further description / specification of the contribution.
+	 * 
+	 * @return the description
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	/**
 	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined by knowing the amount of the other
 	 * contributions. The default value is 0L (not measurable).
 	 * 
@@ -105,21 +120,6 @@ public class Contribution implements Comparable<Contribution>
 			throw new IllegalArgumentException("progress must be between 0.0 and 1.0 inclusively");
 		}
 		this.progress = progress;
-	}
-
-	/**
-	 * Further description / specification of the contribution.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription()
-	{
-		return description;
-	}
-
-	public void setDescription(String description)
-	{
-		this.description = description;
 	}
 
 	// Object methods
@@ -168,9 +168,9 @@ public class Contribution implements Comparable<Contribution>
 				.omitNullValues()
 				.add("contributor", contributor)
 				.add("type", type)
+				.add("description", description)
 				.add("amount", amount)
 				.add("progress", progress)
-				.add("description", description)
 				.toString();
 	}
 }
