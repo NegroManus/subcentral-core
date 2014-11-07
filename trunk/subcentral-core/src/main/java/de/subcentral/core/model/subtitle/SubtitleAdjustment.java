@@ -268,7 +268,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void addAdjuster(Contributor contributor)
 	{
-		contributions.add(new Contribution(contributor, CONTRIBUTION_TYPE_ADJUSTMENT, 1L, 1d, null));
+		contributions.add(new Contribution(contributor, CONTRIBUTION_TYPE_ADJUSTMENT, null, 1, 1.0f));
 	}
 
 	// Object methods
