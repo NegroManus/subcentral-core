@@ -59,7 +59,7 @@ public class SimpleParsingService implements ParsingService
 		Parsings.requireNotBlank(text, targetClass);
 		try
 		{
-			Objects.requireNonNull(targetClass, "targetClass cannot be null. For untyped parsing use " + getClass() + ".parse(String).");
+			Objects.requireNonNull(targetClass, "targetClass cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
 			return targetClass.cast(doParse(text, targetClass));
 		}
 		catch (ClassCastException | NullPointerException e)
