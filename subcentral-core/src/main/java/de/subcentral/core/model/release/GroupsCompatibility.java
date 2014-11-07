@@ -15,7 +15,7 @@ public class GroupsCompatibility implements Compatibility
 {
 	public static enum Scope
 	{
-		IF_EXISTS, ALWAYS;
+		ALWAYS, IF_EXISTS;
 	}
 
 	public static enum MatchDirection
@@ -98,16 +98,6 @@ public class GroupsCompatibility implements Compatibility
 		}
 		switch (getScope())
 		{
-			case IF_EXISTS:
-				Set<Release> compatibles = new HashSet<>(4);
-				for (Release existingRls : existingRlss)
-				{
-					if (matchesCompatible(existingRls, md) && !rls.equals(existingRls))
-					{
-						compatibles.add(existingRls);
-					}
-				}
-				return compatibles;
 			case ALWAYS:
 				Release compatibleRls = buildCompatible(rls, md);
 				if (!rls.equals(compatibleRls))
@@ -115,6 +105,17 @@ public class GroupsCompatibility implements Compatibility
 					return ImmutableSet.of(compatibleRls);
 				}
 				break;
+			case IF_EXISTS:
+				Set<Release> compatibles = new HashSet<>(4);
+				for (Release existingRls : existingRlss)
+				{
+					if (matchesCompatible(existingRls, md) && !rls.equals(existingRls))
+					{
+						// Set.add() only adds if does not yet exist
+						compatibles.add(existingRls);
+					}
+				}
+				return compatibles;
 		}
 		return ImmutableSet.of();
 	}
