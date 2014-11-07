@@ -15,7 +15,7 @@ public class GroupsCompatibility implements Compatibility
 {
 	public static enum Scope
 	{
-		ALWAYS, IF_EXISTS;
+		ALWAYS, IF_EXISTS, IF_EXISTS_OR_NO_INFO;
 	}
 
 	public static enum MatchDirection
@@ -96,26 +96,26 @@ public class GroupsCompatibility implements Compatibility
 		{
 			return ImmutableSet.of();
 		}
-		switch (getScope())
+		if (scope == Scope.ALWAYS || (scope == Scope.IF_EXISTS_OR_NO_INFO && existingRlss.isEmpty()))
 		{
-			case ALWAYS:
-				Release compatibleRls = buildCompatible(rls, md);
-				if (!rls.equals(compatibleRls))
+			Release compatibleRls = buildCompatible(rls, md);
+			if (!rls.equals(compatibleRls))
+			{
+				return ImmutableSet.of(compatibleRls);
+			}
+		}
+		else if (scope == Scope.IF_EXISTS || scope == Scope.IF_EXISTS_OR_NO_INFO)
+		{
+			Set<Release> compatibles = new HashSet<>(4);
+			for (Release existingRls : existingRlss)
+			{
+				if (matchesCompatible(existingRls, md) && !rls.equals(existingRls))
 				{
-					return ImmutableSet.of(compatibleRls);
+					// Set.add() only adds if does not exist yet
+					compatibles.add(existingRls);
 				}
-				break;
-			case IF_EXISTS:
-				Set<Release> compatibles = new HashSet<>(4);
-				for (Release existingRls : existingRlss)
-				{
-					if (matchesCompatible(existingRls, md) && !rls.equals(existingRls))
-					{
-						// Set.add() only adds if does not yet exist
-						compatibles.add(existingRls);
-					}
-				}
-				return compatibles;
+			}
+			return compatibles;
 		}
 		return ImmutableSet.of();
 	}
