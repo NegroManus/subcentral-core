@@ -1,19 +1,23 @@
 package de.subcentral.core.model;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.Test;
 
 import de.subcentral.core.model.media.Contribution;
 import de.subcentral.core.model.media.Contributions;
 import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.util.TimeUtil;
 
 public class ContributionTest
 {
-	public static void main(String[] args)
+	@Test
+	public void testContributions()
 	{
-		List<Contribution> clist = new ArrayList<>();
 		Contribution c1 = new Contribution();
 		c1.setType(Subtitle.CONTRIBUTION_TYPE_TRANSLATION);
 		c1.setAmount(50);
@@ -31,18 +35,17 @@ public class ContributionTest
 		cb1.setAmount(1);
 		cb1.setProgress(1f);
 
-		clist.add(c1);
-		clist.add(c2);
-		clist.add(c3);
-		clist.add(cb1);
+		List<Contribution> contributions = new ArrayList<>(4);
+		contributions.add(c1);
+		contributions.add(c2);
+		contributions.add(c3);
+		contributions.add(cb1);
 
-		for (int i = 0; i < 100; i++)
-		{
-			long start = System.nanoTime();
-			Map<String, Float> progresses = Contributions.calcProgresses(clist);
-			double duration = TimeUtil.durationMillis(start, System.nanoTime());
-			System.out.println(duration + "ms");
-			System.out.println(progresses);
-		}
+		Map<String, Float> calculatedProgresses = Contributions.calcProgresses(contributions);
+		Map<String, Float> expectedProgresses = new HashMap<>(2);
+		expectedProgresses.put(Subtitle.CONTRIBUTION_TYPE_TRANSLATION, 0.625f);
+		expectedProgresses.put(Subtitle.CONTRIBUTION_TYPE_REVISION, 1.0f);
+
+		assertEquals(expectedProgresses, calculatedProgresses);
 	}
 }
