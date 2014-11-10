@@ -219,7 +219,7 @@ class WindowsWinRarPackager extends WinRarPackager
 				break;
 			case REPLACE:
 				// do not set the overwrite mode as the target file is deleted anyway if it existed
-				// see de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
+				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
 				break;
 		}
 		switch (cfg.getSourceDeletionMode())
