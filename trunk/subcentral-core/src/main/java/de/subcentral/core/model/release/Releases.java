@@ -23,7 +23,7 @@ public class Releases
 		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
 		for (Release rls : rlss)
 		{
-			if (rls != null && Releases.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService))
+			if (Releases.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService))
 			{
 				filteredRlss.add(rls);
 			}
