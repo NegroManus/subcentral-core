@@ -38,7 +38,6 @@ public interface PropNames
 	public static final String	SERIES				= "series";
 	public static final String	SIZE				= "size";
 	public static final String	SOURCE				= "source";
-	public static final String	SOURCE_URL			= "sourceUrl";
 	public static final String	SPECIAL				= "special";
 	public static final String	STATE				= "state";
 	public static final String	SUBTITLES			= "subtitles";

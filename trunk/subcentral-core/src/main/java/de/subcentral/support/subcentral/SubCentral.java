@@ -103,7 +103,6 @@ public class SubCentral
 				ImmutableMap.Builder<SimplePropDescriptor, String> predefinedMatches = ImmutableMap.builder();
 				predefinedMatches.putAll(sceneMatcher.getPredefinedMatches());
 				predefinedMatches.put(Subtitle.PROP_SOURCE, "SubCentral.de");
-				predefinedMatches.put(Subtitle.PROP_SOURCE_URL, "http://www.subcentral.de");
 				MappingMatcher<SimplePropDescriptor> matcher = new MappingMatcher<SimplePropDescriptor>(p, grps.build(), predefinedMatches.build());
 				matchers.add(matcher);
 			}

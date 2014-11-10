@@ -7,6 +7,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.Settings;
 
+/**
+ * 
+ * @implSpec #immutable #thread-safe
+ */
 public class Group implements Comparable<Group>
 {
 	private final String	name;

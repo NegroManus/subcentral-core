@@ -35,8 +35,8 @@ public class Release implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_NAME		= new SimplePropDescriptor(Release.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_MEDIA		= new SimplePropDescriptor(Release.class, PropNames.MEDIA);
 	public static final SimplePropDescriptor	PROP_TAGS		= new SimplePropDescriptor(Release.class, PropNames.TAGS);
-	public static final SimplePropDescriptor	PROP_LANGUAGES	= new SimplePropDescriptor(Release.class, PropNames.LANGUAGES);
 	public static final SimplePropDescriptor	PROP_GROUP		= new SimplePropDescriptor(Release.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_LANGUAGES	= new SimplePropDescriptor(Release.class, PropNames.LANGUAGES);
 	public static final SimplePropDescriptor	PROP_SECTION	= new SimplePropDescriptor(Release.class, PropNames.SECTION);
 	public static final SimplePropDescriptor	PROP_DATE		= new SimplePropDescriptor(Release.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_SIZE		= new SimplePropDescriptor(Release.class, PropNames.SIZE);
@@ -44,15 +44,13 @@ public class Release implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_NUKES		= new SimplePropDescriptor(Release.class, PropNames.NUKES);
 	public static final SimplePropDescriptor	PROP_INFO		= new SimplePropDescriptor(Release.class, PropNames.INFO);
 	public static final SimplePropDescriptor	PROP_INFO_URL	= new SimplePropDescriptor(Release.class, PropNames.INFO_URL);
-	public static final SimplePropDescriptor	PROP_SOURCE		= new SimplePropDescriptor(Release.class, PropNames.SOURCE);
-	public static final SimplePropDescriptor	PROP_SOURCE_URL	= new SimplePropDescriptor(Release.class, PropNames.SOURCE_URL);
 
 	private String								name;
-	// In 99,9% of the cases, there is only one Media per Release
+	// In 99% of the cases, there is only one Media per Release
 	private final List<Media>					media			= new ArrayList<>(1);
-	private Group								group;
 	// Normally there are 2 to 4 Tags per Release
 	private final List<Tag>						tags			= new ArrayList<>(4);
+	private Group								group;
 	private final List<String>					languages		= new ArrayList<>(1);
 	private String								section;
 	private Temporal							date;
@@ -61,8 +59,6 @@ public class Release implements Comparable<Release>
 	private final List<Nuke>					nukes			= new ArrayList<>(0);
 	private String								info;
 	private String								infoUrl;
-	private String								source;
-	private String								sourceUrl;
 
 	public static Release create(Media media, String group, String... tags)
 	{
@@ -96,20 +92,20 @@ public class Release implements Comparable<Release>
 		this.name = name;
 	}
 
-	public Release(String name, Media media, Group group, List<Tag> tags)
+	public Release(String name, Media media, List<Tag> tags, Group group)
 	{
 		this.name = name;
 		this.media.add(media);
-		this.group = group;
 		this.tags.addAll(tags);
+		this.group = group;
 	}
 
-	public Release(String name, List<Media> media, Group group, List<Tag> tags)
+	public Release(String name, List<Media> media, List<Tag> tags, Group group)
 	{
 		this.name = name;
 		this.media.addAll(media);
-		this.group = group;
 		this.tags.addAll(tags);
+		this.group = group;
 	}
 
 	public Release(Release rls)
@@ -117,8 +113,8 @@ public class Release implements Comparable<Release>
 		this.name = rls.name;
 		// just the media references are copied into the new list, no deep copy
 		this.media.addAll(rls.media);
-		this.group = rls.group;
 		this.tags.addAll(rls.tags);
+		this.group = rls.group;
 		this.languages.addAll(rls.languages);
 		this.date = rls.date;
 		this.section = rls.section;
@@ -127,8 +123,6 @@ public class Release implements Comparable<Release>
 		this.nukes.addAll(rls.nukes);
 		this.info = rls.info;
 		this.infoUrl = rls.infoUrl;
-		this.source = rls.source;
-		this.sourceUrl = rls.sourceUrl;
 	}
 
 	/**
@@ -166,22 +160,6 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * The group which released this release.
-	 * 
-	 * @return the release group
-	 * @see #getSource()
-	 */
-	public Group getGroup()
-	{
-		return group;
-	}
-
-	public void setGroup(Group group)
-	{
-		this.group = group;
-	}
-
-	/**
 	 * The release tags. Like XviD, WEB-DL, DD5.1, 720p, HDTV, PROPER, REPACK, GERMAN CUSTOM SUBBED, FRENCH, NLSUBBED, etc. May contain language tags.
 	 * 
 	 * @return the tags
@@ -195,6 +173,22 @@ public class Release implements Comparable<Release>
 	{
 		this.tags.clear();
 		this.tags.addAll(tags);
+	}
+
+	/**
+	 * The group which released this release.
+	 * 
+	 * @return the release group
+	 * @see #getSource()
+	 */
+	public Group getGroup()
+	{
+		return group;
+	}
+
+	public void setGroup(Group group)
+	{
+		this.group = group;
 	}
 
 	/**
@@ -320,36 +314,6 @@ public class Release implements Comparable<Release>
 		this.infoUrl = infoUrl;
 	}
 
-	/**
-	 * The name of the source of this release. Typically the site which released this release.
-	 * 
-	 * @return the source
-	 */
-	public String getSource()
-	{
-		return source;
-	}
-
-	public void setSource(String source)
-	{
-		this.source = source;
-	}
-
-	/**
-	 * An URL pointing to the source of this release. Typically the site which released this release.
-	 * 
-	 * @return the source URL
-	 */
-	public String getSourceUrl()
-	{
-		return sourceUrl;
-	}
-
-	public void setSourceUrl(String sourceUrl)
-	{
-		this.sourceUrl = sourceUrl;
-	}
-
 	// Convenience
 	public boolean containsSingleMedia()
 	{
@@ -392,7 +356,7 @@ public class Release implements Comparable<Release>
 
 	// Object methods
 	/**
-	 * Compared by their {@link #getMedia() media}, {@link #getGroup() group} and {@link #getTags() tags}.
+	 * Compared by their {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
 	 */
 	@Override
 	public boolean equals(Object obj)
@@ -404,22 +368,22 @@ public class Release implements Comparable<Release>
 		if (obj instanceof Release)
 		{
 			Release o = (Release) obj;
-			return Objects.equals(media, o.media) && Objects.equals(group, o.group) && Objects.equals(tags, o.tags);
+			return Objects.equals(media, o.media) && Objects.equals(tags, o.tags) && Objects.equals(group, o.group);
 		}
 		return false;
 	}
 
 	/**
-	 * Calculated from its {@link #getMedia() media}, {@link #getGroup() group} and {@link #getTags() tags}.
+	 * Calculated from its {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
 	 */
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(45, 7).append(media).append(group).append(tags).toHashCode();
+		return new HashCodeBuilder(45, 7).append(media).append(tags).append(group).toHashCode();
 	}
 
 	/**
-	 * Two releases are compared by their media, then by their groups and then their tags.
+	 * Two releases are compared by their media, then their tags and then by their groups.
 	 */
 	@Override
 	public int compareTo(Release o)
@@ -431,8 +395,8 @@ public class Release implements Comparable<Release>
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, Medias.MEDIA_ITERABLE_NAME_COMPARATOR)
-				.compare(group, o.group, Settings.createDefaultOrdering())
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.compare(group, o.group, Settings.createDefaultOrdering())
 				.result();
 	}
 
@@ -443,8 +407,8 @@ public class Release implements Comparable<Release>
 				.omitNullValues()
 				.add("name", name)
 				.add("media", Models.nullIfEmpty(media))
-				.add("group", group)
 				.add("tags", Models.nullIfEmpty(tags))
+				.add("group", group)
 				.add("languages", Models.nullIfEmpty(languages))
 				.add("date", date)
 				.add("section", section)
@@ -453,8 +417,6 @@ public class Release implements Comparable<Release>
 				.add("nukes", Models.nullIfEmpty(nukes))
 				.add("info", info)
 				.add("infoUrl", infoUrl)
-				.add("source", source)
-				.add("sourceUrl", sourceUrl)
 				.toString();
 	}
 }

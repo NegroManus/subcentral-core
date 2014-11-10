@@ -125,7 +125,7 @@ public abstract class WinRarPackager
 			process.getOutputStream().close();
 			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeoutValue(), cfg.getTimeoutUnit());
 			exitCode = process.exitValue();
-			log.debug("Execution exited with {}: {}", exitCode, processBuilder.command());
+			log.debug("Execution exited with exit code {} {}", exitCode, processBuilder.command());
 
 			// may add tags
 			if (targetExists && cfg.getTargetOverwriteMode() == OverwriteMode.UPDATE
