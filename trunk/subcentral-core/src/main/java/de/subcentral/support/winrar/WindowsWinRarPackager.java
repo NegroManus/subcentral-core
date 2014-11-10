@@ -21,8 +21,6 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
-import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
-import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 class WindowsWinRarPackager extends WinRarPackager
 {
@@ -208,24 +206,38 @@ class WindowsWinRarPackager extends WinRarPackager
 		args.add("-ep"); // -EP - exclude paths from names
 		args.add("-m" + cfg.getCompressionMethod().getCode()); // -M<n> - set compression method
 		args.add("-y"); // -Y - assume Yes on all queries
-		if (OverwriteMode.UPDATE == cfg.getTargetOverwriteMode()) // -O[+|-] - set the overwrite mode
+		switch (cfg.getTargetOverwriteMode())
 		{
-			args.add("-o+");
+			case SKIP:
+				// "-o- Skip existing files."
+				args.add("-o-");
+				break;
+			case UPDATE:
+				// "-o+ Overwrite all
+				// (default for updating archived files);"
+				args.add("-o+");
+				break;
+			case REPLACE:
+				// do not set the overwrite mode as the target file is deleted anyway if it existed
+				// see de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
+				break;
 		}
-		else
+		switch (cfg.getSourceDeletionMode())
 		{
-			args.add("-o-");
-		}
-		if (DeletionMode.DELETE == cfg.getSourceDeletionMode())
-		{
-			args.add("-df"); // -DF - delete files after archiving
-		}
-		else if (DeletionMode.RECYCLE == cfg.getSourceDeletionMode())
-		{
-			args.add("-dr");
-			// -dr Delete files to Recycle Bin
-			// Delete files after archiving and place them to Recycle Bin.
-			// Available in Windows version only.
+			case KEEP:
+				// don't add a delete arg
+				break;
+			case RECYCLE:
+				// "-dr Delete files to Recycle Bin
+				// Delete files after archiving and place them to Recycle Bin.
+				// Available in Windows version only."
+				args.add("-dr");
+				break;
+			case DELETE:
+				// "-DF - delete files after archiving"
+				args.add("-df");
+				break;
+
 		}
 
 		// target package

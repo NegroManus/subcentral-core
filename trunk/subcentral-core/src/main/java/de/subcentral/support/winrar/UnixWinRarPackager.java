@@ -6,15 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Joiner;
 
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
-import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
 class UnixWinRarPackager extends WinRarPackager
 {
+	private static final Logger	log				= LogManager.getLogger(UnixWinRarPackager.class.getName());
+
 	private static final String	RAR_EXECUTABLE	= "rar";
 
 	UnixWinRarPackager(LocateStrategy locateStrategy, Path rarExe)
@@ -68,17 +71,36 @@ class UnixWinRarPackager extends WinRarPackager
 		args.add("-ep"); // -EP - exclude paths from names
 		args.add("-m" + cfg.getCompressionMethod().getCode()); // -M<n> - set compression method
 		args.add("-y"); // -Y - assume Yes on all queries
-		if (OverwriteMode.UPDATE == cfg.getTargetOverwriteMode()) // -O[+|-] - set the overwrite mode
+		switch (cfg.getTargetOverwriteMode())
 		{
-			args.add("-o+");
+			case SKIP:
+				// "-o- Skip existing files."
+				args.add("-o-");
+				break;
+			case UPDATE:
+				// "-o+ Overwrite all
+				// (default for updating archived files);"
+				args.add("-o+");
+				break;
+			case REPLACE:
+				// do not set the overwrite mode as the target file is deleted anyway if it existed
+				// see de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
+				break;
 		}
-		else
+		switch (cfg.getSourceDeletionMode())
 		{
-			args.add("-o-");
-		}
-		if (DeletionMode.DELETE == cfg.getSourceDeletionMode())
-		{
-			args.add("-df"); // -DF - delete files after archiving
+			case KEEP:
+				// don't add a delete option
+				break;
+			case RECYCLE:
+				// "Available in Windows version only."
+				log.warn("Option sourceDelectionMode={} is ignored. This option is only available in Windows versions of WinRAR",
+						DeletionMode.RECYCLE);
+				break;
+			case DELETE:
+				// -DF - delete files after archiving
+				args.add("-df");
+				break;
 		}
 
 		// target package
