@@ -16,9 +16,7 @@ import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 
 class UnixWinRarPackager extends WinRarPackager
 {
-	private static final Logger	log				= LogManager.getLogger(UnixWinRarPackager.class.getName());
-
-	private static final String	RAR_EXECUTABLE	= "rar";
+	private static final Logger	log	= LogManager.getLogger(UnixWinRarPackager.class.getName());
 
 	UnixWinRarPackager(LocateStrategy locateStrategy, Path rarExe)
 	{
@@ -54,7 +52,7 @@ class UnixWinRarPackager extends WinRarPackager
 	@Override
 	protected Path locateRarExecutable()
 	{
-		return Paths.get(RAR_EXECUTABLE);
+		return Paths.get("rar");
 	}
 
 	@Override
@@ -111,7 +109,7 @@ class UnixWinRarPackager extends WinRarPackager
 		// 1) the executable
 		// 2) the argument(s), separated with whitespace
 		List<String> command = new ArrayList<>(2);
-		command.add(RAR_EXECUTABLE);
+		command.add(rarExecutable.toString());
 		command.add(Joiner.on(' ').join(args));
 		return command;
 	}

@@ -24,12 +24,7 @@ import de.subcentral.support.winrar.WinRar.LocateStrategy;
 
 class WindowsWinRarPackager extends WinRarPackager
 {
-	private static final Logger	log						= LogManager.getLogger(WindowsWinRarPackager.class.getName());
-
-	/**
-	 * The Console RAR can only pack RAR archives, but it does not open a GUI.
-	 */
-	private static final String	RAR_EXECUTABLE_FILENAME	= "RAR.exe";
+	private static final Logger	log	= LogManager.getLogger(WindowsWinRarPackager.class.getName());
 
 	public static Path tryLocateRarExecutable()
 	{
@@ -154,7 +149,9 @@ class WindowsWinRarPackager extends WinRarPackager
 		log.debug("Trying to locate RAR executable in directories: {}", possibleWinRarDirectories);
 		for (Path path : possibleWinRarDirectories)
 		{
-			Path candidate = path.resolve(RAR_EXECUTABLE_FILENAME);
+			// The Console RAR.exe can only pack RAR archives, but it does not open a GUI.
+			// WinRAR.exe opens a GUI - so do not use that.
+			Path candidate = path.resolve("RAR.exe");
 			try
 			{
 				validateRarExecutable(candidate);
