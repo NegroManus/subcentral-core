@@ -18,7 +18,7 @@ public abstract class AbstractMedia implements Media
 	protected String								description;
 	protected final List<String>					coverUrls		= new ArrayList<>(1);
 	protected String								contentAdvisory;
-	protected final List<Contribution>				contributions	= new ArrayList<>();
+	protected final List<Contribution>				contributions	= new ArrayList<>(0);
 	// HashMap / HashSet initial capacities should be a power of 2
 	protected final Set<String>						furtherInfoUrls	= new HashSet<>(4);
 	protected final ListMultimap<String, Object>	attributes		= LinkedListMultimap.create(0);
