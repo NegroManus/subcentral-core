@@ -237,7 +237,6 @@ class WindowsWinRarPackager extends WinRarPackager
 				// "-DF - delete files after archiving"
 				args.add("-df");
 				break;
-
 		}
 
 		// target package
