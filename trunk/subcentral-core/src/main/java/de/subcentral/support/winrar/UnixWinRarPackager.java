@@ -84,7 +84,7 @@ class UnixWinRarPackager extends WinRarPackager
 				break;
 			case REPLACE:
 				// do not set the overwrite mode as the target file is deleted anyway if it existed
-				// see de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
+				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
 				break;
 		}
 		switch (cfg.getSourceDeletionMode())
@@ -111,7 +111,7 @@ class UnixWinRarPackager extends WinRarPackager
 
 		// Unix expects a command list which contains exactly two elements:
 		// 1) the executable
-		// 2) the argument(s); separated with whitespace
+		// 2) the argument(s), separated with whitespace
 		List<String> command = new ArrayList<>(2);
 		command.add(RAR_EXECUTABLE);
 		command.add(Joiner.on(' ').join(args));
