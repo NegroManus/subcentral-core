@@ -51,6 +51,7 @@ public abstract class WinRarPackager
 				default:
 					throw new IllegalArgumentException("Invalid LocateStrategy value:" + locateStrategy);
 			}
+			log.info("Using rar executable at {}", this.rarExecutable);
 		}
 		catch (NoSuchFileException | NullPointerException | SecurityException | URISyntaxException e)
 		{
