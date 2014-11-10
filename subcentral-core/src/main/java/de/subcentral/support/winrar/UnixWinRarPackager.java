@@ -66,8 +66,6 @@ class UnixWinRarPackager extends WinRarPackager
 		args.add("a"); // A - add to an archive
 
 		// WinRAR switches
-		// Cannot respect the archive format. -af not available
-		// "This switch is supported only by WinRAR. Console RAR is not able to create ZIP archives."
 		args.add("-ep"); // -EP - exclude paths from names
 		args.add("-m" + cfg.getCompressionMethod().getCode()); // -M<n> - set compression method
 		args.add("-y"); // -Y - assume Yes on all queries
@@ -83,14 +81,14 @@ class UnixWinRarPackager extends WinRarPackager
 				args.add("-o+");
 				break;
 			case REPLACE:
-				// do not set the overwrite mode as the target file is deleted anyway if it existed
-				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
+				// do not set the overwrite mode as it does not matter because the target file is deleted anyway
+				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig) if it existed
 				break;
 		}
 		switch (cfg.getSourceDeletionMode())
 		{
 			case KEEP:
-				// don't add a delete option
+				// don't add a delete switch
 				break;
 			case RECYCLE:
 				// "Available in Windows version only."

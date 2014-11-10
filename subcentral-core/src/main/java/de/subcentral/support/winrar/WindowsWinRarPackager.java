@@ -218,14 +218,14 @@ class WindowsWinRarPackager extends WinRarPackager
 				args.add("-o+");
 				break;
 			case REPLACE:
-				// do not set the overwrite mode as the target file is deleted anyway if it existed
-				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig)
+				// do not set the overwrite mode as it does not matter because the target file is deleted anyway
+				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig) if it existed
 				break;
 		}
 		switch (cfg.getSourceDeletionMode())
 		{
 			case KEEP:
-				// don't add a delete arg
+				// don't add a delete switch
 				break;
 			case RECYCLE:
 				// "-dr Delete files to Recycle Bin
