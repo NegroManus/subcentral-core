@@ -20,8 +20,8 @@ public class SameGroupCompatibility implements Compatibility
 		{
 			if (rls.getGroup().equals(existingRls.getGroup()) && !rls.equals(existingRls))
 			{
-				// Set.add() only adds the new element if that element is not already contained in the Set.
-				// That is what we want.
+				// Set.add() only adds if does not exist yet. That is what we want.
+				// Do not use ImmutableSet.Builder.add here as it allows the addition of duplicate entries but throws an exception at build time.
 				compatibles.add(existingRls);
 			}
 		}

@@ -101,7 +101,7 @@ public class WinRarPackResult
 	WinRarPackResult(int exitCode, EnumSet<Flag> flags, Exception exception)
 	{
 		this.exitCode = exitCode;
-		this.flags = EnumSet.copyOf(flags);
+		this.flags = EnumSet.copyOf(flags); // performs null check
 		this.exception = exception;
 	}
 
