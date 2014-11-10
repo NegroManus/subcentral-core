@@ -212,7 +212,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	public void setForeignParts(ForeignParts foreignParts)
 	{
-		this.foreignParts = foreignParts;
+		this.foreignParts = Objects.requireNonNull(foreignParts);
 	}
 
 	/**
