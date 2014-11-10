@@ -313,8 +313,12 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		return basis;
 	}
 
-	public void setBasis(Subtitle basis)
+	public void setBasis(Subtitle basis) throws IllegalArgumentException
 	{
+		if (this == basis)
+		{
+			throw new IllegalArgumentException("cannot be based on itself");
+		}
 		this.basis = basis;
 	}
 
