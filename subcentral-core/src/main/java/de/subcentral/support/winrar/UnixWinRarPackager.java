@@ -26,7 +26,7 @@ class UnixWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected String getRarExecutableResourceName()
+	protected String determineRarExecutableResourceFilename()
 	{
 		if (SystemUtils.IS_OS_LINUX)
 		{

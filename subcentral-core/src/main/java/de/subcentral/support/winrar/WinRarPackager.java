@@ -46,7 +46,7 @@ public abstract class WinRarPackager
 					}
 					break;
 				case RESOURCE:
-					this.rarExecutable = loadResource(getRarExecutableResourceName());
+					this.rarExecutable = loadResource(determineRarExecutableResourceFilename());
 					break;
 				default:
 					throw new IllegalArgumentException("Invalid LocateStrategy value:" + locateStrategy);
@@ -80,7 +80,7 @@ public abstract class WinRarPackager
 		return rarExecutable;
 	}
 
-	protected abstract String getRarExecutableResourceName();
+	protected abstract String determineRarExecutableResourceFilename();
 
 	protected abstract Path locateRarExecutable();
 
