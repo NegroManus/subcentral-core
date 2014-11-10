@@ -95,7 +95,6 @@ public class CharReplacer implements UnaryOperator<String>
 					appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
 				}
 			}
-
 		}
 		// strip replacement at the end
 		StringUtil.stripEnd(dest, defaultReplacement);
