@@ -32,6 +32,7 @@ public class CompatibilityService
 			return ImmutableMap.of();
 		}
 
+		// Do not use ImmutableMap.Builder here, as it has no putIfAbsent() method
 		Map<Release, Compatibility> allCompatibles = new HashMap<>();
 
 		Queue<Release> rlssToCheck = new ArrayDeque<>(4);
