@@ -78,26 +78,24 @@ public class CharReplacer implements UnaryOperator<String>
 			if (c == defaultReplacement)
 			{
 				appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
-				continue;
 			}
-			if (ArrayUtils.contains(allowedChars, c))
+			else if (ArrayUtils.contains(allowedChars, c))
 			{
 				dest.append(c);
-				continue;
 			}
-			if (ArrayUtils.contains(charsToDelete, c))
+			else if (!ArrayUtils.contains(charsToDelete, c))
 			{
-				continue;
+				Character replacingChar = replacements.get(c);
+				if (replacingChar != null)
+				{
+					dest.append(replacingChar.charValue());
+				}
+				else
+				{
+					appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
+				}
 			}
-			Character replacingChar = replacements.get(c);
-			if (replacingChar != null)
-			{
-				dest.append(replacingChar.charValue());
-			}
-			else
-			{
-				appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
-			}
+
 		}
 		// strip replacement at the end
 		StringUtil.stripEnd(dest, defaultReplacement);
