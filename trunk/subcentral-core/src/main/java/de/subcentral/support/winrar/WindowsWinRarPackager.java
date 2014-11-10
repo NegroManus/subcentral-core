@@ -176,7 +176,7 @@ class WindowsWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected String getRarExecutableResourceName()
+	protected String determineRarExecutableResourceFilename()
 	{
 		if (SystemUtils.OS_ARCH.contains("64"))
 		{
