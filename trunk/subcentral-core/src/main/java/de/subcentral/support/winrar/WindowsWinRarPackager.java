@@ -90,7 +90,7 @@ class WindowsWinRarPackager extends WinRarPackager
 
 		String[] command = new String[] { "REG", "QUERY", "\"HKEY_LOCAL_MACHINE\\Software\\WinRAR\"" };
 		ProcessBuilder builder = new ProcessBuilder(command);
-		log.debug("Querying Windows registry for WinRAR installation directory: {}", command, "");
+		log.debug("Querying Windows registry for WinRAR installation directory: {}", builder.command(), "");
 		try
 		{
 			Process p = builder.start();
