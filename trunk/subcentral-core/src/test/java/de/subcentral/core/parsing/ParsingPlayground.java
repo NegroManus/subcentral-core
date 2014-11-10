@@ -46,6 +46,7 @@ import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
+import de.subcentral.support.winrar.WinRarPackager;
 
 public class ParsingPlayground
 {
@@ -108,6 +109,7 @@ public class ParsingPlayground
 		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
 		packCfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
+		WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
@@ -187,7 +189,7 @@ public class ParsingPlayground
 							SubCentral.standardizeSubtitleLanguage(convertedSub);
 							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, allMatchingRlss);
 							TimeUtil.printDurationMillis("Converting releases", start);
-							for (Release matchingRls : allMatchingRlss)
+							for (Release matchingRls : convertedAdj.getMatchingReleases())
 							{
 								start = System.nanoTime();
 								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, matchingRls));
@@ -204,7 +206,7 @@ public class ParsingPlayground
 								Path rarTarget = voDir.resolve(newName + ".rar");
 								System.out.println(rarTarget);
 								start = System.nanoTime();
-								System.out.println(WinRar.getPackager(LocateStrategy.RESOURCE).pack(newPath, rarTarget, packCfg));
+								System.out.println(packager.pack(newPath, rarTarget, packCfg));
 								TimeUtil.printDurationMillis("Raring", start);
 							}
 						}
