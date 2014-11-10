@@ -43,8 +43,6 @@ public class Addic7ed
 		String langTagsSourcePattern = langPattern + "\\.(.+)\\.Addic7ed\\.com";
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE,
 				"Addic7ed.com",
-				Subtitle.PROP_SOURCE_URL,
-				"http://www.addic7ed.com",
 				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,
 				Media.MEDIA_CONTENT_TYPE_VIDEO);
 

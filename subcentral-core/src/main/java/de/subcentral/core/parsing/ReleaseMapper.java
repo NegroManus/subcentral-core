@@ -16,8 +16,6 @@ public class ReleaseMapper extends AbstractMapper<Release>
 		rls.setName(props.get(Release.PROP_NAME));
 		rls.setGroup(propFromStringService.parse(props, Release.PROP_GROUP, Group.class));
 		rls.getTags().addAll(propFromStringService.parseList(props, Release.PROP_TAGS, Tag.class));
-		rls.setSource(propFromStringService.parse(props, Release.PROP_SOURCE, String.class));
-		rls.setSourceUrl(propFromStringService.parse(props, Release.PROP_SOURCE_URL, String.class));
 		return rls;
 	}
 }

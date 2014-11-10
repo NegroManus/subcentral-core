@@ -32,14 +32,13 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final SimplePropDescriptor	PROP_HEARING_IMPAIRED			= new SimplePropDescriptor(Subtitle.class, PropNames.HEARING_IMPAIRED);
 	public static final SimplePropDescriptor	PROP_FOREIGN_PARTS				= new SimplePropDescriptor(Subtitle.class, PropNames.FOREIGN_PARTS);
 	public static final SimplePropDescriptor	PROP_TAGS						= new SimplePropDescriptor(Subtitle.class, PropNames.TAGS);
-	public static final SimplePropDescriptor	PROP_GROUP						= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
 	public static final SimplePropDescriptor	PROP_VERSION					= new SimplePropDescriptor(Subtitle.class, PropNames.VERSION);
+	public static final SimplePropDescriptor	PROP_GROUP						= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_SOURCE						= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
 	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE			= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
 	public static final SimplePropDescriptor	PROP_BASIS						= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
 	public static final SimplePropDescriptor	PROP_INFO						= new SimplePropDescriptor(Subtitle.class, PropNames.INFO);
 	public static final SimplePropDescriptor	PROP_INFO_URL					= new SimplePropDescriptor(Subtitle.class, PropNames.INFO_URL);
-	public static final SimplePropDescriptor	PROP_SOURCE						= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
-	public static final SimplePropDescriptor	PROP_SOURCE_URL					= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE_URL);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
 
 	public static final Tag						TAG_HEARING_IMPAIRED			= new Tag("HI", "Hearing Impaired");
@@ -132,14 +131,13 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private final List<Tag>				tags							= new ArrayList<>(0);
 	private int							version							= 1;
 	private Group						group;
+	private String						source;
 	private String						productionType;
+	private Subtitle					basis;
 	private String						info;
 	private String						infoUrl;
-	private String						source;
-	private String						sourceUrl;
 	// More than 4 contributions per subtitle is very rare
 	private final List<Contribution>	contributions					= new ArrayList<>(4);
-	private Subtitle					basis;
 
 	public Subtitle()
 	{
@@ -218,7 +216,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The tags of this subtitle. The tag list must not contain the following tags / information:
+	 * The tags of this subtitle. The tag list must <b>not</b> contain the following tags / information:
 	 * <ul>
 	 * <li><b>Language tags</b> like "German", "de" (the language is stored separately in {@link #getLanguage()})</li>
 	 * <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in {@link #getForeignParts()})</li>
@@ -226,7 +224,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 * {@link #isHearingImpaired()})</li>
 	 * <li><b>Version tags</b> like "V2" (the version is stored separately in {@link #getVersion()})
 	 * </ul>
-	 * All other important information about this subtitle may be stored in the tag list.
+	 * All other important information about this subtitle may be stored in the tag list. For example "COLORED" for colored subs.
 	 * 
 	 * @return the tags
 	 */
@@ -275,6 +273,21 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
+	 * The source of this subtitle. Typically the site which released this Subtitle.
+	 * 
+	 * @return the source
+	 */
+	public String getSource()
+	{
+		return source;
+	}
+
+	public void setSource(String source)
+	{
+		this.source = source;
+	}
+
+	/**
 	 * How this subtitles was produced. See the <code>PRODUCTION_TYPE_*</code> constants.
 	 * 
 	 * @return the production type
@@ -287,6 +300,22 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public void setProductionType(String productionType)
 	{
 		this.productionType = productionType;
+	}
+
+	/**
+	 * The subtitle on which this subtitle was based on. Only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and
+	 * {@link #PRODUCTION_TYPE_TRANSLATION}.
+	 * 
+	 * @return the basis
+	 */
+	public Subtitle getBasis()
+	{
+		return basis;
+	}
+
+	public void setBasis(Subtitle basis)
+	{
+		this.basis = basis;
 	}
 
 	/**
@@ -319,36 +348,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.infoUrl = infoUrl;
 	}
 
-	/**
-	 * The source of this subtitle. Typically the site which released this Subtitle.
-	 * 
-	 * @return the source
-	 */
-	public String getSource()
-	{
-		return source;
-	}
-
-	public void setSource(String source)
-	{
-		this.source = source;
-	}
-
-	/**
-	 * An URL pointing to the source of this subtitle. Typically the site which released this Subtitle.
-	 * 
-	 * @return the source URL
-	 */
-	public String getSourceUrl()
-	{
-		return sourceUrl;
-	}
-
-	public void setSourceUrl(String sourceUrl)
-	{
-		this.sourceUrl = sourceUrl;
-	}
-
 	@Override
 	public List<Contribution> getContributions()
 	{
@@ -359,22 +358,6 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	{
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
-	}
-
-	/**
-	 * The subtitle on which this subtitle was based on. Only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and
-	 * {@link #PRODUCTION_TYPE_TRANSLATION}.
-	 * 
-	 * @return the basis
-	 */
-	public Subtitle getBasis()
-	{
-		return basis;
-	}
-
-	public void setBasis(Subtitle basis)
-	{
-		this.basis = basis;
 	}
 
 	// convenience / complex
@@ -433,8 +416,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		{
 			Subtitle o = (Subtitle) obj;
 			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && hearingImpaired == o.hearingImpaired
-					&& foreignParts.equals(o.foreignParts) && Objects.equals(tags, o.tags) && Objects.equals(group, o.group)
-					&& StringUtils.equalsIgnoreCase(source, o.source) && version == o.version;
+					&& foreignParts.equals(o.foreignParts) && Objects.equals(tags, o.tags) && version == o.version && Objects.equals(group, o.group)
+					&& StringUtils.equalsIgnoreCase(source, o.source);
 		}
 		return false;
 	}
@@ -447,9 +430,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.append(hearingImpaired)
 				.append(foreignParts)
 				.append(tags)
+				.append(version)
 				.append(group)
 				.append(StringUtils.lowerCase(source, Locale.ENGLISH))
-				.append(version)
 				.toHashCode();
 	}
 
@@ -467,9 +450,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
-				.compare(group, o.group)
-				.compare(StringUtils.lowerCase(source), StringUtils.lowerCase(o.source))
 				.compare(version, version)
+				.compare(group, o.group)
+				.compare(source, o.source, Settings.STRING_ORDERING)
 				.result();
 	}
 
@@ -483,14 +466,13 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("hearingImpaired", hearingImpaired)
 				.add("foreignParts", foreignParts)
 				.add("tags", Models.nullIfEmpty(tags))
-				.add("group", group)
 				.add("version", version)
+				.add("group", group)
+				.add("source", source)
 				.add("productionType", productionType)
 				.add("basis", basis)
 				.add("info", info)
 				.add("infoUrl", infoUrl)
-				.add("source", source)
-				.add("sourceUrl", sourceUrl)
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.toString();
 	}

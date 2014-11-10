@@ -33,15 +33,16 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 		switch (sub.getForeignParts())
 		{
 			case NONE:
+				// if there are no foreign parts, of course no extra tag
 				break;
 			case INCLUDED:
-				b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS INCL");
+				b.append(Subtitle.PROP_FOREIGN_PARTS, "FP_INCL");
 				break;
 			case EXCLUDED:
-				b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS EXCL");
+				b.append(Subtitle.PROP_FOREIGN_PARTS, "FP_EXCL");
 				break;
 			case ONLY:
-				b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS ONLY");
+				b.append(Subtitle.PROP_FOREIGN_PARTS, "FP_ONLY");
 				break;
 			default:
 				break;
