@@ -141,8 +141,7 @@ public class WinRarPackConfig
 
 	public void setCompressionMethod(CompressionMethod compressionMethod)
 	{
-		Objects.requireNonNull(compressionMethod);
-		this.compressionMethod = compressionMethod;
+		this.compressionMethod = Objects.requireNonNull(compressionMethod);
 	}
 
 	/**

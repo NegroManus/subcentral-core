@@ -103,14 +103,15 @@ public abstract class WinRarPackager
 		try
 		{
 			long startTime = System.currentTimeMillis();
-			boolean targetExists = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
-			if (targetExists)
+			boolean targetExisted = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
+			if (targetExisted)
 			{
 				flags.add(Flag.TARGET_EXISTED);
-			}
-			if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode() && Files.deleteIfExists(target))
-			{
-				flags.add(Flag.TARGET_REPLACED);
+				if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode())
+				{
+					Files.delete(target);
+					flags.add(Flag.TARGET_REPLACED);
+				}
 			}
 
 			ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(source, target, cfg));
@@ -128,7 +129,7 @@ public abstract class WinRarPackager
 			log.debug("Execution exited with exit code {} {}", exitCode, processBuilder.command());
 
 			// may add tags
-			if (targetExists && cfg.getTargetOverwriteMode() == OverwriteMode.UPDATE
+			if (targetExisted && cfg.getTargetOverwriteMode() == OverwriteMode.UPDATE
 					&& Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
 			{
 				flags.add(Flag.TARGET_UPDATED);
