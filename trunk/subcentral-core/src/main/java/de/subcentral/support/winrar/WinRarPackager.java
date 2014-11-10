@@ -40,20 +40,16 @@ public abstract class WinRarPackager
 					break;
 				case LOCATE:
 					this.rarExecutable = locateRarExecutable();
-					if (this.rarExecutable == null)
-					{
-						throw new IllegalStateException("Could not locate RAR executable");
-					}
 					break;
 				case RESOURCE:
 					this.rarExecutable = loadResource(determineRarExecutableResourceFilename());
 					break;
 				default:
-					throw new IllegalArgumentException("Invalid LocateStrategy value:" + locateStrategy);
+					throw new IllegalArgumentException("Invalid value for locateStrategy: " + locateStrategy);
 			}
 			log.info("Using rar executable at {}", this.rarExecutable);
 		}
-		catch (NoSuchFileException | NullPointerException | SecurityException | URISyntaxException e)
+		catch (NoSuchFileException | URISyntaxException | RuntimeException e)
 		{
 			throw new IllegalArgumentException("Exception while initializing rar executable: " + e, e);
 		}

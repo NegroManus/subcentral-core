@@ -186,9 +186,14 @@ class WindowsWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected Path locateRarExecutable()
+	protected Path locateRarExecutable() throws IllegalStateException
 	{
-		return tryLocateRarExecutable();
+		Path rarExecutable = tryLocateRarExecutable();
+		if (rarExecutable == null)
+		{
+			throw new IllegalStateException("Could not locate RAR executable");
+		}
+		return rarExecutable;
 	}
 
 	@Override
