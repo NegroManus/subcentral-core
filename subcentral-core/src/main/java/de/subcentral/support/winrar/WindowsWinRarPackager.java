@@ -100,7 +100,7 @@ class WindowsWinRarPackager extends WinRarPackager
 				if (!errorMsg.isEmpty())
 				{
 					log.error("Could not locate WinRAR installation directory in Windows registry: Command {} returned error message. Returning null\n\"{}\"",
-							command,
+							builder.command(),
 							errorMsg);
 					return null;
 				}
