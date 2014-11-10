@@ -88,15 +88,19 @@ public abstract class WinRarPackager
 	 * Packs a single file into a single WinRAR package.
 	 * 
 	 * @param source
-	 *            the source file to pack
+	 *            the source file to pack, not null
 	 * @param target
-	 *            the target package (may or not exist yet)
+	 *            the target package, not null (may or not exist yet)
 	 * @param cfg
-	 *            the packaging configuration
-	 * @return the result of the packaging
+	 *            the packaging configuration, not null
+	 * @return the result of the packaging operation
 	 */
 	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
 	{
+		Objects.requireNonNull(source, "source");
+		Objects.requireNonNull(target, "target");
+		Objects.requireNonNull(cfg, "cfg");
+
 		log.debug("Packing {} to {} with {}", source, target, cfg);
 		int exitCode = -1;
 		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
