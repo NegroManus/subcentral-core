@@ -4,14 +4,13 @@ import java.lang.reflect.ParameterizedType;
 
 public class ReflectionUtil
 {
-	public static Class<?> getFirstTypeArg(Class<?> clazz)
+	public static Class<?> getActualTypeArg(Class<?> clazz, int index)
 	{
-		return (Class<?>) ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[0];
+		return (Class<?>) ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[index];
 	}
 
 	private ReflectionUtil()
 	{
-		// utilty class
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
-
 }
