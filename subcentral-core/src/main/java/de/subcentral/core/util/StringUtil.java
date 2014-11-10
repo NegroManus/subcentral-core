@@ -14,11 +14,6 @@ public class StringUtil
 
 	public static final Splitter	WHITESPACE_SPLITTER	= Splitter.on(Pattern.compile("\\s+"));
 
-	private StringUtil()
-	{
-		// static utility class
-	}
-
 	public static boolean startsWith(StringBuilder sb, char c)
 	{
 		return sb.length() > 0 && sb.charAt(0) == c;
@@ -114,4 +109,8 @@ public class StringUtil
 		return stripEnd(sb);
 	}
 
+	private StringUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
+	}
 }

@@ -19,6 +19,11 @@ public class TemporalComparator implements Comparator<Temporal>, Serializable
 	// Comparators should be Serializable
 	private static final long					serialVersionUID	= -7918244215818591537L;
 
+	private TemporalComparator()
+	{
+		// singleton: not instantiable from outside
+	}
+
 	@Override
 	public int compare(Temporal o1, Temporal o2)
 	{

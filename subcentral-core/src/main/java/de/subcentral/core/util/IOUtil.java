@@ -21,6 +21,6 @@ public class IOUtil
 
 	private IOUtil()
 	{
-		// utilty class
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
 }

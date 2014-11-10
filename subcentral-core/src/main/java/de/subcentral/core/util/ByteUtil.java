@@ -79,13 +79,6 @@ public class ByteUtil
 
 	private ByteUtil()
 	{
-		// utility class
+		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
-
-	public static void main(String[] args)
-	{
-		long bytes = parseBytes("1 GB");
-		System.out.println(bytes);
-	}
-
 }

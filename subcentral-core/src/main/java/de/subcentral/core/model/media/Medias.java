@@ -16,6 +16,11 @@ public class Medias
 		// Comparators should be Serializable
 		private static final long	serialVersionUID	= -3197188465533525469L;
 
+		private MediaNameComparator()
+		{
+			// singleton: not instantiable from outside
+		}
+
 		@Override
 		public int compare(Media o1, Media o2)
 		{
