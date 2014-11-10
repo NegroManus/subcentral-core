@@ -177,11 +177,11 @@ class WindowsWinRarPackager extends WinRarPackager
 	{
 		if (SystemUtils.OS_ARCH.contains("64"))
 		{
-			return "rar_5.10_win_x32.exe";
+			return "rar_5.10_win_x64.exe";
 		}
 		else
 		{
-			return "rar_5.10_win_x64.exe";
+			return "rar_5.10_win_x32.exe";
 		}
 	}
 
