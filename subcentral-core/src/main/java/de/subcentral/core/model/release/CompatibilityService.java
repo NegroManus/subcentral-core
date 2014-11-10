@@ -48,9 +48,10 @@ public class CompatibilityService
 					// Never add the source Release
 					if (!rls.equals(compatible))
 					{
-						// only add the compatible Release, if it was not found before
+						// Only add the compatible Release if it was not found before
 						Compatibility previousValue = allCompatibles.putIfAbsent(compatible, c);
-						// if previousValue == null, the compatible is new
+						// If previousValue == null, the compatible is new.
+						// Then it should be checked for compatibilities as well
 						if (previousValue == null)
 						{
 							rlssToCheck.add(compatible);
