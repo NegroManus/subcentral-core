@@ -68,16 +68,16 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	}
 
 	private String						name;
-	// In 99,9% of the cases, there is only one subtitle
+	// In 99% of the cases, there is only one subtitle, at most 2
 	private final List<Subtitle>		subtitles			= new ArrayList<>(1);
-	// Most adjustments are compatible to 1-2 releases. Maybe 5-6 sometimes
+	// Most adjustments are compatible to 1 or 2 releases
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<Release>			matchingReleases	= new HashSet<>(2);
 	private Temporal					date;
 	private long						size				= 0L;
 	private int							fileCount			= 0;
 	private final List<Nuke>			nukes				= new ArrayList<>(0);
-	// In 99,9% of the cases, there is only one adjustment contribution
+	// In 99% of the cases, there is only one adjustment contribution
 	private final List<Contribution>	contributions		= new ArrayList<>(1);
 
 	public SubtitleAdjustment()

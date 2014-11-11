@@ -175,7 +175,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public List<Episode> getEpisodes()
 	{
-		return series != null ? series.getEpisodes(this) : ImmutableList.of();
+		return series != null ? series.getEpisodesOf(this) : ImmutableList.of();
 	}
 
 	public Episode newEpisode()

@@ -171,7 +171,7 @@ public interface Media extends Work
 	 * 
 	 * @return a set of URLs where further information about this media can be found
 	 */
-	public Set<String> getFurtherInfoUrls();
+	public List<String> getFurtherInfoUrls();
 
 	/**
 	 * Additional attributes that have no designated property can be stored in the ListMultimap of getAttributes().
