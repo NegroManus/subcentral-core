@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -109,6 +108,22 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.name = name;
 	}
 
+	/**
+	 * Returns the date of the Series' finale. This is the date of the last / final Episode of this Series. The date of the premiere is stored in
+	 * {@link #getDate()}.
+	 * <p>
+	 * <b>Note:</b> The premiere date and finale date may be stored redundantly if this Series contains all its Episodes in {@link #getEpisodes() the
+	 * Episodes list}. Then the premiere date and finale date can be retrieved via {@link #getDateOfFirstEpisode()} and
+	 * {@link #getDateOfLastEpisode()} respectively. But if this Series object does not contain all its Episodes (because they are unknown), then the
+	 * dates can be stored explicitly in the {@link #getDate() date} and {@link #getFinaleDate() finaleDate} properties.
+	 * </p>
+	 * 
+	 * @see #getDate()
+	 * @see #getDateOfFirstEpisode()
+	 * @see #getDateOfLastEpisode()
+	 * 
+	 * @return the date of the finale
+	 */
 	public Temporal getFinaleDate()
 	{
 		return finaleDate;
@@ -175,6 +190,11 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.countriesOfOrigin.addAll(countriesOfOrigin);
 	}
 
+	/**
+	 * The regular running time in milliseconds of the episodes of this Series.
+	 * 
+	 * @return the regular running time in milliseconds, <code>0</code> if unknown
+	 */
 	public int getRegularRunningTime()
 	{
 		return regularRunningTime;
@@ -210,7 +230,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	/**
-	 * @return The air date ({@link Episode#getDate()}) of the first episode of this series or <code>null</code> if this series has no episodes.
+	 * @return the air date ({@link Episode#getDate()}) of the first episode of this series or <code>null</code> if this series has no episodes
 	 */
 	public Temporal getDateOfFirstEpisode()
 	{
@@ -218,7 +238,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	/**
-	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series or <code>null</code> if this series has no episodes.
+	 * @return the air date ({@link Episode#getDate()}) of the last episode of this series or <code>null</code> if this series has no episodes
 	 */
 	public Temporal getDateOfLastEpisode()
 	{
@@ -348,17 +368,17 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	/**
-	 * Returns a sorted map of all the Episodes of this Series grouped by the Seasons. The Episodes are sorted as well.
+	 * Returns a sorted map of all the Episodes of this Series grouped by the Seasons.
 	 * 
 	 * @return a sorted map with the Seasons as keys and the corresponding Episodes as values
 	 */
-	public SortedMap<Season, SortedSet<Episode>> getEpisodesGroupedBySeason()
+	public SortedMap<Season, List<Episode>> getEpisodesGroupedBySeason()
 	{
 		if (episodes.isEmpty())
 		{
 			return ImmutableSortedMap.of();
 		}
-		return episodes.stream().collect(Collectors.groupingBy(Episode::getSeason, TreeMap::new, Collectors.toCollection(TreeSet::new)));
+		return episodes.stream().collect(Collectors.groupingBy(Episode::getSeason, TreeMap::new, Collectors.toList()));
 	}
 
 	// Object methods
