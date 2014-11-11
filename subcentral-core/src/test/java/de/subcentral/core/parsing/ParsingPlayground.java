@@ -106,7 +106,7 @@ public class ParsingPlayground
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
 
 		WinRarPackConfig packCfg = new WinRarPackConfig();
-		packCfg.setSourceDeletionMode(DeletionMode.KEEP);
+		packCfg.setSourceDeletionMode(DeletionMode.DELETE);
 		packCfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 		WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
