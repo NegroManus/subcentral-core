@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public class SeriesMediaFilter implements Predicate<List<Media>>
+public class EpisodeOfSeriesMediaFilter implements Predicate<List<Media>>
 {
 	private final Series	series;
 
-	public SeriesMediaFilter(Series series)
+	public EpisodeOfSeriesMediaFilter(Series series)
 	{
 		this.series = Objects.requireNonNull(series, "series");
 	}
