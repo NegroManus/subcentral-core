@@ -54,8 +54,8 @@ public class Release implements Comparable<Release>
 	private final List<String>					languages		= new ArrayList<>(1);
 	private String								section;
 	private Temporal							date;
-	private long								size;
-	private int									fileCount;
+	private long								size			= 0L;
+	private int									fileCount		= 0;
 	private final List<Nuke>					nukes			= new ArrayList<>(0);
 	private String								info;
 	private String								infoUrl;

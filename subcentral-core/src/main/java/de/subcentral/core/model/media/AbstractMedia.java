@@ -2,9 +2,8 @@ package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -19,8 +18,7 @@ public abstract class AbstractMedia implements Media
 	protected final List<String>					coverUrls		= new ArrayList<>(1);
 	protected String								contentAdvisory;
 	protected final List<Contribution>				contributions	= new ArrayList<>(0);
-	// HashMap / HashSet initial capacities should be a power of 2
-	protected final Set<String>						furtherInfoUrls	= new HashSet<>(4);
+	protected final List<String>					furtherInfoUrls	= new ArrayList<>(3);
 	protected final ListMultimap<String, Object>	attributes		= LinkedListMultimap.create(0);
 
 	@Override
@@ -62,7 +60,7 @@ public abstract class AbstractMedia implements Media
 		return coverUrls;
 	}
 
-	public void setCoverUrls(List<String> coverUrls)
+	public void setCoverUrls(Collection<String> coverUrls)
 	{
 		this.coverUrls.clear();
 		this.coverUrls.addAll(coverUrls);
@@ -85,19 +83,19 @@ public abstract class AbstractMedia implements Media
 		return contributions;
 	}
 
-	public void setContributions(List<Contribution> contributions)
+	public void setContributions(Collection<Contribution> contributions)
 	{
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}
 
 	@Override
-	public Set<String> getFurtherInfoUrls()
+	public List<String> getFurtherInfoUrls()
 	{
 		return furtherInfoUrls;
 	}
 
-	public void setFurtherInfoUrls(Set<String> furtherInfoUrls)
+	public void setFurtherInfoUrls(Collection<String> furtherInfoUrls)
 	{
 		this.furtherInfoUrls.clear();
 		this.furtherInfoUrls.addAll(furtherInfoUrls);

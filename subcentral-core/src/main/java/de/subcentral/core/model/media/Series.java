@@ -2,16 +2,24 @@ package de.subcentral.core.model.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableSortedSet;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
@@ -73,8 +81,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	private int									regularRunningTime			= 0;
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<String>					genres						= new HashSet<>(4);
-	// Normally, the Seasons and Episodes are not stored in the Series
-	private final List<Season>					seasons						= new ArrayList<>(0);
+	// Normally, the Episodes are not stored in the Series
 	private final List<Episode>					episodes					= new ArrayList<>(0);
 
 	public Series()
@@ -218,37 +225,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return episodes.isEmpty() ? null : episodes.get(episodes.size() - 1).getDate();
 	}
 
-	// Seasons
-	/**
-	 * 
-	 * @return This series' seasons. Only filled if the series is the information root.
-	 */
-	public List<Season> getSeasons()
-	{
-		return seasons;
-	}
-
-	public void setSeasons(List<Season> seasons)
-	{
-		this.seasons.clear();
-		this.seasons.addAll(seasons);
-	}
-
-	public Season newSeason()
-	{
-		return new Season(this);
-	}
-
-	public Season newSeason(Integer seasonNumber)
-	{
-		return new Season(this, seasonNumber);
-	}
-
-	public Season newSeason(String seasonTitle)
-	{
-		return new Season(this, seasonTitle);
-	}
-
 	// Episodes
 	@Override
 	public List<Episode> getMediaItems()
@@ -265,7 +241,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return episodes;
 	}
 
-	public void setEpisodes(List<Episode> episodes)
+	public void setEpisodes(Collection<Episode> episodes)
 	{
 		this.episodes.clear();
 		this.episodes.addAll(episodes);
@@ -314,7 +290,47 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		return new Episode(this, season, numberInSeason, title);
 	}
 
-	public List<Episode> getEpisodes(Season season)
+	// Seasons
+	/**
+	 * Returns a immutable SortedSet of all the Seasons of the {@link #getEpisodes() episodes of this series}.
+	 * 
+	 * @return this series' seasons
+	 */
+	public SortedSet<Season> getSeasons()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableSortedSet.of();
+		}
+		ImmutableSortedSet.Builder<Season> seasons = ImmutableSortedSet.naturalOrder();
+		for (Episode epi : episodes)
+		{
+			if (epi.getSeason() != null)
+			{
+				// add() only adds if not added before
+				seasons.add(epi.getSeason());
+			}
+		}
+		return seasons.build();
+	}
+
+	public Season newSeason()
+	{
+		return new Season(this);
+	}
+
+	public Season newSeason(Integer seasonNumber)
+	{
+		return new Season(this, seasonNumber);
+	}
+
+	public Season newSeason(String seasonTitle)
+	{
+		return new Season(this, seasonTitle);
+	}
+
+	// Seasons and Episode
+	public List<Episode> getEpisodesOf(Season season)
 	{
 		if (season == null || episodes.isEmpty())
 		{
@@ -329,6 +345,20 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 			}
 		}
 		return episInSeason.build();
+	}
+
+	/**
+	 * Returns a sorted map of all the Episodes of this Series grouped by the Seasons. The Episodes are sorted as well.
+	 * 
+	 * @return a sorted map with the Seasons as keys and the corresponding Episodes as values
+	 */
+	public SortedMap<Season, SortedSet<Episode>> getEpisodesGroupedBySeason()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableSortedMap.of();
+		}
+		return episodes.stream().collect(Collectors.groupingBy(Episode::getSeason, TreeMap::new, Collectors.toCollection(TreeSet::new)));
 	}
 
 	// Object methods
@@ -384,7 +414,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
 				.add("attributes", Models.nullIfEmpty(attributes))
-				.add("seasons.size", Models.nullIfZero(seasons.size()))
 				.add("episodes.size", Models.nullIfZero(episodes.size()))
 				.toString();
 	}
