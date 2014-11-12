@@ -21,10 +21,6 @@ public abstract class AbstractHttpHtmlLookup<R, P> extends AbstractHttpLookup<R,
 		{
 			return queryWithHtmlDoc(getDocument(query));
 		}
-		catch (LookupException e)
-		{
-			throw e;
-		}
 		catch (Exception e)
 		{
 			throw new LookupException(query, e);
