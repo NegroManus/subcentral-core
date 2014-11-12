@@ -81,10 +81,6 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 		{
 			return queryWithUrl(buildDefaultQueryUrl(query));
 		}
-		catch (LookupException e)
-		{
-			throw e;
-		}
 		catch (Exception e)
 		{
 			throw new LookupException(query, e);
@@ -97,10 +93,6 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 		try
 		{
 			return queryWithUrl(buildQueryUrlFromParameterBean(parameterBean));
-		}
-		catch (LookupException e)
-		{
-			throw e;
 		}
 		catch (Exception e)
 		{

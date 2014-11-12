@@ -49,7 +49,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<Release, OrlyDbLookupPa
 	@Override
 	protected URL initHost() throws MalformedURLException
 	{
-		return new URL("http://www.orlydb.com/");
+		return new URL("https://www.orlydb.com/");
 	}
 
 	@Override

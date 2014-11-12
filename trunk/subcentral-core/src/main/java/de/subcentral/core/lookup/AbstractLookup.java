@@ -39,10 +39,6 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 		{
 			return query(queryEntityNamingService.name(queryEntity));
 		}
-		catch (LookupException e)
-		{
-			throw e;
-		}
 		catch (Exception e)
 		{
 			throw new LookupException(queryEntity, e);
