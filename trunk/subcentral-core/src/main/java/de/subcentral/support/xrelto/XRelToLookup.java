@@ -1,4 +1,4 @@
-package de.subcentral.support.xrel;
+package de.subcentral.support.xrelto;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class XRelLookup extends AbstractHttpHtmlLookup<Release, String>
+public class XRelToLookup extends AbstractHttpHtmlLookup<Release, String>
 {
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"

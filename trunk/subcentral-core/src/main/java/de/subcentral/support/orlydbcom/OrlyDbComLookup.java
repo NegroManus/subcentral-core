@@ -1,4 +1,4 @@
-package de.subcentral.support.orlydb;
+package de.subcentral.support.orlydbcom;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -28,7 +28,7 @@ import de.subcentral.core.lookup.LookupException;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class OrlyDbLookup extends AbstractHttpHtmlLookup<Release, OrlyDbLookupParameters>
+public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLookupParameters>
 {
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
@@ -59,9 +59,9 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<Release, OrlyDbLookupPa
 	}
 
 	@Override
-	public Class<OrlyDbLookupParameters> getParameterBeanClass()
+	public Class<OrlyDbComLookupParameters> getParameterBeanClass()
 	{
-		return OrlyDbLookupParameters.class;
+		return OrlyDbComLookupParameters.class;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class OrlyDbLookup extends AbstractHttpHtmlLookup<Release, OrlyDbLookupPa
 	}
 
 	@Override
-	protected URL buildQueryUrlFromParameterBean(OrlyDbLookupParameters parameterBean) throws UnsupportedEncodingException, MalformedURLException,
+	protected URL buildQueryUrlFromParameterBean(OrlyDbComLookupParameters parameterBean) throws UnsupportedEncodingException, MalformedURLException,
 			URISyntaxException, NullPointerException
 	{
 		Objects.requireNonNull(parameterBean, "parameterBean");

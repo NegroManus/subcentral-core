@@ -1,4 +1,4 @@
-package de.subcentral.support.subcentral;
+package de.subcentral.support.subcentralde;
 
 import java.util.List;
 import java.util.Map;
@@ -26,11 +26,11 @@ import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.scene.Scene;
 
-public class SubCentral
+public class SubCentralDe
 {
 	public static final String					DOMAIN			= "subcentral.de";
 
-	private static final Logger					log				= LogManager.getLogger(SubCentral.class.getName());
+	private static final Logger					log				= LogManager.getLogger(SubCentralDe.class.getName());
 	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
 	static
 	{
@@ -146,7 +146,7 @@ public class SubCentral
 		sub.setLanguage(lang);
 	}
 
-	private SubCentral()
+	private SubCentralDe()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}

@@ -1,9 +1,9 @@
 package de.subcentral.core.parsing;
 
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.support.addic7ed.Addic7ed;
+import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.scene.Scene;
-import de.subcentral.support.subcentral.SubCentral;
+import de.subcentral.support.subcentralde.SubCentralDe;
 
 public class ParsingPerformanceTest
 {
@@ -11,8 +11,8 @@ public class ParsingPerformanceTest
 	public static void main(String[] args)
 	{
 		final SimpleParsingService ps = new SimpleParsingService("default");
-		ps.getParsers().putAll(Addic7ed.getAllParsers());
-		ps.getParsers().putAll(SubCentral.getAllParsers());
+		ps.getParsers().putAll(Addic7edCom.getAllParsers());
+		ps.getParsers().putAll(SubCentralDe.getAllParsers());
 		ps.getParsers().putAll(Scene.getAllParsers());
 
 		String name = "Psych - 05x04 - Chivalry Is Not Dead...But Someone Is.FQM.English.C.orig.Addic7ed.com";

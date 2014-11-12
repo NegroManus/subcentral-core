@@ -1,4 +1,4 @@
-package de.subcentral.support.addic7ed;
+package de.subcentral.support.addic7edcom;
 
 import java.time.Year;
 
@@ -12,6 +12,7 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.support.addic7edcom.Addic7edCom;
 
 public class Addic7edParsingTest
 {
@@ -266,7 +267,7 @@ public class Addic7edParsingTest
 
 	private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
 	{
-		Object parsed = Addic7ed.getParsingService().parse(nameToParse);
+		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);
 		System.out.println("Results for test: " + testName);
 		System.out.println("Expected: " + expected);
 		System.out.println("Parsed  : " + parsed);
