@@ -1,5 +1,6 @@
 package de.subcentral.core.lookup;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableMap;
@@ -32,11 +33,15 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 	}
 
 	@Override
-	public LookupQuery<R> createQueryFromEntity(Object queryEntity)
+	public List<R> queryWithQueryObject(Object queryEntity) throws LookupException
 	{
 		try
 		{
-			return createQuery(queryEntityNamingService.name(queryEntity));
+			return query(queryEntityNamingService.name(queryEntity));
+		}
+		catch (LookupException e)
+		{
+			throw e;
 		}
 		catch (Exception e)
 		{
@@ -45,9 +50,8 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 	}
 
 	@Override
-	public boolean isQueryEntitySupported(Object queryObject)
+	public boolean isQueryObjectSupported(Object queryObject)
 	{
 		return queryEntityNamingService.canName(queryObject);
 	}
-
 }
