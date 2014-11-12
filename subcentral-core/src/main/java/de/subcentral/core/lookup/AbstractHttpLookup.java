@@ -3,27 +3,38 @@ package de.subcentral.core.lookup;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 
 public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 {
 	public static final int	DEFAULT_TIMEOUT	= 10000;
 
 	protected final URL		host;
-	private int				timeout			= DEFAULT_TIMEOUT;
+	protected int			timeout			= DEFAULT_TIMEOUT;
 
 	public AbstractHttpLookup()
 	{
-		this.host = initHost();
+		try
+		{
+			this.host = initHost();
+		}
+		catch (MalformedURLException e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
 	}
 
 	/**
 	 * 
-	 * @return the URL of the host of this lookup. Not null
+	 * @return the URL of the host of this lookup, not null
+	 * @throws MalformedURLException
 	 */
-	protected abstract URL initHost();
+	protected abstract URL initHost() throws MalformedURLException;
 
 	public URL getHost()
 	{
@@ -64,11 +75,15 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	}
 
 	@Override
-	public LookupQuery<R> createQuery(String query)
+	public List<R> query(String query) throws LookupException
 	{
 		try
 		{
-			return createQuery(buildDefaultQueryUrl(query));
+			return queryWithUrl(buildDefaultQueryUrl(query));
+		}
+		catch (LookupException e)
+		{
+			throw e;
 		}
 		catch (Exception e)
 		{
@@ -77,11 +92,15 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	}
 
 	@Override
-	public LookupQuery<R> createQueryFromParameters(P parameterBean)
+	public List<R> queryWithParameterBean(P parameterBean) throws LookupException
 	{
 		try
 		{
-			return createQuery(buildQueryUrlFromParameters(parameterBean));
+			return queryWithUrl(buildQueryUrlFromParameterBean(parameterBean));
+		}
+		catch (LookupException e)
+		{
+			throw e;
 		}
 		catch (Exception e)
 		{
@@ -89,7 +108,7 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 		}
 	}
 
-	public abstract LookupQuery<R> createQuery(URL query);
+	public abstract List<R> queryWithUrl(URL query) throws LookupException;
 
 	/**
 	 * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.
@@ -97,9 +116,12 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	 * @param queryString
 	 *            The query string. For example "Psych S08E01".
 	 * @return The generated URL for this query string.
+	 * @throws URISyntaxException
+	 * @throws MalformedURLException
+	 * @throws UnsupportedEncodingException
 	 * @throws Exception
 	 */
-	protected URL buildDefaultQueryUrl(String queryString) throws Exception
+	protected URL buildDefaultQueryUrl(String queryString) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
 	{
 		return buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), queryString);
 	}
@@ -113,19 +135,23 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	 * @param queryString
 	 *            The actual query string.
 	 * @return An URL build of the host of this lookup and the given path, queryPrefix and queryString.
+	 * @throws URISyntaxException
+	 * @throws UnsupportedEncodingException
+	 * @throws MalformedURLException
 	 * @throws Exception
 	 */
-	protected URL buildQueryUrl(String path, String queryPrefix, String queryString) throws Exception
+	protected URL buildQueryUrl(String path, String queryPrefix, String queryString) throws UnsupportedEncodingException, URISyntaxException,
+			MalformedURLException
 	{
 		if (queryString == null)
 		{
 			return null;
 		}
-		URI uri = new URI("http", null, initHost().getHost(), -1, path, buildQuery(queryPrefix, queryString), null);
+		URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, buildQuery(queryPrefix, queryString), null);
 		return uri.toURL();
 	}
 
-	protected abstract URL buildQueryUrlFromParameters(P parameterBean) throws Exception;
+	protected abstract URL buildQueryUrlFromParameterBean(P parameterBean) throws Exception;
 
 	/**
 	 * 

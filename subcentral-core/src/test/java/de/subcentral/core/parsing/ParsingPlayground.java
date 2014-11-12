@@ -50,7 +50,7 @@ import de.subcentral.support.winrar.WinRarPackager;
 
 public class ParsingPlayground
 {
-	private static final Logger	log	= LogManager.getLogger(ParsingPlayground.class.getName());
+	private static final Logger	log	= LogManager.getLogger(ParsingPlayground.class);
 
 	/**
 	 * To specify other watch folder than "<user.home>/Downloads", add argument "watchFolder="D:\Downloads".
@@ -146,7 +146,7 @@ public class ParsingPlayground
 							SubtitleAdjustment subAdj = (SubtitleAdjustment) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							start = System.nanoTime();
-							List<Release> releases = lookup.createQueryFromEntity(subAdj.getFirstMatchingRelease().getMedia()).execute();
+							List<Release> releases = lookup.queryWithQueryObject(subAdj.getFirstMatchingRelease().getMedia());
 							TimeUtil.printDurationMillis("Lookup", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));

@@ -1,5 +1,7 @@
 package de.subcentral.core.lookup;
 
+import java.util.List;
+
 public interface Lookup<R, P>
 {
 	public String getName();
@@ -10,14 +12,14 @@ public interface Lookup<R, P>
 
 	public Class<R> getResultClass();
 
-	public LookupQuery<R> createQuery(String query);
-
-	public LookupQuery<R> createQueryFromParameters(P parameterBean);
-
 	public Class<P> getParameterBeanClass();
 
-	public LookupQuery<R> createQueryFromEntity(Object queryEntity);
+	public List<R> query(String query) throws LookupException;
 
-	public boolean isQueryEntitySupported(Object queryEntity);
+	public List<R> queryWithParameterBean(P parameterBean) throws LookupException;
+
+	public List<R> queryWithQueryObject(Object queryObject) throws LookupException;
+
+	public boolean isQueryObjectSupported(Object queryObject);
 
 }
