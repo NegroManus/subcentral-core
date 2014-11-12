@@ -36,10 +36,10 @@ import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.support.addic7ed.Addic7ed;
-import de.subcentral.support.orlydb.OrlyDbLookup;
+import de.subcentral.support.addic7edcom.Addic7edCom;
+import de.subcentral.support.orlydbcom.OrlyDbComLookup;
 import de.subcentral.support.scene.Scene;
-import de.subcentral.support.subcentral.SubCentral;
+import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig;
@@ -90,13 +90,13 @@ public class ParsingPlayground
 		long totalStart = System.nanoTime();
 
 		final SimpleParsingService ps = new SimpleParsingService("default");
-		ps.getParsers().putAll(Addic7ed.getAllParsers());
-		ps.getParsers().putAll(SubCentral.getAllParsers());
+		ps.getParsers().putAll(Addic7edCom.getAllParsers());
+		ps.getParsers().putAll(SubCentralDe.getAllParsers());
 		ps.getParsers().putAll(Scene.getAllParsers());
 
 		final NamingService ns = NamingStandards.getDefaultNamingService();
 
-		final Lookup<Release, ?> lookup = new OrlyDbLookup();
+		final Lookup<Release, ?> lookup = new OrlyDbComLookup();
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
 		CompatibilityService compService = new CompatibilityService();
@@ -186,7 +186,7 @@ public class ParsingPlayground
 							convertedSub.setLanguage(subAdj.getFirstSubtitle().getLanguage());
 							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
-							SubCentral.standardizeSubtitleLanguage(convertedSub);
+							SubCentralDe.standardizeSubtitleLanguage(convertedSub);
 							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, allMatchingRlss);
 							TimeUtil.printDurationMillis("Converting releases", start);
 							for (Release matchingRls : convertedAdj.getMatchingReleases())

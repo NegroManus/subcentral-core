@@ -1,4 +1,4 @@
-package de.subcentral.support.addic7ed;
+package de.subcentral.support.addic7edcom;
 
 import java.util.regex.Pattern;
 
@@ -24,7 +24,7 @@ import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Addic7ed
+public class Addic7edCom
 {
 	public static final String					DOMAIN			= "addic7ed.com";
 
@@ -244,7 +244,7 @@ public class Addic7ed
 		return PARSING_SERVICE.getParsers();
 	}
 
-	private Addic7ed()
+	private Addic7edCom()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
