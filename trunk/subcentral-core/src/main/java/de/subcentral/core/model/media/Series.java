@@ -391,14 +391,14 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	/**
-	 * Returns a map of all the seasons of this series mapped to their corresponding episodes, plus {@code null} mapped to the episodes which are not
-	 * part of a season.<br/>
+	 * Returns an immutable map of all the seasons of this series mapped to their corresponding episodes, plus {@code null} mapped to the episodes
+	 * which are not part of a season.<br/>
 	 * The map contains a {@code null} key which value is a list of all the episodes with no season, this list may be empty but it is never
 	 * {@code null}. The map may contain a mapping between a season and an empty list for seasons without episodes.<br/>
 	 * The seasons (the keys) are in the same order as in the {@link #getSeasons() seasons list}. The episodes for each season are in the same order
 	 * as in the {@link #getEpisodes() episodes list}.
 	 * 
-	 * @return a map with the seasons as keys (including the {@code null} season) and their episodes as values
+	 * @return an immutable map with the seasons as keys (including the {@code null} season) and their episodes as values
 	 * @throws IllegalStateException
 	 *             if the season of an episode in the {@link #getEpisodes() episodes list} is not contained in the {@link #getSeasons() seasons list}
 	 */
