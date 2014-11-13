@@ -402,7 +402,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	 * @throws IllegalStateException
 	 *             if the season of an episode in the {@link #getEpisodes() episodes list} is not contained in the {@link #getSeasons() seasons list}
 	 */
-	public Map<Season, List<Episode>> createSeasonsToEpisodesMap() throws IllegalStateException
+	public Map<Season, List<Episode>> getSeasonsToEpisodesMap() throws IllegalStateException
 	{
 		// preserve insertion order -> use a LinkedHashMap
 		Map<Season, List<Episode>> seasonsAndEpis = new LinkedHashMap<>(seasons.size());
