@@ -449,13 +449,13 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 					 * </pre>
 					 */
 					Series series = new Series(mediaTitle);
-					Episode epi = series.newEpisode();
+					Episode epi = new Episode(series);
 					String seasonEpisodeTxt = value;
 					Pattern pSeason = Pattern.compile("S(\\d+)");
 					Matcher mSeason = pSeason.matcher(seasonEpisodeTxt);
 					if (mSeason.find())
 					{
-						Season season = series.newSeason(Integer.parseInt(mSeason.group(1)));
+						Season season = new Season(series, Integer.parseInt(mSeason.group(1)));
 						epi.setSeason(season);
 					}
 					Pattern pEpi = Pattern.compile("E(\\d+)");

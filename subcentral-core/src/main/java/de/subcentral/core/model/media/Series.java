@@ -3,22 +3,20 @@ package de.subcentral.core.model.media;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.ImmutableSortedSet;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
@@ -80,7 +78,8 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	private int									regularRunningTime			= 0;
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<String>					genres						= new HashSet<>(4);
-	// Normally, the Episodes are not stored in the Series
+	// Normally, the Seasons and Episodes are not stored in the Series
+	private final List<Season>					seasons						= new ArrayList<>(0);
 	private final List<Episode>					episodes					= new ArrayList<>(0);
 
 	public Series()
@@ -267,99 +266,123 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.episodes.addAll(episodes);
 	}
 
-	public Episode newEpisode()
+	public Episode addEpisode()
 	{
-		return new Episode(this);
+		Episode epi = new Episode(this);
+		episodes.add(epi);
+		return epi;
+	}
+
+	public Episode addEpisode(String title)
+	{
+		Episode epi = new Episode(this, title);
+		episodes.add(epi);
+		return epi;
 	}
 
 	// Mini-series
-	public Episode newEpisode(Integer numberInSeries)
+	public Episode addEpisode(Integer numberInSeries)
 	{
-		return new Episode(this, numberInSeries);
+		Episode epi = new Episode(this, numberInSeries);
+		episodes.add(epi);
+		return epi;
 	}
 
-	public Episode newEpisode(Integer numberInSeries, String title)
+	public Episode addEpisode(Integer numberInSeries, String title)
 	{
-		return new Episode(this, numberInSeries, title);
+		Episode epi = new Episode(this, numberInSeries, title);
+		episodes.add(epi);
+		return epi;
 	}
 
 	// Dated
-	public Episode newEpisode(Temporal date)
+	public Episode addEpisode(Temporal date)
 	{
-		return new Episode(this, date);
+		Episode epi = new Episode(this, date);
+		episodes.add(epi);
+		return epi;
 	}
 
-	public Episode newEpisode(Temporal date, String title)
+	public Episode addEpisode(Temporal date, String title)
 	{
-		return new Episode(this, date, title);
+		Episode epi = new Episode(this, date, title);
+		episodes.add(epi);
+		return epi;
 	}
 
 	// Seasoned
-	public Episode newEpisode(Season season)
+	public Episode addEpisode(Season season)
 	{
-		return new Episode(this, season);
+		Episode epi = new Episode(this, season);
+		episodes.add(epi);
+		return epi;
 	}
 
-	public Episode newEpisode(Season season, Integer numberInSeason)
+	public Episode addEpisode(Season season, Integer numberInSeason)
 	{
-		return new Episode(this, season, numberInSeason);
+		Episode epi = new Episode(this, season, numberInSeason);
+		episodes.add(epi);
+		return epi;
 	}
 
-	public Episode newEpisode(Season season, Integer numberInSeason, String title)
+	public Episode addEpisode(Season season, String title)
 	{
-		return new Episode(this, season, numberInSeason, title);
+		Episode epi = new Episode(this, season, title);
+		episodes.add(epi);
+		return epi;
+	}
+
+	public Episode addEpisode(Season season, Integer numberInSeason, String title)
+	{
+		Episode epi = new Episode(this, season, numberInSeason, title);
+		episodes.add(epi);
+		return epi;
 	}
 
 	// Seasons
-	/**
-	 * Returns a immutable SortedSet of all the Seasons of the {@link #getEpisodes() episodes of this series}.
-	 * 
-	 * @return this series' seasons
-	 */
-	public SortedSet<Season> getSeasons()
+	public List<Season> getSeasons()
 	{
-		if (episodes.isEmpty())
-		{
-			return ImmutableSortedSet.of();
-		}
-		ImmutableSortedSet.Builder<Season> seasons = ImmutableSortedSet.naturalOrder();
-		for (Episode epi : episodes)
-		{
-			if (epi.getSeason() != null)
-			{
-				// add() only adds if not added before
-				seasons.add(epi.getSeason());
-			}
-		}
-		return seasons.build();
+		return seasons;
 	}
 
-	public Season newSeason()
+	public void setSeasons(Collection<Season> seasons)
 	{
-		return new Season(this);
+		this.seasons.clear();
+		this.seasons.addAll(seasons);
 	}
 
-	public Season newSeason(Integer seasonNumber)
+	public Season addSeason()
 	{
-		return new Season(this, seasonNumber);
+		Season season = new Season(this);
+		seasons.add(season);
+		return season;
 	}
 
-	public Season newSeason(String seasonTitle)
+	public Season addSeason(Integer seasonNumber)
 	{
-		return new Season(this, seasonTitle);
+		Season season = new Season(this, seasonNumber);
+		seasons.add(season);
+		return season;
+	}
+
+	public Season addSeason(String seasonTitle)
+	{
+		Season season = new Season(this, seasonTitle);
+		seasons.add(season);
+		return season;
 	}
 
 	// Seasons and Episode
 	public List<Episode> getEpisodesOf(Season season)
 	{
-		if (season == null || episodes.isEmpty())
+		if (episodes.isEmpty())
 		{
 			return ImmutableList.of();
 		}
 		ImmutableList.Builder<Episode> episInSeason = ImmutableList.builder();
 		for (Episode epi : episodes)
 		{
-			if (season.equals(epi.getSeason()))
+			if (Objects.equals(season, epi.getSeason()))
 			{
 				episInSeason.add(epi);
 			}
@@ -368,17 +391,37 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	}
 
 	/**
-	 * Returns a sorted map of all the Episodes of this Series grouped by the Seasons.
+	 * Returns a map of all the seasons of this series mapped to their corresponding episodes, plus {@code null} mapped to the episodes which are not
+	 * part of a season.<br/>
+	 * The map contains a {@code null} key which value is a list of all the episodes with no season, this list may be empty but it is never
+	 * {@code null}. The map may contain a mapping between a season and an empty list for seasons without episodes.<br/>
+	 * The seasons (the keys) are in the same order as in the {@link #getSeasons() seasons list}. The episodes for each season are in the same order
+	 * as in the {@link #getEpisodes() episodes list}.
 	 * 
-	 * @return a sorted map with the Seasons as keys and the corresponding Episodes as values
+	 * @return a map with the seasons as keys (including the {@code null} season) and their episodes as values
+	 * @throws IllegalStateException
+	 *             if the season of an episode in the {@link #getEpisodes() episodes list} is not contained in the {@link #getSeasons() seasons list}
 	 */
-	public SortedMap<Season, List<Episode>> getEpisodesGroupedBySeason()
+	public Map<Season, List<Episode>> createSeasonsToEpisodesMap() throws IllegalStateException
 	{
-		if (episodes.isEmpty())
+		// preserve insertion order -> use a LinkedHashMap
+		Map<Season, List<Episode>> seasonsAndEpis = new LinkedHashMap<>(seasons.size());
+		for (Season s : seasons)
 		{
-			return ImmutableSortedMap.of();
+			seasonsAndEpis.put(s, new ArrayList<>());
 		}
-		return episodes.stream().collect(Collectors.groupingBy(Episode::getSeason, TreeMap::new, Collectors.toList()));
+		// for the Episodes without a Season
+		seasonsAndEpis.put(null, new ArrayList<>());
+		for (Episode epi : episodes)
+		{
+			List<Episode> seasonEpiList = seasonsAndEpis.get(epi.getSeason());
+			if (seasonEpiList == null)
+			{
+				throw new IllegalStateException("The Seasons list of this Series does not contain the Season of the following Episode: " + epi);
+			}
+			seasonEpiList.add(epi);
+		}
+		return Collections.unmodifiableMap(seasonsAndEpis);
 	}
 
 	// Object methods

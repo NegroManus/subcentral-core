@@ -7,9 +7,9 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.MultiEpisodeHelper;
+import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
@@ -27,17 +27,17 @@ public class NamingPlayground
 		series.setName("How I Met Your Mother");
 		series.setType(Series.TYPE_SEASONED);
 
-		Season s2 = series.newSeason();
+		Season s2 = new Season(series);
 		s2.setNumber(2);
 		s2.setTitle("Webisodes");
 
-		Episode epi = series.newEpisode(s2);
+		Episode epi = new Episode(series, s2);
 		epi.setNumberInSeason(1);
 		epi.setNumberInSeries(17);
 		epi.setTitle("Weekend at Barney's");
 		epi.setDate(LocalDateTime.now());
 
-		Episode epi2 = series.newEpisode();
+		Episode epi2 = new Episode(series);
 		epi2.setNumberInSeries(18);
 
 		RegularAvMedia movie = new RegularAvMedia();
