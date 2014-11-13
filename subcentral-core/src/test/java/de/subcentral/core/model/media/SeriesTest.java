@@ -21,12 +21,12 @@ public class SeriesTest
 		Episode epi1x1 = psych.addEpisode(season1, 1, "Pilot");
 		Episode epiSpecial = psych.addEpisode("Special episode");
 
-		Map<Season, List<Episode>> expectedSeasonsAndEpisodes = new LinkedHashMap<>(3);
-		expectedSeasonsAndEpisodes.put(season1, ImmutableList.of(epi1x1));
-		expectedSeasonsAndEpisodes.put(season2, ImmutableList.of());
-		expectedSeasonsAndEpisodes.put(null, ImmutableList.of(epiSpecial));
+		Map<Season, List<Episode>> expectedMap = new LinkedHashMap<>(3);
+		expectedMap.put(season1, ImmutableList.of(epi1x1));
+		expectedMap.put(season2, ImmutableList.of());
+		expectedMap.put(null, ImmutableList.of(epiSpecial));
 
-		Map<Season, List<Episode>> seasonsAndEpisodes = psych.createSeasonsToEpisodesMap();
-		assertEquals(expectedSeasonsAndEpisodes, seasonsAndEpisodes);
+		Map<Season, List<Episode>> map = psych.getSeasonsToEpisodesMap();
+		assertEquals(expectedMap, map);
 	}
 }
