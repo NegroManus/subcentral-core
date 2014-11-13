@@ -417,7 +417,7 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 			List<Episode> seasonEpiList = seasonsAndEpis.get(epi.getSeason());
 			if (seasonEpiList == null)
 			{
-				throw new IllegalStateException("The Seasons list of this Series does not contain the Season of the following Episode: " + epi);
+				throw new IllegalStateException("The seasons list of this series does not contain the season of the following episode: " + epi);
 			}
 			seasonEpiList.add(epi);
 		}
