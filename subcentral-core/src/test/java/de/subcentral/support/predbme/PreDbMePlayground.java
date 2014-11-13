@@ -17,7 +17,7 @@ public class PreDbMePlayground
 	{
 		PreDbMeLookup lookup = new PreDbMeLookup();
 
-		URL url = Resources.getResource("de/subcentral/core/impl/predb/icarly.s01e10_details_formatted.html");
+		URL url = Resources.getResource("de/subcentral/support/predbme/icarly.s01e10_details_formatted.html");
 		File resource = new File(url.toURI());
 		Document doc = Jsoup.parse(resource, "UTF-8", lookup.getHost().toExternalForm());
 
