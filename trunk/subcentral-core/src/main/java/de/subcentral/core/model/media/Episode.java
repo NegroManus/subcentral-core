@@ -155,6 +155,12 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 		setSeries(series);
 	}
 
+	public Episode(Series series, String title)
+	{
+		setSeries(series);
+		setTitle(title);
+	}
+
 	// Mini-series
 	public Episode(Series series, Integer numberInSeries)
 	{
