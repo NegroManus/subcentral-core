@@ -58,7 +58,7 @@ public class Release implements Comparable<Release>
 	private int									fileCount		= 0;
 	private final List<Nuke>					nukes			= new ArrayList<>(0);
 	private String								info;
-	private String								infoUrl;
+	private String								infoLink;
 
 	public static Release create(Media media, String group, String... tags)
 	{
@@ -122,7 +122,7 @@ public class Release implements Comparable<Release>
 		this.fileCount = rls.fileCount;
 		this.nukes.addAll(rls.nukes);
 		this.info = rls.info;
-		this.infoUrl = rls.infoUrl;
+		this.infoLink = rls.infoLink;
 	}
 
 	/**
@@ -306,12 +306,12 @@ public class Release implements Comparable<Release>
 	 */
 	public String getInfoUrl()
 	{
-		return infoUrl;
+		return infoLink;
 	}
 
-	public void setInfoUrl(String infoUrl)
+	public void setInfoLink(String infoLink)
 	{
-		this.infoUrl = infoUrl;
+		this.infoLink = infoLink;
 	}
 
 	// Convenience
@@ -416,7 +416,7 @@ public class Release implements Comparable<Release>
 				.add("fileCount", Models.nullIfZero(fileCount))
 				.add("nukes", Models.nullIfEmpty(nukes))
 				.add("info", info)
-				.add("infoUrl", infoUrl)
+				.add("infoLink", infoLink)
 				.toString();
 	}
 }

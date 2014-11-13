@@ -330,7 +330,7 @@ public class XRelToLookup extends AbstractHttpHtmlLookup<Release, String>
 		{
 			Element nfoAnchor = optionsDiv.getElementsByTag("a").first();
 			String nfoUrl = nfoAnchor.absUrl("href");
-			rls.setInfoUrl(nfoUrl);
+			rls.setInfoLink(nfoUrl);
 		}
 
 		/**

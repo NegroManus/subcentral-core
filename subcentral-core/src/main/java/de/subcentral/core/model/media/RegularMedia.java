@@ -174,10 +174,10 @@ public class RegularMedia extends AbstractMedia
 				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
 				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverUrls", Models.nullIfEmpty(coverUrls))
+				.add("coverLinks", Models.nullIfEmpty(coverLinks))
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
+				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", Models.nullIfEmpty(attributes))
 				.toString();
 	}

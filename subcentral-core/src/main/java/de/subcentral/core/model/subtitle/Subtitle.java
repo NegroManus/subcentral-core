@@ -135,7 +135,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private String						productionType;
 	private Subtitle					basis;
 	private String						info;
-	private String						infoUrl;
+	private String						infoLink;
 	// More than 4 contributions per subtitle is very rare
 	private final List<Contribution>	contributions					= new ArrayList<>(4);
 
@@ -342,14 +342,14 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the information URL
 	 */
-	public String getInfoUrl()
+	public String getInfoLink()
 	{
-		return infoUrl;
+		return infoLink;
 	}
 
-	public void setInfoUrl(String infoUrl)
+	public void setInfoLink(String infoLink)
 	{
-		this.infoUrl = infoUrl;
+		this.infoLink = infoLink;
 	}
 
 	@Override
@@ -476,7 +476,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("productionType", productionType)
 				.add("basis", basis)
 				.add("info", info)
-				.add("infoUrl", infoUrl)
+				.add("infoLink", infoLink)
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.toString();
 	}

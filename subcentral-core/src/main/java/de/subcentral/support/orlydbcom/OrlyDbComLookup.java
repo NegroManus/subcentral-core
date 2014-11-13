@@ -210,7 +210,7 @@ public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLo
 			rls.nuke(nukeSpan.text());
 		}
 
-		rls.setInfoUrl(doc.baseUri());
+		rls.setInfoLink(doc.baseUri());
 
 		return rls;
 	}

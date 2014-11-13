@@ -242,10 +242,10 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("finaleDate", finaleDate)
 				.add("special", special)
 				.add("description", description)
-				.add("coverUrls", Models.nullIfEmpty(coverUrls))
+				.add("coverLinks", Models.nullIfEmpty(coverLinks))
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
+				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", Models.nullIfEmpty(attributes))
 				.toString();
 	}

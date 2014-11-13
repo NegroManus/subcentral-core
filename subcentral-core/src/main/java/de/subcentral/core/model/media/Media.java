@@ -152,9 +152,9 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return a list of URLs each pointing to a cover image for this media. The first URL points to the primary cover
+	 * @return a list of links (typically URLs) each pointing to a cover image for this media. The first URL points to the primary cover
 	 */
-	public List<String> getCoverUrls();
+	public List<String> getCoverLinks();
 
 	/**
 	 * <ul>
@@ -169,9 +169,9 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return a set of URLs where further information about this media can be found
+	 * @return a set of links (typically URLs) where further information about this media can be found
 	 */
-	public List<String> getFurtherInfoUrls();
+	public Set<String> getFurtherInfoLinks();
 
 	/**
 	 * Additional attributes that have no designated property can be stored in the ListMultimap of getAttributes().

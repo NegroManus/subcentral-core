@@ -243,7 +243,7 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 			}
 		}
 
-		rls.setInfoUrl(detailsUrl);
+		rls.setInfoLink(detailsUrl);
 
 		// Parse details
 		if (detailsUrl != null)
@@ -364,7 +364,7 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 		String mediaTitle = null;
 		String plot = null;
 		List<String> genres = null;
-		List<String> furtherInfoUrls = null;
+		List<String> seriesInfoUrls = null;
 		for (Element keyValueDiv : keyValueDivs)
 		{
 			Element keyDiv = keyValueDiv.getElementsByClass("pb-l").first();
@@ -464,12 +464,12 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 					{
 						epi.setNumberInSeason(Integer.parseInt(mEpi.group(1)));
 					}
-					// Episode title and furtherInfoUrl
+					// Episode title and furtherInfoLinks
 					Element episodeTitleAnchor = valueDiv.select("a.ext-link").first();
 					if (episodeTitleAnchor != null)
 					{
 						epi.setTitle(episodeTitleAnchor.text());
-						epi.getFurtherInfoUrls().add(episodeTitleAnchor.attr("href"));
+						epi.getFurtherInfoLinks().add(episodeTitleAnchor.attr("href"));
 					}
 					Element airdateElement = valueDiv.getElementsByClass("airdate").first();
 					if (airdateElement != null)
@@ -506,16 +506,16 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 					 * <pre>
 					 * <div class="pb-c  pb-l">Links</div>
 					 * 	<div class="pb-c  pb-d">
-					 * 			<a rel='nofollow' target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly'>TVRage</a>, <a rel='nofollow' target='_blank' class='ext-link'
-					 * 			href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a>
+					 * 			<a rel='nofollow' target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly'>TVRage</a>,
+					 * 			<a rel='nofollow' target='_blank' class='ext-link' href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a>
 					 * 		</div>
 					 * </pre>
 					 */
 					Elements extLinksAnchors = valueDiv.select("a.ext-link");
-					furtherInfoUrls = new ArrayList<>(extLinksAnchors.size());
+					seriesInfoUrls = new ArrayList<>(extLinksAnchors.size());
 					for (Element extLinkAnchor : extLinksAnchors)
 					{
-						furtherInfoUrls.add(extLinkAnchor.attr("href"));
+						seriesInfoUrls.add(extLinkAnchor.attr("href"));
 					}
 				}
 			}
@@ -563,10 +563,10 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 			{
 				epi.getSeries().getGenres().addAll(genres);
 			}
-			if (furtherInfoUrls != null)
+			if (seriesInfoUrls != null)
 			{
 				// the ext-links for episode releases belong to the series
-				epi.getSeries().getFurtherInfoUrls().addAll(furtherInfoUrls);
+				epi.getSeries().getFurtherInfoLinks().addAll(seriesInfoUrls);
 			}
 		}
 		else if (media instanceof RegularMedia)
@@ -581,15 +581,15 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 			{
 				stdMediaItem.getGenres().addAll(genres);
 			}
-			if (furtherInfoUrls != null)
+			if (seriesInfoUrls != null)
 			{
-				stdMediaItem.getFurtherInfoUrls().addAll(furtherInfoUrls);
+				stdMediaItem.getFurtherInfoLinks().addAll(seriesInfoUrls);
 			}
 		}
 
 		rls.setSingleMedia(media);
 
-		rls.setInfoUrl(doc.baseUri());
+		rls.setInfoLink(doc.baseUri());
 
 		return rls;
 	}

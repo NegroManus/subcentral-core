@@ -472,12 +472,13 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("regularRunningTime", Models.nullIfZero(regularRunningTime))
 				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverUrls", Models.nullIfEmpty(coverUrls))
+				.add("coverLinks", Models.nullIfEmpty(coverLinks))
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
+				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", Models.nullIfEmpty(attributes))
 				.add("episodes.size", Models.nullIfZero(episodes.size()))
+				.add("seasons.size", Models.nullIfZero(seasons.size()))
 				.toString();
 	}
 }

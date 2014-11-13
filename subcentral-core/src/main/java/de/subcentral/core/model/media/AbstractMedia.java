@@ -3,7 +3,9 @@ package de.subcentral.core.model.media;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -15,11 +17,11 @@ public abstract class AbstractMedia implements Media
 	protected String								title;
 	protected Temporal								date;
 	protected String								description;
-	protected final List<String>					coverUrls		= new ArrayList<>(1);
+	protected final List<String>					coverLinks			= new ArrayList<>(1);
 	protected String								contentAdvisory;
-	protected final List<Contribution>				contributions	= new ArrayList<>(0);
-	protected final List<String>					furtherInfoUrls	= new ArrayList<>(3);
-	protected final ListMultimap<String, Object>	attributes		= LinkedListMultimap.create(0);
+	protected final List<Contribution>				contributions		= new ArrayList<>(0);
+	protected final Set<String>						furtherInfoLinks	= new HashSet<>(4);
+	protected final ListMultimap<String, Object>	attributes			= LinkedListMultimap.create(0);
 
 	@Override
 	public String getTitle()
@@ -55,15 +57,15 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public List<String> getCoverUrls()
+	public List<String> getCoverLinks()
 	{
-		return coverUrls;
+		return coverLinks;
 	}
 
-	public void setCoverUrls(Collection<String> coverUrls)
+	public void setCoverLinks(Collection<String> coverLinks)
 	{
-		this.coverUrls.clear();
-		this.coverUrls.addAll(coverUrls);
+		this.coverLinks.clear();
+		this.coverLinks.addAll(coverLinks);
 	}
 
 	@Override
@@ -90,15 +92,15 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public List<String> getFurtherInfoUrls()
+	public Set<String> getFurtherInfoLinks()
 	{
-		return furtherInfoUrls;
+		return furtherInfoLinks;
 	}
 
-	public void setFurtherInfoUrls(Collection<String> furtherInfoUrls)
+	public void setFurtherInfoLinks(Collection<String> furtherInfoLinks)
 	{
-		this.furtherInfoUrls.clear();
-		this.furtherInfoUrls.addAll(furtherInfoUrls);
+		this.furtherInfoLinks.clear();
+		this.furtherInfoLinks.addAll(furtherInfoLinks);
 	}
 
 	@Override

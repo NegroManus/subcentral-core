@@ -390,10 +390,10 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 				.add("special", special)
 				.add("runningTime", Models.nullIfZero(runningTime))
 				.add("description", description)
-				.add("coverUrls", Models.nullIfEmpty(coverUrls))
+				.add("coverLinks", Models.nullIfEmpty(coverLinks))
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
+				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", Models.nullIfEmpty(attributes))
 				.toString();
 	}

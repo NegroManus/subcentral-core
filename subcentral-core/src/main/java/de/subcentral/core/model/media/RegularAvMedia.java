@@ -1,8 +1,5 @@
 package de.subcentral.core.model.media;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.model.Models;
@@ -68,26 +65,6 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof RegularAvMedia)
-		{
-			return StringUtils.equalsIgnoreCase(name, ((RegularAvMedia) obj).name);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(67, 65).append(StringUtils.lowerCase(name)).toHashCode();
-	}
-
-	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(RegularAvMedia.class)
@@ -102,10 +79,10 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 				.add("runningTime", runningTime)
 				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverUrls", Models.nullIfEmpty(coverUrls))
+				.add("coverLinks", Models.nullIfEmpty(coverLinks))
 				.add("contentAdvisory", contentAdvisory)
 				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoUrls", Models.nullIfEmpty(furtherInfoUrls))
+				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", Models.nullIfEmpty(attributes))
 				.toString();
 	}
