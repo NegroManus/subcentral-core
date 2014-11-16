@@ -1,6 +1,7 @@
 package de.subcentral.core.lookup;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableMap;
@@ -13,14 +14,14 @@ import de.subcentral.core.util.PatternReplacer;
 
 public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 {
-	protected final NamingService	queryEntityNamingService;
+	protected final NamingService	queryObjectNamingService;
 
 	public AbstractLookup()
 	{
-		this.queryEntityNamingService = initQueryEntityNamingService();
+		this.queryObjectNamingService = Objects.requireNonNull(initQueryObjectNamingService(), "queryObjectNamingService");
 	}
 
-	protected NamingService initQueryEntityNamingService()
+	protected NamingService initQueryObjectNamingService()
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
 		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", ' ');
@@ -29,25 +30,25 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 
 	public NamingService getQueryEntityNamingService()
 	{
-		return queryEntityNamingService;
+		return queryObjectNamingService;
 	}
 
 	@Override
-	public List<R> queryWithName(Object queryEntity) throws LookupException
+	public List<R> queryWithName(Object obj) throws LookupException
 	{
 		try
 		{
-			return query(queryEntityNamingService.name(queryEntity));
+			return query(queryObjectNamingService.name(obj));
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(queryEntity, e);
+			throw new LookupException(obj, e);
 		}
 	}
 
 	@Override
-	public boolean canQueryWithName(Object queryObject)
+	public boolean canQueryWithName(Object obj)
 	{
-		return queryEntityNamingService.canName(queryObject);
+		return queryObjectNamingService.canName(obj);
 	}
 }
