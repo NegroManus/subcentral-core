@@ -88,7 +88,7 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	}
 
 	@Override
-	public List<R> queryWithParameterBean(P parameterBean) throws LookupException
+	public List<R> queryWithParameters(P parameterBean) throws LookupException
 	{
 		try
 		{

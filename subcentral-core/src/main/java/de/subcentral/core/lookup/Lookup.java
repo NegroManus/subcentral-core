@@ -16,10 +16,10 @@ public interface Lookup<R, P>
 
 	public List<R> query(String query) throws LookupException;
 
-	public List<R> queryWithParameterBean(P parameterBean) throws LookupException;
+	public List<R> queryWithParameters(P parameterBean) throws LookupException;
 
-	public List<R> queryWithQueryObject(Object queryObject) throws LookupException;
+	public List<R> queryWithName(Object obj) throws LookupException;
 
-	public boolean isQueryObjectSupported(Object queryObject);
+	public boolean canQueryWithName(Object obj);
 
 }

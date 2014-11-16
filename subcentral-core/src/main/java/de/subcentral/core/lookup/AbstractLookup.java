@@ -33,7 +33,7 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 	}
 
 	@Override
-	public List<R> queryWithQueryObject(Object queryEntity) throws LookupException
+	public List<R> queryWithName(Object queryEntity) throws LookupException
 	{
 		try
 		{
@@ -46,7 +46,7 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 	}
 
 	@Override
-	public boolean isQueryObjectSupported(Object queryObject)
+	public boolean canQueryWithName(Object queryObject)
 	{
 		return queryEntityNamingService.canName(queryObject);
 	}

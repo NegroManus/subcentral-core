@@ -159,7 +159,7 @@ public class ParsingPlayground
 							SubtitleAdjustment subAdj = (SubtitleAdjustment) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							start = System.nanoTime();
-							List<Release> releases = lookup.queryWithQueryObject(subAdj.getFirstMatchingRelease().getMedia());
+							List<Release> releases = lookup.queryWithName(subAdj.getFirstMatchingRelease().getMedia());
 							TimeUtil.printDurationMillis("Lookup", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));
