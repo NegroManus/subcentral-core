@@ -53,13 +53,13 @@ public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLo
 	}
 
 	@Override
-	public Class<Release> getResultClass()
+	public Class<Release> getResultType()
 	{
 		return Release.class;
 	}
 
 	@Override
-	public Class<OrlyDbComLookupParameters> getParameterBeanClass()
+	public Class<OrlyDbComLookupParameters> getParameterBeanType()
 	{
 		return OrlyDbComLookupParameters.class;
 	}

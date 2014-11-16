@@ -10,9 +10,9 @@ public interface Lookup<R, P>
 
 	public boolean isLookupAvailable();
 
-	public Class<R> getResultClass();
+	public Class<R> getResultType();
 
-	public Class<P> getParameterBeanClass();
+	public Class<P> getParameterBeanType();
 
 	public List<R> query(String query) throws LookupException;
 

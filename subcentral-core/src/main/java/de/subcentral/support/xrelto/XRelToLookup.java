@@ -60,13 +60,13 @@ public class XRelToLookup extends AbstractHttpHtmlLookup<Release, String>
 	}
 
 	@Override
-	public Class<Release> getResultClass()
+	public Class<Release> getResultType()
 	{
 		return Release.class;
 	}
 
 	@Override
-	public Class<String> getParameterBeanClass()
+	public Class<String> getParameterBeanType()
 	{
 		return String.class;
 	}
