@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.core.lookup.JavaLookup;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.lookup.Lookup;
+import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Compatibility;
 import de.subcentral.core.model.release.CompatibilityService;
 import de.subcentral.core.model.release.Group;
@@ -35,6 +37,11 @@ import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
+import de.subcentral.core.standardizing.ClassBasedStandardizingService;
+import de.subcentral.core.standardizing.SeriesNameStandardizer;
+import de.subcentral.core.standardizing.StandardizingChange;
+import de.subcentral.core.standardizing.Standardizings;
+import de.subcentral.core.util.PatternReplacer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.orlydbcom.OrlyDbComLookup;
@@ -87,7 +94,7 @@ public class ParsingPlayground
 			watchFolder = Paths.get(System.getProperty("user.home"), "Downloads");
 		}
 
-		long totalStart = System.nanoTime();
+		final long totalStart = System.nanoTime();
 
 		final SimpleParsingService ps = new SimpleParsingService("default");
 		ps.getParsers().putAll(Addic7edCom.getAllParsers());
@@ -99,17 +106,23 @@ public class ParsingPlayground
 		final Lookup<Release, ?> lookup = new OrlyDbComLookup();
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
-		CompatibilityService compService = new CompatibilityService();
+		final CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(new SameGroupCompatibility());
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
 
-		WinRarPackConfig packCfg = new WinRarPackConfig();
+		final WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.DELETE);
 		packCfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
-		WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
+		final WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
+
+		final ClassBasedStandardizingService lookupStdzService = new ClassBasedStandardizingService("parsed");
+		Standardizings.registerAllDefaultNestedBeansRetrievers(lookupStdzService);
+		lookupStdzService.registerStandardizer(Series.class,
+				new SeriesNameStandardizer(new PatternReplacer(ImmutableMap.of(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE),
+						"The Good Wife"))));
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
@@ -150,6 +163,16 @@ public class ParsingPlayground
 							TimeUtil.printDurationMillis("Lookup", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));
+
+							start = System.nanoTime();
+							releases.forEach(r -> {
+								List<StandardizingChange> changes = lookupStdzService.standardize(r);
+								if (!changes.isEmpty())
+								{
+									changes.forEach(c -> System.out.println("Changed: " + c));
+								}
+							});
+							TimeUtil.printDurationMillis("Standardizing lookup results", start);
 
 							start = System.nanoTime();
 							releases.forEach(r -> Releases.enrichByParsingName(r, ps, false));
