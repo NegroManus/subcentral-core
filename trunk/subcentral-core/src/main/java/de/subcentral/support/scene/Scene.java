@@ -36,7 +36,7 @@ public class Scene
 
 	static
 	{
-		PARSING_SERVICE.getParsers().putAll(initParsers());
+		PARSING_SERVICE.registerAllParsers(initParsers());
 	}
 
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()

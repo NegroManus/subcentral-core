@@ -32,6 +32,9 @@ import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
+/**
+ * @implSpec #immutable #thread-safe
+ */
 public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 {
 	// DateTimeFormatter not needed because using the epoch seconds

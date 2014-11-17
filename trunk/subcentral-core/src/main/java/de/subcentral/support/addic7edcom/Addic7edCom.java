@@ -31,7 +31,7 @@ public class Addic7edCom
 	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
 	static
 	{
-		PARSING_SERVICE.getParsers().putAll(initParsers());
+		PARSING_SERVICE.registerAllParsers(initParsers());
 	}
 
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()
