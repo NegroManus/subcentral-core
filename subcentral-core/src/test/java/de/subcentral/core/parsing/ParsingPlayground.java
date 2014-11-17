@@ -119,18 +119,18 @@ public class ParsingPlayground
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 		final WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
 
-		final ClassBasedStandardizingService parsedToQueryStdzService = new ClassBasedStandardizingService("after query");
-		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToQueryStdzService);
+		final ClassBasedStandardizingService parsedToInfoDbStdzService = new ClassBasedStandardizingService("after parsing");
+		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
 		ImmutableMap.Builder<Pattern, String> parsedToQuerySeriesNameReplacements = ImmutableMap.builder();
 		parsedToQuerySeriesNameReplacements.put(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)");
-		parsedToQueryStdzService.registerStandardizer(Series.class,
+		parsedToInfoDbStdzService.registerStandardizer(Series.class,
 				new SeriesNameStandardizer(new PatternReplacer(parsedToQuerySeriesNameReplacements.build())));
 
-		final ClassBasedStandardizingService parsedToCustomQueryStdzService = new ClassBasedStandardizingService("after query");
-		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToCustomQueryStdzService);
+		final ClassBasedStandardizingService infoDbToCustomStdzService = new ClassBasedStandardizingService("after infoDb");
+		Standardizings.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
 		ImmutableMap.Builder<Pattern, String> parsedToCustomSeriesNameReplacements = ImmutableMap.builder();
 		parsedToCustomSeriesNameReplacements.put(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife");
-		parsedToCustomQueryStdzService.registerStandardizer(Series.class,
+		infoDbToCustomStdzService.registerStandardizer(Series.class,
 				new SeriesNameStandardizer(new PatternReplacer(parsedToCustomSeriesNameReplacements.build())));
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
@@ -163,7 +163,7 @@ public class ParsingPlayground
 						System.out.println(nameOfParsed);
 
 						start = System.nanoTime();
-						List<StandardizingChange> parsedChanges = parsedToQueryStdzService.standardize(parsed);
+						List<StandardizingChange> parsedChanges = parsedToInfoDbStdzService.standardize(parsed);
 						parsedChanges.forEach(c -> System.out.println("Changed: " + c));
 						TimeUtil.printDurationMillis("Standardizing parsed", start);
 
@@ -180,7 +180,7 @@ public class ParsingPlayground
 
 							start = System.nanoTime();
 							releases.forEach(r -> {
-								List<StandardizingChange> rlsChanges = parsedToCustomQueryStdzService.standardize(r);
+								List<StandardizingChange> rlsChanges = infoDbToCustomStdzService.standardize(r);
 								rlsChanges.forEach(c -> System.out.println("Changed: " + c));
 							});
 							TimeUtil.printDurationMillis("Standardizing info db results", start);
