@@ -1,4 +1,4 @@
-package de.subcentral.core.lookup;
+package de.subcentral.core.infodb;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,14 +10,14 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
+public abstract class AbstractHttpInfoDb<R, P> extends AbstractInfoDb<R, P>
 {
 	public static final int	DEFAULT_TIMEOUT	= 10000;
 
 	protected final URL		host;
 	protected int			timeout			= DEFAULT_TIMEOUT;
 
-	public AbstractHttpLookup()
+	public AbstractHttpInfoDb()
 	{
 		try
 		{
@@ -75,7 +75,7 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 	}
 
 	@Override
-	public List<R> query(String query) throws LookupException
+	public List<R> query(String query) throws InfoDbQueryException
 	{
 		try
 		{
@@ -83,12 +83,12 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(query, e);
+			throw new InfoDbQueryException(query, e);
 		}
 	}
 
 	@Override
-	public List<R> queryWithParameters(P parameterBean) throws LookupException
+	public List<R> queryWithParameters(P parameterBean) throws InfoDbQueryException
 	{
 		try
 		{
@@ -96,11 +96,11 @@ public abstract class AbstractHttpLookup<R, P> extends AbstractLookup<R, P>
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(parameterBean, e);
+			throw new InfoDbQueryException(parameterBean, e);
 		}
 	}
 
-	public abstract List<R> queryWithUrl(URL query) throws LookupException;
+	public abstract List<R> queryWithUrl(URL query) throws InfoDbQueryException;
 
 	/**
 	 * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.

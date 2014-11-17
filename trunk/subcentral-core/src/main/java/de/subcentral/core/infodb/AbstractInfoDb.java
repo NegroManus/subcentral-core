@@ -1,4 +1,4 @@
-package de.subcentral.core.lookup;
+package de.subcentral.core.infodb;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,11 +12,11 @@ import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.PatternReplacer;
 
-public abstract class AbstractLookup<R, P> implements Lookup<R, P>
+public abstract class AbstractInfoDb<R, P> implements InfoDb<R, P>
 {
 	protected final NamingService	queryObjectNamingService;
 
-	public AbstractLookup()
+	public AbstractInfoDb()
 	{
 		this.queryObjectNamingService = Objects.requireNonNull(initQueryObjectNamingService(), "queryObjectNamingService");
 	}
@@ -34,7 +34,7 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 	}
 
 	@Override
-	public List<R> queryWithName(Object obj) throws LookupException
+	public List<R> queryWithName(Object obj) throws InfoDbQueryException
 	{
 		try
 		{
@@ -42,7 +42,7 @@ public abstract class AbstractLookup<R, P> implements Lookup<R, P>
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(obj, e);
+			throw new InfoDbQueryException(obj, e);
 		}
 	}
 

@@ -23,12 +23,12 @@ import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.lookup.AbstractHttpHtmlLookup;
-import de.subcentral.core.lookup.LookupException;
+import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
+import de.subcentral.core.infodb.InfoDbQueryException;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLookupParameters>
+public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQueryParameters>
 {
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
@@ -59,9 +59,9 @@ public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLo
 	}
 
 	@Override
-	public Class<OrlyDbComLookupParameters> getParameterBeanType()
+	public Class<OrlyDbComQueryParameters> getQueryParametersType()
 	{
-		return OrlyDbComLookupParameters.class;
+		return OrlyDbComQueryParameters.class;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLo
 	}
 
 	@Override
-	protected URL buildQueryUrlFromParameterBean(OrlyDbComLookupParameters parameterBean) throws UnsupportedEncodingException, MalformedURLException,
+	protected URL buildQueryUrlFromParameterBean(OrlyDbComQueryParameters parameterBean) throws UnsupportedEncodingException, MalformedURLException,
 			URISyntaxException, NullPointerException
 	{
 		Objects.requireNonNull(parameterBean, "parameterBean");
@@ -92,7 +92,7 @@ public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLo
 
 	// Querying
 	@Override
-	public List<Release> queryWithHtmlDoc(Document doc) throws LookupException
+	public List<Release> queryWithHtmlDoc(Document doc) throws InfoDbQueryException
 	{
 		try
 		{
@@ -100,7 +100,7 @@ public class OrlyDbComLookup extends AbstractHttpHtmlLookup<Release, OrlyDbComLo
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(doc.baseUri(), e);
+			throw new InfoDbQueryException(doc.baseUri(), e);
 		}
 	}
 

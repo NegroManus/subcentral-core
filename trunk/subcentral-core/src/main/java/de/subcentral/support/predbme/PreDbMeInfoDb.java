@@ -19,8 +19,8 @@ import org.jsoup.select.Elements;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.lookup.AbstractHttpHtmlLookup;
-import de.subcentral.core.lookup.LookupException;
+import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
+import de.subcentral.core.infodb.InfoDbQueryException;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.RegularAvMedia;
@@ -32,7 +32,7 @@ import de.subcentral.core.model.release.Nuke;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
+public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 {
 	// DateTimeFormatter not needed because using the epoch seconds
 	// /**
@@ -72,7 +72,7 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 	}
 
 	@Override
-	public Class<String> getParameterBeanType()
+	public Class<String> getQueryParametersType()
 	{
 		return String.class;
 	}
@@ -96,7 +96,7 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 	}
 
 	@Override
-	public List<Release> queryWithHtmlDoc(Document doc) throws LookupException
+	public List<Release> queryWithHtmlDoc(Document doc) throws InfoDbQueryException
 	{
 		try
 		{
@@ -104,7 +104,7 @@ public class PreDbMeLookup extends AbstractHttpHtmlLookup<Release, String>
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(doc.baseUri(), e);
+			throw new InfoDbQueryException(doc.baseUri(), e);
 		}
 	}
 

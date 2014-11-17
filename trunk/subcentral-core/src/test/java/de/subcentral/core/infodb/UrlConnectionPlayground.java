@@ -1,4 +1,4 @@
-package de.subcentral.core.lookup;
+package de.subcentral.core.infodb;
 
 import java.io.InputStream;
 import java.net.URL;
