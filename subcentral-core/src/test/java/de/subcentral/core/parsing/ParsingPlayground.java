@@ -97,9 +97,10 @@ public class ParsingPlayground
 		final long totalStart = System.nanoTime();
 
 		final SimpleParsingService ps = new SimpleParsingService("default");
-		ps.getParsers().putAll(Addic7edCom.getAllParsers());
-		ps.getParsers().putAll(SubCentralDe.getAllParsers());
-		ps.getParsers().putAll(Scene.getAllParsers());
+		// order is relevant. Scene matchers would also match SubCentralDe matchers
+		ps.registerAllParsers(Addic7edCom.getAllParsers());
+		ps.registerAllParsers(SubCentralDe.getAllParsers());
+		ps.registerAllParsers(Scene.getAllParsers());
 
 		final NamingService ns = NamingStandards.getDefaultNamingService();
 

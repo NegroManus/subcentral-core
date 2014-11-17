@@ -7,12 +7,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
 
 /**
  * 
@@ -22,7 +23,8 @@ import com.google.common.collect.Multimaps;
 public class ClassBasedStandardizingService implements StandardizingService
 {
 	private final String												domain;
-	private final ListMultimap<Class<?>, Standardizer<?>>				standardizers			= Multimaps.synchronizedListMultimap(LinkedListMultimap.create());
+	private final ListMultimap<Class<?>, Standardizer<?>>				standardizers			= LinkedListMultimap.create();
+	private final ReentrantReadWriteLock								standardizersRwl		= new ReentrantReadWriteLock();
 	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
 	public ClassBasedStandardizingService(String domain)
@@ -36,29 +38,88 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return domain;
 	}
 
+	/**
+	 * 
+	 * @return an immutable copy of the current standardizers map (a snapshot)
+	 */
+	public ListMultimap<Class<?>, Standardizer<?>> getStandardizers()
+	{
+		standardizersRwl.readLock().lock();
+		try
+		{
+			return ImmutableListMultimap.copyOf(standardizers);
+		}
+		finally
+		{
+			standardizersRwl.readLock().unlock();
+		}
+	}
+
 	public <T> boolean registerStandardizer(Class<T> entityType, Standardizer<T> standardizer)
 	{
-		return standardizers.put(entityType, standardizer);
+		standardizersRwl.writeLock().lock();
+		try
+		{
+			return standardizers.put(entityType, standardizer);
+		}
+		finally
+		{
+			standardizersRwl.writeLock().unlock();
+		}
 	}
 
 	public <T> boolean registerAllStandardizers(Class<T> entityType, Iterable<Standardizer<T>> standardizers)
 	{
-		return this.standardizers.putAll(entityType, standardizers);
+		standardizersRwl.writeLock().lock();
+		try
+		{
+			return this.standardizers.putAll(entityType, standardizers);
+		}
+		finally
+		{
+			standardizersRwl.writeLock().unlock();
+		}
 	}
 
 	public <T> boolean unregisterStandardizer(Class<T> entityType, Standardizer<T> standardizer)
 	{
-		return standardizers.remove(entityType, standardizer);
+		standardizersRwl.writeLock().lock();
+		try
+		{
+			return standardizers.remove(entityType, standardizer);
+		}
+		finally
+		{
+			standardizersRwl.writeLock().unlock();
+		}
 	}
 
 	public <T> List<Standardizer<?>> unregisterAllStandardizers(Class<T> entityType)
 	{
-		return standardizers.removeAll(entityType);
+		standardizersRwl.writeLock().lock();
+		try
+		{
+			return standardizers.removeAll(entityType);
+		}
+		finally
+		{
+			standardizersRwl.writeLock().unlock();
+		}
 	}
 
-	public void unregisterAllStandardizers()
+	public int unregisterAllStandardizers()
 	{
-		standardizers.clear();
+		standardizersRwl.writeLock().lock();
+		try
+		{
+			int size = standardizers.size();
+			standardizers.clear();
+			return size;
+		}
+		finally
+		{
+			standardizersRwl.writeLock().unlock();
+		}
 	}
 
 	public <T> void registerNestedBeansRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
@@ -107,14 +168,17 @@ public class ClassBasedStandardizingService implements StandardizingService
 			return ImmutableList.of();
 		}
 		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
-		// Multimaps.synchronizedMultimap() JavaDoc:
-		// "It is imperative that the user manually synchronize on the returned multimap when accessing any of its collection views"
-		synchronized (standardizers)
+		standardizersRwl.readLock().lock();
+		try
 		{
 			for (Standardizer<?> std : standardizers.get(bean.getClass()))
 			{
 				changes.addAll(((Standardizer<T>) std).standardize(bean));
 			}
+		}
+		finally
+		{
+			standardizersRwl.readLock().unlock();
 		}
 		return changes.build();
 	}

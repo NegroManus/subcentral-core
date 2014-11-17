@@ -2,10 +2,11 @@ package de.subcentral.core.parsing;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
 
 /**
  * 
@@ -15,7 +16,8 @@ import com.google.common.collect.Multimaps;
 public class SimpleParsingService implements ParsingService
 {
 	private final String							domain;
-	private final ListMultimap<Class<?>, Parser<?>>	parsers	= Multimaps.synchronizedListMultimap(LinkedListMultimap.create());
+	private final ListMultimap<Class<?>, Parser<?>>	parsers		= LinkedListMultimap.create();
+	private final ReentrantReadWriteLock			parsersRwl	= new ReentrantReadWriteLock();
 
 	public SimpleParsingService(String domain)
 	{
@@ -28,29 +30,103 @@ public class SimpleParsingService implements ParsingService
 		return domain;
 	}
 
+	/**
+	 * 
+	 * @return an immutable copy of the current parsers map (a snapshot)
+	 */
 	public ListMultimap<Class<?>, Parser<?>> getParsers()
 	{
-		return parsers;
+		parsersRwl.readLock().lock();
+		try
+		{
+			return ImmutableListMultimap.copyOf(parsers);
+		}
+		finally
+		{
+			parsersRwl.readLock().unlock();
+		}
 	}
 
-	public <T> boolean registerParser(Class<T> targetClass, Parser<T> standardizer)
+	public <T> boolean registerParser(Class<T> targetClass, Parser<T> parser)
 	{
-		return parsers.put(targetClass, standardizer);
+		parsersRwl.writeLock().lock();
+		try
+		{
+			return parsers.put(targetClass, parser);
+		}
+		finally
+		{
+			parsersRwl.writeLock().unlock();
+		}
 	}
 
-	public <T> boolean registerAllParsers(Class<T> targetClass, Iterable<Parser<T>> standardizers)
+	public <T> boolean registerAllParsers(Class<T> targetClass, Iterable<Parser<T>> parsers)
 	{
-		return this.parsers.putAll(targetClass, standardizers);
+		parsersRwl.writeLock().lock();
+		try
+		{
+			return this.parsers.putAll(targetClass, parsers);
+		}
+		finally
+		{
+			parsersRwl.writeLock().unlock();
+		}
 	}
 
-	public <T> boolean unregisterParser(Class<T> targetClass, Parser<T> standardizer)
+	public boolean registerAllParsers(ListMultimap<Class<?>, Parser<?>> parsers)
 	{
-		return parsers.remove(targetClass, standardizer);
+		parsersRwl.writeLock().lock();
+		try
+		{
+			return this.parsers.putAll(parsers);
+		}
+		finally
+		{
+			parsersRwl.writeLock().unlock();
+		}
+	}
+
+	public <T> boolean unregisterParser(Class<T> targetClass, Parser<T> parser)
+	{
+		parsersRwl.writeLock().lock();
+		try
+		{
+
+			return parsers.remove(targetClass, parser);
+		}
+		finally
+		{
+			parsersRwl.writeLock().unlock();
+		}
 	}
 
 	public <T> List<Parser<?>> unregisterAllParsers(Class<T> targetClass)
 	{
-		return parsers.removeAll(targetClass);
+
+		parsersRwl.writeLock().lock();
+		try
+		{
+			return parsers.removeAll(targetClass);
+		}
+		finally
+		{
+			parsersRwl.writeLock().unlock();
+		}
+	}
+
+	public int unregisterAllParsers()
+	{
+		parsersRwl.writeLock().lock();
+		try
+		{
+			int size = parsers.size();
+			parsers.clear();
+			return size;
+		}
+		finally
+		{
+			parsersRwl.writeLock().unlock();
+		}
 	}
 
 	@Override
@@ -76,9 +152,8 @@ public class SimpleParsingService implements ParsingService
 
 	private Object doParse(String text, Class<?> targetClass) throws NoMatchException, ParsingException
 	{
-		// Multimaps.synchronizedMultimap() JavaDoc:
-		// "It is imperative that the user manually synchronize on the returned multimap when accessing any of its collection views"
-		synchronized (parsers)
+		parsersRwl.readLock().lock();
+		try
 		{
 			for (Parser<?> p : (targetClass == null ? parsers.values() : parsers.get(targetClass)))
 			{
@@ -93,6 +168,10 @@ public class SimpleParsingService implements ParsingService
 					continue;
 				}
 			}
+		}
+		finally
+		{
+			parsersRwl.readLock().unlock();
 		}
 
 		// build Exception message

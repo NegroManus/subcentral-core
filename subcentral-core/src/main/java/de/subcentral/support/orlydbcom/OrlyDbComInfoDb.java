@@ -28,6 +28,11 @@ import de.subcentral.core.infodb.InfoDbQueryException;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
+/**
+ * 
+ * @implSpec #immutable #thread-safe
+ *
+ */
 public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQueryParameters>
 {
 	/**

@@ -27,6 +27,9 @@ import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
+/**
+ * @implSpec #immutable #thread-safe
+ */
 public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 {
 	/**
