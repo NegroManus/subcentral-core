@@ -9,7 +9,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * #Immutable #Thread-safe
+ * @implSpec #immutable #thread-safe
  */
 public class CharReplacer implements UnaryOperator<String>
 {
