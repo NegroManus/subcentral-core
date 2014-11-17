@@ -5,11 +5,17 @@ import java.util.Objects;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
+/**
+ * 
+ * @implSpec #thread-safe
+ *
+ */
 public class SimpleParsingService implements ParsingService
 {
 	private final String							domain;
-	private final ListMultimap<Class<?>, Parser<?>>	parsers	= LinkedListMultimap.create();
+	private final ListMultimap<Class<?>, Parser<?>>	parsers	= Multimaps.synchronizedListMultimap(LinkedListMultimap.create());
 
 	public SimpleParsingService(String domain)
 	{
@@ -70,17 +76,22 @@ public class SimpleParsingService implements ParsingService
 
 	private Object doParse(String text, Class<?> targetClass) throws NoMatchException, ParsingException
 	{
-		for (Parser<?> p : (targetClass == null ? parsers.values() : parsers.get(targetClass)))
+		// Multimaps.synchronizedMultimap() JavaDoc:
+		// "It is imperative that the user manually synchronize on the returned multimap when accessing any of its collection views"
+		synchronized (parsers)
 		{
-			try
+			for (Parser<?> p : (targetClass == null ? parsers.values() : parsers.get(targetClass)))
 			{
-				return p.parse(text);
-			}
-			catch (NoMatchException e)
-			{
-				// this parser could no match
-				// ignore and move on to the next
-				continue;
+				try
+				{
+					return p.parse(text);
+				}
+				catch (NoMatchException e)
+				{
+					// this parser could no match
+					// ignore and move on to the next
+					continue;
+				}
 			}
 		}
 
