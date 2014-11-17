@@ -8,6 +8,9 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.util.PatternReplacer;
 
+/**
+ * @implSpec #immutable #thread-safe
+ */
 public class SeriesNameStandardizer implements Standardizer<Series>
 {
 	private final PatternReplacer	patternReplacer;

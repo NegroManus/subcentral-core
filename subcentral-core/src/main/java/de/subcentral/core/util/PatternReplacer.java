@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * #Immutable #Thread-safe
+ * @implSpec #immutable #thread-safe
  */
 public class PatternReplacer implements UnaryOperator<String>
 {
