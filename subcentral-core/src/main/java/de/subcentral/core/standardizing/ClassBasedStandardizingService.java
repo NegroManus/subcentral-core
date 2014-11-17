@@ -1,23 +1,29 @@
 package de.subcentral.core.standardizing;
 
 import java.util.ArrayDeque;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
+/**
+ * 
+ * @implSpec #thread-safe
+ *
+ */
 public class ClassBasedStandardizingService implements StandardizingService
 {
 	private final String												domain;
-	private final ListMultimap<Class<?>, Standardizer<?>>				standardizers			= LinkedListMultimap.create();
-	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new HashMap<>(8);
+	private final ListMultimap<Class<?>, Standardizer<?>>				standardizers			= Multimaps.synchronizedListMultimap(LinkedListMultimap.create());
+	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
 	public ClassBasedStandardizingService(String domain)
 	{
@@ -50,6 +56,11 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return standardizers.removeAll(entityType);
 	}
 
+	public void unregisterAllStandardizers()
+	{
+		standardizers.clear();
+	}
+
 	public <T> void registerNestedBeansRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
 	{
 		nestedBeansRetrievers.put(type, retriever);
@@ -71,18 +82,18 @@ public class ClassBasedStandardizingService implements StandardizingService
 		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
 		// keep track which Objects were already standardized
 		// to not end in an infinite loop because two beans had a bidirectional relationship
-		IdentityHashMap<Object, Boolean> standardizedObjects = new IdentityHashMap<>();
+		IdentityHashMap<Object, Boolean> alreadyStdizedObjs = new IdentityHashMap<>();
 
 		Queue<Object> beansToStandardize = new ArrayDeque<>();
 		beansToStandardize.add(bean);
 		Object beanToStandardize;
 		while ((beanToStandardize = beansToStandardize.poll()) != null)
 		{
-			if (!standardizedObjects.containsKey(beanToStandardize))
+			if (!alreadyStdizedObjs.containsKey(beanToStandardize))
 			{
 				changes.addAll(doStandardize(beanToStandardize));
 				addNestedBeans(beanToStandardize, beansToStandardize);
-				standardizedObjects.put(beanToStandardize, Boolean.TRUE);
+				alreadyStdizedObjs.put(beanToStandardize, Boolean.TRUE);
 			}
 		}
 		return changes.build();
@@ -96,9 +107,14 @@ public class ClassBasedStandardizingService implements StandardizingService
 			return ImmutableList.of();
 		}
 		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
-		for (Standardizer<?> std : standardizers.get(bean.getClass()))
+		// Multimaps.synchronizedMultimap() JavaDoc:
+		// "It is imperative that the user manually synchronize on the returned multimap when accessing any of its collection views"
+		synchronized (standardizers)
 		{
-			changes.addAll(((Standardizer<T>) std).standardize(bean));
+			for (Standardizer<?> std : standardizers.get(bean.getClass()))
+			{
+				changes.addAll(((Standardizer<T>) std).standardize(bean));
+			}
 		}
 		return changes.build();
 	}
