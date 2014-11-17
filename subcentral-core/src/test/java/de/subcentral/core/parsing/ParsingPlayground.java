@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.lookup.JavaLookup;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.lookup.Lookup;
+import de.subcentral.core.infodb.InfoDb;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Compatibility;
 import de.subcentral.core.model.release.CompatibilityService;
@@ -44,7 +44,7 @@ import de.subcentral.core.standardizing.Standardizings;
 import de.subcentral.core.util.PatternReplacer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
-import de.subcentral.support.orlydbcom.OrlyDbComLookup;
+import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
 import de.subcentral.support.scene.Scene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
@@ -103,7 +103,7 @@ public class ParsingPlayground
 
 		final NamingService ns = NamingStandards.getDefaultNamingService();
 
-		final Lookup<Release, ?> lookup = new OrlyDbComLookup();
+		final InfoDb<Release, ?> rlsInfoDb = new OrlyDbComInfoDb();
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
 		final CompatibilityService compService = new CompatibilityService();
@@ -118,11 +118,19 @@ public class ParsingPlayground
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 		final WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
 
-		final ClassBasedStandardizingService lookupStdzService = new ClassBasedStandardizingService("parsed");
-		Standardizings.registerAllDefaultNestedBeansRetrievers(lookupStdzService);
-		lookupStdzService.registerStandardizer(Series.class,
-				new SeriesNameStandardizer(new PatternReplacer(ImmutableMap.of(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE),
-						"The Good Wife"))));
+		final ClassBasedStandardizingService parsedToQueryStdzService = new ClassBasedStandardizingService("after query");
+		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToQueryStdzService);
+		ImmutableMap.Builder<Pattern, String> parsedToQuerySeriesNameReplacements = ImmutableMap.builder();
+		parsedToQuerySeriesNameReplacements.put(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)");
+		parsedToQueryStdzService.registerStandardizer(Series.class,
+				new SeriesNameStandardizer(new PatternReplacer(parsedToQuerySeriesNameReplacements.build())));
+
+		final ClassBasedStandardizingService parsedToCustomQueryStdzService = new ClassBasedStandardizingService("after query");
+		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToCustomQueryStdzService);
+		ImmutableMap.Builder<Pattern, String> parsedToCustomSeriesNameReplacements = ImmutableMap.builder();
+		parsedToCustomSeriesNameReplacements.put(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife");
+		parsedToCustomQueryStdzService.registerStandardizer(Series.class,
+				new SeriesNameStandardizer(new PatternReplacer(parsedToCustomSeriesNameReplacements.build())));
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
@@ -141,7 +149,7 @@ public class ParsingPlayground
 						String name = fileName.toString().substring(0, fileName.toString().length() - 4);
 						System.out.println(name);
 
-						System.out.println("Parsing... ");
+						System.out.println("Parsing ... ");
 						long start = System.nanoTime();
 						Object parsed = ps.parse(name);
 						TimeUtil.printDurationMillis("Parsing", start);
@@ -153,26 +161,28 @@ public class ParsingPlayground
 						TimeUtil.printDurationMillis("Naming the parsed", start);
 						System.out.println(nameOfParsed);
 
-						System.out.println("Looking up ...");
+						start = System.nanoTime();
+						List<StandardizingChange> parsedChanges = parsedToQueryStdzService.standardize(parsed);
+						parsedChanges.forEach(c -> System.out.println("Changed: " + c));
+						TimeUtil.printDurationMillis("Standardizing parsed", start);
+
+						System.out.println("Querying release info db ...");
 						if (parsed instanceof SubtitleAdjustment)
 						{
 							SubtitleAdjustment subAdj = (SubtitleAdjustment) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							start = System.nanoTime();
-							List<Release> releases = lookup.queryWithName(subAdj.getFirstMatchingRelease().getMedia());
-							TimeUtil.printDurationMillis("Lookup", start);
+							List<Release> releases = rlsInfoDb.queryWithName(subAdj.getFirstMatchingRelease().getMedia());
+							TimeUtil.printDurationMillis("Querying release info db", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
 							releases.forEach(r -> {
-								List<StandardizingChange> changes = lookupStdzService.standardize(r);
-								if (!changes.isEmpty())
-								{
-									changes.forEach(c -> System.out.println("Changed: " + c));
-								}
+								List<StandardizingChange> rlsChanges = parsedToCustomQueryStdzService.standardize(r);
+								rlsChanges.forEach(c -> System.out.println("Changed: " + c));
 							});
-							TimeUtil.printDurationMillis("Standardizing lookup results", start);
+							TimeUtil.printDurationMillis("Standardizing info db results", start);
 
 							start = System.nanoTime();
 							releases.forEach(r -> Releases.enrichByParsingName(r, ps, false));

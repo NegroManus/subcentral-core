@@ -1,16 +1,16 @@
 package de.subcentral.support.orlydbcom;
 
-public class OrlyDbComLookupParameters
+public class OrlyDbComQueryParameters
 {
 	private String	section;
 	private String	query;
 
-	public OrlyDbComLookupParameters()
+	public OrlyDbComQueryParameters()
 	{
 
 	}
 
-	public OrlyDbComLookupParameters(String section, String query)
+	public OrlyDbComQueryParameters(String section, String query)
 	{
 		this.section = section;
 		this.query = query;

@@ -1,13 +1,13 @@
-package de.subcentral.core.lookup;
+package de.subcentral.core.infodb;
 
 import java.util.List;
 
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.support.predbme.PreDbMeLookup;
+import de.subcentral.support.predbme.PreDbMeInfoDb;
 
-public class LookupTest
+public class InfoDbTest
 {
 	public static void main(String[] args) throws Exception
 	{
@@ -32,7 +32,7 @@ public class LookupTest
 		// System.out.println(foundRls);
 		// }
 
-		PreDbMeLookup preDbLookup = new PreDbMeLookup();
+		PreDbMeInfoDb preDbLookup = new PreDbMeInfoDb();
 		List<Release> results = preDbLookup.query("^pacific rim 720p");
 		results.forEach(r -> System.out.println(r));
 

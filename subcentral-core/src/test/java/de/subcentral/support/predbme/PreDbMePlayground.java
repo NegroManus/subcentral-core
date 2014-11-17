@@ -15,7 +15,7 @@ public class PreDbMePlayground
 
 	public static void main(String[] args) throws Exception
 	{
-		PreDbMeLookup lookup = new PreDbMeLookup();
+		PreDbMeInfoDb lookup = new PreDbMeInfoDb();
 
 		URL url = Resources.getResource("de/subcentral/support/predbme/icarly.s01e10_details_formatted.html");
 		File resource = new File(url.toURI());

@@ -1,4 +1,4 @@
-package de.subcentral.core.lookup;
+package de.subcentral.core.infodb;
 
 import java.io.IOException;
 import java.net.URL;
@@ -10,12 +10,12 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public abstract class AbstractHttpHtmlLookup<R, P> extends AbstractHttpLookup<R, P>
+public abstract class AbstractHtmlHttpInfoDb<R, P> extends AbstractHttpInfoDb<R, P>
 {
-	private static final Logger	log	= LogManager.getLogger(AbstractHttpHtmlLookup.class);
+	private static final Logger	log	= LogManager.getLogger(AbstractHtmlHttpInfoDb.class);
 
 	@Override
-	public List<R> queryWithUrl(URL query) throws LookupException
+	public List<R> queryWithUrl(URL query) throws InfoDbQueryException
 	{
 		try
 		{
@@ -23,11 +23,11 @@ public abstract class AbstractHttpHtmlLookup<R, P> extends AbstractHttpLookup<R,
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(query, e);
+			throw new InfoDbQueryException(query, e);
 		}
 	}
 
-	public abstract List<R> queryWithHtmlDoc(Document doc) throws LookupException;
+	public abstract List<R> queryWithHtmlDoc(Document doc) throws InfoDbQueryException;
 
 	protected Document getDocument(URL url) throws IOException
 	{

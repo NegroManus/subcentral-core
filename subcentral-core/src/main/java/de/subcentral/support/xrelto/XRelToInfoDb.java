@@ -19,15 +19,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import de.subcentral.core.lookup.AbstractHttpHtmlLookup;
-import de.subcentral.core.lookup.LookupException;
+import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
+import de.subcentral.core.infodb.InfoDbQueryException;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
-public class XRelToLookup extends AbstractHttpHtmlLookup<Release, String>
+public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 {
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
@@ -66,12 +66,12 @@ public class XRelToLookup extends AbstractHttpHtmlLookup<Release, String>
 	}
 
 	@Override
-	public Class<String> getParameterBeanType()
+	public Class<String> getQueryParametersType()
 	{
 		return String.class;
 	}
 
-	public List<Release> parseReleases(File file) throws IOException, LookupException
+	public List<Release> parseReleases(File file) throws IOException, InfoDbQueryException
 	{
 		Document doc = Jsoup.parse(file, "UTF-8", initHost().toExternalForm());
 		return queryWithHtmlDoc(doc);
@@ -98,7 +98,7 @@ public class XRelToLookup extends AbstractHttpHtmlLookup<Release, String>
 	}
 
 	@Override
-	public List<Release> queryWithHtmlDoc(Document doc) throws LookupException
+	public List<Release> queryWithHtmlDoc(Document doc) throws InfoDbQueryException
 	{
 		try
 		{
@@ -106,7 +106,7 @@ public class XRelToLookup extends AbstractHttpHtmlLookup<Release, String>
 		}
 		catch (Exception e)
 		{
-			throw new LookupException(doc.baseUri(), e);
+			throw new InfoDbQueryException(doc.baseUri(), e);
 		}
 	}
 
