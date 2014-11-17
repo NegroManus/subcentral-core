@@ -12,8 +12,7 @@ public class ParsingServiceMultithreadingTest
 	@Test
 	public void testParsingServiceMultithreading() throws InterruptedException
 	{
-		// SimpleParsingServiceWithStampedLock ps = new SimpleParsingServiceWithStampedLock("test"); // 1,04-1,05
-		SimpleParsingService ps = new SimpleParsingService("test"); // 0,85-0,89
+		SimpleParsingService ps = new SimpleParsingService("test");
 		ps.registerParser(String.class, t -> {
 			try
 			{
