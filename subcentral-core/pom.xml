@@ -4,9 +4,8 @@
 
 	<groupId>de.subcentral</groupId>
 	<artifactId>subcentral-core</artifactId>
-	<version>0.1.0</version>
+	<version>1.0</version>
 	<name>SubCentral Core</name>
-
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
