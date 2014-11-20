@@ -420,7 +420,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		{
 			Subtitle o = (Subtitle) obj;
 			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && hearingImpaired == o.hearingImpaired
-					&& foreignParts.equals(o.foreignParts) && Objects.equals(tags, o.tags) && version == o.version && Objects.equals(group, o.group)
+					&& foreignParts.equals(o.foreignParts) && tags.equals(o.tags) && version == o.version && Objects.equals(group, o.group)
 					&& StringUtils.equalsIgnoreCase(source, o.source);
 		}
 		return false;
