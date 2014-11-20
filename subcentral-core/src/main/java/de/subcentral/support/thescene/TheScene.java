@@ -1,4 +1,4 @@
-package de.subcentral.support.scene;
+package de.subcentral.support.thescene;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +29,7 @@ import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Scene
+public class TheScene
 {
 	public static final String					DOMAIN			= "scene";
 	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
@@ -250,7 +250,7 @@ public class Scene
 		return PARSING_SERVICE.getParsers();
 	}
 
-	private Scene()
+	private TheScene()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
 	}
