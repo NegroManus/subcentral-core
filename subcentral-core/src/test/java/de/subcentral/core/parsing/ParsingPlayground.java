@@ -27,7 +27,7 @@ import de.subcentral.core.model.release.Compatibility;
 import de.subcentral.core.model.release.CompatibilityService;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.GroupsCompatibility;
-import de.subcentral.core.model.release.GroupsCompatibility.Scope;
+import de.subcentral.core.model.release.GroupsCompatibility.Condition;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.model.release.SameGroupCompatibility;
@@ -109,9 +109,9 @@ public class ParsingPlayground
 
 		final CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(new SameGroupCompatibility());
-		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Scope.IF_EXISTS, true));
-		compService.getCompatibilities().add(new GroupsCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Scope.IF_EXISTS, true));
-		compService.getCompatibilities().add(new GroupsCompatibility(new Group("ASAP"), new Group("IMMERSE"), Scope.IF_EXISTS, true));
+		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Condition.IF_EXISTS, true));
+		compService.getCompatibilities().add(new GroupsCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Condition.IF_EXISTS, true));
+		compService.getCompatibilities().add(new GroupsCompatibility(new Group("ASAP"), new Group("IMMERSE"), Condition.IF_EXISTS, true));
 
 		final WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.DELETE);

@@ -13,12 +13,12 @@ import com.google.common.collect.ImmutableSet;
 
 public class GroupsCompatibility implements Compatibility
 {
-	public static enum Scope
+	public static enum Condition
 	{
 		ALWAYS, IF_EXISTS, IF_EXISTS_OR_NO_INFO;
 	}
 
-	public static enum MatchDirection
+	private static enum MatchDirection
 	{
 		NONE, FORWARD, BACKWARD;
 	}
@@ -27,15 +27,15 @@ public class GroupsCompatibility implements Compatibility
 	private final List<Tag>	sourceTags;
 	private final Group		compatibleGroup;
 	private final List<Tag>	compatibleTags;
-	private final Scope		scope;
+	private final Condition	condition;
 	private final boolean	bidirectional;
 
-	public GroupsCompatibility(Group sourceGroup, Group compatibleGroup, Scope scope, boolean bidirectional)
+	public GroupsCompatibility(Group sourceGroup, Group compatibleGroup, Condition condition, boolean bidirectional)
 	{
-		this(sourceGroup, null, compatibleGroup, null, scope, bidirectional);
+		this(sourceGroup, null, compatibleGroup, null, condition, bidirectional);
 	}
 
-	public GroupsCompatibility(Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup, List<Tag> compatibleTags, Scope scope,
+	public GroupsCompatibility(Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup, List<Tag> compatibleTags, Condition condition,
 			boolean bidirectional)
 	{
 		if (sourceGroup == null && sourceTags == null)
@@ -50,7 +50,7 @@ public class GroupsCompatibility implements Compatibility
 		this.sourceTags = sourceTags;
 		this.compatibleGroup = compatibleGroup;
 		this.compatibleTags = compatibleTags;
-		this.scope = Objects.requireNonNull(scope, "scope");
+		this.condition = Objects.requireNonNull(condition, "condition");
 		this.bidirectional = bidirectional;
 	}
 
@@ -74,9 +74,9 @@ public class GroupsCompatibility implements Compatibility
 		return compatibleTags;
 	}
 
-	public Scope getScope()
+	public Condition getCondition()
 	{
-		return scope;
+		return condition;
 	}
 
 	public boolean isBidirectional()
@@ -96,7 +96,7 @@ public class GroupsCompatibility implements Compatibility
 		{
 			return ImmutableSet.of();
 		}
-		if (scope == Scope.ALWAYS || (scope == Scope.IF_EXISTS_OR_NO_INFO && existingRlss.isEmpty()))
+		if (condition == Condition.ALWAYS || (condition == Condition.IF_EXISTS_OR_NO_INFO && existingRlss.isEmpty()))
 		{
 			Release compatibleRls = buildCompatible(rls, md);
 			if (!rls.equals(compatibleRls))
@@ -104,7 +104,7 @@ public class GroupsCompatibility implements Compatibility
 				return ImmutableSet.of(compatibleRls);
 			}
 		}
-		else if (scope == Scope.IF_EXISTS || scope == Scope.IF_EXISTS_OR_NO_INFO)
+		else if (condition == Condition.IF_EXISTS || condition == Condition.IF_EXISTS_OR_NO_INFO)
 		{
 			Set<Release> compatibles = new HashSet<>(4);
 			for (Release existingRls : existingRlss)
@@ -188,7 +188,7 @@ public class GroupsCompatibility implements Compatibility
 			GroupsCompatibility o = (GroupsCompatibility) obj;
 			return Objects.equals(sourceGroup, o.sourceGroup) && Objects.equals(sourceTags, o.sourceTags)
 					&& Objects.equals(compatibleGroup, o.compatibleGroup) && Objects.equals(compatibleTags, o.compatibleTags)
-					&& scope.equals(o.scope) && bidirectional == o.bidirectional;
+					&& condition.equals(o.condition) && bidirectional == o.bidirectional;
 		}
 		return false;
 	}
@@ -200,7 +200,7 @@ public class GroupsCompatibility implements Compatibility
 				.append(sourceTags)
 				.append(compatibleGroup)
 				.append(compatibleTags)
-				.append(scope)
+				.append(condition)
 				.append(bidirectional)
 				.toHashCode();
 	}
@@ -214,7 +214,7 @@ public class GroupsCompatibility implements Compatibility
 				.add("sourceTags", sourceTags)
 				.add("compatibleGroup", compatibleGroup)
 				.add("compatibleTags", compatibleTags)
-				.add("scope", scope)
+				.add("condition", condition)
 				.add("bidirectional", bidirectional)
 				.toString();
 	}
