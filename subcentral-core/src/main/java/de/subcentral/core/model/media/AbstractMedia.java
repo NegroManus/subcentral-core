@@ -3,9 +3,7 @@ package de.subcentral.core.model.media;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -20,7 +18,7 @@ public abstract class AbstractMedia implements Media
 	protected final List<String>					coverLinks			= new ArrayList<>(1);
 	protected String								contentAdvisory;
 	protected final List<Contribution>				contributions		= new ArrayList<>(0);
-	protected final Set<String>						furtherInfoLinks	= new HashSet<>(4);
+	protected final List<String>					furtherInfoLinks	= new ArrayList<>(4);
 	protected final ListMultimap<String, Object>	attributes			= LinkedListMultimap.create(0);
 
 	@Override
@@ -92,7 +90,7 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public Set<String> getFurtherInfoLinks()
+	public List<String> getFurtherInfoLinks()
 	{
 		return furtherInfoLinks;
 	}
