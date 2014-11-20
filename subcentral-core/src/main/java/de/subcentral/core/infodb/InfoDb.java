@@ -8,7 +8,7 @@ public interface InfoDb<R, P>
 
 	public String getDomain();
 
-	public boolean isLookupAvailable();
+	public boolean isInfoDbAvailable();
 
 	public Class<R> getResultType();
 
