@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -266,9 +265,9 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		nukes.add(new Nuke(nukeReason, ZonedDateTime.now()));
 	}
 
-	public void addAdjuster(Contributor contributor)
+	public void addAdjuster(Contributor adjuster)
 	{
-		contributions.add(new Contribution(contributor, CONTRIBUTION_TYPE_ADJUSTMENT, null, 1, 1.0f));
+		contributions.add(new Contribution(adjuster, CONTRIBUTION_TYPE_ADJUSTMENT, null, 1, 1.0f));
 	}
 
 	// Object methods
@@ -282,7 +281,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		if (obj instanceof SubtitleAdjustment)
 		{
 			SubtitleAdjustment o = (SubtitleAdjustment) obj;
-			return Objects.equals(subtitles, o.subtitles) && Objects.equals(matchingReleases, o.matchingReleases);
+			return subtitles.equals(o.subtitles) && matchingReleases.equals(o.matchingReleases);
 		}
 		return false;
 	}
