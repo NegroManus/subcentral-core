@@ -45,8 +45,8 @@ import de.subcentral.core.util.PatternReplacer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
-import de.subcentral.support.scene.Scene;
 import de.subcentral.support.subcentralde.SubCentralDe;
+import de.subcentral.support.thescene.TheScene;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig;
@@ -100,7 +100,7 @@ public class ParsingPlayground
 		// order is relevant. Scene matchers would also match SubCentralDe matchers
 		ps.registerAllParsers(Addic7edCom.getAllParsers());
 		ps.registerAllParsers(SubCentralDe.getAllParsers());
-		ps.registerAllParsers(Scene.getAllParsers());
+		ps.registerAllParsers(TheScene.getAllParsers());
 
 		final NamingService ns = NamingStandards.getDefaultNamingService();
 

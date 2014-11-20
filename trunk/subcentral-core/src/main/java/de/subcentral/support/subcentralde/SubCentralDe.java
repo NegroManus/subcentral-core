@@ -24,7 +24,7 @@ import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
-import de.subcentral.support.scene.Scene;
+import de.subcentral.support.thescene.TheScene;
 
 public class SubCentralDe
 {
@@ -45,7 +45,7 @@ public class SubCentralDe
 
 		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
 
-		for (Parser<?> sceneParser : Scene.getAllParsers().get(Release.class))
+		for (Parser<?> sceneParser : TheScene.getAllParsers().get(Release.class))
 		{
 			if (!(sceneParser instanceof ReleaseParser))
 			{
