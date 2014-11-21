@@ -16,12 +16,12 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	 * The parameter key for the Boolean value "preferName". The default value is {@code false}. If set to true, the subtitle adjustment's name (if
 	 * not null) is returned as the name.
 	 */
-	public static final String		PARAM_PREFER_NAME_KEY	= "preferName";
+	public static final String		PARAM_PREFER_NAME	= "preferName";
 
 	/**
 	 * The parameter key for the Release value. The default value is {@link SubtitleAdjustment#getFirstMatchingRelease()}.
 	 */
-	public static final String		PARAM_KEY_RELEASE		= "release";
+	public static final String		PARAM_RELEASE		= "release";
 
 	private final Namer<Release>	releaseNamer;
 
@@ -41,7 +41,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	public void buildName(PropSequenceNameBuilder b, SubtitleAdjustment adjustment, Map<String, Object> params)
 	{
 		// read useName parameter
-		boolean preferName = Namings.readParameter(params, PARAM_PREFER_NAME_KEY, Boolean.class, Boolean.FALSE);
+		boolean preferName = Namings.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
 		if (preferName && adjustment.getName() != null)
 		{
 			b.append(SubtitleAdjustment.PROP_NAME, adjustment.getName());
@@ -49,7 +49,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 		}
 
 		// read other naming parameters
-		Release rls = Namings.readParameter(params, PARAM_KEY_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
+		Release rls = Namings.readParameter(params, PARAM_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
 
 		b.append(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 

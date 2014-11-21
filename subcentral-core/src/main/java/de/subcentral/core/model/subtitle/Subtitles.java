@@ -28,7 +28,7 @@ public class Subtitles
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
 		for (Release rls : subAdj.getMatchingReleases())
 		{
-			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, rls)));
+			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_RELEASE, rls)));
 		}
 		return names.build();
 	}

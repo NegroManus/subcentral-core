@@ -19,9 +19,9 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// settings
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
 		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
-				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_KEY,
+				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE,
 				Boolean.class,
 				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT);
 

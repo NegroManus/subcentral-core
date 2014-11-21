@@ -226,7 +226,7 @@ public class ParsingPlayground
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
 							{
 								start = System.nanoTime();
-								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_KEY_RELEASE, matchingRls));
+								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_RELEASE, matchingRls));
 								TimeUtil.printDurationMillis("Naming", start);
 								System.out.println("New name:");
 								System.out.println(newName);
