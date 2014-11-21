@@ -13,13 +13,15 @@ import de.subcentral.core.util.Separation;
 public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<SubtitleAdjustment>
 {
 	/**
-	 * The parameter key for the Boolean value "useName". The default value is {@code false}.
+	 * The parameter key for the Boolean value "preferName". The default value is {@code false}. If set to true, the subtitle adjustment's name (if
+	 * not null) is returned as the name.
 	 */
-	public static final String		PARAM_USE_NAME_KEY	= "useName";
+	public static final String		PARAM_PREFER_NAME_KEY	= "preferName";
+
 	/**
 	 * The parameter key for the Release value. The default value is {@link SubtitleAdjustment#getFirstMatchingRelease()}.
 	 */
-	public static final String		PARAM_KEY_RELEASE	= "release";
+	public static final String		PARAM_KEY_RELEASE		= "release";
 
 	private final Namer<Release>	releaseNamer;
 
@@ -39,10 +41,10 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	public void buildName(PropSequenceNameBuilder b, SubtitleAdjustment adjustment, Map<String, Object> params)
 	{
 		// read useName parameter
-		boolean useName = Namings.readParameter(params, PARAM_USE_NAME_KEY, Boolean.class, Boolean.FALSE);
-		if (useName)
+		boolean preferName = Namings.readParameter(params, PARAM_PREFER_NAME_KEY, Boolean.class, Boolean.FALSE);
+		if (preferName && adjustment.getName() != null)
 		{
-			b.appendIfNotNull(SubtitleAdjustment.PROP_NAME, adjustment.getName());
+			b.append(SubtitleAdjustment.PROP_NAME, adjustment.getName());
 			return;
 		}
 
