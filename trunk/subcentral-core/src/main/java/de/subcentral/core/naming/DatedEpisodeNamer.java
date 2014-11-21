@@ -21,7 +21,7 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 		// settings
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
 		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
-				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE,
+				PARAM_ALWAYS_INCLUDE_TITLE,
 				Boolean.class,
 				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT);
 

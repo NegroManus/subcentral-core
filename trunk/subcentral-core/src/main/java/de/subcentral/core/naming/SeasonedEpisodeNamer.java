@@ -106,12 +106,12 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	/**
 	 * The parameter key for the Boolean value "includeSeason". The default value is {@code true}.
 	 */
-	public static final String	PARAM_INCLUDE_SEASON				= "includeSeason";
+	public static final String	PARAM_INCLUDE_SEASON				= SeasonedEpisodeNamer.class.getName() + ".includeSeason";
 
 	/**
 	 * The parameter key for the Boolean value "alwaysIncludeSeasonTitle". The default value is {@code false}.
 	 */
-	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE	= "alwaysIncludeSeasonTitle";
+	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE	= SeasonedEpisodeNamer.class.getName() + ".alwaysIncludeSeasonTitle";
 
 	protected SeasonedEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)
@@ -127,7 +127,7 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
 		boolean alwaysIncludeSeasonTitle = Namings.readParameter(params, PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.class, Boolean.FALSE);
 		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
-				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE,
+				PARAM_ALWAYS_INCLUDE_TITLE,
 				Boolean.class,
 				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT);
 
