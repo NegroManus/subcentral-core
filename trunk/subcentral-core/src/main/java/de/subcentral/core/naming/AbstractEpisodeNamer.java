@@ -11,14 +11,14 @@ public abstract class AbstractEpisodeNamer extends AbstractPropertySequenceNamer
 	/**
 	 * The parameter key for the Boolean value "includeSeries".
 	 */
-	public static final String	PARAM_INCLUDE_SERIES_KEY					= "includeSeries";
-	public static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT				= Boolean.TRUE;
+	public static final String		PARAM_INCLUDE_SERIES						= "includeSeries";
+	protected static final Boolean	PARAM_INCLUDE_SERIES_DEFAULT				= Boolean.TRUE;
 
 	/**
 	 * The parameter key for the Boolean value "alwaysIncludeEpisodeTitle".
 	 */
-	public static final String	PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_KEY		= "alwaysIncludeEpisodeTitle";
-	public static final Boolean	PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT	= Boolean.FALSE;
+	public static final String		PARAM_ALWAYS_INCLUDE_EPISODE_TITLE			= "alwaysIncludeEpisodeTitle";
+	protected static final Boolean	PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT	= Boolean.FALSE;
 
 	protected AbstractEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)

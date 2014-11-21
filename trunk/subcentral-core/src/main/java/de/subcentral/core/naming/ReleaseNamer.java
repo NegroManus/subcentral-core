@@ -14,7 +14,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	 * The parameter key for the Boolean value "preferName". The default value is {@code false}. If set to true, the release's name (if not null) is
 	 * returned as the name.
 	 */
-	public static final String	PARAM_PREFER_NAME_KEY	= "preferName";
+	public static final String	PARAM_PREFER_NAME	= "preferName";
 
 	private final NamingService	mediaNamingService;
 
@@ -34,7 +34,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	public void buildName(PropSequenceNameBuilder b, Release rls, Map<String, Object> params)
 	{
 		// read naming parameters
-		boolean preferName = Namings.readParameter(params, PARAM_PREFER_NAME_KEY, Boolean.class, Boolean.FALSE);
+		boolean preferName = Namings.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
 
 		if (preferName && rls.getName() != null)
 		{

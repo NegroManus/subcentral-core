@@ -106,13 +106,12 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	/**
 	 * The parameter key for the Boolean value "includeSeason". The default value is {@code true}.
 	 */
-	public static final String	PARAM_INCLUDE_SEASON_KEY					= "includeSeason";
+	public static final String	PARAM_INCLUDE_SEASON				= "includeSeason";
 
 	/**
-	 * The parameter key for the Boolean value "alwaysIncludeSeasonTitle".
+	 * The parameter key for the Boolean value "alwaysIncludeSeasonTitle". The default value is {@code false}.
 	 */
-	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE_KEY		= "alwaysIncludeSeasonTitle";
-	public static final Boolean	PARAM_ALWAYS_INCLUDE_SEASON_TITLE_DEFAULT	= Boolean.FALSE;
+	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE	= "alwaysIncludeSeasonTitle";
 
 	protected SeasonedEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)
@@ -124,14 +123,11 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// read naming parameters
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
-		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON_KEY, Boolean.class, Boolean.TRUE);
-		boolean alwaysIncludeSeasonTitle = Namings.readParameter(params,
-				PARAM_ALWAYS_INCLUDE_SEASON_TITLE_KEY,
-				Boolean.class,
-				PARAM_ALWAYS_INCLUDE_SEASON_TITLE_DEFAULT);
+		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
+		boolean alwaysIncludeSeasonTitle = Namings.readParameter(params, PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.class, Boolean.FALSE);
 		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
-				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_KEY,
+				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE,
 				Boolean.class,
 				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT);
 
