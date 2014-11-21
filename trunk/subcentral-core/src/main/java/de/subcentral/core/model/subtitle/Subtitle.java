@@ -170,6 +170,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.group = group;
 	}
 
+	/**
+	 * {@code null} if unknown.
+	 * 
+	 * @return the media (may be {@code null})
+	 */
 	public AvMedia getMedia()
 	{
 		return media;
@@ -180,6 +185,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.media = media;
 	}
 
+	/**
+	 * {@code null} if unknown.
+	 * 
+	 * @return the language (may be {@code null})
+	 */
 	public String getLanguage()
 	{
 		return language;
@@ -191,7 +201,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * Whether the subtitle contains annotations for the hearing impaired.
+	 * Whether the subtitle contains annotations for the hearing impaired. The default value is {@code false}.
 	 * 
 	 * @return whether or not hearing impaired
 	 */
@@ -205,6 +215,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		this.hearingImpaired = hearingImpaired;
 	}
 
+	/**
+	 * The default value is {@link ForeignParts#NONE} .
+	 * 
+	 * @return the information about foreign parts (never {@code null})
+	 */
 	public ForeignParts getForeignParts()
 	{
 		return foreignParts;
@@ -226,7 +241,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 * </ul>
 	 * All other important information about this subtitle may be stored in the tag list. For example "COLORED" for colored subs.
 	 * 
-	 * @return the tags
+	 * @return the tags (never {@code null}, may be empty)
 	 */
 	public List<Tag> getTags()
 	{
@@ -240,17 +255,21 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The version number of this subtitle. The version should follow the decimal notation (1.0) and get incremented whenever this subtitle is changed
-	 * (improved) by its contributors. <br/>
-	 * If someone other than its original contributors improves a subtitle, this leads to a new Subtitle which is {@link #getBasis() based on} the old
-	 * one. <br/>
-	 * If no version information is available, the version is {@code null}.
+	 * The version string defines the version (revision) of this subtitle. The version string should be a simple version (1, 2, 3, ...) number or
+	 * follow the decimal notation (1.0, 2.0, 2.0.1, ...) and be incremented whenever this subtitle is changed (improved). But there are no
+	 * limitations on valid version strings as any source has its own version scheme.
 	 * <p>
-	 * The version is not for storing information about alternate releases (like colored/uncolored, hearing impaired/not hearing impaired, ...). It's
-	 * more like a revision.
+	 * The version string must not contain information about differences from alternate releases (like colored/uncolored, hearing impaired/not hearing
+	 * impaired, includes foreign parts/does not include foreign parts, ...).
+	 * </p>
+	 * <p>
+	 * An improved/customized subtitle is always {@link #getBasis() based on} the former version of that subtitle and has the
+	 * {@link #getProductionType() productionType} {@value #PRODUCTION_TYPE_MODIFICATION}.
 	 * </p>
 	 * 
-	 * @return the version
+	 * If no version information is available, the version is {@code null}.
+	 * 
+	 * @return the version string (may be {@code null})
 	 */
 	public String getVersion()
 	{
@@ -263,9 +282,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The group which released this subtitle.
+	 * The group which released this subtitle. {@code null} if unknown or not released by a group.
 	 * 
-	 * @return the release group
+	 * @return the release group (may be {@code null})
 	 * @see #getSource()
 	 */
 	public Group getGroup()
@@ -279,9 +298,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The source of this subtitle. Typically the site which released this Subtitle.
+	 * The source of this subtitle. Typically the site which released this Subtitle. {@code null} if unknown.
 	 * 
-	 * @return the source
+	 * @return the source (may be {@code null})
 	 */
 	public String getSource()
 	{
@@ -294,9 +313,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * How this subtitles was produced. See the <code>PRODUCTION_TYPE_*</code> constants.
+	 * How this subtitles was produced. See the <code>PRODUCTION_TYPE_*</code> constants. {@code null} if unknown.
 	 * 
-	 * @return the production type
+	 * @return the production type (may be null)
 	 */
 	public String getProductionType()
 	{
