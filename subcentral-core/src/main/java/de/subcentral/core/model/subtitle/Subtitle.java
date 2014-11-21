@@ -129,7 +129,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private ForeignParts				foreignParts					= ForeignParts.NONE;
 	// Normally there are 0 extra tags per Subtitle
 	private final List<Tag>				tags							= new ArrayList<>(0);
-	private int							version							= 1;
+	private String						version;
 	private Group						group;
 	private String						source;
 	private String						productionType;
@@ -240,18 +240,24 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The version of this subtitle. Initially <code>1</code>. The version gets incremented whenever this subtitle is changed by its contributors. If
-	 * someone other than its original contributors improves a subtitle, this leads to a new Subtitle which is {@link #getBasis() based on} the old
-	 * one.
+	 * The version number of this subtitle. The version should follow the decimal notation (1.0) and get incremented whenever this subtitle is changed
+	 * (improved) by its contributors. <br/>
+	 * If someone other than its original contributors improves a subtitle, this leads to a new Subtitle which is {@link #getBasis() based on} the old
+	 * one. <br/>
+	 * If no version information is available, the version is {@code null}.
+	 * <p>
+	 * The version is not for storing information about alternate releases (like colored/uncolored, hearing impaired/not hearing impaired, ...). It's
+	 * more like a revision.
+	 * </p>
 	 * 
 	 * @return the version
 	 */
-	public int getVersion()
+	public String getVersion()
 	{
 		return version;
 	}
 
-	public void setVersion(int version)
+	public void setVersion(String version)
 	{
 		this.version = version;
 	}
@@ -420,8 +426,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		{
 			Subtitle o = (Subtitle) obj;
 			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && hearingImpaired == o.hearingImpaired
-					&& foreignParts.equals(o.foreignParts) && tags.equals(o.tags) && version == o.version && Objects.equals(group, o.group)
-					&& StringUtils.equalsIgnoreCase(source, o.source);
+					&& foreignParts.equals(o.foreignParts) && tags.equals(o.tags) && Objects.equals(version, o.version)
+					&& Objects.equals(group, o.group) && StringUtils.equalsIgnoreCase(source, o.source);
 		}
 		return false;
 	}

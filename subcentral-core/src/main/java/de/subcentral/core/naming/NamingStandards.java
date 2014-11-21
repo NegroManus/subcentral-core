@@ -23,6 +23,7 @@ import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.model.subtitle.Subtitle.ForeignParts;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.PatternReplacer;
@@ -55,16 +56,23 @@ public class NamingStandards
 		// PropToStringService
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("'('uuuu')'", Locale.US).format(y));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(YearMonth.class,
-				(Year y) -> DateTimeFormatter.ofPattern("'('uuuu.MM')'", Locale.US).format(y));
+				(YearMonth y) -> DateTimeFormatter.ofPattern("'('uuuu.MM')'", Locale.US).format(y));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDate.class,
 				(LocalDate d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd')'", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDateTime.class,
-				(LocalDate d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd.HH.mm.ss')'", Locale.US).format(d));
+				(LocalDateTime d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd.HH.mm.ss')'", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(ZonedDateTime.class,
 				(ZonedDateTime d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd.HH.mm.ss')'", Locale.US).format(d));
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, n -> String.format("S%02d", n));
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, n -> String.format("E%02d", n));
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, n -> String.format("E%02d", n));
+
+		// Episode
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
+		// Subtitle
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_HEARING_IMPAIRED, (Boolean hi) -> hi ? "HI" : "");
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_FOREIGN_PARTS,
+				(ForeignParts fp) -> fp == ForeignParts.NONE ? "" : "FOREIGN_PARTS_" + fp.name());
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_VERSION, (String version) -> "V" + version);
 
 		// DatedEpisodeNamer
 		DATED_EPISODE_NAMER = new DatedEpisodeNamer(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, ImmutableSet.of(), null);
