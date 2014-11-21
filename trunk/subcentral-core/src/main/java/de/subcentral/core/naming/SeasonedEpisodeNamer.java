@@ -123,7 +123,7 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	@Override
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
-		// settings
+		// read naming parameters
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES_KEY, Boolean.class, Boolean.TRUE);
 		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON_KEY, Boolean.class, Boolean.TRUE);
 		boolean alwaysIncludeSeasonTitle = Namings.readParameter(params,
