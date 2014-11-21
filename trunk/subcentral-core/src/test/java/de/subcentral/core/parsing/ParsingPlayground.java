@@ -36,6 +36,7 @@ import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingStandards;
+import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.standardizing.ClassBasedStandardizingService;
 import de.subcentral.core.standardizing.SeriesNameStandardizer;
@@ -226,7 +227,10 @@ public class ParsingPlayground
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
 							{
 								start = System.nanoTime();
-								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_RELEASE, matchingRls));
+								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_RELEASE,
+										matchingRls,
+										ReleaseNamer.PARAM_PREFER_NAME,
+										Boolean.TRUE));
 								TimeUtil.printDurationMillis("Naming", start);
 								System.out.println("New name:");
 								System.out.println(newName);
