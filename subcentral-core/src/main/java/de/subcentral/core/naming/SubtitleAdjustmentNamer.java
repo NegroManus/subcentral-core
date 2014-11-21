@@ -16,12 +16,12 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	 * The parameter key for the Boolean value "preferName". The default value is {@code false}. If set to true, the subtitle adjustment's name (if
 	 * not null) is returned as the name.
 	 */
-	public static final String		PARAM_PREFER_NAME	= "preferName";
+	public static final String		PARAM_PREFER_NAME	= SubtitleAdjustmentNamer.class.getName() + ".preferName";
 
 	/**
 	 * The parameter key for the Release value. The default value is {@link SubtitleAdjustment#getFirstMatchingRelease()}.
 	 */
-	public static final String		PARAM_RELEASE		= "release";
+	public static final String		PARAM_RELEASE		= SubtitleAdjustmentNamer.class.getName() + ".release";
 
 	private final Namer<Release>	releaseNamer;
 
