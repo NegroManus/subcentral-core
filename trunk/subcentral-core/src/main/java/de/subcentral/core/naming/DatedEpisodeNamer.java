@@ -18,7 +18,7 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 	@Override
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
-		// settings
+		// read naming parameters
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
 		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
 				PARAM_ALWAYS_INCLUDE_TITLE,
