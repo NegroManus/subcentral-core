@@ -70,7 +70,7 @@ public class Subtitles
 			}
 			else if (mVersion.reset(tag.getName()).matches())
 			{
-				sub.setVersion(Integer.parseInt(mVersion.group(1)));
+				sub.setVersion(mVersion.group(1));
 				iter.remove();
 				changed = true;
 			}

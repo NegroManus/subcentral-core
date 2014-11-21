@@ -51,30 +51,16 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 		// read other naming parameters
 		Release rls = Namings.readParameter(params, PARAM_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
 
-		b.append(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
+		b.appendIfNotBlank(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 
 		Subtitle sub = adjustment.getFirstSubtitle();
 		if (sub != null)
 		{
 			b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());
-			b.appendIf(Subtitle.PROP_HEARING_IMPAIRED, Subtitle.TAG_HEARING_IMPAIRED.getName(), sub.isHearingImpaired());
-			switch (sub.getForeignParts())
-			{
-				case NONE:
-					break;
-				case INCLUDED:
-					b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS INCL");
-					break;
-				case EXCLUDED:
-					b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS EXCL");
-					break;
-				case ONLY:
-					b.append(Subtitle.PROP_FOREIGN_PARTS, "FOREIGN PARTS ONLY");
-					break;
-				default:
-					break;
-			}
+			b.append(Subtitle.PROP_HEARING_IMPAIRED, sub.isHearingImpaired());
+			b.append(Subtitle.PROP_FOREIGN_PARTS, sub.getForeignParts());
 			b.appendAll(Subtitle.PROP_TAGS, sub.getTags());
+			b.appendIfNotNull(Subtitle.PROP_VERSION, sub.getVersion());
 			if (sub.getGroup() != null)
 			{
 				b.append(Subtitle.PROP_GROUP, sub.getGroup());
