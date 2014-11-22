@@ -124,6 +124,7 @@ public class ParsingPlayground
 		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
 		ImmutableMap.Builder<Pattern, String> parsedToQuerySeriesNameReplacements = ImmutableMap.builder();
 		parsedToQuerySeriesNameReplacements.put(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)");
+		parsedToQuerySeriesNameReplacements.put(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE), "Last Man Standing (US)");
 		parsedToInfoDbStdzService.registerStandardizer(Series.class,
 				new SeriesNameStandardizer(new PatternReplacer(parsedToQuerySeriesNameReplacements.build())));
 
