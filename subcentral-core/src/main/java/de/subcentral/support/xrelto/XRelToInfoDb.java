@@ -8,12 +8,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,6 +35,8 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 {
+	private static final Logger				log					= LogManager.getLogger(XRelToInfoDb.class);
+
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
 	 */
@@ -220,8 +225,16 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 			String dateStr = dateDiv.ownText().trim();
 			Element timeSpan = dateDiv.getElementsByTag("span").first();
 			String timeStr = timeSpan.text().trim();
-			ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.parse(dateStr + " " + timeStr, DATE_TIME_FORMATTER), TIME_ZONE);
-			rls.setDate(dateTime);
+			String dateTimeString = dateStr + " " + timeStr;
+			try
+			{
+				ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER), TIME_ZONE);
+				rls.setDate(dateTime);
+			}
+			catch (DateTimeParseException e)
+			{
+				log.error("Could not parse release date string '" + dateTimeString + "'", e);
+			}
 		}
 
 		/**
@@ -384,11 +397,12 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		Element sizeSpan = groupDiv.getElementsByTag("span").first();
 		try
 		{
-			rls.setSize(ByteUtil.parseBytes(sizeSpan.text()));
+			long size = ByteUtil.parseBytes(sizeSpan.text());
+			rls.setSize(size);
 		}
 		catch (NumberFormatException e)
 		{
-			e.printStackTrace();
+			log.error("Could not parse release size string '" + sizeSpan.text() + "'", e);
 		}
 
 		return rls;

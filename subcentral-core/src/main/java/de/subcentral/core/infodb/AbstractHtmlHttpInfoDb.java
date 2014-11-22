@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import de.subcentral.core.util.TimeUtil;
 
 public abstract class AbstractHtmlHttpInfoDb<R, P> extends AbstractHttpInfoDb<R, P>
 {
@@ -31,9 +34,12 @@ public abstract class AbstractHtmlHttpInfoDb<R, P> extends AbstractHttpInfoDb<R,
 
 	protected Document getDocument(URL url) throws IOException
 	{
-		log.debug("Retrieving contents of {}", url);
+		log.trace("Retrieving contents of {}", url);
+		long start = System.nanoTime();
 		Document doc = setupConnection(url).get();
-		log.trace("Retrieved following contents of {}:{}{}{}", url, System.lineSeparator(), doc, System.lineSeparator());
+		double duration = TimeUtil.durationMillis(start);
+		log.printf(Level.DEBUG, "Retrieved contents of %s in %.0f ms", url, duration);
+		log.printf(Level.TRACE, "Contents of %s were:%n%s%n", url, doc);
 		return doc;
 	}
 
