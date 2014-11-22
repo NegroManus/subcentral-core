@@ -7,11 +7,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -37,6 +40,8 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 {
+	private static final Logger	log			= LogManager.getLogger(PreDbMeInfoDb.class);
+
 	// DateTimeFormatter not needed because using the epoch seconds
 	// /**
 	// * The release dates are ISO-formatted with an @. Example: "2011-11-10 @ 09:16:10 ( UTC )"
@@ -206,10 +211,17 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		Element timeSpan = rlsDiv.select("span[class*=time]").first();
 		if (timeSpan != null)
 		{
-			// Note: attribute "data" stores the seconds since epoch
-			long epochSec = Long.parseLong(timeSpan.attr("data"));
-			ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSec), TIME_ZONE);
-			rls.setDate(date);
+			try
+			{
+				// Note: attribute "data" stores the seconds since epoch
+				long epochSec = Long.parseLong(timeSpan.attr("data"));
+				ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSec), TIME_ZONE);
+				rls.setDate(date);
+			}
+			catch (NumberFormatException e)
+			{
+				log.error("Could not parse release date epoch seconds string '" + timeSpan.attr("data") + "'", e);
+			}
 		}
 
 		// Example: If parent cat = TV, and child cat = SD -> section=TV-SD
@@ -392,10 +404,11 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 					Matcher mSize = pSize.matcher(sizeTxt);
 					if (mSize.find())
 					{
+						// no NumberFormatExceptions can occur because then the pattern would not match in the first place
 						long size = ByteUtil.parseBytes(mSize.group(1));
 						rls.setSize(size);
-						int files = Integer.parseInt(mSize.group(2));
-						rls.setFileCount(files);
+						int fileCount = Integer.parseInt(mSize.group(2));
+						rls.setFileCount(fileCount);
 					}
 				}
 				else if ("Nukes".equals(key))
@@ -427,9 +440,16 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 							Element nukeTimeSpan = nukeLi.getElementsByClass("nuke-time").first();
 							if (nukeTimeSpan != null)
 							{
-								double nukeTimeEpochSeconds = Double.parseDouble(nukeTimeSpan.attr("data"));
-								long nukeTimeEpochMillis = (long) nukeTimeEpochSeconds * 1000L;
-								nukeDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(nukeTimeEpochMillis), TIME_ZONE);
+								try
+								{
+									double nukeTimeEpochSeconds = Double.parseDouble(nukeTimeSpan.attr("data"));
+									long nukeTimeEpochMillis = (long) nukeTimeEpochSeconds * 1000L;
+									nukeDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(nukeTimeEpochMillis), TIME_ZONE);
+								}
+								catch (NumberFormatException e)
+								{
+									log.error("Could not parse release nuke date epoch seconds string '" + nukeTimeSpan.attr("data") + "'", e);
+								}
 							}
 							nukes.add(new Nuke(nukeReason, nukeDate));
 						}
@@ -477,7 +497,14 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 					Element airdateElement = valueDiv.getElementsByClass("airdate").first();
 					if (airdateElement != null)
 					{
-						epi.setDate(LocalDate.parse(airdateElement.text()));
+						try
+						{
+							epi.setDate(LocalDate.parse(airdateElement.text()));
+						}
+						catch (DateTimeParseException e)
+						{
+							log.error("Could not parse episode date string '" + airdateElement.text() + "'", e);
+						}
 					}
 					media = epi;
 				}

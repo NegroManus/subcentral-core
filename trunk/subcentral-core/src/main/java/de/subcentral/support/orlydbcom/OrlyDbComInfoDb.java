@@ -17,6 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -35,6 +37,8 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQueryParameters>
 {
+	private static final Logger				log					= LogManager.getLogger(OrlyDbComInfoDb.class);
+
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
 	 */
@@ -186,11 +190,12 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 		{
 			try
 			{
-				rls.setDate(ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE));
+				ZonedDateTime date = ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE);
+				rls.setDate(date);
 			}
 			catch (DateTimeParseException e)
 			{
-				e.printStackTrace();
+				log.error("Could not parse release date string '" + timestampSpan.text() + "'", e);
 			}
 		}
 
@@ -203,10 +208,11 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 			Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
 			if (mSizeAndFiles.matches())
 			{
+				// no NumberFormatExceptions can occur because then the pattern would not match in the first place
 				long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
 				rls.setSize(size);
-				int files = Integer.parseInt(mSizeAndFiles.group(2));
-				rls.setFileCount(files);
+				int fileCount = Integer.parseInt(mSizeAndFiles.group(2));
+				rls.setFileCount(fileCount);
 			}
 		}
 
@@ -219,5 +225,4 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 
 		return rls;
 	}
-
 }
