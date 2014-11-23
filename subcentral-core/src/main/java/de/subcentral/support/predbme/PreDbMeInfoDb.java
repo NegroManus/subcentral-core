@@ -258,7 +258,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 			}
 		}
 
-		rls.setInfoLink(detailsUrl);
+		rls.getFurtherInfoLinks().add(detailsUrl);
 
 		// Parse details
 		if (detailsUrl != null)
@@ -618,8 +618,6 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		}
 
 		rls.setSingleMedia(media);
-
-		rls.setInfoLink(doc.baseUri());
 
 		return rls;
 	}

@@ -37,8 +37,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final SimplePropDescriptor	PROP_SOURCE						= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
 	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE			= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
 	public static final SimplePropDescriptor	PROP_BASIS						= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
-	public static final SimplePropDescriptor	PROP_INFO						= new SimplePropDescriptor(Subtitle.class, PropNames.INFO);
-	public static final SimplePropDescriptor	PROP_INFO_URL					= new SimplePropDescriptor(Subtitle.class, PropNames.INFO_URL);
+	public static final SimplePropDescriptor	PROP_NFO						= new SimplePropDescriptor(Subtitle.class, PropNames.NFO);
+	public static final SimplePropDescriptor	PROP_NFO_LINK					= new SimplePropDescriptor(Subtitle.class, PropNames.NFO_URL);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
 
 	public static final Tag						TAG_HEARING_IMPAIRED			= new Tag("HI", "Hearing Impaired");
@@ -117,11 +117,30 @@ public class Subtitle implements Work, Comparable<Subtitle>
 		ONLY;
 	}
 
+	/**
+	 * The making of a transcript.
+	 */
 	public static final String			CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
+
+	/**
+	 * The syncing of the subtitles.
+	 */
 	public static final String			CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
+
+	/**
+	 * The actual translation of a subtitle to another language.
+	 */
 	public static final String			CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
+
+	/**
+	 * Internal revision before the release.
+	 */
 	public static final String			CONTRIBUTION_TYPE_REVISION		= "REVISION";
-	public static final String			CONTRIBUTION_TYPE_IMPROVEMENT	= "IMPROVEMENT";
+
+	/**
+	 * Improvement / customization of the subtitle.
+	 */
+	public static final String			CONTRIBUTION_TYPE_MODIFICATION	= "MODIFICATION";
 
 	private AvMedia						media;
 	private String						language;
@@ -134,8 +153,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private String						source;
 	private String						productionType;
 	private Subtitle					basis;
-	private String						info;
-	private String						infoLink;
+	private String						nfo;
+	private String						nfoLink;
 	// More than 4 contributions per subtitle is very rare
 	private final List<Contribution>	contributions					= new ArrayList<>(4);
 
@@ -370,33 +389,34 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * The information (description) about this subtitle. Like release notes.
+	 * The subtitle's release information (content of the NFO file).
 	 * 
-	 * @return the information
+	 * @return the NFO
 	 */
-	public String getInfo()
+	public String getNfo()
 	{
-		return info;
+		return nfo;
 	}
 
-	public void setInfo(String info)
+	public void setNfo(String nfo)
 	{
-		this.info = info;
+		this.nfo = nfo;
 	}
 
 	/**
-	 * An URL pointing to a file or a website providing the information about this subtitle.
+	 * A link pointing to a file or a HTML page with the NFO of this subtitle.
 	 * 
-	 * @return the information URL
+	 * @return the link to the NFO
+	 * @see #getNfo()
 	 */
-	public String getInfoLink()
+	public String getNfoLink()
 	{
-		return infoLink;
+		return nfoLink;
 	}
 
-	public void setInfoLink(String infoLink)
+	public void setNfoLink(String nfoLink)
 	{
-		this.infoLink = infoLink;
+		this.nfoLink = nfoLink;
 	}
 
 	@Override
@@ -522,8 +542,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("source", source)
 				.add("productionType", productionType)
 				.add("basis", basis)
-				.add("info", info)
-				.add("infoLink", infoLink)
+				.add("nfo", nfo)
+				.add("nfoLink", nfoLink)
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.toString();
 	}

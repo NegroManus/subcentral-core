@@ -34,10 +34,10 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Series.class, PropNames.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Series.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(Series.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_COVER_LINKS			= new SimplePropDescriptor(Series.class, PropNames.COVER_LINKS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(Series.class, PropNames.CONTENT_ADVISORY);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Series.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FINFO_URLS				= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO_URLS);
+	public static final SimplePropDescriptor	PROP_FINFO_LINKS			= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO_LINKS);
 	public static final SimplePropDescriptor	PROP_SEASONS				= new SimplePropDescriptor(Series.class, PropNames.SEASONS);
 	public static final SimplePropDescriptor	PROP_EPISODES				= new SimplePropDescriptor(Series.class, PropNames.EPISODES);
 
