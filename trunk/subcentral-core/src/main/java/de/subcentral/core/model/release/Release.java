@@ -388,6 +388,11 @@ public class Release implements Comparable<Release>
 		return false;
 	}
 
+	public boolean equalsByName(Release other)
+	{
+		return other == null ? false : name == null ? false : name.equalsIgnoreCase(other.name);
+	}
+
 	/**
 	 * Calculated from its {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
 	 */

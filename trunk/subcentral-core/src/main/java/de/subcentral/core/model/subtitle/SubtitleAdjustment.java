@@ -286,6 +286,11 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		return false;
 	}
 
+	public boolean equalsByName(SubtitleAdjustment other)
+	{
+		return other == null ? false : name == null ? false : name.equalsIgnoreCase(other.name);
+	}
+
 	@Override
 	public int hashCode()
 	{

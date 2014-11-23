@@ -52,7 +52,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 	@Override
 	public String getName()
 	{
-		return "ORLYDB";
+		return "ORLYDB.com";
 	}
 
 	@Override
