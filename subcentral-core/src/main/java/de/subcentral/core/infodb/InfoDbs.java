@@ -13,12 +13,12 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
 import de.subcentral.support.predbme.PreDbMeInfoDb;
 import de.subcentral.support.xrelto.XRelToInfoDb;
@@ -34,13 +34,13 @@ public class InfoDbs
 		{
 			return ImmutableListMultimap.of();
 		}
-		ImmutableList.Builder<Callable<List<R>>> tasks = ImmutableList.builder();
+		List<Callable<List<R>>> tasks = new ArrayList<>(infoDbs.size());
 		for (InfoDb<R, ?> infoDb : infoDbs)
 		{
 			tasks.add(() -> infoDb.queryWithName(queryObj));
 		}
 
-		List<Future<List<R>>> futures = executor.invokeAll(tasks.build());
+		List<Future<List<R>>> futures = executor.invokeAll(tasks);
 
 		ImmutableListMultimap.Builder<InfoDb<R, ?>, R> results = ImmutableListMultimap.builder();
 		for (int i = 0; i < infoDbs.size(); i++)
@@ -78,7 +78,9 @@ public class InfoDbs
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 
 		System.out.println("Querying");
+		long start = System.nanoTime();
 		ListMultimap<InfoDb<Release, ?>, Release> results = queryAll(infoDbs, query, executor);
+		TimeUtil.printDurationMillis("queryAll", start);
 		for (Map.Entry<InfoDb<Release, ?>, Collection<Release>> entry : results.asMap().entrySet())
 		{
 			System.out.println("Results of " + entry.getKey().getName());

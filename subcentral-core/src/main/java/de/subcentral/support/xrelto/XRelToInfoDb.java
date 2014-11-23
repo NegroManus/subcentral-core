@@ -233,7 +233,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 			}
 			catch (DateTimeParseException e)
 			{
-				log.error("Could not parse release date string '" + dateTimeString + "'", e);
+				log.warn("Could not parse release date string '" + dateTimeString + "'", e);
 			}
 		}
 
@@ -402,7 +402,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		}
 		catch (NumberFormatException e)
 		{
-			log.error("Could not parse release size string '" + sizeSpan.text() + "'", e);
+			log.warn("Could not parse release size string '" + sizeSpan.text() + "'", e);
 		}
 
 		return rls;
