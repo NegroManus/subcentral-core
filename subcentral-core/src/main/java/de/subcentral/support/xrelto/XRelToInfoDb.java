@@ -50,7 +50,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	@Override
 	public String getName()
 	{
-		return "xREL";
+		return "xREL.to";
 	}
 
 	@Override

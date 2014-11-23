@@ -18,6 +18,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.model.release.Releases;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
 import de.subcentral.support.predbme.PreDbMeInfoDb;
@@ -64,13 +65,13 @@ public class InfoDbs
 
 	public static void main(String[] args) throws InterruptedException
 	{
-		OrlyDbComInfoDb orlyDb = new OrlyDbComInfoDb();
-		XRelToInfoDb xrelTo = new XRelToInfoDb();
 		PreDbMeInfoDb preDbMe = new PreDbMeInfoDb();
+		XRelToInfoDb xrelTo = new XRelToInfoDb();
+		OrlyDbComInfoDb orlyDb = new OrlyDbComInfoDb();
 		List<InfoDb<Release, ?>> infoDbs = new ArrayList<>(3);
-		infoDbs.add(orlyDb);
-		infoDbs.add(xrelTo);
 		infoDbs.add(preDbMe);
+		infoDbs.add(xrelTo);
+		infoDbs.add(orlyDb);
 
 		// Episode query = Episode.createSeasonedEpisode("Big Bang Theory", 8, 10);
 		RegularAvMedia query = new RegularAvMedia("Psych S08E01");
@@ -83,11 +84,13 @@ public class InfoDbs
 		TimeUtil.printDurationMillis("queryAll", start);
 		for (Map.Entry<InfoDb<Release, ?>, Collection<Release>> entry : results.asMap().entrySet())
 		{
-			System.out.println("Results of " + entry.getKey().getName());
+			System.out.println("Results of " + entry.getKey().getName() + " " + entry.getKey().getDomain());
 			entry.getValue().stream().forEach((r) -> System.out.println(r));
 			System.out.println();
 		}
-
 		executor.shutdown();
+
+		List<Release> reducedRlss = Releases.distinctReleasesByName(results);
+		reducedRlss.stream().forEach(e -> System.out.println(e));
 	}
 }
