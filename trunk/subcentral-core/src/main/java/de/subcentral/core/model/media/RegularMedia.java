@@ -32,13 +32,13 @@ public class RegularMedia extends AbstractMedia
 																						PropNames.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES						= new SimplePropDescriptor(RegularMedia.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION				= new SimplePropDescriptor(RegularMedia.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS					= new SimplePropDescriptor(RegularMedia.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_COVER_LINKS				= new SimplePropDescriptor(RegularMedia.class, PropNames.COVER_LINKS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY			= new SimplePropDescriptor(RegularMedia.class,
 																						PropNames.CONTENT_ADVISORY);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(RegularMedia.class,
 																						PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_URLS	= new SimplePropDescriptor(RegularMedia.class,
-																						PropNames.FURTHER_INFO_URLS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_LINKS	= new SimplePropDescriptor(RegularMedia.class,
+																						PropNames.FURTHER_INFO_LINKS);
 
 	protected String							name;
 	protected String							mediaType;

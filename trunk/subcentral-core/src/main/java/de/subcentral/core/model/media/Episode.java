@@ -36,10 +36,10 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Episode.class, PropNames.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Episode.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Episode.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_URLS				= new SimplePropDescriptor(Episode.class, PropNames.COVER_URLS);
+	public static final SimplePropDescriptor	PROP_COVER_LINKS			= new SimplePropDescriptor(Episode.class, PropNames.COVER_LINKS);
 	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(Episode.class, PropNames.CONTENT_ADVISORY);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Episode.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_URLS		= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO_URLS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS		= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO_LINKS);
 
 	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
 	{

@@ -73,7 +73,7 @@ public class InfoDbs
 		infoDbs.add(preDbMe);
 
 		// Episode query = Episode.createSeasonedEpisode("Big Bang Theory", 8, 10);
-		RegularAvMedia query = new RegularAvMedia("The.Gift.2007");
+		RegularAvMedia query = new RegularAvMedia("Psych S08E01");
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 

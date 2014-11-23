@@ -202,7 +202,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 		if (infoSpan != null)
 		{
 			String info = infoSpan.text();
-			rls.setInfo(info);
+			rls.setNfo(info);
 			// e.g. "349.3MB | 25F"
 			Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
 			Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
@@ -221,7 +221,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 			rls.nuke(nukeSpan.text());
 		}
 
-		rls.setInfoLink(doc.baseUri());
+		rls.getFurtherInfoLinks().add(doc.baseUri());
 
 		return rls;
 	}

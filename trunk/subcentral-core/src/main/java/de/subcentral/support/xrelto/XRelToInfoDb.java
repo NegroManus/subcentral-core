@@ -346,7 +346,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		{
 			Element nfoAnchor = optionsDiv.getElementsByTag("a").first();
 			String nfoUrl = nfoAnchor.absUrl("href");
-			rls.setInfoLink(nfoUrl);
+			rls.setNfoLink(nfoUrl);
 		}
 
 		/**
@@ -404,6 +404,8 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		{
 			log.warn("Could not parse release size string '" + sizeSpan.text() + "'", e);
 		}
+
+		rls.getFurtherInfoLinks().add(doc.baseUri());
 
 		return rls;
 	}

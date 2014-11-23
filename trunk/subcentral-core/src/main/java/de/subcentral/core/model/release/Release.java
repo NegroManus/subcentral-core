@@ -3,6 +3,7 @@ package de.subcentral.core.model.release;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,33 +33,35 @@ import de.subcentral.core.util.SimplePropDescriptor;
  */
 public class Release implements Comparable<Release>
 {
-	public static final SimplePropDescriptor	PROP_NAME		= new SimplePropDescriptor(Release.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_MEDIA		= new SimplePropDescriptor(Release.class, PropNames.MEDIA);
-	public static final SimplePropDescriptor	PROP_TAGS		= new SimplePropDescriptor(Release.class, PropNames.TAGS);
-	public static final SimplePropDescriptor	PROP_GROUP		= new SimplePropDescriptor(Release.class, PropNames.GROUP);
-	public static final SimplePropDescriptor	PROP_LANGUAGES	= new SimplePropDescriptor(Release.class, PropNames.LANGUAGES);
-	public static final SimplePropDescriptor	PROP_SECTION	= new SimplePropDescriptor(Release.class, PropNames.SECTION);
-	public static final SimplePropDescriptor	PROP_DATE		= new SimplePropDescriptor(Release.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_SIZE		= new SimplePropDescriptor(Release.class, PropNames.SIZE);
-	public static final SimplePropDescriptor	PROP_FILE_COUNT	= new SimplePropDescriptor(Release.class, PropNames.FILE_COUNT);
-	public static final SimplePropDescriptor	PROP_NUKES		= new SimplePropDescriptor(Release.class, PropNames.NUKES);
-	public static final SimplePropDescriptor	PROP_INFO		= new SimplePropDescriptor(Release.class, PropNames.INFO);
-	public static final SimplePropDescriptor	PROP_INFO_URL	= new SimplePropDescriptor(Release.class, PropNames.INFO_URL);
+	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Release.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_MEDIA				= new SimplePropDescriptor(Release.class, PropNames.MEDIA);
+	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(Release.class, PropNames.TAGS);
+	public static final SimplePropDescriptor	PROP_GROUP				= new SimplePropDescriptor(Release.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_LANGUAGES			= new SimplePropDescriptor(Release.class, PropNames.LANGUAGES);
+	public static final SimplePropDescriptor	PROP_SECTION			= new SimplePropDescriptor(Release.class, PropNames.SECTION);
+	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(Release.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_SIZE				= new SimplePropDescriptor(Release.class, PropNames.SIZE);
+	public static final SimplePropDescriptor	PROP_FILE_COUNT			= new SimplePropDescriptor(Release.class, PropNames.FILE_COUNT);
+	public static final SimplePropDescriptor	PROP_NUKES				= new SimplePropDescriptor(Release.class, PropNames.NUKES);
+	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(Release.class, PropNames.NFO);
+	public static final SimplePropDescriptor	PROP_NFO_URL			= new SimplePropDescriptor(Release.class, PropNames.NFO_URL);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Release.class, PropNames.FURTHER_INFO_LINKS);
 
 	private String								name;
 	// In 99% of the cases, there is only one Media per Release
-	private final List<Media>					media			= new ArrayList<>(1);
+	private final List<Media>					media					= new ArrayList<>(1);
 	// Normally there are 2 to 4 Tags per Release
-	private final List<Tag>						tags			= new ArrayList<>(4);
+	private final List<Tag>						tags					= new ArrayList<>(4);
 	private Group								group;
-	private final List<String>					languages		= new ArrayList<>(1);
+	private final List<String>					languages				= new ArrayList<>(1);
 	private String								section;
 	private Temporal							date;
-	private long								size			= 0L;
-	private int									fileCount		= 0;
-	private final List<Nuke>					nukes			= new ArrayList<>(0);
-	private String								info;
-	private String								infoLink;
+	private long								size					= 0L;
+	private int									fileCount				= 0;
+	private final List<Nuke>					nukes					= new ArrayList<>(0);
+	private String								nfo;
+	private String								nfoLink;
+	private List<String>						furtherInfoLinks		= new ArrayList<>(4);
 
 	public static Release create(Media media, String group, String... tags)
 	{
@@ -121,8 +124,8 @@ public class Release implements Comparable<Release>
 		this.size = rls.size;
 		this.fileCount = rls.fileCount;
 		this.nukes.addAll(rls.nukes);
-		this.info = rls.info;
-		this.infoLink = rls.infoLink;
+		this.nfo = rls.nfo;
+		this.nfoLink = rls.nfoLink;
 	}
 
 	/**
@@ -278,40 +281,52 @@ public class Release implements Comparable<Release>
 		return nukes;
 	}
 
-	public void setNukes(List<Nuke> nukes)
+	public void setNukes(Collection<Nuke> nukes)
 	{
 		this.nukes.clear();
 		this.nukes.addAll(nukes);
 	}
 
 	/**
-	 * Information about this release / the release notes (typically, the text of the nfo file).
+	 * The release information (content of the NFO file).
 	 * 
-	 * @return the information
+	 * @return the NFO
 	 */
-	public String getInfo()
+	public String getNfo()
 	{
-		return info;
+		return nfo;
 	}
 
-	public void setInfo(String info)
+	public void setNfo(String nfo)
 	{
-		this.info = info;
+		this.nfo = nfo;
 	}
 
 	/**
-	 * An URL pointing to a file or a website providing the information about this release.
+	 * A link pointing to a file or a HTML page with the NFO of this release.
 	 * 
-	 * @return the information URL
+	 * @return the link to the NFO
+	 * @see #getNfo()
 	 */
-	public String getInfoUrl()
+	public String getNfoLink()
 	{
-		return infoLink;
+		return nfoLink;
 	}
 
-	public void setInfoLink(String infoLink)
+	public void setNfoLink(String nfoLink)
 	{
-		this.infoLink = infoLink;
+		this.nfoLink = nfoLink;
+	}
+
+	public List<String> getFurtherInfoLinks()
+	{
+		return furtherInfoLinks;
+	}
+
+	public void setFurtherInfoLinks(Collection<String> furtherInfoLinks)
+	{
+		this.furtherInfoLinks.clear();
+		this.furtherInfoLinks.addAll(furtherInfoLinks);
 	}
 
 	// Convenience
@@ -415,8 +430,9 @@ public class Release implements Comparable<Release>
 				.add("size", Models.nullIfZero(size))
 				.add("fileCount", Models.nullIfZero(fileCount))
 				.add("nukes", Models.nullIfEmpty(nukes))
-				.add("info", info)
-				.add("infoLink", infoLink)
+				.add("nfo", nfo)
+				.add("nfoLink", nfoLink)
+				.add("furtherInfoLinks", furtherInfoLinks)
 				.toString();
 	}
 }
