@@ -195,7 +195,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 			}
 			catch (DateTimeParseException e)
 			{
-				log.error("Could not parse release date string '" + timestampSpan.text() + "'", e);
+				log.warn("Could not parse release date string '" + timestampSpan.text() + "'", e);
 			}
 		}
 

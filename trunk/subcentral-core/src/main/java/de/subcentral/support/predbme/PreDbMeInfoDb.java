@@ -220,7 +220,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 			}
 			catch (NumberFormatException e)
 			{
-				log.error("Could not parse release date epoch seconds string '" + timeSpan.attr("data") + "'", e);
+				log.warn("Could not parse release date epoch seconds string '" + timeSpan.attr("data") + "'", e);
 			}
 		}
 
@@ -448,7 +448,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 								}
 								catch (NumberFormatException e)
 								{
-									log.error("Could not parse release nuke date epoch seconds string '" + nukeTimeSpan.attr("data") + "'", e);
+									log.warn("Could not parse release nuke date epoch seconds string '" + nukeTimeSpan.attr("data") + "'", e);
 								}
 							}
 							nukes.add(new Nuke(nukeReason, nukeDate));
@@ -503,7 +503,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 						}
 						catch (DateTimeParseException e)
 						{
-							log.error("Could not parse episode date string '" + airdateElement.text() + "'", e);
+							log.warn("Could not parse episode date string '" + airdateElement.text() + "'", e);
 						}
 					}
 					media = epi;
