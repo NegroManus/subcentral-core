@@ -66,17 +66,9 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	}
 
 	@Override
-	protected URL initHost()
+	protected URL initHost() throws MalformedURLException
 	{
-		try
-		{
-			return new URL("http://www.predb.me/");
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		return new URL("http://www.predb.me/");
 	}
 
 	@Override

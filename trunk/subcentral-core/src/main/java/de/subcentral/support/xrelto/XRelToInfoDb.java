@@ -60,17 +60,9 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	}
 
 	@Override
-	protected URL initHost()
+	protected URL initHost() throws MalformedURLException
 	{
-		try
-		{
-			return new URL("http://www.xrel.to/");
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		return new URL("http://www.xrel.to/");
 	}
 
 	@Override
