@@ -56,7 +56,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 	}
 
 	@Override
-	protected String initDomain()
+	public String getDomain()
 	{
 		return "orlydb.com";
 	}
