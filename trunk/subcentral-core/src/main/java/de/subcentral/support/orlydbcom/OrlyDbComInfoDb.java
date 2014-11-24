@@ -56,6 +56,12 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 	}
 
 	@Override
+	protected String initDomain()
+	{
+		return "orlydb.com";
+	}
+
+	@Override
 	protected URL initHost() throws MalformedURLException
 	{
 		return new URL("http://www.orlydb.com/");
