@@ -60,6 +60,12 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	}
 
 	@Override
+	protected String initDomain()
+	{
+		return "predb.me";
+	}
+
+	@Override
 	protected URL initHost()
 	{
 		try

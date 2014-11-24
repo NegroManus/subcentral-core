@@ -52,12 +52,6 @@ public abstract class AbstractHttpInfoDb<R, P> extends AbstractInfoDb<R, P>
 	}
 
 	@Override
-	public String getDomain()
-	{
-		return host.getHost();
-	}
-
-	@Override
 	public boolean isInfoDbAvailable()
 	{
 		try

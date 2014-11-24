@@ -14,18 +14,28 @@ import de.subcentral.core.util.PatternReplacer;
 
 public abstract class AbstractInfoDb<R, P> implements InfoDb<R, P>
 {
+	protected final String			domain;
 	protected final NamingService	queryObjectNamingService;
 
 	public AbstractInfoDb()
 	{
+		this.domain = Objects.requireNonNull(initDomain(), "domain");
 		this.queryObjectNamingService = Objects.requireNonNull(initQueryObjectNamingService(), "queryObjectNamingService");
 	}
+
+	protected abstract String initDomain();
 
 	protected NamingService initQueryObjectNamingService()
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
 		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", ' ');
 		return new DelegatingNamingService("QueryEntityNamingService", NamingStandards.getDefaultNamingService(), pr.andThen(cr));
+	}
+
+	@Override
+	public String getDomain()
+	{
+		return domain;
 	}
 
 	public NamingService getQueryEntityNamingService()
