@@ -54,7 +54,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	}
 
 	@Override
-	protected String initDomain()
+	public String getDomain()
 	{
 		return "xrel.to";
 	}

@@ -60,7 +60,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	}
 
 	@Override
-	protected String initDomain()
+	public String getDomain()
 	{
 		return "predb.me";
 	}
