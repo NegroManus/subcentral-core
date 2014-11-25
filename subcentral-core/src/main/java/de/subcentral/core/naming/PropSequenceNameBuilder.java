@@ -81,12 +81,15 @@ public class PropSequenceNameBuilder
 
 	public PropSequenceNameBuilder appendString(SimplePropDescriptor propDescr, String propValue, String separationType)
 	{
-		if (lastProp != null)
+		if (propValue != null && !propValue.isEmpty())
 		{
-			sb.append(Separation.getSeparatorBetween(lastProp, propDescr, separationType, separations, defaultSeparator));
+			if (lastProp != null)
+			{
+				sb.append(Separation.getSeparatorBetween(lastProp, propDescr, separationType, separations, defaultSeparator));
+			}
+			sb.append(propValue);
+			lastProp = propDescr;
 		}
-		sb.append(propValue);
-		lastProp = propDescr;
 		return this;
 	}
 
