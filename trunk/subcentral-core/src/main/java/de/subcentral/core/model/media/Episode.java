@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
-import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
 
@@ -229,12 +228,6 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 	public void setSeason(Season season) throws IllegalArgumentException
 	{
 		this.season = requireSameSeries(season);
-	}
-
-	@Override
-	public String getName()
-	{
-		return NamingStandards.getDefaultEpisodeNamer().name(this);
 	}
 
 	@Override

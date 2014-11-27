@@ -23,7 +23,7 @@ import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Series extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Series>
+public class Series extends AbstractNamedMedia implements AvMediaCollection<Episode>, Comparable<Series>
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Series.class, PropNames.TITLE);
@@ -69,7 +69,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	 */
 	public static final String					STATE_ENDED					= "ENDED";
 
-	private String								name;
 	private Temporal							finaleDate;
 	private String								type;
 	private String								state;
@@ -94,17 +93,6 @@ public class Series extends AbstractMedia implements AvMediaCollection<Episode>,
 	{
 		setName(name);
 		setTitle(title);
-	}
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
 	}
 
 	/**

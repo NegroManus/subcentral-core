@@ -45,7 +45,7 @@ public class NamingTest
 	{
 		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
-		String name = NamingStandards.getDefaultMediaNamer().name(movie);
+		String name = NamingStandards.getDefaultNamedMediaNamer().name(movie);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_NAME, name);
 	}
@@ -56,11 +56,11 @@ public class NamingTest
 		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Release rel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
-		String name = NamingStandards.getDefaultReleaseNamer().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
+		String name = NamingStandards.getDefaultReleaseNamer().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_REL_NAME, name);
 		Assert.assertEquals(MOVIE_REL_NAME,
-				NamingStandards.getDefaultNamingService().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE)));
+				NamingStandards.getDefaultNamingService().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE)));
 	}
 
 	@Test
@@ -84,11 +84,11 @@ public class NamingTest
 
 		Release mediaRel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		SubtitleAdjustment rel = SubtitleAdjustment.create(mediaRel, "de", "SubCentral");
-		String name = NamingStandards.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
+		String name = NamingStandards.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME,
-				NamingStandards.getDefaultNamingService().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE)));
+				NamingStandards.getDefaultNamingService().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR_KEY, Boolean.TRUE)));
 	}
 
 	/**

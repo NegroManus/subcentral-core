@@ -19,10 +19,10 @@ import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.media.AvMedia;
 import de.subcentral.core.model.media.Contribution;
-import de.subcentral.core.model.media.Medias;
 import de.subcentral.core.model.media.Work;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.naming.Namings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
@@ -516,7 +516,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Medias.MEDIA_NAME_COMPARATOR)
+				.compare(media, o.media, Namings.MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
 				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)

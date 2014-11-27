@@ -90,11 +90,6 @@ public interface Media extends Work
 
 	// Property accessors
 	/**
-	 * @return the unique name of this media
-	 */
-	public String getName();
-
-	/**
 	 * Normally a media only has a {@link #getName() name} which is in fact its title. The title is only set if it differs from the name (like name:
 	 * "The Office (UK)", title: "The Office").<br/>
 	 * In case of numbered Media, like an {@link Episode} or a Song, the title may be optional.
@@ -188,15 +183,6 @@ public interface Media extends Work
 	public default boolean isTitled()
 	{
 		return getTitle() != null;
-	}
-
-	/**
-	 * 
-	 * @return the {@link #getTitle() title} if this media {@link #isTitled() is titled}, else the {@link #getName() name}
-	 */
-	public default String getTitleOrName()
-	{
-		return isTitled() ? getTitle() : getName();
 	}
 
 	/**

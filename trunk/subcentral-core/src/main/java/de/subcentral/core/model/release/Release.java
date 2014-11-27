@@ -16,7 +16,7 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.media.Medias;
+import de.subcentral.core.naming.Namings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -414,7 +414,7 @@ public class Release implements Comparable<Release>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Medias.MEDIA_ITERABLE_NAME_COMPARATOR)
+				.compare(media, o.media, Namings.MEDIA_ITERABLE_NAME_COMPARATOR)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group, Settings.createDefaultOrdering())
 				.result();
