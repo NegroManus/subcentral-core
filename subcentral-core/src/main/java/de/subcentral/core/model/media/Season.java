@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.Settings;
 import de.subcentral.core.model.Models;
 import de.subcentral.core.model.PropNames;
-import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
@@ -67,12 +66,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	public void setSeries(Series series)
 	{
 		this.series = series;
-	}
-
-	@Override
-	public String getName()
-	{
-		return NamingStandards.getDefaultSeasonNamer().name(this);
 	}
 
 	@Override

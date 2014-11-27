@@ -18,7 +18,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For any media item that has no own class. For audio / video media items see {@link RegularAvMedia}.
  *
  */
-public class RegularMedia extends AbstractMedia
+public class RegularMedia extends AbstractNamedMedia
 {
 	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(RegularMedia.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE						= new SimplePropDescriptor(RegularMedia.class, PropNames.TITLE);
@@ -40,7 +40,6 @@ public class RegularMedia extends AbstractMedia
 	public static final SimplePropDescriptor	PROP_FURTHER_INFORMATION_LINKS	= new SimplePropDescriptor(RegularMedia.class,
 																						PropNames.FURTHER_INFO_LINKS);
 
-	protected String							name;
 	protected String							mediaType;
 	protected String							mediaContentType;
 	protected final List<String>				originalLanguages				= new ArrayList<>(1);
@@ -53,17 +52,6 @@ public class RegularMedia extends AbstractMedia
 	}
 
 	public RegularMedia(String name)
-	{
-		this.name = name;
-	}
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
 	{
 		this.name = name;
 	}
