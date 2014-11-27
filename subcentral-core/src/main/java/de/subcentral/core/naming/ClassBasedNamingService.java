@@ -78,7 +78,7 @@ public class ClassBasedNamingService implements NamingService
 
 	public void setDefaultSeparator(String defaultSeparator)
 	{
-		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator));
+		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator, "defaultSeparator"));
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class ClassBasedNamingService implements NamingService
 	 *             if an exception occurs while naming
 	 */
 	@Override
-	public String name(Object candidate, Map<String, Object> parameters) throws NamingException
+	public String name(Object candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
 	{
 		if (candidate == null)
 		{

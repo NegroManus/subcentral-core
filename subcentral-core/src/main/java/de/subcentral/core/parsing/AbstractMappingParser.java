@@ -19,7 +19,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 
 	public void setMatchers(List<MappingMatcher<SimplePropDescriptor>> matchers)
 	{
-		this.matchers = Objects.requireNonNull(matchers);
+		this.matchers = Objects.requireNonNull(matchers, "matchers");
 	}
 
 	public SimplePropFromStringService getPropFromStringService()
@@ -29,7 +29,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 
 	public void setPropFromStringService(SimplePropFromStringService propFromStringService)
 	{
-		this.propFromStringService = Objects.requireNonNull(propFromStringService);
+		this.propFromStringService = Objects.requireNonNull(propFromStringService, "propFromStringService");
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 				}
 			}
 		}
-		catch (Exception e)
+		catch (RuntimeException e)
 		{
 			throw new ParsingException(text, null, "Exception while parsing", e);
 		}

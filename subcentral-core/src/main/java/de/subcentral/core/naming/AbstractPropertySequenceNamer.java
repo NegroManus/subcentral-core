@@ -73,7 +73,7 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 			buildName(builder, candidate, parameters);
 			return builder.toString();
 		}
-		catch (Exception e)
+		catch (RuntimeException e)
 		{
 			throw new NamingException(candidate, e);
 		}

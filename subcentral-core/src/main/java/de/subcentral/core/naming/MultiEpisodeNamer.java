@@ -14,7 +14,7 @@ import de.subcentral.core.model.media.MultiEpisodeHelper;
 import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<Episode>>
+public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<? extends Episode>>
 {
 	public static final String									PROP_NAME_EPISODES			= "episodes";
 	public static final SimplePropDescriptor					PROP_EPISODES				= new SimplePropDescriptor(MultiEpisodeHelper.class,
@@ -45,7 +45,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Collection<Episode> episodes, Map<String, Object> parameters) throws NamingException
+	public void buildName(PropSequenceNameBuilder b, Collection<? extends Episode> episodes, Map<String, Object> parameters) throws NamingException
 	{
 		if (episodes.isEmpty())
 		{

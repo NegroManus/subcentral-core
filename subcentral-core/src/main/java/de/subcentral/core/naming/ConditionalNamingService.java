@@ -52,7 +52,7 @@ public class ConditionalNamingService implements NamingService
 
 	public void setDefaultSeparator(String defaultSeparator)
 	{
-		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator));
+		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator, "defaultSeparator"));
 	}
 
 	@Override

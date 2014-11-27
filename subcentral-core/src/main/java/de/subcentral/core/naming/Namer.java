@@ -28,7 +28,7 @@ public interface Namer<T> extends Function<T, String>
 	 */
 	public String name(T candidate, Map<String, Object> parameters) throws NamingException;
 
-	public default String nameAll(Iterable<? extends T> candidates, String separator, Map<String, Object> parameters)
+	public default String nameAll(Iterable<? extends T> candidates, String separator, Map<String, Object> parameters) throws NamingException
 	{
 		StringBuilder name = new StringBuilder();
 		for (T candidate : candidates)
@@ -39,7 +39,7 @@ public interface Namer<T> extends Function<T, String>
 		return StringUtil.stripEnd(name, separator).toString();
 	}
 
-	public default List<String> nameEach(Iterable<? extends T> candidates, Map<String, Object> parameters)
+	public default List<String> nameEach(Iterable<? extends T> candidates, Map<String, Object> parameters) throws NamingException
 	{
 		ImmutableList.Builder<String> names = ImmutableList.builder();
 		for (T candidate : candidates)
