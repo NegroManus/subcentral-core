@@ -17,7 +17,7 @@ public class SimpleMappingService implements MappingService
 
 	public void setMappers(Map<Class<?>, Mapper<?>> mappers)
 	{
-		Objects.requireNonNull(mappers);
+		Objects.requireNonNull(mappers, "mappers");
 		this.mappers = mappers;
 	}
 

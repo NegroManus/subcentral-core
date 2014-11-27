@@ -28,7 +28,7 @@ public class SimplePropToStringService implements PropToStringService
 		{
 			return doConversion(propDescriptor, propValue);
 		}
-		catch (Exception e)
+		catch (RuntimeException e)
 		{
 			throw new NamingException(propValue, "Exception while converting property " + propDescriptor + " to string", e);
 		}

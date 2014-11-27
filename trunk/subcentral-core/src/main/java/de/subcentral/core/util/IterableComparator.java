@@ -3,7 +3,6 @@ package de.subcentral.core.util;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Objects;
 
 import com.google.common.collect.Ordering;
 
@@ -16,7 +15,7 @@ public class IterableComparator<T> implements Comparator<Iterable<T>>, Serializa
 		// if elem1 or elem2 is null, then the corresponding Iterable is shorter
 		// and if all values before were equal, the shorter Iterable is considered less.
 		// Therefore, "nullsFirst()".
-		return new IterableComparator<T>(Ordering.from(Objects.requireNonNull(elementComparator, "elementComparator")).nullsFirst());
+		return new IterableComparator<T>(Ordering.from(elementComparator).nullsFirst()); // includes null-check for elementComparator
 	}
 
 	public static final <T extends Comparable<T>> IterableComparator<T> create()

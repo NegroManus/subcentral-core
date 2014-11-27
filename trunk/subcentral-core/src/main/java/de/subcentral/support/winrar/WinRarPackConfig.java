@@ -141,7 +141,7 @@ public class WinRarPackConfig
 
 	public void setCompressionMethod(CompressionMethod compressionMethod)
 	{
-		this.compressionMethod = Objects.requireNonNull(compressionMethod);
+		this.compressionMethod = Objects.requireNonNull(compressionMethod, "compressionMethod");
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class WinRarPackConfig
 
 	public void setTargetOverwriteMode(OverwriteMode targetOverwriteMode)
 	{
-		this.targetOverwriteMode = Objects.requireNonNull(targetOverwriteMode);
+		this.targetOverwriteMode = Objects.requireNonNull(targetOverwriteMode, "targetOverwriteMode");
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class WinRarPackConfig
 
 	public void setSourceDeletionMode(DeletionMode sourceDeletionMode)
 	{
-		this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode);
+		this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode, "sourceDeletionMode");
 	}
 
 	@Override
