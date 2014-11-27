@@ -516,7 +516,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Namings.MEDIA_NAME_COMPARATOR)
+				.compare(media, o.media, Namings.DEFAULT_MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
 				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)

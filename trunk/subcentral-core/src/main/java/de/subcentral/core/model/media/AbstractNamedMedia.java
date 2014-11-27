@@ -14,14 +14,4 @@ public abstract class AbstractNamedMedia extends AbstractMedia implements NamedM
 	{
 		this.name = name;
 	}
-
-	/**
-	 * 
-	 * @return the {@link #getTitle() title} if this media {@link #isTitled() is titled}, else the {@link #getName() name}
-	 */
-	@Override
-	public String getTitleOrName()
-	{
-		return isTitled() ? title : name;
-	}
 }

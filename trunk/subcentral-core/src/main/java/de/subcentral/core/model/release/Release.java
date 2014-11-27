@@ -414,7 +414,7 @@ public class Release implements Comparable<Release>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Namings.MEDIA_ITERABLE_NAME_COMPARATOR)
+				.compare(media, o.media, Namings.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group, Settings.createDefaultOrdering())
 				.result();
