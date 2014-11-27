@@ -22,5 +22,8 @@ public interface NamedMedia extends Media
 	 * 
 	 * @return the {@link #getTitle() title} if this media {@link #isTitled() is titled}, else the {@link #getName() name}
 	 */
-	public String getTitleOrName();
+	public default String getTitleOrName()
+	{
+		return isTitled() ? getTitle() : getName();
+	}
 }
