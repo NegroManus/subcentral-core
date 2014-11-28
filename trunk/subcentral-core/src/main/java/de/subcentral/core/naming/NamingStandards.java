@@ -44,7 +44,7 @@ public class NamingStandards
 	private static SeasonedEpisodeNamer				SEASONED_EPISODE_NAMER;
 	private static MiniSeriesEpisodeNamer			MINI_SERIES_EPISODE_NAMER;
 	private static DatedEpisodeNamer				DATED_EPISODE_NAMER;
-	private static EpisodeNamer						EPISODE_NAMER;
+	private static SeriesTypeDependentEpisodeNamer	EPISODE_NAMER;
 	private static MultiEpisodeNamer				MULTI_EPISODE_NAMER;
 	private static ReleaseNamer						RELEASE_NAMER;
 	private static SubtitleNamer					SUBTITLE_NAMER;
@@ -88,7 +88,7 @@ public class NamingStandards
 		epiSeriesTypeNamers.put(Series.TYPE_SEASONED, SEASONED_EPISODE_NAMER);
 		epiSeriesTypeNamers.put(Series.TYPE_MINI_SERIES, MINI_SERIES_EPISODE_NAMER);
 		epiSeriesTypeNamers.put(Series.TYPE_DATED, DATED_EPISODE_NAMER);
-		EPISODE_NAMER = new EpisodeNamer(epiSeriesTypeNamers.build(), SEASONED_EPISODE_NAMER);
+		EPISODE_NAMER = new SeriesTypeDependentEpisodeNamer(epiSeriesTypeNamers.build(), SEASONED_EPISODE_NAMER);
 
 		// MultiEpisodeNamer
 		ImmutableSet<Separation> multiEpiSeps = ImmutableSet.of(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""),
