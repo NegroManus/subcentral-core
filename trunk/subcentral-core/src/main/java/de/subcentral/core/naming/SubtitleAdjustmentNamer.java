@@ -14,8 +14,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 {
 	/**
 	 * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link SubtitleAdjustment#getName() subtitle
-	 * adjustment's name} is not {@code null}, this name is returned as the name, otherwise the computed name is returned. The default value is
-	 * {@code false}.
+	 * adjustment's name} is not {@code null}, that name is returned, otherwise the computed name is returned. The default value is {@code false}.
 	 */
 	public static final String		PARAM_PREFER_NAME	= SubtitleAdjustmentNamer.class.getName() + ".preferName";
 
