@@ -104,12 +104,14 @@ import de.subcentral.core.util.Separation;
 public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 {
 	/**
-	 * The parameter key for the Boolean value "includeSeason". The default value is {@code true}.
+	 * The name of the parameter "includeSeason" of type {@link Boolean}. If set to {@code true}, the episode's season is included in the name,
+	 * otherwise it is excluded. The default value is {@code true}.
 	 */
 	public static final String	PARAM_INCLUDE_SEASON				= SeasonedEpisodeNamer.class.getName() + ".includeSeason";
 
 	/**
-	 * The parameter key for the Boolean value "alwaysIncludeSeasonTitle". The default value is {@code false}.
+	 * The name of the parameter "alwaysIncludeSeasonTitle" of type {@link Boolean}. If set to {@code true}, the title of the episode's season is
+	 * always included in the name, otherwise only if the season is not numbered. The default value is {@code false}.
 	 */
 	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE	= SeasonedEpisodeNamer.class.getName() + ".alwaysIncludeSeasonTitle";
 
@@ -129,7 +131,7 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
 				PARAM_ALWAYS_INCLUDE_TITLE,
 				Boolean.class,
-				PARAM_ALWAYS_INCLUDE_EPISODE_TITLE_DEFAULT);
+				PARAM_ALWAYS_INCLUDE_TITLE_DEFAULT);
 
 		// add series
 		if (includeSeries && epi.getSeries() != null)
