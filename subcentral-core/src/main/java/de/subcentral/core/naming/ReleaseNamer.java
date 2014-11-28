@@ -12,7 +12,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 {
 	/**
 	 * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link Release#getName() release's name} is not
-	 * {@code null}, this name is returned as the name, otherwise the computed name is returned. The default value is {@code false}.
+	 * {@code null}, that name is returned, otherwise the computed name is returned. The default value is {@code false}.
 	 */
 	public static final String	PARAM_PREFER_NAME	= ReleaseNamer.class.getName() + ".preferName";
 
