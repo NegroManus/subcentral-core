@@ -7,12 +7,12 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.model.media.Episode;
 
-public class EpisodeNamer implements Namer<Episode>
+public class SeriesTypeDependentEpisodeNamer implements Namer<Episode>
 {
 	private final ImmutableMap<String, Namer<Episode>>	seriesTypeNamers;
 	private final Namer<Episode>						defaultNamer;
 
-	public EpisodeNamer(Map<String, Namer<Episode>> seriesTypeNamers, Namer<Episode> defaultNamer)
+	public SeriesTypeDependentEpisodeNamer(Map<String, Namer<Episode>> seriesTypeNamers, Namer<Episode> defaultNamer)
 	{
 		this.seriesTypeNamers = ImmutableMap.copyOf(seriesTypeNamers); // includes null check
 		this.defaultNamer = Objects.requireNonNull(defaultNamer, "defaultNamer");
