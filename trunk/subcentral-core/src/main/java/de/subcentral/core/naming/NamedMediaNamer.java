@@ -19,15 +19,15 @@ public class NamedMediaNamer extends AbstractPropertySequenceNamer<NamedMedia>
 	}
 
 	/**
-	 * The parameter key for the Boolean value "includeYear". The default value is {@code true}.
+	 * The parameter key for the Boolean value "includeYear". The default value is {@code false}.
 	 */
-	public static final String	PARAM_INCLUDE_YEAR_KEY	= "includeYear";
+	public static final String	PARAM_INCLUDE_YEAR	= NamedMediaNamer.class.getName() + "includeYear";
 
 	@Override
 	public void buildName(PropSequenceNameBuilder b, NamedMedia media, Map<String, Object> params)
 	{
 		// settings
-		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR_KEY, Boolean.class, Boolean.FALSE);
+		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR, Boolean.class, Boolean.FALSE);
 
 		b.appendIfNotNull(new SimplePropDescriptor(Media.class, PropNames.TITLE), media.getTitleOrName());
 		if (includeYear)
