@@ -41,19 +41,18 @@ public class TheScene
 
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
-		String tagsPattern = buildFirstTagPattern();
+		String firstTagPattern = buildFirstTagPattern();
 
 		SimplePropFromStringService pps = new SimplePropFromStringService();
 		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
-
 		// SINGLE EPISODES
 		ReleaseParser epiRlsParser = new ReleaseParser(Parsings.getDefaultSingletonListEpisodeMapper());
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> epiRlsMatchers = ImmutableList.builder();
 
 		// Seasoned episode
-		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
 		grps101.put(0, Release.PROP_NAME);
 		grps101.put(1, Series.PROP_NAME);
@@ -78,8 +77,21 @@ public class TheScene
 				grps102.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
+		// Alternate naming scheme (used for example by UK group FoV) "The_Fall.2x02.720p_HDTV_x264-FoV"
+		Pattern p112 = Pattern.compile("(.*?)\\.(\\d{1,2})x(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps112 = ImmutableMap.builder();
+		grps112.put(0, Release.PROP_NAME);
+		grps112.put(1, Series.PROP_NAME);
+		grps112.put(2, Season.PROP_NUMBER);
+		grps112.put(3, Episode.PROP_NUMBER_IN_SEASON);
+		grps112.put(4, Release.PROP_TAGS);
+		grps112.put(5, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher112 = new MappingMatcher<SimplePropDescriptor>(p112,
+				grps112.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
+
 		// Mini-series episode
-		Pattern p201 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		Pattern p201 = Pattern.compile("(.*?)\\.E(\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
 		grps201.put(0, Release.PROP_NAME);
 		grps201.put(1, Series.PROP_NAME);
@@ -103,7 +115,7 @@ public class TheScene
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_MINI_SERIES));
 
 		// Dated episode
-		Pattern p301 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		Pattern p301 = Pattern.compile("(.*?)\\.(\\d{4}\\.\\d{2}\\.\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps301 = ImmutableMap.builder();
 		grps301.put(0, Release.PROP_NAME);
 		grps301.put(1, Series.PROP_NAME);
@@ -128,6 +140,7 @@ public class TheScene
 
 		epiRlsMatchers.add(matcher101);
 		epiRlsMatchers.add(matcher102);
+		epiRlsMatchers.add(matcher112);
 		epiRlsMatchers.add(matcher201);
 		epiRlsMatchers.add(matcher202);
 		epiRlsMatchers.add(matcher301);
@@ -140,7 +153,7 @@ public class TheScene
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpiRlsMatchers = ImmutableList.builder();
 
 		// Multi-episode (seasoned, range)
-		Pattern p401 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		Pattern p401 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps401 = ImmutableMap.builder();
 		grps401.put(0, Release.PROP_NAME);
 		grps401.put(1, Series.PROP_NAME);
@@ -166,7 +179,7 @@ public class TheScene
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
 		// Multi-episode (seasoned, addition)
-		Pattern p451 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}(?:\\+?E\\d{2})+)\\.(.*?)\\.(" + tagsPattern + "\\..*)-(\\w+)",
+		Pattern p451 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}(?:\\+?E\\d{2})+)\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)",
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps451 = ImmutableMap.builder();
 		grps451.put(0, Release.PROP_NAME);

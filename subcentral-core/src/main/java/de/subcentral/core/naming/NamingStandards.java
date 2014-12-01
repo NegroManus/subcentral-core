@@ -33,6 +33,7 @@ public class NamingStandards
 {
 	public static final String						DEFAULT_DOMAIN			= "default";
 	private static final Function<String, String>	RELEASE_NAME_FORMATTER	= initReleaseNameFormatter();
+	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER	= initReleaseMediaFormatter();
 
 	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE	= new SimplePropToStringService();
 
@@ -68,6 +69,8 @@ public class NamingStandards
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
+		// Release
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Release.PROP_MEDIA, RELEASE_MEDIA_FORMATTER);
 		// Subtitle
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_HEARING_IMPAIRED, (Boolean hi) -> hi ? "HI" : "");
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_FOREIGN_PARTS,
@@ -139,6 +142,13 @@ public class NamingStandards
 		NAMING_SERVICE.getNamers().addAll(namers);
 	}
 
+	private static Function<String, String> initReleaseMediaFormatter()
+	{
+		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
+		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.", "'´`", '.');
+		return pr.andThen(cr);
+	}
+
 	private static Function<String, String> initReleaseNameFormatter()
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
@@ -149,6 +159,11 @@ public class NamingStandards
 	public static Function<String, String> getDefaultReleaseNameFormatter()
 	{
 		return RELEASE_NAME_FORMATTER;
+	}
+
+	public static Function<String, String> getDefaultReleaseMediaFormatter()
+	{
+		return RELEASE_MEDIA_FORMATTER;
 	}
 
 	public static PropToStringService getDefaultPropToStringService()

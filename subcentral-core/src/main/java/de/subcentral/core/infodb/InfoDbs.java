@@ -74,7 +74,7 @@ public class InfoDbs
 		infoDbs.add(orlyDb);
 
 		// Episode query = Episode.createSeasonedEpisode("Big Bang Theory", 8, 10);
-		RegularAvMedia query = new RegularAvMedia("Psych S08E01");
+		RegularAvMedia query = new RegularAvMedia("The_Fall.2x02");
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 
