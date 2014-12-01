@@ -169,11 +169,11 @@ public class ParsingPlayground
 						parsedChanges.forEach(c -> System.out.println("Changed: " + c));
 						TimeUtil.printDurationMillis("Standardizing parsed", start);
 
-						System.out.println("Querying release info db ...");
 						if (parsed instanceof SubtitleAdjustment)
 						{
 							SubtitleAdjustment subAdj = (SubtitleAdjustment) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
+							System.out.println("Querying release info db ...");
 							start = System.nanoTime();
 							List<Release> releases = rlsInfoDb.queryWithName(subAdj.getFirstMatchingRelease().getMedia());
 							TimeUtil.printDurationMillis("Querying release info db", start);

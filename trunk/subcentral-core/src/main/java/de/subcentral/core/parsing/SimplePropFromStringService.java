@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -29,11 +30,11 @@ public class SimplePropFromStringService implements PropFromStringService
 {
 	public static final SimplePropFromStringService			DEFAULT								= new SimplePropFromStringService();
 	/**
-	 * The default item splitter. Splits the string into words (pattern {@code "[^\\w-]+"}). Is used by PropParsingService instances if no specific
-	 * item splitter is defined. Common to all instances to save memory.
+	 * The default item splitter. Splits the string into words of alpha-num chars. Is used by PropParsingService instances if no specific item
+	 * splitter is defined. Common to all instances to save memory.
 	 */
-	public static final Splitter							DEFAULT_ITEM_SPLITTER				= Splitter.onPattern("[^\\w-]+");
-
+	public static final Splitter							DEFAULT_ITEM_SPLITTER				= Splitter.on(CharMatcher.JAVA_LETTER_OR_DIGIT.negate())
+																										.omitEmptyStrings();
 	/**
 	 * The default map of fromString() functions. If a PropParsingService defines no specific fromString() function for a property or its type, the
 	 * default map is searched. Common to all instances to save memory.
@@ -74,7 +75,7 @@ public class SimplePropFromStringService implements PropFromStringService
 	}
 
 	private Splitter										itemSplitter			= null;
-	private Map<SimplePropDescriptor, Splitter>				propItemSplitter		= new HashMap<>(0);
+	private Map<SimplePropDescriptor, Splitter>				propItemSplitters		= new HashMap<>(0);
 	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions	= new HashMap<>(0);
 	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions	= new HashMap<>(0);
 
@@ -98,14 +99,14 @@ public class SimplePropFromStringService implements PropFromStringService
 		this.itemSplitter = itemSplitter;
 	}
 
-	public Map<SimplePropDescriptor, Splitter> getPropItemSplitter()
+	public Map<SimplePropDescriptor, Splitter> getPropItemSplitters()
 	{
-		return propItemSplitter;
+		return propItemSplitters;
 	}
 
-	public void setPropItemSplitter(Map<SimplePropDescriptor, Splitter> propItemSplitter)
+	public void setPropItemSplitters(Map<SimplePropDescriptor, Splitter> propItemSplitters)
 	{
-		this.propItemSplitter = propItemSplitter;
+		this.propItemSplitters = propItemSplitters;
 	}
 
 	public Map<Class<?>, Function<String, ?>> getTypeFromStringFunctions()
@@ -134,7 +135,7 @@ public class SimplePropFromStringService implements PropFromStringService
 		{
 			return ImmutableList.of();
 		}
-		Splitter splitter = propItemSplitter.getOrDefault(propDescriptor, itemSplitter);
+		Splitter splitter = propItemSplitters.getOrDefault(propDescriptor, itemSplitter);
 		if (splitter == null)
 		{
 			splitter = DEFAULT_ITEM_SPLITTER;
@@ -143,7 +144,15 @@ public class SimplePropFromStringService implements PropFromStringService
 		Iterable<String> splitted = splitter.split(propListString);
 		for (String propString : splitted)
 		{
-			builder.add(parse(propString, propDescriptor, itemClass));
+			P parsedItem = parse(propString, propDescriptor, itemClass);
+			if (parsedItem != null)
+			{
+				builder.add(parsedItem);
+			}
+			else
+			{
+				System.out.println(propListString);
+			}
 		}
 		return builder.build();
 	}
