@@ -34,21 +34,25 @@ public abstract class AbstractInfoDb<R, P> implements InfoDb<R, P>
 	}
 
 	@Override
-	public List<R> queryWithName(Object obj) throws InfoDbQueryException
+	public List<R> queryWithName(Object obj) throws InfoDbUnavailableException, InfoDbQueryException
 	{
 		try
 		{
 			return query(queryObjectNamingService.name(obj));
 		}
+		catch (InfoDbUnavailableException ue)
+		{
+			throw ue;
+		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(obj, e);
+			throw new InfoDbQueryException(this, obj, e);
 		}
 	}
 
 	@Override
-	public boolean canQueryWithName(Object obj)
+	public String toString()
 	{
-		return queryObjectNamingService.canName(obj);
+		return getName();
 	}
 }

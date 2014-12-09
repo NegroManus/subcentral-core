@@ -25,7 +25,7 @@ public abstract class AbstractHttpInfoDb<R, P> extends AbstractInfoDb<R, P>
 		}
 		catch (MalformedURLException e)
 		{
-			throw new ExceptionInInitializerError(e);
+			throw new AssertionError("Host URL malformed", e);
 		}
 	}
 
@@ -69,32 +69,40 @@ public abstract class AbstractHttpInfoDb<R, P> extends AbstractInfoDb<R, P>
 	}
 
 	@Override
-	public List<R> query(String query) throws InfoDbQueryException
+	public List<R> query(String query) throws InfoDbUnavailableException, InfoDbQueryException
 	{
 		try
 		{
 			return queryWithUrl(buildDefaultQueryUrl(query));
 		}
+		catch (InfoDbUnavailableException ue)
+		{
+			throw ue;
+		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(query, e);
+			throw new InfoDbQueryException(this, query, e);
 		}
 	}
 
 	@Override
-	public List<R> queryWithParameters(P parameterBean) throws InfoDbQueryException
+	public List<R> queryWithParameters(P parameterBean) throws InfoDbUnavailableException, InfoDbQueryException
 	{
 		try
 		{
 			return queryWithUrl(buildQueryUrlFromParameterBean(parameterBean));
 		}
+		catch (InfoDbUnavailableException ue)
+		{
+			throw ue;
+		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(parameterBean, e);
+			throw new InfoDbQueryException(this, parameterBean, e);
 		}
 	}
 
-	public abstract List<R> queryWithUrl(URL query) throws InfoDbQueryException;
+	public abstract List<R> queryWithUrl(URL query) throws InfoDbUnavailableException, InfoDbQueryException;
 
 	/**
 	 * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.

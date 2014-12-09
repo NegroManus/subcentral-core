@@ -81,12 +81,6 @@ public class ClassBasedNamingService implements NamingService
 		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator, "defaultSeparator"));
 	}
 
-	@Override
-	public boolean canName(Object candidate)
-	{
-		return candidate != null && getNamer(candidate.getClass()) != null;
-	}
-
 	/**
 	 * Returns a name for the given object which is calculated as follows:
 	 * <ul>

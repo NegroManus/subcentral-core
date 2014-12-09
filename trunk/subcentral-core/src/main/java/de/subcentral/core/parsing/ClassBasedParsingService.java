@@ -13,13 +13,13 @@ import com.google.common.collect.ListMultimap;
  * @implSpec #thread-safe
  *
  */
-public class SimpleParsingService implements ParsingService
+public class ClassBasedParsingService implements ParsingService
 {
 	private final String							domain;
 	private final ListMultimap<Class<?>, Parser<?>>	parsers		= LinkedListMultimap.create();
 	private final ReentrantReadWriteLock			parsersRwl	= new ReentrantReadWriteLock();
 
-	public SimpleParsingService(String domain)
+	public ClassBasedParsingService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 	}

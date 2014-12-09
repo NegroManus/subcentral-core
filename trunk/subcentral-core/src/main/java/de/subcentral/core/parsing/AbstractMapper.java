@@ -13,7 +13,7 @@ public abstract class AbstractMapper<T> implements Mapper<T>
 		{
 			return doMap(props, propFromStringService);
 		}
-		catch (Exception e)
+		catch (RuntimeException e)
 		{
 			throw new MappingException(props, null, "Exception while mapping", e);
 		}

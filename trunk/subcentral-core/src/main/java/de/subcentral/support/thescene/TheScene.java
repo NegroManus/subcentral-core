@@ -25,14 +25,14 @@ import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.ReleaseParser;
-import de.subcentral.core.parsing.SimpleParsingService;
+import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class TheScene
 {
 	public static final String					DOMAIN			= "scene";
-	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
+	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 
 	static
 	{

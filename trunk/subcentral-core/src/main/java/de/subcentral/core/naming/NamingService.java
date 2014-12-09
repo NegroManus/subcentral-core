@@ -8,8 +8,6 @@ public interface NamingService extends Namer<Object>
 
 	public String getDefaultSeparator();
 
-	public boolean canName(Object candidate);
-
 	public default String nameAll(Iterable<?> candidates, Map<String, Object> parameters)
 	{
 		return nameAll(candidates, getDefaultSeparator(), parameters);

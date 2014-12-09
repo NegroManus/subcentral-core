@@ -112,7 +112,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(doc.baseUri(), e);
+			throw new InfoDbQueryException(this, doc, e);
 		}
 	}
 

@@ -21,7 +21,7 @@ import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
-import de.subcentral.core.parsing.SimpleParsingService;
+import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.thescene.TheScene;
@@ -31,7 +31,7 @@ public class SubCentralDe
 	public static final String					DOMAIN			= "subcentral.de";
 
 	private static final Logger					log				= LogManager.getLogger(SubCentralDe.class.getName());
-	private static final SimpleParsingService	PARSING_SERVICE	= new SimpleParsingService(DOMAIN);
+	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
 	{
 		PARSING_SERVICE.registerAllParsers(initParsers());
