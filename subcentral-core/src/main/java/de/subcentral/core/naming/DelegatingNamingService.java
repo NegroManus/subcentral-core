@@ -40,12 +40,6 @@ public class DelegatingNamingService implements NamingService
 	}
 
 	@Override
-	public boolean canName(Object candidate)
-	{
-		return delegate.canName(candidate);
-	}
-
-	@Override
 	public String name(Object candidate, Map<String, Object> parameters) throws NamingException
 	{
 		return finalFormatter.apply(delegate.name(candidate, parameters));

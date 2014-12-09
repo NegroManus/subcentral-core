@@ -18,19 +18,27 @@ public abstract class AbstractHtmlHttpInfoDb<R, P> extends AbstractHttpInfoDb<R,
 	private static final Logger	log	= LogManager.getLogger(AbstractHtmlHttpInfoDb.class);
 
 	@Override
-	public List<R> queryWithUrl(URL query) throws InfoDbQueryException
+	public List<R> queryWithUrl(URL query) throws InfoDbUnavailableException, InfoDbQueryException
 	{
 		try
 		{
 			return queryWithHtmlDoc(getDocument(query));
 		}
+		catch (IOException ioe)
+		{
+			throw new InfoDbUnavailableException(this, ioe);
+		}
+		catch (InfoDbUnavailableException ue)
+		{
+			throw ue;
+		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(query, e);
+			throw new InfoDbQueryException(this, query, e);
 		}
 	}
 
-	public abstract List<R> queryWithHtmlDoc(Document doc) throws InfoDbQueryException;
+	public abstract List<R> queryWithHtmlDoc(Document doc) throws InfoDbUnavailableException, InfoDbQueryException;
 
 	protected Document getDocument(URL url) throws IOException
 	{

@@ -115,7 +115,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(doc.baseUri(), e);
+			throw new InfoDbQueryException(this, doc, e);
 		}
 	}
 

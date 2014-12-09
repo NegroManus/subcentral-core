@@ -14,12 +14,9 @@ public interface InfoDb<R, P>
 
 	public Class<P> getQueryParametersType();
 
-	public List<R> query(String query) throws InfoDbQueryException;
+	public List<R> query(String query) throws InfoDbUnavailableException, InfoDbQueryException;
 
-	public List<R> queryWithParameters(P parameterBean) throws InfoDbQueryException;
+	public List<R> queryWithParameters(P parameterBean) throws InfoDbUnavailableException, InfoDbQueryException;
 
-	public List<R> queryWithName(Object obj) throws InfoDbQueryException;
-
-	public boolean canQueryWithName(Object obj);
-
+	public List<R> queryWithName(Object obj) throws InfoDbUnavailableException, InfoDbQueryException;
 }

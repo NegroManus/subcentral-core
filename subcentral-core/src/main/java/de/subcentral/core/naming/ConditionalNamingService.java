@@ -55,12 +55,6 @@ public class ConditionalNamingService implements NamingService
 		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator, "defaultSeparator"));
 	}
 
-	@Override
-	public boolean canName(Object candidate)
-	{
-		return getNamer(candidate) != null;
-	}
-
 	@SuppressWarnings("unchecked")
 	public <T> Namer<? super T> getNamer(T candidate) throws ClassCastException
 	{
