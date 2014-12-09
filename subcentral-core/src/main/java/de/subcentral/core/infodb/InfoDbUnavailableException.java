@@ -1,6 +1,8 @@
 package de.subcentral.core.infodb;
 
-public class InfoDbUnavailableException extends Exception
+import java.io.IOException;
+
+public class InfoDbUnavailableException extends IOException
 {
 	private static final long	serialVersionUID	= 3669402029190061652L;
 
