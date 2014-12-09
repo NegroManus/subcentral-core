@@ -75,14 +75,22 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 		}
 	}
 
-	private static final Pattern	RANGE_PATTERN		= Pattern.compile("E(\\d{1,2})-E(\\d{1,2})", Pattern.CASE_INSENSITIVE);
-	// "(?:X) 	X, as a non-capturing group"
-	private static final Pattern	ADDITION_PATTERN	= Pattern.compile("E(\\d{1,2})((?:\\+?E\\d{1,2})+)", Pattern.CASE_INSENSITIVE);
+	/**
+	 * Matches "E01-E02", "E01-02", "01-02", ... (two number blocks, separated by a hyphen).
+	 */
+	private static final Pattern	RANGE_PATTERN		= Pattern.compile("(\\d{1,2})-\\D*(\\d{1,2})", Pattern.CASE_INSENSITIVE);
+	/**
+	 * Matches "E01E02", "E01+E02", "E01+02", "E01E02E03", "E01+E02+E03", "E01+02+03" ... (several number blocks, separated by non digit chars).
+	 * 
+	 * "(?:X) 	X, as a non-capturing group"
+	 */
+	private static final Pattern	ADDITION_PATTERN	= Pattern.compile("(\\d{1,2})((?:\\D+\\d{1,2})+)", Pattern.CASE_INSENSITIVE);
 
 	public static boolean containsMultiEpisode(Map<SimplePropDescriptor, String> props)
 	{
-		return extractEpiNums(props.get(Episode.PROP_NUMBER_IN_SERIES)).length >= 2
-				|| extractEpiNums(props.get(Episode.PROP_NUMBER_IN_SEASON)).length >= 2;
+		// first check for multiple numbers in season because most episode are part of a season
+		return extractEpiNums(props.get(Episode.PROP_NUMBER_IN_SEASON)).length >= 2
+				|| extractEpiNums(props.get(Episode.PROP_NUMBER_IN_SERIES)).length >= 2;
 	}
 
 	private static String[] extractEpiNums(String numString)
@@ -113,12 +121,15 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 		matcher = ADDITION_PATTERN.matcher(numString);
 		if (matcher.find())
 		{
-			List<String> epiNums = Splitter.on(CharMatcher.noneOf("0123456789")).omitEmptyStrings().trimResults().splitToList(matcher.group(2));
-			String[] nums = new String[1 + epiNums.size()];
+			List<String> additionalEpiNums = Splitter.on(CharMatcher.JAVA_DIGIT.negate())
+					.omitEmptyStrings()
+					.trimResults()
+					.splitToList(matcher.group(2));
+			String[] nums = new String[1 + additionalEpiNums.size()];
 			nums[0] = matcher.group(1);
-			for (int i = 0; i < epiNums.size(); i++)
+			for (int i = 0; i < additionalEpiNums.size(); i++)
 			{
-				nums[i + 1] = epiNums.get(i);
+				nums[i + 1] = additionalEpiNums.get(i);
 			}
 			return nums;
 		}

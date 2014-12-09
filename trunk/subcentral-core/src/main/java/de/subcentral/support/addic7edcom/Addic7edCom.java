@@ -10,7 +10,6 @@ import com.google.common.collect.ListMultimap;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.RegularAvMedia;
-import de.subcentral.core.model.media.RegularMedia;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
@@ -46,12 +45,8 @@ public class Addic7edCom
 				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,
 				Media.MEDIA_CONTENT_TYPE_VIDEO);
 
-		// Matchers
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
-
-		// init the matchers
 		// --------------
-		// Episode matchers
+		// Episode Parser
 		// Predefined matches for episodes
 		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultSingletonListEpisodeMapper());
 
@@ -194,6 +189,8 @@ public class Addic7edCom
 		// matcher102.match("Psych (UK) - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k
 		// + " = " + v));
 
+		// Matchers
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
 		episodeMatchers.add(matcher101);
 		episodeMatchers.add(matcher102);
 		episodeMatchers.add(matcher103);
@@ -203,9 +200,8 @@ public class Addic7edCom
 		episodeSubParser.setMatchers(episodeMatchers.build());
 
 		// --------------
-		// Movie matchers
+		// Movie Parser
 		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultSingletonListRegularAvMediaMapper());
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);
@@ -226,12 +222,13 @@ public class Addic7edCom
 		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), predefMovieMatches);
 
 		// --------------
-		// add all the matchers to the map
+		// add all movie matchers
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 		movieMatchers.add(matcher201);
 
 		movieSubParser.setMatchers(movieMatchers.build());
 
-		return ImmutableListMultimap.of(Episode.class, episodeSubParser, RegularMedia.class, movieSubParser);
+		return ImmutableListMultimap.of(SubtitleAdjustment.class, episodeSubParser, SubtitleAdjustment.class, movieSubParser);
 	}
 
 	public static final ParsingService getParsingService()
