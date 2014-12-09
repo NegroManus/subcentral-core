@@ -24,13 +24,13 @@ public abstract class AbstractHtmlHttpInfoDb<R, P> extends AbstractHttpInfoDb<R,
 		{
 			return queryWithHtmlDoc(getDocument(query));
 		}
-		catch (IOException ioe)
-		{
-			throw new InfoDbUnavailableException(this, ioe);
-		}
 		catch (InfoDbUnavailableException ue)
 		{
 			throw ue;
+		}
+		catch (IOException ioe)
+		{
+			throw new InfoDbUnavailableException(this, ioe);
 		}
 		catch (Exception e)
 		{

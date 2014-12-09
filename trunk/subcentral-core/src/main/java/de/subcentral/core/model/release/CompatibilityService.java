@@ -10,6 +10,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.google.common.collect.ImmutableMap;
 
+/**
+ * 
+ * @implSpec #thread-safe
+ *
+ */
 public class CompatibilityService
 {
 	private Set<Compatibility>	compatibilities	= new CopyOnWriteArraySet<>();
