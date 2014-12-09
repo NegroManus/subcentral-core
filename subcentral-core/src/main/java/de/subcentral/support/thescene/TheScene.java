@@ -47,9 +47,9 @@ public class TheScene
 		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
+
 		// SINGLE EPISODES
 		ReleaseParser epiRlsParser = new ReleaseParser(Parsings.getDefaultSingletonListEpisodeMapper());
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> epiRlsMatchers = ImmutableList.builder();
 
 		// Seasoned episode
 		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
@@ -138,6 +138,7 @@ public class TheScene
 				grps302.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_DATED));
 
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> epiRlsMatchers = ImmutableList.builder();
 		epiRlsMatchers.add(matcher101);
 		epiRlsMatchers.add(matcher102);
 		epiRlsMatchers.add(matcher112);
@@ -150,7 +151,6 @@ public class TheScene
 
 		// MULTI-EPISODES
 		ReleaseParser multiEpiRlsParser = new ReleaseParser(Parsings.getDefaultMultiEpisodeMapper());
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpiRlsMatchers = ImmutableList.builder();
 
 		// Multi-episode (seasoned, range)
 		Pattern p401 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
@@ -205,6 +205,7 @@ public class TheScene
 				grps452.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpiRlsMatchers = ImmutableList.builder();
 		multiEpiRlsMatchers.add(matcher401);
 		multiEpiRlsMatchers.add(matcher402);
 		multiEpiRlsMatchers.add(matcher451);
