@@ -28,7 +28,7 @@ public abstract class AbstractInfoDb<R, P> implements InfoDb<R, P>
 		return new DelegatingNamingService("QueryEntityNamingService", NamingStandards.getDefaultNamingService(), pr.andThen(cr));
 	}
 
-	public NamingService getQueryEntityNamingService()
+	public NamingService getQueryObjectNamingService()
 	{
 		return queryObjectNamingService;
 	}
