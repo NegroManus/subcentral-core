@@ -13,6 +13,11 @@ import com.google.common.collect.ImmutableMap;
 
 public class MappingMatcher<K>
 {
+	/**
+	 * This separator is used to separate multiple values for the same key. These values are concatenated, using this separator.
+	 */
+	public static final String				VALUES_WITH_SAME_KEY_SEPARATOR	= " ";
+
 	private final Pattern					pattern;
 	private final ImmutableMap<Integer, K>	groups;
 	private final ImmutableMap<K, String>	predefinedMatches;
@@ -37,7 +42,7 @@ public class MappingMatcher<K>
 	/**
 	 * A Map:
 	 * <ul>
-	 * <li>Key: group number (0: whole match string, 1-n: pattern groups)</li>
+	 * <li>Key: group number (0: whole match string, 1-n: capturing pattern groups)</li>
 	 * <li>Value: group key</li>
 	 * </ul>
 	 * 
@@ -56,9 +61,10 @@ public class MappingMatcher<K>
 	/**
 	 * 
 	 * @param text
-	 * @return The mapped groups. If the matcher does no match, null is returned.
+	 *            the text to
+	 * @return the mapped groups. If the matcher does no match, {@code null} is returned
 	 * @throws IndexOutOfBoundsException
-	 *             If there is no pattern group for a specified group number.
+	 *             if there is no capturing group in the {@link #getPattern() pattern} associated with an index specified in {@link #getGroups()}.
 	 */
 	public Map<K, String> match(String text) throws IndexOutOfBoundsException
 	{
@@ -79,7 +85,7 @@ public class MappingMatcher<K>
 				String storedValue = mappedGroups.get(groupKey);
 				if (storedValue != null)
 				{
-					groupValue = storedValue + (groupValue != null ? " " + groupValue : "");
+					groupValue = storedValue + (groupValue != null ? VALUES_WITH_SAME_KEY_SEPARATOR + groupValue : "");
 				}
 				mappedGroups.put(groupKey, groupValue);
 			}
@@ -91,6 +97,11 @@ public class MappingMatcher<K>
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(this).omitNullValues().add("pattern", pattern).add("groups", groups).toString();
+		return MoreObjects.toStringHelper(this)
+				.omitNullValues()
+				.add("pattern", pattern)
+				.add("groups", groups)
+				.add("predefinedMatches", predefinedMatches)
+				.toString();
 	}
 }
