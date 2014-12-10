@@ -233,6 +233,6 @@ public class NamingStandards
 
 	private NamingStandards()
 	{
-		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

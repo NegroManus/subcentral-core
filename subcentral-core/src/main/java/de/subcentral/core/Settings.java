@@ -26,6 +26,6 @@ public class Settings
 
 	private Settings()
 	{
-		throw new AssertionError(getClass() + " cannot be insantiated. It is an utility class.");
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }
