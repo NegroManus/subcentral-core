@@ -55,15 +55,15 @@ public class NamingStandards
 		// Configure namers
 
 		// PropToStringService
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("'('uuuu')'", Locale.US).format(y));
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(YearMonth.class,
-				(YearMonth y) -> DateTimeFormatter.ofPattern("'('uuuu.MM')'", Locale.US).format(y));
+		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("uuuu", Locale.US).format(y));
+		PROP_TO_STRING_SERVICE.getTypeToStringFns()
+				.put(YearMonth.class, (YearMonth y) -> DateTimeFormatter.ofPattern("uuuu.MM", Locale.US).format(y));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDate.class,
-				(LocalDate d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd')'", Locale.US).format(d));
+				(LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDateTime.class,
-				(LocalDateTime d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd.HH.mm.ss')'", Locale.US).format(d));
+				(LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(ZonedDateTime.class,
-				(ZonedDateTime d) -> DateTimeFormatter.ofPattern("'('uuuu.MM.dd.HH.mm.ss')'", Locale.US).format(d));
+				(ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss", Locale.US).format(d));
 
 		// Episode
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
