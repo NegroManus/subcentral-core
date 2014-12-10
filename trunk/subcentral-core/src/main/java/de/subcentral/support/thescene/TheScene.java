@@ -20,18 +20,18 @@ import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
+import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.ReleaseParser;
-import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class TheScene
 {
-	public static final String					DOMAIN			= "scene";
+	public static final String						DOMAIN			= "scene";
 	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 
 	static
@@ -266,6 +266,6 @@ public class TheScene
 
 	private TheScene()
 	{
-		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

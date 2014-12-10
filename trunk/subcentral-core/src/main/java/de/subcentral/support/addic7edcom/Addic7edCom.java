@@ -15,17 +15,17 @@ import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.Parsings;
-import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7edCom
 {
-	public static final String					DOMAIN			= "addic7ed.com";
+	public static final String						DOMAIN			= "addic7ed.com";
 
 	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
@@ -243,6 +243,6 @@ public class Addic7edCom
 
 	private Addic7edCom()
 	{
-		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

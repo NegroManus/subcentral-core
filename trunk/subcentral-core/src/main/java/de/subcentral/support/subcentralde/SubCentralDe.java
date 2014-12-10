@@ -16,21 +16,21 @@ import de.subcentral.core.model.media.AvMedia;
 import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
-import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.thescene.TheScene;
 
 public class SubCentralDe
 {
-	public static final String					DOMAIN			= "subcentral.de";
+	public static final String						DOMAIN			= "subcentral.de";
 
-	private static final Logger					log				= LogManager.getLogger(SubCentralDe.class.getName());
+	private static final Logger						log				= LogManager.getLogger(SubCentralDe.class.getName());
 	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
 	{
@@ -148,6 +148,6 @@ public class SubCentralDe
 
 	private SubCentralDe()
 	{
-		throw new AssertionError(getClass() + " is an utility class and therefore should not be instantiated.");
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }
