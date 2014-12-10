@@ -55,6 +55,11 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 		return createSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
 	}
 
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber)
+	{
+		return createSeasonedEpisode(seriesName, seriesTitle, seasonNumber, null, episodeNumber, null);
+	}
+
 	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber,
 			String episodeTitle)
 	{
