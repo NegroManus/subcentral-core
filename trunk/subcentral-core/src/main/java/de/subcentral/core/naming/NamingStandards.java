@@ -145,7 +145,8 @@ public class NamingStandards
 	private static Function<String, String> initReleaseMediaFormatter()
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
-		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.", "'´`", '.');
+		// hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible
+		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-", "'´`", '.');
 		return pr.andThen(cr);
 	}
 
