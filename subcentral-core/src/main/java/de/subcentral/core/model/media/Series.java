@@ -255,6 +255,63 @@ public class Series extends AbstractNamedMedia implements AvMediaCollection<Epis
 		this.episodes.addAll(episodes);
 	}
 
+	// == newEpisode() methods ==
+	// Generic
+	public Episode newEpisode()
+	{
+		return new Episode(this);
+	}
+
+	public Episode newEpisode(String title)
+	{
+		return new Episode(this, title);
+	}
+
+	// Seasoned
+	public Episode newEpisode(Season season)
+	{
+		return new Episode(this, season);
+	}
+
+	public Episode newEpisode(Season season, Integer numberInSeason)
+	{
+		return new Episode(this, season, numberInSeason);
+	}
+
+	public Episode newEpisode(Season season, String title)
+	{
+		return new Episode(this, season, title);
+	}
+
+	public Episode newEpisode(Season season, Integer numberInSeason, String title)
+	{
+		return new Episode(this, season, numberInSeason, title);
+	}
+
+	// Mini-series
+	public Episode newEpisode(Integer numberInSeries)
+	{
+		return new Episode(this, numberInSeries);
+	}
+
+	public Episode newEpisode(Integer numberInSeries, String title)
+	{
+		return new Episode(this, numberInSeries, title);
+	}
+
+	// Dated
+	public Episode newEpisode(Temporal date)
+	{
+		return new Episode(this, date);
+	}
+
+	public Episode newEpisode(Temporal date, String title)
+	{
+		return new Episode(this, date, title);
+	}
+
+	// == addEpisode() methods ==
+	// Generic
 	public Episode addEpisode()
 	{
 		Episode epi = new Episode(this);
@@ -265,6 +322,35 @@ public class Series extends AbstractNamedMedia implements AvMediaCollection<Epis
 	public Episode addEpisode(String title)
 	{
 		Episode epi = new Episode(this, title);
+		episodes.add(epi);
+		return epi;
+	}
+
+	// Seasoned
+	public Episode addEpisode(Season season)
+	{
+		Episode epi = new Episode(this, season);
+		episodes.add(epi);
+		return epi;
+	}
+
+	public Episode addEpisode(Season season, Integer numberInSeason)
+	{
+		Episode epi = new Episode(this, season, numberInSeason);
+		episodes.add(epi);
+		return epi;
+	}
+
+	public Episode addEpisode(Season season, String title)
+	{
+		Episode epi = new Episode(this, season, title);
+		episodes.add(epi);
+		return epi;
+	}
+
+	public Episode addEpisode(Season season, Integer numberInSeason, String title)
+	{
+		Episode epi = new Episode(this, season, numberInSeason, title);
 		episodes.add(epi);
 		return epi;
 	}
@@ -299,35 +385,6 @@ public class Series extends AbstractNamedMedia implements AvMediaCollection<Epis
 		return epi;
 	}
 
-	// Seasoned
-	public Episode addEpisode(Season season)
-	{
-		Episode epi = new Episode(this, season);
-		episodes.add(epi);
-		return epi;
-	}
-
-	public Episode addEpisode(Season season, Integer numberInSeason)
-	{
-		Episode epi = new Episode(this, season, numberInSeason);
-		episodes.add(epi);
-		return epi;
-	}
-
-	public Episode addEpisode(Season season, String title)
-	{
-		Episode epi = new Episode(this, season, title);
-		episodes.add(epi);
-		return epi;
-	}
-
-	public Episode addEpisode(Season season, Integer numberInSeason, String title)
-	{
-		Episode epi = new Episode(this, season, numberInSeason, title);
-		episodes.add(epi);
-		return epi;
-	}
-
 	// Seasons
 	public List<Season> getSeasons()
 	{
@@ -340,6 +397,21 @@ public class Series extends AbstractNamedMedia implements AvMediaCollection<Epis
 		this.seasons.addAll(seasons);
 	}
 
+	public Season newSeason()
+	{
+		return new Season(this);
+	}
+
+	public Season newSeason(Integer number)
+	{
+		return new Season(this, number);
+	}
+
+	public Season newSeason(String title)
+	{
+		return new Season(this, title);
+	}
+
 	public Season addSeason()
 	{
 		Season season = new Season(this);
@@ -347,16 +419,16 @@ public class Series extends AbstractNamedMedia implements AvMediaCollection<Epis
 		return season;
 	}
 
-	public Season addSeason(Integer seasonNumber)
+	public Season addSeason(Integer number)
 	{
-		Season season = new Season(this, seasonNumber);
+		Season season = new Season(this, number);
 		seasons.add(season);
 		return season;
 	}
 
-	public Season addSeason(String seasonTitle)
+	public Season addSeason(String title)
 	{
-		Season season = new Season(this, seasonTitle);
+		Season season = new Season(this, title);
 		seasons.add(season);
 		return season;
 	}
