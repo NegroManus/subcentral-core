@@ -13,6 +13,7 @@ import de.subcentral.core.infodb.InfoDb;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.standardizing.StandardizingChange;
 
 public class Releases
@@ -53,13 +54,18 @@ public class Releases
 				&& (rls.getTags().containsAll(containedTags));
 	}
 
-	public static void enrichByParsingName(Release rls, ParsingService ps, boolean overwrite)
+	public static void enrichByParsingName(Release rls, ParsingService parsingService, boolean overwrite)
+	{
+		enrichByParsingName(rls, ImmutableList.of(parsingService), overwrite);
+	}
+
+	public static void enrichByParsingName(Release rls, List<ParsingService> parsingServices, boolean overwrite)
 	{
 		if (rls == null || rls.getName() == null)
 		{
 			return;
 		}
-		Release parsedName = ps.parse(rls.getName(), Release.class);
+		Release parsedName = Parsings.parse(rls.getName(), Release.class, parsingServices);
 		if (overwrite || rls.getMedia().isEmpty())
 		{
 			rls.setMedia(parsedName.getMedia());
