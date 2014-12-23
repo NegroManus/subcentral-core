@@ -20,7 +20,7 @@ import de.subcentral.core.naming.Namings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
- * * A Release is a publication of one media (movie, TV episode, series, season, song, album, movie, game, software) or a set of media (multiple TV
+ * A Release is a publication of one media (movie, TV episode, series, season, song, album, movie, game, software) or a set of media (multiple TV
  * episodes). Every Release has a unique name so that it can be identified. The name is constructed of:
  * <ul>
  * <li>the name(s) of the media</li>
