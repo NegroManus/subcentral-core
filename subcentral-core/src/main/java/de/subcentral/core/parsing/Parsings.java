@@ -154,6 +154,38 @@ public class Parsings
 		}
 	}
 
+	public static <T> T parse(String text, Class<T> targetClass, List<ParsingService> parsingServices) throws NoMatchException, ParsingException
+	{
+		for (ParsingService ps : parsingServices)
+		{
+			try
+			{
+				return ps.parse(text, targetClass);
+			}
+			catch (NoMatchException nme)
+			{
+				continue;
+			}
+		}
+		throw new NoMatchException(text, targetClass, "No ParsingService could parse the text");
+	}
+
+	public static Object parse(String text, List<ParsingService> parsingServices) throws NoMatchException, ParsingException
+	{
+		for (ParsingService ps : parsingServices)
+		{
+			try
+			{
+				return ps.parse(text);
+			}
+			catch (NoMatchException nme)
+			{
+				continue;
+			}
+		}
+		throw new NoMatchException(text, null, "No ParsingService could parse the text");
+	}
+
 	private Parsings()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
