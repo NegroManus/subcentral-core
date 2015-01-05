@@ -152,15 +152,11 @@ public interface Media extends Work
 	public List<String> getCoverLinks();
 
 	/**
-	 * <ul>
-	 * <li>Audio: http://en.wikipedia.org/wiki/Parental_Advisory</li>
-	 * <li>Video: http://en.wikipedia.org/wiki/Motion_picture_rating_system</li>
-	 * <li>Games: http://en.wikipedia.org/wiki/Video_game_content_rating_system</li>
-	 * </ul>
+	 * See: http://en.wikipedia.org/wiki/Content_rating.
 	 * 
-	 * @return the parental advisory / content advisory / content rating for this media
+	 * @return the parental advisory (music industry) / content rating for this media
 	 */
-	public String getContentAdvisory();
+	public String getContentRating();
 
 	/**
 	 * 
