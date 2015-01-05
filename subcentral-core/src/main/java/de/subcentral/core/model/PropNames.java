@@ -3,7 +3,7 @@ package de.subcentral.core.model;
 public interface PropNames
 {
 	public static final String	BASIS					= "basis";
-	public static final String	CONTENT_ADVISORY		= "contentAdvisory";
+	public static final String	CONTENT_RATING			= "contentRating";
 	public static final String	CONTRIBUTIONS			= "contributions";
 	public static final String	COUNTRIES_OF_ORIGIN		= "countriesOfOrigin";
 	public static final String	COVER_LINKS				= "coverUrls";

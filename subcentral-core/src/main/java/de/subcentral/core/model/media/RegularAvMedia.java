@@ -26,8 +26,7 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(RegularAvMedia.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_COVER_LINKS			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.COVER_LINKS);
-	public static final SimplePropDescriptor	PROP_CONTENT_ADVISORY		= new SimplePropDescriptor(RegularAvMedia.class,
-																					PropNames.CONTENT_ADVISORY);
+	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS		= new SimplePropDescriptor(RegularAvMedia.class,
 																					PropNames.FURTHER_INFO_LINKS);
@@ -80,7 +79,7 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
 				.add("coverLinks", Models.nullIfEmpty(coverLinks))
-				.add("contentAdvisory", contentAdvisory)
+				.add("contentRating", contentRating)
 				.add("contributions", Models.nullIfEmpty(contributions))
 				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", Models.nullIfEmpty(attributes))

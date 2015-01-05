@@ -16,7 +16,7 @@ public abstract class AbstractMedia implements Media
 	protected Temporal								date;
 	protected String								description;
 	protected final List<String>					coverLinks			= new ArrayList<>(1);
-	protected String								contentAdvisory;
+	protected String								contentRating;
 	protected final List<Contribution>				contributions		= new ArrayList<>(0);
 	protected final List<String>					furtherInfoLinks	= new ArrayList<>(4);
 	protected final ListMultimap<String, Object>	attributes			= LinkedListMultimap.create(0);
@@ -67,14 +67,14 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public String getContentAdvisory()
+	public String getContentRating()
 	{
-		return contentAdvisory;
+		return contentRating;
 	}
 
-	public void setContentAdvisory(String contentAdvisory)
+	public void setContentRating(String contentRating)
 	{
-		this.contentAdvisory = contentAdvisory;
+		this.contentRating = contentRating;
 	}
 
 	@Override
