@@ -19,6 +19,6 @@ public class NamedThreadFactory implements ThreadFactory
 		{
 			num = 0;
 		}
-		return new Thread(r, new StringBuilder(baseName).append('#').append(num++).toString());
+		return new Thread(r, new StringBuilder(baseName).append('-').append(num++).toString());
 	}
 }
