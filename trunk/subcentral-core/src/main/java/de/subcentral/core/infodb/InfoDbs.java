@@ -41,7 +41,7 @@ public class InfoDbs
 			}
 			catch (ExecutionException e)
 			{
-				log.error("Exception while querying InfoDb " + infoDbs.get(i) + " with query " + queryObj + ". Skipping this InfoDb.", e.getCause());
+				log.error("Exception while querying InfoDb " + infoDbs.get(i) + " with query " + queryObj + ". Skipping this InfoDb.", e);
 			}
 		}
 		return results.build();
