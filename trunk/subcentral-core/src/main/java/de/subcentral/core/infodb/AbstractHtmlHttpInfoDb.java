@@ -13,7 +13,7 @@ import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.TimeUtil;
 
-public abstract class AbstractHtmlHttpInfoDb<R, P> extends AbstractHttpInfoDb<R, P>
+public abstract class AbstractHtmlHttpInfoDb<R> extends AbstractHttpInfoDb<R>
 {
 	private static final Logger	log	= LogManager.getLogger(AbstractHtmlHttpInfoDb.class);
 

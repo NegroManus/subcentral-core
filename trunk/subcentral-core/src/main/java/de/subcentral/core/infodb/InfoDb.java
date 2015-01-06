@@ -2,7 +2,7 @@ package de.subcentral.core.infodb;
 
 import java.util.List;
 
-public interface InfoDb<R, P>
+public interface InfoDb<R>
 {
 	public String getName();
 
@@ -12,11 +12,7 @@ public interface InfoDb<R, P>
 
 	public Class<R> getResultType();
 
-	public Class<P> getQueryParametersType();
-
 	public List<R> query(String query) throws InfoDbUnavailableException, InfoDbQueryException;
-
-	public List<R> queryWithParameters(P parameterBean) throws InfoDbUnavailableException, InfoDbQueryException;
 
 	public List<R> queryWithName(Object obj) throws InfoDbUnavailableException, InfoDbQueryException;
 }

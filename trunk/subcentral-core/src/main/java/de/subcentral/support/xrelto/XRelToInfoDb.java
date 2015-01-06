@@ -33,7 +33,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
+public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release>
 {
 	private static final Logger				log					= LogManager.getLogger(XRelToInfoDb.class);
 
@@ -71,12 +71,6 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 		return Release.class;
 	}
 
-	@Override
-	public Class<String> getQueryParametersType()
-	{
-		return String.class;
-	}
-
 	public List<Release> parseReleases(File file) throws IOException, InfoDbQueryException
 	{
 		Document doc = Jsoup.parse(file, "UTF-8", initHost().toExternalForm());
@@ -95,12 +89,6 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	protected String getDefaultQueryPath()
 	{
 		return "/search.html";
-	}
-
-	@Override
-	protected URL buildQueryUrlFromParameterBean(String parameterBean) throws Exception
-	{
-		return buildDefaultQueryUrl(parameterBean);
 	}
 
 	@Override

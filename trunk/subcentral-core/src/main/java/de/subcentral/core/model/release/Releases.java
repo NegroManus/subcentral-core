@@ -137,6 +137,7 @@ public class Releases
 		{
 			return ImmutableList.of();
 		}
+
 		List<Release> reducedList = new ArrayList<>();
 		for (Release rls : releases)
 		{

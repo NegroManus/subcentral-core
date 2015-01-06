@@ -25,7 +25,7 @@ public class MultiInfoDbPlayground
 		PreDbMeInfoDb preDbMe = new PreDbMeInfoDb();
 		XRelToInfoDb xrelTo = new XRelToInfoDb();
 		OrlyDbComInfoDb orlyDb = new OrlyDbComInfoDb();
-		List<InfoDb<Release, ?>> infoDbs = new ArrayList<>(3);
+		List<InfoDb<Release>> infoDbs = new ArrayList<>(3);
 		infoDbs.add(preDbMe);
 		infoDbs.add(xrelTo);
 		infoDbs.add(orlyDb);
@@ -37,9 +37,9 @@ public class MultiInfoDbPlayground
 
 		System.out.println("Querying");
 		long start = System.nanoTime();
-		ListMultimap<InfoDb<Release, ?>, Release> results = InfoDbs.queryAll(infoDbs, query, executor);
+		ListMultimap<InfoDb<Release>, Release> results = InfoDbs.queryAll(infoDbs, query, executor);
 		TimeUtil.printDurationMillis("queryAll", start);
-		for (Map.Entry<InfoDb<Release, ?>, Collection<Release>> entry : results.asMap().entrySet())
+		for (Map.Entry<InfoDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
 		{
 			System.out.println("Results of " + entry.getKey().getName() + " " + entry.getKey().getDomain());
 			entry.getValue().stream().forEach((r) -> System.out.println(r));
