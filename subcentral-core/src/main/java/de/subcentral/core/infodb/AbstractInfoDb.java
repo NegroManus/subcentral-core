@@ -12,7 +12,7 @@ import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.PatternReplacer;
 
-public abstract class AbstractInfoDb<R, P> implements InfoDb<R, P>
+public abstract class AbstractInfoDb<R> implements InfoDb<R>
 {
 	protected final NamingService	queryObjectNamingService;
 

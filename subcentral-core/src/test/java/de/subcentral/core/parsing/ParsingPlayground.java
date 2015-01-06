@@ -107,7 +107,7 @@ public class ParsingPlayground
 
 		final NamingService ns = NamingStandards.getDefaultNamingService();
 
-		final InfoDb<Release, ?> rlsInfoDb = new OrlyDbComInfoDb();
+		final InfoDb<Release> rlsInfoDb = new OrlyDbComInfoDb();
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
 
 		final CompatibilityService compService = new CompatibilityService();

@@ -17,7 +17,7 @@ public class InfoDbs
 {
 	private static final Logger	log	= LogManager.getLogger(InfoDbs.class);
 
-	public static <R> ListMultimap<InfoDb<R, ?>, R> queryAll(List<InfoDb<R, ?>> infoDbs, Object queryObj, ExecutorService executor)
+	public static <R> ListMultimap<InfoDb<R>, R> queryAll(List<InfoDb<R>> infoDbs, Object queryObj, ExecutorService executor)
 			throws InterruptedException
 	{
 		if (infoDbs.isEmpty() || queryObj == null)
@@ -25,14 +25,14 @@ public class InfoDbs
 			return ImmutableListMultimap.of();
 		}
 		List<Callable<List<R>>> tasks = new ArrayList<>(infoDbs.size());
-		for (InfoDb<R, ?> infoDb : infoDbs)
+		for (InfoDb<R> infoDb : infoDbs)
 		{
 			tasks.add(() -> infoDb.queryWithName(queryObj));
 		}
 
 		List<Future<List<R>>> futures = executor.invokeAll(tasks);
 
-		ImmutableListMultimap.Builder<InfoDb<R, ?>, R> results = ImmutableListMultimap.builder();
+		ImmutableListMultimap.Builder<InfoDb<R>, R> results = ImmutableListMultimap.builder();
 		for (int i = 0; i < infoDbs.size(); i++)
 		{
 			try

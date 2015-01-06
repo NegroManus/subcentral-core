@@ -10,7 +10,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-public abstract class AbstractHttpInfoDb<R, P> extends AbstractInfoDb<R, P>
+public abstract class AbstractHttpInfoDb<R> extends AbstractInfoDb<R>
 {
 	public static final int	DEFAULT_TIMEOUT	= 10000;
 
@@ -85,23 +85,6 @@ public abstract class AbstractHttpInfoDb<R, P> extends AbstractInfoDb<R, P>
 		}
 	}
 
-	@Override
-	public List<R> queryWithParameters(P parameterBean) throws InfoDbUnavailableException, InfoDbQueryException
-	{
-		try
-		{
-			return queryWithUrl(buildQueryUrlFromParameterBean(parameterBean));
-		}
-		catch (InfoDbUnavailableException ue)
-		{
-			throw ue;
-		}
-		catch (Exception e)
-		{
-			throw new InfoDbQueryException(this, parameterBean, e);
-		}
-	}
-
 	public abstract List<R> queryWithUrl(URL query) throws InfoDbUnavailableException, InfoDbQueryException;
 
 	/**
@@ -144,8 +127,6 @@ public abstract class AbstractHttpInfoDb<R, P> extends AbstractInfoDb<R, P>
 		URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, buildQuery(queryPrefix, queryString), null);
 		return uri.toURL();
 	}
-
-	protected abstract URL buildQueryUrlFromParameterBean(P parameterBean) throws Exception;
 
 	/**
 	 * 

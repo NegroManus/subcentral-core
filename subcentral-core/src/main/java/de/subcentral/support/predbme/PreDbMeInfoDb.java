@@ -38,7 +38,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
+public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 {
 	private static final Logger	log			= LogManager.getLogger(PreDbMeInfoDb.class);
 
@@ -78,12 +78,6 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	}
 
 	@Override
-	public Class<String> getQueryParametersType()
-	{
-		return String.class;
-	}
-
-	@Override
 	protected String getDefaultQueryPath()
 	{
 		return "/";
@@ -93,12 +87,6 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release, String>
 	protected String getDefaultQueryPrefix()
 	{
 		return "search=";
-	}
-
-	@Override
-	protected URL buildQueryUrlFromParameterBean(String parameterBean) throws Exception
-	{
-		return buildDefaultQueryUrl(parameterBean);
 	}
 
 	@Override

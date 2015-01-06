@@ -1,8 +1,6 @@
 package de.subcentral.support.orlydbcom;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -12,11 +10,9 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
@@ -35,7 +31,7 @@ import de.subcentral.core.util.ByteUtil;
  * @implSpec #immutable #thread-safe
  *
  */
-public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQueryParameters>
+public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release>
 {
 	private static final Logger				log					= LogManager.getLogger(OrlyDbComInfoDb.class);
 
@@ -74,12 +70,6 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 	}
 
 	@Override
-	public Class<OrlyDbComQueryParameters> getQueryParametersType()
-	{
-		return OrlyDbComQueryParameters.class;
-	}
-
-	@Override
 	protected String getDefaultQueryPath()
 	{
 		return "/";
@@ -89,20 +79,6 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release, OrlyDbComQu
 	protected String getDefaultQueryPrefix()
 	{
 		return "q=";
-	}
-
-	@Override
-	protected URL buildQueryUrlFromParameterBean(OrlyDbComQueryParameters parameterBean) throws UnsupportedEncodingException, MalformedURLException,
-			URISyntaxException, NullPointerException
-	{
-		Objects.requireNonNull(parameterBean, "parameterBean");
-		StringBuilder path = new StringBuilder("/");
-		if (!StringUtils.isBlank(parameterBean.getSection()))
-		{
-			path.append("s/");
-			path.append(parameterBean.getSection());
-		}
-		return buildQueryUrl(path.toString(), getDefaultQueryPrefix(), parameterBean.getQuery());
 	}
 
 	// Querying
