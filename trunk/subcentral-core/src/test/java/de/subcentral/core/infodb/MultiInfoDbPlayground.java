@@ -47,7 +47,7 @@ public class MultiInfoDbPlayground
 		}
 		executor.shutdown();
 
-		List<Release> reducedRlss = Releases.distinctReleasesByName(results);
+		List<Release> reducedRlss = Releases.distinctByName(results.values());
 		reducedRlss.stream().forEach(e -> System.out.println(e));
 	}
 }
