@@ -1,15 +1,13 @@
 package de.subcentral.core.model.release;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.infodb.InfoDb;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
@@ -133,28 +131,26 @@ public class Releases
 		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, rls.getTags())) : ImmutableList.of();
 	}
 
-	public static List<Release> distinctReleasesByName(ListMultimap<InfoDb<Release, ?>, Release> queryResults)
+	public static List<Release> distinctByName(Collection<Release> releases)
 	{
-		if (queryResults.isEmpty())
+		if (releases.isEmpty())
 		{
 			return ImmutableList.of();
 		}
 		List<Release> reducedList = new ArrayList<>();
-		for (Map.Entry<InfoDb<Release, ?>, Release> foundEntry : queryResults.entries())
+		for (Release rls : releases)
 		{
-			// System.out.println(foundEntry);
-			Release foundRls = foundEntry.getValue();
 			boolean notListed = true;
 			for (Release reducedEntry : reducedList)
 			{
-				if (reducedEntry.equalsByName(foundRls))
+				if (reducedEntry.equalsByName(rls))
 				{
 					notListed = false;
 				}
 			}
 			if (notListed)
 			{
-				reducedList.add(foundRls);
+				reducedList.add(rls);
 			}
 		}
 		return reducedList;
