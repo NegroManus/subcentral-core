@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -18,15 +19,21 @@ public class Releases
 {
 	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
+		return filter(rlss, media, containedTags, group, mediaNamingService, ImmutableMap.of());
+	}
+
+	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService,
+			Map<String, Object> namingParameters)
+	{
 		if (rlss.isEmpty())
 		{
 			return ImmutableList.of();
 		}
-		String requiredMediaName = mediaNamingService.name(media, ImmutableMap.of());
+		String requiredMediaName = mediaNamingService.name(media, namingParameters);
 		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
 		for (Release rls : rlss)
 		{
-			if (Releases.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService))
+			if (Releases.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService, namingParameters))
 			{
 				filteredRlss.add(rls);
 			}
@@ -36,18 +43,24 @@ public class Releases
 
 	public static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
+		return filter(rls, media, containedTags, group, mediaNamingService, ImmutableMap.of());
+	}
+
+	public static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService,
+			Map<String, Object> namingParameters)
+	{
 		if (rls == null)
 		{
 			return false;
 		}
 		String requiredMediaName = mediaNamingService.name(media, ImmutableMap.of());
-		return filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService);
+		return filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService, namingParameters);
 	}
 
 	private static boolean filterInternal(Release rls, String requiredMediaName, List<Tag> containedTags, Group group,
-			NamingService mediaNamingService)
+			NamingService mediaNamingService, Map<String, Object> namingParams)
 	{
-		String actualMediaName = mediaNamingService.name(rls.getMedia(), ImmutableMap.of());
+		String actualMediaName = mediaNamingService.name(rls.getMedia(), namingParams);
 		return requiredMediaName.equalsIgnoreCase(actualMediaName) && (group == null ? true : group.equals(rls.getGroup()))
 				&& (rls.getTags().containsAll(containedTags));
 	}
