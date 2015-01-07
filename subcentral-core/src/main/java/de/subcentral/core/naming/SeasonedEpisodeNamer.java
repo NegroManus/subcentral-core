@@ -124,10 +124,8 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	@Override
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
-		// read naming parameters
+		// read general naming parameters that are needed in any case
 		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
-		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
-		boolean alwaysIncludeSeasonTitle = Namings.readParameter(params, PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.class, Boolean.FALSE);
 		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
 				PARAM_ALWAYS_INCLUDE_TITLE,
 				Boolean.class,
@@ -136,16 +134,19 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		// add series
 		if (includeSeries && epi.getSeries() != null)
 		{
-			b.appendIfNotNull(Episode.PROP_SERIES, epi.getSeries().getName());
+			boolean useSeriesTitle = Namings.readParameter(params, PARAM_USE_SERIES_TITLE, Boolean.class, PARAM_USE_SERIES_TITLE_DEFAULT);
+			b.appendIfNotNull(Episode.PROP_SERIES, useSeriesTitle ? epi.getSeries().getTitleOrName() : epi.getSeries().getName());
 		}
 
 		// add season
+		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
 		if (includeSeason && epi.isPartOfSeason())
 		{
 			Season season = epi.getSeason();
 			if (season.isNumbered())
 			{
 				b.append(Season.PROP_NUMBER, season.getNumber());
+				boolean alwaysIncludeSeasonTitle = Namings.readParameter(params, PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.class, Boolean.FALSE);
 				b.appendIf(Season.PROP_TITLE, season.getTitle(), alwaysIncludeSeasonTitle && season.isTitled());
 			}
 			else
