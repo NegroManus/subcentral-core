@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -30,7 +31,7 @@ public class CompatibilityService
 		this.compatibilities.addAll(compatibilities);
 	}
 
-	public Map<Release, Compatibility> findCompatibles(Release rls, Collection<Release> existingRlss)
+	public Map<Release, CompatibilityInfo> findCompatibles(Release rls, Collection<Release> existingRlss)
 	{
 		if (rls == null)
 		{
@@ -38,7 +39,7 @@ public class CompatibilityService
 		}
 
 		// Do not use ImmutableMap.Builder here, as it has no putIfAbsent() method
-		Map<Release, Compatibility> allCompatibles = new HashMap<>(4);
+		Map<Release, CompatibilityInfo> allCompatibles = new HashMap<>(4);
 
 		Queue<Release> rlssToCheck = new ArrayDeque<>(4);
 		rlssToCheck.add(rls);
@@ -54,7 +55,7 @@ public class CompatibilityService
 					if (!rls.equals(compatible))
 					{
 						// Only add the compatible Release if it was not found before
-						Compatibility previousValue = allCompatibles.putIfAbsent(compatible, c);
+						CompatibilityInfo previousValue = allCompatibles.putIfAbsent(compatible, new CompatibilityInfo(rlsToCheck, c));
 						// If previousValue == null, the compatible is new.
 						// Then it should be checked for compatibilities as well
 						if (previousValue == null)
@@ -66,5 +67,37 @@ public class CompatibilityService
 			}
 		}
 		return ImmutableMap.copyOf(allCompatibles);
+	}
+
+	public static class CompatibilityInfo
+	{
+		private final Release		compatibleTo;
+		private final Compatibility	compatibility;
+
+		public CompatibilityInfo(Release compatibleTo, Compatibility compatibility)
+		{
+			this.compatibleTo = compatibleTo;
+			this.compatibility = compatibility;
+		}
+
+		public Release getCompatibleTo()
+		{
+			return compatibleTo;
+		}
+
+		public Compatibility getCompatibility()
+		{
+			return compatibility;
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(CompatibilityInfo.class)
+					.omitNullValues()
+					.add("compatibleTo", compatibleTo)
+					.add("compatibility", compatibility)
+					.toString();
+		}
 	}
 }

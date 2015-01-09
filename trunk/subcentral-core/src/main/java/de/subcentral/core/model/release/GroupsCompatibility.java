@@ -218,4 +218,45 @@ public class GroupsCompatibility implements Compatibility
 				.add("bidirectional", bidirectional)
 				.toString();
 	}
+
+	public String toShortString()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (sourceTags != null)
+		{
+			sb.append(sourceTags);
+		}
+		if (sourceGroup != null)
+		{
+			if (sourceTags != null)
+			{
+				sb.append('.');
+			}
+			sb.append(sourceGroup);
+		}
+		if (bidirectional)
+		{
+			sb.append(" <-> ");
+		}
+		else
+		{
+			sb.append(" -> ");
+		}
+		if (compatibleTags != null)
+		{
+			sb.append(compatibleTags);
+		}
+		if (compatibleGroup != null)
+		{
+			if (compatibleTags != null)
+			{
+				sb.append('.');
+			}
+			sb.append(compatibleGroup);
+		}
+		sb.append(" [");
+		sb.append(condition);
+		sb.append(']');
+		return sb.toString();
+	}
 }

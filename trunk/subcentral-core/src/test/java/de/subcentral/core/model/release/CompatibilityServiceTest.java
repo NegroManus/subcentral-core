@@ -11,6 +11,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.model.release.GroupsCompatibility.Condition;
 
 public class CompatibilityServiceTest
@@ -38,7 +39,7 @@ public class CompatibilityServiceTest
 		expectedCompatibleRlss.add(existingRlss.get(2)); // DIMENSION
 		expectedCompatibleRlss.add(Release.create(epi, "AFG", "HDTV", "XviD")); // AFG
 
-		Map<Release, Compatibility> compatibleRlss = compService.findCompatibles(sourceRls, existingRlss);
+		Map<Release, CompatibilityInfo> compatibleRlss = compService.findCompatibles(sourceRls, existingRlss);
 		compatibleRlss.entrySet().forEach(e -> System.out.println(e));
 
 		assertEquals(expectedCompatibleRlss, compatibleRlss.keySet());
