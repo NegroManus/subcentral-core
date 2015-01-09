@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.infodb.InfoDb;
 import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.release.Compatibility;
 import de.subcentral.core.model.release.CompatibilityService;
+import de.subcentral.core.model.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.GroupsCompatibility;
 import de.subcentral.core.model.release.GroupsCompatibility.Condition;
@@ -204,10 +204,10 @@ public class ParsingPlayground
 							filteredReleases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
-							Map<Release, Compatibility> compatibleRlss = new HashMap<>();
+							Map<Release, CompatibilityInfo> compatibleRlss = new HashMap<>();
 							for (Release rls : filteredReleases)
 							{
-								Map<Release, Compatibility> rlss = compService.findCompatibles(rls, releases);
+								Map<Release, CompatibilityInfo> rlss = compService.findCompatibles(rls, releases);
 								compatibleRlss.putAll(rlss);
 							}
 							TimeUtil.printDurationMillis("Build compatibilities", start);
