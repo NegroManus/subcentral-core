@@ -17,6 +17,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Media;
+import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
@@ -213,7 +215,39 @@ public class TheScene
 		multiEpiRlsParser.setMatchers(multiEpiRlsMatchers.build());
 		multiEpiRlsParser.setPropFromStringService(pps);
 
-		return ImmutableListMultimap.of(Release.class, epiRlsParser, Release.class, multiEpiRlsParser);
+		// MOVIE
+		ReleaseParser movieRlsParser = new ReleaseParser(Parsings.getDefaultSingletonListRegularAvMediaMapper());
+		ImmutableMap<SimplePropDescriptor, String> moviePreDefMatches = ImmutableMap.of(RegularAvMedia.PROP_MEDIA_TYPE,
+				Media.MEDIA_TYPE_MOVIE,
+				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,
+				Media.MEDIA_CONTENT_TYPE_VIDEO);
+
+		// Movie.Name.2015.All.Tags-Group
+		Pattern p601 = Pattern.compile("(.*?)\\.(\\d{4})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps601 = ImmutableMap.builder();
+		grps601.put(0, Release.PROP_NAME);
+		grps601.put(1, RegularAvMedia.PROP_NAME);
+		grps601.put(2, RegularAvMedia.PROP_DATE);
+		grps601.put(3, Release.PROP_TAGS);
+		grps601.put(4, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher601 = new MappingMatcher<SimplePropDescriptor>(p601, grps601.build(), moviePreDefMatches);
+
+		// Movie.Name.All.Tags-Group
+		Pattern p602 = Pattern.compile("(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps602 = ImmutableMap.builder();
+		grps602.put(0, Release.PROP_NAME);
+		grps602.put(1, RegularAvMedia.PROP_NAME);
+		grps602.put(2, Release.PROP_TAGS);
+		grps602.put(3, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher602 = new MappingMatcher<SimplePropDescriptor>(p602, grps602.build(), moviePreDefMatches);
+
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieRlsMatchers = ImmutableList.builder();
+		movieRlsMatchers.add(matcher601);
+		movieRlsMatchers.add(matcher602);
+		movieRlsParser.setMatchers(movieRlsMatchers.build());
+		movieRlsParser.setPropFromStringService(pps);
+
+		return ImmutableListMultimap.of(Release.class, epiRlsParser, Release.class, multiEpiRlsParser, Release.class, movieRlsParser);
 	}
 
 	public static String buildFirstTagPattern()
