@@ -15,8 +15,8 @@ public interface NamedMedia extends Media
 	 * <p>
 	 * Examples
 	 * <ul>
-	 * <li>name: "The Office (UK)" -> title: "The Office"</li>
-	 * <li>name: "Titanic (2002)" -> title: "Titanic".</li>
+	 * <li>name: "The Office (UK)" -&gt; title: "The Office"</li>
+	 * <li>name: "Titanic (2002)" -&gt; title: "Titanic".</li>
 	 * </ul>
 	 * </p>
 	 * 
