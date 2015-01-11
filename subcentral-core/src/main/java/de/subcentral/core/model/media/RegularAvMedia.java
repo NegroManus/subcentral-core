@@ -75,7 +75,7 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 				.add("date", date)
 				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
 				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
-				.add("runningTime", runningTime)
+				.add("runningTime", Models.nullIfZero(runningTime))
 				.add("genres", Models.nullIfEmpty(genres))
 				.add("description", description)
 				.add("coverLinks", Models.nullIfEmpty(coverLinks))
