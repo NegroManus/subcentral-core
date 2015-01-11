@@ -96,7 +96,6 @@ public abstract class AbstractHttpInfoDb<R> extends AbstractInfoDb<R>
 	 * @throws URISyntaxException
 	 * @throws MalformedURLException
 	 * @throws UnsupportedEncodingException
-	 * @throws Exception
 	 */
 	protected URL buildDefaultQueryUrl(String queryString) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
 	{
@@ -115,7 +114,6 @@ public abstract class AbstractHttpInfoDb<R> extends AbstractInfoDb<R>
 	 * @throws URISyntaxException
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
-	 * @throws Exception
 	 */
 	protected URL buildQueryUrl(String path, String queryPrefix, String queryString) throws UnsupportedEncodingException, URISyntaxException,
 			MalformedURLException

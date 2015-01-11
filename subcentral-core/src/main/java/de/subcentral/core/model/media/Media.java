@@ -90,8 +90,8 @@ public interface Media extends Work
 
 	// Property accessors
 	/**
-	 * Normally a media only has a {@link #getName() name} which is in fact its title. The title is only set if it differs from the name (like name:
-	 * "The Office (UK)", title: "The Office").<br/>
+	 * Normally a media only has a {@link NamedMedia#getName() name} which is in fact its title. The title is only set if it differs from the name
+	 * (like name: "The Office (UK)", title: "The Office").<br>
 	 * In case of numbered Media, like an {@link Episode} or a Song, the title may be optional.
 	 * 
 	 * @return the title of this media
@@ -122,8 +122,8 @@ public interface Media extends Work
 
 	/**
 	 * 
-	 * @return the language codes of the original languages of this media. Typically, not available on medias of {@link Media#CONTENT_TYPE_IMAGE},
-	 *         except if there is text in the picture
+	 * @return the language codes of the original languages of this media. Typically, not available on medias of
+	 *         {@link Media#MEDIA_CONTENT_TYPE_IMAGE}, except if there is text in the picture
 	 */
 	public List<String> getOriginalLanguages();
 
