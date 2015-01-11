@@ -255,7 +255,7 @@ public class TheScene
 		StringBuilder knownTag = new StringBuilder();
 		knownTag.append("(?:REAL|PROPER|REPACK|DiRFIX|");
 		knownTag.append(Joiner.on('|').join(getAllLanguageTags()));
-		knownTag.append("|3D|720p|1080p|HDTV|PDTV|WS|HR|WebHD|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
+		knownTag.append("|3D|720p|1080p|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
 		knownTag.append("|iNTERNAL)");
 
 		StringBuilder tagPattern = new StringBuilder();
