@@ -43,7 +43,8 @@ public class TheScene
 
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
-		String firstTagPattern = buildFirstTagPattern();
+		String knownTagPattern = buildKnownTagPattern();
+		String firstTagPattern = buildFirstTagPattern(knownTagPattern);
 
 		SimplePropFromStringService pps = new SimplePropFromStringService();
 		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
@@ -222,51 +223,68 @@ public class TheScene
 				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,
 				Media.MEDIA_CONTENT_TYPE_VIDEO);
 
-		// Movie.Name.2015.All.Tags-Group
-		Pattern p601 = Pattern.compile("(.*?)\\.(\\d{4})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		// Movie.Name.FirstTag.2015.Other.Tags-Group
+		// Movie.Name.FirstTag.OtherTags.2015.Other.Tags-Group
+		Pattern p601 = Pattern.compile("(.*?)\\.(" + firstTagPattern + ".*?)\\.(\\d{4})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps601 = ImmutableMap.builder();
 		grps601.put(0, Release.PROP_NAME);
 		grps601.put(1, RegularAvMedia.PROP_NAME);
-		grps601.put(2, RegularAvMedia.PROP_DATE);
-		grps601.put(3, Release.PROP_TAGS);
-		grps601.put(4, Release.PROP_GROUP);
+		grps601.put(2, Release.PROP_TAGS);
+		grps601.put(3, RegularAvMedia.PROP_DATE);
+		grps601.put(4, Release.PROP_TAGS);
+		grps601.put(5, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher601 = new MappingMatcher<SimplePropDescriptor>(p601, grps601.build(), moviePreDefMatches);
 
-		// Movie.Name.All.Tags-Group
-		Pattern p602 = Pattern.compile("(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		// Movie.Name.2015.All.Tags-Group
+		Pattern p602 = Pattern.compile("(.*?)\\.(\\d{4})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps602 = ImmutableMap.builder();
 		grps602.put(0, Release.PROP_NAME);
 		grps602.put(1, RegularAvMedia.PROP_NAME);
-		grps602.put(2, Release.PROP_TAGS);
-		grps602.put(3, Release.PROP_GROUP);
+		grps602.put(2, RegularAvMedia.PROP_DATE);
+		grps602.put(3, Release.PROP_TAGS);
+		grps602.put(4, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher602 = new MappingMatcher<SimplePropDescriptor>(p602, grps602.build(), moviePreDefMatches);
+
+		// Movie.Name.All.Tags-Group
+		Pattern p603 = Pattern.compile("(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps603 = ImmutableMap.builder();
+		grps603.put(0, Release.PROP_NAME);
+		grps603.put(1, RegularAvMedia.PROP_NAME);
+		grps603.put(2, Release.PROP_TAGS);
+		grps603.put(3, Release.PROP_GROUP);
+		MappingMatcher<SimplePropDescriptor> matcher603 = new MappingMatcher<SimplePropDescriptor>(p603, grps603.build(), moviePreDefMatches);
 
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieRlsMatchers = ImmutableList.builder();
 		movieRlsMatchers.add(matcher601);
 		movieRlsMatchers.add(matcher602);
+		movieRlsMatchers.add(matcher603);
 		movieRlsParser.setMatchers(movieRlsMatchers.build());
 		movieRlsParser.setPropFromStringService(pps);
 
 		return ImmutableListMultimap.of(Release.class, epiRlsParser, Release.class, multiEpiRlsParser, Release.class, movieRlsParser);
 	}
 
-	public static String buildFirstTagPattern()
+	public static String buildKnownTagPattern()
 	{
-		StringBuilder knownTag = new StringBuilder();
-		knownTag.append("(?:REAL|PROPER|REPACK|DiRFIX|");
-		knownTag.append(Joiner.on('|').join(getAllLanguageTags()));
-		knownTag.append("|3D|720p|1080p|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
-		knownTag.append("|iNTERNAL)");
+		StringBuilder sb = new StringBuilder();
+		sb.append("(?:REAL|PROPER|REPACK|DiRFIX|");
+		sb.append(Joiner.on('|').join(getAllLanguageTags()));
+		sb.append("|3D|720p|1080p|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
+		sb.append("|iNTERNAL)");
+		return sb.toString();
+	}
 
+	public static String buildFirstTagPattern(String knownTagPattern)
+	{
 		StringBuilder tagPattern = new StringBuilder();
 		// add a negative look-behind for a tag
 		// so that the pattern does not match releases without a title
 		tagPattern.append("(?<!");
-		tagPattern.append(knownTag);
+		tagPattern.append(knownTagPattern);
 		// the dot after the tag
 		tagPattern.append("\\.)");
 		// first recognized tag
-		tagPattern.append(knownTag);
+		tagPattern.append(knownTagPattern);
 
 		return tagPattern.toString();
 	}
