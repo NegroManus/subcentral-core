@@ -1,6 +1,7 @@
 package de.subcentral.support.addic7edcom;
 
 import java.time.Year;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +13,8 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.support.addic7edcom.Addic7edCom;
+import de.subcentral.core.standardizing.StandardizingChange;
+import de.subcentral.core.standardizing.Standardizings;
 
 public class Addic7edParsingTest
 {
@@ -60,7 +62,8 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot");
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
-		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
@@ -198,7 +201,8 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
-		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
@@ -212,7 +216,8 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
-		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
@@ -226,7 +231,8 @@ public class Addic7edParsingTest
 
 		Episode epi = Episode.createSeasonedEpisode("10 Things I Hate About You", 1, 1, "Pilot... And Another Pilot");
 		Release rls = Release.create(epi, null, "720p", "WEB-DL");
-		Subtitle sub = new Subtitle(epi, "English", Tag.list("HI"));
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setHearingImpaired(true);
 		sub.setSource("Addic7ed.com");
 		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
 
@@ -268,6 +274,9 @@ public class Addic7edParsingTest
 	private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
 	{
 		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);
+		List<StandardizingChange> changes = Standardizings.getDefaultStandardizingService().standardize(parsed);
+		changes.stream().forEach(c -> System.out.println(c));
+
 		System.out.println("Results for test: " + testName);
 		System.out.println("Expected: " + expected);
 		System.out.println("Parsed  : " + parsed);

@@ -17,8 +17,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.model.media.Media;
 import de.subcentral.core.model.media.MultiEpisodeHelper;
-import de.subcentral.core.model.media.NamedMedia;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
@@ -39,7 +39,7 @@ public class NamingStandards
 
 	// NamingService has to be instantiated first because it is referenced in some namers
 	private static final ConditionalNamingService	NAMING_SERVICE			= new ConditionalNamingService(DEFAULT_DOMAIN);
-	private static NamedMediaNamer					NAMED_MEDIA_NAMER;
+	private static MediaNamer						MEDIA_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
 	private static SeasonedEpisodeNamer				SEASONED_EPISODE_NAMER;
@@ -116,7 +116,7 @@ public class NamingStandards
 		SEASON_NAMER = new SeasonNamer(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, ImmutableSet.of(), null);
 
 		// MediaNamer
-		NAMED_MEDIA_NAMER = new NamedMediaNamer(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, ImmutableSet.of(), null);
+		MEDIA_NAMER = new MediaNamer(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, ImmutableSet.of(), null);
 
 		// ReleaseNamer
 		ImmutableSet<Separation> rlsSeps = ImmutableSet.of(Separation.before(Release.PROP_GROUP, "-"));
@@ -136,7 +136,7 @@ public class NamingStandards
 		namers.add(ConditionalNamer.create(EPISODE_NAMER, Episode.class));
 		namers.add(ConditionalNamer.create(SERIES_NAMER, Series.class));
 		namers.add(ConditionalNamer.create(SEASON_NAMER, Season.class));
-		namers.add(ConditionalNamer.create(NAMED_MEDIA_NAMER, NamedMedia.class));
+		namers.add(ConditionalNamer.create(MEDIA_NAMER, Media.class));
 		namers.add(ConditionalNamer.create(MULTI_EPISODE_NAMER, MultiEpisodeHelper::isMultiEpisode));
 		namers.add(ConditionalNamer.create(SUBTITLE_NAMER, Subtitle.class));
 		NAMING_SERVICE.getNamers().addAll(namers);
@@ -177,9 +177,9 @@ public class NamingStandards
 		return NAMING_SERVICE;
 	}
 
-	public static Namer<NamedMedia> getDefaultNamedMediaNamer()
+	public static Namer<Media> getDefaultMediaNamer()
 	{
-		return NAMED_MEDIA_NAMER;
+		return MEDIA_NAMER;
 	}
 
 	public static Namer<Episode> getDefaultEpisodeNamer()
