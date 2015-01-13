@@ -122,13 +122,24 @@ public class Releases
 					iter.set(new Tag("DD5.1"));
 					changed = true;
 				}
-				// H, 264 -> H.264
-				else if ("H".equals(lastTag.getName()) && "264".equals(tag.getName()))
+				else if ("H".equals(lastTag.getName()))
 				{
-					iter.remove();
-					iter.previous();
-					iter.set(new Tag("H.264"));
-					changed = true;
+					// H, 264 -> H.264
+					if ("264".equals(tag.getName()))
+					{
+						iter.remove();
+						iter.previous();
+						iter.set(new Tag("H.264"));
+						changed = true;
+					}
+					// H, 265 -> H.265
+					else if ("H".equals(lastTag.getName()) && "265".equals(tag.getName()))
+					{
+						iter.remove();
+						iter.previous();
+						iter.set(new Tag("H.265"));
+						changed = true;
+					}
 				}
 				// WEB, DL -> WEB-DL
 				else if ("WEB".equals(lastTag.getName()) && "DL".equals(tag.getName()))
