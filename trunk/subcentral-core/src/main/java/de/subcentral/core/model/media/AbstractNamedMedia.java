@@ -1,6 +1,6 @@
 package de.subcentral.core.model.media;
 
-public abstract class AbstractNamedMedia extends AbstractMedia implements NamedMedia
+public abstract class AbstractNamedMedia extends AbstractMedia
 {
 	protected String	name;
 
