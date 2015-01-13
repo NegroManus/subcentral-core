@@ -133,7 +133,7 @@ public class Releases
 						changed = true;
 					}
 					// H, 265 -> H.265
-					else if ("H".equals(lastTag.getName()) && "265".equals(tag.getName()))
+					else if ("265".equals(tag.getName()))
 					{
 						iter.remove();
 						iter.previous();
