@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Series;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.util.PatternReplacer;
 
 public class StandardizingTest
 {
@@ -42,8 +41,7 @@ public class StandardizingTest
 			Boolean newVal = Boolean.valueOf(e.isSpecial());
 			return ImmutableList.of(new StandardizingChange(e, Episode.PROP_SPECIAL.getPropName(), oldVal, newVal));
 		});
-		service.registerStandardizer(Series.class,
-				new SeriesNameStandardizer(new PatternReplacer(ImmutableMap.<Pattern, String> of(Pattern.compile("Psych"), "Psych (2001)"))));
+		service.registerStandardizer(Series.class, new SeriesNameAndTitleStandardizer(Pattern.compile("Psych"), "Psych (2001)", "Psych"));
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 2, 2);
 		Episode expectedEpi = Episode.createSeasonedEpisode("Psych (2001)", 2, 2);

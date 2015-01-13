@@ -39,10 +39,9 @@ import de.subcentral.core.naming.NamingStandards;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.standardizing.ClassBasedStandardizingService;
-import de.subcentral.core.standardizing.SeriesNameStandardizer;
+import de.subcentral.core.standardizing.SeriesNameAndTitleStandardizer;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.standardizing.Standardizings;
-import de.subcentral.core.util.PatternReplacer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -124,18 +123,18 @@ public class ParsingPlayground
 
 		final ClassBasedStandardizingService parsedToInfoDbStdzService = new ClassBasedStandardizingService("after parsing");
 		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
-		ImmutableMap.Builder<Pattern, String> parsedToQuerySeriesNameReplacements = ImmutableMap.builder();
-		parsedToQuerySeriesNameReplacements.put(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)");
-		parsedToQuerySeriesNameReplacements.put(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE), "Last Man Standing (US)");
+		parsedToInfoDbStdzService.registerStandardizer(Series.class, new SeriesNameAndTitleStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE),
+				"Scandal (US)",
+				"Scandal"));
 		parsedToInfoDbStdzService.registerStandardizer(Series.class,
-				new SeriesNameStandardizer(new PatternReplacer(parsedToQuerySeriesNameReplacements.build())));
+				new SeriesNameAndTitleStandardizer(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE),
+						"Last Man Standing (US)",
+						"Last Man Standing"));
 
 		final ClassBasedStandardizingService infoDbToCustomStdzService = new ClassBasedStandardizingService("after infoDb");
 		Standardizings.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
-		ImmutableMap.Builder<Pattern, String> parsedToCustomSeriesNameReplacements = ImmutableMap.builder();
-		parsedToCustomSeriesNameReplacements.put(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife");
 		infoDbToCustomStdzService.registerStandardizer(Series.class,
-				new SeriesNameStandardizer(new PatternReplacer(parsedToCustomSeriesNameReplacements.build())));
+				new SeriesNameAndTitleStandardizer(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", null));
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
