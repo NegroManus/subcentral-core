@@ -2,6 +2,7 @@ package de.subcentral.core.model.subtitle;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +54,8 @@ public class Subtitles
 		{
 			return ImmutableList.of();
 		}
-		boolean changed = false;
+		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
+		boolean tagsChanged = false;
 		List<Tag> oldTags = ImmutableList.copyOf(sub.getTags());
 
 		Pattern pVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE);
@@ -64,19 +66,35 @@ public class Subtitles
 			Tag tag = iter.next();
 			if (Subtitle.TAG_HEARING_IMPAIRED.equals(tag))
 			{
+				boolean oldHIValue = sub.isHearingImpaired();
 				sub.setHearingImpaired(true);
+				if (oldHIValue != true)
+				{
+					changes.add(new StandardizingChange(sub, Subtitle.PROP_HEARING_IMPAIRED.getPropName(), oldHIValue, true));
+				}
+
 				iter.remove();
-				changed = true;
+				tagsChanged = true;
 			}
 			else if (mVersion.reset(tag.getName()).matches())
 			{
-				sub.setVersion(mVersion.group(1));
+				String oldVersion = sub.getVersion();
+				String newVersion = mVersion.group(1);
+				sub.setVersion(newVersion);
+				if (!Objects.equals(oldVersion, newVersion))
+				{
+					changes.add(new StandardizingChange(sub, Subtitle.PROP_VERSION.getPropName(), oldVersion, newVersion));
+				}
+
 				iter.remove();
-				changed = true;
+				tagsChanged = true;
 			}
 		}
-		return changed ? ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_TAGS.getPropName(), oldTags, sub.getTags()))
-				: ImmutableList.of();
+		if (tagsChanged)
+		{
+			changes.add(new StandardizingChange(sub, Subtitle.PROP_TAGS.getPropName(), oldTags, sub.getTags()));
+		}
+		return changes.build();
 	}
 
 	public static boolean containsHearingImpairedTag(List<Tag> tags)
