@@ -269,7 +269,7 @@ public class TheScene
 		StringBuilder sb = new StringBuilder();
 		sb.append("(?:REAL|PROPER|REPACK|DiRFIX|");
 		sb.append(Joiner.on('|').join(getAllLanguageTags()));
-		sb.append("|3D|720p|1080p|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
+		sb.append("|3D|720p|1080i|1080p|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
 		sb.append("|iNTERNAL)");
 		return sb.toString();
 	}
