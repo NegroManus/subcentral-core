@@ -27,9 +27,9 @@ public class PropSequenceNameBuilder
 		this.finalFormatter = finalFormatter;
 	}
 
-	public PropSequenceNameBuilder appendAll(SimplePropDescriptor propDescriptor, Iterable<?> propertyIterable)
+	public PropSequenceNameBuilder appendAll(SimplePropDescriptor propDescriptor, Iterable<?> iterableProperty)
 	{
-		for (Object prop : propertyIterable)
+		for (Object prop : iterableProperty)
 		{
 			append(propDescriptor, prop);
 		}
