@@ -25,6 +25,7 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.Subtitle.ForeignParts;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.PatternReplacer;
 import de.subcentral.core.util.Separation;
@@ -130,16 +131,16 @@ public class NamingStandards
 		SUBTITLE_ADJUSTMENT_NAMER = new SubtitleAdjustmentNamer(PROP_TO_STRING_SERVICE, ".", subtitleSeps, RELEASE_NAME_FORMATTER, RELEASE_NAMER);
 
 		// Add namers to the NamingService
-		List<ConditionalNamer<?>> namers = new ArrayList<>(8);
-		namers.add(ConditionalNamer.create(SUBTITLE_ADJUSTMENT_NAMER, SubtitleAdjustment.class));
-		namers.add(ConditionalNamer.create(RELEASE_NAMER, Release.class));
-		namers.add(ConditionalNamer.create(EPISODE_NAMER, Episode.class));
-		namers.add(ConditionalNamer.create(SERIES_NAMER, Series.class));
-		namers.add(ConditionalNamer.create(SEASON_NAMER, Season.class));
-		namers.add(ConditionalNamer.create(MEDIA_NAMER, Media.class));
-		namers.add(ConditionalNamer.create(MULTI_EPISODE_NAMER, MultiEpisodeHelper::isMultiEpisode));
-		namers.add(ConditionalNamer.create(SUBTITLE_NAMER, Subtitle.class));
-		NAMING_SERVICE.getNamers().addAll(namers);
+		List<ConditionalNamingEntry<?>> namers = new ArrayList<>(8);
+		namers.add(ConditionalNamingEntry.of(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER));
+		namers.add(ConditionalNamingEntry.of(Release.class, RELEASE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Episode.class, EPISODE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Series.class, SERIES_NAMER));
+		namers.add(ConditionalNamingEntry.of(Season.class, SEASON_NAMER));
+		namers.add(ConditionalNamingEntry.of(Media.class, MEDIA_NAMER));
+		namers.add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Subtitle.class, SUBTITLE_NAMER));
+		NAMING_SERVICE.getConditionalNamingEntries().addAll(namers);
 	}
 
 	private static Function<String, String> initReleaseMediaFormatter()

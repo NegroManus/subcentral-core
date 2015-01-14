@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 
 import de.subcentral.core.util.Separation;
 
@@ -13,9 +14,9 @@ import de.subcentral.core.util.Separation;
  */
 public class ConditionalNamingService implements NamingService
 {
-	private final String					domain;
-	private final List<ConditionalNamer<?>>	namers				= new CopyOnWriteArrayList<>();
-	private final AtomicReference<String>	defaultSeparator	= new AtomicReference<>(Separation.DEFAULT_SEPARATOR);
+	private final String							domain;
+	private final List<ConditionalNamingEntry<?>>	entries				= new CopyOnWriteArrayList<>();
+	private final AtomicReference<String>			defaultSeparator	= new AtomicReference<>(Separation.DEFAULT_SEPARATOR);
 
 	public ConditionalNamingService(String domain)
 	{
@@ -32,16 +33,49 @@ public class ConditionalNamingService implements NamingService
 	 * Important:
 	 * <ul>
 	 * <li>The order of the elements is the order the conditions are tested. So more restricting conditions must be placed before more general
-	 * conditions. The first ConditionalNamer which condition returns true will be taken.</li>
+	 * conditions. The first ConditionalNamingEntry which condition returns true will be taken.</li>
 	 * <li>The order should also consider how often specific types are named. The types that are named most frequently should be at the top of the
 	 * list.</li>
 	 * </ul>
 	 * 
 	 * @return
 	 */
-	public List<ConditionalNamer<?>> getNamers()
+	public List<ConditionalNamingEntry<?>> getConditionalNamingEntries()
 	{
-		return namers;
+		return entries;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <V> ConditionalNamingEntry<V> getEntryFor(Namer<V> namer)
+	{
+		if (namer == null)
+		{
+			return null;
+		}
+		for (ConditionalNamingEntry<?> e : entries)
+		{
+			if (e.getNamer().equals(namer))
+			{
+				return (ConditionalNamingEntry<V>) e;
+			}
+		}
+		return null;
+	}
+
+	public ConditionalNamingEntry<?> getEntryFor(Predicate<Object> condition)
+	{
+		if (condition == null)
+		{
+			return null;
+		}
+		for (ConditionalNamingEntry<?> e : entries)
+		{
+			if (e.getCondition().equals(condition))
+			{
+				return e;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -52,7 +86,7 @@ public class ConditionalNamingService implements NamingService
 
 	public void setDefaultSeparator(String defaultSeparator)
 	{
-		this.defaultSeparator.set(Objects.requireNonNull(defaultSeparator, "defaultSeparator"));
+		this.defaultSeparator.set(defaultSeparator != null ? defaultSeparator : Separation.DEFAULT_SEPARATOR);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -62,11 +96,11 @@ public class ConditionalNamingService implements NamingService
 		{
 			return null;
 		}
-		for (ConditionalNamer<?> namer : namers)
+		for (ConditionalNamingEntry<?> e : entries)
 		{
-			if (namer.test(candidate))
+			if (e.test(candidate))
 			{
-				return (Namer<? super T>) namer;
+				return (Namer<? super T>) e.getNamer();
 			}
 		}
 		return null;
@@ -93,6 +127,44 @@ public class ConditionalNamingService implements NamingService
 		{
 			return nameAll((Iterable<?>) candidate, parameters);
 		}
-		throw new NoNamerRegisteredException(candidate, "No ConditionalNamer's condition returned true for the candidate");
+		throw new NoNamerRegisteredException(candidate, "No ConditionalNamingEntry's condition returned true for the candidate");
+	}
+
+	public static class ConditionalNamingEntry<U>
+	{
+		private final Predicate<Object>	condition;
+		private final Namer<U>			namer;
+
+		public static <V> ConditionalNamingEntry<V> of(Class<? extends V> requiredType, Namer<V> namer)
+		{
+			Objects.requireNonNull(requiredType, "requiredType");
+			return new ConditionalNamingEntry<V>(((obj) -> requiredType.isInstance(obj)), namer);
+		}
+
+		public static <V> ConditionalNamingEntry<V> of(Predicate<Object> condition, Namer<V> namer)
+		{
+			return new ConditionalNamingEntry<V>(condition, namer);
+		}
+
+		private ConditionalNamingEntry(Predicate<Object> condition, Namer<U> namer)
+		{
+			this.condition = Objects.requireNonNull(condition, "condition");
+			this.namer = Objects.requireNonNull(namer, "namer");
+		}
+
+		public Predicate<Object> getCondition()
+		{
+			return condition;
+		}
+
+		public Namer<U> getNamer()
+		{
+			return namer;
+		}
+
+		public boolean test(Object obj)
+		{
+			return condition.test(obj);
+		}
 	}
 }
