@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ClassUtils;
 /**
  * {@code Thread-safe}
  *
+ * @deprecated Use {@link ConditionalNamingService} instead.
  */
 public class ClassBasedNamingService implements NamingService
 {
