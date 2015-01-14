@@ -76,7 +76,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 			}
 			else
 			{
-				throw new IllegalArgumentException("media list can only contain Episodes but contains " + episodes);
+				throw new IllegalArgumentException("episode iterable can only contain Episodes but contains " + episodes);
 			}
 		}
 		return me;
