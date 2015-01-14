@@ -55,18 +55,28 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		return false;
 	}
 
-	public static MultiEpisodeHelper of(List<? extends Media> media) throws IllegalArgumentException
+	public static MultiEpisodeHelper of(Iterable<? super Episode> episodes) throws IllegalArgumentException
 	{
-		MultiEpisodeHelper me = new MultiEpisodeHelper(media.size());
-		for (Media m : media)
+		return of(episodes, 2);
+	}
+
+	public static MultiEpisodeHelper of(Collection<? super Episode> episodes) throws IllegalArgumentException
+	{
+		return of(episodes, episodes.size());
+	}
+
+	private static MultiEpisodeHelper of(Iterable<? super Episode> episodes, int expectedSize) throws IllegalArgumentException
+	{
+		MultiEpisodeHelper me = new MultiEpisodeHelper(expectedSize);
+		for (Object e : episodes)
 		{
-			if (m instanceof Episode)
+			if (e instanceof Episode)
 			{
-				me.add((Episode) m);
+				me.add((Episode) e);
 			}
 			else
 			{
-				throw new IllegalArgumentException("media list can only contain Episodes but contains" + media);
+				throw new IllegalArgumentException("media list can only contain Episodes but contains " + episodes);
 			}
 		}
 		return me;
