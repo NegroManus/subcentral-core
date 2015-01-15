@@ -11,7 +11,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class ReleaseParser extends AbstractMappingParser<Release>
 {
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
-	private final Mapper<Release>							releaseMapper	= Parsings.getDefaultReleaseMapper();
+	private final Mapper<Release>							releaseMapper	= ParsingDefaults.getDefaultReleaseMapper();
 
 	public ReleaseParser(Mapper<? extends List<? extends Media>> mediaMapper)
 	{

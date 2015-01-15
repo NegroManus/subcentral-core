@@ -19,10 +19,10 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// add series
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean includeSeries = NamingUtils.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
 		if (includeSeries && epi.getSeries() != null)
 		{
-			boolean useSeriesTitle = Namings.readParameter(params, PARAM_USE_SERIES_TITLE, Boolean.class, PARAM_USE_SERIES_TITLE_DEFAULT);
+			boolean useSeriesTitle = NamingUtils.readParameter(params, PARAM_USE_SERIES_TITLE, Boolean.class, PARAM_USE_SERIES_TITLE_DEFAULT);
 			b.appendIfNotNull(Episode.PROP_SERIES, useSeriesTitle ? epi.getSeries().getTitleOrName() : epi.getSeries().getName());
 		}
 
@@ -30,7 +30,7 @@ public class DatedEpisodeNamer extends AbstractEpisodeNamer
 		if (epi.getDate() != null)
 		{
 			b.append(Episode.PROP_DATE, epi.getDate());
-			boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
+			boolean alwaysIncludeEpisodeTitle = NamingUtils.readParameter(params,
 					PARAM_ALWAYS_INCLUDE_TITLE,
 					Boolean.class,
 					PARAM_ALWAYS_INCLUDE_TITLE_DEFAULT);

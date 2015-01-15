@@ -14,7 +14,7 @@ import de.subcentral.core.model.release.Tag;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.standardizing.StandardizingChange;
-import de.subcentral.core.standardizing.Standardizings;
+import de.subcentral.core.standardizing.StandardizingDefaults;
 
 public class Addic7edParsingTest
 {
@@ -274,7 +274,7 @@ public class Addic7edParsingTest
 	private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
 	{
 		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);
-		List<StandardizingChange> changes = Standardizings.getDefaultStandardizingService().standardize(parsed);
+		List<StandardizingChange> changes = StandardizingDefaults.getDefaultStandardizingService().standardize(parsed);
 		changes.stream().forEach(c -> System.out.println(c));
 
 		System.out.println("Results for test: " + testName);

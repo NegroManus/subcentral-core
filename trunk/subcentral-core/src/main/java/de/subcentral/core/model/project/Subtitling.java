@@ -5,7 +5,7 @@ import java.util.Map;
 
 import de.subcentral.core.model.media.AvMedia;
 import de.subcentral.core.model.media.Contribution;
-import de.subcentral.core.model.media.Contributions;
+import de.subcentral.core.model.media.ContributionUtils;
 import de.subcentral.core.model.media.Work;
 import de.subcentral.core.model.subtitle.Subtitle;
 
@@ -59,17 +59,17 @@ public class Subtitling implements Work
 
 	public double getProgress()
 	{
-		return Contributions.calcProgress(contributions);
+		return ContributionUtils.calcProgress(contributions);
 	}
 
 	public double getProgress(String contributionType)
 	{
-		return Contributions.calcProgress(contributions, contributionType);
+		return ContributionUtils.calcProgress(contributions, contributionType);
 	}
 
 	public Map<String, Float> getProgresses()
 	{
-		return Contributions.calcProgresses(contributions);
+		return ContributionUtils.calcProgresses(contributions);
 	}
 
 	public Subtitle toSubtitle()

@@ -13,10 +13,10 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.model.Models;
+import de.subcentral.core.model.ModelUtils;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.media.Media;
-import de.subcentral.core.naming.Namings;
+import de.subcentral.core.naming.NamingUtils;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -237,7 +237,7 @@ public class Release implements Comparable<Release>
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		this.date = Models.validateTemporalClass(date);
+		this.date = ModelUtils.validateTemporalClass(date);
 	}
 
 	/**
@@ -414,7 +414,7 @@ public class Release implements Comparable<Release>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Namings.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
+				.compare(media, o.media, NamingUtils.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group, Settings.createDefaultOrdering())
 				.result();
@@ -426,15 +426,15 @@ public class Release implements Comparable<Release>
 		return MoreObjects.toStringHelper(Release.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("media", Models.nullIfEmpty(media))
-				.add("tags", Models.nullIfEmpty(tags))
+				.add("media", ModelUtils.nullIfEmpty(media))
+				.add("tags", ModelUtils.nullIfEmpty(tags))
 				.add("group", group)
-				.add("languages", Models.nullIfEmpty(languages))
+				.add("languages", ModelUtils.nullIfEmpty(languages))
 				.add("date", date)
 				.add("section", section)
-				.add("size", Models.nullIfZero(size))
-				.add("fileCount", Models.nullIfZero(fileCount))
-				.add("nukes", Models.nullIfEmpty(nukes))
+				.add("size", ModelUtils.nullIfZero(size))
+				.add("fileCount", ModelUtils.nullIfZero(fileCount))
+				.add("nukes", ModelUtils.nullIfEmpty(nukes))
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
 				.add("furtherInfoLinks", furtherInfoLinks)

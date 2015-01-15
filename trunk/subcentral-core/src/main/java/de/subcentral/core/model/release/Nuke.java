@@ -11,7 +11,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.model.Models;
+import de.subcentral.core.model.ModelUtils;
 import de.subcentral.core.util.TemporalComparator;
 
 public class Nuke implements Comparable<Nuke>
@@ -27,7 +27,7 @@ public class Nuke implements Comparable<Nuke>
 	public Nuke(String reason, Temporal date) throws IllegalArgumentException
 	{
 		this.reason = reason;
-		this.date = Models.validateTemporalClass(date);
+		this.date = ModelUtils.validateTemporalClass(date);
 	}
 
 	public String getReason()

@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.model.Models;
+import de.subcentral.core.model.ModelUtils;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -158,15 +158,15 @@ public class RegularMedia extends AbstractNamedMedia
 				.add("mediaType", mediaType)
 				.add("mediaContentType", mediaContentType)
 				.add("date", date)
-				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
-				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
-				.add("genres", Models.nullIfEmpty(genres))
+				.add("originalLanguages", ModelUtils.nullIfEmpty(originalLanguages))
+				.add("countriesOfOrigin", ModelUtils.nullIfEmpty(countriesOfOrigin))
+				.add("genres", ModelUtils.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverLinks", Models.nullIfEmpty(coverLinks))
+				.add("coverLinks", ModelUtils.nullIfEmpty(coverLinks))
 				.add("contentRating", contentRating)
-				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
-				.add("attributes", Models.nullIfEmpty(attributes))
+				.add("contributions", ModelUtils.nullIfEmpty(contributions))
+				.add("furtherInfoLinks", ModelUtils.nullIfEmpty(furtherInfoLinks))
+				.add("attributes", ModelUtils.nullIfEmpty(attributes))
 				.toString();
 	}
 }

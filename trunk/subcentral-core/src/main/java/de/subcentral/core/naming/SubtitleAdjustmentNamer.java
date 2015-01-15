@@ -42,7 +42,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	public void buildName(PropSequenceNameBuilder b, SubtitleAdjustment adjustment, Map<String, Object> params)
 	{
 		// read useName parameter
-		boolean preferName = Namings.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
+		boolean preferName = NamingUtils.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
 		if (preferName && adjustment.getName() != null)
 		{
 			b.append(SubtitleAdjustment.PROP_NAME, adjustment.getName());
@@ -50,7 +50,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 		}
 
 		// read other naming parameters
-		Release rls = Namings.readParameter(params, PARAM_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
+		Release rls = NamingUtils.readParameter(params, PARAM_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
 		b.appendIfNotBlank(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 
 		Subtitle sub = adjustment.getFirstSubtitle();

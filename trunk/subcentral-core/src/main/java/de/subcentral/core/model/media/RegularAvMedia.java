@@ -2,7 +2,7 @@ package de.subcentral.core.model.media;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.model.Models;
+import de.subcentral.core.model.ModelUtils;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -46,7 +46,7 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 	@Override
 	public void setMediaContentType(String mediaContentType) throws IllegalArgumentException
 	{
-		super.setMediaContentType(Models.validateString(mediaContentType,
+		super.setMediaContentType(ModelUtils.validateString(mediaContentType,
 				"mediaContentType",
 				Media.MEDIA_CONTENT_TYPE_AUDIO,
 				Media.MEDIA_CONTENT_TYPE_VIDEO));
@@ -73,16 +73,16 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 				.add("mediaType", mediaType)
 				.add("mediaContentType", mediaContentType)
 				.add("date", date)
-				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
-				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
-				.add("runningTime", Models.nullIfZero(runningTime))
-				.add("genres", Models.nullIfEmpty(genres))
+				.add("originalLanguages", ModelUtils.nullIfEmpty(originalLanguages))
+				.add("countriesOfOrigin", ModelUtils.nullIfEmpty(countriesOfOrigin))
+				.add("runningTime", ModelUtils.nullIfZero(runningTime))
+				.add("genres", ModelUtils.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverLinks", Models.nullIfEmpty(coverLinks))
+				.add("coverLinks", ModelUtils.nullIfEmpty(coverLinks))
 				.add("contentRating", contentRating)
-				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
-				.add("attributes", Models.nullIfEmpty(attributes))
+				.add("contributions", ModelUtils.nullIfEmpty(contributions))
+				.add("furtherInfoLinks", ModelUtils.nullIfEmpty(furtherInfoLinks))
+				.add("attributes", ModelUtils.nullIfEmpty(attributes))
 				.toString();
 	}
 }

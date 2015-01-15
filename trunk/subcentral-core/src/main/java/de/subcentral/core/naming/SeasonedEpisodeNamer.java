@@ -125,8 +125,8 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// read general naming parameters that are needed in any case
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
-		boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
+		boolean includeSeries = NamingUtils.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean alwaysIncludeEpisodeTitle = NamingUtils.readParameter(params,
 				PARAM_ALWAYS_INCLUDE_TITLE,
 				Boolean.class,
 				PARAM_ALWAYS_INCLUDE_TITLE_DEFAULT);
@@ -134,19 +134,19 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 		// add series
 		if (includeSeries && epi.getSeries() != null)
 		{
-			boolean useSeriesTitle = Namings.readParameter(params, PARAM_USE_SERIES_TITLE, Boolean.class, PARAM_USE_SERIES_TITLE_DEFAULT);
+			boolean useSeriesTitle = NamingUtils.readParameter(params, PARAM_USE_SERIES_TITLE, Boolean.class, PARAM_USE_SERIES_TITLE_DEFAULT);
 			b.appendIfNotNull(Episode.PROP_SERIES, useSeriesTitle ? epi.getSeries().getTitleOrName() : epi.getSeries().getName());
 		}
 
 		// add season
-		boolean includeSeason = Namings.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
+		boolean includeSeason = NamingUtils.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
 		if (includeSeason && epi.isPartOfSeason())
 		{
 			Season season = epi.getSeason();
 			if (season.isNumbered())
 			{
 				b.append(Season.PROP_NUMBER, season.getNumber());
-				boolean alwaysIncludeSeasonTitle = Namings.readParameter(params, PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.class, Boolean.FALSE);
+				boolean alwaysIncludeSeasonTitle = NamingUtils.readParameter(params, PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.class, Boolean.FALSE);
 				b.appendIf(Season.PROP_TITLE, season.getTitle(), alwaysIncludeSeasonTitle && season.isTitled());
 			}
 			else

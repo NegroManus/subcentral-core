@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
-public class Contributions
+public class ContributionUtils
 {
 	public static ListMultimap<String, Contribution> groupByType(Collection<Contribution> contributions)
 	{
@@ -84,7 +84,7 @@ public class Contributions
 		return progresses.build();
 	}
 
-	private Contributions()
+	private ContributionUtils()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

@@ -27,7 +27,7 @@ public class MediaNamer extends AbstractPropertySequenceNamer<Media>
 	public void buildName(PropSequenceNameBuilder b, Media media, Map<String, Object> params)
 	{
 		// read naming parameters
-		boolean includeYear = Namings.readParameter(params, PARAM_INCLUDE_YEAR, Boolean.class, Boolean.FALSE);
+		boolean includeYear = NamingUtils.readParameter(params, PARAM_INCLUDE_YEAR, Boolean.class, Boolean.FALSE);
 
 		b.appendIfNotNull(new SimplePropDescriptor(Media.class, PropNames.TITLE), media.getTitleOrName());
 		if (includeYear)

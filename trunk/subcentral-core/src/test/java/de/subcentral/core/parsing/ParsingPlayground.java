@@ -29,19 +29,19 @@ import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.GroupsCompatibility;
 import de.subcentral.core.model.release.GroupsCompatibility.Condition;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.release.ReleaseUtils;
 import de.subcentral.core.model.release.SameGroupCompatibility;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.NamingStandards;
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.standardizing.ClassBasedStandardizingService;
 import de.subcentral.core.standardizing.SeriesNameAndTitleStandardizer;
 import de.subcentral.core.standardizing.StandardizingChange;
-import de.subcentral.core.standardizing.Standardizings;
+import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -104,10 +104,10 @@ public class ParsingPlayground
 		ps.registerAllParsers(TheScene.getAllParsers());
 		ps.registerAllParsers(ItalianSubsNet.getAllParsers());
 
-		final NamingService ns = NamingStandards.getDefaultNamingService();
+		final NamingService ns = NamingDefaults.getDefaultNamingService();
 
 		final InfoDb<Release> rlsInfoDb = new OrlyDbComInfoDb();
-		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingStandards.getDefaultReleaseNameFormatter());
+		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingDefaults.getDefaultReleaseNameFormatter());
 
 		final CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(new SameGroupCompatibility());
@@ -122,7 +122,7 @@ public class ParsingPlayground
 		final WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
 
 		final ClassBasedStandardizingService parsedToInfoDbStdzService = new ClassBasedStandardizingService("after parsing");
-		Standardizings.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
+		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
 		parsedToInfoDbStdzService.registerStandardizer(Series.class, new SeriesNameAndTitleStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE),
 				"Scandal (US)",
 				"Scandal"));
@@ -132,7 +132,7 @@ public class ParsingPlayground
 						"Last Man Standing"));
 
 		final ClassBasedStandardizingService infoDbToCustomStdzService = new ClassBasedStandardizingService("after infoDb");
-		Standardizings.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
+		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
 		infoDbToCustomStdzService.registerStandardizer(Series.class,
 				new SeriesNameAndTitleStandardizer(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", null));
 
@@ -189,12 +189,12 @@ public class ParsingPlayground
 							TimeUtil.printDurationMillis("Standardizing info db results", start);
 
 							start = System.nanoTime();
-							releases.forEach(r -> Releases.enrichByParsingName(r, ps, false));
+							releases.forEach(r -> ReleaseUtils.enrichByParsingName(r, ps, false));
 							TimeUtil.printDurationMillis("Enriched by parsing", start);
 							releases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
-							List<Release> filteredReleases = Releases.filter(releases,
+							List<Release> filteredReleases = ReleaseUtils.filter(releases,
 									subAdjRls.getMedia(),
 									subAdjRls.getTags(),
 									subAdjRls.getGroup(),

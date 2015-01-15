@@ -29,14 +29,14 @@ public class NamingTest
 	@BeforeClass
 	public static void beforeClass()
 	{
-		NamingService ns = NamingStandards.getDefaultNamingService();
+		NamingService ns = NamingDefaults.getDefaultNamingService();
 		System.out.println(ns);
 	}
 
 	@Before
 	public void before()
 	{
-		NamingService ns = NamingStandards.getDefaultNamingService();
+		NamingService ns = NamingDefaults.getDefaultNamingService();
 		System.out.println(ns);
 	}
 
@@ -45,7 +45,7 @@ public class NamingTest
 	{
 		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
-		String name = NamingStandards.getDefaultMediaNamer().name(movie);
+		String name = NamingDefaults.getDefaultMediaNamer().name(movie);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_NAME, name);
 	}
@@ -56,11 +56,11 @@ public class NamingTest
 		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Release rel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
-		String name = NamingStandards.getDefaultReleaseNamer().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
+		String name = NamingDefaults.getDefaultReleaseNamer().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_REL_NAME, name);
 		Assert.assertEquals(MOVIE_REL_NAME,
-				NamingStandards.getDefaultNamingService().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+				NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
 	}
 
 	@Test
@@ -70,10 +70,10 @@ public class NamingTest
 		movie.setDate(Year.of(2001));
 		Subtitle sub = new Subtitle(movie);
 		sub.setLanguage("de");
-		String name = NamingStandards.getDefaultSubtitleNamer().name(sub);
+		String name = NamingDefaults.getDefaultSubtitleNamer().name(sub);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_NAME, name);
-		Assert.assertEquals(MOVIE_SUB_NAME, NamingStandards.getDefaultNamingService().name(sub));
+		Assert.assertEquals(MOVIE_SUB_NAME, NamingDefaults.getDefaultNamingService().name(sub));
 	}
 
 	@Test
@@ -84,11 +84,11 @@ public class NamingTest
 
 		Release mediaRel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		SubtitleAdjustment rel = SubtitleAdjustment.create(mediaRel, "de", "SubCentral");
-		String name = NamingStandards.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
+		String name = NamingDefaults.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME,
-				NamingStandards.getDefaultNamingService().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+				NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class NamingTest
 		expectedNames.add("Psych S01E01 Pilot");
 		expectedNames.add("Psych S01 Webisodes E01");
 		expectedNames.add("Psych S01 Webisodes E01 Pilot");
-		SeasonedEpisodeNamer epiNamer = (SeasonedEpisodeNamer) NamingStandards.getDefaultSeasonedEpisodeNamer();
+		SeasonedEpisodeNamer epiNamer = (SeasonedEpisodeNamer) NamingDefaults.getDefaultSeasonedEpisodeNamer();
 		assertSeasonedEpisodeNamingSeriesSeasonEpisode(epiNamer, expectedNames);
 	}
 

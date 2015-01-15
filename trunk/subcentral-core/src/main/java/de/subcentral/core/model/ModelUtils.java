@@ -15,7 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.Multimap;
 
-public class Models
+public class ModelUtils
 {
 	public static final Temporal validateTemporalClass(Temporal date) throws IllegalArgumentException
 	{
@@ -70,7 +70,7 @@ public class Models
 		return copied;
 	}
 
-	public Models()
+	public ModelUtils()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
