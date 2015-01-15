@@ -69,7 +69,7 @@ public class ParsingUtils
 		}
 	}
 
-	public static <T> T parse(String text, Class<T> targetClass, List<ParsingService> parsingServices) throws NoMatchException, ParsingException
+	public static <T> T parse(String text, Class<T> targetClass, Iterable<ParsingService> parsingServices) throws NoMatchException, ParsingException
 	{
 		for (ParsingService ps : parsingServices)
 		{
@@ -85,7 +85,7 @@ public class ParsingUtils
 		throw new NoMatchException(text, targetClass, "No ParsingService could parse the text");
 	}
 
-	public static Object parse(String text, List<ParsingService> parsingServices) throws NoMatchException, ParsingException
+	public static Object parse(String text, Iterable<ParsingService> parsingServices) throws NoMatchException, ParsingException
 	{
 		for (ParsingService ps : parsingServices)
 		{
