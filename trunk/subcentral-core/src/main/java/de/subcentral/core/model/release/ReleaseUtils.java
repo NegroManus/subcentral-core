@@ -6,17 +6,24 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.parsing.NoMatchException;
+import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtils;
 import de.subcentral.core.standardizing.StandardizingChange;
 
 public class ReleaseUtils
 {
+	private static final Logger	log	= LogManager.getLogger(ReleaseUtils.class);
+
 	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
 		return filter(rlss, media, containedTags, group, mediaNamingService, ImmutableMap.of());
@@ -70,13 +77,22 @@ public class ReleaseUtils
 		enrichByParsingName(rls, ImmutableList.of(parsingService), overwrite);
 	}
 
-	public static void enrichByParsingName(Release rls, List<ParsingService> parsingServices, boolean overwrite)
+	public static void enrichByParsingName(Release rls, List<ParsingService> parsingServices, boolean overwrite) throws ParsingException
 	{
 		if (rls == null || rls.getName() == null)
 		{
 			return;
 		}
-		Release parsedName = ParsingUtils.parse(rls.getName(), Release.class, parsingServices);
+		Release parsedName;
+		try
+		{
+			parsedName = ParsingUtils.parse(rls.getName(), Release.class, parsingServices);
+		}
+		catch (NoMatchException e)
+		{
+			log.warn("Failed to enrich release because its name could not be parsed: " + rls, e);
+			return;
+		}
 		if (overwrite || rls.getMedia().isEmpty())
 		{
 			rls.setMedia(parsedName.getMedia());
