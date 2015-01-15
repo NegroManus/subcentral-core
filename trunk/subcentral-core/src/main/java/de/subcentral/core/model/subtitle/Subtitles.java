@@ -22,9 +22,13 @@ public class Subtitles
 {
 	public static Set<String> buildNamesForMatchingReleases(SubtitleAdjustment subAdj, NamingService namingService)
 	{
-		if (subAdj == null || subAdj.getMatchingReleases().isEmpty())
+		if (subAdj == null)
 		{
 			return ImmutableSet.of();
+		}
+		else if (subAdj.getMatchingReleases().size() < 2)
+		{
+			return ImmutableSet.of(namingService.name(subAdj));
 		}
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
 		for (Release rls : subAdj.getMatchingReleases())
