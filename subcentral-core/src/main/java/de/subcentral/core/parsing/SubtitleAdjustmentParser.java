@@ -20,9 +20,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
 {
 	private final Mapper<? extends List<? extends AvMedia>>	mediaMapper;
-	private final Mapper<Release>							releaseMapper				= Parsings.getDefaultReleaseMapper();
-	private final Mapper<Subtitle>							subtitleMapper				= Parsings.getDefaultSubtitleMapper();
-	private final Mapper<SubtitleAdjustment>				subtitleAdjustmentMapper	= Parsings.getDefaultSubtitleAdjustmentMapper();
+	private final Mapper<Release>							releaseMapper				= ParsingDefaults.getDefaultReleaseMapper();
+	private final Mapper<Subtitle>							subtitleMapper				= ParsingDefaults.getDefaultSubtitleMapper();
+	private final Mapper<SubtitleAdjustment>				subtitleAdjustmentMapper	= ParsingDefaults.getDefaultSubtitleAdjustmentMapper();
 
 	public SubtitleAdjustmentParser(Mapper<? extends List<? extends AvMedia>> mediaMapper)
 	{

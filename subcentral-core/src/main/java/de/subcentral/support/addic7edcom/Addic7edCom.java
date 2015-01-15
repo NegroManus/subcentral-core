@@ -18,8 +18,8 @@ import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
+import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -36,7 +36,7 @@ public class Addic7edCom
 	private static ListMultimap<Class<?>, Parser<?>> initParsers()
 	{
 		// Common Objects
-		String seriesSeasonEpiNumsPattern = Parsings.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
+		String seriesSeasonEpiNumsPattern = ParsingDefaults.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
 		// String tagsPattern = "((HI|C|orig|updated)+)";
 		String langPattern = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian \\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 		String langTagsSourcePattern = langPattern + "\\.(.+)\\.Addic7ed\\.com";
@@ -48,7 +48,7 @@ public class Addic7edCom
 		// --------------
 		// Episode Parser
 		// Predefined matches for episodes
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultSingletonListEpisodeMapper());
+		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefEpisodeMatchesBuilder = ImmutableMap.builder();
 		predefEpisodeMatchesBuilder.putAll(commonPredefMatches);
@@ -201,7 +201,7 @@ public class Addic7edCom
 
 		// --------------
 		// Movie Parser
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultSingletonListRegularAvMediaMapper());
+		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListRegularAvMediaMapper());
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);

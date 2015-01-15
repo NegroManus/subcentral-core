@@ -11,7 +11,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.model.media.RegularAvMedia;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.release.ReleaseUtils;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
 import de.subcentral.support.predbme.PreDbMeInfoDb;
@@ -37,7 +37,7 @@ public class MultiInfoDbPlayground
 
 		System.out.println("Querying");
 		long start = System.nanoTime();
-		ListMultimap<InfoDb<Release>, Release> results = InfoDbs.queryAll(infoDbs, query, executor);
+		ListMultimap<InfoDb<Release>, Release> results = InfoDbUtils.queryAll(infoDbs, query, executor);
 		TimeUtil.printDurationMillis("queryAll", start);
 		for (Map.Entry<InfoDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
 		{
@@ -47,7 +47,7 @@ public class MultiInfoDbPlayground
 		}
 		executor.shutdown();
 
-		List<Release> reducedRlss = Releases.distinctByName(results.values());
+		List<Release> reducedRlss = ReleaseUtils.distinctByName(results.values());
 		reducedRlss.stream().forEach(e -> System.out.println(e));
 	}
 }

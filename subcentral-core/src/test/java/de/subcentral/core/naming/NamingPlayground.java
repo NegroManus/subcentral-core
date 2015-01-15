@@ -68,12 +68,12 @@ public class NamingPlayground
 		subRel.setSingleSubtitle(sub1);
 		subRel.setSingleMatchingRelease(rel);
 
-		System.out.println(NamingStandards.getDefaultNamingService().name(epis));
+		System.out.println(NamingDefaults.getDefaultNamingService().name(epis));
 		// long overallStart = System.nanoTime();
 		// for (int i = 0; i < 1000; i++)
 		// {
 		// long start = System.nanoTime();
-		// String name = NamingStandards.NAMING_SERVICE.name(subRel); // ns.name(epi);//
+		// String name = NamingDefaults.NAMING_SERVICE.name(subRel); // ns.name(epi);//
 		// double duration = TimeUtil.durationMillis(start, System.nanoTime());
 		// System.out.println(name);
 		// System.out.println(duration + " ms");

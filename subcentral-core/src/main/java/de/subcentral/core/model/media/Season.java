@@ -15,9 +15,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.model.Models;
+import de.subcentral.core.model.ModelUtils;
 import de.subcentral.core.model.PropNames;
-import de.subcentral.core.naming.NamingStandards;
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
@@ -62,7 +62,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	@Override
 	public String getName()
 	{
-		return NamingStandards.getDefaultSeasonNamer().name(this);
+		return NamingDefaults.getDefaultSeasonNamer().name(this);
 	}
 
 	public Series getSeries()
@@ -104,7 +104,7 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 
 	public void setFinaleDate(Temporal finaleDate)
 	{
-		Models.validateTemporalClass(finaleDate);
+		ModelUtils.validateTemporalClass(finaleDate);
 		this.finaleDate = finaleDate;
 	}
 
@@ -257,11 +257,11 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 				.add("finaleDate", finaleDate)
 				.add("special", special)
 				.add("description", description)
-				.add("coverLinks", Models.nullIfEmpty(coverLinks))
+				.add("coverLinks", ModelUtils.nullIfEmpty(coverLinks))
 				.add("contentRating", contentRating)
-				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
-				.add("attributes", Models.nullIfEmpty(attributes))
+				.add("contributions", ModelUtils.nullIfEmpty(contributions))
+				.add("furtherInfoLinks", ModelUtils.nullIfEmpty(furtherInfoLinks))
+				.add("attributes", ModelUtils.nullIfEmpty(attributes))
 				.toString();
 	}
 }

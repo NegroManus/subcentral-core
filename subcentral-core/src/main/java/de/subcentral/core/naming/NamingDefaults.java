@@ -30,7 +30,7 @@ import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.PatternReplacer;
 import de.subcentral.core.util.Separation;
 
-public class NamingStandards
+public class NamingDefaults
 {
 	public static final String						DEFAULT_DOMAIN			= "default";
 	private static final Function<String, String>	RELEASE_NAME_FORMATTER	= initReleaseNameFormatter();
@@ -233,7 +233,7 @@ public class NamingStandards
 		return SUBTITLE_ADJUSTMENT_NAMER;
 	}
 
-	private NamingStandards()
+	private NamingDefaults()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

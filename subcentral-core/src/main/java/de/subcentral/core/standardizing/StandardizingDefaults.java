@@ -8,12 +8,12 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.model.media.Episode;
 import de.subcentral.core.model.media.Season;
 import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Releases;
+import de.subcentral.core.model.release.ReleaseUtils;
 import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
-import de.subcentral.core.model.subtitle.Subtitles;
+import de.subcentral.core.model.subtitle.SubtitleUtils;
 
-public class Standardizings
+public class StandardizingDefaults
 {
 	private static final ClassBasedStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new ClassBasedStandardizingService("default");
 	static
@@ -25,14 +25,6 @@ public class Standardizings
 	public static StandardizingService getDefaultStandardizingService()
 	{
 		return DEFAULT_STANDARDIZING_SERVICE;
-	}
-
-	public static <T> void mayStandardize(T entity, StandardizingService standardizingService)
-	{
-		if (standardizingService != null)
-		{
-			standardizingService.standardize(entity);
-		}
 	}
 
 	public static List<? extends Object> retrieveNestedBeans(Episode epi)
@@ -82,20 +74,20 @@ public class Standardizings
 
 	public static void registerAllDefaultNestedBeansRetrievers(ClassBasedStandardizingService service)
 	{
-		service.registerNestedBeansRetriever(Episode.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeansRetriever(Season.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeansRetriever(Release.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeansRetriever(Subtitle.class, Standardizings::retrieveNestedBeans);
-		service.registerNestedBeansRetriever(SubtitleAdjustment.class, Standardizings::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Episode.class, StandardizingDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Season.class, StandardizingDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Release.class, StandardizingDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Subtitle.class, StandardizingDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(SubtitleAdjustment.class, StandardizingDefaults::retrieveNestedBeans);
 	}
 
 	public static void registerAllDefaulStandardizers(ClassBasedStandardizingService service)
 	{
-		service.registerStandardizer(Subtitle.class, Subtitles::standardizeTags);
-		service.registerStandardizer(Release.class, Releases::standardizeTags);
+		service.registerStandardizer(Subtitle.class, SubtitleUtils::standardizeTags);
+		service.registerStandardizer(Release.class, ReleaseUtils::standardizeTags);
 	}
 
-	private Standardizings()
+	private StandardizingDefaults()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

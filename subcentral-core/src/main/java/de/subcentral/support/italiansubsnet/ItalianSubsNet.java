@@ -17,8 +17,8 @@ import de.subcentral.core.model.subtitle.Subtitle;
 import de.subcentral.core.model.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
+import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.SimpleParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -43,7 +43,7 @@ public class ItalianSubsNet
 
 		// --------------
 		// Episode Parsers
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultSingletonListEpisodeMapper());
+		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// Examples:
 		// Psych.s08e04.sub.itasa
@@ -77,7 +77,7 @@ public class ItalianSubsNet
 
 		// --------------
 		// Multi-Episode Parsers
-		SubtitleAdjustmentParser multiEpisodeSubParser = new SubtitleAdjustmentParser(Parsings.getDefaultMultiEpisodeMapper());
+		SubtitleAdjustmentParser multiEpisodeSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultMultiEpisodeMapper());
 
 		// Examples:
 		// Psych.s07e15-16.sub.itasa

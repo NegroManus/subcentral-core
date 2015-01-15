@@ -19,7 +19,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.model.Models;
+import de.subcentral.core.model.ModelUtils;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -119,7 +119,7 @@ public class Series extends AbstractNamedMedia implements AvMediaCollection<Epis
 
 	public void setFinaleDate(Temporal finaleDate)
 	{
-		this.finaleDate = Models.validateTemporalClass(finaleDate);
+		this.finaleDate = ModelUtils.validateTemporalClass(finaleDate);
 	}
 
 	@Override
@@ -528,18 +528,18 @@ public class Series extends AbstractNamedMedia implements AvMediaCollection<Epis
 				.add("finaleDate", finaleDate)
 				.add("type", type)
 				.add("state", state)
-				.add("originalLanguages", Models.nullIfEmpty(originalLanguages))
-				.add("countriesOfOrigin", Models.nullIfEmpty(countriesOfOrigin))
-				.add("regularRunningTime", Models.nullIfZero(regularRunningTime))
-				.add("genres", Models.nullIfEmpty(genres))
+				.add("originalLanguages", ModelUtils.nullIfEmpty(originalLanguages))
+				.add("countriesOfOrigin", ModelUtils.nullIfEmpty(countriesOfOrigin))
+				.add("regularRunningTime", ModelUtils.nullIfZero(regularRunningTime))
+				.add("genres", ModelUtils.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverLinks", Models.nullIfEmpty(coverLinks))
+				.add("coverLinks", ModelUtils.nullIfEmpty(coverLinks))
 				.add("contentRating", contentRating)
-				.add("contributions", Models.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", Models.nullIfEmpty(furtherInfoLinks))
-				.add("attributes", Models.nullIfEmpty(attributes))
-				.add("episodes.size", Models.nullIfZero(episodes.size()))
-				.add("seasons.size", Models.nullIfZero(seasons.size()))
+				.add("contributions", ModelUtils.nullIfEmpty(contributions))
+				.add("furtherInfoLinks", ModelUtils.nullIfEmpty(furtherInfoLinks))
+				.add("attributes", ModelUtils.nullIfEmpty(attributes))
+				.add("episodes.size", ModelUtils.nullIfZero(episodes.size()))
+				.add("seasons.size", ModelUtils.nullIfZero(seasons.size()))
 				.toString();
 	}
 }

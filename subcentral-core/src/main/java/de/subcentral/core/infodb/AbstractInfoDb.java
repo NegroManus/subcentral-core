@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.NamingStandards;
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.PatternReplacer;
 
@@ -25,7 +25,7 @@ public abstract class AbstractInfoDb<R> implements InfoDb<R>
 	{
 		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
 		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", ' ');
-		return new DelegatingNamingService("QueryEntityNamingService", NamingStandards.getDefaultNamingService(), pr.andThen(cr));
+		return new DelegatingNamingService("QueryEntityNamingService", NamingDefaults.getDefaultNamingService(), pr.andThen(cr));
 	}
 
 	public NamingService getQueryObjectNamingService()

@@ -19,10 +19,10 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// add series
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
+		boolean includeSeries = NamingUtils.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, PARAM_INCLUDE_SERIES_DEFAULT);
 		if (includeSeries && epi.getSeries() != null)
 		{
-			boolean useSeriesTitle = Namings.readParameter(params, PARAM_USE_SERIES_TITLE, Boolean.class, PARAM_USE_SERIES_TITLE_DEFAULT);
+			boolean useSeriesTitle = NamingUtils.readParameter(params, PARAM_USE_SERIES_TITLE, Boolean.class, PARAM_USE_SERIES_TITLE_DEFAULT);
 			b.appendIfNotNull(Episode.PROP_SERIES, useSeriesTitle ? epi.getSeries().getTitleOrName() : epi.getSeries().getName());
 		}
 
@@ -30,7 +30,7 @@ public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 		if (epi.isNumberedInSeries())
 		{
 			b.append(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries());
-			boolean alwaysIncludeEpisodeTitle = Namings.readParameter(params,
+			boolean alwaysIncludeEpisodeTitle = NamingUtils.readParameter(params,
 					PARAM_ALWAYS_INCLUDE_TITLE,
 					Boolean.class,
 					PARAM_ALWAYS_INCLUDE_TITLE_DEFAULT);

@@ -138,7 +138,7 @@ public class SimpleParsingService implements ParsingService
 	@Override
 	public <T> T parse(String text, Class<T> targetClass) throws NoMatchException, ParsingException
 	{
-		Parsings.requireNotBlank(text, targetClass);
+		ParsingUtils.requireNotBlank(text, targetClass);
 		try
 		{
 			Objects.requireNonNull(targetClass, "targetClass cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");

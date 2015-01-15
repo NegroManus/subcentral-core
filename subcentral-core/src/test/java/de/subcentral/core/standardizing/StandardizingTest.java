@@ -20,7 +20,7 @@ public class StandardizingTest
 	@Test
 	public void testDefaultStandardizingService()
 	{
-		StandardizingService service = Standardizings.getDefaultStandardizingService();
+		StandardizingService service = StandardizingDefaults.getDefaultStandardizingService();
 
 		Release rls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H", "264", "DD5", "1");
 		Release expectedRls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H.264", "DD5.1");
@@ -34,7 +34,7 @@ public class StandardizingTest
 	public void testCustomStandardizingService()
 	{
 		ClassBasedStandardizingService service = new ClassBasedStandardizingService("test");
-		Standardizings.registerAllDefaultNestedBeansRetrievers(service);
+		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		service.registerStandardizer(Episode.class, e -> {
 			Boolean oldVal = Boolean.valueOf(e.isSpecial());
 			e.setSpecial(true);

@@ -15,14 +15,14 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.model.Models;
+import de.subcentral.core.model.ModelUtils;
 import de.subcentral.core.model.PropNames;
 import de.subcentral.core.model.media.AvMedia;
 import de.subcentral.core.model.media.Contribution;
 import de.subcentral.core.model.media.Work;
 import de.subcentral.core.model.release.Group;
 import de.subcentral.core.model.release.Tag;
-import de.subcentral.core.naming.Namings;
+import de.subcentral.core.naming.NamingUtils;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
@@ -516,7 +516,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, Namings.DEFAULT_MEDIA_NAME_COMPARATOR)
+				.compare(media, o.media, NamingUtils.DEFAULT_MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
 				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)
@@ -536,7 +536,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("language", language)
 				.add("hearingImpaired", hearingImpaired)
 				.add("foreignParts", foreignParts)
-				.add("tags", Models.nullIfEmpty(tags))
+				.add("tags", ModelUtils.nullIfEmpty(tags))
 				.add("version", version)
 				.add("group", group)
 				.add("source", source)
@@ -544,7 +544,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("basis", basis)
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
-				.add("contributions", Models.nullIfEmpty(contributions))
+				.add("contributions", ModelUtils.nullIfEmpty(contributions))
 				.toString();
 	}
 }

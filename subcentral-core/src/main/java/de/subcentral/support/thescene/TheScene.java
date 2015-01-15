@@ -25,8 +25,8 @@ import de.subcentral.core.model.release.Release;
 import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
+import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.Parsings;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -52,7 +52,7 @@ public class TheScene
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 
 		// SINGLE EPISODES
-		ReleaseParser epiRlsParser = new ReleaseParser(Parsings.getDefaultSingletonListEpisodeMapper());
+		ReleaseParser epiRlsParser = new ReleaseParser(ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// Seasoned episode
 		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
@@ -153,7 +153,7 @@ public class TheScene
 		epiRlsParser.setPropFromStringService(pps);
 
 		// MULTI-EPISODES
-		ReleaseParser multiEpiRlsParser = new ReleaseParser(Parsings.getDefaultMultiEpisodeMapper());
+		ReleaseParser multiEpiRlsParser = new ReleaseParser(ParsingDefaults.getDefaultMultiEpisodeMapper());
 
 		// Multi-episode (seasoned, range)
 		Pattern p401 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
@@ -217,7 +217,7 @@ public class TheScene
 		multiEpiRlsParser.setPropFromStringService(pps);
 
 		// MOVIE
-		ReleaseParser movieRlsParser = new ReleaseParser(Parsings.getDefaultSingletonListRegularAvMediaMapper());
+		ReleaseParser movieRlsParser = new ReleaseParser(ParsingDefaults.getDefaultSingletonListRegularAvMediaMapper());
 		ImmutableMap<SimplePropDescriptor, String> moviePreDefMatches = ImmutableMap.of(RegularAvMedia.PROP_MEDIA_TYPE,
 				Media.MEDIA_TYPE_MOVIE,
 				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,

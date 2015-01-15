@@ -12,10 +12,10 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.model.media.Media;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.Parsings;
+import de.subcentral.core.parsing.ParsingUtils;
 import de.subcentral.core.standardizing.StandardizingChange;
 
-public class Releases
+public class ReleaseUtils
 {
 	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
@@ -33,7 +33,7 @@ public class Releases
 		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
 		for (Release rls : rlss)
 		{
-			if (Releases.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService, namingParameters))
+			if (ReleaseUtils.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService, namingParameters))
 			{
 				filteredRlss.add(rls);
 			}
@@ -76,7 +76,7 @@ public class Releases
 		{
 			return;
 		}
-		Release parsedName = Parsings.parse(rls.getName(), Release.class, parsingServices);
+		Release parsedName = ParsingUtils.parse(rls.getName(), Release.class, parsingServices);
 		if (overwrite || rls.getMedia().isEmpty())
 		{
 			rls.setMedia(parsedName.getMedia());
@@ -181,7 +181,7 @@ public class Releases
 		return reducedList;
 	}
 
-	private Releases()
+	private ReleaseUtils()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

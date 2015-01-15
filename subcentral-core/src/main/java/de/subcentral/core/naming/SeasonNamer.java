@@ -32,8 +32,8 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 	public void buildName(PropSequenceNameBuilder b, Season season, Map<String, Object> params)
 	{
 		// read naming parameters
-		boolean includeSeries = Namings.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
-		boolean alwaysIncludeTitle = Namings.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE);
+		boolean includeSeries = NamingUtils.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
+		boolean alwaysIncludeTitle = NamingUtils.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE);
 
 		// add series
 		if (includeSeries && season.getSeries() != null)

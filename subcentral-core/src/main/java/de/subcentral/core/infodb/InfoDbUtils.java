@@ -13,9 +13,9 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
-public class InfoDbs
+public class InfoDbUtils
 {
-	private static final Logger	log	= LogManager.getLogger(InfoDbs.class);
+	private static final Logger	log	= LogManager.getLogger(InfoDbUtils.class);
 
 	public static <R> ListMultimap<InfoDb<R>, R> queryAll(List<InfoDb<R>> infoDbs, Object queryObj, ExecutorService executor)
 			throws InterruptedException
@@ -47,7 +47,7 @@ public class InfoDbs
 		return results.build();
 	}
 
-	private InfoDbs()
+	private InfoDbUtils()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

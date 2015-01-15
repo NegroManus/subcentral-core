@@ -10,7 +10,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import de.subcentral.core.model.media.Contribution;
-import de.subcentral.core.model.media.Contributions;
+import de.subcentral.core.model.media.ContributionUtils;
 import de.subcentral.core.model.subtitle.Subtitle;
 
 public class ContributionTest
@@ -41,7 +41,7 @@ public class ContributionTest
 		contributions.add(c3);
 		contributions.add(cb1);
 
-		Map<String, Float> calculatedProgresses = Contributions.calcProgresses(contributions);
+		Map<String, Float> calculatedProgresses = ContributionUtils.calcProgresses(contributions);
 		Map<String, Float> expectedProgresses = new HashMap<>(2);
 		expectedProgresses.put(Subtitle.CONTRIBUTION_TYPE_TRANSLATION, 0.625f);
 		expectedProgresses.put(Subtitle.CONTRIBUTION_TYPE_REVISION, 1.0f);
