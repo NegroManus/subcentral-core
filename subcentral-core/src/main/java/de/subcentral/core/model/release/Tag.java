@@ -9,6 +9,8 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.collect.ImmutableList;
+
 import de.subcentral.core.Settings;
 import de.subcentral.core.util.IterableComparator;
 
@@ -62,6 +64,20 @@ public class Tag implements Comparable<Tag>
 			tagList.add(new Tag(s));
 		}
 		return tagList;
+	}
+
+	public static ImmutableList<Tag> immutableList(String... tags)
+	{
+		if (tags.length == 0)
+		{
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<Tag> tagList = ImmutableList.builder();
+		for (String s : tags)
+		{
+			tagList.add(new Tag(s));
+		}
+		return tagList.build();
 	}
 
 	private final String	name;
