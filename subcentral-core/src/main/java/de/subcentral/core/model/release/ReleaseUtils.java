@@ -197,15 +197,26 @@ public class ReleaseUtils
 		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, rls.getTags())) : ImmutableList.of();
 	}
 
-	public static void replaceTags(Release rls, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	public static boolean replaceTags(Release rls, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
 	{
-		replaceTags(rls.getTags(), newTags, metaTagsToRetain);
+		return replaceTags(rls.getTags(), newTags, metaTagsToRetain);
 	}
 
-	public static void replaceTags(List<Tag> tags, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	public static boolean replaceTags(List<Tag> tags, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
 	{
-		tags.retainAll(metaTagsToRetain);
-		tags.addAll(newTags);
+		// no shortcut (||) because both operations need to be performed
+		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
+	}
+
+	public static List<Tag> copyWithoutMetaTags(Collection<Tag> tags, Collection<Tag> metaTagsToRemove)
+	{
+		if (tags.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		List<Tag> tagsWithoutMetaTags = new ArrayList<>(tags);
+		tagsWithoutMetaTags.removeAll(metaTagsToRemove);
+		return tagsWithoutMetaTags;
 	}
 
 	private ReleaseUtils()

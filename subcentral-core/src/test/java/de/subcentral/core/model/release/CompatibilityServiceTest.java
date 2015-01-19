@@ -25,8 +25,12 @@ public class CompatibilityServiceTest
 		CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(new SameGroupCompatibility());
 		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Condition.IF_EXISTS, true));
-		compService.getCompatibilities().add(new GroupsCompatibility(null, Tag.list("720p", "HDTV", "x264"), new Group("AFG"), Tag.list("HDTV",
-				"XviD"), Condition.ALWAYS, false));
+		compService.getCompatibilities().add(new GroupsCompatibility(Tag.list("720p", "HDTV", "x264"),
+				null,
+				Tag.list("HDTV", "XviD"),
+				new Group("AFG"),
+				Condition.ALWAYS,
+				false));
 
 		List<Release> existingRlss = new ArrayList<>(4);
 		existingRlss.add(Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264"));
