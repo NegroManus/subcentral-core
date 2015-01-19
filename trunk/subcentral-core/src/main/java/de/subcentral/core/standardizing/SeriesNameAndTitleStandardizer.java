@@ -42,6 +42,10 @@ public class SeriesNameAndTitleStandardizer implements Standardizer<Series>
 	@Override
 	public List<StandardizingChange> standardize(Series series)
 	{
+		if (series == null)
+		{
+			return ImmutableList.of();
+		}
 		String oldName = series.getName();
 		if (oldName != null && namePattern.matcher(oldName).matches())
 		{

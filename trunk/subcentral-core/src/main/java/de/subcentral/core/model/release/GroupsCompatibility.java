@@ -2,20 +2,23 @@ package de.subcentral.core.model.release;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
+import de.subcentral.core.model.ModelUtils;
 
 public class GroupsCompatibility implements Compatibility
 {
 	public static enum Condition
 	{
-		ALWAYS, IF_EXISTS, IF_EXISTS_OR_NO_INFO;
+		IF_EXISTS, IF_EXISTS_OR_NO_INFO, ALWAYS;
 	}
 
 	private static enum MatchDirection
@@ -23,35 +26,42 @@ public class GroupsCompatibility implements Compatibility
 		NONE, FORWARD, BACKWARD;
 	}
 
-	private final Group		sourceGroup;
-	private final List<Tag>	sourceTags;
-	private final Group		compatibleGroup;
-	private final List<Tag>	compatibleTags;
-	private final Condition	condition;
-	private final boolean	bidirectional;
+	private final ImmutableList<Tag>	sourceTags;
+	private final Group					sourceGroup;
+	private final ImmutableList<Tag>	compatibleTags;
+	private final Group					compatibleGroup;
+	private final Condition				condition;
+	private final boolean				bidirectional;
 
 	public GroupsCompatibility(Group sourceGroup, Group compatibleGroup, Condition condition, boolean bidirectional)
 	{
-		this(sourceGroup, null, compatibleGroup, null, condition, bidirectional);
+		this(ImmutableList.of(), sourceGroup, ImmutableList.of(), compatibleGroup, condition, bidirectional);
 	}
 
-	public GroupsCompatibility(Group sourceGroup, List<Tag> sourceTags, Group compatibleGroup, List<Tag> compatibleTags, Condition condition,
-			boolean bidirectional)
+	public GroupsCompatibility(Collection<Tag> sourceTags, Group sourceGroup, Collection<Tag> compatibleTags, Group compatibleGroup,
+			Condition condition, boolean bidirectional)
 	{
-		if (sourceGroup == null && sourceTags == null)
+		Objects.requireNonNull(sourceTags, "sourceTags");
+		Objects.requireNonNull(compatibleTags, "compatibleTags");
+		if (sourceGroup == null && sourceTags.isEmpty())
 		{
-			throw new IllegalArgumentException("either sourceGroup or sourceTags must be non-null");
+			throw new IllegalArgumentException("either sourceGroup or sourceTags must be non-null / non-empty");
 		}
-		if (compatibleGroup == null && compatibleTags == null)
+		if (compatibleGroup == null && compatibleTags.isEmpty())
 		{
-			throw new IllegalArgumentException("either compatibleGroup or compatibleTags must be non-null");
+			throw new IllegalArgumentException("either compatibleGroup or compatibleTags must be non-null / non-empty");
 		}
+		this.sourceTags = ImmutableList.copyOf(sourceTags);
 		this.sourceGroup = sourceGroup;
-		this.sourceTags = sourceTags;
+		this.compatibleTags = ImmutableList.copyOf(compatibleTags);
 		this.compatibleGroup = compatibleGroup;
-		this.compatibleTags = compatibleTags;
 		this.condition = Objects.requireNonNull(condition, "condition");
 		this.bidirectional = bidirectional;
+	}
+
+	public ImmutableList<Tag> getSourceTags()
+	{
+		return sourceTags;
 	}
 
 	public Group getSourceGroup()
@@ -59,19 +69,14 @@ public class GroupsCompatibility implements Compatibility
 		return sourceGroup;
 	}
 
-	public List<Tag> getSourceTags()
+	public ImmutableList<Tag> getCompatibleTags()
 	{
-		return sourceTags;
+		return compatibleTags;
 	}
 
 	public Group getCompatibleGroup()
 	{
 		return compatibleGroup;
-	}
-
-	public List<Tag> getCompatibleTags()
-	{
-		return compatibleTags;
 	}
 
 	public Condition getCondition()
@@ -123,12 +128,12 @@ public class GroupsCompatibility implements Compatibility
 
 	private MatchDirection match(Release rls)
 	{
-		if ((sourceGroup == null || sourceGroup.equals(rls.getGroup())) && (sourceTags == null || sourceTags.equals(rls.getTags())))
+		if ((sourceTags.isEmpty() || sourceTags.equals(rls.getTags())) && (sourceGroup == null || sourceGroup.equals(rls.getGroup())))
 		{
 			return MatchDirection.FORWARD;
 		}
-		if (bidirectional && (compatibleGroup == null || compatibleGroup.equals(rls.getGroup()))
-				&& (compatibleTags == null || compatibleTags.equals(rls.getTags())))
+		if (bidirectional && (compatibleTags.isEmpty() || compatibleTags.equals(rls.getTags()))
+				&& (compatibleGroup == null || compatibleGroup.equals(rls.getGroup())))
 		{
 			return MatchDirection.BACKWARD;
 		}
@@ -144,11 +149,11 @@ public class GroupsCompatibility implements Compatibility
 		switch (matchDirection)
 		{
 			case FORWARD:
-				return (compatibleGroup == null || compatibleGroup.equals(compatibleRls.getGroup()))
-						&& (compatibleTags == null || compatibleTags.equals(compatibleRls.getTags()));
+				return (compatibleTags.isEmpty() || compatibleTags.equals(compatibleRls.getTags()))
+						&& (compatibleGroup == null || compatibleGroup.equals(compatibleRls.getGroup()));
 			case BACKWARD:
-				return (sourceGroup == null || sourceGroup.equals(compatibleRls.getGroup()))
-						&& (sourceTags == null || sourceTags.equals(compatibleRls.getTags()));
+				return (sourceTags.isEmpty() || sourceTags.equals(compatibleRls.getTags()))
+						&& (sourceGroup == null || sourceGroup.equals(compatibleRls.getGroup()));
 			case NONE:
 				return false;
 			default:
@@ -163,12 +168,12 @@ public class GroupsCompatibility implements Compatibility
 		switch (md)
 		{
 			case FORWARD:
+				compatibleRls.setTags(compatibleTags.isEmpty() ? sourceRls.getTags() : compatibleTags);
 				compatibleRls.setGroup(compatibleGroup == null ? sourceRls.getGroup() : compatibleGroup);
-				compatibleRls.setTags(compatibleTags == null ? sourceRls.getTags() : compatibleTags);
 				break;
 			case BACKWARD:
+				compatibleRls.setTags(sourceTags.isEmpty() ? sourceRls.getTags() : sourceTags);
 				compatibleRls.setGroup(sourceGroup == null ? sourceRls.getGroup() : sourceGroup);
-				compatibleRls.setTags(sourceTags == null ? sourceRls.getTags() : sourceTags);
 				break;
 			case NONE:
 				break;
@@ -186,9 +191,8 @@ public class GroupsCompatibility implements Compatibility
 		if (obj instanceof GroupsCompatibility)
 		{
 			GroupsCompatibility o = (GroupsCompatibility) obj;
-			return Objects.equals(sourceGroup, o.sourceGroup) && Objects.equals(sourceTags, o.sourceTags)
-					&& Objects.equals(compatibleGroup, o.compatibleGroup) && Objects.equals(compatibleTags, o.compatibleTags)
-					&& condition.equals(o.condition) && bidirectional == o.bidirectional;
+			return sourceTags.equals(o.sourceTags) && Objects.equals(sourceGroup, o.sourceGroup) && compatibleTags.equals(o.compatibleTags)
+					&& Objects.equals(compatibleGroup, o.compatibleGroup) && condition.equals(o.condition) && bidirectional == o.bidirectional;
 		}
 		return false;
 	}
@@ -196,10 +200,10 @@ public class GroupsCompatibility implements Compatibility
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(13, 67).append(sourceGroup)
-				.append(sourceTags)
-				.append(compatibleGroup)
+		return new HashCodeBuilder(13, 67).append(sourceTags)
+				.append(sourceGroup)
 				.append(compatibleTags)
+				.append(compatibleGroup)
 				.append(condition)
 				.append(bidirectional)
 				.toHashCode();
@@ -210,10 +214,10 @@ public class GroupsCompatibility implements Compatibility
 	{
 		return MoreObjects.toStringHelper(GroupsCompatibility.class)
 				.omitNullValues()
+				.add("sourceTags", ModelUtils.nullIfEmpty(sourceTags))
 				.add("sourceGroup", sourceGroup)
-				.add("sourceTags", sourceTags)
+				.add("compatibleTags", ModelUtils.nullIfEmpty(compatibleTags))
 				.add("compatibleGroup", compatibleGroup)
-				.add("compatibleTags", compatibleTags)
 				.add("condition", condition)
 				.add("bidirectional", bidirectional)
 				.toString();
@@ -222,13 +226,13 @@ public class GroupsCompatibility implements Compatibility
 	public String toShortString()
 	{
 		StringBuilder sb = new StringBuilder();
-		if (sourceTags != null)
+		if (!sourceTags.isEmpty())
 		{
-			sb.append(sourceTags);
+			Joiner.on('.').appendTo(sb, sourceTags);
 		}
 		if (sourceGroup != null)
 		{
-			if (sourceTags != null)
+			if (!sourceTags.isEmpty())
 			{
 				sb.append('.');
 			}
@@ -242,13 +246,13 @@ public class GroupsCompatibility implements Compatibility
 		{
 			sb.append(" -> ");
 		}
-		if (compatibleTags != null)
+		if (!compatibleTags.isEmpty())
 		{
-			sb.append(compatibleTags);
+			Joiner.on('.').appendTo(sb, compatibleTags);
 		}
 		if (compatibleGroup != null)
 		{
-			if (compatibleTags != null)
+			if (!compatibleTags.isEmpty())
 			{
 				sb.append('.');
 			}
