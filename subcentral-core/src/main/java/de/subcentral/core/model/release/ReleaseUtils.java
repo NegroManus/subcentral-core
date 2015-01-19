@@ -24,6 +24,32 @@ public class ReleaseUtils
 {
 	private static final Logger	log	= LogManager.getLogger(ReleaseUtils.class);
 
+	public static List<Release> distinctByName(Collection<Release> releases)
+	{
+		if (releases.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+
+		List<Release> reducedList = new ArrayList<>();
+		for (Release rls : releases)
+		{
+			boolean notListed = true;
+			for (Release reducedEntry : reducedList)
+			{
+				if (reducedEntry.equalsByName(rls))
+				{
+					notListed = false;
+				}
+			}
+			if (notListed)
+			{
+				reducedList.add(rls);
+			}
+		}
+		return reducedList;
+	}
+
 	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
 		return filter(rlss, media, containedTags, group, mediaNamingService, ImmutableMap.of());
@@ -171,30 +197,15 @@ public class ReleaseUtils
 		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, rls.getTags())) : ImmutableList.of();
 	}
 
-	public static List<Release> distinctByName(Collection<Release> releases)
+	public static void replaceTags(Release rls, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
 	{
-		if (releases.isEmpty())
-		{
-			return ImmutableList.of();
-		}
+		replaceTags(rls.getTags(), newTags, metaTagsToRetain);
+	}
 
-		List<Release> reducedList = new ArrayList<>();
-		for (Release rls : releases)
-		{
-			boolean notListed = true;
-			for (Release reducedEntry : reducedList)
-			{
-				if (reducedEntry.equalsByName(rls))
-				{
-					notListed = false;
-				}
-			}
-			if (notListed)
-			{
-				reducedList.add(rls);
-			}
-		}
-		return reducedList;
+	public static void replaceTags(List<Tag> tags, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	{
+		tags.retainAll(metaTagsToRetain);
+		tags.addAll(newTags);
 	}
 
 	private ReleaseUtils()
