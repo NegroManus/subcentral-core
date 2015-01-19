@@ -27,12 +27,12 @@ public class Tag implements Comparable<Tag>
 	public static final String						CATEGORY_FORMAT		= "FORMAT";
 
 	/**
-	 * Language tags. Like German, GERMAN.CUSTOM.SUBBED, NLSUBBED, ...
+	 * Language tags. Like German, GERMAN.CUSTOM.SUBBED, NLSUBBED, MULTi, ...
 	 */
 	public static final String						CATEGORY_LANGUAGE	= "LANGUAGE";
 
 	/**
-	 * Tags for meta information about the release itself. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
+	 * Tags for meta information about the release itself, not about the content. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
 	 */
 	public static final String						CATEGORY_META		= "META";
 
