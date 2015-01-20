@@ -61,7 +61,12 @@ public class Release implements Comparable<Release>
 	private final List<Nuke>					nukes					= new ArrayList<>(0);
 	private String								nfo;
 	private String								nfoLink;
-	private List<String>						furtherInfoLinks		= new ArrayList<>(4);
+	private final List<String>					furtherInfoLinks		= new ArrayList<>(4);
+
+	public static Release create(String group, String... tags)
+	{
+		return create(null, null, group, tags);
+	}
 
 	public static Release create(Media media, String group, String... tags)
 	{
@@ -72,7 +77,10 @@ public class Release implements Comparable<Release>
 	{
 		Release rls = new Release();
 		rls.name = name;
-		rls.media.add(media);
+		if (media != null)
+		{
+			rls.media.add(media);
+		}
 		if (group != null)
 		{
 			rls.group = new Group(group);
@@ -93,6 +101,12 @@ public class Release implements Comparable<Release>
 	public Release(String name)
 	{
 		this.name = name;
+	}
+
+	public Release(List<Tag> tags, Group group)
+	{
+		this.tags.addAll(tags);
+		this.group = group;
 	}
 
 	public Release(String name, Media media, List<Tag> tags, Group group)
