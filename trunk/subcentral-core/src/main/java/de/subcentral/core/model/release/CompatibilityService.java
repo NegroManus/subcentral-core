@@ -31,6 +31,32 @@ public class CompatibilityService
 		this.compatibilities.addAll(compatibilities);
 	}
 
+	public Map<Release, CompatibilityInfo> findCompatibles(Collection<Release> rlss, Collection<Release> existingRlss)
+	{
+		if (rlss.isEmpty())
+		{
+			return ImmutableMap.of();
+		}
+		Map<Release, CompatibilityInfo> allCompatibles = new HashMap<>(4);
+		for (Release rls : rlss)
+		{
+			Map<Release, CompatibilityInfo> compatiblesForRls = findCompatibles(rls, existingRlss);
+			for (Map.Entry<Release, CompatibilityInfo> newCompatibleEntry : compatiblesForRls.entrySet())
+			{
+				// only add the compatible release if not contained in the original release list
+				// and not already in the list of found compatible releases
+				Release newCompatibleRls = newCompatibleEntry.getKey();
+				if (!rlss.contains(newCompatibleRls))
+				{
+					allCompatibles.putIfAbsent(newCompatibleRls, newCompatibleEntry.getValue());
+					// no need to check the newly found compatible release itself for compatibilities
+					// because that was already done in findCompatibles(Release, ...)
+				}
+			}
+		}
+		return ImmutableMap.copyOf(allCompatibles);
+	}
+
 	public Map<Release, CompatibilityInfo> findCompatibles(Release rls, Collection<Release> existingRlss)
 	{
 		if (rls == null)

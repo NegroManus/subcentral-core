@@ -50,13 +50,31 @@ public class ReleaseUtils
 		return reducedList;
 	}
 
-	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
+	public static List<Release> filter(Collection<Release> rlss, List<Tag> containedTags, Group group, Collection<Tag> metaTagsToIgnore)
+	{
+		if (rlss.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
+		for (Release rls : rlss)
+		{
+			if (containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore) && (group == null || group.equals(rls.getGroup())))
+			{
+				filteredRlss.add(rls);
+			}
+		}
+		return filteredRlss.build();
+	}
+
+	public static List<Release> filter(Collection<Release> rlss, Collection<Media> media, Collection<Tag> containedTags, Group group,
+			NamingService mediaNamingService)
 	{
 		return filter(rlss, media, containedTags, group, mediaNamingService, ImmutableMap.of());
 	}
 
-	public static List<Release> filter(List<Release> rlss, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService,
-			Map<String, Object> namingParameters)
+	public static List<Release> filter(Collection<Release> rlss, Collection<Media> media, Collection<Tag> containedTags, Group group,
+			NamingService mediaNamingService, Map<String, Object> namingParameters)
 	{
 		if (rlss.isEmpty())
 		{
@@ -74,12 +92,12 @@ public class ReleaseUtils
 		return filteredRlss.build();
 	}
 
-	public static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService)
+	public static boolean filter(Release rls, Collection<Media> media, Collection<Tag> containedTags, Group group, NamingService mediaNamingService)
 	{
 		return filter(rls, media, containedTags, group, mediaNamingService, ImmutableMap.of());
 	}
 
-	public static boolean filter(Release rls, List<Media> media, List<Tag> containedTags, Group group, NamingService mediaNamingService,
+	public static boolean filter(Release rls, Collection<Media> media, Collection<Tag> containedTags, Group group, NamingService mediaNamingService,
 			Map<String, Object> namingParameters)
 	{
 		if (rls == null)
@@ -90,7 +108,7 @@ public class ReleaseUtils
 		return filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService, namingParameters);
 	}
 
-	private static boolean filterInternal(Release rls, String requiredMediaName, List<Tag> containedTags, Group group,
+	private static boolean filterInternal(Release rls, String requiredMediaName, Collection<Tag> containedTags, Group group,
 			NamingService mediaNamingService, Map<String, Object> namingParams)
 	{
 		String actualMediaName = mediaNamingService.name(rls.getMedia(), namingParams);
@@ -208,7 +226,48 @@ public class ReleaseUtils
 		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
 	}
 
-	public static List<Tag> copyWithoutMetaTags(Collection<Tag> tags, Collection<Tag> metaTagsToRemove)
+	public static void transferMetaTags(List<Tag> sourceTags, List<Tag> targetTags, Collection<Tag> metaTags)
+	{
+		// iterate the source tags in reverse order so that the order in the target tags is correct
+		for (int i = sourceTags.size() - 1; i >= 0; i--)
+		{
+			Tag sourceTag = sourceTags.get(i);
+			if (metaTags.contains(sourceTag))
+			{
+				targetTags.add(0, sourceTag);
+			}
+		}
+	}
+
+	public static boolean containsAllIgnoreMetaTags(List<Tag> tags1, List<Tag> tags2, Collection<Tag> metaTagsToIgnore)
+	{
+		return copyAndRemoveMetaTags(tags1, metaTagsToIgnore).containsAll(copyAndRemoveMetaTags(tags2, metaTagsToIgnore));
+	}
+
+	public static boolean equalsIgnoreMetaTags(List<Tag> tags1, List<Tag> tags2, Collection<Tag> metaTagsToIgnore)
+	{
+		return copyAndRemoveMetaTags(tags1, metaTagsToIgnore).equals(copyAndRemoveMetaTags(tags2, metaTagsToIgnore));
+	}
+
+	public static List<Release> guessMatchingReleases(Release partialRls, Collection<Release> commonRlss, Collection<Tag> metaTags)
+	{
+		List<Release> matchingCommonRlss = filter(commonRlss, partialRls.getTags(), partialRls.getGroup(), metaTags);
+		if (matchingCommonRlss.isEmpty())
+		{
+			return ImmutableList.of(new Release(partialRls));
+		}
+		ImmutableList.Builder<Release> guessedRlss = ImmutableList.builder();
+		for (Release rls : matchingCommonRlss)
+		{
+			Release guessedRls = new Release(rls);
+			guessedRls.setMedia(partialRls.getMedia());
+			transferMetaTags(partialRls.getTags(), guessedRls.getTags(), metaTags);
+			guessedRlss.add(guessedRls);
+		}
+		return guessedRlss.build();
+	}
+
+	private static List<Tag> copyAndRemoveMetaTags(List<Tag> tags, Collection<Tag> metaTagsToRemove)
 	{
 		if (tags.isEmpty())
 		{
