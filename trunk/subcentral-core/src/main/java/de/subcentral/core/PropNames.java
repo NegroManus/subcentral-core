@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata;
+package de.subcentral.core;
 
 public interface PropNames
 {

@@ -12,9 +12,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
+import de.subcentral.core.BeanUtil;
+import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
-import de.subcentral.core.metadata.ModelUtils;
-import de.subcentral.core.metadata.PropNames;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.naming.NamingUtils;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -251,7 +251,7 @@ public class Release implements Comparable<Release>
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		this.date = ModelUtils.validateTemporalClass(date);
+		this.date = BeanUtil.validateTemporalClass(date);
 	}
 
 	/**
@@ -440,15 +440,15 @@ public class Release implements Comparable<Release>
 		return MoreObjects.toStringHelper(Release.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("media", ModelUtils.nullIfEmpty(media))
-				.add("tags", ModelUtils.nullIfEmpty(tags))
+				.add("media", BeanUtil.nullIfEmpty(media))
+				.add("tags", BeanUtil.nullIfEmpty(tags))
 				.add("group", group)
-				.add("languages", ModelUtils.nullIfEmpty(languages))
+				.add("languages", BeanUtil.nullIfEmpty(languages))
 				.add("date", date)
 				.add("section", section)
-				.add("size", ModelUtils.nullIfZero(size))
-				.add("fileCount", ModelUtils.nullIfZero(fileCount))
-				.add("nukes", ModelUtils.nullIfEmpty(nukes))
+				.add("size", BeanUtil.nullIfZero(size))
+				.add("fileCount", BeanUtil.nullIfZero(fileCount))
+				.add("nukes", BeanUtil.nullIfEmpty(nukes))
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
 				.add("furtherInfoLinks", furtherInfoLinks)

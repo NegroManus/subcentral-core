@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata;
+package de.subcentral.core;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.Multimap;
 
-public class ModelUtils
+public class BeanUtil
 {
 	public static final Temporal validateTemporalClass(Temporal date) throws IllegalArgumentException
 	{
@@ -70,7 +70,7 @@ public class ModelUtils
 		return copied;
 	}
 
-	public ModelUtils()
+	public BeanUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

@@ -14,9 +14,9 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.BeanUtil;
+import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
-import de.subcentral.core.metadata.ModelUtils;
-import de.subcentral.core.metadata.PropNames;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
@@ -393,13 +393,13 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 				.add("title", title)
 				.add("date", date)
 				.add("special", special)
-				.add("runningTime", ModelUtils.nullIfZero(runningTime))
+				.add("runningTime", BeanUtil.nullIfZero(runningTime))
 				.add("description", description)
-				.add("coverLinks", ModelUtils.nullIfEmpty(coverLinks))
+				.add("coverLinks", BeanUtil.nullIfEmpty(coverLinks))
 				.add("contentRating", contentRating)
-				.add("contributions", ModelUtils.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", ModelUtils.nullIfEmpty(furtherInfoLinks))
-				.add("attributes", ModelUtils.nullIfEmpty(attributes))
+				.add("contributions", BeanUtil.nullIfEmpty(contributions))
+				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 

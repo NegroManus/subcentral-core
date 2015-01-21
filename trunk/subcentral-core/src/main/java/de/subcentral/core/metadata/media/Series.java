@@ -12,9 +12,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
+import de.subcentral.core.BeanUtil;
+import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
-import de.subcentral.core.metadata.ModelUtils;
-import de.subcentral.core.metadata.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Series extends AbstractNamedMedia implements Comparable<Series>
@@ -110,7 +110,7 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 
 	public void setFinaleDate(Temporal finaleDate)
 	{
-		this.finaleDate = ModelUtils.validateTemporalClass(finaleDate);
+		this.finaleDate = BeanUtil.validateTemporalClass(finaleDate);
 	}
 
 	@Override
@@ -322,16 +322,16 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 				.add("finaleDate", finaleDate)
 				.add("type", type)
 				.add("state", state)
-				.add("originalLanguages", ModelUtils.nullIfEmpty(originalLanguages))
-				.add("countriesOfOrigin", ModelUtils.nullIfEmpty(countriesOfOrigin))
-				.add("regularRunningTime", ModelUtils.nullIfZero(regularRunningTime))
-				.add("genres", ModelUtils.nullIfEmpty(genres))
+				.add("originalLanguages", BeanUtil.nullIfEmpty(originalLanguages))
+				.add("countriesOfOrigin", BeanUtil.nullIfEmpty(countriesOfOrigin))
+				.add("regularRunningTime", BeanUtil.nullIfZero(regularRunningTime))
+				.add("genres", BeanUtil.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverLinks", ModelUtils.nullIfEmpty(coverLinks))
+				.add("coverLinks", BeanUtil.nullIfEmpty(coverLinks))
 				.add("contentRating", contentRating)
-				.add("contributions", ModelUtils.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", ModelUtils.nullIfEmpty(furtherInfoLinks))
-				.add("attributes", ModelUtils.nullIfEmpty(attributes))
+				.add("contributions", BeanUtil.nullIfEmpty(contributions))
+				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import de.subcentral.core.metadata.PropNames;
+import de.subcentral.core.PropNames;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
