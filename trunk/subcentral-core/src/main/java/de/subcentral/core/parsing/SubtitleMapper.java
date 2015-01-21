@@ -2,9 +2,9 @@ package de.subcentral.core.parsing;
 
 import java.util.Map;
 
-import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.Tag;
-import de.subcentral.core.model.subtitle.Subtitle;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleMapper extends AbstractMapper<Subtitle>

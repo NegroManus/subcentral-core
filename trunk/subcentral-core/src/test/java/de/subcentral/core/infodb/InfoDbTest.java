@@ -2,9 +2,9 @@ package de.subcentral.core.infodb;
 
 import java.util.List;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.RegularAvMedia;
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.support.predbme.PreDbMeInfoDb;
 
 public class InfoDbTest

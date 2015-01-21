@@ -12,10 +12,10 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.model.media.AvMedia;
-import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.media.AvMedia;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ClassBasedParsingService;
 import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.parsing.MappingMatcher;

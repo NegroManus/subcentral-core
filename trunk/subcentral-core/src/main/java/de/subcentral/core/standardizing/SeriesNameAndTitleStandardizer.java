@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.model.media.Series;
+import de.subcentral.core.metadata.media.Series;
 
 /**
  * @implSpec #immutable #thread-safe

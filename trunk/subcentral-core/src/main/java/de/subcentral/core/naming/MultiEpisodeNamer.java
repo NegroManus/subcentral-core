@@ -9,8 +9,8 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.MultiEpisodeHelper;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
 

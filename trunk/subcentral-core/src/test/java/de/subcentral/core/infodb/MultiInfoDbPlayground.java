@@ -9,9 +9,9 @@ import java.util.concurrent.Executors;
 
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.model.media.RegularAvMedia;
-import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.ReleaseUtils;
+import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.ReleaseUtils;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
 import de.subcentral.support.predbme.PreDbMeInfoDb;

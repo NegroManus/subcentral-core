@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.Separation;
 
 public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>

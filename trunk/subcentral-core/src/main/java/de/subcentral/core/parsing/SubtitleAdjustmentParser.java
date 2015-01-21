@@ -10,11 +10,11 @@ import java.util.Set;
 
 import com.google.common.base.Splitter;
 
-import de.subcentral.core.model.media.AvMedia;
-import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.media.AvMedia;
+import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>

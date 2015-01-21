@@ -24,15 +24,15 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
 import de.subcentral.core.infodb.InfoDbQueryException;
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.media.RegularAvMedia;
-import de.subcentral.core.model.media.RegularMedia;
-import de.subcentral.core.model.media.Season;
-import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.Nuke;
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
+import de.subcentral.core.metadata.media.Season;
+import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Nuke;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
 /**

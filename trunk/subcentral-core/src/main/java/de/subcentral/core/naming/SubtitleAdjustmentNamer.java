@@ -5,9 +5,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.Separation;
 
 public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<SubtitleAdjustment>

@@ -11,9 +11,9 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.release.Release;
 
 public class StandardizingTest
 {

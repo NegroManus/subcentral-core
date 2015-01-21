@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.model.media.Media;
+import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.util.IterableComparator;
 
 public class NamingUtils

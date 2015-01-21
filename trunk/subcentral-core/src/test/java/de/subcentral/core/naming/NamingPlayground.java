@@ -5,16 +5,16 @@ import java.time.Year;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.MultiEpisodeHelper;
-import de.subcentral.core.model.media.RegularAvMedia;
-import de.subcentral.core.model.media.Season;
-import de.subcentral.core.model.media.Series;
-import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Tag;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.MultiEpisodeHelper;
+import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.Season;
+import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 
 public class NamingPlayground
 {
