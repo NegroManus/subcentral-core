@@ -20,7 +20,7 @@ import de.subcentral.core.model.PropNames;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Season extends AbstractMedia implements AvMediaCollection<Episode>, Comparable<Season>
+public class Season extends AbstractMedia implements Comparable<Season>
 {
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
 	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
@@ -118,16 +118,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		this.special = special;
 	}
 
-	/**
-	 * @return The air date ({@link Episode#getDate()}) of the first episode of this season, <code>null</code> if this season has no episodes.
-	 */
-	@Override
-	public Temporal getDate()
-	{
-		List<Episode> epis = getEpisodes();
-		return epis.isEmpty() ? null : epis.get(0).getDate();
-	}
-
 	@Override
 	public Set<String> getGenres()
 	{
@@ -157,27 +147,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 		return number != null;
 	}
 
-	/**
-	 * @return The air date ({@link Episode#getDate()}) of the last episode of this series, <code>null</code> if this series has no episodes.
-	 */
-	public Temporal getDateOfLastEpisode()
-	{
-		List<Episode> epis = getEpisodes();
-		return epis.isEmpty() ? null : epis.get(epis.size() - 1).getDate();
-	}
-
-	// Episodes
-	@Override
-	public List<Episode> getMediaItems()
-	{
-		return getEpisodes();
-	}
-
-	public List<Episode> getEpisodes()
-	{
-		return series != null ? series.getEpisodesOf(this) : ImmutableList.of();
-	}
-
 	public Episode newEpisode()
 	{
 		return new Episode(series, this);
@@ -191,21 +160,6 @@ public class Season extends AbstractMedia implements AvMediaCollection<Episode>,
 	public Episode newEpisode(Integer numberInSeason, String title)
 	{
 		return new Episode(series, this, numberInSeason, title);
-	}
-
-	public Episode addEpisode()
-	{
-		return series.addEpisode(this);
-	}
-
-	public Episode addEpisode(Integer numberInSeason)
-	{
-		return series.addEpisode(this, numberInSeason);
-	}
-
-	public Episode addEpisode(Integer numberInSeason, String title)
-	{
-		return series.addEpisode(this, numberInSeason, title);
 	}
 
 	// Object methods
