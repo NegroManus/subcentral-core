@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.metadata.ModelUtils;
+import de.subcentral.core.BeanUtil;
 
 public abstract class AbstractMedia implements Media
 {
@@ -40,7 +40,7 @@ public abstract class AbstractMedia implements Media
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		this.date = ModelUtils.validateTemporalClass(date);
+		this.date = BeanUtil.validateTemporalClass(date);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata;
+package de.subcentral.core;
 
 /**
  * The following statements apply to all model classes in this package and the sub packages:

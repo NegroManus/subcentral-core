@@ -12,7 +12,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.metadata.ModelUtils;
+import de.subcentral.core.BeanUtil;
 
 public class GroupsCompatibility implements Compatibility
 {
@@ -214,9 +214,9 @@ public class GroupsCompatibility implements Compatibility
 	{
 		return MoreObjects.toStringHelper(GroupsCompatibility.class)
 				.omitNullValues()
-				.add("sourceTags", ModelUtils.nullIfEmpty(sourceTags))
+				.add("sourceTags", BeanUtil.nullIfEmpty(sourceTags))
 				.add("sourceGroup", sourceGroup)
-				.add("compatibleTags", ModelUtils.nullIfEmpty(compatibleTags))
+				.add("compatibleTags", BeanUtil.nullIfEmpty(compatibleTags))
 				.add("compatibleGroup", compatibleGroup)
 				.add("condition", condition)
 				.add("bidirectional", bidirectional)

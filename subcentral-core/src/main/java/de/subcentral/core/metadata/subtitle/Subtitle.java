@@ -14,9 +14,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import de.subcentral.core.BeanUtil;
+import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
-import de.subcentral.core.metadata.ModelUtils;
-import de.subcentral.core.metadata.PropNames;
 import de.subcentral.core.metadata.media.AvMedia;
 import de.subcentral.core.metadata.media.Contribution;
 import de.subcentral.core.metadata.media.Work;
@@ -536,7 +536,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("language", language)
 				.add("hearingImpaired", hearingImpaired)
 				.add("foreignParts", foreignParts)
-				.add("tags", ModelUtils.nullIfEmpty(tags))
+				.add("tags", BeanUtil.nullIfEmpty(tags))
 				.add("version", version)
 				.add("group", group)
 				.add("source", source)
@@ -544,7 +544,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("basis", basis)
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
-				.add("contributions", ModelUtils.nullIfEmpty(contributions))
+				.add("contributions", BeanUtil.nullIfEmpty(contributions))
 				.toString();
 	}
 }

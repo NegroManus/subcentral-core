@@ -13,8 +13,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.metadata.ModelUtils;
-import de.subcentral.core.metadata.PropNames;
+import de.subcentral.core.BeanUtil;
+import de.subcentral.core.PropNames;
 import de.subcentral.core.metadata.media.AvMedia;
 import de.subcentral.core.metadata.media.Contribution;
 import de.subcentral.core.metadata.media.Contributor;
@@ -160,7 +160,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		this.date = ModelUtils.validateTemporalClass(date);
+		this.date = BeanUtil.validateTemporalClass(date);
 	}
 
 	public long getSize()
@@ -317,13 +317,13 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		return MoreObjects.toStringHelper(SubtitleAdjustment.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("subtitles", ModelUtils.nullIfEmpty(subtitles))
-				.add("matchingReleases", ModelUtils.nullIfEmpty(matchingReleases))
+				.add("subtitles", BeanUtil.nullIfEmpty(subtitles))
+				.add("matchingReleases", BeanUtil.nullIfEmpty(matchingReleases))
 				.add("date", date)
-				.add("size", ModelUtils.nullIfZero(size))
-				.add("fileCount", ModelUtils.nullIfZero(fileCount))
-				.add("nukes", ModelUtils.nullIfEmpty(nukes))
-				.add("contributions", ModelUtils.nullIfEmpty(contributions))
+				.add("size", BeanUtil.nullIfZero(size))
+				.add("fileCount", BeanUtil.nullIfZero(fileCount))
+				.add("nukes", BeanUtil.nullIfEmpty(nukes))
+				.add("contributions", BeanUtil.nullIfEmpty(contributions))
 				.toString();
 	}
 }
