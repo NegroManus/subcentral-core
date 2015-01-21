@@ -22,20 +22,23 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends AbstractMedia implements Comparable<Season>
 {
-	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
-	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
-	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Season.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_SPECIAL			= new SimplePropDescriptor(Season.class, PropNames.SPECIAL);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_LINKS		= new SimplePropDescriptor(Season.class, PropNames.COVER_LINKS);
-	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(Season.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO_LINKS);
+	public static final SimplePropDescriptor	PROP_SERIES			= new SimplePropDescriptor(Season.class, PropNames.SERIES);
+	public static final SimplePropDescriptor	PROP_NUMBER			= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
+	public static final SimplePropDescriptor	PROP_TITLE			= new SimplePropDescriptor(Season.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_SPECIAL		= new SimplePropDescriptor(Season.class, PropNames.SPECIAL);
+	public static final SimplePropDescriptor	PROP_DATE			= new SimplePropDescriptor(Series.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_FINALE_DATE	= new SimplePropDescriptor(Series.class, PropNames.FINALE_DATE);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION	= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_IMAGES			= new SimplePropDescriptor(Season.class, PropNames.IMAGES);
+	public static final SimplePropDescriptor	PROP_CONTENT_RATING	= new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS	= new SimplePropDescriptor(Season.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES		= new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
 
 	private Series								series;
 	private Integer								number;
-	private Temporal							finaleDate;
 	private boolean								special;
+	private Temporal							finaleDate;
 
 	public Season()
 	{
@@ -97,6 +100,16 @@ public class Season extends AbstractMedia implements Comparable<Season>
 		this.number = number;
 	}
 
+	public boolean isSpecial()
+	{
+		return special;
+	}
+
+	public void setSpecial(boolean special)
+	{
+		this.special = special;
+	}
+
 	public Temporal getFinaleDate()
 	{
 		return finaleDate;
@@ -106,16 +119,6 @@ public class Season extends AbstractMedia implements Comparable<Season>
 	{
 		BeanUtil.validateTemporalClass(finaleDate);
 		this.finaleDate = finaleDate;
-	}
-
-	public boolean isSpecial()
-	{
-		return special;
-	}
-
-	public void setSpecial(boolean special)
-	{
-		this.special = special;
 	}
 
 	@Override
@@ -207,14 +210,13 @@ public class Season extends AbstractMedia implements Comparable<Season>
 				.add("series", series)
 				.add("number", number)
 				.add("title", title)
+				.add("special", special)
 				.add("date", date)
 				.add("finaleDate", finaleDate)
-				.add("special", special)
 				.add("description", description)
-				.add("coverLinks", BeanUtil.nullIfEmpty(coverLinks))
+				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("contentRating", contentRating)
-				.add("contributions", BeanUtil.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

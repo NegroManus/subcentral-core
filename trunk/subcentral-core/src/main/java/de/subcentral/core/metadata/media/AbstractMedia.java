@@ -9,18 +9,16 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.BeanUtil;
-import de.subcentral.core.metadata.Contribution;
 
 public abstract class AbstractMedia implements Media
 {
 	protected String								title;
 	protected Temporal								date;
 	protected String								description;
-	protected final List<String>					coverLinks			= new ArrayList<>(1);
+	protected final ListMultimap<String, String>	images		= LinkedListMultimap.create(0);
 	protected String								contentRating;
-	protected final List<Contribution>				contributions		= new ArrayList<>(0);
-	protected final List<String>					furtherInfoLinks	= new ArrayList<>(4);
-	protected final ListMultimap<String, Object>	attributes			= LinkedListMultimap.create(0);
+	protected final List<String>					furtherInfo	= new ArrayList<>(4);
+	protected final ListMultimap<String, Object>	attributes	= LinkedListMultimap.create(0);
 
 	@Override
 	public String getTitle()
@@ -56,15 +54,15 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public List<String> getCoverLinks()
+	public ListMultimap<String, String> getImages()
 	{
-		return coverLinks;
+		return images;
 	}
 
-	public void setCoverLinks(Collection<String> coverLinks)
+	public void setImages(ListMultimap<String, String> images)
 	{
-		this.coverLinks.clear();
-		this.coverLinks.addAll(coverLinks);
+		this.images.clear();
+		this.images.putAll(images);
 	}
 
 	@Override
@@ -79,27 +77,15 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public List<Contribution> getContributions()
+	public List<String> getFurtherInfo()
 	{
-		return contributions;
+		return furtherInfo;
 	}
 
-	public void setContributions(Collection<Contribution> contributions)
+	public void setFurtherInfo(Collection<String> furtherInfo)
 	{
-		this.contributions.clear();
-		this.contributions.addAll(contributions);
-	}
-
-	@Override
-	public List<String> getFurtherInfoLinks()
-	{
-		return furtherInfoLinks;
-	}
-
-	public void setFurtherInfoLinks(Collection<String> furtherInfoLinks)
-	{
-		this.furtherInfoLinks.clear();
-		this.furtherInfoLinks.addAll(furtherInfoLinks);
+		this.furtherInfo.clear();
+		this.furtherInfo.addAll(furtherInfo);
 	}
 
 	@Override

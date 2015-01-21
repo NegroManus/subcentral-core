@@ -473,12 +473,12 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 					{
 						epi.setNumberInSeason(Integer.parseInt(mEpi.group(1)));
 					}
-					// Episode title and furtherInfoLinks
+					// Episode title and furtherInfo
 					Element episodeTitleAnchor = valueDiv.select("a.ext-link").first();
 					if (episodeTitleAnchor != null)
 					{
 						epi.setTitle(episodeTitleAnchor.text());
-						epi.getFurtherInfoLinks().add(episodeTitleAnchor.attr("href"));
+						epi.getFurtherInfo().add(episodeTitleAnchor.attr("href"));
 					}
 					Element airdateElement = valueDiv.getElementsByClass("airdate").first();
 					if (airdateElement != null)
@@ -582,7 +582,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 			if (seriesInfoUrls != null)
 			{
 				// the ext-links for episode releases belong to the series
-				epi.getSeries().getFurtherInfoLinks().addAll(seriesInfoUrls);
+				epi.getSeries().getFurtherInfo().addAll(seriesInfoUrls);
 			}
 		}
 		else if (media instanceof RegularMedia)
@@ -599,7 +599,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 			}
 			if (seriesInfoUrls != null)
 			{
-				stdMediaItem.getFurtherInfoLinks().addAll(seriesInfoUrls);
+				stdMediaItem.getFurtherInfo().addAll(seriesInfoUrls);
 			}
 		}
 

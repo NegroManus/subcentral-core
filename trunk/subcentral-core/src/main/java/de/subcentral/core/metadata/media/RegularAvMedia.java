@@ -25,11 +25,10 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 	public static final SimplePropDescriptor	PROP_RUNNING_TIME			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.RUNNING_TIME);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(RegularAvMedia.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_LINKS			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.COVER_LINKS);
+	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(RegularAvMedia.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS		= new SimplePropDescriptor(RegularAvMedia.class,
-																					PropNames.FURTHER_INFO_LINKS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(RegularAvMedia.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(RegularAvMedia.class, PropNames.ATTRIBUTES);
 
 	protected int								runningTime					= 0;
 
@@ -78,10 +77,9 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 				.add("runningTime", BeanUtil.nullIfZero(runningTime))
 				.add("genres", BeanUtil.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverLinks", BeanUtil.nullIfEmpty(coverLinks))
+				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("contentRating", contentRating)
-				.add("contributions", BeanUtil.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}
