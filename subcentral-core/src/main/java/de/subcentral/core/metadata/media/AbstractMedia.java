@@ -3,7 +3,9 @@ package de.subcentral.core.metadata.media;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -15,8 +17,9 @@ public abstract class AbstractMedia implements Media
 	protected String								title;
 	protected Temporal								date;
 	protected String								description;
-	protected final ListMultimap<String, String>	images		= LinkedListMultimap.create(0);
+	protected Map<String, Float>					ratings		= new HashMap<>(2);
 	protected String								contentRating;
+	protected final ListMultimap<String, String>	images		= LinkedListMultimap.create(0);
 	protected final List<String>					furtherInfo	= new ArrayList<>(4);
 	protected final ListMultimap<String, Object>	attributes	= LinkedListMultimap.create(0);
 
@@ -54,15 +57,15 @@ public abstract class AbstractMedia implements Media
 	}
 
 	@Override
-	public ListMultimap<String, String> getImages()
+	public Map<String, Float> getRatings()
 	{
-		return images;
+		return ratings;
 	}
 
-	public void setImages(ListMultimap<String, String> images)
+	public void setRatings(Map<String, Float> ratings)
 	{
-		this.images.clear();
-		this.images.putAll(images);
+		this.ratings.clear();
+		this.ratings.putAll(ratings);
 	}
 
 	@Override
@@ -74,6 +77,18 @@ public abstract class AbstractMedia implements Media
 	public void setContentRating(String contentRating)
 	{
 		this.contentRating = contentRating;
+	}
+
+	@Override
+	public ListMultimap<String, String> getImages()
+	{
+		return images;
+	}
+
+	public void setImages(ListMultimap<String, String> images)
+	{
+		this.images.clear();
+		this.images.putAll(images);
 	}
 
 	@Override

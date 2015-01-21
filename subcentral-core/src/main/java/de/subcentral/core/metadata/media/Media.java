@@ -3,6 +3,7 @@ package de.subcentral.core.metadata.media;
 import java.time.Year;
 import java.time.temporal.Temporal;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ListMultimap;
@@ -158,11 +159,12 @@ public interface Media
 	public String getDescription();
 
 	/**
-	 * The key of the map is the image typ (thumbnail, banner, header, background), the value is a resource path (URL).
+	 * Allows to store different ratings (IMDb, filmstarts, ...). The key of an entry is an identifier for the "rating agency", the value is a float
+	 * value between 0.0 and 10.0.
 	 * 
-	 * @return all images associated with this media
+	 * @return the ratings
 	 */
-	public ListMultimap<String, String> getImages();
+	public Map<String, Float> getRatings();
 
 	/**
 	 * See: http://en.wikipedia.org/wiki/Content_rating.
@@ -170,6 +172,13 @@ public interface Media
 	 * @return the parental advisory (music industry) / content rating for this media
 	 */
 	public String getContentRating();
+
+	/**
+	 * The key of the map is the image typ (thumbnail, banner, header, background), the values are resource paths (URLs) to the images.
+	 * 
+	 * @return all images associated with this media
+	 */
+	public ListMultimap<String, String> getImages();
 
 	/**
 	 * 

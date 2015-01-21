@@ -33,6 +33,7 @@ public interface PropNames
 	public static final String	NUMBER_IN_SERIES		= "numberInSeries";
 	public static final String	ORIGINAL_LANGUAGES		= "originalLanguages";
 	public static final String	PRODUCTION_TYPE			= "productionType";
+	public static final String	RATINGS					= "ratings";
 	public static final String	REGULAR_RUNNING_TIME	= "regularRunningTime";
 	public static final String	RUNNING_TIME			= "runningTime";
 	public static final String	SEASON					= "season";
