@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.media;
+package de.subcentral.core.metadata;
 
 public interface Contributor
 {

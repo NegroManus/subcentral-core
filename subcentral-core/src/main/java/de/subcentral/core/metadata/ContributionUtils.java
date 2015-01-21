@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.media;
+package de.subcentral.core.metadata;
 
 import java.util.Collection;
 import java.util.List;

@@ -9,6 +9,7 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.BeanUtil;
+import de.subcentral.core.metadata.Contribution;
 
 public abstract class AbstractMedia implements Media
 {

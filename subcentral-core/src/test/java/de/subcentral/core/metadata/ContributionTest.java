@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import de.subcentral.core.metadata.media.Contribution;
-import de.subcentral.core.metadata.media.ContributionUtils;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
 public class ContributionTest
