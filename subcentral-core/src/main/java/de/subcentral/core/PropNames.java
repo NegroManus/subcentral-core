@@ -2,20 +2,22 @@ package de.subcentral.core;
 
 public interface PropNames
 {
+	public static final String	ATTRIBUTES				= "attributes";
 	public static final String	BASIS					= "basis";
 	public static final String	CONTENT_RATING			= "contentRating";
 	public static final String	CONTRIBUTIONS			= "contributions";
 	public static final String	COUNTRIES_OF_ORIGIN		= "countriesOfOrigin";
-	public static final String	COVER_LINKS				= "coverUrls";
 	public static final String	DATE					= "date";
 	public static final String	DESCRIPTION				= "description";
 	public static final String	EPISODES				= "episodes";
 	public static final String	FILE_COUNT				= "fileCount";
+	public static final String	FINALE_DATE				= "finaleDate";
 	public static final String	FOREIGN_PARTS			= "foreignParts";
-	public static final String	FURTHER_INFO_LINKS		= "furtherInfoLinks";
+	public static final String	FURTHER_INFO			= "furtherInfo";
 	public static final String	GENRES					= "genres";
 	public static final String	GROUP					= "group";
 	public static final String	HEARING_IMPAIRED		= "hearingImpaired";
+	public static final String	IMAGES					= "images";
 	public static final String	LANGUAGE				= "language";
 	public static final String	LANGUAGES				= "languages";
 	public static final String	MATCHING_RELEASES		= "matchingReleases";

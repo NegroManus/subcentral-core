@@ -24,17 +24,17 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	public static final SimplePropDescriptor	PROP_TYPE					= new SimplePropDescriptor(Series.class, PropNames.TYPE);
 	public static final SimplePropDescriptor	PROP_STATE					= new SimplePropDescriptor(Series.class, PropNames.STATE);
 	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(Series.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_FINALE_DATE			= new SimplePropDescriptor(Series.class, PropNames.FINALE_DATE);
 	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(Series.class, PropNames.ORIGINAL_LANGUAGES);
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Series.class, PropNames.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_REGULAR_RUNNING_TIME	= new SimplePropDescriptor(Series.class, PropNames.REGULAR_RUNNING_TIME);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Series.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_LINKS			= new SimplePropDescriptor(Series.class, PropNames.COVER_LINKS);
+	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Series.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Series.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Series.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FINFO_LINKS			= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO_LINKS);
-	public static final SimplePropDescriptor	PROP_SEASONS				= new SimplePropDescriptor(Series.class, PropNames.SEASONS);
-	public static final SimplePropDescriptor	PROP_EPISODES				= new SimplePropDescriptor(Series.class, PropNames.EPISODES);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(Series.class, PropNames.ATTRIBUTES);
 
 	/**
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
@@ -64,9 +64,9 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	 */
 	public static final String					STATE_ENDED					= "ENDED";
 
-	private Temporal							finaleDate;
 	private String								type;
 	private String								state;
+	private Temporal							finaleDate;
 	private final List<String>					originalLanguages			= new ArrayList<>(1);
 	private final List<String>					countriesOfOrigin			= new ArrayList<>(1);
 	private int									regularRunningTime			= 0;
@@ -85,32 +85,6 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	{
 		setName(name);
 		setTitle(title);
-	}
-
-	/**
-	 * Returns the date of the Series' finale. This is the date of the last / final Episode of this Series. The date of the premiere is stored in
-	 * {@link #getDate()}.
-	 * <p>
-	 * <b>Note:</b> The premiere date and finale date may be stored redundantly if this Series contains all its Episodes in {@link #getEpisodes() the
-	 * Episodes list}. Then the premiere date and finale date can be retrieved via {@link #getDateOfFirstEpisode()} and
-	 * {@link #getDateOfLastEpisode()} respectively. But if this Series object does not contain all its Episodes (because they are unknown), then the
-	 * dates can be stored explicitly in the {@link #getDate() date} and {@link #getFinaleDate() finaleDate} properties.
-	 * </p>
-	 * 
-	 * @see #getDate()
-	 * @see #getDateOfFirstEpisode()
-	 * @see #getDateOfLastEpisode()
-	 * 
-	 * @return the date of the finale
-	 */
-	public Temporal getFinaleDate()
-	{
-		return finaleDate;
-	}
-
-	public void setFinaleDate(Temporal finaleDate)
-	{
-		this.finaleDate = BeanUtil.validateTemporalClass(finaleDate);
 	}
 
 	@Override
@@ -143,6 +117,32 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	public void setState(String state)
 	{
 		this.state = state;
+	}
+
+	/**
+	 * Returns the date of the Series' finale. This is the date of the last / final Episode of this Series. The date of the premiere is stored in
+	 * {@link #getDate()}.
+	 * <p>
+	 * <b>Note:</b> The premiere date and finale date may be stored redundantly if this Series contains all its Episodes in {@link #getEpisodes() the
+	 * Episodes list}. Then the premiere date and finale date can be retrieved via {@link #getDateOfFirstEpisode()} and
+	 * {@link #getDateOfLastEpisode()} respectively. But if this Series object does not contain all its Episodes (because they are unknown), then the
+	 * dates can be stored explicitly in the {@link #getDate() date} and {@link #getFinaleDate() finaleDate} properties.
+	 * </p>
+	 * 
+	 * @see #getDate()
+	 * @see #getDateOfFirstEpisode()
+	 * @see #getDateOfLastEpisode()
+	 * 
+	 * @return the date of the finale
+	 */
+	public Temporal getFinaleDate()
+	{
+		return finaleDate;
+	}
+
+	public void setFinaleDate(Temporal finaleDate)
+	{
+		this.finaleDate = BeanUtil.validateTemporalClass(finaleDate);
 	}
 
 	@Override
@@ -318,19 +318,18 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 				.omitNullValues()
 				.add("name", name)
 				.add("title", title)
-				.add("date", date)
-				.add("finaleDate", finaleDate)
 				.add("type", type)
 				.add("state", state)
+				.add("date", date)
+				.add("finaleDate", finaleDate)
 				.add("originalLanguages", BeanUtil.nullIfEmpty(originalLanguages))
 				.add("countriesOfOrigin", BeanUtil.nullIfEmpty(countriesOfOrigin))
 				.add("regularRunningTime", BeanUtil.nullIfZero(regularRunningTime))
 				.add("genres", BeanUtil.nullIfEmpty(genres))
 				.add("description", description)
-				.add("coverLinks", BeanUtil.nullIfEmpty(coverLinks))
+				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("contentRating", contentRating)
-				.add("contributions", BeanUtil.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

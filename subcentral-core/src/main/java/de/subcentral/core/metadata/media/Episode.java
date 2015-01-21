@@ -36,10 +36,10 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Episode.class, PropNames.COUNTRIES_OF_ORIGIN);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Episode.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Episode.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_COVER_LINKS			= new SimplePropDescriptor(Episode.class, PropNames.COVER_LINKS);
+	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Episode.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Episode.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Episode.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS		= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO_LINKS);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(Episode.class, PropNames.ATTRIBUTES);
 
 	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
 	{
@@ -395,10 +395,9 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 				.add("special", special)
 				.add("runningTime", BeanUtil.nullIfZero(runningTime))
 				.add("description", description)
-				.add("coverLinks", BeanUtil.nullIfEmpty(coverLinks))
+				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("contentRating", contentRating)
-				.add("contributions", BeanUtil.nullIfEmpty(contributions))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

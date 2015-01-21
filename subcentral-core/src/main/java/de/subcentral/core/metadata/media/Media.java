@@ -7,7 +7,6 @@ import java.util.Set;
 
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.metadata.Work;
 import de.subcentral.core.util.TimeUtil;
 
 /**
@@ -64,7 +63,7 @@ import de.subcentral.core.util.TimeUtil;
  * @implSpec All (non-standard) implementations should implement {@link Comparable}.
  *
  */
-public interface Media extends Work
+public interface Media
 {
 	public static final String	MEDIA_TYPE_EPISODE				= "EPISODE";
 	public static final String	MEDIA_TYPE_SERIES				= "SERIES";
@@ -88,6 +87,11 @@ public interface Media extends Work
 	public static final String	MEDIA_CONTENT_TYPE_AUDIO		= "AUDIO";
 	public static final String	MEDIA_CONTENT_TYPE_VIDEO		= "VIDEO";
 	public static final String	MEDIA_CONTENT_TYPE_APPLICATION	= "APPLICATION";
+
+	public static final String	MEDIA_IMAGE_TYPE_THUMBNAIL		= "thumbnail";
+	public static final String	MEDIA_IMAGE_TYPE_BANNER			= "banner";
+	public static final String	MEDIA_IMAGE_TYPE_HEADER			= "header";
+	public static final String	MEDIA_IMAGE_TYPE_BACKGROUND		= "background";
 
 	// Property accessors
 	/**
@@ -147,17 +151,18 @@ public interface Media extends Work
 	public Set<String> getGenres();
 
 	/**
-	 * the description can for example be facts about this media or a plot summary (in case of Episodes or Movies)
+	 * The description can for example be facts about this media or a plot summary (in case of Episodes or Movies).
 	 * 
 	 * @return The description of this media.
 	 */
 	public String getDescription();
 
 	/**
+	 * The key of the map is the image typ (thumbnail, banner, header, background), the value is a resource path (URL).
 	 * 
-	 * @return a list of links (typically URLs) each pointing to a cover image for this media. The first URL points to the primary cover
+	 * @return all images associated with this media
 	 */
-	public List<String> getCoverLinks();
+	public ListMultimap<String, String> getImages();
 
 	/**
 	 * See: http://en.wikipedia.org/wiki/Content_rating.
@@ -170,7 +175,7 @@ public interface Media extends Work
 	 * 
 	 * @return a set of links (typically URLs) where further information about this media can be found
 	 */
-	public List<String> getFurtherInfoLinks();
+	public List<String> getFurtherInfo();
 
 	/**
 	 * Additional attributes that have no designated property can be stored in the ListMultimap of getAttributes().
