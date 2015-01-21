@@ -39,17 +39,17 @@ public class BeanUtil
 
 	public static final Collection<?> nullIfEmpty(Collection<?> c)
 	{
-		return c.isEmpty() ? null : c;
+		return c == null || c.isEmpty() ? null : c;
 	}
 
 	public static final Map<?, ?> nullIfEmpty(Map<?, ?> m)
 	{
-		return m.isEmpty() ? null : m;
+		return m == null || m.isEmpty() ? null : m;
 	}
 
 	public static final Multimap<?, ?> nullIfEmpty(Multimap<?, ?> m)
 	{
-		return m.isEmpty() ? null : m;
+		return m == null || m.isEmpty() ? null : m;
 	}
 
 	public static final Integer nullIfZero(int num)
