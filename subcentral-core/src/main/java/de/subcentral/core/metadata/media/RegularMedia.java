@@ -34,7 +34,6 @@ public class RegularMedia extends AbstractNamedMedia
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(RegularMedia.class, PropNames.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(RegularMedia.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(RegularMedia.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(RegularMedia.class, PropNames.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(RegularMedia.class, PropNames.FURTHER_INFO);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(RegularMedia.class, PropNames.ATTRIBUTES);
 

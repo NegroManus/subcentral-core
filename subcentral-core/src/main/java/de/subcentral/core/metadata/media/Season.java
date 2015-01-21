@@ -31,7 +31,6 @@ public class Season extends AbstractMedia implements Comparable<Season>
 	public static final SimplePropDescriptor	PROP_DESCRIPTION	= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_IMAGES			= new SimplePropDescriptor(Season.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING	= new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS	= new SimplePropDescriptor(Season.class, PropNames.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES		= new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
 

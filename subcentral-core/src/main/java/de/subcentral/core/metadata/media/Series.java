@@ -32,7 +32,6 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, PropNames.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Series.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Series.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS			= new SimplePropDescriptor(Series.class, PropNames.CONTRIBUTIONS);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(Series.class, PropNames.ATTRIBUTES);
 
