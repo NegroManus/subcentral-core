@@ -30,6 +30,7 @@ public class Season extends AbstractMedia implements Comparable<Season>
 	public static final SimplePropDescriptor	PROP_FINALE_DATE	= new SimplePropDescriptor(Series.class, PropNames.FINALE_DATE);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION	= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_IMAGES			= new SimplePropDescriptor(Season.class, PropNames.IMAGES);
+	public static final SimplePropDescriptor	PROP_RATINGS		= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING	= new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES		= new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
@@ -213,8 +214,9 @@ public class Season extends AbstractMedia implements Comparable<Season>
 				.add("date", date)
 				.add("finaleDate", finaleDate)
 				.add("description", description)
-				.add("images", BeanUtil.nullIfEmpty(images))
+				.add("ratings", BeanUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
+				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();

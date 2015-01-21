@@ -159,8 +159,9 @@ public class RegularMedia extends AbstractNamedMedia
 				.add("countriesOfOrigin", BeanUtil.nullIfEmpty(countriesOfOrigin))
 				.add("genres", BeanUtil.nullIfEmpty(genres))
 				.add("description", description)
-				.add("images", BeanUtil.nullIfEmpty(images))
+				.add("ratings", BeanUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
+				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();

@@ -9,6 +9,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -39,6 +40,11 @@ public class BeanUtil
 	public static final Collection<?> nullIfEmpty(Collection<?> c)
 	{
 		return c.isEmpty() ? null : c;
+	}
+
+	public static final Map<?, ?> nullIfEmpty(Map<?, ?> m)
+	{
+		return m.isEmpty() ? null : m;
 	}
 
 	public static final Multimap<?, ?> nullIfEmpty(Multimap<?, ?> m)

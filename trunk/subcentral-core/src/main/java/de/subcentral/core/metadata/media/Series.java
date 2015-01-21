@@ -30,8 +30,9 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	public static final SimplePropDescriptor	PROP_REGULAR_RUNNING_TIME	= new SimplePropDescriptor(Series.class, PropNames.REGULAR_RUNNING_TIME);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Series.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Series.class, PropNames.IMAGES);
+	public static final SimplePropDescriptor	PROP_RATINGS				= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Series.class, PropNames.CONTENT_RATING);
+	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Series.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(Series.class, PropNames.ATTRIBUTES);
 
@@ -326,8 +327,9 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 				.add("regularRunningTime", BeanUtil.nullIfZero(regularRunningTime))
 				.add("genres", BeanUtil.nullIfEmpty(genres))
 				.add("description", description)
-				.add("images", BeanUtil.nullIfEmpty(images))
+				.add("ratings", BeanUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
+				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
