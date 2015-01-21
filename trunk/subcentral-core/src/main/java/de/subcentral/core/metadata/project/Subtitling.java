@@ -3,10 +3,10 @@ package de.subcentral.core.metadata.project;
 import java.util.List;
 import java.util.Map;
 
+import de.subcentral.core.metadata.Contribution;
+import de.subcentral.core.metadata.ContributionUtils;
+import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.AvMedia;
-import de.subcentral.core.metadata.media.Contribution;
-import de.subcentral.core.metadata.media.ContributionUtils;
-import de.subcentral.core.metadata.media.Work;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
 public class Subtitling implements Work

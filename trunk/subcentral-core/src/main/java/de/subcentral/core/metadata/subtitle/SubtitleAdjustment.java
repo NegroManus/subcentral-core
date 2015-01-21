@@ -15,11 +15,11 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
+import de.subcentral.core.metadata.Contribution;
+import de.subcentral.core.metadata.Contributor;
+import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.AvMedia;
-import de.subcentral.core.metadata.media.Contribution;
-import de.subcentral.core.metadata.media.Contributor;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.media.Work;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
