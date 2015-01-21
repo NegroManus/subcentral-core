@@ -24,10 +24,10 @@ import org.jsoup.select.Elements;
 
 import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
 import de.subcentral.core.infodb.InfoDbQueryException;
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
 /**

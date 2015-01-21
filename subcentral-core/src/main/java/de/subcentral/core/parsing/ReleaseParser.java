@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import de.subcentral.core.model.media.Media;
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseParser extends AbstractMappingParser<Release>

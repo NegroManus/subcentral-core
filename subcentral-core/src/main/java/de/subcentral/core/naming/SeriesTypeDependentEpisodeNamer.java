@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.metadata.media.Episode;
 
 public class SeriesTypeDependentEpisodeNamer implements Namer<Episode>
 {

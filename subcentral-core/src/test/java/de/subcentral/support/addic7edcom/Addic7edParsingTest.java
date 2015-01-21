@@ -8,11 +8,11 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Tag;
-import de.subcentral.core.model.subtitle.Subtitle;
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 

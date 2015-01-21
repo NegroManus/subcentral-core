@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Season;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.util.Separation;
 
 /**

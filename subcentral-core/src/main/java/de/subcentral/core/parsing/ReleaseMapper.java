@@ -2,9 +2,9 @@ package de.subcentral.core.parsing;
 
 import java.util.Map;
 
-import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.Release;
-import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseMapper extends AbstractMapper<Release>

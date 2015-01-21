@@ -2,7 +2,7 @@ package de.subcentral.core.parsing;
 
 import java.util.Map;
 
-import de.subcentral.core.model.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleAdjustment>

@@ -5,9 +5,9 @@ import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Objects;
 
-import de.subcentral.core.model.media.Episode;
-import de.subcentral.core.model.media.Season;
-import de.subcentral.core.model.media.Series;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Season;
+import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class EpisodeMapper extends AbstractMapper<Episode>

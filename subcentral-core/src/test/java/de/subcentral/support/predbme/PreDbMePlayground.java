@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document;
 
 import com.google.common.io.Resources;
 
-import de.subcentral.core.model.release.Release;
+import de.subcentral.core.metadata.release.Release;
 
 public class PreDbMePlayground
 {

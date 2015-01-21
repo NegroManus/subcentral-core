@@ -14,7 +14,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.model.media.Episode;
+import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>

@@ -3,7 +3,7 @@ package de.subcentral.core.parsing;
 import java.time.temporal.Temporal;
 import java.util.Map;
 
-import de.subcentral.core.model.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularAvMedia;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class RegularAvMediaMapper implements Mapper<RegularAvMedia>

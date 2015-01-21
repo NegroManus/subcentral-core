@@ -20,9 +20,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.model.release.Group;
-import de.subcentral.core.model.release.Nuke;
-import de.subcentral.core.model.release.Tag;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Nuke;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TimeUtil;
 

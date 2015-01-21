@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import de.subcentral.core.model.media.Series;
+import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.util.Separation;
 
 public class SeriesNamer extends AbstractPropertySequenceNamer<Series>
