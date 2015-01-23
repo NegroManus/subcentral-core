@@ -42,7 +42,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 	 * 
 	 * @return an immutable copy of the current standardizers map (a snapshot)
 	 */
-	public ListMultimap<Class<?>, Standardizer<?>> getStandardizers()
+	public ImmutableListMultimap<Class<?>, Standardizer<?>> getStandardizers()
 	{
 		standardizersRwl.readLock().lock();
 		try
@@ -115,6 +115,20 @@ public class ClassBasedStandardizingService implements StandardizingService
 			int size = standardizers.size();
 			standardizers.clear();
 			return size;
+		}
+		finally
+		{
+			standardizersRwl.writeLock().unlock();
+		}
+	}
+
+	public <T> void setAllStandardizers(ListMultimap<Class<?>, Standardizer<?>> parsers)
+	{
+		standardizersRwl.writeLock().lock();
+		try
+		{
+			this.standardizers.clear();
+			this.standardizers.putAll(parsers);
 		}
 		finally
 		{

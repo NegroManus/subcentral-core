@@ -33,6 +33,8 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release>
 {
+	public static final String				DOMAIN				= "orlydb.com";
+
 	private static final Logger				log					= LogManager.getLogger(OrlyDbComInfoDb.class);
 
 	/**
@@ -54,7 +56,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release>
 	@Override
 	public String getDomain()
 	{
-		return "orlydb.com";
+		return DOMAIN;
 	}
 
 	@Override

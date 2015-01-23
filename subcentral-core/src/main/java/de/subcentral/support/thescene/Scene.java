@@ -31,7 +31,7 @@ import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimplePropFromStringService;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class TheScene
+public class Scene
 {
 	public static final String						DOMAIN			= "scene";
 	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
@@ -316,7 +316,7 @@ public class TheScene
 		return PARSING_SERVICE.getParsers();
 	}
 
-	private TheScene()
+	private Scene()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
