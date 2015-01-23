@@ -201,6 +201,14 @@ public class ReleaseUtils
 						changed = true;
 					}
 				}
+				// AAC2, 0 -> AAC2.0
+				else if ("AAC2".equals(lastTag.getName()) && "0".equals(tag.getName()))
+				{
+					iter.remove();
+					iter.previous();
+					iter.set(new Tag("AAC2.0"));
+					changed = true;
+				}
 				// WEB, DL -> WEB-DL
 				else if ("WEB".equals(lastTag.getName()) && "DL".equals(tag.getName()))
 				{
