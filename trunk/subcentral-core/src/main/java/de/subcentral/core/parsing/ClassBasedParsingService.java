@@ -129,6 +129,20 @@ public class ClassBasedParsingService implements ParsingService
 		}
 	}
 
+	public <T> void setAllParsers(ListMultimap<Class<?>, Parser<?>> parsers)
+	{
+		parsersRwl.writeLock().lock();
+		try
+		{
+			this.parsers.clear();
+			this.parsers.putAll(parsers);
+		}
+		finally
+		{
+			parsersRwl.writeLock().unlock();
+		}
+	}
+
 	@Override
 	public Object parse(String text) throws NoMatchException, ParsingException
 	{

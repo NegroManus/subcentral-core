@@ -35,6 +35,8 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release>
 {
+	public static final String				DOMAIN				= "xrel.to";
+
 	private static final Logger				log					= LogManager.getLogger(XRelToInfoDb.class);
 
 	/**
@@ -56,7 +58,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release>
 	@Override
 	public String getDomain()
 	{
-		return "xrel.to";
+		return DOMAIN;
 	}
 
 	@Override

@@ -23,8 +23,9 @@ import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.util.SimplePropDescriptor;
-import de.subcentral.support.thescene.TheScene;
+import de.subcentral.support.thescene.Scene;
 
 public class SubCentralDe
 {
@@ -45,7 +46,7 @@ public class SubCentralDe
 
 		ImmutableListMultimap.Builder<Class<?>, Parser<?>> parsers = ImmutableListMultimap.builder();
 
-		for (Parser<?> sceneParser : TheScene.getAllParsers().get(Release.class))
+		for (Parser<?> sceneParser : Scene.getAllParsers().get(Release.class))
 		{
 			if (!(sceneParser instanceof ReleaseParser))
 			{
@@ -124,26 +125,29 @@ public class SubCentralDe
 		return PARSING_SERVICE.getParsers();
 	}
 
-	public static void standardizeSubtitleLanguage(Subtitle sub)
+	public static List<StandardizingChange> standardizeSubtitleLanguage(Subtitle sub)
 	{
 		if (sub == null)
 		{
-			return;
+			return ImmutableList.of();
 		}
-		String lang = sub.getLanguage();
-		if (lang == null)
+		String oldLang = sub.getLanguage();
+		if (oldLang == null)
 		{
-			return;
+			return ImmutableList.of();
 		}
-		if (lang.equalsIgnoreCase("en") || lang.equalsIgnoreCase("eng") || lang.equalsIgnoreCase("english"))
+		if (oldLang.equalsIgnoreCase("en") || oldLang.equalsIgnoreCase("eng") || oldLang.equalsIgnoreCase("english"))
 		{
-			lang = "VO";
+			sub.setLanguage("VO");
+			return ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, "VO"));
 		}
-		else if (lang.equalsIgnoreCase("ger") || lang.equalsIgnoreCase("german") || lang.equalsIgnoreCase("deu") || lang.equalsIgnoreCase("deutsch"))
+		else if (oldLang.equalsIgnoreCase("ger") || oldLang.equalsIgnoreCase("german") || oldLang.equalsIgnoreCase("deu")
+				|| oldLang.equalsIgnoreCase("deutsch"))
 		{
-			lang = "de";
+			sub.setLanguage("de");
+			return ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, "de"));
 		}
-		sub.setLanguage(lang);
+		return ImmutableList.of();
 	}
 
 	private SubCentralDe()

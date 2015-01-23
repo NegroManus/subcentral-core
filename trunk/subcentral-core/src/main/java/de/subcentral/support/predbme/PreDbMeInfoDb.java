@@ -40,6 +40,8 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 {
+	public static final String	DOMAIN		= "predb.me";
+
 	private static final Logger	log			= LogManager.getLogger(PreDbMeInfoDb.class);
 
 	// DateTimeFormatter not needed because using the epoch seconds
@@ -62,7 +64,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 	@Override
 	public String getDomain()
 	{
-		return "predb.me";
+		return DOMAIN;
 	}
 
 	@Override
