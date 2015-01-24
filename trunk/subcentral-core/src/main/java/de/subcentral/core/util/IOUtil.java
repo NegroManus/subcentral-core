@@ -19,8 +19,23 @@ public class IOUtil
 		}
 	}
 
+	public static String[] splitIntoFilenameAndExtension(String filename)
+	{
+		if (filename == null)
+		{
+			return null;
+		}
+		int indexOfLastDot = filename.lastIndexOf('.');
+		if (indexOfLastDot == -1)
+		{
+			return new String[] { filename, "" };
+		}
+		return new String[] { filename.substring(0, indexOfLastDot), filename.substring(indexOfLastDot, filename.length()) };
+	}
+
 	private IOUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
+
 }
