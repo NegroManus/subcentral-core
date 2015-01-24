@@ -1,5 +1,7 @@
 package de.subcentral.core.util;
 
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -107,6 +109,61 @@ public class StringUtil
 	{
 		stripStart(sb);
 		return stripEnd(sb);
+	}
+
+	public static Pattern parseSimplePatterns(String simplePatternsString)
+	{
+		if (StringUtils.isBlank(simplePatternsString))
+		{
+			return null;
+		}
+		String[] simplePatterns = simplePatternsString.split("\\s*,\\s*");
+		String[] convertedPatterns = new String[simplePatterns.length];
+		for (int i = 0; i < simplePatterns.length; i++)
+		{
+			convertedPatterns[i] = convertToPattern(simplePatterns[i]);
+		}
+		if (convertedPatterns.length == 1)
+		{
+			return Pattern.compile(convertedPatterns[0], Pattern.CASE_INSENSITIVE);
+		}
+		else
+		{
+			StringJoiner strJoiner = new StringJoiner("|", "(", ")");
+			for (String p : convertedPatterns)
+			{
+				strJoiner.add(p);
+			}
+			return Pattern.compile(strJoiner.toString(), Pattern.CASE_INSENSITIVE);
+		}
+	}
+
+	public static Pattern parseSimplePattern(String simplePattern)
+	{
+		return Pattern.compile(convertToPattern(simplePattern), Pattern.CASE_INSENSITIVE);
+	}
+
+	private static String convertToPattern(String simplePattern)
+	{
+		StringBuilder convertedPattern = new StringBuilder();
+		Matcher mAsterisk = Pattern.compile("\\*").matcher(simplePattern);
+		int index = 0;
+		while (mAsterisk.find())
+		{
+			String head = simplePattern.substring(index, mAsterisk.start());
+			if (!head.isEmpty())
+			{
+				convertedPattern.append(Pattern.quote(head));
+			}
+			convertedPattern.append(".*");
+			index = mAsterisk.end();
+		}
+		String tail = simplePattern.substring(index);
+		if (!tail.isEmpty())
+		{
+			convertedPattern.append(Pattern.quote(tail));
+		}
+		return convertedPattern.toString();
 	}
 
 	private StringUtil()
