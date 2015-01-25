@@ -55,7 +55,12 @@ public class ClassBasedStandardizingService implements StandardizingService
 		}
 	}
 
-	public <T> boolean registerStandardizer(Class<T> entityType, Standardizer<T> standardizer)
+	public <T> boolean registerStandardizer(StandardizingEntry<T> entry)
+	{
+		return registerStandardizer(entry.getBeanClass(), entry.getStandardizer());
+	}
+
+	public <T> boolean registerStandardizer(Class<T> entityType, Standardizer<? super T> standardizer)
 	{
 		standardizersRwl.writeLock().lock();
 		try
@@ -68,7 +73,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 		}
 	}
 
-	public <T> boolean registerAllStandardizers(Class<T> entityType, Iterable<Standardizer<T>> standardizers)
+	public <T> boolean registerAllStandardizers(Class<T> entityType, Iterable<Standardizer<? super T>> standardizers)
 	{
 		standardizersRwl.writeLock().lock();
 		try
@@ -81,7 +86,12 @@ public class ClassBasedStandardizingService implements StandardizingService
 		}
 	}
 
-	public <T> boolean unregisterStandardizer(Class<T> entityType, Standardizer<T> standardizer)
+	public <T> boolean unregisterStandardizer(StandardizingEntry<T> entry)
+	{
+		return unregisterStandardizer(entry.getBeanClass(), entry.getStandardizer());
+	}
+
+	public <T> boolean unregisterStandardizer(Class<T> entityType, Standardizer<? super T> standardizer)
 	{
 		standardizersRwl.writeLock().lock();
 		try
@@ -209,6 +219,28 @@ public class ClassBasedStandardizingService implements StandardizingService
 					queue.add(nestedBean);
 				}
 			}
+		}
+	}
+
+	public static class StandardizingEntry<T>
+	{
+		private final Class<T>					beanClass;
+		private final Standardizer<? super T>	standardizer;
+
+		public StandardizingEntry(Class<T> beanClass, Standardizer<? super T> standardizer)
+		{
+			this.beanClass = beanClass;
+			this.standardizer = standardizer;
+		}
+
+		public Class<T> getBeanClass()
+		{
+			return beanClass;
+		}
+
+		public Standardizer<? super T> getStandardizer()
+		{
+			return standardizer;
 		}
 	}
 }
