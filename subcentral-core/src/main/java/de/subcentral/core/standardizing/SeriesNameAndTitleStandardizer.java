@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Series;
@@ -65,5 +68,37 @@ public class SeriesNameAndTitleStandardizer implements Standardizer<Series>
 			return changes.build();
 		}
 		return ImmutableList.of();
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof SeriesNameAndTitleStandardizer)
+		{
+			SeriesNameAndTitleStandardizer o = (SeriesNameAndTitleStandardizer) obj;
+			return namePattern.equals(o.namePattern) && Objects.equals(nameReplacement, o.nameReplacement)
+					&& Objects.equals(titleReplacement, o.titleReplacement);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(41, 93).append(namePattern).append(nameReplacement).append(titleReplacement).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(SeriesNameAndTitleStandardizer.class)
+				.add("namePattern", namePattern)
+				.add("nameReplacement", nameReplacement)
+				.add("titleReplacement", titleReplacement)
+				.toString();
 	}
 }
