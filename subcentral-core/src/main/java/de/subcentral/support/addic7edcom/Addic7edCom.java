@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Episode;
@@ -27,7 +28,7 @@ public class Addic7edCom
 {
 	public static final String						DOMAIN			= "addic7ed.com";
 
-	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
+	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN, ImmutableSet.of(SubtitleAdjustment.class));
 	static
 	{
 		PARSING_SERVICE.registerAllParsers(initParsers());
