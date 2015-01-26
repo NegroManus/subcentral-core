@@ -14,13 +14,13 @@ import de.subcentral.core.metadata.media.Series;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class SeriesNameAndTitleStandardizer implements Standardizer<Series>
+public class SeriesNameStandardizer implements Standardizer<Series>
 {
 	private final Pattern	namePattern;
 	private final String	nameReplacement;
 	private final String	titleReplacement;
 
-	public SeriesNameAndTitleStandardizer(Pattern namePattern, String nameReplacement, String titleReplacement)
+	public SeriesNameStandardizer(Pattern namePattern, String nameReplacement, String titleReplacement)
 	{
 		this.namePattern = Objects.requireNonNull(namePattern, "namePattern");
 		this.nameReplacement = nameReplacement;
@@ -77,9 +77,9 @@ public class SeriesNameAndTitleStandardizer implements Standardizer<Series>
 		{
 			return true;
 		}
-		if (obj instanceof SeriesNameAndTitleStandardizer)
+		if (obj instanceof SeriesNameStandardizer)
 		{
-			SeriesNameAndTitleStandardizer o = (SeriesNameAndTitleStandardizer) obj;
+			SeriesNameStandardizer o = (SeriesNameStandardizer) obj;
 			return namePattern.equals(o.namePattern) && Objects.equals(nameReplacement, o.nameReplacement)
 					&& Objects.equals(titleReplacement, o.titleReplacement);
 		}
@@ -95,7 +95,7 @@ public class SeriesNameAndTitleStandardizer implements Standardizer<Series>
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(SeriesNameAndTitleStandardizer.class)
+		return MoreObjects.toStringHelper(SeriesNameStandardizer.class)
 				.add("namePattern", namePattern)
 				.add("nameReplacement", nameReplacement)
 				.add("titleReplacement", titleReplacement)

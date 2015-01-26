@@ -40,7 +40,7 @@ import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.standardizing.ClassBasedStandardizingService;
-import de.subcentral.core.standardizing.SeriesNameAndTitleStandardizer;
+import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.util.TimeUtil;
@@ -125,16 +125,16 @@ public class ParsingPlayground
 		final ClassBasedStandardizingService parsedToInfoDbStdzService = new ClassBasedStandardizingService("after parsing");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
 		parsedToInfoDbStdzService.registerStandardizer(Series.class,
-				new SeriesNameAndTitleStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", "Scandal"));
+				new SeriesNameStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", "Scandal"));
 		parsedToInfoDbStdzService.registerStandardizer(Series.class,
-				new SeriesNameAndTitleStandardizer(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE),
+				new SeriesNameStandardizer(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE),
 						"Last Man Standing (US)",
 						"Last Man Standing"));
 
 		final ClassBasedStandardizingService infoDbToCustomStdzService = new ClassBasedStandardizingService("after infoDb");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
 		infoDbToCustomStdzService.registerStandardizer(Series.class,
-				new SeriesNameAndTitleStandardizer(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", null));
+				new SeriesNameStandardizer(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", null));
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 

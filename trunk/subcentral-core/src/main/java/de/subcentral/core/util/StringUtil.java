@@ -166,6 +166,15 @@ public class StringUtil
 		return convertedPattern.toString();
 	}
 
+	public static String quoteString(String s)
+	{
+		if (s == null)
+		{
+			return null;
+		}
+		return '"' + s + '"';
+	}
+
 	private StringUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
