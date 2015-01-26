@@ -2,9 +2,11 @@ package de.subcentral.core.parsing;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -16,18 +18,26 @@ import com.google.common.collect.ListMultimap;
 public class ClassBasedParsingService implements ParsingService
 {
 	private final String							domain;
+	private final ImmutableSet<Class<?>>			emittedTypes;
 	private final ListMultimap<Class<?>, Parser<?>>	parsers		= LinkedListMultimap.create();
 	private final ReentrantReadWriteLock			parsersRwl	= new ReentrantReadWriteLock();
 
-	public ClassBasedParsingService(String domain)
+	public ClassBasedParsingService(String domain, Set<Class<?>> emittedTypes)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
+		this.emittedTypes = ImmutableSet.copyOf(emittedTypes); // includes null-check
 	}
 
 	@Override
 	public String getDomain()
 	{
 		return domain;
+	}
+
+	@Override
+	public Set<Class<?>> getEmittedTypes()
+	{
+		return emittedTypes;
 	}
 
 	/**
