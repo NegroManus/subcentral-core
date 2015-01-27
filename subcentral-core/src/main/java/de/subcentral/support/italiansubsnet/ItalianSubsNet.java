@@ -1,12 +1,10 @@
 package de.subcentral.support.italiansubsnet;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
@@ -28,13 +26,13 @@ public class ItalianSubsNet
 {
 	public static final String						DOMAIN			= "italiansubs.net";
 
-	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN, ImmutableSet.of(SubtitleAdjustment.class));
+	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
 	{
 		PARSING_SERVICE.registerAllParsers(initParsers());
 	}
 
-	private static ListMultimap<Class<?>, Parser<?>> initParsers()
+	private static List<Parser<?>> initParsers()
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
 		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, DOMAIN);
@@ -109,7 +107,7 @@ public class ItalianSubsNet
 		multiEpisodeMatchers.add(matcher202);
 		multiEpisodeSubParser.setMatchers(multiEpisodeMatchers.build());
 
-		return ImmutableListMultimap.of(SubtitleAdjustment.class, episodeSubParser, SubtitleAdjustment.class, multiEpisodeSubParser);
+		return ImmutableList.of(episodeSubParser, multiEpisodeSubParser);
 	}
 
 	public static final ParsingService getParsingService()
@@ -117,7 +115,7 @@ public class ItalianSubsNet
 		return PARSING_SERVICE;
 	}
 
-	public static ListMultimap<Class<?>, Parser<?>> getAllParsers()
+	public static List<Parser<?>> getAllParsers()
 	{
 		return PARSING_SERVICE.getParsers();
 	}
