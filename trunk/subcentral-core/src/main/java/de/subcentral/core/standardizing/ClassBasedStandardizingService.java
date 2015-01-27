@@ -2,18 +2,17 @@ package de.subcentral.core.standardizing;
 
 import java.util.ArrayDeque;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
 
 /**
  * 
@@ -23,8 +22,7 @@ import com.google.common.collect.ListMultimap;
 public class ClassBasedStandardizingService implements StandardizingService
 {
 	private final String												domain;
-	private final ListMultimap<Class<?>, Standardizer<?>>				standardizers			= LinkedListMultimap.create();
-	private final ReentrantReadWriteLock								standardizersRwl		= new ReentrantReadWriteLock();
+	private final List<StandardizerEntry<?>>							standardizerEntries		= new CopyOnWriteArrayList<>();
 	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
 	public ClassBasedStandardizingService(String domain)
@@ -38,102 +36,29 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return domain;
 	}
 
-	/**
-	 * 
-	 * @return an immutable copy of the current standardizers map (a snapshot)
-	 */
-	public ImmutableListMultimap<Class<?>, Standardizer<?>> getStandardizers()
+	public List<StandardizerEntry<?>> getStandardizerEntries()
 	{
-		standardizersRwl.readLock().lock();
-		try
-		{
-			return ImmutableListMultimap.copyOf(standardizers);
-		}
-		finally
-		{
-			standardizersRwl.readLock().unlock();
-		}
+		return standardizerEntries;
 	}
 
-	public <T> boolean registerStandardizer(Class<T> entityType, Standardizer<? super T> standardizer)
+	public <T> void registerStandardizer(Class<T> beanType, Standardizer<? super T> standardizer)
 	{
-		standardizersRwl.writeLock().lock();
-		try
-		{
-			return standardizers.put(entityType, standardizer);
-		}
-		finally
-		{
-			standardizersRwl.writeLock().unlock();
-		}
+		standardizerEntries.add(new StandardizerEntry<T>(beanType, standardizer));
 	}
 
-	public <T> boolean registerAllStandardizers(Class<T> entityType, Iterable<Standardizer<? super T>> standardizers)
+	public <T> boolean unregisterStandardizer(Standardizer<? super T> standardizer)
 	{
-		standardizersRwl.writeLock().lock();
-		try
+		Iterator<StandardizerEntry<?>> iter = standardizerEntries.iterator();
+		while (iter.hasNext())
 		{
-			return this.standardizers.putAll(entityType, standardizers);
+			StandardizerEntry<?> entry = iter.next();
+			if (entry.standardizer.equals(standardizer))
+			{
+				iter.remove();
+				return true;
+			}
 		}
-		finally
-		{
-			standardizersRwl.writeLock().unlock();
-		}
-	}
-
-	public <T> boolean unregisterStandardizer(Class<T> entityType, Standardizer<? super T> standardizer)
-	{
-		standardizersRwl.writeLock().lock();
-		try
-		{
-			return standardizers.remove(entityType, standardizer);
-		}
-		finally
-		{
-			standardizersRwl.writeLock().unlock();
-		}
-	}
-
-	public <T> List<Standardizer<?>> unregisterAllStandardizers(Class<T> entityType)
-	{
-		standardizersRwl.writeLock().lock();
-		try
-		{
-			return standardizers.removeAll(entityType);
-		}
-		finally
-		{
-			standardizersRwl.writeLock().unlock();
-		}
-	}
-
-	public int unregisterAllStandardizers()
-	{
-		standardizersRwl.writeLock().lock();
-		try
-		{
-			int size = standardizers.size();
-			standardizers.clear();
-			return size;
-		}
-		finally
-		{
-			standardizersRwl.writeLock().unlock();
-		}
-	}
-
-	public <T> void setAllStandardizers(ListMultimap<Class<?>, Standardizer<?>> parsers)
-	{
-		standardizersRwl.writeLock().lock();
-		try
-		{
-			this.standardizers.clear();
-			this.standardizers.putAll(parsers);
-		}
-		finally
-		{
-			standardizersRwl.writeLock().unlock();
-		}
+		return false;
 	}
 
 	public <T> void registerNestedBeansRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
@@ -182,18 +107,16 @@ public class ClassBasedStandardizingService implements StandardizingService
 			return ImmutableList.of();
 		}
 		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
-		standardizersRwl.readLock().lock();
-		try
+
+		for (StandardizerEntry<?> entry : standardizerEntries)
 		{
-			for (Standardizer<?> std : standardizers.get(bean.getClass()))
+			if (entry.beanType.isAssignableFrom(bean.getClass()))
 			{
-				changes.addAll(((Standardizer<T>) std).standardize(bean));
+				Standardizer<? super T> standardizer = (Standardizer<? super T>) entry.standardizer;
+				changes.addAll(standardizer.standardize(bean));
 			}
 		}
-		finally
-		{
-			standardizersRwl.readLock().unlock();
-		}
+
 		return changes.build();
 	}
 
@@ -209,6 +132,34 @@ public class ClassBasedStandardizingService implements StandardizingService
 					queue.add(nestedBean);
 				}
 			}
+		}
+	}
+
+	public static final class StandardizerEntry<T>
+	{
+		private final Class<T>					beanType;
+		private final Standardizer<? super T>	standardizer;
+
+		public StandardizerEntry(Class<T> beanType, Standardizer<? super T> standardizer)
+		{
+			this.beanType = beanType;
+			this.standardizer = standardizer;
+		}
+
+		public Class<T> getBeanType()
+		{
+			return beanType;
+		}
+
+		public Standardizer<? super T> getStandardizer()
+		{
+			return standardizer;
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(StandardizerEntry.class).add("beanType", beanType).add("standardizer", standardizer).toString();
 		}
 	}
 }
