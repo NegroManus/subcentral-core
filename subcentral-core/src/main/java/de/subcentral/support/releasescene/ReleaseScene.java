@@ -22,6 +22,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.parsing.ClassBasedParsingService;
+import de.subcentral.core.parsing.ClassBasedParsingService.ParserEntry;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
@@ -37,10 +38,10 @@ public class ReleaseScene
 
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(initParsers());
+		PARSING_SERVICE.registerAllParsers(Release.class, initParsers());
 	}
 
-	private static List<Parser<?>> initParsers()
+	private static List<Parser<Release>> initParsers()
 	{
 		String knownTagPattern = buildKnownTagPattern();
 		String firstTagPattern = buildFirstTagPattern(knownTagPattern);
@@ -310,9 +311,9 @@ public class ReleaseScene
 		return PARSING_SERVICE;
 	}
 
-	public static List<Parser<?>> getAllParsers()
+	public static List<ParserEntry<?>> getParsersEntries()
 	{
-		return PARSING_SERVICE.getParsers();
+		return PARSING_SERVICE.getParserEntries();
 	}
 
 	private ReleaseScene()

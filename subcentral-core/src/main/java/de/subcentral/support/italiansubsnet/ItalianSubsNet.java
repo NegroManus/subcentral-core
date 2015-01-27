@@ -15,6 +15,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ClassBasedParsingService;
+import de.subcentral.core.parsing.ClassBasedParsingService.ParserEntry;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
@@ -29,10 +30,10 @@ public class ItalianSubsNet
 	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(initParsers());
+		PARSING_SERVICE.registerAllParsers(SubtitleAdjustment.class, initParsers());
 	}
 
-	private static List<Parser<?>> initParsers()
+	private static List<Parser<SubtitleAdjustment>> initParsers()
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
 		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, DOMAIN);
@@ -115,9 +116,9 @@ public class ItalianSubsNet
 		return PARSING_SERVICE;
 	}
 
-	public static List<Parser<?>> getAllParsers()
+	public static List<ParserEntry<?>> getParserEntries()
 	{
-		return PARSING_SERVICE.getParsers();
+		return PARSING_SERVICE.getParserEntries();
 	}
 
 	private ItalianSubsNet()

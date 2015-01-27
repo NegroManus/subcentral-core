@@ -15,6 +15,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ClassBasedParsingService;
+import de.subcentral.core.parsing.ClassBasedParsingService.ParserEntry;
 import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
@@ -33,19 +34,20 @@ public class SubCentralDe
 	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(initParsers());
+		PARSING_SERVICE.registerAllParsers(SubtitleAdjustment.class, initParsers());
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<Parser<?>> initParsers()
+	private static List<Parser<SubtitleAdjustment>> initParsers()
 	{
 		String scPatternPrefix = "(";
 		String scPatternSuffix = ")\\.(de|ger|german|VO|en|english)(?:-|\\.)([\\w&]+)";
 
-		ImmutableList.Builder<Parser<?>> parsers = ImmutableList.builder();
+		ImmutableList.Builder<Parser<SubtitleAdjustment>> parsers = ImmutableList.builder();
 
-		for (Parser<?> sceneParser : ReleaseScene.getAllParsers())
+		for (ParserEntry<?> sceneParserEntry : ReleaseScene.getParsersEntries())
 		{
+			Parser<?> sceneParser = sceneParserEntry.getParser();
 			if (!(sceneParser instanceof ReleaseParser))
 			{
 				log.warn("Parser will be ignored because it is not an instance of ReleaseParser: {}", sceneParser);
@@ -118,9 +120,9 @@ public class SubCentralDe
 		return PARSING_SERVICE;
 	}
 
-	public static List<Parser<?>> getAllParsers()
+	public static List<ParserEntry<?>> getParserEntries()
 	{
-		return PARSING_SERVICE.getParsers();
+		return PARSING_SERVICE.getParserEntries();
 	}
 
 	public static List<StandardizingChange> standardizeSubtitleLanguage(Subtitle sub)
