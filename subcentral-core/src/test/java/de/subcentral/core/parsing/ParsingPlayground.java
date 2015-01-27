@@ -46,7 +46,7 @@ import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
-import de.subcentral.support.releasescene.Scene;
+import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
@@ -98,10 +98,10 @@ public class ParsingPlayground
 		final long totalStart = System.nanoTime();
 
 		final ClassBasedParsingService ps = new ClassBasedParsingService("default");
-		// order is relevant. Scene matchers would also match SubCentralDe matchers
+		// order is relevant. ReleaseScene matchers would also match SubCentralDe matchers
 		ps.registerAllParsers(Addic7edCom.getAllParsers());
 		ps.registerAllParsers(SubCentralDe.getAllParsers());
-		ps.registerAllParsers(Scene.getAllParsers());
+		ps.registerAllParsers(ReleaseScene.getAllParsers());
 		ps.registerAllParsers(ItalianSubsNet.getAllParsers());
 
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
