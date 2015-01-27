@@ -4,10 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.ReleaseUtils;
-import de.subcentral.core.metadata.release.Tag;
-
 public class ReleasesTest
 {
 	@Test
