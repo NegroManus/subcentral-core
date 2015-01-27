@@ -34,7 +34,7 @@ public class ClassBasedParsingService implements ParsingService
 	}
 
 	@Override
-	public Set<Class<?>> getEmittedTypes()
+	public Set<Class<?>> getTargetTypes()
 	{
 		return parserEntries.stream().map((entry) -> entry.getTargetType()).collect(Collectors.toSet());
 	}

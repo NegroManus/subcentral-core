@@ -6,7 +6,7 @@ public interface ParsingService extends Parser<Object>
 {
 	public String getDomain();
 
-	public Set<Class<?>> getEmittedTypes();
+	public Set<Class<?>> getTargetTypes();
 
 	public <T> T parse(String text, Class<T> targetClass) throws NoMatchException, ParsingException;
 }
