@@ -59,7 +59,7 @@ public class ReleaseUtils
 		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
 		for (Release rls : rlss)
 		{
-			if (containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore) && (group == null || group.equals(rls.getGroup())))
+			if (TagUtils.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore) && (group == null || group.equals(rls.getGroup())))
 			{
 				filteredRlss.add(rls);
 			}
@@ -151,6 +151,24 @@ public class ReleaseUtils
 		}
 	}
 
+	public static List<Release> guessMatchingReleases(Release partialRls, Collection<Release> commonRlss, Collection<Tag> metaTags)
+	{
+		List<Release> matchingCommonRlss = filter(commonRlss, partialRls.getTags(), partialRls.getGroup(), metaTags);
+		if (matchingCommonRlss.isEmpty())
+		{
+			return ImmutableList.of(new Release(partialRls));
+		}
+		ImmutableList.Builder<Release> guessedRlss = ImmutableList.builder();
+		for (Release rls : matchingCommonRlss)
+		{
+			Release guessedRls = new Release(rls);
+			guessedRls.setMedia(partialRls.getMedia());
+			TagUtils.transferMetaTags(partialRls.getTags(), guessedRls.getTags(), metaTags);
+			guessedRlss.add(guessedRls);
+		}
+		return guessedRlss.build();
+	}
+
 	public static List<StandardizingChange> standardizeTags(Release rls)
 	{
 		if (rls == null || rls.getTags().isEmpty())
@@ -221,69 +239,6 @@ public class ReleaseUtils
 			lastTag = tag;
 		}
 		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, rls.getTags())) : ImmutableList.of();
-	}
-
-	public static boolean replaceTags(Release rls, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
-	{
-		return replaceTags(rls.getTags(), newTags, metaTagsToRetain);
-	}
-
-	public static boolean replaceTags(List<Tag> tags, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
-	{
-		// no shortcut (||) because both operations need to be performed
-		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
-	}
-
-	public static void transferMetaTags(List<Tag> sourceTags, List<Tag> targetTags, Collection<Tag> metaTags)
-	{
-		// iterate the source tags in reverse order so that the order in the target tags is correct
-		for (int i = sourceTags.size() - 1; i >= 0; i--)
-		{
-			Tag sourceTag = sourceTags.get(i);
-			if (metaTags.contains(sourceTag))
-			{
-				targetTags.add(0, sourceTag);
-			}
-		}
-	}
-
-	public static boolean containsAllIgnoreMetaTags(List<Tag> tags1, List<Tag> tags2, Collection<Tag> metaTagsToIgnore)
-	{
-		return copyAndRemoveMetaTags(tags1, metaTagsToIgnore).containsAll(copyAndRemoveMetaTags(tags2, metaTagsToIgnore));
-	}
-
-	public static boolean equalsIgnoreMetaTags(List<Tag> tags1, List<Tag> tags2, Collection<Tag> metaTagsToIgnore)
-	{
-		return copyAndRemoveMetaTags(tags1, metaTagsToIgnore).equals(copyAndRemoveMetaTags(tags2, metaTagsToIgnore));
-	}
-
-	public static List<Release> guessMatchingReleases(Release partialRls, Collection<Release> commonRlss, Collection<Tag> metaTags)
-	{
-		List<Release> matchingCommonRlss = filter(commonRlss, partialRls.getTags(), partialRls.getGroup(), metaTags);
-		if (matchingCommonRlss.isEmpty())
-		{
-			return ImmutableList.of(new Release(partialRls));
-		}
-		ImmutableList.Builder<Release> guessedRlss = ImmutableList.builder();
-		for (Release rls : matchingCommonRlss)
-		{
-			Release guessedRls = new Release(rls);
-			guessedRls.setMedia(partialRls.getMedia());
-			transferMetaTags(partialRls.getTags(), guessedRls.getTags(), metaTags);
-			guessedRlss.add(guessedRls);
-		}
-		return guessedRlss.build();
-	}
-
-	private static List<Tag> copyAndRemoveMetaTags(List<Tag> tags, Collection<Tag> metaTagsToRemove)
-	{
-		if (tags.isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		List<Tag> tagsWithoutMetaTags = new ArrayList<>(tags);
-		tagsWithoutMetaTags.removeAll(metaTagsToRemove);
-		return tagsWithoutMetaTags;
 	}
 
 	private ReleaseUtils()
