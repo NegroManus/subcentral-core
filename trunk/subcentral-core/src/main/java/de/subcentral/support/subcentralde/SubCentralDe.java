@@ -23,7 +23,7 @@ import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.util.SimplePropDescriptor;
-import de.subcentral.support.releasescene.Scene;
+import de.subcentral.support.releasescene.ReleaseScene;
 
 public class SubCentralDe
 {
@@ -44,7 +44,7 @@ public class SubCentralDe
 
 		ImmutableList.Builder<Parser<?>> parsers = ImmutableList.builder();
 
-		for (Parser<?> sceneParser : Scene.getAllParsers())
+		for (Parser<?> sceneParser : ReleaseScene.getAllParsers())
 		{
 			if (!(sceneParser instanceof ReleaseParser))
 			{
