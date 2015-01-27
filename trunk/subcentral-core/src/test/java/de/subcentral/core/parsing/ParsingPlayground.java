@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.infodb.InfoDb;
 import de.subcentral.core.metadata.media.Series;
@@ -98,7 +97,7 @@ public class ParsingPlayground
 
 		final long totalStart = System.nanoTime();
 
-		final ClassBasedParsingService ps = new ClassBasedParsingService("default", ImmutableSet.of(SubtitleAdjustment.class, Release.class));
+		final ClassBasedParsingService ps = new ClassBasedParsingService("default");
 		// order is relevant. Scene matchers would also match SubCentralDe matchers
 		ps.registerAllParsers(Addic7edCom.getAllParsers());
 		ps.registerAllParsers(SubCentralDe.getAllParsers());
@@ -124,8 +123,9 @@ public class ParsingPlayground
 
 		final ClassBasedStandardizingService parsedToInfoDbStdzService = new ClassBasedStandardizingService("after parsing");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
-		parsedToInfoDbStdzService.registerStandardizer(Series.class,
-				new SeriesNameStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", "Scandal"));
+		parsedToInfoDbStdzService.registerStandardizer(Series.class, new SeriesNameStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE),
+				"Scandal (US)",
+				"Scandal"));
 		parsedToInfoDbStdzService.registerStandardizer(Series.class,
 				new SeriesNameStandardizer(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE),
 						"Last Man Standing (US)",

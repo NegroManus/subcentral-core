@@ -5,8 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableSet;
-
 public class ParsingServiceMultithreadingTest
 {
 	private static final Logger	log	= LogManager.getLogger(ParsingServiceMultithreadingTest.class);
@@ -14,8 +12,8 @@ public class ParsingServiceMultithreadingTest
 	@Test
 	public void testParsingServiceMultithreading() throws InterruptedException
 	{
-		ClassBasedParsingService ps = new ClassBasedParsingService("test", ImmutableSet.of(String.class));
-		ps.registerParser(String.class, t -> {
+		ClassBasedParsingService ps = new ClassBasedParsingService("test");
+		ps.registerParser(t -> {
 			try
 			{
 				Thread.sleep(100);
@@ -35,13 +33,13 @@ public class ParsingServiceMultithreadingTest
 
 		Runnable unregister = () -> {
 			log.info("Unregistering ...");
-			ps.unregisterAllParsers(String.class);
+			ps.getParserEntries().clear();
 			log.info("Unregistered!");
 		};
 
 		Runnable register = () -> {
 			log.info("Registering ...");
-			ps.registerParser(String.class, t -> StringUtils.capitalize(t));
+			ps.registerParser(t -> StringUtils.capitalize(t));
 			log.info("Registered!");
 		};
 

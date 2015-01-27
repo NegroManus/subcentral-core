@@ -3,6 +3,7 @@ package de.subcentral.support.thescene;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.Function;
@@ -12,10 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
@@ -35,14 +33,14 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class Scene
 {
 	public static final String						DOMAIN			= "scene";
-	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN, ImmutableSet.of(Release.class));
+	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 
 	static
 	{
 		PARSING_SERVICE.registerAllParsers(initParsers());
 	}
 
-	private static ListMultimap<Class<?>, Parser<?>> initParsers()
+	private static List<Parser<?>> initParsers()
 	{
 		String knownTagPattern = buildKnownTagPattern();
 		String firstTagPattern = buildFirstTagPattern(knownTagPattern);
@@ -262,7 +260,7 @@ public class Scene
 		movieRlsParser.setMatchers(movieRlsMatchers.build());
 		movieRlsParser.setPropFromStringService(pps);
 
-		return ImmutableListMultimap.of(Release.class, epiRlsParser, Release.class, multiEpiRlsParser, Release.class, movieRlsParser);
+		return ImmutableList.of(epiRlsParser, multiEpiRlsParser, movieRlsParser);
 	}
 
 	public static String buildKnownTagPattern()
@@ -312,7 +310,7 @@ public class Scene
 		return PARSING_SERVICE;
 	}
 
-	public static ListMultimap<Class<?>, Parser<?>> getAllParsers()
+	public static List<Parser<?>> getAllParsers()
 	{
 		return PARSING_SERVICE.getParsers();
 	}

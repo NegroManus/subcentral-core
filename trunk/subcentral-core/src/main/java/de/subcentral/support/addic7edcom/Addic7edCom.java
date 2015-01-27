@@ -1,12 +1,10 @@
 package de.subcentral.support.addic7edcom;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
@@ -28,13 +26,13 @@ public class Addic7edCom
 {
 	public static final String						DOMAIN			= "addic7ed.com";
 
-	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN, ImmutableSet.of(SubtitleAdjustment.class));
+	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
 	{
 		PARSING_SERVICE.registerAllParsers(initParsers());
 	}
 
-	private static ListMultimap<Class<?>, Parser<?>> initParsers()
+	private static List<Parser<?>> initParsers()
 	{
 		// Common Objects
 		String seriesSeasonEpiNumsPattern = ParsingDefaults.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
@@ -229,7 +227,7 @@ public class Addic7edCom
 
 		movieSubParser.setMatchers(movieMatchers.build());
 
-		return ImmutableListMultimap.of(SubtitleAdjustment.class, episodeSubParser, SubtitleAdjustment.class, movieSubParser);
+		return ImmutableList.of(episodeSubParser, movieSubParser);
 	}
 
 	public static final ParsingService getParsingService()
@@ -237,7 +235,7 @@ public class Addic7edCom
 		return PARSING_SERVICE;
 	}
 
-	public static ListMultimap<Class<?>, Parser<?>> getAllParsers()
+	public static ImmutableList<Parser<?>> getAllParsers()
 	{
 		return PARSING_SERVICE.getParsers();
 	}

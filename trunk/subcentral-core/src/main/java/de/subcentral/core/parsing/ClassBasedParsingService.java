@@ -1,14 +1,16 @@
 package de.subcentral.core.parsing;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
+
+import de.subcentral.core.util.ReflectionUtil;
 
 /**
  * 
@@ -17,15 +19,12 @@ import com.google.common.collect.ListMultimap;
  */
 public class ClassBasedParsingService implements ParsingService
 {
-	private final String							domain;
-	private final ImmutableSet<Class<?>>			emittedTypes;
-	private final ListMultimap<Class<?>, Parser<?>>	parsers		= LinkedListMultimap.create();
-	private final ReentrantReadWriteLock			parsersRwl	= new ReentrantReadWriteLock();
+	private final String				domain;
+	private final List<ParserEntry<?>>	parserEntries	= new CopyOnWriteArrayList<>();
 
-	public ClassBasedParsingService(String domain, Set<Class<?>> emittedTypes)
+	public ClassBasedParsingService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
-		this.emittedTypes = ImmutableSet.copyOf(emittedTypes); // includes null-check
 	}
 
 	@Override
@@ -37,153 +36,118 @@ public class ClassBasedParsingService implements ParsingService
 	@Override
 	public Set<Class<?>> getEmittedTypes()
 	{
-		return emittedTypes;
+		return parserEntries.stream().map((entry) -> entry.getTargetType()).collect(Collectors.toSet());
 	}
 
-	/**
-	 * 
-	 * @return an immutable copy of the current parsers map (a snapshot)
-	 */
-	public ListMultimap<Class<?>, Parser<?>> getParsers()
+	public List<ParserEntry<?>> getParserEntries()
 	{
-		parsersRwl.readLock().lock();
-		try
-		{
-			return ImmutableListMultimap.copyOf(parsers);
-		}
-		finally
-		{
-			parsersRwl.readLock().unlock();
-		}
+		return parserEntries;
 	}
 
-	public <T> boolean registerParser(Class<T> targetClass, Parser<T> parser)
+	public ImmutableList<Parser<?>> getParsers()
 	{
-		parsersRwl.writeLock().lock();
-		try
+		ImmutableList.Builder<Parser<?>> parsers = ImmutableList.builder();
+		for (ParserEntry<?> entry : parserEntries)
 		{
-			return parsers.put(targetClass, parser);
+			parsers.add(entry.parser);
 		}
-		finally
-		{
-			parsersRwl.writeLock().unlock();
-		}
+		return parsers.build();
 	}
 
-	public <T> boolean registerAllParsers(Class<T> targetClass, Iterable<Parser<T>> parsers)
+	public <T> ImmutableList<Parser<? extends T>> getParsersForType(Class<T> targetType)
 	{
-		parsersRwl.writeLock().lock();
-		try
+		Objects.requireNonNull(targetType, "targetType");
+		ImmutableList.Builder<Parser<? extends T>> parsers = ImmutableList.builder();
+		for (ParserEntry<?> entry : parserEntries)
 		{
-			return this.parsers.putAll(targetClass, parsers);
+			if (targetType.isAssignableFrom(entry.targetType))
+			{
+				// safe cast because targetType is superClass of parser's target type
+				@SuppressWarnings("unchecked")
+				Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
+				parsers.add(parser);
+			}
 		}
-		finally
+		return parsers.build();
+	}
+
+	public void registerAllParsers(Iterable<Parser<?>> parsers)
+	{
+		for (Parser<?> p : parsers)
 		{
-			parsersRwl.writeLock().unlock();
+			registerParser(p);
 		}
 	}
 
-	public boolean registerAllParsers(ListMultimap<Class<?>, Parser<?>> parsers)
+	public boolean unregisterAllParsers(Iterable<Parser<?>> parsers)
 	{
-		parsersRwl.writeLock().lock();
-		try
+		boolean changed = false;
+		for (Parser<?> p : parsers)
 		{
-			return this.parsers.putAll(parsers);
+			if (unregisterParser(p))
+			{
+				changed = true;
+			}
 		}
-		finally
-		{
-			parsersRwl.writeLock().unlock();
-		}
+		return changed;
 	}
 
-	public <T> boolean unregisterParser(Class<T> targetClass, Parser<T> parser)
+	@SuppressWarnings("unchecked")
+	public <T> void registerParser(Parser<T> parser)
 	{
-		parsersRwl.writeLock().lock();
-		try
-		{
-
-			return parsers.remove(targetClass, parser);
-		}
-		finally
-		{
-			parsersRwl.writeLock().unlock();
-		}
+		parserEntries.add(new ParserEntry<T>(parser, (Class<T>) ReflectionUtil.getActualTypeArg(parser.getClass(), 0)));
 	}
 
-	public <T> List<Parser<?>> unregisterAllParsers(Class<T> targetClass)
+	public boolean unregisterParser(Parser<?> parser)
 	{
-
-		parsersRwl.writeLock().lock();
-		try
+		Iterator<ParserEntry<?>> iter = parserEntries.iterator();
+		while (iter.hasNext())
 		{
-			return parsers.removeAll(targetClass);
+			ParserEntry<?> entry = iter.next();
+			if (entry.parser.equals(parser))
+			{
+				iter.remove();
+				return true;
+			}
 		}
-		finally
-		{
-			parsersRwl.writeLock().unlock();
-		}
-	}
-
-	public int unregisterAllParsers()
-	{
-		parsersRwl.writeLock().lock();
-		try
-		{
-			int size = parsers.size();
-			parsers.clear();
-			return size;
-		}
-		finally
-		{
-			parsersRwl.writeLock().unlock();
-		}
-	}
-
-	public <T> void setAllParsers(ListMultimap<Class<?>, Parser<?>> parsers)
-	{
-		parsersRwl.writeLock().lock();
-		try
-		{
-			this.parsers.clear();
-			this.parsers.putAll(parsers);
-		}
-		finally
-		{
-			parsersRwl.writeLock().unlock();
-		}
+		return false;
 	}
 
 	@Override
 	public Object parse(String text) throws NoMatchException, ParsingException
 	{
-		return doParse(text, null);
+		ParsingUtils.requireNotBlank(text, null);
+		for (ParserEntry<?> entry : parserEntries)
+		{
+			try
+			{
+				return entry.parser.parse(text);
+			}
+			catch (NoMatchException e)
+			{
+				// this parser could no match
+				// ignore and move on to the next
+				continue;
+			}
+		}
+		throw buildNoMatchException(text, null);
 	}
 
 	@Override
 	public <T> T parse(String text, Class<T> targetClass) throws NoMatchException, ParsingException
 	{
 		ParsingUtils.requireNotBlank(text, targetClass);
-		try
+		Objects.requireNonNull(targetClass, "targetClass cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
+		for (ParserEntry<?> entry : parserEntries)
 		{
-			Objects.requireNonNull(targetClass, "targetClass cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
-			return targetClass.cast(doParse(text, targetClass));
-		}
-		catch (ClassCastException | NullPointerException e)
-		{
-			throw new ParsingException(text, targetClass, e);
-		}
-	}
-
-	private Object doParse(String text, Class<?> targetClass) throws NoMatchException, ParsingException
-	{
-		parsersRwl.readLock().lock();
-		try
-		{
-			for (Parser<?> p : (targetClass == null ? parsers.values() : parsers.get(targetClass)))
+			if (targetClass.isAssignableFrom(entry.targetType))
 			{
 				try
 				{
-					return p.parse(text);
+					// save cast because targetClass is superClass of parsers type
+					@SuppressWarnings("unchecked")
+					Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
+					return parser.parse(text);
 				}
 				catch (NoMatchException e)
 				{
@@ -193,23 +157,50 @@ public class ClassBasedParsingService implements ParsingService
 				}
 			}
 		}
-		finally
-		{
-			parsersRwl.readLock().unlock();
-		}
+		throw buildNoMatchException(text, targetClass);
+	}
 
+	private static NoMatchException buildNoMatchException(String text, Class<?> targetClass)
+	{
 		// build Exception message
 		StringBuilder msg = new StringBuilder();
 		msg.append("No parser ");
 		if (targetClass != null)
 		{
-			msg.append("with ");
-			msg.append("entity type");
+			msg.append("that produces objects of");
 			msg.append(targetClass);
 			msg.append(' ');
 		}
 		msg.append("could parse the text");
 
 		throw new NoMatchException(text, targetClass, msg.toString());
+	}
+
+	public static final class ParserEntry<T>
+	{
+		private final Parser<T>	parser;
+		private final Class<T>	targetType;
+
+		public ParserEntry(Parser<T> parser, Class<T> targetType)
+		{
+			this.parser = Objects.requireNonNull(parser, "parser");
+			this.targetType = Objects.requireNonNull(targetType, "parser");
+		}
+
+		public Parser<T> getParser()
+		{
+			return parser;
+		}
+
+		public Class<T> getTargetType()
+		{
+			return targetType;
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(ParserEntry.class).add("parser", parser).add("targetType", targetType).toString();
+		}
 	}
 }
