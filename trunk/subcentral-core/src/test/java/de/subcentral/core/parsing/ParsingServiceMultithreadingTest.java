@@ -13,7 +13,7 @@ public class ParsingServiceMultithreadingTest
 	public void testParsingServiceMultithreading() throws InterruptedException
 	{
 		ClassBasedParsingService ps = new ClassBasedParsingService("test");
-		ps.registerParser(t -> {
+		ps.registerParser(String.class, t -> {
 			try
 			{
 				Thread.sleep(100);
@@ -33,13 +33,13 @@ public class ParsingServiceMultithreadingTest
 
 		Runnable unregister = () -> {
 			log.info("Unregistering ...");
-			ps.getParserEntries().clear();
+			ps.unregisterAllParsers();
 			log.info("Unregistered!");
 		};
 
 		Runnable register = () -> {
 			log.info("Registering ...");
-			ps.registerParser(t -> StringUtils.capitalize(t));
+			ps.registerParser(String.class, t -> StringUtils.capitalize(t));
 			log.info("Registered!");
 		};
 

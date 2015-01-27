@@ -99,10 +99,10 @@ public class ParsingPlayground
 
 		final ClassBasedParsingService ps = new ClassBasedParsingService("default");
 		// order is relevant. ReleaseScene matchers would also match SubCentralDe matchers
-		ps.registerAllParsers(Addic7edCom.getAllParsers());
-		ps.registerAllParsers(SubCentralDe.getAllParsers());
-		ps.registerAllParsers(ReleaseScene.getAllParsers());
-		ps.registerAllParsers(ItalianSubsNet.getAllParsers());
+		ps.getParserEntries().addAll(Addic7edCom.getParserEntries());
+		ps.getParserEntries().addAll(SubCentralDe.getParserEntries());
+		ps.getParserEntries().addAll(ReleaseScene.getParsersEntries());
+		ps.getParserEntries().addAll(ItalianSubsNet.getParserEntries());
 
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
 

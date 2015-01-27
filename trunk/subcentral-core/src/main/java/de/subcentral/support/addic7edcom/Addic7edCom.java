@@ -15,6 +15,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ClassBasedParsingService;
+import de.subcentral.core.parsing.ClassBasedParsingService.ParserEntry;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
@@ -29,10 +30,10 @@ public class Addic7edCom
 	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(initParsers());
+		PARSING_SERVICE.registerAllParsers(SubtitleAdjustment.class, initParsers());
 	}
 
-	private static List<Parser<?>> initParsers()
+	private static List<Parser<SubtitleAdjustment>> initParsers()
 	{
 		// Common Objects
 		String seriesSeasonEpiNumsPattern = ParsingDefaults.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - ";
@@ -235,9 +236,9 @@ public class Addic7edCom
 		return PARSING_SERVICE;
 	}
 
-	public static ImmutableList<Parser<?>> getAllParsers()
+	public static List<ParserEntry<?>> getParserEntries()
 	{
-		return PARSING_SERVICE.getParsers();
+		return PARSING_SERVICE.getParserEntries();
 	}
 
 	private Addic7edCom()

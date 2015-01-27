@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.util.ReflectionUtil;
-
 /**
  * 
  * @implSpec #thread-safe
@@ -36,7 +34,7 @@ public class ClassBasedParsingService implements ParsingService
 	@Override
 	public Set<Class<?>> getTargetTypes()
 	{
-		return parserEntries.stream().map((entry) -> entry.getTargetType()).collect(Collectors.toSet());
+		return parserEntries.stream().map((entry) -> entry.targetType).collect(Collectors.toSet());
 	}
 
 	public List<ParserEntry<?>> getParserEntries()
@@ -71,11 +69,11 @@ public class ClassBasedParsingService implements ParsingService
 		return parsers.build();
 	}
 
-	public void registerAllParsers(Iterable<Parser<?>> parsers)
+	public <T> void registerAllParsers(Class<T> targetType, Iterable<Parser<T>> parsers)
 	{
-		for (Parser<?> p : parsers)
+		for (Parser<T> p : parsers)
 		{
-			registerParser(p);
+			registerParser(targetType, p);
 		}
 	}
 
@@ -92,10 +90,9 @@ public class ClassBasedParsingService implements ParsingService
 		return changed;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> void registerParser(Parser<T> parser)
+	public <T> void registerParser(Class<T> targetType, Parser<T> parser)
 	{
-		parserEntries.add(new ParserEntry<T>(parser, (Class<T>) ReflectionUtil.getActualTypeArg(parser.getClass(), 0)));
+		parserEntries.add(new ParserEntry<T>(parser, targetType));
 	}
 
 	public boolean unregisterParser(Parser<?> parser)
@@ -111,6 +108,11 @@ public class ClassBasedParsingService implements ParsingService
 			}
 		}
 		return false;
+	}
+
+	public void unregisterAllParsers()
+	{
+		parserEntries.clear();
 	}
 
 	@Override
@@ -181,10 +183,10 @@ public class ClassBasedParsingService implements ParsingService
 		private final Parser<T>	parser;
 		private final Class<T>	targetType;
 
-		public ParserEntry(Parser<T> parser, Class<T> targetType)
+		private ParserEntry(Parser<T> parser, Class<T> targetType)
 		{
 			this.parser = Objects.requireNonNull(parser, "parser");
-			this.targetType = Objects.requireNonNull(targetType, "parser");
+			this.targetType = Objects.requireNonNull(targetType, "targetType");
 		}
 
 		public Parser<T> getParser()

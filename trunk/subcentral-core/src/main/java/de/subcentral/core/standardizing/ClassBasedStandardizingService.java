@@ -2,7 +2,6 @@ package de.subcentral.core.standardizing;
 
 import java.util.ArrayDeque;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,20 +40,18 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return standardizerEntries;
 	}
 
-	public <T> void registerStandardizer(Class<T> beanType, Standardizer<? super T> standardizer)
+	public <T> void registerStandardizer(Class<T> beanType, Standardizer<T> standardizer)
 	{
-		standardizerEntries.add(new StandardizerEntry<T>(beanType, standardizer));
+		standardizerEntries.add(new StandardizerEntry<T>(standardizer, beanType));
 	}
 
-	public <T> boolean unregisterStandardizer(Standardizer<? super T> standardizer)
+	public boolean unregisterStandardizer(Standardizer<?> standardizer)
 	{
-		Iterator<StandardizerEntry<?>> iter = standardizerEntries.iterator();
-		while (iter.hasNext())
+		for (StandardizerEntry<?> entry : standardizerEntries)
 		{
-			StandardizerEntry<?> entry = iter.next();
 			if (entry.standardizer.equals(standardizer))
 			{
-				iter.remove();
+				standardizerEntries.remove(entry);
 				return true;
 			}
 		}
@@ -137,23 +134,23 @@ public class ClassBasedStandardizingService implements StandardizingService
 
 	public static final class StandardizerEntry<T>
 	{
-		private final Class<T>					beanType;
-		private final Standardizer<? super T>	standardizer;
+		private final Standardizer<T>	standardizer;
+		private final Class<T>			beanType;
 
-		public StandardizerEntry(Class<T> beanType, Standardizer<? super T> standardizer)
+		private StandardizerEntry(Standardizer<T> standardizer, Class<T> beanType)
 		{
-			this.beanType = beanType;
-			this.standardizer = standardizer;
+			this.standardizer = Objects.requireNonNull(standardizer, "standardizer");
+			this.beanType = Objects.requireNonNull(beanType, "beanType");
+		}
+
+		public Standardizer<T> getStandardizer()
+		{
+			return standardizer;
 		}
 
 		public Class<T> getBeanType()
 		{
 			return beanType;
-		}
-
-		public Standardizer<? super T> getStandardizer()
-		{
-			return standardizer;
 		}
 
 		@Override
