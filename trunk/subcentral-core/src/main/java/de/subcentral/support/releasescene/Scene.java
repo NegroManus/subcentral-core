@@ -1,4 +1,4 @@
-package de.subcentral.support.thescene;
+package de.subcentral.support.releasescene;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
