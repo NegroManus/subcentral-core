@@ -2,8 +2,8 @@ package de.subcentral.core.parsing;
 
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
+import de.subcentral.support.releasescene.Scene;
 import de.subcentral.support.subcentralde.SubCentralDe;
-import de.subcentral.support.thescene.Scene;
 
 public class ParsingPerformanceTest
 {

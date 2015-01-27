@@ -23,7 +23,7 @@ import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.util.SimplePropDescriptor;
-import de.subcentral.support.thescene.Scene;
+import de.subcentral.support.releasescene.Scene;
 
 public class SubCentralDe
 {
