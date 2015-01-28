@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.collect.ImmutableList;
@@ -90,7 +90,7 @@ public class Tag implements Comparable<Tag>
 
 	public Tag(String name, String longName)
 	{
-		this.name = Objects.requireNonNull(name, "name");
+		this.name = Validate.notBlank(name, "name cannot be blank");
 		this.longName = longName;
 	}
 
