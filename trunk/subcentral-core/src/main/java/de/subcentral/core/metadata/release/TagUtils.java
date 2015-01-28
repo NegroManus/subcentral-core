@@ -8,12 +8,12 @@ import com.google.common.collect.ImmutableList;
 
 public class TagUtils
 {
-	public static boolean replaceTags(Release rls, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	public static boolean replaceTags(Release rls, List<Tag> newTags, Collection<Tag> metaTagsToRetain)
 	{
 		return replaceTags(rls.getTags(), newTags, metaTagsToRetain);
 	}
 
-	public static boolean replaceTags(List<Tag> tags, Collection<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	public static boolean replaceTags(List<Tag> tags, List<Tag> newTags, Collection<Tag> metaTagsToRetain)
 	{
 		// no shortcut (||) because both operations need to be performed
 		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
@@ -53,7 +53,7 @@ public class TagUtils
 		return tagsWithoutMetaTags;
 	}
 
-	public static List<Tag> orderedCopy(Collection<Tag> tags)
+	public static List<Tag> orderedCopy(List<Tag> tags)
 	{
 		if (tags.isEmpty())
 		{
