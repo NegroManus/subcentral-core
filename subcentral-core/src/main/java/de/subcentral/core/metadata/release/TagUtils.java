@@ -15,7 +15,7 @@ public class TagUtils
 
 	public static boolean replaceTags(List<Tag> tags, List<Tag> newTags, Collection<Tag> metaTagsToRetain)
 	{
-		// no shortcut (||) because both operations need to be performed
+		// no shortcut || because both operations need to be performed
 		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
 	}
 
@@ -64,26 +64,51 @@ public class TagUtils
 		return ordered;
 	}
 
-	public static boolean equalsIgnoreOrdering(List<Tag> tags1, List<Tag> tags2)
+	public static boolean equalsIgnoreOrder(List<Tag> tags1, List<Tag> tags2)
 	{
-		return orderedCopy(tags1).equals(orderedCopy(tags2));
+		if (tags1.size() != tags2.size())
+		{
+			return false;
+		}
+		return tags1.containsAll(tags2) && tags2.containsAll(tags1);
 	}
 
-	public static void replace(List<Tag> tags, List<Tag> target, List<Tag> replacement, boolean ignoreOrdering, boolean onlyReplaceFirst)
+	public static boolean replace(List<Tag> tags, List<Tag> tagsToReplace, List<Tag> replacement)
 	{
-		for (int i = 0; i < tags.size() && i + target.size() <= tags.size(); i++)
+		return replace(tags, tagsToReplace, replacement, false, false);
+	}
+
+	public static boolean containsSequence(List<Tag> tags, List<Tag> tagSequenceToFind)
+	{
+		for (int i = 0; i < tags.size() && i + tagSequenceToFind.size() <= tags.size(); i++)
 		{
-			List<Tag> sublist = tags.subList(i, i + target.size());
-			if (ignoreOrdering ? equalsIgnoreOrdering(sublist, target) : sublist.equals(target))
+			List<Tag> sublist = tags.subList(i, i + tagSequenceToFind.size());
+			if (equalsIgnoreOrder(sublist, tagSequenceToFind))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean replace(List<Tag> tags, List<Tag> tagsToReplace, List<Tag> replacement, boolean ignoreOrder, boolean onlyReplaceFirst)
+	{
+		boolean changed = false;
+		for (int i = 0; i < tags.size() && i + tagsToReplace.size() <= tags.size(); i++)
+		{
+			List<Tag> sublist = tags.subList(i, i + tagsToReplace.size());
+			if (ignoreOrder ? equalsIgnoreOrder(sublist, tagsToReplace) : sublist.equals(tagsToReplace))
 			{
 				sublist.clear();
 				tags.addAll(i, replacement);
+				changed = true;
 				if (onlyReplaceFirst)
 				{
-					break;
+					return true;
 				}
 			}
 		}
+		return changed;
 	}
 
 	public static void main(String[] args)
