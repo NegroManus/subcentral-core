@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.project;
+package de.subcentral.core.sms;
 
 import java.util.List;
 import java.util.Map;
