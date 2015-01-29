@@ -12,7 +12,7 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.CharReplacer;
 import de.subcentral.core.util.PatternReplacer;
 
-public abstract class AbstractMetadataDb<R> implements MetadataDb<R>
+public abstract class AbstractMetadataDb<T> implements MetadataDb<T>
 {
 	protected final NamingService	queryObjectNamingService;
 
@@ -34,7 +34,7 @@ public abstract class AbstractMetadataDb<R> implements MetadataDb<R>
 	}
 
 	@Override
-	public List<R> queryWithName(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException
+	public List<T> queryWithName(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
 		try
 		{

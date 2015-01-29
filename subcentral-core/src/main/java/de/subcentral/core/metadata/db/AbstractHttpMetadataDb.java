@@ -10,7 +10,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-public abstract class AbstractHttpMetadataDb<R> extends AbstractMetadataDb<R>
+public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 {
 	public static final int	DEFAULT_TIMEOUT	= 10000;
 
@@ -69,7 +69,7 @@ public abstract class AbstractHttpMetadataDb<R> extends AbstractMetadataDb<R>
 	}
 
 	@Override
-	public List<R> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
+	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
 		try
 		{
@@ -85,7 +85,7 @@ public abstract class AbstractHttpMetadataDb<R> extends AbstractMetadataDb<R>
 		}
 	}
 
-	public abstract List<R> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
+	public abstract List<T> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
 	/**
 	 * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.

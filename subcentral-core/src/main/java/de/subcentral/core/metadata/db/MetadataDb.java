@@ -2,7 +2,7 @@ package de.subcentral.core.metadata.db;
 
 import java.util.List;
 
-public interface MetadataDb<R>
+public interface MetadataDb<T>
 {
 	public String getName();
 
@@ -10,9 +10,9 @@ public interface MetadataDb<R>
 
 	public boolean isAvailable();
 
-	public Class<R> getResultType();
+	public Class<T> getResultType();
 
-	public List<R> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException;
+	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
-	public List<R> queryWithName(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException;
+	public List<T> queryWithName(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException;
 }
