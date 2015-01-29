@@ -22,8 +22,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
-import de.subcentral.core.infodb.InfoDbQueryException;
+import de.subcentral.core.metadata.infodb.AbstractHtmlHttpInfoDb;
+import de.subcentral.core.metadata.infodb.InfoDbQueryException;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
