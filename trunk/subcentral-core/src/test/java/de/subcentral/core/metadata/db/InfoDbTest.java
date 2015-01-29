@@ -1,11 +1,11 @@
-package de.subcentral.core.metadata.infodb;
+package de.subcentral.core.metadata.db;
 
 import java.util.List;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.RegularAvMedia;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.support.predbme.PreDbMeInfoDb;
+import de.subcentral.support.predbme.PreDbMeReleaseDb;
 
 public class InfoDbTest
 {
@@ -32,7 +32,7 @@ public class InfoDbTest
 		// System.out.println(foundRls);
 		// }
 
-		PreDbMeInfoDb preDbLookup = new PreDbMeInfoDb();
+		PreDbMeReleaseDb preDbLookup = new PreDbMeReleaseDb();
 		List<Release> results = preDbLookup.query("^pacific rim 720p");
 		results.forEach(r -> System.out.println(r));
 

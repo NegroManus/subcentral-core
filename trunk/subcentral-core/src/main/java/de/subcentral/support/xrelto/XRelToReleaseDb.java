@@ -22,8 +22,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import de.subcentral.core.metadata.infodb.AbstractHtmlHttpInfoDb;
-import de.subcentral.core.metadata.infodb.InfoDbQueryException;
+import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
+import de.subcentral.core.metadata.db.MetadataDbQueryException;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
@@ -33,11 +33,11 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release>
+public class XRelToReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 {
 	public static final String				DOMAIN				= "xrel.to";
 
-	private static final Logger				log					= LogManager.getLogger(XRelToInfoDb.class);
+	private static final Logger				log					= LogManager.getLogger(XRelToReleaseDb.class);
 
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
@@ -73,7 +73,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release>
 		return Release.class;
 	}
 
-	public List<Release> parseReleases(File file) throws IOException, InfoDbQueryException
+	public List<Release> parseReleases(File file) throws IOException, MetadataDbQueryException
 	{
 		Document doc = Jsoup.parse(file, "UTF-8", initHost().toExternalForm());
 		return queryWithHtmlDoc(doc);
@@ -94,7 +94,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release>
 	}
 
 	@Override
-	public List<Release> queryWithHtmlDoc(Document doc) throws InfoDbQueryException
+	public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
 	{
 		try
 		{
@@ -102,7 +102,7 @@ public class XRelToInfoDb extends AbstractHtmlHttpInfoDb<Release>
 		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(this, doc, e);
+			throw new MetadataDbQueryException(this, doc, e);
 		}
 	}
 

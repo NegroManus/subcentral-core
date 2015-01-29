@@ -21,8 +21,8 @@ import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.metadata.infodb.AbstractHtmlHttpInfoDb;
-import de.subcentral.core.metadata.infodb.InfoDbQueryException;
+import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
+import de.subcentral.core.metadata.db.MetadataDbQueryException;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
@@ -31,11 +31,11 @@ import de.subcentral.core.util.ByteUtil;
  * @implSpec #immutable #thread-safe
  *
  */
-public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release>
+public class OrlyDbComReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 {
 	public static final String				DOMAIN				= "orlydb.com";
 
-	private static final Logger				log					= LogManager.getLogger(OrlyDbComInfoDb.class);
+	private static final Logger				log					= LogManager.getLogger(OrlyDbComReleaseDb.class);
 
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
@@ -85,7 +85,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release>
 
 	// Querying
 	@Override
-	public List<Release> queryWithHtmlDoc(Document doc) throws InfoDbQueryException
+	public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
 	{
 		try
 		{
@@ -93,7 +93,7 @@ public class OrlyDbComInfoDb extends AbstractHtmlHttpInfoDb<Release>
 		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(this, doc, e);
+			throw new MetadataDbQueryException(this, doc, e);
 		}
 	}
 

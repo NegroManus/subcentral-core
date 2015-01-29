@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.lookup.JavaLookup;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.metadata.infodb.InfoDb;
+import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
@@ -45,7 +45,7 @@ import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
-import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
+import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
@@ -106,7 +106,7 @@ public class ParsingPlayground
 
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
 
-		final InfoDb<Release> rlsInfoDb = new OrlyDbComInfoDb();
+		final MetadataDb<Release> rlsInfoDb = new OrlyDbComReleaseDb();
 		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingDefaults.getDefaultReleaseNameFormatter());
 
 		final CompatibilityService compService = new CompatibilityService();

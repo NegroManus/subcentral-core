@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.infodb;
+package de.subcentral.core.metadata.db;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,25 +9,25 @@ import java.util.concurrent.Executors;
 
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.metadata.infodb.InfoDb;
-import de.subcentral.core.metadata.infodb.InfoDbUtils;
+import de.subcentral.core.metadata.db.MetadataDb;
+import de.subcentral.core.metadata.db.MetadataDbUtils;
 import de.subcentral.core.metadata.media.RegularAvMedia;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtils;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.support.orlydbcom.OrlyDbComInfoDb;
-import de.subcentral.support.predbme.PreDbMeInfoDb;
-import de.subcentral.support.xrelto.XRelToInfoDb;
+import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
+import de.subcentral.support.predbme.PreDbMeReleaseDb;
+import de.subcentral.support.xrelto.XRelToReleaseDb;
 
 public class MultiInfoDbPlayground
 {
 
 	public static void main(String[] args) throws InterruptedException
 	{
-		PreDbMeInfoDb preDbMe = new PreDbMeInfoDb();
-		XRelToInfoDb xrelTo = new XRelToInfoDb();
-		OrlyDbComInfoDb orlyDb = new OrlyDbComInfoDb();
-		List<InfoDb<Release>> infoDbs = new ArrayList<>(3);
+		PreDbMeReleaseDb preDbMe = new PreDbMeReleaseDb();
+		XRelToReleaseDb xrelTo = new XRelToReleaseDb();
+		OrlyDbComReleaseDb orlyDb = new OrlyDbComReleaseDb();
+		List<MetadataDb<Release>> infoDbs = new ArrayList<>(3);
 		infoDbs.add(preDbMe);
 		infoDbs.add(xrelTo);
 		infoDbs.add(orlyDb);
@@ -39,9 +39,9 @@ public class MultiInfoDbPlayground
 
 		System.out.println("Querying");
 		long start = System.nanoTime();
-		ListMultimap<InfoDb<Release>, Release> results = InfoDbUtils.queryAll(infoDbs, query, executor);
+		ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtils.queryAll(infoDbs, query, executor);
 		TimeUtil.printDurationMillis("queryAll", start);
-		for (Map.Entry<InfoDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
+		for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
 		{
 			System.out.println("Results of " + entry.getKey().getName() + " " + entry.getKey().getDomain());
 			entry.getValue().stream().forEach((r) -> System.out.println(r));

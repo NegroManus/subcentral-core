@@ -22,8 +22,8 @@ import org.jsoup.select.Elements;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.metadata.infodb.AbstractHtmlHttpInfoDb;
-import de.subcentral.core.metadata.infodb.InfoDbQueryException;
+import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
+import de.subcentral.core.metadata.db.MetadataDbQueryException;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.RegularAvMedia;
@@ -38,11 +38,11 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
+public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 {
 	public static final String	DOMAIN		= "predb.me";
 
-	private static final Logger	log			= LogManager.getLogger(PreDbMeInfoDb.class);
+	private static final Logger	log			= LogManager.getLogger(PreDbMeReleaseDb.class);
 
 	// DateTimeFormatter not needed because using the epoch seconds
 	// /**
@@ -92,7 +92,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 	}
 
 	@Override
-	public List<Release> queryWithHtmlDoc(Document doc) throws InfoDbQueryException
+	public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
 	{
 		try
 		{
@@ -100,7 +100,7 @@ public class PreDbMeInfoDb extends AbstractHtmlHttpInfoDb<Release>
 		}
 		catch (Exception e)
 		{
-			throw new InfoDbQueryException(this, doc, e);
+			throw new MetadataDbQueryException(this, doc, e);
 		}
 	}
 
