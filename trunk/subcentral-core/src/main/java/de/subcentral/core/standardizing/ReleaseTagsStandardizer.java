@@ -16,7 +16,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 {
 	public static enum QueryMode
 	{
-		CONTAINS, MATCHES
+		CONTAINS, EQUALS
 	};
 
 	public static enum ReplaceWith
@@ -99,7 +99,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 						break;
 				}
 				break;
-			case MATCHES:
+			case EQUALS:
 				if (ignoreOrder)
 				{
 					if (TagUtils.equalsIgnoreOrder(tags, queryTags))
@@ -133,7 +133,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		{
 			ReleaseTagsStandardizer o = (ReleaseTagsStandardizer) obj;
 			return queryTags.equals(o.queryTags) && replacement.equals(o.replacement) && queryMode.equals(o.queryMode)
-					&& replaceWith.equals(o.replaceWith);
+					&& replaceWith.equals(o.replaceWith) && ignoreOrder == o.ignoreOrder;
 		}
 		return false;
 	}
@@ -141,12 +141,23 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(41, 93).append(queryTags).append(replacement).append(queryMode).append(replaceWith).toHashCode();
+		return new HashCodeBuilder(15, 93).append(queryTags)
+				.append(replacement)
+				.append(queryMode)
+				.append(replaceWith)
+				.append(ignoreOrder)
+				.toHashCode();
 	}
 
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(ReleaseTagsStandardizer.class).add("queryTags", queryTags).add("replacement", replacement).toString();
+		return MoreObjects.toStringHelper(ReleaseTagsStandardizer.class)
+				.add("queryTags", queryTags)
+				.add("replacement", replacement)
+				.add("queryMode", queryMode)
+				.add("replaceWith", replaceWith)
+				.add("ignoreOrder", ignoreOrder)
+				.toString();
 	}
 }
