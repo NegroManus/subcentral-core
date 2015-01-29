@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.media;
+package tests;
 
 import java.util.concurrent.CompletableFuture;
 
