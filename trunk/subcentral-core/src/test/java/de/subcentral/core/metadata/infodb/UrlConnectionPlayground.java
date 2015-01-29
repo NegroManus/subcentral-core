@@ -1,4 +1,4 @@
-package de.subcentral.core.infodb;
+package de.subcentral.core.metadata.infodb;
 
 import java.io.InputStream;
 import java.net.URL;

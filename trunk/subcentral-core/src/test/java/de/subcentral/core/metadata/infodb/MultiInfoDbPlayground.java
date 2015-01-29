@@ -1,4 +1,4 @@
-package de.subcentral.core.infodb;
+package de.subcentral.core.metadata.infodb;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 
 import com.google.common.collect.ListMultimap;
 
+import de.subcentral.core.metadata.infodb.InfoDb;
+import de.subcentral.core.metadata.infodb.InfoDbUtils;
 import de.subcentral.core.metadata.media.RegularAvMedia;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtils;

@@ -22,8 +22,8 @@ import org.jsoup.select.Elements;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
-import de.subcentral.core.infodb.InfoDbQueryException;
+import de.subcentral.core.metadata.infodb.AbstractHtmlHttpInfoDb;
+import de.subcentral.core.metadata.infodb.InfoDbQueryException;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.RegularAvMedia;

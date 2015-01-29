@@ -21,8 +21,8 @@ import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.infodb.AbstractHtmlHttpInfoDb;
-import de.subcentral.core.infodb.InfoDbQueryException;
+import de.subcentral.core.metadata.infodb.AbstractHtmlHttpInfoDb;
+import de.subcentral.core.metadata.infodb.InfoDbQueryException;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.ByteUtil;
 

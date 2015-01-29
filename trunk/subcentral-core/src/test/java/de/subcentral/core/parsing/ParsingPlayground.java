@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.lookup.JavaLookup;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.infodb.InfoDb;
+import de.subcentral.core.metadata.infodb.InfoDb;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
