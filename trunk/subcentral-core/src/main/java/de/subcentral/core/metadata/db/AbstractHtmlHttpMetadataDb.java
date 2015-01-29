@@ -13,12 +13,12 @@ import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.TimeUtil;
 
-public abstract class AbstractHtmlHttpMetadataDb<R> extends AbstractHttpMetadataDb<R>
+public abstract class AbstractHtmlHttpMetadataDb<T> extends AbstractHttpMetadataDb<T>
 {
 	private static final Logger	log	= LogManager.getLogger(AbstractHtmlHttpMetadataDb.class);
 
 	@Override
-	public List<R> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException
+	public List<T> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
 		try
 		{
@@ -38,7 +38,7 @@ public abstract class AbstractHtmlHttpMetadataDb<R> extends AbstractHttpMetadata
 		}
 	}
 
-	public abstract List<R> queryWithHtmlDoc(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException;
+	public abstract List<T> queryWithHtmlDoc(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
 	protected Document getDocument(URL url) throws IOException
 	{
