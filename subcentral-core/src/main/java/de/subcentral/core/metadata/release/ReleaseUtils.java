@@ -3,7 +3,6 @@ package de.subcentral.core.metadata.release;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +17,6 @@ import de.subcentral.core.parsing.NoMatchException;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtils;
-import de.subcentral.core.standardizing.StandardizingChange;
 
 public class ReleaseUtils
 {
@@ -167,78 +165,6 @@ public class ReleaseUtils
 			guessedRlss.add(guessedRls);
 		}
 		return guessedRlss.build();
-	}
-
-	public static List<StandardizingChange> standardizeTags(Release rls)
-	{
-		if (rls == null || rls.getTags().isEmpty())
-		{
-			return ImmutableList.of();
-		}
-
-		boolean changed = false;
-		List<Tag> oldTags = ImmutableList.copyOf(rls.getTags());
-
-		ListIterator<Tag> iter = rls.getTags().listIterator();
-		Tag lastTag = null;
-		while (iter.hasNext())
-		{
-			Tag tag = iter.next();
-			// X264 -> x264
-			if ("X264".equals(tag.getName()))
-			{
-				iter.set(new Tag("x264"));
-				changed = true;
-			}
-			else if (lastTag != null)
-			{
-				// DD5, 1 -> DD5.1
-				if ("DD5".equals(lastTag.getName()) && "1".equals(tag.getName()))
-				{
-					iter.remove();
-					iter.previous();
-					iter.set(new Tag("DD5.1"));
-					changed = true;
-				}
-				else if ("H".equals(lastTag.getName()))
-				{
-					// H, 264 -> H.264
-					if ("264".equals(tag.getName()))
-					{
-						iter.remove();
-						iter.previous();
-						iter.set(new Tag("H.264"));
-						changed = true;
-					}
-					// H, 265 -> H.265
-					else if ("265".equals(tag.getName()))
-					{
-						iter.remove();
-						iter.previous();
-						iter.set(new Tag("H.265"));
-						changed = true;
-					}
-				}
-				// AAC2, 0 -> AAC2.0
-				else if ("AAC2".equals(lastTag.getName()) && "0".equals(tag.getName()))
-				{
-					iter.remove();
-					iter.previous();
-					iter.set(new Tag("AAC2.0"));
-					changed = true;
-				}
-				// WEB, DL -> WEB-DL
-				else if ("WEB".equals(lastTag.getName()) && "DL".equals(tag.getName()))
-				{
-					iter.remove();
-					iter.previous();
-					iter.set(new Tag("WEB-DL"));
-					changed = true;
-				}
-			}
-			lastTag = tag;
-		}
-		return changed ? ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, rls.getTags())) : ImmutableList.of();
 	}
 
 	private ReleaseUtils()

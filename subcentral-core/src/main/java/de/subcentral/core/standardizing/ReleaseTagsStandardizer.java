@@ -19,7 +19,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		CONTAINS, EQUALS
 	};
 
-	public static enum ReplaceWith
+	public static enum ReplaceMode
 	{
 		COMPLETE_LIST, MATCHED_SEQUENCE
 	};
@@ -27,15 +27,20 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 	private final ImmutableList<Tag>	queryTags;
 	private final ImmutableList<Tag>	replacement;
 	private final QueryMode				queryMode;
-	private final ReplaceWith			replaceWith;
+	private final ReplaceMode			replaceMode;
 	private final boolean				ignoreOrder;
 
-	public ReleaseTagsStandardizer(List<Tag> queryTags, List<Tag> replacement, QueryMode queryMode, ReplaceWith replaceWith, boolean ignoreOrder)
+	public ReleaseTagsStandardizer(List<Tag> queryTags, List<Tag> replacement)
+	{
+		this(queryTags, replacement, QueryMode.CONTAINS, ReplaceMode.MATCHED_SEQUENCE, false);
+	}
+
+	public ReleaseTagsStandardizer(List<Tag> queryTags, List<Tag> replacement, QueryMode queryMode, ReplaceMode replaceMode, boolean ignoreOrder)
 	{
 		this.queryTags = ImmutableList.copyOf(queryTags);
 		this.replacement = ImmutableList.copyOf(replacement);
 		this.queryMode = Objects.requireNonNull(queryMode, "queryMode");
-		this.replaceWith = Objects.requireNonNull(replaceWith, "replaceWith");
+		this.replaceMode = Objects.requireNonNull(replaceMode, "replaceMode");
 		this.ignoreOrder = ignoreOrder;
 	}
 
@@ -54,9 +59,9 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		return queryMode;
 	}
 
-	public ReplaceWith getReplaceWith()
+	public ReplaceMode getReplaceMode()
 	{
-		return replaceWith;
+		return replaceMode;
 	}
 
 	public boolean getIgnoreOrder()
@@ -76,7 +81,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		switch (queryMode)
 		{
 			case CONTAINS:
-				switch (replaceWith)
+				switch (replaceMode)
 				{
 					case COMPLETE_LIST:
 						if (ignoreOrder)
@@ -119,7 +124,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		{
 			return ImmutableList.of();
 		}
-		return ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, tags));
+		return ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, Tag.immutableCopy(tags)));
 	}
 
 	@Override
@@ -133,7 +138,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		{
 			ReleaseTagsStandardizer o = (ReleaseTagsStandardizer) obj;
 			return queryTags.equals(o.queryTags) && replacement.equals(o.replacement) && queryMode.equals(o.queryMode)
-					&& replaceWith.equals(o.replaceWith) && ignoreOrder == o.ignoreOrder;
+					&& replaceMode.equals(o.replaceMode) && ignoreOrder == o.ignoreOrder;
 		}
 		return false;
 	}
@@ -144,7 +149,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		return new HashCodeBuilder(15, 93).append(queryTags)
 				.append(replacement)
 				.append(queryMode)
-				.append(replaceWith)
+				.append(replaceMode)
 				.append(ignoreOrder)
 				.toHashCode();
 	}
@@ -156,7 +161,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 				.add("queryTags", queryTags)
 				.add("replacement", replacement)
 				.add("queryMode", queryMode)
-				.add("replaceWith", replaceWith)
+				.add("replaceMode", replaceMode)
 				.add("ignoreOrder", ignoreOrder)
 				.toString();
 	}

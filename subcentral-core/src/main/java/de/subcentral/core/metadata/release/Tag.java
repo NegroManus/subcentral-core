@@ -80,6 +80,11 @@ public class Tag implements Comparable<Tag>
 		return tagList.build();
 	}
 
+	public static ImmutableList<Tag> immutableCopy(List<Tag> tags)
+	{
+		return ImmutableList.copyOf(tags);
+	}
+
 	private final String	name;
 	private final String	longName;
 

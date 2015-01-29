@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.ReleaseUtils;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.metadata.subtitle.SubtitleUtils;
@@ -84,7 +84,11 @@ public class StandardizingDefaults
 	public static void registerAllDefaulStandardizers(ClassBasedStandardizingService service)
 	{
 		service.registerStandardizer(Subtitle.class, SubtitleUtils::standardizeTags);
-		service.registerStandardizer(Release.class, ReleaseUtils::standardizeTags);
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("AAC2", "0"), Tag.list("AAC2.0")));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("DD5", "1"), Tag.list("DD5.1")));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("H", "264"), Tag.list("H.264")));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("H", "265"), Tag.list("H.265")));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("WEB", "DL"), Tag.list("WEB-DL")));
 	}
 
 	private StandardizingDefaults()
