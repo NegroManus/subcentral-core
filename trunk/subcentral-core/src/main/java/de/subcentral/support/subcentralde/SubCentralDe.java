@@ -22,7 +22,8 @@ import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
-import de.subcentral.core.standardizing.StandardizingChange;
+import de.subcentral.core.standardizing.ClassBasedStandardizingService;
+import de.subcentral.core.standardizing.SubtitleLanguageStandardizer;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.releasescene.ReleaseScene;
 
@@ -125,29 +126,12 @@ public class SubCentralDe
 		return PARSING_SERVICE.getParserEntries();
 	}
 
-	public static List<StandardizingChange> standardizeSubtitleLanguage(Subtitle sub)
+	public static void registerSubtitleLanguageStandardizers(ClassBasedStandardizingService service)
 	{
-		if (sub == null)
-		{
-			return ImmutableList.of();
-		}
-		String oldLang = sub.getLanguage();
-		if (oldLang == null)
-		{
-			return ImmutableList.of();
-		}
-		if (oldLang.equalsIgnoreCase("en") || oldLang.equalsIgnoreCase("eng") || oldLang.equalsIgnoreCase("english"))
-		{
-			sub.setLanguage("VO");
-			return ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, "VO"));
-		}
-		else if (oldLang.equalsIgnoreCase("ger") || oldLang.equalsIgnoreCase("german") || oldLang.equalsIgnoreCase("deu")
-				|| oldLang.equalsIgnoreCase("deutsch"))
-		{
-			sub.setLanguage("de");
-			return ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, "de"));
-		}
-		return ImmutableList.of();
+		service.registerStandardizer(Subtitle.class, new SubtitleLanguageStandardizer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE),
+				"VO"));
+		service.registerStandardizer(Subtitle.class,
+				new SubtitleLanguageStandardizer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de"));
 	}
 
 	private SubCentralDe()
