@@ -130,6 +130,7 @@ public class ParsingPlayground
 				new SeriesNameStandardizer(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE),
 						"Last Man Standing (US)",
 						"Last Man Standing"));
+		SubCentralDe.registerSubtitleLanguageStandardizers(parsedToInfoDbStdzService);
 
 		final ClassBasedStandardizingService infoDbToCustomStdzService = new ClassBasedStandardizingService("after infoDb");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
@@ -223,7 +224,6 @@ public class ParsingPlayground
 							convertedSub.setLanguage(subAdj.getFirstSubtitle().getLanguage());
 							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
-							SubCentralDe.standardizeSubtitleLanguage(convertedSub);
 							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, allMatchingRlss);
 							TimeUtil.printDurationMillis("Converting releases", start);
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
