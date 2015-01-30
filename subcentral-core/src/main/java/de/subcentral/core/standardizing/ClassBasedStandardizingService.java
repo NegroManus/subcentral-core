@@ -132,6 +132,12 @@ public class ClassBasedStandardizingService implements StandardizingService
 		}
 	}
 
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(ClassBasedStandardizingService.class).add("domain", domain).toString();
+	}
+
 	public static final class StandardizerEntry<T>
 	{
 		private final Standardizer<T>	standardizer;

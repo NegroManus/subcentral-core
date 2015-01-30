@@ -5,6 +5,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 
@@ -19,11 +21,11 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ParsingUtils
 {
-	public static void requireNotBlank(String text, Class<?> targetClass) throws NoMatchException
+	public static void requireNotBlank(String text) throws NoMatchException
 	{
 		if (StringUtils.isBlank(text))
 		{
-			throw new NoMatchException(text, targetClass, "text is blank");
+			throw new NoMatchException(text, null, "text is blank");
 		}
 	}
 
@@ -69,22 +71,6 @@ public class ParsingUtils
 		}
 	}
 
-	public static <T> T parse(String text, Class<T> targetClass, Iterable<ParsingService> parsingServices) throws NoMatchException, ParsingException
-	{
-		for (ParsingService ps : parsingServices)
-		{
-			try
-			{
-				return ps.parse(text, targetClass);
-			}
-			catch (NoMatchException nme)
-			{
-				continue;
-			}
-		}
-		throw new NoMatchException(text, targetClass, "No ParsingService could parse the text");
-	}
-
 	public static Object parse(String text, Iterable<ParsingService> parsingServices) throws NoMatchException, ParsingException
 	{
 		for (ParsingService ps : parsingServices)
@@ -98,7 +84,53 @@ public class ParsingUtils
 				continue;
 			}
 		}
-		throw new NoMatchException(text, null, "No ParsingService could parse the text");
+		throw new NoMatchException(text, ImmutableSet.of(), "No ParsingService could parse the text");
+	}
+
+	public static <T> T parse(String text, Class<T> targetType, Iterable<ParsingService> parsingServices) throws NoMatchException, ParsingException
+	{
+		for (ParsingService ps : parsingServices)
+		{
+			try
+			{
+				return ps.parse(text, targetType);
+			}
+			catch (NoMatchException nme)
+			{
+				continue;
+			}
+		}
+		throw new NoMatchException(text, ImmutableSet.of(targetType), "No ParsingService could parse the text");
+	}
+
+	public static Object parse(String text, Set<Class<?>> targetTypes, Iterable<ParsingService> parsingServices) throws NoMatchException,
+			ParsingException
+	{
+		for (ParsingService ps : parsingServices)
+		{
+			try
+			{
+				return ps.parse(text, targetTypes);
+			}
+			catch (NoMatchException nme)
+			{
+				continue;
+			}
+		}
+		throw new NoMatchException(text, targetTypes, "No ParsingService could parse the text");
+	}
+
+	public static List<ParsingService> filterByTargetTypes(Iterable<ParsingService> parsingServices, Set<Class<?>> targetTypes)
+	{
+		ImmutableList.Builder<ParsingService> filteredServices = ImmutableList.builder();
+		for (ParsingService service : parsingServices)
+		{
+			if (!Collections.disjoint(service.getTargetTypes(), targetTypes))
+			{
+				filteredServices.add(service);
+			}
+		}
+		return filteredServices.build();
 	}
 
 	private ParsingUtils()
