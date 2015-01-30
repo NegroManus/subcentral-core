@@ -1,5 +1,6 @@
 package de.subcentral.core.util;
 
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,11 +118,11 @@ public class StringUtil
 		{
 			return null;
 		}
-		String[] simplePatterns = simplePatternsString.split("\\s*,\\s*");
-		String[] convertedPatterns = new String[simplePatterns.length];
-		for (int i = 0; i < simplePatterns.length; i++)
+		List<String> simplePatterns = Splitter.on(Pattern.compile("\\s*,\\s*")).omitEmptyStrings().splitToList(simplePatternsString);
+		String[] convertedPatterns = new String[simplePatterns.size()];
+		for (int i = 0; i < simplePatterns.size(); i++)
 		{
-			convertedPatterns[i] = convertToPattern(simplePatterns[i]);
+			convertedPatterns[i] = convertToPattern(simplePatterns.get(i));
 		}
 		if (convertedPatterns.length == 1)
 		{

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * 
@@ -118,7 +119,7 @@ public class ClassBasedParsingService implements ParsingService
 	@Override
 	public Object parse(String text) throws NoMatchException, ParsingException
 	{
-		ParsingUtils.requireNotBlank(text, null);
+		ParsingUtils.requireNotBlank(text);
 		for (ParserEntry<?> entry : parserEntries)
 		{
 			try
@@ -132,17 +133,17 @@ public class ClassBasedParsingService implements ParsingService
 				continue;
 			}
 		}
-		throw buildNoMatchException(text, null);
+		throw buildNoMatchException(text, ImmutableSet.of());
 	}
 
 	@Override
-	public <T> T parse(String text, Class<T> targetClass) throws NoMatchException, ParsingException
+	public <T> T parse(String text, Class<T> targetType) throws NoMatchException, ParsingException
 	{
-		ParsingUtils.requireNotBlank(text, targetClass);
-		Objects.requireNonNull(targetClass, "targetClass cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
+		ParsingUtils.requireNotBlank(text);
+		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
 		for (ParserEntry<?> entry : parserEntries)
 		{
-			if (targetClass.isAssignableFrom(entry.targetType))
+			if (targetType.isAssignableFrom(entry.targetType))
 			{
 				try
 				{
@@ -159,23 +160,60 @@ public class ClassBasedParsingService implements ParsingService
 				}
 			}
 		}
-		throw buildNoMatchException(text, targetClass);
+		throw buildNoMatchException(text, ImmutableSet.of(targetType));
 	}
 
-	private static NoMatchException buildNoMatchException(String text, Class<?> targetClass)
+	@Override
+	public Object parse(String text, Set<Class<?>> targetTypes) throws NoMatchException, ParsingException
+	{
+		ParsingUtils.requireNotBlank(text);
+		if (targetTypes == null || targetTypes.isEmpty())
+		{
+			return parse(text);
+		}
+		for (ParserEntry<?> entry : parserEntries)
+		{
+			for (Class<?> targetClass : targetTypes)
+			{
+				if (targetClass.isAssignableFrom(entry.targetType))
+				{
+					try
+					{
+						Parser<?> parser = entry.parser;
+						return parser.parse(text);
+					}
+					catch (NoMatchException e)
+					{
+						// this parser could no match
+						// ignore and move on to the next
+						continue;
+					}
+				}
+			}
+		}
+		throw buildNoMatchException(text, targetTypes);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(ClassBasedParsingService.class).add("domain", domain).toString();
+	}
+
+	private static NoMatchException buildNoMatchException(String text, Set<Class<?>> targetTypes)
 	{
 		// build Exception message
 		StringBuilder msg = new StringBuilder();
 		msg.append("No parser ");
-		if (targetClass != null)
+		if (targetTypes.isEmpty())
 		{
-			msg.append("that produces objects of");
-			msg.append(targetClass);
+			msg.append("that produces any target type of");
+			msg.append(targetTypes);
 			msg.append(' ');
 		}
 		msg.append("could parse the text");
 
-		throw new NoMatchException(text, targetClass, msg.toString());
+		throw new NoMatchException(text, targetTypes, msg.toString());
 	}
 
 	public static final class ParserEntry<T>
