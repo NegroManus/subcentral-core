@@ -2,6 +2,7 @@ package de.subcentral.core.metadata.release;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,19 +39,15 @@ public class CrossGroupCompatibility implements Compatibility
 		this(ImmutableList.of(), sourceGroup, ImmutableList.of(), compatibleGroup, condition, bidirectional);
 	}
 
-	public CrossGroupCompatibility(Collection<Tag> sourceTags, Group sourceGroup, Collection<Tag> compatibleTags, Group compatibleGroup,
-			Condition condition, boolean bidirectional)
+	public CrossGroupCompatibility(List<Tag> sourceTags, Group sourceGroup, List<Tag> compatibleTags, Group compatibleGroup, Condition condition,
+			boolean bidirectional)
 	{
+		// Currently null groups are not allowed because it makes things simpler and there is no use case for null groups.
+		// If null groups were allowed, the algorithm would take the source group, if compatible group was null.
 		Objects.requireNonNull(sourceTags, "sourceTags");
+		Objects.requireNonNull(sourceGroup, "sourceGroup");
 		Objects.requireNonNull(compatibleTags, "compatibleTags");
-		if (sourceGroup == null && sourceTags.isEmpty())
-		{
-			throw new IllegalArgumentException("either sourceGroup or sourceTags must be non-null / non-empty");
-		}
-		if (compatibleGroup == null && compatibleTags.isEmpty())
-		{
-			throw new IllegalArgumentException("either compatibleGroup or compatibleTags must be non-null / non-empty");
-		}
+		Objects.requireNonNull(compatibleGroup, "compatibleGroup");
 		this.sourceTags = ImmutableList.copyOf(sourceTags);
 		this.sourceGroup = sourceGroup;
 		this.compatibleTags = ImmutableList.copyOf(compatibleTags);

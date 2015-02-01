@@ -1,8 +1,8 @@
 package de.subcentral.core.metadata.release;
 
 import java.util.Locale;
-import java.util.Objects;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.Settings;
@@ -17,7 +17,7 @@ public class Group implements Comparable<Group>
 
 	public Group(String name)
 	{
-		this.name = Objects.requireNonNull(name, "name");
+		this.name = Validate.notBlank(name, "name cannot be blank");
 	}
 
 	public String getName()
