@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.BeanUtil;
 
-public class GroupsCompatibility implements Compatibility
+public class CrossGroupCompatibility implements Compatibility
 {
 	public static enum Condition
 	{
@@ -33,12 +33,12 @@ public class GroupsCompatibility implements Compatibility
 	private final Condition				condition;
 	private final boolean				bidirectional;
 
-	public GroupsCompatibility(Group sourceGroup, Group compatibleGroup, Condition condition, boolean bidirectional)
+	public CrossGroupCompatibility(Group sourceGroup, Group compatibleGroup, Condition condition, boolean bidirectional)
 	{
 		this(ImmutableList.of(), sourceGroup, ImmutableList.of(), compatibleGroup, condition, bidirectional);
 	}
 
-	public GroupsCompatibility(Collection<Tag> sourceTags, Group sourceGroup, Collection<Tag> compatibleTags, Group compatibleGroup,
+	public CrossGroupCompatibility(Collection<Tag> sourceTags, Group sourceGroup, Collection<Tag> compatibleTags, Group compatibleGroup,
 			Condition condition, boolean bidirectional)
 	{
 		Objects.requireNonNull(sourceTags, "sourceTags");
@@ -188,9 +188,9 @@ public class GroupsCompatibility implements Compatibility
 		{
 			return true;
 		}
-		if (obj instanceof GroupsCompatibility)
+		if (obj instanceof CrossGroupCompatibility)
 		{
-			GroupsCompatibility o = (GroupsCompatibility) obj;
+			CrossGroupCompatibility o = (CrossGroupCompatibility) obj;
 			return sourceTags.equals(o.sourceTags) && Objects.equals(sourceGroup, o.sourceGroup) && compatibleTags.equals(o.compatibleTags)
 					&& Objects.equals(compatibleGroup, o.compatibleGroup) && condition.equals(o.condition) && bidirectional == o.bidirectional;
 		}
@@ -212,7 +212,7 @@ public class GroupsCompatibility implements Compatibility
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(GroupsCompatibility.class)
+		return MoreObjects.toStringHelper(CrossGroupCompatibility.class)
 				.omitNullValues()
 				.add("sourceTags", BeanUtil.nullIfEmpty(sourceTags))
 				.add("sourceGroup", sourceGroup)

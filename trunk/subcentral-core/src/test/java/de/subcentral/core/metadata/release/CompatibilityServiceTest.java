@@ -13,12 +13,12 @@ import org.junit.Test;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.GroupsCompatibility;
+import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
-import de.subcentral.core.metadata.release.GroupsCompatibility.Condition;
+import de.subcentral.core.metadata.release.CrossGroupCompatibility.Condition;
 
 public class CompatibilityServiceTest
 {
@@ -30,8 +30,8 @@ public class CompatibilityServiceTest
 
 		CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(new SameGroupCompatibility());
-		compService.getCompatibilities().add(new GroupsCompatibility(new Group("LOL"), new Group("DIMENSION"), Condition.IF_EXISTS, true));
-		compService.getCompatibilities().add(new GroupsCompatibility(Tag.list("720p", "HDTV", "x264"),
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), Condition.IF_EXISTS, true));
+		compService.getCompatibilities().add(new CrossGroupCompatibility(Tag.list("720p", "HDTV", "x264"),
 				null,
 				Tag.list("HDTV", "XviD"),
 				new Group("AFG"),
