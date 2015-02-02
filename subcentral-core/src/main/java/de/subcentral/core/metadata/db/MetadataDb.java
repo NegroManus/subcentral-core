@@ -14,5 +14,5 @@ public interface MetadataDb<T>
 
 	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
-	public List<T> queryWithName(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException;
+	public List<T> queryWithName(Object metadataObj) throws MetadataDbUnavailableException, MetadataDbQueryException;
 }
