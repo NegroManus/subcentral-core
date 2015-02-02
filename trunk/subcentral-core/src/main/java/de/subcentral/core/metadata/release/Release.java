@@ -465,7 +465,7 @@ public class Release implements Comparable<Release>
 				.add("nukes", BeanUtil.nullIfEmpty(nukes))
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
-				.add("furtherInfo", furtherInfo)
+				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
 				.toString();
 	}
 }
