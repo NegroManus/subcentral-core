@@ -34,11 +34,11 @@ public abstract class AbstractMetadataDb<T> implements MetadataDb<T>
 	}
 
 	@Override
-	public List<T> queryWithName(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException
+	public List<T> queryWithName(Object metaDataObj) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
 		try
 		{
-			return query(queryObjectNamingService.name(obj));
+			return query(queryObjectNamingService.name(metaDataObj));
 		}
 		catch (MetadataDbUnavailableException ue)
 		{
@@ -46,7 +46,7 @@ public abstract class AbstractMetadataDb<T> implements MetadataDb<T>
 		}
 		catch (Exception e)
 		{
-			throw new MetadataDbQueryException(this, obj, e);
+			throw new MetadataDbQueryException(this, metaDataObj, e);
 		}
 	}
 
