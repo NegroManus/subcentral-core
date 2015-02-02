@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-public class CommonRelease
+public class CommonReleaseDefinition
 {
 	public enum AssumeExistence
 	{
@@ -18,12 +18,12 @@ public class CommonRelease
 	private final Release			commonRelease;
 	private final AssumeExistence	assumeExistence;
 
-	public CommonRelease(Release partialRelease, AssumeExistence assumeExistence)
+	public CommonReleaseDefinition(Release partialRelease, AssumeExistence assumeExistence)
 	{
 		this(partialRelease.getTags(), partialRelease.getGroup(), assumeExistence);
 	}
 
-	public CommonRelease(List<Tag> tags, Group group, AssumeExistence assumeExistence)
+	public CommonReleaseDefinition(List<Tag> tags, Group group, AssumeExistence assumeExistence)
 	{
 		this.commonRelease = new Release(tags, group);
 		this.assumeExistence = Objects.requireNonNull(assumeExistence, "assumeExistence");
@@ -51,9 +51,9 @@ public class CommonRelease
 		{
 			return true;
 		}
-		if (obj instanceof CommonRelease)
+		if (obj instanceof CommonReleaseDefinition)
 		{
-			return commonRelease.equals(((CommonRelease) obj).commonRelease);
+			return commonRelease.equals(((CommonReleaseDefinition) obj).commonRelease);
 		}
 		return false;
 	}
@@ -67,6 +67,6 @@ public class CommonRelease
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(CommonRelease.class).add("commonRelease", commonRelease).add("assumeExistence", assumeExistence).toString();
+		return MoreObjects.toStringHelper(CommonReleaseDefinition.class).add("commonRelease", commonRelease).add("assumeExistence", assumeExistence).toString();
 	}
 }
