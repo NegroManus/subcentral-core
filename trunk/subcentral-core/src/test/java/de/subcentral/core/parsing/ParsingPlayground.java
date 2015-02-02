@@ -25,9 +25,8 @@ import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
-import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
-import de.subcentral.core.metadata.release.CrossGroupCompatibility.Condition;
+import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtils;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
@@ -111,9 +110,9 @@ public class ParsingPlayground
 
 		final CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(new SameGroupCompatibility());
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), Condition.IF_EXISTS, true));
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), Condition.IF_EXISTS, true));
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("ASAP"), new Group("IMMERSE"), Condition.IF_EXISTS, true));
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), true));
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), true));
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("ASAP"), new Group("IMMERSE"), true));
 
 		final WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.DELETE);

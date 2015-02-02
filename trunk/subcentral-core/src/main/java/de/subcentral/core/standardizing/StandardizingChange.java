@@ -43,7 +43,6 @@ public class StandardizingChange
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(StandardizingChange.class)
-				.omitNullValues()
 				.add("bean", bean)
 				.add("propertyName", propertyName)
 				.add("oldValue", oldValue)

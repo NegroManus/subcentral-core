@@ -109,6 +109,20 @@ public class Release implements Comparable<Release>
 		this.group = group;
 	}
 
+	public Release(Media media, List<Tag> tags, Group group)
+	{
+		this.media.add(media);
+		this.tags.addAll(tags);
+		this.group = group;
+	}
+
+	public Release(List<Media> media, List<Tag> tags, Group group)
+	{
+		this.media.addAll(media);
+		this.tags.addAll(tags);
+		this.group = group;
+	}
+
 	public Release(String name, Media media, List<Tag> tags, Group group)
 	{
 		this.name = name;
