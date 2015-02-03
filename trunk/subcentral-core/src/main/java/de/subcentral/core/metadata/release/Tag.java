@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.Settings;
@@ -83,6 +86,36 @@ public class Tag implements Comparable<Tag>
 	public static ImmutableList<Tag> immutableCopy(List<Tag> tags)
 	{
 		return ImmutableList.copyOf(tags);
+	}
+
+	public static List<Tag> parseList(String tagList)
+	{
+		return parseList(tagList, Splitter.on(','));
+	}
+
+	public static List<Tag> parseList(String tagList, Splitter splitter)
+	{
+		if (StringUtils.isBlank(tagList))
+		{
+			return ImmutableList.of();
+		}
+		return list(splitter.omitEmptyStrings().trimResults().splitToList(tagList));
+	}
+
+	public static Tag parse(String tag)
+	{
+		String trimmedTag = StringUtils.trimToNull(tag);
+		return trimmedTag == null ? null : new Tag(trimmedTag);
+	}
+
+	public static String listToString(List<Tag> tags)
+	{
+		return listToString(tags, ", ");
+	}
+
+	public static String listToString(List<Tag> tags, String separator)
+	{
+		return Joiner.on(separator).join(tags);
 	}
 
 	private final String	name;

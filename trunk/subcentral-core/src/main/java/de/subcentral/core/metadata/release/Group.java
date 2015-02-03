@@ -2,6 +2,7 @@ package de.subcentral.core.metadata.release;
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -13,6 +14,17 @@ import de.subcentral.core.Settings;
  */
 public class Group implements Comparable<Group>
 {
+	public static Group parse(String group)
+	{
+		String trimmedGroup = StringUtils.trimToNull(group);
+		return trimmedGroup == null ? null : new Group(trimmedGroup);
+	}
+
+	public static String toSafeString(Group group)
+	{
+		return group == null ? "" : group.getName();
+	}
+
 	private final String	name;
 
 	public Group(String name)
