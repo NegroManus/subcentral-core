@@ -2,7 +2,7 @@ package de.subcentral.core.metadata.release;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -37,7 +37,8 @@ public class CompatibilityService
 		{
 			return ImmutableMap.of();
 		}
-		Map<Release, CompatibilityInfo> allCompatibles = new HashMap<>(4);
+		// LinkedHashMap to maintain insertion order
+		Map<Release, CompatibilityInfo> allCompatibles = new LinkedHashMap<>(4);
 		for (Release rls : rlss)
 		{
 			Map<Release, CompatibilityInfo> compatiblesForRls = findCompatibles(rls, existingRlss);
@@ -65,7 +66,8 @@ public class CompatibilityService
 		}
 
 		// Do not use ImmutableMap.Builder here, as it has no putIfAbsent() method
-		Map<Release, CompatibilityInfo> allCompatibles = new HashMap<>(4);
+		// LinkedHashMap to maintain insertion order
+		Map<Release, CompatibilityInfo> allCompatibles = new LinkedHashMap<>(4);
 
 		Queue<Release> rlssToCheck = new ArrayDeque<>(4);
 		rlssToCheck.add(rls);

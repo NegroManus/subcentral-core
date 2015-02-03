@@ -19,13 +19,13 @@ public class CrossGroupCompatibility implements Compatibility
 
 	private final Group		sourceGroup;
 	private final Group		compatibleGroup;
-	private final boolean	bidirectional;
+	private final boolean	symmetric;
 
-	public CrossGroupCompatibility(Group sourceGroup, Group compatibleGroup, boolean bidirectional)
+	public CrossGroupCompatibility(Group sourceGroup, Group compatibleGroup, boolean symmetric)
 	{
 		this.sourceGroup = Objects.requireNonNull(sourceGroup, "sourceGroup");
 		this.compatibleGroup = Objects.requireNonNull(compatibleGroup, "compatibleGroup");
-		this.bidirectional = bidirectional;
+		this.symmetric = symmetric;
 	}
 
 	public Group getSourceGroup()
@@ -38,9 +38,9 @@ public class CrossGroupCompatibility implements Compatibility
 		return compatibleGroup;
 	}
 
-	public boolean isBidirectional()
+	public boolean isSymmetric()
 	{
-		return bidirectional;
+		return symmetric;
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class CrossGroupCompatibility implements Compatibility
 		{
 			return MatchDirection.FORWARD;
 		}
-		if (bidirectional && compatibleGroup.equals(rls.getGroup()))
+		if (symmetric && compatibleGroup.equals(rls.getGroup()))
 		{
 			return MatchDirection.BACKWARD;
 		}
@@ -108,7 +108,7 @@ public class CrossGroupCompatibility implements Compatibility
 		if (obj instanceof CrossGroupCompatibility)
 		{
 			CrossGroupCompatibility o = (CrossGroupCompatibility) obj;
-			return sourceGroup.equals(o.sourceGroup) && compatibleGroup.equals(o.compatibleGroup) && bidirectional == o.bidirectional;
+			return sourceGroup.equals(o.sourceGroup) && compatibleGroup.equals(o.compatibleGroup) && symmetric == o.symmetric;
 		}
 		return false;
 	}
@@ -116,7 +116,7 @@ public class CrossGroupCompatibility implements Compatibility
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(13, 67).append(sourceGroup).append(compatibleGroup).append(bidirectional).toHashCode();
+		return new HashCodeBuilder(13, 67).append(sourceGroup).append(compatibleGroup).append(symmetric).toHashCode();
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class CrossGroupCompatibility implements Compatibility
 		return MoreObjects.toStringHelper(CrossGroupCompatibility.class)
 				.add("sourceGroup", sourceGroup)
 				.add("compatibleGroup", compatibleGroup)
-				.add("bidirectional", bidirectional)
+				.add("symmetric", symmetric)
 				.toString();
 	}
 
@@ -133,7 +133,7 @@ public class CrossGroupCompatibility implements Compatibility
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(sourceGroup);
-		if (bidirectional)
+		if (symmetric)
 		{
 			sb.append(" <-> ");
 		}
