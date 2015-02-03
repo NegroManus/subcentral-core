@@ -126,7 +126,7 @@ public class StringUtil
 		}
 		if (convertedPatterns.length == 1)
 		{
-			return Pattern.compile(convertedPatterns[0], Pattern.CASE_INSENSITIVE);
+			return Pattern.compile(convertedPatterns[0], Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 		}
 		else
 		{
@@ -135,13 +135,13 @@ public class StringUtil
 			{
 				strJoiner.add(p);
 			}
-			return Pattern.compile(strJoiner.toString(), Pattern.CASE_INSENSITIVE);
+			return Pattern.compile(strJoiner.toString(), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 		}
 	}
 
 	public static Pattern parseSimplePattern(String simplePattern)
 	{
-		return Pattern.compile(convertToPattern(simplePattern), Pattern.CASE_INSENSITIVE);
+		return Pattern.compile(convertToPattern(simplePattern), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 	}
 
 	private static String convertToPattern(String simplePattern)
