@@ -11,19 +11,11 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtils;
+import de.subcentral.core.metadata.release.TagUtils.QueryMode;
+import de.subcentral.core.metadata.release.TagUtils.ReplaceMode;
 
 public class ReleaseTagsStandardizer implements Standardizer<Release>
 {
-	public static enum QueryMode
-	{
-		CONTAINS, EQUALS
-	};
-
-	public static enum ReplaceMode
-	{
-		COMPLETE_LIST, MATCHED_SEQUENCE
-	};
-
 	private final ImmutableList<Tag>	queryTags;
 	private final ImmutableList<Tag>	replacement;
 	private final QueryMode				queryMode;
@@ -78,53 +70,12 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		}
 		List<Tag> tags = rls.getTags();
 		ImmutableList<Tag> oldTags = ImmutableList.copyOf(tags);
-		switch (queryMode)
+		boolean changed = TagUtils.replace(tags, queryTags, replacement, queryMode, replaceMode, ignoreOrder);
+		if (changed)
 		{
-			case CONTAINS:
-				switch (replaceMode)
-				{
-					case COMPLETE_LIST:
-						if (ignoreOrder)
-						{
-							if (tags.containsAll(queryTags))
-							{
-								rls.setTags(replacement);
-							}
-						}
-						else
-						{
-							if (TagUtils.containsSequence(tags, queryTags))
-							{
-								rls.setTags(replacement);
-							}
-						}
-						break;
-					case MATCHED_SEQUENCE:
-						TagUtils.replace(tags, queryTags, replacement, ignoreOrder, false);
-						break;
-				}
-				break;
-			case EQUALS:
-				if (ignoreOrder)
-				{
-					if (TagUtils.equalsIgnoreOrder(tags, queryTags))
-					{
-						rls.setTags(replacement);
-					}
-				}
-				else
-				{
-					if (tags.equals(queryTags))
-					{
-						rls.setTags(replacement);
-					}
-				}
+			return ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, Tag.immutableCopy(tags)));
 		}
-		if (oldTags.equals(tags))
-		{
-			return ImmutableList.of();
-		}
-		return ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, Tag.immutableCopy(tags)));
+		return ImmutableList.of();
 	}
 
 	@Override
