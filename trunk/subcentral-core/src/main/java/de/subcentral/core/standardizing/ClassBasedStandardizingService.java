@@ -40,7 +40,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return standardizerEntries;
 	}
 
-	public <T> void registerStandardizer(Class<T> beanType, Standardizer<T> standardizer)
+	public <T> void registerStandardizer(Class<T> beanType, Standardizer<? super T> standardizer)
 	{
 		standardizerEntries.add(new StandardizerEntry<T>(standardizer, beanType));
 	}
@@ -140,16 +140,16 @@ public class ClassBasedStandardizingService implements StandardizingService
 
 	public static final class StandardizerEntry<T>
 	{
-		private final Standardizer<T>	standardizer;
-		private final Class<T>			beanType;
+		private final Standardizer<? super T>	standardizer;
+		private final Class<T>					beanType;
 
-		private StandardizerEntry(Standardizer<T> standardizer, Class<T> beanType)
+		private StandardizerEntry(Standardizer<? super T> standardizer, Class<T> beanType)
 		{
 			this.standardizer = Objects.requireNonNull(standardizer, "standardizer");
 			this.beanType = Objects.requireNonNull(beanType, "beanType");
 		}
 
-		public Standardizer<T> getStandardizer()
+		public Standardizer<? super T> getStandardizer()
 		{
 			return standardizer;
 		}
