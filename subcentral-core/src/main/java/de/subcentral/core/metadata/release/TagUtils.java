@@ -8,16 +8,15 @@ import com.google.common.collect.ImmutableList;
 
 public class TagUtils
 {
-	public static boolean replaceTags(Release rls, List<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	public static enum QueryMode
 	{
-		return replaceTags(rls.getTags(), newTags, metaTagsToRetain);
-	}
+		CONTAINS, EQUALS
+	};
 
-	public static boolean replaceTags(List<Tag> tags, List<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	public static enum ReplaceMode
 	{
-		// no shortcut || because both operations need to be performed
-		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
-	}
+		COMPLETE_LIST, MATCHED_SEQUENCE
+	};
 
 	public static void transferMetaTags(List<Tag> sourceTags, List<Tag> targetTags, Collection<Tag> metaTags)
 	{
@@ -73,9 +72,96 @@ public class TagUtils
 		return tags1.containsAll(tags2) && tags2.containsAll(tags1);
 	}
 
-	public static boolean replace(List<Tag> tags, List<Tag> tagsToReplace, List<Tag> replacement)
+	public static boolean replaceRetainingMetaTags(Release rls, List<Tag> newTags, Collection<Tag> metaTagsToRetain)
 	{
-		return replace(tags, tagsToReplace, replacement, false, false);
+		return replaceRetainingMetaTags(rls.getTags(), newTags, metaTagsToRetain);
+	}
+
+	public static boolean replaceRetainingMetaTags(List<Tag> tags, List<Tag> newTags, Collection<Tag> metaTagsToRetain)
+	{
+		// no shortcut || because both operations need to be performed
+		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
+	}
+
+	public static boolean replace(List<Tag> tags, List<Tag> queryTags, List<Tag> replacement, QueryMode queryMode, ReplaceMode replaceMode,
+			boolean ignoreOrder)
+	{
+		switch (queryMode)
+		{
+			case CONTAINS:
+				switch (replaceMode)
+				{
+					case COMPLETE_LIST:
+						if (ignoreOrder)
+						{
+							if (tags.containsAll(queryTags))
+							{
+								tags.clear();
+								tags.addAll(replacement);
+								return true;
+							}
+						}
+						else
+						{
+							if (TagUtils.containsSequence(tags, queryTags))
+							{
+								tags.clear();
+								tags.addAll(replacement);
+								return true;
+							}
+						}
+						break;
+					case MATCHED_SEQUENCE:
+						return replaceSequences(tags, queryTags, replacement, ignoreOrder, false);
+				}
+				break;
+			case EQUALS:
+				if (ignoreOrder)
+				{
+					if (equalsIgnoreOrder(tags, queryTags))
+					{
+						tags.clear();
+						tags.addAll(replacement);
+						return true;
+					}
+				}
+				else
+				{
+					if (tags.equals(queryTags))
+					{
+						tags.clear();
+						tags.addAll(replacement);
+						return true;
+					}
+				}
+		}
+		return false;
+	}
+
+	public static boolean replaceSequences(List<Tag> tags, List<Tag> tagsToReplace, List<Tag> replacement)
+	{
+		return replaceSequences(tags, tagsToReplace, replacement, false, false);
+	}
+
+	public static boolean replaceSequences(List<Tag> tags, List<Tag> tagSequenceToReplace, List<Tag> replacementSequence, boolean ignoreOrder,
+			boolean onlyReplaceFirst)
+	{
+		boolean changed = false;
+		for (int i = 0; i < tags.size() && i + tagSequenceToReplace.size() <= tags.size(); i++)
+		{
+			List<Tag> sublist = tags.subList(i, i + tagSequenceToReplace.size());
+			if (ignoreOrder ? equalsIgnoreOrder(sublist, tagSequenceToReplace) : sublist.equals(tagSequenceToReplace))
+			{
+				sublist.clear();
+				tags.addAll(i, replacementSequence);
+				changed = true;
+				if (onlyReplaceFirst)
+				{
+					return true;
+				}
+			}
+		}
+		return changed;
 	}
 
 	public static boolean containsSequence(List<Tag> tags, List<Tag> tagSequenceToFind)
@@ -91,34 +177,14 @@ public class TagUtils
 		return false;
 	}
 
-	public static boolean replace(List<Tag> tags, List<Tag> tagsToReplace, List<Tag> replacement, boolean ignoreOrder, boolean onlyReplaceFirst)
-	{
-		boolean changed = false;
-		for (int i = 0; i < tags.size() && i + tagsToReplace.size() <= tags.size(); i++)
-		{
-			List<Tag> sublist = tags.subList(i, i + tagsToReplace.size());
-			if (ignoreOrder ? equalsIgnoreOrder(sublist, tagsToReplace) : sublist.equals(tagsToReplace))
-			{
-				sublist.clear();
-				tags.addAll(i, replacement);
-				changed = true;
-				if (onlyReplaceFirst)
-				{
-					return true;
-				}
-			}
-		}
-		return changed;
-	}
-
 	public static void main(String[] args)
 	{
 		List<Tag> tags = Tag.list("720p", "WEB", "DL", "H", "264", "DD5", "1", "WEB", "DL", "Xx264");
 
-		replace(tags, Tag.list("H", "264"), Tag.list("H.264"), false, false);
-		replace(tags, Tag.list("DL", "WEB"), Tag.list("WEB-DL"), true, false);
-		replace(tags, Tag.list("DD5", "1"), Tag.list("DD5.1"), false, false);
-		replace(tags, Tag.list("xx264"), Tag.list("X264"), false, false);
+		replaceSequences(tags, Tag.list("H", "264"), Tag.list("H.264"), false, false);
+		replaceSequences(tags, Tag.list("DL", "WEB"), Tag.list("WEB-DL"), true, false);
+		replaceSequences(tags, Tag.list("DD5", "1"), Tag.list("DD5.1"), false, false);
+		replaceSequences(tags, Tag.list("xx264"), Tag.list("X264"), false, false);
 		System.out.println(tags);
 	}
 
