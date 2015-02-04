@@ -23,7 +23,7 @@ import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.standardizing.ClassBasedStandardizingService;
-import de.subcentral.core.standardizing.SubtitleLanguageStandardizer;
+import de.subcentral.core.standardizing.SubtitleLanguageCustomStandardizer;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.releasescene.ReleaseScene;
 
@@ -128,10 +128,10 @@ public class SubCentralDe
 
 	public static void registerSubtitleLanguageStandardizers(ClassBasedStandardizingService service)
 	{
-		service.registerStandardizer(Subtitle.class, new SubtitleLanguageStandardizer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE),
+		service.registerStandardizer(Subtitle.class, new SubtitleLanguageCustomStandardizer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE),
 				"VO"));
 		service.registerStandardizer(Subtitle.class,
-				new SubtitleLanguageStandardizer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de"));
+				new SubtitleLanguageCustomStandardizer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de"));
 	}
 
 	private SubCentralDe()
