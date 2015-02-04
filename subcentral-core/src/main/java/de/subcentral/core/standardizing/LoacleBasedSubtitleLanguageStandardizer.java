@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class SubtitleLanguageStandardizer implements Standardizer<Subtitle>
+public class LoacleBasedSubtitleLanguageStandardizer implements Standardizer<Subtitle>
 {
 	public enum LangFormat
 	{
@@ -45,7 +45,7 @@ public class SubtitleLanguageStandardizer implements Standardizer<Subtitle>
 	private final LangFormat			targetLanguageFormat;
 	private final Locale				targetLanguage;
 
-	public SubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LangFormat targetLanguageFormat, Locale targetLanguage)
+	public LoacleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LangFormat targetLanguageFormat, Locale targetLanguage)
 	{
 		this.possibleSourceLanguages = ImmutableList.copyOf(possibleSourceLanguages);
 		this.targetLanguageFormat = Objects.requireNonNull(targetLanguageFormat, "targetLanguageFormat");
