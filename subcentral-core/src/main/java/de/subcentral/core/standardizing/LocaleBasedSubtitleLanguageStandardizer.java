@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
 
@@ -41,15 +43,26 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		LANGUAGE_TAG
 	};
 
-	private final ImmutableList<Locale>	possibleSourceLanguages;
-	private final LangFormat			targetLanguageFormat;
-	private final Locale				targetLanguage;
+	private final ImmutableList<Function<String, Locale>>	customToLocaleConverters;
+	private final ImmutableList<Locale>						possibleSourceLanguages;
+	private final LangFormat								targetLanguageFormat;
+	private final Locale									targetLanguage;
+	private final ImmutableList<Function<Locale, String>>	customFromLocaleConverters;
 
 	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LangFormat targetLanguageFormat, Locale targetLanguage)
+	{
+		this(possibleSourceLanguages, targetLanguageFormat, targetLanguage, ImmutableList.of(), ImmutableList.of());
+	}
+
+	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LangFormat targetLanguageFormat,
+			Locale targetLanguage, Collection<Function<Locale, String>> customFromLocaleConverters,
+			Collection<Function<String, Locale>> customToLocaleConverters)
 	{
 		this.possibleSourceLanguages = ImmutableList.copyOf(possibleSourceLanguages);
 		this.targetLanguageFormat = Objects.requireNonNull(targetLanguageFormat, "targetLanguageFormat");
 		this.targetLanguage = Objects.requireNonNull(targetLanguage, "targetLanguage");
+		this.customFromLocaleConverters = ImmutableList.copyOf(customFromLocaleConverters);
+		this.customToLocaleConverters = ImmutableList.copyOf(customToLocaleConverters);
 	}
 
 	public ImmutableList<Locale> getPossibleSourceLanguages()
@@ -65,6 +78,16 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 	public Locale getTargetLanguage()
 	{
 		return targetLanguage;
+	}
+
+	public ImmutableList<Function<String, Locale>> getCustomToLocaleConverters()
+	{
+		return customToLocaleConverters;
+	}
+
+	public ImmutableList<Function<Locale, String>> getCustomFromLocaleConverters()
+	{
+		return customFromLocaleConverters;
 	}
 
 	@Override
@@ -86,43 +109,75 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 
 	private String standardizeLang(String oldLang)
 	{
-		Locale[] availableLocales = Locale.getAvailableLocales();
-		Locale oldLocale = new Locale(oldLang);
-		for (Locale locale : availableLocales)
+		Locale locale = parseLocale(oldLang);
+		if (locale != null)
 		{
-			if (locale.toString().equalsIgnoreCase(oldLang))
-			{
-				return calcNewLang(locale);
-			}
-			if (locale.toLanguageTag().equalsIgnoreCase(oldLang))
-			{
-				return calcNewLang(locale);
-			}
-			if (locale.getLanguage().equals(oldLocale.getLanguage()))
-			{
-				return calcNewLang(locale);
-			}
-			if (locale.getISO3Language().equalsIgnoreCase(oldLang))
-			{
-				return calcNewLang(locale);
-			}
-			for (Locale sourceLang : possibleSourceLanguages)
-			{
-				if (locale.getDisplayLanguage(sourceLang).equalsIgnoreCase(oldLang))
-				{
-					return calcNewLang(locale);
-				}
-				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(oldLang))
-				{
-					return calcNewLang(locale);
-				}
-			}
+			return localeToString(locale);
 		}
 		return oldLang;
 	}
 
-	private String calcNewLang(Locale l)
+	private Locale parseLocale(String s)
 	{
+		// 1. try custom to-locale converters
+		for (Function<String, Locale> converter : customToLocaleConverters)
+		{
+			Locale locale = converter.apply(s);
+			if (locale != null)
+			{
+				return locale;
+			}
+		}
+
+		// 2. try "parsing" the locale
+		Locale[] availableLocales = Locale.getAvailableLocales();
+		Locale localeFromString = new Locale(s);
+		for (Locale locale : availableLocales)
+		{
+			if (locale.toString().equalsIgnoreCase(s))
+			{
+				return locale;
+			}
+			if (locale.toLanguageTag().equalsIgnoreCase(s))
+			{
+				return locale;
+			}
+			if (locale.getLanguage().equals(localeFromString.getLanguage()))
+			{
+				return locale;
+			}
+			if (locale.getISO3Language().equalsIgnoreCase(s))
+			{
+				return locale;
+			}
+			for (Locale sourceLang : possibleSourceLanguages)
+			{
+				if (locale.getDisplayLanguage(sourceLang).equalsIgnoreCase(s))
+				{
+					return locale;
+				}
+				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(s))
+				{
+					return locale;
+				}
+			}
+		}
+		return null;
+	}
+
+	private String localeToString(Locale l)
+	{
+		// 1. try the custom from-locale converters
+		for (Function<Locale, String> converter : customFromLocaleConverters)
+		{
+			String string = converter.apply(l);
+			if (string != null)
+			{
+				return string;
+			}
+		}
+
+		// 2. print the language as specified
 		switch (targetLanguageFormat)
 		{
 			case ISO2:
@@ -142,4 +197,47 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		}
 	}
 
+	public static class ToLocaleConversionEntry
+	{
+		private final Pattern	pattern;
+		private final Locale	locale;
+
+		public ToLocaleConversionEntry(Pattern pattern, Locale locale)
+		{
+			this.pattern = Objects.requireNonNull(pattern, "pattern");
+			this.locale = Objects.requireNonNull(locale, "locale");
+		}
+
+		public Pattern getPattern()
+		{
+			return pattern;
+		}
+
+		public Locale getLocale()
+		{
+			return locale;
+		}
+	}
+
+	public static class FromLocaleConversionEntry
+	{
+		private final Locale	locale;
+		private final String	string;
+
+		private FromLocaleConversionEntry(Locale locale, String string)
+		{
+			this.locale = Objects.requireNonNull(locale, "locale");
+			this.string = Objects.requireNonNull(string, "string");
+		}
+
+		public Locale getLocale()
+		{
+			return locale;
+		}
+
+		public String getString()
+		{
+			return string;
+		}
+	}
 }
