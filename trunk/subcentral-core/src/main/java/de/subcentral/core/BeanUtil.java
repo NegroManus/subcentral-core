@@ -13,11 +13,22 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Multimap;
 
 public class BeanUtil
 {
+	public static final String requireNotBlankAndTrim(String s, String message) throws IllegalArgumentException
+	{
+		String trimmed = StringUtils.trimToNull(s);
+		if (trimmed == null)
+		{
+			throw new IllegalArgumentException(message);
+		}
+		return trimmed;
+	}
+
 	public static final Temporal validateTemporalClass(Temporal date) throws IllegalArgumentException
 	{
 		if (date == null || ZonedDateTime.class.equals(date.getClass()) || LocalDateTime.class.equals(date.getClass())
