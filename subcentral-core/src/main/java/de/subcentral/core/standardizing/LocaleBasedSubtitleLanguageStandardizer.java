@@ -14,29 +14,29 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 	public enum LangFormat
 	{
 		/**
-		 * ISO 639-1 two-letter code
+		 * ISO 639-1 two-letter code. See {@link Locale#getLanguage()}.
 		 */
 		ISO2,
 		/**
-		 * ISO 639-2/T three-letter lowercase code
+		 * ISO 639-2/T three-letter lowercase code. See {@link Locale#getISO3Language()}.
 		 */
 		ISO3,
 		/**
-		 * display language
+		 * display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
 		 */
 		DISPLAY_LANGUAGE,
 		/**
-		 * display name
+		 * display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
 		 */
 		DISPLAY_NAME,
 
 		/**
-		 * Java-Name. "pt_BR".
+		 * Java-Name. "pt_BR". See {@link Locale#toString()}.
 		 */
 		NAME,
 
 		/**
-		 * Well-formed IETF BCP 47 language tag. e.g. "pt-BR".
+		 * Well-formed IETF BCP 47 language tag. e.g. "pt-BR". See {@link Locale#toLanguageTag()}.
 		 */
 		LANGUAGE_TAG
 	};
@@ -49,7 +49,7 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 	{
 		this.possibleSourceLanguages = ImmutableList.copyOf(possibleSourceLanguages);
 		this.targetLanguageFormat = Objects.requireNonNull(targetLanguageFormat, "targetLanguageFormat");
-		this.targetLanguage = Objects.requireNonNull(targetLanguage);
+		this.targetLanguage = Objects.requireNonNull(targetLanguage, "targetLanguage");
 	}
 
 	public ImmutableList<Locale> getPossibleSourceLanguages()
@@ -109,6 +109,10 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 			for (Locale sourceLang : possibleSourceLanguages)
 			{
 				if (locale.getDisplayLanguage(sourceLang).equalsIgnoreCase(oldLang))
+				{
+					return calcNewLang(locale);
+				}
+				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(oldLang))
 				{
 					return calcNewLang(locale);
 				}
