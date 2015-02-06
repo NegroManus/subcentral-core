@@ -362,6 +362,22 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	 */
 	protected Release parseReleaseDetails(Document doc, Release rls)
 	{
+		/**
+		 * <pre>
+		 * <div class="p-body">
+		 * 							<img alt='' class='pb-img' src='http://images.tvrage.com/shows/35/34590.jpg' />
+		 * 							<div class="post-body-table img-adjacent">
+		 * 								<div class="pb-r ">
+		 * 									<div class="pb-c  pb-l">Rlsname</div>
+		 * </pre>
+		 */
+		String mediaImageUrl = null;
+		Element mediaImg = doc.select("img.pb-img").first();
+		if (mediaImg != null)
+		{
+			mediaImageUrl = mediaImg.attr("src");
+		}
+
 		Elements keyValueDivs = doc.getElementsByClass("pb-r");
 		Media media = null;
 		String mediaTitle = null;
@@ -586,22 +602,30 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 				// the ext-links for episode releases belong to the series
 				epi.getSeries().getFurtherInfo().addAll(seriesInfoUrls);
 			}
+			if (mediaImageUrl != null)
+			{
+				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER, mediaImageUrl);
+			}
 		}
 		else if (media instanceof RegularMedia)
 		{
-			// also for StandardAvMediaItem
-			RegularMedia stdMediaItem = (RegularMedia) media;
+			// also for RegularAvMedia
+			RegularMedia regularMediaItem = (RegularMedia) media;
 			if (plot != null)
 			{
-				stdMediaItem.setDescription(plot);
+				regularMediaItem.setDescription(plot);
 			}
 			if (genres != null)
 			{
-				stdMediaItem.getGenres().addAll(genres);
+				regularMediaItem.getGenres().addAll(genres);
 			}
 			if (seriesInfoUrls != null)
 			{
-				stdMediaItem.getFurtherInfo().addAll(seriesInfoUrls);
+				regularMediaItem.getFurtherInfo().addAll(seriesInfoUrls);
+			}
+			if (mediaImageUrl != null)
+			{
+				regularMediaItem.getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER, mediaImageUrl);
 			}
 		}
 

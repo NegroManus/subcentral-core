@@ -89,10 +89,9 @@ public interface Media
 	public static final String	MEDIA_CONTENT_TYPE_VIDEO		= "VIDEO";
 	public static final String	MEDIA_CONTENT_TYPE_APPLICATION	= "APPLICATION";
 
-	public static final String	MEDIA_IMAGE_TYPE_THUMBNAIL		= "thumbnail";
-	public static final String	MEDIA_IMAGE_TYPE_BANNER			= "banner";
-	public static final String	MEDIA_IMAGE_TYPE_HEADER			= "header";
 	public static final String	MEDIA_IMAGE_TYPE_BACKGROUND		= "background";
+	public static final String	MEDIA_IMAGE_TYPE_POSTER			= "poster";
+	public static final String	MEDIA_IMAGE_TYPE_THUMBNAIL		= "thumbnail";
 
 	// Property accessors
 	/**
@@ -174,7 +173,8 @@ public interface Media
 	public String getContentRating();
 
 	/**
-	 * The key of the map is the image typ (thumbnail, banner, header, background), the values are resource paths (URLs) to the images.
+	 * The key of the map is the image typ ({@link #MEDIA_IMAGE_TYPE_BACKGROUND}, {@link #MEDIA_IMAGE_TYPE_POSTER},
+	 * {@link #MEDIA_IMAGE_TYPE_THUMBNAIL}, some custom image type or {@code null}), the values are resource paths (URLs) to the images.
 	 * 
 	 * @return all images associated with this media
 	 */
