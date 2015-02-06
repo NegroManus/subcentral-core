@@ -96,12 +96,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 	@SuppressWarnings("unchecked")
 	private <T> List<StandardizingChange> doStandardize(T bean)
 	{
-		if (bean == null)
-		{
-			return ImmutableList.of();
-		}
 		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
-
 		for (StandardizerEntry<?> entry : standardizerEntries)
 		{
 			if (entry.beanType.isAssignableFrom(bean.getClass()))
@@ -110,7 +105,6 @@ public class ClassBasedStandardizingService implements StandardizingService
 				changes.addAll(standardizer.standardize(bean));
 			}
 		}
-
 		return changes.build();
 	}
 
