@@ -58,15 +58,9 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return false;
 	}
 
-	public <T> void registerNestedBeansRetriever(Class<T> type, Function<? super T, List<? extends Object>> retriever)
+	public <T> void registerNestedBeansRetriever(Class<T> beanType, Function<? super T, List<?>> retriever)
 	{
-		nestedBeansRetrievers.put(type, retriever);
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T> Function<? super T, List<? extends Object>> getNestedBeansRetriever(T bean)
-	{
-		return (Function<? super T, List<? extends Object>>) nestedBeansRetrievers.get(bean.getClass());
+		nestedBeansRetrievers.put(beanType, retriever);
 	}
 
 	@Override
@@ -77,9 +71,9 @@ public class ClassBasedStandardizingService implements StandardizingService
 			return ImmutableList.of();
 		}
 		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
-		// keep track which Objects were already standardized
+		// keep track which beans were already standardized
 		// to not end in an infinite loop because two beans had a bidirectional relationship
-		IdentityHashMap<Object, Boolean> alreadyStdizedObjs = new IdentityHashMap<>();
+		IdentityHashMap<Object, Boolean> alreadyStdizedBeans = new IdentityHashMap<>();
 
 		Queue<Object> beansToStandardize = new ArrayDeque<>();
 		beansToStandardize.add(bean);
@@ -87,8 +81,8 @@ public class ClassBasedStandardizingService implements StandardizingService
 		while ((beanToStandardize = beansToStandardize.poll()) != null)
 		{
 			changes.addAll(doStandardize(beanToStandardize));
-			alreadyStdizedObjs.put(beanToStandardize, Boolean.TRUE);
-			addNestedBeans(beanToStandardize, beansToStandardize, alreadyStdizedObjs);
+			alreadyStdizedBeans.put(beanToStandardize, Boolean.TRUE);
+			addNestedBeans(beanToStandardize, beansToStandardize, alreadyStdizedBeans);
 		}
 		return changes.build();
 	}
@@ -108,19 +102,25 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return changes.build();
 	}
 
-	private <T> void addNestedBeans(T bean, Queue<Object> queue, IdentityHashMap<Object, Boolean> alreadyStdizedObjs)
+	private <T> void addNestedBeans(T bean, Queue<Object> queue, IdentityHashMap<Object, Boolean> alreadyStdizedBeans)
 	{
 		Function<? super T, List<? extends Object>> nestedBeanRetriever = getNestedBeansRetriever(bean);
 		if (nestedBeanRetriever != null)
 		{
 			for (Object nestedBean : nestedBeanRetriever.apply(bean))
 			{
-				if (nestedBean != null && !alreadyStdizedObjs.containsKey(nestedBean))
+				if (nestedBean != null && !alreadyStdizedBeans.containsKey(nestedBean))
 				{
 					queue.add(nestedBean);
 				}
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> Function<? super T, List<? extends Object>> getNestedBeansRetriever(T bean)
+	{
+		return (Function<? super T, List<? extends Object>>) nestedBeansRetrievers.get(bean.getClass());
 	}
 
 	@Override
