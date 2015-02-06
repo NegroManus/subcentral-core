@@ -42,7 +42,7 @@ public class SubCentralDe
 	private static List<Parser<SubtitleAdjustment>> initParsers()
 	{
 		String scPatternPrefix = "(";
-		String scPatternSuffix = ")\\.(de|ger|german|VO|en|english)(?:-|\\.)([\\w&]+)";
+		String scPatternSuffix = ")\\.(de|ger|german|VO|en|eng|english)(?:-|\\.)([\\w&]+)";
 
 		ImmutableList.Builder<Parser<SubtitleAdjustment>> parsers = ImmutableList.builder();
 
@@ -128,8 +128,8 @@ public class SubCentralDe
 
 	public static void registerSubtitleLanguageStandardizers(ClassBasedStandardizingService service)
 	{
-		service.registerStandardizer(Subtitle.class, new CustomSubtitleLanguageStandardizer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE),
-				"VO"));
+		service.registerStandardizer(Subtitle.class,
+				new CustomSubtitleLanguageStandardizer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO"));
 		service.registerStandardizer(Subtitle.class,
 				new CustomSubtitleLanguageStandardizer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de"));
 	}

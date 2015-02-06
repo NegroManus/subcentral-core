@@ -3,18 +3,28 @@ package de.subcentral.core.standardizing;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
 public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Subtitle>
 {
-	public enum LangFormat
+	public enum LanguageFormat
 	{
+		/**
+		 * Java-Name. "pt_BR". See {@link Locale#toString()}.
+		 */
+		NAME,
+
+		/**
+		 * Well-formed IETF BCP 47 language tag. e.g. "pt-BR". See {@link Locale#toLanguageTag()}.
+		 */
+		LANGUAGE_TAG,
 		/**
 		 * ISO 639-1 two-letter code. See {@link Locale#getLanguage()}.
 		 */
@@ -24,45 +34,40 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		 */
 		ISO3,
 		/**
-		 * display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
-		 */
-		DISPLAY_LANGUAGE,
-		/**
 		 * display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
 		 */
 		DISPLAY_NAME,
-
 		/**
-		 * Java-Name. "pt_BR". See {@link Locale#toString()}.
+		 * display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
 		 */
-		NAME,
-
-		/**
-		 * Well-formed IETF BCP 47 language tag. e.g. "pt-BR". See {@link Locale#toLanguageTag()}.
-		 */
-		LANGUAGE_TAG
+		DISPLAY_LANGUAGE
 	};
 
-	private final ImmutableList<Function<String, Locale>>	customToLocaleConverters;
-	private final ImmutableList<Locale>						possibleSourceLanguages;
-	private final LangFormat								targetLanguageFormat;
-	private final Locale									targetLanguage;
-	private final ImmutableList<Function<Locale, String>>	customFromLocaleConverters;
+	private final ImmutableMap<Pattern, Locale>	customLocalePatterns;
+	private final ImmutableList<Locale>			possibleSourceLanguages;
+	private final LanguageFormat				targetLanguageFormat;
+	private final Locale						targetLanguage;
+	private final ImmutableMap<Locale, String>	customLocaleStrings;
 
-	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LangFormat targetLanguageFormat, Locale targetLanguage)
+	public LocaleBasedSubtitleLanguageStandardizer()
 	{
-		this(possibleSourceLanguages, targetLanguageFormat, targetLanguage, ImmutableList.of(), ImmutableList.of());
+		this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableMap.of(), ImmutableMap.of());
 	}
 
-	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LangFormat targetLanguageFormat,
-			Locale targetLanguage, Collection<Function<Locale, String>> customFromLocaleConverters,
-			Collection<Function<String, Locale>> customToLocaleConverters)
+	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
+			Locale targetLanguage)
+	{
+		this(possibleSourceLanguages, targetLanguageFormat, targetLanguage, ImmutableMap.of(), ImmutableMap.of());
+	}
+
+	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
+			Locale targetLanguage, Map<Pattern, Locale> customLocalePatterns, Map<Locale, String> customLocaleStrings)
 	{
 		this.possibleSourceLanguages = ImmutableList.copyOf(possibleSourceLanguages);
 		this.targetLanguageFormat = Objects.requireNonNull(targetLanguageFormat, "targetLanguageFormat");
 		this.targetLanguage = Objects.requireNonNull(targetLanguage, "targetLanguage");
-		this.customFromLocaleConverters = ImmutableList.copyOf(customFromLocaleConverters);
-		this.customToLocaleConverters = ImmutableList.copyOf(customToLocaleConverters);
+		this.customLocalePatterns = ImmutableMap.copyOf(customLocalePatterns);
+		this.customLocaleStrings = ImmutableMap.copyOf(customLocaleStrings);
 	}
 
 	public ImmutableList<Locale> getPossibleSourceLanguages()
@@ -70,7 +75,7 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		return possibleSourceLanguages;
 	}
 
-	public LangFormat getTargetLanguageFormat()
+	public LanguageFormat getTargetLanguageFormat()
 	{
 		return targetLanguageFormat;
 	}
@@ -80,14 +85,14 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		return targetLanguage;
 	}
 
-	public ImmutableList<Function<String, Locale>> getCustomToLocaleConverters()
+	public ImmutableMap<Pattern, Locale> getCustomLocalePatterns()
 	{
-		return customToLocaleConverters;
+		return customLocalePatterns;
 	}
 
-	public ImmutableList<Function<Locale, String>> getCustomFromLocaleConverters()
+	public ImmutableMap<Locale, String> getCustomLocaleStrings()
 	{
-		return customFromLocaleConverters;
+		return customLocaleStrings;
 	}
 
 	@Override
@@ -119,19 +124,19 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 
 	private Locale parseLocale(String s)
 	{
-		// 1. try custom to-locale converters
-		for (Function<String, Locale> converter : customToLocaleConverters)
+		// 1. try the custom locale patterns
+		for (Map.Entry<Pattern, Locale> pattern : customLocalePatterns.entrySet())
 		{
-			Locale locale = converter.apply(s);
-			if (locale != null)
+			if (pattern.getKey().matcher(s).matches())
 			{
-				return locale;
+				return pattern.getValue();
 			}
 		}
 
 		// 2. try "parsing" the locale
 		Locale[] availableLocales = Locale.getAvailableLocales();
-		Locale localeFromString = new Locale(s);
+
+		// first check: full qualified locale names
 		for (Locale locale : availableLocales)
 		{
 			if (locale.toString().equalsIgnoreCase(s))
@@ -142,21 +147,18 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 			{
 				return locale;
 			}
-			if (locale.getLanguage().equals(localeFromString.getLanguage()))
-			{
-				return locale;
-			}
-			if (locale.getISO3Language().equalsIgnoreCase(s))
-			{
-				return locale;
-			}
 			for (Locale sourceLang : possibleSourceLanguages)
 			{
-				if (locale.getDisplayLanguage(sourceLang).equalsIgnoreCase(s))
+				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(s))
 				{
 					return locale;
 				}
-				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(s))
+			}
+			if (locale.getCountry().isEmpty() && locale.getScript().isEmpty() && locale.getVariant().isEmpty())
+			{
+				// no need to check for language / display language because if it would match.
+				// Because in that case toString() / getDisplayName() would have matched, too (if country, script, variant are empty)
+				if (locale.getISO3Language().equalsIgnoreCase(s))
 				{
 					return locale;
 				}
@@ -167,14 +169,11 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 
 	private String localeToString(Locale l)
 	{
-		// 1. try the custom from-locale converters
-		for (Function<Locale, String> converter : customFromLocaleConverters)
+		// 1. try the custom locale strings
+		String customLocaleString = customLocaleStrings.get(l);
+		if (customLocaleString != null)
 		{
-			String string = converter.apply(l);
-			if (string != null)
-			{
-				return string;
-			}
+			return customLocaleString;
 		}
 
 		// 2. print the language as specified
@@ -197,12 +196,12 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		}
 	}
 
-	public static class ToLocaleConversionEntry
+	public static class ToLocaleConverter
 	{
 		private final Pattern	pattern;
 		private final Locale	locale;
 
-		public ToLocaleConversionEntry(Pattern pattern, Locale locale)
+		public ToLocaleConverter(Pattern pattern, Locale locale)
 		{
 			this.pattern = Objects.requireNonNull(pattern, "pattern");
 			this.locale = Objects.requireNonNull(locale, "locale");
@@ -216,28 +215,6 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		public Locale getLocale()
 		{
 			return locale;
-		}
-	}
-
-	public static class FromLocaleConversionEntry
-	{
-		private final Locale	locale;
-		private final String	string;
-
-		private FromLocaleConversionEntry(Locale locale, String string)
-		{
-			this.locale = Objects.requireNonNull(locale, "locale");
-			this.string = Objects.requireNonNull(string, "string");
-		}
-
-		public Locale getLocale()
-		{
-			return locale;
-		}
-
-		public String getString()
-		{
-			return string;
 		}
 	}
 }
