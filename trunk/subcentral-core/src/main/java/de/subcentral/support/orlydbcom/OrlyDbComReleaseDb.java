@@ -186,7 +186,6 @@ public class OrlyDbComReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		if (infoSpan != null)
 		{
 			String info = infoSpan.text();
-			rls.setNfo(info);
 			// e.g. "349.3MB | 25F"
 			Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
 			Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
