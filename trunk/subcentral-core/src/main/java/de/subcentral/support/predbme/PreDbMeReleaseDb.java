@@ -604,7 +604,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			}
 			if (mediaImageUrl != null)
 			{
-				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER, mediaImageUrl);
+				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL, mediaImageUrl);
 			}
 		}
 		else if (media instanceof RegularMedia)
@@ -625,7 +625,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			}
 			if (mediaImageUrl != null)
 			{
-				regularMediaItem.getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER, mediaImageUrl);
+				regularMediaItem.getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_VERTICAL, mediaImageUrl);
 			}
 		}
 
