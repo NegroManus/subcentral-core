@@ -66,32 +66,33 @@ import de.subcentral.core.util.TimeUtil;
  */
 public interface Media
 {
-	public static final String	MEDIA_TYPE_EPISODE				= "EPISODE";
-	public static final String	MEDIA_TYPE_SERIES				= "SERIES";
-	public static final String	MEDIA_TYPE_SEASON				= "SEASON";
-	public static final String	MEDIA_TYPE_MOVIE				= "MOVIE";
-	public static final String	MEDIA_TYPE_GAME					= "GAME";
-	public static final String	MEDIA_TYPE_SOFTWARE				= "SOFTWARE";
-	public static final String	MEDIA_TYPE_DOCUMENTATION		= "DOCUMENTATION";
-	public static final String	MEDIA_TYPE_SHOW					= "SHOW";
-	public static final String	MEDIA_TYPE_CONCERT				= "CONCERT";
-	public static final String	MEDIA_TYPE_SONG					= "SONG";
-	public static final String	MEDIA_TYPE_ALBUM				= "ALBUM";
-	public static final String	MEDIA_TYPE_IMG_SET				= "IMG_SET";
-	public static final String	MEDIA_TYPE_MUSIC_VIDEO			= "MUSIC_VIDEO";
-	public static final String	MEDIA_TYPE_IMAGE				= "IMAGE";
-	public static final String	MEDIA_TYPE_EBOOK				= "EBOOK";
-	public static final String	MEDIA_TYPE_AUDIOBOOK			= "AUDIOBOOK";
+	public static final String	MEDIA_TYPE_EPISODE					= "EPISODE";
+	public static final String	MEDIA_TYPE_SERIES					= "SERIES";
+	public static final String	MEDIA_TYPE_SEASON					= "SEASON";
+	public static final String	MEDIA_TYPE_MOVIE					= "MOVIE";
+	public static final String	MEDIA_TYPE_GAME						= "GAME";
+	public static final String	MEDIA_TYPE_SOFTWARE					= "SOFTWARE";
+	public static final String	MEDIA_TYPE_DOCUMENTATION			= "DOCUMENTATION";
+	public static final String	MEDIA_TYPE_SHOW						= "SHOW";
+	public static final String	MEDIA_TYPE_CONCERT					= "CONCERT";
+	public static final String	MEDIA_TYPE_SONG						= "SONG";
+	public static final String	MEDIA_TYPE_ALBUM					= "ALBUM";
+	public static final String	MEDIA_TYPE_IMG_SET					= "IMG_SET";
+	public static final String	MEDIA_TYPE_MUSIC_VIDEO				= "MUSIC_VIDEO";
+	public static final String	MEDIA_TYPE_IMAGE					= "IMAGE";
+	public static final String	MEDIA_TYPE_EBOOK					= "EBOOK";
+	public static final String	MEDIA_TYPE_AUDIOBOOK				= "AUDIOBOOK";
 
-	public static final String	MEDIA_CONTENT_TYPE_TEXT			= "TEXT";
-	public static final String	MEDIA_CONTENT_TYPE_IMAGE		= "IMAGE";
-	public static final String	MEDIA_CONTENT_TYPE_AUDIO		= "AUDIO";
-	public static final String	MEDIA_CONTENT_TYPE_VIDEO		= "VIDEO";
-	public static final String	MEDIA_CONTENT_TYPE_APPLICATION	= "APPLICATION";
+	public static final String	MEDIA_CONTENT_TYPE_TEXT				= "TEXT";
+	public static final String	MEDIA_CONTENT_TYPE_IMAGE			= "IMAGE";
+	public static final String	MEDIA_CONTENT_TYPE_AUDIO			= "AUDIO";
+	public static final String	MEDIA_CONTENT_TYPE_VIDEO			= "VIDEO";
+	public static final String	MEDIA_CONTENT_TYPE_APPLICATION		= "APPLICATION";
 
-	public static final String	MEDIA_IMAGE_TYPE_BACKGROUND		= "background";
-	public static final String	MEDIA_IMAGE_TYPE_POSTER			= "poster";
-	public static final String	MEDIA_IMAGE_TYPE_THUMBNAIL		= "thumbnail";
+	public static final String	MEDIA_IMAGE_TYPE_BANNER				= "banner";
+	public static final String	MEDIA_IMAGE_TYPE_POSTER_VERTICAL	= "poster_vertical";
+	public static final String	MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL	= "poster_horizontal";
+	public static final String	MEDIA_IMAGE_TYPE_THUMBNAIL			= "thumbnail";
 
 	// Property accessors
 	/**
@@ -173,8 +174,9 @@ public interface Media
 	public String getContentRating();
 
 	/**
-	 * The key of the map is the image typ ({@link #MEDIA_IMAGE_TYPE_BACKGROUND}, {@link #MEDIA_IMAGE_TYPE_POSTER},
-	 * {@link #MEDIA_IMAGE_TYPE_THUMBNAIL}, some custom image type or {@code null}), the values are resource paths (URLs) to the images.
+	 * The key of the map is the image typ ({@link #MEDIA_IMAGE_TYPE_BACKGROUND}, {@link #MEDIA_IMAGE_TYPE_POSTER_VERTICAL},,
+	 * {@link #MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL} {@link #MEDIA_IMAGE_TYPE_THUMBNAIL}, some custom image type or {@code null} if unknown), the values
+	 * are resource paths (URLs) to the images.
 	 * 
 	 * @return all images associated with this media
 	 */
