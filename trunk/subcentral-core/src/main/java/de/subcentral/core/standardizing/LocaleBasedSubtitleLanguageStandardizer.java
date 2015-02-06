@@ -122,34 +122,31 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		return oldLang;
 	}
 
-	private Locale parseLocale(String s)
+	private Locale parseLocale(String lang)
 	{
 		// 1. try the custom locale patterns
 		for (Map.Entry<Pattern, Locale> pattern : customLocalePatterns.entrySet())
 		{
-			if (pattern.getKey().matcher(s).matches())
+			if (pattern.getKey().matcher(lang).matches())
 			{
 				return pattern.getValue();
 			}
 		}
 
 		// 2. try "parsing" the locale
-		Locale[] availableLocales = Locale.getAvailableLocales();
-
-		// first check: full qualified locale names
-		for (Locale locale : availableLocales)
+		for (Locale locale : Locale.getAvailableLocales())
 		{
-			if (locale.toString().equalsIgnoreCase(s))
+			if (locale.toString().equalsIgnoreCase(lang))
 			{
 				return locale;
 			}
-			if (locale.toLanguageTag().equalsIgnoreCase(s))
+			if (locale.toLanguageTag().equalsIgnoreCase(lang))
 			{
 				return locale;
 			}
 			for (Locale sourceLang : possibleSourceLanguages)
 			{
-				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(s))
+				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(lang))
 				{
 					return locale;
 				}
@@ -158,7 +155,7 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 			{
 				// no need to check for language / display language because if it would match.
 				// Because in that case toString() / getDisplayName() would have matched, too (if country, script, variant are empty)
-				if (locale.getISO3Language().equalsIgnoreCase(s))
+				if (locale.getISO3Language().equalsIgnoreCase(lang))
 				{
 					return locale;
 				}
@@ -167,10 +164,10 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		return null;
 	}
 
-	private String localeToString(Locale l)
+	private String localeToString(Locale locale)
 	{
 		// 1. try the custom locale strings
-		String customLocaleString = customLocaleStrings.get(l);
+		String customLocaleString = customLocaleStrings.get(locale);
 		if (customLocaleString != null)
 		{
 			return customLocaleString;
@@ -179,42 +176,20 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 		// 2. print the language as specified
 		switch (targetLanguageFormat)
 		{
-			case ISO2:
-				return l.getLanguage();
-			case ISO3:
-				return l.getISO3Language();
-			case DISPLAY_LANGUAGE:
-				return l.getDisplayLanguage(targetLanguage);
-			case DISPLAY_NAME:
-				return l.getDisplayName(targetLanguage);
 			case NAME:
-				return l.toString();
+				return locale.toString();
 			case LANGUAGE_TAG:
-				return l.toLanguageTag();
+				return locale.toLanguageTag();
+			case ISO2:
+				return locale.getLanguage();
+			case ISO3:
+				return locale.getISO3Language();
+			case DISPLAY_NAME:
+				return locale.getDisplayName(targetLanguage);
+			case DISPLAY_LANGUAGE:
+				return locale.getDisplayLanguage(targetLanguage);
 			default:
-				return l.getLanguage();
-		}
-	}
-
-	public static class ToLocaleConverter
-	{
-		private final Pattern	pattern;
-		private final Locale	locale;
-
-		public ToLocaleConverter(Pattern pattern, Locale locale)
-		{
-			this.pattern = Objects.requireNonNull(pattern, "pattern");
-			this.locale = Objects.requireNonNull(locale, "locale");
-		}
-
-		public Pattern getPattern()
-		{
-			return pattern;
-		}
-
-		public Locale getLocale()
-		{
-			return locale;
+				return locale.toString();
 		}
 	}
 }
