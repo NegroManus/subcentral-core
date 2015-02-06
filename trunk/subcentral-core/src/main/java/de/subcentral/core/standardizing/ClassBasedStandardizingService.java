@@ -86,12 +86,9 @@ public class ClassBasedStandardizingService implements StandardizingService
 		Object beanToStandardize;
 		while ((beanToStandardize = beansToStandardize.poll()) != null)
 		{
-			if (!alreadyStdizedObjs.containsKey(beanToStandardize))
-			{
-				changes.addAll(doStandardize(beanToStandardize));
-				addNestedBeans(beanToStandardize, beansToStandardize);
-				alreadyStdizedObjs.put(beanToStandardize, Boolean.TRUE);
-			}
+			changes.addAll(doStandardize(beanToStandardize));
+			alreadyStdizedObjs.put(beanToStandardize, Boolean.TRUE);
+			addNestedBeans(beanToStandardize, beansToStandardize, alreadyStdizedObjs);
 		}
 		return changes.build();
 	}
@@ -117,14 +114,14 @@ public class ClassBasedStandardizingService implements StandardizingService
 		return changes.build();
 	}
 
-	private <T> void addNestedBeans(T bean, Queue<Object> queue)
+	private <T> void addNestedBeans(T bean, Queue<Object> queue, IdentityHashMap<Object, Boolean> alreadyStdizedObjs)
 	{
 		Function<? super T, List<? extends Object>> nestedBeanRetriever = getNestedBeansRetriever(bean);
 		if (nestedBeanRetriever != null)
 		{
 			for (Object nestedBean : nestedBeanRetriever.apply(bean))
 			{
-				if (nestedBean != null)
+				if (nestedBean != null && !alreadyStdizedObjs.containsKey(nestedBean))
 				{
 					queue.add(nestedBean);
 				}
