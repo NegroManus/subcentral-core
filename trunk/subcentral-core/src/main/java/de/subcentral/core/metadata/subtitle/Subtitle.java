@@ -242,7 +242,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	}
 
 	/**
-	 * Whether the subtitle contains annotations for the hearing impaired. The default value is {@code false}.
+	 * Whether the subtitle contains transcription for the hearing impaired. Also known as "closed captioning (CC)". The default value is
+	 * {@code false}.
 	 * 
 	 * @return whether or not hearing impaired
 	 */
