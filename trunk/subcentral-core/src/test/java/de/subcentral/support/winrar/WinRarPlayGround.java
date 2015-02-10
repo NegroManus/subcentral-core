@@ -18,9 +18,9 @@ public class WinRarPlayGround
 		cfg.setTimeout(15, TimeUnit.SECONDS);
 		cfg.setSourceDeletionMode(DeletionMode.KEEP);
 		cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
-		cfg.setCompressionMethod(CompressionMethod.NORMAL);
-		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\Bescheinigung Austritt aus der evangelischen Kirchen 09-2014.pdf");
-		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\Bescheinigung Austritt aus der evangelischen Kirchen 09-2014.NORMAL.rar");
+		cfg.setCompressionMethod(CompressionMethod.BEST);
+		Path src = Paths.get("C:\\Users\\mhertram\\Downloads\\Chicago.Fire.S03E09.720p.WEB-DL.DD5.1.H.264-KiNGS.de-SC&TV4U.srt");
+		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\Chicago.Fire.S03E09.720p.WEB-DL.DD5.1.H.264-KiNGS.de-SC&TV4U.rar");
 
 		long start = System.nanoTime();
 		WinRarPackager packer = WinRar.getPackager(LocateStrategy.RESOURCE);
