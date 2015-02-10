@@ -82,7 +82,7 @@ public class ParsingException extends RuntimeException
 		return text;
 	}
 
-	public Set<Class<?>> gettargetTypes()
+	public Set<Class<?>> getTargetTypes()
 	{
 		return targetTypes;
 	}

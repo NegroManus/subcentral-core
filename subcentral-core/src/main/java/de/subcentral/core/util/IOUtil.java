@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 public class IOUtil
 {
 	public static String readInputStream(InputStream is)
@@ -23,7 +25,7 @@ public class IOUtil
 	{
 		if (filename == null)
 		{
-			return null;
+			return ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 		int indexOfLastDot = filename.lastIndexOf('.');
 		if (indexOfLastDot == -1)
