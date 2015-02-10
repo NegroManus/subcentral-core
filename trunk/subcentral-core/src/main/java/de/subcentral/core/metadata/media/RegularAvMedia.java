@@ -69,6 +69,7 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 		return MoreObjects.toStringHelper(RegularAvMedia.class)
 				.omitNullValues()
 				.add("name", name)
+				.add("aliasNames", BeanUtil.nullIfEmpty(aliasNames))
 				.add("title", title)
 				.add("mediaType", mediaType)
 				.add("mediaContentType", mediaContentType)

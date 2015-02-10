@@ -317,6 +317,7 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 		return MoreObjects.toStringHelper(Series.class)
 				.omitNullValues()
 				.add("name", name)
+				.add("aliasNames", BeanUtil.nullIfEmpty(aliasNames))
 				.add("title", title)
 				.add("type", type)
 				.add("state", state)
