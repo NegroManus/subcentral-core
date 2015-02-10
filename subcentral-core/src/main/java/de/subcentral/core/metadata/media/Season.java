@@ -68,6 +68,12 @@ public class Season extends AbstractMedia implements Comparable<Season>
 		return NamingDefaults.getDefaultSeasonNamer().name(this);
 	}
 
+	@Override
+	public List<String> getAliasNames()
+	{
+		return ImmutableList.of();
+	}
+
 	public Series getSeries()
 	{
 		return series;

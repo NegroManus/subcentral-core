@@ -223,6 +223,12 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 		return NamingDefaults.getDefaultEpisodeNamer().name(this);
 	}
 
+	@Override
+	public List<String> getAliasNames()
+	{
+		return ImmutableList.of();
+	}
+
 	public Series getSeries()
 	{
 		return series;

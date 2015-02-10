@@ -96,11 +96,18 @@ public interface Media
 
 	// Property accessors
 	/**
-	 * the unique name of this media
+	 * The unique, primary name of this media.
 	 * 
 	 * @return
 	 */
 	public String getName();
+
+	/**
+	 * Alias names for this media. For example, "House of Cards (US)"'s alias name is "House of Cards (2013)".
+	 * 
+	 * @return the alias names
+	 */
+	public List<String> getAliasNames();
 
 	/**
 	 * Normally a media only has a {@link #getName() name} which is in fact its title. The title is only set if it differs from the name (like name:
