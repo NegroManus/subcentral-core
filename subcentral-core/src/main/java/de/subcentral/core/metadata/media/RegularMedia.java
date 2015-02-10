@@ -151,6 +151,7 @@ public class RegularMedia extends AbstractNamedMedia
 		return MoreObjects.toStringHelper(RegularMedia.class)
 				.omitNullValues()
 				.add("name", name)
+				.add("aliasNames", BeanUtil.nullIfEmpty(aliasNames))
 				.add("title", title)
 				.add("mediaType", mediaType)
 				.add("mediaContentType", mediaContentType)
