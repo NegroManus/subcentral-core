@@ -124,8 +124,8 @@ public class WinRarPackConfig
 	}
 
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
-	private long				timeoutValue		= 15;
-	private TimeUnit			timeoutUnit			= TimeUnit.SECONDS;
+	private long				timeoutValue		= 5;
+	private TimeUnit			timeoutUnit			= TimeUnit.MINUTES;
 	private OverwriteMode		targetOverwriteMode	= OverwriteMode.REPLACE;
 	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
 

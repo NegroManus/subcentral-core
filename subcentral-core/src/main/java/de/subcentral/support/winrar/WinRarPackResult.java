@@ -92,17 +92,19 @@ public class WinRarPackResult
 	private final int			exitCode;
 	private final EnumSet<Flag>	flags;
 	private final Exception		exception;
+	private final String		log;
 
-	WinRarPackResult(int exitCode, EnumSet<Flag> flags)
+	WinRarPackResult(int exitCode, EnumSet<Flag> flags, String log)
 	{
-		this(exitCode, flags, null);
+		this(exitCode, flags, null, log);
 	}
 
-	WinRarPackResult(int exitCode, EnumSet<Flag> flags, Exception exception)
+	WinRarPackResult(int exitCode, EnumSet<Flag> flags, Exception exception, String log)
 	{
 		this.exitCode = exitCode;
 		this.flags = EnumSet.copyOf(flags); // performs null check
 		this.exception = exception;
+		this.log = log;
 	}
 
 	public int getExitCode()
@@ -118,6 +120,15 @@ public class WinRarPackResult
 	public Exception getException()
 	{
 		return exception;
+	}
+
+	/**
+	 * 
+	 * @return the execution log
+	 */
+	public String getLog()
+	{
+		return log;
 	}
 
 	// Convenience
@@ -139,6 +150,7 @@ public class WinRarPackResult
 				.add("exitCode", exitCode)
 				.add("flags", flags)
 				.add("exception", exception)
+				.add("log", "<omitted>")
 				.toString();
 	}
 }
