@@ -11,11 +11,13 @@ import de.subcentral.core.Settings;
 
 public class Contribution implements Comparable<Contribution>
 {
-	private Contributor	contributor;
-	private String		type;
-	private String		description;
-	private int			amount		= 0;
-	private float		progress	= 1.0f;
+	public static final int	AMOUNT_NOT_MEASURABLE	= 0;
+
+	private Contributor		contributor;
+	private String			type;
+	private String			description;
+	private int				amount					= 1;
+	private float			progress				= 1.0f;
 
 	public Contribution()
 	{
@@ -85,7 +87,7 @@ public class Contribution implements Comparable<Contribution>
 
 	/**
 	 * The amount of the contribution. This is a relative value. How big that amount is, can only be determined by knowing the amount of the other
-	 * contributions. The default value is 0L (not measurable).
+	 * contributions. The default value is 1.
 	 * 
 	 * @return the amount (a zero or positive int)
 	 */

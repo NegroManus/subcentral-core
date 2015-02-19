@@ -57,11 +57,6 @@ public class Subtitling implements Work
 		this.contributions = contributions;
 	}
 
-	public double getProgress()
-	{
-		return ContributionUtils.calcProgress(contributions);
-	}
-
 	public double getProgress(String contributionType)
 	{
 		return ContributionUtils.calcProgress(contributions, contributionType);
