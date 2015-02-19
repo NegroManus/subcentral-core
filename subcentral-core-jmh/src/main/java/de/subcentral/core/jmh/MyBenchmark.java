@@ -32,13 +32,11 @@
 package de.subcentral.core.jmh;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -107,24 +105,24 @@ public class MyBenchmark
 	}
 
 	@Benchmark
-	@BenchmarkMode(Mode.AverageTime)
-	@OutputTimeUnit(TimeUnit.NANOSECONDS)
+	@BenchmarkMode(Mode.Throughput)
+	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testStandardizing()
 	{
 		STANDARDIZING_SERVICE.standardize(SUB_ADJ);
 	}
 
 	@Benchmark
-	@BenchmarkMode(Mode.AverageTime)
-	@OutputTimeUnit(TimeUnit.NANOSECONDS)
+	@BenchmarkMode(Mode.Throughput)
+	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testNaming()
 	{
 		NAMING_SERVICE.name(SUB_ADJ);
 	}
 
 	@Benchmark
-	@BenchmarkMode(Mode.AverageTime)
-	@OutputTimeUnit(TimeUnit.NANOSECONDS)
+	@BenchmarkMode(Mode.Throughput)
+	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
@@ -136,10 +134,10 @@ public class MyBenchmark
 	 * Last results
 	 * 
 	 * <pre>
-	 * Benchmark                        Mode  Cnt     Score     Error  Units
-	 * MyBenchmark.testNaming           avgt   10  8802,149 ± 741,668  ns/op
-	 * MyBenchmark.testParsingAddic7ed  avgt   10  9432,883 ± 547,290  ns/op
-	 * MyBenchmark.testStandardizing    avgt   10  1621,994 ±  58,712  ns/op
+	 * Benchmark                         Mode  Cnt       Score      Error  Units
+	 * MyBenchmark.testNaming           thrpt  200  144.430,330 ± 2349,290  ops/s
+	 * MyBenchmark.testParsingAddic7ed  thrpt  200  116.031,352 ± 1449,548  ops/s
+	 * MyBenchmark.testStandardizing    thrpt  200  667.912,881 ± 7009,422  ops/s
 	 * </pre>
 	 * 
 	 * @param args
@@ -147,7 +145,7 @@ public class MyBenchmark
 	 */
 	public static void main(String[] args) throws RunnerException
 	{
-		Options opt = new OptionsBuilder().include(MyBenchmark.class.getSimpleName()).warmupIterations(10).measurementIterations(10).forks(1).build();
+		Options opt = new OptionsBuilder().include(MyBenchmark.class.getSimpleName()).build();
 
 		new Runner(opt).run();
 	}
