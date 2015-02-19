@@ -98,9 +98,9 @@ public abstract class WinRarPackager
 		Objects.requireNonNull(target, "target");
 		Objects.requireNonNull(cfg, "cfg");
 
-		log.debug("Packing {} to {} with {}", source, target, cfg);
 		int exitCode = -1;
 		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
+		String logMsg = null;
 		try
 		{
 			long startTime = System.currentTimeMillis();
@@ -118,16 +118,23 @@ public abstract class WinRarPackager
 			ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(source, target, cfg));
 			log.debug("Executing {}", processBuilder.command());
 			Process process = processBuilder.start();
+			process.getOutputStream().close();
 			String errMsg = null;
 			try (InputStream errStream = process.getErrorStream())
 			{
-				errMsg = StringUtils.trim(IOUtil.readInputStream(errStream));
+				errMsg = StringUtils.trimToNull(IOUtil.readInputStream(errStream));
 			}
-			process.getInputStream().close();
-			process.getOutputStream().close();
+			try (InputStream errStream = process.getInputStream())
+			{
+				logMsg = StringUtils.trimToNull(IOUtil.readInputStream(errStream));
+			}
 			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeoutValue(), cfg.getTimeoutUnit());
 			exitCode = process.exitValue();
-			log.debug("Execution exited with exit code {} {}", exitCode, processBuilder.command());
+			if (log.isDebugEnabled())
+			{
+				String timeoutString = exitedBeforeTimeout ? "" : " (timeout reached: " + cfg.getTimeoutUnit() + " " + cfg.getTimeoutValue() + ")";
+				log.debug("Execution exited with exit code {}{}: {} ", exitCode, timeoutString, processBuilder.command());
+			}
 
 			// may add tags
 			if (targetExisted && cfg.getTargetOverwriteMode() == OverwriteMode.UPDATE
@@ -144,20 +151,21 @@ public abstract class WinRarPackager
 			if (!exitedBeforeTimeout)
 			{
 				return new WinRarPackResult(exitCode, flags, new TimeoutException("RAR process timed out after " + cfg.getTimeoutValue() + " "
-						+ cfg.getTimeoutUnit()));
+						+ cfg.getTimeoutUnit()), logMsg);
 			}
-			if (StringUtils.isBlank(errMsg))
+			if (errMsg == null)
 			{
-				return new WinRarPackResult(exitCode, flags);
+				return new WinRarPackResult(exitCode, flags, logMsg);
 			}
 			else
 			{
-				return new WinRarPackResult(exitCode, flags, new IOException(errMsg));
+				return new WinRarPackResult(exitCode, flags, new IOException(errMsg), logMsg);
 			}
 		}
 		catch (IOException | InterruptedException | RuntimeException e)
 		{
-			return new WinRarPackResult(exitCode, flags, e);
+			log.warn("Exception while packing", e);
+			return new WinRarPackResult(exitCode, flags, e, logMsg);
 		}
 	}
 
