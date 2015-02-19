@@ -12,6 +12,8 @@ import com.google.common.collect.ListMultimap;
 
 public class ContributionUtils
 {
+	public static final float	PROGRESS_NOT_MEASURABLE	= Float.NaN;
+
 	public static ListMultimap<String, Contribution> groupByType(Collection<Contribution> contributions)
 	{
 		if (contributions.isEmpty())
@@ -47,7 +49,7 @@ public class ContributionUtils
 	{
 		if (contributions.isEmpty())
 		{
-			return 0.0f;
+			return PROGRESS_NOT_MEASURABLE;
 		}
 		int totalAmount = 0;
 		float amountDone = 0.0f;
@@ -58,8 +60,8 @@ public class ContributionUtils
 		}
 		if (totalAmount == 0)
 		{
-			// return zero if no amount at all
-			return 0.0f;
+			// return not measurable if no amount at all
+			return PROGRESS_NOT_MEASURABLE;
 		}
 		return amountDone / totalAmount;
 	}
