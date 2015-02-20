@@ -14,16 +14,16 @@ import de.subcentral.core.metadata.media.AvMedia;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.parsing.ClassBasedParsingService;
-import de.subcentral.core.parsing.ClassBasedParsingService.ParserEntry;
+import de.subcentral.core.parsing.TypeParsingService;
+import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
 import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
-import de.subcentral.core.standardizing.ClassBasedStandardizingService;
-import de.subcentral.core.standardizing.CustomSubtitleLanguageStandardizer;
+import de.subcentral.core.standardizing.TypeStandardizingService;
+import de.subcentral.core.standardizing.PatternSubtitleLanguageStandardizer;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.releasescene.ReleaseScene;
 
@@ -32,7 +32,7 @@ public class SubCentralDe
 	public static final String						DOMAIN			= "subcentral.de";
 
 	private static final Logger						log				= LogManager.getLogger(SubCentralDe.class.getName());
-	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
+	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(DOMAIN);
 	static
 	{
 		PARSING_SERVICE.registerAllParsers(SubtitleAdjustment.class, initParsers());
@@ -126,12 +126,12 @@ public class SubCentralDe
 		return PARSING_SERVICE.getParserEntries();
 	}
 
-	public static void registerSubtitleLanguageStandardizers(ClassBasedStandardizingService service)
+	public static void registerSubtitleLanguageStandardizers(TypeStandardizingService service)
 	{
 		service.registerStandardizer(Subtitle.class,
-				new CustomSubtitleLanguageStandardizer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO"));
+				new PatternSubtitleLanguageStandardizer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO"));
 		service.registerStandardizer(Subtitle.class,
-				new CustomSubtitleLanguageStandardizer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de"));
+				new PatternSubtitleLanguageStandardizer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de"));
 	}
 
 	private SubCentralDe()

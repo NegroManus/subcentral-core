@@ -33,7 +33,7 @@ public class StandardizingTest
 	@Test
 	public void testCustomStandardizingService()
 	{
-		ClassBasedStandardizingService service = new ClassBasedStandardizingService("test");
+		TypeStandardizingService service = new TypeStandardizingService("test");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		service.registerStandardizer(Episode.class, e -> {
 			Boolean oldVal = Boolean.valueOf(e.isSpecial());

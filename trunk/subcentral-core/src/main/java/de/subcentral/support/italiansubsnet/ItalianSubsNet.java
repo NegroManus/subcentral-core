@@ -14,8 +14,8 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.parsing.ClassBasedParsingService;
-import de.subcentral.core.parsing.ClassBasedParsingService.ParserEntry;
+import de.subcentral.core.parsing.TypeParsingService;
+import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
@@ -27,7 +27,7 @@ public class ItalianSubsNet
 {
 	public static final String						DOMAIN			= "italiansubs.net";
 
-	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
+	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(DOMAIN);
 	static
 	{
 		PARSING_SERVICE.registerAllParsers(SubtitleAdjustment.class, initParsers());

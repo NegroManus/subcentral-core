@@ -15,7 +15,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleUtils;
 
 public class StandardizingDefaults
 {
-	private static final ClassBasedStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new ClassBasedStandardizingService("default");
+	private static final TypeStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new TypeStandardizingService("default");
 	static
 	{
 		registerAllDefaultNestedBeansRetrievers(DEFAULT_STANDARDIZING_SERVICE);
@@ -72,7 +72,7 @@ public class StandardizingDefaults
 		return nestedBeans;
 	}
 
-	public static void registerAllDefaultNestedBeansRetrievers(ClassBasedStandardizingService service)
+	public static void registerAllDefaultNestedBeansRetrievers(TypeStandardizingService service)
 	{
 		service.registerNestedBeansRetriever(Episode.class, StandardizingDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Season.class, StandardizingDefaults::retrieveNestedBeans);
@@ -81,7 +81,7 @@ public class StandardizingDefaults
 		service.registerNestedBeansRetriever(SubtitleAdjustment.class, StandardizingDefaults::retrieveNestedBeans);
 	}
 
-	public static void registerAllDefaulStandardizers(ClassBasedStandardizingService service)
+	public static void registerAllDefaulStandardizers(TypeStandardizingService service)
 	{
 		service.registerStandardizer(Subtitle.class, SubtitleUtils::standardizeTags);
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("AAC2", "0"), Tag.list("AAC2.0")));

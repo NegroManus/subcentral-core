@@ -17,12 +17,12 @@ import com.google.common.collect.ImmutableList;
  * @implSpec #thread-safe
  *
  */
-public class ClassBasedParsingService implements ParsingService
+public class TypeParsingService implements ParsingService
 {
 	private final String				domain;
 	private final List<ParserEntry<?>>	parserEntries	= new CopyOnWriteArrayList<>();
 
-	public ClassBasedParsingService(String domain)
+	public TypeParsingService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 	}
@@ -173,9 +173,9 @@ public class ClassBasedParsingService implements ParsingService
 		}
 		for (ParserEntry<?> entry : parserEntries)
 		{
-			for (Class<?> targetClass : targetTypes)
+			for (Class<?> targetType : targetTypes)
 			{
-				if (targetClass.isAssignableFrom(entry.targetType))
+				if (targetType.isAssignableFrom(entry.targetType))
 				{
 					Parser<?> parser = entry.parser;
 					Object parsedObj = parser.parse(text);
@@ -192,7 +192,7 @@ public class ClassBasedParsingService implements ParsingService
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(ClassBasedParsingService.class).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(TypeParsingService.class).add("domain", domain).toString();
 	}
 
 	public static final class ParserEntry<T>

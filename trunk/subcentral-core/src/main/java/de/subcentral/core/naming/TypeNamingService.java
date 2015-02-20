@@ -13,13 +13,13 @@ import org.apache.commons.lang3.ClassUtils;
  *
  * @deprecated Use {@link ConditionalNamingService} instead.
  */
-public class ClassBasedNamingService implements NamingService
+public class TypeNamingService implements NamingService
 {
 	private final String					domain;
 	private final Map<Class<?>, Namer<?>>	namers				= new ConcurrentHashMap<>();
 	private final AtomicReference<String>	defaultSeparator	= new AtomicReference<>(" ");
 
-	public ClassBasedNamingService(String domain)
+	public TypeNamingService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 	}
@@ -43,21 +43,21 @@ public class ClassBasedNamingService implements NamingService
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Namer<? super T> getNamer(Class<T> clazz)
+	public <T> Namer<? super T> getNamer(Class<T> type)
 	{
-		Class<?> searchClass = clazz;
-		while (searchClass != Object.class)
+		Class<?> searchType = type;
+		while (searchType != Object.class)
 		{
-			Namer<?> namer = namers.get(searchClass);
+			Namer<?> namer = namers.get(searchType);
 			if (namer != null)
 			{
 				return (Namer<? super T>) namer;
 			}
-			searchClass = searchClass.getSuperclass();
+			searchType = searchType.getSuperclass();
 		}
-		for (Class<?> interfaceClass : ClassUtils.getAllInterfaces(clazz))
+		for (Class<?> interfaceType : ClassUtils.getAllInterfaces(type))
 		{
-			Namer<?> namer = namers.get(interfaceClass);
+			Namer<?> namer = namers.get(interfaceType);
 			if (namer != null)
 			{
 				return (Namer<? super T>) namer;

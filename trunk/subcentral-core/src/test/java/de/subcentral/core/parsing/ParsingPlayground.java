@@ -37,7 +37,7 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
-import de.subcentral.core.standardizing.ClassBasedStandardizingService;
+import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.standardizing.StandardizingDefaults;
@@ -96,7 +96,7 @@ public class ParsingPlayground
 
 		final long totalStart = System.nanoTime();
 
-		final ClassBasedParsingService ps = new ClassBasedParsingService("default");
+		final TypeParsingService ps = new TypeParsingService("default");
 		// order is relevant. ReleaseScene matchers would also match SubCentralDe matchers
 		ps.getParserEntries().addAll(Addic7edCom.getParserEntries());
 		ps.getParserEntries().addAll(SubCentralDe.getParserEntries());
@@ -120,7 +120,7 @@ public class ParsingPlayground
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 		final WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
 
-		final ClassBasedStandardizingService parsedToInfoDbStdzService = new ClassBasedStandardizingService("after parsing");
+		final TypeStandardizingService parsedToInfoDbStdzService = new TypeStandardizingService("after parsing");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
 		parsedToInfoDbStdzService.registerStandardizer(Series.class, new SeriesNameStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE),
 				"Scandal (US)",
@@ -131,7 +131,7 @@ public class ParsingPlayground
 						"Last Man Standing"));
 		SubCentralDe.registerSubtitleLanguageStandardizers(parsedToInfoDbStdzService);
 
-		final ClassBasedStandardizingService infoDbToCustomStdzService = new ClassBasedStandardizingService("after infoDb");
+		final TypeStandardizingService infoDbToCustomStdzService = new TypeStandardizingService("after infoDb");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
 		infoDbToCustomStdzService.registerStandardizer(Series.class,
 				new SeriesNameStandardizer(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", null));
