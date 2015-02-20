@@ -2,7 +2,6 @@ package de.subcentral.core.metadata.release;
 
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import de.subcentral.core.BeanUtil;
@@ -16,8 +15,14 @@ public class Group implements Comparable<Group>
 {
 	public static Group parse(String group)
 	{
-		String trimmedGroup = StringUtils.stripToNull(group);
-		return trimmedGroup == null ? null : new Group(trimmedGroup);
+		try
+		{
+			return new Group(group);
+		}
+		catch (IllegalArgumentException e)
+		{
+			return null;
+		}
 	}
 
 	public static String toSafeString(Group group)
@@ -27,7 +32,7 @@ public class Group implements Comparable<Group>
 
 	private final String	name;
 
-	public Group(String name)
+	public Group(String name) throws IllegalArgumentException
 	{
 		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
 	}
