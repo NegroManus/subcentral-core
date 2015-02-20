@@ -21,14 +21,6 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ParsingUtils
 {
-	public static void requireNotBlank(String text) throws NoMatchException
-	{
-		if (StringUtils.isBlank(text))
-		{
-			throw new NoMatchException(text, null, "text is blank");
-		}
-	}
-
 	public static final <T> void reflectiveMapping(T entity, Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
 		Objects.requireNonNull(entity, "entity");
@@ -71,53 +63,55 @@ public class ParsingUtils
 		}
 	}
 
-	public static Object parse(String text, Iterable<ParsingService> parsingServices) throws NoMatchException, ParsingException
+	public static Object parse(String text, Iterable<ParsingService> parsingServices) throws ParsingException
 	{
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
 		for (ParsingService ps : parsingServices)
 		{
-			try
+			Object parsedObj = ps.parse(text);
+			if (parsedObj != null)
 			{
-				return ps.parse(text);
-			}
-			catch (NoMatchException nme)
-			{
-				continue;
+				return parsedObj;
 			}
 		}
-		throw new NoMatchException(text, ImmutableSet.of(), "No ParsingService could parse the text");
+		return null;
 	}
 
-	public static <T> T parse(String text, Class<T> targetType, Iterable<ParsingService> parsingServices) throws NoMatchException, ParsingException
+	public static <T> T parse(String text, Class<T> targetType, Iterable<ParsingService> parsingServices) throws ParsingException
 	{
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
 		for (ParsingService ps : parsingServices)
 		{
-			try
+			T parsedObj = ps.parse(text, targetType);
+			if (parsedObj != null)
 			{
-				return ps.parse(text, targetType);
-			}
-			catch (NoMatchException nme)
-			{
-				continue;
+				return parsedObj;
 			}
 		}
-		throw new NoMatchException(text, ImmutableSet.of(targetType), "No ParsingService could parse the text");
+		return null;
 	}
 
-	public static Object parse(String text, Set<Class<?>> targetTypes, Iterable<ParsingService> parsingServices) throws NoMatchException,
-			ParsingException
+	public static Object parse(String text, Set<Class<?>> targetTypes, Iterable<ParsingService> parsingServices) throws ParsingException
 	{
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
 		for (ParsingService ps : parsingServices)
 		{
-			try
+			Object parsedObj = ps.parse(text, targetTypes);
+			if (parsedObj != null)
 			{
-				return ps.parse(text, targetTypes);
-			}
-			catch (NoMatchException nme)
-			{
-				continue;
+				return parsedObj;
 			}
 		}
-		throw new NoMatchException(text, targetTypes, "No ParsingService could parse the text");
+		return null;
 	}
 
 	public static List<ParsingService> filterByTargetTypes(Iterable<ParsingService> parsingServices, Set<Class<?>> targetTypes)

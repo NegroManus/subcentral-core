@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.parsing.NoMatchException;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtils;
@@ -119,33 +118,29 @@ public class ReleaseUtils
 		enrichByParsingName(rls, ImmutableList.of(parsingService), overwrite);
 	}
 
-	public static void enrichByParsingName(Release rls, List<ParsingService> parsingServices, boolean overwrite) throws ParsingException
+	public static void enrichByParsingName(Release rls, Iterable<ParsingService> parsingServices, boolean overwrite) throws ParsingException
 	{
 		if (rls == null || rls.getName() == null)
 		{
 			return;
 		}
-		Release parsedName;
-		try
+		Release parsedRls = ParsingUtils.parse(rls.getName(), Release.class, parsingServices);
+		if (parsedRls == null)
 		{
-			parsedName = ParsingUtils.parse(rls.getName(), Release.class, parsingServices);
-		}
-		catch (NoMatchException e)
-		{
-			log.warn("Failed to enrich release because its name could not be parsed: " + rls, e);
+			log.warn("Failed to enrich release because its name could not be parsed: " + rls);
 			return;
 		}
 		if (overwrite || rls.getMedia().isEmpty())
 		{
-			rls.setMedia(parsedName.getMedia());
+			rls.setMedia(parsedRls.getMedia());
 		}
 		if (overwrite || rls.getTags().isEmpty())
 		{
-			rls.setTags(parsedName.getTags());
+			rls.setTags(parsedRls.getTags());
 		}
 		if (overwrite || rls.getGroup() == null)
 		{
-			rls.setGroup(parsedName.getGroup());
+			rls.setGroup(parsedRls.getGroup());
 		}
 	}
 

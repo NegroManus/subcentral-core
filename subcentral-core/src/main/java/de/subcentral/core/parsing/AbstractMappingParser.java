@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.StringUtils;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -35,9 +35,12 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 	}
 
 	@Override
-	public T parse(String text) throws NoMatchException, ParsingException
+	public T parse(String text) throws ParsingException
 	{
-		ParsingUtils.requireNotBlank(text);
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
 		try
 		{
 			for (MappingMatcher<SimplePropDescriptor> matcher : matchers)
@@ -53,7 +56,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 		{
 			throw new ParsingException(text, "Exception while parsing", e);
 		}
-		throw new NoMatchException(text, ImmutableSet.of(), "No matcher could match");
+		return null;
 	}
 
 	protected abstract T map(Map<SimplePropDescriptor, String> props);
