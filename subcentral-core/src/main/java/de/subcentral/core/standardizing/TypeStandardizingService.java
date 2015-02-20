@@ -18,13 +18,13 @@ import com.google.common.collect.ImmutableList;
  * @implSpec #thread-safe
  *
  */
-public class ClassBasedStandardizingService implements StandardizingService
+public class TypeStandardizingService implements StandardizingService
 {
 	private final String												domain;
 	private final List<StandardizerEntry<?>>							standardizerEntries		= new CopyOnWriteArrayList<>();
 	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
-	public ClassBasedStandardizingService(String domain)
+	public TypeStandardizingService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 	}
@@ -126,7 +126,7 @@ public class ClassBasedStandardizingService implements StandardizingService
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(ClassBasedStandardizingService.class).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(TypeStandardizingService.class).add("domain", domain).toString();
 	}
 
 	public static final class StandardizerEntry<T>

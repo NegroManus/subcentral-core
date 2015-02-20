@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Subtitle>
+public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle>
 {
 	public enum LanguageFormat
 	{
@@ -49,18 +49,18 @@ public class LocaleBasedSubtitleLanguageStandardizer implements Standardizer<Sub
 	private final Locale						targetLanguage;
 	private final ImmutableMap<Locale, String>	customLocaleStrings;
 
-	public LocaleBasedSubtitleLanguageStandardizer()
+	public LocaleSubtitleLanguageStandardizer()
 	{
 		this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableMap.of(), ImmutableMap.of());
 	}
 
-	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
+	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
 			Locale targetLanguage)
 	{
 		this(possibleSourceLanguages, targetLanguageFormat, targetLanguage, ImmutableMap.of(), ImmutableMap.of());
 	}
 
-	public LocaleBasedSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
+	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
 			Locale targetLanguage, Map<Pattern, Locale> customLocalePatterns, Map<Locale, String> customLocaleStrings)
 	{
 		this.possibleSourceLanguages = ImmutableList.copyOf(possibleSourceLanguages);

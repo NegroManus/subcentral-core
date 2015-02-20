@@ -10,7 +10,7 @@ public class ParsingPerformanceTest
 
 	public static void main(String[] args)
 	{
-		final ClassBasedParsingService ps = new ClassBasedParsingService("default");
+		final TypeParsingService ps = new TypeParsingService("default");
 		ps.getParserEntries().addAll(Addic7edCom.getParserEntries());
 		ps.getParserEntries().addAll(SubCentralDe.getParserEntries());
 		ps.getParserEntries().addAll(ReleaseScene.getParsersEntries());

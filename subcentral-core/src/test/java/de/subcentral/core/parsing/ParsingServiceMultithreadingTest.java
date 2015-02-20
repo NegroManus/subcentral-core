@@ -12,7 +12,7 @@ public class ParsingServiceMultithreadingTest
 	@Test
 	public void testParsingServiceMultithreading() throws InterruptedException
 	{
-		ClassBasedParsingService ps = new ClassBasedParsingService("test");
+		TypeParsingService ps = new TypeParsingService("test");
 		ps.registerParser(String.class, t -> {
 			try
 			{

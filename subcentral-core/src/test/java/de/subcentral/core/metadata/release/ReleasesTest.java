@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.subcentral.core.standardizing.ClassBasedStandardizingService;
+import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 
@@ -17,7 +17,7 @@ public class ReleasesTest
 	{
 		Release rls = new Release();
 		rls.setTags(Tag.list("720p", "WEB", "DL", "DD5", "1", "x264"));
-		ClassBasedStandardizingService service = new ClassBasedStandardizingService("test");
+		TypeStandardizingService service = new TypeStandardizingService("test");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		StandardizingDefaults.registerAllDefaulStandardizers(service);
 		List<StandardizingChange> changes = service.standardize(rls);

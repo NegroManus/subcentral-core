@@ -21,8 +21,8 @@ import de.subcentral.core.metadata.media.RegularAvMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.parsing.ClassBasedParsingService;
-import de.subcentral.core.parsing.ClassBasedParsingService.ParserEntry;
+import de.subcentral.core.parsing.TypeParsingService;
+import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
@@ -34,7 +34,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class ReleaseScene
 {
 	public static final String						DOMAIN			= "release.scene";
-	private static final ClassBasedParsingService	PARSING_SERVICE	= new ClassBasedParsingService(DOMAIN);
+	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(DOMAIN);
 
 	static
 	{

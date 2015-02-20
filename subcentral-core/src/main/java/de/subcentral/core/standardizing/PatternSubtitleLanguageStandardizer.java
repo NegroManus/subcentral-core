@@ -11,12 +11,12 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class CustomSubtitleLanguageStandardizer implements Standardizer<Subtitle>
+public class PatternSubtitleLanguageStandardizer implements Standardizer<Subtitle>
 {
 	private final Pattern	languagePattern;
 	private final String	languageReplacement;
 
-	public CustomSubtitleLanguageStandardizer(Pattern languagePattern, String languageReplacement)
+	public PatternSubtitleLanguageStandardizer(Pattern languagePattern, String languageReplacement)
 	{
 		this.languagePattern = languagePattern;
 		this.languageReplacement = languageReplacement;
@@ -55,9 +55,9 @@ public class CustomSubtitleLanguageStandardizer implements Standardizer<Subtitle
 		{
 			return true;
 		}
-		if (obj instanceof CustomSubtitleLanguageStandardizer)
+		if (obj instanceof PatternSubtitleLanguageStandardizer)
 		{
-			CustomSubtitleLanguageStandardizer o = (CustomSubtitleLanguageStandardizer) obj;
+			PatternSubtitleLanguageStandardizer o = (PatternSubtitleLanguageStandardizer) obj;
 			return languagePattern.equals(o.languagePattern) && Objects.equals(languageReplacement, o.languageReplacement);
 		}
 		return false;

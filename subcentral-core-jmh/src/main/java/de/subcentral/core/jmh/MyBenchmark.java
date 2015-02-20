@@ -51,9 +51,9 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtils;
-import de.subcentral.core.standardizing.ClassBasedStandardizingService;
-import de.subcentral.core.standardizing.LocaleBasedSubtitleLanguageStandardizer;
-import de.subcentral.core.standardizing.LocaleBasedSubtitleLanguageStandardizer.LanguageFormat;
+import de.subcentral.core.standardizing.TypeStandardizingService;
+import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
+import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -85,7 +85,7 @@ public class MyBenchmark
 																							"English",
 																							"SubCentral");
 
-	private static final ClassBasedStandardizingService	STANDARDIZING_SERVICE		= buildService();
+	private static final TypeStandardizingService	STANDARDIZING_SERVICE		= buildService();
 	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
@@ -97,13 +97,13 @@ public class MyBenchmark
 																							SubCentralDe.getParsingService(),
 																							ADDIC7ED_PARSING_SERVICE);
 
-	private static ClassBasedStandardizingService buildService()
+	private static TypeStandardizingService buildService()
 	{
-		ClassBasedStandardizingService service = new ClassBasedStandardizingService("testing");
+		TypeStandardizingService service = new TypeStandardizingService("testing");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		StandardizingDefaults.registerAllDefaulStandardizers(service);
 		service.registerStandardizer(Subtitle.class,
-				new LocaleBasedSubtitleLanguageStandardizer(ImmutableList.of(Locale.ENGLISH),
+				new LocaleSubtitleLanguageStandardizer(ImmutableList.of(Locale.ENGLISH),
 						LanguageFormat.NAME,
 						Locale.ENGLISH,
 						ImmutableMap.of(Pattern.compile("VO", Pattern.CASE_INSENSITIVE),
