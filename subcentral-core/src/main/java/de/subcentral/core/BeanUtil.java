@@ -19,9 +19,9 @@ import com.google.common.collect.Multimap;
 
 public class BeanUtil
 {
-	public static final String requireNotBlankAndTrim(String s, String message) throws IllegalArgumentException
+	public static final String requireNotBlankAndTrimWhitespace(String s, String message) throws IllegalArgumentException
 	{
-		String trimmed = StringUtils.trimToNull(s);
+		String trimmed = StringUtils.stripToNull(s);
 		if (trimmed == null)
 		{
 			throw new IllegalArgumentException(message);

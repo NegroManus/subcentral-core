@@ -104,7 +104,7 @@ public class Tag implements Comparable<Tag>
 
 	public static Tag parse(String tag)
 	{
-		String trimmedTag = StringUtils.trimToNull(tag);
+		String trimmedTag = StringUtils.stripToNull(tag);
 		return trimmedTag == null ? null : new Tag(trimmedTag);
 	}
 
@@ -128,7 +128,7 @@ public class Tag implements Comparable<Tag>
 
 	public Tag(String name, String longName)
 	{
-		this.name = BeanUtil.requireNotBlankAndTrim(name, "name cannot be blank");
+		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
 		this.longName = longName;
 	}
 

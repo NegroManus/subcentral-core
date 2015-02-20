@@ -16,7 +16,7 @@ public class Group implements Comparable<Group>
 {
 	public static Group parse(String group)
 	{
-		String trimmedGroup = StringUtils.trimToNull(group);
+		String trimmedGroup = StringUtils.stripToNull(group);
 		return trimmedGroup == null ? null : new Group(trimmedGroup);
 	}
 
@@ -29,7 +29,7 @@ public class Group implements Comparable<Group>
 
 	public Group(String name)
 	{
-		this.name = BeanUtil.requireNotBlankAndTrim(name, "name cannot be blank");
+		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
 	}
 
 	public String getName()
