@@ -15,7 +15,6 @@ public class Subtitling implements Work
 {
 	private AvMedia						media;
 	private String						language;
-	private String						state;
 	private String						info;
 	private final List<Contribution>	contributions	= new ArrayList<>(4);
 
@@ -39,16 +38,6 @@ public class Subtitling implements Work
 		this.language = language;
 	}
 
-	public String getState()
-	{
-		return state;
-	}
-
-	public void setState(String state)
-	{
-		this.state = state;
-	}
-
 	public String getInfo()
 	{
 		return info;
@@ -69,11 +58,6 @@ public class Subtitling implements Work
 	{
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
-	}
-
-	public double getProgressOfCurrentState()
-	{
-		return ContributionUtils.calcProgress(contributions, state);
 	}
 
 	public double getProgress(String contributionType)
