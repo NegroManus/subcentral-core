@@ -35,8 +35,6 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -52,11 +50,15 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parsing.ParsingUtils;
 import de.subcentral.core.standardizing.ClassBasedStandardizingService;
 import de.subcentral.core.standardizing.LocaleBasedSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.LocaleBasedSubtitleLanguageStandardizer.LanguageFormat;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.support.addic7edcom.Addic7edCom;
+import de.subcentral.support.italiansubsnet.ItalianSubsNet;
+import de.subcentral.support.releasescene.ReleaseScene;
+import de.subcentral.support.subcentralde.SubCentralDe;
 
 /**
  * <pre>
@@ -86,6 +88,14 @@ public class MyBenchmark
 	private static final ClassBasedStandardizingService	STANDARDIZING_SERVICE		= buildService();
 	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
+	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
+																							SubCentralDe.getParsingService(),
+																							ItalianSubsNet.getParsingService(),
+																							ReleaseScene.getParsingService());
+	private static final ImmutableList<ParsingService>	PARSING_SERVICES_REVERSED	= ImmutableList.of(ReleaseScene.getParsingService(),
+																							ItalianSubsNet.getParsingService(),
+																							SubCentralDe.getParsingService(),
+																							ADDIC7ED_PARSING_SERVICE);
 
 	private static ClassBasedStandardizingService buildService()
 	{
@@ -104,16 +114,16 @@ public class MyBenchmark
 		return service;
 	}
 
-	@Benchmark
-	@BenchmarkMode(Mode.Throughput)
+	// @Benchmark
+	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testStandardizing()
 	{
 		STANDARDIZING_SERVICE.standardize(SUB_ADJ);
 	}
 
-	@Benchmark
-	@BenchmarkMode(Mode.Throughput)
+	// @Benchmark
+	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testNaming()
 	{
@@ -121,23 +131,53 @@ public class MyBenchmark
 	}
 
 	@Benchmark
-	@BenchmarkMode(Mode.Throughput)
+	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
+	@Benchmark
+	public void testParsingBestCase()
+	{
+		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
+	}
+
+	@Benchmark
+	public void testParsingWorstCase()
+	{
+		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
+	}
+
+	@Benchmark
+	public void testParsingSubAdjBestCase()
+	{
+		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
+				SubtitleAdjustment.class,
+				PARSING_SERVICES);
+	}
+
+	@Benchmark
+	public void testParsingSubAdjWorstCase()
+	{
+		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
+				SubtitleAdjustment.class,
+				PARSING_SERVICES_REVERSED);
+	}
+
 	/**
 	 * http://openjdk.java.net/projects/code-tools/jmh/
 	 * 
-	 * Last results
+	 * Last results (prior to refactoring out NoMatchException)
 	 * 
 	 * <pre>
-	 * Benchmark                         Mode  Cnt       Score      Error  Units
-	 * MyBenchmark.testNaming           thrpt  200  144.430,330 ± 2349,290  ops/s
-	 * MyBenchmark.testParsingAddic7ed  thrpt  200  116.031,352 ± 1449,548  ops/s
-	 * MyBenchmark.testStandardizing    thrpt  200  667.912,881 ± 7009,422  ops/s
+	 * Benchmark                                Mode  Cnt       Score      Error  Units
+	 * MyBenchmark.testParsingAddic7ed         thrpt   50  114988,834 ± 2987,927  ops/s
+	 * MyBenchmark.testParsingBestCase         thrpt   50  116191,826 ± 3068,515  ops/s
+	 * MyBenchmark.testParsingSubAdjBestCase   thrpt   50  113918,814 ± 2605,354  ops/s
+	 * MyBenchmark.testParsingSubAdjWorstCase  thrpt   50    7077,061 ±  208,035  ops/s
+	 * MyBenchmark.testParsingWorstCase        thrpt   50    3919,695 ±  145,933  ops/s
 	 * </pre>
 	 * 
 	 * @param args
@@ -145,7 +185,7 @@ public class MyBenchmark
 	 */
 	public static void main(String[] args) throws RunnerException
 	{
-		Options opt = new OptionsBuilder().include(MyBenchmark.class.getSimpleName()).build();
+		Options opt = new OptionsBuilder().include(MyBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
 
 		new Runner(opt).run();
 	}

@@ -7,9 +7,10 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * 
@@ -117,56 +118,55 @@ public class ClassBasedParsingService implements ParsingService
 	}
 
 	@Override
-	public Object parse(String text) throws NoMatchException, ParsingException
+	public Object parse(String text) throws ParsingException
 	{
-		ParsingUtils.requireNotBlank(text);
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
 		for (ParserEntry<?> entry : parserEntries)
 		{
-			try
+			Object parsedObj = entry.parser.parse(text);
+			if (parsedObj != null)
 			{
-				return entry.parser.parse(text);
-			}
-			catch (NoMatchException e)
-			{
-				// this parser could no match
-				// ignore and move on to the next
-				continue;
+				return parsedObj;
 			}
 		}
-		throw buildNoMatchException(text, ImmutableSet.of());
+		return null;
 	}
 
 	@Override
-	public <T> T parse(String text, Class<T> targetType) throws NoMatchException, ParsingException
+	public <T> T parse(String text, Class<T> targetType) throws ParsingException
 	{
-		ParsingUtils.requireNotBlank(text);
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
 		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
 		for (ParserEntry<?> entry : parserEntries)
 		{
 			if (targetType.isAssignableFrom(entry.targetType))
 			{
-				try
+				// save cast because targetClass is superClass of parsers type
+				@SuppressWarnings("unchecked")
+				Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
+				T parsedObj = parser.parse(text);
+				if (parsedObj != null)
 				{
-					// save cast because targetClass is superClass of parsers type
-					@SuppressWarnings("unchecked")
-					Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
-					return parser.parse(text);
-				}
-				catch (NoMatchException e)
-				{
-					// this parser could no match
-					// ignore and move on to the next
-					continue;
+					return parsedObj;
 				}
 			}
 		}
-		throw buildNoMatchException(text, ImmutableSet.of(targetType));
+		return null;
 	}
 
 	@Override
-	public Object parse(String text, Set<Class<?>> targetTypes) throws NoMatchException, ParsingException
+	public Object parse(String text, Set<Class<?>> targetTypes) throws ParsingException
 	{
-		ParsingUtils.requireNotBlank(text);
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
 		if (targetTypes == null || targetTypes.isEmpty())
 		{
 			return parse(text);
@@ -177,43 +177,22 @@ public class ClassBasedParsingService implements ParsingService
 			{
 				if (targetClass.isAssignableFrom(entry.targetType))
 				{
-					try
+					Parser<?> parser = entry.parser;
+					Object parsedObj = parser.parse(text);
+					if (parsedObj != null)
 					{
-						Parser<?> parser = entry.parser;
-						return parser.parse(text);
-					}
-					catch (NoMatchException e)
-					{
-						// this parser could no match
-						// ignore and move on to the next
-						continue;
+						return parsedObj;
 					}
 				}
 			}
 		}
-		throw buildNoMatchException(text, targetTypes);
+		return null;
 	}
 
 	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(ClassBasedParsingService.class).add("domain", domain).toString();
-	}
-
-	private static NoMatchException buildNoMatchException(String text, Set<Class<?>> targetTypes)
-	{
-		// build Exception message
-		StringBuilder msg = new StringBuilder();
-		msg.append("No parser ");
-		if (targetTypes.isEmpty())
-		{
-			msg.append("that produces any target type of");
-			msg.append(targetTypes);
-			msg.append(' ');
-		}
-		msg.append("could parse the text");
-
-		throw new NoMatchException(text, targetTypes, msg.toString());
 	}
 
 	public static final class ParserEntry<T>

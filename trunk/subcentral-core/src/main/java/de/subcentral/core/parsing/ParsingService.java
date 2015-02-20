@@ -8,7 +8,7 @@ public interface ParsingService extends Parser<Object>
 
 	public Set<Class<?>> getTargetTypes();
 
-	public <T> T parse(String text, Class<T> targetClass) throws NoMatchException, ParsingException;
+	public <T> T parse(String text, Class<T> targetClass) throws ParsingException;
 
-	public Object parse(String text, Set<Class<?>> targetClasses) throws NoMatchException, ParsingException;
+	public Object parse(String text, Set<Class<?>> targetClasses) throws ParsingException;
 }
