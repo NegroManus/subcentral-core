@@ -1,5 +1,7 @@
 package de.subcentral.core.sms;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -11,10 +13,11 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 
 public class Subtitling implements Work
 {
-	private AvMedia				media;
-	private String				language;
-	private String				info;
-	private List<Contribution>	contributions;
+	private AvMedia						media;
+	private String						language;
+	private String						state;
+	private String						info;
+	private final List<Contribution>	contributions	= new ArrayList<>(4);
 
 	public AvMedia getMedia()
 	{
@@ -36,6 +39,16 @@ public class Subtitling implements Work
 		this.language = language;
 	}
 
+	public String getState()
+	{
+		return state;
+	}
+
+	public void setState(String state)
+	{
+		this.state = state;
+	}
+
 	public String getInfo()
 	{
 		return info;
@@ -52,9 +65,15 @@ public class Subtitling implements Work
 		return contributions;
 	}
 
-	public void setContributions(List<Contribution> contributions)
+	public void setContributions(Collection<Contribution> contributions)
 	{
-		this.contributions = contributions;
+		this.contributions.clear();
+		this.contributions.addAll(contributions);
+	}
+
+	public double getProgressOfCurrentState()
+	{
+		return ContributionUtils.calcProgress(contributions, state);
 	}
 
 	public double getProgress(String contributionType)
