@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
@@ -28,12 +30,14 @@ import de.subcentral.core.util.TimeUtil;
 
 public class SimplePropFromStringService implements PropFromStringService
 {
+	private static final Logger								log									= LogManager.getLogger(SimplePropFromStringService.class);
+
 	public static final SimplePropFromStringService			DEFAULT								= new SimplePropFromStringService();
 	/**
-	 * The default item splitter. Splits the string into words of alpha-num chars. Is used by PropParsingService instances if no specific item
-	 * splitter is defined. Common to all instances to save memory.
+	 * The default element splitter. Used for splitting a list property string into its elements. Splits the string into words of alpha-num chars. Is
+	 * used by PropParsingService instances if no specific item splitter is defined. Common to all instances to save memory.
 	 */
-	public static final Splitter							DEFAULT_ITEM_SPLITTER				= Splitter.on(CharMatcher.JAVA_LETTER_OR_DIGIT.negate())
+	public static final Splitter							DEFAULT_ELEMENT_SPLITTER			= Splitter.on(CharMatcher.JAVA_LETTER_OR_DIGIT.negate())
 																										.omitEmptyStrings();
 
 	/**
@@ -68,15 +72,15 @@ public class SimplePropFromStringService implements PropFromStringService
 		typeFns.put(ZonedDateTime.class, ZonedDateTime::parse);
 		typeFns.put(Temporal.class, TimeUtil::parseTemporal);
 		// Model specific types
-		typeFns.put(Tag.class, s -> new Tag(s));
-		typeFns.put(Group.class, s -> new Group(s));
+		typeFns.put(Tag.class, Tag::parse);
+		typeFns.put(Group.class, Group::parse);
 		typeFns.put(Nuke.class, s -> new Nuke(s));
 
 		return typeFns.build();
 	}
 
-	private Splitter										itemSplitter			= null;
-	private Map<SimplePropDescriptor, Splitter>				propItemSplitters		= new HashMap<>(0);
+	private Splitter										elementSplitter			= null;
+	private Map<SimplePropDescriptor, Splitter>				propElementSplitters	= new HashMap<>(0);
 	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions	= new HashMap<>(0);
 	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions	= new HashMap<>(0);
 
@@ -86,28 +90,28 @@ public class SimplePropFromStringService implements PropFromStringService
 	}
 
 	/**
-	 * The defined item splitter. If null, {@link #DEFAULT_ITEM_SPLITTER} is used.
+	 * The defined item splitter. If null, {@link #DEFAULT_ELEMENT_SPLITTER} is used.
 	 * 
 	 * @return the item splitter
 	 */
-	public Splitter getItemSplitter()
+	public Splitter getElementSplitter()
 	{
-		return itemSplitter;
+		return elementSplitter;
 	}
 
-	public void setItemSplitter(Splitter itemSplitter)
+	public void setElementSplitter(Splitter elementSplitter)
 	{
-		this.itemSplitter = itemSplitter;
+		this.elementSplitter = elementSplitter;
 	}
 
-	public Map<SimplePropDescriptor, Splitter> getPropItemSplitters()
+	public Map<SimplePropDescriptor, Splitter> getPropElementSplitters()
 	{
-		return propItemSplitters;
+		return propElementSplitters;
 	}
 
-	public void setPropItemSplitters(Map<SimplePropDescriptor, Splitter> propItemSplitters)
+	public void setPropElementSplitters(Map<SimplePropDescriptor, Splitter> propElementSplitters)
 	{
-		this.propItemSplitters = propItemSplitters;
+		this.propElementSplitters = propElementSplitters;
 	}
 
 	public Map<Class<?>, Function<String, ?>> getTypeFromStringFunctions()
@@ -130,29 +134,34 @@ public class SimplePropFromStringService implements PropFromStringService
 		this.propFromStringFunctions = propFromStringFunctions;
 	}
 
-	public <P> List<P> parseList(String propListString, SimplePropDescriptor propDescriptor, Class<P> itemClass) throws ParsingException
+	@Override
+	public <P> List<P> parseList(String propListString, SimplePropDescriptor propDescriptor, Class<P> elementClass) throws ParsingException
 	{
 		if (StringUtils.isBlank(propListString))
 		{
 			return ImmutableList.of();
 		}
-		Splitter splitter = propItemSplitters.getOrDefault(propDescriptor, itemSplitter);
+		Splitter splitter = propElementSplitters.getOrDefault(propDescriptor, elementSplitter);
 		if (splitter == null)
 		{
-			splitter = DEFAULT_ITEM_SPLITTER;
+			splitter = DEFAULT_ELEMENT_SPLITTER;
 		}
 		ImmutableList.Builder<P> builder = ImmutableList.builder();
 		Iterable<String> splitted = splitter.split(propListString);
-		for (String propString : splitted)
+		for (String elementString : splitted)
 		{
-			P parsedItem = parse(propString, propDescriptor, itemClass);
-			if (parsedItem != null)
+			P parsedElem = parse(elementString, propDescriptor, elementClass);
+			if (parsedElem != null)
 			{
-				builder.add(parsedItem);
+				builder.add(parsedElem);
 			}
 			else
 			{
-				System.out.println(propListString);
+				log.warn("Parsed an element of a list property to null, ignoring this element. propListString={}, elementString={}, propDescriptor={}, elementClass={}",
+						propListString,
+						elementString,
+						propDescriptor,
+						elementClass);
 			}
 		}
 		return builder.build();

@@ -104,8 +104,14 @@ public class Tag implements Comparable<Tag>
 
 	public static Tag parse(String tag)
 	{
-		String trimmedTag = StringUtils.stripToNull(tag);
-		return trimmedTag == null ? null : new Tag(trimmedTag);
+		try
+		{
+			return new Tag(tag);
+		}
+		catch (IllegalArgumentException e)
+		{
+			return null;
+		}
 	}
 
 	public static String listToString(List<Tag> tags)
@@ -126,7 +132,7 @@ public class Tag implements Comparable<Tag>
 		this(name, null);
 	}
 
-	public Tag(String name, String longName)
+	public Tag(String name, String longName) throws IllegalArgumentException
 	{
 		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
 		this.longName = longName;
