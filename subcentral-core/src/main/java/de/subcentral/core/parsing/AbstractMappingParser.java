@@ -46,7 +46,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 			for (MappingMatcher<SimplePropDescriptor> matcher : matchers)
 			{
 				Map<SimplePropDescriptor, String> matchResult = matcher.match(text);
-				if (matchResult != null)
+				if (!matchResult.isEmpty())
 				{
 					return map(matchResult);
 				}
