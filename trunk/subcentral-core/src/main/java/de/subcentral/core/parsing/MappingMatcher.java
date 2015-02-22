@@ -62,7 +62,7 @@ public class MappingMatcher<K>
 	 * 
 	 * @param text
 	 *            the text to
-	 * @return the mapped groups. If the matcher does no match, {@code null} is returned
+	 * @return the mapped groups. If the matcher does no match, an empty map is returned
 	 * @throws IndexOutOfBoundsException
 	 *             if there is no capturing group in the {@link #getPattern() pattern} associated with an index specified in {@link #getGroups()}.
 	 */
@@ -70,7 +70,7 @@ public class MappingMatcher<K>
 	{
 		if (StringUtils.isBlank(text))
 		{
-			return null;
+			return ImmutableMap.of();
 		}
 		Matcher m = pattern.matcher(text);
 		if (m.matches())
@@ -91,7 +91,7 @@ public class MappingMatcher<K>
 			}
 			return mappedGroups;
 		}
-		return null;
+		return ImmutableMap.of();
 	}
 
 	@Override
