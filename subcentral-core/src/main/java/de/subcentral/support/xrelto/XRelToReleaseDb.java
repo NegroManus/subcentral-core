@@ -22,6 +22,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.common.collect.ImmutableList;
+
 import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbQueryException;
 import de.subcentral.core.metadata.media.Episode;
@@ -96,6 +98,10 @@ public class XRelToReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	@Override
 	public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
 	{
+		if (doc == null)
+		{
+			return ImmutableList.of();
+		}
 		try
 		{
 			return parseReleases(doc);

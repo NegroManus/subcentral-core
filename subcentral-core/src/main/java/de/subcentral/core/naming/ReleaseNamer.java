@@ -18,7 +18,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 
 	private final NamingService	mediaNamingService;
 
-	protected ReleaseNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+	public ReleaseNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter, NamingService mediaNamingService)
 	{
 		super(propToStringService, defaultSeparator, separations, finalFormatter);

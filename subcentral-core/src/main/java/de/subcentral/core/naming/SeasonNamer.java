@@ -22,7 +22,7 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 	 */
 	public static final String	PARAM_ALWAYS_INCLUDE_TITLE	= SeasonNamer.class.getName() + ".alwaysIncludeTitle";
 
-	protected SeasonNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+	public SeasonNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)
 	{
 		super(propToStringService, defaultSeparator, separations, finalFormatter);

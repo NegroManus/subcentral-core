@@ -26,7 +26,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 	private final ImmutableMap<String, AbstractEpisodeNamer>	seriesTypeNamers;
 	private final AbstractEpisodeNamer							defaultNamer;
 
-	protected MultiEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+	public MultiEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter, Map<String, AbstractEpisodeNamer> seriesTypeNamers, AbstractEpisodeNamer defaultNamer)
 	{
 		super(propToStringService, defaultSeparator, separations, finalFormatter);

@@ -11,7 +11,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MediaNamer extends AbstractPropertySequenceNamer<Media>
 {
-	protected MediaNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+	public MediaNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)
 	{
 		super(propToStringService, defaultSeparator, separations, finalFormatter);

@@ -10,6 +10,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 {
 	public static final int	DEFAULT_TIMEOUT	= 10000;
@@ -71,6 +73,10 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	@Override
 	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
+		if (query == null)
+		{
+			return ImmutableList.of();
+		}
 		try
 		{
 			return queryWithUrl(buildDefaultQueryUrl(query));

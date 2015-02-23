@@ -115,7 +115,7 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	 */
 	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE	= SeasonedEpisodeNamer.class.getName() + ".alwaysIncludeSeasonTitle";
 
-	protected SeasonedEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+	public SeasonedEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)
 	{
 		super(propToStringService, defaultSeparator, separations, finalFormatter);
