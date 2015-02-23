@@ -11,6 +11,8 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.google.common.collect.ImmutableList;
+
 import de.subcentral.core.util.TimeUtil;
 
 public abstract class AbstractHtmlHttpMetadataDb<T> extends AbstractHttpMetadataDb<T>
@@ -20,6 +22,10 @@ public abstract class AbstractHtmlHttpMetadataDb<T> extends AbstractHttpMetadata
 	@Override
 	public List<T> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
+		if (query == null)
+		{
+			return ImmutableList.of();
+		}
 		try
 		{
 			return queryWithHtmlDoc(getDocument(query));

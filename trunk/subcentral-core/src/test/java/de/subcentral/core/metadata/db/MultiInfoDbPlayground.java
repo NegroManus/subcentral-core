@@ -7,13 +7,22 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.metadata.db.MetadataDb;
-import de.subcentral.core.metadata.db.MetadataDbUtils;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtils;
+import de.subcentral.core.naming.ConditionalNamingService;
+import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
+import de.subcentral.core.naming.MultiEpisodeNamer;
+import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.SeasonedEpisodeNamer;
+import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
 import de.subcentral.support.predbme.PreDbMeReleaseDb;
@@ -22,6 +31,15 @@ import de.subcentral.support.xrelto.XRelToReleaseDb;
 public class MultiInfoDbPlayground
 {
 
+	/**
+	 * <pre>
+	 * -Dhttp.proxyHost=10.206.247.65
+	 * -Dhttp.proxyHost=10.206.247.65
+	 * </pre>
+	 * 
+	 * @param args
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws InterruptedException
 	{
 		PreDbMeReleaseDb preDbMe = new PreDbMeReleaseDb();
@@ -32,14 +50,27 @@ public class MultiInfoDbPlayground
 		infoDbs.add(xrelTo);
 		infoDbs.add(orlyDb);
 
-		// Episode query = Episode.createSeasonedEpisode("Big Bang Theory", 8, 10);
-		RegularAvMedia query = new RegularAvMedia("Halo.Nightfall");
+		ConditionalNamingService alternateNs = new ConditionalNamingService("alternate");
+		MultiEpisodeNamer alternameMeNamer = new MultiEpisodeNamer(NamingDefaults.getDefaultPropToStringService(),
+				" ",
+				ImmutableSet.of(),
+				null,
+				ImmutableMap.of(),
+				new SeasonedEpisodeNamer(NamingDefaults.getDefaultPropToStringService(), Separation.DEFAULT_SEPARATOR, ImmutableSet.of(), null));
+		alternateNs.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, alternameMeNamer));
+		NamingService alternateMetadataDbNs = MetadataDbDefaults.createDefaultDelegatingMetadataDbNamingService(alternateNs);
+		ImmutableList<NamingService> namingServices = ImmutableList.of(MetadataDbDefaults.getDefaultMetadataDbNamingService(), alternateMetadataDbNs);
+
+		Episode epi1 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 23);
+		Episode epi2 = Episode.createSeasonedEpisode("Big Bang Theory", 9, 24);
+		List<Episode> query = ImmutableList.of(epi1, epi2);
+		// RegularAvMedia query = new RegularAvMedia("Halo.Nightfall");
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 
 		System.out.println("Querying");
 		long start = System.nanoTime();
-		ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtils.queryAll(infoDbs, query, executor);
+		ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtils.queryAll(infoDbs, query, namingServices, executor);
 		TimeUtil.printDurationMillis("queryAll", start);
 		for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
 		{

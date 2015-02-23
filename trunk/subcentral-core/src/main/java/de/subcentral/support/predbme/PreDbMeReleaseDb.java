@@ -94,6 +94,10 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	@Override
 	public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
 	{
+		if (doc == null)
+		{
+			return ImmutableList.of();
+		}
 		try
 		{
 			return parseReleases(doc);

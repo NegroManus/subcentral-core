@@ -26,7 +26,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 
 	private final Namer<Release>	releaseNamer;
 
-	protected SubtitleAdjustmentNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+	public SubtitleAdjustmentNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter, Namer<Release> releaseNamer)
 	{
 		super(propToStringService, defaultSeparator, separations, finalFormatter);

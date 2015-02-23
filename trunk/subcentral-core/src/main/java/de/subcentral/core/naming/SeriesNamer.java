@@ -9,7 +9,7 @@ import de.subcentral.core.util.Separation;
 
 public class SeriesNamer extends AbstractPropertySequenceNamer<Series>
 {
-	protected SeriesNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
+	public SeriesNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
 			Function<String, String> finalFormatter)
 	{
 		super(propToStringService, defaultSeparator, separations, finalFormatter);
