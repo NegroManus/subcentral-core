@@ -10,6 +10,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.collect.ImmutableList;
 
 public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
@@ -73,7 +75,7 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	@Override
 	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
-		if (query == null)
+		if (StringUtils.isBlank(query))
 		{
 			return ImmutableList.of();
 		}
@@ -103,7 +105,7 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	 * @throws MalformedURLException
 	 * @throws UnsupportedEncodingException
 	 */
-	protected URL buildDefaultQueryUrl(String queryString) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
+	private URL buildDefaultQueryUrl(String queryString) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
 	{
 		return buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), queryString);
 	}
@@ -121,13 +123,9 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 */
-	protected URL buildQueryUrl(String path, String queryPrefix, String queryString) throws UnsupportedEncodingException, URISyntaxException,
+	private URL buildQueryUrl(String path, String queryPrefix, String queryString) throws UnsupportedEncodingException, URISyntaxException,
 			MalformedURLException
 	{
-		if (queryString == null)
-		{
-			return null;
-		}
 		URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, buildQuery(queryPrefix, queryString), null);
 		return uri.toURL();
 	}
