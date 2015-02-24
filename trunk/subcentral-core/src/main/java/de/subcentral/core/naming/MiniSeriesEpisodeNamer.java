@@ -1,18 +1,14 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.util.Separation;
 
 public class MiniSeriesEpisodeNamer extends AbstractEpisodeNamer
 {
-	public MiniSeriesEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
-			Function<String, String> finalFormatter)
+	public MiniSeriesEpisodeNamer(PropSequenceNameBuilder.Config config)
 	{
-		super(propToStringService, defaultSeparator, separations, finalFormatter);
+		super(config);
 	}
 
 	@Override

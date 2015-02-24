@@ -1,20 +1,16 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 import de.subcentral.core.PropNames;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MediaNamer extends AbstractPropertySequenceNamer<Media>
 {
-	public MediaNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
-			Function<String, String> finalFormatter)
+	public MediaNamer(PropSequenceNameBuilder.Config config)
 	{
-		super(propToStringService, defaultSeparator, separations, finalFormatter);
+		super(config);
 	}
 
 	/**

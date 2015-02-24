@@ -2,20 +2,16 @@ package de.subcentral.core.naming;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.util.Separation;
 
 public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 {
 	private final NamingService	mediaNamingService;
 
-	public SubtitleNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
-			Function<String, String> finalFormatter, NamingService mediaNamingService)
+	public SubtitleNamer(PropSequenceNameBuilder.Config config, NamingService mediaNamingService)
 	{
-		super(propToStringService, defaultSeparator, separations, finalFormatter);
+		super(config);
 		this.mediaNamingService = Objects.requireNonNull(mediaNamingService, "mediaNamingService");
 	}
 

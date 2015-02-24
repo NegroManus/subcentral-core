@@ -4,14 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
-import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<? extends Episode>>
@@ -26,10 +23,10 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<Collection<
 	private final ImmutableMap<String, AbstractEpisodeNamer>	seriesTypeNamers;
 	private final AbstractEpisodeNamer							defaultNamer;
 
-	public MultiEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
-			Function<String, String> finalFormatter, Map<String, AbstractEpisodeNamer> seriesTypeNamers, AbstractEpisodeNamer defaultNamer)
+	public MultiEpisodeNamer(PropSequenceNameBuilder.Config config, Map<String, AbstractEpisodeNamer> seriesTypeNamers,
+			AbstractEpisodeNamer defaultNamer)
 	{
-		super(propToStringService, defaultSeparator, separations, finalFormatter);
+		super(config);
 		this.seriesTypeNamers = ImmutableMap.copyOf(seriesTypeNamers); // includes null check
 		this.defaultNamer = Objects.requireNonNull(defaultNamer, "defaultNamer");
 	}
