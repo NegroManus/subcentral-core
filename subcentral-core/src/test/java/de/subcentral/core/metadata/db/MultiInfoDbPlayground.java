@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Episode;
@@ -19,10 +18,9 @@ import de.subcentral.core.metadata.release.ReleaseUtils;
 import de.subcentral.core.naming.ConditionalNamingService;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.MultiEpisodeNamer;
-import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
 import de.subcentral.core.naming.SeasonedEpisodeNamer;
-import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
 import de.subcentral.support.predbme.PreDbMeReleaseDb;
@@ -51,18 +49,13 @@ public class MultiInfoDbPlayground
 		infoDbs.add(orlyDb);
 
 		ConditionalNamingService alternateNs = new ConditionalNamingService("alternate");
-		MultiEpisodeNamer alternameMeNamer = new MultiEpisodeNamer(NamingDefaults.getDefaultPropToStringService(),
-				" ",
-				ImmutableSet.of(),
-				null,
-				ImmutableMap.of(),
-				new SeasonedEpisodeNamer(NamingDefaults.getDefaultPropToStringService(), Separation.DEFAULT_SEPARATOR, ImmutableSet.of(), null));
+		MultiEpisodeNamer alternameMeNamer = new MultiEpisodeNamer(new Config(), ImmutableMap.of(), new SeasonedEpisodeNamer(new Config()));
 		alternateNs.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, alternameMeNamer));
 		NamingService alternateMetadataDbNs = MetadataDbDefaults.createDefaultDelegatingMetadataDbNamingService(alternateNs);
 		ImmutableList<NamingService> namingServices = ImmutableList.of(MetadataDbDefaults.getDefaultMetadataDbNamingService(), alternateMetadataDbNs);
 
 		Episode epi1 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 23);
-		Episode epi2 = Episode.createSeasonedEpisode("Big Bang Theory", 9, 24);
+		Episode epi2 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 24);
 		List<Episode> query = ImmutableList.of(epi1, epi2);
 		// RegularAvMedia query = new RegularAvMedia("Halo.Nightfall");
 

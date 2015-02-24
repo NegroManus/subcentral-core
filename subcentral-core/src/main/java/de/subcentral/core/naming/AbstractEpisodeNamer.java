@@ -1,10 +1,7 @@
 package de.subcentral.core.naming;
 
-import java.util.Set;
-import java.util.function.Function;
-
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.util.Separation;
+import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
 
 public abstract class AbstractEpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 {
@@ -29,9 +26,8 @@ public abstract class AbstractEpisodeNamer extends AbstractPropertySequenceNamer
 	public static final String		PARAM_ALWAYS_INCLUDE_TITLE			= AbstractEpisodeNamer.class.getName() + ".alwaysIncludeTitle";
 	protected static final Boolean	PARAM_ALWAYS_INCLUDE_TITLE_DEFAULT	= Boolean.FALSE;
 
-	protected AbstractEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
-			Function<String, String> finalFormatter)
+	public AbstractEpisodeNamer(Config config)
 	{
-		super(propToStringService, defaultSeparator, separations, finalFormatter);
+		super(config);
 	}
 }

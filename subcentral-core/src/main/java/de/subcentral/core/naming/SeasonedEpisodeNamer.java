@@ -1,12 +1,9 @@
 package de.subcentral.core.naming;
 
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
-import de.subcentral.core.util.Separation;
 
 /**
  * Possible naming combinations:
@@ -115,10 +112,9 @@ public class SeasonedEpisodeNamer extends AbstractEpisodeNamer
 	 */
 	public static final String	PARAM_ALWAYS_INCLUDE_SEASON_TITLE	= SeasonedEpisodeNamer.class.getName() + ".alwaysIncludeSeasonTitle";
 
-	public SeasonedEpisodeNamer(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations,
-			Function<String, String> finalFormatter)
+	public SeasonedEpisodeNamer(PropSequenceNameBuilder.Config config)
 	{
-		super(propToStringService, defaultSeparator, separations, finalFormatter);
+		super(config);
 	}
 
 	@Override
