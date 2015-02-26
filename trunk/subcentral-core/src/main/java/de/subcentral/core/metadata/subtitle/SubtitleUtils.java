@@ -48,13 +48,12 @@ public class SubtitleUtils
 		return media.build();
 	}
 
-	public static List<StandardizingChange> standardizeTags(Subtitle sub)
+	public static void standardizeTags(Subtitle sub, List<StandardizingChange> changes)
 	{
 		if (sub == null || sub.getTags().isEmpty())
 		{
-			return ImmutableList.of();
+			return;
 		}
-		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
 		boolean tagsChanged = false;
 		List<Tag> oldTags = ImmutableList.copyOf(sub.getTags());
 
@@ -94,7 +93,6 @@ public class SubtitleUtils
 		{
 			changes.add(new StandardizingChange(sub, Subtitle.PROP_TAGS.getPropName(), oldTags, sub.getTags()));
 		}
-		return changes.build();
 	}
 
 	public static boolean containsHearingImpairedTag(List<Tag> tags)

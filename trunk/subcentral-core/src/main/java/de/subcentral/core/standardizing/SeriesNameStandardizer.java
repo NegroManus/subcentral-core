@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Series;
 
@@ -43,16 +42,15 @@ public class SeriesNameStandardizer implements Standardizer<Series>
 	}
 
 	@Override
-	public List<StandardizingChange> standardize(Series series)
+	public void standardize(Series series, List<StandardizingChange> changes)
 	{
-		if (series == null)
+		if (series == null || series.getName() == null)
 		{
-			return ImmutableList.of();
+			return;
 		}
 		String oldName = series.getName();
-		if (oldName != null && namePattern.matcher(oldName).matches())
+		if (namePattern.matcher(oldName).matches())
 		{
-			ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
 			if (!oldName.equals(nameReplacement))
 			{
 				series.setName(nameReplacement);
@@ -65,9 +63,7 @@ public class SeriesNameStandardizer implements Standardizer<Series>
 				series.setTitle(titleReplacement);
 				changes.add(new StandardizingChange(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement));
 			}
-			return changes.build();
 		}
-		return ImmutableList.of();
 	}
 
 	@Override
