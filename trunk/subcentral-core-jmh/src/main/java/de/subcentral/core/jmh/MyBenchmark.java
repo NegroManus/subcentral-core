@@ -51,10 +51,10 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtils;
-import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
 import de.subcentral.core.standardizing.StandardizingDefaults;
+import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.releasescene.ReleaseScene;
@@ -85,7 +85,7 @@ public class MyBenchmark
 																							"English",
 																							"SubCentral");
 
-	private static final TypeStandardizingService	STANDARDIZING_SERVICE		= buildService();
+	private static final TypeStandardizingService		STANDARDIZING_SERVICE		= buildService();
 	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
@@ -114,7 +114,7 @@ public class MyBenchmark
 		return service;
 	}
 
-	// @Benchmark
+	@Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testStandardizing()
@@ -130,7 +130,7 @@ public class MyBenchmark
 		NAMING_SERVICE.name(SUB_ADJ);
 	}
 
-	@Benchmark
+	// @Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testParsingAddic7ed()
@@ -138,19 +138,19 @@ public class MyBenchmark
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingBestCase()
 	{
 		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingWorstCase()
 	{
 		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
@@ -158,7 +158,7 @@ public class MyBenchmark
 				PARSING_SERVICES);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
 		ParsingUtils.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
@@ -169,9 +169,15 @@ public class MyBenchmark
 	/**
 	 * http://openjdk.java.net/projects/code-tools/jmh/
 	 * 
-	 * Last results (prior to refactoring out NoMatchException)
+	 * Current results:
 	 * 
 	 * <pre>
+	 * Benchmark                       Mode  Cnt       Score       Error  Units
+	 * MyBenchmark.testStandardizing  thrpt   50  708570,507 ± 12669,468  ops/s
+	 * 
+	 * Benchmark                Mode  Cnt       Score      Error  Units
+	 * MyBenchmark.testNaming  thrpt   50  127120,133 ± 4104,576  ops/s
+	 * 
 	 * Benchmark                                Mode  Cnt       Score      Error  Units
 	 * MyBenchmark.testParsingAddic7ed         thrpt   50  114988,834 ± 2987,927  ops/s
 	 * MyBenchmark.testParsingBestCase         thrpt   50  116191,826 ± 3068,515  ops/s
