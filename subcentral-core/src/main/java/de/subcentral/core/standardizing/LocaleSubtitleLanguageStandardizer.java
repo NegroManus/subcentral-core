@@ -54,14 +54,13 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 		this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableMap.of(), ImmutableMap.of());
 	}
 
-	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
-			Locale targetLanguage)
+	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat, Locale targetLanguage)
 	{
 		this(possibleSourceLanguages, targetLanguageFormat, targetLanguage, ImmutableMap.of(), ImmutableMap.of());
 	}
 
-	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat,
-			Locale targetLanguage, Map<Pattern, Locale> customLocalePatterns, Map<Locale, String> customLocaleStrings)
+	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleSourceLanguages, LanguageFormat targetLanguageFormat, Locale targetLanguage,
+			Map<Pattern, Locale> customLocalePatterns, Map<Locale, String> customLocaleStrings)
 	{
 		this.possibleSourceLanguages = ImmutableList.copyOf(possibleSourceLanguages);
 		this.targetLanguageFormat = Objects.requireNonNull(targetLanguageFormat, "targetLanguageFormat");
@@ -96,20 +95,20 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 	}
 
 	@Override
-	public List<StandardizingChange> standardize(Subtitle sub)
+	public void standardize(Subtitle sub, List<StandardizingChange> changes)
 	{
 		if (sub == null || sub.getLanguage() == null)
 		{
-			return null;
+			return;
 		}
 		String oldLang = sub.getLanguage();
 		String newLang = standardizeLang(oldLang);
 		if (oldLang.equals(newLang))
 		{
-			return ImmutableList.of();
+			return;
 		}
 		sub.setLanguage(newLang);
-		return ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, newLang));
+		changes.add(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, newLang));
 	}
 
 	private String standardizeLang(String oldLang)

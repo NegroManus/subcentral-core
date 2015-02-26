@@ -1,6 +1,7 @@
 package de.subcentral.core.standardizing;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,16 +91,16 @@ public class TypeStandardizingService implements StandardizingService
 	@SuppressWarnings("unchecked")
 	private <T> List<StandardizingChange> doStandardize(T bean)
 	{
-		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
+		List<StandardizingChange> changes = new ArrayList<>();
 		for (StandardizerEntry<?> entry : standardizerEntries)
 		{
 			if (entry.beanType.isAssignableFrom(bean.getClass()))
 			{
 				Standardizer<? super T> standardizer = (Standardizer<? super T>) entry.standardizer;
-				changes.addAll(standardizer.standardize(bean));
+				standardizer.standardize(bean, changes);
 			}
 		}
-		return changes.build();
+		return changes;
 	}
 
 	private <T> void addNestedBeans(T bean, Queue<Object> queue, IdentityHashMap<Object, Boolean> alreadyStdizedBeans)

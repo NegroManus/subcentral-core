@@ -62,20 +62,19 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 	}
 
 	@Override
-	public List<StandardizingChange> standardize(Release rls) throws StandardizingException
+	public void standardize(Release rls, List<StandardizingChange> changes) throws StandardizingException
 	{
 		if (rls == null || rls.getTags().isEmpty())
 		{
-			return ImmutableList.of();
+			return;
 		}
 		List<Tag> tags = rls.getTags();
 		ImmutableList<Tag> oldTags = ImmutableList.copyOf(tags);
 		boolean changed = TagUtils.replace(tags, queryTags, replacement, queryMode, replaceMode, ignoreOrder);
 		if (changed)
 		{
-			return ImmutableList.of(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, Tag.immutableCopy(tags)));
+			changes.add(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, Tag.immutableCopy(tags)));
 		}
-		return ImmutableList.of();
 	}
 
 	@Override

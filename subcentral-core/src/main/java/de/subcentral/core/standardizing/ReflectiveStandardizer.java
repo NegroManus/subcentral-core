@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 public class ReflectiveStandardizer<T> implements Standardizer<T>
@@ -33,13 +32,12 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 	}
 
 	@Override
-	public List<StandardizingChange> standardize(T bean) throws StandardizingException
+	public void standardize(T bean, List<StandardizingChange> changes) throws StandardizingException
 	{
 		if (bean == null)
 		{
-			return ImmutableList.of();
+			return;
 		}
-		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
 		for (Map.Entry<String, UnaryOperator<?>> entry : propStandardizers.entrySet())
 		{
 			StandardizingChange change = standardizeProperty(bean, entry.getKey(), entry.getValue());
@@ -48,7 +46,6 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 				changes.add(change);
 			}
 		}
-		return changes.build();
 	}
 
 	@SuppressWarnings("unchecked")

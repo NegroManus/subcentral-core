@@ -2,13 +2,13 @@ package de.subcentral.core.standardizing;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
@@ -35,11 +35,13 @@ public class StandardizingTest
 	{
 		TypeStandardizingService service = new TypeStandardizingService("test");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		service.registerStandardizer(Episode.class, e -> {
-			Boolean oldVal = Boolean.valueOf(e.isSpecial());
-			e.setSpecial(true);
-			Boolean newVal = Boolean.valueOf(e.isSpecial());
-			return ImmutableList.of(new StandardizingChange(e, Episode.PROP_SPECIAL.getPropName(), oldVal, newVal));
+		service.registerStandardizer(Episode.class, (e, changes) -> {
+			if (!e.isSpecial())
+			{
+				e.setSpecial(true);
+				changes.add(new StandardizingChange(e, Episode.PROP_SPECIAL.getPropName(), false, true));
+			}
+
 		});
 		service.registerStandardizer(Series.class, new SeriesNameStandardizer(Pattern.compile("Psych"), "Psych (2001)", "Psych"));
 
@@ -62,7 +64,8 @@ public class StandardizingTest
 		Series series = new Series("Psych");
 		Series expectedSeries = new Series("PSYCH");
 
-		List<StandardizingChange> changes = stdzer.standardize(series);
+		List<StandardizingChange> changes = new ArrayList<>();
+		stdzer.standardize(series, changes);
 		changes.stream().forEach(c -> System.out.println(c));
 
 		assertEquals(expectedSeries, series);
@@ -72,6 +75,7 @@ public class StandardizingTest
 	public void testReflectiveStandardizingFail()
 	{
 		ReflectiveStandardizer<Series> stdzer = new ReflectiveStandardizer<Series>(Series.class, ImmutableMap.of("notExistingProp", (String s) -> s));
-		stdzer.standardize(new Series("Psych"));
+		List<StandardizingChange> changes = new ArrayList<>();
+		stdzer.standardize(new Series("Psych"), changes);
 	}
 }

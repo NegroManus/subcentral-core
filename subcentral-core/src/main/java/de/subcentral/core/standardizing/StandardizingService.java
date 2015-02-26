@@ -1,6 +1,10 @@
 package de.subcentral.core.standardizing;
 
-public interface StandardizingService extends Standardizer<Object>
+import java.util.List;
+
+public interface StandardizingService
 {
 	public String getDomain();
+
+	public List<StandardizingChange> standardize(Object bean) throws StandardizingException;
 }

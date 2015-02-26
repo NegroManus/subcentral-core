@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
@@ -33,19 +32,18 @@ public class PatternSubtitleLanguageStandardizer implements Standardizer<Subtitl
 	}
 
 	@Override
-	public List<StandardizingChange> standardize(Subtitle sub) throws StandardizingException
+	public void standardize(Subtitle sub, List<StandardizingChange> changes)
 	{
 		if (sub == null || sub.getLanguage() == null)
 		{
-			return ImmutableList.of();
+			return;
 		}
 		if (languagePattern.matcher(sub.getLanguage()).matches())
 		{
 			String oldLang = sub.getLanguage();
 			sub.setLanguage(languageReplacement);
-			return ImmutableList.of(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, sub.getLanguage()));
+			changes.add(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, sub.getLanguage()));
 		}
-		return ImmutableList.of();
 	}
 
 	@Override
