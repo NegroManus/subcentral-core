@@ -71,7 +71,7 @@ public class TypeStandardizingService implements StandardizingService
 		{
 			return ImmutableList.of();
 		}
-		ImmutableList.Builder<StandardizingChange> changes = ImmutableList.builder();
+		List<StandardizingChange> changes = new ArrayList<>();
 		// keep track which beans were already standardized
 		// to not end in an infinite loop because two beans had a bidirectional relationship
 		IdentityHashMap<Object, Boolean> alreadyStdizedBeans = new IdentityHashMap<>();
@@ -81,17 +81,16 @@ public class TypeStandardizingService implements StandardizingService
 		Object beanToStandardize;
 		while ((beanToStandardize = beansToStandardize.poll()) != null)
 		{
-			changes.addAll(doStandardize(beanToStandardize));
+			doStandardize(beanToStandardize, changes);
 			alreadyStdizedBeans.put(beanToStandardize, Boolean.TRUE);
 			addNestedBeans(beanToStandardize, beansToStandardize, alreadyStdizedBeans);
 		}
-		return changes.build();
+		return changes;
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> List<StandardizingChange> doStandardize(T bean)
+	private <T> void doStandardize(T bean, List<StandardizingChange> changes)
 	{
-		List<StandardizingChange> changes = new ArrayList<>();
 		for (StandardizerEntry<?> entry : standardizerEntries)
 		{
 			if (entry.beanType.isAssignableFrom(bean.getClass()))
@@ -100,7 +99,6 @@ public class TypeStandardizingService implements StandardizingService
 				standardizer.standardize(bean, changes);
 			}
 		}
-		return changes;
 	}
 
 	private <T> void addNestedBeans(T bean, Queue<Object> queue, IdentityHashMap<Object, Boolean> alreadyStdizedBeans)
