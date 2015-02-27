@@ -7,7 +7,6 @@ import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
@@ -44,10 +43,7 @@ public class NamingDefaults
 	private static MediaNamer						MEDIA_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
-	private static SeasonedEpisodeNamer				SEASONED_EPISODE_NAMER;
-	private static MiniSeriesEpisodeNamer			MINI_SERIES_EPISODE_NAMER;
-	private static DatedEpisodeNamer				DATED_EPISODE_NAMER;
-	private static SeriesTypeDependentEpisodeNamer	EPISODE_NAMER;
+	private static EpisodeNamer						EPISODE_NAMER;
 	private static MultiEpisodeNamer				MULTI_EPISODE_NAMER;
 	private static ReleaseNamer						RELEASE_NAMER;
 	private static SubtitleNamer					SUBTITLE_NAMER;
@@ -63,9 +59,9 @@ public class NamingDefaults
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDate.class,
 				(LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDateTime.class,
-				(LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss", Locale.US).format(d));
+				(LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(ZonedDateTime.class,
-				(ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd.HH.mm.ss", Locale.US).format(d));
+				(ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
 
 		// Episode
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
@@ -79,36 +75,22 @@ public class NamingDefaults
 				(ForeignParts fp) -> fp == ForeignParts.NONE ? "" : "FOREIGN_PARTS_" + fp.name());
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_VERSION, (String version) -> "V" + version);
 
-		ImmutableSet<Separation> separations = ImmutableSet.of(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""),
-				Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""),
-				Separation.inBetween(Episode.PROP_NUMBER_IN_SEASON, MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, ""),
-				Separation.inBetween(Episode.PROP_NUMBER_IN_SERIES, MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, ""),
-				Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-"),
-				Separation.before(Release.PROP_GROUP, "-"),
-				Separation.before(Subtitle.PROP_GROUP, "-"));
+		ImmutableSet.Builder<Separation> sepsBuilder = ImmutableSet.builder();
+		sepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
+		sepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, ""));
+		sepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-"));
+		sepsBuilder.add(Separation.before(Release.PROP_GROUP, "-"));
+		sepsBuilder.add(Separation.before(Subtitle.PROP_GROUP, "-"));
+		ImmutableSet<Separation> separations = sepsBuilder.build();
+
 		Config config = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, null);
 		Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, RELEASE_MEDIA_FORMATTER);
-		// DatedEpisodeNamer
-		DATED_EPISODE_NAMER = new DatedEpisodeNamer(config);
-
-		MINI_SERIES_EPISODE_NAMER = new MiniSeriesEpisodeNamer(config);
-
-		// SeasonedEpisodeNamer;
-		SEASONED_EPISODE_NAMER = new SeasonedEpisodeNamer(config);
 
 		// EpisodeNamer
-		ImmutableMap.Builder<String, Namer<Episode>> epiSeriesTypeNamers = ImmutableMap.builder();
-		epiSeriesTypeNamers.put(Series.TYPE_SEASONED, SEASONED_EPISODE_NAMER);
-		epiSeriesTypeNamers.put(Series.TYPE_MINI_SERIES, MINI_SERIES_EPISODE_NAMER);
-		epiSeriesTypeNamers.put(Series.TYPE_DATED, DATED_EPISODE_NAMER);
-		EPISODE_NAMER = new SeriesTypeDependentEpisodeNamer(epiSeriesTypeNamers.build(), SEASONED_EPISODE_NAMER);
+		EPISODE_NAMER = new EpisodeNamer(config);
 
 		// MultiEpisodeNamer
-		ImmutableMap.Builder<String, AbstractEpisodeNamer> multiEpiSeriesTypeNamers = ImmutableMap.builder();
-		multiEpiSeriesTypeNamers.put(Series.TYPE_SEASONED, SEASONED_EPISODE_NAMER);
-		multiEpiSeriesTypeNamers.put(Series.TYPE_MINI_SERIES, MINI_SERIES_EPISODE_NAMER);
-		multiEpiSeriesTypeNamers.put(Series.TYPE_DATED, DATED_EPISODE_NAMER);
-		MULTI_EPISODE_NAMER = new MultiEpisodeNamer(config, multiEpiSeriesTypeNamers.build(), SEASONED_EPISODE_NAMER);
+		MULTI_EPISODE_NAMER = new MultiEpisodeNamer(config);
 
 		// SeriesNamer
 		SERIES_NAMER = new SeriesNamer(config);
@@ -186,21 +168,6 @@ public class NamingDefaults
 		return EPISODE_NAMER;
 	}
 
-	public static Namer<Episode> getDefaultSeasonedEpisodeNamer()
-	{
-		return SEASONED_EPISODE_NAMER;
-	}
-
-	public static Namer<Episode> getDefaultMiniSeriesEpisodeNamer()
-	{
-		return MINI_SERIES_EPISODE_NAMER;
-	}
-
-	public static Namer<Episode> getDefaultDatedEpisodeNamer()
-	{
-		return DATED_EPISODE_NAMER;
-	}
-
 	public static Namer<Series> getDefaultSeriesNamer()
 	{
 		return SERIES_NAMER;
@@ -211,7 +178,7 @@ public class NamingDefaults
 		return SEASON_NAMER;
 	}
 
-	public static Namer<Collection<? extends Episode>> getDefaultMultiEpisodeNamer()
+	public static Namer<List<? extends Episode>> getDefaultMultiEpisodeNamer()
 	{
 		return MULTI_EPISODE_NAMER;
 	}

@@ -7,6 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
+import com.google.common.base.MoreObjects;
+
 import de.subcentral.core.util.Separation;
 
 /**
@@ -128,6 +130,12 @@ public class ConditionalNamingService implements NamingService
 			return nameAll((Iterable<?>) candidate, parameters);
 		}
 		throw new NoNamerRegisteredException(candidate, "No ConditionalNamingEntry's condition returned true for the candidate");
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(ConditionalNamingService.class).add("domain", domain).toString();
 	}
 
 	public static class ConditionalNamingEntry<U>
