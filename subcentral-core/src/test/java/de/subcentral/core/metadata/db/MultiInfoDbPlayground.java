@@ -8,10 +8,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
+import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtils;
 import de.subcentral.core.naming.ConditionalNamingService;
@@ -19,6 +21,7 @@ import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry
 import de.subcentral.core.naming.MultiEpisodeNamer;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
+import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
 import de.subcentral.support.predbme.PreDbMeReleaseDb;
@@ -47,7 +50,9 @@ public class MultiInfoDbPlayground
 		infoDbs.add(orlyDb);
 
 		ConditionalNamingService alternateNs = new ConditionalNamingService("alternate");
-		MultiEpisodeNamer alternameMeNamer = new MultiEpisodeNamer(new Config());
+		Config cfg = new Config();
+		cfg.setSeparations(ImmutableSet.of(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, "")));
+		MultiEpisodeNamer alternameMeNamer = new MultiEpisodeNamer(cfg);
 		alternateNs.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, alternameMeNamer));
 		NamingService alternateMetadataDbNs = MetadataDbDefaults.createDefaultDelegatingMetadataDbNamingService(alternateNs);
 		ImmutableList<NamingService> namingServices = ImmutableList.of(MetadataDbDefaults.getDefaultMetadataDbNamingService(), alternateMetadataDbNs);
