@@ -114,7 +114,7 @@ public class MyBenchmark
 		return service;
 	}
 
-	@Benchmark
+	// @Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testStandardizing()
@@ -122,7 +122,7 @@ public class MyBenchmark
 		STANDARDIZING_SERVICE.standardize(SUB_ADJ);
 	}
 
-	// @Benchmark
+	@Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testNaming()
@@ -176,7 +176,7 @@ public class MyBenchmark
 	 * MyBenchmark.testStandardizing  thrpt   50  708570,507 ± 12669,468  ops/s
 	 * 
 	 * Benchmark                Mode  Cnt       Score      Error  Units
-	 * MyBenchmark.testNaming  thrpt   50  127120,133 ± 4104,576  ops/s
+	 * MyBenchmark.testNaming  thrpt   50  134524,437 ± 1944,228  ops/s
 	 * 
 	 * Benchmark                                Mode  Cnt       Score      Error  Units
 	 * MyBenchmark.testParsingAddic7ed         thrpt   50  114988,834 ± 2987,927  ops/s

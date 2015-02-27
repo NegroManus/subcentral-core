@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.ClassUtils;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * {@code Thread-safe}
  *
@@ -128,5 +130,11 @@ public class TypeNamingService implements NamingService
 			return nameAll((Iterable<?>) candidate, parameters);
 		}
 		throw new NoNamerRegisteredException(candidate, "No Namer registered for candidate's type");
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(TypeNamingService.class).add("domain", domain).toString();
 	}
 }

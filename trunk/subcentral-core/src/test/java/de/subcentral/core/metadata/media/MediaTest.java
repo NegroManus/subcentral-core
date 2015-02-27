@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.TimeUtil;
 
@@ -26,7 +25,7 @@ public class MediaTest
 			media.sort(Settings.createDefaultOrdering());
 			System.out.println(TimeUtil.durationMillis(start, System.nanoTime()));
 
-			media.forEach(s -> System.out.println(NamingDefaults.getDefaultSeasonedEpisodeNamer().name(s)));
+			media.forEach(s -> System.out.println(NamingDefaults.getDefaultEpisodeNamer().name(s)));
 			System.out.println(TimeUtil.durationMillis(start, System.nanoTime()));
 		}
 	}
