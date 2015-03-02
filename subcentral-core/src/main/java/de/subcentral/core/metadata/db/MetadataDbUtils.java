@@ -44,11 +44,11 @@ public class MetadataDbUtils
 			throw new IllegalArgumentException("namingServices is empty. At least one NamingService must be specified");
 		}
 		List<Callable<List<R>>> tasks = new ArrayList<>(metadataDbs.size());
-		for (MetadataDb<R> infoDb : metadataDbs)
+		for (MetadataDb<R> metadataDb : metadataDbs)
 		{
 			for (NamingService ns : namingServices)
 			{
-				tasks.add(() -> infoDb.queryWithName(metadataObj, ns));
+				tasks.add(() -> metadataDb.queryWithName(metadataObj, ns));
 			}
 		}
 
@@ -64,8 +64,8 @@ public class MetadataDbUtils
 			}
 			catch (ExecutionException e)
 			{
-				log.error("Exception while querying MetadataDb " + metadataDbs.get(indexOfMetaDb) + " with query " + metadataObj
-						+ ". Skipping this MetadataDb.", e);
+				log.error("Exception while querying metadata database " + metadataDbs.get(indexOfMetaDb) + " with query " + metadataObj
+						+ ". Skipping this metadata database.", e);
 			}
 		}
 		return results.build();
