@@ -1,10 +1,7 @@
 package de.subcentral.core.standardizing;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
@@ -44,27 +41,6 @@ public class PatternSubtitleLanguageStandardizer implements Standardizer<Subtitl
 			sub.setLanguage(languageReplacement);
 			changes.add(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, sub.getLanguage()));
 		}
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof PatternSubtitleLanguageStandardizer)
-		{
-			PatternSubtitleLanguageStandardizer o = (PatternSubtitleLanguageStandardizer) obj;
-			return languagePattern.equals(o.languagePattern) && Objects.equals(languageReplacement, o.languageReplacement);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(95, 59).append(languagePattern).append(languageReplacement).toHashCode();
 	}
 
 	@Override
