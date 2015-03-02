@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.metadata.media.Series;
@@ -64,28 +62,6 @@ public class SeriesNameStandardizer implements Standardizer<Series>
 				changes.add(new StandardizingChange(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement));
 			}
 		}
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof SeriesNameStandardizer)
-		{
-			SeriesNameStandardizer o = (SeriesNameStandardizer) obj;
-			return namePattern.equals(o.namePattern) && Objects.equals(nameReplacement, o.nameReplacement)
-					&& Objects.equals(titleReplacement, o.titleReplacement);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(41, 93).append(namePattern).append(nameReplacement).append(titleReplacement).toHashCode();
 	}
 
 	@Override

@@ -3,8 +3,6 @@ package de.subcentral.core.standardizing;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
@@ -75,33 +73,6 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		{
 			changes.add(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, Tag.immutableCopy(tags)));
 		}
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof ReleaseTagsStandardizer)
-		{
-			ReleaseTagsStandardizer o = (ReleaseTagsStandardizer) obj;
-			return queryTags.equals(o.queryTags) && replacement.equals(o.replacement) && queryMode.equals(o.queryMode)
-					&& replaceMode.equals(o.replaceMode) && ignoreOrder == o.ignoreOrder;
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(15, 93).append(queryTags)
-				.append(replacement)
-				.append(queryMode)
-				.append(replaceMode)
-				.append(ignoreOrder)
-				.toHashCode();
 	}
 
 	@Override
