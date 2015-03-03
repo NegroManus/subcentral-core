@@ -14,18 +14,18 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.parsing.TypeParsingService;
-import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.parsing.TypeParsingService;
+import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7edCom
 {
-	public static final String						DOMAIN			= "addic7ed.com";
+	public static final String				DOMAIN			= "addic7ed.com";
 
 	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(DOMAIN);
 	static
@@ -58,7 +58,7 @@ public class Addic7edCom
 		// WEB-DL but then no "-" after that (which would indicate a group)
 		// Examples:
 		// Ben 10_ Omniverse - 01x26 - The Frogs of War, Part 1.WEB-DL.x264.AAC.English.C.orig.Addic7ed.com
-		Pattern p101 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(WEB-DL\\.[\\w\\.]+)\\." + langTagsSourcePattern,
+		Pattern p101 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(WEB[.-]DL\\.[\\w\\.]+)\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
 		grps101.put(0, SubtitleAdjustment.PROP_NAME);
@@ -77,7 +77,7 @@ public class Addic7edCom
 		// Expecting no dots in the episode title, then a dot, then "WEB-DL" or a group
 		// Examples:
 		// "Psych - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com"
-		Pattern p102 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+		Pattern p102 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.(?:(WEB[.-]DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
 		grps102.put(0, SubtitleAdjustment.PROP_NAME);
@@ -101,7 +101,7 @@ public class Addic7edCom
 		// "Vikings - 01x08 - Sacrifice.x264.2HD.English.C.orig.Addic7ed.com"
 		// "Out There (2013) - 01x09 - Viking Days.480p.WEB-DL.x264-mSD.English.C.orig.Addic7ed.com"
 		// "Psych - 01x01 - Pilot.DVDRip TOPAZ.French.orig.Addic7ed.com"
-		Pattern p103 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.([\\w+\\.-]+?)\\W(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+		Pattern p103 = Pattern.compile(seriesSeasonEpiNumsPattern + "([^\\.]+?)\\.([\\w+\\.-]+?)\\W(?:(WEB[.-]DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps103 = ImmutableMap.builder();
 		grps103.put(0, SubtitleAdjustment.PROP_NAME);
@@ -124,7 +124,7 @@ public class Addic7edCom
 		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264-DIMENSION.English.HI.Addic7ed.com
 		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264.DIMENSION.English.HI.Addic7ed.com
 		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.WEB-DL.English.HI.Addic7ed.com
-		Pattern p104 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.([\\w+\\.-]+?)\\W(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+		Pattern p104 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.([\\w+\\.-]+?)\\W(?:(WEB[.-]DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps104 = ImmutableMap.builder();
 		grps104.put(0, SubtitleAdjustment.PROP_NAME);
@@ -149,7 +149,7 @@ public class Addic7edCom
 		// "Dallas (2012) - 02x08 - J.R.'s Masterpiece.LOL.English.orig.Addic7ed.com"
 		// "Dallas (2012) - 02x08 - J.R.'s Masterpiece.LOL.German.C.updated.Addic7ed.com"
 		// "Psych - 07x03 - Lassie Jerky.WEB-DL.English.orig.Addic7ed.com"
-		Pattern p105 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(?:(WEB-DL)|(\\w+))\\." + langTagsSourcePattern,
+		Pattern p105 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(?:(WEB[.-]DL)|(\\w+))\\." + langTagsSourcePattern,
 				Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps105 = ImmutableMap.builder();
 		grps105.put(0, SubtitleAdjustment.PROP_NAME);
