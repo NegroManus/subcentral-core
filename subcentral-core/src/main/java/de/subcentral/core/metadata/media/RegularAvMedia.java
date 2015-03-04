@@ -63,6 +63,8 @@ public class RegularAvMedia extends RegularMedia implements AvMedia
 		this.runningTime = runningTime;
 	}
 
+	// equals() and hashCode() are the same as in RegularMedia
+
 	@Override
 	public String toString()
 	{
