@@ -50,7 +50,15 @@ public class ReleaseUtils
 
 	public static Predicate<Release> filterByMedia(List<Media> media, NamingService mediaNamingService, Map<String, Object> namingParams)
 	{
-		String requiredMediaName = mediaNamingService.name(media, namingParams);
+		String requiredMediaName;
+		if (media.isEmpty())
+		{
+			requiredMediaName = "";
+		}
+		else
+		{
+			requiredMediaName = mediaNamingService.name(media, namingParams);
+		}
 		return filterByMedia(requiredMediaName, mediaNamingService, namingParams);
 	}
 
