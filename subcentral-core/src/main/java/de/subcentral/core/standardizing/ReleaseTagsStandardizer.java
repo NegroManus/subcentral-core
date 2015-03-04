@@ -8,9 +8,9 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.metadata.release.TagUtils;
-import de.subcentral.core.metadata.release.TagUtils.QueryMode;
-import de.subcentral.core.metadata.release.TagUtils.ReplaceMode;
+import de.subcentral.core.metadata.release.TagUtil;
+import de.subcentral.core.metadata.release.TagUtil.QueryMode;
+import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 
 public class ReleaseTagsStandardizer implements Standardizer<Release>
 {
@@ -68,7 +68,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 		}
 		List<Tag> tags = rls.getTags();
 		ImmutableList<Tag> oldTags = ImmutableList.copyOf(tags);
-		boolean changed = TagUtils.replace(tags, queryTags, replacement, queryMode, replaceMode, ignoreOrder);
+		boolean changed = TagUtil.replace(tags, queryTags, replacement, queryMode, replaceMode, ignoreOrder);
 		if (changed)
 		{
 			changes.add(new StandardizingChange(rls, Release.PROP_TAGS.getPropName(), oldTags, Tag.immutableCopy(tags)));

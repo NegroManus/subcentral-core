@@ -39,7 +39,7 @@ public class ContributionTest
 		contributions.add(c3);
 		contributions.add(cb1);
 
-		Map<String, Float> calculatedProgresses = ContributionUtils.calcProgresses(contributions);
+		Map<String, Float> calculatedProgresses = ContributionUtil.calcProgresses(contributions);
 		Map<String, Float> expectedProgresses = new HashMap<>(2);
 		expectedProgresses.put(Subtitle.CONTRIBUTION_TYPE_TRANSLATION, 0.625f);
 		expectedProgresses.put(Subtitle.CONTRIBUTION_TYPE_REVISION, 1.0f);

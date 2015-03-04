@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
-public class ContributionUtils
+public class ContributionUtil
 {
 	public static final float	PROGRESS_NOT_MEASURABLE	= Float.NaN;
 
@@ -86,7 +86,7 @@ public class ContributionUtils
 		return progresses.build();
 	}
 
-	private ContributionUtils()
+	private ContributionUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

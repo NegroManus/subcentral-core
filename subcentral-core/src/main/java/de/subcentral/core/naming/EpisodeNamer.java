@@ -46,10 +46,10 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// add series
-		boolean includeSeries = NamingUtils.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
+		boolean includeSeries = NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
 		if (includeSeries && epi.isPartOfSeries())
 		{
-			boolean preferSeriesTitle = NamingUtils.readParameter(params, PARAM_PREFER_SERIES_TITLE, Boolean.class, Boolean.FALSE);
+			boolean preferSeriesTitle = NamingUtil.readParameter(params, PARAM_PREFER_SERIES_TITLE, Boolean.class, Boolean.FALSE);
 			b.appendIfNotNull(Episode.PROP_SERIES, preferSeriesTitle ? epi.getSeries().getTitleOrName() : epi.getSeries().getName());
 		}
 
@@ -57,14 +57,14 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		boolean sufficientlyNamed = false;
 		if (epi.isPartOfSeason())
 		{
-			boolean includeSeason = NamingUtils.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
+			boolean includeSeason = NamingUtil.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
 			if (includeSeason)
 			{
 				Season season = epi.getSeason();
 				if (season.isNumbered())
 				{
 					b.append(Season.PROP_NUMBER, season.getNumber());
-					boolean alwaysIncludeSeasonTitle = NamingUtils.readParameter(params,
+					boolean alwaysIncludeSeasonTitle = NamingUtil.readParameter(params,
 							PARAM_ALWAYS_INCLUDE_SEASON_TITLE,
 							Boolean.class,
 							Boolean.FALSE);
@@ -96,7 +96,7 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		}
 
 		// may add episode title
-		boolean alwaysIncludeTitle = NamingUtils.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE);
+		boolean alwaysIncludeTitle = NamingUtil.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE);
 		if (epi.isTitled() && (!sufficientlyNamed || alwaysIncludeTitle))
 		{
 			b.append(Episode.PROP_TITLE, epi.getTitle());

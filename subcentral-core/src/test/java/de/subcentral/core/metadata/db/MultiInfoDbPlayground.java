@@ -15,7 +15,7 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.ReleaseUtils;
+import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.naming.ConditionalNamingService;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.MultiEpisodeNamer;
@@ -66,7 +66,7 @@ public class MultiInfoDbPlayground
 
 		System.out.println("Querying");
 		long start = System.nanoTime();
-		ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtils.queryAll(infoDbs, query, namingServices, executor);
+		ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtil.queryAll(infoDbs, query, namingServices, executor);
 		TimeUtil.printDurationMillis("queryAll", start);
 		for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
 		{
@@ -76,7 +76,7 @@ public class MultiInfoDbPlayground
 		}
 		executor.shutdown();
 
-		List<Release> reducedRlss = ReleaseUtils.distinctByName(results.values());
+		List<Release> reducedRlss = ReleaseUtil.distinctByName(results.values());
 		reducedRlss.stream().forEach(e -> System.out.println(e));
 	}
 }

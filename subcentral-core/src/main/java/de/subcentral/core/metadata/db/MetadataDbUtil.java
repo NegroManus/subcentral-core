@@ -16,9 +16,9 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.naming.NamingService;
 
-public class MetadataDbUtils
+public class MetadataDbUtil
 {
-	private static final Logger	log	= LogManager.getLogger(MetadataDbUtils.class);
+	private static final Logger	log	= LogManager.getLogger(MetadataDbUtil.class);
 
 	public static <R> ListMultimap<MetadataDb<R>, R> queryAll(List<MetadataDb<R>> metadataDbs, Object metadataObj, ExecutorService executor)
 			throws InterruptedException
@@ -71,7 +71,7 @@ public class MetadataDbUtils
 		return results.build();
 	}
 
-	private MetadataDbUtils()
+	private MetadataDbUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

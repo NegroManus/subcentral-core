@@ -16,11 +16,11 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ParsingUtils;
+import de.subcentral.core.parsing.ParsingUtil;
 
-public class ReleaseUtils
+public class ReleaseUtil
 {
-	private static final Logger	log	= LogManager.getLogger(ReleaseUtils.class);
+	private static final Logger	log	= LogManager.getLogger(ReleaseUtil.class);
 
 	public static List<Release> distinctByName(Collection<Release> releases)
 	{
@@ -70,7 +70,7 @@ public class ReleaseUtils
 
 	public static Predicate<Release> filterByTags(List<Tag> containedTags, Collection<Tag> metaTagsToIgnore)
 	{
-		return (rls) -> TagUtils.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore);
+		return (rls) -> TagUtil.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore);
 	}
 
 	public static Predicate<Release> filterByGroup(Group group, boolean requireSameGroup)
@@ -89,7 +89,7 @@ public class ReleaseUtils
 		{
 			return;
 		}
-		Release parsedRls = ParsingUtils.parse(rls.getName(), Release.class, parsingServices);
+		Release parsedRls = ParsingUtil.parse(rls.getName(), Release.class, parsingServices);
 		if (parsedRls == null)
 		{
 			log.warn("Failed to enrich release because its name could not be parsed: " + rls);
@@ -124,13 +124,13 @@ public class ReleaseUtils
 		{
 			Release guessedRls = new Release(rls);
 			guessedRls.setMedia(partialRls.getMedia());
-			TagUtils.transferMetaTags(partialRls.getTags(), guessedRls.getTags(), metaTags);
+			TagUtil.transferMetaTags(partialRls.getTags(), guessedRls.getTags(), metaTags);
 			guessedRlss.add(guessedRls);
 		}
 		return guessedRlss.build();
 	}
 
-	private ReleaseUtils()
+	private ReleaseUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

@@ -18,7 +18,7 @@ import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.standardizing.StandardizingChange;
 
-public class SubtitleUtils
+public class SubtitleUtil
 {
 	public static Set<String> buildNamesForMatchingReleases(SubtitleAdjustment subAdj, NamingService namingService)
 	{
@@ -100,7 +100,7 @@ public class SubtitleUtils
 		return tags.contains(Subtitle.TAG_HEARING_IMPAIRED);
 	}
 
-	private SubtitleUtils()
+	private SubtitleUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

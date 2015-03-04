@@ -30,7 +30,7 @@ import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInf
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.ReleaseUtils;
+import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -191,16 +191,16 @@ public class ParsingPlayground
 							TimeUtil.printDurationMillis("Standardizing info db results", start);
 
 							start = System.nanoTime();
-							releases.forEach(r -> ReleaseUtils.enrichByParsingName(r, ps, false));
+							releases.forEach(r -> ReleaseUtil.enrichByParsingName(r, ps, false));
 							TimeUtil.printDurationMillis("Enriched by parsing", start);
 							releases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
 
 							List<Release> filteredReleases = releases.stream()
-									.filter(ReleaseUtils.filterByMedia(subAdjRls.getMedia(), mediaNsForFiltering, ImmutableMap.of()))
-									.filter(ReleaseUtils.filterByTags(subAdjRls.getTags(), ImmutableList.of()))
-									.filter(ReleaseUtils.filterByGroup(subAdjRls.getGroup(), false))
+									.filter(ReleaseUtil.filterByMedia(subAdjRls.getMedia(), mediaNsForFiltering, ImmutableMap.of()))
+									.filter(ReleaseUtil.filterByTags(subAdjRls.getTags(), ImmutableList.of()))
+									.filter(ReleaseUtil.filterByGroup(subAdjRls.getGroup(), false))
 									.collect(Collectors.toList());
 							TimeUtil.printDurationMillis("Filtering found releases", start);
 							filteredReleases.forEach(r -> System.out.println(r));
