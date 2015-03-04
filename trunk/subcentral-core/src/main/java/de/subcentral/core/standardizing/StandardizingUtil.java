@@ -1,6 +1,6 @@
 package de.subcentral.core.standardizing;
 
-public class StandardizingUtils
+public class StandardizingUtil
 {
 	public static <T> void mayStandardize(T entity, StandardizingService standardizingService)
 	{
@@ -10,7 +10,7 @@ public class StandardizingUtils
 		}
 	}
 
-	private StandardizingUtils()
+	private StandardizingUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

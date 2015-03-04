@@ -16,7 +16,7 @@ import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.naming.NamingUtils;
+import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -442,7 +442,7 @@ public class Release implements Comparable<Release>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, NamingUtils.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
+				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group, Settings.createDefaultOrdering())
 				.result();

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.subcentral.core.metadata.Contribution;
-import de.subcentral.core.metadata.ContributionUtils;
+import de.subcentral.core.metadata.ContributionUtil;
 import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.AvMedia;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -62,12 +62,12 @@ public class Subtitling implements Work
 
 	public double getProgress(String contributionType)
 	{
-		return ContributionUtils.calcProgress(contributions, contributionType);
+		return ContributionUtil.calcProgress(contributions, contributionType);
 	}
 
 	public Map<String, Float> getProgresses()
 	{
-		return ContributionUtils.calcProgresses(contributions);
+		return ContributionUtil.calcProgresses(contributions);
 	}
 
 	public Subtitle toSubtitle()

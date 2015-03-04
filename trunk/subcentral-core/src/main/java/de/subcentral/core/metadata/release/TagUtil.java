@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-public class TagUtils
+public class TagUtil
 {
 	public static enum QueryMode
 	{
@@ -103,7 +103,7 @@ public class TagUtils
 						}
 						else
 						{
-							if (TagUtils.containsSequence(tags, queryTags))
+							if (TagUtil.containsSequence(tags, queryTags))
 							{
 								tags.clear();
 								tags.addAll(replacement);
@@ -188,7 +188,7 @@ public class TagUtils
 		System.out.println(tags);
 	}
 
-	private TagUtils()
+	private TagUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

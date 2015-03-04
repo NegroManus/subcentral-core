@@ -21,7 +21,7 @@ public class ReflectiveMapper<T> implements Mapper<T>
 		try
 		{
 			entity = entityType.newInstance();
-			ParsingUtils.reflectiveMapping(entity, props, propParsingService);
+			ParsingUtil.reflectiveMapping(entity, props, propParsingService);
 			return entity;
 		}
 		catch (InstantiationException | IllegalAccessException e)

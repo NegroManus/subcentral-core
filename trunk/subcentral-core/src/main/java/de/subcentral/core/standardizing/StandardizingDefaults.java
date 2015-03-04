@@ -11,7 +11,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.metadata.subtitle.SubtitleUtils;
+import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 
 public class StandardizingDefaults
 {
@@ -83,7 +83,7 @@ public class StandardizingDefaults
 
 	public static void registerAllDefaulStandardizers(TypeStandardizingService service)
 	{
-		service.registerStandardizer(Subtitle.class, SubtitleUtils::standardizeTags);
+		service.registerStandardizer(Subtitle.class, SubtitleUtil::standardizeTags);
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("AAC2", "0"), Tag.list("AAC2.0")));
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("DD5", "1"), Tag.list("DD5.1")));
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("H", "264"), Tag.list("H.264")));

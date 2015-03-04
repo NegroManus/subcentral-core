@@ -19,7 +19,7 @@ import com.google.common.reflect.TypeToken;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class ParsingUtils
+public class ParsingUtil
 {
 	public static final <T> void reflectiveMapping(T entity, Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
@@ -127,7 +127,7 @@ public class ParsingUtils
 		return filteredServices.build();
 	}
 
-	private ParsingUtils()
+	private ParsingUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

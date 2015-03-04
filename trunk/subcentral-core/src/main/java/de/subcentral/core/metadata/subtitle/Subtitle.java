@@ -22,7 +22,7 @@ import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.AvMedia;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.naming.NamingUtils;
+import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle implements Work, Comparable<Subtitle>
@@ -517,7 +517,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(media, o.media, NamingUtils.DEFAULT_MEDIA_NAME_COMPARATOR)
+				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
 				.compare(hearingImpaired, o.hearingImpaired)
 				.compare(foreignParts, o.foreignParts)

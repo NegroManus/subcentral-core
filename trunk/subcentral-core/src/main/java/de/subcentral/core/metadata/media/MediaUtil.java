@@ -1,9 +1,9 @@
 package de.subcentral.core.metadata.media;
 
-public class MediaUtils
+public class MediaUtil
 {
 
-	private MediaUtils()
+	private MediaUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

@@ -30,7 +30,7 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	public void buildName(PropSequenceNameBuilder b, Release rls, Map<String, Object> params)
 	{
 		// read naming parameters
-		boolean preferName = NamingUtils.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
+		boolean preferName = NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
 		if (preferName && rls.getName() != null)
 		{
 			b.append(Release.PROP_NAME, rls.getName());

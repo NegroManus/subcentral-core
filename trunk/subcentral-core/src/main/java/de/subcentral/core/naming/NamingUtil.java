@@ -9,7 +9,7 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.util.IterableComparator;
 
-public class NamingUtils
+public class NamingUtil
 {
 	public static final Comparator<Media>			DEFAULT_MEDIA_NAME_COMPARATOR			= new MediaNameComparator(NamingDefaults.getDefaultNamingService());
 	public static final Comparator<Iterable<Media>>	DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR	= IterableComparator.create(DEFAULT_MEDIA_NAME_COMPARATOR);
@@ -39,7 +39,7 @@ public class NamingUtils
 		return valueClass.cast(parameters.getOrDefault(key, defaultValue));
 	}
 
-	private NamingUtils()
+	private NamingUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
