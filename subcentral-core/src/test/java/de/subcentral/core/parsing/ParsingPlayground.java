@@ -14,11 +14,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.db.MetadataDb;
@@ -37,10 +39,10 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
-import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.standardizing.StandardizingDefaults;
+import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -194,11 +196,12 @@ public class ParsingPlayground
 							releases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
-							List<Release> filteredReleases = ReleaseUtils.filter(releases,
-									subAdjRls.getMedia(),
-									subAdjRls.getTags(),
-									subAdjRls.getGroup(),
-									mediaNsForFiltering);
+
+							List<Release> filteredReleases = releases.stream()
+									.filter(ReleaseUtils.filterByMedia(subAdjRls.getMedia(), mediaNsForFiltering, ImmutableMap.of()))
+									.filter(ReleaseUtils.filterByTags(subAdjRls.getTags(), ImmutableList.of()))
+									.filter(ReleaseUtils.filterByGroup(subAdjRls.getGroup(), false))
+									.collect(Collectors.toList());
 							TimeUtil.printDurationMillis("Filtering found releases", start);
 							filteredReleases.forEach(r -> System.out.println(r));
 

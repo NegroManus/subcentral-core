@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.naming.NamingService;
@@ -47,70 +48,26 @@ public class ReleaseUtils
 		return reducedList;
 	}
 
-	public static List<Release> filter(Collection<Release> rlss, List<Tag> containedTags, Group group, Collection<Tag> metaTagsToIgnore)
+	public static Predicate<Release> filterByMedia(List<Media> media, NamingService mediaNamingService, Map<String, Object> namingParams)
 	{
-		if (rlss.isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
-		for (Release rls : rlss)
-		{
-			if (TagUtils.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore) && (group == null || group.equals(rls.getGroup())))
-			{
-				filteredRlss.add(rls);
-			}
-		}
-		return filteredRlss.build();
+		String requiredMediaName = mediaNamingService.name(media, namingParams);
+		return filterByMedia(requiredMediaName, mediaNamingService, namingParams);
 	}
 
-	public static List<Release> filter(Collection<Release> rlss, Collection<Media> media, Collection<Tag> containedTags, Group group,
-			NamingService mediaNamingService)
+	public static Predicate<Release> filterByMedia(String requiredMediaName, NamingService mediaNamingService, Map<String, Object> namingParams)
 	{
-		return filter(rlss, media, containedTags, group, mediaNamingService, ImmutableMap.of());
+		return (rls) -> requiredMediaName.isEmpty() ? true
+				: requiredMediaName.equalsIgnoreCase(mediaNamingService.name(rls.getMedia(), namingParams));
 	}
 
-	public static List<Release> filter(Collection<Release> rlss, Collection<Media> media, Collection<Tag> containedTags, Group group,
-			NamingService mediaNamingService, Map<String, Object> namingParameters)
+	public static Predicate<Release> filterByTags(List<Tag> containedTags, Collection<Tag> metaTagsToIgnore)
 	{
-		if (rlss.isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		String requiredMediaName = mediaNamingService.name(media, namingParameters);
-		ImmutableList.Builder<Release> filteredRlss = ImmutableList.builder();
-		for (Release rls : rlss)
-		{
-			if (ReleaseUtils.filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService, namingParameters))
-			{
-				filteredRlss.add(rls);
-			}
-		}
-		return filteredRlss.build();
+		return (rls) -> TagUtils.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore);
 	}
 
-	public static boolean filter(Release rls, Collection<Media> media, Collection<Tag> containedTags, Group group, NamingService mediaNamingService)
+	public static Predicate<Release> filterByGroup(Group group, boolean requireSameGroup)
 	{
-		return filter(rls, media, containedTags, group, mediaNamingService, ImmutableMap.of());
-	}
-
-	public static boolean filter(Release rls, Collection<Media> media, Collection<Tag> containedTags, Group group, NamingService mediaNamingService,
-			Map<String, Object> namingParameters)
-	{
-		if (rls == null)
-		{
-			return false;
-		}
-		String requiredMediaName = mediaNamingService.name(media, ImmutableMap.of());
-		return filterInternal(rls, requiredMediaName, containedTags, group, mediaNamingService, namingParameters);
-	}
-
-	private static boolean filterInternal(Release rls, String requiredMediaName, Collection<Tag> containedTags, Group group,
-			NamingService mediaNamingService, Map<String, Object> namingParams)
-	{
-		String actualMediaName = mediaNamingService.name(rls.getMedia(), namingParams);
-		return requiredMediaName.equalsIgnoreCase(actualMediaName) && (group == null ? true : group.equals(rls.getGroup()))
-				&& (rls.getTags().containsAll(containedTags));
+		return (rls) -> group == null ? (rls.getGroup() == null || !requireSameGroup) : group.equals(rls.getGroup());
 	}
 
 	public static void enrichByParsingName(Release rls, ParsingService parsingService, boolean overwrite)
@@ -146,7 +103,10 @@ public class ReleaseUtils
 
 	public static List<Release> guessMatchingReleases(Release partialRls, Collection<Release> commonRlss, Collection<Tag> metaTags)
 	{
-		List<Release> matchingCommonRlss = filter(commonRlss, partialRls.getTags(), partialRls.getGroup(), metaTags);
+		List<Release> matchingCommonRlss = commonRlss.stream()
+				.filter(filterByTags(partialRls.getTags(), metaTags))
+				.filter(filterByGroup(partialRls.getGroup(), true))
+				.collect(Collectors.toList());
 		if (matchingCommonRlss.isEmpty())
 		{
 			return ImmutableList.of(new Release(partialRls));
