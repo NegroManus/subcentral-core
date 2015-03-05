@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.Settings;
 import de.subcentral.core.util.IterableComparator;
+import de.subcentral.core.util.StringUtil;
 
 public class Tag implements Comparable<Tag>
 {
@@ -90,7 +91,7 @@ public class Tag implements Comparable<Tag>
 
 	public static List<Tag> parseList(String tagList)
 	{
-		return parseList(tagList, Splitter.on(','));
+		return parseList(tagList, StringUtil.COMMA_SPLITTER);
 	}
 
 	public static List<Tag> parseList(String tagList, Splitter splitter)
@@ -99,7 +100,7 @@ public class Tag implements Comparable<Tag>
 		{
 			return ImmutableList.of();
 		}
-		return list(splitter.omitEmptyStrings().trimResults().splitToList(tagList));
+		return list(splitter.splitToList(tagList));
 	}
 
 	public static Tag parse(String tag)
@@ -116,12 +117,12 @@ public class Tag implements Comparable<Tag>
 
 	public static String listToString(List<Tag> tags)
 	{
-		return listToString(tags, ", ");
+		return listToString(tags, StringUtil.COMMA_JOINER);
 	}
 
-	public static String listToString(List<Tag> tags, String separator)
+	public static String listToString(List<Tag> tags, Joiner joiner)
 	{
-		return Joiner.on(separator).join(tags);
+		return joiner.join(tags);
 	}
 
 	private final String	name;

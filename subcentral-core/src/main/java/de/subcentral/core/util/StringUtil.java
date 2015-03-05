@@ -1,18 +1,17 @@
 package de.subcentral.core.util;
 
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
 public class StringUtil
 {
-	public static final Joiner		COMMA_JOINER		= Joiner.on(',').skipNulls();
-	public static final Splitter	COMMA_SPLITTER		= Splitter.on(',');
+	public static final Joiner		COMMA_JOINER		= Joiner.on(", ").skipNulls();
+	public static final Splitter	COMMA_SPLITTER		= Splitter.on(',').omitEmptyStrings().trimResults();
 
-	public static final Splitter	WHITESPACE_SPLITTER	= Splitter.on(Pattern.compile("\\s+"));
+	public static final Splitter	WHITESPACE_SPLITTER	= Splitter.on(CharMatcher.WHITESPACE);
 
 	public static boolean startsWith(StringBuilder sb, char c)
 	{
