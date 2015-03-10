@@ -43,10 +43,10 @@ public class StandardizingChange
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(StandardizingChange.class)
-				.add("bean", bean)
 				.add("propertyName", propertyName)
 				.add("oldValue", oldValue)
 				.add("newValue", newValue)
+				.add("bean", bean)
 				.toString();
 	}
 }
