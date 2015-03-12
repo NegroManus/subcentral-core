@@ -167,7 +167,7 @@ public class TypeParsingService implements ParsingService
 		{
 			return null;
 		}
-		if (targetTypes == null || targetTypes.isEmpty())
+		if (targetTypes.isEmpty())
 		{
 			return parse(text);
 		}

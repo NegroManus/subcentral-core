@@ -6,5 +6,5 @@ public interface StandardizingService
 {
 	public String getDomain();
 
-	public List<StandardizingChange> standardize(Object bean) throws StandardizingException;
+	public List<StandardizingChange> standardize(Object bean);
 }

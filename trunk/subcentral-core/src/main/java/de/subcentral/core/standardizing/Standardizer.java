@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Standardizer<T>
 {
-	public void standardize(T bean, List<StandardizingChange> changes) throws StandardizingException;
+	public void standardize(T bean, List<StandardizingChange> changes);
 }

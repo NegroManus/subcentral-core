@@ -71,7 +71,7 @@ public class StandardizingTest
 		assertEquals(expectedSeries, series);
 	}
 
-	@Test(expected = StandardizingException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testReflectiveStandardizingFail()
 	{
 		ReflectiveStandardizer<Series> stdzer = new ReflectiveStandardizer<Series>(Series.class, ImmutableMap.of("notExistingProp", (String s) -> s));
