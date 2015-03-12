@@ -32,7 +32,7 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 	}
 
 	@Override
-	public void standardize(T bean, List<StandardizingChange> changes) throws StandardizingException
+	public void standardize(T bean, List<StandardizingChange> changes) throws IllegalArgumentException
 	{
 		if (bean == null)
 		{
@@ -49,7 +49,7 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 	}
 
 	@SuppressWarnings("unchecked")
-	private <P> StandardizingChange standardizeProperty(Object bean, String propName, UnaryOperator<P> operator) throws StandardizingException
+	private <P> StandardizingChange standardizeProperty(Object bean, String propName, UnaryOperator<P> operator) throws IllegalArgumentException
 	{
 		try
 		{
@@ -65,7 +65,7 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 		}
 		catch (IntrospectionException | IllegalAccessException | InvocationTargetException | RuntimeException e)
 		{
-			throw new StandardizingException("Exception while standardizing property " + bean.getClass().getName() + "." + propName + " of bean "
+			throw new IllegalArgumentException("Exception while standardizing property " + bean.getClass().getName() + "." + propName + " of bean "
 					+ bean + " with operator " + operator, e);
 		}
 	}

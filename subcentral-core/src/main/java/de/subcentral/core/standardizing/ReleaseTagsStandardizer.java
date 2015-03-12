@@ -60,7 +60,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 	}
 
 	@Override
-	public void standardize(Release rls, List<StandardizingChange> changes) throws StandardizingException
+	public void standardize(Release rls, List<StandardizingChange> changes)
 	{
 		if (rls == null || rls.getTags().isEmpty())
 		{
