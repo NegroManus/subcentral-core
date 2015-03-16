@@ -10,7 +10,7 @@ public class TagUtil
 {
 	public static enum QueryMode
 	{
-		CONTAINS, EQUALS
+		CONTAIN, EQUAL
 	};
 
 	public static enum ReplaceMode
@@ -88,7 +88,7 @@ public class TagUtil
 	{
 		switch (queryMode)
 		{
-			case CONTAINS:
+			case CONTAIN:
 				switch (replaceMode)
 				{
 					case COMPLETE_LIST:
@@ -115,7 +115,7 @@ public class TagUtil
 						return replaceSequences(tags, queryTags, replacement, ignoreOrder, false);
 				}
 				break;
-			case EQUALS:
+			case EQUAL:
 				if (ignoreOrder)
 				{
 					if (equalsIgnoreOrder(tags, queryTags))
