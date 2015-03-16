@@ -22,7 +22,7 @@ public class ReleaseTagsStandardizer implements Standardizer<Release>
 
 	public ReleaseTagsStandardizer(List<Tag> queryTags, List<Tag> replacement)
 	{
-		this(queryTags, replacement, QueryMode.CONTAINS, ReplaceMode.MATCHED_SEQUENCE, false);
+		this(queryTags, replacement, QueryMode.CONTAIN, ReplaceMode.MATCHED_SEQUENCE, false);
 	}
 
 	public ReleaseTagsStandardizer(List<Tag> queryTags, List<Tag> replacement, QueryMode queryMode, ReplaceMode replaceMode, boolean ignoreOrder)
