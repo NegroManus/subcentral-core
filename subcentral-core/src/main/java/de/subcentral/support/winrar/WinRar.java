@@ -11,6 +11,19 @@ public class WinRar
 		SPECIFY, LOCATE, RESOURCE;
 	}
 
+	public static final String getRarExecutableFilename()
+	{
+		if (SystemUtils.IS_OS_WINDOWS)
+		{
+			return WindowsWinRarPackager.RAR_EXECUTABLE_FILENAME;
+		}
+		else if (SystemUtils.IS_OS_UNIX)
+		{
+			return UnixWinRarPackager.RAR_EXECUTABLE_FILENAME;
+		}
+		return null;
+	}
+
 	public static final WinRarPackager getPackager(LocateStrategy locateStrategy)
 	{
 		return getPackager(locateStrategy, null);
