@@ -72,7 +72,7 @@ public abstract class WinRarPackager
 		}
 		if (!Files.isExecutable(rarExecutable))
 		{
-			throw new SecurityException("Not executable: " + rarExecutable);
+			throw new SecurityException("RAR executable is not executable: " + rarExecutable);
 		}
 		return rarExecutable;
 	}
@@ -132,8 +132,12 @@ public abstract class WinRarPackager
 			exitCode = process.exitValue();
 			if (log.isDebugEnabled())
 			{
-				String timeoutString = exitedBeforeTimeout ? "" : " (timeout reached: " + cfg.getTimeoutUnit() + " " + cfg.getTimeoutValue() + ")";
-				log.debug("Execution exited with exit code {}{}: {} ", exitCode, timeoutString, processBuilder.command());
+				String timeoutString = exitedBeforeTimeout ? "" : " . Timeout reached: " + cfg.getTimeoutUnit() + " " + cfg.getTimeoutValue();
+				log.debug("Execution exited with exit code {} (\"{}\"){}: {} ",
+						exitCode,
+						WinRarPackResult.getExitCodeDescription(exitCode),
+						timeoutString,
+						processBuilder.command());
 			}
 
 			// may add tags
