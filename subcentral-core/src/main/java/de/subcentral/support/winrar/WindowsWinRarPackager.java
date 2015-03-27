@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,11 +25,15 @@ import de.subcentral.support.winrar.WinRar.LocateStrategy;
 
 class WindowsWinRarPackager extends WinRarPackager
 {
+	/**
+	 * The console program RAR.exe can only pack RAR archives, but it does not open a GUI. WinRAR.exe can pack ZIP archives, but it opens a GUI - so
+	 * do not use that.
+	 */
 	public static final String	RAR_EXECUTABLE_FILENAME	= "Rar.exe";
 
 	private static final Logger	log						= LogManager.getLogger(WindowsWinRarPackager.class.getName());
 
-	public static Path tryLocateRarExecutable()
+	static Path tryLocateRarExecutable()
 	{
 		// 1. try the well known WinRAR directories
 		Path rarExecutable = searchRarExecutableInWellKnownDirectories();
@@ -50,7 +55,7 @@ class WindowsWinRarPackager extends WinRarPackager
 		return null;
 	}
 
-	public static Path searchRarExecutableInWellKnownDirectories()
+	static Path searchRarExecutableInWellKnownDirectories()
 	{
 		// The typical WinRAR installation directories on Windows.
 		return returnFirstValidRarExecutable(ImmutableSet.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR")));
@@ -85,16 +90,16 @@ class WindowsWinRarPackager extends WinRarPackager
 
 		String[] command = new String[] { "REG", "QUERY", "\"HKEY_LOCAL_MACHINE\\Software\\WinRAR\"" };
 		ProcessBuilder builder = new ProcessBuilder(command);
-		log.debug("Querying Windows registry for WinRAR installation directory: {}", builder.command(), "");
+		log.debug("Querying Windows registry for WinRAR installation directory: {}", builder.command());
 		try
 		{
 			Process p = builder.start();
 			try (InputStream es = p.getErrorStream();)
 			{
-				String errorMsg = IOUtil.readInputStream(es);
-				if (!errorMsg.isEmpty())
+				String errorMsg = StringUtils.stripToNull(IOUtil.readInputStream(es));
+				if (errorMsg != null)
 				{
-					log.error("Could not locate WinRAR installation directory in Windows registry: Command {} returned error message. Returning null\n\"{}\"",
+					log.error("Could not locate WinRAR installation directory in Windows registry: Command {} returned error message: \"{}\". Returning null",
 							builder.command(),
 							errorMsg);
 					return null;
@@ -123,14 +128,14 @@ class WindowsWinRarPackager extends WinRarPackager
 
 				if (rarExecutable == null)
 				{
-					log.warn("Could not locate WinRAR installation directory in Windows registry. Returning null");
+					log.warn("Could not locate WinRAR installation directory in Windows registry: Could not parse output of REG. Returning null");
 					return null;
 				}
 			}
 		}
 		catch (IOException e)
 		{
-			log.error("Exception while querying Windows registry for WinRAR installation directory. Returning null", e);
+			log.warn("Exception while querying Windows registry for WinRAR installation directory. Returning null", e);
 			return null;
 		}
 
@@ -140,7 +145,9 @@ class WindowsWinRarPackager extends WinRarPackager
 		}
 		catch (Exception e)
 		{
-			log.error("RAR executable in WinRAR installation directory ({}) is invalid: {}", rarExecutable, e);
+			log.warn("No valid RAR executable in WinRAR installation directory specified in Windows registry ({}): {}. Returning null",
+					rarExecutable,
+					e);
 			return null;
 		}
 		return rarExecutable;
@@ -151,13 +158,10 @@ class WindowsWinRarPackager extends WinRarPackager
 		log.debug("Trying to locate RAR executable in directories: {}", possibleWinRarDirectories);
 		for (Path path : possibleWinRarDirectories)
 		{
-			// The Console RAR.exe can only pack RAR archives, but it does not open a GUI.
-			// WinRAR.exe opens a GUI - so do not use that.
 			Path candidate = path.resolve(RAR_EXECUTABLE_FILENAME);
 			try
 			{
 				validateRarExecutable(candidate);
-				log.debug("Found valid RAR executable: {}", candidate);
 				return candidate;
 			}
 			catch (Exception e)

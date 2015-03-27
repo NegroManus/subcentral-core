@@ -92,7 +92,7 @@ class UnixWinRarPackager extends WinRarPackager
 				break;
 			case RECYCLE:
 				// "Available in Windows version only."
-				log.warn("configuration item sourceDelectionMode={} is ignored. This option is only available in Windows versions of WinRAR",
+				log.warn("Configuration item sourceDelectionMode={} is ignored. This option is only available on Windows. Files are kept.",
 						DeletionMode.RECYCLE);
 				break;
 			case DELETE:
