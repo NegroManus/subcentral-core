@@ -94,8 +94,10 @@ public class WinRarPackConfig
 		 * Keep files.
 		 */
 		KEEP,
+
 		/**
-		 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only.
+		 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only. If mode is
+		 * specified on not Windows platforms, the files are kept.
 		 */
 		RECYCLE,
 

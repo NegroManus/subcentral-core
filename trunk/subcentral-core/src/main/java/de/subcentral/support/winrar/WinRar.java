@@ -1,6 +1,7 @@
 package de.subcentral.support.winrar;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.lang3.SystemUtils;
 
@@ -9,6 +10,19 @@ public class WinRar
 	public static enum LocateStrategy
 	{
 		SPECIFY, LOCATE, RESOURCE;
+	}
+
+	public static final Path tryLocateRarExecutable()
+	{
+		if (SystemUtils.IS_OS_WINDOWS)
+		{
+			return WindowsWinRarPackager.tryLocateRarExecutable();
+		}
+		else if (SystemUtils.IS_OS_UNIX)
+		{
+			return Paths.get(UnixWinRarPackager.RAR_EXECUTABLE_FILENAME);
+		}
+		return null;
 	}
 
 	public static final String getRarExecutableFilename()

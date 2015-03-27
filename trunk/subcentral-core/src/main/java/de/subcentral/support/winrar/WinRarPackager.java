@@ -111,7 +111,6 @@ public abstract class WinRarPackager
 				if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode())
 				{
 					Files.delete(target);
-					flags.add(Flag.TARGET_REPLACED);
 				}
 			}
 
@@ -122,11 +121,11 @@ public abstract class WinRarPackager
 			String errMsg = null;
 			try (InputStream errStream = process.getErrorStream())
 			{
-				errMsg = StringUtils.trimToNull(IOUtil.readInputStream(errStream));
+				errMsg = StringUtils.stripToNull(IOUtil.readInputStream(errStream));
 			}
 			try (InputStream errStream = process.getInputStream())
 			{
-				logMsg = StringUtils.trimToNull(IOUtil.readInputStream(errStream));
+				logMsg = StringUtils.stripToNull(IOUtil.readInputStream(errStream));
 			}
 			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeoutValue(), cfg.getTimeoutUnit());
 			exitCode = process.exitValue();
@@ -141,11 +140,21 @@ public abstract class WinRarPackager
 			}
 
 			// may add tags
-			if (targetExisted && cfg.getTargetOverwriteMode() == OverwriteMode.UPDATE
-					&& Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
+			if (targetExisted && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
 			{
-				flags.add(Flag.TARGET_UPDATED);
+				switch (cfg.getTargetOverwriteMode())
+				{
+					case UPDATE:
+						flags.add(Flag.TARGET_UPDATED);
+						break;
+					case REPLACE:
+						flags.add(Flag.TARGET_REPLACED);
+						break;
+					default:
+						break;
+				}
 			}
+			// if DeletionMode.DELETE || DeletionMode.RECYCLE and it really was deleted
 			if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source))
 			{
 				flags.add(Flag.SOURCE_DELETED);
