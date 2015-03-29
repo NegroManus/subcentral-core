@@ -44,7 +44,7 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 		DISPLAY_LANGUAGE
 	};
 
-	private final ImmutableList<Locale>			possibleInputLanguages;
+	private final ImmutableList<Locale>			parsingLanguages;
 	private final LanguageFormat				outputLanguageFormat;
 	private final Locale						outputLanguage;
 	private final ImmutableMap<Pattern, Locale>	customLanguagePatterns;
@@ -55,24 +55,24 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 		this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableMap.of(), ImmutableMap.of());
 	}
 
-	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleInputLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage)
+	public LocaleSubtitleLanguageStandardizer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage)
 	{
-		this(possibleInputLanguages, outputLanguageFormat, targetLanguage, ImmutableMap.of(), ImmutableMap.of());
+		this(parsingLanguages, outputLanguageFormat, targetLanguage, ImmutableMap.of(), ImmutableMap.of());
 	}
 
-	public LocaleSubtitleLanguageStandardizer(Collection<Locale> possibleInputLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage,
+	public LocaleSubtitleLanguageStandardizer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage,
 			Map<Pattern, Locale> customLanguagePatterns, Map<Locale, String> customLanguageNames)
 	{
-		this.possibleInputLanguages = ImmutableList.copyOf(possibleInputLanguages);
+		this.parsingLanguages = ImmutableList.copyOf(parsingLanguages);
 		this.outputLanguageFormat = Objects.requireNonNull(outputLanguageFormat, "outputLanguageFormat");
 		this.outputLanguage = Objects.requireNonNull(targetLanguage, "outputLanguage");
 		this.customLanguagePatterns = ImmutableMap.copyOf(customLanguagePatterns);
 		this.customLanguageNames = ImmutableMap.copyOf(customLanguageNames);
 	}
 
-	public ImmutableList<Locale> getPossibleInputLanguages()
+	public ImmutableList<Locale> getParsingLanguages()
 	{
-		return possibleInputLanguages;
+		return parsingLanguages;
 	}
 
 	public LanguageFormat getOutputLanguageFormat()
@@ -144,7 +144,7 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 			{
 				return locale;
 			}
-			for (Locale sourceLang : possibleInputLanguages)
+			for (Locale sourceLang : parsingLanguages)
 			{
 				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(lang))
 				{
@@ -197,7 +197,7 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(LocaleSubtitleLanguageStandardizer.class)
-				.add("possibleInputLanguages", possibleInputLanguages)
+				.add("parsingLanguages", parsingLanguages)
 				.add("outputLanguageFormat", outputLanguageFormat)
 				.add("outputLanguage", outputLanguage)
 				.add("customLanguagePatterns", customLanguagePatterns)
