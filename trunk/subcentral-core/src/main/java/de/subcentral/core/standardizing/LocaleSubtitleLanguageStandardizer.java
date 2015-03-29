@@ -44,9 +44,12 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 		DISPLAY_LANGUAGE
 	};
 
+	// Parsing
 	private final ImmutableList<Locale>			parsingLanguages;
+	// Formatting
 	private final LanguageFormat				outputLanguageFormat;
 	private final Locale						outputLanguage;
+	// Custom parsing/formatting
 	private final ImmutableMap<Pattern, Locale>	customLanguagePatterns;
 	private final ImmutableMap<Locale, String>	customLanguageNames;
 
