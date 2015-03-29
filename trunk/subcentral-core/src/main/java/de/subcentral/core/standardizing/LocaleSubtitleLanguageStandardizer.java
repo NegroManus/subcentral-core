@@ -35,11 +35,11 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 		 */
 		ISO3,
 		/**
-		 * display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
+		 * Display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
 		 */
 		DISPLAY_NAME,
 		/**
-		 * display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
+		 * Display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
 		 */
 		DISPLAY_LANGUAGE
 	};
