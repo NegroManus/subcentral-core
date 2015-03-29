@@ -36,12 +36,14 @@ class WindowsWinRarPackager extends WinRarPackager
 	static Path tryLocateRarExecutable()
 	{
 		// 1. try the well known WinRAR directories
-		Path /*
-			 * rarExecutable = searchRarExecutableInWellKnownDirectories(); if (rarExecutable != null) { log.info("Found valid RAR executable: {}",
-			 * rarExecutable); return rarExecutable; }
-			 * 
-			 * // 2. if that fails, query the registry
-			 */
+		Path rarExecutable = searchRarExecutableInWellKnownDirectories();
+		if (rarExecutable != null)
+		{
+			log.info("Found valid RAR executable: {}", rarExecutable);
+			return rarExecutable;
+		}
+
+		// 2. if that fails, query the registry
 		rarExecutable = queryWindowsRegistryForRarExecutable();
 		if (rarExecutable != null)
 		{
