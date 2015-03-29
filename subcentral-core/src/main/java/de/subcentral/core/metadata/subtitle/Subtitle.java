@@ -123,7 +123,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String			CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
 
 	/**
-	 * The syncing of the subtitles.
+	 * The syncing of a subtitle.
 	 */
 	public static final String			CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
 
@@ -138,9 +138,9 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String			CONTRIBUTION_TYPE_REVISION		= "REVISION";
 
 	/**
-	 * Improvement / customization of the subtitle.
+	 * Customization of a subtitle (e.g. removal of Hearing Impaired parts).
 	 */
-	public static final String			CONTRIBUTION_TYPE_MODIFICATION	= "MODIFICATION";
+	public static final String			CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
 	private AvMedia						media;
 	private String						language;
