@@ -36,7 +36,7 @@ public abstract class WinRarPackager
 			switch (locateStrategy)
 			{
 				case SPECIFY:
-					this.rarExecutable = validateRarExecutable(rarExecutable);
+					this.rarExecutable = validateExecutable(rarExecutable);
 					break;
 				case LOCATE:
 					this.rarExecutable = locateRarExecutable();
@@ -60,21 +60,21 @@ public abstract class WinRarPackager
 		return rarExecutable;
 	}
 
-	protected static final Path validateRarExecutable(Path rarExecutable) throws NullPointerException, NoSuchFileException, SecurityException
+	protected static final Path validateExecutable(Path exe) throws NullPointerException, NoSuchFileException, SecurityException
 	{
-		if (rarExecutable == null)
+		if (exe == null)
 		{
-			throw new NullPointerException("RAR executable cannot be null");
+			throw new NullPointerException("Executable cannot be null");
 		}
-		if (!Files.isRegularFile(rarExecutable, LinkOption.NOFOLLOW_LINKS))
+		if (!Files.isRegularFile(exe, LinkOption.NOFOLLOW_LINKS))
 		{
-			throw new NoSuchFileException(rarExecutable.toString());
+			throw new NoSuchFileException(exe.toString());
 		}
-		if (!Files.isExecutable(rarExecutable))
+		if (!Files.isExecutable(exe))
 		{
-			throw new SecurityException("RAR executable is not executable: " + rarExecutable);
+			throw new SecurityException("Executable is not executable: " + exe);
 		}
-		return rarExecutable;
+		return exe;
 	}
 
 	protected abstract String determineRarExecutableResourceFilename();
