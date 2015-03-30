@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -45,31 +47,31 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 	};
 
 	// Parsing
-	private final ImmutableList<Locale>			parsingLanguages;
+	private final ImmutableList<Locale>				parsingLanguages;
 	// Formatting
-	private final LanguageFormat				outputLanguageFormat;
-	private final Locale						outputLanguage;
+	private final LanguageFormat					outputLanguageFormat;
+	private final Locale							outputLanguage;
 	// Custom parsing/formatting
-	private final ImmutableMap<Pattern, Locale>	customLanguagePatterns;
-	private final ImmutableMap<Locale, String>	customLanguageNames;
+	private final ImmutableList<LanguagePattern>	customLanguagePatterns;
+	private final ImmutableMap<Locale, String>		customLanguageNames;
 
 	public LocaleSubtitleLanguageStandardizer()
 	{
-		this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableMap.of(), ImmutableMap.of());
+		this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableList.of(), ImmutableMap.of());
 	}
 
 	public LocaleSubtitleLanguageStandardizer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage)
 	{
-		this(parsingLanguages, outputLanguageFormat, targetLanguage, ImmutableMap.of(), ImmutableMap.of());
+		this(parsingLanguages, outputLanguageFormat, targetLanguage, ImmutableList.of(), ImmutableMap.of());
 	}
 
 	public LocaleSubtitleLanguageStandardizer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage,
-			Map<Pattern, Locale> customLanguagePatterns, Map<Locale, String> customLanguageNames)
+			List<LanguagePattern> customLanguagePatterns, Map<Locale, String> customLanguageNames)
 	{
 		this.parsingLanguages = ImmutableList.copyOf(parsingLanguages);
 		this.outputLanguageFormat = Objects.requireNonNull(outputLanguageFormat, "outputLanguageFormat");
 		this.outputLanguage = Objects.requireNonNull(targetLanguage, "outputLanguage");
-		this.customLanguagePatterns = ImmutableMap.copyOf(customLanguagePatterns);
+		this.customLanguagePatterns = ImmutableList.copyOf(customLanguagePatterns);
 		this.customLanguageNames = ImmutableMap.copyOf(customLanguageNames);
 	}
 
@@ -88,7 +90,7 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 		return outputLanguage;
 	}
 
-	public ImmutableMap<Pattern, Locale> getCustomLanguagePatterns()
+	public ImmutableList<LanguagePattern> getCustomLanguagePatterns()
 	{
 		return customLanguagePatterns;
 	}
@@ -128,11 +130,11 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 	private Locale parseLocale(String lang)
 	{
 		// 1. try the custom locale patterns
-		for (Map.Entry<Pattern, Locale> pattern : customLanguagePatterns.entrySet())
+		for (LanguagePattern langPattern : customLanguagePatterns)
 		{
-			if (pattern.getKey().matcher(lang).matches())
+			if (langPattern.pattern.matcher(lang).matches())
 			{
-				return pattern.getValue();
+				return langPattern.language;
 			}
 		}
 
@@ -206,5 +208,54 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 				.add("customLanguagePatterns", customLanguagePatterns)
 				.add("customLanguageNames", customLanguageNames)
 				.toString();
+	}
+
+	public final static class LanguagePattern
+	{
+		private final Pattern	pattern;
+		private final Locale	language;
+
+		public LanguagePattern(Pattern pattern, Locale lang)
+		{
+			this.pattern = Objects.requireNonNull(pattern, "pattern");
+			this.language = Objects.requireNonNull(lang, "language");
+		}
+
+		public Pattern getPattern()
+		{
+			return pattern;
+		}
+
+		public Locale getLanguage()
+		{
+			return language;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (obj instanceof LanguagePattern)
+			{
+				LanguagePattern o = (LanguagePattern) obj;
+				return pattern.equals(o.pattern);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return new HashCodeBuilder(983, 133).append(pattern).toHashCode();
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(LanguagePattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
+		}
 	}
 }
