@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="fileTransformationSettingsPane" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <HBox maxHeight="-Infinity" minHeight="-Infinity" spacing="5.0" GridPane.columnSpan="2147483647">
+         <children>
+            <Label maxHeight="1.7976931348623157E308" text="File transformation" underline="true">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <Label text="Target directory" GridPane.rowIndex="1" />
+      <TextField fx:id="targetDirTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Button fx:id="chooseTargetDirBtn" mnemonicParsing="false" text="Choose" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Label text="(absolute or relative to directory of source file; leave empty to use source directory)" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+      <Label text="Delete source files" GridPane.rowIndex="3" />
+      <CheckBox fx:id="deleteSourceCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+      <HBox maxHeight="-Infinity" minHeight="-Infinity" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
+         <children>
+            <Label maxHeight="1.7976931348623157E308" text="Packing" underline="true">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <Label text="Enable packing" GridPane.rowIndex="5" />
+      <CheckBox fx:id="packingEnabledCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+      <Label text="WinRAR location" GridPane.rowIndex="6" />
+      <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
+         <children>
+            <RadioButton fx:id="locateRadioBtn" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Locate automatically" />
+            <Button fx:id="testLocateBtn" mnemonicParsing="false" text="Test" />
+         </children>
+      </HBox>
+      <HBox spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
+         <children>
+            <RadioButton fx:id="specifyRadioBtn" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Specify:" />
+            <TextField fx:id="rarExeTxtFld" maxWidth="1.7976931348623157E308" promptText="Rar.exe on Windows, rar on Unix/Linux/Mac" HBox.hgrow="SOMETIMES" />
+            <Button fx:id="chooseRarExeBtn" mnemonicParsing="false" text="Choose" />
+         </children>
+      </HBox>
+      <Label text="After packing:" GridPane.rowIndex="8" />
+      <ChoiceBox fx:id="packingSourceDeletionModeChoiceBox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</GridPane>

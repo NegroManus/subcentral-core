@@ -53,6 +53,7 @@ import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
+import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguagePattern;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.support.addic7edcom.Addic7edCom;
@@ -106,11 +107,9 @@ public class MyBenchmark
 				new LocaleSubtitleLanguageStandardizer(ImmutableList.of(Locale.ENGLISH),
 						LanguageFormat.NAME,
 						Locale.ENGLISH,
-						ImmutableMap.of(Pattern.compile("VO", Pattern.CASE_INSENSITIVE),
-								Locale.ENGLISH,
-								Pattern.compile("VF", Pattern.CASE_INSENSITIVE),
-								Locale.FRENCH),
-						ImmutableMap.of(Locale.ENGLISH, "VO")));
+						ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
+								new LanguagePattern(Pattern.compile("VF", Pattern.CASE_INSENSITIVE), Locale.FRENCH)), ImmutableMap.of(Locale.ENGLISH,
+								"VO")));
 		return service;
 	}
 

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<watcherConfig>
+
+	<watch>
+		<directories>
+			<dir>${sys:user.home}/Downloads</dir>
+		</directories>
+		<initialScan>true</initialScan>
+	</watch>
+
+	<parsing>
+		<filenamePatterns>*.srt</filenamePatterns>
+		<parsingServices>
+			<parsingService>addic7ed.com</parsingService>
+			<parsingService>italiansubs.net</parsingService>
+			<parsingService>subcentral.de</parsingService>
+		</parsingServices>
+	</parsing>
+
+
+	<metadata>
+		<release>
+			<parsingServices>
+				<parsingService>release.scene</parsingService>
+			</parsingServices>
+			<metaTags>
+				<tag>REAL</tag>
+				<tag>PROPER</tag>
+				<tag>REPACK</tag>
+				<tag>DiRFIX</tag>
+				<tag>NFOFIX</tag>
+				<tag>iNTERNAL</tag>
+			</metaTags>
+			<databases>
+				<metadataDatabase>predb.me</metadataDatabase>
+				<metadataDatabase>xrel.to</metadataDatabase>
+				<metadataDatabase>orlydb.com</metadataDatabase>
+			</databases>
+			<guessing enabled="true">
+				<standardReleases>
+					<standardRelease tags="720p, HDTV, x264" group="2HD" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="HDTV, x264" group="2HD" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="720p, HDTV, x264" group="DIMENSION" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="HDTV, x264" group="LOL" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="720p, HDTV, x264" group="KILLERS" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="HDTV, x264" group="KILLERS" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="HDTV, x264" group="EXCELLENCE" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" group="Oosh" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" group="Oosh" assumeExistence="IF_NONE_FOUND" />
+				</standardReleases>
+			</guessing>
+			<compatibility enabled="true">
+				<compatibilities>
+					<crossGroupCompatibility sourceGroup="ASAP" compatibleGroup="IMMERSE" bidirectional="true" />
+					<crossGroupCompatibility sourceGroup="EXCELLENCE" compatibleGroup="REMARKABLE" bidirectional="true" />
+					<crossGroupCompatibility sourceGroup="FQM" compatibleGroup="ORENJI" bidirectional="true" />
+					<crossGroupCompatibility sourceGroup="LOL" compatibleGroup="DIMENSION" bidirectional="true" />
+				</compatibilities>
+			</compatibility>
+		</release>
+	</metadata>
+
+	<standardizing>
+		<preMetadataDb>
+			<standardizers>
+				<seriesNameStandardizer namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" />
+				<seriesNameStandardizer namePattern="Clarence\W+US\W+2013\W*" namePatternMode="REGEX" nameReplacement="Clarence (US)" />
+				<seriesNameStandardizer namePattern="Marry\W+Me" namePatternMode="REGEX" nameReplacement="Marry Me (2014)" />
+				<seriesNameStandardizer namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" />
+				<seriesNameStandardizer namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" />
+				<seriesNameStandardizer namePattern="Undercover\W+Boss" namePatternMode="REGEX" nameReplacement="Undercover Boss (US)" />
+			</standardizers>
+		</preMetadataDb>
+		<postMetadataDb>
+			<standardizers>
+				<seriesNameStandardizer namePattern="Good\W+Wife" namePatternMode="REGEX" nameReplacement="The Good Wife" />
+			</standardizers>
+		</postMetadataDb>
+
+		<subtitleLanguage>
+			<parsingLanguages>
+				<language tag="en" />
+				<language tag="de" /> <!-- german -->
+				<language tag="fr" /> <!-- french -->
+				<language tag="it" /> <!-- italian -->
+				<language tag="zh" /> <!-- chinese -->
+			</parsingLanguages>
+			<ouputLanguageFormat format="NAME" />
+			<ouputLanguage tag="en" />
+			<customLanguagePatterns>
+				<languagePattern pattern="VO" tag="en" />
+				<languagePattern pattern="VF" tag="fr" />
+				<languagePattern pattern="ger" tag="de" />
+				<languagePattern pattern="简体" tag="zh-CN" /> <!-- simplified chinese -->
+				<languagePattern pattern="繁体" tag="zh-TW" /> <!-- traditional chinese -->
+			</customLanguagePatterns>
+			<customLanguageNames>
+				<languageName tag="en" name="VO" />
+			</customLanguageNames>
+		</subtitleLanguage>
+	</standardizing>
+
+	<naming>
+		<parameters>
+			<param key="de.subcentral.core.naming.EpisodeNamer.alwaysIncludeTitle" value="false" />
+			<param key="de.subcentral.core.naming.ReleaseNamer.preferName" value="true" />
+		</parameters>
+	</naming>
+
+	<fileTransformation>
+		<targetDir>!VO</targetDir>
+		<deleteSource>false</deleteSource>
+		<packing enabled="true">
+			<winrar>
+				<autoLocate>true</autoLocate>
+				<rarExe></rarExe>
+				<sourceDeletionMode>DELETE</sourceDeletionMode>
+			</winrar>
+		</packing>
+	</fileTransformation>
+
+</watcherConfig>
