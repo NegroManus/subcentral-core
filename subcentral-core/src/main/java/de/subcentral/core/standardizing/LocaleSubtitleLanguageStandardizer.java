@@ -145,6 +145,7 @@ public class LocaleSubtitleLanguageStandardizer implements Standardizer<Subtitle
 			{
 				return locale;
 			}
+			// cannot use Locale.forLanguageTag() because it accepts any string (not only valid languages)
 			if (locale.toLanguageTag().equalsIgnoreCase(lang))
 			{
 				return locale;
