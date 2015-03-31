@@ -56,6 +56,7 @@ import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguagePattern;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
+import de.subcentral.fx.FXUtil;
 import de.subcentral.fx.UiPattern;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -433,6 +434,7 @@ public class WatcherSettings extends ObservableBean
 		{
 			parsingLangs.add(Locale.forLanguageTag(parsingLangCfg.getString("[@tag]")));
 		}
+		parsingLangs.sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 
 		LanguageFormat outputFormat = LanguageFormat.valueOf(cfg.getString(key + ".ouputLanguageFormat[@format]"));
 		Locale outputLang = Locale.forLanguageTag(cfg.getString(key + ".ouputLanguage[@tag]"));

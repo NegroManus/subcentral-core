@@ -9,7 +9,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
@@ -72,7 +72,6 @@ public class SettingsController extends AbstractController
 	private TreeView<SettingsSection>						settingsSectionsTreeView;
 	@FXML
 	private AnchorPane										settingsSectionRootPane;
-	private StackPane										loadingPane;
 
 	public SettingsController(MainController mainController)
 	{
@@ -267,7 +266,7 @@ public class SettingsController extends AbstractController
 					// If the SectionController is not loaded yet but can be loaded, load it in a background thread
 					else if (ctrlGetter != null)
 					{
-						settingsSectionRootPane.getChildren().setAll(getLoadingPane());
+						settingsSectionRootPane.getChildren().setAll(createLoadingIndicatorNode());
 						mainController.getCommonExecutor().execute(createLoadSectionControllerTask(ctrlGetter));
 					}
 					// If there is no matching SectionController for the chosen section, clear the sectionRootPane
@@ -402,19 +401,19 @@ public class SettingsController extends AbstractController
 		AnchorPane.setLeftAnchor(sectionNode, 0.0d);
 	}
 
-	private StackPane getLoadingPane()
+	private StackPane createLoadingIndicatorNode()
 	{
-		if (loadingPane == null)
-		{
-			loadingPane = new StackPane();
-			AnchorPane.setTopAnchor(loadingPane, 0.0d);
-			AnchorPane.setRightAnchor(loadingPane, 0.0d);
-			AnchorPane.setBottomAnchor(loadingPane, 0.0d);
-			AnchorPane.setLeftAnchor(loadingPane, 0.0d);
-			Label loadingLbl = new Label("Loading ...");
-			StackPane.setAlignment(loadingLbl, Pos.CENTER);
-			loadingPane.getChildren().add(loadingLbl);
-		}
+		StackPane loadingPane = new StackPane();
+		AnchorPane.setTopAnchor(loadingPane, 0.0d);
+		AnchorPane.setRightAnchor(loadingPane, 0.0d);
+		AnchorPane.setBottomAnchor(loadingPane, 0.0d);
+		AnchorPane.setLeftAnchor(loadingPane, 0.0d);
+		ProgressIndicator loadingIndicator = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);
+		loadingIndicator.setMaxHeight(50d);
+		loadingIndicator.setMaxWidth(50d);
+		// "Loading ..."
+		StackPane.setAlignment(loadingIndicator, Pos.CENTER);
+		loadingPane.getChildren().add(loadingIndicator);
 		return loadingPane;
 	}
 

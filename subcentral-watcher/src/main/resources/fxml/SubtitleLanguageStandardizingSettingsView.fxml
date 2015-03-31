@@ -12,7 +12,7 @@
       <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0">
         <columnConstraints>
           <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
             <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
         </columnConstraints>
         <rowConstraints>
@@ -38,16 +38,15 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <ListView fx:id="parsingLangsListView" prefHeight="75.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
             <Label text="Languages in which the input language may be written" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
             <Label text="Format" GridPane.rowIndex="7" />
-            <ChoiceBox fx:id="outputLangFormatChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ChoiceBox fx:id="outputLangFormatChoiceBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <Label text="Format language" GridPane.rowIndex="8" />
-            <ComboBox fx:id="outputLangComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <ComboBox fx:id="outputLangComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="8" />
             <Label text="Parsing of input language" underline="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
             <Label text="Formatting of output language" underline="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
             <Label text="Custom language patterns" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-            <TableView fx:id="langPatternsTableView" prefHeight="100.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
+            <TableView fx:id="langPatternsTableView" prefHeight="75.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
               <columns>
                 <TableColumn fx:id="langPatternsPatternColumn" prefWidth="75.0" text="Pattern" />
                 <TableColumn fx:id="langPatternsLangColumn" prefWidth="75.0" text="Language" />
@@ -57,7 +56,7 @@
                </columnResizePolicy>
             </TableView>
             <Label text="Custom language names" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
-            <TableView fx:id="langNamesTableView" prefHeight="100.0" GridPane.columnSpan="2" GridPane.rowIndex="10">
+            <TableView fx:id="langNamesTableView" prefHeight="75.0" GridPane.columnSpan="2" GridPane.rowIndex="10">
               <columns>
                 <TableColumn fx:id="langNamesLangColumn" prefWidth="75.0" text="Language" />
                 <TableColumn fx:id="langNamesNameColumn" prefWidth="75.0" text="Name" />
@@ -70,12 +69,10 @@
             <Label text="Input language:" GridPane.rowIndex="12" />
             <Label text="Output language:" GridPane.rowIndex="13" />
             <TextField fx:id="testingInputTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <TextField fx:id="testingOutputTxtFld" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <TextField fx:id="testingOutputTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="13" />
             <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <children>
-                  <Button fx:id="addParsingLangBtn" mnemonicParsing="false" text="Add" />
-                  <Button fx:id="editParsingLangBtn" mnemonicParsing="false" text="Edit" />
-                  <Button fx:id="deleteParsingLangBtn" mnemonicParsing="false" text="Delete" />
+                  <Button fx:id="editParsingLangsBtn" mnemonicParsing="false" text="Edit" />
                </children>
             </VBox>
             <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
@@ -98,6 +95,7 @@
                   <Button fx:id="deleteLangNameBtn" mnemonicParsing="false" text="Delete" />
                </children>
             </VBox>
+            <TextField fx:id="parsingLangsTxtFld" editable="false" GridPane.columnSpan="2" GridPane.rowIndex="3" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

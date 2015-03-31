@@ -21,6 +21,7 @@ import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;
@@ -38,6 +39,7 @@ public class SubCentralFXUtil
 	public static final StringConverter<ObservableList<Tag>>	OBSERVABLE_TAGS_STRING_CONVERTER	= initObservableTagsStringConverter();
 	public static final StringConverter<Group>					GROUP_STRING_CONVERTER				= initGroupStringConverter();
 	public static final StringConverter<DeletionMode>			DELETION_MODE_STRING_CONVERTER		= initDeletionModeStringConverter();
+	public static final StringConverter<LanguageFormat>			LANGUAGE_FORMAT_STRING_CONVERTER	= initLanguageFormatStringConverter();
 
 	private static StringConverter<List<Tag>> initTagsStringConverter()
 	{
@@ -119,6 +121,44 @@ public class SubCentralFXUtil
 
 			@Override
 			public DeletionMode fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+
+	public static StringConverter<LanguageFormat> initLanguageFormatStringConverter()
+	{
+		return new StringConverter<LanguageFormat>()
+		{
+			@Override
+			public String toString(LanguageFormat format)
+			{
+				if (format == null)
+				{
+					return "";
+				}
+				switch (format)
+				{
+					case NAME:
+						return "Language tag (Java)";
+					case LANGUAGE_TAG:
+						return "Language tag (IETF)";
+					case ISO2:
+						return "2-letter code (ISO 639-1)";
+					case ISO3:
+						return "3-letter code (ISO 639-2/T)";
+					case DISPLAY_NAME:
+						return "Full name";
+					case DISPLAY_LANGUAGE:
+						return "Language name only";
+					default:
+						return format.toString();
+				}
+			}
+
+			@Override
+			public LanguageFormat fromString(String string)
 			{
 				throw new UnsupportedOperationException();
 			}

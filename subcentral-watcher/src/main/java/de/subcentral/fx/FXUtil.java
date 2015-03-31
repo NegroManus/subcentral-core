@@ -8,8 +8,10 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.StringJoiner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -48,12 +50,13 @@ import de.subcentral.watcher.settings.WatcherSettings.PatternMode;
 
 public class FXUtil
 {
-	private static final Logger							log								= LogManager.getLogger(FXUtil.class);
+	private static final Logger							log									= LogManager.getLogger(FXUtil.class);
 
-	public static final StringConverter<Path>			PATH_STRING_CONVERTER			= initPathStringConverter();
-	public static final StringConverter<Locale>			LOCALE_DISPLAY_NAME_CONVERTER	= initLocaleDisplayNameConverter();
-	public static final Comparator<Locale>				LOCALE_DISPLAY_NAME_COMPARATOR	= initLocaleDisplayNameComparator();
-	public static final EventHandler<WorkerStateEvent>	DEFAULT_TASK_FAILED_HANDLER		= initDefaultTaskFailedHandler();
+	public static final StringConverter<Path>			PATH_STRING_CONVERTER				= initPathStringConverter();
+	public static final StringConverter<Locale>			LOCALE_DISPLAY_NAME_CONVERTER		= initLocaleDisplayNameConverter();
+	public static final StringConverter<List<Locale>>	LOCALE_LIST_DISPLAY_NAME_CONVERTER	= initLocaleListDisplayNameConverter();
+	public static final Comparator<Locale>				LOCALE_DISPLAY_NAME_COMPARATOR		= initLocaleDisplayNameComparator();
+	public static final EventHandler<WorkerStateEvent>	DEFAULT_TASK_FAILED_HANDLER			= initDefaultTaskFailedHandler();
 
 	private static StringConverter<Path> initPathStringConverter()
 	{
@@ -97,6 +100,37 @@ public class FXUtil
 
 			@Override
 			public Locale fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+
+	private static StringConverter<List<Locale>> initLocaleListDisplayNameConverter()
+	{
+		return new StringConverter<List<Locale>>()
+		{
+			@Override
+			public String toString(List<Locale> locales)
+			{
+				if (locales == null)
+				{
+					return "";
+				}
+				StringJoiner joiner = new StringJoiner(", ");
+				for (Locale l : locales)
+				{
+					if (l == null)
+					{
+						continue;
+					}
+					joiner.add(l.getDisplayName());
+				}
+				return joiner.toString();
+			}
+
+			@Override
+			public List<Locale> fromString(String string)
 			{
 				throw new UnsupportedOperationException();
 			}

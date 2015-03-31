@@ -1,8 +1,10 @@
 package de.subcentral.watcher.controller.settings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +15,6 @@ import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -22,15 +23,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
+import javafx.scene.control.TextFormatter;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -41,58 +40,53 @@ import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguagePattern;
 import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.SubCentralFXUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
 
 public class SubtitleLanguageStandardizingSettingsController extends AbstractSettingsSectionController
 {
 	@FXML
-	private ScrollPane									subLangStandardizingSettingsPane;
+	private ScrollPane								subLangStandardizingSettingsPane;
 	@FXML
-	private ListView<Locale>							parsingLangsListView;
+	private TextField								parsingLangsTxtFld;
 	@FXML
-	private Button										addParsingLangBtn;
+	private Button									editParsingLangsBtn;
 	@FXML
-	private Button										editParsingLangBtn;
+	private TableView<LanguagePattern>				langPatternsTableView;
 	@FXML
-	private Button										deleteParsingLangBtn;
+	private TableColumn<LanguagePattern, Pattern>	langPatternsPatternColumn;
 	@FXML
-	private TableView<LanguagePattern>					langPatternsTableView;
+	private TableColumn<LanguagePattern, Locale>	langPatternsLangColumn;
 	@FXML
-	private TableColumn<LanguagePattern, Pattern>		langPatternsPatternColumn;
+	private Button									addLangPatternBtn;
 	@FXML
-	private TableColumn<LanguagePattern, Locale>		langPatternsLangColumn;
+	private Button									editLangPatternBtn;
 	@FXML
-	private Button										addLangPatternBtn;
+	private Button									deleteLangPatternBtn;
 	@FXML
-	private Button										editLangPatternBtn;
+	private Button									moveUpLangPatternBtn;
 	@FXML
-	private Button										deleteLangPatternBtn;
+	private Button									moveDownLangPatternBtn;
 	@FXML
-	private Button										moveUpLangPatternBtn;
+	private ChoiceBox<LanguageFormat>				outputLangFormatChoiceBox;
 	@FXML
-	private Button										moveDownLangPatternBtn;
+	private ComboBox<Locale>						outputLangComboBox;
 	@FXML
-	private ChoiceBox<LanguageFormat>					outputLangFormatChoiceBox;
+	private TableView<LanguageName>					langNamesTableView;
 	@FXML
-	private ComboBox<Locale>							outputLangComboBox;
+	private TableColumn<LanguageName, Locale>		langNamesLangColumn;
 	@FXML
-	private TableView<LangName>							langNamesTableView;
+	private TableColumn<LanguageName, String>		langNamesNameColumn;
 	@FXML
-	private TableColumn<LangName, Locale>				langNamesLangColumn;
+	private Button									addLangNameBtn;
 	@FXML
-	private TableColumn<LangName, String>				langNamesNameColumn;
+	private Button									editLangNameBtn;
 	@FXML
-	private Button										addLangNameBtn;
+	private Button									deleteLangNameBtn;
 	@FXML
-	private Button										editLangNameBtn;
+	private TextField								testingInputTxtFld;
 	@FXML
-	private Button										deleteLangNameBtn;
-	@FXML
-	private TextField									testingInputTxtFld;
-	@FXML
-	private TextField									testingOutputTxtFld;
-
-	private Binding<LocaleSubtitleLanguageStandardizer>	standardizer;
+	private TextField								testingOutputTxtFld;
 
 	public SubtitleLanguageStandardizingSettingsController(SettingsController settingsController)
 	{
@@ -108,67 +102,33 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	@Override
 	protected void doInitialize() throws Exception
 	{
-		initComponents();
-		initData();
-		initBindings();
-	}
+		LocaleSubtitleLanguageStandardizer initialStdzer = WatcherSettings.INSTANCE.getLanguageStandardizer();
 
-	private void initComponents()
-	{
-		parsingLangsListView.setCellFactory(new Callback<ListView<Locale>, ListCell<Locale>>()
-		{
-			@Override
-			public ListCell<Locale> call(ListView<Locale> p)
-			{
-				return new ListCell<Locale>()
-				{
-					@Override
-					protected void updateItem(Locale lang, boolean empty)
-					{
-						super.updateItem(lang, empty);
-						if (lang != null)
-						{
-							setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-						}
-					}
-				};
-			}
-		});
+		// ParsingLangs
+		TextFormatter<List<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FXUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER,
+				initialStdzer.getParsingLanguages());
+		parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
-		langPatternsPatternColumn.setCellValueFactory(new Callback<CellDataFeatures<LanguagePattern, Pattern>, ObservableValue<Pattern>>()
-		{
-			@Override
-			public ObservableValue<Pattern> call(CellDataFeatures<LanguagePattern, Pattern> param)
-			{
-				return FXUtil.createConstantBinding(param.getValue().getPattern());
-			}
+		// LangPatterns
+		langPatternsPatternColumn.setCellValueFactory((CellDataFeatures<LanguagePattern, Pattern> param) -> {
+			return FXUtil.createConstantBinding(param.getValue().getPattern());
 		});
-		langPatternsLangColumn.setCellValueFactory(new Callback<CellDataFeatures<LanguagePattern, Locale>, ObservableValue<Locale>>()
-		{
-			@Override
-			public ObservableValue<Locale> call(CellDataFeatures<LanguagePattern, Locale> param)
-			{
-				return FXUtil.createConstantBinding(param.getValue().getLanguage());
-			}
+		langPatternsLangColumn.setCellValueFactory((CellDataFeatures<LanguagePattern, Locale> param) -> {
+			return FXUtil.createConstantBinding(param.getValue().getLanguage());
 		});
-		langPatternsLangColumn.setCellFactory(new Callback<TableColumn<LanguagePattern, Locale>, TableCell<LanguagePattern, Locale>>()
-		{
-			@Override
-			public TableCell<LanguagePattern, Locale> call(TableColumn<LanguagePattern, Locale> param)
+		langPatternsLangColumn.setCellFactory((TableColumn<LanguagePattern, Locale> param) -> {
+			return new TableCell<LanguagePattern, Locale>()
 			{
-				return new TableCell<LanguagePattern, Locale>()
+				@Override
+				protected void updateItem(Locale lang, boolean empty)
 				{
-					@Override
-					protected void updateItem(Locale lang, boolean empty)
+					super.updateItem(lang, empty);
+					if (lang != null)
 					{
-						super.updateItem(lang, empty);
-						if (lang != null)
-						{
-							setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-						}
+						setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
 					}
-				};
-			}
+				}
+			};
 		});
 
 		moveUpLangPatternBtn.setOnAction((ActionEvent event) -> {
@@ -181,82 +141,23 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			Collections.swap(langPatternsTableView.getItems(), selectedIndex, selectedIndex + 1);
 			langPatternsTableView.getSelectionModel().select(selectedIndex + 1);
 		});
-
-		outputLangFormatChoiceBox.getItems().addAll(LanguageFormat.values());
-
-		outputLangComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-		outputLangComboBox.getItems().setAll(Locale.getAvailableLocales());
-		FXCollections.sort(outputLangComboBox.getItems(), FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-
-		langNamesLangColumn.setCellValueFactory(new Callback<CellDataFeatures<LangName, Locale>, ObservableValue<Locale>>()
-		{
-			@Override
-			public ObservableValue<Locale> call(CellDataFeatures<LangName, Locale> param)
-			{
-				return FXUtil.createConstantBinding(param.getValue().lang);
-			}
-		});
-		langNamesLangColumn.setCellFactory(new Callback<TableColumn<LangName, Locale>, TableCell<LangName, Locale>>()
-		{
-			@Override
-			public TableCell<LangName, Locale> call(TableColumn<LangName, Locale> param)
-			{
-				return new TableCell<LangName, Locale>()
-				{
-					@Override
-					protected void updateItem(Locale lang, boolean empty)
-					{
-						super.updateItem(lang, empty);
-						if (lang != null)
-						{
-							setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-						}
-					}
-				};
-			}
-		});
-
-		langNamesNameColumn.setCellValueFactory(new Callback<CellDataFeatures<LangName, String>, ObservableValue<String>>()
-		{
-			@Override
-			public ObservableValue<String> call(CellDataFeatures<LangName, String> param)
-			{
-				return FXUtil.createConstantBinding(param.getValue().name);
-			}
-		});
-
-	}
-
-	private void initData()
-	{
-		LocaleSubtitleLanguageStandardizer stdzer = WatcherSettings.INSTANCE.getLanguageStandardizer();
-
-		SortedList<Locale> sortedParsingLangs = new SortedList<>(FXCollections.observableArrayList(stdzer.getParsingLanguages()),
-				FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-		parsingLangsListView.setItems(sortedParsingLangs);
-
-		langPatternsTableView.getItems().setAll(stdzer.getCustomLanguagePatterns());
-
-		outputLangFormatChoiceBox.setValue(stdzer.getOutputLanguageFormat());
-
-		outputLangComboBox.setValue(stdzer.getOutputLanguage());
-
-		ObservableList<LangName> langNames = FXCollections.observableArrayList();
-		for (Map.Entry<Locale, String> customName : stdzer.getCustomLanguageNames().entrySet())
-		{
-			langNames.add(new LangName(customName.getKey(), customName.getValue()));
-		}
-		SortedList<LangName> sortedLangNames = new SortedList<>(langNames);
-		langNamesTableView.setItems(sortedLangNames);
-	}
-
-	private void initBindings()
-	{
 		updateMoveUpAndDownLangPatternButtons();
 		langPatternsTableView.getSelectionModel()
 				.selectedIndexProperty()
 				.addListener((Observable observable) -> updateMoveUpAndDownLangPatternButtons());
+		langPatternsTableView.getItems().setAll(initialStdzer.getCustomLanguagePatterns());
 
+		// OutputLangFormat
+		outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
+		outputLangFormatChoiceBox.setConverter(SubCentralFXUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
+		outputLangFormatChoiceBox.setValue(initialStdzer.getOutputLanguageFormat());
+
+		// OutputLang
+		outputLangComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+		List<Locale> allLocales = Arrays.asList(Locale.getAvailableLocales());
+		allLocales.sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+		outputLangComboBox.getItems().setAll(allLocales);
+		outputLangComboBox.setValue(initialStdzer.getOutputLanguage());
 		outputLangComboBox.disableProperty().bind(new BooleanBinding()
 		{
 			{
@@ -290,10 +191,34 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			}
 		});
 
-		standardizer = new ObjectBinding<LocaleSubtitleLanguageStandardizer>()
+		// LangNames
+		langNamesLangColumn.setCellValueFactory((CellDataFeatures<LanguageName, Locale> param) -> {
+			return FXUtil.createConstantBinding(param.getValue().lang);
+		});
+		langNamesLangColumn.setCellFactory((TableColumn<LanguageName, Locale> param) -> {
+			return new TableCell<LanguageName, Locale>()
+			{
+				@Override
+				protected void updateItem(Locale lang, boolean empty)
+				{
+					super.updateItem(lang, empty);
+					if (lang != null)
+					{
+						setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
+					}
+				}
+			};
+		});
+		langNamesNameColumn.setCellValueFactory((CellDataFeatures<LanguageName, String> param) -> {
+			return FXUtil.createConstantBinding(param.getValue().name);
+		});
+		langNamesTableView.setItems(convertToLangNameList(initialStdzer.getCustomLanguageNames()));
+
+		// Standardizer
+		final Binding<LocaleSubtitleLanguageStandardizer> stdzerBinding = new ObjectBinding<LocaleSubtitleLanguageStandardizer>()
 		{
 			{
-				super.bind(parsingLangsListView.itemsProperty(),
+				super.bind(parsingLangsTextFormatter.valueProperty(),
 						langPatternsTableView.itemsProperty(),
 						outputLangFormatChoiceBox.valueProperty(),
 						outputLangComboBox.valueProperty(),
@@ -304,30 +229,31 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			protected LocaleSubtitleLanguageStandardizer computeValue()
 			{
 				Map<Locale, String> names = new HashMap<>();
-				for (LangName p : langNamesTableView.getItems())
+				for (LanguageName p : langNamesTableView.getItems())
 				{
 					names.put(p.lang, p.name);
 				}
-				return new LocaleSubtitleLanguageStandardizer(parsingLangsListView.getItems(),
+				return new LocaleSubtitleLanguageStandardizer(parsingLangsTextFormatter.getValue(),
 						outputLangFormatChoiceBox.getValue(),
 						outputLangComboBox.getValue(),
 						langPatternsTableView.getItems(),
 						names);
 			}
 		};
-		WatcherSettings.INSTANCE.languageStandardizerProperty().bind(standardizer);
+		WatcherSettings.INSTANCE.languageStandardizerProperty().bind(stdzerBinding);
 
+		// Testing
 		testingOutputTxtFld.textProperty().bind(new StringBinding()
 		{
 			{
-				super.bind(testingInputTxtFld.textProperty(), standardizer);
+				super.bind(testingInputTxtFld.textProperty(), stdzerBinding);
 			}
 
 			@Override
 			protected String computeValue()
 			{
 				Subtitle sub = new Subtitle(null, testingInputTxtFld.getText());
-				standardizer.getValue().standardize(sub, new ArrayList<>(1));
+				stdzerBinding.getValue().standardize(sub, new ArrayList<>(1));
 				return sub.getLanguage();
 			}
 		});
@@ -340,12 +266,22 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		moveDownLangPatternBtn.setDisable(selectedIndex >= langPatternsTableView.getItems().size() - 1 || selectedIndex < 0);
 	}
 
-	private final static class LangName implements Comparable<LangName>
+	private static ObservableList<LanguageName> convertToLangNameList(Map<Locale, String> languageNames)
+	{
+		ObservableList<LanguageName> langNamesList = FXCollections.observableArrayList();
+		for (Map.Entry<Locale, String> name : languageNames.entrySet())
+		{
+			langNamesList.add(new LanguageName(name.getKey(), name.getValue()));
+		}
+		return new SortedList<>(langNamesList);
+	}
+
+	private final static class LanguageName implements Comparable<LanguageName>
 	{
 		private final Locale	lang;
 		private final String	name;
 
-		private LangName(Locale lang, String name)
+		private LanguageName(Locale lang, String name)
 		{
 			this.lang = Objects.requireNonNull(lang, "lang");
 			this.name = Objects.requireNonNull(name, "name");
@@ -358,9 +294,9 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			{
 				return true;
 			}
-			if (obj instanceof LangName)
+			if (obj instanceof LanguageName)
 			{
-				LangName o = (LangName) obj;
+				LanguageName o = (LanguageName) obj;
 				return lang.equals(o.lang);
 			}
 			return false;
@@ -375,11 +311,11 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		@Override
 		public String toString()
 		{
-			return MoreObjects.toStringHelper(LangName.class).omitNullValues().add("lang", lang).add("name", name).toString();
+			return MoreObjects.toStringHelper(LanguageName.class).omitNullValues().add("lang", lang).add("name", name).toString();
 		}
 
 		@Override
-		public int compareTo(LangName o)
+		public int compareTo(LanguageName o)
 		{
 			// nulls first
 			if (o == null)
