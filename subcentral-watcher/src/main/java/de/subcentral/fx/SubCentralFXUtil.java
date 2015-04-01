@@ -145,13 +145,13 @@ public class SubCentralFXUtil
 					case LANGUAGE_TAG:
 						return "Language tag (IETF)";
 					case ISO2:
-						return "2-letter code (ISO 639-1)";
+						return "2-letter language code (ISO 639-1)";
 					case ISO3:
-						return "3-letter code (ISO 639-2/T)";
+						return "3-letter language code (ISO 639-2/T)";
 					case DISPLAY_NAME:
 						return "Full name";
 					case DISPLAY_LANGUAGE:
-						return "Language name only";
+						return "Language only";
 					default:
 						return format.toString();
 				}
