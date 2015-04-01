@@ -13,14 +13,14 @@ public abstract class SinglePropertyStandardizer<T, P, R extends UnaryOperator<P
 		this.replacer = Objects.requireNonNull(replacer, "replacer");
 	}
 
-	public abstract Class<T> getBeanType();
-
-	public abstract String getPropertyName();
-
 	public R getReplacer()
 	{
 		return replacer;
 	}
+
+	public abstract Class<T> getBeanType();
+
+	public abstract String getPropertyName();
 
 	protected abstract P getValue(T bean);
 
