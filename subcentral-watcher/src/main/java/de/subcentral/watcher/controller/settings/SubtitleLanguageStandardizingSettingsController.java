@@ -1,6 +1,5 @@
 package de.subcentral.watcher.controller.settings;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
@@ -253,9 +251,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			@Override
 			protected String computeValue()
 			{
-				Subtitle sub = new Subtitle(null, testingInputTxtFld.getText());
-				stdzerBinding.getValue().standardize(sub, new ArrayList<>(1));
-				return sub.getLanguage();
+				return stdzerBinding.getValue().getReplacer().apply(testingInputTxtFld.getText());
 			}
 		});
 	}
