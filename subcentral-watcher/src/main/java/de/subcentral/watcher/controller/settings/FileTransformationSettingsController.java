@@ -1,6 +1,8 @@
 package de.subcentral.watcher.controller.settings;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 import javafx.beans.value.ChangeListener;
@@ -141,7 +143,11 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 			Path currentValue = rarExeFormatter.getValue();
 			if (currentValue != null)
 			{
-				fileChooser.setInitialDirectory(currentValue.getParent().toFile());
+				Path potentialParentDir = currentValue.getParent();
+				if (potentialParentDir != null && Files.isDirectory(potentialParentDir, LinkOption.NOFOLLOW_LINKS))
+				{
+					fileChooser.setInitialDirectory(potentialParentDir.toFile());
+				}
 			}
 			ExtensionFilter exeFilter = new ExtensionFilter("RAR executable", WinRar.getRarExecutableFilename());
 			fileChooser.getExtensionFilters().add(exeFilter);
