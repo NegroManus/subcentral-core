@@ -21,7 +21,7 @@ import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;

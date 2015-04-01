@@ -6,6 +6,7 @@ import com.google.common.base.Joiner;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
+import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.FXUtil;
 
 public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntry<Release, ReleaseTagsStandardizer>
@@ -38,9 +39,10 @@ public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntr
 
 	private static String operationToString(ReleaseTagsStandardizer standardizer)
 	{
+		TagsReplacer replacer = standardizer.getReplacer();
 		StringBuilder sb = new StringBuilder();
 		sb.append("If tags ");
-		switch (standardizer.getQueryMode())
+		switch (replacer.getQueryMode())
 		{
 			case CONTAIN:
 				sb.append("contain ");
@@ -49,13 +51,13 @@ public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntr
 				sb.append("equal ");
 				break;
 		}
-		Joiner.on(", ").appendTo(sb, standardizer.getQueryTags());
-		if (standardizer.getIgnoreOrder())
+		Joiner.on(", ").appendTo(sb, replacer.getQueryTags());
+		if (replacer.getIgnoreOrder())
 		{
 			sb.append(" (in any order)");
 		}
 		sb.append(", then ");
-		switch (standardizer.getReplaceMode())
+		switch (replacer.getReplaceMode())
 		{
 			case MATCHED_SEQUENCE:
 				sb.append("replace that with ");
@@ -64,7 +66,7 @@ public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntr
 				sb.append("set the release's tags to ");
 				break;
 		}
-		Joiner.on(", ").appendTo(sb, standardizer.getReplacement());
+		Joiner.on(", ").appendTo(sb, replacer.getReplacement());
 		return sb.toString();
 	}
 }

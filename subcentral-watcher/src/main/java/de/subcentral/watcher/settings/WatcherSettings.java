@@ -52,10 +52,12 @@ import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.naming.EpisodeNamer;
 import de.subcentral.core.naming.ReleaseNamer;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguagePattern;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
+import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.FXUtil;
 import de.subcentral.fx.UiPattern;
 import de.subcentral.support.addic7edcom.Addic7edCom;
@@ -397,7 +399,11 @@ public class WatcherSettings extends ObservableBean
 			QueryMode queryMode = de.subcentral.core.metadata.release.TagUtil.QueryMode.valueOf(rlsTagsStdzerCfg.getString("[@queryMode]"));
 			ReplaceMode replaceMode = de.subcentral.core.metadata.release.TagUtil.ReplaceMode.valueOf(rlsTagsStdzerCfg.getString("[@replaceMode]"));
 			boolean ignoreOrder = rlsTagsStdzerCfg.getBoolean("[@ignoreOrder]", false);
-			ReleaseTagsStandardizer stdzer = new ReleaseTagsStandardizer(tagsToReplace, replacement, queryMode, replaceMode, ignoreOrder);
+			ReleaseTagsStandardizer stdzer = new ReleaseTagsStandardizer(new TagsReplacer(tagsToReplace,
+					replacement,
+					queryMode,
+					replaceMode,
+					ignoreOrder));
 			stdzers.add(new ReleaseTagsStandardizerSettingEntry(stdzer, true));
 		}
 		stdzers.trimToSize();
@@ -454,7 +460,11 @@ public class WatcherSettings extends ObservableBean
 			names.put(Locale.forLanguageTag(namesCfg.getString("[@tag]")), namesCfg.getString("[@name]"));
 		}
 
-		LocaleSubtitleLanguageStandardizer stdzer = new LocaleSubtitleLanguageStandardizer(parsingLangs, outputFormat, outputLang, patterns, names);
+		LocaleSubtitleLanguageStandardizer stdzer = new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(parsingLangs,
+				outputFormat,
+				outputLang,
+				patterns,
+				names));
 		return stdzer;
 	}
 

@@ -36,6 +36,7 @@ import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
+import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
@@ -381,7 +382,8 @@ public class WatcherDialogs
 				if (dialogButton == ButtonType.APPLY)
 				{
 					String nameReplacement = StringUtils.trimToNull(namePatternTxtFld.getText());
-					return new SeriesNameStandardizerSettingEntry(namePatternBinding.getValue(), nameReplacement, bean.isEnabled());
+					boolean enabled = (bean == null ? true : bean.isEnabled());
+					return new SeriesNameStandardizerSettingEntry(namePatternBinding.getValue(), nameReplacement, enabled);
 				}
 				return null;
 			});
@@ -454,8 +456,8 @@ public class WatcherDialogs
 			}
 			else
 			{
-				ReleaseTagsStandardizer stdzer = bean.getValue();
-				switch (stdzer.getQueryMode())
+				TagsReplacer replacer = bean.getValue().getReplacer();
+				switch (replacer.getQueryMode())
 				{
 					case CONTAIN:
 						initialQueryModeToggle = containRadioBtn;
@@ -466,9 +468,9 @@ public class WatcherDialogs
 					default:
 						initialQueryModeToggle = containRadioBtn;
 				}
-				initialQueryTags = stdzer.getQueryTags();
-				initialIgnoreOrder = stdzer.getIgnoreOrder();
-				switch (stdzer.getReplaceMode())
+				initialQueryTags = replacer.getQueryTags();
+				initialIgnoreOrder = replacer.getIgnoreOrder();
+				switch (replacer.getReplaceMode())
 				{
 					case MATCHED_SEQUENCE:
 						initialReplaceWithToggle = matchRadioBtn;
@@ -525,11 +527,11 @@ public class WatcherDialogs
 					}
 					boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
 					boolean enabled = bean == null ? true : bean.isEnabled();
-					return new ReleaseTagsStandardizerSettingEntry(new ReleaseTagsStandardizer(queryTags,
+					return new ReleaseTagsStandardizerSettingEntry(new ReleaseTagsStandardizer(new TagsReplacer(queryTags,
 							replacement,
 							queryMode,
 							replaceWith,
-							ignoreOrder), enabled);
+							ignoreOrder)), enabled);
 				}
 				return null;
 			});

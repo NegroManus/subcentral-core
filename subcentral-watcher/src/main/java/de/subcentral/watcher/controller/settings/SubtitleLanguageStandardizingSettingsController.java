@@ -36,9 +36,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguageFormat;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer.LanguagePattern;
 import de.subcentral.fx.FXUtil;
 import de.subcentral.fx.SubCentralFXUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
@@ -102,11 +103,11 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	@Override
 	protected void doInitialize() throws Exception
 	{
-		LocaleSubtitleLanguageStandardizer initialStdzer = WatcherSettings.INSTANCE.getLanguageStandardizer();
+		LocaleLanguageReplacer initialReplacer = WatcherSettings.INSTANCE.getLanguageStandardizer().getReplacer();
 
 		// ParsingLangs
 		TextFormatter<List<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FXUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER,
-				initialStdzer.getParsingLanguages());
+				initialReplacer.getParsingLanguages());
 		parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
 		// LangPatterns
@@ -145,19 +146,19 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		langPatternsTableView.getSelectionModel()
 				.selectedIndexProperty()
 				.addListener((Observable observable) -> updateMoveUpAndDownLangPatternButtons());
-		langPatternsTableView.getItems().setAll(initialStdzer.getCustomLanguagePatterns());
+		langPatternsTableView.getItems().setAll(initialReplacer.getCustomLanguagePatterns());
 
 		// OutputLangFormat
 		outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
 		outputLangFormatChoiceBox.setConverter(SubCentralFXUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
-		outputLangFormatChoiceBox.setValue(initialStdzer.getOutputLanguageFormat());
+		outputLangFormatChoiceBox.setValue(initialReplacer.getOutputLanguageFormat());
 
 		// OutputLang
 		outputLangComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 		List<Locale> allLocales = Arrays.asList(Locale.getAvailableLocales());
 		allLocales.sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 		outputLangComboBox.getItems().setAll(allLocales);
-		outputLangComboBox.setValue(initialStdzer.getOutputLanguage());
+		outputLangComboBox.setValue(initialReplacer.getOutputLanguage());
 		outputLangComboBox.disableProperty().bind(new BooleanBinding()
 		{
 			{
@@ -212,7 +213,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		langNamesNameColumn.setCellValueFactory((CellDataFeatures<LanguageName, String> param) -> {
 			return FXUtil.createConstantBinding(param.getValue().name);
 		});
-		langNamesTableView.setItems(convertToLangNameList(initialStdzer.getCustomLanguageNames()));
+		langNamesTableView.setItems(convertToLangNameList(initialReplacer.getCustomLanguageNames()));
 
 		// Standardizer
 		final Binding<LocaleSubtitleLanguageStandardizer> stdzerBinding = new ObjectBinding<LocaleSubtitleLanguageStandardizer>()
@@ -233,11 +234,11 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				{
 					names.put(p.lang, p.name);
 				}
-				return new LocaleSubtitleLanguageStandardizer(parsingLangsTextFormatter.getValue(),
+				return new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(parsingLangsTextFormatter.getValue(),
 						outputLangFormatChoiceBox.getValue(),
 						outputLangComboBox.getValue(),
 						langPatternsTableView.getItems(),
-						names);
+						names));
 			}
 		};
 		WatcherSettings.INSTANCE.languageStandardizerProperty().bind(stdzerBinding);
