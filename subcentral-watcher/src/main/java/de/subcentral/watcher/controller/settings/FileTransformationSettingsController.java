@@ -158,8 +158,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 			{
 				return;
 			}
-			Path newRarExe = selectedFile.toPath();
-			rarExeFormatter.setValue(newRarExe);
+			rarExeFormatter.setValue(selectedFile.toPath());
 		});
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
