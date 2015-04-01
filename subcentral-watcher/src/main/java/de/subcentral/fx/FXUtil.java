@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
@@ -303,6 +305,32 @@ public class FXUtil
 				}
 			}
 		});
+	}
+
+	public static void bindMoveButtonsForSingleSelection(final TableView<?> tableView, final ButtonBase moveUpBtn, final ButtonBase moveDownBtn)
+	{
+		updateMoveButtonsDisabilityWithSingleSelection(tableView, moveUpBtn, moveDownBtn);
+		tableView.getSelectionModel()
+				.selectedIndexProperty()
+				.addListener((Observable observable) -> updateMoveButtonsDisabilityWithSingleSelection(tableView, moveUpBtn, moveDownBtn));
+
+		moveUpBtn.setOnAction((ActionEvent event) -> {
+			int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex - 1);
+			tableView.getSelectionModel().select(selectedIndex - 1);
+		});
+		moveDownBtn.setOnAction((ActionEvent event) -> {
+			int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex + 1);
+			tableView.getSelectionModel().select(selectedIndex + 1);
+		});
+	}
+
+	private static void updateMoveButtonsDisabilityWithSingleSelection(TableView<?> tableView, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
+	{
+		int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+		moveUpBtn.setDisable(selectedIndex < 1);
+		moveDownBtn.setDisable(selectedIndex >= tableView.getItems().size() - 1 || selectedIndex < 0);
 	}
 
 	public static Alert createExceptionAlert(String title, String headerText, Throwable exception)

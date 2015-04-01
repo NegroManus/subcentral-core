@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
@@ -140,10 +139,8 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			Collections.swap(langPatternsTableView.getItems(), selectedIndex, selectedIndex + 1);
 			langPatternsTableView.getSelectionModel().select(selectedIndex + 1);
 		});
-		updateMoveUpAndDownLangPatternButtons();
-		langPatternsTableView.getSelectionModel()
-				.selectedIndexProperty()
-				.addListener((Observable observable) -> updateMoveUpAndDownLangPatternButtons());
+
+		FXUtil.bindMoveButtonsForSingleSelection(langPatternsTableView, moveUpLangPatternBtn, moveDownLangPatternBtn);
 		langPatternsTableView.getItems().setAll(initialReplacer.getCustomLanguagePatterns());
 
 		// OutputLangFormat
@@ -254,13 +251,6 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				return stdzerBinding.getValue().getReplacer().apply(testingInputTxtFld.getText());
 			}
 		});
-	}
-
-	private void updateMoveUpAndDownLangPatternButtons()
-	{
-		int selectedIndex = langPatternsTableView.getSelectionModel().getSelectedIndex();
-		moveUpLangPatternBtn.setDisable(selectedIndex < 1);
-		moveDownLangPatternBtn.setDisable(selectedIndex >= langPatternsTableView.getItems().size() - 1 || selectedIndex < 0);
 	}
 
 	private static ObservableList<LanguageName> convertToLangNameList(Map<Locale, String> languageNames)

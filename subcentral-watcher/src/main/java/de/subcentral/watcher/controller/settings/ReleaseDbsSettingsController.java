@@ -2,9 +2,7 @@ package de.subcentral.watcher.controller.settings;
 
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
 
-import javafx.beans.Observable;
 import javafx.beans.binding.ObjectBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -125,19 +123,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		recheckAvailibities();
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> recheckAvailibities());
 
-		updateMoveUpAndDownReleaseDbButtons();
-		releaseDbsTableView.getSelectionModel().selectedIndexProperty().addListener((Observable observable) -> updateMoveUpAndDownReleaseDbButtons());
-
-		moveUpReleaseDbButton.setOnAction((ActionEvent event) -> {
-			int selectedIndex = releaseDbsTableView.getSelectionModel().getSelectedIndex();
-			Collections.swap(releaseDbsTableView.getItems(), selectedIndex, selectedIndex - 1);
-			releaseDbsTableView.getSelectionModel().select(selectedIndex - 1);
-		});
-		moveDownReleaseDbButton.setOnAction((ActionEvent event) -> {
-			int selectedIndex = releaseDbsTableView.getSelectionModel().getSelectedIndex();
-			Collections.swap(releaseDbsTableView.getItems(), selectedIndex, selectedIndex + 1);
-			releaseDbsTableView.getSelectionModel().select(selectedIndex + 1);
-		});
+		FXUtil.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
 	}
 
 	private void recheckAvailibities()
@@ -146,12 +132,5 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		{
 			releaseDb.recheckAvailability(settingsController.getMainController().getCommonExecutor());
 		}
-	}
-
-	private void updateMoveUpAndDownReleaseDbButtons()
-	{
-		int selectedIndex = releaseDbsTableView.getSelectionModel().getSelectedIndex();
-		moveUpReleaseDbButton.setDisable(selectedIndex < 1);
-		moveDownReleaseDbButton.setDisable(selectedIndex >= releaseDbsTableView.getItems().size() - 1 || selectedIndex < 0);
 	}
 }
