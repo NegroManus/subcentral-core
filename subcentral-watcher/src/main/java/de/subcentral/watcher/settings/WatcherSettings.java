@@ -443,8 +443,8 @@ public class WatcherSettings extends ObservableBean
 		List<LanguagePattern> patterns = new ArrayList<>(patternsCfgs.size());
 		for (HierarchicalConfiguration<ImmutableNode> patternsCfg : patternsCfgs)
 		{
-			patterns.add(new LanguagePattern(Pattern.compile(patternsCfg.getString("[@pattern]")),
-					Locale.forLanguageTag(patternsCfg.getString("[@tag]"))));
+			patterns.add(new LanguagePattern(Pattern.compile(patternsCfg.getString("[@pattern]"), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+					| Pattern.UNICODE_CHARACTER_CLASS), Locale.forLanguageTag(patternsCfg.getString("[@tag]"))));
 		}
 
 		List<HierarchicalConfiguration<ImmutableNode>> namesCfgs = cfg.configurationsAt(key + ".customLanguageNames.languageName");

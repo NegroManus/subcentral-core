@@ -23,13 +23,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.BorderPane;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -46,7 +46,7 @@ import de.subcentral.watcher.settings.WatcherSettings;
 public class SubtitleLanguageStandardizingSettingsController extends AbstractSettingsSectionController
 {
 	@FXML
-	private ScrollPane								subLangStandardizingSettingsPane;
+	private BorderPane								subLangStandardizingSettingsPane;
 	@FXML
 	private TextField								parsingLangsTxtFld;
 	@FXML
@@ -94,7 +94,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	}
 
 	@Override
-	public ScrollPane getSectionRootPane()
+	public BorderPane getSectionRootPane()
 	{
 		return subLangStandardizingSettingsPane;
 	}
