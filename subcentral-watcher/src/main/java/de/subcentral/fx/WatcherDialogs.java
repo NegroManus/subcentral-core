@@ -1,7 +1,10 @@
 package de.subcentral.fx;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 import javafx.application.Platform;
@@ -9,12 +12,19 @@ import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
@@ -55,12 +65,12 @@ public class WatcherDialogs
 		@FXML
 		protected GridPane			inputPane;
 
-		public AbstractBeanDialogController(T bean)
+		private AbstractBeanDialogController(T bean)
 		{
 			this.bean = bean;
 		}
 
-		public Dialog<T> getDialog()
+		private Dialog<T> getDialog()
 		{
 			return dialog;
 		}
@@ -105,7 +115,7 @@ public class WatcherDialogs
 		@FXML
 		private RadioButton	alwaysRadioBtn;
 
-		public StandardReleaseDialogController(StandardRelease commonReleaseDef)
+		private StandardReleaseDialogController(StandardRelease commonReleaseDef)
 		{
 			super(commonReleaseDef);
 		}
@@ -199,7 +209,7 @@ public class WatcherDialogs
 		@FXML
 		private CheckBox	symmetricCheckBox;
 
-		public CrossGroupCompatibilityDialogController(CrossGroupCompatibility bean)
+		private CrossGroupCompatibilityDialogController(CrossGroupCompatibility bean)
 		{
 			super(bean);
 		}
@@ -292,7 +302,7 @@ public class WatcherDialogs
 		@FXML
 		private TextField	nameReplacementTxtFld;
 
-		public SeriesNameStandardizerSettingEntryDialogController(SeriesNameStandardizerSettingEntry bean)
+		private SeriesNameStandardizerSettingEntryDialogController(SeriesNameStandardizerSettingEntry bean)
 		{
 			super(bean);
 		}
@@ -409,7 +419,7 @@ public class WatcherDialogs
 		@FXML
 		private TextField	replacementTxtFld;
 
-		public ReleaseTagsStandardizerSettingEntryDialogController(ReleaseTagsStandardizerSettingEntry bean)
+		private ReleaseTagsStandardizerSettingEntryDialogController(ReleaseTagsStandardizerSettingEntry bean)
 		{
 			super(bean);
 		}
@@ -538,6 +548,95 @@ public class WatcherDialogs
 		}
 	}
 
+	private static class LocaleListEditorController extends AbstractBeanDialogController<List<Locale>>
+	{
+		@FXML
+		private ListView<Locale>	langsListView;
+		@FXML
+		private ComboBox<Locale>	addableLangsComboBox;
+		@FXML
+		private Button				addLangBtn;
+		@FXML
+		private Button				removeLangBtn;
+
+		private LocaleListEditorController(List<Locale> bean)
+		{
+			super(Objects.requireNonNull(bean));
+		}
+
+		@Override
+		protected String buildTitle()
+		{
+			return "Edit languages";
+		}
+
+		@Override
+		protected Node getDefaultFocusNode()
+		{
+			return langsListView;
+		}
+
+		@Override
+		protected void initInputPaneControl()
+		{
+			// Set initial values
+			final ObservableList<Locale> langList = FXCollections.observableArrayList(bean);
+			SortedList<Locale> sortedLangList = new SortedList<>(langList, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			langsListView.setItems(sortedLangList);
+			langsListView.setCellFactory((ListView<Locale> param) -> {
+				return new ListCell<Locale>()
+				{
+					@Override
+					protected void updateItem(Locale lang, boolean empty)
+					{
+						super.updateItem(lang, empty);
+						if (empty || lang == null)
+						{
+							setText(null);
+							setGraphic(null);
+						}
+						else
+						{
+							setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
+						}
+					}
+				};
+			});
+
+			final ObservableList<Locale> addableLangList = FXCollections.observableArrayList(Arrays.asList(Locale.getAvailableLocales()));
+			addableLangList.removeAll(bean);
+			SortedList<Locale> sortedAddableLangList = new SortedList<>(addableLangList, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			// already selected langs are not addable
+			addableLangsComboBox.setItems(sortedAddableLangList);
+			addableLangsComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+
+			// Bindings
+			addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
+			addLangBtn.setOnAction((ActionEvent) -> {
+				Locale selectedItem = addableLangsComboBox.getSelectionModel().getSelectedItem();
+				// addableLangList.remove(selectedItem);
+				langList.add(selectedItem);
+			});
+
+			removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
+			removeLangBtn.setOnAction((ActionEvent) -> {
+				Locale selectedItem = langsListView.getSelectionModel().getSelectedItem();
+				langList.remove(selectedItem);
+				// add language to addable langs
+				// addableLangList.add(selectedItem);
+			});
+
+			// Set ResultConverter
+			dialog.setResultConverter(dialogButton -> {
+				if (dialogButton == ButtonType.APPLY)
+				{
+					return langList;
+				}
+				return null;
+			});
+		}
+	}
+
 	public static Optional<StandardRelease> showStandardReleaseDefinitionDialog()
 	{
 		return showStandardReleaseDefinitionDialog(null);
@@ -581,6 +680,12 @@ public class WatcherDialogs
 	{
 		ReleaseTagsStandardizerSettingEntryDialogController ctrl = new ReleaseTagsStandardizerSettingEntryDialogController(entry);
 		return showDialogAndWait(ctrl, "ReleaseTagsStandardizerSettingEntryDialog.fxml");
+	}
+
+	public static Optional<List<Locale>> showLocaleListEditor(List<Locale> languages)
+	{
+		LocaleListEditorController ctrl = new LocaleListEditorController(languages);
+		return showDialogAndWait(ctrl, "LocaleListEditor.fxml");
 	}
 
 	private static <T> Optional<T> showDialogAndWait(AbstractBeanDialogController<T> ctrl, String fxmlFilename)

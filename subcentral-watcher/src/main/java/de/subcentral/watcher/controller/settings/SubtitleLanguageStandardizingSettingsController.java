@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javafx.beans.binding.Binding;
@@ -39,6 +40,7 @@ import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.fx.FXUtil;
 import de.subcentral.fx.SubCentralFXUtil;
+import de.subcentral.fx.WatcherDialogs;
 import de.subcentral.watcher.settings.WatcherSettings;
 
 public class SubtitleLanguageStandardizingSettingsController extends AbstractSettingsSectionController
@@ -107,6 +109,14 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				initialReplacer.getParsingLanguages());
 		parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
+		editParsingLangsBtn.setOnAction((ActionEvent) -> {
+			Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditor(parsingLangsTextFormatter.getValue());
+			if (result.isPresent())
+			{
+				parsingLangsTextFormatter.setValue(result.get());
+			}
+		});
+
 		// LangPatterns
 		langPatternsPatternColumn.setCellValueFactory((CellDataFeatures<LanguagePattern, Pattern> param) -> {
 			return FXUtil.createConstantBinding(param.getValue().getPattern());
@@ -121,7 +131,12 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				protected void updateItem(Locale lang, boolean empty)
 				{
 					super.updateItem(lang, empty);
-					if (lang != null)
+					if (empty || lang == null)
+					{
+						setText(null);
+						setGraphic(null);
+					}
+					else
 					{
 						setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
 					}
@@ -198,7 +213,12 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				protected void updateItem(Locale lang, boolean empty)
 				{
 					super.updateItem(lang, empty);
-					if (lang != null)
+					if (empty || lang == null)
+					{
+						setText(null);
+						setGraphic(null);
+					}
+					else
 					{
 						setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
 					}
