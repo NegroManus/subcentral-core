@@ -6,26 +6,16 @@ import java.util.function.UnaryOperator;
 
 public abstract class SinglePropertyStandardizer<T, P, R extends UnaryOperator<P>> implements Standardizer<T>
 {
-	private final Class<T>	beanType;
-	private final String	propertyName;
-	private final R			replacer;
+	private final R	replacer;
 
-	public SinglePropertyStandardizer(Class<T> beanType, String propertyName, R replacer)
+	public SinglePropertyStandardizer(R replacer)
 	{
-		this.beanType = Objects.requireNonNull(beanType, "beanType");
-		this.propertyName = Objects.requireNonNull(propertyName, "propertyName");
 		this.replacer = Objects.requireNonNull(replacer, "replacer");
 	}
 
-	public Class<T> getBeanType()
-	{
-		return beanType;
-	}
+	public abstract Class<T> getBeanType();
 
-	public String getPropertyName()
-	{
-		return propertyName;
-	}
+	public abstract String getPropertyName();
 
 	public R getReplacer()
 	{
@@ -43,7 +33,7 @@ public abstract class SinglePropertyStandardizer<T, P, R extends UnaryOperator<P
 		P newValue = replacer.apply(oldValue);
 		if (!Objects.equals(oldValue, newValue))
 		{
-			changes.add(new StandardizingChange(bean, propertyName, oldValue, newValue));
+			changes.add(new StandardizingChange(bean, getPropertyName(), oldValue, newValue));
 			setValue(bean, newValue);
 		}
 	}

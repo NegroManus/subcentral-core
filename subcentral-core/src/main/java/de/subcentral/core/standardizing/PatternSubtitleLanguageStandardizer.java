@@ -6,7 +6,19 @@ public class PatternSubtitleLanguageStandardizer extends SinglePropertyStandardi
 {
 	public PatternSubtitleLanguageStandardizer(PatternStringReplacer replacer)
 	{
-		super(Subtitle.class, Subtitle.PROP_LANGUAGE.getPropName(), replacer);
+		super(replacer);
+	}
+
+	@Override
+	public Class<Subtitle> getBeanType()
+	{
+		return Subtitle.class;
+	}
+
+	@Override
+	public String getPropertyName()
+	{
+		return Subtitle.PROP_LANGUAGE.getPropName();
 	}
 
 	@Override

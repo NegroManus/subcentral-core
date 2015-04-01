@@ -9,7 +9,19 @@ public class ReleaseTagsStandardizer extends SinglePropertyStandardizer<Release,
 {
 	public ReleaseTagsStandardizer(TagsReplacer replacer)
 	{
-		super(Release.class, Release.PROP_TAGS.getPropName(), replacer);
+		super(replacer);
+	}
+
+	@Override
+	public Class<Release> getBeanType()
+	{
+		return Release.class;
+	}
+
+	@Override
+	public String getPropertyName()
+	{
+		return Release.PROP_TAGS.getPropName();
 	}
 
 	@Override
