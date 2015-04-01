@@ -284,13 +284,15 @@ public class FXUtil
 		}
 	}
 
-	public static void setStandardMouseAndKeyboardSupportForTableView(TableView<?> tableView, ButtonBase editButton, ButtonBase removeButton)
+	public static void setStandardMouseAndKeyboardSupportForTableView(final TableView<?> tableView, final ButtonBase editButton,
+			final ButtonBase removeButton)
 	{
 		tableView.setOnMouseClicked((MouseEvent evt) -> {
 			if (evt.getClickCount() == 2 && (!tableView.getSelectionModel().isEmpty()))
 			{
 				editButton.fire();
 			}
+			evt.consume();
 		});
 		tableView.setOnKeyPressed((KeyEvent evt) -> {
 			if (!tableView.getSelectionModel().isEmpty())
@@ -303,30 +305,41 @@ public class FXUtil
 				{
 					removeButton.fire();
 				}
+				evt.consume();
 			}
 		});
 	}
 
 	public static void bindMoveButtonsForSingleSelection(final TableView<?> tableView, final ButtonBase moveUpBtn, final ButtonBase moveDownBtn)
 	{
-		updateMoveButtonsDisabilityWithSingleSelection(tableView, moveUpBtn, moveDownBtn);
+		updateMoveBtnsDisabilityForSingleSelection(tableView, moveUpBtn, moveDownBtn);
 		tableView.getSelectionModel()
 				.selectedIndexProperty()
-				.addListener((Observable observable) -> updateMoveButtonsDisabilityWithSingleSelection(tableView, moveUpBtn, moveDownBtn));
+				.addListener((Observable observable) -> updateMoveBtnsDisabilityForSingleSelection(tableView, moveUpBtn, moveDownBtn));
 
-		moveUpBtn.setOnAction((ActionEvent event) -> {
+		moveUpBtn.setOnAction((ActionEvent evt) -> {
 			int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+			if (selectedIndex < 1)
+			{
+				return;
+			}
 			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex - 1);
 			tableView.getSelectionModel().select(selectedIndex - 1);
+			evt.consume();
 		});
-		moveDownBtn.setOnAction((ActionEvent event) -> {
+		moveDownBtn.setOnAction((ActionEvent evt) -> {
 			int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+			if (selectedIndex >= tableView.getItems().size() - 1 || selectedIndex < 0)
+			{
+				return;
+			}
 			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex + 1);
 			tableView.getSelectionModel().select(selectedIndex + 1);
+			evt.consume();
 		});
 	}
 
-	private static void updateMoveButtonsDisabilityWithSingleSelection(TableView<?> tableView, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
+	private static void updateMoveBtnsDisabilityForSingleSelection(TableView<?> tableView, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
 	{
 		int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
 		moveUpBtn.setDisable(selectedIndex < 1);
