@@ -1,54 +1,23 @@
 package de.subcentral.core.standardizing;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
-import com.google.common.base.MoreObjects;
-
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class PatternSubtitleLanguageStandardizer implements Standardizer<Subtitle>
+public class PatternSubtitleLanguageStandardizer extends SinglePropertyStandardizer<Subtitle, String, PatternStringReplacer>
 {
-	private final Pattern	languagePattern;
-	private final String	languageReplacement;
-
-	public PatternSubtitleLanguageStandardizer(Pattern languagePattern, String languageReplacement)
+	public PatternSubtitleLanguageStandardizer(PatternStringReplacer replacer)
 	{
-		this.languagePattern = languagePattern;
-		this.languageReplacement = languageReplacement;
-	}
-
-	public Pattern getLanguagePattern()
-	{
-		return languagePattern;
-	}
-
-	public String getLanguageReplacement()
-	{
-		return languageReplacement;
+		super(Subtitle.class, Subtitle.PROP_LANGUAGE.getPropName(), replacer);
 	}
 
 	@Override
-	public void standardize(Subtitle sub, List<StandardizingChange> changes)
+	protected String getValue(Subtitle bean)
 	{
-		if (sub == null || sub.getLanguage() == null)
-		{
-			return;
-		}
-		if (languagePattern.matcher(sub.getLanguage()).matches())
-		{
-			String oldLang = sub.getLanguage();
-			sub.setLanguage(languageReplacement);
-			changes.add(new StandardizingChange(sub, Subtitle.PROP_LANGUAGE.getPropName(), oldLang, sub.getLanguage()));
-		}
+		return bean.getLanguage();
 	}
 
 	@Override
-	public String toString()
+	protected void setValue(Subtitle bean, String value)
 	{
-		return MoreObjects.toStringHelper(SeriesNameStandardizer.class)
-				.add("languagePattern", languagePattern)
-				.add("languageReplacement", languageReplacement)
-				.toString();
+		bean.setLanguage(value);
 	}
 }

@@ -84,11 +84,11 @@ public class StandardizingDefaults
 	public static void registerAllDefaulStandardizers(TypeStandardizingService service)
 	{
 		service.registerStandardizer(Subtitle.class, SubtitleUtil::standardizeTags);
-		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("AAC2", "0"), Tag.list("AAC2.0")));
-		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("DD5", "1"), Tag.list("DD5.1")));
-		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("H", "264"), Tag.list("H.264")));
-		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("H", "265"), Tag.list("H.265")));
-		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(Tag.list("WEB", "DL"), Tag.list("WEB-DL")));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("AAC2", "0"), Tag.list("AAC2.0"))));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("DD5", "1"), Tag.list("DD5.1"))));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("H", "264"), Tag.list("H.264"))));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("H", "265"), Tag.list("H.265"))));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("WEB", "DL"), Tag.list("WEB-DL"))));
 	}
 
 	private StandardizingDefaults()

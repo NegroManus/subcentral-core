@@ -7,8 +7,8 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.util.CharReplacer;
-import de.subcentral.core.util.PatternReplacer;
+import de.subcentral.core.standardizing.CharStringReplacer;
+import de.subcentral.core.standardizing.PatternMapStringReplacer;
 
 public class MetadataDbDefaults
 {
@@ -21,8 +21,8 @@ public class MetadataDbDefaults
 
 	public static DelegatingNamingService createDefaultDelegatingMetadataDbNamingService(NamingService originalNamingService)
 	{
-		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
-		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", ' ');
+		PatternMapStringReplacer pr = new PatternMapStringReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
+		CharStringReplacer cr = new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "'´`", ' ');
 		return new DelegatingNamingService("QueryEntityNamingService", originalNamingService, pr.andThen(cr));
 	}
 

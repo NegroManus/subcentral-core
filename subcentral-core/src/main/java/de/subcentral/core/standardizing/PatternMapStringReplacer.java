@@ -1,4 +1,4 @@
-package de.subcentral.core.util;
+package de.subcentral.core.standardizing;
 
 import java.util.Map;
 import java.util.function.UnaryOperator;
@@ -9,11 +9,11 @@ import com.google.common.collect.ImmutableMap;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PatternReplacer implements UnaryOperator<String>
+public class PatternMapStringReplacer implements UnaryOperator<String>
 {
 	private final ImmutableMap<Pattern, String>	replacements;
 
-	public PatternReplacer(Map<Pattern, String> replacements)
+	public PatternMapStringReplacer(Map<Pattern, String> replacements)
 	{
 		this.replacements = ImmutableMap.copyOf(replacements); // null check included
 	}

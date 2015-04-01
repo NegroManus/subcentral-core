@@ -26,8 +26,8 @@ import de.subcentral.core.metadata.subtitle.Subtitle.ForeignParts;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
-import de.subcentral.core.util.CharReplacer;
-import de.subcentral.core.util.PatternReplacer;
+import de.subcentral.core.standardizing.CharStringReplacer;
+import de.subcentral.core.standardizing.PatternMapStringReplacer;
 import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
@@ -125,16 +125,16 @@ public class NamingDefaults
 
 	private static Function<String, String> initReleaseMediaFormatter()
 	{
-		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
+		PatternMapStringReplacer pr = new PatternMapStringReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
 		// hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible
-		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-", "'´`", '.');
+		CharStringReplacer cr = new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-", "'´`", '.');
 		return pr.andThen(cr);
 	}
 
 	private static Function<String, String> initReleaseNameFormatter()
 	{
-		PatternReplacer pr = new PatternReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
-		CharReplacer cr = new CharReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-", "'´`", '.');
+		PatternMapStringReplacer pr = new PatternMapStringReplacer(ImmutableMap.of(Pattern.compile("&"), "and"));
+		CharStringReplacer cr = new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-", "'´`", '.');
 		return pr.andThen(cr);
 	}
 
