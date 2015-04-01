@@ -154,11 +154,10 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 			fileChooser.setSelectedExtensionFilter(exeFilter);
 
 			File selectedFile = fileChooser.showOpenDialog(settingsController.getMainController().getPrimaryStage());
-			if (selectedFile == null)
+			if (selectedFile != null)
 			{
-				return;
+				rarExeFormatter.setValue(selectedFile.toPath());
 			}
-			rarExeFormatter.setValue(selectedFile.toPath());
 		});
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
