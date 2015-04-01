@@ -149,9 +149,9 @@ public class SubCentralFXUtil
 					case ISO3:
 						return "3-letter language code (ISO 639-2/T)";
 					case DISPLAY_NAME:
-						return "Full name";
+						return "Language name with country";
 					case DISPLAY_LANGUAGE:
-						return "Language only";
+						return "Language name without country";
 					default:
 						return format.toString();
 				}
