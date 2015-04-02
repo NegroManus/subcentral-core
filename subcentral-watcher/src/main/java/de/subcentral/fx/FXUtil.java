@@ -21,6 +21,8 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -446,6 +448,21 @@ public class FXUtil
 				return value;
 			}
 		};
+	}
+
+	public static ObservableList<Locale> createListOfAvailableLocales(boolean includeEmptyLocale, Comparator<Locale> sortOrder)
+	{
+		ObservableList<Locale> list = FXCollections.observableArrayList(Locale.getAvailableLocales());
+		if (!includeEmptyLocale)
+		{
+			// remove the empty locale
+			list.remove(Locale.ROOT);
+		}
+		if (sortOrder != null)
+		{
+			list.sort(sortOrder);
+		}
+		return list;
 	}
 
 	/**

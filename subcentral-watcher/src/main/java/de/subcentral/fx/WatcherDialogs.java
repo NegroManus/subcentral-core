@@ -1,7 +1,6 @@
 package de.subcentral.fx;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -603,10 +602,10 @@ public class WatcherDialogs
 				};
 			});
 
-			final ObservableList<Locale> addableLangList = FXCollections.observableArrayList(Arrays.asList(Locale.getAvailableLocales()));
+			final ObservableList<Locale> addableLangList = FXUtil.createListOfAvailableLocales(false, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			// already selected langs are not addable
 			addableLangList.removeAll(bean);
 			SortedList<Locale> sortedAddableLangList = new SortedList<>(addableLangList, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			// already selected langs are not addable
 			addableLangsComboBox.setItems(sortedAddableLangList);
 			addableLangsComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 
@@ -614,7 +613,8 @@ public class WatcherDialogs
 			addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
 			addLangBtn.setOnAction((ActionEvent) -> {
 				Locale selectedItem = addableLangsComboBox.getSelectionModel().getSelectedItem();
-				// addableLangList.remove(selectedItem);
+				// remove lang from addable langs
+				addableLangList.remove(selectedItem);
 				langList.add(selectedItem);
 			});
 
@@ -623,7 +623,7 @@ public class WatcherDialogs
 				Locale selectedItem = langsListView.getSelectionModel().getSelectedItem();
 				langList.remove(selectedItem);
 				// add language to addable langs
-				// addableLangList.add(selectedItem);
+				addableLangList.add(selectedItem);
 			});
 
 			// Set ResultConverter

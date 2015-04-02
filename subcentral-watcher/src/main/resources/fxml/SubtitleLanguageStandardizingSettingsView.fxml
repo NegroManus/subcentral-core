@@ -44,7 +44,7 @@
                            <children>
                               <Button fx:id="addLangPatternBtn" mnemonicParsing="false" text="Add" />
                               <Button fx:id="editLangPatternBtn" mnemonicParsing="false" text="Edit" />
-                              <Button fx:id="deleteLangPatternBtn" mnemonicParsing="false" text="Delete" />
+                              <Button fx:id="removeLangPatternBtn" mnemonicParsing="false" text="Remove" />
                               <Button fx:id="moveUpLangPatternBtn" mnemonicParsing="false" text="Move up">
                                  <VBox.margin>
                                     <Insets top="10.0" />
@@ -88,7 +88,7 @@
                            <children>
                               <Button fx:id="addLangNameBtn" mnemonicParsing="false" text="Add" />
                               <Button fx:id="editLangNameBtn" mnemonicParsing="false" text="Edit" />
-                              <Button fx:id="deleteLangNameBtn" mnemonicParsing="false" text="Delete" />
+                              <Button fx:id="removeLangNameBtn" mnemonicParsing="false" text="Remove" />
                            </children>
                         </VBox>
                      </children>

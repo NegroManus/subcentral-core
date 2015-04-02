@@ -1,6 +1,5 @@
 package de.subcentral.watcher.controller.settings;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +61,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	@FXML
 	private Button									editLangPatternBtn;
 	@FXML
-	private Button									deleteLangPatternBtn;
+	private Button									removeLangPatternBtn;
 	@FXML
 	private Button									moveUpLangPatternBtn;
 	@FXML
@@ -82,7 +81,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	@FXML
 	private Button									editLangNameBtn;
 	@FXML
-	private Button									deleteLangNameBtn;
+	private Button									removeLangNameBtn;
 	@FXML
 	private TextField								testingInputTxtFld;
 	@FXML
@@ -164,10 +163,8 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		outputLangFormatChoiceBox.setValue(initialReplacer.getOutputLanguageFormat());
 
 		// OutputLang
+		outputLangComboBox.setItems(FXUtil.createListOfAvailableLocales(false, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
 		outputLangComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-		List<Locale> allLocales = Arrays.asList(Locale.getAvailableLocales());
-		allLocales.sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-		outputLangComboBox.getItems().setAll(allLocales);
 		outputLangComboBox.setValue(initialReplacer.getOutputLanguage());
 		outputLangComboBox.disableProperty().bind(new BooleanBinding()
 		{
