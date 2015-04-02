@@ -1,6 +1,5 @@
 package de.subcentral.watcher.controller.settings;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -108,7 +107,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				initialReplacer.getParsingLanguages());
 		parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
-		editParsingLangsBtn.setOnAction((ActionEvent) -> {
+		editParsingLangsBtn.setOnAction((Actionevt) -> {
 			Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditor(parsingLangsTextFormatter.getValue());
 			if (result.isPresent())
 			{
@@ -142,20 +141,19 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				}
 			};
 		});
-
-		moveUpLangPatternBtn.setOnAction((ActionEvent event) -> {
-			int selectedIndex = langPatternsTableView.getSelectionModel().getSelectedIndex();
-			Collections.swap(langPatternsTableView.getItems(), selectedIndex, selectedIndex - 1);
-			langPatternsTableView.getSelectionModel().select(selectedIndex - 1);
-		});
-		moveDownLangPatternBtn.setOnAction((ActionEvent event) -> {
-			int selectedIndex = langPatternsTableView.getSelectionModel().getSelectedIndex();
-			Collections.swap(langPatternsTableView.getItems(), selectedIndex, selectedIndex + 1);
-			langPatternsTableView.getSelectionModel().select(selectedIndex + 1);
-		});
-
-		FXUtil.bindMoveButtonsForSingleSelection(langPatternsTableView, moveUpLangPatternBtn, moveDownLangPatternBtn);
 		langPatternsTableView.getItems().setAll(initialReplacer.getCustomLanguagePatterns());
+
+		final BooleanBinding noLangPatternSelection = langPatternsTableView.getSelectionModel().selectedItemProperty().isNull();
+		addLangPatternBtn.setOnAction((ActionEvent evt) -> {});
+
+		editLangPatternBtn.disableProperty().bind(noLangPatternSelection);
+		editLangPatternBtn.setOnAction((ActionEvent evt) -> {});
+
+		removeLangPatternBtn.disableProperty().bind(noLangPatternSelection);
+		removeLangPatternBtn.setOnAction((ActionEvent evt) -> {});
+
+		FXUtil.setStandardMouseAndKeyboardSupportForTableView(langPatternsTableView, editLangPatternBtn, removeLangPatternBtn);
+		FXUtil.bindMoveButtonsForSingleSelection(langPatternsTableView, moveUpLangPatternBtn, moveDownLangPatternBtn);
 
 		// OutputLangFormat
 		outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
