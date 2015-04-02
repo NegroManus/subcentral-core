@@ -13,7 +13,6 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -44,9 +43,11 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.watcher.controller.AbstractController;
+import de.subcentral.watcher.controller.settings.SubtitleLanguageStandardizingSettingsController.LanguageTextMapping;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 
@@ -86,7 +87,7 @@ public class WatcherDialogs
 			String title = buildTitle();
 			dialog.setTitle(title);
 			dialog.setHeaderText(title);
-			dialog.getDialogPane().setMinWidth(350d);
+			dialog.setWidth(350);
 
 			// Set the button types.
 			dialog.getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
@@ -579,9 +580,7 @@ public class WatcherDialogs
 		protected void initInputPaneControl()
 		{
 			// Set initial values
-			final ObservableList<Locale> langList = FXCollections.observableArrayList(bean);
-			SortedList<Locale> sortedLangList = new SortedList<>(langList, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			langsListView.setItems(sortedLangList);
+			langsListView.setItems(initLangList());
 			langsListView.setCellFactory((ListView<Locale> param) -> {
 				return new ListCell<Locale>()
 				{
@@ -602,35 +601,157 @@ public class WatcherDialogs
 				};
 			});
 
-			final ObservableList<Locale> addableLangList = FXUtil.createListOfAvailableLocales(false, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			// already selected langs are not addable
-			addableLangList.removeAll(bean);
-			SortedList<Locale> sortedAddableLangList = new SortedList<>(addableLangList, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			addableLangsComboBox.setItems(sortedAddableLangList);
+			addableLangsComboBox.setItems(initAddableLangList());
 			addableLangsComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 
 			// Bindings
 			addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
 			addLangBtn.setOnAction((ActionEvent) -> {
-				Locale selectedItem = addableLangsComboBox.getSelectionModel().getSelectedItem();
 				// remove lang from addable langs
-				addableLangList.remove(selectedItem);
-				langList.add(selectedItem);
+				Locale langToAdd = addableLangsComboBox.getItems().remove(addableLangsComboBox.getSelectionModel().getSelectedIndex());
+				// add lang to lang list
+				langsListView.getItems().add(langToAdd);
+				langsListView.getItems().sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 			});
 
 			removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
 			removeLangBtn.setOnAction((ActionEvent) -> {
-				Locale selectedItem = langsListView.getSelectionModel().getSelectedItem();
-				langList.remove(selectedItem);
-				// add language to addable langs
-				addableLangList.add(selectedItem);
+				// remove lang from lang list
+				Locale removedLang = langsListView.getItems().remove(langsListView.getSelectionModel().getSelectedIndex());
+				// add lang to addable langs
+				addableLangsComboBox.getItems().add(removedLang);
+				addableLangsComboBox.getItems().sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 			});
 
 			// Set ResultConverter
 			dialog.setResultConverter(dialogButton -> {
 				if (dialogButton == ButtonType.APPLY)
 				{
-					return langList;
+					return langsListView.getItems();
+				}
+				return null;
+			});
+		}
+
+		private ObservableList<Locale> initLangList()
+		{
+			ObservableList<Locale> langList = FXCollections.observableArrayList(bean);
+			langList.sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			return langList;
+		}
+
+		private ObservableList<Locale> initAddableLangList()
+		{
+			ObservableList<Locale> addableLangList = FXUtil.createListOfAvailableLocales(false, false, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			// already selected langs are not addable
+			addableLangList.removeAll(bean);
+			return addableLangList;
+		}
+	}
+
+	private static class StringToLanguageMappingEditorController extends AbstractBeanDialogController<LanguagePattern>
+	{
+		@FXML
+		private RadioButton			literalRadioBtn;
+		@FXML
+		private RadioButton			simplePatternRadioBtn;
+		@FXML
+		private RadioButton			regexRadioBtn;
+		@FXML
+		private TextField			stringTxtFld;
+		@FXML
+		private ComboBox<Locale>	langComboBox;
+
+		private StringToLanguageMappingEditorController(LanguagePattern bean)
+		{
+			super(bean);
+		}
+
+		@Override
+		protected String buildTitle()
+		{
+			return "Edit string to language mapping";
+		}
+
+		@Override
+		protected Node getDefaultFocusNode()
+		{
+			return stringTxtFld;
+		}
+
+		@Override
+		protected void initInputPaneControl()
+		{
+			// Set initial values
+
+			// Bindings
+			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+
+			// Set ResultConverter
+			dialog.setResultConverter(dialogButton -> {
+				if (dialogButton == ButtonType.APPLY)
+				{
+					return new LanguagePattern(null, null);
+				}
+				return null;
+			});
+		}
+	}
+
+	private static class LanguageTextMappingEditorController extends AbstractBeanDialogController<LanguageTextMapping>
+	{
+		@FXML
+		private ComboBox<Locale>	langComboBox;
+		@FXML
+		private TextField			textTxtFld;
+
+		private LanguageTextMappingEditorController(LanguageTextMapping bean)
+		{
+			super(bean);
+		}
+
+		@Override
+		protected String buildTitle()
+		{
+			return "Edit language to text mapping";
+		}
+
+		@Override
+		protected Node getDefaultFocusNode()
+		{
+			return textTxtFld;
+		}
+
+		@Override
+		protected void initInputPaneControl()
+		{
+			// Set initial values
+			langComboBox.setItems(FXUtil.createListOfAvailableLocales(true, true, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+			langComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+			langComboBox.setValue(bean != null ? bean.getLanguage() : null);
+
+			textTxtFld.setText(bean != null ? bean.getText() : "");
+
+			// Bindings
+			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+			applyButton.disableProperty().bind(new BooleanBinding()
+			{
+				{
+					super.bind(langComboBox.valueProperty(), textTxtFld.textProperty());
+				}
+
+				@Override
+				protected boolean computeValue()
+				{
+					return langComboBox.getValue() == null || StringUtils.isBlank(textTxtFld.getText());
+				}
+			});
+
+			// Set ResultConverter
+			dialog.setResultConverter(dialogButton -> {
+				if (dialogButton == ButtonType.APPLY)
+				{
+					return new LanguageTextMapping(langComboBox.getValue(), textTxtFld.getText());
 				}
 				return null;
 			});
@@ -686,6 +807,17 @@ public class WatcherDialogs
 	{
 		LocaleListEditorController ctrl = new LocaleListEditorController(languages);
 		return showDialogAndWait(ctrl, "LocaleListEditor.fxml");
+	}
+
+	public static Optional<LanguageTextMapping> showLanguageTextMappingEditor()
+	{
+		return showLanguageTextMappingEditor(null);
+	}
+
+	public static Optional<LanguageTextMapping> showLanguageTextMappingEditor(LanguageTextMapping mapping)
+	{
+		LanguageTextMappingEditorController ctrl = new LanguageTextMappingEditorController(mapping);
+		return showDialogAndWait(ctrl, "LanguageTextMappingEditor.fxml");
 	}
 
 	private static <T> Optional<T> showDialogAndWait(AbstractBeanDialogController<T> ctrl, String fxmlFilename)

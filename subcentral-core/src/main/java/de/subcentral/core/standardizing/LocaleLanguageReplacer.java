@@ -52,7 +52,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 	private final Locale							outputLanguage;
 	// Custom parsing/formatting
 	private final ImmutableList<LanguagePattern>	customLanguagePatterns;
-	private final ImmutableMap<Locale, String>		customLanguageNames;
+	private final ImmutableMap<Locale, String>		customLanguageTextMappings;
 
 	public LocaleLanguageReplacer()
 	{
@@ -65,13 +65,13 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 	}
 
 	public LocaleLanguageReplacer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage,
-			List<LanguagePattern> customLanguagePatterns, Map<Locale, String> customLanguageNames)
+			List<LanguagePattern> customLanguagePatterns, Map<Locale, String> customLanguageTextMappings)
 	{
 		this.parsingLanguages = ImmutableList.copyOf(parsingLanguages);
 		this.outputLanguageFormat = Objects.requireNonNull(outputLanguageFormat, "outputLanguageFormat");
 		this.outputLanguage = Objects.requireNonNull(targetLanguage, "outputLanguage");
 		this.customLanguagePatterns = ImmutableList.copyOf(customLanguagePatterns);
-		this.customLanguageNames = ImmutableMap.copyOf(customLanguageNames);
+		this.customLanguageTextMappings = ImmutableMap.copyOf(customLanguageTextMappings);
 	}
 
 	public ImmutableList<Locale> getParsingLanguages()
@@ -94,9 +94,9 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		return customLanguagePatterns;
 	}
 
-	public ImmutableMap<Locale, String> getCustomLanguageNames()
+	public ImmutableMap<Locale, String> getCustomLanguageTextMappings()
 	{
-		return customLanguageNames;
+		return customLanguageTextMappings;
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 	private String localeToString(Locale locale)
 	{
 		// 1. try the custom locale strings
-		String customLocaleString = customLanguageNames.get(locale);
+		String customLocaleString = customLanguageTextMappings.get(locale);
 		if (customLocaleString != null)
 		{
 			return customLocaleString;
@@ -190,7 +190,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 				.add("outputLanguageFormat", outputLanguageFormat)
 				.add("outputLanguage", outputLanguage)
 				.add("customLanguagePatterns", customLanguagePatterns)
-				.add("customLanguageNames", customLanguageNames)
+				.add("customLanguageTextMappings", customLanguageTextMappings)
 				.toString();
 	}
 

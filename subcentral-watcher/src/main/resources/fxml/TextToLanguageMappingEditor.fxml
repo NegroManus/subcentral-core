@@ -10,12 +10,11 @@
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
   </columnConstraints>
   <rowConstraints>
-      <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" spacing="3.0" GridPane.rowIndex="1">
@@ -25,9 +24,9 @@
             <RadioButton fx:id="regexRadioBtn" mnemonicParsing="false" text="the regular expression" />
          </children>
       </VBox>
-      <TextField fx:id="compatibleGroupTxtFld" maxWidth="1.7976931348623157E308" GridPane.rowIndex="2" />
+      <TextField fx:id="textTxtFld" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.rowIndex="2" />
       <Label text="then the language is:" GridPane.rowIndex="3" />
-      <Label text="If the input matches" />
-      <ComboBox prefWidth="150.0" GridPane.rowIndex="4" />
+      <Label text="If the language text matches" />
+      <ComboBox fx:id="langComboBox" minWidth="100.0" prefWidth="150.0" GridPane.rowIndex="4" />
    </children>
 </GridPane>

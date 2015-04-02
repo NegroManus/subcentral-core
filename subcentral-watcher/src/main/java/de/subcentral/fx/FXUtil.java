@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -294,7 +295,6 @@ public class FXUtil
 			{
 				editButton.fire();
 			}
-			evt.consume();
 		});
 		tableView.setOnKeyPressed((KeyEvent evt) -> {
 			if (!tableView.getSelectionModel().isEmpty())
@@ -307,7 +307,6 @@ public class FXUtil
 				{
 					removeButton.fire();
 				}
-				evt.consume();
 			}
 		});
 	}
@@ -327,7 +326,6 @@ public class FXUtil
 			}
 			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex - 1);
 			tableView.getSelectionModel().select(selectedIndex - 1);
-			evt.consume();
 		});
 		moveDownBtn.setOnAction((ActionEvent evt) -> {
 			int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
@@ -337,7 +335,6 @@ public class FXUtil
 			}
 			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex + 1);
 			tableView.getSelectionModel().select(selectedIndex + 1);
-			evt.consume();
 		});
 	}
 
@@ -450,19 +447,25 @@ public class FXUtil
 		};
 	}
 
-	public static ObservableList<Locale> createListOfAvailableLocales(boolean includeEmptyLocale, Comparator<Locale> sortOrder)
+	public static ObservableList<Locale> createListOfAvailableLocales(boolean includeEmptyLocale, boolean includeVariants,
+			Comparator<Locale> sortOrder)
 	{
-		ObservableList<Locale> list = FXCollections.observableArrayList(Locale.getAvailableLocales());
-		if (!includeEmptyLocale)
+		Locale[] allLocales = Locale.getAvailableLocales(); // ca. 160 (without variants 45)
+		int estimatedSize = includeVariants ? allLocales.length : (int) (allLocales.length / 3.5f);
+		ArrayList<Locale> filteredLocales = new ArrayList<>(estimatedSize);
+		for (Locale l : allLocales)
 		{
-			// remove the empty locale
-			list.remove(Locale.ROOT);
+			if ((includeEmptyLocale || !l.equals(Locale.ROOT)) && (includeVariants || l.getLanguage().equals(l.toString())))
+			{
+				filteredLocales.add(l);
+			}
 		}
+		filteredLocales.trimToSize();
 		if (sortOrder != null)
 		{
-			list.sort(sortOrder);
+			filteredLocales.sort(sortOrder);
 		}
-		return list;
+		return FXCollections.observableList(filteredLocales);
 	}
 
 	/**

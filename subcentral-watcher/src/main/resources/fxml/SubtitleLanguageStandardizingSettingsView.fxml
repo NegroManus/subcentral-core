@@ -31,10 +31,10 @@
                         <TextField fx:id="parsingLangsTxtFld" editable="false" GridPane.rowIndex="2" />
                         <Button fx:id="editParsingLangsBtn" mnemonicParsing="false" text="Edit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Custom parsing" underline="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
-                        <TableView fx:id="langPatternsTableView" prefHeight="75.0" GridPane.rowIndex="4">
+                        <TableView fx:id="textLangMappingsTableView" prefHeight="75.0" GridPane.rowIndex="4">
                           <columns>
-                            <TableColumn fx:id="langPatternsPatternColumn" prefWidth="75.0" text="Pattern" />
-                            <TableColumn fx:id="langPatternsLangColumn" prefWidth="75.0" text="Language" />
+                            <TableColumn fx:id="textLangMappingsTextColumn" prefWidth="75.0" text="Text" />
+                            <TableColumn fx:id="textLangMappingsLangColumn" prefWidth="75.0" text="Language" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -42,15 +42,15 @@
                         </TableView>
                         <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                            <children>
-                              <Button fx:id="addLangPatternBtn" mnemonicParsing="false" text="Add" />
-                              <Button fx:id="editLangPatternBtn" mnemonicParsing="false" text="Edit" />
-                              <Button fx:id="removeLangPatternBtn" mnemonicParsing="false" text="Remove" />
-                              <Button fx:id="moveUpLangPatternBtn" mnemonicParsing="false" text="Move up">
+                              <Button fx:id="addTextLangMappingBtn" mnemonicParsing="false" text="Add" />
+                              <Button fx:id="editTextLangMappingBtn" mnemonicParsing="false" text="Edit" />
+                              <Button fx:id="removeTextLangMappingBtn" mnemonicParsing="false" text="Remove" />
+                              <Button fx:id="moveUpTextLangMappingBtn" mnemonicParsing="false" text="Move up">
                                  <VBox.margin>
                                     <Insets top="10.0" />
                                  </VBox.margin>
                               </Button>
-                              <Button fx:id="moveDownLangPatternBtn" mnemonicParsing="false" text="Move down" />
+                              <Button fx:id="moveDownTextLangMappingBtn" mnemonicParsing="false" text="Move down" />
                            </children>
                         </VBox>
                      </children>
@@ -75,10 +75,10 @@
                         <Label text="Format language" GridPane.rowIndex="2" />
                         <ComboBox fx:id="outputLangComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Custom formatting" underline="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
-                        <TableView fx:id="langNamesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                        <TableView fx:id="langTextMappingsTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
                           <columns>
-                            <TableColumn fx:id="langNamesLangColumn" prefWidth="75.0" text="Language" />
-                            <TableColumn fx:id="langNamesNameColumn" prefWidth="75.0" text="Name" />
+                            <TableColumn fx:id="langTextMappingsLangColumn" prefWidth="75.0" text="Language" />
+                            <TableColumn fx:id="langTextMappingsTextColumn" prefWidth="75.0" text="Text" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -86,9 +86,9 @@
                         </TableView>
                         <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
                            <children>
-                              <Button fx:id="addLangNameBtn" mnemonicParsing="false" text="Add" />
-                              <Button fx:id="editLangNameBtn" mnemonicParsing="false" text="Edit" />
-                              <Button fx:id="removeLangNameBtn" mnemonicParsing="false" text="Remove" />
+                              <Button fx:id="addLangTextMappingBtn" mnemonicParsing="false" text="Add" />
+                              <Button fx:id="editLangTextMappingBtn" mnemonicParsing="false" text="Edit" />
+                              <Button fx:id="removeLangTextMappingBtn" mnemonicParsing="false" text="Remove" />
                            </children>
                         </VBox>
                      </children>
@@ -126,8 +126,8 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label text="Input language" GridPane.rowIndex="2" />
-            <Label text="Resulting output language" GridPane.rowIndex="3" />
+            <Label text="Input language text" GridPane.rowIndex="2" />
+            <Label text="Output language text" GridPane.rowIndex="3" />
             <TextField fx:id="testingInputTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="testingOutputTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" />
