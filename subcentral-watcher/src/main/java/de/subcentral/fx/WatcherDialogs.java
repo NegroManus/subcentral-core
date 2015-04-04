@@ -391,7 +391,7 @@ public class WatcherDialogs
 			dialog.setResultConverter(dialogButton -> {
 				if (dialogButton == ButtonType.APPLY)
 				{
-					String nameReplacement = StringUtils.trimToNull(namePatternTxtFld.getText());
+					String nameReplacement = StringUtils.trimToNull(nameReplacementTxtFld.getText());
 					boolean enabled = (bean == null ? true : bean.isEnabled());
 					return new SeriesNameStandardizerSettingEntry(namePatternBinding.getValue(), nameReplacement, enabled);
 				}

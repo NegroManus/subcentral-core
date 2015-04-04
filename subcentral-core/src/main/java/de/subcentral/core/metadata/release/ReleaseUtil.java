@@ -64,8 +64,9 @@ public class ReleaseUtil
 
 	public static Predicate<Release> filterByMedia(String requiredMediaName, NamingService mediaNamingService, Map<String, Object> namingParams)
 	{
-		return (rls) -> requiredMediaName.isEmpty() ? true
-				: requiredMediaName.equalsIgnoreCase(mediaNamingService.name(rls.getMedia(), namingParams));
+		return (rls) -> {
+			return requiredMediaName.isEmpty() ? true : requiredMediaName.equalsIgnoreCase(mediaNamingService.name(rls.getMedia(), namingParams));
+		};
 	}
 
 	public static Predicate<Release> filterByTags(List<Tag> containedTags, Collection<Tag> metaTagsToIgnore)
