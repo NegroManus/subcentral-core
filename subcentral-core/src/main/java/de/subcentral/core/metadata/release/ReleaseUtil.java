@@ -89,17 +89,25 @@ public class ReleaseUtil
 		enrichByParsingName(rls, ImmutableList.of(parsingService), overwrite);
 	}
 
-	public static void enrichByParsingName(Release rls, Iterable<ParsingService> parsingServices, boolean overwrite) throws ParsingException
+	/**
+	 * 
+	 * @param rls
+	 * @param parsingServices
+	 * @param overwrite
+	 * @return {@code true} if parsing was successful, {@code false} otherwise
+	 * @throws ParsingException
+	 */
+	public static boolean enrichByParsingName(Release rls, Iterable<ParsingService> parsingServices, boolean overwrite) throws ParsingException
 	{
-		if (rls == null || rls.getName() == null)
+		if (rls == null)
 		{
-			return;
+			return false;
 		}
 		Release parsedRls = ParsingUtil.parse(rls.getName(), Release.class, parsingServices);
 		if (parsedRls == null)
 		{
 			log.warn("Failed to enrich release because its name could not be parsed: " + rls);
-			return;
+			return false;
 		}
 		if (overwrite || rls.getMedia().isEmpty())
 		{
@@ -113,6 +121,7 @@ public class ReleaseUtil
 		{
 			rls.setGroup(parsedRls.getGroup());
 		}
+		return true;
 	}
 
 	public static List<Release> guessMatchingReleases(Release partialRls, Collection<Release> commonRlss, Collection<Tag> metaTags)
