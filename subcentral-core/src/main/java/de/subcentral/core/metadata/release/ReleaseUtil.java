@@ -65,7 +65,10 @@ public class ReleaseUtil
 	public static Predicate<Release> filterByMedia(String requiredMediaName, NamingService mediaNamingService, Map<String, Object> namingParams)
 	{
 		return (rls) -> {
-			return requiredMediaName.isEmpty() ? true : requiredMediaName.equalsIgnoreCase(mediaNamingService.name(rls.getMedia(), namingParams));
+			String name = mediaNamingService.name(rls.getMedia(), namingParams);
+			boolean accepted = requiredMediaName.isEmpty() ? true : requiredMediaName.equalsIgnoreCase(name);
+
+			return accepted;
 		};
 	}
 
@@ -76,7 +79,9 @@ public class ReleaseUtil
 
 	public static Predicate<Release> filterByGroup(Group group, boolean requireSameGroup)
 	{
-		return (rls) -> group == null ? (rls.getGroup() == null || !requireSameGroup) : group.equals(rls.getGroup());
+		return (rls) -> {
+			return group == null ? (rls.getGroup() == null || !requireSameGroup) : group.equals(rls.getGroup());
+		};
 	}
 
 	public static void enrichByParsingName(Release rls, ParsingService parsingService, boolean overwrite)
