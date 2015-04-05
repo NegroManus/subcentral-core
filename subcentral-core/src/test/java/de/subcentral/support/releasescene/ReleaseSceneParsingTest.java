@@ -52,5 +52,4 @@ public class ReleaseSceneParsingTest
 		System.out.println(parsed);
 		assertEquals(expectedResult, parsed);
 	}
-
 }
