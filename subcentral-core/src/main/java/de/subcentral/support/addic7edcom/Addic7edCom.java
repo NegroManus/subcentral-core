@@ -221,7 +221,6 @@ public class Addic7edCom
 		grps201.put(4, Release.PROP_TAGS);
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, Subtitle.PROP_TAGS);
-		grps201.put(7, Subtitle.PROP_SOURCE);
 		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), predefMovieMatches);
 
 		// --------------
