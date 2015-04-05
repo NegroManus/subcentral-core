@@ -374,7 +374,7 @@ public class WatcherSettings extends ObservableBean
 		ArrayList<ParsingServiceSettingEntry> services = new ArrayList<>(1);
 		List<String> domains = cfg.getList(String.class, key + ".parsingService");
 		boolean sceneEnabled = domains.contains(ReleaseScene.DOMAIN);
-		services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), sceneEnabled));
+		services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), sceneEnabled));
 		services.trimToSize();
 		return FXCollections.observableList(services);
 	}

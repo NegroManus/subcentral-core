@@ -21,19 +21,19 @@ import de.subcentral.core.metadata.media.RegularAvMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.parsing.TypeParsingService;
-import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimplePropFromStringService;
+import de.subcentral.core.parsing.TypeParsingService;
+import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseScene
 {
-	public static final String						DOMAIN			= "release.scene";
+	public static final String				DOMAIN			= "release.scene";
 	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(DOMAIN);
 
 	static
@@ -55,6 +55,7 @@ public class ReleaseScene
 		ReleaseParser epiRlsParser = new ReleaseParser(ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// Seasoned episode
+		// Series.Name.S00E00.Episode.Title.Some.Tags-Group
 		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
 		grps101.put(0, Release.PROP_NAME);
@@ -68,6 +69,7 @@ public class ReleaseScene
 				grps101.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
+		// Series.Name.S00E00.Some.Tags-Group
 		Pattern p102 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
 		grps102.put(0, Release.PROP_NAME);
@@ -78,6 +80,19 @@ public class ReleaseScene
 		grps102.put(5, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<SimplePropDescriptor>(p102,
 				grps102.build(),
+				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
+
+		// Series.Name.S00E00.Some.Tags
+		// "Penn.Zero.Part-Time.Hero.S01E08.1080p.WEBRip.AAC2.0.x264"
+		Pattern p103 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(.*?)", Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps103 = ImmutableMap.builder();
+		grps103.put(0, Release.PROP_NAME);
+		grps103.put(1, Series.PROP_NAME);
+		grps103.put(2, Season.PROP_NUMBER);
+		grps103.put(3, Episode.PROP_NUMBER_IN_SEASON);
+		grps103.put(4, Release.PROP_TAGS);
+		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<SimplePropDescriptor>(p103,
+				grps103.build(),
 				ImmutableMap.of(Series.PROP_TYPE, Series.TYPE_SEASONED));
 
 		// Alternate naming scheme (used for example by UK group FoV) "The_Fall.2x02.720p_HDTV_x264-FoV"
@@ -144,6 +159,7 @@ public class ReleaseScene
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> epiRlsMatchers = ImmutableList.builder();
 		epiRlsMatchers.add(matcher101);
 		epiRlsMatchers.add(matcher102);
+		epiRlsMatchers.add(matcher103);
 		epiRlsMatchers.add(matcher112);
 		epiRlsMatchers.add(matcher201);
 		epiRlsMatchers.add(matcher202);

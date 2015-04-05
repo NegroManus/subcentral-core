@@ -30,8 +30,6 @@ import com.google.common.collect.ListMultimap;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbUtil;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
@@ -39,6 +37,8 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
+import de.subcentral.core.metadata.release.StandardRelease;
+import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ParsingException;
@@ -219,8 +219,9 @@ public class ProcessingTask extends Task<Void>
 		{
 			if (standardRls.getAssumeExistence() == AssumeExistence.ALWAYS)
 			{
-				Release standardRlsWithMedia = new Release(srcRls.getMedia(), standardRls.getStandardRelease().getTags(), standardRls.getStandardRelease()
-						.getGroup());
+				Release standardRlsWithMedia = new Release(srcRls.getMedia(),
+						standardRls.getStandardRelease().getTags(),
+						standardRls.getStandardRelease().getGroup());
 				existingRlss.add(standardRlsWithMedia);
 			}
 		}
@@ -229,6 +230,7 @@ public class ProcessingTask extends Task<Void>
 		List<Release> foundRlss = processReleases(existingRlss);
 
 		// Filter
+		log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
 		List<Release> matchingRlss = foundRlss.stream()
 				.filter(ReleaseUtil.filterByMedia(srcRls.getMedia(),
 						processingController.getMediaNamingServiceForReleaseFiltering(),
