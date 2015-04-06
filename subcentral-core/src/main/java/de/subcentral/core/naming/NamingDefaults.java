@@ -30,13 +30,12 @@ import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
 import de.subcentral.core.standardizing.CharStringReplacer;
 import de.subcentral.core.standardizing.PatternMapStringReplacer;
 import de.subcentral.core.standardizing.PatternStringReplacer;
-import de.subcentral.core.standardizing.StripAccentsStringReplacer;
+import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
 {
 	public static final String						DEFAULT_DOMAIN						= "default";
-	private static final UnaryOperator<String>		ACCENT_REPLACER						= new StripAccentsStringReplacer();
 	private static final UnaryOperator<String>		AND_REPLACER						= new PatternStringReplacer(Pattern.compile("&"), "and");
 	private static final UnaryOperator<String>		ALNUM_DOT_HYPEN_REPLACER			= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-",
 																								"'´`",
@@ -146,12 +145,14 @@ public class NamingDefaults
 
 	private static Function<String, String> initReleaseMediaFormatter()
 	{
-		return ACCENT_REPLACER.andThen(AND_REPLACER).andThen(ALNUM_DOT_HYPEN_REPLACER).andThen(DOT_HYPHEN_DOT_REPLACER);
+		return StandardizingDefaults.ACCENT_REPLACER.andThen(AND_REPLACER).andThen(ALNUM_DOT_HYPEN_REPLACER).andThen(DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	private static Function<String, String> initReleaseNameFormatter()
 	{
-		return ACCENT_REPLACER.andThen(AND_REPLACER).andThen(ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER).andThen(DOT_HYPHEN_DOT_REPLACER);
+		return StandardizingDefaults.ACCENT_REPLACER.andThen(AND_REPLACER)
+				.andThen(ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER)
+				.andThen(DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	public static Function<String, String> getDefaultReleaseNameFormatter()

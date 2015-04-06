@@ -2,6 +2,7 @@ package de.subcentral.core.standardizing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableList;
 
@@ -15,6 +16,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 
 public class StandardizingDefaults
 {
+	public static final UnaryOperator<String>		ACCENT_REPLACER					= new StripAccentsStringReplacer();
 	private static final TypeStandardizingService	DEFAULT_STANDARDIZING_SERVICE	= new TypeStandardizingService("default");
 	static
 	{
