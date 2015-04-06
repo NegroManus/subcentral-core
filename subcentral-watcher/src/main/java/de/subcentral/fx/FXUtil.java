@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
@@ -55,13 +54,13 @@ import de.subcentral.watcher.settings.WatcherSettings.PatternMode;
 
 public class FXUtil
 {
-	private static final Logger							log									= LogManager.getLogger(FXUtil.class);
+	private static final Logger									log									= LogManager.getLogger(FXUtil.class);
 
-	public static final StringConverter<Path>			PATH_STRING_CONVERTER				= initPathStringConverter();
-	public static final StringConverter<Locale>			LOCALE_DISPLAY_NAME_CONVERTER		= initLocaleDisplayNameConverter();
-	public static final StringConverter<List<Locale>>	LOCALE_LIST_DISPLAY_NAME_CONVERTER	= initLocaleListDisplayNameConverter();
-	public static final Comparator<Locale>				LOCALE_DISPLAY_NAME_COMPARATOR		= initLocaleDisplayNameComparator();
-	public static final EventHandler<WorkerStateEvent>	DEFAULT_TASK_FAILED_HANDLER			= initDefaultTaskFailedHandler();
+	public static final StringConverter<Path>					PATH_STRING_CONVERTER				= initPathStringConverter();
+	public static final StringConverter<Locale>					LOCALE_DISPLAY_NAME_CONVERTER		= initLocaleDisplayNameConverter();
+	public static final StringConverter<ObservableList<Locale>>	LOCALE_LIST_DISPLAY_NAME_CONVERTER	= initLocaleListDisplayNameConverter();
+	public static final Comparator<Locale>						LOCALE_DISPLAY_NAME_COMPARATOR		= initLocaleDisplayNameComparator();
+	public static final EventHandler<WorkerStateEvent>			DEFAULT_TASK_FAILED_HANDLER			= initDefaultTaskFailedHandler();
 
 	private static StringConverter<Path> initPathStringConverter()
 	{
@@ -111,12 +110,12 @@ public class FXUtil
 		};
 	}
 
-	private static StringConverter<List<Locale>> initLocaleListDisplayNameConverter()
+	private static StringConverter<ObservableList<Locale>> initLocaleListDisplayNameConverter()
 	{
-		return new StringConverter<List<Locale>>()
+		return new StringConverter<ObservableList<Locale>>()
 		{
 			@Override
-			public String toString(List<Locale> locales)
+			public String toString(ObservableList<Locale> locales)
 			{
 				if (locales == null)
 				{
@@ -135,7 +134,7 @@ public class FXUtil
 			}
 
 			@Override
-			public List<Locale> fromString(String string)
+			public ObservableList<Locale> fromString(String string)
 			{
 				throw new UnsupportedOperationException();
 			}

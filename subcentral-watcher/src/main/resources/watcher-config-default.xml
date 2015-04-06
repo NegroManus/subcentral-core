@@ -85,8 +85,6 @@
 			<parsingLanguages>
 				<language tag="en" />
 				<language tag="de" /> <!-- german -->
-				<language tag="fr" /> <!-- french -->
-				<language tag="it" /> <!-- italian -->
 				<language tag="zh" /> <!-- chinese -->
 			</parsingLanguages>
 			<ouputLanguageFormat format="NAME" />

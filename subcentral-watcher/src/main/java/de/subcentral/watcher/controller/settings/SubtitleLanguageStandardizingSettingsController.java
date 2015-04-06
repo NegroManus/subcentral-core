@@ -1,16 +1,12 @@
 package de.subcentral.watcher.controller.settings;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,18 +22,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.BorderPane;
-
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import com.google.common.base.MoreObjects;
-
-import de.subcentral.core.standardizing.LocaleLanguageReplacer;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.fx.FXUtil;
 import de.subcentral.fx.SubCentralFXUtil;
 import de.subcentral.fx.WatcherDialogs;
+import de.subcentral.watcher.settings.LanguageTextMapping;
+import de.subcentral.watcher.settings.LocaleLanguageReplacerSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 
 public class SubtitleLanguageStandardizingSettingsController extends AbstractSettingsSectionController
@@ -101,18 +92,17 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	@Override
 	protected void doInitialize() throws Exception
 	{
-		final LocaleLanguageReplacer initialReplacer = WatcherSettings.INSTANCE.getLanguageStandardizer().getReplacer();
-
+		LocaleLanguageReplacerSettings settings = WatcherSettings.INSTANCE.getSubtitleLanguageSettings();
 		// ParsingLangs
-		final TextFormatter<List<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FXUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER,
-				initialReplacer.getParsingLanguages());
+		final TextFormatter<ObservableList<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FXUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER);
+		parsingLangsTextFormatter.valueProperty().bindBidirectional(settings.parsingLanguagesProperty());
 		parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
 		editParsingLangsBtn.setOnAction((Actionevt) -> {
 			Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditor(parsingLangsTextFormatter.getValue());
 			if (result.isPresent())
 			{
-				parsingLangsTextFormatter.setValue(result.get());
+				parsingLangsTextFormatter.setValue(FXCollections.observableArrayList(result.get()));
 			}
 		});
 
@@ -142,7 +132,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				}
 			};
 		});
-		textLangMappingsTableView.getItems().setAll(initialReplacer.getCustomLanguagePatterns());
+		textLangMappingsTableView.setItems(settings.getCustomLanguagePatterns());
 
 		addTextLangMappingBtn.setOnAction((ActionEvent evt) -> {});
 
@@ -161,12 +151,12 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		// OutputLangFormat
 		outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
 		outputLangFormatChoiceBox.setConverter(SubCentralFXUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
-		outputLangFormatChoiceBox.setValue(initialReplacer.getOutputLanguageFormat());
+		outputLangFormatChoiceBox.valueProperty().bindBidirectional(settings.outputLanguageFormatProperty());
 
 		// OutputLang
 		outputLangComboBox.setItems(FXUtil.createListOfAvailableLocales(false, false, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
 		outputLangComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-		outputLangComboBox.setValue(initialReplacer.getOutputLanguage());
+		outputLangComboBox.valueProperty().bindBidirectional(settings.outputLanguageProperty());
 		outputLangComboBox.disableProperty().bind(new BooleanBinding()
 		{
 			{
@@ -202,7 +192,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 
 		// LangTextMappings
 		langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, Locale> param) -> {
-			return FXUtil.createConstantBinding(param.getValue().language);
+			return FXUtil.createConstantBinding(param.getValue().getLanguage());
 		});
 		langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageTextMapping, Locale> param) -> {
 			return new TableCell<LanguageTextMapping, Locale>()
@@ -224,9 +214,9 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			};
 		});
 		langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, String> param) -> {
-			return FXUtil.createConstantBinding(param.getValue().text);
+			return FXUtil.createConstantBinding(param.getValue().getText());
 		});
-		langTextMappingsTableView.setItems(convertToObservableMappingList(initialReplacer.getCustomLanguageTextMappings()));
+		langTextMappingsTableView.setItems(settings.customLanguageTextMappingsProperty());
 
 		addLangTextMappingBtn.setOnAction((ActionEvent) -> {
 			Optional<LanguageTextMapping> result = WatcherDialogs.showLanguageTextMappingEditor();
@@ -255,46 +245,17 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 
 		FXUtil.setStandardMouseAndKeyboardSupportForTableView(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);
 
-		// Standardizer
-		final Binding<LocaleSubtitleLanguageStandardizer> stdzerBinding = new ObjectBinding<LocaleSubtitleLanguageStandardizer>()
-		{
-			{
-				// use getItems() because itemProperty() is an ObjectProperty, not a ListProperty
-				super.bind(parsingLangsTextFormatter.valueProperty(),
-						textLangMappingsTableView.getItems(),
-						outputLangFormatChoiceBox.valueProperty(),
-						outputLangComboBox.valueProperty(),
-						langTextMappingsTableView.getItems());
-			}
-
-			@Override
-			protected LocaleSubtitleLanguageStandardizer computeValue()
-			{
-				Map<Locale, String> langTextMappings = new HashMap<>();
-				for (LanguageTextMapping p : langTextMappingsTableView.getItems())
-				{
-					langTextMappings.put(p.language, p.text);
-				}
-				return new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(parsingLangsTextFormatter.getValue(),
-						outputLangFormatChoiceBox.getValue(),
-						outputLangComboBox.getValue(),
-						textLangMappingsTableView.getItems(),
-						langTextMappings));
-			}
-		};
-		WatcherSettings.INSTANCE.languageStandardizerProperty().bind(stdzerBinding);
-
 		// Testing
 		testingOutputTxtFld.textProperty().bind(new StringBinding()
 		{
 			{
-				super.bind(testingInputTxtFld.textProperty(), stdzerBinding);
+				super.bind(testingInputTxtFld.textProperty(), WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding());
 			}
 
 			@Override
 			protected String computeValue()
 			{
-				return stdzerBinding.getValue().getReplacer().apply(testingInputTxtFld.getText());
+				return WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
 			}
 		});
 	}
@@ -308,65 +269,5 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		}
 		FXCollections.sort(mappings);
 		return mappings;
-	}
-
-	public final static class LanguageTextMapping implements Comparable<LanguageTextMapping>
-	{
-		private final Locale	language;
-		private final String	text;
-
-		public LanguageTextMapping(Locale language, String text)
-		{
-			this.language = Objects.requireNonNull(language, "language");
-			this.text = Objects.requireNonNull(text, "text");
-		}
-
-		public Locale getLanguage()
-		{
-			return language;
-		}
-
-		public String getText()
-		{
-			return text;
-		}
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
-				return true;
-			}
-			if (obj instanceof LanguageTextMapping)
-			{
-				LanguageTextMapping o = (LanguageTextMapping) obj;
-				return language.equals(o.language);
-			}
-			return false;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return new HashCodeBuilder(983, 133).append(language).toHashCode();
-		}
-
-		@Override
-		public String toString()
-		{
-			return MoreObjects.toStringHelper(LanguageTextMapping.class).omitNullValues().add("language", language).add("text", text).toString();
-		}
-
-		@Override
-		public int compareTo(LanguageTextMapping o)
-		{
-			// nulls first
-			if (o == null)
-			{
-				return 1;
-			}
-			return FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR.compare(this.language, o.language);
-		}
 	}
 }

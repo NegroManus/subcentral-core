@@ -47,7 +47,7 @@ import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.watcher.controller.AbstractController;
-import de.subcentral.watcher.controller.settings.SubtitleLanguageStandardizingSettingsController.LanguageTextMapping;
+import de.subcentral.watcher.settings.LanguageTextMapping;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 

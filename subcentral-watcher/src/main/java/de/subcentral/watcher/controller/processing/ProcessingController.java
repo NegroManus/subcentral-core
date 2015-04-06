@@ -157,15 +157,12 @@ public class ProcessingController extends AbstractController
 		// Register default Standardizers (not modifiable via GUI)
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		StandardizingDefaults.registerAllDefaulStandardizers(service);
+
 		// Bind SubtitleLanguageStandardizer
-		LocaleSubtitleLanguageStandardizer langStdzer = WatcherSettings.INSTANCE.getLanguageStandardizer();
-		if (langStdzer != null)
-		{
-			service.registerStandardizer(Subtitle.class, langStdzer);
-		}
-		WatcherSettings.INSTANCE.languageStandardizerProperty().addListener((
-				ObservableValue<? extends LocaleSubtitleLanguageStandardizer> observable, LocaleSubtitleLanguageStandardizer oldValue,
-				LocaleSubtitleLanguageStandardizer newValue) -> {
+		Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding();
+		service.registerStandardizer(Subtitle.class, langStdzerBinding.getValue());
+		langStdzerBinding.addListener((ObservableValue<? extends LocaleSubtitleLanguageStandardizer> observable,
+				LocaleSubtitleLanguageStandardizer oldValue, LocaleSubtitleLanguageStandardizer newValue) -> {
 			if (oldValue != null)
 			{
 				service.unregisterStandardizer(oldValue);
@@ -176,6 +173,7 @@ public class ProcessingController extends AbstractController
 				service.registerStandardizer(Subtitle.class, newValue);
 			}
 		});
+
 		// Bind all other Standardizers
 		SubCentralFXUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPostMetadataStandardizers());
 		return service;
