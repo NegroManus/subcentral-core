@@ -16,7 +16,7 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 	public SeriesNameStandardizerSettingEntry(UiPattern nameUiPattern, String nameReplacement, boolean enabled)
 	{
 		super(Series.class, buildStandardizer(nameUiPattern, nameReplacement), enabled);
-		ruleAsString = FXUtil.createConstantStringBinding(operationToString(standardizer, nameUiPattern));
+		ruleAsString = FXUtil.createConstantStringBinding(operationToString(value, nameUiPattern));
 		this.nameUiPattern = nameUiPattern;
 	}
 

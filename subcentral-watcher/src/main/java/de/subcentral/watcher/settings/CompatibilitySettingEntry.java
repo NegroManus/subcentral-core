@@ -1,41 +1,42 @@
 package de.subcentral.watcher.settings;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.util.StringConverter;
 import de.subcentral.core.metadata.release.Compatibility;
+import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 
-public class CompatibilitySettingEntry implements SettingEntry<Compatibility>
+public class CompatibilitySettingEntry extends AbstractSettingEntry<Compatibility>
 {
-	private final Compatibility		compatibility;
-	private final BooleanProperty	enabled;
-
-	public CompatibilitySettingEntry(Compatibility compatibility, boolean enabled)
+	public CompatibilitySettingEntry(Compatibility value, boolean enabled)
 	{
-		this.compatibility = compatibility;
-		this.enabled = new SimpleBooleanProperty(this, "enabled", enabled);
+		super(value, enabled);
 	}
 
-	@Override
-	public Compatibility getValue()
+	public static final StringConverter<CompatibilitySettingEntry>	STRING_CONVERTER	= initStringConverter();
+
+	private static StringConverter<CompatibilitySettingEntry> initStringConverter()
 	{
-		return compatibility;
+		return new StringConverter<CompatibilitySettingEntry>()
+		{
+			@Override
+			public String toString(CompatibilitySettingEntry entry)
+			{
+				Compatibility c = entry.getValue();
+				if (c instanceof CrossGroupCompatibility)
+				{
+					return ((CrossGroupCompatibility) c).toShortString();
+				}
+				else
+				{
+					return c.toString();
+				}
+			}
+
+			@Override
+			public CompatibilitySettingEntry fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
 
-	@Override
-	public final BooleanProperty enabledProperty()
-	{
-		return this.enabled;
-	}
-
-	@Override
-	public final boolean isEnabled()
-	{
-		return this.enabledProperty().get();
-	}
-
-	@Override
-	public final void setEnabled(final boolean enabled)
-	{
-		this.enabledProperty().set(enabled);
-	}
 }

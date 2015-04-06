@@ -1,6 +1,5 @@
 package de.subcentral.watcher.settings;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
 import javafx.beans.property.BooleanProperty;
@@ -13,43 +12,16 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.db.MetadataDb;
 
-public class MetadataDbSettingEntry<T> implements SettingEntry<MetadataDb<T>>
+public class MetadataDbSettingEntry<T> extends AbstractSettingEntry<MetadataDb<T>>
 {
 	private static final Logger		log	= LogManager.getLogger(MetadataDbSettingEntry.class);
 
-	private final MetadataDb<T>		database;
-	private final BooleanProperty	enabled;
 	private final BooleanProperty	available;
 
 	public MetadataDbSettingEntry(MetadataDb<T> database, boolean enabled)
 	{
-		this.database = Objects.requireNonNull(database, "database");
-		this.enabled = new SimpleBooleanProperty(this, "enabled", enabled);
+		super(database, enabled);
 		this.available = new SimpleBooleanProperty(this, "available", false);
-	}
-
-	@Override
-	public MetadataDb<T> getValue()
-	{
-		return database;
-	}
-
-	@Override
-	public final BooleanProperty enabledProperty()
-	{
-		return this.enabled;
-	}
-
-	@Override
-	public final boolean isEnabled()
-	{
-		return this.enabledProperty().get();
-	}
-
-	@Override
-	public final void setEnabled(final boolean enabled)
-	{
-		this.enabledProperty().set(enabled);
 	}
 
 	public ReadOnlyBooleanProperty availableProperty()
@@ -70,8 +42,8 @@ public class MetadataDbSettingEntry<T> implements SettingEntry<MetadataDb<T>>
 			@Override
 			protected Boolean call() throws Exception
 			{
-				boolean isAvailable = database.isAvailable();
-				log.debug("Rechecked whether {} is available: {}", database, isAvailable);
+				boolean isAvailable = value.isAvailable();
+				log.debug("Rechecked whether {} is available: {}", value, isAvailable);
 				return isAvailable;
 			}
 

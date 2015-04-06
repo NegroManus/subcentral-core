@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 import java.util.StringJoiner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Function;
 
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -491,7 +492,15 @@ public class FXUtil
 		return loader.load();
 	}
 
-	public static <E> void handleDistinctAdd(TableView<E> table, Optional<E> addDialogResult)
+	public static <E, F> void handleDistinctAdd(TableView<E> table, Optional<F> addDialogResult, Function<F, E> converter)
+	{
+		if (addDialogResult.isPresent())
+		{
+			handleDistinctAdd(table, Optional.of(converter.apply(addDialogResult.get())));
+		}
+	}
+
+	public static <E> void handleDistinctAdd(TableView<E> table, Optional<? extends E> addDialogResult)
 	{
 		if (addDialogResult.isPresent())
 		{
@@ -505,6 +514,14 @@ public class FXUtil
 			{
 				table.getItems().set(index, newElem);
 			}
+		}
+	}
+
+	public static <E, F> void handleDistinctEdit(TableView<E> table, Optional<F> editDialogResult, Function<F, E> converter)
+	{
+		if (editDialogResult.isPresent())
+		{
+			handleDistinctEdit(table, Optional.of(converter.apply(editDialogResult.get())));
 		}
 	}
 

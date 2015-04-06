@@ -22,6 +22,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
@@ -175,7 +176,7 @@ public class SubCentralFXUtil
 			@Override
 			public String toString(StandardRelease rls)
 			{
-				return rls.getStandardRelease().getTags() + "-" + rls.getStandardRelease().getGroup() + " (" + rls.getAssumeExistence() + ")";
+				return NamingDefaults.getDefaultReleaseNamer().name(rls.getStandardRelease()) + " (" + rls.getAssumeExistence() + ")";
 			}
 
 			@Override
