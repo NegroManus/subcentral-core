@@ -10,10 +10,10 @@ public class PatternStringReplacer implements UnaryOperator<String>
 	private final Pattern	pattern;
 	private final String	replacement;
 
-	public PatternStringReplacer(Pattern languagePattern, String languageReplacement)
+	public PatternStringReplacer(Pattern languagePattern, String replacement)
 	{
 		this.pattern = languagePattern;
-		this.replacement = languageReplacement;
+		this.replacement = replacement;
 	}
 
 	public Pattern getPattern()
@@ -27,13 +27,13 @@ public class PatternStringReplacer implements UnaryOperator<String>
 	}
 
 	@Override
-	public String apply(String string)
+	public String apply(String s)
 	{
-		if (pattern.matcher(string).matches())
+		if (s == null)
 		{
-			return replacement;
+			return null;
 		}
-		return string;
+		return pattern.matcher(s).replaceAll(replacement);
 	}
 
 	@Override
