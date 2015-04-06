@@ -304,6 +304,19 @@ public class ProcessingTask extends Task<Void>
 		}
 
 		srcItem.updateProgress(0.75d);
+		if (config.isDeleteSource())
+		{
+			try
+			{
+				srcItem.updateStatus("Deleting source file");
+				Files.delete(sourceFile);
+				log.info("Deleted source file {}", sourceFile);
+			}
+			catch (IOException e)
+			{
+				log.warn("Could not delete source file", e);
+			}
+		}
 
 		srcItem.updateStatus("Done");
 		srcItem.updateProgress(1d);
