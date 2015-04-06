@@ -186,7 +186,7 @@ public class ProcessingController extends AbstractController
 
 	private NamingService initMediaNamingServiceForReleaseFiltering()
 	{
-		return new DelegatingNamingService("naming of media for filtering releases", namingService, NamingDefaults.getDefaultReleaseNameFormatter());
+		return new DelegatingNamingService("naming of media for filtering releases", namingService, NamingDefaults.getDefaultFilteringFormatter());
 	}
 
 	public void doInitialize()
