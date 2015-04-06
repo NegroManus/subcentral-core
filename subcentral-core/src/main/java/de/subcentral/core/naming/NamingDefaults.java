@@ -108,7 +108,7 @@ public class NamingDefaults
 		ImmutableSet<Separation> separations = sepsBuilder.build();
 
 		Config config = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, null);
-		Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, RELEASE_MEDIA_FORMATTER);
+		Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, RELEASE_NAME_FORMATTER);
 
 		// EpisodeNamer
 		EPISODE_NAMER = new EpisodeNamer(config);

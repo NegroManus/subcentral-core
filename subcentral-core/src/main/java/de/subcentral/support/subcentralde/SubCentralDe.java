@@ -43,7 +43,7 @@ public class SubCentralDe
 	private static List<Parser<SubtitleAdjustment>> initParsers()
 	{
 		String scPatternPrefix = "(";
-		String scPatternSuffix = ")\\.(de|ger|german|VO|en|eng|english)(?:-|\\.)([\\w&]+)";
+		String scPatternSuffix = ")\\.(de|ger|german|VO|en|eng|english)(?:-|\\.)([\\w&_]+)";
 
 		ImmutableList.Builder<Parser<SubtitleAdjustment>> parsers = ImmutableList.builder();
 
@@ -105,7 +105,6 @@ public class SubCentralDe
 				grps.put(highestGroupNum + 3, Subtitle.PROP_GROUP);
 				ImmutableMap.Builder<SimplePropDescriptor, String> predefinedMatches = ImmutableMap.builder();
 				predefinedMatches.putAll(sceneMatcher.getPredefinedMatches());
-				predefinedMatches.put(Subtitle.PROP_SOURCE, "SubCentral.de");
 				MappingMatcher<SimplePropDescriptor> matcher = new MappingMatcher<SimplePropDescriptor>(p, grps.build(), predefinedMatches.build());
 				matchers.add(matcher);
 			}
