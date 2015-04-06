@@ -8,22 +8,22 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 
 import de.subcentral.watcher.settings.WatcherSettings.PatternMode;
 
-public class UiPattern
+public class UiPattern implements Comparable<UiPattern>
 {
 	private final String		pattern;
-	private final PatternMode	patternMode;
-	private final Pattern		compiledPattern;
+	private final PatternMode	mode;
 
-	public UiPattern(String pattern, PatternMode patternMode) throws PatternSyntaxException
+	public UiPattern(String pattern, PatternMode mode) throws PatternSyntaxException
 	{
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
-		this.patternMode = Objects.requireNonNull(patternMode, "patternMode");
-		this.compiledPattern = compilePattern(pattern, patternMode);
+		this.mode = Objects.requireNonNull(mode, "mode");
 	}
 
 	public String getPattern()
@@ -31,19 +31,19 @@ public class UiPattern
 		return pattern;
 	}
 
-	public PatternMode getPatternMode()
+	public PatternMode getMode()
 	{
-		return patternMode;
+		return mode;
 	}
 
-	public Pattern getCompiledPattern()
+	public Pattern toPattern() throws PatternSyntaxException
 	{
-		return compiledPattern;
+		return compilePattern();
 	}
 
-	private static Pattern compilePattern(String pattern, PatternMode patternMode) throws PatternSyntaxException
+	private Pattern compilePattern() throws PatternSyntaxException
 	{
-		switch (patternMode)
+		switch (mode)
 		{
 			case LITERAL:
 				return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
@@ -109,5 +109,43 @@ public class UiPattern
 			convertedPattern.append(Pattern.quote(tail));
 		}
 		return convertedPattern.toString();
+	}
+
+	@Override
+	public int compareTo(UiPattern o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return pattern.toString().compareToIgnoreCase(o.pattern.toString());
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof UiPattern)
+		{
+			UiPattern o = (UiPattern) obj;
+			return pattern.equals(o.pattern) && mode.equals(o.mode);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(731, 15).append(pattern).append(mode).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(UiPattern.class).omitNullValues().add("pattern", pattern).add("mode", mode).toString();
 	}
 }

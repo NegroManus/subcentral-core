@@ -54,6 +54,7 @@ import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.naming.EpisodeNamer;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
@@ -187,10 +188,15 @@ public class WatcherSettings extends ObservableBean
 				{
 					langTextMappings.put(mapping.getLanguage(), mapping.getText());
 				}
+				List<LanguagePattern> langPatterns = new ArrayList<>(subtitleLanguageSettings.getCustomLanguagePatterns().size());
+				for (LanguageUiPattern uiPattern : subtitleLanguageSettings.getCustomLanguagePatterns())
+				{
+					langPatterns.add(uiPattern.toLanguagePattern());
+				}
 				return new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(subtitleLanguageSettings.getParsingLanguages(),
 						subtitleLanguageSettings.getOutputLanguageFormat(),
 						subtitleLanguageSettings.getOutputLanguage(),
-						subtitleLanguageSettings.getCustomLanguagePatterns(),
+						langPatterns,
 						langTextMappings));
 			}
 		};

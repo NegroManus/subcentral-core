@@ -43,11 +43,11 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.settings.LanguageTextMapping;
+import de.subcentral.watcher.settings.LanguageUiPattern;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 
@@ -344,7 +344,7 @@ public class WatcherDialogs
 			}
 			else
 			{
-				switch (bean.getNameUiPattern().getPatternMode())
+				switch (bean.getNameUiPattern().getMode())
 				{
 					case LITERAL:
 						initialPatternMode = literalRadioBtn;
@@ -649,7 +649,7 @@ public class WatcherDialogs
 		}
 	}
 
-	private static class StringToLanguageMappingEditorController extends AbstractBeanDialogController<LanguagePattern>
+	private static class TextLanguageMappingEditorController extends AbstractBeanDialogController<LanguageUiPattern>
 	{
 		@FXML
 		private RadioButton			literalRadioBtn;
@@ -658,11 +658,13 @@ public class WatcherDialogs
 		@FXML
 		private RadioButton			regexRadioBtn;
 		@FXML
-		private TextField			stringTxtFld;
+		private TextField			textTxtFld;
+		@FXML
+		private Label				patternErrorLbl;
 		@FXML
 		private ComboBox<Locale>	langComboBox;
 
-		private StringToLanguageMappingEditorController(LanguagePattern bean)
+		private TextLanguageMappingEditorController(LanguageUiPattern bean)
 		{
 			super(bean);
 		}
@@ -670,28 +672,78 @@ public class WatcherDialogs
 		@Override
 		protected String buildTitle()
 		{
-			return "Edit string to language mapping";
+			return bean == null ? "Add text to language mapping" : "Edit text to language mapping";
 		}
 
 		@Override
 		protected Node getDefaultFocusNode()
 		{
-			return stringTxtFld;
+			return textTxtFld;
 		}
 
 		@Override
 		protected void initInputPaneControl()
 		{
+			// initialize
+			langComboBox.setItems(FXUtil.createListOfAvailableLocales(false, true, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+			langComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+
 			// Set initial values
 
+			ToggleGroup modeToggleGrp = new ToggleGroup();
+			modeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
+
+			if (bean != null)
+			{
+				switch (bean.getPattern().getMode())
+				{
+					case LITERAL:
+						modeToggleGrp.selectToggle(literalRadioBtn);
+						break;
+					case SIMPLE:
+						modeToggleGrp.selectToggle(simplePatternRadioBtn);
+						break;
+					case REGEX:
+						modeToggleGrp.selectToggle(regexRadioBtn);
+						break;
+					default:
+						modeToggleGrp.selectToggle(literalRadioBtn);
+				}
+				textTxtFld.setText(bean.getPattern().getPattern());
+				langComboBox.setValue(bean.getLanguage());
+			}
+			else
+			{
+				modeToggleGrp.selectToggle(literalRadioBtn);
+			}
+
 			// Bindings
+			final Binding<UiPattern> patternBinding = FXUtil.createUiPatternTextFieldBinding(modeToggleGrp,
+					literalRadioBtn,
+					simplePatternRadioBtn,
+					regexRadioBtn,
+					textTxtFld,
+					patternErrorLbl);
+
 			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+			applyButton.disableProperty().bind(new BooleanBinding()
+			{
+				{
+					super.bind(patternBinding, textTxtFld.textProperty(), langComboBox.valueProperty());
+				}
+
+				@Override
+				protected boolean computeValue()
+				{
+					return patternBinding.getValue() == null || StringUtils.isBlank(textTxtFld.getText()) || langComboBox.getValue() == null;
+				}
+			});
 
 			// Set ResultConverter
 			dialog.setResultConverter(dialogButton -> {
 				if (dialogButton == ButtonType.APPLY)
 				{
-					return new LanguagePattern(null, null);
+					return new LanguageUiPattern(patternBinding.getValue(), langComboBox.getValue());
 				}
 				return null;
 			});
@@ -713,7 +765,7 @@ public class WatcherDialogs
 		@Override
 		protected String buildTitle()
 		{
-			return "Edit language to text mapping";
+			return bean == null ? "Add language to text mapping" : "Edit language to text mapping";
 		}
 
 		@Override
@@ -807,6 +859,17 @@ public class WatcherDialogs
 	{
 		LocaleListEditorController ctrl = new LocaleListEditorController(languages);
 		return showDialogAndWait(ctrl, "LocaleListEditor.fxml");
+	}
+
+	public static Optional<LanguageUiPattern> showTextLanguageMappingEditor()
+	{
+		return showTextLanguageMappingEditor(null);
+	}
+
+	public static Optional<LanguageUiPattern> showTextLanguageMappingEditor(LanguageUiPattern mapping)
+	{
+		TextLanguageMappingEditorController ctrl = new TextLanguageMappingEditorController(mapping);
+		return showDialogAndWait(ctrl, "TextLanguageMappingEditor.fxml");
 	}
 
 	public static Optional<LanguageTextMapping> showLanguageTextMappingEditor()

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 import java.util.concurrent.CountDownLatch;
@@ -31,6 +32,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -410,11 +412,14 @@ public class FXUtil
 				try
 				{
 					UiPattern p = new UiPattern(pattern, patternMode);
+					// try to convert -> may throw an exception
+					p.toPattern();
 					patternErrorLbl.setText("");
 					return p;
 				}
 				catch (Exception e)
 				{
+					e.printStackTrace();
 					patternErrorLbl.setText("Invalid pattern: " + e.getMessage().split("\\n", 2)[0]);
 					return null;
 				}
@@ -484,6 +489,60 @@ public class FXUtil
 		loader.setResources(resourceBaseName == null ? null : ResourceBundle.getBundle("i18n/" + resourceBaseName, locale));
 		loader.setController(controller);
 		return loader.load();
+	}
+
+	public static <E> void handleDistinctAdd(TableView<E> table, Optional<E> addDialogResult)
+	{
+		if (addDialogResult.isPresent())
+		{
+			E newElem = addDialogResult.get();
+			int index = table.getItems().indexOf(newElem);
+			if (index == -1)
+			{
+				table.getItems().add(newElem);
+			}
+			else
+			{
+				table.getItems().set(index, newElem);
+			}
+		}
+	}
+
+	public static <E> void handleDistinctEdit(TableView<E> table, Optional<E> editDialogResult)
+	{
+		if (editDialogResult.isPresent())
+		{
+			E newElem = editDialogResult.get();
+			int index = table.getItems().indexOf(newElem);
+			if (index == -1)
+			{
+				table.getItems().set(table.getSelectionModel().getSelectedIndex(), newElem);
+			}
+			else
+			{
+				// if newItem already exists
+				table.getItems().set(table.getSelectionModel().getSelectedIndex(), newElem);
+				table.getItems().remove(index);
+			}
+		}
+	}
+
+	public static <E> void handleDelete(TableView<E> table, String elementType, StringConverter<E> elemToStringConverter)
+	{
+		E selectedElem = table.getSelectionModel().getSelectedItem();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+		alert.setResizable(true);
+		alert.setTitle("Confirmation of removal of a " + elementType);
+		alert.setHeaderText("Do you really want to remove this " + elementType + "?");
+		alert.setContentText(elemToStringConverter.toString(selectedElem));
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES)
+		{
+			int selectedIndex = table.getSelectionModel().getSelectedIndex();
+			table.getItems().remove(selectedIndex);
+		}
 	}
 
 	private FXUtil()

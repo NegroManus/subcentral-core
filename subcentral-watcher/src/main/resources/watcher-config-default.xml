@@ -90,11 +90,11 @@
 			<ouputLanguageFormat format="NAME" />
 			<ouputLanguage tag="en" />
 			<customLanguagePatterns>
-				<languagePattern pattern="VO" tag="en" />
-				<languagePattern pattern="VF" tag="fr" />
-				<languagePattern pattern="ger" tag="de" />
-				<languagePattern pattern="简体" tag="zh-CN" /> <!-- simplified chinese -->
-				<languagePattern pattern="繁体" tag="zh-TW" /> <!-- traditional chinese -->
+				<languagePattern pattern="VO" patternMode="LITERAL" languageTag="en" />
+				<languagePattern pattern="VF" patternMode="LITERAL" languageTag="fr" />
+				<languagePattern pattern="ger" patternMode="LITERAL" languageTag="de" />
+				<languagePattern pattern="简体" patternMode="LITERAL" languageTag="zh-CN" /> <!-- simplified chinese -->
+				<languagePattern pattern="繁体" patternMode="LITERAL" languageTag="zh-TW" /> <!-- traditional chinese -->
 			</customLanguagePatterns>
 			<customLanguageNames>
 				<languageName tag="en" name="VO" />

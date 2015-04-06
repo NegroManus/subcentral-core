@@ -19,6 +19,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
@@ -40,6 +41,7 @@ public class SubCentralFXUtil
 	public static final StringConverter<Group>					GROUP_STRING_CONVERTER				= initGroupStringConverter();
 	public static final StringConverter<DeletionMode>			DELETION_MODE_STRING_CONVERTER		= initDeletionModeStringConverter();
 	public static final StringConverter<LanguageFormat>			LANGUAGE_FORMAT_STRING_CONVERTER	= initLanguageFormatStringConverter();
+	public static final StringConverter<StandardRelease>		STANDARD_RELEASE_STRING_CONVERTER	= initStandardReleaseStringConverter();
 
 	private static StringConverter<List<Tag>> initTagsStringConverter()
 	{
@@ -159,6 +161,25 @@ public class SubCentralFXUtil
 
 			@Override
 			public LanguageFormat fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+
+	public static StringConverter<StandardRelease> initStandardReleaseStringConverter()
+	{
+		return new StringConverter<StandardRelease>()
+		{
+
+			@Override
+			public String toString(StandardRelease rls)
+			{
+				return rls.getStandardRelease().getTags() + "-" + rls.getStandardRelease().getGroup() + " (" + rls.getAssumeExistence() + ")";
+			}
+
+			@Override
+			public StandardRelease fromString(String string)
 			{
 				throw new UnsupportedOperationException();
 			}

@@ -22,7 +22,7 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 
 	private static SeriesNameStandardizer buildStandardizer(UiPattern namePattern, String nameReplacement)
 	{
-		return new SeriesNameStandardizer(namePattern.getCompiledPattern(), nameReplacement, null);
+		return new SeriesNameStandardizer(namePattern.toPattern(), nameReplacement, null);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 		sb.append("Replace \"");
 		sb.append(nameUiPattern.getPattern());
 		sb.append("\" (");
-		sb.append(nameUiPattern.getPatternMode().name());
+		sb.append(nameUiPattern.getMode().name());
 		sb.append("), with ");
 		sb.append(StringUtil.quoteString(standardizer.getNameReplacement()));
 		return sb.toString();

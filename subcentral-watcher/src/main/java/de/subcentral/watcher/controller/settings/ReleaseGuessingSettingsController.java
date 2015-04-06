@@ -5,10 +5,7 @@ import java.util.Optional;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -18,6 +15,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.SubCentralFXUtil;
 import de.subcentral.fx.WatcherDialogs;
 import de.subcentral.watcher.settings.WatcherSettings;
 
@@ -86,10 +84,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 
 		addStandardReleaseButton.setOnAction((ActionEvent event) -> {
 			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseDefinitionDialog();
-			if (result.isPresent())
-			{
-				standardReleasesTableView.getItems().add(result.get());
-			}
+			FXUtil.handleDistinctAdd(standardReleasesTableView, result);
 		});
 
 		final BooleanBinding noSelection = standardReleasesTableView.getSelectionModel().selectedItemProperty().isNull();
@@ -98,30 +93,12 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 		editStandardReleaseButton.setOnAction((ActionEvent event) -> {
 			StandardRelease def = standardReleasesTableView.getSelectionModel().getSelectedItem();
 			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseDefinitionDialog(def);
-			if (result.isPresent())
-			{
-				int selectedIndex = standardReleasesTableView.getSelectionModel().getSelectedIndex();
-				standardReleasesTableView.getItems().set(selectedIndex, result.get());
-			}
+			FXUtil.handleDistinctEdit(standardReleasesTableView, result);
 		});
 
 		removeStandardReleaseButton.disableProperty().bind(noSelection);
 		removeStandardReleaseButton.setOnAction((ActionEvent event) -> {
-			StandardRelease selectedStandardRls = standardReleasesTableView.getSelectionModel().getSelectedItem();
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-			alert.setResizable(true);
-			alert.setTitle("Confirmation of removal of standard release");
-			alert.setHeaderText("Do you really want to remove this standard release?");
-			String contentText = selectedStandardRls.toString();
-			alert.setContentText(contentText);
-
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.YES)
-			{
-				int selectedIndex = standardReleasesTableView.getSelectionModel().getSelectedIndex();
-				standardReleasesTableView.getItems().remove(selectedIndex);
-			}
+			FXUtil.handleDelete(standardReleasesTableView, "standard release", SubCentralFXUtil.STANDARD_RELEASE_STRING_CONVERTER);
 		});
 
 		FXUtil.setStandardMouseAndKeyboardSupportForTableView(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);
