@@ -48,56 +48,37 @@ public class SubtitleUtil
 		return media.build();
 	}
 
-	public static void standardizeTags(Subtitle sub, List<StandardizingChange> changes)
+	public static void standardizeTags(SubtitleAdjustment subAdj, List<StandardizingChange> changes)
 	{
-		if (sub == null || sub.getTags().isEmpty())
+		if (subAdj == null || subAdj.getTags().isEmpty())
 		{
 			return;
 		}
 		boolean tagsChanged = false;
-		List<Tag> oldTags = ImmutableList.copyOf(sub.getTags());
+		List<Tag> oldTags = ImmutableList.copyOf(subAdj.getTags());
 
-		Pattern pVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE);
-		Matcher mVersion = pVersion.matcher("");
-		ListIterator<Tag> iter = sub.getTags().listIterator();
+		Matcher mVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE).matcher("");
+		ListIterator<Tag> iter = subAdj.getTags().listIterator();
 		while (iter.hasNext())
 		{
 			Tag tag = iter.next();
-			if (Subtitle.TAG_HEARING_IMPAIRED.equals(tag))
+			if (mVersion.reset(tag.getName()).matches())
 			{
-				boolean oldHIValue = sub.isHearingImpaired();
-				sub.setHearingImpaired(true);
-				if (oldHIValue != true)
+				String oldRev = subAdj.getRevision();
+				String newRev = mVersion.group(1);
+				subAdj.setRevision(newRev);
+				if (!Objects.equals(oldRev, newRev))
 				{
-					changes.add(new StandardizingChange(sub, Subtitle.PROP_HEARING_IMPAIRED.getPropName(), oldHIValue, true));
+					changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_REVISION.getPropName(), oldRev, newRev));
 				}
-
-				iter.remove();
-				tagsChanged = true;
-			}
-			else if (mVersion.reset(tag.getName()).matches())
-			{
-				String oldVersion = sub.getVersion();
-				String newVersion = mVersion.group(1);
-				sub.setVersion(newVersion);
-				if (!Objects.equals(oldVersion, newVersion))
-				{
-					changes.add(new StandardizingChange(sub, Subtitle.PROP_VERSION.getPropName(), oldVersion, newVersion));
-				}
-
 				iter.remove();
 				tagsChanged = true;
 			}
 		}
 		if (tagsChanged)
 		{
-			changes.add(new StandardizingChange(sub, Subtitle.PROP_TAGS.getPropName(), oldTags, sub.getTags()));
+			changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
 		}
-	}
-
-	public static boolean containsHearingImpairedTag(List<Tag> tags)
-	{
-		return tags.contains(Subtitle.TAG_HEARING_IMPAIRED);
 	}
 
 	private SubtitleUtil()

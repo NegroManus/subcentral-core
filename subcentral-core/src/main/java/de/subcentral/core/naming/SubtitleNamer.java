@@ -25,10 +25,6 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	{
 		b.appendIfNotBlank(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));
 		b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());
-		b.append(Subtitle.PROP_HEARING_IMPAIRED, sub.isHearingImpaired());
-		b.append(Subtitle.PROP_FOREIGN_PARTS, sub.getForeignParts());
-		b.appendAll(Subtitle.PROP_TAGS, sub.getTags());
-		b.appendIfNotNull(Subtitle.PROP_VERSION, sub.getVersion());
 		if (sub.getGroup() != null)
 		{
 			b.append(Subtitle.PROP_GROUP, sub.getGroup());

@@ -12,11 +12,9 @@ public interface PropNames
 	public static final String	EPISODES				= "episodes";
 	public static final String	FILE_COUNT				= "fileCount";
 	public static final String	FINALE_DATE				= "finaleDate";
-	public static final String	FOREIGN_PARTS			= "foreignParts";
 	public static final String	FURTHER_INFO			= "furtherInfo";
 	public static final String	GENRES					= "genres";
 	public static final String	GROUP					= "group";
-	public static final String	HEARING_IMPAIRED		= "hearingImpaired";
 	public static final String	IMAGES					= "images";
 	public static final String	LANGUAGE				= "language";
 	public static final String	LANGUAGES				= "languages";
@@ -48,5 +46,5 @@ public interface PropNames
 	public static final String	TAGS					= "tags";
 	public static final String	TITLE					= "title";
 	public static final String	TYPE					= "type";
-	public static final String	VERSION					= "version";
+	public static final String	REVISION				= "revision";
 }

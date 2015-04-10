@@ -1,11 +1,11 @@
 package de.subcentral.core.metadata.subtitle;
 
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -21,27 +21,61 @@ import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.AvMedia;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 {
-	public static final SimplePropDescriptor	PROP_NAME						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_SUBTITLES					= new SimplePropDescriptor(SubtitleAdjustment.class,
-																						PropNames.SUBTITLES);
-	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES			= new SimplePropDescriptor(SubtitleAdjustment.class,
-																						PropNames.MATCHING_RELEASES);
-	public static final SimplePropDescriptor	PROP_DATE						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_SIZE						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SIZE);
-	public static final SimplePropDescriptor	PROP_FILECOUNT					= new SimplePropDescriptor(SubtitleAdjustment.class,
-																						PropNames.FILE_COUNT);
-	public static final SimplePropDescriptor	PROP_NUKES						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NUKES);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(SubtitleAdjustment.class,
-																						PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_SUBTITLES			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SUBTITLES);
+	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.TAGS);
+	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES	= new SimplePropDescriptor(SubtitleAdjustment.class,
+																				PropNames.MATCHING_RELEASES);
+	public static final SimplePropDescriptor	PROP_REVISION			= new SimplePropDescriptor(Subtitle.class, PropNames.REVISION);
+	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_SIZE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SIZE);
+	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO);
+	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO_URL);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.CONTRIBUTIONS);
 
-	public static final String					CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
+	public static final Tag						HEARING_IMPAIRED_TAG	= new Tag("HI", "Hearing Impaired");
+
+	public static enum ForeignParts
+	{
+		/**
+		 * No foreign parts in the media item. Therefore none can be included or excluded. Foreign parts are irrelevant.
+		 */
+		NONE,
+
+		/**
+		 * Foreign parts exist in the media item and are included in the subtitle (typically the case for translated subtitles or VO subtitles where
+		 * the foreign parts are not hard coded in the media release).
+		 */
+		INCLUDED,
+
+		/**
+		 * Foreign parts exist in the media item but are not included (typically the case for original subtitles).
+		 */
+		EXCLUDED,
+
+		/**
+		 * Foreign parts exist in the media item and only foreign parts are included (typically the case for special versions of original subtitles
+		 * for people who only need subtitles for the foreign parts).
+		 */
+		ONLY;
+	}
+
+	/**
+	 * Adjustment of the timings so the subtitle fits on a specific video.
+	 */
+	public static final String	CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
+
+	/**
+	 * Textual customization of a subtitle (for example adding/removal of Hearing Impaired parts, foreign language parts, ...).
+	 */
+	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
 	public static SubtitleAdjustment create(Release matchingRelease, String language, String group)
 	{
@@ -69,13 +103,16 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	private String						name;
 	// In 99% of the cases, there is only one subtitle, at most 2
 	private final List<Subtitle>		subtitles			= new ArrayList<>(1);
+	// Normally there are 0 extra tags
+	private final List<Tag>				tags				= new ArrayList<>(0);
 	// Most adjustments are compatible to 1 or 2 releases
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<Release>			matchingReleases	= new HashSet<>(2);
+	private String						revision;
 	private Temporal					date;
 	private long						size				= 0L;
-	private int							fileCount			= 0;
-	private final List<Nuke>			nukes				= new ArrayList<>(0);
+	private String						nfo;
+	private String						nfoLink;
 	// In 99% of the cases, there is only one adjustment contribution
 	private final List<Contribution>	contributions		= new ArrayList<>(1);
 
@@ -142,6 +179,30 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		this.subtitles.addAll(subtitles);
 	}
 
+	/**
+	 * The tags of this subtitle. The tag list must <b>not</b> contain the following tags / information:
+	 * <ul>
+	 * <li><b>Language tags</b> like "German", "de" (the language is stored separately in {@link #getLanguage()})</li>
+	 * <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in {@link #getForeignParts()})</li>
+	 * <li><b>Hearing Impaired tags</b> like "HI" (whether the subtitle contains annotations for the hearing impaired is stored separately in
+	 * {@link #isHearingImpaired()})</li>
+	 * <li><b>Version tags</b> like "V2" (the revision is stored separately in {@link #getRevision()})
+	 * </ul>
+	 * All other important information about this subtitle may be stored in the tag list. For example "COLORED" for colored subs.
+	 * 
+	 * @return the tags (never {@code null}, may be empty)
+	 */
+	public List<Tag> getTags()
+	{
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags)
+	{
+		this.tags.clear();
+		this.tags.addAll(tags);
+	}
+
 	public Set<Release> getMatchingReleases()
 	{
 		return matchingReleases;
@@ -151,6 +212,34 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	{
 		this.matchingReleases.clear();
 		this.matchingReleases.addAll(matchingReleases);
+	}
+
+	/**
+	 * The revision string defines the revision (revision) of this subtitle. The revision string should be a simple revision (1, 2, 3, ...) number or
+	 * follow the decimal notation (1.0, 2.0, 2.0.1, ...) and be incremented whenever this subtitle is changed (improved). But there are no
+	 * limitations on valid revision strings as any source has its own revision scheme. For example, for addic7ed.com the revision string can be one
+	 * of "orig", "c.orig", "c.updated".
+	 * <p>
+	 * The revision string must not contain information about differences from alternate releases (like colored/uncolored, hearing impaired/not
+	 * hearing impaired, includes foreign parts/does not include foreign parts, ...).
+	 * </p>
+	 * <p>
+	 * An improved/customized subtitle is always {@link #getBasis() based on} the former revision of that subtitle and has the
+	 * {@link #getProductionType() productionType} {@value #PRODUCTION_TYPE_MODIFICATION}.
+	 * </p>
+	 * 
+	 * If no revision information is available, the revision is {@code null}.
+	 * 
+	 * @return the revision string (may be {@code null})
+	 */
+	public String getRevision()
+	{
+		return revision;
+	}
+
+	public void setRevision(String version)
+	{
+		this.revision = version;
 	}
 
 	public Temporal getDate()
@@ -173,25 +262,35 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		this.size = size;
 	}
 
-	public int getFileCount()
+	/**
+	 * Specific information about this adjustment (content of NFO file).
+	 * 
+	 * @return the NFO
+	 */
+	public String getNfo()
 	{
-		return fileCount;
+		return nfo;
 	}
 
-	public void setFileCount(int fileCount)
+	public void setNfo(String nfo)
 	{
-		this.fileCount = fileCount;
+		this.nfo = nfo;
 	}
 
-	public List<Nuke> getNukes()
+	/**
+	 * A link pointing to a file or a HTML page with the NFO of this adjustment.
+	 * 
+	 * @return the link to the NFO
+	 * @see #getNfo()
+	 */
+	public String getNfoLink()
 	{
-		return nukes;
+		return nfoLink;
 	}
 
-	public void setNukes(List<Nuke> nukes)
+	public void setNfoLink(String nfoLink)
 	{
-		this.nukes.clear();
-		this.nukes.addAll(nukes);
+		this.nfoLink = nfoLink;
 	}
 
 	@Override
@@ -226,6 +325,32 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		}
 	}
 
+	/**
+	 * Whether the subtitle contains transcription for the hearing impaired. Also known as "closed captioning (CC)". The default value is
+	 * {@code false}.
+	 * 
+	 * @return whether or not hearing impaired
+	 */
+	public boolean isHearingImpaired()
+	{
+		return tags.contains(HEARING_IMPAIRED_TAG);
+	}
+
+	public void setHearingImpaired(boolean hearingImpaired)
+	{
+		if (hearingImpaired)
+		{
+			if (!tags.contains(HEARING_IMPAIRED_TAG))
+			{
+				tags.add(HEARING_IMPAIRED_TAG);
+			}
+		}
+		else
+		{
+			tags.remove(HEARING_IMPAIRED_TAG);
+		}
+	}
+
 	public boolean matchesSingleRelease()
 	{
 		return matchingReleases.size() == 1;
@@ -245,26 +370,6 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		}
 	}
 
-	public boolean isNuked()
-	{
-		return !nukes.isEmpty();
-	}
-
-	public void nuke(String nukeReason)
-	{
-		nukes.add(new Nuke(nukeReason));
-	}
-
-	public void nuke(String nukeReason, Temporal date)
-	{
-		nukes.add(new Nuke(nukeReason, date));
-	}
-
-	public void nukeNow(String nukeReason)
-	{
-		nukes.add(new Nuke(nukeReason, ZonedDateTime.now()));
-	}
-
 	public void addAdjuster(Contributor adjuster)
 	{
 		contributions.add(new Contribution(adjuster, CONTRIBUTION_TYPE_ADJUSTMENT, null, 1, 1.0f));
@@ -281,7 +386,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		if (obj instanceof SubtitleAdjustment)
 		{
 			SubtitleAdjustment o = (SubtitleAdjustment) obj;
-			return subtitles.equals(o.subtitles) && matchingReleases.equals(o.matchingReleases);
+			return subtitles.equals(o.subtitles) && tags.equals(o.tags) && matchingReleases.equals(o.matchingReleases)
+					&& Objects.equals(revision, o.revision);
 		}
 		return false;
 	}
@@ -294,7 +400,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(33, 51).append(subtitles).append(matchingReleases).toHashCode();
+		return new HashCodeBuilder(33, 51).append(subtitles).append(tags).append(matchingReleases).append(revision).toHashCode();
 	}
 
 	@Override
@@ -307,7 +413,9 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		}
 		return ComparisonChain.start()
 				.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
+				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
+				.compare(revision, revision)
 				.result();
 	}
 
@@ -318,11 +426,13 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 				.omitNullValues()
 				.add("name", name)
 				.add("subtitles", BeanUtil.nullIfEmpty(subtitles))
+				.add("tags", BeanUtil.nullIfEmpty(tags))
 				.add("matchingReleases", BeanUtil.nullIfEmpty(matchingReleases))
+				.add("revision", revision)
 				.add("date", date)
 				.add("size", BeanUtil.nullIfZero(size))
-				.add("fileCount", BeanUtil.nullIfZero(fileCount))
-				.add("nukes", BeanUtil.nullIfEmpty(nukes))
+				.add("nfo", nfo)
+				.add("nfoLink", nfoLink)
 				.add("contributions", BeanUtil.nullIfEmpty(contributions))
 				.toString();
 	}

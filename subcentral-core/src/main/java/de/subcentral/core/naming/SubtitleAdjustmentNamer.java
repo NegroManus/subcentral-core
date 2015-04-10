@@ -35,28 +35,29 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, SubtitleAdjustment adjustment, Map<String, Object> params)
+	public void buildName(PropSequenceNameBuilder b, SubtitleAdjustment adj, Map<String, Object> params)
 	{
 		// read useName parameter
 		boolean preferName = NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
-		if (preferName && adjustment.getName() != null)
+		if (preferName && adj.getName() != null)
 		{
-			b.append(SubtitleAdjustment.PROP_NAME, adjustment.getName());
+			b.append(SubtitleAdjustment.PROP_NAME, adj.getName());
 			return;
 		}
 
 		// read other naming parameters
-		Release rls = NamingUtil.readParameter(params, PARAM_RELEASE, Release.class, adjustment.getFirstMatchingRelease());
+		Release rls = NamingUtil.readParameter(params, PARAM_RELEASE, Release.class, adj.getFirstMatchingRelease());
 		b.appendIfNotBlank(SubtitleAdjustment.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 
-		Subtitle sub = adjustment.getFirstSubtitle();
+		Subtitle sub = adj.getFirstSubtitle();
 		if (sub != null)
 		{
 			b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());
-			b.append(Subtitle.PROP_HEARING_IMPAIRED, sub.isHearingImpaired());
-			b.append(Subtitle.PROP_FOREIGN_PARTS, sub.getForeignParts());
-			b.appendAll(Subtitle.PROP_TAGS, sub.getTags());
-			b.appendIfNotNull(Subtitle.PROP_VERSION, sub.getVersion());
+		}
+		b.appendAll(SubtitleAdjustment.PROP_TAGS, adj.getTags());
+		b.appendIfNotNull(SubtitleAdjustment.PROP_REVISION, adj.getRevision());
+		if (sub != null)
+		{
 			if (sub.getGroup() != null)
 			{
 				b.append(Subtitle.PROP_GROUP, sub.getGroup());

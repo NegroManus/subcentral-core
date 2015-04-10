@@ -2,6 +2,7 @@ package de.subcentral.core.parsing;
 
 import java.util.Map;
 
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -12,6 +13,7 @@ public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleAdjustment>
 	{
 		SubtitleAdjustment subAdj = new SubtitleAdjustment();
 		subAdj.setName(props.get(SubtitleAdjustment.PROP_NAME));
+		subAdj.getTags().addAll(propFromStringService.parseList(props, SubtitleAdjustment.PROP_TAGS, Tag.class));
 		return subAdj;
 	}
 }

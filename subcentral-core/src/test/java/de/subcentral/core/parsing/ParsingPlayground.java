@@ -222,11 +222,11 @@ public class ParsingPlayground
 							start = System.nanoTime();
 							Subtitle convertedSub = new Subtitle();
 							convertedSub.setMedia(subAdj.getFirstSubtitle().getMedia());
-							convertedSub.setHearingImpaired(subAdj.getFirstSubtitle().isHearingImpaired());
 							convertedSub.setLanguage(subAdj.getFirstSubtitle().getLanguage());
 							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
 							SubtitleAdjustment convertedAdj = new SubtitleAdjustment(convertedSub, allMatchingRlss);
+							convertedAdj.setHearingImpaired(subAdj.isHearingImpaired());
 							TimeUtil.printDurationMillis("Converting releases", start);
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
 							{

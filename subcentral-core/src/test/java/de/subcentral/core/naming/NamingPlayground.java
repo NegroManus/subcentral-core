@@ -60,13 +60,13 @@ public class NamingPlayground
 		Subtitle sub1 = new Subtitle();
 		sub1.setMedia(epi);
 		sub1.setLanguage("VO");
-		sub1.setTags(Tag.list("orig", "C"));
 		sub1.setGroup(new Group("SubCentral"));
 
 		// Subtitle release
-		SubtitleAdjustment subRel = new SubtitleAdjustment();
-		subRel.setSingleSubtitle(sub1);
-		subRel.setSingleMatchingRelease(rel);
+		SubtitleAdjustment subAdj = new SubtitleAdjustment();
+		subAdj.setSingleSubtitle(sub1);
+		subAdj.setTags(Tag.list("orig", "C"));
+		subAdj.setSingleMatchingRelease(rel);
 
 		System.out.println(NamingDefaults.getDefaultNamingService().name(epis));
 		// long overallStart = System.nanoTime();

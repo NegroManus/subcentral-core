@@ -23,7 +23,6 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.Subtitle.ForeignParts;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
@@ -94,10 +93,7 @@ public class NamingDefaults
 		// Release
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Release.PROP_MEDIA, RELEASE_MEDIA_FORMATTER);
 		// Subtitle
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_HEARING_IMPAIRED, (Boolean hi) -> hi ? "HI" : "");
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_FOREIGN_PARTS,
-				(ForeignParts fp) -> fp == ForeignParts.NONE ? "" : "FOREIGN_PARTS_" + fp.name());
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Subtitle.PROP_VERSION, (String version) -> "V" + version);
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(SubtitleAdjustment.PROP_REVISION, (String rev) -> "V" + rev);
 
 		ImmutableSet.Builder<Separation> sepsBuilder = ImmutableSet.builder();
 		sepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
