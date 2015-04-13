@@ -43,7 +43,7 @@ public class SubCentralDe
 	private static List<Parser<SubtitleAdjustment>> initParsers()
 	{
 		String scPatternPrefix = "(";
-		String scPatternSuffix = ")\\.(de|ger|german|VO|en|eng|english)(?:-|\\.)([\\w&_]+)";
+		String scPatternSuffix = ")\\.(de|ger|german|deutsch|VO|en|eng|english)(?:\\W([\\w&_]+))?";
 
 		ImmutableList.Builder<Parser<SubtitleAdjustment>> parsers = ImmutableList.builder();
 
