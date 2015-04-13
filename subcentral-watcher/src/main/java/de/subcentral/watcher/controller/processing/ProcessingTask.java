@@ -242,11 +242,11 @@ public class ProcessingTask extends Task<Void>
 		matchingRlss.forEach(r -> log.debug(r));
 
 		SubtitleAdjustment convertedSubAdj = new SubtitleAdjustment();
+		convertedSubAdj.setHearingImpaired(srcSubAdj.isHearingImpaired());
 		for (Subtitle srcSub : srcSubAdj.getSubtitles())
 		{
 			Subtitle convertedSub = new Subtitle();
 			convertedSub.setMedia(srcSub.getMedia());
-			convertedSub.setHearingImpaired(srcSub.isHearingImpaired());
 			convertedSub.setLanguage(srcSub.getLanguage());
 			convertedSub.setGroup(srcSub.getGroup());
 			convertedSubAdj.getSubtitles().add(convertedSub);

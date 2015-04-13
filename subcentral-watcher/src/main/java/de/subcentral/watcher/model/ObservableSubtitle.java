@@ -4,35 +4,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SetProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleSetProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingService;
 
 public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleAdjustment>
 {
-
 	private final SetProperty<ObservableRelease>	matchingReleases;
 	private final StringProperty					language;
-	private final BooleanProperty					hearingImpaired;
-	private final ListProperty<Tag>					tags;
-	private final StringProperty					version;
 	private final Property<Group>					group;
 	private final StringProperty					source;
 
@@ -71,30 +61,6 @@ public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleAdj
 			}
 		});
 
-		hearingImpaired = new SimpleBooleanProperty(this, "hearingImpaired", firstSub.isHearingImpaired());
-		hearingImpaired.addListener((Observable o) -> {
-			for (Subtitle sub : bean.getSubtitles())
-			{
-				sub.setHearingImpaired(isHearingImpaired());
-			}
-		});
-
-		tags = new SimpleListProperty<Tag>(this, "tags", FXCollections.observableArrayList(firstSub.getTags()));
-		tags.addListener((Observable o) -> {
-			for (Subtitle sub : bean.getSubtitles())
-			{
-				sub.setTags(getTags());
-			}
-		});
-
-		version = new SimpleStringProperty(this, "version", firstSub.getVersion());
-		version.addListener((Observable o) -> {
-			for (Subtitle sub : bean.getSubtitles())
-			{
-				sub.setVersion(getVersion());
-			}
-		});
-
 		group = new SimpleObjectProperty<Group>(this, "group", firstSub.getGroup());
 		group.addListener((Observable o) -> {
 			for (Subtitle sub : bean.getSubtitles())
@@ -112,7 +78,7 @@ public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleAdj
 		});
 
 		// bind props
-		super.bind(matchingReleases, language, hearingImpaired, tags, version, group, source);
+		super.bind(matchingReleases, language, group, source);
 	}
 
 	private static ObservableSet<ObservableRelease> convertToWrappedReleaseSet(Set<Release> releases, NamingService namingService)
@@ -158,46 +124,6 @@ public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleAdj
 	public final void setLanguage(final java.lang.String language)
 	{
 		this.languageProperty().set(language);
-	}
-
-	public final BooleanProperty hearingImpairedProperty()
-	{
-		return this.hearingImpaired;
-	}
-
-	public final boolean isHearingImpaired()
-	{
-		return this.hearingImpairedProperty().get();
-	}
-
-	public final void setHearingImpaired(final boolean hearingImpaired)
-	{
-		this.hearingImpairedProperty().set(hearingImpaired);
-	}
-
-	public final ListProperty<Tag> tagsProperty()
-	{
-		return this.tags;
-	}
-
-	public final ObservableList<de.subcentral.core.metadata.release.Tag> getTags()
-	{
-		return this.tagsProperty().get();
-	}
-
-	public final StringProperty versionProperty()
-	{
-		return this.version;
-	}
-
-	public final java.lang.String getVersion()
-	{
-		return this.versionProperty().get();
-	}
-
-	public final void setVersion(final java.lang.String version)
-	{
-		this.versionProperty().set(version);
 	}
 
 	public final Group getGroup()
