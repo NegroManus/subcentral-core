@@ -2,11 +2,9 @@ package de.subcentral.core.standardizing;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
@@ -18,10 +16,10 @@ import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 
 public class StandardizingDefaults
 {
-	public static final UnaryOperator<String>		ALNUM_DOT_REPLACER					= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.",
+	public static final Function<String, String>	ALNUM_DOT_REPLACER					= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.",
 																								"'´`",
 																								'.');
-	public static final UnaryOperator<String>		ALNUM_DOT_HYPEN_REPLACER			= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-",
+	public static final Function<String, String>	ALNUM_DOT_HYPEN_REPLACER			= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-",
 																								"'´`",
 																								'.');
 	/**
@@ -29,17 +27,13 @@ public class StandardizingDefaults
 	 * hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible also release names like
 	 * "Katy.Perry-The.Prismatic.World.Tour" are common
 	 */
-	public static final UnaryOperator<String>		ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER	= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_",
+	public static final Function<String, String>	ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER	= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_",
 																								"'´`",
 																								'.');
-	public static final UnaryOperator<String>		DOT_HYPHEN_DOT_REPLACER				= new PatternMapStringReplacer(ImmutableMap.of(Pattern.compile(".-",
-																								Pattern.LITERAL),
-																								"-",
-																								Pattern.compile("-.", Pattern.LITERAL),
+	public static final Function<String, String>	DOT_HYPHEN_DOT_REPLACER				= new StringReplacer(".-", "-").andThen(new StringReplacer("-.",
 																								"-"));
-	public static final UnaryOperator<String>		AND_REPLACER						= new PatternStringReplacer(Pattern.compile("&",
-																								Pattern.LITERAL), "and");
-	public static final UnaryOperator<String>		ACCENT_REPLACER						= new StripAccentsStringReplacer();
+	public static final Function<String, String>	AND_REPLACER						= new StringReplacer("&", "and");
+	public static final Function<String, String>	ACCENT_REPLACER						= new StripAccentsStringReplacer();
 
 	private static final TypeStandardizingService	DEFAULT_STANDARDIZING_SERVICE		= new TypeStandardizingService("default");
 	static
