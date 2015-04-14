@@ -114,7 +114,7 @@ public class MyBenchmark
 		return service;
 	}
 
-	// @Benchmark
+	@Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testStandardizing()
@@ -123,34 +123,30 @@ public class MyBenchmark
 	}
 
 	@Benchmark
-	// @BenchmarkMode(Mode.Throughput)
-	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testNaming()
 	{
 		NAMING_SERVICE.name(SUB_ADJ);
 	}
 
-	// @Benchmark
-	// @BenchmarkMode(Mode.Throughput)
-	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
+	@Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
@@ -158,7 +154,7 @@ public class MyBenchmark
 				PARSING_SERVICES);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
@@ -172,18 +168,14 @@ public class MyBenchmark
 	 * Current results:
 	 * 
 	 * <pre>
-	 * Benchmark                       Mode  Cnt       Score       Error  Units
-	 * MyBenchmark.testStandardizing  thrpt   50  708570,507 ± 12669,468  ops/s
-	 * 
-	 * Benchmark                Mode  Cnt       Score      Error  Units
-	 * MyBenchmark.testNaming  thrpt   50  134524,437 ± 1944,228  ops/s
-	 * 
 	 * Benchmark                                Mode  Cnt       Score      Error  Units
-	 * MyBenchmark.testParsingAddic7ed         thrpt   50  114988,834 ± 2987,927  ops/s
-	 * MyBenchmark.testParsingBestCase         thrpt   50  116191,826 ± 3068,515  ops/s
-	 * MyBenchmark.testParsingSubAdjBestCase   thrpt   50  113918,814 ± 2605,354  ops/s
-	 * MyBenchmark.testParsingSubAdjWorstCase  thrpt   50    7077,061 ±  208,035  ops/s
-	 * MyBenchmark.testParsingWorstCase        thrpt   50    3919,695 ±  145,933  ops/s
+	 * MyBenchmark.testNaming                  thrpt   50   87103,480 ± 1934,612  ops/s
+	 * MyBenchmark.testParsingAddic7ed         thrpt   50  128588,327 ± 1569,210  ops/s
+	 * MyBenchmark.testParsingBestCase         thrpt   50  131312,053 ± 1883,485  ops/s
+	 * MyBenchmark.testParsingSubAdjBestCase   thrpt   50  121854,993 ± 2141,183  ops/s
+	 * MyBenchmark.testParsingSubAdjWorstCase  thrpt   50    8434,303 ±   71,054  ops/s
+	 * MyBenchmark.testParsingWorstCase        thrpt   50    4500,268 ±   48,533  ops/s
+	 * MyBenchmark.testStandardizing           thrpt   50  669034,817 ± 4591,636  ops/s
 	 * </pre>
 	 * 
 	 * @param args
