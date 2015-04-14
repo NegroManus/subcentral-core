@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.media.Episode;
@@ -26,43 +23,21 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
-import de.subcentral.core.standardizing.CharStringReplacer;
-import de.subcentral.core.standardizing.PatternMapStringReplacer;
-import de.subcentral.core.standardizing.PatternStringReplacer;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
 {
-	public static final String						DEFAULT_DOMAIN						= "default";
-	private static final UnaryOperator<String>		AND_REPLACER						= new PatternStringReplacer(Pattern.compile("&"), "and");
-	private static final UnaryOperator<String>		ALNUM_DOT_REPLACER					= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.",
-																								"'´`",
-																								'.');
-	private static final UnaryOperator<String>		ALNUM_DOT_HYPEN_REPLACER			= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-",
-																								"'´`",
-																								'.');
-	/**
-	 * Use this for media naming. <br/>
-	 * hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible also release names like
-	 * "Katy.Perry-The.Prismatic.World.Tour" are common
-	 */
-	private static final UnaryOperator<String>		ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER	= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_",
-																								"'´`",
-																								'.');
-	private static final UnaryOperator<String>		DOT_HYPHEN_DOT_REPLACER				= new PatternMapStringReplacer(ImmutableMap.of(Pattern.compile(".-",
-																								Pattern.LITERAL),
-																								"-",
-																								Pattern.compile("-.", Pattern.LITERAL),
-																								"-"));
-	private static final Function<String, String>	RELEASE_NAME_FORMATTER				= initReleaseNameFormatter();
-	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER				= initReleaseMediaFormatter();
-	private static final Function<String, String>	FILTERING_FORMATTER					= initFilteringFormatter();
+	public static final String						DEFAULT_DOMAIN			= "default";
 
-	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE				= new SimplePropToStringService();
+	private static final Function<String, String>	RELEASE_NAME_FORMATTER	= initReleaseNameFormatter();
+	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER	= initReleaseMediaFormatter();
+	private static final Function<String, String>	FILTERING_FORMATTER		= initFilteringFormatter();
+
+	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE	= new SimplePropToStringService();
 
 	// NamingService has to be instantiated first because it is referenced in some namers
-	private static final ConditionalNamingService	NAMING_SERVICE						= new ConditionalNamingService(DEFAULT_DOMAIN);
+	private static final ConditionalNamingService	NAMING_SERVICE			= new ConditionalNamingService(DEFAULT_DOMAIN);
 	private static MediaNamer						MEDIA_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
@@ -145,19 +120,21 @@ public class NamingDefaults
 
 	private static Function<String, String> initReleaseNameFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(AND_REPLACER)
-				.andThen(ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER)
-				.andThen(DOT_HYPHEN_DOT_REPLACER);
+		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER)
+				.andThen(StandardizingDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER)
+				.andThen(StandardizingDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	private static Function<String, String> initReleaseMediaFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(AND_REPLACER).andThen(ALNUM_DOT_HYPEN_REPLACER).andThen(DOT_HYPHEN_DOT_REPLACER);
+		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER)
+				.andThen(StandardizingDefaults.ALNUM_DOT_HYPEN_REPLACER)
+				.andThen(StandardizingDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	private static Function<String, String> initFilteringFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(AND_REPLACER).andThen(ALNUM_DOT_REPLACER);
+		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER).andThen(StandardizingDefaults.ALNUM_DOT_REPLACER);
 	}
 
 	public static Function<String, String> getDefaultReleaseNameFormatter()
