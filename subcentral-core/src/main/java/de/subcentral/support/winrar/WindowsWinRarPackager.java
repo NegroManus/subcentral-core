@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.IOUtil;
@@ -218,7 +219,42 @@ class WindowsWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected List<String> buildCommand(Path source, Path target, WinRarPackConfig cfg)
+	protected List<String> buildValidateCommand(Path archive)
+	{
+		/**
+		 * Using command t
+		 * 
+		 * <pre>
+		 *     t       Test archive files. This command performs a dummy file
+		 *             extraction, writing nothing to the output stream, in order to
+		 *             validate the specified file(s).
+		 * </pre>
+		 */
+		// Windows expects a command list which contains:
+		// 1) the executable as first element
+		// 2)-n) each argument as an element
+		return ImmutableList.of(rarExecutable.toString(), "t", archive.toString());
+	}
+
+	@Override
+	protected List<String> buildUnpackCommand(Path archive)
+	{
+		/**
+		 * <pre>
+		 *  e       Extract files without archived paths.
+		 * 
+		 *             Extract files excluding their path component, so all files
+		 *             are created in the same destination directory.
+		 * </pre>
+		 */
+		// Windows expects a command list which contains:
+		// 1) the executable as first element
+		// 2)-n) each argument as an element
+		return ImmutableList.of(rarExecutable.toString(), "e", archive.toString(), "*", archive.getParent().toString());
+	}
+
+	@Override
+	protected List<String> buildPackCommand(Path source, Path target, WinRarPackConfig cfg)
 	{
 		List<String> args = new ArrayList<>(8);
 

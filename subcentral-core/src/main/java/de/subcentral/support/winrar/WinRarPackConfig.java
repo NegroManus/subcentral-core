@@ -1,11 +1,10 @@
 package de.subcentral.support.winrar;
 
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.MoreObjects;
 
-public class WinRarPackConfig
+public class WinRarPackConfig extends WinRarCommandConfig
 {
 	public static enum CompressionMethod
 	{
@@ -126,8 +125,6 @@ public class WinRarPackConfig
 	}
 
 	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
-	private long				timeoutValue		= 5;
-	private TimeUnit			timeoutUnit			= TimeUnit.MINUTES;
 	private OverwriteMode		targetOverwriteMode	= OverwriteMode.REPLACE;
 	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
 
@@ -144,32 +141,6 @@ public class WinRarPackConfig
 	public void setCompressionMethod(CompressionMethod compressionMethod)
 	{
 		this.compressionMethod = Objects.requireNonNull(compressionMethod, "compressionMethod");
-	}
-
-	/**
-	 * The default value is {@code 15}.
-	 * 
-	 * @return the timeout value
-	 */
-	public long getTimeoutValue()
-	{
-		return timeoutValue;
-	}
-
-	/**
-	 * The default value is {@link TimeUnit#SECONDS}.
-	 * 
-	 * @return the timeout unit
-	 */
-	public TimeUnit getTimeoutUnit()
-	{
-		return timeoutUnit;
-	}
-
-	public void setTimeout(long timeout, TimeUnit unit)
-	{
-		this.timeoutValue = timeout;
-		this.timeoutUnit = Objects.requireNonNull(unit, "unit");
 	}
 
 	/**

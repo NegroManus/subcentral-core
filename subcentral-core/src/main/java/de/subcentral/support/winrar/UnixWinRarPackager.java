@@ -10,7 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.util.StringUtil;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 
@@ -58,7 +60,43 @@ class UnixWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected List<String> buildCommand(Path source, Path target, WinRarPackConfig cfg)
+	protected List<String> buildValidateCommand(Path archive)
+	{
+		/**
+		 * Using command t
+		 * 
+		 * <pre>
+		 *     t       Test archive files. This command performs a dummy file
+		 *             extraction, writing nothing to the output stream, in order to
+		 *             validate the specified file(s).
+		 * </pre>
+		 */
+		// Unix expects a command list which contains exactly two elements:
+		// 1) the executable
+		// 2) the argument(s), separated with whitespace
+		return ImmutableList.of(rarExecutable.toString(), "t " + StringUtil.quoteString(archive.toString()));
+	}
+
+	@Override
+	protected List<String> buildUnpackCommand(Path archive)
+	{
+		/**
+		 * Using command t
+		 * 
+		 * <pre>
+		 *     t       Test archive files. This command performs a dummy file
+		 *             extraction, writing nothing to the output stream, in order to
+		 *             validate the specified file(s).
+		 * </pre>
+		 */
+		// Unix expects a command list which contains exactly two elements:
+		// 1) the executable
+		// 2) the argument(s), separated with whitespace
+		return ImmutableList.of(rarExecutable.toString(), "e " + StringUtil.quoteString(archive.toString()));
+	}
+
+	@Override
+	protected List<String> buildPackCommand(Path source, Path target, WinRarPackConfig cfg)
 	{
 		List<String> args = new ArrayList<>(8);
 
@@ -102,10 +140,10 @@ class UnixWinRarPackager extends WinRarPackager
 		}
 
 		// target package
-		args.add(target.toString());
+		args.add(StringUtil.quoteString(target.toString()));
 
 		// source file
-		args.add(source.toString());
+		args.add(StringUtil.quoteString(source.toString()));
 
 		// Unix expects a command list which contains exactly two elements:
 		// 1) the executable

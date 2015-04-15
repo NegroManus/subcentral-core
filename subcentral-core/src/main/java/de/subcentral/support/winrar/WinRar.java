@@ -59,6 +59,6 @@ public class WinRar
 
 	private WinRar()
 	{
-		// utility method
+		// utility class
 	}
 }

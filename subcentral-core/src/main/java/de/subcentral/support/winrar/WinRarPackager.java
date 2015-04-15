@@ -1,7 +1,6 @@
 package de.subcentral.support.winrar;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -11,13 +10,14 @@ import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.IOUtil;
+import de.subcentral.core.util.IOUtil.CommandResult;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
@@ -81,13 +81,36 @@ public abstract class WinRarPackager
 
 	protected abstract Path locateRarExecutable();
 
+	public boolean validate(Path archive)
+	{
+		try
+		{
+			return IOUtil.executeCommand(buildValidateCommand(archive), 1, TimeUnit.MINUTES).getExitValue() == 0;
+		}
+		catch (IOException | InterruptedException | TimeoutException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	protected abstract List<String> buildValidateCommand(Path archive);
+
+	public void unpack(Path archive) throws IOException, InterruptedException, TimeoutException
+	{
+		CommandResult result = IOUtil.executeCommand(buildUnpackCommand(archive), 2, TimeUnit.HOURS);
+		System.out.println(result);
+	}
+
+	protected abstract List<String> buildUnpackCommand(Path archive);
+
 	/**
-	 * Packs a single file into a single WinRAR package.
+	 * Packs a single file into a single WinRAR archive.
 	 * 
 	 * @param source
 	 *            the source file to pack, not null
 	 * @param target
-	 *            the target package, not null (may or not exist yet)
+	 *            the target archive, not null (may or not exist yet)
 	 * @param cfg
 	 *            the packaging configuration, not null
 	 * @return the result of the packaging operation
@@ -98,9 +121,10 @@ public abstract class WinRarPackager
 		Objects.requireNonNull(target, "target");
 		Objects.requireNonNull(cfg, "cfg");
 
-		int exitCode = -1;
 		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
+		int exitValue = -1;
 		String logMsg = null;
+		String errMsg = null;
 		try
 		{
 			long startTime = System.currentTimeMillis();
@@ -113,31 +137,10 @@ public abstract class WinRarPackager
 					Files.delete(target);
 				}
 			}
-
-			ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(source, target, cfg));
-			log.debug("Executing {}", processBuilder.command());
-			Process process = processBuilder.start();
-			process.getOutputStream().close();
-			String errMsg = null;
-			try (InputStream errStream = process.getErrorStream())
-			{
-				errMsg = StringUtils.stripToNull(IOUtil.readInputStream(errStream));
-			}
-			try (InputStream errStream = process.getInputStream())
-			{
-				logMsg = StringUtils.stripToNull(IOUtil.readInputStream(errStream));
-			}
-			boolean exitedBeforeTimeout = process.waitFor(cfg.getTimeoutValue(), cfg.getTimeoutUnit());
-			exitCode = process.exitValue();
-			if (log.isDebugEnabled())
-			{
-				String timeoutString = exitedBeforeTimeout ? "" : " . Timeout reached: " + cfg.getTimeoutUnit() + " " + cfg.getTimeoutValue();
-				log.debug("Execution exited with exit code {} (\"{}\"){}: {} ",
-						exitCode,
-						WinRarPackResult.getExitCodeDescription(exitCode),
-						timeoutString,
-						processBuilder.command());
-			}
+			CommandResult result = IOUtil.executeCommand(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit());
+			exitValue = result.getExitValue();
+			logMsg = result.getLogMessage();
+			errMsg = result.getErrorMessage();
 
 			// may add tags
 			if (targetExisted && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
@@ -161,28 +164,23 @@ public abstract class WinRarPackager
 			}
 
 			// return result
-			if (!exitedBeforeTimeout)
+			if (result.getErrorMessage() == null)
 			{
-				return new WinRarPackResult(exitCode, flags, new TimeoutException("RAR process timed out after " + cfg.getTimeoutValue() + " "
-						+ cfg.getTimeoutUnit()), logMsg);
-			}
-			if (errMsg == null)
-			{
-				return new WinRarPackResult(exitCode, flags, logMsg);
+				return new WinRarPackResult(exitValue, flags, logMsg);
 			}
 			else
 			{
-				return new WinRarPackResult(exitCode, flags, new IOException(errMsg), logMsg);
+				return new WinRarPackResult(exitValue, flags, new IOException(errMsg), logMsg);
 			}
 		}
-		catch (IOException | InterruptedException | RuntimeException e)
+		catch (IOException | InterruptedException | RuntimeException | TimeoutException e)
 		{
 			log.warn("Exception while packing", e);
-			return new WinRarPackResult(exitCode, flags, e, logMsg);
+			return new WinRarPackResult(exitValue, flags, e, logMsg);
 		}
 	}
 
-	protected abstract List<String> buildCommand(Path source, Path target, WinRarPackConfig cfg);
+	protected abstract List<String> buildPackCommand(Path source, Path target, WinRarPackConfig cfg);
 
 	private static final Path loadResource(String filename) throws URISyntaxException
 	{
