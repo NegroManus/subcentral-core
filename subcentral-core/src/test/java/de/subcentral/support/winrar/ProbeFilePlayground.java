@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 
 public class ProbeFilePlayground
@@ -14,7 +17,7 @@ public class ProbeFilePlayground
 	public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
 	{
 		WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
-		Path srcDir = Paths.get("C:\\Users\\mhertram\\Downloads");
+		Path srcDir = Paths.get("D:\\Downloads");
 
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir))
 		{
@@ -22,8 +25,12 @@ public class ProbeFilePlayground
 			{
 				String contentType = Files.probeContentType(file);
 				System.out.println(file + ": " + contentType);
-				System.out.println(file + " is RAR : " + packager.validate(file));
-
+				if (Files.isRegularFile(file))
+				{
+					System.out.println(file + " is RAR : " + packager.validate(file));
+					HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
+					System.out.println(hash.toString());
+				}
 			}
 		}
 	}
