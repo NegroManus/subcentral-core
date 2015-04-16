@@ -78,7 +78,7 @@ class UnixWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected List<String> buildUnpackCommand(Path archive)
+	protected List<String> buildUnpackCommand(Path archive, Path targetDir)
 	{
 		/**
 		 * Using command t
@@ -92,7 +92,9 @@ class UnixWinRarPackager extends WinRarPackager
 		// Unix expects a command list which contains exactly two elements:
 		// 1) the executable
 		// 2) the argument(s), separated with whitespace
-		return ImmutableList.of(rarExecutable.toString(), "e " + StringUtil.quoteString(archive.toString()));
+		return ImmutableList.of(rarExecutable.toString(),
+				"e -o+" + StringUtil.quoteString(archive.toString()) + " * ",
+				StringUtil.quoteString(targetDir.toString()));
 	}
 
 	@Override

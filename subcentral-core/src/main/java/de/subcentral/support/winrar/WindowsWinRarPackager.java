@@ -98,7 +98,7 @@ class WindowsWinRarPackager extends WinRarPackager
 			Process p = builder.start();
 			try (InputStream es = p.getErrorStream();)
 			{
-				String errorMsg = StringUtils.stripToNull(IOUtil.readInputStream(es));
+				String errorMsg = StringUtils.stripToNull(IOUtil.drainToString(es));
 				if (errorMsg != null)
 				{
 					log.error("Could not locate WinRAR installation directory in Windows registry: Command {} returned error message: \"{}\". Returning null",
@@ -237,7 +237,7 @@ class WindowsWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected List<String> buildUnpackCommand(Path archive)
+	protected List<String> buildUnpackCommand(Path archive, Path targetDir)
 	{
 		/**
 		 * <pre>
@@ -250,7 +250,7 @@ class WindowsWinRarPackager extends WinRarPackager
 		// Windows expects a command list which contains:
 		// 1) the executable as first element
 		// 2)-n) each argument as an element
-		return ImmutableList.of(rarExecutable.toString(), "e", archive.toString(), "*", archive.getParent().toString());
+		return ImmutableList.of(rarExecutable.toString(), "e", "-o+", archive.toString(), "*", targetDir.toString());
 	}
 
 	@Override

@@ -96,13 +96,12 @@ public abstract class WinRarPackager
 
 	protected abstract List<String> buildValidateCommand(Path archive);
 
-	public void unpack(Path archive) throws IOException, InterruptedException, TimeoutException
+	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException, TimeoutException
 	{
-		CommandResult result = IOUtil.executeCommand(buildUnpackCommand(archive), 2, TimeUnit.HOURS);
-		System.out.println(result);
+		CommandResult result = IOUtil.executeCommand(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS);
 	}
 
-	protected abstract List<String> buildUnpackCommand(Path archive);
+	protected abstract List<String> buildUnpackCommand(Path archive, Path targetDir);
 
 	/**
 	 * Packs a single file into a single WinRAR archive.
@@ -139,8 +138,8 @@ public abstract class WinRarPackager
 			}
 			CommandResult result = IOUtil.executeCommand(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit());
 			exitValue = result.getExitValue();
-			logMsg = result.getLogMessage();
-			errMsg = result.getErrorMessage();
+			logMsg = result.getStdOut();
+			errMsg = result.getStdErr();
 
 			// may add tags
 			if (targetExisted && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
@@ -164,7 +163,7 @@ public abstract class WinRarPackager
 			}
 
 			// return result
-			if (result.getErrorMessage() == null)
+			if (result.getStdErr() == null)
 			{
 				return new WinRarPackResult(exitValue, flags, logMsg);
 			}

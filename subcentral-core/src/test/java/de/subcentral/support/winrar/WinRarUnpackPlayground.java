@@ -13,7 +13,7 @@ public class WinRarUnpackPlayground
 	{
 		WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
 		Path archive = Paths.get("C:\\Users\\mhertram\\Downloads\\Lost S01 Part 1.zip");
-		packager.unpack(archive);
+		packager.unpack(archive, archive.getParent());
 	}
 
 }
