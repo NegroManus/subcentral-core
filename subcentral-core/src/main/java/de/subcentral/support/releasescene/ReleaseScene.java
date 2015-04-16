@@ -285,7 +285,7 @@ public class ReleaseScene
 		StringBuilder sb = new StringBuilder();
 		sb.append("(?:REAL|PROPER|REPACK|DiRFIX|NFOFIX|");
 		sb.append(Joiner.on('|').join(getAllLanguageTags()));
-		sb.append("|3D|720p|1080i|1080p|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
+		sb.append("|3D|720p|1080i|1080p|RETAiL|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
 		sb.append("|iNTERNAL)");
 		return sb.toString();
 	}

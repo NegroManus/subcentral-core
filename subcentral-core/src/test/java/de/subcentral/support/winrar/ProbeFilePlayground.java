@@ -5,6 +5,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,33 +15,58 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 
 import de.subcentral.core.metadata.Contribution;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
+import de.subcentral.support.addic7edcom.Addic7edCom;
+import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 
 public class ProbeFilePlayground
 {
-	private static final WinRarPackager	WINRAR	= WinRar.getPackager(LocateStrategy.RESOURCE);
+	private static final WinRarPackager			WINRAR					= WinRar.getPackager(LocateStrategy.RESOURCE);
+	private static final List<ParsingService>	SUB_PARSING_SERVICES	= ImmutableList.of(SubCentralDe.getParsingService(),
+																				Addic7edCom.getParsingService());
 
 	public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
 	{
-		Path srcDir = Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-src");
-		Path targetDir = Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-target");
+		Path srcDir = Paths.get("D:\\Downloads\\!sc-src");
+		Path targetDir = Paths.get("D:\\Downloads\\!sc-target");
 		// C:\\Users\\mhertram\\Downloads
 		// D:\\Downloads
 
 		// create output directory if not exists
 		Files.createDirectories(targetDir);
 
+		copyAllSrtFiles(srcDir, targetDir);
+
 		unpackAllRecursively(srcDir, targetDir);
 
 		parseAll(targetDir);
+	}
+
+	private static void copyAllSrtFiles(Path srcDir, Path targetDir) throws IOException
+	{
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir))
+		{
+			for (Path file : stream)
+			{
+				String ext = com.google.common.io.Files.getFileExtension(file.getFileName().toString());
+				if ("srt".equals(ext))
+				{
+					Files.copy(file, targetDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+				}
+			}
+		}
 	}
 
 	private static void unpackAllRecursively(Path srcDir, Path targetDir) throws IOException, InterruptedException, TimeoutException
@@ -110,7 +136,15 @@ public class ProbeFilePlayground
 				HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
 				long hashAsLong = hash.asLong();
 				String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
-				SubtitleAdjustment subAdj = SubCentralDe.getParsingService().parse(filenameWithoutExt, SubtitleAdjustment.class);
+				SubtitleAdjustment subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleAdjustment.class, SUB_PARSING_SERVICES);
+				if (subAdj == null)
+				{
+					Release rls = ReleaseScene.getParsingService().parse(filenameWithoutExt, Release.class);
+					if (rls != null)
+					{
+						subAdj = SubtitleAdjustment.create(rls, null, null);
+					}
+				}
 
 				SubFile newSubFile = new SubFile(subAdj, file);
 				checkSums.merge(hashAsLong, newSubFile, ((SubFile oldValue, SubFile newValue) -> oldValue.updateWithMatchingRelease(newValue)));
