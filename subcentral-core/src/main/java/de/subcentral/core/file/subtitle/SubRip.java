@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import de.subcentral.core.util.IOUtil;
+
 public class SubRip implements SubtitleFileFormat
 {
 	@Override
@@ -40,11 +42,12 @@ public class SubRip implements SubtitleFileFormat
 				// if at the end of the stream, add the last item that was read (if any)
 				if (start != -1L)
 				{
-					addCaption(items, start, end, textLines);
+					addItem(items, start, end, textLines);
 				}
 				break;
 			}
-			else if (numMatcher.reset(line).matches())
+			line = IOUtil.removeUTF8BOM(line);
+			if (numMatcher.reset(line).matches())
 			{
 				if (lastNumLine != null)
 				{
@@ -58,7 +61,7 @@ public class SubRip implements SubtitleFileFormat
 				// add previous item if new item is encountered
 				if (start != -1L)
 				{
-					addCaption(items, start, end, textLines);
+					addItem(items, start, end, textLines);
 				}
 				// reset
 				lastNumLine = null;
@@ -118,7 +121,7 @@ public class SubRip implements SubtitleFileFormat
 		return txt.toString();
 	}
 
-	private void addCaption(List<Item> items, long start, long end, List<String> textLines)
+	private void addItem(List<Item> items, long start, long end, List<String> textLines)
 	{
 		Item item = new Item();
 		item.setStart(start);

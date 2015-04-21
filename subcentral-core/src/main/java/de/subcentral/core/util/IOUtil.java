@@ -240,6 +240,28 @@ public class IOUtil
 		}
 	}
 
+	/**
+	 * UTF-8 is not supposed to have a Byte Order Mark (BOM). But it can happen. This method removes leading BOMs.
+	 * 
+	 * @param s
+	 *            string
+	 * @return string without leading UTF-8 BOM
+	 */
+	public static String removeUTF8BOM(String s)
+	{
+		if (s == null)
+		{
+			return null;
+		}
+		// FEFF because this is the Unicode char represented by the UTF-8 byte order mark (EF BB BF).
+		final String UTF8_BOM = "\uFEFF";
+		if (s.startsWith(UTF8_BOM))
+		{
+			s = s.substring(1);
+		}
+		return s;
+	}
+
 	private IOUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
