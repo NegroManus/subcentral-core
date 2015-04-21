@@ -31,10 +31,15 @@
 
 package de.subcentral.core.jmh;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -43,6 +48,8 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.file.subtitle.SubRip;
+import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -98,6 +105,8 @@ public class MyBenchmark
 																							ItalianSubsNet.getParsingService(),
 																							SubCentralDe.getParsingService(),
 																							ADDIC7ED_PARSING_SERVICE);
+	private static final SubRip					SUBRIP_FORMAT				= new SubRip();
+	private static final Path							SUBRIP_TEST_FILE			= Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-src\\Castle - 02x10 - One Man's Treasure.PROPER.FQM.English.C.orig.Addic7ed.com.srt");
 
 	private static TypeStandardizingService buildService()
 	{
@@ -114,7 +123,7 @@ public class MyBenchmark
 		return service;
 	}
 
-	@Benchmark
+	// @Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testStandardizing()
@@ -122,31 +131,31 @@ public class MyBenchmark
 		STANDARDIZING_SERVICE.standardize(SUB_ADJ);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testNaming()
 	{
 		NAMING_SERVICE.name(SUB_ADJ);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
@@ -154,12 +163,19 @@ public class MyBenchmark
 				PARSING_SERVICES);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com",
 				SubtitleAdjustment.class,
 				PARSING_SERVICES_REVERSED);
+	}
+
+	@Benchmark
+	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
+	{
+		SubtitleFile data = SUBRIP_FORMAT.read(SUBRIP_TEST_FILE, Charset.forName("Cp1252"));
+		blackhole.consume(data);
 	}
 
 	/**
@@ -176,7 +192,12 @@ public class MyBenchmark
 	 * MyBenchmark.testParsingSubAdjWorstCase  thrpt   50    8434,303 ±   71,054  ops/s
 	 * MyBenchmark.testParsingWorstCase        thrpt   50    4500,268 ±   48,533  ops/s
 	 * MyBenchmark.testStandardizing           thrpt   50  669034,817 ± 4591,636  ops/s
+	 * 
+	 * 	 * Benchmark                           Mode  Cnt    Score    Error  Units
+	 * MyBenchmark.testParsingSubRipFile  thrpt   50  473,399 ± 18,025  ops/s
 	 * </pre>
+	 * 
+	 * 
 	 * 
 	 * @param args
 	 * @throws RunnerException
