@@ -24,6 +24,12 @@ public class Contribution implements Comparable<Contribution>
 
 	}
 
+	public Contribution(Contributor contributor, String type)
+	{
+		this.contributor = contributor;
+		this.type = type;
+	}
+
 	public Contribution(Contributor contributor, String type, String description)
 	{
 		this.contributor = contributor;
