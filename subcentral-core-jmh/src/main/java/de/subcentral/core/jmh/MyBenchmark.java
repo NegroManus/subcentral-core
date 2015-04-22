@@ -105,7 +105,7 @@ public class MyBenchmark
 																							ItalianSubsNet.getParsingService(),
 																							SubCentralDe.getParsingService(),
 																							ADDIC7ED_PARSING_SERVICE);
-	private static final SubRip					SUBRIP_FORMAT				= new SubRip();
+	private static final SubRip							SUBRIP_FORMAT				= new SubRip();
 	private static final Path							SUBRIP_TEST_FILE			= Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-src\\Castle - 02x10 - One Man's Treasure.PROPER.FQM.English.C.orig.Addic7ed.com.srt");
 
 	private static TypeStandardizingService buildService()
@@ -193,8 +193,8 @@ public class MyBenchmark
 	 * MyBenchmark.testParsingWorstCase        thrpt   50    4500,268 ±   48,533  ops/s
 	 * MyBenchmark.testStandardizing           thrpt   50  669034,817 ± 4591,636  ops/s
 	 * 
-	 * 	 * Benchmark                           Mode  Cnt    Score    Error  Units
-	 * MyBenchmark.testParsingSubRipFile  thrpt   50  473,399 ± 18,025  ops/s
+	 * Benchmark                           Mode  Cnt    Score    Error  Units
+	 * MyBenchmark.testParsingSubRipFile  thrpt   50  474,739 ± 18,451  ops/s
 	 * </pre>
 	 * 
 	 * 

@@ -34,6 +34,7 @@ public class SubRip implements SubtitleFileFormat
 		long end = -1L;
 		final List<String> textLines = new ArrayList<>();
 		final List<Item> items = new ArrayList<>();
+		boolean firstLine = true;
 		for (;;)
 		{
 			String line = reader.readLine();
@@ -46,7 +47,12 @@ public class SubRip implements SubtitleFileFormat
 				}
 				break;
 			}
-			line = IOUtil.removeUTF8BOM(line);
+			if (firstLine)
+			{
+				// remove the UTF-8 BOM that may appear at the start of the content
+				line = IOUtil.removeUTF8BOM(line);
+				firstLine = false;
+			}
 			if (numMatcher.reset(line).matches())
 			{
 				if (lastNumLine != null)
@@ -107,7 +113,7 @@ public class SubRip implements SubtitleFileFormat
 		for (int i = textLines.size() - 1; i >= 0; i--)
 		{
 			String line = textLines.get(i);
-			if (!StringUtils.isBlank(line) || !isTrailingBlankLine)
+			if (!isTrailingBlankLine || !StringUtils.isBlank(line))
 			{
 				isTrailingBlankLine = false;
 				// append \n after insertion if there already was a line (content in StringBuilder)
