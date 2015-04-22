@@ -108,7 +108,7 @@ public class SubRip implements SubtitleFileFormat
 	private static String joinText(List<String> textLines)
 	{
 		boolean isTrailingBlankLine = true;
-		StringBuilder txt = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		// iterate from end to start to skip all trailing blank lines
 		for (int i = textLines.size() - 1; i >= 0; i--)
 		{
@@ -117,17 +117,17 @@ public class SubRip implements SubtitleFileFormat
 			{
 				isTrailingBlankLine = false;
 				// append \n after insertion if there already was a line (content in StringBuilder)
-				if (txt.length() > 0)
+				if (sb.length() > 0)
 				{
-					txt.insert(0, '\n');
+					sb.insert(0, '\n');
 				}
-				txt.insert(0, line);
+				sb.insert(0, line);
 			}
 		}
-		return txt.toString();
+		return sb.toString();
 	}
 
-	private void addItem(List<Item> items, long start, long end, List<String> textLines)
+	private static void addItem(List<Item> items, long start, long end, List<String> textLines)
 	{
 		Item item = new Item();
 		item.setStart(start);
