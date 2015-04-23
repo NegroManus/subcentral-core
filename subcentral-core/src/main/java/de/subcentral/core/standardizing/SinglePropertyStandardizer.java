@@ -2,9 +2,9 @@ package de.subcentral.core.standardizing;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
-public abstract class SinglePropertyStandardizer<T, P, R extends UnaryOperator<P>> implements Standardizer<T>
+public abstract class SinglePropertyStandardizer<T, P, R extends Function<P, P>> implements Standardizer<T>
 {
 	private final R	replacer;
 

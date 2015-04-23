@@ -39,8 +39,8 @@ public class ProbeFilePlayground
 
 	public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
 	{
-		Path srcDir = Paths.get("D:\\Downloads\\!sc-src");
-		Path targetDir = Paths.get("D:\\Downloads\\!sc-target");
+		Path srcDir = Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-src");
+		Path targetDir = Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-target");
 		// C:\\Users\\mhertram\\Downloads
 		// D:\\Downloads
 

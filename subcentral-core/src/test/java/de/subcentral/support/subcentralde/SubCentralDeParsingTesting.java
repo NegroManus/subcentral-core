@@ -30,6 +30,50 @@ public class SubCentralDeParsingTesting
 		testParsingResult(name, subAdj);
 	}
 
+	@Test
+	public void testEpisode03()
+	{
+		String name = "Prison.Break.S04E18.720p.HDTV.X264-DIMENSION.de.SubCentral.V2";
+		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 18);
+		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "X264");
+		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, "de", "SubCentral");
+		subAdj.setRevision("V2");
+		testParsingResult(name, subAdj);
+	}
+
+	@Test
+	public void testEpisode04()
+	{
+		String name = "Prison.Break.S04E19.HDTV.XviD-LOL.V2";
+		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 19);
+		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
+		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, null, null);
+		subAdj.setRevision("V2");
+		testParsingResult(name, subAdj);
+	}
+
+	@Test
+	public void testEpisode05()
+	{
+		String name = "Prison.Break.S04E20.HDTV.XviD-LOL.VO.V2";
+		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 20);
+		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
+		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, "VO", null);
+		subAdj.setRevision("V2");
+		testParsingResult(name, subAdj);
+	}
+
+	@Test
+	public void testEpisode06()
+	{
+		String name = "Prison.Break.S04E18.HDTV.XviD-LOL.V2.de.SubCentral";
+		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 18);
+		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
+		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, "de", "SubCentral");
+		subAdj.setRevision("V2");
+		testParsingResult(name, subAdj);
+	}
+
 	private void testParsingResult(String name, Object expectedResult)
 	{
 		Object parsed = SubCentralDe.getParsingService().parse(name);

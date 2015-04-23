@@ -14,6 +14,7 @@ public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleAdjustment>
 		SubtitleAdjustment subAdj = new SubtitleAdjustment();
 		subAdj.setName(props.get(SubtitleAdjustment.PROP_NAME));
 		subAdj.getTags().addAll(propFromStringService.parseList(props, SubtitleAdjustment.PROP_TAGS, Tag.class));
+		subAdj.setRevision(props.get(SubtitleAdjustment.PROP_REVISION));
 		return subAdj;
 	}
 }

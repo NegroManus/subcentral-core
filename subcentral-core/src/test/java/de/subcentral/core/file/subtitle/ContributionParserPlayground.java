@@ -1,13 +1,14 @@
 package de.subcentral.core.file.subtitle;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
@@ -17,6 +18,8 @@ import de.subcentral.core.file.subtitle.ContributionParser.ContributionTypePatte
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.standardizing.PatternStringReplacer;
+import de.subcentral.core.standardizing.StringReplacer;
 import de.subcentral.core.util.TimeUtil;
 
 public class ContributionParserPlayground
@@ -26,36 +29,40 @@ public class ContributionParserPlayground
 	private static ContributionParser initContributionParser()
 	{
 		ImmutableList.Builder<ContributionTypePattern> patterns = ImmutableList.builder();
-		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Übersetzung|Übersetzung|Übersetzer|Übersetzt|Subbed)\\b(\\s+\\b(von|by)\\b)?",
+		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\\b",
 				Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), Subtitle.CONTRIBUTION_TYPE_TRANSLATION));
-		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Korrektur|Korrektur|Korrekturleser|Korrigiert|Revised)\\b(\\s+\\b(von|by)\\b)?",
+		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected)\\b",
 				Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE),
 				Subtitle.CONTRIBUTION_TYPE_REVISION));
-		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Anpassung|Anpassung|Anpasser|Angepasst|Adjusted)\\b(\\s+(von|by)\\b)?",
-				Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), SubtitleAdjustment.CONTRIBUTION_TYPE_ADJUSTMENT));
-		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Timings|Sync|Synchronisation|Synced)\\b(\\s+\\b(von|by)\\b)?",
+		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Anpassung|Anpasser|Angepasst|Adjusted by)\\b", Pattern.CASE_INSENSITIVE
+				| Pattern.UNICODE_CASE), SubtitleAdjustment.CONTRIBUTION_TYPE_ADJUSTMENT));
+		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs|Sync)\\b",
 				Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), Subtitle.CONTRIBUTION_TYPE_TIMINGS));
 		// nicht nur "VO", weil das zu oft vorkommt. Daher "VO von"
-		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(VO von|VO by|Transcript|Transkript)\\b(\\s+\\b(von|by)\\b)?",
-				Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT));
-		patterns.add(new ContributionTypePattern(Pattern.compile("(\\b(Special Thanks to|Special Thx to)\\b|Untertitel:)", Pattern.CASE_INSENSITIVE
-				| Pattern.UNICODE_CASE), null));
+		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(VO von|VO by|Transcript|Subs)\\b", Pattern.CASE_INSENSITIVE
+				| Pattern.UNICODE_CASE), Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT));
+		patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Special Thx to)\\b", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), null));
 
-		ImmutableSet.Builder<String> knownContributors = ImmutableSet.builder();
+		ImmutableSet.Builder<Pattern> knownContributors = ImmutableSet.builder();
+		knownContributors.add(Pattern.compile("(Randall Flagg|The old Man|JW 301|-TiLT- aka smizz|smizz aka -TiLT-|Kami Cat|Iulius Monea)",
+				Pattern.CASE_INSENSITIVE));
 
-		ImmutableSet.Builder<String> knownNonContributors = ImmutableSet.builder();
-		knownNonContributors.add("und");
-		knownNonContributors.add("and");
-		knownNonContributors.add("from");
+		ImmutableSet.Builder<Pattern> knownNonContributors = ImmutableSet.builder();
+		knownNonContributors.add(Pattern.compile("\\b(und|and|from|von|by)\\b", Pattern.CASE_INSENSITIVE));
 
-		return new ContributionParser(patterns.build(), knownContributors.build(), knownNonContributors.build());
+		ImmutableList.Builder<Function<String, String>> contributorReplacers = ImmutableList.builder();
+		contributorReplacers.add(new PatternStringReplacer(Pattern.compile("(.*)\\."), "$1", PatternStringReplacer.Mode.REPLACE_WHOLLY));
+		contributorReplacers.add(new StringReplacer("Ic3m4n", "Ic3m4n™", StringReplacer.Mode.REPLACE_WHOLLY));
+		contributorReplacers.add(new StringReplacer("smizz aka -TiLT-", "-TiLT- aka smizz", StringReplacer.Mode.REPLACE_WHOLLY));
+
+		return new ContributionParser(patterns.build(), knownContributors.build(), knownNonContributors.build(), contributorReplacers.build());
 	}
 
 	public static void main(String[] args) throws IOException
 	{
 		// "D:\\Downloads\\!sc-target"
 		// "C:\\Users\\mhertram\\Downloads\\!sc-target"
-		Path srcDir = Paths.get("D:\\Downloads\\!sc-target");
+		Path srcDir = Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-target");
 		SubRip subRip = new SubRip();
 		Consumer<SubtitleFile> sink = ContributionParserPlayground::parseContributions;
 
@@ -66,7 +73,7 @@ public class ContributionParserPlayground
 			{
 				long startRead = System.nanoTime();
 				// System.out.println("Reading " + file);
-				SubtitleFile data = subRip.read(file, StandardCharsets.ISO_8859_1);
+				SubtitleFile data = subRip.read(file, Charset.forName("Cp1252"));
 				sink.accept(data);
 				TimeUtil.printDurationMillis("reading one", startRead);
 			}
@@ -76,8 +83,8 @@ public class ContributionParserPlayground
 
 	private static void parseContributions(SubtitleFile data)
 	{
-		System.out.println(data);
-		Set<Contribution> contributions = CONTRIBUTION_PARSER.parse(data);
+		// System.out.println(data);
+		List<Contribution> contributions = CONTRIBUTION_PARSER.parse(data);
 		System.out.println(contributions);
 	}
 }

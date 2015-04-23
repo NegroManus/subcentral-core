@@ -169,9 +169,7 @@ public class Contribution implements Comparable<Contribution>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(contributor != null ? contributor.getName() : null,
-						o.contributor != null ? o.contributor.getName() : null,
-						Settings.STRING_ORDERING)
+				.compare(contributor, o.contributor, Settings.createDefaultOrdering())
 				.compare(type, o.type, Settings.STRING_ORDERING)
 				.compare(description, o.description, Settings.STRING_ORDERING)
 				.result();

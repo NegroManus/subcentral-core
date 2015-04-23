@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jsoup.Jsoup;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
@@ -22,15 +25,18 @@ import de.subcentral.core.metadata.Contributor;
 
 public class ContributionParser
 {
-	private final List<ContributionTypePattern>	contributionTypePatterns;
-	private final Set<String>					knownContributors;
-	private final Set<String>					knownNonContributors;
+	private final List<ContributionTypePattern>		contributionTypePatterns;
+	private final Set<Pattern>						knownContributors;
+	private final Set<Pattern>						knownNonContributors;
+	private final List<Function<String, String>>	contributorReplacers;
 
-	public ContributionParser(List<ContributionTypePattern> contributionTypePatterns, Set<String> knownContributors, Set<String> knownNonContributors)
+	public ContributionParser(List<ContributionTypePattern> contributionTypePatterns, Set<Pattern> knownContributors,
+			Set<Pattern> knownNonContributors, List<Function<String, String>> contributorReplacers)
 	{
 		this.contributionTypePatterns = ImmutableList.copyOf(contributionTypePatterns);
 		this.knownContributors = ImmutableSet.copyOf(knownContributors);
 		this.knownNonContributors = ImmutableSet.copyOf(knownNonContributors);
+		this.contributorReplacers = contributorReplacers;
 	}
 
 	public List<ContributionTypePattern> getContributionTypePatterns()
@@ -38,29 +44,39 @@ public class ContributionParser
 		return contributionTypePatterns;
 	}
 
-	public Set<String> getKnownContributors()
+	public Set<Pattern> getKnownContributors()
 	{
 		return knownContributors;
 	}
 
-	public Set<String> getKnownNonContributors()
+	public Set<Pattern> getKnownNonContributors()
 	{
 		return knownNonContributors;
 	}
 
-	public Set<Contribution> parse(SubtitleFile data)
+	public List<Function<String, String>> getContributorReplacers()
 	{
-		Set<Contribution> contributions = new HashSet<>();
+		return contributorReplacers;
+	}
+
+	public List<Contribution> parse(SubtitleFile data)
+	{
+		List<Contribution> contributions = new ArrayList<>();
 		for (Item item : data.getItems())
 		{
 			parseItemText(item.getText(), contributions);
 		}
+		contributions = contributions.stream().distinct().collect(Collectors.toList());
 		return contributions;
 	}
 
-	private void parseItemText(String text, Set<Contribution> contributions)
+	private void parseItemText(String text, List<Contribution> contributions)
 	{
-		List<Token> tokens = tokenize(text);
+		String normalizedText = text;
+		// remove html tags
+		normalizedText = Jsoup.parse(normalizedText).text();
+
+		List<Token> tokens = tokenize(normalizedText);
 		if (tokens.isEmpty())
 		{
 			return;
@@ -83,13 +99,14 @@ public class ContributionParser
 				case CONTRIBUTOR:
 					if (currentContributionTypes.isEmpty())
 					{
-						contributions.add(new Contribution(new Subber(text.substring(token.start, token.end)), null));
+						// contributions.add(new Contribution(new Subber(text.substring(token.start, token.end)), null));
 					}
 					else
 					{
 						for (String contributionType : currentContributionTypes)
 						{
-							contributions.add(new Contribution(new Subber(text.substring(token.start, token.end)), contributionType));
+							String name = standardizeContributor(normalizedText.substring(token.start, token.end));
+							contributions.add(new Contribution(new Subber(name), contributionType));
 						}
 					}
 					break;
@@ -103,31 +120,23 @@ public class ContributionParser
 	private List<Token> tokenize(String text)
 	{
 		String normalizedText = text;
-		// remove html tags
-		Matcher tagMatcher = Pattern.compile("<[^>]+>").matcher(normalizedText);
-		while (tagMatcher.find())
-		{
-			normalizedText = replaceTokenWithSpaces(normalizedText, tagMatcher.start(), tagMatcher.end());
-		}
 
 		List<Token> tokens = new ArrayList<>();
-		for (String knownContributor : knownContributors)
+		for (Pattern knownContributor : knownContributors)
 		{
-			int start = normalizedText.indexOf(knownContributor);
-			if (start != -1)
+			Matcher m = knownContributor.matcher(normalizedText);
+			while (m.find())
 			{
-				int end = start + knownContributor.length();
-				tokens.add(Token.forContributor(start, end));
-				normalizedText = replaceTokenWithSpaces(normalizedText, start, end);
+				tokens.add(Token.forContributor(m.start(), m.end()));
+				normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
 			}
 		}
-		for (String knownNonContributor : knownNonContributors)
+		for (Pattern knownNonContributor : knownNonContributors)
 		{
-			int start = normalizedText.indexOf(knownNonContributor);
-			if (start != -1)
+			Matcher m = knownNonContributor.matcher(normalizedText);
+			while (m.find())
 			{
-				int end = start + knownNonContributor.length();
-				normalizedText = replaceTokenWithSpaces(normalizedText, start, end);
+				normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
 			}
 		}
 		boolean isCreditItem = false;
@@ -151,7 +160,7 @@ public class ContributionParser
 		try (Scanner scanner = new Scanner(normalizedText);)
 		{
 			// "\\W*(&|und|and|,)\\W*"
-			scanner.useDelimiter(Pattern.compile("[,\\s]+"));
+			scanner.useDelimiter(Pattern.compile("[\\s,/+]+"));
 			while (scanner.hasNext())
 			{
 				String token = scanner.next();
@@ -169,6 +178,15 @@ public class ContributionParser
 		// sort by token index
 		tokens.sort((Token t1, Token t2) -> t1.start - t2.start);
 		return tokens;
+	}
+
+	private String standardizeContributor(String name)
+	{
+		for (Function<String, String> replacer : contributorReplacers)
+		{
+			name = replacer.apply(name);
+		}
+		return name;
 	}
 
 	private static String replaceTokenWithSpaces(String text, int start, int end)
