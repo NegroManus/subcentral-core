@@ -15,33 +15,32 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
- * For any media item that has no own class. For audio / video media items see {@link RegularAvMedia}.
+ * For any media item that has no own class. For audio / video media items see {@link RegularMedia}.
  *
  */
 public class RegularMedia extends AbstractNamedMedia
 {
-	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(RegularMedia.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(RegularMedia.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE		= new SimplePropDescriptor(RegularMedia.class,
-																					PropNames.MEDIA_CONTENT_TYPE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(RegularMedia.class, PropNames.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(RegularMedia.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(RegularMedia.class,
-																					PropNames.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(RegularMedia.class,
-																					PropNames.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(RegularMedia.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(RegularMedia.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(RegularMedia.class, PropNames.IMAGES);
-	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(RegularMedia.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(RegularMedia.class, PropNames.FURTHER_INFO);
-	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(RegularMedia.class, PropNames.ATTRIBUTES);
+	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(RegularMedia.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(RegularMedia.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE	= new SimplePropDescriptor(RegularMedia.class, PropNames.MEDIA_CONTENT_TYPE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE			= new SimplePropDescriptor(RegularMedia.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(RegularMedia.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_LANGUAGES			= new SimplePropDescriptor(RegularMedia.class, PropNames.LANGUAGES);
+	public static final SimplePropDescriptor	PROP_COUNTRIES			= new SimplePropDescriptor(RegularMedia.class, PropNames.COUNTRIES);
+	public static final SimplePropDescriptor	PROP_GENRES				= new SimplePropDescriptor(RegularMedia.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_RUNNING_TIME		= new SimplePropDescriptor(RegularMedia.class, PropNames.RUNNING_TIME);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(RegularMedia.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_IMAGES				= new SimplePropDescriptor(RegularMedia.class, PropNames.IMAGES);
+	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(RegularMedia.class, PropNames.CONTENT_RATING);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO		= new SimplePropDescriptor(RegularMedia.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(RegularMedia.class, PropNames.ATTRIBUTES);
 
-	protected String							mediaType;
-	protected String							mediaContentType;
-	protected final List<String>				originalLanguages			= new ArrayList<>(1);
-	protected final List<String>				countriesOfOrigin			= new ArrayList<>(1);
-	protected final Set<String>					genres						= new HashSet<>(3);
+	private String								mediaType;
+	private String								mediaContentType;
+	private final List<String>					languages				= new ArrayList<>(1);
+	private final List<String>					countries				= new ArrayList<>(1);
+	private final Set<String>					genres					= new HashSet<>(3);
+	private int									runningTime				= 0;
 
 	public RegularMedia()
 	{
@@ -76,6 +75,30 @@ public class RegularMedia extends AbstractNamedMedia
 	}
 
 	@Override
+	public List<String> getLanguages()
+	{
+		return languages;
+	}
+
+	public void setLanguages(List<String> originalLanguages)
+	{
+		this.languages.clear();
+		this.languages.addAll(originalLanguages);
+	}
+
+	@Override
+	public List<String> getCountries()
+	{
+		return countries;
+	}
+
+	public void setCountries(List<String> countriesOfOrigin)
+	{
+		this.countries.clear();
+		this.countries.addAll(countriesOfOrigin);
+	}
+
+	@Override
 	public Set<String> getGenres()
 	{
 		return genres;
@@ -88,40 +111,27 @@ public class RegularMedia extends AbstractNamedMedia
 	}
 
 	@Override
-	public List<String> getOriginalLanguages()
+	public int getRunningTime()
 	{
-		return originalLanguages;
+		return runningTime;
 	}
 
-	public void setOriginalLanguages(List<String> originalLanguages)
+	public void setRunningTime(int runningTime)
 	{
-		this.originalLanguages.clear();
-		this.originalLanguages.addAll(originalLanguages);
-	}
-
-	@Override
-	public List<String> getCountriesOfOrigin()
-	{
-		return countriesOfOrigin;
-	}
-
-	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
-	{
-		this.countriesOfOrigin.clear();
-		this.countriesOfOrigin.addAll(countriesOfOrigin);
+		this.runningTime = runningTime;
 	}
 
 	// convenience
 	@Override
 	public String getPrimaryOriginalLanguage()
 	{
-		return !originalLanguages.isEmpty() ? originalLanguages.get(0) : null;
+		return !languages.isEmpty() ? languages.get(0) : null;
 	}
 
 	@Override
 	public String getPrimaryCountryOfOrigin()
 	{
-		return !countriesOfOrigin.isEmpty() ? countriesOfOrigin.get(0) : null;
+		return !countries.isEmpty() ? countries.get(0) : null;
 	}
 
 	// Object methods
@@ -156,8 +166,9 @@ public class RegularMedia extends AbstractNamedMedia
 				.add("mediaType", mediaType)
 				.add("mediaContentType", mediaContentType)
 				.add("date", date)
-				.add("originalLanguages", BeanUtil.nullIfEmpty(originalLanguages))
-				.add("countriesOfOrigin", BeanUtil.nullIfEmpty(countriesOfOrigin))
+				.add("languages", BeanUtil.nullIfEmpty(languages))
+				.add("countries", BeanUtil.nullIfEmpty(countries))
+				.add("runningTime", BeanUtil.nullIfZero(runningTime))
 				.add("genres", BeanUtil.nullIfEmpty(genres))
 				.add("description", description)
 				.add("ratings", BeanUtil.nullIfEmpty(ratings))

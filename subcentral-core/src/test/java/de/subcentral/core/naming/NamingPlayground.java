@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Group;
@@ -40,7 +40,7 @@ public class NamingPlayground
 		Episode epi2 = new Episode(series);
 		epi2.setNumberInSeries(18);
 
-		RegularAvMedia movie = new RegularAvMedia();
+		RegularMedia movie = new RegularMedia();
 		movie.setName("The Lord of the Rings");
 		movie.setDate(Year.of(2002));
 

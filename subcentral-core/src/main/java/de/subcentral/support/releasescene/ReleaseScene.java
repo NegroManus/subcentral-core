@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -233,10 +233,10 @@ public class ReleaseScene
 		multiEpiRlsParser.setPropFromStringService(pps);
 
 		// MOVIE
-		ReleaseParser movieRlsParser = new ReleaseParser(ParsingDefaults.getDefaultSingletonListRegularAvMediaMapper());
-		ImmutableMap<SimplePropDescriptor, String> moviePreDefMatches = ImmutableMap.of(RegularAvMedia.PROP_MEDIA_TYPE,
+		ReleaseParser movieRlsParser = new ReleaseParser(ParsingDefaults.getDefaultSingletonListRegularMediaMapper());
+		ImmutableMap<SimplePropDescriptor, String> moviePreDefMatches = ImmutableMap.of(RegularMedia.PROP_MEDIA_TYPE,
 				Media.MEDIA_TYPE_MOVIE,
-				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,
+				RegularMedia.PROP_MEDIA_CONTENT_TYPE,
 				Media.MEDIA_CONTENT_TYPE_VIDEO);
 
 		// Movie.Name.FirstTag.2015.Other.Tags-Group
@@ -244,9 +244,9 @@ public class ReleaseScene
 		Pattern p601 = Pattern.compile("(.*?)\\.(" + firstTagPattern + ".*?)\\.(\\d{4})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps601 = ImmutableMap.builder();
 		grps601.put(0, Release.PROP_NAME);
-		grps601.put(1, RegularAvMedia.PROP_NAME);
+		grps601.put(1, RegularMedia.PROP_NAME);
 		grps601.put(2, Release.PROP_TAGS);
-		grps601.put(3, RegularAvMedia.PROP_DATE);
+		grps601.put(3, RegularMedia.PROP_DATE);
 		grps601.put(4, Release.PROP_TAGS);
 		grps601.put(5, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher601 = new MappingMatcher<SimplePropDescriptor>(p601, grps601.build(), moviePreDefMatches);
@@ -255,8 +255,8 @@ public class ReleaseScene
 		Pattern p602 = Pattern.compile("(.*?)\\.(\\d{4})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps602 = ImmutableMap.builder();
 		grps602.put(0, Release.PROP_NAME);
-		grps602.put(1, RegularAvMedia.PROP_NAME);
-		grps602.put(2, RegularAvMedia.PROP_DATE);
+		grps602.put(1, RegularMedia.PROP_NAME);
+		grps602.put(2, RegularMedia.PROP_DATE);
 		grps602.put(3, Release.PROP_TAGS);
 		grps602.put(4, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher602 = new MappingMatcher<SimplePropDescriptor>(p602, grps602.build(), moviePreDefMatches);
@@ -265,7 +265,7 @@ public class ReleaseScene
 		Pattern p603 = Pattern.compile("(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps603 = ImmutableMap.builder();
 		grps603.put(0, Release.PROP_NAME);
-		grps603.put(1, RegularAvMedia.PROP_NAME);
+		grps603.put(1, RegularMedia.PROP_NAME);
 		grps603.put(2, Release.PROP_TAGS);
 		grps603.put(3, Release.PROP_GROUP);
 		MappingMatcher<SimplePropDescriptor> matcher603 = new MappingMatcher<SimplePropDescriptor>(p603, grps603.build(), moviePreDefMatches);

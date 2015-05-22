@@ -19,7 +19,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Work;
-import de.subcentral.core.metadata.media.AvMedia;
+import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -30,11 +30,19 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final SimplePropDescriptor	PROP_LANGUAGE					= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
 	public static final SimplePropDescriptor	PROP_GROUP						= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
 	public static final SimplePropDescriptor	PROP_SOURCE						= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
+	public static final SimplePropDescriptor	PROP_STATE						= new SimplePropDescriptor(Subtitle.class, PropNames.STATE);
 	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE			= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
 	public static final SimplePropDescriptor	PROP_BASIS						= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
 	public static final SimplePropDescriptor	PROP_NFO						= new SimplePropDescriptor(Subtitle.class, PropNames.NFO);
 	public static final SimplePropDescriptor	PROP_NFO_LINK					= new SimplePropDescriptor(Subtitle.class, PropNames.NFO_URL);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
+
+	public static final String					STATE_PLANNED					= "PLANNED";
+	public static final String					STATE_TRANSCRIPT				= "TRANSCRIPT";
+	public static final String					STATE_TIMINGS					= "TIMINGS";
+	public static final String					STATE_TRANSLATION				= "TRANSLATION";
+	public static final String					STATE_REVISION					= "REVISION";
+	public static final String					STATE_RELEASED					= "RELEASED";
 
 	/**
 	 * If a transcript was the source of the subtitle.
@@ -105,10 +113,11 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 */
 	public static final String			CONTRIBUTION_TYPE_REVISION		= "REVISION";
 
-	private AvMedia						media;
+	private Media						media;
 	private String						language;
 	private Group						group;
 	private String						source;
+	private String						state;
 	private String						productionType;
 	private Subtitle					basis;
 	private String						nfo;
@@ -121,25 +130,25 @@ public class Subtitle implements Work, Comparable<Subtitle>
 
 	}
 
-	public Subtitle(AvMedia media)
+	public Subtitle(Media media)
 	{
 		this.media = media;
 	}
 
-	public Subtitle(AvMedia media, String language)
+	public Subtitle(Media media, String language)
 	{
 		this.media = media;
 		this.language = language;
 	}
 
-	public Subtitle(AvMedia media, String language, Group group)
+	public Subtitle(Media media, String language, Group group)
 	{
 		this.media = media;
 		this.language = language;
 		this.group = group;
 	}
 
-	public Subtitle(AvMedia media, String language, String source)
+	public Subtitle(Media media, String language, String source)
 	{
 		this.media = media;
 		this.language = language;
@@ -151,12 +160,12 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the media (may be {@code null})
 	 */
-	public AvMedia getMedia()
+	public Media getMedia()
 	{
 		return media;
 	}
 
-	public void setMedia(AvMedia media)
+	public void setMedia(Media media)
 	{
 		this.media = media;
 	}
@@ -205,6 +214,16 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public void setSource(String source)
 	{
 		this.source = source;
+	}
+
+	public String getState()
+	{
+		return state;
+	}
+
+	public void setState(String state)
+	{
+		this.state = state;
 	}
 
 	/**
@@ -381,6 +400,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("language", language)
 				.add("group", group)
 				.add("source", source)
+				.add("state", state)
 				.add("productionType", productionType)
 				.add("basis", basis)
 				.add("nfo", nfo)

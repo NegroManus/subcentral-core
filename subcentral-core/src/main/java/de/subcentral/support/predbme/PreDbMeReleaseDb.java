@@ -26,7 +26,7 @@ import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbQueryException;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
@@ -566,22 +566,22 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			String section = rls.getSection();
 			if (section.startsWith("Movies"))
 			{
-				RegularAvMedia movie = new RegularAvMedia(mediaTitle);
+				RegularMedia movie = new RegularMedia(mediaTitle);
 				movie.setMediaType(Media.MEDIA_TYPE_MOVIE);
 				movie.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
 				media = movie;
 			}
 			else if (section.startsWith("Music"))
 			{
-				RegularAvMedia avMedia = new RegularAvMedia(mediaTitle);
-				avMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
-				media = avMedia;
+				RegularMedia Media = new RegularMedia(mediaTitle);
+				Media.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
+				media = Media;
 			}
 			else if (section.startsWith("TV"))
 			{
-				RegularAvMedia avMedia = new RegularAvMedia(mediaTitle);
-				avMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
-				media = avMedia;
+				RegularMedia Media = new RegularMedia(mediaTitle);
+				Media.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+				media = Media;
 			}
 			else
 			{
@@ -613,7 +613,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		}
 		else if (media instanceof RegularMedia)
 		{
-			// also for RegularAvMedia
+			// also for RegularMedia
 			RegularMedia regularMediaItem = (RegularMedia) media;
 			if (plot != null)
 			{

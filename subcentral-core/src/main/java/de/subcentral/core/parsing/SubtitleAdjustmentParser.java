@@ -10,7 +10,7 @@ import java.util.Set;
 
 import com.google.common.base.Splitter;
 
-import de.subcentral.core.metadata.media.AvMedia;
+import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -19,12 +19,12 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdjustment>
 {
-	private final Mapper<? extends List<? extends AvMedia>>	mediaMapper;
+	private final Mapper<? extends List<? extends Media>>	mediaMapper;
 	private final Mapper<Release>							releaseMapper				= ParsingDefaults.getDefaultReleaseMapper();
 	private final Mapper<Subtitle>							subtitleMapper				= ParsingDefaults.getDefaultSubtitleMapper();
 	private final Mapper<SubtitleAdjustment>				subtitleAdjustmentMapper	= ParsingDefaults.getDefaultSubtitleAdjustmentMapper();
 
-	public SubtitleAdjustmentParser(Mapper<? extends List<? extends AvMedia>> mediaMapper)
+	public SubtitleAdjustmentParser(Mapper<? extends List<? extends Media>> mediaMapper)
 	{
 		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
 	}
@@ -53,14 +53,14 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 	public SubtitleAdjustment map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends AvMedia> media = mediaMapper.map(props, propFromStringService);
+		List<? extends Media> media = mediaMapper.map(props, propFromStringService);
 
 		// Release
 		Set<Release> matchingRlss = parseMatchingReleases(props, media);
 
 		// Subtitle
 		List<Subtitle> subs = new ArrayList<>(media.size());
-		for (AvMedia m : media)
+		for (Media m : media)
 		{
 			Subtitle sub = subtitleMapper.map(props, propFromStringService);
 			sub.setMedia(m);
@@ -74,7 +74,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleAdju
 		return subAdj;
 	}
 
-	private Set<Release> parseMatchingReleases(Map<SimplePropDescriptor, String> props, List<? extends AvMedia> media)
+	private Set<Release> parseMatchingReleases(Map<SimplePropDescriptor, String> props, List<? extends Media> media)
 	{
 		Set<Release> matchingReleases;
 		String groupStr = props.get(Release.PROP_GROUP);

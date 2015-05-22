@@ -134,15 +134,21 @@ public class Season extends AbstractMedia implements Comparable<Season>
 	}
 
 	@Override
-	public List<String> getOriginalLanguages()
+	public List<String> getLanguages()
 	{
-		return series != null ? series.getOriginalLanguages() : ImmutableList.of();
+		return series != null ? series.getLanguages() : ImmutableList.of();
 	}
 
 	@Override
-	public List<String> getCountriesOfOrigin()
+	public List<String> getCountries()
 	{
-		return series != null ? series.getCountriesOfOrigin() : ImmutableList.of();
+		return series != null ? series.getCountries() : ImmutableList.of();
+	}
+
+	@Override
+	public int getRunningTime()
+	{
+		return 0;
 	}
 
 	// Convenience / Complex

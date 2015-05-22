@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -42,7 +42,7 @@ public class Addic7edCom
 		String langTagsSourcePattern = langPattern + "\\.(.+)\\.Addic7ed\\.com";
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE,
 				"Addic7ed.com",
-				RegularAvMedia.PROP_MEDIA_CONTENT_TYPE,
+				RegularMedia.PROP_MEDIA_CONTENT_TYPE,
 				Media.MEDIA_CONTENT_TYPE_VIDEO);
 
 		// --------------
@@ -65,7 +65,7 @@ public class Addic7edCom
 		grps101.put(1, Series.PROP_NAME);
 		grps101.put(2, Series.PROP_TITLE);
 		grps101.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps101.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps101.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
 		grps101.put(5, Season.PROP_NUMBER);
 		grps101.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps101.put(7, Episode.PROP_TITLE);
@@ -84,7 +84,7 @@ public class Addic7edCom
 		grps102.put(1, Series.PROP_NAME);
 		grps102.put(2, Series.PROP_TITLE);
 		grps102.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps102.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps102.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
 		grps102.put(5, Season.PROP_NUMBER);
 		grps102.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps102.put(7, Episode.PROP_TITLE);
@@ -108,7 +108,7 @@ public class Addic7edCom
 		grps103.put(1, Series.PROP_NAME);
 		grps103.put(2, Series.PROP_TITLE);
 		grps103.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps103.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps103.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
 		grps103.put(5, Season.PROP_NUMBER);
 		grps103.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps103.put(7, Episode.PROP_TITLE);
@@ -131,7 +131,7 @@ public class Addic7edCom
 		grps104.put(1, Series.PROP_NAME);
 		grps104.put(2, Series.PROP_TITLE);
 		grps104.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps104.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps104.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
 		grps104.put(5, Season.PROP_NUMBER);
 		grps104.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps104.put(7, Episode.PROP_TITLE);
@@ -156,7 +156,7 @@ public class Addic7edCom
 		grps105.put(1, Series.PROP_NAME);
 		grps105.put(2, Series.PROP_TITLE);
 		grps105.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps105.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps105.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
 		grps105.put(5, Season.PROP_NUMBER);
 		grps105.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps105.put(7, Episode.PROP_TITLE);
@@ -176,7 +176,7 @@ public class Addic7edCom
 		grps106.put(1, Series.PROP_NAME);
 		grps106.put(2, Series.PROP_TITLE);
 		grps106.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps106.put(4, Series.PROP_COUNTRIES_OF_ORIGIN); // e.g. "UK"
+		grps106.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
 		grps106.put(5, Season.PROP_NUMBER);
 		grps106.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps106.put(7, Episode.PROP_TITLE);
@@ -204,20 +204,20 @@ public class Addic7edCom
 
 		// --------------
 		// Movie Parser
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListRegularAvMediaMapper());
+		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListRegularMediaMapper());
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);
-		predefMovieMatchesBuilder.put(RegularAvMedia.PROP_MEDIA_TYPE, Media.MEDIA_TYPE_MOVIE);
+		predefMovieMatchesBuilder.put(RegularMedia.PROP_MEDIA_TYPE, Media.MEDIA_TYPE_MOVIE);
 		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefEpisodeMatchesBuilder.build();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
 		Pattern p201 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
 		grps201.put(0, SubtitleAdjustment.PROP_NAME);
-		grps201.put(1, RegularAvMedia.PROP_NAME);
-		grps201.put(2, RegularAvMedia.PROP_TITLE);
-		grps201.put(3, RegularAvMedia.PROP_DATE);
+		grps201.put(1, RegularMedia.PROP_NAME);
+		grps201.put(2, RegularMedia.PROP_TITLE);
+		grps201.put(3, RegularMedia.PROP_DATE);
 		grps201.put(4, Release.PROP_TAGS);
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, SubtitleAdjustment.PROP_TAGS);

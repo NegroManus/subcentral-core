@@ -21,26 +21,26 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
 
-public class Episode extends AbstractMedia implements AvMedia, Comparable<Episode>
+public class Episode extends AbstractMedia implements Comparable<Episode>
 {
-	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Episode.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_SERIES					= new SimplePropDescriptor(Episode.class, PropNames.SERIES);
-	public static final SimplePropDescriptor	PROP_NUMBER_IN_SERIES		= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SERIES);
-	public static final SimplePropDescriptor	PROP_SEASON					= new SimplePropDescriptor(Episode.class, PropNames.SEASON);
-	public static final SimplePropDescriptor	PROP_NUMBER_IN_SEASON		= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SEASON);
-	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Episode.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_MEDIA_TYPE				= new SimplePropDescriptor(Episode.class, PropNames.MEDIA_TYPE);
-	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(Episode.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_SPECIAL				= new SimplePropDescriptor(Episode.class, PropNames.SPECIAL);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(Episode.class, PropNames.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Episode.class, PropNames.COUNTRIES_OF_ORIGIN);
-	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Episode.class, PropNames.GENRES);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Episode.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_RATINGS				= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
-	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Episode.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Episode.class, PropNames.IMAGES);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO);
-	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(Episode.class, PropNames.ATTRIBUTES);
+	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Episode.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Episode.class, PropNames.SERIES);
+	public static final SimplePropDescriptor	PROP_NUMBER_IN_SERIES	= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SERIES);
+	public static final SimplePropDescriptor	PROP_SEASON				= new SimplePropDescriptor(Episode.class, PropNames.SEASON);
+	public static final SimplePropDescriptor	PROP_NUMBER_IN_SEASON	= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SEASON);
+	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Episode.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_MEDIA_TYPE			= new SimplePropDescriptor(Episode.class, PropNames.MEDIA_TYPE);
+	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(Episode.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_SPECIAL			= new SimplePropDescriptor(Episode.class, PropNames.SPECIAL);
+	public static final SimplePropDescriptor	PROP_LANGUAGES			= new SimplePropDescriptor(Episode.class, PropNames.LANGUAGES);
+	public static final SimplePropDescriptor	PROP_COUNTRIES			= new SimplePropDescriptor(Episode.class, PropNames.COUNTRIES);
+	public static final SimplePropDescriptor	PROP_GENRES				= new SimplePropDescriptor(Episode.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(Episode.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_RATINGS			= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
+	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(Episode.class, PropNames.CONTENT_RATING);
+	public static final SimplePropDescriptor	PROP_IMAGES				= new SimplePropDescriptor(Episode.class, PropNames.IMAGES);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO		= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Episode.class, PropNames.ATTRIBUTES);
 
 	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
 	{
@@ -309,15 +309,15 @@ public class Episode extends AbstractMedia implements AvMedia, Comparable<Episod
 	}
 
 	@Override
-	public List<String> getOriginalLanguages()
+	public List<String> getLanguages()
 	{
-		return series != null ? series.getOriginalLanguages() : ImmutableList.of();
+		return series != null ? series.getLanguages() : ImmutableList.of();
 	}
 
 	@Override
-	public List<String> getCountriesOfOrigin()
+	public List<String> getCountries()
 	{
-		return series != null ? series.getCountriesOfOrigin() : ImmutableList.of();
+		return series != null ? series.getCountries() : ImmutableList.of();
 	}
 
 	// Convenience

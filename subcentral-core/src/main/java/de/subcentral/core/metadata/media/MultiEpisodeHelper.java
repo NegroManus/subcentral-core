@@ -16,7 +16,7 @@ import com.google.common.collect.ListMultimap;
 /**
  * A helper class for dealing with multiple episodes.
  * <p>
- * <code>MultiEpisodeHelper</code> does not implement {@link AvMediaCollection} because it is just a helper class and not an "official", releasable
+ * <code>MultiEpisodeHelper</code> does not implement {@link MediaCollection} because it is just a helper class and not an "official", releasable
  * collection of <code>Media</code>. In contrast to <code>Media</code> collections like <code>Series</code> and <code>Season</code>, a collection of
  * multiple episodes has no properties of its own. Therefore it is not a valid <code>Media</code> instance. <br/>
  * If multiple <code>Episodes</code> are released in a single <code>Release</code>, they are released as a set of materials and not as one material

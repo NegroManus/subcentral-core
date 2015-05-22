@@ -89,10 +89,10 @@ public interface Media
 	public static final String	MEDIA_CONTENT_TYPE_VIDEO			= "VIDEO";
 	public static final String	MEDIA_CONTENT_TYPE_APPLICATION		= "APPLICATION";
 
-	public static final String	MEDIA_IMAGE_TYPE_BANNER				= "banner";
+	public static final String	MEDIA_IMAGE_TYPE_WALLPAPER			= "wallpaper";
 	public static final String	MEDIA_IMAGE_TYPE_POSTER_VERTICAL	= "poster_vertical";
 	public static final String	MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL	= "poster_horizontal";
-	public static final String	MEDIA_IMAGE_TYPE_THUMBNAIL			= "thumbnail";
+	public static final String	MEDIA_IMAGE_TYPE_LOGO				= "logo";
 
 	// Property accessors
 	/**
@@ -145,18 +145,26 @@ public interface Media
 	 * @return the language codes of the original languages of this media. Typically, not available on medias of
 	 *         {@link Media#MEDIA_CONTENT_TYPE_IMAGE}, except if there is text in the picture
 	 */
-	public List<String> getOriginalLanguages();
+	public List<String> getLanguages();
 
 	/**
 	 * 
 	 * @return the country codes of the countries where this media was originally created. Can be multiple if it was a co-production
 	 */
-	public List<String> getCountriesOfOrigin();
+	public List<String> getCountries();
 
 	/**
 	 * @return the genres of this media
 	 */
 	public Set<String> getGenres();
+
+	/**
+	 * The running time of an audio / video media is its playing duration. Only for medias of type {@link #MEDIA_CONTENT_TYPE_AUDIO} or
+	 * {@link #MEDIA_CONTENT_TYPE_VIDEO}.
+	 * 
+	 * @return the running time in milliseconds, <code>0</code> if none or unknown
+	 */
+	public int getRunningTime();
 
 	/**
 	 * The description can for example be facts about this media or a plot summary (in case of Episodes or Movies).
@@ -181,9 +189,9 @@ public interface Media
 	public String getContentRating();
 
 	/**
-	 * The key of the map is the image typ ({@link #MEDIA_IMAGE_TYPE_BACKGROUND}, {@link #MEDIA_IMAGE_TYPE_POSTER_VERTICAL},,
-	 * {@link #MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL} {@link #MEDIA_IMAGE_TYPE_THUMBNAIL}, some custom image type or {@code null} if unknown), the values
-	 * are resource paths (URLs) to the images.
+	 * The key of the map is the image type ({@link #MEDIA_IMAGE_TYPE_WALLPAPER}, {@link #MEDIA_IMAGE_TYPE_POSTER_VERTICAL},,
+	 * {@link #MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL} {@link #MEDIA_IMAGE_TYPE_LOGO}, some custom image type or {@code null} if unknown), the values are
+	 * resource paths (URLs) to the images.
 	 * 
 	 * @return all images associated with this media
 	 */
@@ -245,7 +253,7 @@ public interface Media
 	 */
 	public default String getPrimaryOriginalLanguage()
 	{
-		return !getOriginalLanguages().isEmpty() ? getOriginalLanguages().get(0) : null;
+		return !getLanguages().isEmpty() ? getLanguages().get(0) : null;
 	}
 
 	/**
@@ -254,6 +262,6 @@ public interface Media
 	 */
 	public default String getPrimaryCountryOfOrigin()
 	{
-		return !getCountriesOfOrigin().isEmpty() ? getCountriesOfOrigin().get(0) : null;
+		return !getCountries().isEmpty() ? getCountries().get(0) : null;
 	}
 }

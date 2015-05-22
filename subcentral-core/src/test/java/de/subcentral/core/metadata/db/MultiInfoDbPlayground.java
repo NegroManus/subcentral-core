@@ -60,7 +60,7 @@ public class MultiInfoDbPlayground
 		Episode epi1 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 23);
 		Episode epi2 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 24);
 		List<Episode> query = ImmutableList.of(epi1, epi2);
-		// RegularAvMedia query = new RegularAvMedia("Halo.Nightfall");
+		// RegularMedia query = new RegularMedia("Halo.Nightfall");
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 

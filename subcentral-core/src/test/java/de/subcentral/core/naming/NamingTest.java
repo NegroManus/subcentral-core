@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -27,7 +27,7 @@ public class NamingTest
 	@Test
 	public void testMovieNaming()
 	{
-		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
+		RegularMedia movie = new RegularMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		String name = NamingDefaults.getDefaultMediaNamer().name(movie);
 		System.out.println(name);
@@ -37,7 +37,7 @@ public class NamingTest
 	@Test
 	public void testMediaReleaseNaming()
 	{
-		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
+		RegularMedia movie = new RegularMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Release rel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		String name = NamingDefaults.getDefaultReleaseNamer().name(rel, ImmutableMap.of(MediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
@@ -50,7 +50,7 @@ public class NamingTest
 	@Test
 	public void testSubtitleNaming()
 	{
-		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
+		RegularMedia movie = new RegularMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Subtitle sub = new Subtitle(movie);
 		sub.setLanguage("de");
@@ -63,7 +63,7 @@ public class NamingTest
 	@Test
 	public void testSubtitleReleaseNaming()
 	{
-		RegularAvMedia movie = new RegularAvMedia(MOVIE_NAME);
+		RegularMedia movie = new RegularMedia(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 
 		Release mediaRel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");

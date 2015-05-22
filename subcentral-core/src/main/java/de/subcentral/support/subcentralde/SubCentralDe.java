@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.metadata.media.AvMedia;
+import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.Mapper;
@@ -54,14 +54,14 @@ public class SubCentralDe
 			}
 			ReleaseParser sceneRlsParser = (ReleaseParser) sceneParser;
 
-			Mapper<List<AvMedia>> mediaMapper;
+			Mapper<List<Media>> mediaMapper;
 			try
 			{
-				mediaMapper = (Mapper<List<AvMedia>>) sceneRlsParser.getMediaMapper();
+				mediaMapper = (Mapper<List<Media>>) sceneRlsParser.getMediaMapper();
 			}
 			catch (ClassCastException e)
 			{
-				log.warn("Parser will be ignored because its media mapper does not map to List<AvMedia>: {}", sceneRlsParser.getMediaMapper());
+				log.warn("Parser will be ignored because its media mapper does not map to List<Media>: {}", sceneRlsParser.getMediaMapper());
 				continue;
 			}
 

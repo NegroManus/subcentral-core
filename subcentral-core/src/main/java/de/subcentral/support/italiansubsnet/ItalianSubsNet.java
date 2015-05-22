@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -37,7 +37,7 @@ public class ItalianSubsNet
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
 		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, DOMAIN);
-		commonPredefMatchesBuilder.put(RegularAvMedia.PROP_MEDIA_CONTENT_TYPE, Media.MEDIA_CONTENT_TYPE_VIDEO);
+		commonPredefMatchesBuilder.put(RegularMedia.PROP_MEDIA_CONTENT_TYPE, Media.MEDIA_CONTENT_TYPE_VIDEO);
 		commonPredefMatchesBuilder.put(Subtitle.PROP_LANGUAGE, "italian");
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = commonPredefMatchesBuilder.build();
 

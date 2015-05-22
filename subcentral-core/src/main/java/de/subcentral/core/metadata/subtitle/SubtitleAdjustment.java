@@ -18,7 +18,6 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.Work;
-import de.subcentral.core.metadata.media.AvMedia;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
@@ -88,7 +87,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		for (Media media : matchingRelease.getMedia())
 		{
 			Subtitle sub = new Subtitle();
-			sub.setMedia((AvMedia) media);
+			sub.setMedia(media);
 			sub.setLanguage(language);
 			if (grp != null)
 			{

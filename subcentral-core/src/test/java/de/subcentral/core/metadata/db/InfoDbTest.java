@@ -3,7 +3,7 @@ package de.subcentral.core.metadata.db;
 import java.util.List;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.RegularAvMedia;
+import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.support.predbme.PreDbMeReleaseDb;
 
@@ -15,7 +15,7 @@ public class InfoDbTest
 		System.getProperties().put("http.proxyPort", "8080");
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 6, 5);
-		RegularAvMedia movie = new RegularAvMedia("The Lord of the Rings");
+		RegularMedia movie = new RegularMedia("The Lord of the Rings");
 		Release rls = Release.create(movie, null, "720p");
 
 		// OrlyDbLookup lookup = new OrlyDbLookup();

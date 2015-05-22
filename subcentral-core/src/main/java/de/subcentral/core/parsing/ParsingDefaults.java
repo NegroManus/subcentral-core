@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.RegularAvMedia;
 import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -23,18 +22,16 @@ public class ParsingDefaults
 	 * <li>country code (or null)</li>
 	 * </ol>
 	 */
-	public static final String							PATTERN_MEDIA_NAME						= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
+	public static final String						PATTERN_MEDIA_NAME					= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
-	private static final EpisodeMapper					EPISODE_MAPPER							= new EpisodeMapper();
-	private static final Mapper<List<Episode>>			SINGLETON_LIST_EPISODE_MAPPER			= createSingletonListMapper(EPISODE_MAPPER);
-	private static final MultiEpisodeMapper				MULTI_EPISODE_MAPPER					= new MultiEpisodeMapper(EPISODE_MAPPER);
-	private static final RegularMediaMapper				REGULAR_MEDIA_MAPPER					= new RegularMediaMapper();
-	private static final Mapper<List<RegularMedia>>		SINGLETON_LIST_REGULAR_MEDIA_MAPPER		= createSingletonListMapper(REGULAR_MEDIA_MAPPER);
-	private static final RegularAvMediaMapper			REGULAR_AV_MEDIA_MAPPER					= new RegularAvMediaMapper();
-	private static final Mapper<List<RegularAvMedia>>	SINGLETON_LIST_REGULAR_AV_MEDIA_MAPPER	= createSingletonListMapper(REGULAR_AV_MEDIA_MAPPER);
-	private static final ReleaseMapper					RELEASE_MAPPER							= new ReleaseMapper();
-	private static final SubtitleMapper					SUBTITLE_MAPPER							= new SubtitleMapper();
-	private static final SubtitleAdjustmentMapper		SUBTITLE_ADJUSTMENT_MAPPER				= new SubtitleAdjustmentMapper();
+	private static final EpisodeMapper				EPISODE_MAPPER						= new EpisodeMapper();
+	private static final Mapper<List<Episode>>		SINGLETON_LIST_EPISODE_MAPPER		= createSingletonListMapper(EPISODE_MAPPER);
+	private static final MultiEpisodeMapper			MULTI_EPISODE_MAPPER				= new MultiEpisodeMapper(EPISODE_MAPPER);
+	private static final RegularMediaMapper			REGULAR_MEDIA_MAPPER				= new RegularMediaMapper();
+	private static final Mapper<List<RegularMedia>>	SINGLETON_LIST_REGULAR_MEDIA_MAPPER	= createSingletonListMapper(REGULAR_MEDIA_MAPPER);
+	private static final ReleaseMapper				RELEASE_MAPPER						= new ReleaseMapper();
+	private static final SubtitleMapper				SUBTITLE_MAPPER						= new SubtitleMapper();
+	private static final SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleAdjustmentMapper();
 
 	private static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
 	{
@@ -64,16 +61,6 @@ public class ParsingDefaults
 	public static Mapper<List<RegularMedia>> getDefaultSingletonListRegularMediaMapper()
 	{
 		return SINGLETON_LIST_REGULAR_MEDIA_MAPPER;
-	}
-
-	public static Mapper<RegularAvMedia> getDefaultRegularAvMediaMapper()
-	{
-		return REGULAR_AV_MEDIA_MAPPER;
-	}
-
-	public static Mapper<List<RegularAvMedia>> getDefaultSingletonListRegularAvMediaMapper()
-	{
-		return SINGLETON_LIST_REGULAR_AV_MEDIA_MAPPER;
 	}
 
 	public static final Mapper<Release> getDefaultReleaseMapper()

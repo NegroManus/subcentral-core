@@ -6,7 +6,7 @@ public interface PropNames
 	public static final String	BASIS					= "basis";
 	public static final String	CONTENT_RATING			= "contentRating";
 	public static final String	CONTRIBUTIONS			= "contributions";
-	public static final String	COUNTRIES_OF_ORIGIN		= "countriesOfOrigin";
+	public static final String	COUNTRIES		= "countries";
 	public static final String	DATE					= "date";
 	public static final String	DESCRIPTION				= "description";
 	public static final String	EPISODES				= "episodes";
@@ -29,7 +29,6 @@ public interface PropNames
 	public static final String	NUMBER					= "number";
 	public static final String	NUMBER_IN_SEASON		= "numberInSeason";
 	public static final String	NUMBER_IN_SERIES		= "numberInSeries";
-	public static final String	ORIGINAL_LANGUAGES		= "originalLanguages";
 	public static final String	PRODUCTION_TYPE			= "productionType";
 	public static final String	RATINGS					= "ratings";
 	public static final String	REGULAR_RUNNING_TIME	= "regularRunningTime";

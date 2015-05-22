@@ -25,7 +25,7 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 			series.setTitle(title);
 		}
 		series.setDate(propFromStringService.parse(props, Series.PROP_DATE, Temporal.class));
-		series.setCountriesOfOrigin(propFromStringService.parseList(props, Series.PROP_COUNTRIES_OF_ORIGIN, String.class));
+		series.setCountries(propFromStringService.parseList(props, Series.PROP_COUNTRIES, String.class));
 
 		Episode epi = new Episode(series);
 		epi.setNumberInSeries(propFromStringService.parse(props, Episode.PROP_NUMBER_IN_SERIES, Integer.class));

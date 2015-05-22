@@ -25,8 +25,8 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	public static final SimplePropDescriptor	PROP_STATE					= new SimplePropDescriptor(Series.class, PropNames.STATE);
 	public static final SimplePropDescriptor	PROP_DATE					= new SimplePropDescriptor(Series.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_FINALE_DATE			= new SimplePropDescriptor(Series.class, PropNames.FINALE_DATE);
-	public static final SimplePropDescriptor	PROP_ORIGINAL_LANGUAGES		= new SimplePropDescriptor(Series.class, PropNames.ORIGINAL_LANGUAGES);
-	public static final SimplePropDescriptor	PROP_COUNTRIES_OF_ORIGIN	= new SimplePropDescriptor(Series.class, PropNames.COUNTRIES_OF_ORIGIN);
+	public static final SimplePropDescriptor	PROP_LANGUAGES				= new SimplePropDescriptor(Series.class, PropNames.LANGUAGES);
+	public static final SimplePropDescriptor	PROP_COUNTRIES				= new SimplePropDescriptor(Series.class, PropNames.COUNTRIES);
 	public static final SimplePropDescriptor	PROP_REGULAR_RUNNING_TIME	= new SimplePropDescriptor(Series.class, PropNames.REGULAR_RUNNING_TIME);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Series.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, PropNames.DESCRIPTION);
@@ -54,21 +54,10 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	 */
 	public static final String					TYPE_DATED					= "DATED";
 
-	/**
-	 * If a series is "continuing", then there will be more episodes to come.
-	 */
-	public static final String					STATE_CONTINUING			= "CONTINUING";
-
-	/**
-	 * If a series has "ended", there will be no more episodes to come. Either because the series was cancelled or it simply is complete.
-	 */
-	public static final String					STATE_ENDED					= "ENDED";
-
 	private String								type;
-	private String								state;
 	private Temporal							finaleDate;
-	private final List<String>					originalLanguages			= new ArrayList<>(1);
-	private final List<String>					countriesOfOrigin			= new ArrayList<>(1);
+	private final List<String>					languages					= new ArrayList<>(1);
+	private final List<String>					countries					= new ArrayList<>(1);
 	private int									regularRunningTime			= 0;
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<String>					genres						= new HashSet<>(4);
@@ -109,16 +98,6 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 		this.type = type;
 	}
 
-	public String getState()
-	{
-		return state;
-	}
-
-	public void setState(String state)
-	{
-		this.state = state;
-	}
-
 	/**
 	 * Returns the date of the Series' finale. This is the date of the last / final Episode of this Series. The date of the premiere is stored in
 	 * {@link #getDate()}.
@@ -146,27 +125,27 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	}
 
 	@Override
-	public List<String> getOriginalLanguages()
+	public List<String> getLanguages()
 	{
-		return originalLanguages;
+		return languages;
 	}
 
-	public void setOriginalLanguages(List<String> originalLanguages)
+	public void setLanguages(List<String> originalLanguages)
 	{
-		this.originalLanguages.clear();
-		this.originalLanguages.addAll(originalLanguages);
+		this.languages.clear();
+		this.languages.addAll(originalLanguages);
 	}
 
 	@Override
-	public List<String> getCountriesOfOrigin()
+	public List<String> getCountries()
 	{
-		return countriesOfOrigin;
+		return countries;
 	}
 
-	public void setCountriesOfOrigin(List<String> countriesOfOrigin)
+	public void setCountries(List<String> countriesOfOrigin)
 	{
-		this.countriesOfOrigin.clear();
-		this.countriesOfOrigin.addAll(countriesOfOrigin);
+		this.countries.clear();
+		this.countries.addAll(countriesOfOrigin);
 	}
 
 	/**
@@ -185,6 +164,12 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	}
 
 	@Override
+	public int getRunningTime()
+	{
+		return 0;
+	}
+
+	@Override
 	public Set<String> getGenres()
 	{
 		return genres;
@@ -199,13 +184,13 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	// Convenience
 	public String getPrimaryOriginalLanguage()
 	{
-		return originalLanguages.isEmpty() ? null : originalLanguages.get(0);
+		return languages.isEmpty() ? null : languages.get(0);
 	}
 
 	@Override
 	public String getPrimaryCountryOfOrigin()
 	{
-		return countriesOfOrigin.isEmpty() ? null : countriesOfOrigin.get(0);
+		return countries.isEmpty() ? null : countries.get(0);
 	}
 
 	// == newEpisode() methods ==
@@ -320,11 +305,10 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 				.add("aliasNames", BeanUtil.nullIfEmpty(aliasNames))
 				.add("title", title)
 				.add("type", type)
-				.add("state", state)
 				.add("date", date)
 				.add("finaleDate", finaleDate)
-				.add("originalLanguages", BeanUtil.nullIfEmpty(originalLanguages))
-				.add("countriesOfOrigin", BeanUtil.nullIfEmpty(countriesOfOrigin))
+				.add("languages", BeanUtil.nullIfEmpty(languages))
+				.add("countries", BeanUtil.nullIfEmpty(countries))
 				.add("regularRunningTime", BeanUtil.nullIfZero(regularRunningTime))
 				.add("genres", BeanUtil.nullIfEmpty(genres))
 				.add("description", description)

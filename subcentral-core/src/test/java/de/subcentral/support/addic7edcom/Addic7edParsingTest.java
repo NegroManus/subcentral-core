@@ -244,7 +244,7 @@ public class Addic7edParsingTest
 		String name = "The Office (US) - 02x16 - Valentine's day.DVDRip TOPAZ.French.orig.Addic7ed.com";
 
 		Episode epi = Episode.createSeasonedEpisode("The Office (US)", "The Office", 2, 16, "Valentine's day");
-		epi.getSeries().getCountriesOfOrigin().add("US");
+		epi.getSeries().getCountries().add("US");
 		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setSource("Addic7ed.com");
