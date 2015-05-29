@@ -32,9 +32,8 @@
 package de.subcentral.core.jmh;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -47,9 +46,10 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Resources;
 
-import de.subcentral.subman.mig.SubRip;
-import de.subcentral.subman.mig.SubtitleFile;
+import de.subcentral.core.file.subtitle.SubRip;
+import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -106,7 +106,7 @@ public class MyBenchmark
 																							SubCentralDe.getParsingService(),
 																							ADDIC7ED_PARSING_SERVICE);
 	private static final SubRip							SUBRIP_FORMAT				= new SubRip();
-	private static final Path							SUBRIP_TEST_FILE			= Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-src\\Castle - 02x10 - One Man's Treasure.PROPER.FQM.English.C.orig.Addic7ed.com.srt");
+	private static final URL							SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
 	private static TypeStandardizingService buildService()
 	{
@@ -174,7 +174,7 @@ public class MyBenchmark
 	@Benchmark
 	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
 	{
-		SubtitleFile data = SUBRIP_FORMAT.read(SUBRIP_TEST_FILE, Charset.forName("Cp1252"));
+		SubtitleFile data = SUBRIP_FORMAT.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
 		blackhole.consume(data);
 	}
 
