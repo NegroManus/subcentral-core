@@ -6,7 +6,7 @@ public interface PropNames
 	public static final String	BASIS					= "basis";
 	public static final String	CONTENT_RATING			= "contentRating";
 	public static final String	CONTRIBUTIONS			= "contributions";
-	public static final String	COUNTRIES		= "countries";
+	public static final String	COUNTRIES				= "countries";
 	public static final String	DATE					= "date";
 	public static final String	DESCRIPTION				= "description";
 	public static final String	EPISODES				= "episodes";
@@ -45,5 +45,5 @@ public interface PropNames
 	public static final String	TAGS					= "tags";
 	public static final String	TITLE					= "title";
 	public static final String	TYPE					= "type";
-	public static final String	REVISION				= "revision";
+	public static final String	VERSION					= "version";
 }

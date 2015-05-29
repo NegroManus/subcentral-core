@@ -37,7 +37,7 @@ public class SubCentralDeParsingTesting
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 18);
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "X264");
 		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, "de", "SubCentral");
-		subAdj.setRevision("V2");
+		subAdj.setVersion("V2");
 		testParsingResult(name, subAdj);
 	}
 
@@ -48,7 +48,7 @@ public class SubCentralDeParsingTesting
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 19);
 		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
 		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, null, null);
-		subAdj.setRevision("V2");
+		subAdj.setVersion("V2");
 		testParsingResult(name, subAdj);
 	}
 
@@ -59,7 +59,7 @@ public class SubCentralDeParsingTesting
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 20);
 		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
 		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, "VO", null);
-		subAdj.setRevision("V2");
+		subAdj.setVersion("V2");
 		testParsingResult(name, subAdj);
 	}
 
@@ -70,7 +70,7 @@ public class SubCentralDeParsingTesting
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 18);
 		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
 		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, "de", "SubCentral");
-		subAdj.setRevision("V2");
+		subAdj.setVersion("V2");
 		testParsingResult(name, subAdj);
 	}
 

@@ -64,12 +64,12 @@ public class SubtitleUtil
 			Tag tag = iter.next();
 			if (mVersion.reset(tag.getName()).matches())
 			{
-				String oldRev = subAdj.getRevision();
+				String oldRev = subAdj.getVersion();
 				String newRev = mVersion.group(1);
-				subAdj.setRevision(newRev);
+				subAdj.setVersion(newRev);
 				if (!Objects.equals(oldRev, newRev))
 				{
-					changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_REVISION.getPropName(), oldRev, newRev));
+					changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_VERSION.getPropName(), oldRev, newRev));
 				}
 				iter.remove();
 				tagsChanged = true;

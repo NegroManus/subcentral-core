@@ -68,7 +68,7 @@ public class NamingDefaults
 		// Release
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Release.PROP_MEDIA, RELEASE_MEDIA_FORMATTER);
 		// Subtitle
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(SubtitleAdjustment.PROP_REVISION, (String rev) -> "V" + rev);
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(SubtitleAdjustment.PROP_VERSION, (String rev) -> "V" + rev);
 
 		ImmutableSet.Builder<Separation> sepsBuilder = ImmutableSet.builder();
 		sepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));

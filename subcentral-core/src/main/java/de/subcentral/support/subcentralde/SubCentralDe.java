@@ -97,7 +97,7 @@ public class SubCentralDe
 		ext01.setPatternPrefix("(");
 		ext01.setPrefixProps(ImmutableList.of(SubtitleAdjustment.PROP_NAME));
 		ext01.setPatternSuffix(")" + versionGrp + langGrp + "(?:" + groupGrp + ")?");
-		ext01.setSuffixProps(ImmutableList.of(SubtitleAdjustment.PROP_REVISION, Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP));
+		ext01.setSuffixProps(ImmutableList.of(SubtitleAdjustment.PROP_VERSION, Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP));
 		extensions.add(ext01);
 
 		// Language, Revision, (Group)?
@@ -105,7 +105,7 @@ public class SubCentralDe
 		ext02.setPatternPrefix("(");
 		ext02.setPrefixProps(ImmutableList.of(SubtitleAdjustment.PROP_NAME));
 		ext02.setPatternSuffix(")" + langGrp + versionGrp + "(?:" + groupGrp + ")?");
-		ext02.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, SubtitleAdjustment.PROP_REVISION, Subtitle.PROP_GROUP));
+		ext02.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, SubtitleAdjustment.PROP_VERSION, Subtitle.PROP_GROUP));
 		extensions.add(ext02);
 
 		// Language, Group, (Revision)?
@@ -113,7 +113,7 @@ public class SubCentralDe
 		ext03.setPatternPrefix("(");
 		ext03.setPrefixProps(ImmutableList.of(SubtitleAdjustment.PROP_NAME));
 		ext03.setPatternSuffix(")" + langGrp + groupGrp + "(?:" + versionGrp + ")?");
-		ext03.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, SubtitleAdjustment.PROP_REVISION));
+		ext03.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, SubtitleAdjustment.PROP_VERSION));
 		extensions.add(ext03);
 
 		// Language, (Group)?
@@ -129,7 +129,7 @@ public class SubCentralDe
 		ext05.setPatternPrefix("(");
 		ext05.setPrefixProps(ImmutableList.of(SubtitleAdjustment.PROP_NAME));
 		ext05.setPatternSuffix(")" + versionGrp);
-		ext05.setSuffixProps(ImmutableList.of(SubtitleAdjustment.PROP_REVISION));
+		ext05.setSuffixProps(ImmutableList.of(SubtitleAdjustment.PROP_VERSION));
 		extensions.add(ext05);
 
 		return extensions.build();

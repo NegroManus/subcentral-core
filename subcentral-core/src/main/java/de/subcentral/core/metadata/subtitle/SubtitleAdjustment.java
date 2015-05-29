@@ -32,7 +32,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.TAGS);
 	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES	= new SimplePropDescriptor(SubtitleAdjustment.class,
 																				PropNames.MATCHING_RELEASES);
-	public static final SimplePropDescriptor	PROP_REVISION			= new SimplePropDescriptor(Subtitle.class, PropNames.REVISION);
+	public static final SimplePropDescriptor	PROP_VERSION			= new SimplePropDescriptor(Subtitle.class, PropNames.VERSION);
 	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_SIZE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SIZE);
 	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO);
@@ -107,7 +107,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	// Most adjustments are compatible to 1 or 2 releases
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<Release>			matchingReleases	= new HashSet<>(2);
-	private String						revision;
+	private String						version;
 	private Temporal					date;
 	private long						size				= 0L;
 	private String						nfo;
@@ -185,7 +185,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	 * <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in {@link #getForeignParts()})</li>
 	 * <li><b>Hearing Impaired tags</b> like "HI" (whether the subtitle contains annotations for the hearing impaired is stored separately in
 	 * {@link #isHearingImpaired()})</li>
-	 * <li><b>Version tags</b> like "V2" (the revision is stored separately in {@link #getRevision()})
+	 * <li><b>Version tags</b> like "V2" (the version is stored separately in {@link #getVersion()})
 	 * </ul>
 	 * All other important information about this subtitle may be stored in the tag list. For example "COLORED" for colored subs.
 	 * 
@@ -214,31 +214,31 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	}
 
 	/**
-	 * The revision string defines the revision (revision) of this subtitle. The revision string should be a simple revision (1, 2, 3, ...) number or
-	 * follow the decimal notation (1.0, 2.0, 2.0.1, ...) and be incremented whenever this subtitle is changed (improved). But there are no
-	 * limitations on valid revision strings as any source has its own revision scheme. For example, for addic7ed.com the revision string can be one
-	 * of "orig", "c.orig", "c.updated".
+	 * The version string defines the version of this subtitle. The version string should be a simple version number (1, 2, 3, ...) or follow the
+	 * decimal notation (1.0, 2.0, 2.0.1, ...) and be incremented whenever this subtitle is changed (improved). But there are no limitations on valid
+	 * version strings as any source has its own version scheme. For example, for addic7ed.com the version string can be one of "orig", "c.orig",
+	 * "c.updated".
 	 * <p>
-	 * The revision string must not contain information about differences from alternate releases (like colored/uncolored, hearing impaired/not
-	 * hearing impaired, includes foreign parts/does not include foreign parts, ...).
+	 * The version string must not contain information about differences from alternate releases (like colored/uncolored, hearing impaired/not hearing
+	 * impaired, includes foreign parts/does not include foreign parts, ...).
 	 * </p>
 	 * <p>
-	 * An improved/customized subtitle is always {@link #getBasis() based on} the former revision of that subtitle and has the
+	 * An improved/customized subtitle is always {@link #getBasis() based on} the former version of that subtitle and has the
 	 * {@link #getProductionType() productionType} {@value #PRODUCTION_TYPE_MODIFICATION}.
 	 * </p>
 	 * 
-	 * If no revision information is available, the revision is {@code null}.
+	 * If no version information is available, the version is {@code null}.
 	 * 
-	 * @return the revision string (may be {@code null})
+	 * @return the version string (may be {@code null})
 	 */
-	public String getRevision()
+	public String getVersion()
 	{
-		return revision;
+		return version;
 	}
 
-	public void setRevision(String version)
+	public void setVersion(String version)
 	{
-		this.revision = version;
+		this.version = version;
 	}
 
 	public Temporal getDate()
@@ -386,7 +386,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		{
 			SubtitleAdjustment o = (SubtitleAdjustment) obj;
 			return subtitles.equals(o.subtitles) && tags.equals(o.tags) && matchingReleases.equals(o.matchingReleases)
-					&& Objects.equals(revision, o.revision);
+					&& Objects.equals(version, o.version);
 		}
 		return false;
 	}
@@ -399,7 +399,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(33, 51).append(subtitles).append(tags).append(matchingReleases).append(revision).toHashCode();
+		return new HashCodeBuilder(33, 51).append(subtitles).append(tags).append(matchingReleases).append(version).toHashCode();
 	}
 
 	@Override
@@ -414,7 +414,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 				.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
-				.compare(revision, revision)
+				.compare(version, version)
 				.result();
 	}
 
@@ -427,7 +427,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 				.add("subtitles", BeanUtil.nullIfEmpty(subtitles))
 				.add("tags", BeanUtil.nullIfEmpty(tags))
 				.add("matchingReleases", BeanUtil.nullIfEmpty(matchingReleases))
-				.add("revision", revision)
+				.add("version", version)
 				.add("date", date)
 				.add("size", BeanUtil.nullIfZero(size))
 				.add("nfo", nfo)
