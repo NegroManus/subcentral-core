@@ -113,7 +113,7 @@ public class SubRip implements SubtitleFileFormat
 		for (int i = textLines.size() - 1; i >= 0; i--)
 		{
 			String line = textLines.get(i);
-			if (!isTrailingBlankLine || !StringUtils.isBlank(line))
+			if (!isTrailingBlankLine || StringUtils.isNotBlank(line))
 			{
 				isTrailingBlankLine = false;
 				// append \n after insertion if there already was a line (content in StringBuilder)
