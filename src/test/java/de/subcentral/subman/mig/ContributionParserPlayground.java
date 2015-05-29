@@ -1,4 +1,4 @@
-package de.subcentral.core.file.subtitle;
+package de.subcentral.subman.mig;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -14,13 +14,15 @@ import java.util.regex.Pattern;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.file.subtitle.ContributionParser.ContributionTypePattern;
+import de.subcentral.core.file.subtitle.SubRip;
+import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.standardizing.PatternStringReplacer;
 import de.subcentral.core.standardizing.StringReplacer;
 import de.subcentral.core.util.TimeUtil;
+import de.subcentral.subman.mig.ContributionParser.ContributionTypePattern;
 
 public class ContributionParserPlayground
 {

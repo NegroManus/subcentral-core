@@ -48,8 +48,8 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.file.subtitle.SubRip;
-import de.subcentral.core.file.subtitle.SubtitleFile;
+import de.subcentral.subman.mig.SubRip;
+import de.subcentral.subman.mig.SubtitleFile;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;

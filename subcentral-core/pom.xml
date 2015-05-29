@@ -12,7 +12,7 @@
 	</properties>
 
 	<dependencies>
-		<!-- Commons -->
+		<!-- Common -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>

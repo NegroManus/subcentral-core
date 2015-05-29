@@ -1,4 +1,4 @@
-package de.subcentral.core.file.subtitle;
+package de.subcentral.subman.mig;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

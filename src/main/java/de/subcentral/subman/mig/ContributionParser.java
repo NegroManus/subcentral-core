@@ -1,4 +1,4 @@
-package de.subcentral.core.file.subtitle;
+package de.subcentral.subman.mig;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,6 +20,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.file.subtitle.Item;
+import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
 
