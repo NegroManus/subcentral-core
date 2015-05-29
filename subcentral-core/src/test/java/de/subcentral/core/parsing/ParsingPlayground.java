@@ -67,8 +67,7 @@ public class ParsingPlayground
 	 * If behind proxy, add VM args:
 	 * 
 	 * <pre>
-	 * -Dhttp.proxyHost=10.206.247.65
-	 * -Dhttp.proxyHost=10.206.247.65
+	 * -Dhttp.proxyHost=10.151.249.76 -Dhttp.proxyPort=8080
 	 * </pre>
 	 * 
 	 * @param args

@@ -1,4 +1,4 @@
-package de.subcentral.support.winrar;
+package de.subcentral.subman.mig;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -29,6 +29,8 @@ import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
+import de.subcentral.support.winrar.WinRar;
+import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 
 public class ProbeFilePlayground
