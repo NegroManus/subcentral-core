@@ -111,7 +111,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	/**
 	 * Internal revision before the release.
 	 */
-	public static final String			CONTRIBUTION_TYPE_REVISION		= "VERSION";
+	public static final String			CONTRIBUTION_TYPE_REVISION		= "REVISION";
 
 	private Media						media;
 	private String						language;

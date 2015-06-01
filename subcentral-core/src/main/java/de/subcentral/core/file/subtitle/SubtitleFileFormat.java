@@ -18,6 +18,8 @@ import java.nio.file.Path;
 
 public interface SubtitleFileFormat
 {
+	public static final SubRip	SUBRIP	= new SubRip();
+
 	public default SubtitleFile read(Path file, Charset charset) throws IOException
 	{
 		return read(Files.newBufferedReader(file, charset));

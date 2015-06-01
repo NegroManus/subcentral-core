@@ -16,6 +16,12 @@ import de.subcentral.core.util.IOUtil;
 
 public class SubRip implements SubtitleFileFormat
 {
+	// package visibility
+	SubRip()
+	{
+
+	}
+
 	@Override
 	public SubtitleFile read(BufferedReader reader) throws IOException
 	{

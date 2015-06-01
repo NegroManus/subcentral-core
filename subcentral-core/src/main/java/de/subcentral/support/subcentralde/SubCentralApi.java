@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.api;
+package de.subcentral.support.subcentralde;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,9 +22,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Joiner;
 
-public class SubCentralService
+public class SubCentralApi
 {
-	private static final Logger		log		= LogManager.getLogger(SubCentralService.class);
+	private static final Logger		log		= LogManager.getLogger(SubCentralApi.class);
 	private static final Charset	UTF_8	= Charset.forName("UTF-8");
 
 	private String					cookies;
@@ -34,7 +34,7 @@ public class SubCentralService
 		String body = "loginUsername=" + URLEncoder.encode(username, UTF_8.name()) + "&loginPassword=" + URLEncoder.encode(password, UTF_8.name());
 
 		URL loginUrl = new URL("http://subcentral.de/index.php?form=UserLogin");
-		HttpURLConnection conn = (HttpURLConnection) loginUrl.openConnection();
+		HttpURLConnection conn = openConnection(loginUrl);
 		conn.setRequestMethod("POST");
 		conn.setDoInput(true);
 		conn.setDoOutput(true);
@@ -47,6 +47,11 @@ public class SubCentralService
 			writer.write(body);
 		}
 
+		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
+		{
+			throw new IllegalStateException("Login failed. Server did not return response code 200: " + conn.getHeaderField(null));
+		}
+
 		List<String> cookieList = new ArrayList<>(4);
 		Map<String, List<String>> map = conn.getHeaderFields();
 		for (Map.Entry<String, List<String>> entry : map.entrySet())
@@ -56,37 +61,42 @@ public class SubCentralService
 				cookieList.addAll(entry.getValue());
 			}
 		}
+
+		// printHeaders(conn);
+
 		cookies = Joiner.on("; ").join(cookieList);
-		log.debug("Logged in as {} (Cookie: {})", username, cookies);
+		if (cookies.isEmpty())
+		{
+			throw new IllegalStateException("Login failed. Server failed to send session cookie.");
+		}
+		log.debug("Logged in as {} (Cookies: {})", username, cookies);
 	}
 
+	/**
+	 * <pre>
+	 * wcf_userID:	21754
+	 * wcf_password:	f191d317ad977506c2e71fbbf91097f83f8bd1ca
+	 * wcf_cookieHash:	6a9df383589c676a9c4c26ba4de65059815d782c
+	 * wcf_boardLastActivityTime:	1433160906
+	 * </pre>
+	 * 
+	 * @deprecated Currently not working (gets 404 because Cookies userID and password (hash) are missing
+	 * @throws IOException
+	 */
+	@Deprecated
 	public void logout() throws IOException
 	{
-		HttpURLConnection conn = openConnectionWithCookies(new URL("http://subcentral.de/index.php?action=UserLogout"));
+		HttpURLConnection conn = openConnection(new URL("http://subcentral.de/index.php?action=UserLogout"));
 		conn.connect();
+		String oldCookies = cookies;
 		cookies = null;
-		log.debug("Logged out");
+		printHeaders(conn);
+		log.debug("Logged out (Cookies: {})", oldCookies);
 	}
 
 	public void downloadAttachment(int attachmentId, Path folder) throws IOException
 	{
-		HttpURLConnection conn = openConnectionWithCookies(new URL("http://subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId));
-
-		String filename = null;
-		String contentDisposition = conn.getHeaderField("Content-disposition");
-		if (contentDisposition != null)
-		{
-			Pattern filenamePattern = Pattern.compile("filename=\"(.*)\"");
-			Matcher filenameMatcher = filenamePattern.matcher(contentDisposition);
-			if (filenameMatcher.find())
-			{
-				filename = filenameMatcher.group(1);
-			}
-		}
-		long contentLength = conn.getHeaderFieldLong("Content-Length", 0L);
-		String contentType = conn.getHeaderField("Content-Type");
-
-		log.debug("Downloading attachment, id={}, filename={}, contentType={}, contentLength={}", attachmentId, filename, contentType, contentLength);
+		HttpURLConnection conn = openConnection(new URL("http://subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId));
 
 		/**
 		 * Header
@@ -104,21 +114,45 @@ public class SubCentralService
 		 * Connection: Keep-Alive
 		 * </pre>
 		 */
+		String filename = null;
+		String contentDisposition = conn.getHeaderField("Content-disposition");
+		if (contentDisposition != null)
+		{
+			Pattern filenamePattern = Pattern.compile("filename=\"(.*)\"");
+			Matcher filenameMatcher = filenamePattern.matcher(contentDisposition);
+			if (filenameMatcher.find())
+			{
+				filename = filenameMatcher.group(1);
+			}
+		}
+		long contentLength = conn.getHeaderFieldLong("Content-Length", 0L);
+		String contentType = conn.getHeaderField("Content-Type");
+
+		log.debug("Downloading attachment. id={}, filename={}, contentType={}, contentLength={}", attachmentId, filename, contentType, contentLength);
+		long start = System.currentTimeMillis();
 		ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
-		try (FileOutputStream fos = new FileOutputStream(folder.resolve(filename).toString());)
+		try (FileOutputStream fos = new FileOutputStream(folder.resolve(filename).toFile());)
 		{
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		}
-		log.debug("Downloaded attachment, id={}, filename={}, contentType={}, contentLength={}", attachmentId, filename, contentType, contentLength);
+		long duration = System.currentTimeMillis() - start;
+		log.debug("Downloaded attachment in {}ms. id={}, filename={}, contentType={}, contentLength={}",
+				duration,
+				attachmentId,
+				filename,
+				contentType,
+				contentLength);
 	}
 
-	private HttpURLConnection openConnectionWithCookies(URL url) throws IOException
+	private HttpURLConnection openConnection(URL url) throws IOException
 	{
 		URLConnection conn = url.openConnection();
 		if (cookies != null)
 		{
 			conn.setRequestProperty("Cookie", cookies);
 		}
+		// fake mozilla user agent
+		conn.setRequestProperty("User-Agent", "User-Agent:	Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0");
 		return (HttpURLConnection) conn;
 	}
 
