@@ -230,9 +230,11 @@ public class SeriesListParser extends Task<SeriesListContent>
 	{
 		SeriesListParser task = new SeriesListParser();
 		SeriesListContent content = task.call();
+		int i = 0;
 		for (Season season : content.getSeasons())
 		{
-			System.out.println(NamingDefaults.getDefaultSeasonNamer().name(season));
+			System.out.println(++i + " " + NamingDefaults.getDefaultSeasonNamer().name(season));
 		}
+		System.out.println(content.getSeries().size());
 	}
 }
