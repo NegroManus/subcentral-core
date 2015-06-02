@@ -48,8 +48,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
-import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleFile;
+import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -105,14 +105,13 @@ public class MyBenchmark
 																							ItalianSubsNet.getParsingService(),
 																							SubCentralDe.getParsingService(),
 																							ADDIC7ED_PARSING_SERVICE);
-	private static final SubRip							SUBRIP_FORMAT				= new SubRip();
 	private static final URL							SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
 	private static TypeStandardizingService buildService()
 	{
 		TypeStandardizingService service = new TypeStandardizingService("testing");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaulStandardizers(service);
+		StandardizingDefaults.registerAllDefaultStandardizers(service);
 		service.registerStandardizer(Subtitle.class,
 				new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
 						LanguageFormat.NAME,
@@ -174,7 +173,7 @@ public class MyBenchmark
 	@Benchmark
 	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
 	{
-		SubtitleFile data = SUBRIP_FORMAT.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
+		SubtitleFile data = SubtitleFileFormat.SUBRIP.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
 		blackhole.consume(data);
 	}
 

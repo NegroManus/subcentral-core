@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.media.Media;
@@ -37,6 +39,47 @@ public class NamingUtil
 	public static final <T> T readParameter(Map<String, Object> parameters, String key, Class<T> valueClass, T defaultValue)
 	{
 		return valueClass.cast(parameters.getOrDefault(key, defaultValue));
+	}
+
+	public static <T> Predicate<T> filterByName(T obj, NamingService mediaNamingService, Map<String, Object> namingParams)
+	{
+		String requiredName = mediaNamingService.name(obj, namingParams);
+		return filterByName(requiredName, mediaNamingService, namingParams);
+	}
+
+	public static <T> Predicate<T> filterByName(String requiredName, NamingService mediaNamingService, Map<String, Object> namingParams)
+	{
+		return (T obj) -> {
+			String nameOfCandidate = mediaNamingService.name(obj, namingParams);
+			boolean accepted = requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
+			if (accepted)
+			{
+				System.out.println("accepted " + nameOfCandidate);
+			}
+			else
+			{
+				System.out.println("denied " + nameOfCandidate);
+			}
+
+			return accepted;
+		};
+	}
+
+	public static <T, U> Predicate<T> filterByNestedName(T obj, NamingService mediaNamingService, Map<String, Object> namingParams,
+			Function<T, U> nestedObjRetriever)
+	{
+		String requiredMediaName = mediaNamingService.name(nestedObjRetriever.apply(obj), namingParams);
+		return filterByNestedName(requiredMediaName, mediaNamingService, namingParams, nestedObjRetriever);
+	}
+
+	public static <T, U> Predicate<T> filterByNestedName(String requiredName, NamingService mediaNamingService, Map<String, Object> namingParams,
+			Function<T, U> nestedObjRetriever)
+	{
+		return (T obj) -> {
+			String nameOfCandidate = mediaNamingService.name(nestedObjRetriever.apply(obj), namingParams);
+			boolean accepted = requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
+			return accepted;
+		};
 	}
 
 	private NamingUtil()

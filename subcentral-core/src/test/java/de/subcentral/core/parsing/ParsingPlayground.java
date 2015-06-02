@@ -34,9 +34,9 @@ import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.standardizing.SeriesNameStandardizer;
@@ -107,7 +107,7 @@ public class ParsingPlayground
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
 
 		final MetadataDb<Release> rlsInfoDb = new OrlyDbComReleaseDb();
-		final NamingService mediaNsForFiltering = new DelegatingNamingService("medianaming", ns, NamingDefaults.getDefaultReleaseNameFormatter());
+		final NamingService mediaNsForFiltering = NamingDefaults.getDefaultNormalizingNamingService();
 
 		final CompatibilityService compService = new CompatibilityService();
 		compService.getCompatibilities().add(new SameGroupCompatibility());
@@ -197,7 +197,10 @@ public class ParsingPlayground
 							start = System.nanoTime();
 
 							List<Release> filteredReleases = releases.stream()
-									.filter(ReleaseUtil.filterByMedia(subAdjRls.getMedia(), mediaNsForFiltering, ImmutableMap.of()))
+									.filter(NamingUtil.filterByNestedName(subAdjRls,
+											mediaNsForFiltering,
+											ImmutableMap.of(),
+											(Release rls) -> rls.getMedia()))
 									.filter(ReleaseUtil.filterByTags(subAdjRls.getTags(), ImmutableList.of()))
 									.filter(ReleaseUtil.filterByGroup(subAdjRls.getGroup(), false))
 									.collect(Collectors.toList());

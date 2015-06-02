@@ -12,7 +12,7 @@ public class PatternStringReplacer implements UnaryOperator<String>
 
 	public static enum Mode
 	{
-		REPLACE_EACH, REPLACE_WHOLLY
+		REPLACE_ALL, REPLACE_COMPLETE
 	}
 
 	private final Pattern	pattern;
@@ -21,7 +21,7 @@ public class PatternStringReplacer implements UnaryOperator<String>
 
 	public PatternStringReplacer(Pattern pattern, String replacement)
 	{
-		this(pattern, replacement, Mode.REPLACE_EACH);
+		this(pattern, replacement, Mode.REPLACE_ALL);
 	}
 
 	public PatternStringReplacer(Pattern pattern, String replacement, Mode mode)
@@ -55,9 +55,9 @@ public class PatternStringReplacer implements UnaryOperator<String>
 		}
 		switch (mode)
 		{
-			case REPLACE_EACH:
+			case REPLACE_ALL:
 				return pattern.matcher(s).replaceAll(replacement);
-			case REPLACE_WHOLLY:
+			case REPLACE_COMPLETE:
 				Matcher m = pattern.matcher(s);
 				if (m.matches())
 				{

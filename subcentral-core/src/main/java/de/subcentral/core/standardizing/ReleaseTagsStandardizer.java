@@ -5,7 +5,7 @@ import java.util.List;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 
-public class ReleaseTagsStandardizer extends SinglePropertyStandardizer<Release, List<Tag>, TagsReplacer>
+public class ReleaseTagsStandardizer extends SinglePropertyStandardizer<Release, List<Tag>>
 {
 	public ReleaseTagsStandardizer(TagsReplacer replacer)
 	{
@@ -35,4 +35,11 @@ public class ReleaseTagsStandardizer extends SinglePropertyStandardizer<Release,
 	{
 		bean.setTags(value);
 	}
+
+	@Override
+	public TagsReplacer getReplacer()
+	{
+		return (TagsReplacer) super.getReplacer();
+	}
+
 }

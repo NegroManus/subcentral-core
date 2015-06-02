@@ -41,6 +41,7 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
@@ -232,9 +233,10 @@ public class ProcessingTask extends Task<Void>
 		// Filter
 		log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
 		List<Release> matchingRlss = foundRlss.stream()
-				.filter(ReleaseUtil.filterByMedia(srcRls.getMedia(),
+				.filter(NamingUtil.filterByNestedName(srcRls,
 						processingController.getMediaNamingServiceForReleaseFiltering(),
-						config.getNamingParameters()))
+						config.getNamingParameters(),
+						(Release rls) -> rls.getMedia()))
 				.filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
 				.filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 				.collect(Collectors.toList());

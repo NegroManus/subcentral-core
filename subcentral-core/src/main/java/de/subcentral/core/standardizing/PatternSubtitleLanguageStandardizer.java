@@ -2,7 +2,7 @@ package de.subcentral.core.standardizing;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class PatternSubtitleLanguageStandardizer extends SinglePropertyStandardizer<Subtitle, String, PatternStringReplacer>
+public class PatternSubtitleLanguageStandardizer extends SinglePropertyStandardizer<Subtitle, String>
 {
 	public PatternSubtitleLanguageStandardizer(PatternStringReplacer replacer)
 	{
@@ -32,4 +32,11 @@ public class PatternSubtitleLanguageStandardizer extends SinglePropertyStandardi
 	{
 		bean.setLanguage(value);
 	}
+
+	@Override
+	public PatternStringReplacer getReplacer()
+	{
+		return (PatternStringReplacer) super.getReplacer();
+	}
+
 }

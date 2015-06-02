@@ -54,9 +54,9 @@ public class Migration
 		knownNonContributors.add(Pattern.compile("\\b(und|and|from|von|by)\\b", Pattern.CASE_INSENSITIVE));
 
 		ImmutableList.Builder<Function<String, String>> contributorReplacers = ImmutableList.builder();
-		contributorReplacers.add(new PatternStringReplacer(Pattern.compile("(.*)\\."), "$1", PatternStringReplacer.Mode.REPLACE_WHOLLY));
-		contributorReplacers.add(new StringReplacer("Ic3m4n", "Ic3m4n™", StringReplacer.Mode.REPLACE_WHOLLY));
-		contributorReplacers.add(new StringReplacer("smizz aka -TiLT-", "-TiLT- aka smizz", StringReplacer.Mode.REPLACE_WHOLLY));
+		contributorReplacers.add(new PatternStringReplacer(Pattern.compile("(.*)\\."), "$1", PatternStringReplacer.Mode.REPLACE_COMPLETE));
+		contributorReplacers.add(new StringReplacer("Ic3m4n", "Ic3m4n™", StringReplacer.Mode.REPLACE_COMPLETE));
+		contributorReplacers.add(new StringReplacer("smizz aka -TiLT-", "-TiLT- aka smizz", StringReplacer.Mode.REPLACE_COMPLETE));
 
 		return new ContributionParser(patterns.build(), knownContributors.build(), knownNonContributors.build(), contributorReplacers.build());
 	}

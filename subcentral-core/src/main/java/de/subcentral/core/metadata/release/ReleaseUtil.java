@@ -3,7 +3,6 @@ package de.subcentral.core.metadata.release;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -12,8 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
@@ -46,30 +43,6 @@ public class ReleaseUtil
 			}
 		}
 		return reducedList;
-	}
-
-	public static Predicate<Release> filterByMedia(List<Media> media, NamingService mediaNamingService, Map<String, Object> namingParams)
-	{
-		String requiredMediaName;
-		if (media.isEmpty())
-		{
-			requiredMediaName = "";
-		}
-		else
-		{
-			requiredMediaName = mediaNamingService.name(media, namingParams);
-		}
-		return filterByMedia(requiredMediaName, mediaNamingService, namingParams);
-	}
-
-	public static Predicate<Release> filterByMedia(String requiredMediaName, NamingService mediaNamingService, Map<String, Object> namingParams)
-	{
-		return (rls) -> {
-			String name = mediaNamingService.name(rls.getMedia(), namingParams);
-			boolean accepted = requiredMediaName.isEmpty() ? true : requiredMediaName.equalsIgnoreCase(name);
-
-			return accepted;
-		};
 	}
 
 	public static Predicate<Release> filterByTags(List<Tag> containedTags, Collection<Tag> metaTagsToIgnore)

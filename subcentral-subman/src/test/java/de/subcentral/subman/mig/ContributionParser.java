@@ -12,18 +12,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jsoup.Jsoup;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.file.subtitle.Item;
 import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.Contribution;
-import de.subcentral.core.metadata.Contributor;
 
 public class ContributionParser
 {
@@ -224,49 +221,6 @@ public class ContributionParser
 			this.end = end;
 			this.type = Objects.requireNonNull(type, "type");
 			this.contributionType = contributionType;
-		}
-	}
-
-	public static class Subber implements Contributor
-	{
-		private final String	name;
-
-		public Subber(String name)
-		{
-			this.name = name;
-		}
-
-		@Override
-		public String getName()
-		{
-			return name;
-		}
-
-		// Object methods
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
-				return true;
-			}
-			if (obj instanceof Subber)
-			{
-				return Objects.equals(name, ((Subber) obj).name);
-			}
-			return false;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return new HashCodeBuilder(973, 59).append(name).toHashCode();
-		}
-
-		@Override
-		public String toString()
-		{
-			return MoreObjects.toStringHelper(Subber.class).omitNullValues().add("name", name).toString();
 		}
 	}
 

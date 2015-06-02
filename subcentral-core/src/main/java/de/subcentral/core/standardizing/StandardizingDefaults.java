@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Episode;
@@ -16,9 +18,9 @@ import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 
 public class StandardizingDefaults
 {
-	public static final Function<String, String>	ALNUM_DOT_REPLACER					= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.",
+	public static final Function<String, String>	ALNUM_BLANK_REPLACER				= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ",
 																								"'´`",
-																								'.');
+																								' ');
 	public static final Function<String, String>	ALNUM_DOT_HYPEN_REPLACER			= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-",
 																								"'´`",
 																								'.');
@@ -34,12 +36,13 @@ public class StandardizingDefaults
 																								"-"));
 	public static final Function<String, String>	AND_REPLACER						= new StringReplacer("&", "and");
 	public static final Function<String, String>	ACCENT_REPLACER						= new StripAccentsStringReplacer();
+	public static final Function<String, String>	TO_LOWERCASE_REPLACER				= (String s) -> StringUtils.lowerCase(s);
 
 	private static final TypeStandardizingService	DEFAULT_STANDARDIZING_SERVICE		= new TypeStandardizingService("default");
 	static
 	{
 		registerAllDefaultNestedBeansRetrievers(DEFAULT_STANDARDIZING_SERVICE);
-		registerAllDefaulStandardizers(DEFAULT_STANDARDIZING_SERVICE);
+		registerAllDefaultStandardizers(DEFAULT_STANDARDIZING_SERVICE);
 	}
 
 	public static StandardizingService getDefaultStandardizingService()
@@ -101,7 +104,7 @@ public class StandardizingDefaults
 		service.registerNestedBeansRetriever(SubtitleAdjustment.class, StandardizingDefaults::retrieveNestedBeans);
 	}
 
-	public static void registerAllDefaulStandardizers(TypeStandardizingService service)
+	public static void registerAllDefaultStandardizers(TypeStandardizingService service)
 	{
 		service.registerStandardizer(SubtitleAdjustment.class, SubtitleUtil::standardizeTags);
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("AAC2", "0"), Tag.list("AAC2.0"))));

@@ -11,7 +11,7 @@ public class StringReplacer implements UnaryOperator<String>
 {
 	public static enum Mode
 	{
-		REPLACE_EACH, REPLACE_WHOLLY
+		REPLACE_ALL, REPLACE_COMPLETE
 	}
 
 	private final String	searchString;
@@ -21,7 +21,7 @@ public class StringReplacer implements UnaryOperator<String>
 
 	public StringReplacer(String searchString, String replacement)
 	{
-		this(searchString, replacement, Mode.REPLACE_EACH);
+		this(searchString, replacement, Mode.REPLACE_ALL);
 	}
 
 	public StringReplacer(String searchString, String replacement, Mode mode)
@@ -51,9 +51,9 @@ public class StringReplacer implements UnaryOperator<String>
 	{
 		switch (mode)
 		{
-			case REPLACE_EACH:
+			case REPLACE_ALL:
 				return StringUtils.replace(text, searchString, replacement);
-			case REPLACE_WHOLLY:
+			case REPLACE_COMPLETE:
 				if (Objects.equals(text, searchString))
 				{
 					return replacement;

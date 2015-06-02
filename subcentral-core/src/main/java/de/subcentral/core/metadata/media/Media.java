@@ -264,4 +264,18 @@ public interface Media
 	{
 		return !getCountries().isEmpty() ? getCountries().get(0) : null;
 	}
+
+	@SuppressWarnings("unchecked")
+	public default <T> T getFirstAttribute(String key) throws ClassCastException
+	{
+		List<Object> values = getAttributes().get(key);
+		return values.isEmpty() ? null : (T) values.get(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	public default <T> List<T> getAttributeList(String key) throws ClassCastException
+	{
+		List<Object> values = getAttributes().get(key);
+		return (List<T>) values;
+	}
 }

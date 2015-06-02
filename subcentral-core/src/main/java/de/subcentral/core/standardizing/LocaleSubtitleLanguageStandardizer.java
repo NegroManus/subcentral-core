@@ -1,8 +1,10 @@
 package de.subcentral.core.standardizing;
 
+import java.util.function.Function;
+
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class LocaleSubtitleLanguageStandardizer extends SinglePropertyStandardizer<Subtitle, String, LocaleLanguageReplacer>
+public class LocaleSubtitleLanguageStandardizer extends SinglePropertyStandardizer<Subtitle, String>
 {
 	public LocaleSubtitleLanguageStandardizer(LocaleLanguageReplacer replacer)
 	{
@@ -32,4 +34,11 @@ public class LocaleSubtitleLanguageStandardizer extends SinglePropertyStandardiz
 	{
 		bean.setLanguage(value);
 	}
+
+	@Override
+	public Function<String, String> getReplacer()
+	{
+		return (LocaleLanguageReplacer) super.getReplacer();
+	}
+
 }

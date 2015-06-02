@@ -2,6 +2,7 @@ package de.subcentral.core.metadata.media;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -175,7 +176,7 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 		return genres;
 	}
 
-	public void setGenres(Set<String> genres)
+	public void setGenres(Collection<? extends String> genres)
 	{
 		this.genres.clear();
 		this.genres.addAll(genres);

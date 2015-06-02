@@ -4,21 +4,20 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
-import com.google.common.collect.ImmutableMap;
-
-public class ReflectiveStandardizer<T> implements Standardizer<T>
+public class ReflectiveStandardizer<T, P> implements Standardizer<T>
 {
-	private final Class<T>						beanType;
-	private final Map<String, UnaryOperator<?>>	propStandardizers;
+	private final Class<T>			beanType;
+	private final String			propertyName;
+	private final Function<P, P>	replacer;
 
-	public ReflectiveStandardizer(Class<T> beanType, Map<String, UnaryOperator<?>> propStandardizers)
+	public ReflectiveStandardizer(Class<T> beanType, String propertyName, Function<P, P> replacer)
 	{
 		this.beanType = Objects.requireNonNull(beanType, "beanType");
-		this.propStandardizers = ImmutableMap.copyOf(propStandardizers); // null check included
+		this.propertyName = Objects.requireNonNull(propertyName, "propertyName");
+		this.replacer = Objects.requireNonNull(replacer, "replacer");
 	}
 
 	public Class<T> getBeanType()
@@ -26,9 +25,14 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 		return beanType;
 	}
 
-	public Map<String, UnaryOperator<?>> getPropStandardizers()
+	public String getPropertyName()
 	{
-		return propStandardizers;
+		return propertyName;
+	}
+
+	public Function<?, ?> getReplacer()
+	{
+		return replacer;
 	}
 
 	@Override
@@ -38,18 +42,15 @@ public class ReflectiveStandardizer<T> implements Standardizer<T>
 		{
 			return;
 		}
-		for (Map.Entry<String, UnaryOperator<?>> entry : propStandardizers.entrySet())
+		StandardizingChange change = standardizeProperty(bean, propertyName, replacer);
+		if (change != null)
 		{
-			StandardizingChange change = standardizeProperty(bean, entry.getKey(), entry.getValue());
-			if (change != null)
-			{
-				changes.add(change);
-			}
+			changes.add(change);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private <P> StandardizingChange standardizeProperty(Object bean, String propName, UnaryOperator<P> operator) throws IllegalArgumentException
+	private StandardizingChange standardizeProperty(Object bean, String propName, Function<P, P> operator) throws IllegalArgumentException
 	{
 		try
 		{

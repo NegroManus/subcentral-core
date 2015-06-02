@@ -19,7 +19,7 @@ public class ReleasesTest
 		rls.setTags(Tag.list("720p", "WEB", "DL", "DD5", "1", "x264"));
 		TypeStandardizingService service = new TypeStandardizingService("test");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaulStandardizers(service);
+		StandardizingDefaults.registerAllDefaultStandardizers(service);
 		List<StandardizingChange> changes = service.standardize(rls);
 		changes.forEach(c -> System.out.println(c));
 		assertEquals(Tag.list("720p", "WEB-DL", "DD5.1", "x264"), rls.getTags());

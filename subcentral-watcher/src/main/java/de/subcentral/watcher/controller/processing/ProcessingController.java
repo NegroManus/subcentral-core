@@ -33,7 +33,6 @@ import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.naming.DelegatingNamingService;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
@@ -138,7 +137,7 @@ public class ProcessingController extends AbstractController
 	{
 		TypeStandardizingService service = new TypeStandardizingService("parsed");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaulStandardizers(service);
+		StandardizingDefaults.registerAllDefaultStandardizers(service);
 		SubCentralFXUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPreMetadataDbStandardizers());
 		return service;
 	}
@@ -156,7 +155,7 @@ public class ProcessingController extends AbstractController
 		final TypeStandardizingService service = new TypeStandardizingService("custom");
 		// Register default Standardizers (not modifiable via GUI)
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaulStandardizers(service);
+		StandardizingDefaults.registerAllDefaultStandardizers(service);
 
 		// Bind SubtitleLanguageStandardizer
 		Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding();
@@ -186,7 +185,7 @@ public class ProcessingController extends AbstractController
 
 	private NamingService initMediaNamingServiceForReleaseFiltering()
 	{
-		return new DelegatingNamingService("naming of media for filtering releases", namingService, NamingDefaults.getDefaultFilteringFormatter());
+		return NamingDefaults.getDefaultNormalizingNamingService();
 	}
 
 	public void doInitialize()

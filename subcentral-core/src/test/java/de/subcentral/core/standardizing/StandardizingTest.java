@@ -9,8 +9,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -58,8 +56,9 @@ public class StandardizingTest
 	@Test
 	public void testReflectiveStandardizing()
 	{
-		ReflectiveStandardizer<Series> stdzer = new ReflectiveStandardizer<Series>(Series.class, ImmutableMap.of("name",
-				(String name) -> StringUtils.upperCase(name)));
+		ReflectiveStandardizer<Series, String> stdzer = new ReflectiveStandardizer<>(Series.class,
+				"name",
+				(String name) -> StringUtils.upperCase(name));
 
 		Series series = new Series("Psych");
 		Series expectedSeries = new Series("PSYCH");
@@ -74,7 +73,7 @@ public class StandardizingTest
 	@Test(expected = IllegalArgumentException.class)
 	public void testReflectiveStandardizingFail()
 	{
-		ReflectiveStandardizer<Series> stdzer = new ReflectiveStandardizer<Series>(Series.class, ImmutableMap.of("notExistingProp", (String s) -> s));
+		ReflectiveStandardizer<Series, String> stdzer = new ReflectiveStandardizer<>(Series.class, "notExistingProp", (String s) -> s);
 		List<StandardizingChange> changes = new ArrayList<>();
 		stdzer.standardize(new Series("Psych"), changes);
 	}

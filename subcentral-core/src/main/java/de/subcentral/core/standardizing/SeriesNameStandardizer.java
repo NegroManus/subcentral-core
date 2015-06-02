@@ -17,6 +17,11 @@ public class SeriesNameStandardizer implements Standardizer<Series>
 	private final String	nameReplacement;
 	private final String	titleReplacement;
 
+	public SeriesNameStandardizer(Pattern namePattern, String nameReplacement)
+	{
+		this(namePattern, nameReplacement, null);
+	}
+
 	public SeriesNameStandardizer(Pattern namePattern, String nameReplacement, String titleReplacement)
 	{
 		this.namePattern = Objects.requireNonNull(namePattern, "namePattern");

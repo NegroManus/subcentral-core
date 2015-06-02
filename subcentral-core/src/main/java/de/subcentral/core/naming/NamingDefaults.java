@@ -28,16 +28,20 @@ import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
 {
-	public static final String						DEFAULT_DOMAIN			= "default";
+	public static final String						DEFAULT_DOMAIN				= "default";
+	public static final String						DEFAULT_DOMAIN_NORMALIZE	= "default.normalize";
 
-	private static final Function<String, String>	RELEASE_NAME_FORMATTER	= initReleaseNameFormatter();
-	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER	= initReleaseMediaFormatter();
-	private static final Function<String, String>	FILTERING_FORMATTER		= initFilteringFormatter();
+	private static final Function<String, String>	RELEASE_NAME_FORMATTER		= initReleaseNameFormatter();
+	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER		= initReleaseMediaFormatter();
+	private static final Function<String, String>	NORMALIZING_FORMATTER		= initNormalizingFormatter();
 
-	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE	= new SimplePropToStringService();
+	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE		= new SimplePropToStringService();
 
 	// NamingService has to be instantiated first because it is referenced in some namers
-	private static final ConditionalNamingService	NAMING_SERVICE			= new ConditionalNamingService(DEFAULT_DOMAIN);
+	private static final ConditionalNamingService	NAMING_SERVICE				= new ConditionalNamingService(DEFAULT_DOMAIN);
+	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE	= new DelegatingNamingService(DEFAULT_DOMAIN_NORMALIZE,
+																						NAMING_SERVICE,
+																						NORMALIZING_FORMATTER);
 	private static MediaNamer						MEDIA_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
@@ -132,9 +136,11 @@ public class NamingDefaults
 				.andThen(StandardizingDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
-	private static Function<String, String> initFilteringFormatter()
+	private static Function<String, String> initNormalizingFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER).andThen(StandardizingDefaults.ALNUM_DOT_REPLACER);
+		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER)
+				.andThen(StandardizingDefaults.ALNUM_BLANK_REPLACER)
+				.andThen(StandardizingDefaults.TO_LOWERCASE_REPLACER);
 	}
 
 	public static Function<String, String> getDefaultReleaseNameFormatter()
@@ -147,9 +153,9 @@ public class NamingDefaults
 		return RELEASE_MEDIA_FORMATTER;
 	}
 
-	public static Function<String, String> getDefaultFilteringFormatter()
+	public static Function<String, String> getDefaultNormalizingFormatter()
 	{
-		return FILTERING_FORMATTER;
+		return NORMALIZING_FORMATTER;
 	}
 
 	public static PropToStringService getDefaultPropToStringService()
@@ -160,6 +166,11 @@ public class NamingDefaults
 	public static NamingService getDefaultNamingService()
 	{
 		return NAMING_SERVICE;
+	}
+
+	public static DelegatingNamingService getDefaultNormalizingNamingService()
+	{
+		return NORMALIZING_NAMING_SERVICE;
 	}
 
 	public static Namer<Media> getDefaultMediaNamer()

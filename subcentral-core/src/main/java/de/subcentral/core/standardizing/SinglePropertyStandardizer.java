@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class SinglePropertyStandardizer<T, P, R extends Function<P, P>> implements Standardizer<T>
+public abstract class SinglePropertyStandardizer<T, P> implements Standardizer<T>
 {
-	private final R	replacer;
+	private final Function<P, P>	replacer;
 
-	public SinglePropertyStandardizer(R replacer)
+	public SinglePropertyStandardizer(Function<P, P> replacer)
 	{
 		this.replacer = Objects.requireNonNull(replacer, "replacer");
 	}
 
-	public R getReplacer()
+	public Function<P, P> getReplacer()
 	{
 		return replacer;
 	}
