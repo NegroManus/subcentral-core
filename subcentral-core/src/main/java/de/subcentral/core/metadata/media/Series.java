@@ -30,6 +30,7 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	public static final SimplePropDescriptor	PROP_COUNTRIES				= new SimplePropDescriptor(Series.class, PropNames.COUNTRIES);
 	public static final SimplePropDescriptor	PROP_REGULAR_RUNNING_TIME	= new SimplePropDescriptor(Series.class, PropNames.REGULAR_RUNNING_TIME);
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Series.class, PropNames.GENRES);
+	public static final SimplePropDescriptor	PROP_NETWORKS				= new SimplePropDescriptor(Series.class, PropNames.NETWORKS);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, PropNames.DESCRIPTION);
 	public static final SimplePropDescriptor	PROP_RATINGS				= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Series.class, PropNames.CONTENT_RATING);
@@ -62,6 +63,7 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	private int									regularRunningTime			= 0;
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<String>					genres						= new HashSet<>(4);
+	private final List<Network>					networks					= new ArrayList<>(1);
 
 	public Series()
 	{}
@@ -180,6 +182,17 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	{
 		this.genres.clear();
 		this.genres.addAll(genres);
+	}
+
+	public List<Network> getNetworks()
+	{
+		return networks;
+	}
+
+	public void setNetworks(Collection<? extends Network> networks)
+	{
+		this.networks.clear();
+		this.networks.addAll(networks);
 	}
 
 	// Convenience
@@ -312,6 +325,7 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 				.add("countries", BeanUtil.nullIfEmpty(countries))
 				.add("regularRunningTime", BeanUtil.nullIfZero(regularRunningTime))
 				.add("genres", BeanUtil.nullIfEmpty(genres))
+				.add("networks", BeanUtil.nullIfEmpty(networks))
 				.add("description", description)
 				.add("ratings", BeanUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)

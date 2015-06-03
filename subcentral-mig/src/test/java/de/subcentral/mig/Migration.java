@@ -64,7 +64,7 @@ public class Migration
 	// public static void main(String[] args) throws IOException
 	// {
 	// int attachmentId = 10527;
-	// SubCentralApi service = new SubCentralApi();
+	// SubCentralApi service = new SubCentralHttpApi();
 	// service.login("NegroManus", "sc-don13duck-");
 	// service.downloadAttachment(attachmentId, Paths.get(System.getProperty("user.home"), "Downloads", "!sc-src"));
 	// // service.logout();

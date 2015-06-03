@@ -1,6 +1,7 @@
 package de.subcentral.core.metadata.media;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class AbstractNamedMedia extends AbstractMedia
@@ -25,7 +26,7 @@ public abstract class AbstractNamedMedia extends AbstractMedia
 		return aliasNames;
 	}
 
-	public void setAliasNames(List<String> aliasNames)
+	public void setAliasNames(Collection<? extends String> aliasNames)
 	{
 		this.aliasNames.clear();
 		this.aliasNames.addAll(aliasNames);

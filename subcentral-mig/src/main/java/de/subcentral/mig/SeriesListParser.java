@@ -6,6 +6,10 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,9 +27,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSortedSet;
 
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.mig.SeriesListParser.SeriesListContent;
 
 public class SeriesListParser extends Task<SeriesListContent>
@@ -33,9 +37,8 @@ public class SeriesListParser extends Task<SeriesListContent>
 	private static final Logger	log					= LogManager.getLogger(SeriesListParser.class);
 	private static final String	URL					= "http://subcentral.de/index.php?page=Thread&postID=29261#post29261";
 
-	public static final String	ATTRIBUTE_BOARD_ID	= "BOARD_ID";
-	public static final String	ATTRIBUTE_THREAD_ID	= "THREAD_ID";
-	public static final String	ATTRIBUTE_NETWORK	= "NETWORK";
+	public static final String	ATTRIBUTE_BOARD_ID	= "SUBCENTRAL_BOARD_ID";
+	public static final String	ATTRIBUTE_THREAD_ID	= "SUBCENTRAL_THREAD_ID";
 
 	@Override
 	protected SeriesListContent call() throws IOException
@@ -47,9 +50,13 @@ public class SeriesListParser extends Task<SeriesListContent>
 		final Pattern seasonAdditionPattern = Pattern.compile("(\\d+)\\s*\\+\\s*(\\d+)");
 		// (1-2)
 		final Pattern seasonRangePattern = Pattern.compile("(\\d+)\\s*-\\s*(\\d+)");
+		//
+		final Splitter listSplitter = Splitter.on(CharMatcher.anyOf("/, ")).trimResults().omitEmptyStrings();
 
-		final ImmutableSortedSet.Builder<Series> seriesList = ImmutableSortedSet.naturalOrder();
-		final ImmutableSortedSet.Builder<Season> seasonList = ImmutableSortedSet.naturalOrder();
+		final SortedSet<Series> seriesList = new TreeSet<>();
+		final SortedSet<Season> seasonList = new TreeSet<>();
+		// have to use a map for putIfAbsent() method
+		final SortedMap<Network, Network> networkList = new TreeMap<>();
 
 		Document doc = Jsoup.parse(new URL(URL), 5000);
 		Element table = doc.getElementById("qltable");
@@ -183,7 +190,7 @@ public class SeriesListParser extends Task<SeriesListContent>
 				 */
 				Element genresCell = iter.next();
 				// Genres may be delimited by '/' or ',' and/or whitespace
-				series.setGenres(Splitter.on(CharMatcher.anyOf("/, ")).trimResults().omitEmptyStrings().splitToList(genresCell.text()));
+				series.setGenres(listSplitter.splitToList(genresCell.text()));
 
 				// state
 				iter.next();
@@ -195,24 +202,33 @@ public class SeriesListParser extends Task<SeriesListContent>
 				 * <pre <td>ABC Family</td> </pre>
 				 */
 				Element networkCell = iter.next();
-				series.getAttributes().put(ATTRIBUTE_NETWORK, networkCell.text());
+				for (String networkName : listSplitter.split(networkCell.text()))
+				{
+					Network network = new Network(networkName);
+					Network previousValue = networkList.putIfAbsent(network, network);
+					series.getNetworks().add(previousValue == null ? network : previousValue);
+				}
 
 				seriesList.add(series);
 			}
 		}
 
-		return new SeriesListContent(seriesList.build(), seasonList.build());
+		return new SeriesListContent(ImmutableSortedSet.copyOf(seriesList),
+				ImmutableSortedSet.copyOf(seasonList),
+				ImmutableSortedSet.copyOf(networkList.keySet()));
 	}
 
 	public static class SeriesListContent
 	{
 		private final ImmutableSortedSet<Series>	series;
 		private final ImmutableSortedSet<Season>	seasons;
+		private final ImmutableSortedSet<Network>	networks;
 
-		public SeriesListContent(ImmutableSortedSet<Series> series, ImmutableSortedSet<Season> seasons)
+		public SeriesListContent(ImmutableSortedSet<Series> series, ImmutableSortedSet<Season> seasons, ImmutableSortedSet<Network> networks)
 		{
 			this.series = series;
 			this.seasons = seasons;
+			this.networks = networks;
 		}
 
 		public ImmutableSortedSet<Series> getSeries()
@@ -224,6 +240,11 @@ public class SeriesListParser extends Task<SeriesListContent>
 		{
 			return seasons;
 		}
+
+		public ImmutableSortedSet<Network> getNetworks()
+		{
+			return networks;
+		}
 	}
 
 	public static void main(String[] args) throws Exception
@@ -231,10 +252,20 @@ public class SeriesListParser extends Task<SeriesListContent>
 		SeriesListParser task = new SeriesListParser();
 		SeriesListContent content = task.call();
 		int i = 0;
-		for (Season season : content.getSeasons())
+		for (Series series : content.getSeries())
 		{
-			System.out.println(++i + " " + NamingDefaults.getDefaultSeasonNamer().name(season));
+			System.out.println(++i + " " + series);
 		}
+		// i = 0;
+		// for (Season season : content.getSeasons())
+		// {
+		// System.out.println(++i + " " + NamingDefaults.getDefaultSeasonNamer().name(season));
+		// }
+		// i = 0;
+		// for (Network network : content.getNetworks())
+		// {
+		// System.out.println(++i + " " + network);
+		// }
 		System.out.println(content.getSeries().size());
 	}
 }

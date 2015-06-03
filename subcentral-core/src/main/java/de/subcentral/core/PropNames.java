@@ -23,6 +23,7 @@ public interface PropNames
 	public static final String	MEDIA_CONTENT_TYPE		= "mediaContentType";
 	public static final String	MEDIA_TYPE				= "mediaType";
 	public static final String	NAME					= "name";
+	public static final String	NETWORKS				= "networks";
 	public static final String	NFO						= "nfo";
 	public static final String	NFO_URL					= "nfoUrl";
 	public static final String	NUKES					= "nukes";
