@@ -152,9 +152,9 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
 	}
 
 	/**
-	 * The regular running time in milliseconds of the episodes of this Series.
+	 * The regular running time of the episodes of this Series in minutes.
 	 * 
-	 * @return the regular running time in milliseconds, <code>0</code> if unknown
+	 * @return the regular running time in minutes, <code>0</code> if unknown
 	 */
 	public int getRegularRunningTime()
 	{

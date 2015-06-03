@@ -1,7 +1,6 @@
 package de.subcentral.core.metadata.media;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -21,7 +20,7 @@ public class Network implements Comparable<Network>
 
 	public Network(String name)
 	{
-		this.name = Objects.requireNonNull(name, "name");
+		this.name = name;
 	}
 
 	public String getName()

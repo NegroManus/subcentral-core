@@ -281,6 +281,10 @@ public class Episode extends AbstractMedia implements Comparable<Episode>
 		this.numberInSeason = numberInSeason;
 	}
 
+	/**
+	 * 
+	 * @return whether the episode is a special (non-regular episode)
+	 */
 	public boolean isSpecial()
 	{
 		return special;

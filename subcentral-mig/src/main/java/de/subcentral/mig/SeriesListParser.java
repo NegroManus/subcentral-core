@@ -24,7 +24,7 @@ import org.jsoup.select.Elements;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
@@ -213,35 +213,33 @@ public class SeriesListParser extends Task<SeriesListContent>
 			}
 		}
 
-		return new SeriesListContent(ImmutableSortedSet.copyOf(seriesList),
-				ImmutableSortedSet.copyOf(seasonList),
-				ImmutableSortedSet.copyOf(networkList.keySet()));
+		return new SeriesListContent(seriesList, seasonList, networkList.keySet());
 	}
 
 	public static class SeriesListContent
 	{
-		private final ImmutableSortedSet<Series>	series;
-		private final ImmutableSortedSet<Season>	seasons;
-		private final ImmutableSortedSet<Network>	networks;
+		private final ImmutableList<Series>		series;
+		private final ImmutableList<Season>		seasons;
+		private final ImmutableList<Network>	networks;
 
-		public SeriesListContent(ImmutableSortedSet<Series> series, ImmutableSortedSet<Season> seasons, ImmutableSortedSet<Network> networks)
+		public SeriesListContent(Iterable<Series> series, Iterable<Season> seasons, Iterable<Network> networks)
 		{
-			this.series = series;
-			this.seasons = seasons;
-			this.networks = networks;
+			this.series = ImmutableList.copyOf(series);
+			this.seasons = ImmutableList.copyOf(seasons);
+			this.networks = ImmutableList.copyOf(networks);
 		}
 
-		public ImmutableSortedSet<Series> getSeries()
+		public ImmutableList<Series> getSeries()
 		{
 			return series;
 		}
 
-		public ImmutableSortedSet<Season> getSeasons()
+		public ImmutableList<Season> getSeasons()
 		{
 			return seasons;
 		}
 
-		public ImmutableSortedSet<Network> getNetworks()
+		public ImmutableList<Network> getNetworks()
 		{
 			return networks;
 		}
