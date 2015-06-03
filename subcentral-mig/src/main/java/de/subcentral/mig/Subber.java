@@ -1,4 +1,4 @@
-package de.subcentral.subman.mig;
+package de.subcentral.mig;
 
 import java.util.Objects;
 

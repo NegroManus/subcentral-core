@@ -1,4 +1,4 @@
-package de.subcentral.subman.mig;
+package de.subcentral.mig;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +26,7 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.subman.mig.SeriesListParser.SeriesListContent;
+import de.subcentral.mig.SeriesListParser.SeriesListContent;
 
 public class SeriesListParser extends Task<SeriesListContent>
 {

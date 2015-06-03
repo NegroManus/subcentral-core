@@ -1,4 +1,4 @@
-package de.subcentral.subman.mig;
+package de.subcentral.mig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import de.subcentral.core.standardizing.ReflectiveStandardizer;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.standardizing.StringReplacer;
 import de.subcentral.core.standardizing.TypeStandardizingService;
-import de.subcentral.subman.mig.ContributionParser.ContributionTypePattern;
+import de.subcentral.mig.ContributionParser.ContributionTypePattern;
 
 public class Config
 {

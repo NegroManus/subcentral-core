@@ -1,4 +1,4 @@
-package de.subcentral.subman.mig;
+package de.subcentral.mig;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -23,7 +23,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.standardizing.PatternStringReplacer;
 import de.subcentral.core.standardizing.StringReplacer;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.subman.mig.ContributionParser.ContributionTypePattern;
+import de.subcentral.mig.ContributionParser.ContributionTypePattern;
 
 public class Migration
 {
