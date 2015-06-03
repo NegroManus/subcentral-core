@@ -51,7 +51,7 @@ public class SeriesListParser extends Task<SeriesListContent>
 		// (1-2)
 		final Pattern seasonRangePattern = Pattern.compile("(\\d+)\\s*-\\s*(\\d+)");
 		//
-		final Splitter listSplitter = Splitter.on(CharMatcher.anyOf("/, ")).trimResults().omitEmptyStrings();
+		final Splitter listSplitter = Splitter.on(CharMatcher.anyOf("/,+")).trimResults().omitEmptyStrings();
 
 		final SortedSet<Series> seriesList = new TreeSet<>();
 		final SortedSet<Season> seasonList = new TreeSet<>();
@@ -252,20 +252,20 @@ public class SeriesListParser extends Task<SeriesListContent>
 		SeriesListParser task = new SeriesListParser();
 		SeriesListContent content = task.call();
 		int i = 0;
-		for (Series series : content.getSeries())
-		{
-			System.out.println(++i + " " + series);
-		}
+		// for (Series series : content.getSeries())
+		// {
+		// System.out.println(++i + " " + series);
+		// }
 		// i = 0;
 		// for (Season season : content.getSeasons())
 		// {
 		// System.out.println(++i + " " + NamingDefaults.getDefaultSeasonNamer().name(season));
 		// }
 		// i = 0;
-		// for (Network network : content.getNetworks())
-		// {
-		// System.out.println(++i + " " + network);
-		// }
+		for (Network network : content.getNetworks())
+		{
+			System.out.println(++i + " " + network);
+		}
 		System.out.println(content.getSeries().size());
 	}
 }
