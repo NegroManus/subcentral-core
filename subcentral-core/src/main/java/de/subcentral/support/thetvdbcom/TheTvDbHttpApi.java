@@ -66,6 +66,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		 */
 
 		URL url = new URL(getApiBasePath() + "GetSeries.php?seriesname=" + URLEncoder.encode(name, Charset.forName("UTF-8").name()));
+		System.out.println(url);
 
 		Document doc = Jsoup.parse(url, 5000);
 		Elements seriesElems = doc.getElementsByTag("series");
@@ -320,7 +321,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addDateAsLocaleDate(AbstractMedia media, Element parentElem, String tag)
 	{
-		String dateTxt = getText(parentElem, "tag");
+		String dateTxt = getText(parentElem, tag);
 		if (dateTxt != null)
 		{
 			LocalDate date = LocalDate.parse(dateTxt);
@@ -350,7 +351,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 	public static void main(String[] args) throws IOException
 	{
 		TheTvDbApi api = new TheTvDbHttpApi("A3ACA9D28A27792D");
-		List<Series> queryResult = api.findSeries("Game of Thrones");
+		List<Series> queryResult = api.findSeries("Kingdom (2014) ");
 		for (Series series : queryResult)
 		{
 			System.out.println(series);
