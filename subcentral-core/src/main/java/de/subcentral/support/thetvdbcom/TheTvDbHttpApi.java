@@ -5,8 +5,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -16,23 +21,29 @@ import org.jsoup.select.Elements;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.AbstractMedia;
+import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
+import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.naming.EpisodeNamer;
+import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.naming.SeasonNamer;
+import de.subcentral.core.util.TemporalComparator;
 
 public class TheTvDbHttpApi implements TheTvDbApi
 {
-	private static final String		MIRROR			= "http://thetvdb.com/";
-	private static final String		IMG_MIRROR		= MIRROR + "banners/";
+	private static final String		BASE_PATH		= "http://thetvdb.com/";
+	private static final String		API_PATH		= BASE_PATH + "api/";
+	private static final String		IMG_PATH		= BASE_PATH + "banners/";
 	private static final Splitter	LIST_SPLITTER	= Splitter.on('|').trimResults().omitEmptyStrings();
 
-	private final String			apiKey;
-
-	public TheTvDbHttpApi(String apiKey)
+	public TheTvDbHttpApi()
 	{
-		this.apiKey = Objects.requireNonNull(apiKey, "apiKey");
+
 	}
 
 	@Override
@@ -65,7 +76,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		 * </pre>
 		 */
 
-		URL url = new URL(getApiBasePath() + "GetSeries.php?seriesname=" + URLEncoder.encode(name, Charset.forName("UTF-8").name()));
+		URL url = new URL(API_PATH + "GetSeries.php?seriesname=" + URLEncoder.encode(name, Charset.forName("UTF-8").name()));
 		System.out.println(url);
 
 		Document doc = Jsoup.parse(url, 5000);
@@ -77,9 +88,9 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 			addTvDbId(series, seriesElem, "seriesid");
 
-			series.setName(getText(seriesElem, "seriesname"));
+			series.setName(getTextOfChild(seriesElem, "seriesname"));
 
-			String aliasNamesTxt = getText(seriesElem, "aliasnames");
+			String aliasNamesTxt = getTextOfChild(seriesElem, "aliasnames");
 			if (aliasNamesTxt != null)
 			{
 				List<String> aliasNames = LIST_SPLITTER.splitToList(aliasNamesTxt);
@@ -88,7 +99,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 			addImage(series, seriesElem, "banner", IMAGE_TYPE_BANNER);
 
-			series.setDescription(getText(seriesElem, "overview"));
+			series.setDescription(getTextOfChild(seriesElem, "overview"));
 
 			addDateAsLocaleDate(series, seriesElem, "firstaired");
 
@@ -102,10 +113,10 @@ public class TheTvDbHttpApi implements TheTvDbApi
 	}
 
 	@Override
-	public SeriesRecord getSeries(int id, String language, boolean full) throws IOException
+	public SeriesRecord getSeries(String apiKey, int id, String language, boolean full) throws IOException
 	{
 		StringBuilder urlSpec = new StringBuilder();
-		urlSpec.append(getApiBasePathWithApiKey());
+		urlSpec.append(getApiPathWithKey(apiKey));
 		urlSpec.append("series/");
 		urlSpec.append(id);
 		urlSpec.append('/');
@@ -163,11 +174,11 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 		addTvDbId(series, seriesElem, "id");
 
-		series.setContentRating(getText(seriesElem, "contentrating"));
+		series.setContentRating(getTextOfChild(seriesElem, "contentrating"));
 
 		addDateAsLocaleDate(series, seriesElem, "firstaired");
 
-		String genresTxt = getText(seriesElem, "genre");
+		String genresTxt = getTextOfChild(seriesElem, "genre");
 		List<String> genres = LIST_SPLITTER.splitToList(genresTxt);
 		series.setGenres(genres);
 
@@ -175,20 +186,20 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 		addNetwork(series, seriesElem, "network");
 
-		series.setDescription(getText(seriesElem, "overview"));
+		series.setDescription(getTextOfChild(seriesElem, "overview"));
 
-		String ratingTxt = getText(seriesElem, "rating");
+		String ratingTxt = getTextOfChild(seriesElem, "rating");
 		if (ratingTxt != null)
 		{
 			float rating = Float.parseFloat(ratingTxt);
 			series.getRatings().put(RATING_AGENCY_THETVDB, rating);
 		}
 
-		String runtimeTxt = getText(seriesElem, "runtime");
+		String runtimeTxt = getTextOfChild(seriesElem, "runtime");
 		int runtime = Integer.parseInt(runtimeTxt);
 		series.setRegularRunningTime(runtime);
 
-		series.setName(getText(seriesElem, "seriesname"));
+		series.setName(getTextOfChild(seriesElem, "seriesname"));
 
 		addImage(series, seriesElem, "banner", IMAGE_TYPE_BANNER);
 		addImage(series, seriesElem, "fanart", IMAGE_TYPE_FANART);
@@ -277,20 +288,190 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		 * </pre>
 		 */
 
-		return new SeriesRecord(series, ImmutableList.of(), ImmutableList.of());
+		Elements epiElems = doc.getElementsByTag("episode");
+		// using a map for the seasons to allow using special map methods
+		SortedMap<Season, Season> seasons = new TreeMap<>();
+		List<Episode> episodes = new ArrayList<>();
+		// a list only for specials, as they are sorted into the complete episode list afterwards
+		List<SpecialEpisodeRecord> specials = new ArrayList<>();
+		for (Element epiElem : epiElems)
+		{
+			Episode epi = series.newEpisode();
+
+			// first determine whether it's a special episode or a regular
+			// and whether it belongs to a new season
+			int seasonNum = getNullableIntegerOfChild(epiElem, "seasonnumber");
+			// special episodes are in season 0
+			if (seasonNum == 0)
+			{
+				epi.setSpecial(true);
+				Integer airsBeforeSeason = getNullableIntegerOfChild(epiElem, "airsbefore_season");
+				Integer airsAfterSeason = getNullableIntegerOfChild(epiElem, "airsafter_season");
+				Integer airsBeforeEpisode = getNullableIntegerOfChild(epiElem, "airsbefore_episode");
+				SpecialEpisodeRecord specialEpi = new SpecialEpisodeRecord(epi, airsBeforeSeason, airsAfterSeason, airsBeforeEpisode);
+				specials.add(specialEpi);
+			}
+			else
+			{
+				epi.setNumberInSeason(getNullableIntegerOfChild(epiElem, "episodenumber"));
+				episodes.add(epi);
+
+				Season possiblyNewSeason = series.newSeason(seasonNum);
+				Season previousValue = seasons.putIfAbsent(possiblyNewSeason, possiblyNewSeason);
+				// if it is in fact a new season
+				if (previousValue == null)
+				{
+					epi.setSeason(possiblyNewSeason);
+					addTvDbId(possiblyNewSeason, epiElem, "seasonid");
+				}
+				else
+				{
+					epi.setSeason(previousValue);
+				}
+			}
+
+			// add rest of the properties
+			addTvDbId(epi, epiElem, "id");
+
+			epi.setTitle(getTextOfChild(epiElem, "episodename"));
+
+			addDateAsLocaleDate(epi, epiElem, "firstaired");
+
+			addImdbId(epi, epiElem, "imdb_id");
+
+			epi.setDescription(getTextOfChild(epiElem, "overview"));
+
+			addTheTvDbRating(epi, epiElem, "rating");
+
+			addImage(epi, epiElem, "filename", IMAGE_TYPE_EPISODE_IMAGE);
+
+			// can be null (for specials or info not available)
+			epi.setNumberInSeries(getNullableIntegerOfChild(epiElem, "absolute_number"));
+		}
+
+		// sort the episodes in natural order (Series, Season number, Episode number))
+		// should not be necessary as episodes are returned in that order but better be safe than sorry
+		Collections.sort(episodes);
+
+		specials.sort((SpecialEpisodeRecord r1, SpecialEpisodeRecord r2) -> TemporalComparator.INSTANCE.compare(r1.episode.getDate(),
+				r2.episode.getDate()));
+
+		if (episodes.isEmpty())
+		{
+			// if no regular episodes, just add the specials at the end
+			for (SpecialEpisodeRecord special : specials)
+			{
+				episodes.add(special.episode);
+			}
+		}
+		else
+		{
+			// insert specials at the right position in the episode list
+			for (SpecialEpisodeRecord special : specials)
+			{
+				boolean added = false;
+				// "airsAfter_season" is just used alone
+				if (special.airsAfterSeason != null)
+				{
+					// add it after the last episode of the season
+					ListIterator<Episode> iter = episodes.listIterator(episodes.size());
+					Episode currentEpi = null;
+					while (iter.hasPrevious())
+					{
+						currentEpi = iter.previous();
+						// if current epi is part the season to add after, add it after that episode
+						if (currentEpi.isPartOfSeason() && special.airsAfterSeason.equals(currentEpi.getSeason().getNumber()))
+						{
+							special.episode.setSeason(currentEpi.getSeason());
+							// advance past the last episode of this season and add the episode there
+							iter.next();
+							iter.add(special.episode);
+							added = true;
+							break;
+						}
+					}
+				}
+				// "airsBefore_season" may be used alone
+				else if (special.airsBeforeSeason != null && special.airsBeforeEpisode == null)
+				{
+					// add it right before the first episode of the next season
+					ListIterator<Episode> iter = episodes.listIterator();
+					Episode currentEpi = null;
+					while (iter.hasNext())
+					{
+						currentEpi = iter.next();
+						// if current epi is part of the next season, add it before current episode
+						if (currentEpi.isPartOfSeason() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()))
+						{
+							special.episode.setSeason(currentEpi.getSeason());
+							iter.previous();
+							iter.add(special.episode);
+							added = true;
+							break;
+						}
+					}
+				}
+				// "airsBefore_season" should be used in conjunction with "airsBefore_episode"
+				else if (special.airsBeforeSeason != null && special.airsBeforeEpisode != null)
+				{
+					// add it before the season
+					ListIterator<Episode> iter = episodes.listIterator(episodes.size());
+					Episode currentEpi = null;
+					while (iter.hasPrevious())
+					{
+						currentEpi = iter.previous();
+						// if previous episode was the denoted episode by "airsBefore_season" and "airsBefore_episode"
+						// Note: all regular episodes have a season number and a episode number
+						if (!currentEpi.isSpecial() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber())
+								&& special.airsBeforeEpisode.equals(currentEpi.getNumberInSeason()))
+						{
+							special.episode.setSeason(currentEpi.getSeason());
+							iter.add(special.episode);
+							added = true;
+							break;
+						}
+					}
+				}
+
+				// if could not find the right position in a season to add, try to add it by date
+				if (!added)
+				{
+					if (special.episode.isDated())
+					{
+						ListIterator<Episode> iter = episodes.listIterator();
+						Episode currentEpi = null;
+						while (iter.hasNext())
+						{
+							currentEpi = iter.next();
+							// if special is before
+							if (currentEpi.isDated() && TemporalComparator.INSTANCE.compare(special.episode.getDate(), currentEpi.getDate()) < 0)
+							{
+								iter.previous();
+								iter.add(special.episode);
+								added = true;
+								break;
+							}
+						}
+					}
+				}
+
+				// if every sorting method fails, just add it at the end
+				if (!added)
+				{
+					episodes.add(special.episode);
+				}
+			}
+		}
+
+		return new SeriesRecord(series, seasons.keySet(), episodes);
 	}
 
-	private String getApiBasePathWithApiKey()
+	private static String getApiPathWithKey(String apiKey)
 	{
-		return new StringBuilder(getApiBasePath()).append(apiKey).append('/').toString();
+		return new StringBuilder(API_PATH).append(apiKey).append('/').toString();
 	}
 
-	private String getApiBasePath()
-	{
-		return new StringBuilder(MIRROR).append("api/").toString();
-	}
-
-	private static String getText(Element parentElem, String tag)
+	private static String getTextOfChild(Element parentElem, String tag)
 	{
 		Elements elems = parentElem.getElementsByTag(tag);
 		if (elems.isEmpty())
@@ -300,9 +481,19 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		return StringUtils.trimToNull(elems.first().text());
 	}
 
+	private static Integer getNullableIntegerOfChild(Element parentElem, String tag)
+	{
+		String txt = getTextOfChild(parentElem, tag);
+		if (txt == null)
+		{
+			return null;
+		}
+		return Integer.parseInt(txt);
+	}
+
 	private static void addTvDbId(Media media, Element parentElem, String tag)
 	{
-		String idTxt = getText(parentElem, tag);
+		String idTxt = getTextOfChild(parentElem, tag);
 		if (idTxt != null)
 		{
 			media.getAttributes().put(ATTRIBUTE_THETVDB_ID, Integer.parseInt(idTxt));
@@ -311,17 +502,17 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addImage(Media media, Element parentElem, String tag, String mediaImageType)
 	{
-		String imgTxt = getText(parentElem, tag);
+		String imgTxt = getTextOfChild(parentElem, tag);
 		if (imgTxt != null)
 		{
-			String img = IMG_MIRROR + imgTxt;
+			String img = IMG_PATH + imgTxt;
 			media.getImages().put(mediaImageType, img);
 		}
 	}
 
 	private static void addDateAsLocaleDate(AbstractMedia media, Element parentElem, String tag)
 	{
-		String dateTxt = getText(parentElem, tag);
+		String dateTxt = getTextOfChild(parentElem, tag);
 		if (dateTxt != null)
 		{
 			LocalDate date = LocalDate.parse(dateTxt);
@@ -331,7 +522,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addNetwork(Series series, Element parentElem, String tag)
 	{
-		String networkTxt = getText(parentElem, tag);
+		String networkTxt = getTextOfChild(parentElem, tag);
 		if (networkTxt != null)
 		{
 			Network network = new Network(networkTxt);
@@ -341,23 +532,66 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addImdbId(Media media, Element parentElem, String tag)
 	{
-		String imdbIdTxt = getText(parentElem, tag);
+		String imdbIdTxt = getTextOfChild(parentElem, tag);
 		if (imdbIdTxt != null)
 		{
 			media.getAttributes().put(ATTRIBUTE_IMDB_ID, imdbIdTxt);
 		}
 	}
 
+	private static void addTheTvDbRating(Media media, Element parentElem, String tag)
+	{
+		String ratingTxt = getTextOfChild(parentElem, tag);
+		if (ratingTxt != null)
+		{
+			float rating = Float.parseFloat(ratingTxt);
+			media.getRatings().put(RATING_AGENCY_THETVDB, rating);
+		}
+	}
+
+	private static class SpecialEpisodeRecord
+	{
+		private final Episode	episode;
+		/**
+		 * An unsigned integer indicating the season number this special episode airs before. Should be used in conjunction with airsbefore_episode
+		 * for exact placement. This field is only available for special episodes. Can be null.
+		 */
+		private final Integer	airsBeforeSeason;
+		/**
+		 * An unsigned integer indicating the season number this episode comes after. This field is only available for special episodes. Can be null
+		 */
+		private final Integer	airsAfterSeason;
+		/**
+		 * An unsigned integer indicating the episode number this special episode airs before. Must be used in conjunction with airsbefore_season, do
+		 * not with airsafter_season. This field is only available for special episodes. Can be null.
+		 */
+		private final Integer	airsBeforeEpisode;
+
+		public SpecialEpisodeRecord(Episode episode, Integer airsBeforeSeason, Integer airsAfterSeason, Integer airsBeforeEpisode)
+		{
+			this.episode = Objects.requireNonNull(episode, "episode");
+			this.airsBeforeSeason = airsBeforeSeason;
+			this.airsAfterSeason = airsAfterSeason;
+			this.airsBeforeEpisode = airsBeforeEpisode;
+		}
+	}
+
 	public static void main(String[] args) throws IOException
 	{
-		TheTvDbApi api = new TheTvDbHttpApi("A3ACA9D28A27792D");
-		List<Series> queryResult = api.findSeries("Kingdom (2014) ");
-		for (Series series : queryResult)
-		{
-			System.out.println(series);
-		}
-
-		SeriesRecord psych = api.getSeries(queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), "en", true);
+		TheTvDbApi api = new TheTvDbHttpApi();
+		List<Series> queryResult = api.findSeries("game of thrones");
+		SeriesRecord psych = api.getSeries("A3ACA9D28A27792D", queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), "en", true);
 		System.out.println(psych.getSeries());
+		for (Season season : psych.getSeasons())
+		{
+			System.out.println(NamingDefaults.getDefaultSeasonNamer().name(season,
+					ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		}
+		for (Episode epi : psych.getEpisodes())
+		{
+			System.out.println(NamingDefaults.getDefaultEpisodeNamer().name(epi,
+					ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE))
+					+ " " + epi.getDate());
+		}
 	}
 }

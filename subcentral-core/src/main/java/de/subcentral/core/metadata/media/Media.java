@@ -240,6 +240,15 @@ public interface Media
 
 	/**
 	 * 
+	 * @return {@code true} if this media has a date, {@code false} otherwise
+	 */
+	public default boolean isDated()
+	{
+		return getDate() != null;
+	}
+
+	/**
+	 * 
 	 * @return the year of the {@link #getDate() date} or <code>null</code> if the date is <code>null</code> or the year cannot be retrieved
 	 */
 	public default Year getYear()
