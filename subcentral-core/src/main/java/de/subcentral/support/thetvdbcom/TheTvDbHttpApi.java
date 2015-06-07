@@ -14,6 +14,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,6 +38,7 @@ import de.subcentral.core.util.TemporalComparator;
 
 public class TheTvDbHttpApi implements TheTvDbApi
 {
+	private static final Logger		log				= LogManager.getLogger(TheTvDbHttpApi.class);
 	private static final String		BASE_PATH		= "http://thetvdb.com/";
 	private static final String		API_PATH		= BASE_PATH + "api/";
 	private static final String		IMG_PATH		= BASE_PATH + "banners/";
@@ -77,9 +80,9 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		 */
 
 		URL url = new URL(API_PATH + "GetSeries.php?seriesname=" + URLEncoder.encode(name, Charset.forName("UTF-8").name()));
-		System.out.println(url);
-
+		log.debug("Requesting {}", url);
 		Document doc = Jsoup.parse(url, 5000);
+
 		Elements seriesElems = doc.getElementsByTag("series");
 		ImmutableList.Builder<Series> seriesList = ImmutableList.builder();
 		for (Element seriesElem : seriesElems)
@@ -127,11 +130,9 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		}
 		urlSpec.append(language);
 		urlSpec.append(".xml");
-		System.out.println(urlSpec);
 		URL url = new URL(urlSpec.toString());
-
+		log.debug("Requesting {}", url);
 		Document doc = Jsoup.parse(url, 5000);
-		// System.out.println(doc);
 
 		Series series = new Series();
 		List<Season> seasons = new ArrayList<>();
@@ -198,12 +199,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 		series.setDescription(getTextFromChild(seriesElem, "overview"));
 
-		String ratingTxt = getTextFromChild(seriesElem, "rating");
-		if (ratingTxt != null)
-		{
-			float rating = Float.parseFloat(ratingTxt);
-			series.getRatings().put(RATING_AGENCY_THETVDB, rating);
-		}
+		addTheTvDbRating(series, seriesElem, "rating");
 
 		String runtimeTxt = getTextFromChild(seriesElem, "runtime");
 		int runtime = Integer.parseInt(runtimeTxt);
@@ -307,7 +303,8 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		Elements epiElems = doc.getElementsByTag("episode");
 		// using a map for the seasons to allow using special map methods
 		SortedMap<Season, Season> seasons = new TreeMap<>();
-		List<Episode> episodes = new ArrayList<>();
+		// a list for all episodes (regular and specials)
+		List<Episode> episodes = new ArrayList<>(epiElems.size());
 		// a list only for specials, as they are sorted into the complete episode list afterwards
 		List<SpecialEpisodeRecord> specials = new ArrayList<>();
 		for (Element epiElem : epiElems)
@@ -329,9 +326,6 @@ public class TheTvDbHttpApi implements TheTvDbApi
 			}
 			else
 			{
-				epi.setNumberInSeason(getIntegerFromChild(epiElem, "episodenumber"));
-				episodes.add(epi);
-
 				Season possiblyNewSeason = series.newSeason(seasonNum);
 				Season previousValue = seasons.putIfAbsent(possiblyNewSeason, possiblyNewSeason);
 				// if it is in fact a new season
@@ -344,10 +338,9 @@ public class TheTvDbHttpApi implements TheTvDbApi
 				{
 					epi.setSeason(previousValue);
 				}
-				if (epi.getNumberInSeason() == 7 && seasonNum == 4)
-				{
-					System.out.println(epi);
-				}
+
+				epi.setNumberInSeason(getIntegerFromChild(epiElem, "episodenumber"));
+				episodes.add(epi);
 			}
 
 			// add rest of the properties
@@ -373,6 +366,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		// should not be necessary as episodes are returned in that order but better be safe than sorry
 		Collections.sort(episodes);
 
+		// sort the specials by date
 		specials.sort((SpecialEpisodeRecord r1, SpecialEpisodeRecord r2) -> TemporalComparator.INSTANCE.compare(r1.episode.getDate(),
 				r2.episode.getDate()));
 
@@ -391,47 +385,88 @@ public class TheTvDbHttpApi implements TheTvDbApi
 			{
 				episodes.add(special.episode);
 			}
+			return;
 		}
-		else
+		// insert specials at the right position in the episode list
+		for (SpecialEpisodeRecord special : specials)
 		{
-			// insert specials at the right position in the episode list
-			for (SpecialEpisodeRecord special : specials)
+			boolean added = false;
+			// "airsAfter_season" is just used alone
+			if (special.airsAfterSeason != null)
 			{
-				boolean added = false;
-				// "airsAfter_season" is just used alone
-				if (special.airsAfterSeason != null)
+				// add it after the last episode of the season
+				ListIterator<Episode> iter = episodes.listIterator(episodes.size());
+				Episode currentEpi = null;
+				while (iter.hasPrevious())
 				{
-					// add it after the last episode of the season
-					ListIterator<Episode> iter = episodes.listIterator(episodes.size());
-					Episode currentEpi = null;
-					while (iter.hasPrevious())
+					currentEpi = iter.previous();
+					// if current epi is part the season to add after, add it after that episode
+					if (currentEpi.isPartOfSeason() && special.airsAfterSeason.equals(currentEpi.getSeason().getNumber()))
 					{
-						currentEpi = iter.previous();
-						// if current epi is part the season to add after, add it after that episode
-						if (currentEpi.isPartOfSeason() && special.airsAfterSeason.equals(currentEpi.getSeason().getNumber()))
-						{
-							special.episode.setSeason(currentEpi.getSeason());
-							// advance past the last episode of this season and add the episode there
-							iter.next();
-							iter.add(special.episode);
-							added = true;
-							break;
-						}
+						special.episode.setSeason(currentEpi.getSeason());
+						// advance past the last episode of this season and add the episode there
+						iter.next();
+						iter.add(special.episode);
+						added = true;
+						break;
 					}
 				}
-				// "airsBefore_season" may be used alone
-				else if (special.airsBeforeSeason != null && special.airsBeforeEpisode == null)
+			}
+			// "airsBefore_season" may be used alone
+			else if (special.airsBeforeSeason != null && special.airsBeforeEpisode == null)
+			{
+				// add it right before the first episode of the next season
+				ListIterator<Episode> iter = episodes.listIterator();
+				Episode currentEpi = null;
+				while (iter.hasNext())
 				{
-					// add it right before the first episode of the next season
+					currentEpi = iter.next();
+					// if current epi is part of the next season, add it before current episode
+					if (currentEpi.isPartOfSeason() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()))
+					{
+						special.episode.setSeason(currentEpi.getSeason());
+						iter.previous();
+						iter.add(special.episode);
+						added = true;
+						break;
+					}
+				}
+			}
+			// "airsBefore_season" should be used in conjunction with "airsBefore_episode"
+			else if (special.airsBeforeSeason != null && special.airsBeforeEpisode != null)
+			{
+				// add it before the season
+				ListIterator<Episode> iter = episodes.listIterator(episodes.size());
+				Episode currentEpi = null;
+				while (iter.hasPrevious())
+				{
+					currentEpi = iter.previous();
+					// if previous episode was the denoted episode by "airsBefore_season" and "airsBefore_episode"
+					// Note: all regular episodes have a season number and a episode number
+					if (!currentEpi.isSpecial() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber())
+							&& special.airsBeforeEpisode.equals(currentEpi.getNumberInSeason()))
+					{
+						special.episode.setSeason(currentEpi.getSeason());
+						iter.add(special.episode);
+						added = true;
+						break;
+					}
+				}
+			}
+
+			// if could not find the right position in a season to add, try to add it by date
+			if (!added)
+			{
+				if (special.episode.isDated())
+				{
 					ListIterator<Episode> iter = episodes.listIterator();
 					Episode currentEpi = null;
 					while (iter.hasNext())
 					{
 						currentEpi = iter.next();
-						// if current epi is part of the next season, add it before current episode
-						if (currentEpi.isPartOfSeason() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()))
+						// if special is before
+						if (currentEpi.isDated() && TemporalComparator.INSTANCE.compare(special.episode.getDate(), currentEpi.getDate()) < 0)
 						{
-							special.episode.setSeason(currentEpi.getSeason());
 							iter.previous();
 							iter.add(special.episode);
 							added = true;
@@ -439,55 +474,12 @@ public class TheTvDbHttpApi implements TheTvDbApi
 						}
 					}
 				}
-				// "airsBefore_season" should be used in conjunction with "airsBefore_episode"
-				else if (special.airsBeforeSeason != null && special.airsBeforeEpisode != null)
-				{
-					// add it before the season
-					ListIterator<Episode> iter = episodes.listIterator(episodes.size());
-					Episode currentEpi = null;
-					while (iter.hasPrevious())
-					{
-						currentEpi = iter.previous();
-						// if previous episode was the denoted episode by "airsBefore_season" and "airsBefore_episode"
-						// Note: all regular episodes have a season number and a episode number
-						if (!currentEpi.isSpecial() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber())
-								&& special.airsBeforeEpisode.equals(currentEpi.getNumberInSeason()))
-						{
-							special.episode.setSeason(currentEpi.getSeason());
-							iter.add(special.episode);
-							added = true;
-							break;
-						}
-					}
-				}
+			}
 
-				// if could not find the right position in a season to add, try to add it by date
-				if (!added)
-				{
-					if (special.episode.isDated())
-					{
-						ListIterator<Episode> iter = episodes.listIterator();
-						Episode currentEpi = null;
-						while (iter.hasNext())
-						{
-							currentEpi = iter.next();
-							// if special is before
-							if (currentEpi.isDated() && TemporalComparator.INSTANCE.compare(special.episode.getDate(), currentEpi.getDate()) < 0)
-							{
-								iter.previous();
-								iter.add(special.episode);
-								added = true;
-								break;
-							}
-						}
-					}
-				}
-
-				// if every sorting method fails, just add it at the end
-				if (!added)
-				{
-					episodes.add(special.episode);
-				}
+			// if every sorting method fails, just add it at the end
+			if (!added)
+			{
+				episodes.add(special.episode);
 			}
 		}
 	}
@@ -605,7 +597,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 	public static void main(String[] args) throws IOException
 	{
 		TheTvDbApi api = new TheTvDbHttpApi();
-		List<Series> queryResult = api.findSeries("lost");
+		List<Series> queryResult = api.findSeries("psych");
 		SeriesRecord psych = api.getSeries("A3ACA9D28A27792D", queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), "en", true);
 		System.out.println(psych.getSeries());
 		for (Season season : psych.getSeasons())
