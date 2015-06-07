@@ -88,9 +88,9 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 			addTvDbId(series, seriesElem, "seriesid");
 
-			series.setName(getTextOfChild(seriesElem, "seriesname"));
+			series.setName(getTextFromChild(seriesElem, "seriesname"));
 
-			String aliasNamesTxt = getTextOfChild(seriesElem, "aliasnames");
+			String aliasNamesTxt = getTextFromChild(seriesElem, "aliasnames");
 			if (aliasNamesTxt != null)
 			{
 				List<String> aliasNames = LIST_SPLITTER.splitToList(aliasNamesTxt);
@@ -99,7 +99,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 			addImage(series, seriesElem, "banner", IMAGE_TYPE_BANNER);
 
-			series.setDescription(getTextOfChild(seriesElem, "overview"));
+			series.setDescription(getTextFromChild(seriesElem, "overview"));
 
 			addDateAsLocaleDate(series, seriesElem, "firstaired");
 
@@ -133,52 +133,62 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		Document doc = Jsoup.parse(url, 5000);
 		// System.out.println(doc);
 
-		/**
-		 * Base series record example
-		 * 
-		 * <pre>
-		 *   <Series>
-		 *     <id>79335</id>
-		 *     <Actors>|James Roday|Dulé Hill|Maggie Lawson|Kirsten Nelson|Corbin Bernsen|Timothy Omundson|</Actors>
-		 *     <Airs_DayOfWeek></Airs_DayOfWeek>
-		 *     <Airs_Time></Airs_Time>
-		 *     <ContentRating>TV-PG</ContentRating>
-		 *     <FirstAired>2006-07-07</FirstAired>
-		 *     <Genre>|Comedy|Crime|Drama|</Genre>
-		 *     <IMDB_ID>tt0491738</IMDB_ID>
-		 *     <Language>de</Language>
-		 *     <Network>USA Network</Network>
-		 *     <NetworkID></NetworkID>
-		 *     <Overview>Shawn Spencer ist selbsternannter Detektiv. Von seinem Vater Henry, einem angesehenen Polizisten, wurde er trainiert, sich alle Dinge in seinem Umfeld genau einzuprägen, seien sie auch noch so klein oder unwichtig. Über seine Erziehung unzufrieden kehrte Shawn seinem Vater jedoch den Rücken. Nach einigen misslungenen Lebensabschnitten erkennt er seine Gabe, ungelöste Fälle der Polizei mithilfe seines fotografischen Gedächtnisses lösen zu können. Dabei gibt Shawn aber stets vor ein Hellseher zu sein. Nachdem er der Polizei in mehreren Fällen helfen konnte und diese ihn immer wieder als Unterstützung anfordert, gründet Shawn schließlich mit seinem Freund Burton Guster eine eigene Detektei.</Overview>
-		 *     <Rating>8.8</Rating>
-		 *     <RatingCount>181</RatingCount>
-		 *     <Runtime>60</Runtime>
-		 *     <SeriesID>59369</SeriesID>
-		 *     <SeriesName>Psych</SeriesName>
-		 *     <Status>Ended</Status>
-		 *     <added></added>
-		 *     <addedBy></addedBy>
-		 *     <banner>graphical/79335-g8.jpg</banner>
-		 *     <fanart>fanart/original/79335-17.jpg</fanart>
-		 *     <lastupdated>1432759112</lastupdated>
-		 *     <poster>posters/79335-8.jpg</poster>
-		 *     <tms_wanted_old>1</tms_wanted_old>
-		 *     <zap2it_id>EP00837834</zap2it_id>
-		 *   </Series>
-		 * </pre>
-		 */
-
-		Element seriesElem = doc.getElementsByTag("series").first();
-
 		Series series = new Series();
+		List<Season> seasons = new ArrayList<>();
+		List<Episode> episodes = new ArrayList<>();
+		parseBaseSeriesRecord(doc, series);
+		parseBaseEpisodeRecords(doc, series, seasons, episodes);
+
+		return new SeriesRecord(series, seasons, episodes);
+	}
+
+	/**
+	 * Base Series Record example:
+	 * 
+	 * <pre>
+	 * {@literal
+	 *   <Series>
+	 *     <id>79335</id>
+	 *     <Actors>|James Roday|Dulé Hill|Maggie Lawson|Kirsten Nelson|Corbin Bernsen|Timothy Omundson|</Actors>
+	 *     <Airs_DayOfWeek></Airs_DayOfWeek>
+	 *     <Airs_Time></Airs_Time>
+	 *     <ContentRating>TV-PG</ContentRating>
+	 *     <FirstAired>2006-07-07</FirstAired>
+	 *     <Genre>|Comedy|Crime|Drama|</Genre>
+	 *     <IMDB_ID>tt0491738</IMDB_ID>
+	 *     <Language>de</Language>
+	 *     <Network>USA Network</Network>
+	 *     <NetworkID></NetworkID>
+	 *     <Overview>Shawn Spencer ist selbsternannter Detektiv. Von seinem Vater Henry, einem angesehenen Polizisten, wurde er trainiert, sich alle Dinge in seinem Umfeld genau einzuprägen, seien sie auch noch so klein oder unwichtig. Über seine Erziehung unzufrieden kehrte Shawn seinem Vater jedoch den Rücken. Nach einigen misslungenen Lebensabschnitten erkennt er seine Gabe, ungelöste Fälle der Polizei mithilfe seines fotografischen Gedächtnisses lösen zu können. Dabei gibt Shawn aber stets vor ein Hellseher zu sein. Nachdem er der Polizei in mehreren Fällen helfen konnte und diese ihn immer wieder als Unterstützung anfordert, gründet Shawn schließlich mit seinem Freund Burton Guster eine eigene Detektei.</Overview>
+	 *     <Rating>8.8</Rating>
+	 *     <RatingCount>181</RatingCount>
+	 *     <Runtime>60</Runtime>
+	 *     <SeriesID>59369</SeriesID>
+	 *     <SeriesName>Psych</SeriesName>
+	 *     <Status>Ended</Status>
+	 *     <added></added>
+	 *     <addedBy></addedBy>
+	 *     <banner>graphical/79335-g8.jpg</banner>
+	 *     <fanart>fanart/original/79335-17.jpg</fanart>
+	 *     <lastupdated>1432759112</lastupdated>
+	 *     <poster>posters/79335-8.jpg</poster>
+	 *     <tms_wanted_old>1</tms_wanted_old>
+	 *     <zap2it_id>EP00837834</zap2it_id>
+	 *   </Series>
+	 *  }
+	 * </pre>
+	 */
+	private static void parseBaseSeriesRecord(Document doc, Series series)
+	{
+		Element seriesElem = doc.getElementsByTag("series").first();
 
 		addTvDbId(series, seriesElem, "id");
 
-		series.setContentRating(getTextOfChild(seriesElem, "contentrating"));
+		series.setContentRating(getTextFromChild(seriesElem, "contentrating"));
 
 		addDateAsLocaleDate(series, seriesElem, "firstaired");
 
-		String genresTxt = getTextOfChild(seriesElem, "genre");
+		String genresTxt = getTextFromChild(seriesElem, "genre");
 		List<String> genres = LIST_SPLITTER.splitToList(genresTxt);
 		series.setGenres(genres);
 
@@ -186,108 +196,114 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 		addNetwork(series, seriesElem, "network");
 
-		series.setDescription(getTextOfChild(seriesElem, "overview"));
+		series.setDescription(getTextFromChild(seriesElem, "overview"));
 
-		String ratingTxt = getTextOfChild(seriesElem, "rating");
+		String ratingTxt = getTextFromChild(seriesElem, "rating");
 		if (ratingTxt != null)
 		{
 			float rating = Float.parseFloat(ratingTxt);
 			series.getRatings().put(RATING_AGENCY_THETVDB, rating);
 		}
 
-		String runtimeTxt = getTextOfChild(seriesElem, "runtime");
+		String runtimeTxt = getTextFromChild(seriesElem, "runtime");
 		int runtime = Integer.parseInt(runtimeTxt);
 		series.setRegularRunningTime(runtime);
 
-		series.setName(getTextOfChild(seriesElem, "seriesname"));
+		series.setName(getTextFromChild(seriesElem, "seriesname"));
 
 		addImage(series, seriesElem, "banner", IMAGE_TYPE_BANNER);
 		addImage(series, seriesElem, "fanart", IMAGE_TYPE_FANART);
 		addImage(series, seriesElem, "poster", IMAGE_TYPE_POSTER);
+	}
 
-		/**
-		 * Regular episode example
-		 * 
-		 * <pre>
-		 * <Episode>
-		 * <id>4649178</id>
-		 * <Combined_episodenumber>10</Combined_episodenumber>
-		 * <Combined_season>8</Combined_season>
-		 * <DVD_chapter/>
-		 * <DVD_discid/>
-		 * <DVD_episodenumber/>
-		 * <DVD_season/>
-		 * <Director>Steve Franks</Director>
-		 * <EpImgFlag>2</EpImgFlag>
-		 * <EpisodeName>The Break Up</EpisodeName>
-		 * <EpisodeNumber>10</EpisodeNumber>
-		 * <FirstAired>2014-03-26</FirstAired>
-		 * <GuestStars/>
-		 * <IMDB_ID/>
-		 * <Language>en</Language>
-		 * <Overview>
-		 * Shawn, Gus and Juliet handle one last case in the series finale.
-		 * </Overview>
-		 * <ProductionCode/>
-		 * <Rating>8.6</Rating>
-		 * <RatingCount>17</RatingCount>
-		 * <SeasonNumber>8</SeasonNumber>
-		 * <Writer>Steve Franks</Writer>
-		 * <absolute_number>121</absolute_number>
-		 * <filename>episodes/79335/4649178.jpg</filename>
-		 * <lastupdated>1426781587</lastupdated>
-		 * <seasonid>523572</seasonid>
-		 * <seriesid>79335</seriesid>
-		 * <thumb_added>2014-03-21 08:42:40</thumb_added>
-		 * <thumb_height>225</thumb_height>
-		 * <thumb_width>400</thumb_width>
-		 * </Episode>
-		 * </pre>
-		 */
-
-		/**
-		 * Special episode example
-		 * 
-		 * <pre>
-		 * <Episode>
-		 * <id>4840154</id>
-		 * <Combined_episodenumber>4</Combined_episodenumber>
-		 * <Combined_season>0</Combined_season>
-		 * <DVD_chapter/>
-		 * <DVD_discid/>
-		 * <DVD_episodenumber/>
-		 * <DVD_season/>
-		 * <Director/>
-		 * <EpImgFlag/>
-		 * <EpisodeName>Psych After Pshow</EpisodeName>
-		 * <EpisodeNumber>4</EpisodeNumber>
-		 * <FirstAired>2014-03-26</FirstAired>
-		 * <GuestStars/>
-		 * <IMDB_ID/>
-		 * <Language>en</Language>
-		 * <Overview>
-		 * The hour-long special bids farewell to USA Network's favorite detective duo. Celebrate Psych's 8 seasons with the cast's favorite clips, audience Q&A and never before seen footage.
-		 * </Overview>
-		 * <ProductionCode/>
-		 * <Rating>7.0</Rating>
-		 * <RatingCount>1</RatingCount>
-		 * <SeasonNumber>0</SeasonNumber>
-		 * <Writer/>
-		 * <absolute_number/>
-		 * <airsafter_season>8</airsafter_season>
-		 * <airsbefore_episode/>
-		 * <airsbefore_season/>
-		 * <filename/>
-		 * <lastupdated>1395959484</lastupdated>
-		 * <seasonid>26775</seasonid>
-		 * <seriesid>79335</seriesid>
-		 * <thumb_added/>
-		 * <thumb_height/>
-		 * <thumb_width/>
-		 * </Episode>
-		 * </pre>
-		 */
-
+	/**
+	 * Base Episode Record of a regular episode:
+	 * 
+	 * <pre>
+	 * {@literal
+	 * <Episode>
+	 * <id>4649178</id>
+	 * <Combined_episodenumber>10</Combined_episodenumber>
+	 * <Combined_season>8</Combined_season>
+	 * <DVD_chapter/>
+	 * <DVD_discid/>
+	 * <DVD_episodenumber/>
+	 * <DVD_season/>
+	 * <Director>Steve Franks</Director>
+	 * <EpImgFlag>2</EpImgFlag>
+	 * <EpisodeName>The Break Up</EpisodeName>
+	 * <EpisodeNumber>10</EpisodeNumber>
+	 * <FirstAired>2014-03-26</FirstAired>
+	 * <GuestStars/>
+	 * <IMDB_ID/>
+	 * <Language>en</Language>
+	 * <Overview>
+	 * Shawn, Gus and Juliet handle one last case in the series finale.
+	 * </Overview>
+	 * <ProductionCode/>
+	 * <Rating>8.6</Rating>
+	 * <RatingCount>17</RatingCount>
+	 * <SeasonNumber>8</SeasonNumber>
+	 * <Writer>Steve Franks</Writer>
+	 * <absolute_number>121</absolute_number>
+	 * <filename>episodes/79335/4649178.jpg</filename>
+	 * <lastupdated>1426781587</lastupdated>
+	 * <seasonid>523572</seasonid>
+	 * <seriesid>79335</seriesid>
+	 * <thumb_added>2014-03-21 08:42:40</thumb_added>
+	 * <thumb_height>225</thumb_height>
+	 * <thumb_width>400</thumb_width>
+	 * </Episode>
+	 * }
+	 * </pre>
+	 * 
+	 * <br>
+	 * <br>
+	 * Base Episode Record of a special episode:
+	 * 
+	 * <pre>
+	 * {@literal
+	 * <Episode>
+	 * <id>4840154</id>
+	 * <Combined_episodenumber>4</Combined_episodenumber>
+	 * <Combined_season>0</Combined_season>
+	 * <DVD_chapter/>
+	 * <DVD_discid/>
+	 * <DVD_episodenumber/>
+	 * <DVD_season/>
+	 * <Director/>
+	 * <EpImgFlag/>
+	 * <EpisodeName>Psych After Pshow</EpisodeName>
+	 * <EpisodeNumber>4</EpisodeNumber>
+	 * <FirstAired>2014-03-26</FirstAired>
+	 * <GuestStars/>
+	 * <IMDB_ID/>
+	 * <Language>en</Language>
+	 * <Overview>
+	 * The hour-long special bids farewell to USA Network's favorite detective duo. Celebrate Psych's 8 seasons with the cast's favorite clips, audience Q&A and never before seen footage.
+	 * </Overview>
+	 * <ProductionCode/>
+	 * <Rating>7.0</Rating>
+	 * <RatingCount>1</RatingCount>
+	 * <SeasonNumber>0</SeasonNumber>
+	 * <Writer/>
+	 * <absolute_number/>
+	 * <airsafter_season>8</airsafter_season>
+	 * <airsbefore_episode/>
+	 * <airsbefore_season/>
+	 * <filename/>
+	 * <lastupdated>1395959484</lastupdated>
+	 * <seasonid>26775</seasonid>
+	 * <seriesid>79335</seriesid>
+	 * <thumb_added/>
+	 * <thumb_height/>
+	 * <thumb_width/>
+	 * </Episode>
+	 * }
+	 * </pre>
+	 */
+	private static void parseBaseEpisodeRecords(Document doc, Series series, List<Season> seasonList, List<Episode> episodeList)
+	{
 		Elements epiElems = doc.getElementsByTag("episode");
 		// using a map for the seasons to allow using special map methods
 		SortedMap<Season, Season> seasons = new TreeMap<>();
@@ -300,20 +316,20 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 			// first determine whether it's a special episode or a regular
 			// and whether it belongs to a new season
-			int seasonNum = getNullableIntegerOfChild(epiElem, "seasonnumber");
+			int seasonNum = getIntegerFromChild(epiElem, "seasonnumber");
 			// special episodes are in season 0
 			if (seasonNum == 0)
 			{
 				epi.setSpecial(true);
-				Integer airsBeforeSeason = getNullableIntegerOfChild(epiElem, "airsbefore_season");
-				Integer airsAfterSeason = getNullableIntegerOfChild(epiElem, "airsafter_season");
-				Integer airsBeforeEpisode = getNullableIntegerOfChild(epiElem, "airsbefore_episode");
+				Integer airsBeforeSeason = getIntegerFromChild(epiElem, "airsbefore_season");
+				Integer airsAfterSeason = getIntegerFromChild(epiElem, "airsafter_season");
+				Integer airsBeforeEpisode = getIntegerFromChild(epiElem, "airsbefore_episode");
 				SpecialEpisodeRecord specialEpi = new SpecialEpisodeRecord(epi, airsBeforeSeason, airsAfterSeason, airsBeforeEpisode);
 				specials.add(specialEpi);
 			}
 			else
 			{
-				epi.setNumberInSeason(getNullableIntegerOfChild(epiElem, "episodenumber"));
+				epi.setNumberInSeason(getIntegerFromChild(epiElem, "episodenumber"));
 				episodes.add(epi);
 
 				Season possiblyNewSeason = series.newSeason(seasonNum);
@@ -328,25 +344,29 @@ public class TheTvDbHttpApi implements TheTvDbApi
 				{
 					epi.setSeason(previousValue);
 				}
+				if (epi.getNumberInSeason() == 7 && seasonNum == 4)
+				{
+					System.out.println(epi);
+				}
 			}
 
 			// add rest of the properties
 			addTvDbId(epi, epiElem, "id");
 
-			epi.setTitle(getTextOfChild(epiElem, "episodename"));
+			epi.setTitle(getTextFromChild(epiElem, "episodename"));
 
 			addDateAsLocaleDate(epi, epiElem, "firstaired");
 
 			addImdbId(epi, epiElem, "imdb_id");
 
-			epi.setDescription(getTextOfChild(epiElem, "overview"));
+			epi.setDescription(getTextFromChild(epiElem, "overview"));
 
 			addTheTvDbRating(epi, epiElem, "rating");
 
 			addImage(epi, epiElem, "filename", IMAGE_TYPE_EPISODE_IMAGE);
 
 			// can be null (for specials or info not available)
-			epi.setNumberInSeries(getNullableIntegerOfChild(epiElem, "absolute_number"));
+			epi.setNumberInSeries(getIntegerFromChild(epiElem, "absolute_number"));
 		}
 
 		// sort the episodes in natural order (Series, Season number, Episode number))
@@ -356,6 +376,14 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		specials.sort((SpecialEpisodeRecord r1, SpecialEpisodeRecord r2) -> TemporalComparator.INSTANCE.compare(r1.episode.getDate(),
 				r2.episode.getDate()));
 
+		insertSpecials(episodes, specials);
+
+		seasonList.addAll(seasons.keySet());
+		episodeList.addAll(episodes);
+	}
+
+	private static void insertSpecials(List<Episode> episodes, List<SpecialEpisodeRecord> specials)
+	{
 		if (episodes.isEmpty())
 		{
 			// if no regular episodes, just add the specials at the end
@@ -462,8 +490,6 @@ public class TheTvDbHttpApi implements TheTvDbApi
 				}
 			}
 		}
-
-		return new SeriesRecord(series, seasons.keySet(), episodes);
 	}
 
 	private static String getApiPathWithKey(String apiKey)
@@ -471,7 +497,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		return new StringBuilder(API_PATH).append(apiKey).append('/').toString();
 	}
 
-	private static String getTextOfChild(Element parentElem, String tag)
+	private static String getTextFromChild(Element parentElem, String tag)
 	{
 		Elements elems = parentElem.getElementsByTag(tag);
 		if (elems.isEmpty())
@@ -481,9 +507,9 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		return StringUtils.trimToNull(elems.first().text());
 	}
 
-	private static Integer getNullableIntegerOfChild(Element parentElem, String tag)
+	private static Integer getIntegerFromChild(Element parentElem, String tag)
 	{
-		String txt = getTextOfChild(parentElem, tag);
+		String txt = getTextFromChild(parentElem, tag);
 		if (txt == null)
 		{
 			return null;
@@ -493,7 +519,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addTvDbId(Media media, Element parentElem, String tag)
 	{
-		String idTxt = getTextOfChild(parentElem, tag);
+		String idTxt = getTextFromChild(parentElem, tag);
 		if (idTxt != null)
 		{
 			media.getAttributes().put(ATTRIBUTE_THETVDB_ID, Integer.parseInt(idTxt));
@@ -502,7 +528,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addImage(Media media, Element parentElem, String tag, String mediaImageType)
 	{
-		String imgTxt = getTextOfChild(parentElem, tag);
+		String imgTxt = getTextFromChild(parentElem, tag);
 		if (imgTxt != null)
 		{
 			String img = IMG_PATH + imgTxt;
@@ -512,7 +538,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addDateAsLocaleDate(AbstractMedia media, Element parentElem, String tag)
 	{
-		String dateTxt = getTextOfChild(parentElem, tag);
+		String dateTxt = getTextFromChild(parentElem, tag);
 		if (dateTxt != null)
 		{
 			LocalDate date = LocalDate.parse(dateTxt);
@@ -522,7 +548,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addNetwork(Series series, Element parentElem, String tag)
 	{
-		String networkTxt = getTextOfChild(parentElem, tag);
+		String networkTxt = getTextFromChild(parentElem, tag);
 		if (networkTxt != null)
 		{
 			Network network = new Network(networkTxt);
@@ -532,7 +558,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addImdbId(Media media, Element parentElem, String tag)
 	{
-		String imdbIdTxt = getTextOfChild(parentElem, tag);
+		String imdbIdTxt = getTextFromChild(parentElem, tag);
 		if (imdbIdTxt != null)
 		{
 			media.getAttributes().put(ATTRIBUTE_IMDB_ID, imdbIdTxt);
@@ -541,7 +567,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
 	private static void addTheTvDbRating(Media media, Element parentElem, String tag)
 	{
-		String ratingTxt = getTextOfChild(parentElem, tag);
+		String ratingTxt = getTextFromChild(parentElem, tag);
 		if (ratingTxt != null)
 		{
 			float rating = Float.parseFloat(ratingTxt);
@@ -579,7 +605,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 	public static void main(String[] args) throws IOException
 	{
 		TheTvDbApi api = new TheTvDbHttpApi();
-		List<Series> queryResult = api.findSeries("game of thrones");
+		List<Series> queryResult = api.findSeries("lost");
 		SeriesRecord psych = api.getSeries("A3ACA9D28A27792D", queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), "en", true);
 		System.out.println(psych.getSeries());
 		for (Season season : psych.getSeasons())
@@ -591,7 +617,7 @@ public class TheTvDbHttpApi implements TheTvDbApi
 		{
 			System.out.println(NamingDefaults.getDefaultEpisodeNamer().name(epi,
 					ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE))
-					+ " " + epi.getDate());
+					+ " " + epi.getDate() + (epi.isSpecial() ? " [Special]" : ""));
 		}
 	}
 }

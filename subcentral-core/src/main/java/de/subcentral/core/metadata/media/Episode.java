@@ -382,11 +382,15 @@ public class Episode extends AbstractMedia implements Comparable<Episode>
 		{
 			return 1;
 		}
+		// first sort criteria (apart from series) is (a) season, numberInSeason instead of (b) numberInSeries
+		// because (a) works for seasoned series even if for some episodes the numberInSeries is given and for others it isn't
+		// for mini-series or dated series, season and numberInSeason will be null, so they don't affect the ordering
+		// but (b) will put the ones with a numberInSeries at the end -> that's not intended
 		return ComparisonChain.start()
 				.compare(series, o.series, Settings.createDefaultOrdering())
-				.compare(numberInSeries, o.numberInSeries, Settings.createDefaultOrdering())
 				.compare(season, o.season, Settings.createDefaultOrdering())
 				.compare(numberInSeason, o.numberInSeason, Settings.createDefaultOrdering())
+				.compare(numberInSeries, o.numberInSeries, Settings.createDefaultOrdering())
 				.compare(date, o.date, TemporalComparator.INSTANCE)
 				.compare(title, title, Settings.STRING_ORDERING)
 				.result();
