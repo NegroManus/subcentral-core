@@ -355,8 +355,8 @@ public class Episode extends AbstractMedia implements Comparable<Episode>
 		if (obj instanceof Episode)
 		{
 			Episode o = (Episode) obj;
-			return Objects.equals(series, o.series) && Objects.equals(numberInSeries, o.numberInSeries) && Objects.equals(season, o.season)
-					&& Objects.equals(numberInSeason, o.numberInSeason) && Objects.equals(date, o.date)
+			return Objects.equals(series, o.series) && Objects.equals(season, o.season) && Objects.equals(numberInSeason, o.numberInSeason)
+					&& Objects.equals(numberInSeries, o.numberInSeries) && Objects.equals(date, o.date)
 					&& StringUtils.equalsIgnoreCase(title, o.title);
 		}
 		return false;
@@ -366,9 +366,9 @@ public class Episode extends AbstractMedia implements Comparable<Episode>
 	public int hashCode()
 	{
 		return new HashCodeBuilder(7, 15).append(series)
-				.append(numberInSeries)
 				.append(season)
 				.append(numberInSeason)
+				.append(numberInSeries)
 				.append(date)
 				.append(StringUtils.lowerCase(title, Locale.ENGLISH))
 				.toHashCode();
