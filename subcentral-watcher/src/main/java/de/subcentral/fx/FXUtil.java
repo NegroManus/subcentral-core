@@ -504,15 +504,17 @@ public class FXUtil
 	{
 		if (addDialogResult.isPresent())
 		{
-			E newElem = addDialogResult.get();
-			int index = table.getItems().indexOf(newElem);
-			if (index == -1)
+			E newItem = addDialogResult.get();
+			int newItemIndex = table.getItems().indexOf(newItem);
+			if (newItemIndex == -1)
 			{
-				table.getItems().add(newElem);
+				// if newItem not already exists
+				table.getItems().add(newItem);
 			}
 			else
 			{
-				table.getItems().set(index, newElem);
+				// if newItem already exists
+				table.getItems().set(newItemIndex, newItem);
 			}
 		}
 	}
@@ -529,17 +531,23 @@ public class FXUtil
 	{
 		if (editDialogResult.isPresent())
 		{
-			E newElem = editDialogResult.get();
-			int index = table.getItems().indexOf(newElem);
-			if (index == -1)
+			E newItem = editDialogResult.get();
+			int newItemIndex = table.getItems().indexOf(newItem);
+			int selectionIndex = table.getSelectionModel().getSelectedIndex();
+			// if the updated item is not equal to any existing item or equal to the item which was opened for edit
+			if (newItemIndex == -1 || newItemIndex == selectionIndex)
 			{
-				table.getItems().set(table.getSelectionModel().getSelectedIndex(), newElem);
+				// replace
+				table.getItems().set(selectionIndex, newItem);
 			}
 			else
 			{
-				// if newItem already exists
-				table.getItems().set(table.getSelectionModel().getSelectedIndex(), newElem);
-				table.getItems().remove(index);
+				// if updatedItem already exists elsewhere
+				// then replace the selected item with the updatedItem ...
+				table.getItems().set(selectionIndex, newItem);
+				// ... and remove the "old" item
+				table.getItems().remove(newItemIndex);
+				table.getSelectionModel().select(newItem);
 			}
 		}
 	}
