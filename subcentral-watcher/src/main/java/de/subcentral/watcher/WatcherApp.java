@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
 
 public class WatcherApp extends Application
@@ -35,7 +35,7 @@ public class WatcherApp extends Application
 		long start = System.nanoTime();
 
 		this.mainController = new MainController(primaryStage);
-		mainView = FXUtil.loadFromFxml("MainView.fxml", "MainView", Locale.ENGLISH, mainController);
+		mainView = FxUtil.loadFromFxml("MainView.fxml", "MainView", Locale.ENGLISH, mainController);
 
 		log.info("Initialized {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
 	}

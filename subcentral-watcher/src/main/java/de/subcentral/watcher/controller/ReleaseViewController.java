@@ -22,8 +22,8 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.fx.FXUtil;
-import de.subcentral.fx.SubCentralFXUtil;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.watcher.model.ObservableBeanWrapper;
 import de.subcentral.watcher.model.ObservableEpisode;
 import de.subcentral.watcher.model.ObservableRelease;
@@ -94,7 +94,7 @@ public class ReleaseViewController extends AbstractController
 		}
 
 		// Tags
-		tagsComboBox.setConverter(SubCentralFXUtil.OBSERVABLE_TAGS_STRING_CONVERTER);
+		tagsComboBox.setConverter(SubCentralFxUtil.OBSERVABLE_TAGS_STRING_CONVERTER);
 		tagsComboBox.getItems().add(FXCollections.observableArrayList(new Tag("720p"), new Tag("HDTV"), new Tag("x264")));
 		tagsComboBox.getItems().add(FXCollections.observableArrayList(new Tag("720p"), new Tag("WEB-DL"), new Tag("DD5.1"), new Tag("H.264")));
 		tagsComboBox.getItems().add(FXCollections.observableArrayList(new Tag("HDTV"), new Tag("x264")));
@@ -102,7 +102,7 @@ public class ReleaseViewController extends AbstractController
 		tagsComboBox.valueProperty().bindBidirectional(release.tagsProperty());
 
 		// Group
-		groupComboBox.setConverter(SubCentralFXUtil.GROUP_STRING_CONVERTER);
+		groupComboBox.setConverter(SubCentralFxUtil.GROUP_STRING_CONVERTER);
 		groupComboBox.getItems().addAll(new Group("2HD"),
 				new Group("DIMENSION"),
 				new Group("EXCELLENCE"),
@@ -168,7 +168,7 @@ public class ReleaseViewController extends AbstractController
 		episodePane.setWrapText(true);
 
 		EpisodeViewController epiViewCtrl = new EpisodeViewController(epi);
-		episodePane.setContent(FXUtil.loadFromFxml("EpisodeView.fxml", null, null, epiViewCtrl));
+		episodePane.setContent(FxUtil.loadFromFxml("EpisodeView.fxml", null, null, epiViewCtrl));
 		episodePane.textProperty().bind(epiViewCtrl.titleBinding());
 		return episodePane;
 	}

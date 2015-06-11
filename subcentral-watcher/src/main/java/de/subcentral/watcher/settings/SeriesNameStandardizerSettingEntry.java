@@ -4,23 +4,23 @@ import javafx.beans.binding.StringBinding;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.util.StringUtil;
-import de.subcentral.fx.FXUtil;
-import de.subcentral.fx.UiPattern;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.UserPattern;
 
 public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry<Series, SeriesNameStandardizer>
 {
-	private static final StringBinding	standardizerTypeAsString	= FXUtil.createConstantStringBinding("Series name");
+	private static final StringBinding	standardizerTypeAsString	= FxUtil.createConstantStringBinding("Series name");
 	private final StringBinding			ruleAsString;
-	private final UiPattern				nameUiPattern;
+	private final UserPattern				nameUiPattern;
 
-	public SeriesNameStandardizerSettingEntry(UiPattern nameUiPattern, String nameReplacement, boolean enabled)
+	public SeriesNameStandardizerSettingEntry(UserPattern nameUiPattern, String nameReplacement, boolean enabled)
 	{
 		super(Series.class, buildStandardizer(nameUiPattern, nameReplacement), enabled);
-		ruleAsString = FXUtil.createConstantStringBinding(operationToString(value, nameUiPattern));
+		ruleAsString = FxUtil.createConstantStringBinding(operationToString(value, nameUiPattern));
 		this.nameUiPattern = nameUiPattern;
 	}
 
-	private static SeriesNameStandardizer buildStandardizer(UiPattern namePattern, String nameReplacement)
+	private static SeriesNameStandardizer buildStandardizer(UserPattern namePattern, String nameReplacement)
 	{
 		return new SeriesNameStandardizer(namePattern.toPattern(), nameReplacement, null);
 	}
@@ -37,7 +37,7 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 		return ruleAsString;
 	}
 
-	public UiPattern getNameUiPattern()
+	public UserPattern getNameUiPattern()
 	{
 		return nameUiPattern;
 	}
@@ -47,7 +47,7 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 		return standardizerTypeAsString.get();
 	}
 
-	private static String operationToString(SeriesNameStandardizer standardizer, UiPattern nameUiPattern)
+	private static String operationToString(SeriesNameStandardizer standardizer, UserPattern nameUiPattern)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("Replace \"");

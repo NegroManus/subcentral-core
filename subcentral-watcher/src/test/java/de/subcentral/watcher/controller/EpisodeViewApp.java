@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.naming.EpisodeNamer;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.model.ObservableEpisode;
 
 public class EpisodeViewApp extends Application
@@ -22,7 +22,7 @@ public class EpisodeViewApp extends Application
 	@Override
 	public void init() throws Exception
 	{
-		episodePane = FXUtil.loadFromFxml("EpisodeView.fxml", null, null, ctrl);
+		episodePane = FxUtil.loadFromFxml("EpisodeView.fxml", null, null, ctrl);
 		rootPane.setCenter(episodePane);
 	}
 

@@ -21,9 +21,9 @@ import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.fx.FXUtil;
-import de.subcentral.fx.SubCentralFXUtil;
-import de.subcentral.fx.WatcherDialogs;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.WatcherDialogs;
+import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 import de.subcentral.watcher.settings.StandardizerSettingEntry;
@@ -89,7 +89,7 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 			@Override
 			public String toString(Class<? extends StandardizerSettingEntry<?, ?>> type)
 			{
-				return SubCentralFXUtil.standardizingRuleTypeToString(type);
+				return WatcherFxUtil.standardizingRuleTypeToString(type);
 			}
 
 			@Override
@@ -180,7 +180,7 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 			}
 		});
 
-		FXUtil.setStandardMouseAndKeyboardSupportForTableView(rulesTableView, editRuleButton, removeRuleButton);
+		FxUtil.setStandardMouseAndKeyboardSupportForTableView(rulesTableView, editRuleButton, removeRuleButton);
 	}
 
 	private static void logWarningForUnknownStandardizerSettingEntryType(Class<? extends StandardizerSettingEntry> standardizerType)

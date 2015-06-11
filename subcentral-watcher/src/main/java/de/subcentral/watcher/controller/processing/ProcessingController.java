@@ -40,10 +40,10 @@ import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.NamedThreadFactory;
-import de.subcentral.fx.FXUtil;
-import de.subcentral.fx.SubCentralFXUtil;
-import de.subcentral.fx.UiPattern;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.UserPattern;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.settings.SettingsUtil;
@@ -101,12 +101,12 @@ public class ProcessingController extends AbstractController
 			protected ProcessingConfig computeValue()
 			{
 				final ProcessingConfig cfg = new ProcessingConfig();
-				FXUtil.runAndWait(() -> {
+				FxUtil.runAndWait(() -> {
 					// processingConfig.getValue() has to be executed in JavaFX Application Thread for concurrency reasons
 					// (all access to watcher settings has to be in JavaFX Application Thread)
 					log.debug("Rebuilding ProcessingConfig due to changes in WatcherSettings");
 					WatcherSettings settings = WatcherSettings.INSTANCE;
-					cfg.setFilenamePattern(UiPattern.parseSimplePatterns(settings.getFilenamePatterns()));
+					cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns()));
 					cfg.setFilenameParsingServices(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices()));
 					cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs()));
 					cfg.setReleaseParsingServices(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseParsingServices()));
@@ -138,7 +138,7 @@ public class ProcessingController extends AbstractController
 		TypeStandardizingService service = new TypeStandardizingService("parsed");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		StandardizingDefaults.registerAllDefaultStandardizers(service);
-		SubCentralFXUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPreMetadataDbStandardizers());
+		WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPreMetadataDbStandardizers());
 		return service;
 	}
 
@@ -146,7 +146,7 @@ public class ProcessingController extends AbstractController
 	{
 		CompatibilityService service = new CompatibilityService();
 		service.getCompatibilities().add(new SameGroupCompatibility());
-		SubCentralFXUtil.bindCompatibilities(service, WatcherSettings.INSTANCE.getCompatibilities());
+		WatcherFxUtil.bindCompatibilities(service, WatcherSettings.INSTANCE.getCompatibilities());
 		return service;
 	}
 
@@ -174,7 +174,7 @@ public class ProcessingController extends AbstractController
 		});
 
 		// Bind all other Standardizers
-		SubCentralFXUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPostMetadataStandardizers());
+		WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPostMetadataStandardizers());
 		return service;
 	}
 

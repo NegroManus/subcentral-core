@@ -7,7 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.releasescene.ReleaseScene;
@@ -52,7 +52,7 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, Boolean> param) -> param.getValue()
 				.enabledProperty());
-		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FXUtil.createConstantBinding(param.getValue()
+		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.createConstantBinding(param.getValue()
 				.getValue()
 				.getDomain()));
 
@@ -75,7 +75,7 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 				default:
 					example = "";
 			}
-			return FXUtil.createConstantBinding(example);
+			return FxUtil.createConstantBinding(example);
 		});
 	}
 }

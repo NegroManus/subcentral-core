@@ -18,7 +18,7 @@ import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.settings.WatcherSettings;
@@ -394,7 +394,7 @@ public class SettingsController extends AbstractController
 
 	private void loadSettingsSectionNode(String fxmlFilename, String resourceBaseName, AbstractSettingsSectionController ctrl) throws IOException
 	{
-		Node sectionNode = FXUtil.loadFromFxml(fxmlFilename, resourceBaseName, Locale.ENGLISH, ctrl);
+		Node sectionNode = FxUtil.loadFromFxml(fxmlFilename, resourceBaseName, Locale.ENGLISH, ctrl);
 		AnchorPane.setTopAnchor(sectionNode, 0.0d);
 		AnchorPane.setRightAnchor(sectionNode, 0.0d);
 		AnchorPane.setBottomAnchor(sectionNode, 0.0d);

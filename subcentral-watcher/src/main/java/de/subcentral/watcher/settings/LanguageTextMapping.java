@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 
 public final class LanguageTextMapping implements Comparable<LanguageTextMapping>
 {
@@ -87,6 +87,6 @@ public final class LanguageTextMapping implements Comparable<LanguageTextMapping
 		{
 			return 1;
 		}
-		return FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR.compare(this.language, o.language);
+		return FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR.compare(this.language, o.language);
 	}
 }

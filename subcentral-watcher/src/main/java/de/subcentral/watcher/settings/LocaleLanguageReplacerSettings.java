@@ -15,10 +15,10 @@ import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
-import de.subcentral.fx.FXUtil;
-import de.subcentral.fx.UiPattern;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.UserPattern;
+import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.watcher.model.ObservableBean;
-import de.subcentral.watcher.settings.WatcherSettings.PatternMode;
 
 public class LocaleLanguageReplacerSettings extends ObservableBean
 {
@@ -44,7 +44,7 @@ public class LocaleLanguageReplacerSettings extends ObservableBean
 		{
 			parsingLangs.add(Locale.forLanguageTag(parsingLangCfg.getString("[@tag]")));
 		}
-		parsingLangs.sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+		parsingLangs.sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 		setParsingLanguages(FXCollections.observableList(parsingLangs));
 
 		LanguageFormat outputFormat = LanguageFormat.valueOf(cfg.getString(key + ".ouputLanguageFormat[@format]"));
@@ -56,7 +56,7 @@ public class LocaleLanguageReplacerSettings extends ObservableBean
 		List<LanguageUiPattern> patterns = new ArrayList<>(patternsCfgs.size());
 		for (HierarchicalConfiguration<ImmutableNode> patternsCfg : patternsCfgs)
 		{
-			UiPattern p = new UiPattern(patternsCfg.getString("[@pattern]"), PatternMode.valueOf(patternsCfg.getString("[@patternMode]")));
+			UserPattern p = new UserPattern(patternsCfg.getString("[@pattern]"), Mode.valueOf(patternsCfg.getString("[@patternMode]")));
 			LanguageUiPattern langPattern = new LanguageUiPattern(p, Locale.forLanguageTag(patternsCfg.getString("[@languageTag]")));
 			patterns.add(langPattern);
 		}

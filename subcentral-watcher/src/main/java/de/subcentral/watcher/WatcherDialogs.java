@@ -1,4 +1,4 @@
-package de.subcentral.fx;
+package de.subcentral.watcher;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,6 +45,9 @@ import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubCentralFxUtil;
+import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.settings.LanguageTextMapping;
 import de.subcentral.watcher.settings.LanguageUiPattern;
@@ -171,8 +174,8 @@ public class WatcherDialogs
 						initialAssumeExistence = ifNoneFoundRadioBtn;
 				}
 			}
-			ListProperty<Tag> tags = SubCentralFXUtil.tagPropertyForTextField(tagsTxtFld, initialTags);
-			Property<Group> group = SubCentralFXUtil.groupPropertyForTextField(groupTxtFld, initialGroup);
+			ListProperty<Tag> tags = SubCentralFxUtil.tagPropertyForTextField(tagsTxtFld, initialTags);
+			Property<Group> group = SubCentralFxUtil.groupPropertyForTextField(groupTxtFld, initialGroup);
 			assumeExistenceToggleGrp.selectToggle(initialAssumeExistence);
 
 			// Bindings
@@ -252,8 +255,8 @@ public class WatcherDialogs
 				initialSourceGroup = bean.getSourceGroup();
 				initialSymmetric = bean.isSymmetric();
 			}
-			Property<Group> compatibleGroup = SubCentralFXUtil.groupPropertyForTextField(compatibleGroupTxtFld, initialCompatibleGroup);
-			Property<Group> sourceGroup = SubCentralFXUtil.groupPropertyForTextField(sourceGroupTxtFld, initialSourceGroup);
+			Property<Group> compatibleGroup = SubCentralFxUtil.groupPropertyForTextField(compatibleGroupTxtFld, initialCompatibleGroup);
+			Property<Group> sourceGroup = SubCentralFxUtil.groupPropertyForTextField(sourceGroupTxtFld, initialSourceGroup);
 			symmetricCheckBox.setSelected(initialSymmetric);
 
 			// Do Bindings
@@ -366,7 +369,7 @@ public class WatcherDialogs
 			nameReplacementTxtFld.setText(initialNameReplacement);
 
 			// Bindings
-			Binding<UiPattern> namePatternBinding = FXUtil.createUiPatternTextFieldBinding(patternModeToggleGrp,
+			Binding<UserPattern> namePatternBinding = FxUtil.createUiPatternTextFieldBinding(patternModeToggleGrp,
 					literalRadioBtn,
 					simplePatternRadioBtn,
 					regexRadioBtn,
@@ -495,8 +498,8 @@ public class WatcherDialogs
 			queryModeToggleGrp.selectToggle(initialQueryModeToggle);
 			ignoreOrderCheckBox.setSelected(initialIgnoreOrder);
 			replaceWithToggleGrp.selectToggle(initialReplaceWithToggle);
-			ListProperty<Tag> queryTags = SubCentralFXUtil.tagPropertyForTextField(queryTagsTxtFld, initialQueryTags);
-			ListProperty<Tag> replacement = SubCentralFXUtil.tagPropertyForTextField(replacementTxtFld, initialQueryTags);
+			ListProperty<Tag> queryTags = SubCentralFxUtil.tagPropertyForTextField(queryTagsTxtFld, initialQueryTags);
+			ListProperty<Tag> replacement = SubCentralFxUtil.tagPropertyForTextField(replacementTxtFld, initialQueryTags);
 
 			// Bindings
 			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
@@ -595,14 +598,14 @@ public class WatcherDialogs
 						}
 						else
 						{
-							setText(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
+							setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
 						}
 					}
 				};
 			});
 
 			addableLangsComboBox.setItems(initAddableLangList());
-			addableLangsComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+			addableLangsComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 
 			// Bindings
 			addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
@@ -611,7 +614,7 @@ public class WatcherDialogs
 				Locale langToAdd = addableLangsComboBox.getItems().remove(addableLangsComboBox.getSelectionModel().getSelectedIndex());
 				// add lang to lang list
 				langsListView.getItems().add(langToAdd);
-				langsListView.getItems().sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+				langsListView.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 			});
 
 			removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
@@ -620,7 +623,7 @@ public class WatcherDialogs
 				Locale removedLang = langsListView.getItems().remove(langsListView.getSelectionModel().getSelectedIndex());
 				// add lang to addable langs
 				addableLangsComboBox.getItems().add(removedLang);
-				addableLangsComboBox.getItems().sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+				addableLangsComboBox.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 			});
 
 			// Set ResultConverter
@@ -636,13 +639,13 @@ public class WatcherDialogs
 		private ObservableList<Locale> initLangList()
 		{
 			ObservableList<Locale> langList = FXCollections.observableArrayList(bean);
-			langList.sort(FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			langList.sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 			return langList;
 		}
 
 		private ObservableList<Locale> initAddableLangList()
 		{
-			ObservableList<Locale> addableLangList = FXUtil.createListOfAvailableLocales(false, false, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			ObservableList<Locale> addableLangList = FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 			// already selected langs are not addable
 			addableLangList.removeAll(bean);
 			return addableLangList;
@@ -685,8 +688,8 @@ public class WatcherDialogs
 		protected void initInputPaneControl()
 		{
 			// initialize
-			langComboBox.setItems(FXUtil.createListOfAvailableLocales(false, true, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
-			langComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+			langComboBox.setItems(FxUtil.createListOfAvailableLocales(false, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+			langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 
 			// Set initial values
 
@@ -718,7 +721,7 @@ public class WatcherDialogs
 			}
 
 			// Bindings
-			final Binding<UiPattern> patternBinding = FXUtil.createUiPatternTextFieldBinding(modeToggleGrp,
+			final Binding<UserPattern> patternBinding = FxUtil.createUiPatternTextFieldBinding(modeToggleGrp,
 					literalRadioBtn,
 					simplePatternRadioBtn,
 					regexRadioBtn,
@@ -778,8 +781,8 @@ public class WatcherDialogs
 		protected void initInputPaneControl()
 		{
 			// Set initial values
-			langComboBox.setItems(FXUtil.createListOfAvailableLocales(true, true, FXUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
-			langComboBox.setConverter(FXUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+			langComboBox.setItems(FxUtil.createListOfAvailableLocales(true, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+			langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 			langComboBox.setValue(bean != null ? bean.getLanguage() : null);
 
 			textTxtFld.setText(bean != null ? bean.getText() : "");
@@ -887,7 +890,7 @@ public class WatcherDialogs
 	{
 		try
 		{
-			FXUtil.loadFromFxml(fxmlFilename, null, null, ctrl);
+			FxUtil.loadFromFxml(fxmlFilename, null, null, ctrl);
 		}
 		catch (IOException e)
 		{

@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.db.AbstractHttpMetadataDb;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.MetadataDbSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
 
@@ -102,7 +102,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 								{
 									AbstractHttpMetadataDb<Release> rlsDb = (AbstractHttpMetadataDb<Release>) item.getValue();
 									URL rlsDbUrl = rlsDb.getHost();
-									Hyperlink link = FXUtil.createUrlHyperlink(rlsDbUrl, settingsController.getMainController().getCommonExecutor());
+									Hyperlink link = FxUtil.createUrlHyperlink(rlsDbUrl, settingsController.getMainController().getCommonExecutor());
 									setGraphic(link);
 								}
 								catch (URISyntaxException e)
@@ -123,7 +123,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		recheckAvailibities();
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> recheckAvailibities());
 
-		FXUtil.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
+		FxUtil.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
 	}
 
 	private void recheckAvailibities()

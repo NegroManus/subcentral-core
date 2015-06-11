@@ -1,37 +1,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.subcentral</groupId>
-	<artifactId>subcentral-watcher</artifactId>
-	<version>2.0</version>
-	<name>SubCentral Watcher</name>
-
-	<properties>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.subcentral</groupId>
+  <artifactId>subcentral-fx</artifactId>
+  <version>1.0</version>
+  <name>SubCentral JavaFX Libary</name>
+  
+  	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
 	<dependencies>
-		<!-- The core subcentral functionality -->
+			<!-- The core subcentral functionality -->
 		<dependency>
 			<groupId>de.subcentral</groupId>
 			<artifactId>subcentral-core</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>de.subcentral</groupId>
-			<artifactId>subcentral-fx</artifactId>
-			<version>1.0</version>
-		</dependency>
 
-		<!-- For configuration -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<finalName>subcentral-watcher</finalName>
+		<!-- For extra JavaFX controls -->
+		<!--  <dependency>
+			<groupId>org.controlsfx</groupId>
+			<artifactId>controlsfx</artifactId>
+			<version>8.20.8</version>
+		</dependency>-->
+		 </dependencies>
+  	<build>
+		<finalName>subcentral-fx</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -91,5 +84,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	
 </project>

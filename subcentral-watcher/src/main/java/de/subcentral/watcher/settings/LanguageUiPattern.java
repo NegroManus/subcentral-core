@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
-import de.subcentral.fx.UiPattern;
+import de.subcentral.fx.UserPattern;
 
 public class LanguageUiPattern implements Comparable<LanguageUiPattern>
 {
@@ -33,16 +33,16 @@ public class LanguageUiPattern implements Comparable<LanguageUiPattern>
 		};
 	}
 
-	private final UiPattern	pattern;
+	private final UserPattern	pattern;
 	private final Locale	language;
 
-	public LanguageUiPattern(UiPattern pattern, Locale language)
+	public LanguageUiPattern(UserPattern pattern, Locale language)
 	{
 		this.pattern = pattern;
 		this.language = language;
 	}
 
-	public UiPattern getPattern()
+	public UserPattern getPattern()
 	{
 		return pattern;
 	}

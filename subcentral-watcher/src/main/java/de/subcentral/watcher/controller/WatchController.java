@@ -23,8 +23,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.DirectoryWatchService;
-import de.subcentral.fx.FXUtil;
-import de.subcentral.fx.SubCentralFXUtil;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
 
 public class WatchController extends AbstractController
@@ -131,7 +131,7 @@ public class WatchController extends AbstractController
 			{
 				dirsString.add(dir.toString());
 			}
-			Alert alert = FXUtil.createExceptionAlert("Exception while watching", "An exception occured while watching " + dirsString + ".", ex);
+			Alert alert = FxUtil.createExceptionAlert("Exception while watching", "An exception occured while watching " + dirsString + ".", ex);
 			alert.show();
 		});
 	}
@@ -148,7 +148,7 @@ public class WatchController extends AbstractController
 			Iterator<Path> iter = watchDirs.iterator();
 			while (iter.hasNext())
 			{
-				addToHBoxWithMaxHeight(watchDirectoriesHBox, FXUtil.createFileHyperlink(iter.next(), mainController.getCommonExecutor()));
+				addToHBoxWithMaxHeight(watchDirectoriesHBox, FxUtil.createFileHyperlink(iter.next(), mainController.getCommonExecutor()));
 				if (iter.hasNext())
 				{
 					addToHBoxWithMaxHeight(watchDirectoriesHBox, new Label("·"));
@@ -170,7 +170,7 @@ public class WatchController extends AbstractController
 
 		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFiles);
 		watchService.setExecutor(watchServiceExecutor);
-		SubCentralFXUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.getWatchDirectories());
+		WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.getWatchDirectories());
 		watchService.setInitialScan(WatcherSettings.INSTANCE.isInitialScan());
 		WatcherSettings.INSTANCE.initialScanProperty()
 				.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {

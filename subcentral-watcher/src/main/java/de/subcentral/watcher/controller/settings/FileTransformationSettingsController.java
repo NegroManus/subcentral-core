@@ -25,8 +25,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import de.subcentral.fx.FXUtil;
-import de.subcentral.fx.SubCentralFXUtil;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.WatcherSettings;
@@ -70,7 +70,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	@Override
 	protected void doInitialize() throws Exception
 	{
-		final TextFormatter<Path> targetDirFormatter = new TextFormatter<Path>(FXUtil.PATH_STRING_CONVERTER);
+		final TextFormatter<Path> targetDirFormatter = new TextFormatter<Path>(FxUtil.PATH_STRING_CONVERTER);
 		targetDirFormatter.valueProperty().bindBidirectional(WatcherSettings.INSTANCE.targetDirProperty());
 		targetDirTxtFld.setTextFormatter(targetDirFormatter);
 
@@ -107,7 +107,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 			}
 		});
 
-		final TextFormatter<Path> rarExeFormatter = new TextFormatter<Path>(FXUtil.PATH_STRING_CONVERTER);
+		final TextFormatter<Path> rarExeFormatter = new TextFormatter<Path>(FxUtil.PATH_STRING_CONVERTER);
 		rarExeFormatter.valueProperty().bindBidirectional(WatcherSettings.INSTANCE.rarExeProperty());
 		rarExeTxtFld.setTextFormatter(rarExeFormatter);
 
@@ -162,6 +162,6 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
 		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(WatcherSettings.INSTANCE.packingSourceDeletionModeProperty());
-		packingSourceDeletionModeChoiceBox.setConverter(SubCentralFXUtil.DELETION_MODE_STRING_CONVERTER);
+		packingSourceDeletionModeChoiceBox.setConverter(SubCentralFxUtil.DELETION_MODE_STRING_CONVERTER);
 	}
 }

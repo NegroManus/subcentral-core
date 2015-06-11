@@ -7,7 +7,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.model.ObservableRelease;
 
 public class ReleaseViewApp extends Application
@@ -20,7 +20,7 @@ public class ReleaseViewApp extends Application
 	@Override
 	public void init() throws Exception
 	{
-		releasePane = FXUtil.loadFromFxml("ReleaseView.fxml", null, null, ctrl);
+		releasePane = FxUtil.loadFromFxml("ReleaseView.fxml", null, null, ctrl);
 		rootPane.setCenter(releasePane);
 	}
 

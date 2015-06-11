@@ -17,7 +17,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import com.google.common.io.Resources;
 
 import de.subcentral.core.util.NamedThreadFactory;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.settings.WatcherSettings;
@@ -90,14 +90,14 @@ public class MainController extends AbstractController
 	private void initWatchController() throws IOException
 	{
 		watchController = new WatchController(this);
-		HBox watchPane = FXUtil.loadFromFxml("WatchPane.fxml", null, Locale.ENGLISH, watchController);
+		HBox watchPane = FxUtil.loadFromFxml("WatchPane.fxml", null, Locale.ENGLISH, watchController);
 		rootBorderPane.setTop(watchPane);
 	}
 
 	private void initProcessingController() throws IOException
 	{
 		processingController = new ProcessingController(this);
-		BorderPane processingPane = FXUtil.loadFromFxml("ProcessingView.fxml", "ProcessingView", Locale.ENGLISH, processingController);
+		BorderPane processingPane = FxUtil.loadFromFxml("ProcessingView.fxml", "ProcessingView", Locale.ENGLISH, processingController);
 		AnchorPane.setTopAnchor(processingPane, 0.0d);
 		AnchorPane.setRightAnchor(processingPane, 0.0d);
 		AnchorPane.setBottomAnchor(processingPane, 0.0d);
@@ -108,7 +108,7 @@ public class MainController extends AbstractController
 	private void initSettingsController() throws IOException
 	{
 		settingsController = new SettingsController(this);
-		AnchorPane settingsPane = FXUtil.loadFromFxml("SettingsView.fxml", "SettingsView", Locale.ENGLISH, settingsController);
+		AnchorPane settingsPane = FxUtil.loadFromFxml("SettingsView.fxml", "SettingsView", Locale.ENGLISH, settingsController);
 		AnchorPane.setTopAnchor(settingsPane, 0.0d);
 		AnchorPane.setRightAnchor(settingsPane, 0.0d);
 		AnchorPane.setBottomAnchor(settingsPane, 0.0d);

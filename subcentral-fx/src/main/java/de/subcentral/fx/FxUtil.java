@@ -53,11 +53,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.ExceptionUtil;
-import de.subcentral.watcher.settings.WatcherSettings.PatternMode;
+import de.subcentral.fx.UserPattern.Mode;
 
-public class FXUtil
+public class FxUtil
 {
-	private static final Logger									log									= LogManager.getLogger(FXUtil.class);
+	private static final Logger									log									= LogManager.getLogger(FxUtil.class);
 
 	public static final StringConverter<Path>					PATH_STRING_CONVERTER				= initPathStringConverter();
 	public static final StringConverter<Locale>					LOCALE_DISPLAY_NAME_CONVERTER		= initLocaleDisplayNameConverter();
@@ -187,7 +187,7 @@ public class FXUtil
 			Throwable exc = evt.getSource().getException();
 
 			log.error(msg, exc);
-			Alert alert = FXUtil.createExceptionAlert(msg, msg, exc);
+			Alert alert = FxUtil.createExceptionAlert(msg, msg, exc);
 			alert.show();
 		};
 	}
@@ -226,7 +226,7 @@ public class FXUtil
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
-		link.setOnAction((ActionEvent evt) -> FXUtil.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxUtil.browse(uri, executor, onFailedHandler));
 		return link;
 	}
 
@@ -242,7 +242,7 @@ public class FXUtil
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(url.toString());
-		link.setOnAction((ActionEvent evt) -> FXUtil.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxUtil.browse(uri, executor, onFailedHandler));
 		return link;
 	}
 
@@ -379,17 +379,17 @@ public class FXUtil
 		return alert;
 	}
 
-	public static Binding<UiPattern> createUiPatternTextFieldBinding(ToggleGroup patternModeToggleGrp, Toggle literalToggle, Toggle simpleToggle,
+	public static Binding<UserPattern> createUiPatternTextFieldBinding(ToggleGroup patternModeToggleGrp, Toggle literalToggle, Toggle simpleToggle,
 			Toggle regexToggle, TextField patternTxtFld, Label patternErrorLbl)
 	{
-		return new ObjectBinding<UiPattern>()
+		return new ObjectBinding<UserPattern>()
 		{
 			{
 				super.bind(patternModeToggleGrp.selectedToggleProperty(), patternTxtFld.textProperty());
 			}
 
 			@Override
-			protected UiPattern computeValue()
+			protected UserPattern computeValue()
 			{
 				String pattern = patternTxtFld.getText();
 				if (StringUtils.isBlank(pattern))
@@ -397,22 +397,22 @@ public class FXUtil
 					patternErrorLbl.setText("");
 					return null;
 				}
-				PatternMode patternMode;
+				Mode mode;
 				if (patternModeToggleGrp.getSelectedToggle() == simpleToggle)
 				{
-					patternMode = PatternMode.SIMPLE;
+					mode = Mode.SIMPLE;
 				}
 				else if (patternModeToggleGrp.getSelectedToggle() == regexToggle)
 				{
-					patternMode = PatternMode.REGEX;
+					mode = Mode.REGEX;
 				}
 				else
 				{
-					patternMode = PatternMode.LITERAL;
+					mode = Mode.LITERAL;
 				}
 				try
 				{
-					UiPattern p = new UiPattern(pattern, patternMode);
+					UserPattern p = new UserPattern(pattern, mode);
 					// try to convert -> may throw an exception
 					p.toPattern();
 					patternErrorLbl.setText("");
@@ -486,7 +486,7 @@ public class FXUtil
 	public static <T> T loadFromFxml(String fxmlFilename, String resourceBaseName, Locale locale, Object controller) throws IOException
 	{
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(FXUtil.class.getClassLoader().getResource("fxml/" + fxmlFilename));
+		loader.setLocation(FxUtil.class.getClassLoader().getResource("fxml/" + fxmlFilename));
 		loader.setResources(resourceBaseName == null ? null : ResourceBundle.getBundle("i18n/" + resourceBaseName, locale));
 		loader.setController(controller);
 		return loader.load();
@@ -570,7 +570,7 @@ public class FXUtil
 		}
 	}
 
-	private FXUtil()
+	private FxUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

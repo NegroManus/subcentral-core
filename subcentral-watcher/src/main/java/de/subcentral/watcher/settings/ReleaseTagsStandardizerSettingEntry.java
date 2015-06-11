@@ -7,17 +7,17 @@ import com.google.common.base.Joiner;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 
 public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntry<Release, ReleaseTagsStandardizer>
 {
-	private static final StringBinding	standardizerTypeAsString	= FXUtil.createConstantStringBinding("Release tags");
+	private static final StringBinding	standardizerTypeAsString	= FxUtil.createConstantStringBinding("Release tags");
 	private final StringBinding			ruleAsString;
 
 	public ReleaseTagsStandardizerSettingEntry(ReleaseTagsStandardizer standardizer, boolean enabled)
 	{
 		super(Release.class, standardizer, enabled);
-		ruleAsString = FXUtil.createConstantStringBinding(operationToString(standardizer));
+		ruleAsString = FxUtil.createConstantStringBinding(operationToString(standardizer));
 	}
 
 	@Override

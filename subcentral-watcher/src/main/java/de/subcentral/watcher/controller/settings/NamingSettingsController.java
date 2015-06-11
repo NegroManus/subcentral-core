@@ -16,7 +16,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
-import de.subcentral.fx.FXUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
 
 public class NamingSettingsController extends AbstractSettingsSectionController
@@ -63,7 +63,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		namingParamsTableView.getItems().addAll(namingParams);
 
 		namingParamsNameColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> {
-			return FXUtil.createConstantBinding(param.getValue().getKey());
+			return FxUtil.createConstantBinding(param.getValue().getKey());
 		});
 
 		namingParamsValueColumn.setCellValueFactory((CellDataFeatures<NamingParam, Boolean> param) -> {

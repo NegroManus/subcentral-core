@@ -13,14 +13,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 
-import de.subcentral.watcher.settings.WatcherSettings.PatternMode;
-
-public class UiPattern implements Comparable<UiPattern>
+public class UserPattern implements Comparable<UserPattern>
 {
-	private final String		pattern;
-	private final PatternMode	mode;
+	public enum Mode
+	{
+		LITERAL, SIMPLE, REGEX
+	}
 
-	public UiPattern(String pattern, PatternMode mode) throws PatternSyntaxException
+	private final String	pattern;
+	private final Mode		mode;
+
+	public UserPattern(String pattern, Mode mode) throws PatternSyntaxException
 	{
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.mode = Objects.requireNonNull(mode, "mode");
@@ -31,7 +34,7 @@ public class UiPattern implements Comparable<UiPattern>
 		return pattern;
 	}
 
-	public PatternMode getMode()
+	public Mode getMode()
 	{
 		return mode;
 	}
@@ -112,7 +115,7 @@ public class UiPattern implements Comparable<UiPattern>
 	}
 
 	@Override
-	public int compareTo(UiPattern o)
+	public int compareTo(UserPattern o)
 	{
 		// nulls first
 		if (o == null)
@@ -129,9 +132,9 @@ public class UiPattern implements Comparable<UiPattern>
 		{
 			return true;
 		}
-		if (obj instanceof UiPattern)
+		if (obj instanceof UserPattern)
 		{
-			UiPattern o = (UiPattern) obj;
+			UserPattern o = (UserPattern) obj;
 			return pattern.equals(o.pattern) && mode.equals(o.mode);
 		}
 		return false;
@@ -146,6 +149,6 @@ public class UiPattern implements Comparable<UiPattern>
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(UiPattern.class).omitNullValues().add("pattern", pattern).add("mode", mode).toString();
+		return MoreObjects.toStringHelper(UserPattern.class).omitNullValues().add("pattern", pattern).add("mode", mode).toString();
 	}
 }

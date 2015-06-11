@@ -58,7 +58,8 @@ import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
-import de.subcentral.fx.UiPattern;
+import de.subcentral.fx.UserPattern;
+import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
@@ -74,11 +75,6 @@ public class WatcherSettings extends ObservableBean
 	public enum FileTransformationMode
 	{
 		COPY, MOVE
-	}
-
-	public enum PatternMode
-	{
-		LITERAL, SIMPLE, REGEX
 	}
 
 	public static final WatcherSettings							INSTANCE							= new WatcherSettings();
@@ -425,8 +421,8 @@ public class WatcherSettings extends ObservableBean
 		for (HierarchicalConfiguration<ImmutableNode> seriesStdzerCfg : seriesStdzerCfgs)
 		{
 			String namePatternStr = seriesStdzerCfg.getString("[@namePattern]");
-			PatternMode namePatternMode = PatternMode.valueOf(seriesStdzerCfg.getString("[@namePatternMode]"));
-			UiPattern nameUiPattern = new UiPattern(namePatternStr, namePatternMode);
+			Mode namePatternMode = Mode.valueOf(seriesStdzerCfg.getString("[@namePatternMode]"));
+			UserPattern nameUiPattern = new UserPattern(namePatternStr, namePatternMode);
 			String nameReplacement = seriesStdzerCfg.getString("[@nameReplacement]");
 			stdzers.add(new SeriesNameStandardizerSettingEntry(nameUiPattern, nameReplacement, true));
 		}
