@@ -6,8 +6,9 @@
 <style type="text/css">
 body {
 	font-family: sans-serif;
-	font-size: 13px;
-	max-width: 800px;
+	font-size: 12px;
+	max-width: 900px;
+	color: #353535;
 }
 
 a {
@@ -16,15 +17,17 @@ a {
 }
 
 .epi {
-	color: #eaffed;
-	background-color: #4cb541;
-	font-size: 14px;
-	margin: 4px 0px 4px 0px;
-	padding: 5px;
+	margin: 6px 0px 6px 0px;
 }
 
-.epi a {
+.epi-head {
+	display: block;
 	color: #eaffed;
+	background-color: #4cb541;
+	font-size: 13px;
+	padding: 5px;
+	text-decoration: none;
+	border: 1px solid #4cb541;
 }
 
 .langs {
@@ -37,28 +40,32 @@ a {
 }
 
 .subs {
-	background-color: #eaffed;
-	margin-bottom: 20px;
+	padding: 5px 10px 0px 5px;
+	background-color: #FFFFFA;
+	border-right: 1px solid #4cb541;
+	border-bottom: 1px solid #4cb541;
+	border-left: 1px solid #4cb541;
 }
 
 .sub {
-	
+	margin-bottom: 10px;
 }
 
 .sub-head {
-	background-color: #e0f9cf;
-	font-size: 14px;
-	margin: 0px 0px 5px 0px;
-	padding: 3px 3px 3px 5px;
+	border-top: 2px solid #4cb541;
+	border-bottom: 2px solid #4cb541;
+	font-size: 13px;
+	padding: 4px;
 }
 
-.sub-lang
-{
- /* TODO */
+}
+.sub-lang {
+
+	
 }
 
 .sub-body {
-	padding: 0px 5px 3px 20px;
+	padding: 8px 3px 0px 3px;
 }
 
 /*handles the vertical centering*/
@@ -73,38 +80,66 @@ a {
 	vertical-align: middle;
 }
 
-.sub-body>div {
+.sub-releases, .sub-progress {
+	float: left;
+	width: 50%;
 	padding: 2px;
-	margin-bottom: 2px;
-	margin-top: 2px;
-	margin-bottom: 2px;
+	margin: 2px;
 }
 
-.sub-notes {
-	border-top: 1px solid grey;
+.sub-rls {
+	word-wrap: break-word;
+	padding-bottom: 8px;
+}
+
+.sub-rls .contribution {
+	padding: 2px 0px 0px 5px;
+	font-size: 11px;
+	color: grey;
+}
+
+.sub-contributions {
+	padding: 2px;
+	margin: 2px;
+}
+
+.sub-contributions td {
+	padding-right: 10px;
 }
 
 .contribution-type {
 	font-weight: bold;
 }
 
+.amount {
+	color: grey;
+}
+
+.sub-notes {
+	padding: 2px;
+	margin: 2px 2px 5px 2px;
+	border-top: 1px solid #DDD;
+	padding: 5px;
+}
+
+.notes {
+	margin: 8px 2px 5px 2px;
+}
+
 .clearBoth {
 	clear: both;
 }
 
-.status {
-	text-align: center;
-	vertical-align: middle;
-	line-height: 25px;
-	float: left;
-	margin-right: 10px;
-}
-
 .progress {
+	font-size: 13px; text-align : center;
+	vertical-align: middle;
+	line-height: 30px;
+	margin: 2px 10px 5px 0px;
 	border: 1px solid grey;
-	width: 150px;
-	height: 25px;
+	width: 200px;
+	height: 30px;
 	background: #4cb541;
+	text-align: center;
 }
 </style>
 
@@ -142,372 +177,505 @@ a {
 	</div>
 	<div class="epis">
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e01-subs');">E01 - "Lock, Stock, Some Smoking Barrels and Burton Guster’s Goblet of Fire"</a></span> <span class="airdate">08. Jan. 2014</span>
-		</div>
-		<div id="e01-subs" class="subs" style="display: none">
-			<div class="sub">
-				<div class="sub-head">
-					<span class="center-helper"></span><span class="sub-lang"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /></span> <span class="sub-source">SubCentral</span>
-				</div>
-				<div id="sub01_de-body" class="sub-body">
-					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E01.PROPER.HDTV.x264-KILLERS">
-							<a href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls" data-rls="Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS">
-							<a href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls" data-rls="Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI">
-							<a href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
-						</div>
+			<a class="epi-head" href="javascript:toggleExpand('e01-subs');"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+					src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E01 - "Lock, Stock, Some Smoking Barrels and Burton Guster’s Goblet of Fire"</span> <span class="airdate">08. Jan.
+					2014</span>
+			</a>
+			<div id="e01-subs" class="subs" style="display: none">
+				<div class="sub">
+					<div class="sub-head">
+						<span class="center-helper"></span><span class="sub-lang"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /></span> <span class="sub-source">SubCentral.de</span>
 					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Übersetzung:</span> Fischchen (50 %), Perian (50 %)
+					<div id="sub01_de-body" class="sub-body">
+						<div class="sub-releases">
+							<div class="sub-rls" data-rls="Psych.S08E01.PROPER.HDTV.x264-KILLERS">
+								<a href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls" data-rls="Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS">
+								<a href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
+							<div class="sub-rls" data-rls="Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI">
+								<a href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
 						</div>
-						<div class="contribution">
-							<span class="contribution-type">Korrektur</span>: Invisible
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Subsfactory.it, Fischchen</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Übersetzung:</span></td>
+									<td>Fischchen <span class="amount">(90 %)</span>, Perian <span class="amount">(10 %)</span></td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Korrektur:</span></td>
+									<td>Invisible</td>
+								</tr>
+							</table>
 						</div>
-						<div class="contribution">
-							<span class="contribution-type">Transkript</span>: Addic7ed.com
-						</div>
-						<div class="contribution">
-							<span class="contribution-type">Timings</span>: subsfactory.it
-						</div>
-					</div>
-					<div class="sub-notes">
-						<b>Anmerkungen</b>:<br />
-						<div class="notes">
-							02:30 - blabla<br /> 05:24 - blabla<br />
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="sub">
-				<div class="sub-head">
-					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral </a>
-				</div>
-				<div id="sub01_en-body" class="sub-body">
-					<div class="sub-releases">
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
-						</div>
-					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Transkript:</span> Addic7ed.com
-						</div>
-						<div class="contribution">
-							<span class="contribution-type">Timings</span>: Fischchen
+						<br class="clearBoth">
+						<div class="sub-notes">
+							<div>
+								<b>Anmerkungen</b>
+							</div>
+							<div class="notes">
+								02:30 - blabla<br /> 05:24 - blabla<br />
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-
-		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e02-subs');">E02 - "S.E.I.Z.E. the Day"</a></span> <span class="airdate">15. Jan. 2014</span>
-		</div>
-		<div id="e02-subs" class="subs released" style="display: none">
-			<div class="sub">
-				<div class="sub-head">
-					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
-				</div>
-				<div class="sub-body">
-					<div class="sub-releases">
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
-						</div>
+				<div class="sub">
+					<div class="sub-head">
+						<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral.de
 					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Übersetzung:</span> NegroManus
+					<div id="sub01_en-body" class="sub-body">
+						<div class="sub-releases">
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
 						</div>
-						<div class="contribution">
-							<span class="contribution-type">Korrektur</span>: Elya
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Subsfactory.it, Fischchen</td>
+								</tr>
+							</table>
 						</div>
-					</div>
-					<div class="sub-notes">
-						<b>Anmerkungen</b>:<br />
-						<div class="notes">
-							KILLER-Glitches<br /> Die KILLERS-Versionen haben Glitches (Aussetzer) im Video in der Anfangsszene (02:33 & 03:39). Es sind nur kleine Aussetzer und wir haben sie trotzdem in den Untertiteln
-							übersetzt. In den WEB-DLs ist alles okay.
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="sub">
-				<div class="sub-head">
-					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral
-				</div>
-				<div class="sub-body" style="display: block">
-					<div class="sub-releases">
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
-						</div>
-					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Transkript:</span> Addic7ed.com
-						</div>
-						<div class="contribution">
-							<span class="contribution-type">Timings</span>: NegroManus
-						</div>
+						<br class="clearBoth">
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e03-subs');">E03 - "Cloudy… With a Chance of Improvement"</a></span> <span class="airdate">22. Jan. 2014</span>
-		</div>
-		<div id="e03-subs" class="subs" style="display: none">
-			<div class="sub">
-				<div class="sub-head">
-					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+			<a class="epi-head" href="javascript:toggleExpand('e02-subs');"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+					src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E02 - "S.E.I.Z.E. the Day"</span> <span class="airdate">15. Jan. 2014</span>
+			</a>
+			<div id="e02-subs" class="subs released" style="display: none">
+				<div class="sub">
+					<div class="sub-head">
+						<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral.de
+					</div>
+					<div class="sub-body">
+						<div class="sub-releases">
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
+						</div>
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Subsfactory.it, NegroManus</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Übersetzung:</span></td>
+									<td>NegroManus</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Korrektur:</span></td>
+									<td>Elya</td>
+								</tr>
+							</table>
+						</div>
+						<br class="clearBoth">
+						<div class="sub-notes">
+							<b>Anmerkungen</b>:<br />
+							<div class="notes">
+								KILLER-Glitches<br /> Die KILLERS-Versionen haben Glitches (Aussetzer) im Video in der Anfangsszene (02:33 & 03:39). Es sind nur kleine Aussetzer und wir haben sie trotzdem in den Untertiteln
+								übersetzt. In den WEB-DLs ist alles okay.
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="sub-body">
-					<div class="sub-releases">
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
-						</div>
+				<div class="sub">
+					<div class="sub-head">
+						<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral.de
 					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Übersetzung:</span> Fischchen (50 %), Perian (50 %)
+					<div class="sub-body" style="display: block">
+						<div class="sub-releases">
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
 						</div>
-						<div class="contribution">
-							<span class="contribution-type">Korrektur</span>: Invisible
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Subsfactory.it, NegroManus</td>
+								</tr>
+							</table>
 						</div>
-					</div>
-					<div class="sub-notes">
-						<b>Anmerkungen</b>:<br />
-						<div class="notes">
-							02:30 - blabla<br /> 05:24 - blabla<br />
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="sub" data-lang="en" data-source="SubCentral.de">
-				<div class="sub-head">
-					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral
-				</div>
-				<div class="sub-body">
-					<div class="sub-releases">
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
-						</div>
-						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
-						</div>
-					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Transkript:</span> Addic7ed.com
-						</div>
-						<div class="contribution">
-							<span class="contribution-type">Timings</span>: Fischchen
-						</div>
+						<br class="clearBoth">
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e04-subs');">E04 - "Someone’s Got a Woody"</a></span> <span class="airdate">29. Jan. 2014</span>
+			<a class="epi-head" href="javascript:toggleExpand('e03-subs');"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+					src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span> E03 - "Cloudy… With a Chance of Improvement"</span> <span class="airdate">22. Jan. 2014</span></a>
+			<div id="e03-subs" class="subs" style="display: none">
+				<div class="sub">
+					<div class="sub-head">
+						<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral.de
+					</div>
+					<div class="sub-body">
+						<div class="sub-releases">
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
+						</div>
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Italiansubs.net, Fischchen</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Übersetzung:</span></td>
+									<td>Fischchen <span class="amount">(50 %)</span>, Perian <span class="amount">(50 %)</span></td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Korrektur:</span></td>
+									<td>Invisible</td>
+								</tr>
+							</table>
+						</div>
+						<br class="clearBoth">
+						<div class="sub-notes">
+							<b>Anmerkungen</b>:<br />
+							<div class="notes">
+								02:30 - blabla<br /> 05:24 - blabla<br />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="sub" data-lang="en" data-source="SubCentral.de">
+					<div class="sub-head">
+						<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral.de
+					</div>
+					<div class="sub-body">
+						<div class="sub-releases">
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
+						</div>
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Italiansubs.net, Fischchen</td>
+								</tr>
+							</table>
+						</div>
+						<br class="clearBoth">
+					</div>
+				</div>
+			</div>
 		</div>
-		<div id="e04-subs" class="subs" style="display: none">
-			<div class="sub">
+
+		<div class="epi">
+			<a class="epi-head" href="javascript:toggleExpand('e04-subs');"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+					src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E04 - "Someone’s Got a Woody"</span> <span class="airdate">29. Jan. 2014</span></a>
+			<div id="e04-subs" class="subs" style="display: none">
+				<div class="sub">
+					<div class="sub-head">
+						<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral.de
+					</div>
+					<div class="sub-body">
+						<div class="sub-releases">
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
+						</div>
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Italiansubs.net, NegroManus</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Übersetzung:</span></td>
+									<td>NegroManus</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Korrektur:</span></td>
+									<td>Invisible</td>
+								</tr>
+							</table>
+						</div>
+						<br class="clearBoth">
+					</div>
+				</div>
+				<div class="sub" data-lang="en" data-source="SubCentral.de">
+					<div class="sub-head">
+						<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral.de
+					</div>
+					<div class="sub-body">
+						<div class="sub-releases">
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
+							</div>
+							<div class="sub-rls">
+								<a href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a>
+								<div class="contribution">
+									<span class="contribution-type">Anpassung:</span> NegroManus
+								</div>
+							</div>
+						</div>
+						<div class="sub-contributions">
+							<table>
+								<tr class="contribution">
+									<td><span class="contribution-type">Transkript:</span></td>
+									<td>Addic7ed.com</td>
+								</tr>
+								<tr class="contribution">
+									<td><span class="contribution-type">Timings:</span></td>
+									<td>Italiansubs.net, NegroManus</td>
+								</tr>
+							</table>
+						</div>
+						<br class="clearBoth">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="epi">
+		<a class="epi-head"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E05
+				- "Cog Blocked"</span> <span class="airdate">05. Feb. 2014</span>
+		</a>
+	</div>
+
+	<div class="epi">
+		<a class="epi-head"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E06
+				- "1967: A Psych Odyssey"</span> <span class="airdate">26. Feb. 2014</span>
+		</a>
+	</div>
+
+	<div class="epi">
+		<a class="epi-head"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E07
+				- "Shawn and Gus Truck Things Up"</span> <span class="airdate">05. Mär. 2014</span>
+		</a>
+	</div>
+
+	<div class="epi">
+		<a class="epi-head"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E08
+				- "A Touch of Sweevil"</span> <span class="airdate">12. Mär. 2014</span>
+		</a>
+	</div>
+
+	<div class="epi">
+		<a class="epi-head"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E09
+				- "A Nightmare on State Street"</span> <span class="airdate">19. Mär. 2014</span>
+		</a>
+	</div>
+
+	<div class="epi">
+		<a class="epi-head" href="javascript:toggleExpand('e10-subs');"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E10 - "The Breakup"</span>
+			<span class="airdate">26. Mär. 2014</span>
+		</a>
+		<div id="e10-subs" class="subs in-progress" style="display: block">
+			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral.de
+				</div>
+				<div class="sub-body">
+					<div class="sub-progress">
+						<div class="progress">Übersetzung 99 %</div>
+						<div class="progress-note">ETA: Montagabend</div>
+					</div>
+					<div class="sub-contributions">
+						<table>
+							<tr class="contribution">
+								<td><span class="contribution-type">Transkript:</span></td>
+								<td>Addic7ed.com</td>
+							</tr>
+							<tr class="contribution">
+								<td><span class="contribution-type">Timings:</span></td>
+								<td>Italiansubs.net, NegroManus</td>
+							</tr>
+							<tr class="contribution">
+								<td><span class="contribution-type">Übersetzung:</span></td>
+								<td>NegroManus</td>
+							</tr>
+							<tr class="contribution">
+								<td><span class="contribution-type">Korrektur:</span></td>
+								<td>Invisible</td>
+							</tr>
+						</table>
+					</div>
+					<br class="clearBoth">
+				</div>
+			</div>
+			<div class="sub" data-lang="en" data-source="Addic7ed.com">
+				<div class="sub-head">
+					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> Addic7ed.com
 				</div>
 				<div class="sub-body">
 					<div class="sub-releases">
 						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
+							<a href="http://www.subcentral.de">Psych.S08E10.HDTV.x264-EXCELLENCE</a>
 						</div>
 						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
+							<a href="http://www.subcentral.de">Psych.S08E10.PROPER.720p.HDTV.x264-REMARKABLE</a>
 						</div>
 						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
+							<a href="http://www.subcentral.de">Psych.S08E10.720p.WEB-DL.DD5.1.H.264-ECI</a>
 						</div>
 					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Übersetzung:</span> NegroManus
-						</div>
-						<div class="contribution">
-							<span class="contribution-type">Korrektur</span>: Invisible
-						</div>
-					</div>
+					<br class="clearBoth">
 				</div>
 			</div>
-			<div class="sub" data-lang="en" data-source="SubCentral.de">
+		</div>
+	</div>
+
+	<div class="epi">
+		<a class="epi-head" href="javascript:toggleExpand('e11-subs');"> <span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>Special - "After
+				Pshow"</span> <span class="airdate">26. Mär. 2014</span>
+		</a>
+		<div id="e11-subs" class="subs" style="display: block">
+			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral
+					<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral.de
+				</div>
+				<div class="sub-body">
+					<div class="sub-progress">
+						<div class="progress">Geplant</div>
+					</div>
+					<div class="sub-contributions">
+						<table>
+							<tr class="contribution">
+								<td><span class="contribution-type">Transkript:</span></td>
+								<td>Addic7ed.com</td>
+							</tr>
+							<tr class="contribution">
+								<td><span class="contribution-type">Timings:</span></td>
+								<td>Italiansubs.net, Invisible</td>
+							</tr>
+							<tr class="contribution">
+								<td><span class="contribution-type">Übersetzung:</span></td>
+								<td>Fischchen <span class="amount">(50 %)</span>, NegroManus <span class="amount">(50 %)</span></td>
+							</tr>
+						</table>
+					</div>
+					<br class="clearBoth">
+				</div>
+			</div>
+			<div class="sub" data-lang="en" data-source="Addic7ed.com">
+				<div class="sub-head">
+					<img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> Addic7ed.com
 				</div>
 				<div class="sub-body">
 					<div class="sub-releases">
 						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
+							<a href="http://www.subcentral.de">Psych.After.Pshow.HDTV.x264-BATV</a>
 						</div>
 						<div class="sub-rls">
-							<a href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
+							<a href="http://www.subcentral.de">Psych.After.Pshow.720p.HDTV.x264-BATV</a>
 						</div>
-						<a href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span> NegroManus
-					</div>
-					<div class="sub-contributions">
-						<div class="contribution">
-							<span class="contribution-type">Transkript:</span> Addic7ed.com
-						</div>
-						<div class="contribution">
-							<span class="contribution-type">Timings</span>: NegroManus
+						<div class="sub-rls">
+							<a href="http://www.subcentral.de">Psych.After.Pshow.720p.WEB-DL.DD5.1.H.264-ECI</a>
 						</div>
 					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-
-	<div class="epi">
-		<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E05 - "Cog Blocked"</span>
-		<span class="airdate">05. Feb. 2014</span>
-	</div>
-	<div class="epi">
-		<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E06 - "1967: A
-			Psych Odyssey"</span> <span class="airdate">26. Feb. 2014</span>
-	</div>
-	<div class="epi">
-		<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E07 - "Shawn and
-			Gus Truck Things Up"</span> <span class="airdate">05. Mär. 2014</span>
-	</div>
-	<div class="epi">
-		<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E08 - "A Touch of
-			Sweevil"</span> <span class="airdate">12. Mär. 2014</span>
-	</div>
-	<div class="epi">
-		<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E09 - "A Nightmare
-			on State Street"</span> <span class="airdate">19. Mär. 2014</span>
-	</div>
-
-	<div class="epi">
-		<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a href="javascript:toggleExpand('e10-subs');">E10 - "The Breakup"</a></span> <span
-			class="airdate">26. Mär. 2014</span>
-	</div>
-	<div id="e10-subs" class="subs in-progress" style="display: block">
-		<div class="sub" data-lang="de" data-source="SubCentral.de">
-			<div class="sub-head">
-				<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
-			</div>
-			<div class="sub-body">
-				<div class="sub-progress">
-					<div class="status progress">Übersetzung 99 %</div>
-					<div class="status">ETA: Montagabend</div>
-					<br class="clearBoth" />
-				</div>
-				<div class="sub-contributions">
-					<div class="contribution">
-						<span class="contribution-type">Übersetzung:</span> NegroManus
-					</div>
-					<div class="contribution">
-						<span class="contribution-type">Korrektur</span>: Invisible
-					</div>
+					<br class="clearBoth">
 				</div>
 			</div>
 		</div>
-		<div class="sub" data-lang="en" data-source="Addic7ed.com">
-			<div class="sub-head">
-				<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> Addic7ed.com
-			</div>
-			<div class="sub-body">
-				<div class="sub-releases">
-					<div class="sub-rls">
-						<a href="http://www.subcentral.de">Psych.S08E10.HDTV.x264-EXCELLENCE</a>
-					</div>
-					<div class="sub-rls">
-						<a href="http://www.subcentral.de">Psych.S08E10.PROPER.720p.HDTV.x264-REMARKABLE</a>
-					</div>
-					<div class="sub-rls">
-						<a href="http://www.subcentral.de">Psych.S08E10.720p.WEB-DL.DD5.1.H.264-ECI</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="epi">
-		<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a href="javascript:toggleExpand('e11-subs');">Special - "After Pshow"</a></span> <span
-			class="airdate">26. Mär. 2014</span>
-	</div>
-	<div id="e11-subs" class="subs" style="display: block">
-		<div class="sub" data-lang="de" data-source="SubCentral.de">
-			<div class="sub-head">
-				<span class="center-helper"></span><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
-			</div>
-			<div class="sub-body">
-				<div class="sub-progress">
-					<div class="status progress">Geplant</div>
-					<br class="clearBoth" />
-				</div>
-				<div class="sub-contributions">
-					<div class="contribution">
-						<span class="contribution-type">Übersetzung:</span> NegroManus (50 %), Fischchen (50 %)
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="sub" data-lang="en" data-source="Addic7ed.com">
-			<div class="sub-head">
-				<img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> Addic7ed.com
-			</div>
-			<div class="sub-body">
-				<div class="sub-releases">
-					<div class="sub-rls">
-						<a href="http://www.subcentral.de">Psych.After.Pshow.HDTV.x264-BATV</a>
-					</div>
-					<div class="sub-rls">
-						<a href="http://www.subcentral.de">Psych.After.Pshow.720p.HDTV.x264-BATV</a>
-					</div>
-					<div class="sub-rls">
-						<a href="http://www.subcentral.de">Psych.After.Pshow.720p.WEB-DL.DD5.1.H.264-ECI</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 	</div>
 </body>
 </html>
