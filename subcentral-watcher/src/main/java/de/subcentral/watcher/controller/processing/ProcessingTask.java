@@ -221,8 +221,8 @@ public class ProcessingTask extends Task<Void>
 			if (standardRls.getAssumeExistence() == AssumeExistence.ALWAYS)
 			{
 				Release standardRlsWithMedia = new Release(srcRls.getMedia(),
-						standardRls.getStandardRelease().getTags(),
-						standardRls.getStandardRelease().getGroup());
+						standardRls.getRelease().getTags(),
+						standardRls.getRelease().getGroup());
 				existingRlss.add(standardRlsWithMedia);
 			}
 		}
@@ -266,7 +266,7 @@ public class ProcessingTask extends Task<Void>
 				List<Release> commonRlssWithMedia = new ArrayList<>(commonRlss.size());
 				for (StandardRelease commonRls : commonRlss)
 				{
-					commonRlssWithMedia.add(new Release(srcRls.getMedia(), commonRls.getStandardRelease().getTags(), commonRls.getStandardRelease()
+					commonRlssWithMedia.add(new Release(srcRls.getMedia(), commonRls.getRelease().getTags(), commonRls.getRelease()
 							.getGroup()));
 				}
 				List<Release> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, commonRlssWithMedia, config.getReleaseMetaTags());

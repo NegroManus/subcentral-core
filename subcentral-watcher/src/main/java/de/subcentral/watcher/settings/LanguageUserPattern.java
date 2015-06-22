@@ -11,22 +11,22 @@ import com.google.common.base.MoreObjects;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.fx.UserPattern;
 
-public class LanguageUiPattern implements Comparable<LanguageUiPattern>
+public class LanguageUserPattern implements Comparable<LanguageUserPattern>
 {
-	public static final StringConverter<LanguageUiPattern>	STRING_CONVERTER	= initStringConverter();
+	public static final StringConverter<LanguageUserPattern>	STRING_CONVERTER	= initStringConverter();
 
-	private static StringConverter<LanguageUiPattern> initStringConverter()
+	private static StringConverter<LanguageUserPattern> initStringConverter()
 	{
-		return new StringConverter<LanguageUiPattern>()
+		return new StringConverter<LanguageUserPattern>()
 		{
 			@Override
-			public String toString(LanguageUiPattern pattern)
+			public String toString(LanguageUserPattern pattern)
 			{
 				return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
 			}
 
 			@Override
-			public LanguageUiPattern fromString(String string)
+			public LanguageUserPattern fromString(String string)
 			{
 				throw new UnsupportedOperationException();
 			}
@@ -34,9 +34,9 @@ public class LanguageUiPattern implements Comparable<LanguageUiPattern>
 	}
 
 	private final UserPattern	pattern;
-	private final Locale	language;
+	private final Locale		language;
 
-	public LanguageUiPattern(UserPattern pattern, Locale language)
+	public LanguageUserPattern(UserPattern pattern, Locale language)
 	{
 		this.pattern = pattern;
 		this.language = language;
@@ -64,9 +64,9 @@ public class LanguageUiPattern implements Comparable<LanguageUiPattern>
 		{
 			return true;
 		}
-		if (obj instanceof LanguageUiPattern)
+		if (obj instanceof LanguageUserPattern)
 		{
-			LanguageUiPattern o = (LanguageUiPattern) obj;
+			LanguageUserPattern o = (LanguageUserPattern) obj;
 			return pattern.equals(o.pattern);
 		}
 		return false;
@@ -79,7 +79,7 @@ public class LanguageUiPattern implements Comparable<LanguageUiPattern>
 	}
 
 	@Override
-	public int compareTo(LanguageUiPattern o)
+	public int compareTo(LanguageUserPattern o)
 	{
 		// nulls first
 		if (o == null)
@@ -92,6 +92,6 @@ public class LanguageUiPattern implements Comparable<LanguageUiPattern>
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(LanguageUiPattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
+		return MoreObjects.toStringHelper(LanguageUserPattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
 	}
 }

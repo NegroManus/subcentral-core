@@ -11,13 +11,13 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 {
 	private static final StringBinding	standardizerTypeAsString	= FxUtil.createConstantStringBinding("Series name");
 	private final StringBinding			ruleAsString;
-	private final UserPattern				nameUiPattern;
+	private final UserPattern			nameUserPattern;
 
 	public SeriesNameStandardizerSettingEntry(UserPattern nameUiPattern, String nameReplacement, boolean enabled)
 	{
 		super(Series.class, buildStandardizer(nameUiPattern, nameReplacement), enabled);
 		ruleAsString = FxUtil.createConstantStringBinding(operationToString(value, nameUiPattern));
-		this.nameUiPattern = nameUiPattern;
+		this.nameUserPattern = nameUiPattern;
 	}
 
 	private static SeriesNameStandardizer buildStandardizer(UserPattern namePattern, String nameReplacement)
@@ -37,9 +37,9 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 		return ruleAsString;
 	}
 
-	public UserPattern getNameUiPattern()
+	public UserPattern getNameUserPattern()
 	{
-		return nameUiPattern;
+		return nameUserPattern;
 	}
 
 	public static String getStandardizerTypeString()
@@ -47,13 +47,13 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 		return standardizerTypeAsString.get();
 	}
 
-	private static String operationToString(SeriesNameStandardizer standardizer, UserPattern nameUiPattern)
+	private static String operationToString(SeriesNameStandardizer standardizer, UserPattern nameUserPattern)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("Replace \"");
-		sb.append(nameUiPattern.getPattern());
+		sb.append(nameUserPattern.getPattern());
 		sb.append("\" (");
-		sb.append(nameUiPattern.getMode().name());
+		sb.append(nameUserPattern.getMode().name());
 		sb.append("), with ");
 		sb.append(StringUtil.quoteString(standardizer.getNameReplacement()));
 		return sb.toString();

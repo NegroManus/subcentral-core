@@ -1,7 +1,12 @@
 package de.subcentral.watcher.controller.settings;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import javafx.beans.value.ObservableValue;
@@ -9,14 +14,20 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.io.Resources;
 
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.AbstractController;
@@ -25,6 +36,8 @@ import de.subcentral.watcher.settings.WatcherSettings;
 
 public class SettingsController extends AbstractController
 {
+	private static final String								SETTINGS_FILE								= "watcher-settings.xml";
+	private static final String								DEFAULT_SETTINGS_FILE						= "watcher-settings-default.xml";
 	private static final Logger								log											= LogManager.getLogger(SettingsController.class);
 
 	public static final String								WATCH_SECTION								= "watch";
@@ -73,9 +86,43 @@ public class SettingsController extends AbstractController
 	@FXML
 	private AnchorPane										settingsSectionRootPane;
 
-	public SettingsController(MainController mainController)
+	// Model
+	private boolean											loadedDefault								= false;
+
+	public SettingsController(MainController mainController) throws Exception
 	{
 		this.mainController = mainController;
+	}
+
+	private void loadSettings() throws Exception
+	{
+		Path settingsFile = Paths.get(SETTINGS_FILE).toAbsolutePath();
+		if (Files.exists(settingsFile, LinkOption.NOFOLLOW_LINKS))
+		{
+			try
+			{
+				log.info("Loading custom settings from {}", settingsFile);
+				WatcherSettings.INSTANCE.load(settingsFile);
+				return;
+			}
+			catch (Exception e)
+			{
+				log.error("Failed to load custom settings from " + settingsFile + ". Will load default settings", e);
+			}
+		}
+		else
+		{
+			log.info("No custom settings found at {}. Will load default settings");
+		}
+		loadDefaultSettings();
+	}
+
+	private void loadDefaultSettings() throws Exception
+	{
+		Path defaultSettingsFile = Paths.get(Resources.getResource(DEFAULT_SETTINGS_FILE).toURI());
+		log.info("Loading default settings from {}", defaultSettingsFile);
+		WatcherSettings.INSTANCE.load(defaultSettingsFile);
+		loadedDefault = true;
 	}
 
 	public MainController getMainController()
@@ -86,6 +133,8 @@ public class SettingsController extends AbstractController
 	@Override
 	protected void doInitialize() throws Exception
 	{
+		loadSettings();
+
 		final TreeItem<SettingsSection> root = new TreeItem<>();
 		settingsSectionsTreeView.setRoot(root);
 		settingsSectionsTreeView.setShowRoot(false);
@@ -267,7 +316,16 @@ public class SettingsController extends AbstractController
 					else if (ctrlGetter != null)
 					{
 						settingsSectionRootPane.getChildren().setAll(createLoadingIndicatorNode());
-						mainController.getCommonExecutor().execute(createLoadSectionControllerTask(ctrlGetter));
+						Task<AbstractSettingsSectionController> loadTask = createLoadSectionControllerTask(ctrlGetter);
+						// if still on application startup, do not load in background thread
+						if (Thread.currentThread().getName().equals("JavaFX-Launcher"))
+						{
+							loadTask.run();
+						}
+						else
+						{
+							mainController.getCommonExecutor().execute(loadTask);
+						}
 					}
 					// If there is no matching SectionController for the chosen section, clear the sectionRootPane
 					else
@@ -448,6 +506,34 @@ public class SettingsController extends AbstractController
 				log.warn("Loading of settings section was cancelled");
 			}
 		};
+	}
+
+	@Override
+	public void shutdown() throws Exception
+	{
+		maySaveSettings();
+	}
+
+	private void maySaveSettings() throws ConfigurationException, IOException
+	{
+		if (loadedDefault || WatcherSettings.INSTANCE.getChanged())
+		{
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Save settings?");
+			alert.setHeaderText("Save settings?");
+			alert.setContentText("The settings have changed. Do you want to save them?");
+			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.YES)
+			{
+				WatcherSettings.INSTANCE.save(Paths.get("watcher-settings.xml"));
+			}
+			else
+			{
+				log.debug("User chose not to save changed settings");
+			}
+		}
 	}
 
 	public static class SettingsSection

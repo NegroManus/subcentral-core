@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
@@ -65,10 +63,6 @@ public class ParsingUtil
 
 	public static Object parse(String text, Iterable<ParsingService> parsingServices) throws ParsingException
 	{
-		if (StringUtils.isBlank(text))
-		{
-			return null;
-		}
 		for (ParsingService ps : parsingServices)
 		{
 			Object parsedObj = ps.parse(text);
@@ -82,10 +76,6 @@ public class ParsingUtil
 
 	public static <T> T parse(String text, Class<T> targetType, Iterable<ParsingService> parsingServices) throws ParsingException
 	{
-		if (StringUtils.isBlank(text))
-		{
-			return null;
-		}
 		for (ParsingService ps : parsingServices)
 		{
 			T parsedObj = ps.parse(text, targetType);
@@ -99,10 +89,6 @@ public class ParsingUtil
 
 	public static Object parse(String text, Set<Class<?>> targetTypes, Iterable<ParsingService> parsingServices) throws ParsingException
 	{
-		if (StringUtils.isBlank(text))
-		{
-			return null;
-		}
 		for (ParsingService ps : parsingServices)
 		{
 			Object parsedObj = ps.parse(text, targetTypes);

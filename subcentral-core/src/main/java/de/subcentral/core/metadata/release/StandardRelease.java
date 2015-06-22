@@ -15,17 +15,17 @@ public class StandardRelease
 	};
 
 	// private final Predicate<List<Media>> mediaFilter;
-	private final Release			standardRelease;
+	private final Release			release;
 	private final AssumeExistence	assumeExistence;
 
-	public StandardRelease(Release standardRelease, AssumeExistence assumeExistence)
+	public StandardRelease(Release release, AssumeExistence assumeExistence)
 	{
-		this(standardRelease.getTags(), standardRelease.getGroup(), assumeExistence);
+		this(release.getTags(), release.getGroup(), assumeExistence);
 	}
 
 	public StandardRelease(List<Tag> tags, Group group, AssumeExistence assumeExistence)
 	{
-		this.standardRelease = new Release(tags, group);
+		this.release = new Release(tags, group);
 		this.assumeExistence = Objects.requireNonNull(assumeExistence, "assumeExistence");
 	}
 
@@ -34,9 +34,9 @@ public class StandardRelease
 	 * 
 	 * @return the standard release
 	 */
-	public Release getStandardRelease()
+	public Release getRelease()
 	{
-		return standardRelease;
+		return release;
 	}
 
 	public AssumeExistence getAssumeExistence()
@@ -53,7 +53,7 @@ public class StandardRelease
 		}
 		if (obj instanceof StandardRelease)
 		{
-			return standardRelease.equals(((StandardRelease) obj).standardRelease);
+			return release.equals(((StandardRelease) obj).release);
 		}
 		return false;
 	}
@@ -61,15 +61,12 @@ public class StandardRelease
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(53, 21).append(standardRelease).toHashCode();
+		return new HashCodeBuilder(53, 21).append(release).toHashCode();
 	}
 
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(StandardRelease.class)
-				.add("standardRelease", standardRelease)
-				.add("assumeExistence", assumeExistence)
-				.toString();
+		return MoreObjects.toStringHelper(StandardRelease.class).add("release", release).add("assumeExistence", assumeExistence).toString();
 	}
 }

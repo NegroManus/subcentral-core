@@ -51,7 +51,9 @@ public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntr
 				sb.append("equal ");
 				break;
 		}
+		sb.append('{');
 		Joiner.on(", ").appendTo(sb, replacer.getQueryTags());
+		sb.append('}');
 		if (replacer.getIgnoreOrder())
 		{
 			sb.append(" (in any order)");
@@ -63,10 +65,12 @@ public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntr
 				sb.append("replace that with ");
 				break;
 			case COMPLETE_LIST:
-				sb.append("set the release's tags to ");
+				sb.append("set the tags to ");
 				break;
 		}
+		sb.append('{');
 		Joiner.on(", ").appendTo(sb, replacer.getReplacement());
+		sb.append('}');
 		return sb.toString();
 	}
 }

@@ -11,9 +11,9 @@
 	<parsing>
 		<filenamePatterns>*.srt</filenamePatterns>
 		<parsingServices>
-			<parsingService>addic7ed.com</parsingService>
-			<parsingService>italiansubs.net</parsingService>
-			<parsingService>subcentral.de</parsingService>
+			<parsingService enabled="true">addic7ed.com</parsingService>
+			<parsingService enabled="false">italiansubs.net</parsingService>
+			<parsingService enabled="true">subcentral.de</parsingService>
 		</parsingServices>
 	</parsing>
 
@@ -21,7 +21,7 @@
 	<metadata>
 		<release>
 			<parsingServices>
-				<parsingService>release.scene</parsingService>
+				<parsingService enabled="true">release.scene</parsingService>
 			</parsingServices>
 			<metaTags>
 				<tag>REAL</tag>
@@ -32,9 +32,9 @@
 				<tag>iNTERNAL</tag>
 			</metaTags>
 			<databases>
-				<metadataDatabase>predb.me</metadataDatabase>
-				<metadataDatabase>xrel.to</metadataDatabase>
-				<metadataDatabase>orlydb.com</metadataDatabase>
+				<db enabled="true">predb.me</db>
+				<db enabled="true">xrel.to</db>
+				<db enabled="true">orlydb.com</db>
 			</databases>
 			<guessing enabled="true">
 				<standardReleases>
@@ -55,10 +55,10 @@
 			</guessing>
 			<compatibility enabled="true">
 				<compatibilities>
-					<crossGroupCompatibility sourceGroup="ASAP" compatibleGroup="IMMERSE" bidirectional="true" />
-					<crossGroupCompatibility sourceGroup="EXCELLENCE" compatibleGroup="REMARKABLE" bidirectional="true" />
-					<crossGroupCompatibility sourceGroup="FQM" compatibleGroup="ORENJI" bidirectional="true" />
-					<crossGroupCompatibility sourceGroup="LOL" compatibleGroup="DIMENSION" bidirectional="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="ASAP" compatibleGroup="IMMERSE" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="EXCELLENCE" compatibleGroup="REMARKABLE" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="FQM" compatibleGroup="ORENJI" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="LOL" compatibleGroup="DIMENSION" symmetric="true" />
 				</compatibilities>
 			</compatibility>
 		</release>
@@ -67,17 +67,17 @@
 	<standardizing>
 		<preMetadataDb>
 			<standardizers>
-				<seriesNameStandardizer namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" />
-				<seriesNameStandardizer namePattern="Clarence\W+US\W+2013\W*" namePatternMode="REGEX" nameReplacement="Clarence (US)" />
-				<seriesNameStandardizer namePattern="Marry\W+Me" namePatternMode="REGEX" nameReplacement="Marry Me (2014)" />
-				<seriesNameStandardizer namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" />
-				<seriesNameStandardizer namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" />
-				<seriesNameStandardizer namePattern="Undercover\W+Boss" namePatternMode="REGEX" nameReplacement="Undercover Boss (US)" />
+				<seriesNameStandardizer enabled="true" namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" />
+				<seriesNameStandardizer enabled="true" namePattern="Clarence\W+US\W+2013\W*" namePatternMode="REGEX" nameReplacement="Clarence (US)" />
+				<seriesNameStandardizer enabled="true" namePattern="Marry\W+Me" namePatternMode="REGEX" nameReplacement="Marry Me (2014)" />
+				<seriesNameStandardizer enabled="true" namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" />
+				<seriesNameStandardizer enabled="true" namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" />
+				<seriesNameStandardizer enabled="true" namePattern="Undercover\W+Boss" namePatternMode="REGEX" nameReplacement="Undercover Boss (US)" />
 			</standardizers>
 		</preMetadataDb>
 		<postMetadataDb>
 			<standardizers>
-				<seriesNameStandardizer namePattern="Good\W+Wife" namePatternMode="REGEX" nameReplacement="The Good Wife" />
+				<seriesNameStandardizer enabled="true" namePattern="Good\W+Wife" namePatternMode="REGEX" nameReplacement="The Good Wife" />
 			</standardizers>
 		</postMetadataDb>
 
@@ -87,7 +87,7 @@
 				<language tag="de" /> <!-- german -->
 				<language tag="zh" /> <!-- chinese -->
 			</parsingLanguages>
-			<ouputLanguageFormat format="NAME" />
+			<ouputLanguageFormat>NAME</ouputLanguageFormat>
 			<ouputLanguage tag="en" />
 			<customLanguagePatterns>
 				<languagePattern pattern="VO" patternMode="LITERAL" languageTag="en" />
@@ -96,9 +96,9 @@
 				<languagePattern pattern="简体" patternMode="LITERAL" languageTag="zh-CN" /> <!-- simplified chinese -->
 				<languagePattern pattern="繁体" patternMode="LITERAL" languageTag="zh-TW" /> <!-- traditional chinese -->
 			</customLanguagePatterns>
-			<customLanguageNames>
-				<languageName tag="en" name="VO" />
-			</customLanguageNames>
+			<customLanguageTextMappings>
+				<languageTextMapping languageTag="en" text="VO" />
+			</customLanguageTextMappings>
 		</subtitleLanguage>
 	</standardizing>
 
@@ -113,10 +113,10 @@
 		<targetDir>!VO</targetDir>
 		<deleteSource>false</deleteSource>
 		<packing enabled="true">
+			<sourceDeletionMode>DELETE</sourceDeletionMode>
 			<winrar>
 				<autoLocate>true</autoLocate>
 				<rarExe></rarExe>
-				<sourceDeletionMode>DELETE</sourceDeletionMode>
 			</winrar>
 		</packing>
 	</fileTransformation>

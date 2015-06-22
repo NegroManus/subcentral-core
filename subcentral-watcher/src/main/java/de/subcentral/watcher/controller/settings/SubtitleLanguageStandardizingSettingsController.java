@@ -27,7 +27,7 @@ import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.WatcherDialogs;
 import de.subcentral.watcher.settings.LanguageTextMapping;
-import de.subcentral.watcher.settings.LanguageUiPattern;
+import de.subcentral.watcher.settings.LanguageUserPattern;
 import de.subcentral.watcher.settings.LocaleLanguageReplacerSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 
@@ -40,11 +40,11 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	@FXML
 	private Button										editParsingLangsBtn;
 	@FXML
-	private TableView<LanguageUiPattern>				textLangMappingsTableView;
+	private TableView<LanguageUserPattern>				textLangMappingsTableView;
 	@FXML
-	private TableColumn<LanguageUiPattern, UserPattern>	textLangMappingsTextColumn;
+	private TableColumn<LanguageUserPattern, UserPattern>	textLangMappingsTextColumn;
 	@FXML
-	private TableColumn<LanguageUiPattern, Locale>		textLangMappingsLangColumn;
+	private TableColumn<LanguageUserPattern, Locale>		textLangMappingsLangColumn;
 	@FXML
 	private Button										addTextLangMappingBtn;
 	@FXML
@@ -107,11 +107,11 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		});
 
 		// TextLangMappings
-		textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageUiPattern, UserPattern> param) -> {
+		textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, UserPattern> param) -> {
 			return FxUtil.createConstantBinding(param.getValue().getPattern());
 		});
-		textLangMappingsTextColumn.setCellFactory((TableColumn<LanguageUiPattern, UserPattern> param) -> {
-			return new TableCell<LanguageUiPattern, UserPattern>()
+		textLangMappingsTextColumn.setCellFactory((TableColumn<LanguageUserPattern, UserPattern> param) -> {
+			return new TableCell<LanguageUserPattern, UserPattern>()
 			{
 				@Override
 				protected void updateItem(UserPattern pattern, boolean empty)
@@ -129,11 +129,11 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 				}
 			};
 		});
-		textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageUiPattern, Locale> param) -> {
+		textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, Locale> param) -> {
 			return FxUtil.createConstantBinding(param.getValue().getLanguage());
 		});
-		textLangMappingsLangColumn.setCellFactory((TableColumn<LanguageUiPattern, Locale> param) -> {
-			return new TableCell<LanguageUiPattern, Locale>()
+		textLangMappingsLangColumn.setCellFactory((TableColumn<LanguageUserPattern, Locale> param) -> {
+			return new TableCell<LanguageUserPattern, Locale>()
 			{
 				@Override
 				protected void updateItem(Locale lang, boolean empty)
@@ -154,21 +154,21 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		textLangMappingsTableView.setItems(settings.getCustomLanguagePatterns());
 
 		addTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
-			Optional<LanguageUiPattern> result = WatcherDialogs.showTextLanguageMappingEditor();
+			Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditor();
 			FxUtil.handleDistinctAdd(textLangMappingsTableView, result);
 		});
 
 		final BooleanBinding noTextLangMappingSelection = textLangMappingsTableView.getSelectionModel().selectedItemProperty().isNull();
 		editTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		editTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
-			Optional<LanguageUiPattern> result = WatcherDialogs.showTextLanguageMappingEditor(textLangMappingsTableView.getSelectionModel()
+			Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditor(textLangMappingsTableView.getSelectionModel()
 					.getSelectedItem());
 			FxUtil.handleDistinctEdit(textLangMappingsTableView, result);
 		});
 
 		removeTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		removeTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
-			FxUtil.handleDelete(textLangMappingsTableView, "text to language mapping", LanguageUiPattern.STRING_CONVERTER);
+			FxUtil.handleDelete(textLangMappingsTableView, "text to language mapping", LanguageUserPattern.STRING_CONVERTER);
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupportForTableView(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);

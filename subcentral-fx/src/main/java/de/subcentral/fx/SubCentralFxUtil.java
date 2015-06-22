@@ -161,7 +161,7 @@ public class SubCentralFxUtil
 			@Override
 			public String toString(StandardRelease rls)
 			{
-				return NamingDefaults.getDefaultReleaseNamer().name(rls.getStandardRelease()) + " (" + rls.getAssumeExistence() + ")";
+				return NamingDefaults.getDefaultReleaseNamer().name(rls.getRelease()) + " (" + rls.getAssumeExistence() + ")";
 			}
 
 			@Override

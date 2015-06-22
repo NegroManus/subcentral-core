@@ -50,7 +50,7 @@ import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.settings.LanguageTextMapping;
-import de.subcentral.watcher.settings.LanguageUiPattern;
+import de.subcentral.watcher.settings.LanguageUserPattern;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 
@@ -160,8 +160,8 @@ public class WatcherDialogs
 			}
 			else
 			{
-				initialTags = bean.getStandardRelease().getTags();
-				initialGroup = bean.getStandardRelease().getGroup();
+				initialTags = bean.getRelease().getTags();
+				initialGroup = bean.getRelease().getGroup();
 				switch (bean.getAssumeExistence())
 				{
 					case IF_NONE_FOUND:
@@ -347,7 +347,7 @@ public class WatcherDialogs
 			}
 			else
 			{
-				switch (bean.getNameUiPattern().getMode())
+				switch (bean.getNameUserPattern().getMode())
 				{
 					case LITERAL:
 						initialPatternMode = literalRadioBtn;
@@ -361,7 +361,7 @@ public class WatcherDialogs
 					default:
 						initialPatternMode = literalRadioBtn;
 				}
-				initialNamePattern = bean.getNameUiPattern().getPattern();
+				initialNamePattern = bean.getNameUserPattern().getPattern();
 				initialNameReplacement = bean.getValue().getNameReplacement();
 			}
 			patternModeToggleGrp.selectToggle(initialPatternMode);
@@ -460,12 +460,14 @@ public class WatcherDialogs
 			List<Tag> initialQueryTags;
 			boolean initialIgnoreOrder;
 			Toggle initialReplaceWithToggle;
+			List<Tag> initialReplacement;
 			if (bean == null)
 			{
 				initialQueryModeToggle = containRadioBtn;
 				initialQueryTags = ImmutableList.of();
 				initialIgnoreOrder = false;
 				initialReplaceWithToggle = matchRadioBtn;
+				initialReplacement = ImmutableList.of();
 			}
 			else
 			{
@@ -494,12 +496,13 @@ public class WatcherDialogs
 					default:
 						initialReplaceWithToggle = matchRadioBtn;
 				}
+				initialReplacement = replacer.getReplacement();
 			}
 			queryModeToggleGrp.selectToggle(initialQueryModeToggle);
 			ignoreOrderCheckBox.setSelected(initialIgnoreOrder);
 			replaceWithToggleGrp.selectToggle(initialReplaceWithToggle);
 			ListProperty<Tag> queryTags = SubCentralFxUtil.tagPropertyForTextField(queryTagsTxtFld, initialQueryTags);
-			ListProperty<Tag> replacement = SubCentralFxUtil.tagPropertyForTextField(replacementTxtFld, initialQueryTags);
+			ListProperty<Tag> replacement = SubCentralFxUtil.tagPropertyForTextField(replacementTxtFld, initialReplacement);
 
 			// Bindings
 			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
@@ -652,7 +655,7 @@ public class WatcherDialogs
 		}
 	}
 
-	private static class TextLanguageMappingEditorController extends AbstractBeanDialogController<LanguageUiPattern>
+	private static class TextLanguageMappingEditorController extends AbstractBeanDialogController<LanguageUserPattern>
 	{
 		@FXML
 		private RadioButton			literalRadioBtn;
@@ -667,7 +670,7 @@ public class WatcherDialogs
 		@FXML
 		private ComboBox<Locale>	langComboBox;
 
-		private TextLanguageMappingEditorController(LanguageUiPattern bean)
+		private TextLanguageMappingEditorController(LanguageUserPattern bean)
 		{
 			super(bean);
 		}
@@ -746,7 +749,7 @@ public class WatcherDialogs
 			dialog.setResultConverter(dialogButton -> {
 				if (dialogButton == ButtonType.APPLY)
 				{
-					return new LanguageUiPattern(patternBinding.getValue(), langComboBox.getValue());
+					return new LanguageUserPattern(patternBinding.getValue(), langComboBox.getValue());
 				}
 				return null;
 			});
@@ -864,12 +867,12 @@ public class WatcherDialogs
 		return showDialogAndWait(ctrl, "LocaleListEditor.fxml");
 	}
 
-	public static Optional<LanguageUiPattern> showTextLanguageMappingEditor()
+	public static Optional<LanguageUserPattern> showTextLanguageMappingEditor()
 	{
 		return showTextLanguageMappingEditor(null);
 	}
 
-	public static Optional<LanguageUiPattern> showTextLanguageMappingEditor(LanguageUiPattern mapping)
+	public static Optional<LanguageUserPattern> showTextLanguageMappingEditor(LanguageUserPattern mapping)
 	{
 		TextLanguageMappingEditorController ctrl = new TextLanguageMappingEditorController(mapping);
 		return showDialogAndWait(ctrl, "TextLanguageMappingEditor.fxml");

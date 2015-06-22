@@ -1,8 +1,5 @@
 package de.subcentral.watcher.settings;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,12 +11,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.MapProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
@@ -33,7 +32,6 @@ import javafx.collections.ObservableMap;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
-import org.apache.commons.configuration2.event.Event;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
@@ -43,6 +41,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
@@ -57,6 +56,7 @@ import de.subcentral.core.standardizing.LocaleLanguageReplacer;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
+import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
@@ -79,6 +79,13 @@ public class WatcherSettings extends ObservableBean
 
 	public static final WatcherSettings							INSTANCE							= new WatcherSettings();
 	private static final Logger									log									= LogManager.getLogger(WatcherSettings.class);
+
+	/**
+	 * Whether the settings changed since initial load
+	 */
+	private BooleanProperty										changed								= new SimpleBooleanProperty(this,
+																											"changed",
+																											false);
 
 	// Watch
 	private final ListProperty<Path>							watchDirectories					= new SimpleListProperty<>(this,
@@ -166,6 +173,8 @@ public class WatcherSettings extends ObservableBean
 				rarExe,
 				autoLocateWinRar,
 				packingSourceDeletionMode);
+
+		addListener((Observable o) -> changed.set(true));
 	}
 
 	private Binding<LocaleSubtitleLanguageStandardizer> initSubtitleLanguageStandardizerBinding()
@@ -185,7 +194,7 @@ public class WatcherSettings extends ObservableBean
 					langTextMappings.put(mapping.getLanguage(), mapping.getText());
 				}
 				List<LanguagePattern> langPatterns = new ArrayList<>(subtitleLanguageSettings.getCustomLanguagePatterns().size());
-				for (LanguageUiPattern uiPattern : subtitleLanguageSettings.getCustomLanguagePatterns())
+				for (LanguageUserPattern uiPattern : subtitleLanguageSettings.getCustomLanguagePatterns())
 				{
 					langPatterns.add(uiPattern.toLanguagePattern());
 				}
@@ -198,29 +207,31 @@ public class WatcherSettings extends ObservableBean
 		};
 	}
 
-	public void load(URL file) throws ConfigurationException
+	public void load(Path file) throws ConfigurationException
 	{
-		log.info("Loading settings from file {}", file);
+		log.info("Loading settings from file {}", file.toAbsolutePath());
 
 		XMLConfiguration cfg = new XMLConfiguration();
-		cfg.addEventListener(Event.ANY, (Event event) -> {
-			System.out.println(event);
-		});
+		// cfg.addEventListener(Event.ANY, (Event event) -> {
+		// System.out.println(event);
+		// });
 
 		FileHandler cfgFileHandler = new FileHandler(cfg);
-		cfgFileHandler.load(file);
+		cfgFileHandler.load(file.toFile());
 
 		load(cfg);
+
+		changed.set(false);
 	}
 
-	private void load(XMLConfiguration cfg)
+	public void load(XMLConfiguration cfg)
 	{
 		// Watch
 		updateWatchDirs(cfg);
 		updateInitialScan(cfg);
-		updateFilenamePatterns(cfg);
 
 		// FileParsing
+		updateFilenamePatterns(cfg);
 		updateFilenameParsingServices(cfg);
 
 		// Metadata
@@ -293,12 +304,12 @@ public class WatcherSettings extends ObservableBean
 
 	private void updateFilenameParsingServices(XMLConfiguration cfg)
 	{
-		setFilenameParsingServices(getSubtitleAdjustmentParsingServices(cfg, "parsing.parsingServices"));
+		setFilenameParsingServices(getParsingServices(cfg, "parsing.parsingServices"));
 	}
 
 	private void updateReleaseParsingServices(XMLConfiguration cfg)
 	{
-		setReleaseParsingServices(getReleaseParsingServices(cfg, "metadata.release.parsingServices"));
+		setReleaseParsingServices(getParsingServices(cfg, "metadata.release.parsingServices"));
 	}
 
 	private void updateReleaseMetaTags(XMLConfiguration cfg)
@@ -373,7 +384,7 @@ public class WatcherSettings extends ObservableBean
 
 	private void updatePackingSourceDeletionMode(XMLConfiguration cfg)
 	{
-		setPackingSourceDeletionMode(DeletionMode.valueOf(cfg.getString("fileTransformation.packing.winrar.sourceDeletionMode")));
+		setPackingSourceDeletionMode(DeletionMode.valueOf(cfg.getString("fileTransformation.packing.sourceDeletionMode")));
 	}
 
 	// Static config getter
@@ -390,26 +401,32 @@ public class WatcherSettings extends ObservableBean
 		}
 	}
 
-	private static ObservableList<ParsingServiceSettingEntry> getSubtitleAdjustmentParsingServices(Configuration cfg, String key)
+	private static ObservableList<ParsingServiceSettingEntry> getParsingServices(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		ArrayList<ParsingServiceSettingEntry> services = new ArrayList<>(4);
-		List<String> domains = cfg.getList(String.class, key + ".parsingService");
-		boolean addic7edEnabled = domains.contains(Addic7edCom.DOMAIN);
-		services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), addic7edEnabled));
-		boolean italianSubsEnabled = domains.contains(ItalianSubsNet.DOMAIN);
-		services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), italianSubsEnabled));
-		boolean subCentralDeEnabled = domains.contains(SubCentralDe.DOMAIN);
-		services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), subCentralDeEnabled));
-		services.trimToSize();
-		return FXCollections.observableList(services);
-	}
-
-	private static ObservableList<ParsingServiceSettingEntry> getReleaseParsingServices(Configuration cfg, String key)
-	{
-		ArrayList<ParsingServiceSettingEntry> services = new ArrayList<>(1);
-		List<String> domains = cfg.getList(String.class, key + ".parsingService");
-		boolean sceneEnabled = domains.contains(ReleaseScene.DOMAIN);
-		services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), sceneEnabled));
+		List<HierarchicalConfiguration<ImmutableNode>> parsingServiceCfgs = cfg.configurationsAt(key + ".parsingService");
+		for (HierarchicalConfiguration<ImmutableNode> parsingServiceCfg : parsingServiceCfgs)
+		{
+			String domain = parsingServiceCfg.getString("");
+			boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
+			switch (domain)
+			{
+				case Addic7edCom.DOMAIN:
+					services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
+					break;
+				case ItalianSubsNet.DOMAIN:
+					services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
+					break;
+				case ReleaseScene.DOMAIN:
+					services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
+					break;
+				case SubCentralDe.DOMAIN:
+					services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown parsing service. domain=" + domain);
+			}
+		}
 		services.trimToSize();
 		return FXCollections.observableList(services);
 	}
@@ -420,43 +437,54 @@ public class WatcherSettings extends ObservableBean
 		List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameStandardizer");
 		for (HierarchicalConfiguration<ImmutableNode> seriesStdzerCfg : seriesStdzerCfgs)
 		{
+			boolean enabled = seriesStdzerCfg.getBoolean("[@enabled]");
 			String namePatternStr = seriesStdzerCfg.getString("[@namePattern]");
 			Mode namePatternMode = Mode.valueOf(seriesStdzerCfg.getString("[@namePatternMode]"));
 			UserPattern nameUiPattern = new UserPattern(namePatternStr, namePatternMode);
 			String nameReplacement = seriesStdzerCfg.getString("[@nameReplacement]");
-			stdzers.add(new SeriesNameStandardizerSettingEntry(nameUiPattern, nameReplacement, true));
+			stdzers.add(new SeriesNameStandardizerSettingEntry(nameUiPattern, nameReplacement, enabled));
 		}
 		List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsStandardizer");
 		for (HierarchicalConfiguration<ImmutableNode> rlsTagsStdzerCfg : rlsTagsStdzerCfgs)
 		{
-			List<Tag> tagsToReplace = Tag.parseList(rlsTagsStdzerCfg.getString("[@queryTags]"));
+			boolean enabled = rlsTagsStdzerCfg.getBoolean("[@enabled]");
+			List<Tag> queryTags = Tag.parseList(rlsTagsStdzerCfg.getString("[@queryTags]"));
 			List<Tag> replacement = Tag.parseList(rlsTagsStdzerCfg.getString("[@replacement]"));
 			QueryMode queryMode = de.subcentral.core.metadata.release.TagUtil.QueryMode.valueOf(rlsTagsStdzerCfg.getString("[@queryMode]"));
 			ReplaceMode replaceMode = de.subcentral.core.metadata.release.TagUtil.ReplaceMode.valueOf(rlsTagsStdzerCfg.getString("[@replaceMode]"));
 			boolean ignoreOrder = rlsTagsStdzerCfg.getBoolean("[@ignoreOrder]", false);
-			ReleaseTagsStandardizer stdzer = new ReleaseTagsStandardizer(new TagsReplacer(tagsToReplace,
-					replacement,
-					queryMode,
-					replaceMode,
-					ignoreOrder));
-			stdzers.add(new ReleaseTagsStandardizerSettingEntry(stdzer, true));
+			ReleaseTagsStandardizer stdzer = new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
+			stdzers.add(new ReleaseTagsStandardizerSettingEntry(stdzer, enabled));
 		}
 		stdzers.trimToSize();
 		return FXCollections.observableList(stdzers);
 	}
 
-	private static ObservableList<MetadataDbSettingEntry<Release>> getReleaseDbs(Configuration cfg, String key)
+	private static ObservableList<MetadataDbSettingEntry<Release>> getReleaseDbs(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		ArrayList<MetadataDbSettingEntry<Release>> rlsInfoDbs = new ArrayList<>(3);
-		List<String> domains = cfg.getList(String.class, key + ".metadataDatabase");
-		boolean preDbEnabled = domains.contains(PreDbMeReleaseDb.DOMAIN);
-		rlsInfoDbs.add(new MetadataDbSettingEntry<>(new PreDbMeReleaseDb(), preDbEnabled));
-		boolean xrelToEnabled = domains.contains(XRelToReleaseDb.DOMAIN);
-		rlsInfoDbs.add(new MetadataDbSettingEntry<>(new XRelToReleaseDb(), xrelToEnabled));
-		boolean orlyDbEnabled = domains.contains(OrlyDbComReleaseDb.DOMAIN);
-		rlsInfoDbs.add(new MetadataDbSettingEntry<>(new OrlyDbComReleaseDb(), orlyDbEnabled));
-		rlsInfoDbs.trimToSize();
-		return FXCollections.observableList(rlsInfoDbs);
+		ArrayList<MetadataDbSettingEntry<Release>> dbs = new ArrayList<>(3);
+		List<HierarchicalConfiguration<ImmutableNode>> rlsDbCfgs = cfg.configurationsAt(key + ".db");
+		for (HierarchicalConfiguration<ImmutableNode> rlsDbCfg : rlsDbCfgs)
+		{
+			String domain = rlsDbCfg.getString("");
+			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
+			switch (domain)
+			{
+				case OrlyDbComReleaseDb.DOMAIN:
+					dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComReleaseDb(), enabled));
+					break;
+				case PreDbMeReleaseDb.DOMAIN:
+					dbs.add(new MetadataDbSettingEntry<>(new PreDbMeReleaseDb(), enabled));
+					break;
+				case XRelToReleaseDb.DOMAIN:
+					dbs.add(new MetadataDbSettingEntry<>(new XRelToReleaseDb(), enabled));
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown metadata database. domain=" + domain);
+			}
+		}
+		dbs.trimToSize();
+		return FXCollections.observableList(dbs);
 	}
 
 	private static ObservableList<Tag> getTags(Configuration cfg, String key)
@@ -506,10 +534,11 @@ public class WatcherSettings extends ObservableBean
 		List<HierarchicalConfiguration<ImmutableNode>> groupsCompCfgs = cfg.configurationsAt(key + ".crossGroupCompatibility");
 		for (HierarchicalConfiguration<ImmutableNode> groupsCompCfg : groupsCompCfgs)
 		{
+			boolean enabled = groupsCompCfg.getBoolean("[@enabled]");
 			Group sourceGroup = Group.parse(groupsCompCfg.getString("[@sourceGroup]"));
 			Group compatibleGroup = Group.parse(groupsCompCfg.getString("[@compatibleGroup]"));
-			boolean bidirectional = groupsCompCfg.getBoolean("[@bidirectional]", false);
-			compatibilities.add(new CompatibilitySettingEntry(new CrossGroupCompatibility(sourceGroup, compatibleGroup, bidirectional), true));
+			boolean symmetric = groupsCompCfg.getBoolean("[@symmetric]", false);
+			compatibilities.add(new CompatibilitySettingEntry(new CrossGroupCompatibility(sourceGroup, compatibleGroup, symmetric), enabled));
 		}
 		return FXCollections.observableArrayList(compatibilities);
 	}
@@ -532,11 +561,162 @@ public class WatcherSettings extends ObservableBean
 	}
 
 	// Write methods
-	public void writeToFile(Path file) throws ConfigurationException, IOException
+	public void save(Path file) throws ConfigurationException
+	{
+		log.info("Saving settings to file {}", file.toAbsolutePath());
+
+		XMLConfiguration cfg = snapshot();
+
+		FileHandler cfgFileHandler = new FileHandler(cfg);
+		cfgFileHandler.save(file.toFile());
+		changed.set(false);
+	}
+
+	private XMLConfiguration snapshot()
 	{
 		XMLConfiguration cfg = new XMLConfiguration();
-		// TODO fill in the cfg
-		cfg.write(new FileWriter(file.toFile()));
+		cfg.setRootElementName("watcherConfig");
+		// Watch
+		for (Path path : watchDirectories)
+		{
+			addPath(cfg, "watch.directories.dir", path);
+		}
+		cfg.addProperty("watch.initialScan", isInitialScan());
+
+		// FileParsing
+		cfg.addProperty("parsing.filenamePatterns", getFilenamePatterns());
+		addParsingServices(cfg, "parsing.parsingServices", filenameParsingServices);
+
+		// Metadata
+		// Metadata - Release
+		addParsingServices(cfg, "metadata.release.parsingServices", releaseParsingServices);
+		for (Tag tag : releaseMetaTags)
+		{
+			cfg.addProperty("metadata.release.metaTags.tag", tag.getName());
+		}
+
+		// Metadata - Release - Databases
+		for (int i = 0; i < releaseDbs.size(); i++)
+		{
+			MetadataDbSettingEntry<Release> db = releaseDbs.get(i);
+			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getValue().getDomain());
+			cfg.addProperty("metadata.release.databases.db(" + i + ")[@enabled]", db.isEnabled());
+		}
+
+		// // Metadata - Release - Guessing
+		cfg.addProperty("metadata.release.guessing[@enabled]", isGuessingEnabled());
+		for (int i = 0; i < standardReleases.size(); i++)
+		{
+			StandardRelease stdRls = standardReleases.get(i);
+			cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@tags]", stdRls.getRelease().getTags());
+			cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@group]", stdRls.getRelease().getGroup());
+			cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@assumeExistence]", stdRls.getAssumeExistence());
+		}
+
+		// Metadata - Release - Compatibility
+		cfg.addProperty("metadata.release.compatibility[@enabled]", isCompatibilityEnabled());
+		for (int i = 0; i < compatibilities.size(); i++)
+		{
+			CompatibilitySettingEntry entry = compatibilities.get(i);
+			Compatibility c = entry.getValue();
+			if (c instanceof CrossGroupCompatibility)
+			{
+				CrossGroupCompatibility cgc = (CrossGroupCompatibility) c;
+				cfg.addProperty("metadata.release.compatibility.compatibilities.crossGroupCompatibility(" + i + ")[@enabled]", entry.isEnabled());
+				cfg.addProperty("metadata.release.compatibility.compatibilities.crossGroupCompatibility(" + i + ")[@sourceGroup]",
+						cgc.getSourceGroup());
+				cfg.addProperty("metadata.release.compatibility.compatibilities.crossGroupCompatibility(" + i + ")[@compatibleGroup]",
+						cgc.getCompatibleGroup());
+				cfg.addProperty("metadata.release.compatibility.compatibilities.crossGroupCompatibility(" + i + ")[@symmetric]", cgc.isSymmetric());
+			}
+			else
+			{
+				throw new IllegalArgumentException("Unknown compatibility: " + c);
+			}
+		}
+
+		// Standardizing
+		addStandardizer(cfg, "standardizing.preMetadataDb.standardizers", preMetadataDbStandardizers);
+		addStandardizer(cfg, "standardizing.postMetadataDb.standardizers", preMetadataDbStandardizers);
+
+		subtitleLanguageSettings.save(cfg, "standardizing.subtitleLanguage");
+
+		// Naming
+		int i = 0;
+		for (Map.Entry<String, Object> param : namingParameters.entrySet())
+		{
+			cfg.addProperty("naming.parameters.param(" + i + ")[@key]", param.getKey());
+			cfg.addProperty("naming.parameters.param(" + i + ")[@value]", param.getValue());
+			i++;
+		}
+
+		// File Transformation - General
+		addPath(cfg, "fileTransformation.targetDir", getTargetDir());
+		cfg.addProperty("fileTransformation.deleteSource", isDeleteSource());
+
+		// File Transformation - Packing
+		cfg.addProperty("fileTransformation.packing[@enabled]", isPackingEnabled());
+		cfg.addProperty("fileTransformation.packing.sourceDeletionMode", getPackingSourceDeletionMode());
+		cfg.addProperty("fileTransformation.packing.winrar.autoLocate", isAutoLocateWinRar());
+		addPath(cfg, "fileTransformation.packing.winrar.rarExe", getRarExe());
+
+		return cfg;
+	}
+
+	private static void addParsingServices(XMLConfiguration cfg, String key, List<ParsingServiceSettingEntry> parsingServices)
+	{
+		for (int i = 0; i < parsingServices.size(); i++)
+		{
+			ParsingServiceSettingEntry ps = parsingServices.get(i);
+			cfg.addProperty(key + ".parsingService(" + i + ")", ps.getValue().getDomain());
+			cfg.addProperty(key + ".parsingService(" + i + ")[@enabled]", ps.isEnabled());
+		}
+	}
+
+	private static void addStandardizer(XMLConfiguration cfg, String key, List<StandardizerSettingEntry<?, ?>> standardizers)
+	{
+		// one index for each element name
+		int seriesNameIndex = 0;
+		int releaseTagsIndex = 0;
+		for (StandardizerSettingEntry<?, ?> genericEntry : standardizers)
+		{
+			if (genericEntry instanceof SeriesNameStandardizerSettingEntry)
+			{
+				SeriesNameStandardizerSettingEntry entry = (SeriesNameStandardizerSettingEntry) genericEntry;
+				SeriesNameStandardizer stdzer = entry.getValue();
+				UserPattern namePattern = entry.getNameUserPattern();
+
+				cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@enabled]", entry.isEnabled());
+				cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@namePattern]", namePattern.getPattern());
+				cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@namePatternMode]", namePattern.getMode());
+				cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@nameReplacement]", stdzer.getNameReplacement());
+				seriesNameIndex++;
+			}
+			else if (genericEntry instanceof ReleaseTagsStandardizerSettingEntry)
+			{
+				ReleaseTagsStandardizerSettingEntry entry = (ReleaseTagsStandardizerSettingEntry) genericEntry;
+				TagsReplacer replacer = entry.getValue().getReplacer();
+
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@enabled]", entry.isEnabled());
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@queryTags]", replacer.getQueryTags());
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@replacement]", replacer.getReplacement());
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@queryMode]", replacer.getQueryMode());
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@replaceMode]", replacer.getReplaceMode());
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@ignoreOrder]", replacer.getIgnoreOrder());
+				releaseTagsIndex++;
+			}
+			else
+			{
+				throw new IllegalArgumentException("Unknown standardizer: " + genericEntry);
+			}
+		}
+	}
+
+	private void addPath(Configuration cfg, String key, Path path)
+	{
+		// WARNING: Need to use path.toString() because path implements iterable
+		// and results in an endless loop when Commons-Configuration tries to print it
+		cfg.addProperty(key, path == null ? "" : path.toString());
 	}
 
 	// Getter and Setter
@@ -850,4 +1030,13 @@ public class WatcherSettings extends ObservableBean
 		this.packingSourceDeletionModeProperty().setValue(packingSourceDeletionMode);
 	}
 
+	public ReadOnlyBooleanProperty changedProperty()
+	{
+		return changed;
+	}
+
+	public boolean getChanged()
+	{
+		return changed.get();
+	}
 }
