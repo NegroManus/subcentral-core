@@ -29,6 +29,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -574,7 +577,7 @@ public class WatcherSettings extends ObservableBean
 
 	private XMLConfiguration snapshot()
 	{
-		XMLConfiguration cfg = new XMLConfiguration();
+		XMLConfiguration cfg = new IndentingXMLConfiguration();
 		cfg.setRootElementName("watcherConfig");
 		// Watch
 		for (Path path : watchDirectories)
@@ -637,7 +640,7 @@ public class WatcherSettings extends ObservableBean
 
 		// Standardizing
 		addStandardizer(cfg, "standardizing.preMetadataDb.standardizers", preMetadataDbStandardizers);
-		addStandardizer(cfg, "standardizing.postMetadataDb.standardizers", preMetadataDbStandardizers);
+		addStandardizer(cfg, "standardizing.postMetadataDb.standardizers", postMetadataStandardizers);
 
 		subtitleLanguageSettings.save(cfg, "standardizing.subtitleLanguage");
 
@@ -1038,5 +1041,17 @@ public class WatcherSettings extends ObservableBean
 	public boolean getChanged()
 	{
 		return changed.get();
+	}
+
+	private static class IndentingXMLConfiguration extends XMLConfiguration
+	{
+		@Override
+		protected Transformer createTransformer() throws ConfigurationException
+		{
+			Transformer transformer = super.createTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			return transformer;
+		}
 	}
 }
