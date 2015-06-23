@@ -2,6 +2,7 @@ package de.subcentral.core.metadata.db;
 
 import java.util.List;
 
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 
 public interface MetadataDb<T>
@@ -18,7 +19,7 @@ public interface MetadataDb<T>
 
 	public default List<T> queryWithName(Object metadataObj) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
-		return queryWithName(metadataObj, MetadataDbDefaults.getDefaultMetadataDbNamingService());
+		return queryWithName(metadataObj, NamingDefaults.getDefaultNormalizingNamingService());
 	}
 
 	public default List<T> queryWithName(Object metadataObj, NamingService namingService) throws MetadataDbUnavailableException,

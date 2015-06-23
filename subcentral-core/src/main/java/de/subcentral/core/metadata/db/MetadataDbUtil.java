@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 
 public class MetadataDbUtil
@@ -23,7 +24,7 @@ public class MetadataDbUtil
 	public static <R> ListMultimap<MetadataDb<R>, R> queryAll(List<MetadataDb<R>> metadataDbs, Object metadataObj, ExecutorService executor)
 			throws InterruptedException
 	{
-		return queryAll(metadataDbs, metadataObj, ImmutableList.of(MetadataDbDefaults.getDefaultMetadataDbNamingService()), executor);
+		return queryAll(metadataDbs, metadataObj, ImmutableList.of(NamingDefaults.getDefaultNormalizingNamingService()), executor);
 	}
 
 	public static <R> ListMultimap<MetadataDb<R>, R> queryAll(List<MetadataDb<R>> metadataDbs, Object metadataObj, NamingService namingService,

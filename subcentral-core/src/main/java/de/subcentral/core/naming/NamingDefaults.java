@@ -29,7 +29,6 @@ import de.subcentral.core.util.Separation;
 public class NamingDefaults
 {
 	public static final String						DEFAULT_DOMAIN				= "default";
-	public static final String						DEFAULT_DOMAIN_NORMALIZE	= "default.normalize";
 
 	private static final Function<String, String>	RELEASE_NAME_FORMATTER		= initReleaseNameFormatter();
 	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER		= initReleaseMediaFormatter();
@@ -39,9 +38,7 @@ public class NamingDefaults
 
 	// NamingService has to be instantiated first because it is referenced in some namers
 	private static final ConditionalNamingService	NAMING_SERVICE				= new ConditionalNamingService(DEFAULT_DOMAIN);
-	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE	= new DelegatingNamingService(DEFAULT_DOMAIN_NORMALIZE,
-																						NAMING_SERVICE,
-																						NORMALIZING_FORMATTER);
+	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(NAMING_SERVICE);
 	private static MediaNamer						MEDIA_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
@@ -161,6 +158,11 @@ public class NamingDefaults
 	public static PropToStringService getDefaultPropToStringService()
 	{
 		return PROP_TO_STRING_SERVICE;
+	}
+
+	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)
+	{
+		return new DelegatingNamingService(namingService.getDomain() + ".normalizing", namingService, NORMALIZING_FORMATTER);
 	}
 
 	public static NamingService getDefaultNamingService()

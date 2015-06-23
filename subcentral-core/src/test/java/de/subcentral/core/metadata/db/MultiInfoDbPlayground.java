@@ -19,6 +19,7 @@ import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.naming.ConditionalNamingService;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.MultiEpisodeNamer;
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
 import de.subcentral.core.util.Separation;
@@ -54,8 +55,8 @@ public class MultiInfoDbPlayground
 		cfg.setSeparations(ImmutableSet.of(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, "")));
 		MultiEpisodeNamer alternameMeNamer = new MultiEpisodeNamer(cfg);
 		alternateNs.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, alternameMeNamer));
-		NamingService alternateMetadataDbNs = MetadataDbDefaults.createDefaultDelegatingMetadataDbNamingService(alternateNs);
-		ImmutableList<NamingService> namingServices = ImmutableList.of(MetadataDbDefaults.getDefaultMetadataDbNamingService(), alternateMetadataDbNs);
+		NamingService alternateMetadataDbNs = NamingDefaults.createNormalizingNamingService(alternateNs);
+		ImmutableList<NamingService> namingServices = ImmutableList.of(NamingDefaults.getDefaultNormalizingNamingService(), alternateMetadataDbNs);
 
 		Episode epi1 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 23);
 		Episode epi2 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 24);
