@@ -70,6 +70,7 @@ public class ProcessingController extends AbstractController
 	private final NamingService										mediaNamingServiceForReleaseFiltering	= initMediaNamingServiceForReleaseFiltering();
 
 	private ExecutorService											processingExecutor;
+	private ProcessingTask											processingTask;
 
 	// View properties
 	// ProcessingTree
@@ -341,7 +342,7 @@ public class ProcessingController extends AbstractController
 	}
 
 	// other public methods
-	public void handleFiles(Path watchDir, Collection<Path> files)
+	public synchronized void handleFiles(Path watchDir, Collection<Path> files)
 	{
 		log.info("Handling {} file(s) in {}", files.size(), watchDir);
 		for (Path file : files)
@@ -350,16 +351,23 @@ public class ProcessingController extends AbstractController
 		}
 	}
 
-	public void handleFile(Path file)
+	public synchronized void handleFile(Path file)
 	{
+		if (processingTask != null && processingTask.getSourceFile().equals(file))
+		{
+			log.warn("Rejected file {} because that file is already processed at the moment");
+			return;
+		}
+
 		if (processingExecutor == null || processingExecutor.isShutdown())
 		{
 			processingExecutor = createProcessingExecutor();
 		}
-		processingExecutor.execute(new ProcessingTask(file, this));
+		processingTask = new ProcessingTask(file, this);
+		processingExecutor.execute(processingTask);
 	}
 
-	public void cancelAllTasks()
+	public synchronized void cancelAllTasks()
 	{
 		if (processingExecutor != null)
 		{
@@ -368,7 +376,7 @@ public class ProcessingController extends AbstractController
 	}
 
 	@Override
-	public void shutdown() throws InterruptedException
+	public synchronized void shutdown() throws InterruptedException
 	{
 		if (processingExecutor != null)
 		{
