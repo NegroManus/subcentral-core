@@ -611,7 +611,8 @@ public class WatcherSettings extends ObservableBean
 		for (int i = 0; i < standardReleases.size(); i++)
 		{
 			StandardRelease stdRls = standardReleases.get(i);
-			cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@tags]", stdRls.getRelease().getTags());
+			cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@tags]",
+					Tag.listToString(stdRls.getRelease().getTags()));
 			cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@group]", stdRls.getRelease().getGroup());
 			cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@assumeExistence]", stdRls.getAssumeExistence());
 		}
