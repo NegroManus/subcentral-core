@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -53,8 +54,6 @@ import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
-import de.subcentral.core.naming.EpisodeNamer;
-import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
@@ -548,10 +547,7 @@ public class WatcherSettings extends ObservableBean
 
 	private static ObservableMap<String, Object> getNamingParameters(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		Map<String, Object> params = new HashMap<>(2);
-		// add default values
-		params.put(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.FALSE);
-		params.put(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE);
+		Map<String, Object> params = new LinkedHashMap<>(3);
 		// read actual values
 		List<HierarchicalConfiguration<ImmutableNode>> paramCfgs = cfg.configurationsAt(key + ".param");
 		for (HierarchicalConfiguration<ImmutableNode> paramCfg : paramCfgs)

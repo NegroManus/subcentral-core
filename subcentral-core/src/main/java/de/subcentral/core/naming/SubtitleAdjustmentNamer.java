@@ -21,6 +21,12 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	 */
 	public static final String		PARAM_RELEASE		= SubtitleAdjustmentNamer.class.getName() + ".release";
 
+	/**
+	 * The name of the parameter "includeGroup" of type {@link Boolean}. If set to {@code true}, the group / source is included in the name. The
+	 * default value is {@code true}.
+	 */
+	public static final String		PARAM_INCLUDE_GROUP	= SubtitleAdjustmentNamer.class.getName() + ".includeGroup";
+
 	private final Namer<Release>	releaseNamer;
 
 	public SubtitleAdjustmentNamer(PropSequenceNameBuilder.Config config, Namer<Release> releaseNamer)
@@ -58,13 +64,18 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 		b.appendIfNotNull(SubtitleAdjustment.PROP_VERSION, adj.getVersion());
 		if (sub != null)
 		{
-			if (sub.getGroup() != null)
+			// read useName parameter
+			boolean includeGroup = NamingUtil.readParameter(params, PARAM_INCLUDE_GROUP, Boolean.class, Boolean.TRUE);
+			if (includeGroup)
 			{
-				b.append(Subtitle.PROP_GROUP, sub.getGroup());
-			}
-			else
-			{
-				b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
+				if (sub.getGroup() != null)
+				{
+					b.append(Subtitle.PROP_GROUP, sub.getGroup());
+				}
+				else
+				{
+					b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
+				}
 			}
 		}
 	}

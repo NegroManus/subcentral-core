@@ -106,6 +106,7 @@
 		<parameters>
 			<param key="de.subcentral.core.naming.EpisodeNamer.alwaysIncludeTitle" value="false" />
 			<param key="de.subcentral.core.naming.ReleaseNamer.preferName" value="true" />
+			<param key="de.subcentral.core.naming.SubtitleAdjustmentNamer.includeGroup" value="true" />
 		</parameters>
 	</naming>
 
