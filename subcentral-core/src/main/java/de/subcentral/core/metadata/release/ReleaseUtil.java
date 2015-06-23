@@ -2,9 +2,11 @@ package de.subcentral.core.metadata.release;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -97,25 +99,27 @@ public class ReleaseUtil
 		return true;
 	}
 
-	public static List<Release> guessMatchingReleases(Release partialRls, Collection<Release> commonRlss, Collection<Tag> metaTags)
+	public static Map<Release, StandardRelease> guessMatchingReleases(Release partialRls, Collection<StandardRelease> standardRlss,
+			Collection<Tag> metaTags)
 	{
-		List<Release> matchingCommonRlss = commonRlss.stream()
-				.filter(filterByTags(partialRls.getTags(), metaTags))
-				.filter(filterByGroup(partialRls.getGroup(), true))
-				.collect(Collectors.toList());
-		if (matchingCommonRlss.isEmpty())
+		// LinkedHashMap to maintain insertion order
+		Map<Release, StandardRelease> guessedRlss = new LinkedHashMap<>(4);
+		for (StandardRelease stdRls : standardRlss)
 		{
-			return ImmutableList.of(new Release(partialRls));
+			Release candidate = stdRls.getRelease();
+			if (filterByTags(partialRls.getTags(), metaTags).test(candidate) && filterByGroup(partialRls.getGroup(), true).test(candidate))
+			{
+				Release guessedRls = new Release(candidate);
+				guessedRls.setMedia(partialRls.getMedia());
+				TagUtil.transferMetaTags(partialRls.getTags(), guessedRls.getTags(), metaTags);
+				guessedRlss.put(guessedRls, stdRls);
+			}
 		}
-		ImmutableList.Builder<Release> guessedRlss = ImmutableList.builder();
-		for (Release rls : matchingCommonRlss)
+		if (guessedRlss.isEmpty())
 		{
-			Release guessedRls = new Release(rls);
-			guessedRls.setMedia(partialRls.getMedia());
-			TagUtil.transferMetaTags(partialRls.getTags(), guessedRls.getTags(), metaTags);
-			guessedRlss.add(guessedRls);
+			return Collections.singletonMap(partialRls, null);
 		}
-		return guessedRlss.build();
+		return guessedRlss;
 	}
 
 	private ReleaseUtil()

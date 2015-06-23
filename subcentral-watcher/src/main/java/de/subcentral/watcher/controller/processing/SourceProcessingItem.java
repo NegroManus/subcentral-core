@@ -1,40 +1,68 @@
 package de.subcentral.watcher.controller.processing;
 
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.StringJoiner;
 
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import de.subcentral.watcher.model.ObservableNamedBeanWrapper;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.naming.NamingService;
+import de.subcentral.fx.FxUtil;
 
 public class SourceProcessingItem extends AbstractProcessingItem
 {
-	private final ListProperty<Path>	sourceFiles;
+	private final Property<SubtitleAdjustment>	parsedBean	= new SimpleObjectProperty<SubtitleAdjustment>(this, "parsedBean", null);
+	private final StringBinding					nameBinding;
 
-	public SourceProcessingItem(Path srcFile, ObservableNamedBeanWrapper<?> beanWrapper)
+	public SourceProcessingItem(NamingService namingService, Map<String, Object> namingParameters)
 	{
-		ObservableList<Path> list = FXCollections.observableArrayList(srcFile);
-		this.sourceFiles = new SimpleListProperty<Path>(this, "files", list); // includes null check
-		this.beanWrapper.setValue(beanWrapper);
+		super(namingService, namingParameters);
+
+		nameBinding = new StringBinding()
+		{
+			{
+				super.bind(files);
+			}
+
+			@Override
+			protected String computeValue()
+			{
+				StringJoiner s = new StringJoiner(", ");
+				for (Path file : files)
+				{
+					s.add(file.getFileName().toString());
+				}
+				return s.toString();
+			}
+		};
 	}
 
 	@Override
 	public StringBinding nameBinding()
 	{
-		return beanWrapper.getValue().nameBinding();
+		return nameBinding;
+	}
+
+	public Property<SubtitleAdjustment> parsedBeanProperty()
+	{
+		return parsedBean;
+	}
+
+	public SubtitleAdjustment getParsedBean()
+	{
+		return parsedBean.getValue();
+	}
+
+	public void setParsedBean(SubtitleAdjustment parsedBean)
+	{
+		this.parsedBean.setValue(parsedBean);
 	}
 
 	@Override
-	public String getName()
+	public StringBinding infoBinding()
 	{
-		return nameBinding().get();
-	}
-
-	@Override
-	public ListProperty<Path> getFiles()
-	{
-		return sourceFiles;
+		return FxUtil.createConstantStringBinding("");
 	}
 }

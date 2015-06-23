@@ -30,15 +30,13 @@ import com.google.common.collect.ListMultimap;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbUtil;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
-import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
+import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingUtil;
@@ -57,6 +55,10 @@ import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.watcher.controller.processing.ProcessingController.ProcessingConfig;
+import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.CompatibilityProcessInfo;
+import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.GuessingProcessInfo;
+import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.ProcessInfo;
+import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.ProcessInfo.Method;
 import de.subcentral.watcher.model.ObservableNamableBeanWrapper;
 
 public class ProcessingTask extends Task<Void>
@@ -193,8 +195,9 @@ public class ProcessingTask extends Task<Void>
 
 	private void processSubtitleAdjustment(SubtitleAdjustment srcSubAdj) throws InterruptedException
 	{
-		ObservableNamableBeanWrapper<SubtitleAdjustment> subAdjWrapper = createSubAdjWrapper(srcSubAdj);
-		SourceProcessingItem srcItem = new SourceProcessingItem(sourceFile, subAdjWrapper);
+		SourceProcessingItem srcItem = new SourceProcessingItem(processingController.getNamingService(), config.getNamingParameters());
+		srcItem.getFiles().add(sourceFile);
+		srcItem.setParsedBean(srcSubAdj);
 
 		TreeItem<ProcessingItem> srcTreeItem = addSourceTreeItem(srcItem);
 
@@ -265,24 +268,25 @@ public class ProcessingTask extends Task<Void>
 			if (config.isGuessingEnabled())
 			{
 				log.info("Guessing enabled. Guessing");
-				List<StandardRelease> commonRlss = config.getStandardReleases();
-				List<Release> commonRlssWithMedia = new ArrayList<>(commonRlss.size());
-				for (StandardRelease commonRls : commonRlss)
+				List<StandardRelease> stdRlss = config.getStandardReleases();
+				Map<Release, StandardRelease> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls,
+						config.getStandardReleases(),
+						config.getReleaseMetaTags());
+				logReleases(Level.DEBUG, "Guessed releases:", guessedRlss.keySet());
+				for (Map.Entry<Release, StandardRelease> entry : guessedRlss.entrySet())
 				{
-					commonRlssWithMedia.add(new Release(srcRls.getMedia(), commonRls.getRelease().getTags(), commonRls.getRelease().getGroup()));
+					GuessingProcessInfo processInfo = new GuessingProcessInfo(Method.GUESSING, entry.getValue());
+					addMatchingRelease(convertedSubAdj, entry.getKey(), processInfo, srcTreeItem, srcItem);
 				}
-				List<Release> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, commonRlssWithMedia, config.getReleaseMetaTags());
-				logReleases(Level.DEBUG, "Guessed releases:", guessedRlss);
-				for (Release rls : guessedRlss)
+
+				List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
+				for (StandardRelease stdRls : stdRlss)
 				{
-					// fill media with media of source rls if not set
-					if (rls.getMedia().isEmpty())
-					{
-						rls.getMedia().addAll(srcRls.getMedia());
-					}
-					addMatchingRelease(convertedSubAdj, rls, "Guessed release", srcTreeItem, srcItem);
+					Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
+					TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
+					stdRlssWithMediaAndMetaTags.add(rls);
 				}
-				addCompatibleReleases(guessedRlss, commonRlssWithMedia, convertedSubAdj, srcTreeItem, srcItem);
+				addCompatibleReleases(guessedRlss.keySet(), stdRlssWithMediaAndMetaTags, convertedSubAdj, srcTreeItem, srcItem);
 			}
 			else
 			{
@@ -294,7 +298,8 @@ public class ProcessingTask extends Task<Void>
 			// Add matching releases
 			for (Release rls : matchingRlss)
 			{
-				addMatchingRelease(convertedSubAdj, rls, "Matching release", srcTreeItem, srcItem);
+				ProcessInfo processInfo = new ProcessInfo(Method.MATCHING);
+				addMatchingRelease(convertedSubAdj, rls, processInfo, srcTreeItem, srcItem);
 			}
 			if (config.isCompatibilityEnabled())
 			{
@@ -344,11 +349,12 @@ public class ProcessingTask extends Task<Void>
 		// Add compatible releases
 		for (Map.Entry<Release, CompatibilityInfo> entry : compatibleRlss.entrySet())
 		{
-			addMatchingRelease(subAdj, entry.getKey(), formatCompatibilityInfo(entry.getValue()), srcTreeItem, srcItem);
+			CompatibilityProcessInfo processInfo = new CompatibilityProcessInfo(Method.COMPATIBILITY, entry.getValue());
+			addMatchingRelease(subAdj, entry.getKey(), processInfo, srcTreeItem, srcItem);
 		}
 	}
 
-	private SubtitleTargetProcessingItem addMatchingRelease(SubtitleAdjustment subAdj, Release rls, String info,
+	private SubtitleTargetProcessingItem addMatchingRelease(SubtitleAdjustment subAdj, Release rls, ProcessInfo info,
 			TreeItem<ProcessingItem> srcTreeItem, SourceProcessingItem srcItem)
 	{
 		List<StandardizingChange> rlsChanges = processingController.getPostMetadataStandardizingService().standardize(rls);
@@ -374,6 +380,10 @@ public class ProcessingTask extends Task<Void>
 
 	private List<Release> processReleases(Collection<Release> rlss)
 	{
+		if (rlss.isEmpty())
+		{
+			return new ArrayList<>(rlss);
+		}
 		// Distinct
 		List<Release> processedRlss = ReleaseUtil.distinctByName(rlss);
 		logReleases(Level.DEBUG, "Distinct releases (by name):", processedRlss);
@@ -418,34 +428,15 @@ public class ProcessingTask extends Task<Void>
 		}
 	}
 
-	private String formatCompatibilityInfo(CompatibilityInfo info)
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("Compatible to ");
-		sb.append(processingController.getNamingService().name(info.getCompatibleTo(), config.getNamingParameters()));
-		sb.append(" because ");
-		Compatibility c = info.getCompatibility();
-		if (c instanceof SameGroupCompatibility)
-		{
-			sb.append("same group");
-		}
-		else if (c instanceof CrossGroupCompatibility)
-		{
-			sb.append(((CrossGroupCompatibility) c).toShortString());
-		}
-		else
-		{
-			sb.append(info.getCompatibility());
-		}
-		return sb.toString();
-	}
-
 	private SubtitleTargetProcessingItem addTargetFilesItem(TreeItem<ProcessingItem> srcFileTreeItem, SubtitleAdjustment targetSubAdj, Release rls,
-			String info)
+			ProcessInfo info)
 	{
-		ObservableNamableBeanWrapper<SubtitleAdjustment> subAdjWrapper = createSubAdjWrapper(targetSubAdj);
-		SubtitleTargetProcessingItem targetItem = new SubtitleTargetProcessingItem(subAdjWrapper, rls);
-		targetItem.updateInfo(info);
+		SubtitleTargetProcessingItem targetItem = new SubtitleTargetProcessingItem(processingController.getNamingService(),
+				config.getNamingParameters());
+		targetItem.setSubtitleAdjustment(targetSubAdj);
+		targetItem.setRelease(rls);
+		targetItem.setProcessInfo(info);
+
 		TreeItem<ProcessingItem> targetTreeItem = new TreeItem<>(targetItem);
 		Platform.runLater(() -> {
 			srcFileTreeItem.getChildren().add(targetTreeItem);

@@ -301,7 +301,7 @@ public class ProcessingController extends AbstractController
 				.asObject());
 		infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue()
 				.getValue()
-				.infoProperty());
+				.infoBinding());
 	}
 
 	// getter

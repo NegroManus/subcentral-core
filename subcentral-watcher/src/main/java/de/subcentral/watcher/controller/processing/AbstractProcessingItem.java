@@ -1,34 +1,46 @@
 package de.subcentral.watcher.controller.processing;
 
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.Objects;
+
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.Property;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import de.subcentral.watcher.model.ObservableNamedBeanWrapper;
+import javafx.collections.FXCollections;
+import de.subcentral.core.naming.NamingService;
 
 public abstract class AbstractProcessingItem implements ProcessingItem
 {
-	protected final Property<ObservableNamedBeanWrapper<?>>	beanWrapper	= new SimpleObjectProperty<>(this, "beanWrapper");
-	protected final StringProperty							status		= new SimpleStringProperty(this, "status");
-	protected final DoubleProperty							progress	= new SimpleDoubleProperty(this, "progress");
-	protected final StringProperty							info		= new SimpleStringProperty(this, "info");
+	protected final NamingService		namingService;
+	protected final Map<String, Object>	namingParameters;
 
-	@Override
-	public ReadOnlyProperty<ObservableNamedBeanWrapper<?>> beanWrapperProperty()
+	protected final ListProperty<Path>	files		= new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
+	protected final StringProperty		status		= new SimpleStringProperty(this, "status", "");
+	protected final DoubleProperty		progress	= new SimpleDoubleProperty(this, "progress");
+
+	public AbstractProcessingItem(NamingService namingService, Map<String, Object> namingParameters)
 	{
-		return beanWrapper;
+		this.namingService = Objects.requireNonNull(namingService, "namingService");
+		this.namingParameters = Objects.requireNonNull(namingParameters, "namingParameters");
 	}
 
 	@Override
-	public ObservableNamedBeanWrapper<?> getBeanWrapper()
+	public String getName()
 	{
-		return beanWrapper.getValue();
+		return nameBinding().get();
+	}
+
+	@Override
+	public ListProperty<Path> getFiles()
+	{
+		return files;
 	}
 
 	@Override
@@ -80,26 +92,8 @@ public abstract class AbstractProcessingItem implements ProcessingItem
 	}
 
 	@Override
-	public ReadOnlyStringProperty infoProperty()
-	{
-		return info;
-	}
-
-	@Override
 	public String getInfo()
 	{
-		return info.get();
-	}
-
-	public void updateInfo(String newInfo)
-	{
-		if (Platform.isFxApplicationThread())
-		{
-			info.setValue(newInfo);
-		}
-		else
-		{
-			Platform.runLater(() -> info.setValue(newInfo));
-		}
+		return infoBinding().get();
 	}
 }
