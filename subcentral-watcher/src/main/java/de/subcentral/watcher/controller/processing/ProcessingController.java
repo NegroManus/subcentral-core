@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javafx.beans.binding.Binding;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
@@ -86,7 +87,11 @@ public class ProcessingController extends AbstractController
 	private TreeTableColumn<ProcessingItem, String>					infoColumn;
 	// Row Button bar
 	@FXML
-	private Button													clearButton;
+	private Button													openFolderBtn;
+	@FXML
+	private Button													openNfoBtn;
+	@FXML
+	private Button													clearBtn;
 
 	public ProcessingController(MainController mainController)
 	{
@@ -196,7 +201,52 @@ public class ProcessingController extends AbstractController
 	{
 		initProcessingTreeTable();
 
-		clearButton.setOnAction(evt -> {
+		openFolderBtn.disableProperty().bind(new BooleanBinding()
+		{
+			{
+				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
+			}
+
+			@Override
+			protected boolean computeValue()
+			{
+				TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
+				return selectedItem == null || selectedItem.getValue().getFiles().isEmpty();
+			}
+		});
+		openFolderBtn.setOnAction(evt -> FxUtil.browse(processingTreeTable.getSelectionModel()
+				.getSelectedItem()
+				.getValue()
+				.getFiles()
+				.get(0)
+				.getParent()
+				.toUri()
+				.toString(), mainController.getCommonExecutor()));
+
+		openNfoBtn.disableProperty().bind(new BooleanBinding()
+		{
+			{
+				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
+			}
+
+			@Override
+			protected boolean computeValue()
+			{
+				TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
+				if (selectedItem != null && selectedItem.getValue() instanceof SubtitleTargetProcessingItem)
+				{
+					SubtitleTargetProcessingItem subTargetItem = (SubtitleTargetProcessingItem) selectedItem.getValue();
+					return subTargetItem.getRelease().getNfoLink() == null;
+				}
+				return true;
+			}
+		});
+		openNfoBtn.setOnAction(evt -> {
+			SubtitleTargetProcessingItem item = (SubtitleTargetProcessingItem) processingTreeTable.getSelectionModel().getSelectedItem().getValue();
+			FxUtil.browse(item.getRelease().getNfoLink(), mainController.getCommonExecutor());
+		});
+
+		clearBtn.setOnAction(evt -> {
 			processingTreeTable.getRoot().getChildren().clear();
 			processingTreeTable.setRoot(new TreeItem<>());
 			cancelAllTasks();

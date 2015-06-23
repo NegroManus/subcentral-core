@@ -58,4 +58,9 @@ public class SubtitleTargetProcessingItem extends AbstractProcessingItem
 		return files;
 	}
 
+	public Release getRelease()
+	{
+		return release;
+	}
+
 }

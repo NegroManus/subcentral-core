@@ -187,17 +187,17 @@ public class FxUtil
 			Throwable exc = evt.getSource().getException();
 
 			log.error(msg, exc);
-			Alert alert = FxUtil.createExceptionAlert(msg, msg, exc);
+			Alert alert = createExceptionAlert(msg, msg, exc);
 			alert.show();
 		};
 	}
 
-	public static void browse(URI uri, ExecutorService executor)
+	public static void browse(String uri, ExecutorService executor)
 	{
 		browse(uri, executor, DEFAULT_TASK_FAILED_HANDLER);
 	}
 
-	public static void browse(URI uri, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
+	public static void browse(String uri, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
 	{
 		Task<Void> browseTask = new Task<Void>()
 		{
@@ -206,7 +206,7 @@ public class FxUtil
 			{
 				updateTitle("Browse " + uri);
 				log.debug("Before browsing");
-				Desktop.getDesktop().browse(uri);
+				Desktop.getDesktop().browse(new URI(uri));
 				log.debug("After browsing");
 				return null;
 			}
@@ -215,14 +215,14 @@ public class FxUtil
 		executor.submit(browseTask);
 	}
 
-	public static Hyperlink createFileHyperlink(Path file, ExecutorService executor)
+	public static Hyperlink createPathHyperlink(Path file, ExecutorService executor)
 	{
 		return createFileHyperlink(file, executor, DEFAULT_TASK_FAILED_HANDLER);
 	}
 
 	public static Hyperlink createFileHyperlink(Path file, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
 	{
-		URI uri = file.toUri();
+		String uri = file.toUri().toString();
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
@@ -238,7 +238,7 @@ public class FxUtil
 	public static Hyperlink createUrlHyperlink(URL url, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
 			throws URISyntaxException
 	{
-		URI uri = url.toURI();
+		String uri = url.toURI().toString();
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(url.toString());

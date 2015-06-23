@@ -6,11 +6,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <bottom>
       <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="clearButton" mnemonicParsing="false" text="Clear" />
+            <Button fx:id="detailsBtn" mnemonicParsing="false" text="Details" />
+            <Button fx:id="openFolderBtn" mnemonicParsing="false" text="Open folder" />
+            <Button fx:id="openNfoBtn" mnemonicParsing="false" text="Open online info " />
+            <HBox maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
+            <Button fx:id="clearBtn" mnemonicParsing="false" text="Clear" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

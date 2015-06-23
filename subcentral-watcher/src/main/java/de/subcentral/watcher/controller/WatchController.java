@@ -148,7 +148,7 @@ public class WatchController extends AbstractController
 			Iterator<Path> iter = watchDirs.iterator();
 			while (iter.hasNext())
 			{
-				addToHBoxWithMaxHeight(watchDirectoriesHBox, FxUtil.createFileHyperlink(iter.next(), mainController.getCommonExecutor()));
+				addToHBoxWithMaxHeight(watchDirectoriesHBox, FxUtil.createPathHyperlink(iter.next(), mainController.getCommonExecutor()));
 				if (iter.hasNext())
 				{
 					addToHBoxWithMaxHeight(watchDirectoriesHBox, new Label("·"));
