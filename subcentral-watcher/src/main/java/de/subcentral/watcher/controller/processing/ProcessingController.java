@@ -2,6 +2,7 @@ package de.subcentral.watcher.controller.processing;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
@@ -56,18 +57,19 @@ import de.subcentral.watcher.settings.WatcherSettings;
 
 public class ProcessingController extends AbstractController
 {
-	private static final Logger										log										= LogManager.getLogger(ProcessingController.class);
+	private static final Logger										log									= LogManager.getLogger(ProcessingController.class);
 
 	// Controlling properties
 	private final MainController									mainController;
 
 	// Processing Config
-	private final Binding<ProcessingConfig>							processingConfig						= initProcessingCfg();
-	private final TypeStandardizingService							preMetadataDbStandardizingService		= initPreMetadataDbStandardizingService();
-	private final CompatibilityService								compatibilityService					= initCompatibilityService();
-	private final TypeStandardizingService							postMetadataStandardizingService		= initPostMetadataStandardizingService();
-	private final NamingService										namingService							= initNamingService();
-	private final NamingService										mediaNamingServiceForReleaseFiltering	= initMediaNamingServiceForReleaseFiltering();
+	private final Binding<ProcessingConfig>							processingConfig					= initProcessingCfg();
+	private final TypeStandardizingService							preMetadataDbStandardizingService	= initPreMetadataDbStandardizingService();
+	private final CompatibilityService								compatibilityService				= initCompatibilityService();
+	private final TypeStandardizingService							postMetadataStandardizingService	= initPostMetadataStandardizingService();
+	private final NamingService										namingService						= initNamingService();
+	private final NamingService										namingServiceForFiltering			= initNamingServiceForFiltering();
+	private final Map<String, Object>								namingParametersForFiltering		= initNamingParametersForFiltering();
 
 	private ExecutorService											processingExecutor;
 	private ProcessingTask											processingTask;
@@ -99,7 +101,7 @@ public class ProcessingController extends AbstractController
 		this.mainController = Objects.requireNonNull(mainController, "mainController");
 	}
 
-	private Binding<ProcessingConfig> initProcessingCfg()
+	private static Binding<ProcessingConfig> initProcessingCfg()
 	{
 		return new ObjectBinding<ProcessingConfig>()
 		{
@@ -143,16 +145,16 @@ public class ProcessingController extends AbstractController
 		};
 	}
 
-	private TypeStandardizingService initPreMetadataDbStandardizingService()
+	private static TypeStandardizingService initPreMetadataDbStandardizingService()
 	{
 		TypeStandardizingService service = new TypeStandardizingService("parsed");
+		// Register default nested beans retrievers but not default standardizers
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaultStandardizers(service);
 		WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPreMetadataDbStandardizers());
 		return service;
 	}
 
-	private CompatibilityService initCompatibilityService()
+	private static CompatibilityService initCompatibilityService()
 	{
 		CompatibilityService service = new CompatibilityService();
 		service.getCompatibilities().add(new SameGroupCompatibility());
@@ -160,12 +162,11 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private TypeStandardizingService initPostMetadataStandardizingService()
+	private static TypeStandardizingService initPostMetadataStandardizingService()
 	{
 		final TypeStandardizingService service = new TypeStandardizingService("custom");
-		// Register default Standardizers (not modifiable via GUI)
+		// Register default nested beans retrievers but not default standardizers
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaultStandardizers(service);
 
 		// Bind SubtitleLanguageStandardizer
 		Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding();
@@ -188,14 +189,19 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private NamingService initNamingService()
+	private static NamingService initNamingService()
 	{
 		return NamingDefaults.getDefaultNamingService();
 	}
 
-	private NamingService initMediaNamingServiceForReleaseFiltering()
+	private static NamingService initNamingServiceForFiltering()
 	{
 		return NamingDefaults.getDefaultNormalizingNamingService();
+	}
+
+	private static Map<String, Object> initNamingParametersForFiltering()
+	{
+		return ImmutableMap.of();
 	}
 
 	public void doInitialize()
@@ -237,14 +243,14 @@ public class ProcessingController extends AbstractController
 				if (selectedItem != null && selectedItem.getValue() instanceof SubtitleTargetProcessingItem)
 				{
 					SubtitleTargetProcessingItem subTargetItem = (SubtitleTargetProcessingItem) selectedItem.getValue();
-					return subTargetItem.getRelease().getNfoLink() == null;
+					return subTargetItem.getRelease().getFurtherInfoLinks().isEmpty();
 				}
 				return true;
 			}
 		});
 		openNfoBtn.setOnAction(evt -> {
 			SubtitleTargetProcessingItem item = (SubtitleTargetProcessingItem) processingTreeTable.getSelectionModel().getSelectedItem().getValue();
-			FxUtil.browse(item.getRelease().getNfoLink(), mainController.getCommonExecutor());
+			FxUtil.browse(item.getRelease().getFurtherInfoLinks().get(0), mainController.getCommonExecutor());
 		});
 
 		clearBtn.setOnAction(evt -> {
@@ -331,9 +337,14 @@ public class ProcessingController extends AbstractController
 		return namingService;
 	}
 
-	public NamingService getMediaNamingServiceForReleaseFiltering()
+	public NamingService getNamingServiceForFiltering()
 	{
-		return mediaNamingServiceForReleaseFiltering;
+		return namingServiceForFiltering;
+	}
+
+	public Map<String, Object> getNamingParametersForFiltering()
+	{
+		return namingParametersForFiltering;
 	}
 
 	public TreeTableView<ProcessingItem> getProcessingTreeTable()

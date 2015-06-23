@@ -205,9 +205,9 @@ public class FxUtil
 			protected Void call() throws IOException, URISyntaxException
 			{
 				updateTitle("Browse " + uri);
-				log.debug("Before browsing");
+				// log.debug("Before browsing");
 				Desktop.getDesktop().browse(new URI(uri));
-				log.debug("After browsing");
+				// log.debug("After browsing");
 				return null;
 			}
 		};

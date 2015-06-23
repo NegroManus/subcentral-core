@@ -240,8 +240,8 @@ public class ProcessingTask extends Task<Void>
 		log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
 		List<Release> matchingRlss = foundRlss.stream()
 				.filter(NamingUtil.filterByNestedName(srcRls,
-						processingController.getMediaNamingServiceForReleaseFiltering(),
-						config.getNamingParameters(),
+						processingController.getNamingServiceForFiltering(),
+						processingController.getNamingParametersForFiltering(),
 						(Release rls) -> rls.getMedia()))
 				.filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
 				.filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))

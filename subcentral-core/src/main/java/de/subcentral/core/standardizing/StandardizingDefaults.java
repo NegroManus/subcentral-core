@@ -111,6 +111,8 @@ public class StandardizingDefaults
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("DD5", "1"), Tag.list("DD5.1"))));
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("H", "264"), Tag.list("H.264"))));
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("H", "265"), Tag.list("H.265"))));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("H264"), Tag.list("H.264"))));
+		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("H265"), Tag.list("H.265"))));
 		service.registerStandardizer(Release.class, new ReleaseTagsStandardizer(new TagsReplacer(Tag.list("WEB", "DL"), Tag.list("WEB-DL"))));
 	}
 

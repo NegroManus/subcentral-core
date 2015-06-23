@@ -74,6 +74,16 @@ public class SubCentralDeParsingTesting
 		testParsingResult(name, subAdj);
 	}
 
+	@Test
+	public void testEpisode07()
+	{
+		String name = "Salem.S02E04.Book.of.Shadows.1080p.WEB-DL.DD5.1.H264-ABH.de-SubCentral";
+		Episode epi = Episode.createSeasonedEpisode("Salem", 2, 4, "Book.of.Shadows");
+		Release rls = Release.create(epi, "ABH", "1080p", "WEB", "DL", "DD5", "1", "H264");
+		SubtitleAdjustment subAdj = SubtitleAdjustment.create(rls, "de", "SubCentral");
+		testParsingResult(name, subAdj);
+	}
+
 	private void testParsingResult(String name, Object expectedResult)
 	{
 		Object parsed = SubCentralDe.getParsingService().parse(name);

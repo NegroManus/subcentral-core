@@ -129,6 +129,7 @@ public class TypeParsingService implements ParsingService
 			Object parsedObj = entry.parser.parse(text);
 			if (parsedObj != null)
 			{
+				System.out.println("Parser succeeded:" + entry.parser + " - " + text);
 				return parsedObj;
 			}
 		}

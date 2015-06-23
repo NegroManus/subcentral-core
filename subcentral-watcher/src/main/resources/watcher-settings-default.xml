@@ -73,11 +73,27 @@
 				<seriesNameStandardizer enabled="true" namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" />
 				<seriesNameStandardizer enabled="true" namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" />
 				<seriesNameStandardizer enabled="true" namePattern="Undercover\W+Boss" namePatternMode="REGEX" nameReplacement="Undercover Boss (US)" />
+
+				<releaseTagsStandardizer enabled="true" queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
 			</standardizers>
 		</preMetadataDb>
 		<postMetadataDb>
 			<standardizers>
 				<seriesNameStandardizer enabled="true" namePattern="Good\W+Wife" namePatternMode="REGEX" nameReplacement="The Good Wife" />
+
+				<releaseTagsStandardizer enabled="true" queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
+				<releaseTagsStandardizer enabled="true" queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
 			</standardizers>
 		</postMetadataDb>
 

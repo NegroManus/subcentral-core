@@ -45,6 +45,15 @@ public class ReleaseSceneParsingTest
 		testParsingResult(name, rls);
 	}
 
+	@Test
+	public void testEpisode05()
+	{
+		String name = "Salem.S02E04.Book.of.Shadows.1080p.WEB-DL.DD5.1.H264-ABH";
+		Episode epi = Episode.createSeasonedEpisode("Salem", 2, 4, "Book.of.Shadows");
+		Release rls = Release.create(epi, "ABH", "1080p", "WEB", "DL", "DD5", "1", "H264");
+		testParsingResult(name, rls);
+	}
+
 	private void testParsingResult(String name, Object expectedResult)
 	{
 		Object parsed = ReleaseScene.getParsingService().parse(name);
