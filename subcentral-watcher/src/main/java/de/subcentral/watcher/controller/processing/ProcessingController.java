@@ -3,6 +3,7 @@ package de.subcentral.watcher.controller.processing;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -10,11 +11,13 @@ import java.util.regex.Pattern;
 
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.ProgressBarTreeTableCell;
@@ -39,6 +42,7 @@ import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.standardizing.TypeStandardizingService;
+import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
@@ -58,7 +62,7 @@ public class ProcessingController extends AbstractController
 
 	// Processing Config
 	private final Binding<ProcessingConfig>							processingConfig						= initProcessingCfg();
-	private final TypeStandardizingService							parsedStandardizingService				= initParsedStandardizingService();
+	private final TypeStandardizingService							preMetadataDbStandardizingService		= initPreMetadataDbStandardizingService();
 	private final CompatibilityService								compatibilityService					= initCompatibilityService();
 	private final TypeStandardizingService							postMetadataStandardizingService		= initPostMetadataStandardizingService();
 	private final NamingService										namingService							= initNamingService();
@@ -133,7 +137,7 @@ public class ProcessingController extends AbstractController
 		};
 	}
 
-	private TypeStandardizingService initParsedStandardizingService()
+	private TypeStandardizingService initPreMetadataDbStandardizingService()
 	{
 		TypeStandardizingService service = new TypeStandardizingService("parsed");
 		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
@@ -193,11 +197,9 @@ public class ProcessingController extends AbstractController
 		initProcessingTreeTable();
 
 		clearButton.setOnAction(evt -> {
-			System.out.println("clearButton button action");
 			processingTreeTable.getRoot().getChildren().clear();
 			processingTreeTable.setRoot(new TreeItem<>());
 			cancelAllTasks();
-			evt.consume();
 		});
 	}
 
@@ -210,13 +212,35 @@ public class ProcessingController extends AbstractController
 		nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue()
 				.getValue()
 				.nameBinding());
-		filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> {
-			// TODO somehow the updates to the list are not recognized by the treetablecolumn if they come too fast.
-			// so as a result, the view show an empty list for the last row
-			// the sysout is enough delay
-			// System.out.println("Building files cell value factory");
-			return features.getValue().getValue().getFiles();
+		filesColumn.setCellFactory((TreeTableColumn<ProcessingItem, ObservableList<Path>> param) -> {
+			return new TreeTableCell<ProcessingItem, ObservableList<Path>>()
+			{
+				@Override
+				protected void updateItem(ObservableList<Path> item, boolean empty)
+				{
+					// calling super here is very important - don't skip this!
+					super.updateItem(item, empty);
+
+					if (empty || item == null)
+					{
+						setText("");
+					}
+					else
+					{
+						StringJoiner joiner = new StringJoiner(", ");
+						for (Path path : item)
+						{
+							joiner.add(IOUtil.splitIntoFilenameAndExtension(path.getFileName().toString())[1]);
+						}
+						setText(joiner.toString().replace(".", "").toUpperCase());
+					}
+				};
+			};
 		});
+		filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> {
+			return new SimpleListProperty<>(features.getValue().getValue().getFiles());
+		});
+
 		statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue()
 				.getValue()
 				.statusProperty());
@@ -236,9 +260,9 @@ public class ProcessingController extends AbstractController
 		return mainController;
 	}
 
-	public TypeStandardizingService getParsedStandardizingService()
+	public TypeStandardizingService getPreMetadataDbStandardizingService()
 	{
-		return parsedStandardizingService;
+		return preMetadataDbStandardizingService;
 	}
 
 	public CompatibilityService getCompatibilityService()

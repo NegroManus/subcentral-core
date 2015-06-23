@@ -6,15 +6,17 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import de.subcentral.watcher.model.ObservableNamedBeanWrapper;
 
 public class SourceProcessingItem extends AbstractProcessingItem
 {
-	private final ListProperty<Path>	sourceFile;
+	private final ListProperty<Path>	sourceFiles;
 
 	public SourceProcessingItem(Path srcFile, ObservableNamedBeanWrapper<?> beanWrapper)
 	{
-		this.sourceFile = new SimpleListProperty<Path>(this, "files", FXCollections.singletonObservableList(srcFile)); // includes null check
+		ObservableList<Path> list = FXCollections.observableArrayList(srcFile);
+		this.sourceFiles = new SimpleListProperty<Path>(this, "files", list); // includes null check
 		this.beanWrapper.setValue(beanWrapper);
 	}
 
@@ -33,6 +35,6 @@ public class SourceProcessingItem extends AbstractProcessingItem
 	@Override
 	public ListProperty<Path> getFiles()
 	{
-		return sourceFile;
+		return sourceFiles;
 	}
 }

@@ -54,6 +54,7 @@ import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult;
+import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.watcher.controller.processing.ProcessingController.ProcessingConfig;
 import de.subcentral.watcher.model.ObservableNamableBeanWrapper;
@@ -177,7 +178,7 @@ public class ProcessingTask extends Task<Void>
 			return null;
 		}
 
-		List<StandardizingChange> parsedChanges = processingController.getParsedStandardizingService().standardize(parsed);
+		List<StandardizingChange> parsedChanges = processingController.getPreMetadataDbStandardizingService().standardize(parsed);
 		parsedChanges.forEach(c -> log.debug("Standardized parsed: {}", c));
 
 		return parsed;
@@ -212,6 +213,10 @@ public class ProcessingTask extends Task<Void>
 		}
 
 		srcItem.updateProgress(0.5d);
+		if (isCancelled())
+		{
+			return;
+		}
 		srcItem.updateStatus("Processing query results");
 
 		List<Release> existingRlss = new ArrayList<>(results.values().size());
@@ -220,9 +225,7 @@ public class ProcessingTask extends Task<Void>
 		{
 			if (standardRls.getAssumeExistence() == AssumeExistence.ALWAYS)
 			{
-				Release standardRlsWithMedia = new Release(srcRls.getMedia(),
-						standardRls.getRelease().getTags(),
-						standardRls.getRelease().getGroup());
+				Release standardRlsWithMedia = new Release(srcRls.getMedia(), standardRls.getRelease().getTags(), standardRls.getRelease().getGroup());
 				existingRlss.add(standardRlsWithMedia);
 			}
 		}
@@ -266,8 +269,7 @@ public class ProcessingTask extends Task<Void>
 				List<Release> commonRlssWithMedia = new ArrayList<>(commonRlss.size());
 				for (StandardRelease commonRls : commonRlss)
 				{
-					commonRlssWithMedia.add(new Release(srcRls.getMedia(), commonRls.getRelease().getTags(), commonRls.getRelease()
-							.getGroup()));
+					commonRlssWithMedia.add(new Release(srcRls.getMedia(), commonRls.getRelease().getTags(), commonRls.getRelease().getGroup()));
 				}
 				List<Release> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, commonRlssWithMedia, config.getReleaseMetaTags());
 				logReleases(Level.DEBUG, "Guessed releases:", guessedRlss);
@@ -306,6 +308,10 @@ public class ProcessingTask extends Task<Void>
 		}
 
 		srcItem.updateProgress(0.75d);
+		if (isCancelled())
+		{
+			return;
+		}
 		if (config.isDeleteSource())
 		{
 			try
@@ -313,6 +319,7 @@ public class ProcessingTask extends Task<Void>
 				srcItem.updateStatus("Deleting source file");
 				Files.delete(sourceFile);
 				log.info("Deleted source file {}", sourceFile);
+				srcItem.getFiles().remove(sourceFile);
 			}
 			catch (IOException e)
 			{
@@ -484,6 +491,10 @@ public class ProcessingTask extends Task<Void>
 			cfg.setTimeout(1, TimeUnit.MINUTES);
 			cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
 			WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
+			if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
+			{
+				targetItem.getFiles().remove(newFile);
+			}
 			Path otherNewRar = Paths.get(newRar.toString());
 			Platform.runLater(() -> {
 				targetItem.getFiles().add(otherNewRar);
