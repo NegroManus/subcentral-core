@@ -29,7 +29,7 @@
 		</Button>
 		<Label fx:id="watchStatusLabel" maxHeight="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Watch stopped" />
 		<HBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-		<HBox fx:id="watchDirectoriesHBox" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" HBox.hgrow="NEVER">
+		<HBox fx:id="watchDirectoriesHBox" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="2.0" HBox.hgrow="NEVER">
 			<children>
 				<Label maxHeight="1.7976931348623157E308" text="&lt;no watch directories&gt;" />
 			</children>
