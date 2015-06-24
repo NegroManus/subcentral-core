@@ -88,9 +88,6 @@ public class SettingsController extends AbstractController
 	@FXML
 	private AnchorPane										settingsSectionRootPane;
 
-	// Model
-	private boolean											usingDefaultSettings						= false;
-
 	public SettingsController(MainController mainController) throws Exception
 	{
 		this.mainController = mainController;
@@ -363,11 +360,6 @@ public class SettingsController extends AbstractController
 		settingsSectionsTreeView.getSelectionModel().select(itemToSelect);
 	}
 
-	public boolean isUsingDefaultSettings()
-	{
-		return usingDefaultSettings;
-	}
-
 	public void loadSettings() throws Exception
 	{
 		Path settingsFile = Paths.get(SETTINGS_FILE).toAbsolutePath();
@@ -394,18 +386,17 @@ public class SettingsController extends AbstractController
 	public void loadDefaultSettings() throws Exception
 	{
 		WatcherSettings.INSTANCE.load(Paths.get(Resources.getResource(DEFAULT_SETTINGS_FILE).toURI()));
-		usingDefaultSettings = true;
 	}
 
 	private void maySaveSettings() throws ConfigurationException, IOException
 	{
-		if (usingDefaultSettings || WatcherSettings.INSTANCE.getChanged())
+		if (WatcherSettings.INSTANCE.getChanged())
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			// alert.getDialogPane().setPrefWidth(600d);
 			alert.setTitle("Save watcher settings?");
 			alert.setHeaderText("Save watcher settings?");
-			alert.setContentText("The settings have changed or you have no custom settings yet.\n\nDo you want to save them?");
+			alert.setContentText("The settings have changed. Do you want to save them?");
 			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 			Optional<ButtonType> result = alert.showAndWait();
@@ -423,7 +414,6 @@ public class SettingsController extends AbstractController
 	public void saveSettings() throws ConfigurationException
 	{
 		WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE));
-		usingDefaultSettings = false;
 	}
 
 	public WatchSettingsController getWatchSettingsController() throws IOException
