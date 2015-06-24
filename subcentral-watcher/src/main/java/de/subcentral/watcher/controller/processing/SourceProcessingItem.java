@@ -2,47 +2,67 @@ package de.subcentral.watcher.controller.processing;
 
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.StringJoiner;
 
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.fx.FxUtil;
 
 public class SourceProcessingItem extends AbstractProcessingItem
 {
-	private final Property<SubtitleAdjustment>	parsedBean	= new SimpleObjectProperty<SubtitleAdjustment>(this, "parsedBean", null);
+	private final ListProperty<Path>			files;
 	private final StringBinding					nameBinding;
+	private final StringBinding					infoBinding;
+	private final Property<SubtitleAdjustment>	parsedBean			= new SimpleObjectProperty<SubtitleAdjustment>(this, "parsedBean", null);
+	private final BooleanProperty				sourceFileExists	= new SimpleBooleanProperty(this, "sourceFileExists", true);
 
-	public SourceProcessingItem(NamingService namingService, Map<String, Object> namingParameters)
+	public SourceProcessingItem(NamingService namingService, Map<String, Object> namingParameters, Path sourceFile)
 	{
 		super(namingService, namingParameters);
+		nameBinding = FxUtil.constantStringBinding(sourceFile.getFileName().toString());
+		infoBinding = createInfoBinding();
+		files = new SimpleListProperty<>(this, "files", FXCollections.singletonObservableList(sourceFile));
+	}
 
-		nameBinding = new StringBinding()
+	private StringBinding createInfoBinding()
+	{
+		return new StringBinding()
 		{
 			{
-				super.bind(files);
+				super.bind(sourceFileExists);
 			}
 
 			@Override
 			protected String computeValue()
 			{
-				StringJoiner s = new StringJoiner(", ");
-				for (Path file : files)
-				{
-					s.add(file.getFileName().toString());
-				}
-				return s.toString();
+				return sourceFileExists.get() ? "" : "Source file was deleted";
 			}
 		};
+	}
+
+	@Override
+	public ListProperty<Path> getFiles()
+	{
+		return files;
 	}
 
 	@Override
 	public StringBinding nameBinding()
 	{
 		return nameBinding;
+	}
+
+	@Override
+	public StringBinding infoBinding()
+	{
+		return infoBinding;
 	}
 
 	public Property<SubtitleAdjustment> parsedBeanProperty()
@@ -60,9 +80,19 @@ public class SourceProcessingItem extends AbstractProcessingItem
 		this.parsedBean.setValue(parsedBean);
 	}
 
-	@Override
-	public StringBinding infoBinding()
+	public final BooleanProperty sourceFileExistsProperty()
 	{
-		return FxUtil.createConstantStringBinding("");
+		return this.sourceFileExists;
 	}
+
+	public final boolean isSourceFileExists()
+	{
+		return this.sourceFileExistsProperty().get();
+	}
+
+	public final void setSourceFileExists(final boolean sourceFileExists)
+	{
+		this.sourceFileExistsProperty().set(sourceFileExists);
+	}
+
 }

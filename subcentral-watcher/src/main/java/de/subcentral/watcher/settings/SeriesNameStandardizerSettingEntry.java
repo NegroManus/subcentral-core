@@ -9,14 +9,14 @@ import de.subcentral.fx.UserPattern;
 
 public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry<Series, SeriesNameStandardizer>
 {
-	private static final StringBinding	standardizerTypeAsString	= FxUtil.createConstantStringBinding("Series name");
+	private static final StringBinding	standardizerTypeAsString	= FxUtil.constantStringBinding("Series name");
 	private final StringBinding			ruleAsString;
 	private final UserPattern			nameUserPattern;
 
 	public SeriesNameStandardizerSettingEntry(UserPattern nameUiPattern, String nameReplacement, boolean enabled)
 	{
 		super(Series.class, buildStandardizer(nameUiPattern, nameReplacement), enabled);
-		ruleAsString = FxUtil.createConstantStringBinding(operationToString(value, nameUiPattern));
+		ruleAsString = FxUtil.constantStringBinding(operationToString(value, nameUiPattern));
 		this.nameUserPattern = nameUiPattern;
 	}
 

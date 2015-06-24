@@ -1,11 +1,15 @@
 package de.subcentral.watcher.controller.processing;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
@@ -18,6 +22,7 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 
 public class SubtitleTargetProcessingItem extends AbstractProcessingItem
 {
+	private final ListProperty<Path>			files				= new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
 	private final Property<SubtitleAdjustment>	subtitleAdjustment	= new SimpleObjectProperty<>(this, "subtitleAdjustment");
 	private final Property<Release>				release				= new SimpleObjectProperty<>(this, "release");
 	private final Property<ProcessInfo>			processInfo			= new SimpleObjectProperty<>(this, "processInfo");
@@ -28,7 +33,13 @@ public class SubtitleTargetProcessingItem extends AbstractProcessingItem
 	{
 		super(namingService, namingParameters);
 
-		nameBinding = new StringBinding()
+		nameBinding = createNameBinding();
+		infoBinding = createInfoBinding();
+	}
+
+	private StringBinding createNameBinding()
+	{
+		return new StringBinding()
 		{
 			{
 				super.bind(subtitleAdjustment, release);
@@ -43,8 +54,11 @@ public class SubtitleTargetProcessingItem extends AbstractProcessingItem
 				return SubtitleTargetProcessingItem.this.namingService.name(subtitleAdjustment.getValue(), effectiveParams);
 			}
 		};
+	}
 
-		infoBinding = new StringBinding()
+	private StringBinding createInfoBinding()
+	{
+		return new StringBinding()
 		{
 			{
 				super.bind(processInfo);
@@ -104,6 +118,12 @@ public class SubtitleTargetProcessingItem extends AbstractProcessingItem
 				}
 			}
 		};
+	}
+
+	@Override
+	public ListProperty<Path> getFiles()
+	{
+		return files;
 	}
 
 	@Override

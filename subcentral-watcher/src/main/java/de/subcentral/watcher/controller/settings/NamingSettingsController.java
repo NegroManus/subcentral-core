@@ -63,7 +63,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		namingParamsTableView.getItems().addAll(namingParams);
 
 		namingParamsNameColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> {
-			return FxUtil.createConstantBinding(param.getValue().getKey());
+			return FxUtil.constantBinding(param.getValue().getKey());
 		});
 
 		namingParamsValueColumn.setCellValueFactory((CellDataFeatures<NamingParam, Boolean> param) -> {

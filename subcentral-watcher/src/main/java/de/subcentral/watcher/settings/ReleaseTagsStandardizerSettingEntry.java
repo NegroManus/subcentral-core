@@ -11,13 +11,13 @@ import de.subcentral.fx.FxUtil;
 
 public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntry<Release, ReleaseTagsStandardizer>
 {
-	private static final StringBinding	standardizerTypeAsString	= FxUtil.createConstantStringBinding("Release tags");
+	private static final StringBinding	standardizerTypeAsString	= FxUtil.constantStringBinding("Release tags");
 	private final StringBinding			ruleAsString;
 
 	public ReleaseTagsStandardizerSettingEntry(ReleaseTagsStandardizer standardizer, boolean enabled)
 	{
 		super(Release.class, standardizer, enabled);
-		ruleAsString = FxUtil.createConstantStringBinding(operationToString(standardizer));
+		ruleAsString = FxUtil.constantStringBinding(operationToString(standardizer));
 	}
 
 	@Override

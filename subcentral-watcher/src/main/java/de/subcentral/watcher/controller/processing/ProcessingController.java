@@ -14,7 +14,6 @@ import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -46,7 +45,6 @@ import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.IOUtil;
-import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
@@ -247,9 +245,9 @@ public class ProcessingController extends AbstractController
 				};
 			};
 		});
-		filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> {
-			return new SimpleListProperty<>(features.getValue().getValue().getFiles());
-		});
+		filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> features.getValue()
+				.getValue()
+				.getFiles());
 
 		statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue()
 				.getValue()
@@ -408,7 +406,7 @@ public class ProcessingController extends AbstractController
 
 	private ExecutorService createProcessingExecutor()
 	{
-		return Executors.newSingleThreadExecutor(new NamedThreadFactory("Watcher-FileProcessor", false));
+		return Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
 	}
 
 	// package private

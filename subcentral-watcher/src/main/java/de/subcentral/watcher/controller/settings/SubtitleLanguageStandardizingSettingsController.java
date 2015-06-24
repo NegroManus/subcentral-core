@@ -108,7 +108,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 
 		// TextLangMappings
 		textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, UserPattern> param) -> {
-			return FxUtil.createConstantBinding(param.getValue().getPattern());
+			return FxUtil.constantBinding(param.getValue().getPattern());
 		});
 		textLangMappingsTextColumn.setCellFactory((TableColumn<LanguageUserPattern, UserPattern> param) -> {
 			return new TableCell<LanguageUserPattern, UserPattern>()
@@ -130,7 +130,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			};
 		});
 		textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, Locale> param) -> {
-			return FxUtil.createConstantBinding(param.getValue().getLanguage());
+			return FxUtil.constantBinding(param.getValue().getLanguage());
 		});
 		textLangMappingsLangColumn.setCellFactory((TableColumn<LanguageUserPattern, Locale> param) -> {
 			return new TableCell<LanguageUserPattern, Locale>()
@@ -218,7 +218,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 
 		// LangTextMappings
 		langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, Locale> param) -> {
-			return FxUtil.createConstantBinding(param.getValue().getLanguage());
+			return FxUtil.constantBinding(param.getValue().getLanguage());
 		});
 		langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageTextMapping, Locale> param) -> {
 			return new TableCell<LanguageTextMapping, Locale>()
@@ -240,7 +240,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 			};
 		});
 		langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, String> param) -> {
-			return FxUtil.createConstantBinding(param.getValue().getText());
+			return FxUtil.constantBinding(param.getValue().getText());
 		});
 		langTextMappingsTableView.setItems(settings.customLanguageTextMappingsProperty());
 

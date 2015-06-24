@@ -52,7 +52,7 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, Boolean> param) -> param.getValue()
 				.enabledProperty());
-		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.createConstantBinding(param.getValue()
+		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.constantBinding(param.getValue()
 				.getValue()
 				.getDomain()));
 
@@ -75,7 +75,7 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 				default:
 					example = "";
 			}
-			return FxUtil.createConstantBinding(example);
+			return FxUtil.constantBinding(example);
 		});
 	}
 }

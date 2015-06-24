@@ -195,8 +195,7 @@ public class ProcessingTask extends Task<Void>
 
 	private void processSubtitleAdjustment(SubtitleAdjustment srcSubAdj) throws InterruptedException
 	{
-		SourceProcessingItem srcItem = new SourceProcessingItem(processingController.getNamingService(), config.getNamingParameters());
-		srcItem.getFiles().add(sourceFile);
+		SourceProcessingItem srcItem = new SourceProcessingItem(processingController.getNamingService(), config.getNamingParameters(), sourceFile);
 		srcItem.setParsedBean(srcSubAdj);
 
 		TreeItem<ProcessingItem> srcTreeItem = addSourceTreeItem(srcItem);
@@ -324,7 +323,7 @@ public class ProcessingTask extends Task<Void>
 				srcItem.updateStatus("Deleting source file");
 				Files.delete(sourceFile);
 				log.info("Deleted source file {}", sourceFile);
-				srcItem.getFiles().remove(sourceFile);
+				srcItem.setSourceFileExists(false);
 			}
 			catch (IOException e)
 			{

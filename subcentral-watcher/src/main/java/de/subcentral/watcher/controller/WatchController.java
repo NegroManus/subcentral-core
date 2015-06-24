@@ -22,7 +22,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherFxUtil;
@@ -165,7 +164,7 @@ public class WatchController extends AbstractController
 
 	private void initWatchService() throws IOException
 	{
-		watchServiceExecutor = Executors.newSingleThreadExecutor(new NamedThreadFactory("Watcher-WatchService", false));
+		watchServiceExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-WatchService"));
 
 		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFiles);
 		watchService.setExecutor(watchServiceExecutor);

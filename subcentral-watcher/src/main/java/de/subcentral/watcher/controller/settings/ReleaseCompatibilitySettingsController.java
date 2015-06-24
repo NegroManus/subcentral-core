@@ -60,7 +60,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingEntry, Boolean> param) -> param.getValue()
 				.enabledProperty());
 		crossGroupCompatibilitiesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingEntry, String> param) -> {
-			return FxUtil.createConstantBinding(((CrossGroupCompatibility) param.getValue().getValue()).toShortString());
+			return FxUtil.constantBinding(((CrossGroupCompatibility) param.getValue().getValue()).toShortString());
 		});
 
 		addCrossGroupCompatibility.setOnAction((ActionEvent event) -> {

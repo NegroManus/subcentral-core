@@ -431,7 +431,7 @@ public class FxUtil
 		};
 	}
 
-	public static StringBinding createConstantStringBinding(final String value)
+	public static StringBinding constantStringBinding(final String value)
 	{
 		return new StringBinding()
 		{
@@ -443,7 +443,7 @@ public class FxUtil
 		};
 	}
 
-	public static <T> Binding<T> createConstantBinding(final T value)
+	public static <T> Binding<T> constantBinding(final T value)
 	{
 		return new ObjectBinding<T>()
 		{
