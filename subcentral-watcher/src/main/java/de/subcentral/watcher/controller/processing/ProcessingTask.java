@@ -395,6 +395,9 @@ public class ProcessingTask extends Task<Void>
 				// the info from the parsed name should overwrite the info from the release db
 				// because if matters how the series name is in the release (not how it is listed on tvrage or sth else)
 				// therefore overwrite=true
+				// For example a Series may be listed as "Good Wife" but the official release name is "The Good Wife"
+				// TODO: sadly all the extra information about series and episodes (episode title) is overwritten
+				// on the other hands, those mistakes can be corrected by standardizers
 				ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), true);
 			}
 			catch (ParsingException e)
