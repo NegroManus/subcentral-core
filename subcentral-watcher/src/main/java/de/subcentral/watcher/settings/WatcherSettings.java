@@ -1,5 +1,7 @@
 package de.subcentral.watcher.settings;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -209,9 +211,22 @@ public class WatcherSettings extends ObservableBean
 		};
 	}
 
-	public void load(Path file) throws ConfigurationException
+	public void load(Path path) throws ConfigurationException
 	{
-		log.info("Loading settings from file {}", file.toAbsolutePath());
+		try
+		{
+			load(path.toUri().toURL());
+		}
+		catch (MalformedURLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void load(URL file) throws ConfigurationException
+	{
+		log.info("Loading settings from file {}", file);
 
 		XMLConfiguration cfg = new XMLConfiguration();
 		// cfg.addEventListener(Event.ANY, (Event event) -> {
@@ -219,7 +234,7 @@ public class WatcherSettings extends ObservableBean
 		// });
 
 		FileHandler cfgFileHandler = new FileHandler(cfg);
-		cfgFileHandler.load(file.toFile());
+		cfgFileHandler.load(file);
 
 		load(cfg);
 

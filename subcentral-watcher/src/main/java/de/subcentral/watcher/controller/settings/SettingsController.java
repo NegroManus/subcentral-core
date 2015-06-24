@@ -378,14 +378,14 @@ public class SettingsController extends AbstractController
 		}
 		else
 		{
-			log.debug("No custom settings found at {}. Will load default settings");
+			log.debug("No custom settings found at {}. Will load default settings", settingsFile);
 		}
 		loadDefaultSettings();
 	}
 
 	public void loadDefaultSettings() throws Exception
 	{
-		WatcherSettings.INSTANCE.load(Paths.get(Resources.getResource(DEFAULT_SETTINGS_FILE).toURI()));
+		WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE));
 	}
 
 	private void maySaveSettings() throws ConfigurationException, IOException

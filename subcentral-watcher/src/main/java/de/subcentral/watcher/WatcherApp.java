@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +33,7 @@ public class WatcherApp extends Application
 	public void init() throws Exception
 	{
 		log.info("Initializing {} ...", APP_INFO);
+		log.info(SystemUtils.USER_DIR);
 		long start = System.nanoTime();
 
 		this.mainController = new MainController(primaryStage);
@@ -96,6 +98,7 @@ public class WatcherApp extends Application
 
 	public static void main(String[] args)
 	{
+		System.setProperty("log4j.configurationFile", "/subcentral-watcher/src/main/resources/log4j2.xml");
 		launch(args);
 	}
 }
