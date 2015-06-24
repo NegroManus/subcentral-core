@@ -33,7 +33,16 @@ public class WatcherApp extends Application
 	public void init() throws Exception
 	{
 		log.info("Initializing {} ...", APP_INFO);
-		log.info(SystemUtils.USER_DIR);
+		log.info("Operating system: {} {} {}", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
+		log.info("Java version: {}", SystemUtils.JAVA_VERSION);
+		log.info("Java runtime: {} {}", SystemUtils.JAVA_RUNTIME_NAME, SystemUtils.JAVA_RUNTIME_VERSION);
+		log.info("Java VM: {} ({}) - Vendor: {}, Version: {}",
+				SystemUtils.JAVA_VM_NAME,
+				SystemUtils.JAVA_VM_INFO,
+				SystemUtils.JAVA_VM_VENDOR,
+				SystemUtils.JAVA_VM_VERSION);
+		log.info("Java home: {}", SystemUtils.JAVA_HOME);
+		log.info("User dir: {}", SystemUtils.USER_DIR);
 		long start = System.nanoTime();
 
 		this.mainController = new MainController(primaryStage);
