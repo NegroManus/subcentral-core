@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="rootBorderPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="rootBorderPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<center>
-		<TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+		<TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
 			<tabs>
 				<Tab text="Processing">
 					<content>
 						<AnchorPane fx:id="processingRootPane" minHeight="0.0" minWidth="0.0" />
 					</content>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/gears_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
 				</Tab>
 				<Tab text="Settings">
 					<content>
 						<AnchorPane fx:id="settingsRootPane" minHeight="0.0" minWidth="0.0" />
 					</content>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/settings_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
 				</Tab>
 			</tabs>
 		</TabPane>

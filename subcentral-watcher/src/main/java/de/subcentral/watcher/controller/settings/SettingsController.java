@@ -18,8 +18,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
@@ -41,30 +43,30 @@ public class SettingsController extends AbstractController
 	private static final Logger								log											= LogManager.getLogger(SettingsController.class);
 
 	public static final String								WATCH_SECTION								= "watch";
-	public static final String								WATCH_SECTION_LBL							= "Watch";
+	private static final String								WATCH_SECTION_LBL							= "Watch";
 	public static final String								PARSING_SECTION								= "parsing";
-	public static final String								PARSING_SECTION_LBL							= "Parsing";
+	private static final String								PARSING_SECTION_LBL							= "Parsing";
 
 	public static final String								RELEASE_SECTION								= "release";
-	public static final String								RELEASE_SECTION_LBL							= "Release";
+	private static final String								RELEASE_SECTION_LBL							= "Release";
 	public static final String								RELEASE_DBS_SECTION							= "release.dbs";
-	public static final String								RELEASE_DBS_SECTION_LBL						= "Databases";
+	private static final String								RELEASE_DBS_SECTION_LBL						= "Databases";
 	public static final String								RELEASE_GUESSING_SECTION					= "release.guessing";
-	public static final String								RELEASE_GUESSING_SECTION_LBL				= "Guessing";
+	private static final String								RELEASE_GUESSING_SECTION_LBL				= "Guessing";
 	public static final String								RELEASE_COMPATIBILITY_SECTION				= "release.compatibility";
-	public static final String								RELEASE_COMPATIBILITY_SECTION_LBL			= "Compatibility";
+	private static final String								RELEASE_COMPATIBILITY_SECTION_LBL			= "Compatibility";
 	public static final String								STANDARDIZING_SECTION						= "standardizing";
-	public static final String								STANDARDIZING_SECTION_LBL					= "Standardizing";
+	private static final String								STANDARDIZING_SECTION_LBL					= "Standardizing";
 	public static final String								STANDARDIZING_PRE_METADATADB_SECTION		= "standardizing.premetadb";
-	public static final String								STANDARDIZING_PRE_METADATADB_SECTION_LBL	= "Pre metadata database";
+	private static final String								STANDARDIZING_PRE_METADATADB_SECTION_LBL	= "Pre metadata database";
 	public static final String								STANDARDIZING_POST_METADATADB_SECTION		= "standardizing.postmetadb";
-	public static final String								STANDARDIZING_POST_METADATADB_SECTION_LBL	= "Post metadata database";
+	private static final String								STANDARDIZING_POST_METADATADB_SECTION_LBL	= "Post metadata database";
 	public static final String								STANDARDIZING_SUBTITLE_LANGUAGE_SECTION		= "standardizing.subtitleLanguage";
-	public static final String								STANDARDIZING_SUBTITLE_LANGUAGE_SECTION_LBL	= "Subtitle language";
+	private static final String								STANDARDIZING_SUBTITLE_LANGUAGE_SECTION_LBL	= "Subtitle language";
 	public static final String								NAMING_SECTION								= "naming";
-	public static final String								NAMING_SECTION_LBL							= "Naming";
+	private static final String								NAMING_SECTION_LBL							= "Naming";
 	public static final String								FILE_TRANSFORMATION_SECTION					= "filetransformation";
-	public static final String								FILE_TRANSFORMATION_SECTION_LBL				= "File transformation";
+	private static final String								FILE_TRANSFORMATION_SECTION_LBL				= "File transformation";
 
 	// Controlling properties
 	private final MainController							mainController;
@@ -87,80 +89,87 @@ public class SettingsController extends AbstractController
 	private AnchorPane										settingsSectionRootPane;
 
 	// Model
-	private boolean											loadedDefault								= false;
+	private boolean											usingDefaultSettings						= false;
 
 	public SettingsController(MainController mainController) throws Exception
 	{
 		this.mainController = mainController;
 	}
 
-	private void loadSettings() throws Exception
-	{
-		Path settingsFile = Paths.get(SETTINGS_FILE).toAbsolutePath();
-		if (Files.exists(settingsFile, LinkOption.NOFOLLOW_LINKS))
-		{
-			try
-			{
-				log.info("Loading custom settings from {}", settingsFile);
-				WatcherSettings.INSTANCE.load(settingsFile);
-				return;
-			}
-			catch (Exception e)
-			{
-				log.error("Failed to load custom settings from " + settingsFile + ". Will load default settings", e);
-			}
-		}
-		else
-		{
-			log.info("No custom settings found at {}. Will load default settings");
-		}
-		loadDefaultSettings();
-	}
-
-	private void loadDefaultSettings() throws Exception
-	{
-		Path defaultSettingsFile = Paths.get(Resources.getResource(DEFAULT_SETTINGS_FILE).toURI());
-		log.info("Loading default settings from {}", defaultSettingsFile);
-		WatcherSettings.INSTANCE.load(defaultSettingsFile);
-		loadedDefault = true;
-	}
-
-	public MainController getMainController()
-	{
-		return mainController;
-	}
-
 	@Override
 	protected void doInitialize() throws Exception
 	{
 		loadSettings();
+		initSettingsTree();
+	}
 
+	private void initSettingsTree()
+	{
 		final TreeItem<SettingsSection> root = new TreeItem<>();
 		settingsSectionsTreeView.setRoot(root);
-		settingsSectionsTreeView.setShowRoot(false);
+		settingsSectionsTreeView.setCellFactory((TreeView<SettingsSection> param) -> {
+			return new TreeCell<SettingsSection>()
+			{
+				@Override
+				protected void updateItem(SettingsSection item, boolean empty)
+				{
+					// calling super here is very important - don't skip this!
+					super.updateItem(item, empty);
 
-		TreeItem<SettingsSection> watchTreeItem = new TreeItem<>(new SettingsSection(WATCH_SECTION, WATCH_SECTION_LBL));
+					if (empty || item == null)
+					{
+						setText("");
+						setGraphic(null);
+					}
+					else
+					{
+						setText(item.getLabel());
+						if (item.getImage() == null)
+						{
+							setGraphic(null);
+						}
+						else
+						{
+							setGraphic(new ImageView(FxUtil.loadImg(item.getImage())));
+						}
+					}
+				}
+			};
+		});
 
-		TreeItem<SettingsSection> parsingTreeItem = new TreeItem<>(new SettingsSection(PARSING_SECTION, PARSING_SECTION_LBL));
+		TreeItem<SettingsSection> watchTreeItem = new TreeItem<>(new SettingsSection(WATCH_SECTION, WATCH_SECTION_LBL, "iris_16.png"));
 
-		TreeItem<SettingsSection> releaseTreeItem = new TreeItem<>(new SettingsSection(RELEASE_SECTION, RELEASE_SECTION_LBL));
-		TreeItem<SettingsSection> releaseDatabasesTreeItem = new TreeItem<>(new SettingsSection(RELEASE_DBS_SECTION, RELEASE_DBS_SECTION_LBL));
-		TreeItem<SettingsSection> releaseGuessingTreeItem = new TreeItem<>(new SettingsSection(RELEASE_GUESSING_SECTION, RELEASE_GUESSING_SECTION_LBL));
+		TreeItem<SettingsSection> parsingTreeItem = new TreeItem<>(new SettingsSection(PARSING_SECTION, PARSING_SECTION_LBL, "file_search_16.png"));
+
+		TreeItem<SettingsSection> releaseTreeItem = new TreeItem<>(new SettingsSection(RELEASE_SECTION, RELEASE_SECTION_LBL, "archive_16.png"));
+		TreeItem<SettingsSection> releaseDatabasesTreeItem = new TreeItem<>(new SettingsSection(RELEASE_DBS_SECTION,
+				RELEASE_DBS_SECTION_LBL,
+				"database_16.png"));
+		TreeItem<SettingsSection> releaseGuessingTreeItem = new TreeItem<>(new SettingsSection(RELEASE_GUESSING_SECTION,
+				RELEASE_GUESSING_SECTION_LBL,
+				"idea_16.png"));
 		TreeItem<SettingsSection> releaseCompatibilityTreeItem = new TreeItem<>(new SettingsSection(RELEASE_COMPATIBILITY_SECTION,
-				RELEASE_COMPATIBILITY_SECTION_LBL));
+				RELEASE_COMPATIBILITY_SECTION_LBL,
+				"couple_16.png"));
 
-		TreeItem<SettingsSection> standardizingTreeItem = new TreeItem<>(new SettingsSection(STANDARDIZING_SECTION, STANDARDIZING_SECTION_LBL));
+		TreeItem<SettingsSection> standardizingTreeItem = new TreeItem<>(new SettingsSection(STANDARDIZING_SECTION,
+				STANDARDIZING_SECTION_LBL,
+				"exchange_16.png"));
 		TreeItem<SettingsSection> preMetadataDbStandardizingTreeItem = new TreeItem<>(new SettingsSection(STANDARDIZING_PRE_METADATADB_SECTION,
-				STANDARDIZING_PRE_METADATADB_SECTION_LBL));
+				STANDARDIZING_PRE_METADATADB_SECTION_LBL,
+				"exchange_16.png"));
 		TreeItem<SettingsSection> postMetadataDbStandardizingTreeItem = new TreeItem<>(new SettingsSection(STANDARDIZING_POST_METADATADB_SECTION,
-				STANDARDIZING_POST_METADATADB_SECTION_LBL));
+				STANDARDIZING_POST_METADATADB_SECTION_LBL,
+				"exchange_16.png"));
 		TreeItem<SettingsSection> subtitleLanguageStandardizingTreeItem = new TreeItem<>(new SettingsSection(STANDARDIZING_SUBTITLE_LANGUAGE_SECTION,
-				STANDARDIZING_SUBTITLE_LANGUAGE_SECTION_LBL));
+				STANDARDIZING_SUBTITLE_LANGUAGE_SECTION_LBL,
+				"usa_16.png"));
 
-		TreeItem<SettingsSection> namingTreeItem = new TreeItem<>(new SettingsSection(NAMING_SECTION, NAMING_SECTION_LBL));
+		TreeItem<SettingsSection> namingTreeItem = new TreeItem<>(new SettingsSection(NAMING_SECTION, NAMING_SECTION_LBL, "font_16.png"));
 
 		TreeItem<SettingsSection> filetransformationTreeItem = new TreeItem<>(new SettingsSection(FILE_TRANSFORMATION_SECTION,
-				FILE_TRANSFORMATION_SECTION_LBL));
+				FILE_TRANSFORMATION_SECTION_LBL,
+				"transform_16.png"));
 
 		root.getChildren().add(watchTreeItem);
 		root.getChildren().add(parsingTreeItem);
@@ -336,6 +345,85 @@ public class SettingsController extends AbstractController
 
 		// Select the first
 		settingsSectionsTreeView.getSelectionModel().selectFirst();
+	}
+
+	public MainController getMainController()
+	{
+		return mainController;
+	}
+
+	public void selectSection(String section)
+	{
+		if (section == null)
+		{
+			settingsSectionsTreeView.getSelectionModel().clearSelection();
+		}
+		TreeItem<SettingsSection> itemToSelect = FxUtil.findTreeItem(settingsSectionsTreeView.getRoot(),
+				(TreeItem<SettingsSection> item) -> item.getValue() != null ? section.equals(item.getValue().getSection()) : false);
+		settingsSectionsTreeView.getSelectionModel().select(itemToSelect);
+	}
+
+	public boolean isUsingDefaultSettings()
+	{
+		return usingDefaultSettings;
+	}
+
+	public void loadSettings() throws Exception
+	{
+		Path settingsFile = Paths.get(SETTINGS_FILE).toAbsolutePath();
+		if (Files.exists(settingsFile, LinkOption.NOFOLLOW_LINKS))
+		{
+			try
+			{
+				log.debug("Loading custom settings from {}", settingsFile);
+				WatcherSettings.INSTANCE.load(settingsFile);
+				return;
+			}
+			catch (Exception e)
+			{
+				log.error("Failed to load custom settings from " + settingsFile + ". Will load default settings", e);
+			}
+		}
+		else
+		{
+			log.debug("No custom settings found at {}. Will load default settings");
+		}
+		loadDefaultSettings();
+	}
+
+	public void loadDefaultSettings() throws Exception
+	{
+		WatcherSettings.INSTANCE.load(Paths.get(Resources.getResource(DEFAULT_SETTINGS_FILE).toURI()));
+		usingDefaultSettings = true;
+	}
+
+	private void maySaveSettings() throws ConfigurationException, IOException
+	{
+		if (usingDefaultSettings || WatcherSettings.INSTANCE.getChanged())
+		{
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			// alert.getDialogPane().setPrefWidth(600d);
+			alert.setTitle("Save watcher settings?");
+			alert.setHeaderText("Save watcher settings?");
+			alert.setContentText("The settings have changed or you have no custom settings yet.\n\nDo you want to save them?");
+			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.YES)
+			{
+				saveSettings();
+			}
+			else
+			{
+				log.debug("User chose not to save changed settings");
+			}
+		}
+	}
+
+	public void saveSettings() throws ConfigurationException
+	{
+		WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE));
+		usingDefaultSettings = false;
 	}
 
 	public WatchSettingsController getWatchSettingsController() throws IOException
@@ -514,37 +602,17 @@ public class SettingsController extends AbstractController
 		maySaveSettings();
 	}
 
-	private void maySaveSettings() throws ConfigurationException, IOException
-	{
-		if (loadedDefault || WatcherSettings.INSTANCE.getChanged())
-		{
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Save settings?");
-			alert.setHeaderText("Save settings?");
-			alert.setContentText("The settings have changed. Do you want to save them?");
-			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.YES)
-			{
-				WatcherSettings.INSTANCE.save(Paths.get("watcher-settings.xml"));
-			}
-			else
-			{
-				log.debug("User chose not to save changed settings");
-			}
-		}
-	}
-
 	public static class SettingsSection
 	{
 		private final String	section;
 		private final String	label;
+		private final String	image;
 
-		public SettingsSection(String section, String label)
+		public SettingsSection(String section, String label, String image)
 		{
 			this.section = section;
 			this.label = label;
+			this.image = image;
 		}
 
 		public String getSection()
@@ -555,6 +623,11 @@ public class SettingsController extends AbstractController
 		public String getLabel()
 		{
 			return label;
+		}
+
+		public String getImage()
+		{
+			return image;
 		}
 
 		@Override

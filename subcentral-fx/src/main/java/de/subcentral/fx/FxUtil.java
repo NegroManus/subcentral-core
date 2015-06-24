@@ -17,6 +17,7 @@ import java.util.StringJoiner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -41,6 +42,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -473,6 +476,15 @@ public class FxUtil
 		return FXCollections.observableList(filteredLocales);
 	}
 
+	public static Image loadImg(String img)
+	{
+		if (img == null)
+		{
+			return null;
+		}
+		return new Image("img/" + img);
+	}
+
 	/**
 	 * Load from fxml file and connect with ResourceBundle and controller.
 	 * 
@@ -568,6 +580,23 @@ public class FxUtil
 			int selectedIndex = table.getSelectionModel().getSelectedIndex();
 			table.getItems().remove(selectedIndex);
 		}
+	}
+
+	public static <T> TreeItem<T> findTreeItem(TreeItem<T> treeItem, Predicate<TreeItem<T>> predicate)
+	{
+		if (predicate.test(treeItem))
+		{
+			return treeItem;
+		}
+		for (TreeItem<T> child : treeItem.getChildren())
+		{
+			TreeItem<T> matchingItem = findTreeItem(child, predicate);
+			if (matchingItem != null)
+			{
+				return matchingItem;
+			}
+		}
+		return null;
 	}
 
 	private FxUtil()

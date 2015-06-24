@@ -15,16 +15,19 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Control;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherFxUtil;
+import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.settings.WatcherSettings;
 
 public class WatchController extends AbstractController
@@ -41,6 +44,8 @@ public class WatchController extends AbstractController
 	private Label					watchStatusLabel;
 	@FXML
 	private HBox					watchDirectoriesHBox;
+
+	private final ImageView			watchImg	= new ImageView(FxUtil.loadImg("iris_16.png"));
 
 	private DirectoryWatchService	watchService;
 	private ExecutorService			watchServiceExecutor;
@@ -112,6 +117,7 @@ public class WatchController extends AbstractController
 			}
 		});
 
+		watchDirectoriesHBox.getChildren().add(watchImg);
 		updateWatchDirsHBox(WatcherSettings.INSTANCE.getWatchDirectories());
 		WatcherSettings.INSTANCE.watchDirectoriesProperty().addListener(new InvalidationListener()
 		{
@@ -138,30 +144,29 @@ public class WatchController extends AbstractController
 
 	private void updateWatchDirsHBox(List<Path> watchDirs)
 	{
-		watchDirectoriesHBox.getChildren().clear();
+		watchDirectoriesHBox.getChildren().retainAll(watchImg);
 		if (watchDirs.isEmpty())
 		{
-			addToHBoxWithMaxHeight(watchDirectoriesHBox, new Label("<no watch directories>"));
+			Hyperlink link = new Hyperlink("No watch directories!");
+			link.setVisited(true);
+			link.setOnAction((ActionEvent evt) -> {
+				mainController.selectTab(MainController.SETTINGS_TAB_INDEX);
+				mainController.getSettingsController().selectSection(SettingsController.WATCH_SECTION);
+			});
+			watchDirectoriesHBox.getChildren().add(link);
 		}
 		else
 		{
 			Iterator<Path> iter = watchDirs.iterator();
 			while (iter.hasNext())
 			{
-				addToHBoxWithMaxHeight(watchDirectoriesHBox, FxUtil.createPathHyperlink(iter.next(), mainController.getCommonExecutor()));
+				watchDirectoriesHBox.getChildren().add(FxUtil.createPathHyperlink(iter.next(), mainController.getCommonExecutor()));
 				if (iter.hasNext())
 				{
-					addToHBoxWithMaxHeight(watchDirectoriesHBox, new Label("·"));
+					watchDirectoriesHBox.getChildren().add(new Label("·"));
 				}
 			}
 		}
-	}
-
-	private void addToHBoxWithMaxHeight(HBox hbox, Control ctrl)
-	{
-		// maximal max height is important so that labels take all the height and are centered correctly
-		ctrl.setMaxHeight(Double.MAX_VALUE);
-		hbox.getChildren().add(ctrl);
 	}
 
 	private void initWatchService() throws IOException

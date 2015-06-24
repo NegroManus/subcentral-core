@@ -34,7 +34,7 @@ public abstract class AbstractController
 		{
 			long start = System.nanoTime();
 			doInitialize();
-			log.info("Initialized {} in {} ms", getClass().getSimpleName(), TimeUtil.durationMillis(start));
+			log.debug("Initialized {} in {} ms", getClass().getSimpleName(), TimeUtil.durationMillis(start));
 		}
 		catch (Exception e)
 		{

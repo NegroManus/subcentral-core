@@ -18,7 +18,7 @@ public class WatcherApp extends Application
 {
 	public static final String	APP_NAME			= "Watcher";
 	public static final String	APP_VERSION			= "2.0";
-	public static final String	APP_VERSION_DATE	= "2014-11-18";
+	public static final String	APP_VERSION_DATE	= "2015-06-24";
 	public static final String	APP_INFO			= APP_NAME + " " + APP_VERSION + " (" + APP_VERSION_DATE + ")";
 
 	private static final Logger	log					= LogManager.getLogger(WatcherApp.class);
@@ -31,7 +31,7 @@ public class WatcherApp extends Application
 	@Override
 	public void init() throws Exception
 	{
-		log.debug("Initializing {} ...", APP_INFO);
+		log.info("Initializing {} ...", APP_INFO);
 		long start = System.nanoTime();
 
 		this.mainController = new MainController(primaryStage);
@@ -43,7 +43,7 @@ public class WatcherApp extends Application
 	@Override
 	public void start(Stage primaryStage)
 	{
-		log.debug("Starting {} ...", APP_INFO);
+		log.info("Starting {} ...", APP_INFO);
 		long start = System.nanoTime();
 
 		this.primaryStage = primaryStage;
@@ -57,6 +57,7 @@ public class WatcherApp extends Application
 	private void initPrimaryStage()
 	{
 		primaryStage.setTitle("Watcher");
+		primaryStage.getIcons().addAll(FxUtil.loadImg("watcher_16.png"), FxUtil.loadImg("watcher_32.png"), FxUtil.loadImg("watcher_64.png"));
 	}
 
 	/**

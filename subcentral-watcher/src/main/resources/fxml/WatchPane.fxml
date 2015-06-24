@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Button fx:id="startWatchButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Start" HBox.hgrow="SOMETIMES" />
-      <Button fx:id="stopWatchButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Stop" />
-      <Label fx:id="watchStatusLabel" maxHeight="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Watch stopped" />
-      <HBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-      <HBox fx:id="watchDirectoriesHBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="NEVER">
-         <children>
-            <Label maxHeight="1.7976931348623157E308" text="Label" />
-         </children>
-      </HBox>
-   </children>
-   <padding>
-      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-   </padding>
+<HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" spacing="6.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<Button fx:id="startWatchButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Start" HBox.hgrow="SOMETIMES">
+			<graphic>
+				<ImageView pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../img/start_16.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Button>
+		<Button fx:id="stopWatchButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Stop">
+			<graphic>
+				<ImageView pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../img/stop_16.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Button>
+		<Label fx:id="watchStatusLabel" maxHeight="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Watch stopped" />
+		<HBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+		<HBox fx:id="watchDirectoriesHBox" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" HBox.hgrow="NEVER">
+			<children>
+				<Label maxHeight="1.7976931348623157E308" text="&lt;no watch directories&gt;" />
+			</children>
+		</HBox>
+	</children>
+	<padding>
+		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+	</padding>
 </HBox>

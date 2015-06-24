@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.SimpleListProperty;
@@ -88,11 +89,13 @@ public class ProcessingController extends AbstractController
 	private TreeTableColumn<ProcessingItem, Double>					progressColumn;
 	@FXML
 	private TreeTableColumn<ProcessingItem, String>					infoColumn;
-	// Row Button bar
+	// Lower Button bar
 	@FXML
-	private Button													openFolderBtn;
+	private Button													protocolBtn;
 	@FXML
-	private Button													openNfoBtn;
+	private Button													openDirectoryBtn;
+	@FXML
+	private Button													releaseInfoBtn;
 	@FXML
 	private Button													clearBtn;
 
@@ -207,57 +210,7 @@ public class ProcessingController extends AbstractController
 	public void doInitialize()
 	{
 		initProcessingTreeTable();
-
-		openFolderBtn.disableProperty().bind(new BooleanBinding()
-		{
-			{
-				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
-			}
-
-			@Override
-			protected boolean computeValue()
-			{
-				TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
-				return selectedItem == null || selectedItem.getValue().getFiles().isEmpty();
-			}
-		});
-		openFolderBtn.setOnAction(evt -> FxUtil.browse(processingTreeTable.getSelectionModel()
-				.getSelectedItem()
-				.getValue()
-				.getFiles()
-				.get(0)
-				.getParent()
-				.toUri()
-				.toString(), mainController.getCommonExecutor()));
-
-		openNfoBtn.disableProperty().bind(new BooleanBinding()
-		{
-			{
-				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
-			}
-
-			@Override
-			protected boolean computeValue()
-			{
-				TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
-				if (selectedItem != null && selectedItem.getValue() instanceof SubtitleTargetProcessingItem)
-				{
-					SubtitleTargetProcessingItem subTargetItem = (SubtitleTargetProcessingItem) selectedItem.getValue();
-					return subTargetItem.getRelease().getFurtherInfoLinks().isEmpty();
-				}
-				return true;
-			}
-		});
-		openNfoBtn.setOnAction(evt -> {
-			SubtitleTargetProcessingItem item = (SubtitleTargetProcessingItem) processingTreeTable.getSelectionModel().getSelectedItem().getValue();
-			FxUtil.browse(item.getRelease().getFurtherInfoLinks().get(0), mainController.getCommonExecutor());
-		});
-
-		clearBtn.setOnAction(evt -> {
-			processingTreeTable.getRoot().getChildren().clear();
-			processingTreeTable.setRoot(new TreeItem<>());
-			cancelAllTasks();
-		});
+		initLowerButtonBar();
 	}
 
 	private void initProcessingTreeTable()
@@ -309,6 +262,63 @@ public class ProcessingController extends AbstractController
 		infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue()
 				.getValue()
 				.infoBinding());
+	}
+
+	private void initLowerButtonBar()
+	{
+		protocolBtn.disableProperty().bind(processingTreeTable.getSelectionModel().selectedItemProperty().isNull());
+		protocolBtn.setOnAction(evt -> System.out.println(processingTreeTable.getSelectionModel().getSelectedItem().getValue()));
+
+		openDirectoryBtn.disableProperty().bind(new BooleanBinding()
+		{
+			{
+				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
+			}
+
+			@Override
+			protected boolean computeValue()
+			{
+				TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
+				return selectedItem == null || selectedItem.getValue().getFiles().isEmpty();
+			}
+		});
+		openDirectoryBtn.setOnAction(evt -> FxUtil.browse(processingTreeTable.getSelectionModel()
+				.getSelectedItem()
+				.getValue()
+				.getFiles()
+				.get(0)
+				.getParent()
+				.toUri()
+				.toString(), mainController.getCommonExecutor()));
+
+		releaseInfoBtn.disableProperty().bind(new BooleanBinding()
+		{
+			{
+				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
+			}
+
+			@Override
+			protected boolean computeValue()
+			{
+				TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
+				if (selectedItem != null && selectedItem.getValue() instanceof SubtitleTargetProcessingItem)
+				{
+					SubtitleTargetProcessingItem subTargetItem = (SubtitleTargetProcessingItem) selectedItem.getValue();
+					return subTargetItem.getRelease().getFurtherInfoLinks().isEmpty();
+				}
+				return true;
+			}
+		});
+		releaseInfoBtn.setOnAction(evt -> {
+			SubtitleTargetProcessingItem item = (SubtitleTargetProcessingItem) processingTreeTable.getSelectionModel().getSelectedItem().getValue();
+			FxUtil.browse(item.getRelease().getFurtherInfoLinks().get(0), mainController.getCommonExecutor());
+		});
+
+		clearBtn.disableProperty().bind(Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0));
+		clearBtn.setOnAction(evt -> {
+			cancelAllTasks();
+			processingTreeTable.getRoot().getChildren().clear();
+		});
 	}
 
 	// getter

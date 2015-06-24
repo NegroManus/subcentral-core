@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -17,11 +18,16 @@ import de.subcentral.watcher.controller.settings.SettingsController;
 
 public class MainController extends AbstractController
 {
+	public static final int				PROCESSING_TAB_INDEX	= 0;
+	public static final int				SETTINGS_TAB_INDEX		= 1;
+
 	// View
 	// UI components are automatically injected before initialize()
 	private final Stage					primaryStage;
 	@FXML
 	private BorderPane					rootBorderPane;
+	@FXML
+	private TabPane						tabPane;
 	@FXML
 	private AnchorPane					processingRootPane;
 	@FXML
@@ -36,6 +42,18 @@ public class MainController extends AbstractController
 	public MainController(Stage primaryStage)
 	{
 		this.primaryStage = primaryStage;
+	}
+
+	@Override
+	public void doInitialize() throws Exception
+	{
+		commonExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2,
+				new NamedThreadFactory("Watcher-CommonExecutor-Thread", false));
+
+		// initialize order
+		initSettingsController();
+		initProcessingController();
+		initWatchController();
 	}
 
 	public Stage getPrimaryStage()
@@ -63,16 +81,9 @@ public class MainController extends AbstractController
 		return settingsController;
 	}
 
-	@Override
-	public void doInitialize() throws Exception
+	public void selectTab(int index)
 	{
-		commonExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2,
-				new NamedThreadFactory("Watcher-CommonExecutor-Thread", false));
-
-		// initialize order
-		initSettingsController();
-		initProcessingController();
-		initWatchController();
+		tabPane.getSelectionModel().select(index);
 	}
 
 	private void initSettingsController() throws Exception

@@ -65,7 +65,7 @@ public class MetadataDbUtil
 			}
 			catch (ExecutionException e)
 			{
-				log.error("Exception while querying metadata database " + metadataDbs.get(indexOfMetaDb) + " with query " + metadataObj
+				log.debug("Exception while querying metadata database " + metadataDbs.get(indexOfMetaDb) + " with query " + metadataObj
 						+ ". Skipping this metadata database.", e);
 			}
 		}
