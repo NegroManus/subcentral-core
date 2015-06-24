@@ -145,7 +145,7 @@ public class WatchController extends AbstractController
 		watchDirectoriesHBox.getChildren().retainAll(watchImg);
 		if (watchDirs.isEmpty())
 		{
-			Hyperlink link = new Hyperlink("Set watch directories");
+			Hyperlink link = new Hyperlink("Configure watch directories");
 			link.setVisited(true);
 			link.setOnAction((ActionEvent evt) -> {
 				mainController.selectTab(MainController.SETTINGS_TAB_INDEX);
