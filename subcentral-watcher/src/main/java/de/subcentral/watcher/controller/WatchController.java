@@ -2,7 +2,6 @@ package de.subcentral.watcher.controller;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
@@ -157,14 +156,9 @@ public class WatchController extends AbstractController
 		}
 		else
 		{
-			Iterator<Path> iter = watchDirs.iterator();
-			while (iter.hasNext())
+			for (Path dir : watchDirs)
 			{
-				watchDirectoriesHBox.getChildren().add(FxUtil.createPathHyperlink(iter.next(), mainController.getCommonExecutor()));
-				if (iter.hasNext())
-				{
-					watchDirectoriesHBox.getChildren().add(new Label("·"));
-				}
+				watchDirectoriesHBox.getChildren().add(FxUtil.createPathHyperlink(dir, mainController.getCommonExecutor()));
 			}
 		}
 	}
