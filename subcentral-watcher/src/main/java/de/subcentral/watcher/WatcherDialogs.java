@@ -233,30 +233,30 @@ public class WatcherDialogs
 		@Override
 		protected Node getDefaultFocusNode()
 		{
-			return compatibleGroupTxtFld;
+			return sourceGroupTxtFld;
 		}
 
 		@Override
 		protected void initInputPaneControl()
 		{
 			// Set initial values
-			Group initialCompatibleGroup = null;
-			Group initialSourceGroup = null;
-			boolean initialSymmetric = false;
+			Group initialSourceGroup;
+			Group initialCompatibleGroup;
+			boolean initialSymmetric;
 			if (bean == null)
 			{
-				initialCompatibleGroup = null;
 				initialSourceGroup = null;
+				initialCompatibleGroup = null;
 				initialSymmetric = false;
 			}
 			else
 			{
-				initialCompatibleGroup = bean.getCompatibleGroup();
 				initialSourceGroup = bean.getSourceGroup();
+				initialCompatibleGroup = bean.getCompatibleGroup();
 				initialSymmetric = bean.isSymmetric();
 			}
-			Property<Group> compatibleGroup = SubCentralFxUtil.groupPropertyForTextField(compatibleGroupTxtFld, initialCompatibleGroup);
 			Property<Group> sourceGroup = SubCentralFxUtil.groupPropertyForTextField(sourceGroupTxtFld, initialSourceGroup);
+			Property<Group> compatibleGroup = SubCentralFxUtil.groupPropertyForTextField(compatibleGroupTxtFld, initialCompatibleGroup);
 			symmetricCheckBox.setSelected(initialSymmetric);
 
 			// Do Bindings
@@ -271,8 +271,8 @@ public class WatcherDialogs
 				protected boolean computeValue()
 				{
 					// Both groups need to be specified and not equal to each other
-					return compatibleGroup.getValue() == null || sourceGroup.getValue() == null
-							|| compatibleGroup.getValue().equals(sourceGroup.getValue());
+					return sourceGroup.getValue() == null || compatibleGroup.getValue() == null
+							|| sourceGroup.getValue().equals(compatibleGroup.getValue());
 				}
 			});
 

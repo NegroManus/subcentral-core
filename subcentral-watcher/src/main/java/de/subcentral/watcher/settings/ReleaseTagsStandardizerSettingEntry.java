@@ -62,7 +62,7 @@ public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntr
 		switch (replacer.getReplaceMode())
 		{
 			case MATCHED_SEQUENCE:
-				sb.append("replace that with ");
+				sb.append("replace it with ");
 				break;
 			case COMPLETE_LIST:
 				sb.append("set the tags to ");

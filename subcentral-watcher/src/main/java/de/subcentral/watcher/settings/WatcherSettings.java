@@ -698,8 +698,8 @@ public class WatcherSettings extends ObservableBean
 				TagsReplacer replacer = entry.getValue().getReplacer();
 
 				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@enabled]", entry.isEnabled());
-				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@queryTags]", replacer.getQueryTags());
-				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@replacement]", replacer.getReplacement());
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@queryTags]", Tag.listToString(replacer.getQueryTags()));
+				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@replacement]", Tag.listToString(replacer.getReplacement()));
 				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@queryMode]", replacer.getQueryMode());
 				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@replaceMode]", replacer.getReplaceMode());
 				cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@ignoreOrder]", replacer.getIgnoreOrder());
