@@ -11,89 +11,89 @@ import java.time.temporal.Temporal;
 
 public class TimeUtil
 {
-	public static void printDurationMillis(String operation, long startNanos)
-	{
-		System.out.println("Duration of " + operation + ": " + durationMillis(startNanos) + " ms");
-	}
+    public static void printDurationMillis(String operation, long startNanos)
+    {
+	System.out.println("Duration of " + operation + ": " + durationMillis(startNanos) + " ms");
+    }
 
-	public static double durationMillis(long startNanos)
-	{
-		return durationMillis(startNanos, System.nanoTime());
-	}
+    public static double durationMillis(long startNanos)
+    {
+	return durationMillis(startNanos, System.nanoTime());
+    }
 
-	public static double durationMillis(long startNanos, long endNanos)
-	{
-		return (endNanos - startNanos) / 1_000_000d;
-	}
+    public static double durationMillis(long startNanos, long endNanos)
+    {
+	return (endNanos - startNanos) / 1_000_000d;
+    }
 
-	public static Year getYear(Temporal t)
+    public static Year getYear(Temporal t)
+    {
+	if (t == null)
 	{
-		if (t == null)
-		{
-			return null;
-		}
-		try
-		{
-			return Year.of(t.get(ChronoField.YEAR));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+	    return null;
 	}
+	try
+	{
+	    return Year.of(t.get(ChronoField.YEAR));
+	}
+	catch (Exception e)
+	{
+	    e.printStackTrace();
+	    return null;
+	}
+    }
 
-	public static Temporal parseTemporal(String s) throws DateTimeParseException
+    public static Temporal parseTemporal(String s) throws DateTimeParseException
+    {
+	try
 	{
-		try
-		{
-			return ZonedDateTime.parse(s);
-		}
-		catch (Exception e)
-		{
-			// ignore
-		}
-		try
-		{
-			return LocalDateTime.parse(s);
-		}
-		catch (Exception e)
-		{
-			// ignore
-		}
-		try
-		{
-			return LocalDate.parse(s);
-		}
-		catch (Exception e)
-		{
-			// ignore
-		}
-		try
-		{
-			return YearMonth.parse(s);
-		}
-		catch (Exception e)
-		{
-			// ignore
-		}
-		try
-		{
-			return Year.parse(s);
-		}
-		catch (Exception e)
-		{
-			throw new DateTimeParseException("Text '" + s + "' could not be parsed to any temporal type", s, 0);
-		}
+	    return ZonedDateTime.parse(s);
 	}
+	catch (Exception e)
+	{
+	    // ignore
+	}
+	try
+	{
+	    return LocalDateTime.parse(s);
+	}
+	catch (Exception e)
+	{
+	    // ignore
+	}
+	try
+	{
+	    return LocalDate.parse(s);
+	}
+	catch (Exception e)
+	{
+	    // ignore
+	}
+	try
+	{
+	    return YearMonth.parse(s);
+	}
+	catch (Exception e)
+	{
+	    // ignore
+	}
+	try
+	{
+	    return Year.parse(s);
+	}
+	catch (Exception e)
+	{
+	    throw new DateTimeParseException("Text '" + s + "' could not be parsed to any temporal type", s, 0);
+	}
+    }
 
-	public static void main(String[] args)
-	{
-		System.out.println(durationMillis(1_000_000, 2_000_000));
-	}
+    public static void main(String[] args)
+    {
+	System.out.println(durationMillis(1_000_000, 2_000_000));
+    }
 
-	private TimeUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
+    private TimeUtil()
+    {
+	throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+    }
 }

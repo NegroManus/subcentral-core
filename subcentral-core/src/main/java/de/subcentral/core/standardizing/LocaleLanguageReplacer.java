@@ -16,230 +16,227 @@ import com.google.common.collect.ImmutableMap;
 
 public class LocaleLanguageReplacer implements UnaryOperator<String>
 {
-	public enum LanguageFormat
+    public enum LanguageFormat
+    {
+	/**
+	 * Java-Name. "pt_BR". See {@link Locale#toString()}.
+	 */
+	NAME,
+
+	/**
+	 * Well-formed IETF BCP 47 language tag. e.g. "pt-BR". See {@link Locale#toLanguageTag()}.
+	 */
+	LANGUAGE_TAG,
+	/**
+	 * ISO 639-1 two-letter code. See {@link Locale#getLanguage()}.
+	 */
+	ISO2, /**
+	       * ISO 639-2/T three-letter lowercase code. See {@link Locale#getISO3Language()}.
+	       */
+	ISO3, /**
+	       * Display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
+	       */
+	DISPLAY_NAME, /**
+		       * Display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
+		       */
+	DISPLAY_LANGUAGE
+    };
+
+    // Parsing
+    private final ImmutableList<Locale>		 parsingLanguages;
+    // Formatting
+    private final LanguageFormat		 outputLanguageFormat;
+    private final Locale			 outputLanguage;
+    // Custom parsing/formatting
+    private final ImmutableList<LanguagePattern> customLanguagePatterns;
+    private final ImmutableMap<Locale, String>	 customLanguageTextMappings;
+
+    public LocaleLanguageReplacer()
+    {
+	this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableList.of(), ImmutableMap.of());
+    }
+
+    public LocaleLanguageReplacer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage)
+    {
+	this(parsingLanguages, outputLanguageFormat, targetLanguage, ImmutableList.of(), ImmutableMap.of());
+    }
+
+    public LocaleLanguageReplacer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage, List<LanguagePattern> customLanguagePatterns,
+	    Map<Locale, String> customLanguageTextMappings)
+    {
+	this.parsingLanguages = ImmutableList.copyOf(parsingLanguages);
+	this.outputLanguageFormat = Objects.requireNonNull(outputLanguageFormat, "outputLanguageFormat");
+	this.outputLanguage = Objects.requireNonNull(targetLanguage, "outputLanguage");
+	this.customLanguagePatterns = ImmutableList.copyOf(customLanguagePatterns);
+	this.customLanguageTextMappings = ImmutableMap.copyOf(customLanguageTextMappings);
+    }
+
+    public ImmutableList<Locale> getParsingLanguages()
+    {
+	return parsingLanguages;
+    }
+
+    public LanguageFormat getOutputLanguageFormat()
+    {
+	return outputLanguageFormat;
+    }
+
+    public Locale getOutputLanguage()
+    {
+	return outputLanguage;
+    }
+
+    public ImmutableList<LanguagePattern> getCustomLanguagePatterns()
+    {
+	return customLanguagePatterns;
+    }
+
+    public ImmutableMap<Locale, String> getCustomLanguageTextMappings()
+    {
+	return customLanguageTextMappings;
+    }
+
+    @Override
+    public String apply(String lang)
+    {
+	Locale oldLocale = parseLocale(lang);
+	if (oldLocale != null)
 	{
-		/**
-		 * Java-Name. "pt_BR". See {@link Locale#toString()}.
-		 */
-		NAME,
+	    return localeToString(oldLocale);
+	}
+	return lang;
+    }
 
-		/**
-		 * Well-formed IETF BCP 47 language tag. e.g. "pt-BR". See {@link Locale#toLanguageTag()}.
-		 */
-		LANGUAGE_TAG,
-		/**
-		 * ISO 639-1 two-letter code. See {@link Locale#getLanguage()}.
-		 */
-		ISO2,
-		/**
-		 * ISO 639-2/T three-letter lowercase code. See {@link Locale#getISO3Language()}.
-		 */
-		ISO3,
-		/**
-		 * Display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
-		 */
-		DISPLAY_NAME,
-		/**
-		 * Display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
-		 */
-		DISPLAY_LANGUAGE
-	};
-
-	// Parsing
-	private final ImmutableList<Locale>				parsingLanguages;
-	// Formatting
-	private final LanguageFormat					outputLanguageFormat;
-	private final Locale							outputLanguage;
-	// Custom parsing/formatting
-	private final ImmutableList<LanguagePattern>	customLanguagePatterns;
-	private final ImmutableMap<Locale, String>		customLanguageTextMappings;
-
-	public LocaleLanguageReplacer()
+    private Locale parseLocale(String lang)
+    {
+	// 1. try the custom locale patterns
+	for (LanguagePattern langPattern : customLanguagePatterns)
 	{
-		this(ImmutableList.of(Locale.ENGLISH), LanguageFormat.NAME, Locale.ENGLISH, ImmutableList.of(), ImmutableMap.of());
+	    if (langPattern.pattern.matcher(lang).matches())
+	    {
+		return langPattern.language;
+	    }
 	}
 
-	public LocaleLanguageReplacer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage)
+	// 2. try "parsing" the locale
+	for (Locale locale : Locale.getAvailableLocales())
 	{
-		this(parsingLanguages, outputLanguageFormat, targetLanguage, ImmutableList.of(), ImmutableMap.of());
+	    if (locale.toString().equalsIgnoreCase(lang))
+	    {
+		return locale;
+	    }
+	    // cannot use Locale.forLanguageTag() because it accepts any string (not only valid languages)
+	    if (locale.toLanguageTag().equalsIgnoreCase(lang))
+	    {
+		return locale;
+	    }
+	    for (Locale sourceLang : parsingLanguages)
+	    {
+		if (locale.getDisplayName(sourceLang).equalsIgnoreCase(lang))
+		{
+		    return locale;
+		}
+	    }
+	    if (locale.getCountry().isEmpty() && locale.getScript().isEmpty() && locale.getVariant().isEmpty())
+	    {
+		// no need to check for language / display language because if it would match.
+		// Because in that case toString() / getDisplayName() would have matched, too (if country, script, variant are empty)
+		if (locale.getISO3Language().equalsIgnoreCase(lang))
+		{
+		    return locale;
+		}
+	    }
+	}
+	return null;
+    }
+
+    private String localeToString(Locale locale)
+    {
+	// 1. try the custom locale strings
+	String customLocaleString = customLanguageTextMappings.get(locale);
+	if (customLocaleString != null)
+	{
+	    return customLocaleString;
 	}
 
-	public LocaleLanguageReplacer(Collection<Locale> parsingLanguages, LanguageFormat outputLanguageFormat, Locale targetLanguage,
-			List<LanguagePattern> customLanguagePatterns, Map<Locale, String> customLanguageTextMappings)
+	// 2. print the language as specified
+	switch (outputLanguageFormat)
 	{
-		this.parsingLanguages = ImmutableList.copyOf(parsingLanguages);
-		this.outputLanguageFormat = Objects.requireNonNull(outputLanguageFormat, "outputLanguageFormat");
-		this.outputLanguage = Objects.requireNonNull(targetLanguage, "outputLanguage");
-		this.customLanguagePatterns = ImmutableList.copyOf(customLanguagePatterns);
-		this.customLanguageTextMappings = ImmutableMap.copyOf(customLanguageTextMappings);
+	    case NAME:
+		return locale.toString();
+	    case LANGUAGE_TAG:
+		return locale.toLanguageTag();
+	    case ISO2:
+		return locale.getLanguage();
+	    case ISO3:
+		return locale.getISO3Language();
+	    case DISPLAY_NAME:
+		return locale.getDisplayName(outputLanguage);
+	    case DISPLAY_LANGUAGE:
+		return locale.getDisplayLanguage(outputLanguage);
+	    default:
+		return locale.toString();
+	}
+    }
+
+    @Override
+    public String toString()
+    {
+	return MoreObjects.toStringHelper(LocaleLanguageReplacer.class)
+		.add("parsingLanguages", parsingLanguages)
+		.add("outputLanguageFormat", outputLanguageFormat)
+		.add("outputLanguage", outputLanguage)
+		.add("customLanguagePatterns", customLanguagePatterns)
+		.add("customLanguageTextMappings", customLanguageTextMappings)
+		.toString();
+    }
+
+    public final static class LanguagePattern
+    {
+	private final Pattern pattern;
+	private final Locale  language;
+
+	public LanguagePattern(Pattern pattern, Locale lang)
+	{
+	    this.pattern = Objects.requireNonNull(pattern, "pattern");
+	    this.language = Objects.requireNonNull(lang, "language");
 	}
 
-	public ImmutableList<Locale> getParsingLanguages()
+	public Pattern getPattern()
 	{
-		return parsingLanguages;
+	    return pattern;
 	}
 
-	public LanguageFormat getOutputLanguageFormat()
+	public Locale getLanguage()
 	{
-		return outputLanguageFormat;
-	}
-
-	public Locale getOutputLanguage()
-	{
-		return outputLanguage;
-	}
-
-	public ImmutableList<LanguagePattern> getCustomLanguagePatterns()
-	{
-		return customLanguagePatterns;
-	}
-
-	public ImmutableMap<Locale, String> getCustomLanguageTextMappings()
-	{
-		return customLanguageTextMappings;
+	    return language;
 	}
 
 	@Override
-	public String apply(String lang)
+	public boolean equals(Object obj)
 	{
-		Locale oldLocale = parseLocale(lang);
-		if (oldLocale != null)
-		{
-			return localeToString(oldLocale);
-		}
-		return lang;
+	    if (this == obj)
+	    {
+		return true;
+	    }
+	    if (obj instanceof LanguagePattern)
+	    {
+		LanguagePattern o = (LanguagePattern) obj;
+		return pattern.equals(o.pattern);
+	    }
+	    return false;
 	}
 
-	private Locale parseLocale(String lang)
+	@Override
+	public int hashCode()
 	{
-		// 1. try the custom locale patterns
-		for (LanguagePattern langPattern : customLanguagePatterns)
-		{
-			if (langPattern.pattern.matcher(lang).matches())
-			{
-				return langPattern.language;
-			}
-		}
-
-		// 2. try "parsing" the locale
-		for (Locale locale : Locale.getAvailableLocales())
-		{
-			if (locale.toString().equalsIgnoreCase(lang))
-			{
-				return locale;
-			}
-			// cannot use Locale.forLanguageTag() because it accepts any string (not only valid languages)
-			if (locale.toLanguageTag().equalsIgnoreCase(lang))
-			{
-				return locale;
-			}
-			for (Locale sourceLang : parsingLanguages)
-			{
-				if (locale.getDisplayName(sourceLang).equalsIgnoreCase(lang))
-				{
-					return locale;
-				}
-			}
-			if (locale.getCountry().isEmpty() && locale.getScript().isEmpty() && locale.getVariant().isEmpty())
-			{
-				// no need to check for language / display language because if it would match.
-				// Because in that case toString() / getDisplayName() would have matched, too (if country, script, variant are empty)
-				if (locale.getISO3Language().equalsIgnoreCase(lang))
-				{
-					return locale;
-				}
-			}
-		}
-		return null;
-	}
-
-	private String localeToString(Locale locale)
-	{
-		// 1. try the custom locale strings
-		String customLocaleString = customLanguageTextMappings.get(locale);
-		if (customLocaleString != null)
-		{
-			return customLocaleString;
-		}
-
-		// 2. print the language as specified
-		switch (outputLanguageFormat)
-		{
-			case NAME:
-				return locale.toString();
-			case LANGUAGE_TAG:
-				return locale.toLanguageTag();
-			case ISO2:
-				return locale.getLanguage();
-			case ISO3:
-				return locale.getISO3Language();
-			case DISPLAY_NAME:
-				return locale.getDisplayName(outputLanguage);
-			case DISPLAY_LANGUAGE:
-				return locale.getDisplayLanguage(outputLanguage);
-			default:
-				return locale.toString();
-		}
+	    return new HashCodeBuilder(983, 133).append(pattern).toHashCode();
 	}
 
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(LocaleLanguageReplacer.class)
-				.add("parsingLanguages", parsingLanguages)
-				.add("outputLanguageFormat", outputLanguageFormat)
-				.add("outputLanguage", outputLanguage)
-				.add("customLanguagePatterns", customLanguagePatterns)
-				.add("customLanguageTextMappings", customLanguageTextMappings)
-				.toString();
+	    return MoreObjects.toStringHelper(LanguagePattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
 	}
-
-	public final static class LanguagePattern
-	{
-		private final Pattern	pattern;
-		private final Locale	language;
-
-		public LanguagePattern(Pattern pattern, Locale lang)
-		{
-			this.pattern = Objects.requireNonNull(pattern, "pattern");
-			this.language = Objects.requireNonNull(lang, "language");
-		}
-
-		public Pattern getPattern()
-		{
-			return pattern;
-		}
-
-		public Locale getLanguage()
-		{
-			return language;
-		}
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
-				return true;
-			}
-			if (obj instanceof LanguagePattern)
-			{
-				LanguagePattern o = (LanguagePattern) obj;
-				return pattern.equals(o.pattern);
-			}
-			return false;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return new HashCodeBuilder(983, 133).append(pattern).toHashCode();
-		}
-
-		@Override
-		public String toString()
-		{
-			return MoreObjects.toStringHelper(LanguagePattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
-		}
-	}
+    }
 }

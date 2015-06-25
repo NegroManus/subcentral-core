@@ -10,33 +10,33 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseParser extends AbstractMappingParser<Release>
 {
-	private final Mapper<? extends List<? extends Media>>	mediaMapper;
-	private final Mapper<Release>							releaseMapper	= ParsingDefaults.getDefaultReleaseMapper();
+    private final Mapper<? extends List<? extends Media>> mediaMapper;
+    private final Mapper<Release>			  releaseMapper	= ParsingDefaults.getDefaultReleaseMapper();
 
-	public ReleaseParser(Mapper<? extends List<? extends Media>> mediaMapper)
-	{
-		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
-	}
+    public ReleaseParser(Mapper<? extends List<? extends Media>> mediaMapper)
+    {
+	this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
+    }
 
-	public Mapper<? extends List<? extends Media>> getMediaMapper()
-	{
-		return mediaMapper;
-	}
+    public Mapper<? extends List<? extends Media>> getMediaMapper()
+    {
+	return mediaMapper;
+    }
 
-	public Mapper<Release> getReleaseMapper()
-	{
-		return releaseMapper;
-	}
+    public Mapper<Release> getReleaseMapper()
+    {
+	return releaseMapper;
+    }
 
-	@Override
-	protected Release map(Map<SimplePropDescriptor, String> props)
-	{
-		// Media
-		List<? extends Media> media = mediaMapper.map(props, propFromStringService);
+    @Override
+    protected Release map(Map<SimplePropDescriptor, String> props)
+    {
+	// Media
+	List<? extends Media> media = mediaMapper.map(props, propFromStringService);
 
-		// Release
-		Release rls = releaseMapper.map(props, propFromStringService);
-		rls.getMedia().addAll(media);
-		return rls;
-	}
+	// Release
+	Release rls = releaseMapper.map(props, propFromStringService);
+	rls.getMedia().addAll(media);
+	return rls;
+    }
 }

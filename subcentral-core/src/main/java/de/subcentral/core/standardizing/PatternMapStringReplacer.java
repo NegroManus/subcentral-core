@@ -11,29 +11,29 @@ import com.google.common.collect.ImmutableMap;
  */
 public class PatternMapStringReplacer implements UnaryOperator<String>
 {
-	private final ImmutableMap<Pattern, String>	replacements;
+    private final ImmutableMap<Pattern, String> replacements;
 
-	public PatternMapStringReplacer(Map<Pattern, String> replacements)
-	{
-		this.replacements = ImmutableMap.copyOf(replacements); // null check included
-	}
+    public PatternMapStringReplacer(Map<Pattern, String> replacements)
+    {
+	this.replacements = ImmutableMap.copyOf(replacements); // null check included
+    }
 
-	public ImmutableMap<Pattern, String> getReplacements()
-	{
-		return replacements;
-	}
+    public ImmutableMap<Pattern, String> getReplacements()
+    {
+	return replacements;
+    }
 
-	@Override
-	public String apply(String s)
+    @Override
+    public String apply(String s)
+    {
+	if (s == null)
 	{
-		if (s == null)
-		{
-			return null;
-		}
-		for (Map.Entry<Pattern, String> entry : replacements.entrySet())
-		{
-			s = entry.getKey().matcher(s).replaceAll(entry.getValue());
-		}
-		return s;
+	    return null;
 	}
+	for (Map.Entry<Pattern, String> entry : replacements.entrySet())
+	{
+	    s = entry.getKey().matcher(s).replaceAll(entry.getValue());
+	}
+	return s;
+    }
 }

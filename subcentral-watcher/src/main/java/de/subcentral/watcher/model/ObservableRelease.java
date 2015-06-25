@@ -3,6 +3,14 @@ package de.subcentral.watcher.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Nuke;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.naming.NamingService;
 import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
@@ -13,14 +21,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.Nuke;
-import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.core.naming.NamingService;
 
 public class ObservableRelease extends ObservableNamableBeanWrapper<Release>
 {

@@ -25,164 +25,164 @@ import de.subcentral.support.winrar.WinRarPackResult.Flag;
 
 public abstract class WinRarPackager
 {
-	private static final Logger	log	= LogManager.getLogger(WinRarPackager.class.getName());
-	protected final Path		rarExecutable;
+    private static final Logger	log = LogManager.getLogger(WinRarPackager.class.getName());
+    protected final Path	rarExecutable;
 
-	WinRarPackager(LocateStrategy locateStrategy, Path rarExecutable)
+    WinRarPackager(LocateStrategy locateStrategy, Path rarExecutable)
+    {
+	Objects.requireNonNull(locateStrategy, "locateStrategy");
+	try
 	{
-		Objects.requireNonNull(locateStrategy, "locateStrategy");
-		try
-		{
-			switch (locateStrategy)
-			{
-				case SPECIFY:
-					this.rarExecutable = validateExecutable(rarExecutable);
-					break;
-				case LOCATE:
-					this.rarExecutable = locateRarExecutable();
-					break;
-				case RESOURCE:
-					this.rarExecutable = loadResource(determineRarExecutableResourceFilename());
-					break;
-				default:
-					throw new IllegalArgumentException("Invalid value for locateStrategy: " + locateStrategy);
-			}
-			log.info("Using rar executable at {}", this.rarExecutable);
-		}
-		catch (NoSuchFileException | URISyntaxException | RuntimeException e)
-		{
-			throw new IllegalArgumentException("Exception while initializing rar executable: " + e, e);
-		}
+	    switch (locateStrategy)
+	    {
+		case SPECIFY:
+		    this.rarExecutable = validateExecutable(rarExecutable);
+		    break;
+		case LOCATE:
+		    this.rarExecutable = locateRarExecutable();
+		    break;
+		case RESOURCE:
+		    this.rarExecutable = loadResource(determineRarExecutableResourceFilename());
+		    break;
+		default:
+		    throw new IllegalArgumentException("Invalid value for locateStrategy: " + locateStrategy);
+	    }
+	    log.info("Using rar executable at {}", this.rarExecutable);
 	}
-
-	public Path getRarExecutable()
+	catch (NoSuchFileException | URISyntaxException | RuntimeException e)
 	{
-		return rarExecutable;
+	    throw new IllegalArgumentException("Exception while initializing rar executable: " + e, e);
 	}
+    }
 
-	protected static final Path validateExecutable(Path exe) throws NullPointerException, NoSuchFileException, SecurityException
+    public Path getRarExecutable()
+    {
+	return rarExecutable;
+    }
+
+    protected static final Path validateExecutable(Path exe) throws NullPointerException, NoSuchFileException, SecurityException
+    {
+	if (exe == null)
 	{
-		if (exe == null)
-		{
-			throw new NullPointerException("Executable cannot be null");
-		}
-		if (!Files.isRegularFile(exe, LinkOption.NOFOLLOW_LINKS))
-		{
-			throw new NoSuchFileException(exe.toString());
-		}
-		if (!Files.isExecutable(exe))
-		{
-			throw new SecurityException("Executable is not executable: " + exe);
-		}
-		return exe;
+	    throw new NullPointerException("Executable cannot be null");
 	}
-
-	protected abstract String determineRarExecutableResourceFilename();
-
-	protected abstract Path locateRarExecutable();
-
-	public boolean validate(Path archive)
+	if (!Files.isRegularFile(exe, LinkOption.NOFOLLOW_LINKS))
 	{
-		try
-		{
-			return IOUtil.executeCommand(buildValidateCommand(archive), 1, TimeUnit.MINUTES).getExitValue() == 0;
-		}
-		catch (IOException | InterruptedException | TimeoutException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
+	    throw new NoSuchFileException(exe.toString());
 	}
-
-	protected abstract List<String> buildValidateCommand(Path archive);
-
-	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException, TimeoutException
+	if (!Files.isExecutable(exe))
 	{
-		CommandResult result = IOUtil.executeCommand(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS);
+	    throw new SecurityException("Executable is not executable: " + exe);
 	}
+	return exe;
+    }
 
-	protected abstract List<String> buildUnpackCommand(Path archive, Path targetDir);
+    protected abstract String determineRarExecutableResourceFilename();
 
-	/**
-	 * Packs a single file into a single WinRAR archive.
-	 * 
-	 * @param source
-	 *            the source file to pack, not null
-	 * @param target
-	 *            the target archive, not null (may or not exist yet)
-	 * @param cfg
-	 *            the packaging configuration, not null
-	 * @return the result of the packaging operation
-	 */
-	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
+    protected abstract Path locateRarExecutable();
+
+    public boolean validate(Path archive)
+    {
+	try
 	{
-		Objects.requireNonNull(source, "source");
-		Objects.requireNonNull(target, "target");
-		Objects.requireNonNull(cfg, "cfg");
-
-		EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
-		int exitValue = -1;
-		String logMsg = null;
-		String errMsg = null;
-		try
-		{
-			long startTime = System.currentTimeMillis();
-			boolean targetExisted = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
-			if (targetExisted)
-			{
-				flags.add(Flag.TARGET_EXISTED);
-				if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode())
-				{
-					Files.delete(target);
-				}
-			}
-			CommandResult result = IOUtil.executeCommand(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit());
-			exitValue = result.getExitValue();
-			logMsg = result.getStdOut();
-			errMsg = result.getStdErr();
-
-			// may add tags
-			if (targetExisted && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
-			{
-				switch (cfg.getTargetOverwriteMode())
-				{
-					case UPDATE:
-						flags.add(Flag.TARGET_UPDATED);
-						break;
-					case REPLACE:
-						flags.add(Flag.TARGET_REPLACED);
-						break;
-					default:
-						break;
-				}
-			}
-			// if DeletionMode.DELETE || DeletionMode.RECYCLE and it really was deleted
-			if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source))
-			{
-				flags.add(Flag.SOURCE_DELETED);
-			}
-
-			// return result
-			if (result.getStdErr() == null)
-			{
-				return new WinRarPackResult(exitValue, flags, logMsg);
-			}
-			else
-			{
-				return new WinRarPackResult(exitValue, flags, new IOException(errMsg), logMsg);
-			}
-		}
-		catch (IOException | InterruptedException | RuntimeException | TimeoutException e)
-		{
-			log.warn("Exception while packing", e);
-			return new WinRarPackResult(exitValue, flags, e, logMsg);
-		}
+	    return IOUtil.executeCommand(buildValidateCommand(archive), 1, TimeUnit.MINUTES).getExitValue() == 0;
 	}
-
-	protected abstract List<String> buildPackCommand(Path source, Path target, WinRarPackConfig cfg);
-
-	private static final Path loadResource(String filename) throws URISyntaxException
+	catch (IOException | InterruptedException | TimeoutException e)
 	{
-		return Paths.get(WinRarPackager.class.getClassLoader().getResource("de/subcentral/support/winrar/" + filename).toURI());
+	    e.printStackTrace();
+	    return false;
 	}
+    }
+
+    protected abstract List<String> buildValidateCommand(Path archive);
+
+    public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException, TimeoutException
+    {
+	CommandResult result = IOUtil.executeCommand(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS);
+    }
+
+    protected abstract List<String> buildUnpackCommand(Path archive, Path targetDir);
+
+    /**
+     * Packs a single file into a single WinRAR archive.
+     * 
+     * @param source
+     *            the source file to pack, not null
+     * @param target
+     *            the target archive, not null (may or not exist yet)
+     * @param cfg
+     *            the packaging configuration, not null
+     * @return the result of the packaging operation
+     */
+    public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
+    {
+	Objects.requireNonNull(source, "source");
+	Objects.requireNonNull(target, "target");
+	Objects.requireNonNull(cfg, "cfg");
+
+	EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
+	int exitValue = -1;
+	String logMsg = null;
+	String errMsg = null;
+	try
+	{
+	    long startTime = System.currentTimeMillis();
+	    boolean targetExisted = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
+	    if (targetExisted)
+	    {
+		flags.add(Flag.TARGET_EXISTED);
+		if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode())
+		{
+		    Files.delete(target);
+		}
+	    }
+	    CommandResult result = IOUtil.executeCommand(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit());
+	    exitValue = result.getExitValue();
+	    logMsg = result.getStdOut();
+	    errMsg = result.getStdErr();
+
+	    // may add tags
+	    if (targetExisted && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
+	    {
+		switch (cfg.getTargetOverwriteMode())
+		{
+		    case UPDATE:
+			flags.add(Flag.TARGET_UPDATED);
+			break;
+		    case REPLACE:
+			flags.add(Flag.TARGET_REPLACED);
+			break;
+		    default:
+			break;
+		}
+	    }
+	    // if DeletionMode.DELETE || DeletionMode.RECYCLE and it really was deleted
+	    if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source))
+	    {
+		flags.add(Flag.SOURCE_DELETED);
+	    }
+
+	    // return result
+	    if (result.getStdErr() == null)
+	    {
+		return new WinRarPackResult(exitValue, flags, logMsg);
+	    }
+	    else
+	    {
+		return new WinRarPackResult(exitValue, flags, new IOException(errMsg), logMsg);
+	    }
+	}
+	catch (IOException | InterruptedException | RuntimeException | TimeoutException e)
+	{
+	    log.warn("Exception while packing", e);
+	    return new WinRarPackResult(exitValue, flags, e, logMsg);
+	}
+    }
+
+    protected abstract List<String> buildPackCommand(Path source, Path target, WinRarPackConfig cfg);
+
+    private static final Path loadResource(String filename) throws URISyntaxException
+    {
+	return Paths.get(WinRarPackager.class.getClassLoader().getResource("de/subcentral/support/winrar/" + filename).toURI());
+    }
 }

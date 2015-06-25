@@ -4,12 +4,12 @@ import java.util.Map;
 
 public interface NamingService extends Namer<Object>
 {
-	public String getDomain();
+    public String getDomain();
 
-	public String getDefaultSeparator();
+    public String getDefaultSeparator();
 
-	public default String nameAll(Iterable<?> candidates, Map<String, Object> parameters)
-	{
-		return nameAll(candidates, getDefaultSeparator(), parameters);
-	}
+    public default String nameAll(Iterable<?> candidates, Map<String, Object> parameters)
+    {
+	return nameAll(candidates, getDefaultSeparator(), parameters);
+    }
 }

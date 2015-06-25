@@ -16,139 +16,138 @@ import com.google.common.collect.ImmutableList;
 
 public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 {
-	public static final int	DEFAULT_TIMEOUT	= 10000;
+    public static final int DEFAULT_TIMEOUT = 10000;
 
-	protected final URL		host;
-	protected int			timeout			= DEFAULT_TIMEOUT;
+    protected final URL	host;
+    protected int	timeout	= DEFAULT_TIMEOUT;
 
-	public AbstractHttpMetadataDb()
+    public AbstractHttpMetadataDb()
+    {
+	try
 	{
-		try
-		{
-			this.host = initHost();
-		}
-		catch (MalformedURLException e)
-		{
-			throw new AssertionError("Host URL malformed", e);
-		}
+	    this.host = initHost();
 	}
-
-	/**
-	 * 
-	 * @return the URL of the host of this lookup, not null
-	 * @throws MalformedURLException
-	 */
-	protected abstract URL initHost() throws MalformedURLException;
-
-	public URL getHost()
+	catch (MalformedURLException e)
 	{
-		return host;
+	    throw new AssertionError("Host URL malformed", e);
 	}
+    }
 
-	public int getTimeout()
+    /**
+     * 
+     * @return the URL of the host of this lookup, not null
+     * @throws MalformedURLException
+     */
+    protected abstract URL initHost() throws MalformedURLException;
+
+    public URL getHost()
+    {
+	return host;
+    }
+
+    public int getTimeout()
+    {
+	return timeout;
+    }
+
+    public void setTimeout(int timeout)
+    {
+	this.timeout = timeout;
+    }
+
+    @Override
+    public boolean isAvailable()
+    {
+	try
 	{
-		return timeout;
+	    HttpURLConnection connection = (HttpURLConnection) initHost().openConnection();
+	    connection.setConnectTimeout(timeout);
+	    connection.setReadTimeout(timeout);
+	    int responseCode = connection.getResponseCode();
+	    return (200 <= responseCode && responseCode <= 399);
 	}
-
-	public void setTimeout(int timeout)
+	catch (IOException exception)
 	{
-		this.timeout = timeout;
+	    return false;
 	}
+    }
 
-	@Override
-	public boolean isAvailable()
+    @Override
+    public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
+    {
+	if (StringUtils.isBlank(query))
 	{
-		try
-		{
-			HttpURLConnection connection = (HttpURLConnection) initHost().openConnection();
-			connection.setConnectTimeout(timeout);
-			connection.setReadTimeout(timeout);
-			int responseCode = connection.getResponseCode();
-			return (200 <= responseCode && responseCode <= 399);
-		}
-		catch (IOException exception)
-		{
-			return false;
-		}
+	    return ImmutableList.of();
 	}
-
-	@Override
-	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
+	try
 	{
-		if (StringUtils.isBlank(query))
-		{
-			return ImmutableList.of();
-		}
-		try
-		{
-			return queryWithUrl(buildDefaultQueryUrl(query));
-		}
-		catch (MetadataDbUnavailableException ue)
-		{
-			throw ue;
-		}
-		catch (Exception e)
-		{
-			throw new MetadataDbQueryException(this, query, e);
-		}
+	    return queryWithUrl(buildDefaultQueryUrl(query));
 	}
-
-	public abstract List<T> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
-
-	/**
-	 * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.
-	 * 
-	 * @param queryString
-	 *            The query string. For example "Psych S08E01".
-	 * @return The generated URL for this query string.
-	 * @throws URISyntaxException
-	 * @throws MalformedURLException
-	 * @throws UnsupportedEncodingException
-	 */
-	private URL buildDefaultQueryUrl(String queryString) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
+	catch (MetadataDbUnavailableException ue)
 	{
-		return buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), queryString);
+	    throw ue;
 	}
-
-	/**
-	 * 
-	 * @param path
-	 *            The path for the URL. Not null.
-	 * @param queryPrefix
-	 *            The prefix for the query string.
-	 * @param queryString
-	 *            The actual query string.
-	 * @return An URL build of the host of this lookup and the given path, queryPrefix and queryString.
-	 * @throws URISyntaxException
-	 * @throws UnsupportedEncodingException
-	 * @throws MalformedURLException
-	 */
-	private URL buildQueryUrl(String path, String queryPrefix, String queryString) throws UnsupportedEncodingException, URISyntaxException,
-			MalformedURLException
+	catch (Exception e)
 	{
-		URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, buildQuery(queryPrefix, queryString), null);
-		return uri.toURL();
+	    throw new MetadataDbQueryException(this, query, e);
 	}
+    }
 
-	/**
-	 * 
-	 * @return The default path for the query URL. Has to start with "/".
-	 */
-	protected abstract String getDefaultQueryPath();
+    public abstract List<T> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
-	/**
-	 * 
-	 * @return The default prefix for the query string. Used to build the query for the query URL. For example "s=".
-	 */
-	protected abstract String getDefaultQueryPrefix();
+    /**
+     * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.
+     * 
+     * @param queryString
+     *            The query string. For example "Psych S08E01".
+     * @return The generated URL for this query string.
+     * @throws URISyntaxException
+     * @throws MalformedURLException
+     * @throws UnsupportedEncodingException
+     */
+    private URL buildDefaultQueryUrl(String queryString) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
+    {
+	return buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), queryString);
+    }
 
-	private String buildQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(queryPrefix);
-		// URLEncoder is just for encoding queries, not for the whole URL
-		sb.append(URLEncoder.encode(queryStr == null ? "" : queryStr, "UTF-8"));
-		return sb.toString();
-	}
+    /**
+     * 
+     * @param path
+     *            The path for the URL. Not null.
+     * @param queryPrefix
+     *            The prefix for the query string.
+     * @param queryString
+     *            The actual query string.
+     * @return An URL build of the host of this lookup and the given path, queryPrefix and queryString.
+     * @throws URISyntaxException
+     * @throws UnsupportedEncodingException
+     * @throws MalformedURLException
+     */
+    private URL buildQueryUrl(String path, String queryPrefix, String queryString) throws UnsupportedEncodingException, URISyntaxException, MalformedURLException
+    {
+	URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, buildQuery(queryPrefix, queryString), null);
+	return uri.toURL();
+    }
+
+    /**
+     * 
+     * @return The default path for the query URL. Has to start with "/".
+     */
+    protected abstract String getDefaultQueryPath();
+
+    /**
+     * 
+     * @return The default prefix for the query string. Used to build the query for the query URL. For example "s=".
+     */
+    protected abstract String getDefaultQueryPrefix();
+
+    private String buildQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException
+    {
+	StringBuilder sb = new StringBuilder();
+	sb.append(queryPrefix);
+	// URLEncoder is just for encoding queries, not for the whole URL
+	sb.append(URLEncoder.encode(queryStr == null ? "" : queryStr, "UTF-8"));
+	return sb.toString();
+    }
 
 }

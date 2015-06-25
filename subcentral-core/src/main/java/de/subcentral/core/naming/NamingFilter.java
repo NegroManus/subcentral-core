@@ -5,18 +5,18 @@ import java.util.function.Predicate;
 
 public class NamingFilter<T> implements Predicate<T>
 {
-	private final NamingService	namingService;
-	private final String		expectedName;
+    private final NamingService	namingService;
+    private final String	expectedName;
 
-	public NamingFilter(NamingService namingService, T expectedObject)
-	{
-		this.namingService = Objects.requireNonNull(namingService, "namingService");
-		this.expectedName = namingService.name(expectedObject);
-	}
+    public NamingFilter(NamingService namingService, T expectedObject)
+    {
+	this.namingService = Objects.requireNonNull(namingService, "namingService");
+	this.expectedName = namingService.name(expectedObject);
+    }
 
-	@Override
-	public boolean test(T o)
-	{
-		return expectedName.equals(namingService.name(o));
-	}
+    @Override
+    public boolean test(T o)
+    {
+	return expectedName.equals(namingService.name(o));
+    }
 }

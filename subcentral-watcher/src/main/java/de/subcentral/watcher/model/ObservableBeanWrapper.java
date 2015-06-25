@@ -2,7 +2,7 @@ package de.subcentral.watcher.model;
 
 import java.util.Objects;
 
-public class ObservableBeanWrapper<T> extends ObservableBean
+public class ObservableBeanWrapper<T> extends ObservableObject
 {
     protected final T bean;
 

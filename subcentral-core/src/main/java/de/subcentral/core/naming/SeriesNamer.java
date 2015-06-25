@@ -6,14 +6,14 @@ import de.subcentral.core.metadata.media.Series;
 
 public class SeriesNamer extends AbstractPropertySequenceNamer<Series>
 {
-	public SeriesNamer(PropSequenceNameBuilder.Config config)
-	{
-		super(config);
-	}
+    public SeriesNamer(PropSequenceNameBuilder.Config config)
+    {
+	super(config);
+    }
 
-	@Override
-	public void buildName(PropSequenceNameBuilder b, Series series, Map<String, Object> parameters)
-	{
-		b.appendIfNotNull(Series.PROP_NAME, series.getName());
-	}
+    @Override
+    public void buildName(PropSequenceNameBuilder b, Series series, Map<String, Object> parameters)
+    {
+	b.appendIfNotNull(Series.PROP_NAME, series.getName());
+    }
 }

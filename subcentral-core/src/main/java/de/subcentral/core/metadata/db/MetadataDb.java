@@ -7,35 +7,34 @@ import de.subcentral.core.naming.NamingService;
 
 public interface MetadataDb<T>
 {
-	public String getName();
+    public String getName();
 
-	public String getDomain();
+    public String getDomain();
 
-	public boolean isAvailable();
+    public boolean isAvailable();
 
-	public Class<T> getResultType();
+    public Class<T> getResultType();
 
-	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException;
+    public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
-	public default List<T> queryWithName(Object metadataObj) throws MetadataDbUnavailableException, MetadataDbQueryException
+    public default List<T> queryWithName(Object metadataObj) throws MetadataDbUnavailableException, MetadataDbQueryException
+    {
+	return queryWithName(metadataObj, NamingDefaults.getDefaultNormalizingNamingService());
+    }
+
+    public default List<T> queryWithName(Object metadataObj, NamingService namingService) throws MetadataDbUnavailableException, MetadataDbQueryException
+    {
+	try
 	{
-		return queryWithName(metadataObj, NamingDefaults.getDefaultNormalizingNamingService());
+	    return query(namingService.name(metadataObj));
 	}
-
-	public default List<T> queryWithName(Object metadataObj, NamingService namingService) throws MetadataDbUnavailableException,
-			MetadataDbQueryException
+	catch (MetadataDbUnavailableException ue)
 	{
-		try
-		{
-			return query(namingService.name(metadataObj));
-		}
-		catch (MetadataDbUnavailableException ue)
-		{
-			throw ue;
-		}
-		catch (Exception e)
-		{
-			throw new MetadataDbQueryException(this, metadataObj, e);
-		}
+	    throw ue;
 	}
+	catch (Exception e)
+	{
+	    throw new MetadataDbQueryException(this, metadataObj, e);
+	}
+    }
 }

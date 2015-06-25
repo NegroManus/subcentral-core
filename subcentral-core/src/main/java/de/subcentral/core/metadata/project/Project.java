@@ -10,81 +10,81 @@ import de.subcentral.core.metadata.media.Media;
 
 public class Project
 {
-	private Media				object;
-	private String				state;
-	private String				vacancies;
-	private List<Membership>	members	= new ArrayList<>();
+    private Media	     object;
+    private String	     state;
+    private String	     vacancies;
+    private List<Membership> members = new ArrayList<>();
 
-	public Media getObject()
+    public Media getObject()
+    {
+	return object;
+    }
+
+    public void setObject(Media object)
+    {
+	this.object = object;
+    }
+
+    public String getState()
+    {
+	return state;
+    }
+
+    public void setState(String state)
+    {
+	this.state = state;
+    }
+
+    public String getVacancies()
+    {
+	return vacancies;
+    }
+
+    public void setVacancies(String vacancies)
+    {
+	this.vacancies = vacancies;
+    }
+
+    public List<Membership> getMembers()
+    {
+	return members;
+    }
+
+    public void setMembers(List<Membership> members)
+    {
+	this.members.clear();
+	this.members.addAll(members);
+    }
+
+    public class Membership
+    {
+	private final Contributor member;
+	private Set<String>	  roles	= new HashSet<>();
+
+	public Membership(Contributor member)
 	{
-		return object;
+	    this.member = member;
 	}
 
-	public void setObject(Media object)
+	public Contributor getMember()
 	{
-		this.object = object;
+	    return member;
 	}
 
-	public String getState()
+	public Set<String> getRoles()
 	{
-		return state;
+	    return roles;
 	}
 
-	public void setState(String state)
+	public void setRoles(Set<String> roles)
 	{
-		this.state = state;
+	    this.roles.clear();
+	    this.roles.addAll(roles);
 	}
 
-	public String getVacancies()
+	public Project getProject()
 	{
-		return vacancies;
+	    return Project.this;
 	}
-
-	public void setVacancies(String vacancies)
-	{
-		this.vacancies = vacancies;
-	}
-
-	public List<Membership> getMembers()
-	{
-		return members;
-	}
-
-	public void setMembers(List<Membership> members)
-	{
-		this.members.clear();
-		this.members.addAll(members);
-	}
-
-	public class Membership
-	{
-		private final Contributor	member;
-		private Set<String>			roles	= new HashSet<>();
-
-		public Membership(Contributor member)
-		{
-			this.member = member;
-		}
-
-		public Contributor getMember()
-		{
-			return member;
-		}
-
-		public Set<String> getRoles()
-		{
-			return roles;
-		}
-
-		public void setRoles(Set<String> roles)
-		{
-			this.roles.clear();
-			this.roles.addAll(roles);
-		}
-
-		public Project getProject()
-		{
-			return Project.this;
-		}
-	}
+    }
 }

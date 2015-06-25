@@ -1,18 +1,17 @@
 package de.subcentral.watcher.settings;
 
+import com.google.common.collect.ImmutableList;
+
+import de.subcentral.watcher.model.ObservableObject;
 import javafx.beans.Observable;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-
-import com.google.common.collect.ImmutableList;
-
-import de.subcentral.watcher.model.ObservableBean;
 
 public class SettingsUtil
 {
     public static Observable observeEnablementOfSettingEntries(ObservableList<? extends SettingEntry<?>> configEntries)
     {
-	ObservableBean obsv = new ObservableBean();
+	ObservableObject obsv = new ObservableObject();
 	for (SettingEntry<?> entry : configEntries)
 	{
 	    obsv.getDependencies().add(entry.enabledProperty());

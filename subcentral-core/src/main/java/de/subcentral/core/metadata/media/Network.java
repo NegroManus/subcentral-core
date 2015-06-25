@@ -11,63 +11,63 @@ import de.subcentral.core.Settings;
 
 public class Network implements Comparable<Network>
 {
-	private String	name;
+    private String name;
 
-	public Network()
+    public Network()
+    {
+
+    }
+
+    public Network(String name)
+    {
+	this.name = name;
+    }
+
+    public String getName()
+    {
+	return name;
+    }
+
+    public void setName(String name)
+    {
+	this.name = name;
+    }
+
+    // Object methods
+    @Override
+    public boolean equals(Object obj)
+    {
+	if (this == obj)
 	{
-
+	    return true;
 	}
-
-	public Network(String name)
+	if (obj instanceof Network)
 	{
-		this.name = name;
+	    return StringUtils.equalsIgnoreCase(name, ((Network) obj).name);
 	}
+	return false;
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    @Override
+    public int hashCode()
+    {
+	return new HashCodeBuilder(73, 897).append(StringUtils.lowerCase(name, Locale.ENGLISH)).toHashCode();
+    }
 
-	public void setName(String name)
+    @Override
+    public int compareTo(Network o)
+    {
+	// nulls first
+	if (o == null)
 	{
-		this.name = name;
+	    return 1;
 	}
+	return Settings.STRING_ORDERING.compare(name, o.name);
+    }
 
-	// Object methods
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof Network)
-		{
-			return StringUtils.equalsIgnoreCase(name, ((Network) obj).name);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(73, 897).append(StringUtils.lowerCase(name, Locale.ENGLISH)).toHashCode();
-	}
-
-	@Override
-	public int compareTo(Network o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return Settings.STRING_ORDERING.compare(name, o.name);
-	}
-
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).toString();
-	}
+    @Override
+    public String toString()
+    {
+	return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).toString();
+    }
 }

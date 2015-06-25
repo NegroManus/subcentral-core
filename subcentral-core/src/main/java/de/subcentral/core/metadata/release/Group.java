@@ -13,69 +13,69 @@ import de.subcentral.core.Settings;
  */
 public class Group implements Comparable<Group>
 {
-	public static Group parse(String group)
+    public static Group parse(String group)
+    {
+	try
 	{
-		try
-		{
-			return new Group(group);
-		}
-		catch (IllegalArgumentException e)
-		{
-			return null;
-		}
+	    return new Group(group);
 	}
-
-	public static String toSafeString(Group group)
+	catch (IllegalArgumentException e)
 	{
-		return group == null ? "" : group.getName();
+	    return null;
 	}
+    }
 
-	private final String	name;
+    public static String toSafeString(Group group)
+    {
+	return group == null ? "" : group.getName();
+    }
 
-	public Group(String name) throws IllegalArgumentException
+    private final String name;
+
+    public Group(String name) throws IllegalArgumentException
+    {
+	this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
+    }
+
+    public String getName()
+    {
+	return name;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+	if (this == obj)
 	{
-		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
+	    return true;
 	}
-
-	public String getName()
+	if (obj instanceof Group)
 	{
-		return name;
+	    return name.equalsIgnoreCase(((Group) obj).name);
 	}
+	return false;
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof Group)
-		{
-			return name.equalsIgnoreCase(((Group) obj).name);
-		}
-		return false;
-	}
+    @Override
+    public int hashCode()
+    {
+	return new HashCodeBuilder(31, 97).append(name.toLowerCase(Locale.ENGLISH)).toHashCode();
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(31, 97).append(name.toLowerCase(Locale.ENGLISH)).toHashCode();
-	}
+    @Override
+    public String toString()
+    {
+	return name;
+    }
 
-	@Override
-	public String toString()
+    @Override
+    public int compareTo(Group o)
+    {
+	// nulls first
+	if (o == null)
 	{
-		return name;
+	    return 1;
 	}
-
-	@Override
-	public int compareTo(Group o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return Settings.STRING_ORDERING.compare(name, o.name);
-	}
+	return Settings.STRING_ORDERING.compare(name, o.name);
+    }
 }

@@ -12,16 +12,16 @@ import de.subcentral.core.standardizing.StandardizingDefaults;
 
 public class ReleasesTest
 {
-	@Test
-	public void testStandardizeTags()
-	{
-		Release rls = new Release();
-		rls.setTags(Tag.list("720p", "WEB", "DL", "DD5", "1", "x264"));
-		TypeStandardizingService service = new TypeStandardizingService("test");
-		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaultStandardizers(service);
-		List<StandardizingChange> changes = service.standardize(rls);
-		changes.forEach(c -> System.out.println(c));
-		assertEquals(Tag.list("720p", "WEB-DL", "DD5.1", "x264"), rls.getTags());
-	}
+    @Test
+    public void testStandardizeTags()
+    {
+	Release rls = new Release();
+	rls.setTags(Tag.list("720p", "WEB", "DL", "DD5", "1", "x264"));
+	TypeStandardizingService service = new TypeStandardizingService("test");
+	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+	StandardizingDefaults.registerAllDefaultStandardizers(service);
+	List<StandardizingChange> changes = service.standardize(rls);
+	changes.forEach(c -> System.out.println(c));
+	assertEquals(Tag.list("720p", "WEB-DL", "DD5.1", "x264"), rls.getTags());
+    }
 }

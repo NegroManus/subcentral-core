@@ -9,40 +9,40 @@ import javafx.beans.Observable;
 
 public class BeanInvalidationSupport implements Observable
 {
-	private final List<InvalidationListener>	listeners	= new CopyOnWriteArrayList<>();
+    private final List<InvalidationListener> listeners = new CopyOnWriteArrayList<>();
 
-	private final Observable					bean;
+    private final Observable bean;
 
-	public BeanInvalidationSupport(Observable bean)
+    public BeanInvalidationSupport(Observable bean)
+    {
+	this.bean = Objects.requireNonNull(bean, "bean");
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener)
+    {
+	listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener)
+    {
+	listeners.remove(listener);
+    }
+
+    public void bind(Observable... props)
+    {
+	for (Observable prop : props)
 	{
-		this.bean = Objects.requireNonNull(bean, "bean");
+	    prop.addListener((Observable observable) -> invalidate());
 	}
+    }
 
-	@Override
-	public void addListener(InvalidationListener listener)
+    public void invalidate()
+    {
+	for (InvalidationListener l : listeners)
 	{
-		listeners.add(listener);
+	    l.invalidated(bean);
 	}
-
-	@Override
-	public void removeListener(InvalidationListener listener)
-	{
-		listeners.remove(listener);
-	}
-
-	public void bind(Observable... props)
-	{
-		for (Observable prop : props)
-		{
-			prop.addListener((Observable observable) -> invalidate());
-		}
-	}
-
-	public void invalidate()
-	{
-		for (InvalidationListener l : listeners)
-		{
-			l.invalidated(bean);
-		}
-	}
+    }
 }

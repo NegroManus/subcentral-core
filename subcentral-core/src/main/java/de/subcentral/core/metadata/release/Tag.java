@@ -20,169 +20,169 @@ import de.subcentral.core.util.StringUtil;
 
 public class Tag implements Comparable<Tag>
 {
-	public static final Comparator<Iterable<Tag>>	TAGS_COMPARATOR		= IterableComparator.create();
+    public static final Comparator<Iterable<Tag>> TAGS_COMPARATOR = IterableComparator.create();
 
-	/**
-	 * Tags describing the source. Like HDTV, BluRay, BDRip, DVDRip, ...
-	 */
-	public static final String						CATEGORY_SOURCE		= "SOURCE";
+    /**
+     * Tags describing the source. Like HDTV, BluRay, BDRip, DVDRip, ...
+     */
+    public static final String CATEGORY_SOURCE = "SOURCE";
 
-	/**
-	 * Tags describing the format. Like x264, XviD, DD5.1, AC3, 720p, 1080p, (subtitle tags), ... Not including the language tags.
-	 */
-	public static final String						CATEGORY_FORMAT		= "FORMAT";
+    /**
+     * Tags describing the format. Like x264, XviD, DD5.1, AC3, 720p, 1080p, (subtitle tags), ... Not including the language tags.
+     */
+    public static final String CATEGORY_FORMAT = "FORMAT";
 
-	/**
-	 * Language tags. Like German, GERMAN.CUSTOM.SUBBED, NLSUBBED, MULTi, ...
-	 */
-	public static final String						CATEGORY_LANGUAGE	= "LANGUAGE";
+    /**
+     * Language tags. Like German, GERMAN.CUSTOM.SUBBED, NLSUBBED, MULTi, ...
+     */
+    public static final String CATEGORY_LANGUAGE = "LANGUAGE";
 
-	/**
-	 * Tags for meta information about the release itself, not about the content. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
-	 */
-	public static final String						CATEGORY_META		= "META";
+    /**
+     * Tags for meta information about the release itself, not about the content. Like PROPER, REPACK, READ INFO, iNTERNAL, DIRFIX, ...
+     */
+    public static final String CATEGORY_META = "META";
 
-	public static List<Tag> list(Collection<String> tags)
+    public static List<Tag> list(Collection<String> tags)
+    {
+	if (tags.isEmpty())
 	{
-		if (tags.isEmpty())
-		{
-			return new ArrayList<>(0);
-		}
-		List<Tag> tagList = new ArrayList<>(tags.size());
-		for (String s : tags)
-		{
-			tagList.add(new Tag(s));
-		}
-		return tagList;
+	    return new ArrayList<>(0);
 	}
-
-	public static List<Tag> list(String... tags)
+	List<Tag> tagList = new ArrayList<>(tags.size());
+	for (String s : tags)
 	{
-		if (tags.length == 0)
-		{
-			return new ArrayList<>(0);
-		}
-		List<Tag> tagList = new ArrayList<>(tags.length);
-		for (String s : tags)
-		{
-			tagList.add(new Tag(s));
-		}
-		return tagList;
+	    tagList.add(new Tag(s));
 	}
+	return tagList;
+    }
 
-	public static ImmutableList<Tag> immutableList(String... tags)
+    public static List<Tag> list(String... tags)
+    {
+	if (tags.length == 0)
 	{
-		if (tags.length == 0)
-		{
-			return ImmutableList.of();
-		}
-		ImmutableList.Builder<Tag> tagList = ImmutableList.builder();
-		for (String s : tags)
-		{
-			tagList.add(new Tag(s));
-		}
-		return tagList.build();
+	    return new ArrayList<>(0);
 	}
-
-	public static ImmutableList<Tag> immutableCopy(List<Tag> tags)
+	List<Tag> tagList = new ArrayList<>(tags.length);
+	for (String s : tags)
 	{
-		return ImmutableList.copyOf(tags);
+	    tagList.add(new Tag(s));
 	}
+	return tagList;
+    }
 
-	public static List<Tag> parseList(String tagList)
+    public static ImmutableList<Tag> immutableList(String... tags)
+    {
+	if (tags.length == 0)
 	{
-		return parseList(tagList, StringUtil.COMMA_SPLITTER);
+	    return ImmutableList.of();
 	}
-
-	public static List<Tag> parseList(String tagList, Splitter splitter)
+	ImmutableList.Builder<Tag> tagList = ImmutableList.builder();
+	for (String s : tags)
 	{
-		if (StringUtils.isBlank(tagList))
-		{
-			return ImmutableList.of();
-		}
-		return list(splitter.splitToList(tagList));
+	    tagList.add(new Tag(s));
 	}
+	return tagList.build();
+    }
 
-	public static Tag parse(String tag)
+    public static ImmutableList<Tag> immutableCopy(List<Tag> tags)
+    {
+	return ImmutableList.copyOf(tags);
+    }
+
+    public static List<Tag> parseList(String tagList)
+    {
+	return parseList(tagList, StringUtil.COMMA_SPLITTER);
+    }
+
+    public static List<Tag> parseList(String tagList, Splitter splitter)
+    {
+	if (StringUtils.isBlank(tagList))
 	{
-		try
-		{
-			return new Tag(tag);
-		}
-		catch (IllegalArgumentException e)
-		{
-			return null;
-		}
+	    return ImmutableList.of();
 	}
+	return list(splitter.splitToList(tagList));
+    }
 
-	public static String listToString(List<Tag> tags)
+    public static Tag parse(String tag)
+    {
+	try
 	{
-		return listToString(tags, StringUtil.COMMA_JOINER);
+	    return new Tag(tag);
 	}
-
-	public static String listToString(List<Tag> tags, Joiner joiner)
+	catch (IllegalArgumentException e)
 	{
-		return joiner.join(tags);
+	    return null;
 	}
+    }
 
-	private final String	name;
-	private final String	longName;
+    public static String listToString(List<Tag> tags)
+    {
+	return listToString(tags, StringUtil.COMMA_JOINER);
+    }
 
-	public Tag(String name)
+    public static String listToString(List<Tag> tags, Joiner joiner)
+    {
+	return joiner.join(tags);
+    }
+
+    private final String name;
+    private final String longName;
+
+    public Tag(String name)
+    {
+	this(name, null);
+    }
+
+    public Tag(String name, String longName) throws IllegalArgumentException
+    {
+	this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
+	this.longName = longName;
+    }
+
+    public String getName()
+    {
+	return name;
+    }
+
+    public String getLongName()
+    {
+	return longName;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+	if (this == obj)
 	{
-		this(name, null);
+	    return true;
 	}
-
-	public Tag(String name, String longName) throws IllegalArgumentException
+	if (obj instanceof Tag)
 	{
-		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
-		this.longName = longName;
+	    return name.equalsIgnoreCase(((Tag) obj).name);
 	}
+	return false;
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    @Override
+    public int hashCode()
+    {
+	return new HashCodeBuilder(21, 47).append(name.toLowerCase(Locale.ENGLISH)).toHashCode();
+    }
 
-	public String getLongName()
-	{
-		return longName;
-	}
+    @Override
+    public String toString()
+    {
+	return name;
+    }
 
-	@Override
-	public boolean equals(Object obj)
+    @Override
+    public int compareTo(Tag o)
+    {
+	// nulls first
+	if (o == null)
 	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof Tag)
-		{
-			return name.equalsIgnoreCase(((Tag) obj).name);
-		}
-		return false;
+	    return 1;
 	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder(21, 47).append(name.toLowerCase(Locale.ENGLISH)).toHashCode();
-	}
-
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-
-	@Override
-	public int compareTo(Tag o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return Settings.STRING_ORDERING.compare(name, o.name);
-	}
+	return Settings.STRING_ORDERING.compare(name, o.name);
+    }
 }

@@ -33,183 +33,183 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class OrlyDbComReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 {
-	public static final String				DOMAIN				= "orlydb.com";
+    public static final String DOMAIN = "orlydb.com";
 
-	private static final Logger				log					= LogManager.getLogger(OrlyDbComReleaseDb.class);
+    private static final Logger log = LogManager.getLogger(OrlyDbComReleaseDb.class);
 
-	/**
-	 * The release dates are ISO-formatted (without the 'T').
-	 */
-	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+    /**
+     * The release dates are ISO-formatted (without the 'T').
+     */
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-	/**
-	 * The release dates are in UTC.
-	 */
-	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
+    /**
+     * The release dates are in UTC.
+     */
+    private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
 
-	@Override
-	public String getName()
+    @Override
+    public String getName()
+    {
+	return "ORLYDB.com";
+    }
+
+    @Override
+    public String getDomain()
+    {
+	return DOMAIN;
+    }
+
+    @Override
+    protected URL initHost() throws MalformedURLException
+    {
+	return new URL("http://www.orlydb.com/");
+    }
+
+    @Override
+    public Class<Release> getResultType()
+    {
+	return Release.class;
+    }
+
+    @Override
+    protected String getDefaultQueryPath()
+    {
+	return "/";
+    }
+
+    @Override
+    protected String getDefaultQueryPrefix()
+    {
+	return "q=";
+    }
+
+    // Querying
+    @Override
+    public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
+    {
+	if (doc == null)
 	{
-		return "ORLYDB.com";
+	    return ImmutableList.of();
+	}
+	try
+	{
+	    return parseReleases(doc);
+	}
+	catch (Exception e)
+	{
+	    throw new MetadataDbQueryException(this, doc, e);
+	}
+    }
+
+    /**
+     * <pre>
+     * <div id="releases">
+     * 		<div>
+     * 		...
+     * 		</div>
+     * ...
+     * </div>
+     * </pre>
+     * 
+     * @param doc
+     * @return
+     */
+    private static List<Release> parseReleases(Document doc)
+    {
+	Element rlssDiv = doc.getElementById("releases");
+	if (rlssDiv == null)
+	{
+	    return ImmutableList.of();
+	}
+	// Search for elements with tag "div" on the children list
+	// If searched in rlssDiv, the rlssDiv itself will be returned too.
+	Elements rlsDivs = rlssDiv.children().tagName("div");
+	List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
+	for (Element rlsDiv : rlsDivs)
+	{
+	    Release rls = parseRelease(doc, rlsDiv);
+	    if (rls != null)
+	    {
+		rlss.add(rls);
+	    }
+	}
+	return rlss;
+    }
+
+    /**
+     * <pre>
+     * <div>
+     * 	<span class="timestamp">2011-11-10 04:16:48</span>
+     * 	<span class="section"><a href="/s/tv-xvid">TV-XVID</a></span>
+     * 	<span class="release">Psych.S06E05.HDTV.XviD-P0W4</span>
+     * 	<a href="/dl/Psych.S06E05.HDTV.XviD-P0W4/" class="dlright"><span class="dl">DL</span></a>
+     * 	
+     * 		<span class="inforight"><span class="info">349.3MB | 25F</span></span>
+     * 	
+     * 	
+     * 		<span class="nukeright"><span class="nuke">contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></span>
+     * 	
+     * </div>
+     * </pre>
+     * 
+     * @param rlsDiv
+     * @return
+     */
+    private static Release parseRelease(Document doc, Element rlsDiv)
+    {
+	Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
+	Element sectionSpan = rlsDiv.getElementsByClass("section").first();
+	Element releaseSpan = rlsDiv.getElementsByClass("release").first();
+	Element infoSpan = rlsDiv.getElementsByClass("info").first();
+	Element nukeSpan = rlsDiv.getElementsByClass("nuke").first();
+
+	if (releaseSpan == null)
+	{
+	    return null;
 	}
 
-	@Override
-	public String getDomain()
+	Release rls = new Release();
+	rls.setName(releaseSpan.text());
+	if (sectionSpan != null)
 	{
-		return DOMAIN;
+	    rls.setSection(sectionSpan.text());
+	}
+	if (timestampSpan != null)
+	{
+	    try
+	    {
+		ZonedDateTime date = ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE);
+		rls.setDate(date);
+	    }
+	    catch (DateTimeParseException e)
+	    {
+		log.warn("Could not parse release date string '" + timestampSpan.text() + "'", e);
+	    }
 	}
 
-	@Override
-	protected URL initHost() throws MalformedURLException
+	if (infoSpan != null)
 	{
-		return new URL("http://www.orlydb.com/");
+	    String info = infoSpan.text();
+	    // e.g. "349.3MB | 25F"
+	    Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
+	    Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
+	    if (mSizeAndFiles.matches())
+	    {
+		// no NumberFormatExceptions can occur because then the pattern would not match in the first place
+		long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
+		rls.setSize(size);
+		int fileCount = Integer.parseInt(mSizeAndFiles.group(2));
+		rls.setFileCount(fileCount);
+	    }
 	}
 
-	@Override
-	public Class<Release> getResultType()
+	if (nukeSpan != null)
 	{
-		return Release.class;
+	    rls.nuke(nukeSpan.text());
 	}
 
-	@Override
-	protected String getDefaultQueryPath()
-	{
-		return "/";
-	}
+	rls.getFurtherInfoLinks().add(doc.baseUri());
 
-	@Override
-	protected String getDefaultQueryPrefix()
-	{
-		return "q=";
-	}
-
-	// Querying
-	@Override
-	public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
-	{
-		if (doc == null)
-		{
-			return ImmutableList.of();
-		}
-		try
-		{
-			return parseReleases(doc);
-		}
-		catch (Exception e)
-		{
-			throw new MetadataDbQueryException(this, doc, e);
-		}
-	}
-
-	/**
-	 * <pre>
-	 * <div id="releases">
-	 * 		<div>
-	 * 		...
-	 * 		</div>
-	 * ...
-	 * </div>
-	 * </pre>
-	 * 
-	 * @param doc
-	 * @return
-	 */
-	private static List<Release> parseReleases(Document doc)
-	{
-		Element rlssDiv = doc.getElementById("releases");
-		if (rlssDiv == null)
-		{
-			return ImmutableList.of();
-		}
-		// Search for elements with tag "div" on the children list
-		// If searched in rlssDiv, the rlssDiv itself will be returned too.
-		Elements rlsDivs = rlssDiv.children().tagName("div");
-		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
-		for (Element rlsDiv : rlsDivs)
-		{
-			Release rls = parseRelease(doc, rlsDiv);
-			if (rls != null)
-			{
-				rlss.add(rls);
-			}
-		}
-		return rlss;
-	}
-
-	/**
-	 * <pre>
-	 * <div>
-	 * 	<span class="timestamp">2011-11-10 04:16:48</span>
-	 * 	<span class="section"><a href="/s/tv-xvid">TV-XVID</a></span>
-	 * 	<span class="release">Psych.S06E05.HDTV.XviD-P0W4</span>
-	 * 	<a href="/dl/Psych.S06E05.HDTV.XviD-P0W4/" class="dlright"><span class="dl">DL</span></a>
-	 * 	
-	 * 		<span class="inforight"><span class="info">349.3MB | 25F</span></span>
-	 * 	
-	 * 	
-	 * 		<span class="nukeright"><span class="nuke">contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></span>
-	 * 	
-	 * </div>
-	 * </pre>
-	 * 
-	 * @param rlsDiv
-	 * @return
-	 */
-	private static Release parseRelease(Document doc, Element rlsDiv)
-	{
-		Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
-		Element sectionSpan = rlsDiv.getElementsByClass("section").first();
-		Element releaseSpan = rlsDiv.getElementsByClass("release").first();
-		Element infoSpan = rlsDiv.getElementsByClass("info").first();
-		Element nukeSpan = rlsDiv.getElementsByClass("nuke").first();
-
-		if (releaseSpan == null)
-		{
-			return null;
-		}
-
-		Release rls = new Release();
-		rls.setName(releaseSpan.text());
-		if (sectionSpan != null)
-		{
-			rls.setSection(sectionSpan.text());
-		}
-		if (timestampSpan != null)
-		{
-			try
-			{
-				ZonedDateTime date = ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE);
-				rls.setDate(date);
-			}
-			catch (DateTimeParseException e)
-			{
-				log.warn("Could not parse release date string '" + timestampSpan.text() + "'", e);
-			}
-		}
-
-		if (infoSpan != null)
-		{
-			String info = infoSpan.text();
-			// e.g. "349.3MB | 25F"
-			Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
-			Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
-			if (mSizeAndFiles.matches())
-			{
-				// no NumberFormatExceptions can occur because then the pattern would not match in the first place
-				long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
-				rls.setSize(size);
-				int fileCount = Integer.parseInt(mSizeAndFiles.group(2));
-				rls.setFileCount(fileCount);
-			}
-		}
-
-		if (nukeSpan != null)
-		{
-			rls.nuke(nukeSpan.text());
-		}
-
-		rls.getFurtherInfoLinks().add(doc.baseUri());
-
-		return rls;
-	}
+	return rls;
+    }
 }

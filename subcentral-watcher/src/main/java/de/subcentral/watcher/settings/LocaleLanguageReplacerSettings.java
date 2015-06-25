@@ -17,7 +17,6 @@ import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
-import de.subcentral.watcher.model.ObservableBean;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ListProperty;
@@ -27,7 +26,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class LocaleLanguageReplacerSettings extends ObservableBean
+public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 {
     private final ListProperty<Locale>		    parsingLanguages	       = new SimpleListProperty<>(this, "parsingLanguages");
     private final Property<LanguageFormat>	    outputLanguageFormat       = new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.NAME);
@@ -69,8 +68,17 @@ public class LocaleLanguageReplacerSettings extends ObservableBean
 	};
     }
 
-    public void load(XMLConfiguration cfg, String key)
+    @Override
+    protected String getKey()
     {
+	return "standardizing.subtitleLanguage";
+    }
+
+    @Override
+    protected void load(XMLConfiguration cfg)
+    {
+	String key = getKey();
+
 	List<HierarchicalConfiguration<ImmutableNode>> parsingLangsCfgs = cfg.configurationsAt(key + ".parsingLanguages.language");
 	List<Locale> parsingLangs = new ArrayList<>(parsingLangsCfgs.size());
 	for (HierarchicalConfiguration<ImmutableNode> parsingLangCfg : parsingLangsCfgs)
@@ -104,8 +112,11 @@ public class LocaleLanguageReplacerSettings extends ObservableBean
 	setCustomLanguageTextMappings(FXCollections.observableList(langTextMappings));
     }
 
-    public void save(XMLConfiguration cfg, String key)
+    @Override
+    protected void save(XMLConfiguration cfg)
     {
+	String key = getKey();
+
 	cfg.clearProperty(key + ".parsingLanguages");
 	for (int i = 0; i < parsingLanguages.size(); i++)
 	{

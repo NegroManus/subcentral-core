@@ -20,70 +20,70 @@ import de.subcentral.core.standardizing.StandardizingChange;
 
 public class SubtitleUtil
 {
-	public static Set<String> buildNamesForMatchingReleases(SubtitleAdjustment subAdj, NamingService namingService)
+    public static Set<String> buildNamesForMatchingReleases(SubtitleAdjustment subAdj, NamingService namingService)
+    {
+	if (subAdj == null || subAdj.getMatchingReleases().isEmpty())
 	{
-		if (subAdj == null || subAdj.getMatchingReleases().isEmpty())
-		{
-			return ImmutableSet.of();
-		}
-		ImmutableSet.Builder<String> names = ImmutableSet.builder();
-		for (Release rls : subAdj.getMatchingReleases())
-		{
-			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_RELEASE, rls)));
-		}
-		return names.build();
+	    return ImmutableSet.of();
 	}
-
-	public static List<Media> getMediaFromSubtitles(SubtitleAdjustment subAdj)
+	ImmutableSet.Builder<String> names = ImmutableSet.builder();
+	for (Release rls : subAdj.getMatchingReleases())
 	{
-		if (subAdj == null || subAdj.getSubtitles().isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		ImmutableList.Builder<Media> media = ImmutableList.builder();
-		for (Subtitle sub : subAdj.getSubtitles())
-		{
-			media.add(sub.getMedia());
-		}
-		return media.build();
+	    names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleAdjustmentNamer.PARAM_RELEASE, rls)));
 	}
+	return names.build();
+    }
 
-	public static void standardizeTags(SubtitleAdjustment subAdj, List<StandardizingChange> changes)
+    public static List<Media> getMediaFromSubtitles(SubtitleAdjustment subAdj)
+    {
+	if (subAdj == null || subAdj.getSubtitles().isEmpty())
 	{
-		if (subAdj == null || subAdj.getTags().isEmpty())
-		{
-			return;
-		}
-		boolean tagsChanged = false;
-		List<Tag> oldTags = ImmutableList.copyOf(subAdj.getTags());
-
-		Matcher mVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE).matcher("");
-		ListIterator<Tag> iter = subAdj.getTags().listIterator();
-		while (iter.hasNext())
-		{
-			Tag tag = iter.next();
-			if (mVersion.reset(tag.getName()).matches())
-			{
-				String oldRev = subAdj.getVersion();
-				String newRev = mVersion.group(1);
-				subAdj.setVersion(newRev);
-				if (!Objects.equals(oldRev, newRev))
-				{
-					changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_VERSION.getPropName(), oldRev, newRev));
-				}
-				iter.remove();
-				tagsChanged = true;
-			}
-		}
-		if (tagsChanged)
-		{
-			changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
-		}
+	    return ImmutableList.of();
 	}
-
-	private SubtitleUtil()
+	ImmutableList.Builder<Media> media = ImmutableList.builder();
+	for (Subtitle sub : subAdj.getSubtitles())
 	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	    media.add(sub.getMedia());
 	}
+	return media.build();
+    }
+
+    public static void standardizeTags(SubtitleAdjustment subAdj, List<StandardizingChange> changes)
+    {
+	if (subAdj == null || subAdj.getTags().isEmpty())
+	{
+	    return;
+	}
+	boolean tagsChanged = false;
+	List<Tag> oldTags = ImmutableList.copyOf(subAdj.getTags());
+
+	Matcher mVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE).matcher("");
+	ListIterator<Tag> iter = subAdj.getTags().listIterator();
+	while (iter.hasNext())
+	{
+	    Tag tag = iter.next();
+	    if (mVersion.reset(tag.getName()).matches())
+	    {
+		String oldRev = subAdj.getVersion();
+		String newRev = mVersion.group(1);
+		subAdj.setVersion(newRev);
+		if (!Objects.equals(oldRev, newRev))
+		{
+		    changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_VERSION.getPropName(), oldRev, newRev));
+		}
+		iter.remove();
+		tagsChanged = true;
+	    }
+	}
+	if (tagsChanged)
+	{
+	    changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
+	}
+    }
+
+    private SubtitleUtil()
+    {
+	throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+    }
 
 }
