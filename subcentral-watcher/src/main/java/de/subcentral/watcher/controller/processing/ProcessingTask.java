@@ -107,19 +107,14 @@ public class ProcessingTask extends Task<Void>
 		return null;
 	    }
 
-	    Object parsed = parse();
+	    SubtitleAdjustment parsed = parse();
 	    if (parsed == null)
 	    {
 		return null;
 	    }
-
-	    if (parsed instanceof Release)
+	    else
 	    {
-		log.warn("Processing of releases is currently not possible");
-	    }
-	    else if (parsed instanceof SubtitleAdjustment)
-	    {
-		processSubtitleAdjustment((SubtitleAdjustment) parsed);
+		processSubtitleAdjustment(parsed);
 	    }
 	    return null;
 	}
