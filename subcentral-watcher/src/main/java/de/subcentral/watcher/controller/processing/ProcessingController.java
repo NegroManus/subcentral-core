@@ -10,20 +10,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableCell;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
-import javafx.scene.control.cell.ProgressBarTreeTableCell;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,6 +31,7 @@ import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.IOUtil;
+import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
@@ -53,6 +40,19 @@ import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.settings.SettingsUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableCell;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.ProgressBarTreeTableCell;
 
 public class ProcessingController extends AbstractController
 {
@@ -117,6 +117,7 @@ public class ProcessingController extends AbstractController
 		FxUtil.runAndWait(() -> {
 		    // processingConfig.getValue() has to be executed in JavaFX Application Thread for concurrency reasons
 		    // (all access to watcher settings has to be in JavaFX Application Thread)
+		    long start = System.nanoTime();
 		    log.debug("Rebuilding ProcessingConfig due to changes in WatcherSettings");
 		    WatcherSettings settings = WatcherSettings.INSTANCE;
 		    cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns()));
@@ -134,6 +135,7 @@ public class ProcessingController extends AbstractController
 		    cfg.setAutoLocateWinRar(settings.isAutoLocateWinRar());
 		    cfg.setRarExe(settings.getRarExe());
 		    cfg.setPackingSourceDeletionMode(settings.getPackingSourceDeletionMode());
+		    log.debug("Rebuit ProcessingConfig in {} ms", TimeUtil.durationMillis(start));
 		});
 		return cfg;
 	    }
@@ -224,7 +226,6 @@ public class ProcessingController extends AbstractController
 		@Override
 		protected void updateItem(ObservableList<Path> item, boolean empty)
 		{
-		    // calling super here is very important - don't skip this!
 		    super.updateItem(item, empty);
 
 		    if (empty || item == null)

@@ -15,10 +15,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -111,16 +108,9 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 	    }
 	    else
 	    {
-		logWarningForUnknownStandardizerSettingEntryType(selectedStandardizerType);
 		result = Optional.empty();
 	    }
-	    if (result.isPresent())
-	    {
-		StandardizerSettingEntry<?, ?> newStandardizer = result.get();
-		rulesTableView.getItems().add(newStandardizer);
-		// so that the added item gets selected
-		rulesTableView.getSelectionModel().selectLast();
-	    }
+	    FxUtil.handleDistinctAdd(rulesTableView, result);
 	});
 
 	final BooleanBinding noSelection = rulesTableView.getSelectionModel().selectedItemProperty().isNull();
@@ -139,48 +129,36 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 	    }
 	    else
 	    {
-		logWarningForUnknownStandardizerSettingEntryType(selectedStandardizer.getClass());
 		result = Optional.empty();
 	    }
-	    if (result.isPresent())
-	    {
-		StandardizerSettingEntry<?, ?> editedRule = result.get();
-		int selectedIndex = rulesTableView.getSelectionModel().getSelectedIndex();
-		rulesTableView.getItems().set(selectedIndex, editedRule);
-		// if there is only one item and that is edited, then the selection somehow gets removed. so reselect
-		rulesTableView.getSelectionModel().select(selectedIndex);
-	    }
+	    FxUtil.handleDistinctEdit(rulesTableView, result);
 	});
 
 	removeRuleButton.disableProperty().bind(noSelection);
 	removeRuleButton.setOnAction((ActionEvent event) -> {
-	    StandardizerSettingEntry<?, ?> selectedRule = rulesTableView.getSelectionModel().getSelectedItem();
-	    Alert alert = new Alert(AlertType.CONFIRMATION);
-	    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-	    alert.setResizable(true);
-	    alert.setTitle("Confirmation of removal of standardizing rule");
-	    alert.setHeaderText("Do you really want to remove this standardizing rule?");
-	    StringBuilder contentText = new StringBuilder();
-	    contentText.append("Rule type: ");
-	    contentText.append(selectedRule.standardizerTypeAsStringBinding().get());
-	    contentText.append("\n");
-	    contentText.append("Rule: ");
-	    contentText.append(selectedRule.ruleAsStringBinding().get());
-	    alert.setContentText(contentText.toString());
-
-	    Optional<ButtonType> result = alert.showAndWait();
-	    if (result.get() == ButtonType.YES)
+	    FxUtil.handleDelete(rulesTableView, "standardizing rule", new StringConverter<StandardizerSettingEntry<?, ?>>()
 	    {
-		int selectedIndex = rulesTableView.getSelectionModel().getSelectedIndex();
-		rulesTableView.getItems().remove(selectedIndex);
-	    }
+		@Override
+		public String toString(StandardizerSettingEntry<?, ?> entry)
+		{
+		    StringBuilder sb = new StringBuilder();
+		    sb.append("Rule type: ");
+		    sb.append(entry.standardizerTypeAsStringBinding().get());
+		    sb.append("\n");
+		    sb.append("Rule: ");
+		    sb.append(entry.ruleAsStringBinding().get());
+		    return sb.toString();
+		}
+
+		@Override
+		public StandardizerSettingEntry<?, ?> fromString(String string)
+		{
+		    // not needed
+		    throw new UnsupportedOperationException();
+		}
+	    });
 	});
 
 	FxUtil.setStandardMouseAndKeyboardSupportForTableView(rulesTableView, editRuleButton, removeRuleButton);
-    }
-
-    private static void logWarningForUnknownStandardizerSettingEntryType(Class<? extends StandardizerSettingEntry> standardizerType)
-    {
-	log.warn("Unknown type of {}: {}. No dialog available for this standardizer", StandardizerSettingEntry.class.getName(), standardizerType.getName());
     }
 }

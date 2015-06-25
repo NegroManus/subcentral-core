@@ -119,7 +119,6 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		    if (empty || pattern == null)
 		    {
 			setText(null);
-			setGraphic(null);
 		    }
 		    else
 		    {
@@ -141,7 +140,6 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		    if (empty || lang == null)
 		    {
 			setText(null);
-			setGraphic(null);
 		    }
 		    else
 		    {
@@ -228,7 +226,6 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		    if (empty || lang == null)
 		    {
 			setText(null);
-			setGraphic(null);
 		    }
 		    else
 		    {

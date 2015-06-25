@@ -2,6 +2,11 @@ package de.subcentral.watcher.controller.settings;
 
 import java.util.Optional;
 
+import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.WatcherDialogs;
+import de.subcentral.watcher.settings.CompatibilitySettingEntry;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,11 +17,6 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.WatcherDialogs;
-import de.subcentral.watcher.settings.CompatibilitySettingEntry;
-import de.subcentral.watcher.settings.WatcherSettings;
 
 public class ReleaseCompatibilitySettingsController extends AbstractSettingsSectionController
 {
@@ -71,7 +71,6 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 
 	editCrossGroupCompatibility.disableProperty().bind(noSelection);
 	editCrossGroupCompatibility.setOnAction((ActionEvent event) -> {
-
 	    CompatibilitySettingEntry selectedEntry = crossGroupCompatibilitiesTableView.getSelectionModel().getSelectedItem();
 	    if (selectedEntry.getValue() instanceof CrossGroupCompatibility)
 	    {

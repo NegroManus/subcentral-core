@@ -34,7 +34,7 @@ public class MetadataDbSettingEntry<T> extends AbstractSettingEntry<MetadataDb<T
 	return available.get();
     }
 
-    public void recheckAvailability(ExecutorService executor)
+    public void updateAvailability(ExecutorService executor)
     {
 	available.set(false);
 	Task<Boolean> checkAvailibilityTask = new Task<Boolean>()

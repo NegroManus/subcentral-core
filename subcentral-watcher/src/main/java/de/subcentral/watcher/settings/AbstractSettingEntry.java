@@ -2,10 +2,10 @@ package de.subcentral.watcher.settings;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public abstract class AbstractSettingEntry<T> implements SettingEntry<T>
 {
@@ -33,13 +33,13 @@ public abstract class AbstractSettingEntry<T> implements SettingEntry<T>
     @Override
     public final boolean isEnabled()
     {
-	return this.enabledProperty().get();
+	return this.enabled.get();
     }
 
     @Override
     public final void setEnabled(final boolean enabled)
     {
-	this.enabledProperty().set(enabled);
+	this.enabled.set(enabled);
     }
 
     @Override

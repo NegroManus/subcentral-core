@@ -1,10 +1,12 @@
 package de.subcentral.watcher.controller.settings;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubCentralFxUtil;
+import de.subcentral.support.winrar.WinRar;
+import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -22,14 +24,6 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.SubCentralFxUtil;
-import de.subcentral.support.winrar.WinRar;
-import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
-import de.subcentral.watcher.settings.WatcherSettings;
 
 public class FileTransformationSettingsController extends AbstractSettingsSectionController
 {
@@ -70,26 +64,8 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
     @Override
     protected void doInitialize() throws Exception
     {
-	final TextFormatter<Path> targetDirFormatter = new TextFormatter<Path>(FxUtil.PATH_STRING_CONVERTER);
-	targetDirFormatter.valueProperty().bindBidirectional(WatcherSettings.INSTANCE.targetDirProperty());
-	targetDirTxtFld.setTextFormatter(targetDirFormatter);
-
-	chooseTargetDirBtn.setOnAction((ActionEvent event) -> {
-	    DirectoryChooser dirChooser = new DirectoryChooser();
-	    dirChooser.setTitle("Choose target directory");
-	    Path currentValue = targetDirFormatter.getValue();
-	    if (currentValue != null && currentValue.isAbsolute())
-	    {
-		dirChooser.setInitialDirectory(currentValue.toFile());
-	    }
-	    File selectedDirectory = dirChooser.showDialog(settingsController.getMainController().getPrimaryStage());
-	    if (selectedDirectory == null)
-	    {
-		return;
-	    }
-	    Path newTargetDir = selectedDirectory.toPath();
-	    targetDirFormatter.setValue(newTargetDir);
-	});
+	TextFormatter<Path> targetDirFormatter = FxUtil.bindPathToTextField(targetDirTxtFld, WatcherSettings.INSTANCE.targetDirProperty());
+	FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory");
 
 	deleteSourceCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.deleteSourceProperty());
 
@@ -107,10 +83,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	    }
 	});
 
-	final TextFormatter<Path> rarExeFormatter = new TextFormatter<Path>(FxUtil.PATH_STRING_CONVERTER);
-	rarExeFormatter.valueProperty().bindBidirectional(WatcherSettings.INSTANCE.rarExeProperty());
-	rarExeTxtFld.setTextFormatter(rarExeFormatter);
-
+	TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, WatcherSettings.INSTANCE.rarExeProperty());
 	testLocateBtn.setOnAction((ActionEvent event) -> {
 	    Path winRarLocation = WinRar.tryLocateRarExecutable();
 	    if (winRarLocation != null)
@@ -137,28 +110,12 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	    }
 	});
 
-	chooseRarExeBtn.setOnAction((ActionEvent event) -> {
-	    FileChooser fileChooser = new FileChooser();
-	    fileChooser.setTitle("Select rar executable");
-	    Path currentValue = rarExeFormatter.getValue();
-	    if (currentValue != null)
-	    {
-		Path potentialParentDir = currentValue.getParent();
-		if (potentialParentDir != null && Files.isDirectory(potentialParentDir, LinkOption.NOFOLLOW_LINKS))
-		{
-		    fileChooser.setInitialDirectory(potentialParentDir.toFile());
-		}
-	    }
-	    ExtensionFilter exeFilter = new ExtensionFilter("RAR executable", WinRar.getRarExecutableFilename());
-	    fileChooser.getExtensionFilters().add(exeFilter);
-	    fileChooser.setSelectedExtensionFilter(exeFilter);
-
-	    File selectedFile = fileChooser.showOpenDialog(settingsController.getMainController().getPrimaryStage());
-	    if (selectedFile != null)
-	    {
-		rarExeFormatter.setValue(selectedFile.toPath());
-	    }
-	});
+	FxUtil.setChooseFileAction(chooseRarExeBtn,
+		rarExeFormatter,
+		settingsController.getMainController().getPrimaryStage(),
+		"Select rar executable",
+		"RAR executable",
+		WinRar.getRarExecutableFilename());
 
 	packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
 	packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(WatcherSettings.INSTANCE.packingSourceDeletionModeProperty());
