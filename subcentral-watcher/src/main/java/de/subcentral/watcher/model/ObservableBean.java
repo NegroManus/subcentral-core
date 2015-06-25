@@ -11,69 +11,69 @@ import javafx.collections.ObservableList;
 
 public class ObservableBean implements Observable
 {
-	private final InternalInvalidationListener	internalInvalidationListener	= new InternalInvalidationListener();
-	private final ObservableList<Observable>	dependencies					= FXCollections.observableArrayList(new CopyOnWriteArrayList<>());
-	private final List<InvalidationListener>	listeners						= new CopyOnWriteArrayList<>();
+    private final InternalInvalidationListener internalInvalidationListener = new InternalInvalidationListener();
+    private final ObservableList<Observable>   dependencies		    = FXCollections.observableArrayList(new CopyOnWriteArrayList<>());
+    private final List<InvalidationListener>   listeners		    = new CopyOnWriteArrayList<>();
 
-	public ObservableBean()
-	{
-		dependencies.addListener((ListChangeListener.Change<? extends Observable> c) -> {
-			while (c.next())
-			{
-				if (c.wasAdded())
-				{
-					for (Observable added : c.getAddedSubList())
-					{
-						added.addListener(internalInvalidationListener);
-					}
-				}
-				else if (c.wasRemoved())
-				{
-					for (Observable removedElem : c.getRemoved())
-					{
-						removedElem.removeListener(internalInvalidationListener);
-					}
-				}
-			}
-		});
-	}
-
-	protected void bind(Observable... properties)
-	{
-		dependencies.addAll(properties);
-	}
-
-	public ObservableList<Observable> getDependencies()
-	{
-		return dependencies;
-	}
-
-	@Override
-	public void addListener(InvalidationListener listener)
-	{
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeListener(InvalidationListener listener)
-	{
-		listeners.remove(listener);
-	}
-
-	public void invalidate()
-	{
-		for (InvalidationListener l : listeners)
+    public ObservableBean()
+    {
+	dependencies.addListener((ListChangeListener.Change<? extends Observable> c) -> {
+	    while (c.next())
+	    {
+		if (c.wasAdded())
 		{
-			l.invalidated(this);
+		    for (Observable added : c.getAddedSubList())
+		    {
+			added.addListener(internalInvalidationListener);
+		    }
 		}
-	}
-
-	private class InternalInvalidationListener implements InvalidationListener
-	{
-		@Override
-		public void invalidated(Observable observable)
+		else if (c.wasRemoved())
 		{
-			invalidate();
+		    for (Observable removedElem : c.getRemoved())
+		    {
+			removedElem.removeListener(internalInvalidationListener);
+		    }
 		}
+	    }
+	});
+    }
+
+    protected void bind(Observable... properties)
+    {
+	dependencies.addAll(properties);
+    }
+
+    public ObservableList<Observable> getDependencies()
+    {
+	return dependencies;
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener)
+    {
+	listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener)
+    {
+	listeners.remove(listener);
+    }
+
+    public void invalidate()
+    {
+	for (InvalidationListener l : listeners)
+	{
+	    l.invalidated(this);
 	}
+    }
+
+    private class InternalInvalidationListener implements InvalidationListener
+    {
+	@Override
+	public void invalidated(Observable observable)
+	{
+	    invalidate();
+	}
+    }
 }

@@ -14,45 +14,45 @@ import de.subcentral.core.metadata.db.MetadataDb;
 
 public class MetadataDbSettingEntry<T> extends AbstractSettingEntry<MetadataDb<T>>
 {
-	private static final Logger		log	= LogManager.getLogger(MetadataDbSettingEntry.class);
+    private static final Logger log = LogManager.getLogger(MetadataDbSettingEntry.class);
 
-	private final BooleanProperty	available;
+    private final BooleanProperty available;
 
-	public MetadataDbSettingEntry(MetadataDb<T> database, boolean enabled)
+    public MetadataDbSettingEntry(MetadataDb<T> database, boolean enabled)
+    {
+	super(database, enabled);
+	this.available = new SimpleBooleanProperty(this, "available", false);
+    }
+
+    public ReadOnlyBooleanProperty availableProperty()
+    {
+	return available;
+    }
+
+    public boolean isAvailable()
+    {
+	return available.get();
+    }
+
+    public void recheckAvailability(ExecutorService executor)
+    {
+	available.set(false);
+	Task<Boolean> checkAvailibilityTask = new Task<Boolean>()
 	{
-		super(database, enabled);
-		this.available = new SimpleBooleanProperty(this, "available", false);
-	}
+	    @Override
+	    protected Boolean call() throws Exception
+	    {
+		boolean isAvailable = value.isAvailable();
+		log.debug("Rechecked whether {} is available: {}", value, isAvailable);
+		return isAvailable;
+	    }
 
-	public ReadOnlyBooleanProperty availableProperty()
-	{
-		return available;
-	}
-
-	public boolean isAvailable()
-	{
-		return available.get();
-	}
-
-	public void recheckAvailability(ExecutorService executor)
-	{
-		available.set(false);
-		Task<Boolean> checkAvailibilityTask = new Task<Boolean>()
-		{
-			@Override
-			protected Boolean call() throws Exception
-			{
-				boolean isAvailable = value.isAvailable();
-				log.debug("Rechecked whether {} is available: {}", value, isAvailable);
-				return isAvailable;
-			}
-
-			@Override
-			protected void succeeded()
-			{
-				available.set(getValue());
-			}
-		};
-		executor.submit(checkAvailibilityTask);
-	}
+	    @Override
+	    protected void succeeded()
+	    {
+		available.set(getValue());
+	    }
+	};
+	executor.submit(checkAvailibilityTask);
+    }
 }

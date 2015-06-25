@@ -13,80 +13,80 @@ import de.subcentral.fx.FxUtil;
 
 public final class LanguageTextMapping implements Comparable<LanguageTextMapping>
 {
-	public static final StringConverter<LanguageTextMapping>	STRING_CONVERTER	= initStringConverter();
+    public static final StringConverter<LanguageTextMapping> STRING_CONVERTER = initStringConverter();
 
-	private static StringConverter<LanguageTextMapping> initStringConverter()
+    private static StringConverter<LanguageTextMapping> initStringConverter()
+    {
+	return new StringConverter<LanguageTextMapping>()
 	{
-		return new StringConverter<LanguageTextMapping>()
-		{
-			@Override
-			public String toString(LanguageTextMapping mapping)
-			{
-				return mapping.language.getDisplayName() + " -> " + mapping.text;
-			}
+	    @Override
+	    public String toString(LanguageTextMapping mapping)
+	    {
+		return mapping.language.getDisplayName() + " -> " + mapping.text;
+	    }
 
-			@Override
-			public LanguageTextMapping fromString(String string)
-			{
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+	    @Override
+	    public LanguageTextMapping fromString(String string)
+	    {
+		throw new UnsupportedOperationException();
+	    }
+	};
+    }
 
-	final Locale	language;
-	final String	text;
+    final Locale language;
+    final String text;
 
-	public LanguageTextMapping(Locale language, String text)
+    public LanguageTextMapping(Locale language, String text)
+    {
+	this.language = Objects.requireNonNull(language, "language");
+	this.text = Objects.requireNonNull(text, "text");
+    }
+
+    public Locale getLanguage()
+    {
+	return language;
+    }
+
+    public String getText()
+    {
+	return text;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+	if (this == obj)
 	{
-		this.language = Objects.requireNonNull(language, "language");
-		this.text = Objects.requireNonNull(text, "text");
+	    return true;
 	}
-
-	public Locale getLanguage()
+	if (obj instanceof LanguageTextMapping)
 	{
-		return language;
+	    LanguageTextMapping o = (LanguageTextMapping) obj;
+	    return language.equals(o.language);
 	}
+	return false;
+    }
 
-	public String getText()
-	{
-		return text;
-	}
+    @Override
+    public int hashCode()
+    {
+	return new HashCodeBuilder(983, 133).append(language).toHashCode();
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj instanceof LanguageTextMapping)
-		{
-			LanguageTextMapping o = (LanguageTextMapping) obj;
-			return language.equals(o.language);
-		}
-		return false;
-	}
+    @Override
+    public String toString()
+    {
+	return MoreObjects.toStringHelper(LanguageTextMapping.class).omitNullValues().add("language", language).add("text", text).toString();
+    }
 
-	@Override
-	public int hashCode()
+    @Override
+    public int compareTo(LanguageTextMapping o)
+    {
+	// nulls first
+	if (o == null)
 	{
-		return new HashCodeBuilder(983, 133).append(language).toHashCode();
+	    return 1;
 	}
-
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(LanguageTextMapping.class).omitNullValues().add("language", language).add("text", text).toString();
-	}
-
-	@Override
-	public int compareTo(LanguageTextMapping o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR.compare(this.language, o.language);
-	}
+	return FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR.compare(this.language, o.language);
+    }
 }

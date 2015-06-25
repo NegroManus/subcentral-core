@@ -17,65 +17,62 @@ import de.subcentral.watcher.settings.WatcherSettings;
 
 public class ParsingSettingsController extends AbstractSettingsSectionController
 {
-	@FXML
-	private GridPane											parsingSettingsPane;
-	@FXML
-	private TextField											filenamePatternsTextField;
-	@FXML
-	private TableView<ParsingServiceSettingEntry>				parsingServicesTableView;
-	@FXML
-	private TableColumn<ParsingServiceSettingEntry, Boolean>	parsingServicesEnabledColumn;
-	@FXML
-	private TableColumn<ParsingServiceSettingEntry, String>		parsingServicesNameColumn;
-	@FXML
-	private TableColumn<ParsingServiceSettingEntry, String>		parsingServicesExampleColumn;
+    @FXML
+    private GridPane					     parsingSettingsPane;
+    @FXML
+    private TextField					     filenamePatternsTextField;
+    @FXML
+    private TableView<ParsingServiceSettingEntry>	     parsingServicesTableView;
+    @FXML
+    private TableColumn<ParsingServiceSettingEntry, Boolean> parsingServicesEnabledColumn;
+    @FXML
+    private TableColumn<ParsingServiceSettingEntry, String>  parsingServicesNameColumn;
+    @FXML
+    private TableColumn<ParsingServiceSettingEntry, String>  parsingServicesExampleColumn;
 
-	public ParsingSettingsController(SettingsController settingsController)
-	{
-		super(settingsController);
-	}
+    public ParsingSettingsController(SettingsController settingsController)
+    {
+	super(settingsController);
+    }
 
-	@Override
-	public GridPane getSectionRootPane()
-	{
-		return parsingSettingsPane;
-	}
+    @Override
+    public GridPane getSectionRootPane()
+    {
+	return parsingSettingsPane;
+    }
 
-	@Override
-	protected void doInitialize() throws Exception
-	{
-		// Filename patterns
-		filenamePatternsTextField.textProperty().bindBidirectional(WatcherSettings.INSTANCE.filenamePatternsProperty());
+    @Override
+    protected void doInitialize() throws Exception
+    {
+	// Filename patterns
+	filenamePatternsTextField.textProperty().bindBidirectional(WatcherSettings.INSTANCE.filenamePatternsProperty());
 
-		// Parsing services
-		parsingServicesTableView.setItems(WatcherSettings.INSTANCE.getFilenameParsingServices());
-		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
-		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, Boolean> param) -> param.getValue()
-				.enabledProperty());
-		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.constantBinding(param.getValue()
-				.getValue()
-				.getDomain()));
+	// Parsing services
+	parsingServicesTableView.setItems(WatcherSettings.INSTANCE.getFilenameParsingServices());
+	parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
+	parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, Boolean> param) -> param.getValue().enabledProperty());
+	parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.constantBinding(param.getValue().getValue().getDomain()));
 
-		parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> {
-			String example;
-			switch (param.getValue().getValue().getDomain())
-			{
-				case Addic7edCom.DOMAIN:
-					example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
-					break;
-				case ItalianSubsNet.DOMAIN:
-					example = "Parks.And.Recreation.s07e01.sub.itasa";
-					break;
-				case SubCentralDe.DOMAIN:
-					example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
-					break;
-				case ReleaseScene.DOMAIN:
-					example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL";
-					break;
-				default:
-					example = "";
-			}
-			return FxUtil.constantBinding(example);
-		});
-	}
+	parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> {
+	    String example;
+	    switch (param.getValue().getValue().getDomain())
+	    {
+		case Addic7edCom.DOMAIN:
+		    example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
+		    break;
+		case ItalianSubsNet.DOMAIN:
+		    example = "Parks.And.Recreation.s07e01.sub.itasa";
+		    break;
+		case SubCentralDe.DOMAIN:
+		    example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
+		    break;
+		case ReleaseScene.DOMAIN:
+		    example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL";
+		    break;
+		default:
+		    example = "";
+	    }
+	    return FxUtil.constantBinding(example);
+	});
+    }
 }

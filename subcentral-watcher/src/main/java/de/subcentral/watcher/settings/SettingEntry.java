@@ -4,11 +4,11 @@ import javafx.beans.property.BooleanProperty;
 
 public interface SettingEntry<T>
 {
-	T getValue();
+    T getValue();
 
-	BooleanProperty enabledProperty();
+    BooleanProperty enabledProperty();
 
-	boolean isEnabled();
+    boolean isEnabled();
 
-	void setEnabled(final boolean enabled);
+    void setEnabled(final boolean enabled);
 }

@@ -14,75 +14,75 @@ import de.subcentral.core.naming.NamingService;
 
 public abstract class AbstractProcessingItem implements ProcessingItem
 {
-	protected final NamingService		namingService;
-	protected final Map<String, Object>	namingParameters;
+    protected final NamingService	namingService;
+    protected final Map<String, Object>	namingParameters;
 
-	protected final StringProperty		status		= new SimpleStringProperty(this, "status", "");
-	protected final DoubleProperty		progress	= new SimpleDoubleProperty(this, "progress");
+    protected final StringProperty status   = new SimpleStringProperty(this, "status", "");
+    protected final DoubleProperty progress = new SimpleDoubleProperty(this, "progress");
 
-	public AbstractProcessingItem(NamingService namingService, Map<String, Object> namingParameters)
+    public AbstractProcessingItem(NamingService namingService, Map<String, Object> namingParameters)
+    {
+	this.namingService = Objects.requireNonNull(namingService, "namingService");
+	this.namingParameters = Objects.requireNonNull(namingParameters, "namingParameters");
+    }
+
+    @Override
+    public String getName()
+    {
+	return nameBinding().get();
+    }
+
+    @Override
+    public ReadOnlyStringProperty statusProperty()
+    {
+	return status;
+    }
+
+    @Override
+    public String getStatus()
+    {
+	return status.get();
+    }
+
+    public void updateStatus(String newStatus)
+    {
+	if (Platform.isFxApplicationThread())
 	{
-		this.namingService = Objects.requireNonNull(namingService, "namingService");
-		this.namingParameters = Objects.requireNonNull(namingParameters, "namingParameters");
+	    status.setValue(newStatus);
 	}
-
-	@Override
-	public String getName()
+	else
 	{
-		return nameBinding().get();
+	    Platform.runLater(() -> status.setValue(newStatus));
 	}
+    }
 
-	@Override
-	public ReadOnlyStringProperty statusProperty()
-	{
-		return status;
-	}
+    @Override
+    public ReadOnlyDoubleProperty progressProperty()
+    {
+	return progress;
+    }
 
-	@Override
-	public String getStatus()
-	{
-		return status.get();
-	}
+    @Override
+    public double getProgress()
+    {
+	return progress.doubleValue();
+    }
 
-	public void updateStatus(String newStatus)
+    public void updateProgress(double newProgress)
+    {
+	if (Platform.isFxApplicationThread())
 	{
-		if (Platform.isFxApplicationThread())
-		{
-			status.setValue(newStatus);
-		}
-		else
-		{
-			Platform.runLater(() -> status.setValue(newStatus));
-		}
+	    progress.setValue(newProgress);
 	}
+	else
+	{
+	    Platform.runLater(() -> progress.setValue(newProgress));
+	}
+    }
 
-	@Override
-	public ReadOnlyDoubleProperty progressProperty()
-	{
-		return progress;
-	}
-
-	@Override
-	public double getProgress()
-	{
-		return progress.doubleValue();
-	}
-
-	public void updateProgress(double newProgress)
-	{
-		if (Platform.isFxApplicationThread())
-		{
-			progress.setValue(newProgress);
-		}
-		else
-		{
-			Platform.runLater(() -> progress.setValue(newProgress));
-		}
-	}
-
-	@Override
-	public String getInfo()
-	{
-		return infoBinding().get();
-	}
+    @Override
+    public String getInfo()
+    {
+	return infoBinding().get();
+    }
 }

@@ -12,40 +12,40 @@ import de.subcentral.watcher.model.ObservableRelease;
 
 public class ReleaseViewApp extends Application
 {
-	private ReleaseViewController	ctrl		= new ReleaseViewController(initRelease());
+    private ReleaseViewController ctrl = new ReleaseViewController(initRelease());
 
-	private BorderPane				rootPane	= new BorderPane();
-	private GridPane				releasePane;
+    private BorderPane rootPane	= new BorderPane();
+    private GridPane   releasePane;
 
-	@Override
-	public void init() throws Exception
-	{
-		releasePane = FxUtil.loadFromFxml("ReleaseView.fxml", null, null, ctrl);
-		rootPane.setCenter(releasePane);
-	}
+    @Override
+    public void init() throws Exception
+    {
+	releasePane = FxUtil.loadFromFxml("ReleaseView.fxml", null, null, ctrl);
+	rootPane.setCenter(releasePane);
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws Exception
-	{
-		primaryStage.setScene(new Scene(rootPane));
-		primaryStage.titleProperty().bind(ctrl.titleBinding());
-		primaryStage.show();
-	}
+    @Override
+    public void start(Stage primaryStage) throws Exception
+    {
+	primaryStage.setScene(new Scene(rootPane));
+	primaryStage.titleProperty().bind(ctrl.titleBinding());
+	primaryStage.show();
+    }
 
-	private static ObservableRelease initRelease()
-	{
-		Episode epi1 = Episode.createSeasonedEpisode("Psych", 8, 1, "Lock, Stock, Some Smoking Barrels and Burton Guster's Goblet of Fire");
-		// Episode epi2 = Episode.createSeasonedEpisode("Psych", 8, 2);
-		Release rls = Release.create("Psych.8x01.HDTV.x264-KILLERS", epi1, "KILLERS", "HDTV", "x264");
-		// rls.getMedia().add(epi2);
-		rls.nukeNow("because of");
-		rls.nuke("another nuke reason");
-		ObservableRelease obsvRls = new ObservableRelease(rls);
-		return obsvRls;
-	}
+    private static ObservableRelease initRelease()
+    {
+	Episode epi1 = Episode.createSeasonedEpisode("Psych", 8, 1, "Lock, Stock, Some Smoking Barrels and Burton Guster's Goblet of Fire");
+	// Episode epi2 = Episode.createSeasonedEpisode("Psych", 8, 2);
+	Release rls = Release.create("Psych.8x01.HDTV.x264-KILLERS", epi1, "KILLERS", "HDTV", "x264");
+	// rls.getMedia().add(epi2);
+	rls.nukeNow("because of");
+	rls.nuke("another nuke reason");
+	ObservableRelease obsvRls = new ObservableRelease(rls);
+	return obsvRls;
+    }
 
-	public static void main(String[] args)
-	{
-		launch(args);
-	}
+    public static void main(String[] args)
+    {
+	launch(args);
+    }
 }

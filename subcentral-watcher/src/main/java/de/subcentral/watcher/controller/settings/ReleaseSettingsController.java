@@ -8,27 +8,27 @@ import de.subcentral.watcher.settings.WatcherSettings;
 
 public class ReleaseSettingsController extends AbstractSettingsSectionController
 {
-	@FXML
-	private GridPane	releaseSettingsPane;
-	@FXML
-	private TextField	metaTagsTextField;
+    @FXML
+    private GridPane  releaseSettingsPane;
+    @FXML
+    private TextField metaTagsTextField;
 
-	public ReleaseSettingsController(SettingsController settingsController)
-	{
-		super(settingsController);
-	}
+    public ReleaseSettingsController(SettingsController settingsController)
+    {
+	super(settingsController);
+    }
 
-	@Override
-	public GridPane getSectionRootPane()
-	{
-		return releaseSettingsPane;
-	}
+    @Override
+    public GridPane getSectionRootPane()
+    {
+	return releaseSettingsPane;
+    }
 
-	@Override
-	protected void doInitialize() throws Exception
-	{
-		// Meta tags
-		SubCentralFxUtil.bindTagsToTextField(metaTagsTextField, WatcherSettings.INSTANCE.releaseMetaTagsProperty());
-		metaTagsTextField.setPromptText(SubCentralFxUtil.DEFAULT_TAGS_PROMPT_TEXT);
-	}
+    @Override
+    protected void doInitialize() throws Exception
+    {
+	// Meta tags
+	SubCentralFxUtil.bindTagsToTextField(metaTagsTextField, WatcherSettings.INSTANCE.releaseMetaTagsProperty());
+	metaTagsTextField.setPromptText(SubCentralFxUtil.DEFAULT_TAGS_PROMPT_TEXT);
+    }
 }

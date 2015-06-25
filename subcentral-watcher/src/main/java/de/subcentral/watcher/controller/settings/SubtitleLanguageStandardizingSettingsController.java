@@ -33,250 +33,248 @@ import javafx.scene.layout.BorderPane;
 public class SubtitleLanguageStandardizingSettingsController extends AbstractSettingsSectionController
 {
     @FXML
-    private BorderPane                                    subLangStandardizingSettingsPane;
+    private BorderPane					  subLangStandardizingSettingsPane;
     @FXML
-    private TextField                                     parsingLangsTxtFld;
+    private TextField					  parsingLangsTxtFld;
     @FXML
-    private Button                                        editParsingLangsBtn;
+    private Button					  editParsingLangsBtn;
     @FXML
-    private TableView<LanguageUserPattern>                textLangMappingsTableView;
+    private TableView<LanguageUserPattern>		  textLangMappingsTableView;
     @FXML
     private TableColumn<LanguageUserPattern, UserPattern> textLangMappingsTextColumn;
     @FXML
-    private TableColumn<LanguageUserPattern, Locale>      textLangMappingsLangColumn;
+    private TableColumn<LanguageUserPattern, Locale>	  textLangMappingsLangColumn;
     @FXML
-    private Button                                        addTextLangMappingBtn;
+    private Button					  addTextLangMappingBtn;
     @FXML
-    private Button                                        editTextLangMappingBtn;
+    private Button					  editTextLangMappingBtn;
     @FXML
-    private Button                                        removeTextLangMappingBtn;
+    private Button					  removeTextLangMappingBtn;
     @FXML
-    private Button                                        moveUpTextLangMappingBtn;
+    private Button					  moveUpTextLangMappingBtn;
     @FXML
-    private Button                                        moveDownTextLangMappingBtn;
+    private Button					  moveDownTextLangMappingBtn;
     @FXML
-    private ChoiceBox<LanguageFormat>                     outputLangFormatChoiceBox;
+    private ChoiceBox<LanguageFormat>			  outputLangFormatChoiceBox;
     @FXML
-    private ComboBox<Locale>                              outputLangComboBox;
+    private ComboBox<Locale>				  outputLangComboBox;
     @FXML
-    private TableView<LanguageTextMapping>                langTextMappingsTableView;
+    private TableView<LanguageTextMapping>		  langTextMappingsTableView;
     @FXML
-    private TableColumn<LanguageTextMapping, Locale>      langTextMappingsLangColumn;
+    private TableColumn<LanguageTextMapping, Locale>	  langTextMappingsLangColumn;
     @FXML
-    private TableColumn<LanguageTextMapping, String>      langTextMappingsTextColumn;
+    private TableColumn<LanguageTextMapping, String>	  langTextMappingsTextColumn;
     @FXML
-    private Button                                        addLangTextMappingBtn;
+    private Button					  addLangTextMappingBtn;
     @FXML
-    private Button                                        editLangTextMappingBtn;
+    private Button					  editLangTextMappingBtn;
     @FXML
-    private Button                                        removeLangTextMappingBtn;
+    private Button					  removeLangTextMappingBtn;
     @FXML
-    private TextField                                     testingInputTxtFld;
+    private TextField					  testingInputTxtFld;
     @FXML
-    private TextField                                     testingParsedLangTxtFld;
+    private TextField					  testingParsedLangTxtFld;
     @FXML
-    private TextField                                     testingOutputTxtFld;
+    private TextField					  testingOutputTxtFld;
 
     public SubtitleLanguageStandardizingSettingsController(SettingsController settingsController)
     {
-        super(settingsController);
+	super(settingsController);
     }
 
     @Override
     public BorderPane getSectionRootPane()
     {
-        return subLangStandardizingSettingsPane;
+	return subLangStandardizingSettingsPane;
     }
 
     @Override
     protected void doInitialize() throws Exception
     {
-        LocaleLanguageReplacerSettings settings = WatcherSettings.INSTANCE.getSubtitleLanguageSettings();
-        // ParsingLangs
-        final TextFormatter<ObservableList<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FxUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER);
-        parsingLangsTextFormatter.valueProperty().bindBidirectional(settings.parsingLanguagesProperty());
-        parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
+	LocaleLanguageReplacerSettings settings = WatcherSettings.INSTANCE.getSubtitleLanguageSettings();
+	// ParsingLangs
+	final TextFormatter<ObservableList<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FxUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER);
+	parsingLangsTextFormatter.valueProperty().bindBidirectional(settings.parsingLanguagesProperty());
+	parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
-        editParsingLangsBtn.setOnAction((Actionevt) -> {
-            Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditor(parsingLangsTextFormatter.getValue());
-            if (result.isPresent())
-            {
-                parsingLangsTextFormatter.setValue(FXCollections.observableArrayList(result.get()));
-            }
-        });
+	editParsingLangsBtn.setOnAction((Actionevt) -> {
+	    Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditor(parsingLangsTextFormatter.getValue());
+	    if (result.isPresent())
+	    {
+		parsingLangsTextFormatter.setValue(FXCollections.observableArrayList(result.get()));
+	    }
+	});
 
-        // TextLangMappings
-        textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, UserPattern> param) -> {
-            return FxUtil.constantBinding(param.getValue().getPattern());
-        });
-        textLangMappingsTextColumn.setCellFactory((TableColumn<LanguageUserPattern, UserPattern> param) -> {
-            return new TableCell<LanguageUserPattern, UserPattern>()
-            {
-                @Override
-                protected void updateItem(UserPattern pattern, boolean empty)
-                {
-                    super.updateItem(pattern, empty);
-                    if (empty || pattern == null)
-                    {
-                        setText(null);
-                        setGraphic(null);
-                    }
-                    else
-                    {
-                        setText(pattern.getPattern() + " (" + pattern.getMode() + ")");
-                    }
-                }
-            };
-        });
-        textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, Locale> param) -> {
-            return FxUtil.constantBinding(param.getValue().getLanguage());
-        });
-        textLangMappingsLangColumn.setCellFactory((TableColumn<LanguageUserPattern, Locale> param) -> {
-            return new TableCell<LanguageUserPattern, Locale>()
-            {
-                @Override
-                protected void updateItem(Locale lang, boolean empty)
-                {
-                    super.updateItem(lang, empty);
-                    if (empty || lang == null)
-                    {
-                        setText(null);
-                        setGraphic(null);
-                    }
-                    else
-                    {
-                        setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-                    }
-                }
-            };
-        });
-        textLangMappingsTableView.setItems(settings.getCustomLanguagePatterns());
+	// TextLangMappings
+	textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, UserPattern> param) -> {
+	    return FxUtil.constantBinding(param.getValue().getPattern());
+	});
+	textLangMappingsTextColumn.setCellFactory((TableColumn<LanguageUserPattern, UserPattern> param) -> {
+	    return new TableCell<LanguageUserPattern, UserPattern>()
+	    {
+		@Override
+		protected void updateItem(UserPattern pattern, boolean empty)
+		{
+		    super.updateItem(pattern, empty);
+		    if (empty || pattern == null)
+		    {
+			setText(null);
+			setGraphic(null);
+		    }
+		    else
+		    {
+			setText(pattern.getPattern() + " (" + pattern.getMode() + ")");
+		    }
+		}
+	    };
+	});
+	textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, Locale> param) -> {
+	    return FxUtil.constantBinding(param.getValue().getLanguage());
+	});
+	textLangMappingsLangColumn.setCellFactory((TableColumn<LanguageUserPattern, Locale> param) -> {
+	    return new TableCell<LanguageUserPattern, Locale>()
+	    {
+		@Override
+		protected void updateItem(Locale lang, boolean empty)
+		{
+		    super.updateItem(lang, empty);
+		    if (empty || lang == null)
+		    {
+			setText(null);
+			setGraphic(null);
+		    }
+		    else
+		    {
+			setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
+		    }
+		}
+	    };
+	});
+	textLangMappingsTableView.setItems(settings.getCustomLanguagePatterns());
 
-        addTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
-            Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditor();
-            FxUtil.handleDistinctAdd(textLangMappingsTableView, result);
-        });
+	addTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
+	    Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditor();
+	    FxUtil.handleDistinctAdd(textLangMappingsTableView, result);
+	});
 
-        final BooleanBinding noTextLangMappingSelection = textLangMappingsTableView.getSelectionModel().selectedItemProperty().isNull();
-        editTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
-        editTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
-            Optional<LanguageUserPattern> result = WatcherDialogs
-                    .showTextLanguageMappingEditor(textLangMappingsTableView.getSelectionModel().getSelectedItem());
-            FxUtil.handleDistinctEdit(textLangMappingsTableView, result);
-        });
+	final BooleanBinding noTextLangMappingSelection = textLangMappingsTableView.getSelectionModel().selectedItemProperty().isNull();
+	editTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
+	editTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
+	    Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditor(textLangMappingsTableView.getSelectionModel().getSelectedItem());
+	    FxUtil.handleDistinctEdit(textLangMappingsTableView, result);
+	});
 
-        removeTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
-        removeTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
-            FxUtil.handleDelete(textLangMappingsTableView, "text to language mapping", LanguageUserPattern.STRING_CONVERTER);
-        });
+	removeTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
+	removeTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
+	    FxUtil.handleDelete(textLangMappingsTableView, "text to language mapping", LanguageUserPattern.STRING_CONVERTER);
+	});
 
-        FxUtil.setStandardMouseAndKeyboardSupportForTableView(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);
-        FxUtil.bindMoveButtonsForSingleSelection(textLangMappingsTableView, moveUpTextLangMappingBtn, moveDownTextLangMappingBtn);
+	FxUtil.setStandardMouseAndKeyboardSupportForTableView(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);
+	FxUtil.bindMoveButtonsForSingleSelection(textLangMappingsTableView, moveUpTextLangMappingBtn, moveDownTextLangMappingBtn);
 
-        // OutputLangFormat
-        outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
-        outputLangFormatChoiceBox.setConverter(SubCentralFxUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
-        outputLangFormatChoiceBox.valueProperty().bindBidirectional(settings.outputLanguageFormatProperty());
+	// OutputLangFormat
+	outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
+	outputLangFormatChoiceBox.setConverter(SubCentralFxUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
+	outputLangFormatChoiceBox.valueProperty().bindBidirectional(settings.outputLanguageFormatProperty());
 
-        // OutputLang
-        outputLangComboBox.setItems(FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
-        outputLangComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-        outputLangComboBox.valueProperty().bindBidirectional(settings.outputLanguageProperty());
-        outputLangComboBox.disableProperty().bind(new BooleanBinding()
-        {
-            {
-                super.bind(outputLangFormatChoiceBox.valueProperty());
-            }
+	// OutputLang
+	outputLangComboBox.setItems(FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+	outputLangComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+	outputLangComboBox.valueProperty().bindBidirectional(settings.outputLanguageProperty());
+	outputLangComboBox.disableProperty().bind(new BooleanBinding()
+	{
+	    {
+		super.bind(outputLangFormatChoiceBox.valueProperty());
+	    }
 
-            @Override
-            protected boolean computeValue()
-            {
-                if (outputLangFormatChoiceBox.getValue() == null)
-                {
-                    return true;
-                }
-                switch (outputLangFormatChoiceBox.getValue())
-                {
-                    case NAME:
-                        // fall through
-                    case LANGUAGE_TAG:
-                        // fall through
-                    case ISO2:
-                        // fall through
-                    case ISO3:
-                        return true;
-                    case DISPLAY_NAME:
-                        // fall through
-                    case DISPLAY_LANGUAGE:
-                        return false;
-                    default:
-                        return true;
-                }
-            }
-        });
+	    @Override
+	    protected boolean computeValue()
+	    {
+		if (outputLangFormatChoiceBox.getValue() == null)
+		{
+		    return true;
+		}
+		switch (outputLangFormatChoiceBox.getValue())
+		{
+		    case NAME:
+			// fall through
+		    case LANGUAGE_TAG:
+			// fall through
+		    case ISO2:
+			// fall through
+		    case ISO3:
+			return true;
+		    case DISPLAY_NAME:
+			// fall through
+		    case DISPLAY_LANGUAGE:
+			return false;
+		    default:
+			return true;
+		}
+	    }
+	});
 
-        // LangTextMappings
-        langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, Locale> param) -> {
-            return FxUtil.constantBinding(param.getValue().getLanguage());
-        });
-        langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageTextMapping, Locale> param) -> {
-            return new TableCell<LanguageTextMapping, Locale>()
-            {
-                @Override
-                protected void updateItem(Locale lang, boolean empty)
-                {
-                    super.updateItem(lang, empty);
-                    if (empty || lang == null)
-                    {
-                        setText(null);
-                        setGraphic(null);
-                    }
-                    else
-                    {
-                        setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-                    }
-                }
-            };
-        });
-        langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, String> param) -> {
-            return FxUtil.constantBinding(param.getValue().getText());
-        });
-        langTextMappingsTableView.setItems(settings.customLanguageTextMappingsProperty());
+	// LangTextMappings
+	langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, Locale> param) -> {
+	    return FxUtil.constantBinding(param.getValue().getLanguage());
+	});
+	langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageTextMapping, Locale> param) -> {
+	    return new TableCell<LanguageTextMapping, Locale>()
+	    {
+		@Override
+		protected void updateItem(Locale lang, boolean empty)
+		{
+		    super.updateItem(lang, empty);
+		    if (empty || lang == null)
+		    {
+			setText(null);
+			setGraphic(null);
+		    }
+		    else
+		    {
+			setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
+		    }
+		}
+	    };
+	});
+	langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, String> param) -> {
+	    return FxUtil.constantBinding(param.getValue().getText());
+	});
+	langTextMappingsTableView.setItems(settings.customLanguageTextMappingsProperty());
 
-        addLangTextMappingBtn.setOnAction((ActionEvent) -> {
-            Optional<LanguageTextMapping> result = WatcherDialogs.showLanguageTextMappingEditor();
-            FxUtil.handleDistinctAdd(langTextMappingsTableView, result);
-            FXCollections.sort(langTextMappingsTableView.getItems());
-        });
+	addLangTextMappingBtn.setOnAction((ActionEvent) -> {
+	    Optional<LanguageTextMapping> result = WatcherDialogs.showLanguageTextMappingEditor();
+	    FxUtil.handleDistinctAdd(langTextMappingsTableView, result);
+	    FXCollections.sort(langTextMappingsTableView.getItems());
+	});
 
-        final BooleanBinding noLangTextMappingSelection = langTextMappingsTableView.getSelectionModel().selectedItemProperty().isNull();
-        editLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
-        editLangTextMappingBtn.setOnAction((ActionEvent) -> {
-            Optional<LanguageTextMapping> result = WatcherDialogs
-                    .showLanguageTextMappingEditor(langTextMappingsTableView.getSelectionModel().getSelectedItem());
-            FxUtil.handleDistinctEdit(langTextMappingsTableView, result);
-            FXCollections.sort(langTextMappingsTableView.getItems());
-        });
+	final BooleanBinding noLangTextMappingSelection = langTextMappingsTableView.getSelectionModel().selectedItemProperty().isNull();
+	editLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
+	editLangTextMappingBtn.setOnAction((ActionEvent) -> {
+	    Optional<LanguageTextMapping> result = WatcherDialogs.showLanguageTextMappingEditor(langTextMappingsTableView.getSelectionModel().getSelectedItem());
+	    FxUtil.handleDistinctEdit(langTextMappingsTableView, result);
+	    FXCollections.sort(langTextMappingsTableView.getItems());
+	});
 
-        removeLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
-        removeLangTextMappingBtn.setOnAction((ActionEvent) -> {
-            FxUtil.handleDelete(langTextMappingsTableView, "language to text mapping", LanguageTextMapping.STRING_CONVERTER);
-        });
+	removeLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
+	removeLangTextMappingBtn.setOnAction((ActionEvent) -> {
+	    FxUtil.handleDelete(langTextMappingsTableView, "language to text mapping", LanguageTextMapping.STRING_CONVERTER);
+	});
 
-        FxUtil.setStandardMouseAndKeyboardSupportForTableView(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);
+	FxUtil.setStandardMouseAndKeyboardSupportForTableView(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);
 
-        // Testing
-        testingOutputTxtFld.textProperty().bind(new StringBinding()
-        {
-            {
-                super.bind(testingInputTxtFld.textProperty(), WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding());
-            }
+	// Testing
+	testingOutputTxtFld.textProperty().bind(new StringBinding()
+	{
+	    {
+		super.bind(testingInputTxtFld.textProperty(), WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding());
+	    }
 
-            @Override
-            protected String computeValue()
-            {
-                return WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
-            }
-        });
+	    @Override
+	    protected String computeValue()
+	    {
+		return WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
+	    }
+	});
     }
 }

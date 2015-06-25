@@ -9,21 +9,21 @@ import javafx.beans.property.ReadOnlyStringProperty;
 
 public interface ProcessingItem
 {
-	StringBinding nameBinding();
+    StringBinding nameBinding();
 
-	String getName();
+    String getName();
 
-	ListProperty<Path> getFiles();
+    ListProperty<Path> getFiles();
 
-	ReadOnlyStringProperty statusProperty();
+    ReadOnlyStringProperty statusProperty();
 
-	String getStatus();
+    String getStatus();
 
-	ReadOnlyDoubleProperty progressProperty();
+    ReadOnlyDoubleProperty progressProperty();
 
-	double getProgress();
+    double getProgress();
 
-	StringBinding infoBinding();
+    StringBinding infoBinding();
 
-	String getInfo();
+    String getInfo();
 }

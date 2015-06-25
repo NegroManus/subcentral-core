@@ -7,20 +7,20 @@ import de.subcentral.core.standardizing.Standardizer;
 
 public abstract class StandardizerSettingEntry<T, S extends Standardizer<? super T>> extends AbstractSettingEntry<S>
 {
-	protected final Class<T>	beanType;
+    protected final Class<T> beanType;
 
-	public StandardizerSettingEntry(Class<T> beanType, S standardizer, boolean enabled)
-	{
-		super(standardizer, enabled);
-		this.beanType = Objects.requireNonNull(beanType, "beanType");
-	}
+    public StandardizerSettingEntry(Class<T> beanType, S standardizer, boolean enabled)
+    {
+	super(standardizer, enabled);
+	this.beanType = Objects.requireNonNull(beanType, "beanType");
+    }
 
-	public Class<T> getBeanType()
-	{
-		return beanType;
-	}
+    public Class<T> getBeanType()
+    {
+	return beanType;
+    }
 
-	public abstract StringBinding standardizerTypeAsStringBinding();
+    public abstract StringBinding standardizerTypeAsStringBinding();
 
-	public abstract StringBinding ruleAsStringBinding();
+    public abstract StringBinding ruleAsStringBinding();
 }
