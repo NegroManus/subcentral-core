@@ -2,15 +2,14 @@ package de.subcentral.watcher.settings;
 
 import java.util.concurrent.ExecutorService;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.concurrent.Task;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.db.MetadataDb;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Task;
 
 public class MetadataDbSettingEntry<T> extends AbstractSettingEntry<MetadataDb<T>>
 {
@@ -37,13 +36,13 @@ public class MetadataDbSettingEntry<T> extends AbstractSettingEntry<MetadataDb<T
     public void updateAvailability(ExecutorService executor)
     {
 	available.set(false);
-	Task<Boolean> checkAvailibilityTask = new Task<Boolean>()
+	Task<Boolean> updateAvailibilityTask = new Task<Boolean>()
 	{
 	    @Override
 	    protected Boolean call() throws Exception
 	    {
 		boolean isAvailable = value.isAvailable();
-		log.debug("Rechecked whether {} is available: {}", value, isAvailable);
+		log.debug("Availibility for {}: {}", value, isAvailable);
 		return isAvailable;
 	    }
 
@@ -53,6 +52,6 @@ public class MetadataDbSettingEntry<T> extends AbstractSettingEntry<MetadataDb<T
 		available.set(getValue());
 	    }
 	};
-	executor.submit(checkAvailibilityTask);
+	executor.submit(updateAvailibilityTask);
     }
 }

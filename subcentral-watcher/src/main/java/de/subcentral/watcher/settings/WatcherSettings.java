@@ -6,11 +6,9 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,9 +36,6 @@ import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
@@ -56,8 +51,6 @@ import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.xrelto.XRelToReleaseDb;
 import de.subcentral.watcher.model.ObservableBean;
 import javafx.beans.Observable;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.MapProperty;
@@ -89,29 +82,28 @@ public class WatcherSettings extends ObservableBean
     private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
     // Watch
-    private final ListProperty<Path>				watchDirectories		    = new SimpleListProperty<>(this, "watchDirectories");
-    private final BooleanProperty				initialScan			    = new SimpleBooleanProperty(this, "initialScan");
+    private final ListProperty<Path>				watchDirectories	   = new SimpleListProperty<>(this, "watchDirectories");
+    private final BooleanProperty				initialScan		   = new SimpleBooleanProperty(this, "initialScan");
     // Parsing
-    private final StringProperty				filenamePatterns		    = new SimpleStringProperty(this, "filenamePatterns");
-    private final ListProperty<ParsingServiceSettingEntry>	filenameParsingServices		    = new SimpleListProperty<>(this, "filenameParsingServices");
+    private final StringProperty				filenamePatterns	   = new SimpleStringProperty(this, "filenamePatterns");
+    private final ListProperty<ParsingServiceSettingEntry>	filenameParsingServices	   = new SimpleListProperty<>(this, "filenameParsingServices");
     // Metadata
     // Metadata - Release
-    private final ListProperty<ParsingServiceSettingEntry>	releaseParsingServices		    = new SimpleListProperty<>(this, "releaseParsingServices");
-    private final ListProperty<Tag>				releaseMetaTags			    = new SimpleListProperty<>(this, "releaseMetaTags");
+    private final ListProperty<ParsingServiceSettingEntry>	releaseParsingServices	   = new SimpleListProperty<>(this, "releaseParsingServices");
+    private final ListProperty<Tag>				releaseMetaTags		   = new SimpleListProperty<>(this, "releaseMetaTags");
     // Metadata - Release - Databases
-    private final ListProperty<MetadataDbSettingEntry<Release>>	releaseDbs			    = new SimpleListProperty<>(this, "releaseDbs");
+    private final ListProperty<MetadataDbSettingEntry<Release>>	releaseDbs		   = new SimpleListProperty<>(this, "releaseDbs");
     // Metadata - Release - Guessing
-    private final BooleanProperty				guessingEnabled			    = new SimpleBooleanProperty(this, "guessingEnabled");
-    private final ListProperty<StandardRelease>			standardReleases		    = new SimpleListProperty<>(this, "standardReleases");
+    private final BooleanProperty				guessingEnabled		   = new SimpleBooleanProperty(this, "guessingEnabled");
+    private final ListProperty<StandardRelease>			standardReleases	   = new SimpleListProperty<>(this, "standardReleases");
     // Metadata - Release - Compatibility
-    private final BooleanProperty				compatibilityEnabled		    = new SimpleBooleanProperty(this, "compatibilityEnabled");
-    private final ListProperty<CompatibilitySettingEntry>	compatibilities			    = new SimpleListProperty<>(this, "compatibilities");
+    private final BooleanProperty				compatibilityEnabled	   = new SimpleBooleanProperty(this, "compatibilityEnabled");
+    private final ListProperty<CompatibilitySettingEntry>	compatibilities		   = new SimpleListProperty<>(this, "compatibilities");
     // Standardizing
-    private final ListProperty<StandardizerSettingEntry<?, ?>>	preMetadataDbStandardizers	    = new SimpleListProperty<>(this, "preMetadataDbStandardizers");
-    private final ListProperty<StandardizerSettingEntry<?, ?>>	postMetadataStandardizers	    = new SimpleListProperty<>(this, "postMetadataStandardizers");
+    private final ListProperty<StandardizerSettingEntry<?, ?>>	preMetadataDbStandardizers = new SimpleListProperty<>(this, "preMetadataDbStandardizers");
+    private final ListProperty<StandardizerSettingEntry<?, ?>>	postMetadataStandardizers  = new SimpleListProperty<>(this, "postMetadataStandardizers");
     // Standardizing - Subtitle language
-    private final LocaleLanguageReplacerSettings		subtitleLanguageSettings	    = new LocaleLanguageReplacerSettings();
-    private final Binding<LocaleSubtitleLanguageStandardizer>	subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
+    private final LocaleLanguageReplacerSettings		subtitleLanguageSettings   = new LocaleLanguageReplacerSettings();
 
     // Naming
     private final MapProperty<String, Object> namingParameters = new SimpleMapProperty<>(this, "namingParameters");
@@ -154,36 +146,6 @@ public class WatcherSettings extends ObservableBean
 		packingSourceDeletionMode);
 
 	addListener((Observable o) -> changed.set(true));
-    }
-
-    private Binding<LocaleSubtitleLanguageStandardizer> initSubtitleLanguageStandardizerBinding()
-    {
-	return new ObjectBinding<LocaleSubtitleLanguageStandardizer>()
-	{
-	    {
-		super.bind(subtitleLanguageSettings);
-	    }
-
-	    @Override
-	    protected LocaleSubtitleLanguageStandardizer computeValue()
-	    {
-		Map<Locale, String> langTextMappings = new HashMap<>(subtitleLanguageSettings.getCustomLanguageTextMappings().size());
-		for (LanguageTextMapping mapping : subtitleLanguageSettings.getCustomLanguageTextMappings())
-		{
-		    langTextMappings.put(mapping.getLanguage(), mapping.getText());
-		}
-		List<LanguagePattern> langPatterns = new ArrayList<>(subtitleLanguageSettings.getCustomLanguagePatterns().size());
-		for (LanguageUserPattern uiPattern : subtitleLanguageSettings.getCustomLanguagePatterns())
-		{
-		    langPatterns.add(uiPattern.toLanguagePattern());
-		}
-		return new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(subtitleLanguageSettings.getParsingLanguages(),
-			subtitleLanguageSettings.getOutputLanguageFormat(),
-			subtitleLanguageSettings.getOutputLanguage(),
-			langPatterns,
-			langTextMappings));
-	    }
-	};
     }
 
     public void load(Path path) throws ConfigurationException
@@ -905,11 +867,6 @@ public class WatcherSettings extends ObservableBean
     public LocaleLanguageReplacerSettings getSubtitleLanguageSettings()
     {
 	return subtitleLanguageSettings;
-    }
-
-    public Binding<LocaleSubtitleLanguageStandardizer> getSubtitleLanguageStandardizerBinding()
-    {
-	return subtitleLanguageStandardizerBinding;
     }
 
     public final MapProperty<String, Object> namingParametersProperty()

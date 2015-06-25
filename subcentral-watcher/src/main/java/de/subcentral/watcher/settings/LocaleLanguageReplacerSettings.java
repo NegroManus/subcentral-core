@@ -1,8 +1,10 @@
 package de.subcentral.watcher.settings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -10,10 +12,14 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 
 import de.subcentral.core.standardizing.LocaleLanguageReplacer;
 import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
+import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.watcher.model.ObservableBean;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
@@ -29,10 +35,38 @@ public class LocaleLanguageReplacerSettings extends ObservableBean
     private final ListProperty<LanguageUserPattern> customLanguagePatterns     = new SimpleListProperty<>(this, "customLanguagePatterns");
     private final ListProperty<LanguageTextMapping> customLanguageTextMappings = new SimpleListProperty<>(this, "customLanguageTextMappings");
 
-    // package protected
+    private final Binding<LocaleSubtitleLanguageStandardizer> subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
+
+    // package protected (should only be instantiated by WatcherSettings)
     LocaleLanguageReplacerSettings()
     {
 	super.bind(parsingLanguages, outputLanguageFormat, outputLanguage, customLanguagePatterns, customLanguageTextMappings);
+    }
+
+    private Binding<LocaleSubtitleLanguageStandardizer> initSubtitleLanguageStandardizerBinding()
+    {
+	return new ObjectBinding<LocaleSubtitleLanguageStandardizer>()
+	{
+	    {
+		super.bind(LocaleLanguageReplacerSettings.this);
+	    }
+
+	    @Override
+	    protected LocaleSubtitleLanguageStandardizer computeValue()
+	    {
+		List<LanguagePattern> langPatterns = new ArrayList<>(customLanguagePatterns.size());
+		for (LanguageUserPattern uiPattern : customLanguagePatterns)
+		{
+		    langPatterns.add(uiPattern.toLanguagePattern());
+		}
+		Map<Locale, String> langTextMappings = new HashMap<>(customLanguageTextMappings.size());
+		for (LanguageTextMapping mapping : customLanguageTextMappings)
+		{
+		    langTextMappings.put(mapping.getLanguage(), mapping.getText());
+		}
+		return new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(parsingLanguages, outputLanguageFormat.getValue(), outputLanguage.getValue(), langPatterns, langTextMappings));
+	    }
+	};
     }
 
     public void load(XMLConfiguration cfg, String key)
@@ -170,4 +204,8 @@ public class LocaleLanguageReplacerSettings extends ObservableBean
 	this.customLanguageTextMappingsProperty().set(customLanguageTextMappings);
     }
 
+    public Binding<LocaleSubtitleLanguageStandardizer> getSubtitleLanguageStandardizerBinding()
+    {
+	return subtitleLanguageStandardizerBinding;
+    }
 }

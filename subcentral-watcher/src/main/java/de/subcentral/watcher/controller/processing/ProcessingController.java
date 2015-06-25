@@ -172,7 +172,7 @@ public class ProcessingController extends AbstractController
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 
 	// Bind SubtitleLanguageStandardizer
-	Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getSubtitleLanguageStandardizerBinding();
+	Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getSubtitleLanguageSettings().getSubtitleLanguageStandardizerBinding();
 	service.registerStandardizer(Subtitle.class, langStdzerBinding.getValue());
 	langStdzerBinding
 		.addListener((ObservableValue<? extends LocaleSubtitleLanguageStandardizer> observable, LocaleSubtitleLanguageStandardizer oldValue, LocaleSubtitleLanguageStandardizer newValue) -> {
