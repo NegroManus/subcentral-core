@@ -5,24 +5,25 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="inputPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
-  <columnConstraints>
-    <ColumnConstraints />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Source group:" GridPane.columnIndex="1" />
-      <TextField fx:id="sourceGroupTxtFld" maxWidth="1.7976931348623157E308" promptText="source group" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Label text="Compatible group:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField fx:id="compatibleGroupTxtFld" maxWidth="1.7976931348623157E308" promptText="compatible group" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <CheckBox fx:id="symmetricCheckBox" mnemonicParsing="false" text="This relation is symmetric" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-   </children>
+<GridPane fx:id="inputPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40"
+	xmlns:fx="http://javafx.com/fxml/1">
+	<columnConstraints>
+		<ColumnConstraints />
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES" />
+	</rowConstraints>
+	<children>
+		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Source group:" GridPane.columnIndex="1" />
+		<TextField fx:id="sourceGroupTxtFld" maxWidth="1.7976931348623157E308" promptText="source group" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+		<Label text="Compatible group:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+		<TextField fx:id="compatibleGroupTxtFld" maxWidth="1.7976931348623157E308" promptText="compatible group" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+		<CheckBox fx:id="symmetricCheckBox" mnemonicParsing="false" text="This relation is symmetric" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+	</children>
 </GridPane>

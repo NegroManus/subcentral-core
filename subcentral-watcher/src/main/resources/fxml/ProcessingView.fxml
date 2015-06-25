@@ -8,60 +8,64 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
-   <bottom>
-      <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="protocolBtn" mnemonicParsing="false" text="Protocol">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/text_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button> 
-            <Button fx:id="openDirectoryBtn" mnemonicParsing="false" text="Open folder">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/open_folder_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button fx:id="releaseInfoBtn" mnemonicParsing="false" text="Release info">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/internet_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <HBox maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
-            <Button fx:id="clearBtn" mnemonicParsing="false" text="Clear">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/remove_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-         </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </HBox>
-   </bottom>
-   <center>
-      <TreeTableView fx:id="processingTreeTable" showRoot="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
-        <columns>
-          <TreeTableColumn fx:id="nameColumn" prefWidth="400.0" text="Name" />
-            <TreeTableColumn fx:id="filesColumn" prefWidth="120.0" text="Files" />
-          <TreeTableColumn fx:id="statusColumn" prefWidth="100.0" text="Status" />
-            <TreeTableColumn fx:id="progressColumn" prefWidth="100.0" text="Progress" />
-            <TreeTableColumn fx:id="infoColumn" prefWidth="110.0" text="Info" />
-        </columns>
-         <columnResizePolicy>
-            <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-      </TreeTableView>
-   </center>
+	<bottom>
+		<HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
+			<children>
+				<Button fx:id="protocolBtn" mnemonicParsing="false" text="Protocol">
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@../img/text_16.png" />
+							</image>
+						</ImageView>
+					</graphic>
+				</Button>
+				<Button fx:id="openDirectoryBtn" mnemonicParsing="false" text="Open folder">
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@../img/open_folder_16.png" />
+							</image>
+						</ImageView>
+					</graphic>
+				</Button>
+				<Button fx:id="releaseInfoBtn" mnemonicParsing="false" text="Release info">
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@../img/internet_16.png" />
+							</image>
+						</ImageView>
+					</graphic>
+				</Button>
+				<HBox maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
+				<Button fx:id="clearBtn" mnemonicParsing="false" text="Clear">
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@../img/remove_16.png" />
+							</image>
+						</ImageView>
+					</graphic>
+				</Button>
+			</children>
+			<padding>
+				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+			</padding>
+		</HBox>
+	</bottom>
+	<center>
+		<TreeTableView fx:id="processingTreeTable" showRoot="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+			<columns>
+				<TreeTableColumn fx:id="nameColumn" prefWidth="400.0" text="Name" />
+				<TreeTableColumn fx:id="filesColumn" prefWidth="120.0" text="Files" />
+				<TreeTableColumn fx:id="statusColumn" prefWidth="100.0" text="Status" />
+				<TreeTableColumn fx:id="progressColumn" prefWidth="100.0" text="Progress" />
+				<TreeTableColumn fx:id="infoColumn" prefWidth="110.0" text="Info" />
+			</columns>
+			<columnResizePolicy>
+				<TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+			</columnResizePolicy>
+		</TreeTableView>
+	</center>
 </BorderPane>

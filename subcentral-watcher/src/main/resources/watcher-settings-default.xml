@@ -69,7 +69,7 @@
 			<standardizers>
 				<seriesNameStandardizer enabled="true" namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" />
 				<seriesNameStandardizer enabled="true" namePattern="Clarence\W+US\W+2013\W*" namePatternMode="REGEX" nameReplacement="Clarence (US)" />
-				<seriesNameStandardizer enabled="true" namePattern="Love\W+Child\W+Aus\W*" namePatternMode="REGEX" nameReplacement="Love Child (AU)"/>
+				<seriesNameStandardizer enabled="true" namePattern="Love\W+Child\W+Aus\W*" namePatternMode="REGEX" nameReplacement="Love Child (AU)" />
 				<seriesNameStandardizer enabled="true" namePattern="Marry\W+Me" namePatternMode="REGEX" nameReplacement="Marry Me (2014)" />
 				<seriesNameStandardizer enabled="true" namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" />
 				<seriesNameStandardizer enabled="true" namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" />

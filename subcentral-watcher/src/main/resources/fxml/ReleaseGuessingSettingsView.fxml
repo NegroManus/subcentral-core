@@ -7,42 +7,43 @@
 <?import javafx.scene.layout.*?>
 
 <GridPane fx:id="releaseGuessingSettingsPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="400.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
-  </columnConstraints>
-  <rowConstraints>
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <Label text="Release guessing" underline="true" GridPane.columnSpan="2147483647">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font></Label>
-      <CheckBox fx:id="enableGuessingCheckBox" mnemonicParsing="false" text="Enable guessing" GridPane.rowIndex="1" />
-      <Label text="Standard releases:" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-      <TableView fx:id="standardReleasesTableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
-        <columns>
-          <TableColumn fx:id="standardReleasesTagsColumn" editable="false" prefWidth="75.0" text="Tags" />
-          <TableColumn fx:id="standardReleasesGroupColumn" editable="false" prefWidth="75.0" text="Group" />
-            <TableColumn fx:id="standardReleasesAssumeExistenceColumn" editable="false" prefWidth="75.0" text="Assume existence" />
-        </columns>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-      </TableView>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-         <children>
-            <Button fx:id="addStandardReleaseButton" mnemonicParsing="false" text="Add" />
-            <Button fx:id="editStandardReleaseButton" mnemonicParsing="false" text="Edit" />
-            <Button fx:id="removeStandardReleaseButton" mnemonicParsing="false" text="Remove" />
-         </children>
-      </VBox>
-   </children>
-   <padding>
-      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-   </padding>
+	<columnConstraints>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
+	</rowConstraints>
+	<children>
+		<Label text="Release guessing" underline="true" GridPane.columnSpan="2147483647">
+			<font>
+				<Font name="System Bold" size="12.0" />
+			</font>
+		</Label>
+		<CheckBox fx:id="enableGuessingCheckBox" mnemonicParsing="false" text="Enable guessing" GridPane.rowIndex="1" />
+		<Label text="Standard releases:" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+		<TableView fx:id="standardReleasesTableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+			<columns>
+				<TableColumn fx:id="standardReleasesTagsColumn" editable="false" prefWidth="75.0" text="Tags" />
+				<TableColumn fx:id="standardReleasesGroupColumn" editable="false" prefWidth="75.0" text="Group" />
+				<TableColumn fx:id="standardReleasesAssumeExistenceColumn" editable="false" prefWidth="75.0" text="Assume existence" />
+			</columns>
+			<columnResizePolicy>
+				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+			</columnResizePolicy>
+		</TableView>
+		<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+			<children>
+				<Button fx:id="addStandardReleaseButton" mnemonicParsing="false" text="Add" />
+				<Button fx:id="editStandardReleaseButton" mnemonicParsing="false" text="Edit" />
+				<Button fx:id="removeStandardReleaseButton" mnemonicParsing="false" text="Remove" />
+			</children>
+		</VBox>
+	</children>
+	<padding>
+		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+	</padding>
 </GridPane>

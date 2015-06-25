@@ -15,25 +15,25 @@
 					<content>
 						<AnchorPane fx:id="processingRootPane" minHeight="0.0" minWidth="0.0" />
 					</content>
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/gears_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@../img/gears_16.png" />
+							</image>
+						</ImageView>
+					</graphic>
 				</Tab>
 				<Tab text="Settings">
 					<content>
 						<AnchorPane fx:id="settingsRootPane" minHeight="0.0" minWidth="0.0" />
 					</content>
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/settings_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@../img/settings_16.png" />
+							</image>
+						</ImageView>
+					</graphic>
 				</Tab>
 			</tabs>
 		</TabPane>
