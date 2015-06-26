@@ -264,7 +264,7 @@ public class SettingsController extends AbstractController
 	    else
 	    {
 		sectionRootPane.getChildren().setAll(createLoadingIndicator());
-		mainController.getCommonExecutor().submit(createLoadSectionControllerTask(() -> section.loadController()));
+		mainController.getCommonExecutor().submit(createLoadSectionControllerTask(section::loadController));
 	    }
 	}
 	else
