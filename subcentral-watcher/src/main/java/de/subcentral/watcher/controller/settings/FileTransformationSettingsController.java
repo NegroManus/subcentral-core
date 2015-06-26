@@ -6,6 +6,7 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -64,26 +65,28 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
     @Override
     protected void doInitialize() throws Exception
     {
-	TextFormatter<Path> targetDirFormatter = FxUtil.bindPathToTextField(targetDirTxtFld, WatcherSettings.INSTANCE.targetDirProperty());
+	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+
+	final TextFormatter<Path> targetDirFormatter = FxUtil.bindPathToTextField(targetDirTxtFld, settings.targetDirProperty());
 	FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory");
 
-	deleteSourceCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.deleteSourceProperty());
+	deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.deleteSourceProperty());
 
-	packingEnabledCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.packingEnabledProperty());
+	packingEnabledCheckBox.selectedProperty().bindBidirectional(settings.packingEnabledProperty());
 
 	ToggleGroup winRarLocateStrategy = new ToggleGroup();
 	winRarLocateStrategy.getToggles().addAll(locateRadioBtn, specifyRadioBtn);
-	winRarLocateStrategy.selectToggle(WatcherSettings.INSTANCE.isAutoLocateWinRar() ? locateRadioBtn : specifyRadioBtn);
+	winRarLocateStrategy.selectToggle(settings.isAutoLocateWinRar() ? locateRadioBtn : specifyRadioBtn);
 	winRarLocateStrategy.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
 	{
 	    @Override
 	    public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue)
 	    {
-		WatcherSettings.INSTANCE.setAutoLocateWinRar(newValue == locateRadioBtn);
+		settings.setAutoLocateWinRar(newValue == locateRadioBtn);
 	    }
 	});
 
-	TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, WatcherSettings.INSTANCE.rarExeProperty());
+	final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
 	testLocateBtn.setOnAction((ActionEvent event) -> {
 	    Path winRarLocation = WinRar.tryLocateRarExecutable();
 	    if (winRarLocation != null)
@@ -118,7 +121,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		WinRar.getRarExecutableFilename());
 
 	packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
-	packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(WatcherSettings.INSTANCE.packingSourceDeletionModeProperty());
+	packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.packingSourceDeletionModeProperty());
 	packingSourceDeletionModeChoiceBox.setConverter(SubCentralFxUtil.DELETION_MODE_STRING_CONVERTER);
     }
 }

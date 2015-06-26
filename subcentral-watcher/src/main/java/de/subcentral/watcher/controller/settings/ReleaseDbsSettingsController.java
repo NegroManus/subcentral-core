@@ -10,6 +10,7 @@ import de.subcentral.core.metadata.db.AbstractHttpMetadataDb;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.MetadataDbSettingEntry;
+import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -57,7 +58,9 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
     @Override
     protected void doInitialize() throws Exception
     {
-	releaseDbsTableView.setItems(WatcherSettings.INSTANCE.getReleaseDbs());
+	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+
+	releaseDbsTableView.setItems(settings.getReleaseDbs());
 
 	releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 	releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().enabledProperty());

@@ -2,6 +2,14 @@ package de.subcentral.watcher.controller.settings;
 
 import java.util.Optional;
 
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.StandardRelease;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubCentralFxUtil;
+import de.subcentral.watcher.WatcherDialogs;
+import de.subcentral.watcher.settings.ProcessingSettings;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,13 +19,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
-import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.SubCentralFxUtil;
-import de.subcentral.watcher.WatcherDialogs;
-import de.subcentral.watcher.settings.WatcherSettings;
 
 public class ReleaseGuessingSettingsController extends AbstractSettingsSectionController
 {
@@ -55,10 +56,12 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
     @Override
     protected void doInitialize() throws Exception
     {
-	enableGuessingCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.guessingEnabledProperty());
+	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+
+	enableGuessingCheckBox.selectedProperty().bindBidirectional(settings.guessingEnabledProperty());
 
 	// Standard releases
-	standardReleasesTableView.setItems(WatcherSettings.INSTANCE.getStandardReleases());
+	standardReleasesTableView.setItems(settings.getStandardReleases());
 
 	standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
 	    return FxUtil.constantBinding(Tag.listToString(param.getValue().getRelease().getTags()));

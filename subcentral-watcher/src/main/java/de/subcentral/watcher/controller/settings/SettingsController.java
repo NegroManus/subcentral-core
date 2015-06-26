@@ -9,6 +9,16 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.google.common.io.Resources;
+
+import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.controller.AbstractController;
+import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -24,17 +34,6 @@ import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-
-import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.common.io.Resources;
-
-import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.controller.AbstractController;
-import de.subcentral.watcher.controller.MainController;
-import de.subcentral.watcher.settings.WatcherSettings;
 
 public class SettingsController extends AbstractController
 {
@@ -466,7 +465,7 @@ public class SettingsController extends AbstractController
     {
 	if (preMetaDbStandardizingSettingsController == null)
 	{
-	    preMetaDbStandardizingSettingsController = new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getPreMetadataDbStandardizers());
+	    preMetaDbStandardizingSettingsController = new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().getPreMetadataDbStandardizers());
 	    loadSettingsSectionNode("StandardizingSettingsView.fxml", "PreMetadataDbStandardizingView", preMetaDbStandardizingSettingsController);
 	}
 	return preMetaDbStandardizingSettingsController;
@@ -476,7 +475,7 @@ public class SettingsController extends AbstractController
     {
 	if (postMetaDbStandardizingSettingsController == null)
 	{
-	    postMetaDbStandardizingSettingsController = new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getPostMetadataStandardizers());
+	    postMetaDbStandardizingSettingsController = new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().getPostMetadataStandardizers());
 	    loadSettingsSectionNode("StandardizingSettingsView.fxml", "PostMetadataDbStandardizingView", postMetaDbStandardizingSettingsController);
 	}
 	return postMetaDbStandardizingSettingsController;

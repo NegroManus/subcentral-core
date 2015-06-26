@@ -1,5 +1,13 @@
 package de.subcentral.watcher.controller.settings;
 
+import de.subcentral.fx.FxUtil;
+import de.subcentral.support.addic7edcom.Addic7edCom;
+import de.subcentral.support.italiansubsnet.ItalianSubsNet;
+import de.subcentral.support.releasescene.ReleaseScene;
+import de.subcentral.support.subcentralde.SubCentralDe;
+import de.subcentral.watcher.settings.ParsingServiceSettingEntry;
+import de.subcentral.watcher.settings.ProcessingSettings;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -7,13 +15,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.support.addic7edcom.Addic7edCom;
-import de.subcentral.support.italiansubsnet.ItalianSubsNet;
-import de.subcentral.support.releasescene.ReleaseScene;
-import de.subcentral.support.subcentralde.SubCentralDe;
-import de.subcentral.watcher.settings.ParsingServiceSettingEntry;
-import de.subcentral.watcher.settings.WatcherSettings;
 
 public class ParsingSettingsController extends AbstractSettingsSectionController
 {
@@ -44,11 +45,13 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
     @Override
     protected void doInitialize() throws Exception
     {
+	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+
 	// Filename patterns
-	filenamePatternsTextField.textProperty().bindBidirectional(WatcherSettings.INSTANCE.filenamePatternsProperty());
+	filenamePatternsTextField.textProperty().bindBidirectional(settings.filenamePatternsProperty());
 
 	// Parsing services
-	parsingServicesTableView.setItems(WatcherSettings.INSTANCE.getFilenameParsingServices());
+	parsingServicesTableView.setItems(settings.getFilenameParsingServices());
 	parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 	parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, Boolean> param) -> param.getValue().enabledProperty());
 	parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.constantBinding(param.getValue().getValue().getDomain()));

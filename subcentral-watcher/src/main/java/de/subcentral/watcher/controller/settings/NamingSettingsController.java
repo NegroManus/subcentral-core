@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -43,16 +44,18 @@ public class NamingSettingsController extends AbstractSettingsSectionController
     @Override
     protected void doInitialize() throws Exception
     {
+	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+
 	// Naming parameters
 	List<NamingParam> namingParams = new ArrayList<>();
-	for (Map.Entry<String, Object> entries : WatcherSettings.INSTANCE.getNamingParameters().entrySet())
+	for (Map.Entry<String, Object> entries : settings.getNamingParameters().entrySet())
 	{
 	    namingParams.add(new NamingParam(entries.getKey(), (Boolean) entries.getValue()));
 	}
 
 	final InvalidationListener listener = (Observable observable) -> {
 	    NamingParam namingParam = (NamingParam) ((BooleanProperty) observable).getBean();
-	    WatcherSettings.INSTANCE.getNamingParameters().put(namingParam.getKey(), namingParam.getValue());
+	    settings.getNamingParameters().put(namingParam.getKey(), namingParam.getValue());
 	};
 	for (NamingParam namingParam : namingParams)
 	{

@@ -6,6 +6,7 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherDialogs;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;
+import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -52,9 +53,11 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
     @Override
     protected void doInitialize() throws Exception
     {
-	compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.compatibilityEnabledProperty());
+	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
-	crossGroupCompatibilitiesTableView.setItems(WatcherSettings.INSTANCE.getCompatibilities());
+	compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.compatibilityEnabledProperty());
+
+	crossGroupCompatibilitiesTableView.setItems(settings.getCompatibilities());
 
 	crossGroupCompatibilitiesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilitiesEnabledColumn));
 	crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingEntry, Boolean> param) -> param.getValue().enabledProperty());

@@ -91,7 +91,8 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
     @Override
     protected void doInitialize() throws Exception
     {
-	LocaleLanguageReplacerSettings settings = WatcherSettings.INSTANCE.getSubtitleLanguageSettings();
+	final LocaleLanguageReplacerSettings settings = WatcherSettings.INSTANCE.getProcessingSettings().getSubtitleLanguageSettings();
+
 	// ParsingLangs
 	final TextFormatter<ObservableList<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FxUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER);
 	parsingLangsTextFormatter.valueProperty().bindBidirectional(settings.parsingLanguagesProperty());
@@ -264,13 +265,13 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	testingOutputTxtFld.textProperty().bind(new StringBinding()
 	{
 	    {
-		super.bind(testingInputTxtFld.textProperty(), WatcherSettings.INSTANCE.getSubtitleLanguageSettings().getSubtitleLanguageStandardizerBinding());
+		super.bind(testingInputTxtFld.textProperty(), settings.getSubtitleLanguageStandardizerBinding());
 	    }
 
 	    @Override
 	    protected String computeValue()
 	    {
-		return WatcherSettings.INSTANCE.getSubtitleLanguageSettings().getSubtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
+		return settings.getSubtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
 	    }
 	});
     }

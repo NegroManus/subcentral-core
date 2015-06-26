@@ -38,6 +38,7 @@ import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.SettingsUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.Binding;
@@ -107,7 +108,7 @@ public class ProcessingController extends AbstractController
 	return new ObjectBinding<ProcessingConfig>()
 	{
 	    {
-		super.bind(WatcherSettings.INSTANCE);
+		super.bind(WatcherSettings.INSTANCE.getProcessingSettings());
 	    }
 
 	    @Override
@@ -118,8 +119,8 @@ public class ProcessingController extends AbstractController
 		    // processingConfig.getValue() has to be executed in JavaFX Application Thread for concurrency reasons
 		    // (all access to watcher settings has to be in JavaFX Application Thread)
 		    long start = System.nanoTime();
-		    log.debug("Rebuilding ProcessingConfig due to changes in WatcherSettings");
-		    WatcherSettings settings = WatcherSettings.INSTANCE;
+		    log.debug("Rebuilding ProcessingConfig due to changes in the processing settings");
+		    final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 		    cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns()));
 		    cfg.setFilenameParsingServices(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices()));
 		    cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs()));
@@ -143,7 +144,7 @@ public class ProcessingController extends AbstractController
 	    @Override
 	    protected void onInvalidating()
 	    {
-		log.debug("WatcherSettings changed. ProcessingConfig will be rebuilt on next execution of ProcessingTask");
+		log.debug("Processing settings changed. ProcessingConfig will be rebuilt on next execution of ProcessingTask");
 	    }
 	};
     }
@@ -153,7 +154,7 @@ public class ProcessingController extends AbstractController
 	TypeStandardizingService service = new TypeStandardizingService("parsed");
 	// Register default nested beans retrievers but not default standardizers
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPreMetadataDbStandardizers());
+	WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getProcessingSettings().getPreMetadataDbStandardizers());
 	return service;
     }
 
@@ -161,7 +162,7 @@ public class ProcessingController extends AbstractController
     {
 	CompatibilityService service = new CompatibilityService();
 	service.getCompatibilities().add(new SameGroupCompatibility());
-	WatcherFxUtil.bindCompatibilities(service, WatcherSettings.INSTANCE.getCompatibilities());
+	WatcherFxUtil.bindCompatibilities(service, WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities());
 	return service;
     }
 
@@ -172,7 +173,7 @@ public class ProcessingController extends AbstractController
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
 
 	// Bind SubtitleLanguageStandardizer
-	Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getSubtitleLanguageSettings().getSubtitleLanguageStandardizerBinding();
+	Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getProcessingSettings().getSubtitleLanguageSettings().getSubtitleLanguageStandardizerBinding();
 	service.registerStandardizer(Subtitle.class, langStdzerBinding.getValue());
 	langStdzerBinding
 		.addListener((ObservableValue<? extends LocaleSubtitleLanguageStandardizer> observable, LocaleSubtitleLanguageStandardizer oldValue, LocaleSubtitleLanguageStandardizer newValue) -> {
@@ -188,7 +189,7 @@ public class ProcessingController extends AbstractController
 		});
 
 	// Bind all other Standardizers
-	WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getPostMetadataStandardizers());
+	WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getProcessingSettings().getPostMetadataStandardizers());
 	return service;
     }
 
