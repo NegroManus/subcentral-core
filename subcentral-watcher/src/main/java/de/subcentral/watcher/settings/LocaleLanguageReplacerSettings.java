@@ -215,8 +215,13 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 	this.customLanguageTextMappingsProperty().set(customLanguageTextMappings);
     }
 
-    public Binding<LocaleSubtitleLanguageStandardizer> getSubtitleLanguageStandardizerBinding()
+    public Binding<LocaleSubtitleLanguageStandardizer> subtitleLanguageStandardizerBinding()
     {
 	return subtitleLanguageStandardizerBinding;
+    }
+
+    public LocaleSubtitleLanguageStandardizer getSubtitleLanguageStandardizer()
+    {
+	return subtitleLanguageStandardizerBinding.getValue();
     }
 }

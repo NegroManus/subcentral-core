@@ -117,7 +117,7 @@ public class WatcherSettings extends ObservableObject
     // Write methods
     public void save(Path file) throws ConfigurationException
     {
-	log.info("Saving settings to file {}", file.toAbsolutePath());
+	log.info("Saving settings to {}", file.toAbsolutePath());
 
 	XMLConfiguration cfg = new IndentingXMLConfiguration();
 	cfg.setRootElementName("watcherConfig");

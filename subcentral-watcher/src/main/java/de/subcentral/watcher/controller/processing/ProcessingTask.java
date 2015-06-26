@@ -173,8 +173,8 @@ public class ProcessingTask extends Task<Void>
 	    return null;
 	}
 
-	List<StandardizingChange> parsedChanges = processingController.getPreMetadataDbStandardizingService().standardize(parsed);
-	parsedChanges.forEach(c -> log.debug("Standardized parsed: {}", c));
+	List<StandardizingChange> parsedChanges = config.getPreMetadataDbStandardizingService().standardize(parsed);
+	parsedChanges.forEach(c -> log.debug("Standardized pre metadata db: {}", c));
 
 	return parsed;
     }
@@ -249,8 +249,8 @@ public class ProcessingTask extends Task<Void>
 	    convertedSub.setGroup(srcSub.getGroup());
 	    convertedSubAdj.getSubtitles().add(convertedSub);
 	}
-	List<StandardizingChange> rlsChanges = processingController.getPostMetadataStandardizingService().standardize(convertedSubAdj);
-	rlsChanges.forEach((e) -> System.out.println(e));
+	List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(convertedSubAdj);
+	changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
 
 	if (matchingRlss.isEmpty())
 	{
@@ -328,7 +328,7 @@ public class ProcessingTask extends Task<Void>
 	    SourceProcessingItem srcItem)
     {
 	// Find compatibles
-	CompatibilityService compatibilityService = processingController.getCompatibilityService();
+	CompatibilityService compatibilityService = config.getCompatibilityService();
 	Map<Release, CompatibilityInfo> compatibleRlss = compatibilityService.findCompatibles(matchingRlss, existingReleases);
 
 	log.debug("Compatible releases:");
@@ -344,8 +344,8 @@ public class ProcessingTask extends Task<Void>
 
     private SubtitleTargetProcessingItem addMatchingRelease(SubtitleAdjustment subAdj, Release rls, ProcessInfo info, TreeItem<ProcessingItem> srcTreeItem, SourceProcessingItem srcItem)
     {
-	List<StandardizingChange> rlsChanges = processingController.getPostMetadataStandardizingService().standardize(rls);
-	rlsChanges.forEach((e) -> System.out.println(e));
+	List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(rls);
+	changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
 
 	subAdj.getMatchingReleases().add(rls);
 	SubtitleTargetProcessingItem targetItem = addTargetFilesItem(srcTreeItem, subAdj, rls, info);
@@ -398,11 +398,8 @@ public class ProcessingTask extends Task<Void>
 	// Standardize
 	for (Release r : processedRlss)
 	{
-	    List<StandardizingChange> rlsChanges = processingController.getPostMetadataStandardizingService().standardize(r);
-	    for (StandardizingChange c : rlsChanges)
-	    {
-		log.debug("Standardized to custom: {}", c);
-	    }
+	    List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(r);
+	    changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
 	}
 	logReleases(Level.DEBUG, "Standardized releases:", processedRlss);
 

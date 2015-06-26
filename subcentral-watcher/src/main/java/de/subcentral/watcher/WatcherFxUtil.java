@@ -4,11 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.standardizing.TypeStandardizingService;
@@ -18,6 +13,11 @@ import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 import de.subcentral.watcher.settings.StandardizerSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 
 public class WatcherFxUtil
 {
@@ -130,7 +130,7 @@ public class WatcherFxUtil
 	}
     }
 
-    private static <T> void registerStandardizer(TypeStandardizingService service, StandardizerSettingEntry<T, ?> entry)
+    public static <T> void registerStandardizer(TypeStandardizingService service, StandardizerSettingEntry<T, ?> entry)
     {
 	if (entry.isEnabled())
 	{
@@ -138,7 +138,7 @@ public class WatcherFxUtil
 	}
     }
 
-    private static <T> boolean unregisterStandardizer(TypeStandardizingService service, StandardizerSettingEntry<T, ?> entry)
+    public static <T> boolean unregisterStandardizer(TypeStandardizingService service, StandardizerSettingEntry<T, ?> entry)
     {
 	return service.unregisterStandardizer(entry.getValue());
     }
@@ -208,7 +208,7 @@ public class WatcherFxUtil
 	}
     }
 
-    private static void addCompatibility(CompatibilityService service, CompatibilitySettingEntry entry)
+    public static void addCompatibility(CompatibilityService service, CompatibilitySettingEntry entry)
     {
 	if (entry.isEnabled())
 	{
@@ -216,7 +216,7 @@ public class WatcherFxUtil
 	}
     }
 
-    private static boolean removeCompatibility(CompatibilityService service, CompatibilitySettingEntry entry)
+    public static boolean removeCompatibility(CompatibilityService service, CompatibilitySettingEntry entry)
     {
 	return service.getCompatibilities().remove(entry.getValue());
     }

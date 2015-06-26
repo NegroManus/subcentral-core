@@ -265,13 +265,13 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 	testingOutputTxtFld.textProperty().bind(new StringBinding()
 	{
 	    {
-		super.bind(testingInputTxtFld.textProperty(), settings.getSubtitleLanguageStandardizerBinding());
+		super.bind(testingInputTxtFld.textProperty(), settings.subtitleLanguageStandardizerBinding());
 	    }
 
 	    @Override
 	    protected String computeValue()
 	    {
-		return settings.getSubtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
+		return settings.subtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
 	    }
 	});
     }

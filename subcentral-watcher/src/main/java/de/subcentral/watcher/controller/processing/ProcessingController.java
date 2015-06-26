@@ -24,11 +24,13 @@ import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
 import de.subcentral.core.standardizing.StandardizingDefaults;
+import de.subcentral.core.standardizing.StandardizingService;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
@@ -40,12 +42,12 @@ import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.SettingsUtil;
+import de.subcentral.watcher.settings.StandardizerSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -63,13 +65,10 @@ public class ProcessingController extends AbstractController
     private final MainController mainController;
 
     // Processing Config
-    private final Binding<ProcessingConfig> processingConfig		      = initProcessingCfg();
-    private final TypeStandardizingService  preMetadataDbStandardizingService = initPreMetadataDbStandardizingService();
-    private final CompatibilityService	    compatibilityService	      = initCompatibilityService();
-    private final TypeStandardizingService  postMetadataStandardizingService  = initPostMetadataStandardizingService();
-    private final NamingService		    namingService		      = initNamingService();
-    private final NamingService		    namingServiceForFiltering	      = initNamingServiceForFiltering();
-    private final Map<String, Object>	    namingParametersForFiltering      = initNamingParametersForFiltering();
+    private final Binding<ProcessingConfig> processingConfig		 = initProcessingCfgBinding();
+    private final NamingService		    namingService		 = initNamingService();
+    private final NamingService		    namingServiceForFiltering	 = initNamingServiceForFiltering();
+    private final Map<String, Object>	    namingParametersForFiltering = initNamingParametersForFiltering();
 
     private ExecutorService processingExecutor;
     private ProcessingTask  processingTask;
@@ -103,7 +102,7 @@ public class ProcessingController extends AbstractController
 	this.mainController = Objects.requireNonNull(mainController, "mainController");
     }
 
-    private static Binding<ProcessingConfig> initProcessingCfg()
+    private static Binding<ProcessingConfig> initProcessingCfgBinding()
     {
 	return new ObjectBinding<ProcessingConfig>()
 	{
@@ -129,6 +128,9 @@ public class ProcessingController extends AbstractController
 		    cfg.setReleaseMetaTags(ImmutableList.copyOf(settings.getReleaseMetaTags()));
 		    cfg.setStandardReleases(ImmutableList.copyOf(settings.getStandardReleases()));
 		    cfg.setCompatibilityEnabled(settings.isCompatibilityEnabled());
+		    cfg.setCompatibilityService(createCompatibilityService(settings));
+		    cfg.setPreMetadataDbStandardizingService(createPreMetadataDbStandardizingService(settings));
+		    cfg.setPostMetadataDbStandardizingService(createPostMetadataDbStandardizingService(settings));
 		    cfg.setNamingParameters(ImmutableMap.copyOf(settings.getNamingParameters()));
 		    cfg.setTargetDir(settings.getTargetDir());
 		    cfg.setDeleteSource(settings.isDeleteSource());
@@ -149,16 +151,7 @@ public class ProcessingController extends AbstractController
 	};
     }
 
-    private static TypeStandardizingService initPreMetadataDbStandardizingService()
-    {
-	TypeStandardizingService service = new TypeStandardizingService("parsed");
-	// Register default nested beans retrievers but not default standardizers
-	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getProcessingSettings().getPreMetadataDbStandardizers());
-	return service;
-    }
-
-    private static CompatibilityService initCompatibilityService()
+    private static CompatibilityService createCompatibilityService(ProcessingSettings settings)
     {
 	CompatibilityService service = new CompatibilityService();
 	service.getCompatibilities().add(new SameGroupCompatibility());
@@ -166,30 +159,31 @@ public class ProcessingController extends AbstractController
 	return service;
     }
 
-    private static TypeStandardizingService initPostMetadataStandardizingService()
+    private static TypeStandardizingService createPreMetadataDbStandardizingService(ProcessingSettings settings)
     {
-	final TypeStandardizingService service = new TypeStandardizingService("custom");
+	TypeStandardizingService service = new TypeStandardizingService("premetadatadb");
 	// Register default nested beans retrievers but not default standardizers
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+	for (StandardizerSettingEntry<?, ?> entry : settings.getPreMetadataDbStandardizers())
+	{
+	    WatcherFxUtil.registerStandardizer(service, entry);
+	}
+	// add subtitle language standardizer
+	service.registerStandardizer(Subtitle.class, settings.getSubtitleLanguageSettings().getSubtitleLanguageStandardizer());
+	// add subtitle tags standardizer
+	service.registerStandardizer(SubtitleAdjustment.class, SubtitleUtil::standardizeTags);
+	return service;
+    }
 
-	// Bind SubtitleLanguageStandardizer
-	Binding<LocaleSubtitleLanguageStandardizer> langStdzerBinding = WatcherSettings.INSTANCE.getProcessingSettings().getSubtitleLanguageSettings().getSubtitleLanguageStandardizerBinding();
-	service.registerStandardizer(Subtitle.class, langStdzerBinding.getValue());
-	langStdzerBinding
-		.addListener((ObservableValue<? extends LocaleSubtitleLanguageStandardizer> observable, LocaleSubtitleLanguageStandardizer oldValue, LocaleSubtitleLanguageStandardizer newValue) -> {
-		    if (oldValue != null)
-		    {
-			service.unregisterStandardizer(oldValue);
-		    }
-
-		    if (newValue != null)
-		    {
-			service.registerStandardizer(Subtitle.class, newValue);
-		    }
-		});
-
-	// Bind all other Standardizers
-	WatcherFxUtil.bindStandardizers(service, WatcherSettings.INSTANCE.getProcessingSettings().getPostMetadataStandardizers());
+    private static TypeStandardizingService createPostMetadataDbStandardizingService(ProcessingSettings settings)
+    {
+	TypeStandardizingService service = new TypeStandardizingService("postmetadatadb");
+	// Register default nested beans retrievers but not default standardizers
+	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+	for (StandardizerSettingEntry<?, ?> entry : settings.getPreMetadataDbStandardizers())
+	{
+	    WatcherFxUtil.registerStandardizer(service, entry);
+	}
 	return service;
     }
 
@@ -310,21 +304,6 @@ public class ProcessingController extends AbstractController
 	return mainController;
     }
 
-    public TypeStandardizingService getPreMetadataDbStandardizingService()
-    {
-	return preMetadataDbStandardizingService;
-    }
-
-    public CompatibilityService getCompatibilityService()
-    {
-	return compatibilityService;
-    }
-
-    public TypeStandardizingService getPostMetadataStandardizingService()
-    {
-	return postMetadataStandardizingService;
-    }
-
     public NamingService getNamingService()
     {
 	return namingService;
@@ -416,6 +395,10 @@ public class ProcessingController extends AbstractController
 	private ImmutableList<StandardRelease>	   standardReleases;
 	// release - compatibility
 	private boolean				   compatibilityEnabled;
+	private CompatibilityService		   compatibilityService;
+	// standardizing
+	private StandardizingService		   preMetadataDbStandardizingService;
+	private StandardizingService		   postMetadataDbStandardizingService;
 	// naming
 	private ImmutableMap<String, Object>	   namingParameters;
 	// File Transformation - General
@@ -513,6 +496,36 @@ public class ProcessingController extends AbstractController
 	    this.compatibilityEnabled = compatibilityEnabled;
 	}
 
+	CompatibilityService getCompatibilityService()
+	{
+	    return compatibilityService;
+	}
+
+	private void setCompatibilityService(CompatibilityService compatibilityService)
+	{
+	    this.compatibilityService = compatibilityService;
+	}
+
+	StandardizingService getPreMetadataDbStandardizingService()
+	{
+	    return preMetadataDbStandardizingService;
+	}
+
+	private void setPreMetadataDbStandardizingService(StandardizingService preMetadataDbStandardizingService)
+	{
+	    this.preMetadataDbStandardizingService = preMetadataDbStandardizingService;
+	}
+
+	StandardizingService getPostMetadataDbStandardizingService()
+	{
+	    return postMetadataDbStandardizingService;
+	}
+
+	private void setPostMetadataDbStandardizingService(StandardizingService postMetadataDbStandardizingService)
+	{
+	    this.postMetadataDbStandardizingService = postMetadataDbStandardizingService;
+	}
+
 	ImmutableMap<String, Object> getNamingParameters()
 	{
 	    return namingParameters;
@@ -596,6 +609,9 @@ public class ProcessingController extends AbstractController
 		    .add("guessingEnabled", guessingEnabled)
 		    .add("standardReleases", standardReleases)
 		    .add("compatibilityEnabled", compatibilityEnabled)
+		    .add("compatibilityService", compatibilityService)
+		    .add("preMetadataDbStandardizingService", preMetadataDbStandardizingService)
+		    .add("postMetadataDbStandardizingService", postMetadataDbStandardizingService)
 		    .add("namingParameters", namingParameters)
 		    .add("targetDir", targetDir)
 		    .add("deleteSource", deleteSource)
