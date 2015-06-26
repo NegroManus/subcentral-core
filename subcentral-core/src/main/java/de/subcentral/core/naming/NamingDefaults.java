@@ -101,7 +101,7 @@ public class NamingDefaults
 	SUBTITLE_NAMER = new SubtitleNamer(config, NAMING_SERVICE);
 
 	// SubtitleReleaseNamer
-	SUBTITLE_ADJUSTMENT_NAMER = new SubtitleAdjustmentNamer(configWithRlsNameFormatter, RELEASE_NAMER);
+	SUBTITLE_ADJUSTMENT_NAMER = new SubtitleAdjustmentNamer(config, RELEASE_NAMER);
 
 	// Add namers to the NamingService
 	List<ConditionalNamingEntry<?>> namers = new ArrayList<>(8);
