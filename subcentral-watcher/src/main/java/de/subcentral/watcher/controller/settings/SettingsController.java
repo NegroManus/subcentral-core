@@ -297,7 +297,7 @@ public class SettingsController extends AbstractController {
 
 					@Override
 					protected boolean computeValue() {
-						// disable if nothing has changed or no custom settings exist to restore
+						// disable if nothing has changed or no custom settings exist to restore 
 						return !WatcherSettings.INSTANCE.getChanged() && !defaultSettingsLoaded.get() || !customSettingsExist.get();
 					}
 				});
