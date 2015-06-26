@@ -83,9 +83,9 @@ public class SettingsController extends AbstractController
 
     // View
     @FXML
-    private TreeView<SettingsSection> settingsSectionsTreeView;
+    private TreeView<SectionItem> sectionSelectionTreeView;
     @FXML
-    private AnchorPane		      settingsSectionRootPane;
+    private AnchorPane		      sectionRootPane;
 
     public SettingsController(MainController mainController) throws Exception
     {
@@ -101,13 +101,13 @@ public class SettingsController extends AbstractController
 
     private void initSettingsTree()
     {
-	final TreeItem<SettingsSection> root = new TreeItem<>();
-	settingsSectionsTreeView.setRoot(root);
-	settingsSectionsTreeView.setCellFactory((TreeView<SettingsSection> param) -> {
-	    return new TreeCell<SettingsSection>()
+	final TreeItem<SectionItem> root = new TreeItem<>();
+	sectionSelectionTreeView.setRoot(root);
+	sectionSelectionTreeView.setCellFactory((TreeView<SectionItem> param) -> {
+	    return new TreeCell<SectionItem>()
 	    {
 		@Override
-		protected void updateItem(SettingsSection item, boolean empty)
+		protected void updateItem(SectionItem item, boolean empty)
 		{
 		    // calling super here is very important - don't skip this!
 		    super.updateItem(item, empty);
@@ -133,26 +133,26 @@ public class SettingsController extends AbstractController
 	    };
 	});
 
-	TreeItem<SettingsSection> watchTreeItem = new TreeItem<>(new SettingsSection(WATCH_SECTION, WATCH_SECTION_LBL, "iris_16.png"));
+	TreeItem<SectionItem> watchTreeItem = new TreeItem<>(new SectionItem(WATCH_SECTION, WATCH_SECTION_LBL, "iris_16.png"));
 
-	TreeItem<SettingsSection> parsingTreeItem = new TreeItem<>(new SettingsSection(PARSING_SECTION, PARSING_SECTION_LBL, "file_search_16.png"));
+	TreeItem<SectionItem> parsingTreeItem = new TreeItem<>(new SectionItem(PARSING_SECTION, PARSING_SECTION_LBL, "file_search_16.png"));
 
-	TreeItem<SettingsSection> releaseTreeItem = new TreeItem<>(new SettingsSection(RELEASE_SECTION, RELEASE_SECTION_LBL, "archive_16.png"));
-	TreeItem<SettingsSection> releaseDatabasesTreeItem = new TreeItem<>(new SettingsSection(RELEASE_DBS_SECTION, RELEASE_DBS_SECTION_LBL, "database_16.png"));
-	TreeItem<SettingsSection> releaseGuessingTreeItem = new TreeItem<>(new SettingsSection(RELEASE_GUESSING_SECTION, RELEASE_GUESSING_SECTION_LBL, "idea_16.png"));
-	TreeItem<SettingsSection> releaseCompatibilityTreeItem = new TreeItem<>(new SettingsSection(RELEASE_COMPATIBILITY_SECTION, RELEASE_COMPATIBILITY_SECTION_LBL, "couple_16.png"));
+	TreeItem<SectionItem> releaseTreeItem = new TreeItem<>(new SectionItem(RELEASE_SECTION, RELEASE_SECTION_LBL, "archive_16.png"));
+	TreeItem<SectionItem> releaseDatabasesTreeItem = new TreeItem<>(new SectionItem(RELEASE_DBS_SECTION, RELEASE_DBS_SECTION_LBL, "database_16.png"));
+	TreeItem<SectionItem> releaseGuessingTreeItem = new TreeItem<>(new SectionItem(RELEASE_GUESSING_SECTION, RELEASE_GUESSING_SECTION_LBL, "idea_16.png"));
+	TreeItem<SectionItem> releaseCompatibilityTreeItem = new TreeItem<>(new SectionItem(RELEASE_COMPATIBILITY_SECTION, RELEASE_COMPATIBILITY_SECTION_LBL, "couple_16.png"));
 
-	TreeItem<SettingsSection> standardizingTreeItem = new TreeItem<>(new SettingsSection(STANDARDIZING_SECTION, STANDARDIZING_SECTION_LBL, "exchange_16.png"));
-	TreeItem<SettingsSection> preMetadataDbStandardizingTreeItem = new TreeItem<>(
-		new SettingsSection(STANDARDIZING_PRE_METADATADB_SECTION, STANDARDIZING_PRE_METADATADB_SECTION_LBL, "exchange_16.png"));
-	TreeItem<SettingsSection> postMetadataDbStandardizingTreeItem = new TreeItem<>(
-		new SettingsSection(STANDARDIZING_POST_METADATADB_SECTION, STANDARDIZING_POST_METADATADB_SECTION_LBL, "exchange_16.png"));
-	TreeItem<SettingsSection> subtitleLanguageStandardizingTreeItem = new TreeItem<>(
-		new SettingsSection(STANDARDIZING_SUBTITLE_LANGUAGE_SECTION, STANDARDIZING_SUBTITLE_LANGUAGE_SECTION_LBL, "usa_16.png"));
+	TreeItem<SectionItem> standardizingTreeItem = new TreeItem<>(new SectionItem(STANDARDIZING_SECTION, STANDARDIZING_SECTION_LBL, "exchange_16.png"));
+	TreeItem<SectionItem> preMetadataDbStandardizingTreeItem = new TreeItem<>(
+		new SectionItem(STANDARDIZING_PRE_METADATADB_SECTION, STANDARDIZING_PRE_METADATADB_SECTION_LBL, "exchange_16.png"));
+	TreeItem<SectionItem> postMetadataDbStandardizingTreeItem = new TreeItem<>(
+		new SectionItem(STANDARDIZING_POST_METADATADB_SECTION, STANDARDIZING_POST_METADATADB_SECTION_LBL, "exchange_16.png"));
+	TreeItem<SectionItem> subtitleLanguageStandardizingTreeItem = new TreeItem<>(
+		new SectionItem(STANDARDIZING_SUBTITLE_LANGUAGE_SECTION, STANDARDIZING_SUBTITLE_LANGUAGE_SECTION_LBL, "usa_16.png"));
 
-	TreeItem<SettingsSection> namingTreeItem = new TreeItem<>(new SettingsSection(NAMING_SECTION, NAMING_SECTION_LBL, "font_16.png"));
+	TreeItem<SectionItem> namingTreeItem = new TreeItem<>(new SectionItem(NAMING_SECTION, NAMING_SECTION_LBL, "font_16.png"));
 
-	TreeItem<SettingsSection> filetransformationTreeItem = new TreeItem<>(new SettingsSection(FILE_TRANSFORMATION_SECTION, FILE_TRANSFORMATION_SECTION_LBL, "transform_16.png"));
+	TreeItem<SectionItem> filetransformationTreeItem = new TreeItem<>(new SectionItem(FILE_TRANSFORMATION_SECTION, FILE_TRANSFORMATION_SECTION_LBL, "transform_16.png"));
 
 	root.getChildren().add(watchTreeItem);
 	root.getChildren().add(parsingTreeItem);
@@ -171,162 +171,21 @@ public class SettingsController extends AbstractController
 	root.getChildren().add(namingTreeItem);
 	root.getChildren().add(filetransformationTreeItem);
 
-	settingsSectionsTreeView.getSelectionModel()
+	sectionSelectionTreeView.getSelectionModel()
 		.selectedItemProperty()
-		.addListener((ObservableValue<? extends TreeItem<SettingsSection>> observable, TreeItem<SettingsSection> oldValue, TreeItem<SettingsSection> newValue) -> {
+		.addListener((ObservableValue<? extends TreeItem<SectionItem>> observable, TreeItem<SectionItem> oldValue, TreeItem<SectionItem> newValue) -> {
 		    if (newValue == null)
 		    {
-			settingsSectionRootPane.getChildren().clear();
-			return;
+			sectionRootPane.getChildren().clear();
 		    }
-
-		    AbstractSettingsSectionController ctrl = null;
-		    Callable<AbstractSettingsSectionController> ctrlGetter = null;
-		    switch (newValue.getValue().getSection())
-		    {
-			case WATCH_SECTION:
-			    if (watchSettingsController != null)
-			    {
-				ctrl = watchSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getWatchSettingsController;
-			    }
-			    break;
-			case PARSING_SECTION:
-			    if (parsingSettingsController != null)
-			    {
-				ctrl = parsingSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getParsingSettingsController;
-			    }
-			    break;
-			case RELEASE_SECTION:
-			    if (releaseSettingsController != null)
-			    {
-				ctrl = releaseSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getReleaseSettingsController;
-			    }
-			    break;
-			case RELEASE_DBS_SECTION:
-			    if (releaseDbsSettingsController != null)
-			    {
-				ctrl = releaseDbsSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getReleaseDbsSettingsController;
-			    }
-			    break;
-			case RELEASE_GUESSING_SECTION:
-			    if (releaseGuessingSettingsController != null)
-			    {
-				ctrl = releaseGuessingSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getReleaseGuessingSettingsController;
-			    }
-			    break;
-			case RELEASE_COMPATIBILITY_SECTION:
-			    if (releaseCompatibilitySettingsController != null)
-			    {
-				ctrl = releaseCompatibilitySettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getReleaseCompatibilitySettingsController;
-			    }
-			    break;
-			case STANDARDIZING_PRE_METADATADB_SECTION:
-			    if (preMetaDbStandardizingSettingsController != null)
-			    {
-				ctrl = preMetaDbStandardizingSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getPreMetaDbStandardizingSettingsController;
-			    }
-			    break;
-			case STANDARDIZING_POST_METADATADB_SECTION:
-			    if (postMetaDbStandardizingSettingsController != null)
-			    {
-				ctrl = postMetaDbStandardizingSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getPostMetaDbStandardizingSettingsController;
-			    }
-			    break;
-			case STANDARDIZING_SUBTITLE_LANGUAGE_SECTION:
-			    if (subtitleLanguageStandardizingSettingsController != null)
-			    {
-				ctrl = subtitleLanguageStandardizingSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getSubtitleLanguageStandardizingSettingsController;
-			    }
-			    break;
-			case NAMING_SECTION:
-			    if (namingSettingsController != null)
-			    {
-				ctrl = namingSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getNamingSettingsController;
-			    }
-			    break;
-			case FILE_TRANSFORMATION_SECTION:
-			    if (fileTransformationSettingsController != null)
-			    {
-				ctrl = fileTransformationSettingsController;
-			    }
-			    else
-			    {
-				ctrlGetter = SettingsController.this::getFileTransformationSettingsController;
-			    }
-			    break;
-			default:
-			    break;
-		    }
-
-		    // If the SectionController is already loaded, just display his SectionPane
-		    if (ctrl != null)
-		    {
-			settingsSectionRootPane.getChildren().setAll(ctrl.getSectionRootPane());
-		    }
-		    // If the SectionController is not loaded yet but can be loaded, load it in a background thread
-		    else if (ctrlGetter != null)
-		    {
-			settingsSectionRootPane.getChildren().setAll(createLoadingIndicatorNode());
-			Task<AbstractSettingsSectionController> loadTask = createLoadSectionControllerTask(ctrlGetter);
-			// if still on application startup, do not load in background thread
-			if (FxUtil.isJavaFxLauncherThread())
-			{
-			    loadTask.run();
-			}
-			else
-			{
-			    mainController.getCommonExecutor().execute(loadTask);
-			}
-		    }
-		    // If there is no matching SectionController for the chosen section, clear the sectionRootPane
 		    else
 		    {
-			settingsSectionRootPane.getChildren().clear();
+			showSection(newValue.getValue().getSectionName());
 		    }
 		});
 
-	// Select the first
-	settingsSectionsTreeView.getSelectionModel().selectFirst();
+	// Select the first section
+	sectionSelectionTreeView.getSelectionModel().selectFirst();
     }
 
     public MainController getMainController()
@@ -338,11 +197,162 @@ public class SettingsController extends AbstractController
     {
 	if (section == null)
 	{
-	    settingsSectionsTreeView.getSelectionModel().clearSelection();
+	    sectionSelectionTreeView.getSelectionModel().clearSelection();
 	}
-	TreeItem<SettingsSection> itemToSelect = FxUtil.findTreeItem(settingsSectionsTreeView.getRoot(),
-		(TreeItem<SettingsSection> item) -> item.getValue() != null ? section.equals(item.getValue().getSection()) : false);
-	settingsSectionsTreeView.getSelectionModel().select(itemToSelect);
+	TreeItem<SectionItem> itemToSelect = FxUtil.findTreeItem(sectionSelectionTreeView.getRoot(),
+		(TreeItem<SectionItem> item) -> item.getValue() != null ? section.equals(item.getValue().getSectionName()) : false);
+	sectionSelectionTreeView.getSelectionModel().select(itemToSelect);
+    }
+
+    private void showSection(String section)
+    {
+	if (section == null)
+	{
+	    sectionRootPane.getChildren().clear();
+	}
+	AbstractSettingsSectionController ctrl = null;
+	Callable<AbstractSettingsSectionController> ctrlLoader = null;
+	switch (section)
+	{
+	    case WATCH_SECTION:
+		if (watchSettingsController != null)
+		{
+		    ctrl = watchSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getWatchSettingsController;
+		}
+		break;
+	    case PARSING_SECTION:
+		if (parsingSettingsController != null)
+		{
+		    ctrl = parsingSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getParsingSettingsController;
+		}
+		break;
+	    case RELEASE_SECTION:
+		if (releaseSettingsController != null)
+		{
+		    ctrl = releaseSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getReleaseSettingsController;
+		}
+		break;
+	    case RELEASE_DBS_SECTION:
+		if (releaseDbsSettingsController != null)
+		{
+		    ctrl = releaseDbsSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getReleaseDbsSettingsController;
+		}
+		break;
+	    case RELEASE_GUESSING_SECTION:
+		if (releaseGuessingSettingsController != null)
+		{
+		    ctrl = releaseGuessingSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getReleaseGuessingSettingsController;
+		}
+		break;
+	    case RELEASE_COMPATIBILITY_SECTION:
+		if (releaseCompatibilitySettingsController != null)
+		{
+		    ctrl = releaseCompatibilitySettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getReleaseCompatibilitySettingsController;
+		}
+		break;
+	    case STANDARDIZING_PRE_METADATADB_SECTION:
+		if (preMetaDbStandardizingSettingsController != null)
+		{
+		    ctrl = preMetaDbStandardizingSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getPreMetaDbStandardizingSettingsController;
+		}
+		break;
+	    case STANDARDIZING_POST_METADATADB_SECTION:
+		if (postMetaDbStandardizingSettingsController != null)
+		{
+		    ctrl = postMetaDbStandardizingSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getPostMetaDbStandardizingSettingsController;
+		}
+		break;
+	    case STANDARDIZING_SUBTITLE_LANGUAGE_SECTION:
+		if (subtitleLanguageStandardizingSettingsController != null)
+		{
+		    ctrl = subtitleLanguageStandardizingSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getSubtitleLanguageStandardizingSettingsController;
+		}
+		break;
+	    case NAMING_SECTION:
+		if (namingSettingsController != null)
+		{
+		    ctrl = namingSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getNamingSettingsController;
+		}
+		break;
+	    case FILE_TRANSFORMATION_SECTION:
+		if (fileTransformationSettingsController != null)
+		{
+		    ctrl = fileTransformationSettingsController;
+		}
+		else
+		{
+		    ctrlLoader = SettingsController.this::getFileTransformationSettingsController;
+		}
+		break;
+	    default:
+		break;
+	}
+
+	// If the SectionController is already loaded, just display his SectionPane
+	if (ctrl != null)
+	{
+	    sectionRootPane.getChildren().setAll(ctrl.getSectionRootPane());
+	}
+	// If the SectionController is not loaded yet but can be loaded, load it in a background thread
+	else if (ctrlLoader != null)
+	{
+	    sectionRootPane.getChildren().setAll(createLoadingIndicator());
+	    Task<AbstractSettingsSectionController> loadTask = createLoadSectionControllerTask(ctrlLoader);
+	    // if still on application startup, do not load in background thread
+	    if (FxUtil.isJavaFxLauncherThread())
+	    {
+		loadTask.run();
+	    }
+	    else
+	    {
+		mainController.getCommonExecutor().execute(loadTask);
+	    }
+	}
+	// If there is no matching SectionController for the chosen section, clear the sectionRootPane
+	else
+	{
+	    sectionRootPane.getChildren().clear();
+	}
     }
 
     public void loadSettings() throws Exception
@@ -406,7 +416,7 @@ public class SettingsController extends AbstractController
 	if (watchSettingsController == null)
 	{
 	    watchSettingsController = new WatchSettingsController(this);
-	    loadSettingsSectionNode("WatchSettingsView.fxml", null, watchSettingsController);
+	    loadSectionController("WatchSettingsView.fxml", null, watchSettingsController);
 	}
 	return watchSettingsController;
     }
@@ -416,7 +426,7 @@ public class SettingsController extends AbstractController
 	if (parsingSettingsController == null)
 	{
 	    parsingSettingsController = new ParsingSettingsController(this);
-	    loadSettingsSectionNode("ParsingSettingsView.fxml", null, parsingSettingsController);
+	    loadSectionController("ParsingSettingsView.fxml", null, parsingSettingsController);
 	}
 	return parsingSettingsController;
     }
@@ -426,7 +436,7 @@ public class SettingsController extends AbstractController
 	if (releaseSettingsController == null)
 	{
 	    releaseSettingsController = new ReleaseSettingsController(this);
-	    loadSettingsSectionNode("ReleaseSettingsView.fxml", null, releaseSettingsController);
+	    loadSectionController("ReleaseSettingsView.fxml", null, releaseSettingsController);
 	}
 	return releaseSettingsController;
     }
@@ -436,7 +446,7 @@ public class SettingsController extends AbstractController
 	if (releaseDbsSettingsController == null)
 	{
 	    releaseDbsSettingsController = new ReleaseDbsSettingsController(this);
-	    loadSettingsSectionNode("ReleaseDbsSettingsView.fxml", null, releaseDbsSettingsController);
+	    loadSectionController("ReleaseDbsSettingsView.fxml", null, releaseDbsSettingsController);
 	}
 	return releaseDbsSettingsController;
     }
@@ -446,7 +456,7 @@ public class SettingsController extends AbstractController
 	if (releaseGuessingSettingsController == null)
 	{
 	    releaseGuessingSettingsController = new ReleaseGuessingSettingsController(this);
-	    loadSettingsSectionNode("ReleaseGuessingSettingsView.fxml", null, releaseGuessingSettingsController);
+	    loadSectionController("ReleaseGuessingSettingsView.fxml", null, releaseGuessingSettingsController);
 	}
 	return releaseGuessingSettingsController;
     }
@@ -456,7 +466,7 @@ public class SettingsController extends AbstractController
 	if (releaseCompatibilitySettingsController == null)
 	{
 	    releaseCompatibilitySettingsController = new ReleaseCompatibilitySettingsController(this);
-	    loadSettingsSectionNode("ReleaseCompatibilitySettingsView.fxml", null, releaseCompatibilitySettingsController);
+	    loadSectionController("ReleaseCompatibilitySettingsView.fxml", null, releaseCompatibilitySettingsController);
 	}
 	return releaseCompatibilitySettingsController;
     }
@@ -466,7 +476,7 @@ public class SettingsController extends AbstractController
 	if (preMetaDbStandardizingSettingsController == null)
 	{
 	    preMetaDbStandardizingSettingsController = new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().getPreMetadataDbStandardizers());
-	    loadSettingsSectionNode("StandardizingSettingsView.fxml", "PreMetadataDbStandardizingView", preMetaDbStandardizingSettingsController);
+	    loadSectionController("StandardizingSettingsView.fxml", "PreMetadataDbStandardizingView", preMetaDbStandardizingSettingsController);
 	}
 	return preMetaDbStandardizingSettingsController;
     }
@@ -476,7 +486,7 @@ public class SettingsController extends AbstractController
 	if (postMetaDbStandardizingSettingsController == null)
 	{
 	    postMetaDbStandardizingSettingsController = new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().getPostMetadataStandardizers());
-	    loadSettingsSectionNode("StandardizingSettingsView.fxml", "PostMetadataDbStandardizingView", postMetaDbStandardizingSettingsController);
+	    loadSectionController("StandardizingSettingsView.fxml", "PostMetadataDbStandardizingView", postMetaDbStandardizingSettingsController);
 	}
 	return postMetaDbStandardizingSettingsController;
     }
@@ -486,7 +496,7 @@ public class SettingsController extends AbstractController
 	if (subtitleLanguageStandardizingSettingsController == null)
 	{
 	    subtitleLanguageStandardizingSettingsController = new SubtitleLanguageStandardizingSettingsController(this);
-	    loadSettingsSectionNode("SubtitleLanguageStandardizingSettingsView.fxml", null, subtitleLanguageStandardizingSettingsController);
+	    loadSectionController("SubtitleLanguageStandardizingSettingsView.fxml", null, subtitleLanguageStandardizingSettingsController);
 	}
 	return subtitleLanguageStandardizingSettingsController;
     }
@@ -496,7 +506,7 @@ public class SettingsController extends AbstractController
 	if (namingSettingsController == null)
 	{
 	    namingSettingsController = new NamingSettingsController(this);
-	    loadSettingsSectionNode("NamingSettingsView.fxml", null, namingSettingsController);
+	    loadSectionController("NamingSettingsView.fxml", null, namingSettingsController);
 	}
 	return namingSettingsController;
     }
@@ -506,12 +516,12 @@ public class SettingsController extends AbstractController
 	if (fileTransformationSettingsController == null)
 	{
 	    fileTransformationSettingsController = new FileTransformationSettingsController(this);
-	    loadSettingsSectionNode("FileTransformationSettingsView.fxml", null, fileTransformationSettingsController);
+	    loadSectionController("FileTransformationSettingsView.fxml", null, fileTransformationSettingsController);
 	}
 	return fileTransformationSettingsController;
     }
 
-    private void loadSettingsSectionNode(String fxmlFilename, String resourceBaseName, AbstractSettingsSectionController ctrl) throws IOException
+    private void loadSectionController(String fxmlFilename, String resourceBaseName, AbstractSettingsSectionController ctrl) throws IOException
     {
 	Node sectionNode = FxUtil.loadFromFxml(fxmlFilename, resourceBaseName, Locale.ENGLISH, ctrl);
 	AnchorPane.setTopAnchor(sectionNode, 0.0d);
@@ -520,7 +530,7 @@ public class SettingsController extends AbstractController
 	AnchorPane.setLeftAnchor(sectionNode, 0.0d);
     }
 
-    private StackPane createLoadingIndicatorNode()
+    private StackPane createLoadingIndicator()
     {
 	StackPane loadingPane = new StackPane();
 	AnchorPane.setTopAnchor(loadingPane, 0.0d);
@@ -536,34 +546,34 @@ public class SettingsController extends AbstractController
 	return loadingPane;
     }
 
-    private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final Callable<AbstractSettingsSectionController> ctrlGetter)
+    private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final Callable<AbstractSettingsSectionController> ctrlLoader)
     {
 	return new Task<AbstractSettingsSectionController>()
 	{
 	    @Override
 	    protected AbstractSettingsSectionController call() throws Exception
 	    {
-		return ctrlGetter.call();
+		return ctrlLoader.call();
 	    }
 
 	    @Override
 	    protected void succeeded()
 	    {
 		log.debug("Loaded new settings section. Controller={}", getValue());
-		settingsSectionRootPane.getChildren().setAll(getValue().getSectionRootPane());
+		sectionRootPane.getChildren().setAll(getValue().getSectionRootPane());
 	    }
 
 	    @Override
 	    protected void failed()
 	    {
-		settingsSectionRootPane.getChildren().clear();
+		sectionRootPane.getChildren().clear();
 		log.error("Loading of settings section failed", getException());
 	    }
 
 	    @Override
 	    protected void cancelled()
 	    {
-		settingsSectionRootPane.getChildren().clear();
+		sectionRootPane.getChildren().clear();
 		log.warn("Loading of settings section was cancelled");
 	    }
 	};
@@ -575,22 +585,22 @@ public class SettingsController extends AbstractController
 	confirmSaveSettings();
     }
 
-    public static class SettingsSection
+    public static class SectionItem
     {
-	private final String section;
+	private final String sectionName;
 	private final String label;
 	private final String image;
 
-	public SettingsSection(String section, String label, String image)
+	public SectionItem(String sectionName, String label, String image)
 	{
-	    this.section = section;
+	    this.sectionName = sectionName;
 	    this.label = label;
 	    this.image = image;
 	}
 
-	public String getSection()
+	public String getSectionName()
 	{
-	    return section;
+	    return sectionName;
 	}
 
 	public String getLabel()
@@ -601,12 +611,6 @@ public class SettingsController extends AbstractController
 	public String getImage()
 	{
 	    return image;
-	}
-
-	@Override
-	public String toString()
-	{
-	    return label;
 	}
     }
 }
