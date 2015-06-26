@@ -2,15 +2,16 @@ package de.subcentral.watcher.controller.settings;
 
 import java.nio.file.Path;
 
+import com.google.common.collect.ImmutableMap;
+
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxUtil.ToggleEnumBinding;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +24,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 
@@ -77,22 +77,9 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 
 	ToggleGroup winRarLocateStrategy = new ToggleGroup();
 	winRarLocateStrategy.getToggles().addAll(locateRadioBtn, specifyRadioBtn);
-	winRarLocateStrategy.selectToggle(settings.getWinRarLocateStrategy() == LocateStrategy.SPECIFY ? specifyRadioBtn : locateRadioBtn);
-	winRarLocateStrategy.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
-	{
-	    @Override
-	    public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue)
-	    {
-		if (newValue == specifyRadioBtn)
-		{
-		    settings.setWinRarLocateStrategy(LocateStrategy.SPECIFY);
-		}
-		else
-		{
-		    settings.setWinRarLocateStrategy(LocateStrategy.LOCATE);
-		}
-	    }
-	});
+
+	// bind toggle button to settings
+	new ToggleEnumBinding<>(winRarLocateStrategy, settings.winRarLocateStrategyProperty(), ImmutableMap.of(locateRadioBtn, LocateStrategy.LOCATE, specifyRadioBtn, LocateStrategy.SPECIFY));
 
 	final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
 	testLocateBtn.setOnAction((ActionEvent event) -> {

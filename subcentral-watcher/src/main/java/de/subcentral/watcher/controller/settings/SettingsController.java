@@ -271,51 +271,42 @@ public class SettingsController extends AbstractController
 	// !(changed || default)
 	saveBtn.disableProperty().bind(WatcherSettings.INSTANCE.changedProperty().or(defaultSettings).not());
 	saveBtn.setOnAction((ActionEvent e) -> {
-	    mainController.getCommonExecutor().submit(new Task<Void>()
-	    {
-		@Override
-		protected Void call() throws Exception
-		{
-		    saveSettings();
-		    return null;
-		}
-	    });
-	});
-
-	restoreLastSavedBtn.disableProperty().bind(WatcherSettings.INSTANCE.changedProperty().not());
-	restoreLastSavedBtn.setOnAction((ActionEvent e) -> {
-	    // sectionRootPane.getChildren().setAll(createLoadingIndicator());
-	    // for (Section s : sections.values())
-	    // {
-	    // s.resetController();
-	    // }
-	    // mainController.getCommonExecutor().submit(new Task<Void>()
-	    // {
-	    // @Override
-	    // protected Void call() throws Exception
-	    // {
-	    // loadSettings();
-	    // return null;
-	    // }
-	    //
-	    // @Override
-	    // protected void succeeded()
-	    // {
-	    // int selected = sectionSelectionTreeView.getSelectionModel().getSelectedIndex();
-	    // sectionSelectionTreeView.getSelectionModel().clearSelection();
-	    // sectionSelectionTreeView.getSelectionModel().select(selected);
-	    // }
-	    //
-	    // @Override
-	    // protected void failed()
-	    // {
-	    // sectionRootPane.getChildren().clear();
-	    // }
-	    // });
-
 	    try
 	    {
-		loadSettings();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Save settings?");
+		alert.setHeaderText("Do you want to save the current settings?");
+		alert.setContentText("The current settings will be stored in the settings file.");
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES)
+		{
+		    saveSettings();
+		}
+	    }
+	    catch (Exception e1)
+	    {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	    }
+	});
+
+	restoreLastSavedBtn.disableProperty().bind(defaultSettings.not().and(WatcherSettings.INSTANCE.changedProperty().not()));
+	restoreLastSavedBtn.setOnAction((ActionEvent e) -> {
+	    try
+	    {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Restore last saved settings?");
+		alert.setHeaderText("Do you want restore the last saved settings?");
+		alert.setContentText("The current settings will be replaced with the content of the settings file.");
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES)
+		{
+		    loadSettings();
+		}
 	    }
 	    catch (Exception e1)
 	    {
@@ -327,38 +318,21 @@ public class SettingsController extends AbstractController
 	// (defaultLoaded && !changed)
 	restoreDefaultsBtn.disableProperty().bind(defaultSettings.and(WatcherSettings.INSTANCE.changedProperty().not()));
 	restoreDefaultsBtn.setOnAction((ActionEvent e) -> {
-	    // sectionRootPane.getChildren().setAll(createLoadingIndicator());
-	    // for (Section s : sections.values())
-	    // {
-	    // s.resetController();
-	    // }
-	    // mainController.getCommonExecutor().submit(new Task<Void>()
-	    // {
-	    // @Override
-	    // protected Void call() throws Exception
-	    // {
-	    // loadDefaultSettings();
-	    // return null;
-	    // }
-	    //
-	    // @Override
-	    // protected void succeeded()
-	    // {
-	    // int selected = sectionSelectionTreeView.getSelectionModel().getSelectedIndex();
-	    // sectionSelectionTreeView.getSelectionModel().clearSelection();
-	    // sectionSelectionTreeView.getSelectionModel().select(selected);
-	    // }
-	    //
-	    // @Override
-	    // protected void failed()
-	    // {
-	    // sectionRootPane.getChildren().clear();
-	    // }
-	    // });
-
 	    try
 	    {
-		loadDefaultSettings();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		// alert.getDialogPane().setPrefWidth(600d);
+		alert.setTitle("Restore defaults?");
+		alert.setHeaderText("Do you want to restore the default settings?");
+		alert.setContentText(
+			"The current settings will be replaced with the default settings.\nBut nothing will be saved until you choose to do so. You can always return to the last saved settings.");
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES)
+		{
+		    loadDefaultSettings();
+		}
 	    }
 	    catch (Exception e1)
 	    {
@@ -593,20 +567,6 @@ public class SettingsController extends AbstractController
 	    AnchorPane.setRightAnchor(sectionNode, 0.0d);
 	    AnchorPane.setBottomAnchor(sectionNode, 0.0d);
 	    AnchorPane.setLeftAnchor(sectionNode, 0.0d);
-	}
-
-	public void resetController()
-	{
-	    try
-	    {
-		controller.shutdown();
-	    }
-	    catch (Exception e)
-	    {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
-	    controller = null;
 	}
 
 	public String getLabel()

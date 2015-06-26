@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
@@ -34,6 +35,8 @@ import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.Property;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -665,6 +668,95 @@ public class FxUtil
 	    }
 	}
 	return null;
+    }
+
+    public static class ToggleEnumBinding<E extends Enum<E>>
+    {
+	private final ToggleGroup	     toggleGroup;
+	private final Property<E>	     enumProp;
+	private final Map<Toggle, E>	     mapping;
+	private final ChangeListener<Toggle> toggleListener;
+	private final ChangeListener<E>	     enumListener;
+	private boolean			     updating;
+
+	public ToggleEnumBinding(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
+	{
+	    this.toggleGroup = toggleGroup;
+	    this.enumProp = enumProp;
+	    this.mapping = mapping;
+
+	    // set initial value
+	    selectToggle(this.enumProp.getValue());
+
+	    // init listeners and add them
+	    this.toggleListener = initToggleListener();
+	    this.enumListener = initEnumListener();
+	    this.toggleGroup.selectedToggleProperty().addListener(toggleListener);
+	    this.enumProp.addListener(enumListener);
+	}
+
+	public void unbind()
+	{
+	    toggleGroup.selectedToggleProperty().removeListener(toggleListener);
+	    enumProp.removeListener(enumListener);
+	}
+
+	private ChangeListener<Toggle> initToggleListener()
+	{
+	    return new ChangeListener<Toggle>()
+	    {
+		@Override
+		public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue)
+		{
+		    if (!updating)
+		    {
+			try
+			{
+			    updating = true;
+			    enumProp.setValue(mapping.get(newValue));
+			}
+			finally
+			{
+			    updating = false;
+			}
+		    }
+		}
+	    };
+	}
+
+	private ChangeListener<E> initEnumListener()
+	{
+	    return new ChangeListener<E>()
+	    {
+		@Override
+		public void changed(ObservableValue<? extends E> observable, E oldValue, E newValue)
+		{
+		    if (!updating)
+		    {
+			try
+			{
+			    updating = true;
+			    selectToggle(newValue);
+			}
+			finally
+			{
+			    updating = false;
+			}
+		    }
+		}
+	    };
+	}
+
+	private void selectToggle(E enumValue)
+	{
+	    for (Map.Entry<Toggle, E> entry : mapping.entrySet())
+	    {
+		if (enumValue == entry.getValue())
+		{
+		    toggleGroup.selectToggle(entry.getKey());
+		}
+	    }
+	}
     }
 
     private FxUtil()
