@@ -30,11 +30,6 @@ import javafx.collections.ObservableList;
 
 public class WatcherSettings extends ObservableObject
 {
-    public enum FileTransformationMode
-    {
-	COPY, MOVE
-    }
-
     public static final WatcherSettings	INSTANCE = new WatcherSettings();
     private static final Logger		log	 = LogManager.getLogger(WatcherSettings.class);
 
