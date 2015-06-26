@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.support.winrar.WinRar;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
@@ -76,13 +77,20 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 
 	ToggleGroup winRarLocateStrategy = new ToggleGroup();
 	winRarLocateStrategy.getToggles().addAll(locateRadioBtn, specifyRadioBtn);
-	winRarLocateStrategy.selectToggle(settings.isAutoLocateWinRar() ? locateRadioBtn : specifyRadioBtn);
+	winRarLocateStrategy.selectToggle(settings.getWinRarLocateStrategy() == LocateStrategy.SPECIFY ? specifyRadioBtn : locateRadioBtn);
 	winRarLocateStrategy.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
 	{
 	    @Override
 	    public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue)
 	    {
-		settings.setAutoLocateWinRar(newValue == locateRadioBtn);
+		if (newValue == specifyRadioBtn)
+		{
+		    settings.setWinRarLocateStrategy(LocateStrategy.SPECIFY);
+		}
+		else
+		{
+		    settings.setWinRarLocateStrategy(LocateStrategy.LOCATE);
+		}
 	    }
 	});
 

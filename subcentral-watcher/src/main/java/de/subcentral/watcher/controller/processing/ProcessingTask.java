@@ -459,7 +459,7 @@ public class ProcessingTask extends Task<Void>
 	if (config.isPackingEnabled())
 	{
 	    final Path newRar = newFile.resolveSibling(targetItem.getName() + ".rar");
-	    LocateStrategy locateStrategy = config.isAutoLocateWinRar() ? LocateStrategy.LOCATE : LocateStrategy.SPECIFY;
+	    LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
 	    WinRarPackager packager = WinRar.getPackager(locateStrategy, config.getRarExe());
 	    WinRarPackConfig cfg = new WinRarPackConfig();
 	    cfg.setCompressionMethod(CompressionMethod.BEST);

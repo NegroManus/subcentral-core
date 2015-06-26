@@ -11,6 +11,7 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -52,13 +53,13 @@ public class ProcessingSettings extends AbstractSubSettings
 
     // File Transformation
     // File Transformation - General
-    private final Property<Path>	 targetDir		   = new SimpleObjectProperty<>(this, "targetDir", null);
-    private final BooleanProperty	 deleteSource		   = new SimpleBooleanProperty(this, "deleteSource");
+    private final Property<Path>	   targetDir		     = new SimpleObjectProperty<>(this, "targetDir", null);
+    private final BooleanProperty	   deleteSource		     = new SimpleBooleanProperty(this, "deleteSource");
     // File Transformation - Packing
-    private final BooleanProperty	 packingEnabled		   = new SimpleBooleanProperty(this, "packingEnabled");
-    private final Property<Path>	 rarExe			   = new SimpleObjectProperty<>(this, "rarExe", null);
-    private final BooleanProperty	 autoLocateWinRar	   = new SimpleBooleanProperty(this, "autoLocateWinRar");
-    private final Property<DeletionMode> packingSourceDeletionMode = new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
+    private final BooleanProperty	   packingEnabled	     = new SimpleBooleanProperty(this, "packingEnabled");
+    private final Property<Path>	   rarExe		     = new SimpleObjectProperty<>(this, "rarExe", null);
+    private final Property<LocateStrategy> winrarLocateStrategy	     = new SimpleObjectProperty<>(this, "winRarLocateStrategy");
+    private final Property<DeletionMode>   packingSourceDeletionMode = new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
 
     // package protected (should only be instantiated by WatcherSettings)
     ProcessingSettings()
@@ -86,7 +87,7 @@ public class ProcessingSettings extends AbstractSubSettings
 		deleteSource,
 		packingEnabled,
 		rarExe,
-		autoLocateWinRar,
+		winrarLocateStrategy,
 		packingSourceDeletionMode);
     }
 
@@ -341,19 +342,19 @@ public class ProcessingSettings extends AbstractSubSettings
 	this.rarExe.setValue(rarExe);
     }
 
-    public final BooleanProperty autoLocateWinRarProperty()
+    public final Property<LocateStrategy> winRarLocateStrategyProperty()
     {
-	return this.autoLocateWinRar;
+	return this.winrarLocateStrategy;
     }
 
-    public final boolean isAutoLocateWinRar()
+    public final de.subcentral.support.winrar.WinRar.LocateStrategy getWinRarLocateStrategy()
     {
-	return this.autoLocateWinRarProperty().get();
+	return this.winRarLocateStrategyProperty().getValue();
     }
 
-    public final void setAutoLocateWinRar(final boolean autoLocateWinRar)
+    public final void setWinRarLocateStrategy(final de.subcentral.support.winrar.WinRar.LocateStrategy winRarLocateStrategy)
     {
-	this.autoLocateWinRarProperty().set(autoLocateWinRar);
+	this.winRarLocateStrategyProperty().setValue(winRarLocateStrategy);
     }
 
     public final Property<DeletionMode> packingSourceDeletionModeProperty()
@@ -495,7 +496,7 @@ public class ProcessingSettings extends AbstractSubSettings
 
     private void loadAutoLocateWinRar(XMLConfiguration cfg)
     {
-	setAutoLocateWinRar(cfg.getBoolean("fileTransformation.packing.winrar.autoLocate"));
+	setWinRarLocateStrategy(LocateStrategy.valueOf(cfg.getString("fileTransformation.packing.winrar.locateStrategy")));
     }
 
     private void loadRarExe(XMLConfiguration cfg)
@@ -583,7 +584,8 @@ public class ProcessingSettings extends AbstractSubSettings
 	// File Transformation - Packing
 	cfg.addProperty("fileTransformation.packing[@enabled]", isPackingEnabled());
 	cfg.addProperty("fileTransformation.packing.sourceDeletionMode", getPackingSourceDeletionMode());
-	cfg.addProperty("fileTransformation.packing.winrar.autoLocate", isAutoLocateWinRar());
+	cfg.addProperty("fileTransformation.packing.winrar.locateStrategy", getWinRarLocateStrategy());
 	ConfigurationHelper.addPath(cfg, "fileTransformation.packing.winrar.rarExe", getRarExe());
     }
+
 }

@@ -36,6 +36,7 @@ import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
+import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
@@ -135,7 +136,7 @@ public class ProcessingController extends AbstractController
 		    cfg.setTargetDir(settings.getTargetDir());
 		    cfg.setDeleteSource(settings.isDeleteSource());
 		    cfg.setPackingEnabled(settings.isPackingEnabled());
-		    cfg.setAutoLocateWinRar(settings.isAutoLocateWinRar());
+		    cfg.setWinRarLocateStrategy(settings.getWinRarLocateStrategy());
 		    cfg.setRarExe(settings.getRarExe());
 		    cfg.setPackingSourceDeletionMode(settings.getPackingSourceDeletionMode());
 		    log.debug("Rebuit ProcessingConfig in {} ms", TimeUtil.durationMillis(start));
@@ -407,7 +408,7 @@ public class ProcessingController extends AbstractController
 	// File Transformation - Packing
 	private boolean				   packingEnabled;
 	private Path				   rarExe;
-	private boolean				   autoLocateWinRar;
+	private LocateStrategy			   winRarLocateStrategy;
 	private DeletionMode			   packingSourceDeletionMode;
 
 	// private
@@ -576,22 +577,22 @@ public class ProcessingController extends AbstractController
 	    this.rarExe = rarExe;
 	}
 
-	boolean isAutoLocateWinRar()
+	LocateStrategy getWinRarLocateStrategy()
 	{
-	    return autoLocateWinRar;
+	    return winRarLocateStrategy;
 	}
 
-	public void setAutoLocateWinRar(boolean autoLocateWinRar)
+	private void setWinRarLocateStrategy(LocateStrategy winRarLocateStrategy)
 	{
-	    this.autoLocateWinRar = autoLocateWinRar;
+	    this.winRarLocateStrategy = winRarLocateStrategy;
 	}
 
-	public DeletionMode getPackingSourceDeletionMode()
+	DeletionMode getPackingSourceDeletionMode()
 	{
 	    return packingSourceDeletionMode;
 	}
 
-	public void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode)
+	private void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode)
 	{
 	    this.packingSourceDeletionMode = packingSourceDeletionMode;
 	}
@@ -617,7 +618,7 @@ public class ProcessingController extends AbstractController
 		    .add("deleteSource", deleteSource)
 		    .add("packingEnabled", packingEnabled)
 		    .add("rarExe", rarExe)
-		    .add("autoLocateWinRar", autoLocateWinRar)
+		    .add("winRarLocateStrategy", winRarLocateStrategy)
 		    .add("packingSourceDeletionMode", packingSourceDeletionMode)
 		    .toString();
 	}
