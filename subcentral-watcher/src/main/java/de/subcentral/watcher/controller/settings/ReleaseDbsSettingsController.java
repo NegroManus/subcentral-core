@@ -12,6 +12,7 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.MetadataDbSettingEntry;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -61,7 +62,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
 	releaseDbsTableView.setItems(settings.releaseDbsProperty());
-
+	
 	releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 	releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().enabledProperty());
 
@@ -103,8 +104,11 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	releaseDbsAvailableColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsAvailableColumn));
 	releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().availableProperty());
 
-	updateAvailibities();
 	recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
+	
+	updateAvailibities();
+	// if the items change update the availibilities (happens on load of settings)
+	releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());
 
 	FxUtil.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
     }
