@@ -31,6 +31,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
+            <HBox HBox.hgrow="SOMETIMES" />
             <Button fx:id="restoreLastSavedBtn" mnemonicParsing="false" text="Restore last saved">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
@@ -39,7 +40,6 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <HBox HBox.hgrow="SOMETIMES" />
             <Button fx:id="restoreDefaultsBtn" mnemonicParsing="false" text="Restore defaults">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
