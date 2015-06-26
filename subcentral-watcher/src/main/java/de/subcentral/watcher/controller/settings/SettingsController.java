@@ -289,7 +289,7 @@ public class SettingsController extends AbstractController
 	return loadingPane;
     }
 
-    private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(Section section)
+    private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final Section section)
     {
 	return new Task<AbstractSettingsSectionController>()
 	{
@@ -302,7 +302,7 @@ public class SettingsController extends AbstractController
 	    @Override
 	    protected void succeeded()
 	    {
-		log.debug("Loaded new settings section. Controller={}", getValue());
+		log.debug("Loaded new settings section {}", section);
 		sectionRootPane.getChildren().setAll(getValue().getSectionRootPane());
 	    }
 
@@ -310,14 +310,14 @@ public class SettingsController extends AbstractController
 	    protected void failed()
 	    {
 		sectionRootPane.getChildren().clear();
-		log.error("Loading of settings section failed", getException());
+		log.error("Loading of settings section " + section + "failed", getException());
 	    }
 
 	    @Override
 	    protected void cancelled()
 	    {
 		sectionRootPane.getChildren().clear();
-		log.warn("Loading of settings section was cancelled");
+		log.warn("Loading of settings section {} was cancelled", section);
 	    }
 	};
     }
