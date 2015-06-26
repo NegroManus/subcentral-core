@@ -12,7 +12,7 @@ import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 import de.subcentral.watcher.settings.StandardizerSettingEntry;
 import javafx.beans.binding.BooleanBinding;
-import javafx.collections.ObservableList;
+import javafx.beans.property.ListProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -29,7 +29,7 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
     private static final Logger log = LogManager.getLogger(StandardizingSettingsController.class);
 
     // Model
-    private final ObservableList<StandardizerSettingEntry<?, ?>> standardizingRules;
+    private final ListProperty<StandardizerSettingEntry<?, ?>> standardizingRules;
 
     @FXML
     private GridPane						       standardizingSettingsPane;
@@ -50,7 +50,7 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
     @FXML
     private Button						       removeRuleButton;
 
-    public StandardizingSettingsController(SettingsController settingsController, ObservableList<StandardizerSettingEntry<?, ?>> standardizingRules)
+    public StandardizingSettingsController(SettingsController settingsController, ListProperty<StandardizerSettingEntry<?, ?>> standardizingRules)
     {
 	super(settingsController);
 	this.standardizingRules = standardizingRules;

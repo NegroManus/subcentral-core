@@ -3,6 +3,7 @@ package de.subcentral.watcher.settings;
 import org.apache.commons.configuration2.XMLConfiguration;
 
 import de.subcentral.watcher.model.ObservableObject;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -38,6 +39,10 @@ abstract class AbstractSubSettings extends ObservableObject
 
     public final void load(XMLConfiguration cfg)
     {
+	if (!Platform.isFxApplicationThread())
+	{
+	    throw new IllegalStateException("load() has to be executed on the FX-Application-Thread");
+	}
 	doLoad(cfg);
 	changed.set(false);
     }
@@ -46,6 +51,10 @@ abstract class AbstractSubSettings extends ObservableObject
 
     public final void save(XMLConfiguration cfg)
     {
+	if (!Platform.isFxApplicationThread())
+	{
+	    throw new IllegalStateException("The export of the runtime settings has to be executed on the FX-Application-Thread");
+	}
 	doSave(cfg);
 	changed.set(false);
     }

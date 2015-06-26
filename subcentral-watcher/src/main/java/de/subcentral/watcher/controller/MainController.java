@@ -5,16 +5,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import de.subcentral.core.util.NamedThreadFactory;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.controller.processing.ProcessingController;
+import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import de.subcentral.core.util.NamedThreadFactory;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.controller.processing.ProcessingController;
-import de.subcentral.watcher.controller.settings.SettingsController;
 
 public class MainController extends AbstractController
 {
@@ -88,7 +88,7 @@ public class MainController extends AbstractController
     private void initSettingsController() throws Exception
     {
 	settingsController = new SettingsController(this);
-	AnchorPane settingsPane = FxUtil.loadFromFxml("SettingsView.fxml", "SettingsView", Locale.ENGLISH, settingsController);
+	BorderPane settingsPane = FxUtil.loadFromFxml("SettingsView.fxml", "SettingsView", Locale.ENGLISH, settingsController);
 	AnchorPane.setTopAnchor(settingsPane, 0.0d);
 	AnchorPane.setRightAnchor(settingsPane, 0.0d);
 	AnchorPane.setBottomAnchor(settingsPane, 0.0d);

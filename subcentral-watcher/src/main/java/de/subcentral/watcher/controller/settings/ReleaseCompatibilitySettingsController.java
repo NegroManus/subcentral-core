@@ -57,7 +57,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 
 	compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.compatibilityEnabledProperty());
 
-	crossGroupCompatibilitiesTableView.setItems(settings.getCompatibilities());
+	crossGroupCompatibilitiesTableView.setItems(settings.compatibilitiesProperty());
 
 	crossGroupCompatibilitiesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilitiesEnabledColumn));
 	crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingEntry, Boolean> param) -> param.getValue().enabledProperty());

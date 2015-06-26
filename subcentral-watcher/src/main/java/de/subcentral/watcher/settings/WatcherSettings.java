@@ -19,7 +19,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.model.ObservableObject;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -76,13 +78,18 @@ public class WatcherSettings extends ObservableObject
 	FileHandler cfgFileHandler = new FileHandler(cfg);
 	cfgFileHandler.load(file);
 
-	load(cfg);
-
-	changed.set(false);
+	Platform.runLater(() -> {
+	    load(cfg);
+	    changed.set(false);
+	});
     }
 
     private void load(XMLConfiguration cfg)
     {
+	if (!Platform.isFxApplicationThread())
+	{
+	    throw new IllegalStateException("The update of the runtime settings has to be executed on the JavaFX Application Thread");
+	}
 	// Watch
 	updateWatchDirs(cfg);
 	updateInitialScan(cfg);
@@ -122,7 +129,7 @@ public class WatcherSettings extends ObservableObject
 	XMLConfiguration cfg = new IndentingXMLConfiguration();
 	cfg.setRootElementName("watcherConfig");
 
-	save(cfg);
+	FxUtil.runAndWait(() -> save(cfg));
 
 	FileHandler cfgFileHandler = new FileHandler(cfg);
 	cfgFileHandler.save(file.toFile());
@@ -131,6 +138,11 @@ public class WatcherSettings extends ObservableObject
 
     private void save(XMLConfiguration cfg)
     {
+	if (!Platform.isFxApplicationThread())
+	{
+	    throw new IllegalStateException("The export of the runtime settings has to be executed on the JavaFX Application Thread");
+	}
+
 	// Watch
 	for (Path path : watchDirectories)
 	{

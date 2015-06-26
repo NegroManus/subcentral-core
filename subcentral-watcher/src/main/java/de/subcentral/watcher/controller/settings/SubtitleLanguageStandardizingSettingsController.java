@@ -149,7 +149,7 @@ public class SubtitleLanguageStandardizingSettingsController extends AbstractSet
 		}
 	    };
 	});
-	textLangMappingsTableView.setItems(settings.getCustomLanguagePatterns());
+	textLangMappingsTableView.setItems(settings.customLanguagePatternsProperty());
 
 	addTextLangMappingBtn.setOnAction((ActionEvent evt) -> {
 	    Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditor();

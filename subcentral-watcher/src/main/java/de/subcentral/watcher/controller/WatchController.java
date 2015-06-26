@@ -8,6 +8,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import de.subcentral.fx.DirectoryWatchService;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.WatcherFxUtil;
+import de.subcentral.watcher.controller.settings.SettingsController;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
@@ -22,11 +27,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import de.subcentral.fx.DirectoryWatchService;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.WatcherFxUtil;
-import de.subcentral.watcher.controller.settings.SettingsController;
-import de.subcentral.watcher.settings.WatcherSettings;
 
 public class WatchController extends AbstractController
 {
@@ -168,7 +168,7 @@ public class WatchController extends AbstractController
 
 	watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFiles);
 	watchService.setExecutor(watchServiceExecutor);
-	WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.getWatchDirectories());
+	WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.watchDirectoriesProperty());
 	watchService.setInitialScan(WatcherSettings.INSTANCE.isInitialScan());
 	WatcherSettings.INSTANCE.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	    watchService.setInitialScan(newValue);

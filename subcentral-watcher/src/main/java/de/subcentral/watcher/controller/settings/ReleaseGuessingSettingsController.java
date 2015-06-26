@@ -61,7 +61,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 	enableGuessingCheckBox.selectedProperty().bindBidirectional(settings.guessingEnabledProperty());
 
 	// Standard releases
-	standardReleasesTableView.setItems(settings.getStandardReleases());
+	standardReleasesTableView.setItems(settings.standardReleasesProperty());
 
 	standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
 	    return FxUtil.constantBinding(Tag.listToString(param.getValue().getRelease().getTags()));

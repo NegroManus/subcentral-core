@@ -75,8 +75,11 @@ public class ProcessingSettings extends AbstractSubSettings
 		standardReleases,
 		compatibilityEnabled,
 		compatibilities,
+		SettingsUtil.observeEnablementOfSettingEntries(compatibilities),
 		preMetadataDbStandardizers,
+		SettingsUtil.observeEnablementOfSettingEntries(preMetadataDbStandardizers),
 		postMetadataStandardizers,
+		SettingsUtil.observeEnablementOfSettingEntries(postMetadataStandardizers),
 		subtitleLanguageSettings,
 		namingParameters,
 		targetDir,
@@ -228,19 +231,19 @@ public class ProcessingSettings extends AbstractSubSettings
 	this.compatibilitiesProperty().set(compatibilities);
     }
 
-    public final ListProperty<StandardizerSettingEntry<?, ?>> parsedStandardizersProperty()
+    public final ListProperty<StandardizerSettingEntry<?, ?>> preMetadataDbStandardizersProperty()
     {
 	return this.preMetadataDbStandardizers;
     }
 
     public final ObservableList<StandardizerSettingEntry<?, ?>> getPreMetadataDbStandardizers()
     {
-	return this.parsedStandardizersProperty().get();
+	return this.preMetadataDbStandardizersProperty().get();
     }
 
     public final void setPreMetadataDbStandardizingRules(final ObservableList<StandardizerSettingEntry<?, ?>> parsedStandardizingRules)
     {
-	this.parsedStandardizersProperty().set(parsedStandardizingRules);
+	this.preMetadataDbStandardizersProperty().set(parsedStandardizingRules);
     }
 
     public final ListProperty<StandardizerSettingEntry<?, ?>> postMetadataStandardizersProperty()

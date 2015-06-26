@@ -51,7 +51,7 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 	filenamePatternsTextField.textProperty().bindBidirectional(settings.filenamePatternsProperty());
 
 	// Parsing services
-	parsingServicesTableView.setItems(settings.getFilenameParsingServices());
+	parsingServicesTableView.setItems(settings.filenameParsingServicesProperty());
 	parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 	parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, Boolean> param) -> param.getValue().enabledProperty());
 	parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.constantBinding(param.getValue().getValue().getDomain()));

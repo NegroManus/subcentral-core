@@ -21,13 +21,17 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.settings.WatcherSettings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TreeCell;
@@ -66,6 +70,14 @@ public class SettingsController extends AbstractController
     private TreeView<Section> sectionSelectionTreeView;
     @FXML
     private AnchorPane	      sectionRootPane;
+    @FXML
+    private Button	      saveBtn;
+    @FXML
+    private Button	      restoreLastSavedBtn;
+    @FXML
+    private Button	      restoreDefaultsBtn;
+
+    private BooleanProperty defaultSettings = new SimpleBooleanProperty();
 
     public SettingsController(MainController mainController) throws Exception
     {
@@ -127,7 +139,8 @@ public class SettingsController extends AbstractController
 	Section standardizingPreMetadataDbSection = new Section(STANDARDIZING_PRE_METADATADB_SECTION);
 	standardizingPreMetadataDbSection.setLabel("Pre metadata database");
 	standardizingPreMetadataDbSection.setImage("exchange_16.png");
-	standardizingPreMetadataDbSection.setControllerConstructor(() -> new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().getPreMetadataDbStandardizers()));
+	standardizingPreMetadataDbSection
+		.setControllerConstructor(() -> new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().preMetadataDbStandardizersProperty()));
 	standardizingPreMetadataDbSection.setFxml("StandardizingSettingsView.fxml");
 	standardizingPreMetadataDbSection.setResourceBundle("PreMetadataDbStandardizingView");
 	ctrls.put(standardizingPreMetadataDbSection.getName(), standardizingPreMetadataDbSection);
@@ -135,7 +148,8 @@ public class SettingsController extends AbstractController
 	Section standardizingPostMetadataDbSection = new Section(STANDARDIZING_POST_METADATADB_SECTION);
 	standardizingPostMetadataDbSection.setLabel("Post metadata database");
 	standardizingPostMetadataDbSection.setImage("exchange_16.png");
-	standardizingPostMetadataDbSection.setControllerConstructor(() -> new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().getPostMetadataStandardizers()));
+	standardizingPostMetadataDbSection
+		.setControllerConstructor(() -> new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().postMetadataStandardizersProperty()));
 	standardizingPostMetadataDbSection.setFxml("StandardizingSettingsView.fxml");
 	standardizingPostMetadataDbSection.setResourceBundle("PostMetadataDbStandardizingView");
 	ctrls.put(standardizingPostMetadataDbSection.getName(), standardizingPostMetadataDbSection);
@@ -169,6 +183,7 @@ public class SettingsController extends AbstractController
     {
 	loadSettings();
 	initSettingsTree();
+	initBottomButtonPane();
     }
 
     private void initSettingsTree()
@@ -251,6 +266,108 @@ public class SettingsController extends AbstractController
 	sectionSelectionTreeView.getSelectionModel().selectFirst();
     }
 
+    private void initBottomButtonPane()
+    {
+	// !(changed || default)
+	saveBtn.disableProperty().bind(WatcherSettings.INSTANCE.changedProperty().or(defaultSettings).not());
+	saveBtn.setOnAction((ActionEvent e) -> {
+	    mainController.getCommonExecutor().submit(new Task<Void>()
+	    {
+		@Override
+		protected Void call() throws Exception
+		{
+		    saveSettings();
+		    return null;
+		}
+	    });
+	});
+
+	restoreLastSavedBtn.disableProperty().bind(WatcherSettings.INSTANCE.changedProperty().not());
+	restoreLastSavedBtn.setOnAction((ActionEvent e) -> {
+	    // sectionRootPane.getChildren().setAll(createLoadingIndicator());
+	    // for (Section s : sections.values())
+	    // {
+	    // s.resetController();
+	    // }
+	    // mainController.getCommonExecutor().submit(new Task<Void>()
+	    // {
+	    // @Override
+	    // protected Void call() throws Exception
+	    // {
+	    // loadSettings();
+	    // return null;
+	    // }
+	    //
+	    // @Override
+	    // protected void succeeded()
+	    // {
+	    // int selected = sectionSelectionTreeView.getSelectionModel().getSelectedIndex();
+	    // sectionSelectionTreeView.getSelectionModel().clearSelection();
+	    // sectionSelectionTreeView.getSelectionModel().select(selected);
+	    // }
+	    //
+	    // @Override
+	    // protected void failed()
+	    // {
+	    // sectionRootPane.getChildren().clear();
+	    // }
+	    // });
+
+	    try
+	    {
+		loadSettings();
+	    }
+	    catch (Exception e1)
+	    {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	    }
+	});
+
+	// (defaultLoaded && !changed)
+	restoreDefaultsBtn.disableProperty().bind(defaultSettings.and(WatcherSettings.INSTANCE.changedProperty().not()));
+	restoreDefaultsBtn.setOnAction((ActionEvent e) -> {
+	    // sectionRootPane.getChildren().setAll(createLoadingIndicator());
+	    // for (Section s : sections.values())
+	    // {
+	    // s.resetController();
+	    // }
+	    // mainController.getCommonExecutor().submit(new Task<Void>()
+	    // {
+	    // @Override
+	    // protected Void call() throws Exception
+	    // {
+	    // loadDefaultSettings();
+	    // return null;
+	    // }
+	    //
+	    // @Override
+	    // protected void succeeded()
+	    // {
+	    // int selected = sectionSelectionTreeView.getSelectionModel().getSelectedIndex();
+	    // sectionSelectionTreeView.getSelectionModel().clearSelection();
+	    // sectionSelectionTreeView.getSelectionModel().select(selected);
+	    // }
+	    //
+	    // @Override
+	    // protected void failed()
+	    // {
+	    // sectionRootPane.getChildren().clear();
+	    // }
+	    // });
+
+	    try
+	    {
+		loadDefaultSettings();
+	    }
+	    catch (Exception e1)
+	    {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	    }
+	});
+    }
+
     private void showSection(String sectionName)
     {
 	Section section = sections.get(sectionName);
@@ -302,7 +419,7 @@ public class SettingsController extends AbstractController
 	    @Override
 	    protected void succeeded()
 	    {
-		log.debug("Loaded new settings section {}", section);
+		log.debug("Loaded settings section {}", section);
 		sectionRootPane.getChildren().setAll(getValue().getSectionRootPane());
 	    }
 
@@ -345,8 +462,7 @@ public class SettingsController extends AbstractController
 	{
 	    try
 	    {
-		log.debug("Loading custom settings from {}", settingsFile);
-		WatcherSettings.INSTANCE.load(settingsFile);
+		loadCustomSettings(settingsFile);
 		return;
 	    }
 	    catch (Exception e)
@@ -364,17 +480,25 @@ public class SettingsController extends AbstractController
     public void loadDefaultSettings() throws Exception
     {
 	WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE));
+	defaultSettings.set(true);
+    }
+
+    public void loadCustomSettings(Path settingsFile) throws Exception
+    {
+	log.debug("Loading custom settings from {}", settingsFile);
+	WatcherSettings.INSTANCE.load(settingsFile);
+	defaultSettings.set(false);
     }
 
     private void confirmSaveSettings() throws ConfigurationException, IOException
     {
-	if (WatcherSettings.INSTANCE.getChanged())
+	if (defaultSettings.get() || WatcherSettings.INSTANCE.getChanged())
 	{
 	    Alert alert = new Alert(AlertType.CONFIRMATION);
 	    // alert.getDialogPane().setPrefWidth(600d);
 	    alert.setTitle("Save watcher settings?");
 	    alert.setHeaderText("Save watcher settings?");
-	    alert.setContentText("The settings have changed. Do you want to save them?");
+	    alert.setContentText("You have unsaved changes in the settings. Do you want to save them?");
 	    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 	    Optional<ButtonType> result = alert.showAndWait();
@@ -392,6 +516,7 @@ public class SettingsController extends AbstractController
     public void saveSettings() throws ConfigurationException
     {
 	WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE));
+	defaultSettings.set(false);
     }
 
     @Override
@@ -472,6 +597,15 @@ public class SettingsController extends AbstractController
 
 	public void resetController()
 	{
+	    try
+	    {
+		controller.shutdown();
+	    }
+	    catch (Exception e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
 	    controller = null;
 	}
 

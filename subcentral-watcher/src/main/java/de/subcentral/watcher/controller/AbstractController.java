@@ -3,12 +3,11 @@ package de.subcentral.watcher.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.fxml.FXML;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.TimeUtil;
+import javafx.fxml.FXML;
 
 public abstract class AbstractController
 {
