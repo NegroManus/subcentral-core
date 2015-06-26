@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -264,7 +263,7 @@ public class SettingsController extends AbstractController
 	    else
 	    {
 		sectionRootPane.getChildren().setAll(createLoadingIndicator());
-		mainController.getCommonExecutor().submit(createLoadSectionControllerTask(section::loadController));
+		mainController.getCommonExecutor().submit(createLoadSectionControllerTask(section));
 	    }
 	}
 	else
@@ -290,14 +289,14 @@ public class SettingsController extends AbstractController
 	return loadingPane;
     }
 
-    private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final Callable<AbstractSettingsSectionController> ctrlLoader)
+    private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(Section section)
     {
 	return new Task<AbstractSettingsSectionController>()
 	{
 	    @Override
 	    protected AbstractSettingsSectionController call() throws Exception
 	    {
-		return ctrlLoader.call();
+		return section.loadController();
 	    }
 
 	    @Override
