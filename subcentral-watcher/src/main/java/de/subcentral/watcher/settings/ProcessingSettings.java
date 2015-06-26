@@ -88,7 +88,7 @@ public class ProcessingSettings extends AbstractSubSettings
     }
 
     @Override
-    protected String getKey()
+    public String getKey()
     {
 	return "processing";
     }
@@ -369,7 +369,7 @@ public class ProcessingSettings extends AbstractSubSettings
     }
 
     @Override
-    protected void load(XMLConfiguration cfg)
+    protected void doLoad(XMLConfiguration cfg)
     {
 	// FileParsing
 	loadFilenamePatterns(cfg);
@@ -506,7 +506,7 @@ public class ProcessingSettings extends AbstractSubSettings
     }
 
     @Override
-    protected void save(XMLConfiguration cfg)
+    protected void doSave(XMLConfiguration cfg)
     {
 	// FileParsing
 	cfg.addProperty("parsing.filenamePatterns", getFilenamePatterns());

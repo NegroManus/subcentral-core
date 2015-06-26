@@ -69,13 +69,13 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
     }
 
     @Override
-    protected String getKey()
+    public String getKey()
     {
 	return "standardizing.subtitleLanguage";
     }
 
     @Override
-    protected void load(XMLConfiguration cfg)
+    protected void doLoad(XMLConfiguration cfg)
     {
 	String key = getKey();
 
@@ -113,7 +113,7 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
     }
 
     @Override
-    protected void save(XMLConfiguration cfg)
+    protected void doSave(XMLConfiguration cfg)
     {
 	String key = getKey();
 
