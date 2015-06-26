@@ -27,7 +27,6 @@ import de.subcentral.core.metadata.db.MetadataDbQueryException;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.RegularMedia;
-import de.subcentral.core.metadata.media.RegularMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Group;
@@ -268,22 +267,32 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
      * Nuked:
      * 
      * <pre>
-     * <div class="content"> <div class="post-list single"> <div class="pl-body"> <div class="post block"> <div class="p-head block-head"> <div class="p-c p-c-time"
-     * > <span class="p-time" data="1320916570" title="2011-11-10 @ 09:16:10 ( UTC )"><span class='t-d'>2011-Nov-10</span></span> </div> <div class="p-c p-c-cat"> <span class="p-cat c-5 c-6 "
-     * ><a href="http://predb.me?cats=tv" class="c-adult">TV</a><a href="http://predb.me?cats=tv-sd" class="c-child">SD</a></span> </div> <div class="p-c p-c-title">
-     * <h1><span class="p-title">Psych.S06E05.HDTV.XviD-P0W4</span></h1> </div> </div> <div class="p-body"> <div alt='' class='pb-img placeholder'></div> <div class="post-body-table img-adjacent"
-     * > <div class="pb-r "> <div class="pb-c  pb-l">Rlsname</div> <div class="pb-c  pb-d">Psych.S06E05.HDTV.XviD-P0W4</div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Group</div> <div class=
-     * "pb-c  pb-d"> <a class='term t-g' href='http://predb.me/?group=p0w4'>P0W4</a> </div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Tags</div> <div class="pb-c  pb-d"
-     * > <a class='term' href='http://predb.me/?tag=aired'>Aired</a>, <a class='term' href='http://predb.me/?tag=xvid'>XviD</a> </div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Size</div>
-     * <div class="pb-c  pb-d"> 349.3 MB <small>in</small> 25 <small>files</small> </div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Nukes</div> <div class="pb-c  pb-d">
-     * <ol class='nuke-list'> <li value='1'><span class='nuked'>contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></li> </ol> </div> </div> <div class="pb-r ">
-     * <div class="pb-c  pb-l pb-s"></div> <div class="pb-c  pb-d pb-s"></div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Title</div> <div class="pb-c  pb-d"
-     * > <a class='term t-t' href='http://predb.me/?title=psych'>Psych</a> </div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Episode</div> <div class="pb-c  pb-d"> (
-     * <a class='term t-s' href='http://predb.me/?season=6&title=psych'>S06</a> - <a class='term t-e' href='http://predb.me/?episode=5&season=6&title=psych'>E05</a> ) </div> </div> <div class="pb-r "
-     * > <div class="pb-c  pb-l pb-s"></div> <div class="pb-c  pb-d pb-s"></div> </div> <div class="pb-r "> <div class="pb-c  pb-l pb-e">Links</div> <div class="pb-c  pb-d pb-e"
-     * > <small>&middot;&middot;&middot;</small> </div> </div> <div class="pb-r pb-search"> <div class="pb-c  pb-l">Search</div> <div class="pb-c  pb-d"
-     * > <a rel='nofollow' target='_blank' class='ext-link' href='http://thepiratebay.se/search/Psych.S06E05.HDTV.XviD-P0W4'>Torrent</a>, <a rel='nofollow' target='_blank' class='ext-link'
-     * href='http://nzbindex.nl/search/?q=Psych.S06E05.HDTV.XviD-P0W4'>Usenet</a> </div> </div> </div> </div> </div> </div> </div> </div> </pre>
+     * <div class="content"> <div class="post-list single"> <div class="pl-body"> <div class="post block"> <div class="p-head block-head"> <div class=
+     * "p-c p-c-time" > <span class="p-time" data="1320916570" title=
+     * "2011-11-10 @ 09:16:10 ( UTC )" ><span class='t-d'>2011-Nov-10</span></span> </div> <div class="p-c p-c-cat"> <span class=
+     * "p-cat c-5 c-6 " ><a href="http://predb.me?cats=tv" class="c-adult">TV</a>
+     * <a href="http://predb.me?cats=tv-sd" class="c-child">SD</a></span> </div> <div class="p-c p-c-title">
+     * <h1><span class="p-title">Psych.S06E05.HDTV.XviD-P0W4</span></h1> </div> </div>
+     * <div class="p-body"> <div alt='' class='pb-img placeholder'></div> <div class="post-body-table img-adjacent" > <div class="pb-r "> <div class=
+     * "pb-c  pb-l">Rlsname</div> <div class="pb-c  pb-d">Psych.S06E05.HDTV.XviD-P0W4</div> </div> <div class="pb-r "> <div class=
+     * "pb-c  pb-l" >Group</div> <div class= "pb-c  pb-d"> <a class='term t-g' href='http://predb.me/?group=p0w4'>P0W4</a> </div> </div> <div class=
+     * "pb-r " > <div class="pb-c  pb-l">Tags</div> <div class=
+     * "pb-c  pb-d" > <a class='term' href='http://predb.me/?tag=aired'>Aired</a>, <a class='term' href='http://predb.me/?tag=xvid'>XviD</a> </div>
+     * </div> <div class="pb-r "> <div class="pb-c  pb-l">Size</div> <div class="pb-c  pb-d"> 349.3 MB <small>in</small> 25
+     * <small>files</small> </div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Nukes</div> <div class="pb-c  pb-d">
+     * <ol class='nuke-list'> <li value='1'><span class='nuked'>contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></li> </ol> </div> </div> <div
+     * class="pb-r ">
+     * <div class="pb-c  pb-l pb-s"></div> <div class="pb-c  pb-d pb-s"></div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Title</div>
+     * <div class="pb-c  pb-d" > <a class='term t-t' href='http://predb.me/?title=psych'>Psych</a> </div> </div> <div class="pb-r "> <div class=
+     * "pb-c  pb-l">Episode</div> <div class="pb-c  pb-d"> (
+     * <a class='term t-s' href='http://predb.me/?season=6&title=psych'>S06</a> - <a class='term t-e'
+     * href='http://predb.me/?episode=5&season=6&title=psych'>E05</a> ) </div> </div> <div class="pb-r " > <div class="pb-c  pb-l pb-s"></div>
+     * <div class="pb-c  pb-d pb-s"></div> </div> <div class="pb-r "> <div class="pb-c  pb-l pb-e">Links</div> <div class=
+     * "pb-c  pb-d pb-e" > <small>&middot;&middot;&middot;</small> </div> </div> <div class="pb-r pb-search"> <div class="pb-c  pb-l">Search</div>
+     * <div class=
+     * "pb-c  pb-d" > <a rel='nofollow' target='_blank' class='ext-link' href='http://thepiratebay.se/search/Psych.S06E05.HDTV.XviD-P0W4'>Torrent</a>,
+     * <a rel='nofollow' target='_blank' class='ext-link' href='http://nzbindex.nl/search/?q=Psych.S06E05.HDTV.XviD-P0W4'>Usenet</a> </div> </div>
+     * </div> </div> </div> </div> </div> </div> </pre>
      * 
      * @param doc
      * @param rls
@@ -350,9 +359,10 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		    /**
 		     * <pre>
 		     * <div class="pb-r "> <div class="pb-c  pb-l">Nukes</div> <div class="pb-c  pb-d">
-		     * <ol class='nuke-list'> <li value='2'><span class='nuked'>get.dirfix</span> <small class='nuke-time' data='1405980397.037'>- <span class='t-n-d'>2.8</span> <span
-		     * class='t-u'>days</span></small></li> <li value='1'><span class='nuked'>mislabeled.2014</span> <small class='nuke-time' data='1405980000.098'>- <span class='t-n-d'>2.8</span>
-		     * <span class='t-u'>days</span></small></li> </ol> </div> </div> </div> </pre>
+		     * <ol class='nuke-list'> <li value='2'><span class='nuked'>get.dirfix</span> <small class='nuke-time' data='1405980397.037'>-
+		     * <span class='t-n-d'>2.8</span> <span class='t-u'>days</span></small></li> <li value='1'><span
+		     * class='nuked'>mislabeled.2014</span> <small class='nuke-time' data='1405980000.098'>- <span class='t-n-d'>2.8</span> <span
+		     * class='t-u'>days</span></small></li> </ol> </div> </div> </div> </pre>
 		     */
 
 		    Element nukeListOl = valueDiv.getElementsByClass("nuke-list").first();
@@ -392,8 +402,9 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		    /**
 		     * <pre>
 		     * <div class="pb-c  pb-l">Episode</div> <div class="pb-c  pb-d"> (
-		     * <a class='term t-s' href='http://predb.me/?season=1&title=icarly'>S01</a> - <a class='term t-e' href='http://predb.me/?episode=10&season=1&title=icarly'>E10</a> ) - <a
-		     * rel='nofollow' target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly/episodes/626951'>iWant a World Record</a> - <small class='airdate'>2007-11-17</small> </div>
+		     * <a class='term t-s' href='http://predb.me/?season=1&title=icarly'>S01</a> - <a class='term t-e'
+		     * href='http://predb.me/?episode=10&season=1&title=icarly'>E10</a> ) - <a rel='nofollow' target='_blank' class='ext-link'
+		     * href='http://www.tvrage.com/iCarly/episodes/626951'>iWant a World Record</a> - <small class='airdate'>2007-11-17</small> </div>
 		     * </pre>
 		     */
 		    Series series = new Series(mediaTitle);
@@ -441,7 +452,8 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		{
 		    /**
 		     * <pre>
-		     * <div class="pb-c  pb-l">Genres</div> <div class="pb-c  pb-d"> <a class='term t-gn' href='http://predb.me/?genre=trance'>Trance</a> </div> </div> </pre>
+		     * <div class="pb-c  pb-l">Genres</div> <div class=
+		     * "pb-c  pb-d" > <a class='term t-gn' href='http://predb.me/?genre=trance'>Trance</a> </div> </div> </pre>
 		     */
 		    Elements genreAnchors = valueDiv.getElementsByTag("a");
 		    genres = new ArrayList<>(genreAnchors.size());
@@ -454,9 +466,9 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		{
 		    /**
 		     * <pre>
-		     * <div class="pb-c  pb-l">Links</div> <div class="pb-c  pb-d"
-		     * > <a rel='nofollow' target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly'>TVRage</a>, <a rel='nofollow' target='_blank' class='ext-link'
-		     * href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a> </div> </pre>
+		     * <div class="pb-c  pb-l">Links</div> <div class=
+		     * "pb-c  pb-d" > <a rel='nofollow' target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly'>TVRage</a>, <a
+		     * rel='nofollow' target='_blank' class='ext-link' href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a> </div> </pre>
 		     */
 		    Elements extLinksAnchors = valueDiv.select("a.ext-link");
 		    seriesInfoUrls = new ArrayList<>(extLinksAnchors.size());
@@ -482,15 +494,15 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	    }
 	    else if (section.startsWith("Music"))
 	    {
-		RegularMedia Media = new RegularMedia(mediaTitle);
-		Media.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
-		media = Media;
+		RegularMedia regularMedia = new RegularMedia(mediaTitle);
+		regularMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
+		media = regularMedia;
 	    }
 	    else if (section.startsWith("TV"))
 	    {
-		RegularMedia Media = new RegularMedia(mediaTitle);
-		Media.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
-		media = Media;
+		RegularMedia regularMedia = new RegularMedia(mediaTitle);
+		regularMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+		media = regularMedia;
 	    }
 	    else
 	    {
