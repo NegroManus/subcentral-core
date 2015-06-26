@@ -204,6 +204,11 @@ public class FxUtil
 	};
     }
 
+    public static boolean isJavaFxLauncherThread()
+    {
+	return Thread.currentThread().getName().equals("JavaFX-Launcher");
+    }
+
     public static <T> TextFormatter<T> bindPropertyToTextField(TextField txtFld, Property<T> prop, StringConverter<T> converter)
     {
 	TextFormatter<T> formatter = new TextFormatter<T>(converter);

@@ -309,7 +309,7 @@ public class SettingsController extends AbstractController
 			settingsSectionRootPane.getChildren().setAll(createLoadingIndicatorNode());
 			Task<AbstractSettingsSectionController> loadTask = createLoadSectionControllerTask(ctrlGetter);
 			// if still on application startup, do not load in background thread
-			if (Thread.currentThread().getName().equals("JavaFX-Launcher"))
+			if (FxUtil.isJavaFxLauncherThread())
 			{
 			    loadTask.run();
 			}
@@ -373,7 +373,7 @@ public class SettingsController extends AbstractController
 	WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE));
     }
 
-    private void maySaveSettings() throws ConfigurationException, IOException
+    private void confirmSaveSettings() throws ConfigurationException, IOException
     {
 	if (WatcherSettings.INSTANCE.getChanged())
 	{
@@ -572,7 +572,7 @@ public class SettingsController extends AbstractController
     @Override
     public void shutdown() throws Exception
     {
-	maySaveSettings();
+	confirmSaveSettings();
     }
 
     public static class SettingsSection
