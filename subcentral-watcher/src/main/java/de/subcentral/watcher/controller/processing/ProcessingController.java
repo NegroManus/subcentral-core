@@ -52,7 +52,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
@@ -66,7 +65,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
@@ -258,7 +256,7 @@ public class ProcessingController extends AbstractController {
 	}
 
 	/**
-	 * Handle Drag & Drop (drop events).
+	 * Set up handling of Drag & Drop events (drop events on processing tree table).
 	 */
 	private void initProcessingTreeTableDnD() {
 		final Border defaultBorder = processingTreeTable.getBorder();
