@@ -62,7 +62,7 @@ public class Migration
     // {
     // int attachmentId = 10527;
     // SubCentralApi service = new SubCentralHttpApi();
-    // service.login("NegroManus", "sc-don13duck-");
+    // service.login("NegroManus", "xxx");
     // service.downloadAttachment(attachmentId, Paths.get(System.getProperty("user.home"), "Downloads", "!sc-src"));
     // // service.logout();
     // }
