@@ -2,28 +2,39 @@ package de.subcentral.watcher.controller.processing;
 
 import java.nio.file.Path;
 
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 
 public interface ProcessingItem
 {
-    StringBinding nameBinding();
+    ReadOnlyStringProperty nameProperty();
 
-    String getName();
+    default String getName()
+    {
+	return nameProperty().get();
+    }
 
     ListProperty<Path> getFiles();
 
     ReadOnlyStringProperty statusProperty();
 
-    String getStatus();
+    default String getStatus()
+    {
+	return statusProperty().get();
+    }
 
     ReadOnlyDoubleProperty progressProperty();
 
-    double getProgress();
+    default double getProgress()
+    {
+	return progressProperty().get();
+    }
 
-    StringBinding infoBinding();
+    ReadOnlyStringProperty infoProperty();
 
-    String getInfo();
+    default String getInfo()
+    {
+	return infoProperty().get();
+    }
 }

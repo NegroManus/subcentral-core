@@ -128,7 +128,7 @@
 	</naming>
 
 	<fileTransformation>
-		<targetDir>!VO</targetDir>
+		<targetDir>${sys:user.home}/Downloads/!VO</targetDir>
 		<deleteSource>false</deleteSource>
 		<packing enabled="true">
 			<sourceDeletionMode>DELETE</sourceDeletionMode>

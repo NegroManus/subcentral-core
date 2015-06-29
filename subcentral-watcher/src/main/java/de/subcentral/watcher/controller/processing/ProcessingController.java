@@ -1,6 +1,8 @@
 package de.subcentral.watcher.controller.processing;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
@@ -52,6 +54,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
@@ -82,7 +85,6 @@ public class ProcessingController extends AbstractController
     private final Map<String, Object>	    namingParametersForFiltering = initNamingParametersForFiltering();
 
     private ExecutorService processingExecutor;
-    private ProcessingTask  processingTask;
 
     // View properties
     // ProcessingTree
@@ -230,7 +232,7 @@ public class ProcessingController extends AbstractController
 	processingTreeTable.setRoot(new TreeItem<>());
 
 	// init columns
-	nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().nameBinding());
+	nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().nameProperty());
 	filesColumn.setCellFactory((TreeTableColumn<ProcessingItem, ObservableList<Path>> param) -> {
 	    return new TreeTableCell<ProcessingItem, ObservableList<Path>>()
 	    {
@@ -246,9 +248,9 @@ public class ProcessingController extends AbstractController
 		    else
 		    {
 			StringJoiner joiner = new StringJoiner(", ");
-			for (Path path : item)
+			for (Path file : item)
 			{
-			    joiner.add(IOUtil.splitIntoFilenameAndExtension(path.getFileName().toString())[1]);
+			    joiner.add(IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1]);
 			}
 			setText(joiner.toString().replace(".", "").toUpperCase());
 		    }
@@ -260,7 +262,7 @@ public class ProcessingController extends AbstractController
 	statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().statusProperty());
 	progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
 	progressColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, Double> features) -> features.getValue().getValue().progressProperty().asObject());
-	infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().infoBinding());
+	infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().infoProperty());
 
 	initProcessingTreeTableDnD();
     }
@@ -361,24 +363,31 @@ public class ProcessingController extends AbstractController
 	    protected boolean computeValue()
 	    {
 		TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
-		if (selectedItem != null && selectedItem.getValue() instanceof SubtitleTargetProcessingItem)
+		if (selectedItem != null && selectedItem.getValue() instanceof ProcessingResult)
 		{
-		    SubtitleTargetProcessingItem subTargetItem = (SubtitleTargetProcessingItem) selectedItem.getValue();
+		    ProcessingResult subTargetItem = (ProcessingResult) selectedItem.getValue();
 		    return subTargetItem.getRelease().getFurtherInfoLinks().isEmpty();
 		}
 		return true;
 	    }
 	});
 	releaseInfoBtn.setOnAction(evt -> {
-	    SubtitleTargetProcessingItem item = (SubtitleTargetProcessingItem) processingTreeTable.getSelectionModel().getSelectedItem().getValue();
-	    FxUtil.browse(item.getRelease().getFurtherInfoLinks().get(0), mainController.getCommonExecutor());
+	    TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
+	    if (selectedItem != null && selectedItem.getValue() instanceof ProcessingResult)
+	    {
+		ProcessingResult item = (ProcessingResult) selectedItem.getValue();
+		FxUtil.browse(item.getRelease().getFurtherInfoLinks().get(0), mainController.getCommonExecutor());
+	    }
 	});
 
 	clearBtn.disableProperty().bind(Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0));
-	clearBtn.setOnAction(evt -> {
+	clearBtn.setOnAction(evt ->
+
+	{
 	    cancelAllTasks();
-	    processingTreeTable.getRoot().getChildren().clear();
+	    // processingTreeTable.getRoot().getChildren().clear();
 	});
+
     }
 
     // getter
@@ -429,26 +438,79 @@ public class ProcessingController extends AbstractController
     public void handleFile(Path file)
     {
 	Platform.runLater(() -> {
-	    if (processingTask != null && processingTask.isRunning() && processingTask.getSourceFile().equals(file))
+	    if (!filter(file))
 	    {
-		log.warn("Rejected {} because that file is already processed at the moment", file);
+		return;
+	    }
+	    if (alreadyInProcess(file))
+	    {
+		log.info("Rejecting {} because that file is already in processing", file);
 		return;
 	    }
 
-	    if (processingExecutor == null || processingExecutor.isShutdown())
-	    {
-		processingExecutor = createProcessingExecutor();
-	    }
-	    processingTask = new ProcessingTask(file, this);
-	    processingExecutor.execute(processingTask);
+	    TreeItem<ProcessingItem> taskItem = new TreeItem<>();
+	    ProcessingTask newTask = new ProcessingTask(file, this, taskItem);
+	    taskItem.setValue(newTask);
+	    processingTreeTable.getRoot().getChildren().add(taskItem);
+
+	    getProcessingExecutor().execute(newTask);
 	});
+    }
+
+    private boolean filter(Path file)
+    {
+	if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS))
+	{
+	    log.debug("Filtered out {} because it is no regular file", file);
+	    return false;
+	}
+
+	Pattern pattern = UserPattern.parseSimplePatterns(WatcherSettings.INSTANCE.getProcessingSettings().getFilenamePatterns());
+	if (pattern == null)
+	{
+	    log.debug("Filtered out {} because no pattern is specified", file);
+	    return false;
+	}
+	if (!pattern.matcher(file.getFileName().toString()).matches())
+	{
+	    log.debug("Filtered out {} because its name does not match the required pattern {}", file, pattern);
+	    return false;
+	}
+
+	return true;
+    }
+
+    /**
+     * @return <code>true</code> if file is already queued for or in process. <code>false</code> otherwise
+     */
+    private boolean alreadyInProcess(Path file)
+    {
+	for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
+	{
+	    ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
+	    if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING) && task.getSourceFile().equals(file))
+	    {
+		return true;
+	    }
+	}
+	return false;
+    }
+
+    private ExecutorService getProcessingExecutor()
+    {
+	if (processingExecutor == null || processingExecutor.isShutdown())
+	{
+	    processingExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
+	}
+	return processingExecutor;
     }
 
     public void cancelAllTasks()
     {
-	if (processingExecutor != null)
+	for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
 	{
-	    processingExecutor.shutdownNow();
+	    ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
+	    task.cancel(true);
 	}
     }
 
@@ -457,14 +519,9 @@ public class ProcessingController extends AbstractController
     {
 	if (processingExecutor != null)
 	{
-	    processingExecutor.shutdown();
+	    processingExecutor.shutdownNow();
 	    processingExecutor.awaitTermination(30, TimeUnit.SECONDS);
 	}
-    }
-
-    private ExecutorService createProcessingExecutor()
-    {
-	return Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
     }
 
     // package private

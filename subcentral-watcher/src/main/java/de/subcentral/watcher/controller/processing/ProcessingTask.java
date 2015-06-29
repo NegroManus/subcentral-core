@@ -2,9 +2,7 @@ package de.subcentral.watcher.controller.processing;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Level;
@@ -50,44 +47,63 @@ import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.watcher.controller.processing.ProcessingController.ProcessingConfig;
-import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.CompatibilityProcessInfo;
-import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.GuessingProcessInfo;
-import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.ProcessInfo;
-import de.subcentral.watcher.controller.processing.SubtitleTargetProcessingItem.ProcessInfo.Method;
+import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibilityMethodInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.MatchingMethodInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.MethodInfo;
 import javafx.application.Platform;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TreeItem;
 
-public class ProcessingTask extends Task<Void>
+public class ProcessingTask extends Task<Void>implements ProcessingItem
 {
     private static final Logger log = LogManager.getLogger(ProcessingTask.class);
 
-    private final Path		       sourceFile;
-    private final ProcessingController processingController;
-    // is loaded on start of the task
-    private ProcessingConfig	       config;
-    private SourceProcessingItem       sourceProcessingItem;
-    private TreeItem<ProcessingItem>   sourceTreeItem;
+    private final ProcessingController controller;
 
-    // private SourceProcessingItem srcItem;
-    // private TreeItem<ProcessingItem> srcTreeItem;
+    // for ProcessingItem implementation
+    private final ListProperty<Path> files;
+    private final StringProperty     info = new SimpleStringProperty(this, "info");
+
+    // is loaded on start of the task
+    private ProcessingConfig   config;
+    private SubtitleAdjustment sourceObject;
+    private SubtitleAdjustment targetObject;
+
+    // TreeTableView
+    private final TreeItem<ProcessingItem> taskTreeItem;
+
+    private ListProperty<ProcessingResult> results = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
 
     // package private
-    ProcessingTask(Path sourceFile, ProcessingController processingController)
+    ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
     {
-	this.sourceFile = Objects.requireNonNull(sourceFile, "sourceFile");
-	this.processingController = Objects.requireNonNull(processingController, "processingController");
+	this.controller = Objects.requireNonNull(controller, "controller");
+
+	this.files = new SimpleListProperty<>(this, "files", FXCollections.singletonObservableList(sourceFile));
+
+	this.taskTreeItem = taskTreeItem;
+
+	updateTitle(sourceFile.getFileName().toString());
+	updateMessage("In queue");
     }
 
     public Path getSourceFile()
     {
-	return sourceFile;
+	return files.get(0);
     }
 
-    public ProcessingController getProcessingController()
+    public ProcessingController getController()
     {
-	return processingController;
+	return controller;
     }
 
     public ProcessingConfig getConfig()
@@ -96,88 +112,118 @@ public class ProcessingTask extends Task<Void>
     }
 
     @Override
+    public ReadOnlyStringProperty nameProperty()
+    {
+	return titleProperty();
+    }
+
+    @Override
+    public ListProperty<Path> getFiles()
+    {
+	return files;
+    }
+
+    @Override
+    public ReadOnlyStringProperty statusProperty()
+    {
+	return messageProperty();
+    }
+
+    @Override
+    public ReadOnlyStringProperty infoProperty()
+    {
+	return info;
+    }
+
+    private void updateInfo(final String info)
+    {
+	Platform.runLater(() -> ProcessingTask.this.info.set(info));
+    }
+
+    public SubtitleAdjustment getSourceObject()
+    {
+	return sourceObject;
+    }
+
+    public SubtitleAdjustment getTargetObject()
+    {
+	return targetObject;
+    }
+
+    public ReadOnlyListProperty<ProcessingResult> resultsProperty()
+    {
+	return results;
+    }
+
+    public TreeItem<ProcessingItem> getTaskTreeItem()
+    {
+	return taskTreeItem;
+    }
+
+    @Override
     protected Void call() throws Exception
     {
 	long start = System.nanoTime();
-	log.debug("Processing {}", sourceFile);
+	log.debug("Processing {}", getSourceFile());
 	try
 	{
 	    loadCurrentProcessingConfig();
 
-	    if (!filter())
+	    sourceObject = parse(getSourceFile());
+	    if (sourceObject != null)
 	    {
-		return null;
-	    }
-
-	    SubtitleAdjustment parsed = parse();
-	    if (parsed == null)
-	    {
-		return null;
-	    }
-	    else
-	    {
-		processSubtitleAdjustment(parsed);
+		processSubtitleAdjustment(sourceObject);
 	    }
 	    return null;
 	}
 	finally
 	{
-	    log.debug("Processed {} in {} ms", sourceFile, TimeUtil.durationMillis(start));
+	    log.debug("Processed {} in {} ms", getSourceFile(), TimeUtil.durationMillis(start));
 	}
+    }
+
+    @Override
+    protected void cancelled()
+    {
+	updateMessage("Cancelled");
+	updateProgress(1d, 1d);
+	log.error("Processing of " + getSourceFile() + " was cancelled", getException());
     }
 
     @Override
     protected void failed()
     {
-	if (sourceProcessingItem != null)
-	{
-	    sourceProcessingItem.updateProgress(1d);
-	    sourceProcessingItem.updateStatus("Processing failed: " + getException());
-	}
-	log.error("Processing of " + sourceFile + " failed", getException());
+	updateMessage("Failed");
+	updateProgress(1d, 1d);
+	updateInfo(getException().toString());
+	log.error("Processing of " + getSourceFile() + " failed", getException());
+    }
+
+    @Override
+    protected void succeeded()
+    {
+	updateMessage("Done");
+	updateProgress(1d, 1d);
     }
 
     private void loadCurrentProcessingConfig()
     {
 	// get the current ProcessingConfig> and use it for the entire process
-	config = processingController.getProcessingConfig().getValue();
+	config = controller.getProcessingConfig().getValue();
 	log.debug("Using processing config: {}", config);
     }
 
-    private boolean filter()
-    {
-	if (!Files.isRegularFile(sourceFile, LinkOption.NOFOLLOW_LINKS))
-	{
-	    log.debug("Filtered out {} because it is no regular file", sourceFile);
-	    return false;
-	}
-
-	Pattern pattern = config.getFilenamePattern();
-	if (pattern == null)
-	{
-	    log.debug("Filtered out {} because no pattern is specified", sourceFile);
-	    return false;
-	}
-	if (!pattern.matcher(sourceFile.getFileName().toString()).matches())
-	{
-	    log.debug("Filtered out {} because its name does not match the required pattern {}", sourceFile, pattern);
-	    return false;
-	}
-
-	return true;
-    }
-
-    private SubtitleAdjustment parse()
+    private SubtitleAdjustment parse(Path file)
     {
 	List<ParsingService> parsingServices = config.getFilenameParsingServices();
 
-	String filenameWithoutExt = IOUtil.splitIntoFilenameAndExtension(sourceFile.getFileName().toString())[0];
+	String filenameWithoutExt = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
 	log.trace("Trying to parse {} with {} to ", filenameWithoutExt, parsingServices, SubtitleAdjustment.class.getSimpleName());
 	SubtitleAdjustment parsed = ParsingUtil.parse(filenameWithoutExt, SubtitleAdjustment.class, parsingServices);
-	log.debug("Parsed {} to {}", sourceFile, parsed);
+	log.debug("Parsed {} to {}", file, parsed);
 	if (parsed == null)
 	{
-	    log.info("No parser could parse the filename of " + sourceFile);
+	    log.info("No parser could parse the filename of " + file);
 	    return null;
 	}
 
@@ -187,38 +233,26 @@ public class ProcessingTask extends Task<Void>
 	return parsed;
     }
 
-    private TreeItem<ProcessingItem> addSourceTreeItem(ProcessingItem sourceItem)
+    private void processSubtitleAdjustment(SubtitleAdjustment srcSubAdj) throws Exception
     {
-	TreeItem<ProcessingItem> sourceTreeItem = new TreeItem<>(sourceItem);
-	Platform.runLater(() -> processingController.getProcessingTreeTable().getRoot().getChildren().add(sourceTreeItem));
-	return sourceTreeItem;
-    }
-
-    private void processSubtitleAdjustment(SubtitleAdjustment srcSubAdj) throws InterruptedException
-    {
-	sourceProcessingItem = new SourceProcessingItem(processingController.getNamingService(), config.getNamingParameters(), sourceFile);
-	sourceProcessingItem.setParsedBean(srcSubAdj);
-
-	sourceTreeItem = addSourceTreeItem(sourceProcessingItem);
-
 	// Querying
 	Release srcRls = srcSubAdj.getFirstMatchingRelease();
 	List<Media> queryObj = srcRls.getMedia();
-	sourceProcessingItem.updateStatus("Querying release databases");
-	sourceProcessingItem.updateProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-	ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, processingController.getMainController().getCommonExecutor());
+	updateMessage("Querying release databases");
+	updateProgress(ProgressIndicator.INDETERMINATE_PROGRESS, 1d);
+	ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
 	for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
 	{
 	    log.debug("Results of {}", entry.getKey().getName());
 	    entry.getValue().stream().forEach((r) -> log.debug(r));
 	}
 
-	sourceProcessingItem.updateProgress(0.5d);
+	updateProgress(0.5d, 1d);
 	if (isCancelled())
 	{
 	    return;
 	}
-	sourceProcessingItem.updateStatus("Processing query results");
+	updateMessage("Processing query results");
 
 	List<Release> existingRlss = new ArrayList<>(results.values().size());
 	existingRlss.addAll(results.values());
@@ -237,10 +271,7 @@ public class ProcessingTask extends Task<Void>
 	// Filter
 	log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
 	List<Release> matchingRlss = foundRlss.stream()
-		.filter(NamingUtil.filterByNestedName(srcRls,
-			processingController.getNamingServiceForFiltering(),
-			processingController.getNamingParametersForFiltering(),
-			(Release rls) -> rls.getMedia()))
+		.filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
 		.filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
 		.filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 		.collect(Collectors.toList());
@@ -260,6 +291,8 @@ public class ProcessingTask extends Task<Void>
 	List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(convertedSubAdj);
 	changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
 
+	targetObject = convertedSubAdj;
+
 	if (matchingRlss.isEmpty())
 	{
 	    log.info("Found no matching releases");
@@ -271,8 +304,8 @@ public class ProcessingTask extends Task<Void>
 		logReleases(Level.DEBUG, "Guessed releases:", guessedRlss.keySet());
 		for (Map.Entry<Release, StandardRelease> entry : guessedRlss.entrySet())
 		{
-		    GuessingProcessInfo processInfo = new GuessingProcessInfo(Method.GUESSING, entry.getValue());
-		    addMatchingRelease(convertedSubAdj, entry.getKey(), processInfo);
+		    GuessingMethodInfo methodInfo = new GuessingMethodInfo(entry.getValue());
+		    addMatchingRelease(entry.getKey(), methodInfo);
 		}
 
 		List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
@@ -282,7 +315,7 @@ public class ProcessingTask extends Task<Void>
 		    TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
 		    stdRlssWithMediaAndMetaTags.add(rls);
 		}
-		addCompatibleReleases(guessedRlss.keySet(), stdRlssWithMediaAndMetaTags, convertedSubAdj);
+		addCompatibleReleases(guessedRlss.keySet(), stdRlssWithMediaAndMetaTags);
 	    }
 	    else
 	    {
@@ -294,13 +327,13 @@ public class ProcessingTask extends Task<Void>
 	    // Add matching releases
 	    for (Release rls : matchingRlss)
 	    {
-		ProcessInfo processInfo = new ProcessInfo(Method.MATCHING);
-		addMatchingRelease(convertedSubAdj, rls, processInfo);
+		MatchingMethodInfo methodInfo = new MatchingMethodInfo();
+		addMatchingRelease(rls, methodInfo);
 	    }
 	    if (config.isCompatibilityEnabled())
 	    {
 		log.debug("Search for compatible releases enabled. Searching");
-		addCompatibleReleases(matchingRlss, foundRlss, convertedSubAdj);
+		addCompatibleReleases(matchingRlss, foundRlss);
 	    }
 	    else
 	    {
@@ -308,7 +341,7 @@ public class ProcessingTask extends Task<Void>
 	    }
 	}
 
-	sourceProcessingItem.updateProgress(0.75d);
+	updateProgress(0.75d, 1d);
 	if (isCancelled())
 	{
 	    return;
@@ -317,22 +350,19 @@ public class ProcessingTask extends Task<Void>
 	{
 	    try
 	    {
-		sourceProcessingItem.updateStatus("Deleting source file");
-		Files.delete(sourceFile);
-		log.info("Deleted source file {}", sourceFile);
-		sourceProcessingItem.setSourceFileExists(false);
+		updateMessage("Deleting source file");
+		Files.delete(getSourceFile());
+		log.info("Deleted source file {}", getSourceFile());
+		updateInfo("Source file deleted");
 	    }
 	    catch (IOException e)
 	    {
 		log.warn("Could not delete source file", e);
 	    }
 	}
-
-	sourceProcessingItem.updateStatus("Done");
-	sourceProcessingItem.updateProgress(1d);
     }
 
-    private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> existingReleases, SubtitleAdjustment subAdj)
+    private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> existingReleases) throws Exception
     {
 	// Find compatibles
 	CompatibilityService compatibilityService = config.getCompatibilityService();
@@ -344,32 +374,34 @@ public class ProcessingTask extends Task<Void>
 	// Add compatible releases
 	for (Map.Entry<Release, CompatibilityInfo> entry : compatibleRlss.entrySet())
 	{
-	    CompatibilityProcessInfo processInfo = new CompatibilityProcessInfo(Method.COMPATIBILITY, entry.getValue());
-	    addMatchingRelease(subAdj, entry.getKey(), processInfo);
+	    CompatibilityMethodInfo methodInfo = new CompatibilityMethodInfo(entry.getValue());
+	    addMatchingRelease(entry.getKey(), methodInfo);
 	}
     }
 
-    private SubtitleTargetProcessingItem addMatchingRelease(SubtitleAdjustment subAdj, Release rls, ProcessInfo info)
+    private void addMatchingRelease(Release rls, MethodInfo methodInfo) throws Exception
     {
 	List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(rls);
 	changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
 
-	subAdj.getMatchingReleases().add(rls);
-	SubtitleTargetProcessingItem targetItem = addTargetFilesItem(subAdj, rls, info);
-	targetItem.updateStatus("Creating files");
-	sourceProcessingItem.updateStatus("Creating files");
+	targetObject.getMatchingReleases().add(rls);
+	ProcessingResult result = addResult(rls, methodInfo);
+	updateMessage("Creating files");
+	result.updateStatus("Creating files");
 	try
 	{
-	    createFiles(sourceFile, targetItem);
-	    targetItem.updateStatus("Done");
+	    createFiles(result);
+	    result.updateStatus("Done");
 	}
 	catch (IOException | TimeoutException e)
 	{
-	    targetItem.updateStatus("Failed to create files: " + e);
-	    log.warn("Failed to create files for " + targetItem, e);
+	    result.updateStatus("Failed to create files: " + e);
+	    log.warn("Failed to create files for " + result, e);
 	}
-	targetItem.updateProgress(1d);
-	return targetItem;
+	finally
+	{
+	    result.updateProgress(1d);
+	}
     }
 
     private List<Release> processReleases(Collection<Release> rlss)
@@ -427,23 +459,20 @@ public class ProcessingTask extends Task<Void>
 	}
     }
 
-    private SubtitleTargetProcessingItem addTargetFilesItem(SubtitleAdjustment targetSubAdj, Release rls, ProcessInfo info)
+    private ProcessingResult addResult(Release rls, MethodInfo info)
     {
-	SubtitleTargetProcessingItem targetItem = new SubtitleTargetProcessingItem(processingController.getNamingService(), config.getNamingParameters());
-	targetItem.setSubtitleAdjustment(targetSubAdj);
-	targetItem.setRelease(rls);
-	targetItem.setProcessInfo(info);
-
-	TreeItem<ProcessingItem> targetTreeItem = new TreeItem<>(targetItem);
+	ProcessingResult result = new ProcessingResult(this, rls, info);
 	Platform.runLater(() -> {
-	    sourceTreeItem.getChildren().add(targetTreeItem);
-	    sourceTreeItem.setExpanded(true);
+	    results.add(result);
+	    taskTreeItem.getChildren().add(new TreeItem<ProcessingItem>(result));
+	    taskTreeItem.setExpanded(true);
 	});
-	return targetItem;
+	return result;
     }
 
-    private void createFiles(Path srcFile, ProcessingItem targetItem) throws IOException, TimeoutException
+    private void createFiles(ProcessingResult result) throws Exception
     {
+	Path srcFile = getSourceFile();
 	Path targetDir;
 	if (config.getTargetDir() != null)
 	{
@@ -456,21 +485,18 @@ public class ProcessingTask extends Task<Void>
 
 	Files.createDirectories(targetDir);
 
-	String fileExtension = IOUtil.splitIntoFilenameAndExtension(sourceFile.getFileName().toString())[1];
-	Path targetFile = targetDir.resolve(targetItem.getName() + fileExtension);
+	String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
+	Path targetFile = targetDir.resolve(result.getName() + fileExtension);
 
 	IOUtil.waitUntilCompletelyWritten(srcFile, 1, TimeUnit.MINUTES);
 
 	Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
-	Path otherNewFile = Paths.get(newFile.toString());
-	Platform.runLater(() -> {
-	    targetItem.getFiles().add(otherNewFile);
-	});
+	result.addFile(newFile);
 	log.debug("Copied {} to {}", srcFile, targetFile);
 
 	if (config.isPackingEnabled())
 	{
-	    final Path newRar = newFile.resolveSibling(targetItem.getName() + ".rar");
+	    final Path newRar = newFile.resolveSibling(result.getName() + ".rar");
 	    LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
 	    WinRarPackager packager = WinRar.getPackager(locateStrategy, config.getRarExe());
 	    WinRarPackConfig cfg = new WinRarPackConfig();
@@ -481,13 +507,18 @@ public class ProcessingTask extends Task<Void>
 	    WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
 	    if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
 	    {
-		targetItem.getFiles().remove(newFile);
+		result.removeFile(newFile);
 	    }
-	    Path otherNewRar = Paths.get(newRar.toString());
-	    Platform.runLater(() -> {
-		targetItem.getFiles().add(otherNewRar);
-	    });
-	    log.debug("Packed {} to {} {}", newFile, newRar, packResult);
+	    if (packResult.failed())
+	    {
+		result.updateStatus("Packing failed");
+		result.updateInfo(packResult.getException().toString());
+	    }
+	    else
+	    {
+		result.addFile(newRar);
+		log.debug("Packed {} to {} {}", newFile, newRar, packResult);
+	    }
 	}
     }
 }
