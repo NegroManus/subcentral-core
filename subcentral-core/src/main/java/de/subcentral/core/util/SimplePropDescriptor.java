@@ -12,8 +12,9 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.Settings;
 
 /**
- * Class for defining a bean / entity property. Unlike {@link PropertyDescriptor} no further checks are conducted. This class is simply a container for a Class value and a String value.
- * <code>SimplePropertyDescriptor</code> instances are not equal just because their write and read methods are equal due to inheritance - like it is the case with <code>PropertyDescriptor</code>.
+ * Class for defining a bean / entity property. Unlike {@link PropertyDescriptor} no further checks are conducted. This class is simply a container
+ * for a Class value and a String value. <code>SimplePropertyDescriptor</code> instances are not equal just because their write and read methods are
+ * equal due to inheritance - like it is the case with <code>PropertyDescriptor</code>.
  *
  */
 public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, Serializable

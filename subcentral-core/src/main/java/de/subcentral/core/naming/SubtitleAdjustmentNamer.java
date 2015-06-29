@@ -10,19 +10,20 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<SubtitleAdjustment>
 {
     /**
-     * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link SubtitleAdjustment#getName() subtitle adjustment's name} is not {@code null}, that name is
-     * returned, otherwise the computed name is returned. The default value is {@code false}.
+     * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link SubtitleAdjustment#getName() subtitle
+     * adjustment's name} is not {@code null}, that name is returned, otherwise the computed name is returned. The default value is {@code false}.
      */
     public static final String PARAM_PREFER_NAME = SubtitleAdjustmentNamer.class.getName() + ".preferName";
 
     /**
-     * The name of the parameter "release" of type {@link Release}. The specified release is used for naming the subtitle adjustment. The default value is the return value of
-     * {@link SubtitleAdjustment#getFirstMatchingRelease()}.
+     * The name of the parameter "release" of type {@link Release}. The specified release is used for naming the subtitle adjustment. The default
+     * value is the return value of {@link SubtitleAdjustment#getFirstMatchingRelease()}.
      */
     public static final String PARAM_RELEASE = SubtitleAdjustmentNamer.class.getName() + ".release";
 
     /**
-     * The name of the parameter "includeGroup" of type {@link Boolean}. If set to {@code true}, the group / source is included in the name. The default value is {@code true}.
+     * The name of the parameter "includeGroup" of type {@link Boolean}. If set to {@code true}, the group / source is included in the name. The
+     * default value is {@code true}.
      */
     public static final String PARAM_INCLUDE_GROUP = SubtitleAdjustmentNamer.class.getName() + ".includeGroup";
 

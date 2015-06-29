@@ -62,7 +62,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
 	releaseDbsTableView.setItems(settings.releaseDbsProperty());
-	
+
 	releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 	releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().enabledProperty());
 
@@ -105,7 +105,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().availableProperty());
 
 	recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
-	
+
 	updateAvailibities();
 	// if the items change update the availibilities (happens on load of settings)
 	releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());

@@ -82,8 +82,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	UNKNOWN,
 
 	/**
-	 * The subtitle's language is the original language. The language of this subtitle is equal to the primary original language of the subtitled media item (in French
-	 * <code>"revision originale" (VO)</code>)
+	 * The subtitle's language is the original language. The language of this subtitle is equal to the primary original language of the subtitled
+	 * media item (in French <code>"revision originale" (VO)</code>)
 	 */
 	ORIGINAL,
 
@@ -242,7 +242,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
     }
 
     /**
-     * The subtitle on which this subtitle was based on. Only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and {@link #PRODUCTION_TYPE_TRANSLATION}.
+     * The subtitle on which this subtitle was based on. Only for production types {@link #PRODUCTION_TYPE_IMPROVEMENT} and
+     * {@link #PRODUCTION_TYPE_TRANSLATION}.
      * 
      * @return the basis
      */

@@ -37,9 +37,10 @@ public class ConditionalNamingService implements NamingService, Serializable
     /**
      * Important:
      * <ul>
-     * <li>The order of the elements is the order the conditions are tested. So more restricting conditions must be placed before more general conditions. The first ConditionalNamingEntry which
-     * condition returns true will be taken.</li>
-     * <li>The order should also consider how often specific types are named. The types that are named most frequently should be at the top of the list.</li>
+     * <li>The order of the elements is the order the conditions are tested. So more restricting conditions must be placed before more general
+     * conditions. The first ConditionalNamingEntry which condition returns true will be taken.</li>
+     * <li>The order should also consider how often specific types are named. The types that are named most frequently should be at the top of the
+     * list.</li>
      * </ul>
      * 
      * @return

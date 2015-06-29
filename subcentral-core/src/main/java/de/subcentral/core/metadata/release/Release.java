@@ -20,8 +20,8 @@ import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
- * A Release is a publication of one media (movie, TV episode, series, season, song, album, movie, game, software) or a set of media (multiple TV episodes). Every Release has a unique name so that it
- * can be identified. The name is constructed of:
+ * A Release is a publication of one media (movie, TV episode, series, season, song, album, movie, game, software) or a set of media (multiple TV
+ * episodes). Every Release has a unique name so that it can be identified. The name is constructed of:
  * <ul>
  * <li>the name(s) of the media</li>
  * <li>the release tags</li>
@@ -157,8 +157,8 @@ public class Release implements Comparable<Release>
     }
 
     /**
-     * The unique name of this release. E.g. "Psych.S08E01.HDTV.x264-EXCELLENCE". Consisting of the name of the {@link #getMedia() media} ("Psych S08E01"), the {@link #getTags() tags} (HDTV, x264) and
-     * the {@link #getGroup() group} ("EXCELLENCE").
+     * The unique name of this release. E.g. "Psych.S08E01.HDTV.x264-EXCELLENCE". Consisting of the name of the {@link #getMedia() media} (
+     * "Psych S08E01"), the {@link #getTags() tags} (HDTV, x264) and the {@link #getGroup() group} ("EXCELLENCE").
      * 
      * @return the name
      */
@@ -173,8 +173,8 @@ public class Release implements Comparable<Release>
     }
 
     /**
-     * The contained media. For the most cases, a Release contains only one media. But, for example, multi-part {@link de.subcentral.core.metadata.media.Episode Episodes} are sometimes packed into one
-     * Release.
+     * The contained media. For the most cases, a Release contains only one media. But, for example, multi-part
+     * {@link de.subcentral.core.metadata.media.Episode Episodes} are sometimes packed into one Release.
      * 
      * @return the contained media
      */

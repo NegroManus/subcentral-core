@@ -14,8 +14,8 @@ public class MediaNamer extends AbstractPropertySequenceNamer<Media>
     }
 
     /**
-     * The name of the parameter "includeYear" of type {@link Boolean}. If set to {@code true}, the {@link Media#getYear() media's year} is included in the name, otherwise it is excluded. The default
-     * value is {@code false}.
+     * The name of the parameter "includeYear" of type {@link Boolean}. If set to {@code true}, the {@link Media#getYear() media's year} is included
+     * in the name, otherwise it is excluded. The default value is {@code false}.
      */
     public static final String PARAM_INCLUDE_YEAR = MediaNamer.class.getName() + "includeYear";
 

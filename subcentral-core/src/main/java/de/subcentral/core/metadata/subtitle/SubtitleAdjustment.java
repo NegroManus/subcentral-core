@@ -48,8 +48,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	NONE,
 
 	/**
-	 * Foreign parts exist in the media item and are included in the subtitle (typically the case for translated subtitles or VO subtitles where the foreign parts are not hard coded in the media
-	 * release).
+	 * Foreign parts exist in the media item and are included in the subtitle (typically the case for translated subtitles or VO subtitles where
+	 * the foreign parts are not hard coded in the media release).
 	 */
 	INCLUDED,
 
@@ -59,8 +59,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	EXCLUDED,
 
 	/**
-	 * Foreign parts exist in the media item and only foreign parts are included (typically the case for special versions of original subtitles for people who only need subtitles for the foreign
-	 * parts).
+	 * Foreign parts exist in the media item and only foreign parts are included (typically the case for special versions of original subtitles
+	 * for people who only need subtitles for the foreign parts).
 	 */
 	ONLY;
     }
@@ -181,8 +181,10 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
      * The tags of this subtitle. The tag list must <b>not</b> contain the following tags / information:
      * <ul>
      * <li><b>Language tags</b> like "German", "de" (the language is stored separately in {@link #getLanguage()})</li>
-     * <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in {@link #getForeignParts()})</li>
-     * <li><b>Hearing Impaired tags</b> like "HI" (whether the subtitle contains annotations for the hearing impaired is stored separately in {@link #isHearingImpaired()})</li>
+     * <li><b>Foreign parts tags</b> like "FOREIGN PARTS INCLUDED" (the foreign parts information is stored separately in {@link #getForeignParts()})
+     * </li>
+     * <li><b>Hearing Impaired tags</b> like "HI" (whether the subtitle contains annotations for the hearing impaired is stored separately in
+     * {@link #isHearingImpaired()})</li>
      * <li><b>Version tags</b> like "V2" (the version is stored separately in {@link #getVersion()})
      * </ul>
      * All other important information about this subtitle may be stored in the tag list. For example "COLORED" for colored subs.
@@ -212,16 +214,17 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
     }
 
     /**
-     * The version string defines the version of this subtitle. The version string should be a simple version number (1, 2, 3, ...) or follow the decimal notation (1.0, 2.0, 2.0.1, ...) and be
-     * incremented whenever this subtitle is changed (improved). But there are no limitations on valid version strings as any source has its own version scheme. For example, for addic7ed.com the
-     * version string can be one of "orig", "c.orig", "c.updated".
+     * The version string defines the version of this subtitle. The version string should be a simple version number (1, 2, 3, ...) or follow the
+     * decimal notation (1.0, 2.0, 2.0.1, ...) and be incremented whenever this subtitle is changed (improved). But there are no limitations on valid
+     * version strings as any source has its own version scheme. For example, for addic7ed.com the version string can be one of "orig", "c.orig",
+     * "c.updated".
      * <p>
-     * The version string must not contain information about differences from alternate releases (like colored/uncolored, hearing impaired/not hearing impaired, includes foreign parts/does not include
-     * foreign parts, ...).
+     * The version string must not contain information about differences from alternate releases (like colored/uncolored, hearing impaired/not hearing
+     * impaired, includes foreign parts/does not include foreign parts, ...).
      * </p>
      * <p>
-     * An improved/customized subtitle is always {@link #getBasis() based on} the former version of that subtitle and has the {@link #getProductionType() productionType}
-     * {@value #PRODUCTION_TYPE_MODIFICATION}.
+     * An improved/customized subtitle is always {@link #getBasis() based on} the former version of that subtitle and has the
+     * {@link #getProductionType() productionType} {@value #PRODUCTION_TYPE_MODIFICATION}.
      * </p>
      * 
      * If no version information is available, the version is {@code null}.
@@ -322,7 +325,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
     }
 
     /**
-     * Whether the subtitle contains transcription for the hearing impaired. Also known as "closed captioning (CC)". The default value is {@code false}.
+     * Whether the subtitle contains transcription for the hearing impaired. Also known as "closed captioning (CC)". The default value is
+     * {@code false}.
      * 
      * @return whether or not hearing impaired
      */

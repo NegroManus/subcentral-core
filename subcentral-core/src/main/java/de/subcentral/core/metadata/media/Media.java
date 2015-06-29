@@ -15,8 +15,9 @@ import de.subcentral.core.util.TimeUtil;
  * <b>Difference between title and name</b> <br/>
  * <ul>
  * <li>The <b>title</b> is given to the media by the author. It has not to be unique.</li>
- * <li>The <b>name</b> is unique for the media in its media class. It often contains more context to identify the media. For example the series and season in case of a episode or the artist in case of
- * a song. If there are two or more media that would have the same name, normally the country code or the date is appended to distinguish the names, like in "The Office (UK)" or "Titanic (2002)".</li>
+ * <li>The <b>name</b> is unique for the media in its media class. It often contains more context to identify the media. For example the series and
+ * season in case of a episode or the artist in case of a song. If there are two or more media that would have the same name, normally the country
+ * code or the date is appended to distinguish the names, like in "The Office (UK)" or "Titanic (2002)".</li>
  * </ul>
  * The name of a media should never be null. The title should only be non-null if it differs from the name. <br/>
  * <br/>
@@ -109,7 +110,8 @@ public interface Media
     public List<String> getAliasNames();
 
     /**
-     * Normally a media only has a {@link #getName() name} which is in fact its title. The title is only set if it differs from the name (like name: "The Office (UK)", title: "The Office").<br>
+     * Normally a media only has a {@link #getName() name} which is in fact its title. The title is only set if it differs from the name (like name:
+     * "The Office (UK)", title: "The Office").<br>
      * In case of numbered Media, like an {@link Episode} or a Song, the title may be optional.
      * 
      * @return the title of this media
@@ -130,8 +132,9 @@ public interface Media
     public String getMediaContentType();
 
     /**
-     * The date can be an instance of {@link java.time.ZonedDateTime}, {@link java.time.LocalDateTime}, {@link java.time.LocalDate}, {@link java.time.YearMonth} or {@link java.time.Year}, depending on
-     * how precise the information is. Other <code>Temporal</code> implementations are not allowed.
+     * The date can be an instance of {@link java.time.ZonedDateTime}, {@link java.time.LocalDateTime}, {@link java.time.LocalDate},
+     * {@link java.time.YearMonth} or {@link java.time.Year}, depending on how precise the information is. Other <code>Temporal</code> implementations
+     * are not allowed.
      * 
      * @return the publishing / air date of this media
      */
@@ -139,7 +142,8 @@ public interface Media
 
     /**
      * 
-     * @return the language codes of the original languages of this media. Typically, not available on medias of {@link Media#MEDIA_CONTENT_TYPE_IMAGE}, except if there is text in the picture
+     * @return the language codes of the original languages of this media. Typically, not available on medias of
+     *         {@link Media#MEDIA_CONTENT_TYPE_IMAGE}, except if there is text in the picture
      */
     public List<String> getLanguages();
 
@@ -155,7 +159,8 @@ public interface Media
     public Set<String> getGenres();
 
     /**
-     * The running time of an audio / video media is its playing duration. Only for medias of type {@link #MEDIA_CONTENT_TYPE_AUDIO} or {@link #MEDIA_CONTENT_TYPE_VIDEO}.
+     * The running time of an audio / video media is its playing duration. Only for medias of type {@link #MEDIA_CONTENT_TYPE_AUDIO} or
+     * {@link #MEDIA_CONTENT_TYPE_VIDEO}.
      * 
      * @return the running time in milliseconds, <code>0</code> if none or unknown
      */
@@ -169,7 +174,8 @@ public interface Media
     public String getDescription();
 
     /**
-     * Allows to store different ratings (IMDb, filmstarts, ...). The key of an entry is an identifier for the "rating agency", the value is a float value between 0.0 and 10.0.
+     * Allows to store different ratings (IMDb, filmstarts, ...). The key of an entry is an identifier for the "rating agency", the value is a float
+     * value between 0.0 and 10.0.
      * 
      * @return the ratings
      */
@@ -183,8 +189,9 @@ public interface Media
     public String getContentRating();
 
     /**
-     * The key of the map is the image type ({@link #MEDIA_IMAGE_TYPE_WALLPAPER}, {@link #MEDIA_IMAGE_TYPE_POSTER_VERTICAL},, {@link #MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL} {@link #MEDIA_IMAGE_TYPE_LOGO}
-     * , some custom image type or {@code null} if unknown), the values are resource paths (URLs) to the images.
+     * The key of the map is the image type ({@link #MEDIA_IMAGE_TYPE_WALLPAPER}, {@link #MEDIA_IMAGE_TYPE_POSTER_VERTICAL},,
+     * {@link #MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL} {@link #MEDIA_IMAGE_TYPE_LOGO} , some custom image type or {@code null} if unknown), the values are
+     * resource paths (URLs) to the images.
      * 
      * @return all images associated with this media
      */
@@ -205,7 +212,8 @@ public interface Media
 
     // Convenience
     /**
-     * For NamedMedia the title is the name without the extension to identify the media (e.g. without the year "(2014)" or country code "(UK)"). If the title equals the name, no title is specified.
+     * For NamedMedia the title is the name without the extension to identify the media (e.g. without the year "(2014)" or country code "(UK)"). If
+     * the title equals the name, no title is specified.
      * <p>
      * Examples
      * <ul>

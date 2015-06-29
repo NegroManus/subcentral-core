@@ -11,21 +11,26 @@ public class WinRarPackConfig extends WinRarCommandConfig
 	/**
 	 * Do not compress file when adding to archive.
 	 */
-	STORE(0, "Store", "Do not compress file when adding to archive."), /**
-									    * Use fastest method (less compressive).
-									    */
-	FASTEST(1, "Fastest", "Use fastest method (less compressive)."), /**
-									  * Use fast compression method.
-									  */
-	FAST(2, "Fast", "Use fast compression method."), /**
-							  * Use normal (default) compression method.
-							  */
-	NORMAL(3, "Normal", "Use normal (default) compression method."), /**
-									  * Use good compression method (more compressive, but slower).
-									  */
-	GOOD(4, "Good", "Use good compression method (more compressive, but slower)."), /**
-											 * Use best compression method (slightly more compressive, but slowest).
-											 */
+	STORE(0, "Store", "Do not compress file when adding to archive."),
+	/**
+	 * Use fastest method (less compressive).
+	 */
+	FASTEST(1, "Fastest", "Use fastest method (less compressive)."),
+	/**
+	 * Use fast compression method.
+	 */
+	FAST(2, "Fast", "Use fast compression method."),
+	/**
+	 * Use normal (default) compression method.
+	 */
+	NORMAL(3, "Normal", "Use normal (default) compression method."),
+	/**
+	 * Use good compression method (more compressive, but slower).
+	 */
+	GOOD(4, "Good", "Use good compression method (more compressive, but slower)."),
+	/**
+	 * Use best compression method (slightly more compressive, but slowest).
+	 */
 	BEST(5, "Best", "Use best compression method (slightly more compressive, but slowest).");
 
 	private final int code;
@@ -90,8 +95,8 @@ public class WinRarPackConfig extends WinRarCommandConfig
 	KEEP,
 
 	/**
-	 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only. If mode is specified on not Windows platforms, the files are
-	 * kept.
+	 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only. If mode is
+	 * specified on not Windows platforms, the files are kept.
 	 */
 	RECYCLE,
 

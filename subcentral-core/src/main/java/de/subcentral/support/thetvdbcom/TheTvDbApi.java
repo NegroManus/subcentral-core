@@ -31,7 +31,8 @@ public interface TheTvDbApi
      * @param id
      *            the TheTVDB.com id of the series
      * @param language
-     *            two-letter language code. Some texts are available in other languages than English (currently: series name, series description, episode title, episode description)
+     *            two-letter language code. Some texts are available in other languages than English (currently: series name, series description,
+     *            episode title, episode description)
      * @param full
      *            whether to retrieve the full record or just the base record (without seasons and episodes)
      * @return information about the series denoted by the id

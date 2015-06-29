@@ -39,18 +39,20 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
     public static final SimplePropDescriptor PROP_ATTRIBUTES	       = new SimplePropDescriptor(Series.class, PropNames.ATTRIBUTES);
 
     /**
-     * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical examples are the TV series "Breaking Bad",
-     * "Game of Thrones" and "Psych".
+     * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical
+     * examples are the TV series "Breaking Bad", "Game of Thrones" and "Psych".
      */
     public static final String TYPE_SEASONED = "SEASONED";
 
     /**
-     * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. A typical example is the TV mini-series "Band of Brothers".
+     * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. A typical example is the TV
+     * mini-series "Band of Brothers".
      */
     public static final String TYPE_MINI_SERIES = "MINI_SERIES";
 
     /**
-     * A type of series which episodes usually have no numbers. Instead the main identifier is their air date. Typical examples are (daily) shows or sports events.
+     * A type of series which episodes usually have no numbers. Instead the main identifier is their air date. Typical examples are (daily) shows or
+     * sports events.
      */
     public static final String TYPE_DATED = "DATED";
 
@@ -100,11 +102,13 @@ public class Series extends AbstractNamedMedia implements Comparable<Series>
     }
 
     /**
-     * Returns the date of the Series' finale. This is the date of the last / final Episode of this Series. The date of the premiere is stored in {@link #getDate()}.
+     * Returns the date of the Series' finale. This is the date of the last / final Episode of this Series. The date of the premiere is stored in
+     * {@link #getDate()}.
      * <p>
-     * <b>Note:</b> The premiere date and finale date may be stored redundantly if this Series contains all its Episodes in {@link #getEpisodes() the Episodes list}. Then the premiere date and finale
-     * date can be retrieved via {@link #getDateOfFirstEpisode()} and {@link #getDateOfLastEpisode()} respectively. But if this Series object does not contain all its Episodes (because they are
-     * unknown), then the dates can be stored explicitly in the {@link #getDate() date} and {@link #getFinaleDate() finaleDate} properties.
+     * <b>Note:</b> The premiere date and finale date may be stored redundantly if this Series contains all its Episodes in {@link #getEpisodes() the
+     * Episodes list}. Then the premiere date and finale date can be retrieved via {@link #getDateOfFirstEpisode()} and
+     * {@link #getDateOfLastEpisode()} respectively. But if this Series object does not contain all its Episodes (because they are unknown), then the
+     * dates can be stored explicitly in the {@link #getDate() date} and {@link #getFinaleDate() finaleDate} properties.
      * </p>
      * 
      * @see #getDate()

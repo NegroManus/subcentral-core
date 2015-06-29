@@ -100,7 +100,8 @@ public class Contribution implements Comparable<Contribution>
     }
 
     /**
-     * The amount of the contribution. This is a relative value. How big that amount is, can only be determined by knowing the amount of the other contributions. The default value is 1.
+     * The amount of the contribution. This is a relative value. How big that amount is, can only be determined by knowing the amount of the other
+     * contributions. The default value is 1.
      * 
      * @return the amount (a zero or positive int)
      */

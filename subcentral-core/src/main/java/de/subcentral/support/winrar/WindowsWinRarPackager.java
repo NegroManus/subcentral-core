@@ -27,7 +27,8 @@ import de.subcentral.support.winrar.WinRar.LocateStrategy;
 class WindowsWinRarPackager extends WinRarPackager
 {
     /**
-     * The console program RAR.exe can only pack RAR archives, but it does not open a GUI. WinRAR.exe can pack ZIP archives, but it opens a GUI - so do not use that.
+     * The console program RAR.exe can only pack RAR archives, but it does not open a GUI. WinRAR.exe can pack ZIP archives, but it opens a GUI - so
+     * do not use that.
      */
     public static final String RAR_EXECUTABLE_FILENAME = "Rar.exe";
 

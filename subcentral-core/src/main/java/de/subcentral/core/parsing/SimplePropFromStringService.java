@@ -34,14 +34,14 @@ public class SimplePropFromStringService implements PropFromStringService
 
     public static final SimplePropFromStringService DEFAULT		     = new SimplePropFromStringService();
     /**
-     * The default element splitter. Used for splitting a list property string into its elements. Splits the string into words of alpha-num chars. Is used by PropParsingService instances if no
-     * specific item splitter is defined. Common to all instances to save memory.
+     * The default element splitter. Used for splitting a list property string into its elements. Splits the string into words of alpha-num chars. Is
+     * used by PropParsingService instances if no specific item splitter is defined. Common to all instances to save memory.
      */
     public static final Splitter		    DEFAULT_ELEMENT_SPLITTER = Splitter.on(CharMatcher.JAVA_LETTER_OR_DIGIT.negate()).omitEmptyStrings();
 
     /**
-     * The default map of fromString() functions. If a PropParsingService defines no specific fromString() function for a property or its type, the default map is searched. Common to all instances to
-     * save memory.
+     * The default map of fromString() functions. If a PropParsingService defines no specific fromString() function for a property or its type, the
+     * default map is searched. Common to all instances to save memory.
      */
     private static final Map<Class<?>, Function<String, ?>> DEFAULT_TYPE_FROM_STRING_FUNCTIONS = initDefaultTypeFromStringFunctions();
 

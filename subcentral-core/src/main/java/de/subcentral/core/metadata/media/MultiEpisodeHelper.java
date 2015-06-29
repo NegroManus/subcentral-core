@@ -16,11 +16,11 @@ import com.google.common.collect.ListMultimap;
 /**
  * A helper class for dealing with multiple episodes.
  * <p>
- * <code>MultiEpisodeHelper</code> does not implement {@link MediaCollection} because it is just a helper class and not an "official", releasable collection of <code>Media</code>. In contrast to
- * <code>Media</code> collections like <code>Series</code> and <code>Season</code>, a collection of multiple episodes has no properties of its own. Therefore it is not a valid <code>Media</code>
- * instance. <br/>
- * If multiple <code>Episodes</code> are released in a single <code>Release</code>, they are released as a set of materials and not as one material (contrary to whole <code>Series</code> or
- * <code>Seasons</code> which are released as one material).
+ * <code>MultiEpisodeHelper</code> does not implement {@link MediaCollection} because it is just a helper class and not an "official", releasable
+ * collection of <code>Media</code>. In contrast to <code>Media</code> collections like <code>Series</code> and <code>Season</code>, a collection of
+ * multiple episodes has no properties of its own. Therefore it is not a valid <code>Media</code> instance. <br/>
+ * If multiple <code>Episodes</code> are released in a single <code>Release</code>, they are released as a set of materials and not as one material
+ * (contrary to whole <code>Series</code> or <code>Seasons</code> which are released as one material).
  * </p>
  *
  */
@@ -29,7 +29,8 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
     private static final long serialVersionUID = 870081295286403057L;
 
     /**
-     * Determines whether the object to test is a multi-episode. Returns true if {@code obj} is an {@link Iterable} of more than one {@link Episode}. Otherwise returns false.
+     * Determines whether the object to test is a multi-episode. Returns true if {@code obj} is an {@link Iterable} of more than one {@link Episode}.
+     * Otherwise returns false.
      * 
      * @param obj
      *            the object to test

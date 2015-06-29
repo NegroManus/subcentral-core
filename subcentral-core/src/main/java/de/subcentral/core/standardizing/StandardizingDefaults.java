@@ -22,7 +22,8 @@ public class StandardizingDefaults
     public static final Function<String, String> ALNUM_DOT_HYPEN_REPLACER	     = new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-", "'´`", '.');
     /**
      * Use this for media naming. <br/>
-     * hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible also release names like "Katy.Perry-The.Prismatic.World.Tour" are common
+     * hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible also release names like
+     * "Katy.Perry-The.Prismatic.World.Tour" are common
      */
     public static final Function<String, String> ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER = new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_", "'´`", '.');
     public static final Function<String, String> DOT_HYPHEN_DOT_REPLACER	     = new StringReplacer(".-", "-").andThen(new StringReplacer("-.", "-"));

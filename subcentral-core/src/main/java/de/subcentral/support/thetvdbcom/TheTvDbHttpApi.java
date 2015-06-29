@@ -569,8 +569,8 @@ public class TheTvDbHttpApi implements TheTvDbApi
     {
 	private final Episode episode;
 	/**
-	 * An unsigned integer indicating the season number this special episode airs before. Should be used in conjunction with airsbefore_episode for exact placement. This field is only available
-	 * for special episodes. Can be null.
+	 * An unsigned integer indicating the season number this special episode airs before. Should be used in conjunction with airsbefore_episode
+	 * for exact placement. This field is only available for special episodes. Can be null.
 	 */
 	private final Integer airsBeforeSeason;
 	/**
@@ -578,8 +578,8 @@ public class TheTvDbHttpApi implements TheTvDbApi
 	 */
 	private final Integer airsAfterSeason;
 	/**
-	 * An unsigned integer indicating the episode number this special episode airs before. Must be used in conjunction with airsbefore_season, do not with airsafter_season. This field is only
-	 * available for special episodes. Can be null.
+	 * An unsigned integer indicating the episode number this special episode airs before. Must be used in conjunction with airsbefore_season, do
+	 * not with airsafter_season. This field is only available for special episodes. Can be null.
 	 */
 	private final Integer airsBeforeEpisode;
 

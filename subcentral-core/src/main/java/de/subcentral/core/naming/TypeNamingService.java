@@ -96,7 +96,8 @@ public class TypeNamingService implements NamingService, Serializable
      * <li>4. Throw NoNamerRegisteredException.</li>
      * </ul>
      * <p>
-     * <b>Note: Register the Namers to the concrete classes to ensure best performance. Searching for Namers of superclasses or interfaces is more costly. </b>
+     * <b>Note: Register the Namers to the concrete classes to ensure best performance. Searching for Namers of superclasses or interfaces is more
+     * costly. </b>
      * </p>
      * 
      * @param candidate
