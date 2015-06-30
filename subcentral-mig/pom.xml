@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.subcentral</groupId>
 	<artifactId>subcentral-mig</artifactId>
@@ -17,10 +18,30 @@
 			<artifactId>subcentral-core</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>de.subcentral</groupId>
+			<artifactId>subcentral-fx</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- For configuration -->
+		<!-- To install it: goal: install:install-file -->
+		<!-- VM-args: -Dfile=src/test/resources/lib/commons-configuration2-2.0-beta1/commons-configuration2-2.0-beta1.jar 
+			-DgroupId=org.apache.commons -DartifactId=commons-configuration2 -Dversion=2.0-beta1 
+			-Dpackaging=jar -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-configuration2</artifactId>
+			<version>2.0-beta1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>subcentral-core</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -40,14 +61,19 @@
 					<skipTests>true</skipTests> <!-- Skipping tests -->
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> <version>2.1.2</version> <executions> <execution> <id>attach-sources</id> <goals> <goal>jar</goal> </goals> </execution> </executions> </plugin> 
-				<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> <version>2.9.1</version> <executions> <execution> <id>attach-javadocs</id> <goals> <goal>jar</goal> </goals> </execution> </executions> </plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> 
+				<version>2.1.2</version> <executions> <execution> <id>attach-sources</id> 
+				<goals> <goal>jar</goal> </goals> </execution> </executions> </plugin> <plugin> 
+				<groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
+				<version>2.9.1</version> <executions> <execution> <id>attach-javadocs</id> 
+				<goals> <goal>jar</goal> </goals> </execution> </executions> </plugin> -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
 					<!-- for manual assembly configuration -->
-					<!-- <descriptors> <descriptor>src/main/assembly/assembly.xml</descriptor> </descriptors> -->
+					<!-- <descriptors> <descriptor>src/main/assembly/assembly.xml</descriptor> 
+						</descriptors> -->
 					<!-- for predefined descriptor -->
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>

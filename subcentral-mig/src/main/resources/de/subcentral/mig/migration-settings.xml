@@ -1,0 +1,37 @@
+<migration>
+
+	<series>
+		<series name="Psych" thetvdbId="79335" />
+		<seriesNameReplacers>
+		</seriesNameReplacers>
+	</series>
+
+
+	<subtitles>
+		<contributionTypes>
+			<contributionType type="TRANSCRIPT" pattern="\b(VO von|VO by|Transcript|Subs)\b" />
+			<contributionType type="TIMINGS" pattern="\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs)\b" />
+			<contributionType type="TRANSLATION" pattern="\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\b" />
+			<contributionType type="REVISION" pattern="\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected)\b" />
+			<contributionType type="ADJUSTMENT" pattern="\b(Anpassung|Anpasser|Angepasst|Adjusted by)\\b" />
+			<contributionType type="" pattern="\b(Special Thx to)\b" />
+		</contributionTypes>
+		<knownContributors>
+			<knownContributor pattern="Randall Flagg" patternMode="LITERAL"/>
+			<knownContributor pattern="The old Man" patternMode="LITERAL"/>
+			<knownContributor pattern="JW 301" patternMode="LITERAL"/>
+			<knownContributor pattern="-TiLT- aka smizz" patternMode="LITERAL"/>
+			<knownContributor pattern="smizz aka -TiLT-" patternMode="LITERAL"/>
+			<knownContributor pattern="Kami Cat" patternMode="LITERAL"/>
+			<knownContributor pattern="Iulius Monea" patternMode="LITERAL"/>
+		</knownContributors>
+		<knownNonContributors>
+			<knownNonContributor pattern="\b(und|and|from|von|by)\b" patternMode="REGEX"/>
+		</knownNonContributors>
+		<contributorNameReplacers>
+			<replacer pattern="(.*)\\." patternMode="REGEX" replacement="$1" />
+			<replacer pattern="smizz aka -TiLT-" patternMode="LITERAL" replacement="-TiLT- aka smizz" />
+			<replacer pattern="Ic3m4n" patternMode="LITERAL" replacement="Ic3m4n™" />
+		</contributorNameReplacers>
+	</subtitles>
+</migration>

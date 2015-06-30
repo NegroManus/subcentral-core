@@ -60,9 +60,9 @@ public class Repository
 
     public Optional<Series> findSeries(Series candidate)
     {
-	List<StandardizingChange> changes = Config.INSTANCE.getStandardizingService().standardize(candidate);
+	List<StandardizingChange> changes = MigrationSettings.INSTANCE.getStandardizingService().standardize(candidate);
 	changes.stream().forEach((c) -> log.debug("Changed Series {}", c));
-	return series.stream().filter(NamingUtil.filterByName(candidate, NamingDefaults.getDefaultNormalizingNamingService(), Config.INSTANCE.getNamingParams())).findAny();
+	return series.stream().filter(NamingUtil.filterByName(candidate, NamingDefaults.getDefaultNormalizingNamingService(), MigrationSettings.INSTANCE.getNamingParams())).findAny();
     }
 
     public static void main(String[] args)

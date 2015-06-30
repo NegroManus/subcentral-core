@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,26 +15,26 @@ import org.jsoup.Jsoup;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.file.subtitle.Item;
 import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.Contribution;
+import de.subcentral.core.standardizing.StandardizingChange;
+import de.subcentral.core.standardizing.StandardizingService;
 
 public class ContributionParser
 {
-    private final List<ContributionTypePattern>	 contributionTypePatterns;
-    private final Set<Pattern>			 knownContributors;
-    private final Set<Pattern>			 knownNonContributors;
-    private final List<Function<String, String>> contributorReplacers;
+    private final List<ContributionTypePattern>	contributionTypePatterns;
+    private final List<Pattern>			knownContributors;
+    private final List<Pattern>			knownNonContributors;
+    private final StandardizingService		standardizingService;
 
-    public ContributionParser(List<ContributionTypePattern> contributionTypePatterns, Set<Pattern> knownContributors, Set<Pattern> knownNonContributors,
-	    List<Function<String, String>> contributorReplacers)
+    public ContributionParser(List<ContributionTypePattern> contributionTypePatterns, List<Pattern> knownContributors, List<Pattern> knownNonContributors, StandardizingService standardizingService)
     {
 	this.contributionTypePatterns = ImmutableList.copyOf(contributionTypePatterns);
-	this.knownContributors = ImmutableSet.copyOf(knownContributors);
-	this.knownNonContributors = ImmutableSet.copyOf(knownNonContributors);
-	this.contributorReplacers = contributorReplacers;
+	this.knownContributors = ImmutableList.copyOf(knownContributors);
+	this.knownNonContributors = ImmutableList.copyOf(knownNonContributors);
+	this.standardizingService = standardizingService;
     }
 
     public List<ContributionTypePattern> getContributionTypePatterns()
@@ -43,19 +42,19 @@ public class ContributionParser
 	return contributionTypePatterns;
     }
 
-    public Set<Pattern> getKnownContributors()
+    public List<Pattern> getKnownContributors()
     {
 	return knownContributors;
     }
 
-    public Set<Pattern> getKnownNonContributors()
+    public List<Pattern> getKnownNonContributors()
     {
 	return knownNonContributors;
     }
 
-    public List<Function<String, String>> getContributorReplacers()
+    public StandardizingService getStandardizingService()
     {
-	return contributorReplacers;
+	return standardizingService;
     }
 
     public List<Contribution> parse(SubtitleFile data)
@@ -104,8 +103,11 @@ public class ContributionParser
 		    {
 			for (String contributionType : currentContributionTypes)
 			{
-			    String name = standardizeContributor(normalizedText.substring(token.start, token.end));
-			    contributions.add(new Contribution(new Subber(name), contributionType));
+			    String name = normalizedText.substring(token.start, token.end);
+			    Subber subber = new Subber(name);
+			    List<StandardizingChange> changes = standardizingService.standardize(subber);
+			    changes.forEach(System.out::println);
+			    contributions.add(new Contribution(subber, contributionType));
 			}
 		    }
 		    break;
@@ -155,10 +157,9 @@ public class ContributionParser
 	    return ImmutableList.of();
 	}
 
-	// tokenize the remaining of the textnormalizedText
+	// tokenize the remaining of the normalizedText
 	try (Scanner scanner = new Scanner(normalizedText);)
 	{
-	    // "\\W*(&|und|and|,)\\W*"
 	    scanner.useDelimiter(Pattern.compile("[\\s,/+]+"));
 	    while (scanner.hasNext())
 	    {
@@ -177,15 +178,6 @@ public class ContributionParser
 	// sort by token index
 	tokens.sort((Token t1, Token t2) -> t1.start - t2.start);
 	return tokens;
-    }
-
-    private String standardizeContributor(String name)
-    {
-	for (Function<String, String> replacer : contributorReplacers)
-	{
-	    name = replacer.apply(name);
-	}
-	return name;
     }
 
     private static String replaceTokenWithSpaces(String text, int start, int end)

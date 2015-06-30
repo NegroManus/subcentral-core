@@ -7,7 +7,13 @@ import de.subcentral.core.metadata.media.Series;
 
 public interface TheTvDbApi
 {
+    /**
+     * Value is of type Integer.
+     */
     public static final String ATTRIBUTE_THETVDB_ID = "THETVDB_ID";
+    /**
+     * Value is of type String.
+     */
     public static final String ATTRIBUTE_IMDB_ID    = "IMDB_ID";
 
     public static final String IMAGE_TYPE_BANNER	= "banner";

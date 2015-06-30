@@ -8,22 +8,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+
+import com.google.common.io.Resources;
 
 import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.Contribution;
-import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.standardizing.PatternStringReplacer;
-import de.subcentral.core.standardizing.StringReplacer;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.mig.ContributionParser.ContributionTypePattern;
 
 public class Migration
 {
@@ -31,41 +25,25 @@ public class Migration
 
     private static ContributionParser initContributionParser()
     {
-	ImmutableList.Builder<ContributionTypePattern> patterns = ImmutableList.builder();
-	patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\\b", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE),
-		Subtitle.CONTRIBUTION_TYPE_TRANSLATION));
-	patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected)\\b",
-		Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), Subtitle.CONTRIBUTION_TYPE_REVISION));
-	patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Anpassung|Anpasser|Angepasst|Adjusted by)\\b", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE),
-		SubtitleAdjustment.CONTRIBUTION_TYPE_ADJUSTMENT));
-	patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs|Sync)\\b", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE),
-		Subtitle.CONTRIBUTION_TYPE_TIMINGS));
-	// nicht nur "VO", weil das zu oft vorkommt. Daher "VO von"
-	patterns.add(new ContributionTypePattern(Pattern.compile("\\b(VO von|VO by|Transcript|Subs)\\b", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT));
-	patterns.add(new ContributionTypePattern(Pattern.compile("\\b(Special Thx to)\\b", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE), null));
+	try
+	{
+	    MigrationSettings settings = MigrationSettings.INSTANCE;
 
-	ImmutableSet.Builder<Pattern> knownContributors = ImmutableSet.builder();
-	knownContributors.add(Pattern.compile("(Randall Flagg|The old Man|JW 301|-TiLT- aka smizz|smizz aka -TiLT-|Kami Cat|Iulius Monea)", Pattern.CASE_INSENSITIVE));
+	    settings.load(Resources.getResource("de/subcentral/mig/migration-settings.xml"));
 
-	ImmutableSet.Builder<Pattern> knownNonContributors = ImmutableSet.builder();
-	knownNonContributors.add(Pattern.compile("\\b(und|and|from|von|by)\\b", Pattern.CASE_INSENSITIVE));
-
-	ImmutableList.Builder<Function<String, String>> contributorReplacers = ImmutableList.builder();
-	contributorReplacers.add(new PatternStringReplacer(Pattern.compile("(.*)\\."), "$1", PatternStringReplacer.Mode.REPLACE_COMPLETE));
-	contributorReplacers.add(new StringReplacer("Ic3m4n", "Ic3m4n™", StringReplacer.Mode.REPLACE_COMPLETE));
-	contributorReplacers.add(new StringReplacer("smizz aka -TiLT-", "-TiLT- aka smizz", StringReplacer.Mode.REPLACE_COMPLETE));
-
-	return new ContributionParser(patterns.build(), knownContributors.build(), knownNonContributors.build(), contributorReplacers.build());
+	    ContributionParser parser = new ContributionParser(settings.contributionTypePatternsProperty(),
+		    settings.knownContributorsProperty(),
+		    settings.knownNonContributorsProperty(),
+		    settings.getStandardizingService());
+	    return parser;
+	}
+	catch (ConfigurationException e)
+	{
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	    return null;
+	}
     }
-
-    // public static void main(String[] args) throws IOException
-    // {
-    // int attachmentId = 10527;
-    // SubCentralApi service = new SubCentralHttpApi();
-    // service.login("NegroManus", "xxx");
-    // service.downloadAttachment(attachmentId, Paths.get(System.getProperty("user.home"), "Downloads", "!sc-src"));
-    // // service.logout();
-    // }
 
     public static void main(String[] args) throws IOException
     {
@@ -83,6 +61,7 @@ public class Migration
 		long startRead = System.nanoTime();
 		// System.out.println("Reading " + file);
 		SubtitleFile data = subRip.read(file, Charset.forName("Cp1252"));
+		System.out.println(file);
 		sink.accept(data);
 		TimeUtil.printDurationMillis("reading one", startRead);
 	    }
