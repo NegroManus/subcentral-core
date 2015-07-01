@@ -15,6 +15,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.standardizing.PatternStringReplacer;
 import de.subcentral.core.standardizing.PatternStringReplacer.Mode;
@@ -75,10 +76,9 @@ public class MigrationSettings
     {
 	series.setAll(loadSeries(cfg, "series.series"));
 	contributionTypePatterns.setAll(loadContributionTypePatterns(cfg, "subtitles.contributionTypes.contributionType"));
-	knownContributors.setAll(loadUserPatterns(cfg, "subtitles.knownContributors.knownContributor"));
-	knownNonContributors.setAll(loadUserPatterns(cfg, "subtitles.knownNonContributors.knownNonContributor"));
+	knownContributors.setAll(loadUserPatterns(cfg, "subtitles.knownContributors.contributor"));
+	knownNonContributors.setAll(loadUserPatterns(cfg, "subtitles.knownNonContributors.contributor"));
 	standardizingService.setValue(loadStandardizingService(cfg));
-
     }
 
     private static List<Series> loadSeries(XMLConfiguration cfg, String key)
@@ -109,6 +109,19 @@ public class MigrationSettings
 	}
 	patterns.trimToSize();
 	return patterns;
+    }
+
+    private static List<Contributor> loadSources(XMLConfiguration cfg, String key)
+    {
+	ArrayList<Contributor> sources = new ArrayList<>();
+	List<HierarchicalConfiguration<ImmutableNode>> sourceCfgs = cfg.configurationsAt(key);
+	for (HierarchicalConfiguration<ImmutableNode> sourceCfg : sourceCfgs)
+	{
+	    String name = sourceCfg.getString("");
+	    sources.add(new Subber(name));
+	}
+	sources.trimToSize();
+	return sources;
     }
 
     private static List<Pattern> loadUserPatterns(XMLConfiguration cfg, String key)

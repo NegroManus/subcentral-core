@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 
 import com.google.common.base.CharMatcher;
@@ -24,37 +26,51 @@ import de.subcentral.core.standardizing.StandardizingService;
 
 public class ContributionParser
 {
-    private final List<ContributionTypePattern>	contributionTypePatterns;
-    private final List<Pattern>			knownContributors;
-    private final List<Pattern>			knownNonContributors;
-    private final StandardizingService		standardizingService;
+    private static final Logger log = LogManager.getLogger(ContributionParser.class);
 
-    public ContributionParser(List<ContributionTypePattern> contributionTypePatterns, List<Pattern> knownContributors, List<Pattern> knownNonContributors, StandardizingService standardizingService)
-    {
-	this.contributionTypePatterns = ImmutableList.copyOf(contributionTypePatterns);
-	this.knownContributors = ImmutableList.copyOf(knownContributors);
-	this.knownNonContributors = ImmutableList.copyOf(knownNonContributors);
-	this.standardizingService = standardizingService;
-    }
+    private ImmutableList<ContributionTypePattern> contributionTypePatterns = ImmutableList.of();
+    private ImmutableList<Pattern>		   knownContributors	    = ImmutableList.of();
+    private ImmutableList<Pattern>		   knownNonContributors	    = ImmutableList.of();
+    private StandardizingService		   standardizingService	    = null;
 
-    public List<ContributionTypePattern> getContributionTypePatterns()
+    public ImmutableList<ContributionTypePattern> getContributionTypePatterns()
     {
 	return contributionTypePatterns;
     }
 
-    public List<Pattern> getKnownContributors()
+    public void setContributionTypePatterns(Iterable<? extends ContributionTypePattern> contributionTypePatterns)
+    {
+	this.contributionTypePatterns = ImmutableList.copyOf(contributionTypePatterns);
+    }
+
+    public ImmutableList<Pattern> getKnownContributors()
     {
 	return knownContributors;
     }
 
-    public List<Pattern> getKnownNonContributors()
+    public void setKnownContributors(Iterable<? extends Pattern> knownContributors)
+    {
+	this.knownContributors = ImmutableList.copyOf(knownContributors);
+    }
+
+    public ImmutableList<Pattern> getKnownNonContributors()
     {
 	return knownNonContributors;
+    }
+
+    public void setKnownNonContributors(Iterable<? extends Pattern> knownNonContributors)
+    {
+	this.knownNonContributors = ImmutableList.copyOf(knownNonContributors);
     }
 
     public StandardizingService getStandardizingService()
     {
 	return standardizingService;
+    }
+
+    public void setStandardizingService(StandardizingService standardizingService)
+    {
+	this.standardizingService = standardizingService;
     }
 
     public List<Contribution> parse(SubtitleFile data)
@@ -64,15 +80,13 @@ public class ContributionParser
 	{
 	    parseItemText(item.getText(), contributions);
 	}
-	contributions = contributions.stream().distinct().collect(Collectors.toList());
+	contributions = clean(contributions);
 	return contributions;
     }
 
     private void parseItemText(String text, List<Contribution> contributions)
     {
-	String normalizedText = text;
-	// remove html tags
-	normalizedText = Jsoup.parse(normalizedText).text();
+	String normalizedText = normalizeText(text);
 
 	List<Token> tokens = tokenize(normalizedText);
 	if (tokens.isEmpty())
@@ -97,17 +111,16 @@ public class ContributionParser
 		case CONTRIBUTOR:
 		    if (currentContributionTypes.isEmpty())
 		    {
-			// contributions.add(new Contribution(new Subber(text.substring(token.start, token.end)), null));
+			String name = normalizedText.substring(token.start, token.end);
+			addContribution(contributions, null, name);
 		    }
 		    else
 		    {
+			// add contributions for this contributor (one per contributionType)
 			for (String contributionType : currentContributionTypes)
 			{
 			    String name = normalizedText.substring(token.start, token.end);
-			    Subber subber = new Subber(name);
-			    List<StandardizingChange> changes = standardizingService.standardize(subber);
-			    changes.forEach(System.out::println);
-			    contributions.add(new Contribution(subber, contributionType));
+			    addContribution(contributions, contributionType, name);
 			}
 		    }
 		    break;
@@ -116,6 +129,23 @@ public class ContributionParser
 	    }
 	    typeOfLastToken = token.type;
 	}
+    }
+
+    private void addContribution(List<Contribution> list, String contributionType, String contributor)
+    {
+	Subber subber = new Subber(contributor);
+	if (standardizingService != null)
+	{
+	    List<StandardizingChange> changes = standardizingService.standardize(subber);
+	    changes.forEach(System.out::println);
+	}
+	list.add(new Contribution(subber, contributionType));
+    }
+
+    private String normalizeText(String text)
+    {
+	// remove html tags
+	return Jsoup.parse(text).text();
     }
 
     private List<Token> tokenize(String text)
@@ -152,32 +182,37 @@ public class ContributionParser
 	    }
 	}
 
-	if (!isCreditItem)
+	if (isCreditItem)
 	{
-	    return ImmutableList.of();
-	}
-
-	// tokenize the remaining of the normalizedText
-	try (Scanner scanner = new Scanner(normalizedText);)
-	{
-	    scanner.useDelimiter(Pattern.compile("[\\s,/+]+"));
-	    while (scanner.hasNext())
+	    // tokenize the remaining of the normalizedText
+	    try (Scanner scanner = new Scanner(normalizedText);)
 	    {
-		String token = scanner.next();
-		// contains letter or digit
-		boolean isWord = CharMatcher.JAVA_LETTER_OR_DIGIT.matchesAnyOf(token);
-		if (isWord)
+		scanner.useDelimiter(Pattern.compile("[\\s,/+]+"));
+		while (scanner.hasNext())
 		{
-		    int start = normalizedText.indexOf(token);
-		    int end = start + token.length();
-		    tokens.add(Token.forContributor(start, end));
+		    String token = scanner.next();
+		    // contains letter or digit
+		    boolean isWord = CharMatcher.JAVA_LETTER_OR_DIGIT.matchesAnyOf(token);
+		    if (isWord)
+		    {
+			int start = normalizedText.indexOf(token);
+			int end = start + token.length();
+			tokens.add(Token.forContributor(start, end));
+		    }
 		}
 	    }
 	}
 
-	// sort by token index
+	// sort by token start index
 	tokens.sort((Token t1, Token t2) -> t1.start - t2.start);
 	return tokens;
+    }
+
+    private List<Contribution> clean(List<Contribution> contributions)
+    {
+	List<Contribution> list = contributions.stream().distinct().collect(Collectors.toList());
+
+	return list;
     }
 
     private static String replaceTokenWithSpaces(String text, int start, int end)

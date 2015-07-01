@@ -12,24 +12,29 @@
 			<contributionType type="TRANSCRIPT" pattern="\b(VO von|VO by|Transcript|Subs)\b" />
 			<contributionType type="TIMINGS" pattern="\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs)\b" />
 			<contributionType type="TRANSLATION" pattern="\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\b" />
-			<contributionType type="REVISION" pattern="\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected)\b" />
+			<contributionType type="REVISION" pattern="\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected|corrections)\b" />
 			<contributionType type="ADJUSTMENT" pattern="\b(Anpassung|Anpasser|Angepasst|Adjusted by)\\b" />
 			<contributionType type="" pattern="\b(Special Thx to)\b" />
 		</contributionTypes>
 		<knownContributors>
-			<knownContributor pattern="Randall Flagg" patternMode="LITERAL"/>
-			<knownContributor pattern="The old Man" patternMode="LITERAL"/>
-			<knownContributor pattern="JW 301" patternMode="LITERAL"/>
-			<knownContributor pattern="-TiLT- aka smizz" patternMode="LITERAL"/>
-			<knownContributor pattern="smizz aka -TiLT-" patternMode="LITERAL"/>
-			<knownContributor pattern="Kami Cat" patternMode="LITERAL"/>
-			<knownContributor pattern="Iulius Monea" patternMode="LITERAL"/>
+			<contributor pattern="(?i)(www\.)?addic7ed\.com" patternMode="REGEX" />
+			<contributor pattern="(?i)(www\.)?subcentral\.de" patternMode="REGEX" />
+			<contributor pattern="Randall Flagg" patternMode="LITERAL" />
+			<contributor pattern="The old Man" patternMode="LITERAL" />
+			<contributor pattern="JW 301" patternMode="LITERAL" />
+			<contributor pattern="-TiLT- aka smizz" patternMode="LITERAL" />
+			<contributor pattern="smizz aka -TiLT-" patternMode="LITERAL" />
+			<contributor pattern="Kami Cat" patternMode="LITERAL" />
+			<contributor pattern="Iulius Monea" patternMode="LITERAL" />
 		</knownContributors>
 		<knownNonContributors>
-			<knownNonContributor pattern="\b(und|and|from|von|by)\b" patternMode="REGEX"/>
+			<contributor pattern="\b(und|and|from|von|by)\b" patternMode="REGEX" />
 		</knownNonContributors>
 		<contributorNameReplacers>
-			<replacer pattern="(.*)\\." patternMode="REGEX" replacement="$1" />
+			<!-- standardize websites: remove the "www." -->
+			<replacer pattern="www\.([\w\.-]+)" patternMode="REGEX" replacement="$1" />
+			<!-- Sometimes the credits are in a sentence with a dot at the end. So that dot needs to be removed. Example: "Übersetzt von NegroManus." -->
+			<replacer pattern="(.*)\." patternMode="REGEX" replacement="$1" />
 			<replacer pattern="smizz aka -TiLT-" patternMode="LITERAL" replacement="-TiLT- aka smizz" />
 			<replacer pattern="Ic3m4n" patternMode="LITERAL" replacement="Ic3m4n™" />
 		</contributorNameReplacers>
