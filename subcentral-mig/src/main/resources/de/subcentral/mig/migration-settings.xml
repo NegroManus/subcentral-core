@@ -8,9 +8,12 @@
 
 
 	<subtitles>
+		<!-- TODO -->
+		<!-- "thx to addic7ed.com for transcript||thx to italiansubs.net for timecodes" -->
+		<!-- "VO-Überarbeitung" -> TRANSCRIPT + TIMINGS -->
 		<contributionTypes>
 			<contributionType type="TRANSCRIPT" pattern="\b(VO von|VO by|Transcript|Subs)\b" />
-			<contributionType type="TIMINGS" pattern="\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs)\b" />
+			<contributionType type="TIMINGS" pattern="\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs|timecodes)\b" />
 			<contributionType type="TRANSLATION" pattern="\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\b" />
 			<contributionType type="REVISION" pattern="\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected|corrections)\b" />
 			<contributionType type="ADJUSTMENT" pattern="\b(Anpassung|Anpasser|Angepasst|Adjusted by)\\b" />
@@ -28,7 +31,7 @@
 			<contributor pattern="Iulius Monea" patternMode="LITERAL" />
 		</knownContributors>
 		<knownNonContributors>
-			<contributor pattern="\b(und|and|from|von|by|eine)\b" patternMode="REGEX" />
+			<contributor pattern="\b(und|and|from|von|by|eine|thx|to|for)\b" patternMode="REGEX" />
 		</knownNonContributors>
 		<contributorNameReplacers>
 			<!-- standardize websites: remove the "www." -->
