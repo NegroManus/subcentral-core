@@ -142,11 +142,11 @@ public class MigrationSettings
     private static StandardizingService loadStandardizingService(XMLConfiguration cfg)
     {
 	TypeStandardizingService service = new TypeStandardizingService("migration");
-	for (PatternStringReplacer seriesNameReplacer : loadPatternStringReplacers(cfg, "series.seriesNameReplacers.seriesNameReplacer"))
+	for (PatternStringReplacer seriesNameReplacer : loadPatternStringReplacers(cfg, "series.seriesNameReplacers.replacer"))
 	{
 	    service.registerStandardizer(Series.class, new SeriesNameStandardizer(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
 	}
-	for (PatternStringReplacer contributorNameReplacer : loadPatternStringReplacers(cfg, "subtitles.contributorNameReplacers.contributorNameReplacer"))
+	for (PatternStringReplacer contributorNameReplacer : loadPatternStringReplacers(cfg, "subtitles.contributorNameReplacers.replacer"))
 	{
 	    service.registerStandardizer(Subber.class, new ReflectiveStandardizer<Subber, String>(Subber.class, "name", contributorNameReplacer));
 	}

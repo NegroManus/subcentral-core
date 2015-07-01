@@ -137,7 +137,7 @@ public class ContributionParser
 	if (standardizingService != null)
 	{
 	    List<StandardizingChange> changes = standardizingService.standardize(subber);
-	    changes.forEach(System.out::println);
+	    changes.forEach((c) -> log.debug("Standardized contributor: {}", c));
 	}
 	list.add(new Contribution(subber, contributionType));
     }

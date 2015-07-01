@@ -13,6 +13,8 @@ import java.util.StringJoiner;
 import java.util.function.Consumer;
 
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
@@ -22,13 +24,18 @@ import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parsing.ParsingUtil;
+import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.subcentralde.SubCentralDe;
 
 public class Migration
 {
+    private static final Logger log = LogManager.getLogger(Migration.class);
+
     private static final ContributionParser   CONTRIBUTION_PARSER = initContributionParser();
     private static final List<ParsingService> PARSING_SERVICES	  = initParsingServices();
 
@@ -76,23 +83,24 @@ public class Migration
 	{
 	    for (Path file : stream)
 	    {
-		long startRead = System.nanoTime();
-		// System.out.println("Reading " + file);
-
+		long startSingle = System.nanoTime();
+		log.debug("Processing {}", file);
+		String name = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
+		SubtitleAdjustment metadata = ParsingUtil.parse(name, SubtitleAdjustment.class, PARSING_SERVICES);
+		log.debug("Parsed metadata: {}", metadata);
 		SubtitleFile data = subRip.read(file, Charset.forName("Cp1252"));
-		System.out.println(file);
+		log.debug("Read {} items", data.getItems().size());
 		sink.accept(data);
-		TimeUtil.printDurationMillis("reading one", startRead);
-		System.out.println();
+		log.debug("Processed {} in {} ms", file, TimeUtil.durationMillis(startSingle));
 	    }
 	}
-	TimeUtil.printDurationMillis("reading all", startTotal);
+	log.debug("Processed the files in {} ms", TimeUtil.durationMillis(startTotal));
     }
 
     private static void parseContributions(SubtitleFile data)
     {
-	// System.out.println(data);
 	List<Contribution> contributions = CONTRIBUTION_PARSER.parse(data);
+	log.debug("Parsed contributions:");
 	for (Map.Entry<String, Collection<Contribution>> entry : ContributionUtil.groupByType(contributions).asMap().entrySet())
 	{
 	    StringJoiner contributors = new StringJoiner(", ");
@@ -100,7 +108,7 @@ public class Migration
 	    {
 		contributors.add(c.getContributor().getName());
 	    }
-	    System.out.println(entry.getKey() + ": " + contributors.toString());
+	    log.debug("{}: {}", entry.getKey().isEmpty() ? "<unspecified>" : entry.getKey(), contributors.toString());
 	}
     }
 }

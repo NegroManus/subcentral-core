@@ -10,17 +10,22 @@ import de.subcentral.core.metadata.Contributor;
 
 public class Subber implements Contributor
 {
-    private final String name;
+    private String name;
 
     public Subber(String name)
     {
-	this.name = name;
+	setName(name);
     }
 
     @Override
     public String getName()
     {
 	return name;
+    }
+
+    public void setName(String name)
+    {
+	this.name = Objects.requireNonNull(name, "name");
     }
 
     // Object methods

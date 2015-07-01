@@ -28,7 +28,7 @@
 			<contributor pattern="Iulius Monea" patternMode="LITERAL" />
 		</knownContributors>
 		<knownNonContributors>
-			<contributor pattern="\b(und|and|from|von|by)\b" patternMode="REGEX" />
+			<contributor pattern="\b(und|and|from|von|by|eine)\b" patternMode="REGEX" />
 		</knownNonContributors>
 		<contributorNameReplacers>
 			<!-- standardize websites: remove the "www." -->
