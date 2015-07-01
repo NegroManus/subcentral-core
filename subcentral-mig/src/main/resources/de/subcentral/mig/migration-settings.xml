@@ -10,9 +10,8 @@
 	<subtitles>
 		<!-- TODO -->
 		<!-- "thx to addic7ed.com for transcript||thx to italiansubs.net for timecodes" -->
-		<!-- "VO-Überarbeitung" -> TRANSCRIPT_REVISION / TIMINGS / TRANSCRIPT, TIMINGS ??? -->
 		<contributionTypes>
-			<contributionType type="TRANSCRIPT" pattern="\b(VO von|VO by|Transcript|Subs)\b" />
+			<contributionType type="TRANSCRIPT" pattern="\b(VO von|VO by|Transcript|Subs|VO-Überarbeitung)\b" />
 			<contributionType type="TIMINGS" pattern="\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs|timecodes)\b" />
 			<contributionType type="TRANSLATION" pattern="\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\b" />
 			<contributionType type="REVISION" pattern="\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected|corrections)\b" />
