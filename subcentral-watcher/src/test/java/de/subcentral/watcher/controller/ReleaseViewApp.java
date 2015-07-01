@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.model.ObservableRelease;
 
 public class ReleaseViewApp extends Application
 {

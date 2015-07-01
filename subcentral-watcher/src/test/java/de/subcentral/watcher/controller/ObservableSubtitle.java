@@ -1,4 +1,4 @@
-package de.subcentral.watcher.model;
+package de.subcentral.watcher.controller;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -105,7 +105,7 @@ public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleAdj
 	return this.matchingReleases;
     }
 
-    public final ObservableSet<de.subcentral.watcher.model.ObservableRelease> getMatchingReleases()
+    public final ObservableSet<de.subcentral.watcher.controller.ObservableRelease> getMatchingReleases()
     {
 	return this.matchingReleasesProperty().get();
     }

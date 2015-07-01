@@ -283,27 +283,7 @@ public class SettingsController extends AbstractController
 		return !WatcherSettings.INSTANCE.getChanged() && customSettingsExist.get() && !defaultSettingsLoaded.get();
 	    }
 	});
-	saveBtn.setOnAction((ActionEvent e) -> {
-	    try
-	    {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Save settings?");
-		alert.setHeaderText("Do you want to save the current settings?");
-		alert.setContentText("The current settings will be stored in the settings file.");
-		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.YES)
-		{
-		    saveSettings();
-		}
-	    }
-	    catch (Exception e1)
-	    {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	    }
-	});
+	saveBtn.setOnAction((ActionEvent e) -> confirmSaveSettings());
 
 	restoreLastSavedBtn.disableProperty().bind(new BooleanBinding()
 	{
@@ -318,27 +298,7 @@ public class SettingsController extends AbstractController
 		return !WatcherSettings.INSTANCE.getChanged() && !defaultSettingsLoaded.get() || !customSettingsExist.get();
 	    }
 	});
-	restoreLastSavedBtn.setOnAction((ActionEvent e) -> {
-	    try
-	    {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Restore last saved settings?");
-		alert.setHeaderText("Do you want restore the last saved settings?");
-		alert.setContentText("The current settings will be replaced with the content of the settings file.");
-		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.YES)
-		{
-		    loadSettings();
-		}
-	    }
-	    catch (Exception e1)
-	    {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	    }
-	});
+	restoreLastSavedBtn.setOnAction((ActionEvent e) -> confirmRestoreLastSavedSettings());
 
 	restoreDefaultsBtn.disableProperty().bind(new BooleanBinding()
 	{
@@ -353,29 +313,7 @@ public class SettingsController extends AbstractController
 		return !WatcherSettings.INSTANCE.getChanged() && defaultSettingsLoaded.get();
 	    }
 	});
-	restoreDefaultsBtn.setOnAction((ActionEvent e) -> {
-	    try
-	    {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		// alert.getDialogPane().setPrefWidth(600d);
-		alert.setTitle("Restore defaults?");
-		alert.setHeaderText("Do you want to restore the default settings?");
-		alert.setContentText(
-			"The current settings will be replaced with the default settings.\nBut nothing will be saved until you choose to do so. You can always return to the last saved settings.");
-		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.YES)
-		{
-		    loadDefaultSettings();
-		}
-	    }
-	    catch (Exception e1)
-	    {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	    }
-	});
+	restoreDefaultsBtn.setOnAction((ActionEvent e) -> confirmRestoreDefaultSettings());
     }
 
     private void showSection(String sectionName)
@@ -466,6 +404,84 @@ public class SettingsController extends AbstractController
 	sectionSelectionTreeView.getSelectionModel().select(itemToSelect);
     }
 
+    public void confirmSaveSettings()
+    {
+	try
+	{
+	    Alert alert = new Alert(AlertType.CONFIRMATION);
+	    alert.setTitle("Save settings?");
+	    alert.setHeaderText("Do you want to save the current settings?");
+	    alert.setContentText("The current settings will be stored in the settings file.");
+	    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+	    Optional<ButtonType> result = alert.showAndWait();
+	    if (result.get() == ButtonType.YES)
+	    {
+		saveSettings();
+	    }
+	}
+	catch (Exception e1)
+	{
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
+    }
+
+    public void confirmRestoreLastSavedSettings()
+    {
+	try
+	{
+	    Alert alert = new Alert(AlertType.CONFIRMATION);
+	    alert.setTitle("Restore last saved settings?");
+	    alert.setHeaderText("Do you want restore the last saved settings?");
+	    alert.setContentText("The current settings will be replaced with the content of the settings file.");
+	    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+	    Optional<ButtonType> result = alert.showAndWait();
+	    if (result.get() == ButtonType.YES)
+	    {
+		loadSettings();
+	    }
+	}
+	catch (Exception e1)
+	{
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
+    }
+
+    public void confirmRestoreDefaultSettings()
+    {
+	try
+	{
+	    Alert alert = new Alert(AlertType.CONFIRMATION);
+	    // alert.getDialogPane().setPrefWidth(600d);
+	    alert.setTitle("Restore defaults?");
+	    alert.setHeaderText("Do you want to restore the default settings?");
+	    alert.setContentText(
+		    "The current settings will be replaced with the default settings.\nBut nothing will be saved until you choose to do so. You can always return to the last saved settings.");
+	    alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+	    Optional<ButtonType> result = alert.showAndWait();
+	    if (result.get() == ButtonType.YES)
+	    {
+		loadDefaultSettings();
+	    }
+	}
+	catch (Exception e1)
+	{
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
+    }
+
+    public void saveSettings() throws ConfigurationException
+    {
+	WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE));
+	defaultSettingsLoaded.set(false);
+	customSettingsExist.set(true);
+    }
+
     public void loadSettings() throws Exception
     {
 	Path settingsFile = Paths.get(SETTINGS_FILE).toAbsolutePath();
@@ -502,7 +518,7 @@ public class SettingsController extends AbstractController
 	customSettingsExist.set(true);
     }
 
-    private void confirmSaveSettings() throws ConfigurationException, IOException
+    private void confirmSaveUnsavedSettings() throws ConfigurationException, IOException
     {
 	if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
 	{
@@ -525,17 +541,10 @@ public class SettingsController extends AbstractController
 	}
     }
 
-    public void saveSettings() throws ConfigurationException
-    {
-	WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE));
-	defaultSettingsLoaded.set(false);
-	customSettingsExist.set(true);
-    }
-
     @Override
     public void shutdown() throws Exception
     {
-	confirmSaveSettings();
+	confirmSaveUnsavedSettings();
     }
 
     public static class Section

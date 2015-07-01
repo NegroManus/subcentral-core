@@ -1,4 +1,4 @@
-package de.subcentral.watcher.model;
+package de.subcentral.watcher.controller;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
