@@ -8,16 +8,19 @@
 
 
 	<subtitles>
-		<!-- TODO -->
-		<!-- "thx to addic7ed.com for transcript||thx to italiansubs.net for timecodes" -->
-		<contributionTypes>
-			<contributionType type="TRANSCRIPT" pattern="\b(VO von|VO by|Transcript|Subs|VO-Überarbeitung)\b" />
-			<contributionType type="TIMINGS" pattern="\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs|timecodes)\b" />
-			<contributionType type="TRANSLATION" pattern="\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\b" />
-			<contributionType type="REVISION" pattern="\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected|corrections)\b" />
-			<contributionType type="ADJUSTMENT" pattern="\b(Anpassung|Anpasser|Angepasst|Adjusted by)\\b" />
-			<contributionType type="" pattern="\b(Special Thx to)\b" />
-		</contributionTypes>
+		<!-- Normally the contributors come after the contribution types. But if not, special contribution patterns are needed -->
+		<!-- For example: "thx to addic7ed.com for transcript||thx to italiansubs.net for timecodes" -->
+		<contributionPatterns>
+			<contributionPattern pattern="thx\s+to\s+(.*?)\s+for\s+([\w-]+)" contributionTypeGroup="2" contributorGroup="1"/>
+		</contributionPatterns>
+		<contributionTypePatterns>
+			<contributionTypePattern pattern="\b(VO von|VO by|VO|Transcript|Transkript|Subs|VO-Überarbeitung)\b" type="TRANSCRIPT" />
+			<contributionTypePattern pattern="\b(Timings|Timings|Sync|Synced|Synchro|Sync's|Syncs|timecodes)\b" type="TIMINGS" />
+			<contributionTypePattern pattern="\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\b" type="TRANSLATION" />
+			<contributionTypePattern pattern="\b(Korrektur|Korrekturen|Korrekturleser|Korrigiert|Revised by|Re-revised by|Überarbeitung|Überarbeitet|Corrected|corrections)\b" type="REVISION" />
+			<contributionTypePattern pattern="\b(Anpassung|Anpasser|Angepasst|Adjusted by)\\b" type="ADJUSTMENT" />
+			<contributionTypePattern pattern="\b(Special Thx to)\b" type="" />
+		</contributionTypePatterns>
 		<knownContributors>
 			<contributor pattern="(?i)(www\.)?addic7ed\.com" patternMode="REGEX" />
 			<contributor pattern="(?i)(www\.)?subcentral\.de" patternMode="REGEX" />

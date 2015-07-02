@@ -48,6 +48,7 @@ public class Migration
 	    settings.load(Resources.getResource("de/subcentral/mig/migration-settings.xml"));
 
 	    ContributionParser parser = new ContributionParser();
+	    parser.setContributionPatterns(settings.contributionPatternsProperty());
 	    parser.setContributionTypePatterns(settings.contributionTypePatternsProperty());
 	    parser.setKnownContributors(settings.knownContributorsProperty());
 	    parser.setKnownNonContributors(settings.knownNonContributorsProperty());

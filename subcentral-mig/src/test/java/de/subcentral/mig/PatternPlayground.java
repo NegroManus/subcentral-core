@@ -8,11 +8,11 @@ public class PatternPlayground
 
     public static void main(String[] args)
     {
-	String text = " smizz aka -TiLT-";
-	Pattern p = Pattern.compile("(^|\\W)smizz aka -TiLT-(\\W|$)", Pattern.CASE_INSENSITIVE);
+	String text = "VO: addic7ed.com";
+	Pattern p = Pattern.compile("\\b(VO von|VO by|VO:|Transcript|Transkript|Subs|VO-Überarbeitung)\\b", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 
 	Matcher m = p.matcher(text);
-	while (m.find())
+	while (m.matches())
 	{
 	    System.out.println(m.group());
 	}

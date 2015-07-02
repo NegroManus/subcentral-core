@@ -28,10 +28,21 @@ public class ContributionParser
 {
     private static final Logger log = LogManager.getLogger(ContributionParser.class);
 
+    private ImmutableList<ContributionPattern>	   contributionPatterns	    = ImmutableList.of();
     private ImmutableList<ContributionTypePattern> contributionTypePatterns = ImmutableList.of();
     private ImmutableList<Pattern>		   knownContributors	    = ImmutableList.of();
     private ImmutableList<Pattern>		   knownNonContributors	    = ImmutableList.of();
     private StandardizingService		   standardizingService	    = null;
+
+    public ImmutableList<ContributionPattern> getContributionPatterns()
+    {
+	return contributionPatterns;
+    }
+
+    public void setContributionPatterns(Iterable<? extends ContributionPattern> contributionPatterns)
+    {
+	this.contributionPatterns = ImmutableList.copyOf(contributionPatterns);
+    }
 
     public ImmutableList<ContributionTypePattern> getContributionTypePatterns()
     {
@@ -100,6 +111,9 @@ public class ContributionParser
 	{
 	    switch (token.type)
 	    {
+		case CONTRIBUTION:
+		    addContribution(contributions, token.contributionType, token.contributor);
+		    break;
 		case CONTRIBUTION_TYPE:
 		    if (Token.Type.CONTRIBUTOR == typeOfLastToken)
 		    {
@@ -111,8 +125,8 @@ public class ContributionParser
 		case CONTRIBUTOR:
 		    if (currentContributionTypes.isEmpty())
 		    {
-			String name = normalizedText.substring(token.start, token.end);
-			addContribution(contributions, null, name);
+			String contributor = normalizedText.substring(token.start, token.end);
+			addContribution(contributions, null, contributor);
 		    }
 		    else
 		    {
@@ -144,15 +158,50 @@ public class ContributionParser
 
     private String normalizeText(String text)
     {
-	// remove html tags
-	return Jsoup.parse(text).text();
+	// remove html tags like <b>
+	text = Jsoup.parse(text).text();
+	// remove SRT tags like {\an8}
+	text = text.replaceAll("\\{\\\\.*?\\}", "");
+	return text;
     }
 
     private List<Token> tokenize(String text)
     {
 	String normalizedText = text;
-
+	boolean isCreditItem = false;
 	List<Token> tokens = new ArrayList<>();
+
+	for (ContributionPattern pattern : contributionPatterns)
+	{
+	    Matcher m = pattern.getPattern().matcher(normalizedText);
+	    while (m.find())
+	    {
+		isCreditItem = true;
+		String contributionType = m.group(pattern.contributionTypeGroup);
+		for (ContributionTypePattern contrTypePattern : contributionTypePatterns)
+		{
+		    Matcher contrTypeMatcher = contrTypePattern.getPattern().matcher(contributionType);
+		    if (contrTypeMatcher.matches())
+		    {
+			contributionType = contrTypePattern.getContributionType();
+		    }
+		}
+		tokens.add(Token.forContribution(m.start(), m.end(), contributionType, m.group(pattern.contributorGroup)));
+		normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
+	    }
+	}
+
+	for (ContributionTypePattern mapping : contributionTypePatterns)
+	{
+	    Matcher m = mapping.getPattern().matcher(normalizedText);
+	    while (m.find())
+	    {
+		isCreditItem = true;
+		tokens.add(Token.forContributionType(m.start(), m.end(), mapping.getContributionType()));
+		normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
+	    }
+	}
+
 	for (Pattern knownContributor : knownContributors)
 	{
 	    Matcher m = knownContributor.matcher(normalizedText);
@@ -162,22 +211,12 @@ public class ContributionParser
 		normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
 	    }
 	}
+
 	for (Pattern knownNonContributor : knownNonContributors)
 	{
 	    Matcher m = knownNonContributor.matcher(normalizedText);
 	    while (m.find())
 	    {
-		normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
-	    }
-	}
-	boolean isCreditItem = false;
-	for (ContributionTypePattern mapping : contributionTypePatterns)
-	{
-	    Matcher m = mapping.getPattern().matcher(normalizedText);
-	    while (m.find())
-	    {
-		isCreditItem = true;
-		tokens.add(Token.forContributionType(m.start(), m.end(), mapping.getContributionType()));
 		normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
 	    }
 	}
@@ -224,30 +263,66 @@ public class ContributionParser
     {
 	private static enum Type
 	{
-	    CONTRIBUTION_TYPE, CONTRIBUTOR
+	    CONTRIBUTION, CONTRIBUTION_TYPE, CONTRIBUTOR
 	}
 
 	private final int    start;
 	private final int    end;
 	private final Type   type;
 	private final String contributionType;
+	private final String contributor;
+
+	private static Token forContribution(int start, int end, String contributionType, String contributor)
+	{
+	    return new Token(start, end, Type.CONTRIBUTION, contributionType, contributor);
+	}
 
 	private static Token forContributionType(int start, int end, String contributionType)
 	{
-	    return new Token(start, end, Type.CONTRIBUTION_TYPE, contributionType);
+	    return new Token(start, end, Type.CONTRIBUTION_TYPE, contributionType, null);
 	}
 
 	private static Token forContributor(int start, int end)
 	{
-	    return new Token(start, end, Type.CONTRIBUTOR, null);
+	    return new Token(start, end, Type.CONTRIBUTOR, null, null);
 	}
 
-	private Token(int start, int end, Type type, String contributionType)
+	private Token(int start, int end, Type type, String contributionType, String contributor)
 	{
 	    this.start = start;
 	    this.end = end;
 	    this.type = Objects.requireNonNull(type, "type");
 	    this.contributionType = contributionType;
+	    this.contributor = contributor;
+	}
+    }
+
+    public static class ContributionPattern
+    {
+	private final Pattern pattern;
+	private final int     contributionTypeGroup;
+	private final int     contributorGroup;
+
+	public ContributionPattern(Pattern pattern, int contributionTypeGroup, int contributorGroup)
+	{
+	    this.pattern = pattern;
+	    this.contributionTypeGroup = contributionTypeGroup;
+	    this.contributorGroup = contributorGroup;
+	}
+
+	public Pattern getPattern()
+	{
+	    return pattern;
+	}
+
+	public int getContributionTypeGroup()
+	{
+	    return contributionTypeGroup;
+	}
+
+	public int getContributorGroup()
+	{
+	    return contributorGroup;
 	}
     }
 
