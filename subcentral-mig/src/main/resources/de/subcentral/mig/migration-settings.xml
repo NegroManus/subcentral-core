@@ -15,7 +15,7 @@
 			<contributionPattern pattern="danke\s+an\s+(.*?)\s+für\s+(die|den|das)\s+([\w-]+)" contributionTypeGroup="2" contributorGroup="1" />
 		</contributionPatterns>
 		<contributionTypePatterns>
-			<contributionTypePattern pattern="\b(VO von|VO by|VO|Transcript|Transkript|Subs|VO-Überarbeitung)\b" type="TRANSCRIPT" />
+			<contributionTypePattern pattern="\b(VO bearbeitet von|VO von|VO by|VO|Transcript|Transkript|Subs|VO-Überarbeitung)\b" type="TRANSCRIPT" />
 			<contributionTypePattern pattern="\b(Timings|Timings|Synchro|Re-Synchro|Synced|Sync's|Syncs|Sync|timecodes)\b" type="TIMINGS" />
 			<contributionTypePattern pattern="Übersetzung &quot;ear2sub&quot;" type="TRANSLATION" />
 			<contributionTypePattern pattern="\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|German-subbed|Translated|Translation|Deutsche Untertitel|Untertitel)\b" type="TRANSLATION" />
