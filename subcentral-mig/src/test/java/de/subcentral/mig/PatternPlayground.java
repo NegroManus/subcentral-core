@@ -8,10 +8,11 @@ public class PatternPlayground
 
     public static void main(String[] args)
     {
-	String text = " smizz aka -TiLT-";
-	Pattern p = Pattern.compile("(^|\\W)smizz aka -TiLT-(\\W|$)", Pattern.CASE_INSENSITIVE);
+	String text = "Übersetzung \"Ear2Sub\"";
+	Pattern p = Pattern.compile("\\b(Übersetzung|Übersetzer|Übersetzt|Subbed by|Untertitel)\\b");
 
 	Matcher m = p.matcher(text);
+	System.out.println(text);
 	while (m.find())
 	{
 	    System.out.println(m.group());

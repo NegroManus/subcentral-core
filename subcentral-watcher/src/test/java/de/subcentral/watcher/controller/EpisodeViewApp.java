@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.naming.EpisodeNamer;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.model.ObservableEpisode;
 
 public class EpisodeViewApp extends Application
 {

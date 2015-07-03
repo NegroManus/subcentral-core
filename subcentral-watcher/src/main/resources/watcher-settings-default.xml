@@ -55,10 +55,11 @@
 			</guessing>
 			<compatibility enabled="true">
 				<compatibilities>
-					<crossGroupCompatibility enabled="true" sourceGroup="ASAP" compatibleGroup="IMMERSE" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="EXCELLENCE" compatibleGroup="REMARKABLE" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="FQM" compatibleGroup="ORENJI" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="LOL" compatibleGroup="DIMENSION" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="REMARKABLE" compatibleGroup="EXCELLENCE" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="ORENJI" compatibleGroup="FQM" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
 				</compatibilities>
 			</compatibility>
 		</release>

@@ -1,52 +1,24 @@
 package de.subcentral.mig;
 
-import java.util.Objects;
-
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.metadata.Contributor;
-
-public class Subber implements Contributor
+public class Subber extends AbstractContributor
 {
-    private final String name;
+    private int id;
 
-    public Subber(String name)
+    public int getId()
     {
-	this.name = name;
+	return id;
     }
 
-    @Override
-    public String getName()
+    public void setId(int id)
     {
-	return name;
-    }
-
-    // Object methods
-    @Override
-    public boolean equals(Object obj)
-    {
-	if (this == obj)
-	{
-	    return true;
-	}
-	if (obj instanceof Subber)
-	{
-	    return Objects.equals(name, ((Subber) obj).name);
-	}
-	return false;
-    }
-
-    @Override
-    public int hashCode()
-    {
-	return new HashCodeBuilder(973, 59).append(name).toHashCode();
+	this.id = id;
     }
 
     @Override
     public String toString()
     {
-	return MoreObjects.toStringHelper(Subber.class).omitNullValues().add("name", name).toString();
+	return MoreObjects.toStringHelper(Subber.class).omitNullValues().add("id", id).add("name", name).toString();
     }
 }

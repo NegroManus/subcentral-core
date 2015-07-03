@@ -1,6 +1,8 @@
-package de.subcentral.watcher.model;
+package de.subcentral.watcher.controller;
 
 import java.util.Objects;
+
+import de.subcentral.watcher.model.ObservableObject;
 
 public class ObservableBeanWrapper<T> extends ObservableObject
 {

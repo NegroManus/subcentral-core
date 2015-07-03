@@ -1,4 +1,4 @@
-package de.subcentral.watcher.model;
+package de.subcentral.watcher.controller;
 
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;

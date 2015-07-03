@@ -9,7 +9,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.util.converter.IntegerStringConverter;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.watcher.model.ObservableEpisode;
 
 public class EpisodeViewController extends AbstractController
 {

@@ -23,7 +23,8 @@ public class ContributionUtil
 	ImmutableListMultimap.Builder<String, Contribution> sorted = ImmutableListMultimap.builder();
 	for (Contribution c : contributions)
 	{
-	    sorted.put(c.getType(), c);
+	    // ImmutableListMultimap does not allow null keys but if the contribution type is unknown, it is null
+	    sorted.put(c.getType() != null ? c.getType() : "", c);
 	}
 	return sorted.build();
     }

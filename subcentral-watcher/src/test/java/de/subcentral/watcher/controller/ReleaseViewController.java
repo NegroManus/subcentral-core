@@ -24,9 +24,6 @@ import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
-import de.subcentral.watcher.model.ObservableBeanWrapper;
-import de.subcentral.watcher.model.ObservableEpisode;
-import de.subcentral.watcher.model.ObservableRelease;
 
 public class ReleaseViewController extends AbstractController
 {
