@@ -53,7 +53,7 @@ public class UserPattern implements Comparable<UserPattern>
 	    case SIMPLE:
 		return parseSimplePattern(pattern);
 	    case REGEX:
-		return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+		return Pattern.compile(pattern);
 	    default:
 		throw new IllegalStateException();
 	}
