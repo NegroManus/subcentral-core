@@ -26,17 +26,19 @@
 		</contributionTypePatterns>
 		<contributorPatterns>
 			<!-- Groups (sources) -->
-			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*addic7ed\.com" patternMode="REGEX" name="addic7ed.com" type="GROUP" />
-			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*subcentral\.de" patternMode="REGEX" name="subcentral.de" type="GROUP" />
-			<contributorPattern pattern="(?i)SubCentral" patternMode="REGEX" name="subcentral.de" type="GROUP" />
-			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*tv4user\.de" patternMode="REGEX" name="tv4user.de" type="GROUP" />
-			<contributorPattern pattern="(?i)TV4User" patternMode="REGEX" name="subcentral.de" type="GROUP" />
-			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*sous-titres\.eu" patternMode="REGEX" name="u-sub.net" type="GROUP" />
-			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*board\.tvfreaks\.to" patternMode="REGEX" name="board.tvfreaks.to" type="GROUP" />
-			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*tvfreaks\.dl\.am" patternMode="REGEX" name="tvfreaks.dl.am" type="GROUP" />
-			<contributorPattern pattern="(?i)La Fabrique" patternMode="REGEX" name="u-sub.net" type="GROUP" />
-			<contributorPattern pattern="(?i)www.ydy.com" patternMode="REGEX" name="ydy.com" type="GROUP" />
-			<contributorPattern pattern="(?i)YTET-°îµÂÖí" patternMode="REGEX" name="ydy.com" type="GROUP" />
+			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*addic7ed\.com" patternMode="REGEX" name="addic7ed.com" type="GROUP" confidence="100"/>
+			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*subcentral\.de" patternMode="REGEX" name="subcentral.de" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)SubCentral" patternMode="REGEX" name="subcentral.de" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*tv4user\.de" patternMode="REGEX" name="tv4user.de" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)TV4User" patternMode="REGEX" name="subcentral.de" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*italiansubs\.net" patternMode="REGEX" name="italiansubs.net" type="GROUP" confidence="100" />
+			
+			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*sous-titres\.eu" patternMode="REGEX" name="u-sub.net" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*board\.tvfreaks\.to" patternMode="REGEX" name="board.tvfreaks.to" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)(http://)?(www\.)?\s*tvfreaks\.dl\.am" patternMode="REGEX" name="tvfreaks.dl.am" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)La Fabrique" patternMode="REGEX" name="u-sub.net" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)www.ydy.com" patternMode="REGEX" name="ydy.com" type="GROUP" confidence="100" />
+			<contributorPattern pattern="(?i)YTET-°îµÂÖí" patternMode="REGEX" name="ydy.com" type="GROUP" confidence="100" />
 
 
 			<!-- Subber that are not in any list -->
@@ -218,8 +220,8 @@
 			<contributorPattern pattern="(?&lt;!\w)\QKami Cat\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="47062" />
 			<contributorPattern pattern="(?&lt;!\w)\Qkampfzicke\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="84751" />
 			<contributorPattern pattern="(?&lt;!\w)\Qkaputter\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="9338" />
-			<contributorPattern pattern="(?&lt;!\w)\QKaro\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="50422" />
-			<contributorPattern pattern="(?&lt;!\w)\QKarteileiche\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="25615" confidence="0" />
+			<contributorPattern pattern="(?&lt;!\w)\QKaro\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="50422" confidence="0" />
+			<contributorPattern pattern="(?&lt;!\w)\QKarteileiche\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="25615" />
 			<contributorPattern pattern="(?&lt;!\w)\Qkatalaki\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="100789" />
 			<contributorPattern pattern="(?&lt;!\w)\QKatGo\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="34373" />
 			<contributorPattern pattern="(?&lt;!\w)\Qkc1\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="24443" />
@@ -296,7 +298,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\QPPcoool\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="14887" />
 			<contributorPattern pattern="(?&lt;!\w)\QProdigyAD\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="37076" />
 			<contributorPattern pattern="(?&lt;!\w)\QProserpine\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="114493" />
-			<contributorPattern pattern="(?&lt;!\w)\QPuh\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="51617" />
+			<contributorPattern pattern="(?&lt;!\w)\QPuh\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="51617" confidence="0" />
 			<contributorPattern pattern="(?&lt;!\w)\Qpydnarocker\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="27637" />
 			<contributorPattern pattern="(?&lt;!\w)\Qraider\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="11774" />
 			<contributorPattern pattern="(?&lt;!\w)\QRainer_Hohn\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="19528" />
@@ -305,7 +307,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\Qrealexkav\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="59771" />
 			<contributorPattern pattern="(?&lt;!\w)\QRebekah Mikaelson\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="203019" />
 			<contributorPattern pattern="(?&lt;!\w)\QRedScorpion\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="26021" />
-			<contributorPattern pattern="(?&lt;!\w)\QReifen\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="26797" />
+			<contributorPattern pattern="(?&lt;!\w)\QReifen\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="26797" confidence="0" />
 			<contributorPattern pattern="(?&lt;!\w)\QRevan\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="13409" />
 			<contributorPattern pattern="(?&lt;!\w)\QRick_Castle\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="75165" />
 			<contributorPattern pattern="(?&lt;!\w)\QriOrizOr\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="11647" />

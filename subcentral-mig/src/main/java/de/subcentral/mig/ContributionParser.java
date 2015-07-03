@@ -108,7 +108,7 @@ public class ContributionParser
 	{
 	    return;
 	}
-	log.debug("Credit item candidate. text: \"{}\" -> tokens: {}", textOneLine, tokens);
+	log.debug("Found credit item candidate. text: \"{}\" -> tokens: {}", textOneLine, tokens);
 	int score = calculateCreditItemConfidence(tokens);
 	if (score <= 0)
 	{
@@ -289,8 +289,8 @@ public class ContributionParser
 		while (scanner.hasNext())
 		{
 		    String token = scanner.next();
-		    // contains letter or digit
-		    boolean isWord = CharMatcher.JAVA_LETTER_OR_DIGIT.matchesAnyOf(token);
+		    // contains letter
+		    boolean isWord = CharMatcher.JAVA_LETTER.matchesAnyOf(token);
 		    if (isWord)
 		    {
 			MatchResult match = scanner.match();
