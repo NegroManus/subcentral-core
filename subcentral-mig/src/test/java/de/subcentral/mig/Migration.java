@@ -49,9 +49,9 @@ public class Migration
 
 	    ContributionParser parser = new ContributionParser();
 	    parser.setContributionPatterns(settings.contributionPatternsProperty());
+	    parser.setContributorPatterns(settings.contributorPatternsProperty());
 	    parser.setContributionTypePatterns(settings.contributionTypePatternsProperty());
-	    parser.setKnownContributors(settings.knownContributorsProperty());
-	    parser.setKnownNonContributors(settings.knownNonContributorsProperty());
+	    parser.setIrrelevantPatterns(settings.irrelevantPatternsProperty());
 	    parser.setStandardizingService(settings.getStandardizingService());
 	    return parser;
 	}
@@ -93,6 +93,8 @@ public class Migration
 		log.debug("Read {} items", data.getItems().size());
 		sink.accept(data);
 		log.debug("Processed {} in {} ms", file, TimeUtil.durationMillis(startSingle));
+		log.debug("---------------------");
+		log.debug("---------------------");
 	    }
 	}
 	log.debug("Processed the files in {} ms", TimeUtil.durationMillis(startTotal));

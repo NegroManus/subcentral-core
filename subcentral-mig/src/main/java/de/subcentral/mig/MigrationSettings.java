@@ -25,8 +25,6 @@ import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.standardizing.StandardizingService;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.mig.ContributionParser.ContributionPattern;
-import de.subcentral.mig.ContributionParser.ContributionTypePattern;
 import de.subcentral.support.thetvdbcom.TheTvDbApi;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
@@ -50,8 +48,8 @@ public class MigrationSettings
     private final ListProperty<Series>			series			 = new SimpleListProperty<>(this, "series", FXCollections.observableArrayList());
     private final ListProperty<ContributionPattern>	contributionPatterns	 = new SimpleListProperty<>(this, "contributionPatterns", FXCollections.observableArrayList());
     private final ListProperty<ContributionTypePattern>	contributionTypePatterns = new SimpleListProperty<>(this, "contributionTypePatterns", FXCollections.observableArrayList());
-    private final ListProperty<Pattern>			knownContributors	 = new SimpleListProperty<>(this, "knownContributors", FXCollections.observableArrayList());
-    private final ListProperty<Pattern>			knownNonContributors	 = new SimpleListProperty<>(this, "knownNonContributors", FXCollections.observableArrayList());
+    private final ListProperty<ContributorPattern>	contributorPatterns	 = new SimpleListProperty<>(this, "contributorPatterns", FXCollections.observableArrayList());
+    private final ListProperty<Pattern>			irrelevantPatterns	 = new SimpleListProperty<>(this, "irrelevantPatterns", FXCollections.observableArrayList());
     private final Property<StandardizingService>	standardizingService	 = new SimpleObjectProperty<>(this, "standardizingService");
     private final Map<String, Object>			namingParams		 = new HashMap<>();
 
@@ -75,13 +73,13 @@ public class MigrationSettings
 	load(cfg);
     }
 
-    private void load(XMLConfiguration cfg)
+    private void load(XMLConfiguration cfg) throws ConfigurationException
     {
 	series.setAll(loadSeries(cfg, "series.series"));
 	contributionPatterns.setAll(loadContributionPatterns(cfg, "subtitles.contributionPatterns.contributionPattern"));
 	contributionTypePatterns.setAll(loadContributionTypePatterns(cfg, "subtitles.contributionTypePatterns.contributionTypePattern"));
-	knownContributors.setAll(loadUserPatterns(cfg, "subtitles.knownContributors.contributor"));
-	knownNonContributors.setAll(loadUserPatterns(cfg, "subtitles.knownNonContributors.contributor"));
+	contributorPatterns.setAll(loadContributorPatterns(cfg, "subtitles.contributorPatterns.contributorPattern"));
+	irrelevantPatterns.setAll(loadUserPatterns(cfg, "subtitles.irrelevantPatterns.irrelevantPattern"));
 	standardizingService.setValue(loadStandardizingService(cfg));
     }
 
@@ -108,9 +106,10 @@ public class MigrationSettings
 	for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
 	{
 	    Pattern pattern = Pattern.compile(patternCfg.getString("[@pattern]"), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+	    int confidence = patternCfg.getInt("[@confidence]", 2);
 	    int contributionTypeGroup = patternCfg.getInt("[@contributionTypeGroup]");
 	    int contributorGroup = patternCfg.getInt("[@contributorGroup]");
-	    patterns.add(new ContributionPattern(pattern, contributionTypeGroup, contributorGroup));
+	    patterns.add(new ContributionPattern(pattern, contributionTypeGroup, contributorGroup, confidence));
 	}
 	patterns.trimToSize();
 	return patterns;
@@ -123,24 +122,52 @@ public class MigrationSettings
 	for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
 	{
 	    Pattern pattern = Pattern.compile(patternCfg.getString("[@pattern]"), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+	    int confidence = patternCfg.getInt("[@confidence]", 3);
 	    String contributionType = StringUtils.trimToNull(patternCfg.getString("[@type]"));
-	    patterns.add(new ContributionTypePattern(pattern, contributionType));
+	    patterns.add(new ContributionTypePattern(pattern, confidence, contributionType));
 	}
 	patterns.trimToSize();
 	return patterns;
     }
 
-    private static List<Contributor> loadSources(XMLConfiguration cfg, String key)
+    private static List<ContributorPattern> loadContributorPatterns(XMLConfiguration cfg, String key) throws ConfigurationException
     {
-	ArrayList<Contributor> sources = new ArrayList<>();
-	List<HierarchicalConfiguration<ImmutableNode>> sourceCfgs = cfg.configurationsAt(key);
-	for (HierarchicalConfiguration<ImmutableNode> sourceCfg : sourceCfgs)
+	ArrayList<ContributorPattern> patterns = new ArrayList<>();
+	List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
+	for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
 	{
-	    String name = sourceCfg.getString("");
-	    sources.add(new Subber(name));
+	    String pattern = patternCfg.getString("[@pattern]");
+	    UserPattern.Mode mode = UserPattern.Mode.valueOf(patternCfg.getString("[@patternMode]"));
+	    UserPattern userPattern = new UserPattern(pattern, mode);
+
+	    int confidence = patternCfg.getInt("[@confidence]", 2);
+
+	    Contributor contributor = null;
+	    String name = patternCfg.getString("[@name]");
+	    String type = patternCfg.getString("[@type]", "SUBBER");
+	    switch (type)
+	    {
+		case "SUBBER":
+		    Subber subber = new Subber();
+		    subber.setName(name);
+		    int scUserId = patternCfg.getInt("[@scUserId]", 0);
+		    subber.setId(scUserId);
+		    contributor = subber;
+		    break;
+		case "GROUP":
+		    SubtitleGroup group = new SubtitleGroup();
+		    group.setName(name);
+		    contributor = group;
+		    break;
+		default:
+		    throw new ConfigurationException("Illegal type: " + type);
+
+	    }
+
+	    patterns.add(new ContributorPattern(userPattern.toPattern(), confidence, contributor));
 	}
-	sources.trimToSize();
-	return sources;
+	patterns.trimToSize();
+	return patterns;
     }
 
     private static List<Pattern> loadUserPatterns(XMLConfiguration cfg, String key)
@@ -198,14 +225,14 @@ public class MigrationSettings
 	return contributionTypePatterns;
     }
 
-    public ListProperty<Pattern> knownContributorsProperty()
+    public ListProperty<ContributorPattern> contributorPatternsProperty()
     {
-	return knownContributors;
+	return contributorPatterns;
     }
 
-    public ListProperty<Pattern> knownNonContributorsProperty()
+    public ListProperty<Pattern> irrelevantPatternsProperty()
     {
-	return knownNonContributors;
+	return irrelevantPatterns;
     }
 
     public StandardizingService getStandardizingService()
