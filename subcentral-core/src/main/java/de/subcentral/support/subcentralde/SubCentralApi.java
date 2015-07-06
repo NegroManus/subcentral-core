@@ -20,6 +20,6 @@ public interface SubCentralApi
      */
     public abstract void logout() throws IOException;
 
-    public abstract void downloadAttachment(int attachmentId, Path folder) throws IOException;
+    public abstract void downloadAttachment(int attachmentId, Path directory) throws IOException;
 
 }

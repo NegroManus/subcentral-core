@@ -23,6 +23,12 @@ public class SubRip implements SubtitleFileFormat
     }
 
     @Override
+    public String getName()
+    {
+	return "SubRip";
+    }
+
+    @Override
     public SubtitleFile read(BufferedReader reader) throws IOException
     {
 	/**

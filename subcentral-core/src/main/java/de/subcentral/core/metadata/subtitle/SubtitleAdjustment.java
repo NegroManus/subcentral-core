@@ -15,6 +15,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
+import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.Work;
@@ -413,7 +414,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 		.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
 		.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 		.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
-		.compare(version, version)
+		.compare(version, version, Settings.STRING_ORDERING)
 		.result();
     }
 

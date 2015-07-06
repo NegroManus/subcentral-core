@@ -381,7 +381,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	return ComparisonChain.start()
 		.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_NAME_COMPARATOR)
 		.compare(language, o.language, Settings.STRING_ORDERING)
-		.compare(group, o.group)
+		.compare(group, o.group, Settings.createDefaultOrdering())
 		.compare(source, o.source, Settings.STRING_ORDERING)
 		.result();
     }

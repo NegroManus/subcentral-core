@@ -46,6 +46,7 @@
 			<contributorPattern pattern="-TiLT- aka smizz" patternMode="LITERAL" />
 			<contributorPattern pattern="smizz aka -TiLT-" patternMode="LITERAL" />
 			<contributorPattern pattern="Willow.shephard@yahoo.com" name="Willow" patternMode="LITERAL" />
+			<contributorPattern pattern="(?&lt;!\w)\QArzt\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="35534" confidence="0" />
 
 
 			<!-- Subber that are in the S/P -->
@@ -82,7 +83,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\QBenjui\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="159671" />
 			<contributorPattern pattern="(?&lt;!\w)\QBeRse\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="22765" />
 			<contributorPattern pattern="(?&lt;!\w)\Qbigskyscraper\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="19970" />
-			<contributorPattern pattern="(?&lt;!\w)\QBILL\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="1933" />
+			<contributorPattern pattern="(?&lt;!\w)\QBILL\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="1933"/>
 			<contributorPattern pattern="(?&lt;!\w)\Qbirdhouse\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="13744" />
 			<contributorPattern pattern="(?&lt;!\w)\Qblackbeth\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="29902" />
 			<contributorPattern pattern="(?&lt;!\w)\Qblackburnious\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="12808" />
@@ -111,7 +112,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\Qchuchip\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="54159" />
 			<contributorPattern pattern="(?&lt;!\w)\QChuck007\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="75044" />
 			<contributorPattern pattern="(?&lt;!\w)\QClauiii\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="54880" />
-			<contributorPattern pattern="(?&lt;!\w)\Qcloud\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="1934" />
+			<contributorPattern pattern="(?&lt;!\w)\Qcloud\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="1934" confidence="0"/>
 			<contributorPattern pattern="(?&lt;!\w)\Qcloud6wei\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="4577" />
 			<contributorPattern pattern="(?&lt;!\w)\Qconvenio\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="38004" />
 			<contributorPattern pattern="(?&lt;!\w)\QCorax\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="828" />
@@ -156,7 +157,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\Qelektra82\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="213801" />
 			<contributorPattern pattern="(?&lt;!\w)\QElya\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="87995" />
 			<contributorPattern pattern="(?&lt;!\w)\Qemotion\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="10941" />
-			<contributorPattern pattern="(?&lt;!\w)\Qevi\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="78870" />
+			<contributorPattern pattern="(?&lt;!\w)\Qevi\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="78870" confidence="0"/>
 			<contributorPattern pattern="(?&lt;!\w)\QEvidence\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="86074" />
 			<contributorPattern pattern="(?&lt;!\w)\Qexizor\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="11289" />
 			<contributorPattern pattern="(?&lt;!\w)\Qextreme\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="15238" />
@@ -205,7 +206,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\QJack O'Neill\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="37633" />
 			<contributorPattern pattern="(?&lt;!\w)\QJakobJewel\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="154152" />
 			<contributorPattern pattern="(?&lt;!\w)\QJANAiky\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="76685" />
-			<contributorPattern pattern="(?&lt;!\w)\Qjannik\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="76791" />
+			<contributorPattern pattern="(?&lt;!\w)\Qjannik\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="76791" confidence="0"/>
 			<contributorPattern pattern="(?&lt;!\w)\QJazzhead\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="7533" />
 			<contributorPattern pattern="(?&lt;!\w)\Qjazzlover\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="11645" />
 			<contributorPattern pattern="(?&lt;!\w)\Qjennaj1987\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="104779" />
@@ -221,7 +222,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\Qkampfzicke\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="84751" />
 			<contributorPattern pattern="(?&lt;!\w)\Qkaputter\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="9338" />
 			<contributorPattern pattern="(?&lt;!\w)\QKaro\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="50422" confidence="0" />
-			<contributorPattern pattern="(?&lt;!\w)\QKarteileiche\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="25615" />
+			<contributorPattern pattern="(?&lt;!\w)\QKarteileiche\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="25615" confidence="0" />
 			<contributorPattern pattern="(?&lt;!\w)\Qkatalaki\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="100789" />
 			<contributorPattern pattern="(?&lt;!\w)\QKatGo\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="34373" />
 			<contributorPattern pattern="(?&lt;!\w)\Qkc1\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="24443" />
@@ -240,7 +241,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\QLiage\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="78374" />
 			<contributorPattern pattern="(?&lt;!\w)\QLilo\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="31177" />
 			<contributorPattern pattern="(?&lt;!\w)\QLisa\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="25444" confidence="0" />
-			<contributorPattern pattern="(?&lt;!\w)\QLoft\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="15954" />
+			<contributorPattern pattern="(?&lt;!\w)\QLoft\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="15954" confidence="0" />
 			<contributorPattern pattern="(?&lt;!\w)\Qlol123\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="16971" />
 			<contributorPattern pattern="(?&lt;!\w)\QLonato\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="17541" />
 			<contributorPattern pattern="(?&lt;!\w)\Qlorelei\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="9854" />
@@ -294,7 +295,7 @@
 			<contributorPattern pattern="(?&lt;!\w)\QPflaumenschnaps\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="7494" />
 			<contributorPattern pattern="(?&lt;!\w)\Qphil27\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="62985" />
 			<contributorPattern pattern="(?&lt;!\w)\Qphlotti\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="42600" />
-			<contributorPattern pattern="(?&lt;!\w)\QPower\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="3154" />
+			<contributorPattern pattern="(?&lt;!\w)\QPower\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="3154" confidence="0" />
 			<contributorPattern pattern="(?&lt;!\w)\QPPcoool\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="14887" />
 			<contributorPattern pattern="(?&lt;!\w)\QProdigyAD\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="37076" />
 			<contributorPattern pattern="(?&lt;!\w)\QProserpine\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="114493" />

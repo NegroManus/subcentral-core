@@ -28,9 +28,9 @@ public class AbstractContributor implements Contributor
 	{
 	    return true;
 	}
-	if (obj instanceof Subber)
+	if (obj instanceof AbstractContributor)
 	{
-	    return Objects.equals(name, ((Subber) obj).name);
+	    return Objects.equals(name, ((AbstractContributor) obj).name);
 	}
 	return false;
     }

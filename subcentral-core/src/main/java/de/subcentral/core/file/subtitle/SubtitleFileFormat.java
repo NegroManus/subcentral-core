@@ -2,6 +2,7 @@ package de.subcentral.core.file.subtitle;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,6 +21,8 @@ public interface SubtitleFileFormat
 {
     public static final SubRip SUBRIP = new SubRip();
 
+    public String getName();
+
     public default SubtitleFile read(Path file, Charset charset) throws IOException
     {
 	return read(Files.newBufferedReader(file, charset));
@@ -29,6 +32,13 @@ public interface SubtitleFileFormat
     {
 	CharsetDecoder decoder = charset.newDecoder();
 	Reader reader = new InputStreamReader(inputStream, decoder);
+	return read(new BufferedReader(reader));
+    }
+
+    public default SubtitleFile read(byte[] bytes, Charset charset) throws IOException
+    {
+	CharsetDecoder decoder = charset.newDecoder();
+	Reader reader = new InputStreamReader(new ByteArrayInputStream(bytes), decoder);
 	return read(new BufferedReader(reader));
     }
 

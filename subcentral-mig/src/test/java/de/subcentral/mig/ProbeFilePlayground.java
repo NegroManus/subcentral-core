@@ -7,21 +7,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 
-import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
@@ -154,62 +149,8 @@ public class ProbeFilePlayground
 	{
 	    System.out.println(entry.getKey() + " =>");
 	    System.out.println(entry.getValue().getFiles().size() + " files: " + entry.getValue().getFiles());
-	    System.out.println(entry.getValue().getSubtitleAdjustment());
+	    System.out.println(entry.getValue().getSubtitleMetadata());
 	    System.out.println();
-	}
-    }
-
-    public static class SubFile
-    {
-	private final SubtitleAdjustment subtitleAdjustment;
-	private final Set<Path>		 files = new HashSet<>(4);
-
-	public SubFile(SubtitleAdjustment subtitleAdjustment, Path file)
-	{
-	    this.subtitleAdjustment = subtitleAdjustment;
-	    files.add(file);
-	}
-
-	public SubFile updateWithContributions(List<Contribution> contributions)
-	{
-	    for (Contribution c : contributions)
-	    {
-		if (SubtitleAdjustment.CONTRIBUTION_TYPE_ADJUSTMENT.equals(c.getType()))
-		{
-		    subtitleAdjustment.getContributions().add(c);
-		}
-		else
-		{
-		    for (Subtitle sub : subtitleAdjustment.getSubtitles())
-		    {
-			sub.getContributions().add(c);
-		    }
-		}
-	    }
-	    return this;
-	}
-
-	public SubFile updateWithMatchingRelease(SubFile other)
-	{
-	    subtitleAdjustment.getMatchingReleases().addAll(other.subtitleAdjustment.getMatchingReleases());
-	    files.addAll(other.files);
-	    return this;
-	}
-
-	public SubtitleAdjustment getSubtitleAdjustment()
-	{
-	    return subtitleAdjustment;
-	}
-
-	public Set<Path> getFiles()
-	{
-	    return files;
-	}
-
-	@Override
-	public String toString()
-	{
-	    return MoreObjects.toStringHelper(SubFile.class).omitNullValues().add("files", files).add("subtitleAdjustment", subtitleAdjustment).toString();
 	}
     }
 }

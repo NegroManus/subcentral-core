@@ -101,7 +101,7 @@ public class SubCentralHttpApi implements SubCentralApi
      * @see de.subcentral.support.subcentralde.SubCentralApi#downloadAttachment(int, java.nio.file.Path)
      */
     @Override
-    public void downloadAttachment(int attachmentId, Path folder) throws IOException
+    public void downloadAttachment(int attachmentId, Path directory) throws IOException
     {
 	HttpURLConnection conn = openConnection(new URL("http://subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId));
 
@@ -138,7 +138,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	log.debug("Downloading attachment. id={}, filename={}, contentType={}, contentLength={}", attachmentId, filename, contentType, contentLength);
 	long start = System.currentTimeMillis();
 	ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
-	try (FileOutputStream fos = new FileOutputStream(folder.resolve(filename).toFile());)
+	try (FileOutputStream fos = new FileOutputStream(directory.resolve(filename).toFile());)
 	{
 	    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 	}
