@@ -24,9 +24,6 @@ public class SubberListParser extends Task<SubberListContent>
     private static final Logger	log = LogManager.getLogger(SubberListParser.class);
     private static final String	URL = "http://subcentral.de/index.php?page=Thread&postID=33900#post33900";
 
-    public static final String ATTRIBUTE_BOARD_ID  = "SUBCENTRAL_BOARD_ID";
-    public static final String ATTRIBUTE_THREAD_ID = "SUBCENTRAL_THREAD_ID";
-
     @Override
     protected SubberListContent call() throws IOException
     {

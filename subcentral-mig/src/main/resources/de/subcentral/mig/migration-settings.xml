@@ -46,7 +46,8 @@
 			<contributorPattern pattern="-TiLT- aka smizz" patternMode="LITERAL" />
 			<contributorPattern pattern="smizz aka -TiLT-" patternMode="LITERAL" />
 			<contributorPattern pattern="Willow.shephard@yahoo.com" name="Willow" patternMode="LITERAL" />
-			<contributorPattern pattern="(?&lt;!\w)\QArzt\E(?!\w)" patternMode="REGEX" type="SUBBER" scUserId="35534" confidence="0" />
+			<contributorPattern pattern="(?&lt;!\w)\QArzt\E(?!\w)" patternMode="REGEX" name="Sloth" type="SUBBER" scUserId="35534" confidence="0" />
+			<contributorPattern pattern="(?&lt;!\w)\Qmc_totti\E(?!\w)" patternMode="REGEX" name="Totti" type="SUBBER" scUserId="120378" confidence="0" />
 
 
 			<!-- Subber that are in the S/P -->
