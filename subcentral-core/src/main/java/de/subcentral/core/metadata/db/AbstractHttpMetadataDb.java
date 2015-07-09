@@ -10,10 +10,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.ImmutableList;
-
 public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 {
     public static final int DEFAULT_TIMEOUT = 10000;
@@ -75,13 +71,9 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
     @Override
     public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
-	if (StringUtils.isBlank(query))
-	{
-	    return ImmutableList.of();
-	}
 	try
 	{
-	    return queryWithUrl(buildDefaultQueryUrl(query));
+	    return queryUrl(buildQueryUrl(query));
 	}
 	catch (MetadataDbUnavailableException ue)
 	{
@@ -93,61 +85,33 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	}
     }
 
-    public abstract List<T> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
+    public abstract List<T> queryUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
-    /**
-     * Calls {@link #buildQueryUrl(String, String, String) buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), query)}.
-     * 
-     * @param queryString
-     *            The query string. For example "Psych S08E01".
-     * @return The generated URL for this query string.
-     * @throws URISyntaxException
-     * @throws MalformedURLException
-     * @throws UnsupportedEncodingException
-     */
-    private URL buildDefaultQueryUrl(String queryString) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
-    {
-	return buildQueryUrl(getDefaultQueryPath(), getDefaultQueryPrefix(), queryString);
-    }
+    protected abstract URL buildQueryUrl(String query) throws Exception;
 
     /**
      * 
      * @param path
-     *            The path for the URL. Not null.
-     * @param queryPrefix
-     *            The prefix for the query string.
-     * @param queryString
-     *            The actual query string.
-     * @return An URL build of the host of this lookup and the given path, queryPrefix and queryString.
+     *            the path for the URL. Not null
+     * @param query
+     *            the query for the URL. Not null
+     * @return An URL build of the host of this lookup and the given path and query
      * @throws URISyntaxException
      * @throws UnsupportedEncodingException
      * @throws MalformedURLException
      */
-    private URL buildQueryUrl(String path, String queryPrefix, String queryString) throws UnsupportedEncodingException, URISyntaxException, MalformedURLException
+    protected URL buildUrl(String path, String query) throws UnsupportedEncodingException, URISyntaxException, MalformedURLException
     {
-	URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, buildQuery(queryPrefix, queryString), null);
+	URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
 	return uri.toURL();
     }
 
-    /**
-     * 
-     * @return The default path for the query URL. Has to start with "/".
-     */
-    protected abstract String getDefaultQueryPath();
-
-    /**
-     * 
-     * @return The default prefix for the query string. Used to build the query for the query URL. For example "s=".
-     */
-    protected abstract String getDefaultQueryPrefix();
-
-    private String buildQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException
+    protected String formatQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException
     {
 	StringBuilder sb = new StringBuilder();
 	sb.append(queryPrefix);
 	// URLEncoder is just for encoding queries, not for the whole URL
-	sb.append(URLEncoder.encode(queryStr == null ? "" : queryStr, "UTF-8"));
+	sb.append(queryStr == null ? "" : URLEncoder.encode(queryStr, "UTF-8"));
 	return sb.toString();
     }
-
 }

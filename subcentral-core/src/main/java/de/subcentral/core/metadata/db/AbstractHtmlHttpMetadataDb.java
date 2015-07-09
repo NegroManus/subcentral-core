@@ -20,7 +20,7 @@ public abstract class AbstractHtmlHttpMetadataDb<T> extends AbstractHttpMetadata
     private static final Logger log = LogManager.getLogger(AbstractHtmlHttpMetadataDb.class);
 
     @Override
-    public List<T> queryWithUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException
+    public List<T> queryUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
 	if (query == null)
 	{
@@ -28,7 +28,7 @@ public abstract class AbstractHtmlHttpMetadataDb<T> extends AbstractHttpMetadata
 	}
 	try
 	{
-	    return queryWithHtmlDoc(getDocument(query));
+	    return queryDocument(getDocument(query));
 	}
 	catch (MetadataDbUnavailableException ue)
 	{
@@ -44,7 +44,7 @@ public abstract class AbstractHtmlHttpMetadataDb<T> extends AbstractHttpMetadata
 	}
     }
 
-    public abstract List<T> queryWithHtmlDoc(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException;
+    public abstract List<T> queryDocument(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
     protected Document getDocument(URL url) throws IOException
     {

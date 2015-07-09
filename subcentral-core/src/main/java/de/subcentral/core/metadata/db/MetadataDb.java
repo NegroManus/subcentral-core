@@ -37,4 +37,9 @@ public interface MetadataDb<T>
 	    throw new MetadataDbQueryException(this, metadataObj, e);
 	}
     }
+
+    public default T get(String id) throws MetadataDbQueryException
+    {
+	throw new UnsupportedOperationException();
+    }
 }

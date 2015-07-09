@@ -2,7 +2,9 @@ package de.subcentral.support.xrelto;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -78,25 +80,19 @@ public class XRelToReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
     public List<Release> parseReleases(File file) throws IOException, MetadataDbQueryException
     {
 	Document doc = Jsoup.parse(file, "UTF-8", initHost().toExternalForm());
-	return queryWithHtmlDoc(doc);
+	return queryDocument(doc);
     }
 
     @Override
-    protected String getDefaultQueryPrefix()
+    protected URL buildQueryUrl(String query) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
     {
 	// Do not use "mode=rls", because then results are displayed different
 	// and the info url is only available via an ajax call.
-	return "xrel_search_query=";
+	return buildUrl("/search.html", formatQuery("xrel_search_query=", query));
     }
 
     @Override
-    protected String getDefaultQueryPath()
-    {
-	return "/search.html";
-    }
-
-    @Override
-    public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
+    public List<Release> queryDocument(Document doc) throws MetadataDbQueryException
     {
 	if (doc == null)
 	{

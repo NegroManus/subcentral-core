@@ -1,6 +1,8 @@
 package de.subcentral.support.orlydbcom;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -72,20 +74,14 @@ public class OrlyDbComReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
     }
 
     @Override
-    protected String getDefaultQueryPath()
+    protected URL buildQueryUrl(String query) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
     {
-	return "/";
-    }
-
-    @Override
-    protected String getDefaultQueryPrefix()
-    {
-	return "q=";
+	return buildUrl("/", formatQuery("q=", query));
     }
 
     // Querying
     @Override
-    public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
+    public List<Release> queryDocument(Document doc) throws MetadataDbQueryException
     {
 	if (doc == null)
 	{

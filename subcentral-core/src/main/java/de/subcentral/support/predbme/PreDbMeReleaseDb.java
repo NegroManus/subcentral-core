@@ -1,7 +1,9 @@
 package de.subcentral.support.predbme;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -79,19 +81,13 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
     }
 
     @Override
-    protected String getDefaultQueryPath()
+    protected URL buildQueryUrl(String query) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException
     {
-	return "/";
+	return buildUrl("/", formatQuery("search=", query));
     }
 
     @Override
-    protected String getDefaultQueryPrefix()
-    {
-	return "search=";
-    }
-
-    @Override
-    public List<Release> queryWithHtmlDoc(Document doc) throws MetadataDbQueryException
+    public List<Release> queryDocument(Document doc) throws MetadataDbQueryException
     {
 	if (doc == null)
 	{
@@ -100,6 +96,24 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	try
 	{
 	    return parseReleases(doc);
+	}
+	catch (Exception e)
+	{
+	    throw new MetadataDbQueryException(this, doc, e);
+	}
+    }
+
+    @Override
+    public Release get(String id) throws MetadataDbQueryException
+    {
+	Document doc = null;
+	try
+	{
+	    String url = "http://predb.me?post=" + id;
+	    doc = getDocument(new URL(url));
+	    Release rls = new Release();
+	    parseReleaseDetails(doc, rls);
+	    return rls;
 	}
 	catch (Exception e)
 	{
