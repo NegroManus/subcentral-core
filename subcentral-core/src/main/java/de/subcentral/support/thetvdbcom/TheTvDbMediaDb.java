@@ -38,7 +38,7 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.SeasonNamer;
 import de.subcentral.core.util.TemporalComparator;
 
-public class TheTvDbHttpApi extends AbstractHtmlHttpMetadataDb<Series>
+public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 {
     public static final String DOMAIN		    = "thetvdb.com";
     /**
@@ -57,7 +57,7 @@ public class TheTvDbHttpApi extends AbstractHtmlHttpMetadataDb<Series>
 
     public static final String RATING_AGENCY_THETVDB = "thetvdb.com";
 
-    private static final Logger	  log		= LogManager.getLogger(TheTvDbHttpApi.class);
+    private static final Logger	  log		= LogManager.getLogger(TheTvDbMediaDb.class);
     private static final String	  BASE_PATH	= "http://thetvdb.com/";
     private static final String	  API_PATH	= BASE_PATH + "api/";
     private static final String	  IMG_PATH	= BASE_PATH + "banners/";
@@ -94,13 +94,13 @@ public class TheTvDbHttpApi extends AbstractHtmlHttpMetadataDb<Series>
     }
 
     @Override
-    public Class<Series> getResultType()
+    public Class<Media> getResultType()
     {
-	return Series.class;
+	return Media.class;
     }
 
     @Override
-    public List<Series> queryDocument(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException
+    public List<Media> queryDocument(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
 	/**
 	 * <pre>
@@ -130,7 +130,7 @@ public class TheTvDbHttpApi extends AbstractHtmlHttpMetadataDb<Series>
 	 */
 
 	Elements seriesElems = doc.getElementsByTag("series");
-	ImmutableList.Builder<Series> seriesList = ImmutableList.builder();
+	ImmutableList.Builder<Media> seriesList = ImmutableList.builder();
 	for (Element seriesElem : seriesElems)
 	{
 	    Series series = new Series();
@@ -662,8 +662,8 @@ public class TheTvDbHttpApi extends AbstractHtmlHttpMetadataDb<Series>
 
     public static void main(String[] args) throws IOException
     {
-	TheTvDbHttpApi db = new TheTvDbHttpApi();
-	List<Series> queryResult = db.query("psych");
+	TheTvDbMediaDb db = new TheTvDbMediaDb();
+	List<Media> queryResult = db.query("psych");
 	db.setApiKey("A3ACA9D28A27792D");
 	SeriesRecord psych = db.get(queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), SeriesRecord.class);
 	System.out.println(psych.getSeries());

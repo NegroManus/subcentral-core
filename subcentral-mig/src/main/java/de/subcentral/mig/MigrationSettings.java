@@ -25,7 +25,7 @@ import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.standardizing.StandardizingService;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.support.thetvdbcom.TheTvDbApi;
+import de.subcentral.support.thetvdbcom.TheTvDbMediaDb;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
@@ -92,7 +92,7 @@ public class MigrationSettings
 	    String name = seriesCfg.getString("[@name]");
 	    int thetvdbId = seriesCfg.getInt("[@thetvdbId]");
 	    Series series = new Series(name);
-	    series.getAttributes().put(TheTvDbApi.ATTRIBUTE_THETVDB_ID, thetvdbId);
+	    series.getAttributes().put(TheTvDbMediaDb.ATTRIBUTE_THETVDB_ID, thetvdbId);
 	    seriesList.add(series);
 	}
 	seriesList.trimToSize();
