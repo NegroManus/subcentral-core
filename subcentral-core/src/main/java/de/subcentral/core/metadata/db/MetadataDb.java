@@ -17,12 +17,12 @@ public interface MetadataDb<T>
 
     public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
-    public default List<T> queryWithName(Object metadataObj) throws MetadataDbUnavailableException, MetadataDbQueryException
+    public default List<T> queryName(Object metadataObj) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
-	return queryWithName(metadataObj, NamingDefaults.getDefaultNormalizingNamingService());
+	return queryName(metadataObj, NamingDefaults.getDefaultNormalizingNamingService());
     }
 
-    public default List<T> queryWithName(Object metadataObj, NamingService namingService) throws MetadataDbUnavailableException, MetadataDbQueryException
+    public default List<T> queryName(Object metadataObj, NamingService namingService) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
 	try
 	{

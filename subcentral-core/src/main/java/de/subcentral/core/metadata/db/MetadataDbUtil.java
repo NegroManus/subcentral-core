@@ -47,7 +47,7 @@ public class MetadataDbUtil
 	{
 	    for (NamingService ns : namingServices)
 	    {
-		tasks.add(() -> metadataDb.queryWithName(metadataObj, ns));
+		tasks.add(() -> metadataDb.queryName(metadataObj, ns));
 	    }
 	}
 
