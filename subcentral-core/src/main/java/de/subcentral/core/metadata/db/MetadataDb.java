@@ -38,7 +38,12 @@ public interface MetadataDb<T>
 	}
     }
 
-    public default T get(String id) throws MetadataDbQueryException
+    public default Object get(String id) throws MetadataDbUnavailableException, MetadataDbQueryException
+    {
+	return get(id, null);
+    }
+
+    public default <E> E get(String id, Class<E> type) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
 	throw new UnsupportedOperationException();
     }

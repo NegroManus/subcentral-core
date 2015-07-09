@@ -92,7 +92,7 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
     /**
      * 
      * @param path
-     *            the path for the URL. Not null
+     *            the path for the URL. Not null. Must start with "/"
      * @param query
      *            the query for the URL. Not null
      * @return An URL build of the host of this lookup and the given path and query

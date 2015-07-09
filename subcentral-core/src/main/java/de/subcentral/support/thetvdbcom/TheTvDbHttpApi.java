@@ -1,9 +1,8 @@
 package de.subcentral.support.thetvdbcom;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +24,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
+import de.subcentral.core.metadata.db.MetadataDbQueryException;
+import de.subcentral.core.metadata.db.MetadataDbUnavailableException;
 import de.subcentral.core.metadata.media.AbstractMedia;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
@@ -36,21 +38,69 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.SeasonNamer;
 import de.subcentral.core.util.TemporalComparator;
 
-public class TheTvDbHttpApi implements TheTvDbApi
+public class TheTvDbHttpApi extends AbstractHtmlHttpMetadataDb<Series>
 {
+    public static final String DOMAIN		    = "thetvdb.com";
+    /**
+     * Value is of type Integer.
+     */
+    public static final String ATTRIBUTE_THETVDB_ID = "THETVDB_ID";
+    /**
+     * Value is of type String.
+     */
+    public static final String ATTRIBUTE_IMDB_ID    = "IMDB_ID";
+
+    public static final String IMAGE_TYPE_BANNER	= "banner";
+    public static final String IMAGE_TYPE_FANART	= "fanart";
+    public static final String IMAGE_TYPE_POSTER	= "poster";
+    public static final String IMAGE_TYPE_EPISODE_IMAGE	= "episode_image";
+
+    public static final String RATING_AGENCY_THETVDB = "thetvdb.com";
+
     private static final Logger	  log		= LogManager.getLogger(TheTvDbHttpApi.class);
     private static final String	  BASE_PATH	= "http://thetvdb.com/";
     private static final String	  API_PATH	= BASE_PATH + "api/";
     private static final String	  IMG_PATH	= BASE_PATH + "banners/";
     private static final Splitter LIST_SPLITTER	= Splitter.on('|').trimResults().omitEmptyStrings();
 
-    public TheTvDbHttpApi()
-    {
+    private String apiKey;
 
+    public String getApiKey()
+    {
+	return apiKey;
+    }
+
+    public void setApiKey(String apiKey)
+    {
+	this.apiKey = apiKey;
     }
 
     @Override
-    public List<Series> findSeries(String name) throws IOException
+    protected URL initHost() throws MalformedURLException
+    {
+	return new URL(BASE_PATH);
+    }
+
+    @Override
+    public String getDomain()
+    {
+	return DOMAIN;
+    }
+
+    @Override
+    public String getName()
+    {
+	return "TheTVDB";
+    }
+
+    @Override
+    public Class<Series> getResultType()
+    {
+	return Series.class;
+    }
+
+    @Override
+    public List<Series> queryDocument(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
 	/**
 	 * <pre>
@@ -78,10 +128,6 @@ public class TheTvDbHttpApi implements TheTvDbApi
 	 * </Series>
 	 * </pre>
 	 */
-
-	URL url = new URL(API_PATH + "GetSeries.php?seriesname=" + URLEncoder.encode(name, Charset.forName("UTF-8").name()));
-	log.debug("Requesting {}", url);
-	Document doc = Jsoup.parse(url, 5000);
 
 	Elements seriesElems = doc.getElementsByTag("series");
 	ImmutableList.Builder<Series> seriesList = ImmutableList.builder();
@@ -116,7 +162,29 @@ public class TheTvDbHttpApi implements TheTvDbApi
     }
 
     @Override
-    public SeriesRecord getSeries(String apiKey, int id, String language, boolean full) throws IOException
+    protected URL buildQueryUrl(String query) throws Exception
+    {
+	return buildUrl("/api/GetSeries.php", formatQuery("seriesname=", query));
+    }
+
+    @Override
+    public <E> E get(String id, Class<E> type) throws MetadataDbUnavailableException, MetadataDbQueryException
+    {
+	if (SeriesRecord.class.equals(type))
+	{
+	    try
+	    {
+		return type.cast(getSeries(Integer.parseInt(id), "en", true));
+	    }
+	    catch (NumberFormatException | IOException e)
+	    {
+		throw new MetadataDbQueryException(this, id, e);
+	    }
+	}
+	throw new IllegalArgumentException("Unknown type " + type.getName() + ". Known are [" + SeriesRecord.class.getName() + "]");
+    }
+
+    public SeriesRecord getSeries(int id, String language, boolean full) throws IOException
     {
 	StringBuilder urlSpec = new StringBuilder();
 	urlSpec.append(getApiPathWithKey(apiKey));
@@ -594,9 +662,10 @@ public class TheTvDbHttpApi implements TheTvDbApi
 
     public static void main(String[] args) throws IOException
     {
-	TheTvDbApi api = new TheTvDbHttpApi();
-	List<Series> queryResult = api.findSeries("psych");
-	SeriesRecord psych = api.getSeries("A3ACA9D28A27792D", queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), "en", true);
+	TheTvDbHttpApi db = new TheTvDbHttpApi();
+	List<Series> queryResult = db.query("psych");
+	db.setApiKey("A3ACA9D28A27792D");
+	SeriesRecord psych = db.get(queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), SeriesRecord.class);
 	System.out.println(psych.getSeries());
 	for (Season season : psych.getSeasons())
 	{
