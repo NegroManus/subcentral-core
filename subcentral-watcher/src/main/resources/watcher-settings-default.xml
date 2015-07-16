@@ -71,13 +71,8 @@
 	<standardizing>
 		<standardizers>
 			<seriesNameStandardizer namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Clarence\W+US\W+2013\W*" namePatternMode="REGEX" nameReplacement="Clarence (US)" beforeQuerying="true" afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Good\W+Wife" namePatternMode="REGEX" nameReplacement="The Good Wife" beforeQuerying="false" afterQuerying="true" />
-			<seriesNameStandardizer namePattern="Love\W+Child\W+Aus\W*" namePatternMode="REGEX" nameReplacement="Love Child (AU)" beforeQuerying="true" afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Marry\W+Me" namePatternMode="REGEX" nameReplacement="Marry Me (2014)" beforeQuerying="true" afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Good Wife" namePatternMode="LITERAL" nameReplacement="The Good Wife" beforeQuerying="false" afterQuerying="true" />
 			<seriesNameStandardizer namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true" afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Undercover\W+Boss" namePatternMode="REGEX" nameReplacement="Undercover Boss (US)" beforeQuerying="true" afterQuerying="false" />
 
 			<releaseTagsStandardizer queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
 			<releaseTagsStandardizer queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />

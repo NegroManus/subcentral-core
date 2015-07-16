@@ -25,8 +25,8 @@
 		<Label text="Add rules to correct the parsed data before querying the databases and to correct the query results after querying the databases." wrapText="true" GridPane.rowIndex="1" />
 		<TableView fx:id="standardizersTableView" editable="true" minHeight="100.0" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2">
 			<columns>
-				<TableColumn fx:id="standardizersTypeColumn" editable="false" prefWidth="100.0" text="Rule type" />
-				<TableColumn fx:id="standardizersRuleColumn" editable="false" prefWidth="350.0" text="Rule" />
+				<TableColumn fx:id="standardizersTypeColumn" editable="false" prefWidth="80.0" text="Rule type" />
+				<TableColumn fx:id="standardizersRuleColumn" editable="false" prefWidth="330.0" text="Rule" />
 				<TableColumn fx:id="standardizersBeforeQueryingColumn" prefWidth="80.0" text="Before querying" />
 				<TableColumn fx:id="standardizersAfterQueryingColumn" prefWidth="80.0" text="After querying" />
 			</columns>
