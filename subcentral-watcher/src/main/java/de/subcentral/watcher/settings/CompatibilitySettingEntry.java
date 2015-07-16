@@ -4,7 +4,7 @@ import javafx.util.StringConverter;
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 
-public class CompatibilitySettingEntry extends AbstractSettingEntry<Compatibility>
+public class CompatibilitySettingEntry extends AbstractDeactivatableSettingEntry<Compatibility>
 {
     public CompatibilitySettingEntry(Compatibility value, boolean enabled)
     {

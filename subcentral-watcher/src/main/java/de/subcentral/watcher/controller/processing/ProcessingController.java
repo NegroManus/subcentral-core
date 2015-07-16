@@ -144,8 +144,8 @@ public class ProcessingController extends AbstractController
 		    cfg.setStandardReleases(ImmutableList.copyOf(settings.getStandardReleases()));
 		    cfg.setCompatibilityEnabled(settings.isCompatibilityEnabled());
 		    cfg.setCompatibilityService(createCompatibilityService(settings));
-		    cfg.setPreMetadataDbStandardizingService(createPreMetadataDbStandardizingService(settings));
-		    cfg.setPostMetadataDbStandardizingService(createPostMetadataDbStandardizingService(settings));
+		    cfg.setBeforeQueryingStandardizingService(createBeforeQueryingStandardizingService(settings));
+		    cfg.setAfterQueryingStandardizingService(createAfterQueryingStandardizingService(settings));
 		    cfg.setNamingParameters(ImmutableMap.copyOf(settings.getNamingParameters()));
 		    cfg.setTargetDir(settings.getTargetDir());
 		    cfg.setDeleteSource(settings.isDeleteSource());
@@ -174,15 +174,18 @@ public class ProcessingController extends AbstractController
 	return service;
     }
 
-    private static TypeStandardizingService createPreMetadataDbStandardizingService(ProcessingSettings settings)
+    private static TypeStandardizingService createBeforeQueryingStandardizingService(ProcessingSettings settings)
     {
 	TypeStandardizingService service = new TypeStandardizingService("premetadatadb");
 	// Register default nested beans retrievers but not default
 	// standardizers
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	for (StandardizerSettingEntry<?, ?> entry : settings.getPreMetadataDbStandardizers())
+	for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers())
 	{
-	    WatcherFxUtil.registerStandardizer(service, entry);
+	    if (entry.isBeforeQuerying())
+	    {
+		registerStandardizer(service, entry);
+	    }
 	}
 	// add subtitle language standardizer
 	service.registerStandardizer(Subtitle.class, settings.getSubtitleLanguageSettings().getSubtitleLanguageStandardizer());
@@ -191,17 +194,25 @@ public class ProcessingController extends AbstractController
 	return service;
     }
 
-    private static TypeStandardizingService createPostMetadataDbStandardizingService(ProcessingSettings settings)
+    private static TypeStandardizingService createAfterQueryingStandardizingService(ProcessingSettings settings)
     {
 	TypeStandardizingService service = new TypeStandardizingService("postmetadatadb");
 	// Register default nested beans retrievers but not default
 	// standardizers
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	for (StandardizerSettingEntry<?, ?> entry : settings.getPreMetadataDbStandardizers())
+	for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers())
 	{
-	    WatcherFxUtil.registerStandardizer(service, entry);
+	    if (entry.isAfterQuerying())
+	    {
+		registerStandardizer(service, entry);
+	    }
 	}
 	return service;
+    }
+
+    private static <T> void registerStandardizer(TypeStandardizingService service, StandardizerSettingEntry<T, ?> entry)
+    {
+	service.registerStandardizer(entry.getBeanType(), entry.getValue());
     }
 
     private static NamingService initNamingService()
@@ -548,8 +559,8 @@ public class ProcessingController extends AbstractController
 	private boolean				   compatibilityEnabled;
 	private CompatibilityService		   compatibilityService;
 	// standardizing
-	private StandardizingService		   preMetadataDbStandardizingService;
-	private StandardizingService		   postMetadataDbStandardizingService;
+	private StandardizingService		   beforeQueryingStandardizingService;
+	private StandardizingService		   afterQueryingStandardizingService;
 	// naming
 	private ImmutableMap<String, Object>	   namingParameters;
 	// File Transformation - General
@@ -657,24 +668,24 @@ public class ProcessingController extends AbstractController
 	    this.compatibilityService = compatibilityService;
 	}
 
-	StandardizingService getPreMetadataDbStandardizingService()
+	StandardizingService getBeforeQueryingStandardizingService()
 	{
-	    return preMetadataDbStandardizingService;
+	    return beforeQueryingStandardizingService;
 	}
 
-	private void setPreMetadataDbStandardizingService(StandardizingService preMetadataDbStandardizingService)
+	private void setBeforeQueryingStandardizingService(StandardizingService beforeQueryingStandardizingService)
 	{
-	    this.preMetadataDbStandardizingService = preMetadataDbStandardizingService;
+	    this.beforeQueryingStandardizingService = beforeQueryingStandardizingService;
 	}
 
-	StandardizingService getPostMetadataDbStandardizingService()
+	StandardizingService getAfterQueryingStandardizingService()
 	{
-	    return postMetadataDbStandardizingService;
+	    return afterQueryingStandardizingService;
 	}
 
-	private void setPostMetadataDbStandardizingService(StandardizingService postMetadataDbStandardizingService)
+	private void setAfterQueryingStandardizingService(StandardizingService afterQueryingStandardizingService)
 	{
-	    this.postMetadataDbStandardizingService = postMetadataDbStandardizingService;
+	    this.afterQueryingStandardizingService = afterQueryingStandardizingService;
 	}
 
 	ImmutableMap<String, Object> getNamingParameters()
@@ -761,8 +772,8 @@ public class ProcessingController extends AbstractController
 		    .add("standardReleases", standardReleases)
 		    .add("compatibilityEnabled", compatibilityEnabled)
 		    .add("compatibilityService", compatibilityService)
-		    .add("preMetadataDbStandardizingService", preMetadataDbStandardizingService)
-		    .add("postMetadataDbStandardizingService", postMetadataDbStandardizingService)
+		    .add("beforeQueryingStandardizingService", beforeQueryingStandardizingService)
+		    .add("afterQueryingStandardizingService", afterQueryingStandardizingService)
 		    .add("namingParameters", namingParameters)
 		    .add("targetDir", targetDir)
 		    .add("deleteSource", deleteSource)

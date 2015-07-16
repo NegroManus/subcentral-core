@@ -2,7 +2,7 @@ package de.subcentral.watcher.settings;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 
-import de.subcentral.watcher.model.ObservableObject;
+import de.subcentral.fx.ObservableObject;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;

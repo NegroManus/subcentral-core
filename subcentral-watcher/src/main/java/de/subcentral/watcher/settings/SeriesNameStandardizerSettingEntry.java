@@ -1,22 +1,22 @@
 package de.subcentral.watcher.settings;
 
-import javafx.beans.binding.StringBinding;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.standardizing.SeriesNameStandardizer;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
+import javafx.beans.binding.StringBinding;
 
 public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry<Series, SeriesNameStandardizer>
 {
-    private static final StringBinding standardizerTypeAsString	= FxUtil.constantStringBinding("Series name");
-    private final StringBinding	       ruleAsString;
+    private static final StringBinding standardizerType	= FxUtil.constantStringBinding("Series name");
+    private final StringBinding	       rule;
     private final UserPattern	       nameUserPattern;
 
-    public SeriesNameStandardizerSettingEntry(UserPattern nameUiPattern, String nameReplacement, boolean enabled)
+    public SeriesNameStandardizerSettingEntry(UserPattern nameUiPattern, String nameReplacement, boolean beforeQuerying, boolean afterQuerying)
     {
-	super(Series.class, buildStandardizer(nameUiPattern, nameReplacement), enabled);
-	ruleAsString = FxUtil.constantStringBinding(operationToString(value, nameUiPattern));
+	super(Series.class, buildStandardizer(nameUiPattern, nameReplacement), beforeQuerying, afterQuerying);
+	rule = FxUtil.constantStringBinding(formatRule(value, nameUiPattern));
 	this.nameUserPattern = nameUiPattern;
     }
 
@@ -26,15 +26,15 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
     }
 
     @Override
-    public StringBinding standardizerTypeAsStringBinding()
+    public StringBinding standardizerTypeStringBinding()
     {
-	return standardizerTypeAsString;
+	return standardizerType;
     }
 
     @Override
-    public StringBinding ruleAsStringBinding()
+    public StringBinding ruleStringBinding()
     {
-	return ruleAsString;
+	return rule;
     }
 
     public UserPattern getNameUserPattern()
@@ -44,10 +44,10 @@ public class SeriesNameStandardizerSettingEntry extends StandardizerSettingEntry
 
     public static String getStandardizerTypeString()
     {
-	return standardizerTypeAsString.get();
+	return standardizerType.get();
     }
 
-    private static String operationToString(SeriesNameStandardizer standardizer, UserPattern nameUserPattern)
+    private static String formatRule(SeriesNameStandardizer standardizer, UserPattern nameUserPattern)
     {
 	StringBuilder sb = new StringBuilder();
 	sb.append("Replace \"");

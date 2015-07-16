@@ -1,43 +1,42 @@
 package de.subcentral.watcher.settings;
 
-import javafx.beans.binding.StringBinding;
-
 import com.google.common.base.Joiner;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
 import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.FxUtil;
+import javafx.beans.binding.StringBinding;
 
 public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntry<Release, ReleaseTagsStandardizer>
 {
-    private static final StringBinding standardizerTypeAsString	= FxUtil.constantStringBinding("Release tags");
-    private final StringBinding	       ruleAsString;
+    private static final StringBinding standardizerType	= FxUtil.constantStringBinding("Release tags");
+    private final StringBinding	       rule;
 
-    public ReleaseTagsStandardizerSettingEntry(ReleaseTagsStandardizer standardizer, boolean enabled)
+    public ReleaseTagsStandardizerSettingEntry(ReleaseTagsStandardizer standardizer, boolean beforeQuerying, boolean afterQuerying)
     {
-	super(Release.class, standardizer, enabled);
-	ruleAsString = FxUtil.constantStringBinding(operationToString(standardizer));
+	super(Release.class, standardizer, beforeQuerying, afterQuerying);
+	rule = FxUtil.constantStringBinding(formatRule(standardizer));
     }
 
     @Override
-    public StringBinding standardizerTypeAsStringBinding()
+    public StringBinding standardizerTypeStringBinding()
     {
-	return standardizerTypeAsString;
+	return standardizerType;
     }
 
     @Override
-    public StringBinding ruleAsStringBinding()
+    public StringBinding ruleStringBinding()
     {
-	return ruleAsString;
+	return rule;
     }
 
     public static String getStandardizerTypeString()
     {
-	return standardizerTypeAsString.get();
+	return standardizerType.get();
     }
 
-    private static String operationToString(ReleaseTagsStandardizer standardizer)
+    private static String formatRule(ReleaseTagsStandardizer standardizer)
     {
 	TagsReplacer replacer = standardizer.getReplacer();
 	StringBuilder sb = new StringBuilder();
@@ -62,7 +61,7 @@ public class ReleaseTagsStandardizerSettingEntry extends StandardizerSettingEntr
 	switch (replacer.getReplaceMode())
 	{
 	    case MATCHED_SEQUENCE:
-		sb.append("replace it with ");
+		sb.append("replace those with ");
 		break;
 	    case COMPLETE_LIST:
 		sb.append("set the tags to ");

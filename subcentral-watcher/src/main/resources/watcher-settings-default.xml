@@ -40,14 +40,14 @@
 				<standardReleases>
 					<standardRelease tags="720p, HDTV, x264" group="2HD" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="2HD" scope="IF_GUESSING" />
-					<standardRelease tags="HDTV, x264"  group="ASAP" scope="IF_GUESSING" />
-					<standardRelease tags="1080p, HDTV, x264"  group="BATV" scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264"  group="BATV" scope="IF_GUESSING" />
-					<standardRelease tags="1080i, HDTV, MPEG2, DD5.1"  group="CtrlHD" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="ASAP" scope="IF_GUESSING" />
+					<standardRelease tags="1080p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
+					<standardRelease tags="1080i, HDTV, MPEG2, DD5.1" group="CtrlHD" scope="IF_GUESSING" />
 					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="DON" scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV x264"  group="IMMERSE" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV x264" group="IMMERSE" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="LOL" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
@@ -59,49 +59,34 @@
 			</guessing>
 			<compatibility enabled="true">
 				<compatibilities>
+					<crossGroupCompatibility enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
 					<crossGroupCompatibility enabled="true" sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />
 					<crossGroupCompatibility enabled="true" sourceGroup="REMARKABLE" compatibleGroup="EXCELLENCE" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="ORENJI" compatibleGroup="FQM" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
 				</compatibilities>
 			</compatibility>
 		</release>
 	</metadata>
 
 	<standardizing>
-		<preMetadataDb>
-			<standardizers>
-				<seriesNameStandardizer enabled="true" namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" />
-				<seriesNameStandardizer enabled="true" namePattern="Clarence\W+US\W+2013\W*" namePatternMode="REGEX" nameReplacement="Clarence (US)" />
-				<seriesNameStandardizer enabled="true" namePattern="Love\W+Child\W+Aus\W*" namePatternMode="REGEX" nameReplacement="Love Child (AU)" />
-				<seriesNameStandardizer enabled="true" namePattern="Marry\W+Me" namePatternMode="REGEX" nameReplacement="Marry Me (2014)" />
-				<seriesNameStandardizer enabled="true" namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" />
-				<seriesNameStandardizer enabled="true" namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" />
-				<seriesNameStandardizer enabled="true" namePattern="Undercover\W+Boss" namePatternMode="REGEX" nameReplacement="Undercover Boss (US)" />
+		<standardizers>
+			<seriesNameStandardizer namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Clarence\W+US\W+2013\W*" namePatternMode="REGEX" nameReplacement="Clarence (US)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Good\W+Wife" namePatternMode="REGEX" nameReplacement="The Good Wife" beforeQuerying="false" afterQuerying="true" />
+			<seriesNameStandardizer namePattern="Love\W+Child\W+Aus\W*" namePatternMode="REGEX" nameReplacement="Love Child (AU)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Marry\W+Me" namePatternMode="REGEX" nameReplacement="Marry Me (2014)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Resurrection\W+2014\W*" namePatternMode="REGEX" nameReplacement="Resurrection (US)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Undercover\W+Boss" namePatternMode="REGEX" nameReplacement="Undercover Boss (US)" beforeQuerying="true" afterQuerying="false" />
 
-				<releaseTagsStandardizer enabled="true" queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-			</standardizers>
-		</preMetadataDb>
-		<postMetadataDb>
-			<standardizers>
-				<seriesNameStandardizer enabled="true" namePattern="Good\W+Wife" namePatternMode="REGEX" nameReplacement="The Good Wife" />
-
-				<releaseTagsStandardizer enabled="true" queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-				<releaseTagsStandardizer enabled="true" queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" />
-			</standardizers>
-		</postMetadataDb>
+			<releaseTagsStandardizer queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsStandardizer queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsStandardizer queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsStandardizer queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsStandardizer queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsStandardizer queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsStandardizer queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+		</standardizers>
 
 		<subtitleLanguage>
 			<parsingLanguages>

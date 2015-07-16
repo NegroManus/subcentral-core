@@ -2,17 +2,14 @@ package de.subcentral.watcher.controller.settings;
 
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherDialogs;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 import de.subcentral.watcher.settings.StandardizerSettingEntry;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.ListProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -26,34 +23,30 @@ import javafx.util.StringConverter;
 
 public class StandardizingSettingsController extends AbstractSettingsSectionController
 {
-    private static final Logger log = LogManager.getLogger(StandardizingSettingsController.class);
-
-    // Model
-    private final ListProperty<StandardizerSettingEntry<?, ?>> standardizingRules;
-
     @FXML
     private GridPane						       standardizingSettingsPane;
     @FXML
-    private TableView<StandardizerSettingEntry<?, ?>>		       rulesTableView;
+    private TableView<StandardizerSettingEntry<?, ?>>		       standardizersTableView;
     @FXML
-    private TableColumn<StandardizerSettingEntry<?, ?>, Boolean>       rulesEnabledColumn;
+    private TableColumn<StandardizerSettingEntry<?, ?>, String>	       standardizersTypeColumn;
     @FXML
-    private TableColumn<StandardizerSettingEntry<?, ?>, String>	       rulesTypeColumn;
+    private TableColumn<StandardizerSettingEntry<?, ?>, String>	       standardizersRuleColumn;
     @FXML
-    private TableColumn<StandardizerSettingEntry<?, ?>, String>	       rulesOperationColumn;
+    private TableColumn<StandardizerSettingEntry<?, ?>, Boolean>       standardizersBeforeQueryingColumn;
     @FXML
-    private ChoiceBox<Class<? extends StandardizerSettingEntry<?, ?>>> ruleTypeChoiceBox;
+    private TableColumn<StandardizerSettingEntry<?, ?>, Boolean>       standardizersAfterQueryingColumn;
     @FXML
-    private Button						       addRuleButton;
+    private ChoiceBox<Class<? extends StandardizerSettingEntry<?, ?>>> standardizerTypeChoiceBox;
     @FXML
-    private Button						       editRuleButton;
+    private Button						       addStandardizerButton;
     @FXML
-    private Button						       removeRuleButton;
+    private Button						       editStandardizerButton;
+    @FXML
+    private Button						       removeStandardizerButton;
 
-    public StandardizingSettingsController(SettingsController settingsController, ListProperty<StandardizerSettingEntry<?, ?>> standardizingRules)
+    public StandardizingSettingsController(SettingsController settingsController)
     {
 	super(settingsController);
-	this.standardizingRules = standardizingRules;
     }
 
     @Override
@@ -66,18 +59,21 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
     protected void doInitialize() throws Exception
     {
 	// Standardizers
-	rulesTableView.setItems(standardizingRules);
+	standardizersTableView.setItems(WatcherSettings.INSTANCE.getProcessingSettings().standardizersProperty());
 
-	rulesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(rulesEnabledColumn));
-	rulesEnabledColumn.setCellValueFactory((CellDataFeatures<StandardizerSettingEntry<?, ?>, Boolean> param) -> param.getValue().enabledProperty());
+	standardizersTypeColumn.setCellValueFactory((CellDataFeatures<StandardizerSettingEntry<?, ?>, String> param) -> param.getValue().standardizerTypeStringBinding());
 
-	rulesTypeColumn.setCellValueFactory((CellDataFeatures<StandardizerSettingEntry<?, ?>, String> param) -> param.getValue().standardizerTypeAsStringBinding());
+	standardizersRuleColumn.setCellValueFactory((CellDataFeatures<StandardizerSettingEntry<?, ?>, String> param) -> param.getValue().ruleStringBinding());
 
-	rulesOperationColumn.setCellValueFactory((CellDataFeatures<StandardizerSettingEntry<?, ?>, String> param) -> param.getValue().ruleAsStringBinding());
+	standardizersBeforeQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(standardizersBeforeQueryingColumn));
+	standardizersBeforeQueryingColumn.setCellValueFactory((CellDataFeatures<StandardizerSettingEntry<?, ?>, Boolean> param) -> param.getValue().beforeQueryingProperty());
 
-	ruleTypeChoiceBox.getItems().add(SeriesNameStandardizerSettingEntry.class);
-	ruleTypeChoiceBox.getItems().add(ReleaseTagsStandardizerSettingEntry.class);
-	ruleTypeChoiceBox.setConverter(new StringConverter<Class<? extends StandardizerSettingEntry<?, ?>>>()
+	standardizersAfterQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(standardizersAfterQueryingColumn));
+	standardizersAfterQueryingColumn.setCellValueFactory((CellDataFeatures<StandardizerSettingEntry<?, ?>, Boolean> param) -> param.getValue().afterQueryingProperty());
+
+	standardizerTypeChoiceBox.getItems().add(SeriesNameStandardizerSettingEntry.class);
+	standardizerTypeChoiceBox.getItems().add(ReleaseTagsStandardizerSettingEntry.class);
+	standardizerTypeChoiceBox.setConverter(new StringConverter<Class<? extends StandardizerSettingEntry<?, ?>>>()
 	{
 	    @Override
 	    public String toString(Class<? extends StandardizerSettingEntry<?, ?>> type)
@@ -92,11 +88,11 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 		throw new UnsupportedOperationException();
 	    }
 	});
-	ruleTypeChoiceBox.getSelectionModel().selectFirst();
+	standardizerTypeChoiceBox.getSelectionModel().selectFirst();
 
-	addRuleButton.disableProperty().bind(ruleTypeChoiceBox.getSelectionModel().selectedItemProperty().isNull());
-	addRuleButton.setOnAction((ActionEvent event) -> {
-	    Class<? extends StandardizerSettingEntry<?, ?>> selectedStandardizerType = ruleTypeChoiceBox.getSelectionModel().getSelectedItem();
+	addStandardizerButton.disableProperty().bind(standardizerTypeChoiceBox.getSelectionModel().selectedItemProperty().isNull());
+	addStandardizerButton.setOnAction((ActionEvent event) -> {
+	    Class<? extends StandardizerSettingEntry<?, ?>> selectedStandardizerType = standardizerTypeChoiceBox.getSelectionModel().getSelectedItem();
 	    Optional<? extends StandardizerSettingEntry<?, ?>> result;
 	    if (SeriesNameStandardizerSettingEntry.class == selectedStandardizerType)
 	    {
@@ -110,14 +106,14 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 	    {
 		result = Optional.empty();
 	    }
-	    FxUtil.handleDistinctAdd(rulesTableView, result);
+	    FxUtil.handleDistinctAdd(standardizersTableView, result);
 	});
 
-	final BooleanBinding noSelection = rulesTableView.getSelectionModel().selectedItemProperty().isNull();
+	final BooleanBinding noSelection = standardizersTableView.getSelectionModel().selectedItemProperty().isNull();
 
-	editRuleButton.disableProperty().bind(noSelection);
-	editRuleButton.setOnAction((ActionEvent event) -> {
-	    StandardizerSettingEntry<?, ?> selectedStandardizer = rulesTableView.getSelectionModel().getSelectedItem();
+	editStandardizerButton.disableProperty().bind(noSelection);
+	editStandardizerButton.setOnAction((ActionEvent event) -> {
+	    StandardizerSettingEntry<?, ?> selectedStandardizer = standardizersTableView.getSelectionModel().getSelectedItem();
 	    Optional<? extends StandardizerSettingEntry<?, ?>> result;
 	    if (SeriesNameStandardizerSettingEntry.class == selectedStandardizer.getClass())
 	    {
@@ -131,22 +127,22 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 	    {
 		result = Optional.empty();
 	    }
-	    FxUtil.handleDistinctEdit(rulesTableView, result);
+	    FxUtil.handleDistinctEdit(standardizersTableView, result);
 	});
 
-	removeRuleButton.disableProperty().bind(noSelection);
-	removeRuleButton.setOnAction((ActionEvent event) -> {
-	    FxUtil.handleDelete(rulesTableView, "standardizing rule", new StringConverter<StandardizerSettingEntry<?, ?>>()
+	removeStandardizerButton.disableProperty().bind(noSelection);
+	removeStandardizerButton.setOnAction((ActionEvent event) -> {
+	    FxUtil.handleDelete(standardizersTableView, "standardizing rule", new StringConverter<StandardizerSettingEntry<?, ?>>()
 	    {
 		@Override
 		public String toString(StandardizerSettingEntry<?, ?> entry)
 		{
 		    StringBuilder sb = new StringBuilder();
 		    sb.append("Rule type: ");
-		    sb.append(entry.standardizerTypeAsStringBinding().get());
+		    sb.append(entry.standardizerTypeStringBinding().get());
 		    sb.append("\n");
 		    sb.append("Rule: ");
-		    sb.append(entry.ruleAsStringBinding().get());
+		    sb.append(entry.ruleStringBinding().get());
 		    return sb.toString();
 		}
 
@@ -159,6 +155,6 @@ public class StandardizingSettingsController extends AbstractSettingsSectionCont
 	    });
 	});
 
-	FxUtil.setStandardMouseAndKeyboardSupportForTableView(rulesTableView, editRuleButton, removeRuleButton);
+	FxUtil.setStandardMouseAndKeyboardSupportForTableView(standardizersTableView, editStandardizerButton, removeStandardizerButton);
     }
 }

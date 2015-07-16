@@ -4,42 +4,19 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-
-public abstract class AbstractSettingEntry<T> implements SettingEntry<T>
+public class AbstractSettingEntry<T> implements SettingEntry<T>
 {
-    protected final T		    value;
-    protected final BooleanProperty enabled;
+    protected final T value;
 
-    public AbstractSettingEntry(T value, boolean enabled)
+    public AbstractSettingEntry(T value)
     {
 	this.value = Objects.requireNonNull(value, "value");
-	this.enabled = new SimpleBooleanProperty(this, "enabled", enabled);
     }
 
     @Override
     public T getValue()
     {
 	return value;
-    }
-
-    @Override
-    public final BooleanProperty enabledProperty()
-    {
-	return this.enabled;
-    }
-
-    @Override
-    public final boolean isEnabled()
-    {
-	return this.enabled.get();
-    }
-
-    @Override
-    public final void setEnabled(final boolean enabled)
-    {
-	this.enabled.set(enabled);
     }
 
     @Override

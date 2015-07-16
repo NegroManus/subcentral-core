@@ -393,8 +393,9 @@ public class WatcherDialogs
 		if (dialogButton == ButtonType.APPLY)
 		{
 		    String nameReplacement = StringUtils.trimToNull(nameReplacementTxtFld.getText());
-		    boolean enabled = (bean == null ? true : bean.isEnabled());
-		    return new SeriesNameStandardizerSettingEntry(namePatternBinding.getValue(), nameReplacement, enabled);
+		    boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
+		    boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
+		    return new SeriesNameStandardizerSettingEntry(namePatternBinding.getValue(), nameReplacement, beforeQuerying, afterQuerying);
 		}
 		return null;
 	    });
@@ -539,8 +540,11 @@ public class WatcherDialogs
 			replaceWith = ReplaceMode.MATCHED_SEQUENCE;
 		    }
 		    boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
-		    boolean enabled = bean == null ? true : bean.isEnabled();
-		    return new ReleaseTagsStandardizerSettingEntry(new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)), enabled);
+		    boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
+		    boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
+		    return new ReleaseTagsStandardizerSettingEntry(new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
+			    beforeQuerying,
+			    afterQuerying);
 		}
 		return null;
 	    });

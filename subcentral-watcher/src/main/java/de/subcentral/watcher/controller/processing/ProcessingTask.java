@@ -227,8 +227,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    return null;
 	}
 
-	List<StandardizingChange> parsedChanges = config.getPreMetadataDbStandardizingService().standardize(parsed);
-	parsedChanges.forEach(c -> log.debug("Standardized pre metadata db: {}", c));
+	List<StandardizingChange> parsedChanges = config.getBeforeQueryingStandardizingService().standardize(parsed);
+	parsedChanges.forEach(c -> log.debug("Standardized before querying: {}", c));
 
 	return parsed;
     }
@@ -288,8 +288,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    convertedSub.setGroup(srcSub.getGroup());
 	    convertedSubAdj.getSubtitles().add(convertedSub);
 	}
-	List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(convertedSubAdj);
-	changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
+	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(convertedSubAdj);
+	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
 
 	targetObject = convertedSubAdj;
 
@@ -381,8 +381,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
     private void addMatchingRelease(Release rls, MethodInfo methodInfo) throws Exception
     {
-	List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(rls);
-	changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
+	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(rls);
+	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
 
 	targetObject.getMatchingReleases().add(rls);
 	ProcessingResult result = addResult(rls, methodInfo);
@@ -442,8 +442,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	// Standardize
 	for (Release r : processedRlss)
 	{
-	    List<StandardizingChange> changes = config.getPostMetadataDbStandardizingService().standardize(r);
-	    changes.forEach(c -> log.debug("Standardized post metadata db: {}", c));
+	    List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(r);
+	    changes.forEach(c -> log.debug("Standardized after querying: {}", c));
 	}
 	logReleases(Level.DEBUG, "Standardized releases:", processedRlss);
 

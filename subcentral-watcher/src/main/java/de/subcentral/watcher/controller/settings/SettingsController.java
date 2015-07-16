@@ -56,8 +56,6 @@ public class SettingsController extends AbstractController
     public static final String RELEASE_GUESSING_SECTION		       = "release.guessing";
     public static final String RELEASE_COMPATIBILITY_SECTION	       = "release.compatibility";
     public static final String STANDARDIZING_SECTION		       = "standardizing";
-    public static final String STANDARDIZING_PRE_METADATADB_SECTION    = "standardizing.premetadb";
-    public static final String STANDARDIZING_POST_METADATADB_SECTION   = "standardizing.postmetadb";
     public static final String STANDARDIZING_SUBTITLE_LANGUAGE_SECTION = "standardizing.subtitleLanguage";
     public static final String NAMING_SECTION			       = "naming";
     public static final String FILE_TRANSFORMATION_SECTION	       = "filetransformation";
@@ -134,27 +132,11 @@ public class SettingsController extends AbstractController
 	ctrls.put(releaseCompatibilitySection.getName(), releaseCompatibilitySection);
 
 	Section standardizingSection = new Section(STANDARDIZING_SECTION);
-	standardizingSection.setLabel("Standardizing");
-	standardizingSection.setImage("exchange_16.png");
+	standardizingSection.setLabel("Correction");
+	standardizingSection.setImage("edit_16.png");
+	standardizingSection.setControllerConstructor(() -> new StandardizingSettingsController(this));
+	standardizingSection.setFxml("StandardizingSettingsView.fxml");
 	ctrls.put(standardizingSection.getName(), standardizingSection);
-
-	Section standardizingPreMetadataDbSection = new Section(STANDARDIZING_PRE_METADATADB_SECTION);
-	standardizingPreMetadataDbSection.setLabel("Pre metadata database");
-	standardizingPreMetadataDbSection.setImage("exchange_16.png");
-	standardizingPreMetadataDbSection
-		.setControllerConstructor(() -> new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().preMetadataDbStandardizersProperty()));
-	standardizingPreMetadataDbSection.setFxml("StandardizingSettingsView.fxml");
-	standardizingPreMetadataDbSection.setResourceBundle("PreMetadataDbStandardizingView");
-	ctrls.put(standardizingPreMetadataDbSection.getName(), standardizingPreMetadataDbSection);
-
-	Section standardizingPostMetadataDbSection = new Section(STANDARDIZING_POST_METADATADB_SECTION);
-	standardizingPostMetadataDbSection.setLabel("Post metadata database");
-	standardizingPostMetadataDbSection.setImage("exchange_16.png");
-	standardizingPostMetadataDbSection
-		.setControllerConstructor(() -> new StandardizingSettingsController(this, WatcherSettings.INSTANCE.getProcessingSettings().postMetadataStandardizersProperty()));
-	standardizingPostMetadataDbSection.setFxml("StandardizingSettingsView.fxml");
-	standardizingPostMetadataDbSection.setResourceBundle("PostMetadataDbStandardizingView");
-	ctrls.put(standardizingPostMetadataDbSection.getName(), standardizingPostMetadataDbSection);
 
 	Section standardizingSubtitleLanguageSection = new Section(STANDARDIZING_SUBTITLE_LANGUAGE_SECTION);
 	standardizingSubtitleLanguageSection.setLabel("Subtitle language");
@@ -224,8 +206,6 @@ public class SettingsController extends AbstractController
 	TreeItem<Section> releaseCompatibilityTreeItem = new TreeItem<>(sections.get(RELEASE_COMPATIBILITY_SECTION));
 
 	TreeItem<Section> standardizingTreeItem = new TreeItem<>(sections.get(STANDARDIZING_SECTION));
-	TreeItem<Section> preMetadataDbStandardizingTreeItem = new TreeItem<>(sections.get(STANDARDIZING_PRE_METADATADB_SECTION));
-	TreeItem<Section> postMetadataDbStandardizingTreeItem = new TreeItem<>(sections.get(STANDARDIZING_POST_METADATADB_SECTION));
 	TreeItem<Section> subtitleLanguageStandardizingTreeItem = new TreeItem<>(sections.get(STANDARDIZING_SUBTITLE_LANGUAGE_SECTION));
 
 	TreeItem<Section> namingTreeItem = new TreeItem<>(sections.get(NAMING_SECTION));
@@ -243,8 +223,6 @@ public class SettingsController extends AbstractController
 	releaseTreeItem.getChildren().add(releaseCompatibilityTreeItem);
 	// Standardizing
 	root.getChildren().add(standardizingTreeItem);
-	standardizingTreeItem.getChildren().add(preMetadataDbStandardizingTreeItem);
-	standardizingTreeItem.getChildren().add(postMetadataDbStandardizingTreeItem);
 	standardizingTreeItem.getChildren().add(subtitleLanguageStandardizingTreeItem);
 	// Naming
 	root.getChildren().add(namingTreeItem);

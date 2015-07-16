@@ -90,26 +90,28 @@ class ConfigurationHelper
     {
 	ArrayList<StandardizerSettingEntry<?, ?>> stdzers = new ArrayList<>();
 	List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameStandardizer");
-	for (HierarchicalConfiguration<ImmutableNode> seriesStdzerCfg : seriesStdzerCfgs)
+	for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : seriesStdzerCfgs)
 	{
-	    boolean enabled = seriesStdzerCfg.getBoolean("[@enabled]");
-	    String namePatternStr = seriesStdzerCfg.getString("[@namePattern]");
-	    Mode namePatternMode = Mode.valueOf(seriesStdzerCfg.getString("[@namePatternMode]"));
+	    String namePatternStr = stdzerCfg.getString("[@namePattern]");
+	    Mode namePatternMode = Mode.valueOf(stdzerCfg.getString("[@namePatternMode]"));
 	    UserPattern nameUiPattern = new UserPattern(namePatternStr, namePatternMode);
-	    String nameReplacement = seriesStdzerCfg.getString("[@nameReplacement]");
-	    stdzers.add(new SeriesNameStandardizerSettingEntry(nameUiPattern, nameReplacement, enabled));
+	    String nameReplacement = stdzerCfg.getString("[@nameReplacement]");
+	    boolean enabledPreMetadataDb = stdzerCfg.getBoolean("[@beforeQuerying]");
+	    boolean enabledPostMetadataDb = stdzerCfg.getBoolean("[@afterQuerying]");
+	    stdzers.add(new SeriesNameStandardizerSettingEntry(nameUiPattern, nameReplacement, enabledPreMetadataDb, enabledPostMetadataDb));
 	}
 	List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsStandardizer");
-	for (HierarchicalConfiguration<ImmutableNode> rlsTagsStdzerCfg : rlsTagsStdzerCfgs)
+	for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : rlsTagsStdzerCfgs)
 	{
-	    boolean enabled = rlsTagsStdzerCfg.getBoolean("[@enabled]");
-	    List<Tag> queryTags = Tag.parseList(rlsTagsStdzerCfg.getString("[@queryTags]"));
-	    List<Tag> replacement = Tag.parseList(rlsTagsStdzerCfg.getString("[@replacement]"));
-	    QueryMode queryMode = de.subcentral.core.metadata.release.TagUtil.QueryMode.valueOf(rlsTagsStdzerCfg.getString("[@queryMode]"));
-	    ReplaceMode replaceMode = de.subcentral.core.metadata.release.TagUtil.ReplaceMode.valueOf(rlsTagsStdzerCfg.getString("[@replaceMode]"));
-	    boolean ignoreOrder = rlsTagsStdzerCfg.getBoolean("[@ignoreOrder]", false);
+	    List<Tag> queryTags = Tag.parseList(stdzerCfg.getString("[@queryTags]"));
+	    List<Tag> replacement = Tag.parseList(stdzerCfg.getString("[@replacement]"));
+	    QueryMode queryMode = QueryMode.valueOf(stdzerCfg.getString("[@queryMode]"));
+	    ReplaceMode replaceMode = ReplaceMode.valueOf(stdzerCfg.getString("[@replaceMode]"));
+	    boolean ignoreOrder = stdzerCfg.getBoolean("[@ignoreOrder]", false);
+	    boolean beforeQuerying = stdzerCfg.getBoolean("[@beforeQuerying]");
+	    boolean afterQuerying = stdzerCfg.getBoolean("[@afterQuerying]");
 	    ReleaseTagsStandardizer stdzer = new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
-	    stdzers.add(new ReleaseTagsStandardizerSettingEntry(stdzer, enabled));
+	    stdzers.add(new ReleaseTagsStandardizerSettingEntry(stdzer, beforeQuerying, afterQuerying));
 	}
 	stdzers.trimToSize();
 	return FXCollections.observableList(stdzers);
@@ -236,10 +238,11 @@ class ConfigurationHelper
 		SeriesNameStandardizer stdzer = entry.getValue();
 		UserPattern namePattern = entry.getNameUserPattern();
 
-		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@enabled]", entry.isEnabled());
 		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@namePattern]", namePattern.getPattern());
 		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@namePatternMode]", namePattern.getMode());
 		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@nameReplacement]", stdzer.getNameReplacement());
+		cfg.addProperty(key + ".seriesNameStandardizer(" + releaseTagsIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());
+		cfg.addProperty(key + ".seriesNameStandardizer(" + releaseTagsIndex + ")[@afterQuerying]", entry.isAfterQuerying());
 		seriesNameIndex++;
 	    }
 	    else if (genericEntry instanceof ReleaseTagsStandardizerSettingEntry)
@@ -247,12 +250,13 @@ class ConfigurationHelper
 		ReleaseTagsStandardizerSettingEntry entry = (ReleaseTagsStandardizerSettingEntry) genericEntry;
 		TagsReplacer replacer = entry.getValue().getReplacer();
 
-		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@enabled]", entry.isEnabled());
 		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@queryTags]", Tag.listToString(replacer.getQueryTags()));
 		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@replacement]", Tag.listToString(replacer.getReplacement()));
 		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@queryMode]", replacer.getQueryMode());
 		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@replaceMode]", replacer.getReplaceMode());
 		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@ignoreOrder]", replacer.getIgnoreOrder());
+		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());
+		cfg.addProperty(key + ".releaseTagsStandardizer(" + releaseTagsIndex + ")[@afterQuerying]", entry.isAfterQuerying());
 		releaseTagsIndex++;
 	    }
 	    else

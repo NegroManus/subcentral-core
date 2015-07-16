@@ -1,4 +1,4 @@
-package de.subcentral.watcher.model;
+package de.subcentral.fx;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

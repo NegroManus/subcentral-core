@@ -11,7 +11,7 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 
-public class MetadataDbSettingEntry<T> extends AbstractSettingEntry<MetadataDb<T>>
+public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry<MetadataDb<T>>
 {
     private static final Logger log = LogManager.getLogger(MetadataDbSettingEntry.class);
 

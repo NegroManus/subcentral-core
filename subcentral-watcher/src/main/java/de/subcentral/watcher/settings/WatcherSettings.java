@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.model.ObservableObject;
+import de.subcentral.fx.ObservableObject;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;

@@ -1,4 +1,4 @@
-package de.subcentral.watcher.model;
+package de.subcentral.fx;
 
 import javafx.beans.Observable;
 import javafx.beans.property.Property;

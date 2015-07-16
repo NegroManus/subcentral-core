@@ -11,8 +11,10 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.MapProperty;
@@ -28,25 +30,24 @@ import javafx.collections.ObservableList;
 public class ProcessingSettings extends AbstractSubSettings
 {
     // Parsing
-    private final StringProperty				filenamePatterns	   = new SimpleStringProperty(this, "filenamePatterns");
-    private final ListProperty<ParsingServiceSettingEntry>	filenameParsingServices	   = new SimpleListProperty<>(this, "filenameParsingServices");
+    private final StringProperty				filenamePatterns	 = new SimpleStringProperty(this, "filenamePatterns");
+    private final ListProperty<ParsingServiceSettingEntry>	filenameParsingServices	 = new SimpleListProperty<>(this, "filenameParsingServices");
     // Metadata
     // Metadata - Release
-    private final ListProperty<ParsingServiceSettingEntry>	releaseParsingServices	   = new SimpleListProperty<>(this, "releaseParsingServices");
-    private final ListProperty<Tag>				releaseMetaTags		   = new SimpleListProperty<>(this, "releaseMetaTags");
+    private final ListProperty<ParsingServiceSettingEntry>	releaseParsingServices	 = new SimpleListProperty<>(this, "releaseParsingServices");
+    private final ListProperty<Tag>				releaseMetaTags		 = new SimpleListProperty<>(this, "releaseMetaTags");
     // Metadata - Release - Databases
-    private final ListProperty<MetadataDbSettingEntry<Release>>	releaseDbs		   = new SimpleListProperty<>(this, "releaseDbs");
+    private final ListProperty<MetadataDbSettingEntry<Release>>	releaseDbs		 = new SimpleListProperty<>(this, "releaseDbs");
     // Metadata - Release - Guessing
-    private final BooleanProperty				guessingEnabled		   = new SimpleBooleanProperty(this, "guessingEnabled");
-    private final ListProperty<StandardRelease>			standardReleases	   = new SimpleListProperty<>(this, "standardReleases");
+    private final BooleanProperty				guessingEnabled		 = new SimpleBooleanProperty(this, "guessingEnabled");
+    private final ListProperty<StandardRelease>			standardReleases	 = new SimpleListProperty<>(this, "standardReleases");
     // Metadata - Release - Compatibility
-    private final BooleanProperty				compatibilityEnabled	   = new SimpleBooleanProperty(this, "compatibilityEnabled");
-    private final ListProperty<CompatibilitySettingEntry>	compatibilities		   = new SimpleListProperty<>(this, "compatibilities");
+    private final BooleanProperty				compatibilityEnabled	 = new SimpleBooleanProperty(this, "compatibilityEnabled");
+    private final ListProperty<CompatibilitySettingEntry>	compatibilities		 = new SimpleListProperty<>(this, "compatibilities");
     // Standardizing
-    private final ListProperty<StandardizerSettingEntry<?, ?>>	preMetadataDbStandardizers = new SimpleListProperty<>(this, "preMetadataDbStandardizers");
-    private final ListProperty<StandardizerSettingEntry<?, ?>>	postMetadataStandardizers  = new SimpleListProperty<>(this, "postMetadataStandardizers");
+    private final ListProperty<StandardizerSettingEntry<?, ?>>	standardizers		 = new SimpleListProperty<>(this, "standardizers");
     // Standardizing - Subtitle language
-    private final LocaleLanguageReplacerSettings		subtitleLanguageSettings   = new LocaleLanguageReplacerSettings();
+    private final LocaleLanguageReplacerSettings		subtitleLanguageSettings = new LocaleLanguageReplacerSettings();
 
     // Naming
     private final MapProperty<String, Object> namingParameters = new SimpleMapProperty<>(this, "namingParameters");
@@ -58,7 +59,7 @@ public class ProcessingSettings extends AbstractSubSettings
     // File Transformation - Packing
     private final BooleanProperty	   packingEnabled	     = new SimpleBooleanProperty(this, "packingEnabled");
     private final Property<Path>	   rarExe		     = new SimpleObjectProperty<>(this, "rarExe", null);
-    private final Property<LocateStrategy> winrarLocateStrategy	     = new SimpleObjectProperty<>(this, "winRarLocateStrategy");
+    private final Property<LocateStrategy> winRarLocateStrategy	     = new SimpleObjectProperty<>(this, "winRarLocateStrategy");
     private final Property<DeletionMode>   packingSourceDeletionMode = new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
 
     // package protected (should only be instantiated by WatcherSettings)
@@ -66,28 +67,26 @@ public class ProcessingSettings extends AbstractSubSettings
     {
 	super.bind(filenamePatterns,
 		filenameParsingServices,
-		SettingsUtil.observeEnablementOfSettingEntries(filenameParsingServices),
+		FxUtil.observeProperties(filenameParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
 		releaseParsingServices,
-		SettingsUtil.observeEnablementOfSettingEntries(releaseParsingServices),
+		FxUtil.observeProperties(releaseParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
 		releaseMetaTags,
 		releaseDbs,
-		SettingsUtil.observeEnablementOfSettingEntries(releaseDbs),
+		FxUtil.observeProperties(releaseDbs, (MetadataDbSettingEntry<Release> entry) -> new Observable[] { entry.enabledProperty() }),
 		guessingEnabled,
 		standardReleases,
 		compatibilityEnabled,
 		compatibilities,
-		SettingsUtil.observeEnablementOfSettingEntries(compatibilities),
-		preMetadataDbStandardizers,
-		SettingsUtil.observeEnablementOfSettingEntries(preMetadataDbStandardizers),
-		postMetadataStandardizers,
-		SettingsUtil.observeEnablementOfSettingEntries(postMetadataStandardizers),
+		FxUtil.observeProperties(compatibilities, (CompatibilitySettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
+		standardizers,
+		FxUtil.observeProperties(standardizers, (StandardizerSettingEntry<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
 		subtitleLanguageSettings,
 		namingParameters,
 		targetDir,
 		deleteSource,
 		packingEnabled,
 		rarExe,
-		winrarLocateStrategy,
+		winRarLocateStrategy,
 		packingSourceDeletionMode);
     }
 
@@ -232,34 +231,19 @@ public class ProcessingSettings extends AbstractSubSettings
 	this.compatibilitiesProperty().set(compatibilities);
     }
 
-    public final ListProperty<StandardizerSettingEntry<?, ?>> preMetadataDbStandardizersProperty()
+    public final ListProperty<StandardizerSettingEntry<?, ?>> standardizersProperty()
     {
-	return this.preMetadataDbStandardizers;
+	return this.standardizers;
     }
 
-    public final ObservableList<StandardizerSettingEntry<?, ?>> getPreMetadataDbStandardizers()
+    public final javafx.collections.ObservableList<de.subcentral.watcher.settings.StandardizerSettingEntry<?, ?>> getStandardizers()
     {
-	return this.preMetadataDbStandardizersProperty().get();
+	return this.standardizersProperty().get();
     }
 
-    public final void setPreMetadataDbStandardizingRules(final ObservableList<StandardizerSettingEntry<?, ?>> parsedStandardizingRules)
+    public final void setStandardizers(final javafx.collections.ObservableList<de.subcentral.watcher.settings.StandardizerSettingEntry<?, ?>> standardizers)
     {
-	this.preMetadataDbStandardizersProperty().set(parsedStandardizingRules);
-    }
-
-    public final ListProperty<StandardizerSettingEntry<?, ?>> postMetadataStandardizersProperty()
-    {
-	return this.postMetadataStandardizers;
-    }
-
-    public final ObservableList<StandardizerSettingEntry<?, ?>> getPostMetadataStandardizers()
-    {
-	return this.postMetadataStandardizersProperty().get();
-    }
-
-    public final void setPostMetadataDbStandardizingRules(final ObservableList<StandardizerSettingEntry<?, ?>> postMetadataStandardizingRules)
-    {
-	this.postMetadataStandardizersProperty().set(postMetadataStandardizingRules);
+	this.standardizersProperty().set(standardizers);
     }
 
     public LocaleLanguageReplacerSettings getSubtitleLanguageSettings()
@@ -344,7 +328,7 @@ public class ProcessingSettings extends AbstractSubSettings
 
     public final Property<LocateStrategy> winRarLocateStrategyProperty()
     {
-	return this.winrarLocateStrategy;
+	return this.winRarLocateStrategy;
     }
 
     public final de.subcentral.support.winrar.WinRar.LocateStrategy getWinRarLocateStrategy()
@@ -393,8 +377,7 @@ public class ProcessingSettings extends AbstractSubSettings
 	loadCompatibilities(cfg);
 
 	// Standardizing
-	loadPreMetadataDbStandardizingRules(cfg);
-	loadPostMetadataDbStandardizingRules(cfg);
+	loadStandardizers(cfg);
 	subtitleLanguageSettings.load(cfg);
 
 	// Naming
@@ -464,14 +447,9 @@ public class ProcessingSettings extends AbstractSubSettings
 	setCompatibilities(ConfigurationHelper.getCompatibilities(cfg, "metadata.release.compatibility.compatibilities"));
     }
 
-    private void loadPreMetadataDbStandardizingRules(XMLConfiguration cfg)
+    private void loadStandardizers(XMLConfiguration cfg)
     {
-	setPreMetadataDbStandardizingRules(ConfigurationHelper.getStandardizers(cfg, "standardizing.preMetadataDb.standardizers"));
-    }
-
-    private void loadPostMetadataDbStandardizingRules(XMLConfiguration cfg)
-    {
-	setPostMetadataDbStandardizingRules(ConfigurationHelper.getStandardizers(cfg, "standardizing.postMetadataDb.standardizers"));
+	setStandardizers(ConfigurationHelper.getStandardizers(cfg, "standardizing.standardizers"));
     }
 
     private void loadNamingParameters(XMLConfiguration cfg)
@@ -563,8 +541,7 @@ public class ProcessingSettings extends AbstractSubSettings
 	}
 
 	// Standardizing
-	ConfigurationHelper.addStandardizers(cfg, "standardizing.preMetadataDb.standardizers", preMetadataDbStandardizers);
-	ConfigurationHelper.addStandardizers(cfg, "standardizing.postMetadataDb.standardizers", postMetadataStandardizers);
+	ConfigurationHelper.addStandardizers(cfg, "standardizing.standardizers", standardizers);
 
 	subtitleLanguageSettings.save(cfg);
 
@@ -587,5 +564,4 @@ public class ProcessingSettings extends AbstractSubSettings
 	cfg.addProperty("fileTransformation.packing.winrar.locateStrategy", getWinRarLocateStrategy());
 	ConfigurationHelper.addPath(cfg, "fileTransformation.packing.winrar.rarExe", getRarExe());
     }
-
 }

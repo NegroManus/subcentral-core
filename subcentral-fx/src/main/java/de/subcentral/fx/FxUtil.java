@@ -38,6 +38,7 @@ import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -757,6 +758,43 @@ public class FxUtil
 		}
 	    }
 	}
+    }
+
+    public static <E> Observable observeProperties(ObservableList<E> beans, Function<E, Observable[]> propertiesExtractor)
+    {
+	ObservableObject obsv = new ObservableObject();
+	for (E bean : beans)
+	{
+	    obsv.getDependencies().addAll(propertiesExtractor.apply(bean));
+	}
+	beans.addListener(new ListChangeListener<E>()
+	{
+	    @Override
+	    public void onChanged(ListChangeListener.Change<? extends E> c)
+	    {
+		while (c.next())
+		{
+		    if (c.wasRemoved())
+		    {
+			for (E bean : c.getRemoved())
+			{
+			    // remove listener for properties
+			    obsv.getDependencies().removeAll(propertiesExtractor.apply(bean));
+			}
+		    }
+		    if (c.wasAdded())
+		    {
+			for (E bean : c.getAddedSubList())
+			{
+			    // add listener for properties
+			    obsv.getDependencies().addAll(propertiesExtractor.apply(bean));
+			}
+		    }
+		}
+
+	    }
+	});
+	return obsv;
     }
 
     private FxUtil()

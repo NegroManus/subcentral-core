@@ -22,7 +22,7 @@
 				<Font name="System Bold" size="12.0" />
 			</font>
 		</Label>
-		<Label text="Meta tags (ordered by order in release name):" GridPane.rowIndex="1" />
+		<Label text="Meta tags (ordered by appearance in release name):" GridPane.rowIndex="1" />
 		<TextField fx:id="metaTagsTextField" promptText="meta tags (separated by comma)" GridPane.rowIndex="2" />
 	</children>
 	<padding>

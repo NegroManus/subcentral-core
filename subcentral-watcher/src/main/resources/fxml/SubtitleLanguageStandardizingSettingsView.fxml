@@ -8,6 +8,16 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane fx:id="subLangStandardizingSettingsPane" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+	<top>
+		<Label text="Subtitle language correction" underline="true" BorderPane.alignment="CENTER_LEFT">
+			<font>
+				<Font name="System Bold" size="12.0" />
+			</font>
+			<BorderPane.margin>
+				<Insets bottom="5.0" />
+			</BorderPane.margin>
+		</Label>
+	</top>
 	<center>
 		<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE">
 			<tabs>
@@ -140,14 +150,4 @@
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 	</padding>
-	<top>
-		<Label text="Subtitle language standardizing" underline="true" BorderPane.alignment="CENTER_LEFT">
-			<font>
-				<Font name="System Bold" size="12.0" />
-			</font>
-			<BorderPane.margin>
-				<Insets bottom="5.0" />
-			</BorderPane.margin>
-		</Label>
-	</top>
 </BorderPane>
