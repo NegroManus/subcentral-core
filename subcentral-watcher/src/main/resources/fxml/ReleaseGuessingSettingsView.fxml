@@ -29,7 +29,7 @@
 			<columns>
 				<TableColumn fx:id="standardReleasesTagsColumn" editable="false" prefWidth="75.0" text="Tags" />
 				<TableColumn fx:id="standardReleasesGroupColumn" editable="false" prefWidth="75.0" text="Group" />
-				<TableColumn fx:id="standardReleasesAssumeExistenceColumn" editable="false" prefWidth="75.0" text="Assume existence" />
+				<TableColumn fx:id="standardReleasesScopeColumn" editable="false" prefWidth="75.0" text="Scope" />
 			</columns>
 			<columnResizePolicy>
 				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

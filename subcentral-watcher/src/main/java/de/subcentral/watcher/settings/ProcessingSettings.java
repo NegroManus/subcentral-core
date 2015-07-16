@@ -539,7 +539,7 @@ public class ProcessingSettings extends AbstractSubSettings
 	    StandardRelease stdRls = standardReleases.get(i);
 	    cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@tags]", Tag.listToString(stdRls.getRelease().getTags()));
 	    cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@group]", stdRls.getRelease().getGroup());
-	    cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@assumeExistence]", stdRls.getAssumeExistence());
+	    cfg.addProperty("metadata.release.guessing.standardReleases.standardRelease(" + i + ")[@scope]", stdRls.getScope());
 	}
 
 	// Metadata - Release - Compatibility

@@ -33,7 +33,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
     @FXML
     private TableColumn<StandardRelease, String> standardReleasesGroupColumn;
     @FXML
-    private TableColumn<StandardRelease, String> standardReleasesAssumeExistenceColumn;
+    private TableColumn<StandardRelease, String> standardReleasesScopeColumn;
 
     @FXML
     private Button addStandardReleaseButton;
@@ -69,18 +69,18 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 	standardReleasesGroupColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
 	    return FxUtil.constantBinding(Group.toSafeString(param.getValue().getRelease().getGroup()));
 	});
-	standardReleasesAssumeExistenceColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
+	standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
 	    String value;
-	    switch (param.getValue().getAssumeExistence())
+	    switch (param.getValue().getScope())
 	    {
-		case IF_NONE_FOUND:
-		    value = "Only if none found";
+		case IF_GUESSING:
+		    value = "If guessing";
 		    break;
 		case ALWAYS:
 		    value = "Always";
 		    break;
 		default:
-		    value = param.getValue().getAssumeExistence().name();
+		    value = param.getValue().getScope().name();
 	    }
 	    return FxUtil.constantBinding(value);
 	});

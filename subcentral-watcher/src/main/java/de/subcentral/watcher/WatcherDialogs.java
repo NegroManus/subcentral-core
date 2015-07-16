@@ -6,6 +6,30 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.google.common.collect.ImmutableList;
+
+import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.StandardRelease;
+import de.subcentral.core.metadata.release.StandardRelease.Scope;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.TagUtil;
+import de.subcentral.core.metadata.release.TagUtil.QueryMode;
+import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
+import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
+import de.subcentral.core.standardizing.TagsReplacer;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubCentralFxUtil;
+import de.subcentral.fx.UserPattern;
+import de.subcentral.watcher.controller.AbstractController;
+import de.subcentral.watcher.settings.LanguageTextMapping;
+import de.subcentral.watcher.settings.LanguageUserPattern;
+import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
+import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 import javafx.application.Platform;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
@@ -28,31 +52,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.common.collect.ImmutableList;
-
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
-import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
-import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.metadata.release.TagUtil;
-import de.subcentral.core.metadata.release.TagUtil.QueryMode;
-import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
-import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
-import de.subcentral.core.standardizing.TagsReplacer;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.SubCentralFxUtil;
-import de.subcentral.fx.UserPattern;
-import de.subcentral.watcher.controller.AbstractController;
-import de.subcentral.watcher.settings.LanguageTextMapping;
-import de.subcentral.watcher.settings.LanguageUserPattern;
-import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
-import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
 
 public class WatcherDialogs
 {
@@ -114,7 +113,7 @@ public class WatcherDialogs
 	@FXML
 	private TextField   groupTxtFld;
 	@FXML
-	private RadioButton ifNoneFoundRadioBtn;
+	private RadioButton ifGuessingRadioBtn;
 	@FXML
 	private RadioButton alwaysRadioBtn;
 
@@ -145,38 +144,38 @@ public class WatcherDialogs
 	@Override
 	protected void initInputPaneControl()
 	{
-	    ToggleGroup assumeExistenceToggleGrp = new ToggleGroup();
-	    assumeExistenceToggleGrp.getToggles().addAll(ifNoneFoundRadioBtn, alwaysRadioBtn);
+	    ToggleGroup scopeToggleGrp = new ToggleGroup();
+	    scopeToggleGrp.getToggles().addAll(ifGuessingRadioBtn, alwaysRadioBtn);
 
 	    // Set initial values
 	    List<Tag> initialTags;
 	    Group initialGroup;
-	    Toggle initialAssumeExistence;
+	    Toggle initialScope;
 	    if (bean == null)
 	    {
 		initialTags = ImmutableList.of();
 		initialGroup = null;
-		initialAssumeExistence = ifNoneFoundRadioBtn;
+		initialScope = ifGuessingRadioBtn;
 	    }
 	    else
 	    {
 		initialTags = bean.getRelease().getTags();
 		initialGroup = bean.getRelease().getGroup();
-		switch (bean.getAssumeExistence())
+		switch (bean.getScope())
 		{
-		    case IF_NONE_FOUND:
-			initialAssumeExistence = ifNoneFoundRadioBtn;
+		    case IF_GUESSING:
+			initialScope = ifGuessingRadioBtn;
 			break;
 		    case ALWAYS:
-			initialAssumeExistence = alwaysRadioBtn;
+			initialScope = alwaysRadioBtn;
 			break;
 		    default:
-			initialAssumeExistence = ifNoneFoundRadioBtn;
+			initialScope = ifGuessingRadioBtn;
 		}
 	    }
 	    ListProperty<Tag> tags = SubCentralFxUtil.tagPropertyForTextField(tagsTxtFld, initialTags);
 	    Property<Group> group = SubCentralFxUtil.groupPropertyForTextField(groupTxtFld, initialGroup);
-	    assumeExistenceToggleGrp.selectToggle(initialAssumeExistence);
+	    scopeToggleGrp.selectToggle(initialScope);
 
 	    // Bindings
 	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
@@ -187,16 +186,16 @@ public class WatcherDialogs
 	    dialog.setResultConverter(dialogButton -> {
 		if (dialogButton == ButtonType.APPLY)
 		{
-		    AssumeExistence assumeExistence;
-		    if (assumeExistenceToggleGrp.getSelectedToggle() == alwaysRadioBtn)
+		    Scope scope;
+		    if (scopeToggleGrp.getSelectedToggle() == alwaysRadioBtn)
 		    {
-			assumeExistence = AssumeExistence.ALWAYS;
+			scope = Scope.ALWAYS;
 		    }
 		    else
 		    {
-			assumeExistence = AssumeExistence.IF_NONE_FOUND;
+			scope = Scope.IF_GUESSING;
 		    }
-		    return new StandardRelease(tags.get(), group.getValue(), assumeExistence);
+		    return new StandardRelease(tags.get(), group.getValue(), scope);
 		}
 		return null;
 	    });

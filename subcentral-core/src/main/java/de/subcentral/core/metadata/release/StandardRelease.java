@@ -9,24 +9,24 @@ import com.google.common.base.MoreObjects;
 
 public class StandardRelease
 {
-    public enum AssumeExistence
+    public enum Scope
     {
-	ALWAYS, IF_NONE_FOUND
+	ALWAYS, IF_GUESSING
     };
 
     // private final Predicate<List<Media>> mediaFilter;
-    private final Release	  release;
-    private final AssumeExistence assumeExistence;
+    private final Release release;
+    private final Scope	  scope;
 
-    public StandardRelease(Release release, AssumeExistence assumeExistence)
+    public StandardRelease(Release release, Scope scope)
     {
-	this(release.getTags(), release.getGroup(), assumeExistence);
+	this(release.getTags(), release.getGroup(), scope);
     }
 
-    public StandardRelease(List<Tag> tags, Group group, AssumeExistence assumeExistence)
+    public StandardRelease(List<Tag> tags, Group group, Scope scope)
     {
 	this.release = new Release(tags, group);
-	this.assumeExistence = Objects.requireNonNull(assumeExistence, "assumeExistence");
+	this.scope = Objects.requireNonNull(scope, "scope");
     }
 
     /**
@@ -39,9 +39,9 @@ public class StandardRelease
 	return release;
     }
 
-    public AssumeExistence getAssumeExistence()
+    public Scope getScope()
     {
-	return assumeExistence;
+	return scope;
     }
 
     @Override
@@ -67,6 +67,6 @@ public class StandardRelease
     @Override
     public String toString()
     {
-	return MoreObjects.toStringHelper(StandardRelease.class).add("release", release).add("assumeExistence", assumeExistence).toString();
+	return MoreObjects.toStringHelper(StandardRelease.class).add("release", release).add("scope", scope).toString();
     }
 }

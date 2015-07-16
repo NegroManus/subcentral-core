@@ -38,19 +38,23 @@
 			</databases>
 			<guessing enabled="true">
 				<standardReleases>
-					<standardRelease tags="720p, HDTV, x264" group="2HD" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="HDTV, x264" group="2HD" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="720p, HDTV, x264" group="DIMENSION" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="HDTV, x264" group="LOL" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="720p, HDTV, x264" group="KILLERS" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="HDTV, x264" group="KILLERS" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="HDTV, x264" group="EXCELLENCE" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" group="Oosh" assumeExistence="IF_NONE_FOUND" />
-					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" group="Oosh" assumeExistence="IF_NONE_FOUND" />
+					<standardRelease tags="720p, HDTV, x264" group="2HD" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="2HD" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264"  group="ASAP" scope="IF_GUESSING" />
+					<standardRelease tags="1080p, HDTV, x264"  group="BATV" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264"  group="BATV" scope="IF_GUESSING" />
+					<standardRelease tags="1080i, HDTV, MPEG2, DD5.1"  group="CtrlHD" scope="IF_GUESSING" />
+					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="DON" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV x264"  group="IMMERSE" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="LOL" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="EXCELLENCE" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE" scope="IF_GUESSING" />
+					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
+					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
 				</standardReleases>
 			</guessing>
 			<compatibility enabled="true">

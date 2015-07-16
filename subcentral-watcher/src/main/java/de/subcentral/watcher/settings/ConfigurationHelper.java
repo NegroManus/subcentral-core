@@ -18,7 +18,7 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
+import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
@@ -161,8 +161,8 @@ class ConfigurationHelper
 	{
 	    List<Tag> tags = Tag.parseList(rlsCfg.getString("[@tags]"));
 	    Group group = Group.parse(rlsCfg.getString("[@group]"));
-	    AssumeExistence assumeExistence = AssumeExistence.valueOf(rlsCfg.getString("[@assumeExistence]"));
-	    rlss.add(new StandardRelease(tags, group, assumeExistence));
+	    Scope scope = Scope.valueOf(rlsCfg.getString("[@scope]"));
+	    rlss.add(new StandardRelease(tags, group, scope));
 	}
 	rlss.trimToSize();
 	return FXCollections.observableList(rlss);

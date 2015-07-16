@@ -22,10 +22,10 @@
 		<TextField fx:id="tagsTxtFld" promptText="tags (separated by comma)" GridPane.columnIndex="1" />
 		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Group:" GridPane.rowIndex="1" />
 		<TextField fx:id="groupTxtFld" maxWidth="1.7976931348623157E308" promptText="group" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-		<Label text="Assume that such a release exists:" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+		<Label text="Scope:" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
 		<VBox spacing="3.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
 			<children>
-				<RadioButton fx:id="ifNoneFoundRadioBtn" mnemonicParsing="false" text="Only if none found" />
+				<RadioButton fx:id="ifGuessingRadioBtn" mnemonicParsing="false" text="If guessing" />
 				<RadioButton fx:id="alwaysRadioBtn" mnemonicParsing="false" text="Always" />
 			</children>
 		</VBox>

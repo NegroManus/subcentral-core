@@ -27,7 +27,7 @@ import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInf
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.StandardRelease.AssumeExistence;
+import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -258,7 +258,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	existingRlss.addAll(results.values());
 	for (StandardRelease standardRls : config.getStandardReleases())
 	{
-	    if (standardRls.getAssumeExistence() == AssumeExistence.ALWAYS)
+	    if (standardRls.getScope() == Scope.ALWAYS)
 	    {
 		Release standardRlsWithMedia = new Release(srcRls.getMedia(), standardRls.getRelease().getTags(), standardRls.getRelease().getGroup());
 		existingRlss.add(standardRlsWithMedia);
