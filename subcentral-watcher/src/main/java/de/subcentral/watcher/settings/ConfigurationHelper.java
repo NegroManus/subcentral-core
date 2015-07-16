@@ -241,8 +241,8 @@ class ConfigurationHelper
 		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@namePattern]", namePattern.getPattern());
 		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@namePatternMode]", namePattern.getMode());
 		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@nameReplacement]", stdzer.getNameReplacement());
-		cfg.addProperty(key + ".seriesNameStandardizer(" + releaseTagsIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());
-		cfg.addProperty(key + ".seriesNameStandardizer(" + releaseTagsIndex + ")[@afterQuerying]", entry.isAfterQuerying());
+		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());
+		cfg.addProperty(key + ".seriesNameStandardizer(" + seriesNameIndex + ")[@afterQuerying]", entry.isAfterQuerying());
 		seriesNameIndex++;
 	    }
 	    else if (genericEntry instanceof ReleaseTagsStandardizerSettingEntry)
