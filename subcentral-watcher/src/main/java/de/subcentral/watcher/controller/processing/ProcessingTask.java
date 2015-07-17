@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -18,15 +19,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbUtil;
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
+import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
+import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.TagUtil;
@@ -178,9 +183,11 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    }
 	    updateProgress(0.25d, 1d);
 
+	    // Process
 	    if (sourceObject != null)
 	    {
-		processSubtitleAdjustment(sourceObject);
+		createTargetObject();
+		processParsed();
 	    }
 	    return null;
 	}
@@ -195,7 +202,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     {
 	updateMessage("Cancelled");
 	updateProgress(1d, 1d);
-	log.error("Processing of " + getSourceFile() + " was cancelled", getException());
+	log.info("Processing of " + getSourceFile() + " was cancelled", getException());
     }
 
     @Override
@@ -241,12 +248,12 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	return parsed;
     }
 
-    private void processSubtitleAdjustment(SubtitleAdjustment srcSubAdj) throws Exception
+    private void createTargetObject()
     {
 	// Created target object
 	SubtitleAdjustment convertedSubAdj = new SubtitleAdjustment();
-	convertedSubAdj.setHearingImpaired(srcSubAdj.isHearingImpaired());
-	for (Subtitle srcSub : srcSubAdj.getSubtitles())
+	convertedSubAdj.setHearingImpaired(sourceObject.isHearingImpaired());
+	for (Subtitle srcSub : sourceObject.getSubtitles())
 	{
 	    Subtitle convertedSub = new Subtitle();
 	    convertedSub.setMedia(srcSub.getMedia());
@@ -257,21 +264,14 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(convertedSubAdj);
 	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
 	targetObject = convertedSubAdj;
+    }
 
+    private void processParsed() throws Exception
+    {
 	// Querying
-	updateMessage("Querying release databases");
-	Release srcRls = srcSubAdj.getFirstMatchingRelease();
-	List<Media> queryObj = srcRls.getMedia();
-	ListMultimap<MetadataDb<Release>, Release> queyrResults = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
-	for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : queyrResults.asMap().entrySet())
-	{
-	    log.debug("Results of {}", entry.getKey().getName());
-	    entry.getValue().stream().forEach((r) -> log.debug(r));
-	}
-	if (queyrResults.isEmpty())
-	{
-	    log.info("Found no results in release databases");
-	}
+
+	Release srcRls = sourceObject.getFirstMatchingRelease();
+	ListMultimap<MetadataDb<Release>, Release> queryResults = query(srcRls);
 	if (isCancelled())
 	{
 	    return;
@@ -281,8 +281,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	// Process query results
 	updateMessage("Processing query results");
 	// Add StandardReleases with Scope=ALWAYS
-	List<Release> existingRlss = new ArrayList<>(queyrResults.values().size());
-	existingRlss.addAll(queyrResults.values());
+	List<Release> existingRlss = new ArrayList<>(queryResults.values().size());
+	existingRlss.addAll(queryResults.values());
 	for (StandardRelease standardRls : config.getStandardReleases())
 	{
 	    if (standardRls.getScope() == Scope.ALWAYS)
@@ -298,6 +298,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	{
 	    processedExistingRlss = ImmutableList.of();
 	    matchingRlss = ImmutableList.of();
+	    log.info("Found no existing or standard releases with Scope=ALWAYS");
+	    guess();
 	}
 	else
 	{
@@ -313,55 +315,32 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		    .collect(Collectors.toList());
 	    log.debug("Matching releases:");
 	    matchingRlss.forEach(r -> log.debug(r));
-	}
 
-	if (matchingRlss.isEmpty())
-	{
-	    log.info("Found no matching releases");
-	    if (config.isGuessingEnabled())
+	    if (matchingRlss.isEmpty())
 	    {
-		log.info("Guessing enabled. Guessing");
-		List<StandardRelease> stdRlss = config.getStandardReleases();
-		Map<Release, StandardRelease> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
-		logReleases(Level.DEBUG, "Guessed releases:", guessedRlss.keySet());
-		for (Map.Entry<Release, StandardRelease> entry : guessedRlss.entrySet())
-		{
-		    GuessingMethodInfo methodInfo = new GuessingMethodInfo(entry.getValue());
-		    addMatchingRelease(entry.getKey(), methodInfo);
-		}
-
-		List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
-		for (StandardRelease stdRls : stdRlss)
-		{
-		    Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
-		    TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
-		    stdRlssWithMediaAndMetaTags.add(rls);
-		}
-		addCompatibleReleases(guessedRlss.keySet(), stdRlssWithMediaAndMetaTags);
+		log.info("Found no matching releases");
+		guess();
 	    }
 	    else
 	    {
-		log.info("Guessing disabled");
+		// Add matching releases
+		for (Release rls : matchingRlss)
+		{
+		    MatchingMethodInfo methodInfo = new MatchingMethodInfo();
+		    addMatchingRelease(rls, methodInfo);
+		}
+		if (config.isCompatibilityEnabled())
+		{
+		    log.debug("Search for compatible releases enabled. Searching");
+		    addCompatibleReleases(matchingRlss, processedExistingRlss);
+		}
+		else
+		{
+		    log.debug("Search for compatible releases disabled");
+		}
 	    }
 	}
-	else
-	{
-	    // Add matching releases
-	    for (Release rls : matchingRlss)
-	    {
-		MatchingMethodInfo methodInfo = new MatchingMethodInfo();
-		addMatchingRelease(rls, methodInfo);
-	    }
-	    if (config.isCompatibilityEnabled())
-	    {
-		log.debug("Search for compatible releases enabled. Searching");
-		addCompatibleReleases(matchingRlss, processedExistingRlss);
-	    }
-	    else
-	    {
-		log.debug("Search for compatible releases disabled");
-	    }
-	}
+
 	if (isCancelled())
 	{
 	    return;
@@ -382,6 +361,66 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    {
 		log.warn("Could not delete source file", e);
 	    }
+	}
+    }
+
+    private ListMultimap<MetadataDb<Release>, Release> query(Release rls) throws InterruptedException
+    {
+	if (config.getReleaseDbs().isEmpty())
+	{
+	    log.info("No release databases configured");
+	    return ImmutableListMultimap.of();
+	}
+
+	StringJoiner rlsDbs = new StringJoiner(", ");
+	for (MetadataDb<Release> rlsDb : config.getReleaseDbs())
+	{
+	    rlsDbs.add(rlsDb.getName());
+	}
+
+	updateMessage("Querying " + rlsDbs.toString());
+	log.debug("Querying release databases " + rlsDbs.toString());
+	List<Media> queryObj = rls.getMedia();
+	ListMultimap<MetadataDb<Release>, Release> queryResults = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
+	for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : queryResults.asMap().entrySet())
+	{
+	    log.debug("Results of {}", entry.getKey().getName());
+	    entry.getValue().stream().forEach((r) -> log.debug(r));
+	}
+	if (queryResults.isEmpty())
+	{
+	    log.info("Found no existing releases in databases");
+	}
+	return queryResults;
+    }
+
+    private void guess() throws Exception
+    {
+	Release srcRls = sourceObject.getFirstMatchingRelease();
+	if (config.isGuessingEnabled())
+	{
+	    log.info("Guessing enabled. Guessing");
+	    List<StandardRelease> stdRlss = config.getStandardReleases();
+	    Map<Release, StandardRelease> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
+	    logReleases(Level.DEBUG, "Guessed releases:", guessedRlss.keySet());
+	    for (Map.Entry<Release, StandardRelease> entry : guessedRlss.entrySet())
+	    {
+		GuessingMethodInfo methodInfo = new GuessingMethodInfo(entry.getValue());
+		addMatchingRelease(entry.getKey(), methodInfo);
+	    }
+
+	    List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
+	    for (StandardRelease stdRls : stdRlss)
+	    {
+		Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
+		TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
+		stdRlssWithMediaAndMetaTags.add(rls);
+	    }
+	    addCompatibleReleases(guessedRlss.keySet(), stdRlssWithMediaAndMetaTags);
+	}
+	else
+	{
+	    log.info("Guessing disabled");
 	}
     }
 
@@ -486,11 +525,60 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     {
 	ProcessingResult result = new ProcessingResult(this, rls, info);
 	Platform.runLater(() -> {
+	    result.updateInfo(methodInfoToString(info));
 	    results.add(result);
 	    taskTreeItem.getChildren().add(new TreeItem<ProcessingItem>(result));
 	    taskTreeItem.setExpanded(true);
 	});
 	return result;
+    }
+
+    private String methodInfoToString(MethodInfo info)
+    {
+	switch (info.getMethod())
+	{
+	    case MATCHING:
+		return "Matching release";
+	    case GUESSING:
+	    {
+		GuessingMethodInfo gmi = (GuessingMethodInfo) info;
+		StringBuilder sb = new StringBuilder();
+		sb.append("Guessed release");
+		if (gmi.getStandardRelease() != null)
+		{
+		    sb.append(" (standard release: ");
+		    sb.append(name(gmi.getStandardRelease().getRelease()));
+		    sb.append(')');
+		}
+		return sb.toString();
+	    }
+	    case COMPATIBILITY:
+	    {
+		CompatibilityMethodInfo cmi = (CompatibilityMethodInfo) info;
+		StringBuilder sb = new StringBuilder();
+		sb.append("Compatible release ");
+		Compatibility c = cmi.getCompatibilityInfo().getCompatibility();
+		if (c instanceof SameGroupCompatibility)
+		{
+		    sb.append("same group");
+		}
+		else if (c instanceof CrossGroupCompatibility)
+		{
+		    sb.append(((CrossGroupCompatibility) c).toShortString());
+		}
+		sb.append(", source: ");
+		sb.append(name(cmi.getCompatibilityInfo().getCompatibleTo()));
+		sb.append(')');
+		return sb.toString();
+	    }
+	    default:
+		throw new IllegalArgumentException("Unknown method: " + info.getMethod());
+	}
+    }
+
+    private String name(Object obj)
+    {
+	return controller.getNamingService().name(obj, config.getNamingParameters());
     }
 
     private void createFiles(ProcessingResult result) throws Exception

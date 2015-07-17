@@ -66,15 +66,12 @@
 	<center>
 		<TreeTableView fx:id="processingTreeTable" showRoot="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
 			<columns>
-				<TreeTableColumn fx:id="nameColumn" prefWidth="400.0" text="Name" />
-				<TreeTableColumn fx:id="filesColumn" prefWidth="120.0" text="Files" />
+				<TreeTableColumn fx:id="nameColumn" prefWidth="350.0" text="Name" />
+				<TreeTableColumn fx:id="filesColumn" prefWidth="60.0" text="Files" />
 				<TreeTableColumn fx:id="statusColumn" prefWidth="100.0" text="Status" />
-				<TreeTableColumn fx:id="progressColumn" prefWidth="100.0" text="Progress" />
-				<TreeTableColumn fx:id="infoColumn" prefWidth="110.0" text="Info" />
+				<TreeTableColumn fx:id="progressColumn" prefWidth="75.0" text="Progress" />
+				<TreeTableColumn fx:id="infoColumn" prefWidth="200.0" text="Info" />
 			</columns>
-			<columnResizePolicy>
-				<TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-			</columnResizePolicy>
 		</TreeTableView>
 	</center>
 </BorderPane>

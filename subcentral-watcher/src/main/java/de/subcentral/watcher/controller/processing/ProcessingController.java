@@ -518,6 +518,7 @@ public class ProcessingController extends AbstractController
 
     public void clearProcessingTreeTable()
     {
+	cancelAllTasks();
 	processingTreeTable.getRoot().getChildren().clear();
     }
 
