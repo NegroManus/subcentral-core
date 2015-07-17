@@ -313,8 +313,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		    .filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
 		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 		    .collect(Collectors.toList());
-	    log.debug("Matching releases:");
-	    matchingRlss.forEach(r -> log.debug(r));
 
 	    if (matchingRlss.isEmpty())
 	    {
@@ -323,6 +321,9 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    }
 	    else
 	    {
+		log.debug("Matching releases:");
+		matchingRlss.forEach(r -> log.debug(r));
+
 		// Add matching releases
 		for (Release rls : matchingRlss)
 		{
@@ -399,7 +400,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	Release srcRls = sourceObject.getFirstMatchingRelease();
 	if (config.isGuessingEnabled())
 	{
-	    log.info("Guessing enabled. Guessing");
+	    log.info("Guessing enabled");
 	    List<StandardRelease> stdRlss = config.getStandardReleases();
 	    Map<Release, StandardRelease> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
 	    logReleases(Level.DEBUG, "Guessed releases:", guessedRlss.keySet());
