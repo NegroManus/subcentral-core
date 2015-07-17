@@ -39,7 +39,16 @@
 					</graphic>
 				</Button>
 				<HBox maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
-				<Button fx:id="clearBtn" mnemonicParsing="false" text="Clear">
+            <Button fx:id="cancelAllBtn" mnemonicParsing="false" text="Cancel all">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/cancel_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+				<Button fx:id="removeAllBtn" mnemonicParsing="false" text="Remove all">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>

@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.db.MetadataDb;
@@ -60,7 +61,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TreeItem;
 
 public class ProcessingTask extends Task<Void>implements ProcessingItem
@@ -169,7 +169,15 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	{
 	    loadCurrentProcessingConfig();
 
+	    // Parse
+	    updateMessage("Parsing file");
 	    sourceObject = parse(getSourceFile());
+	    if (isCancelled())
+	    {
+		return null;
+	    }
+	    updateProgress(0.25d, 1d);
+
 	    if (sourceObject != null)
 	    {
 		processSubtitleAdjustment(sourceObject);
@@ -235,49 +243,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
     private void processSubtitleAdjustment(SubtitleAdjustment srcSubAdj) throws Exception
     {
-	// Querying
-	Release srcRls = srcSubAdj.getFirstMatchingRelease();
-	List<Media> queryObj = srcRls.getMedia();
-	updateMessage("Querying release databases");
-	updateProgress(ProgressIndicator.INDETERMINATE_PROGRESS, 1d);
-	ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
-	for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
-	{
-	    log.debug("Results of {}", entry.getKey().getName());
-	    entry.getValue().stream().forEach((r) -> log.debug(r));
-	}
-
-	updateProgress(0.5d, 1d);
-	if (isCancelled())
-	{
-	    return;
-	}
-	updateMessage("Processing query results");
-
-	List<Release> existingRlss = new ArrayList<>(results.values().size());
-	existingRlss.addAll(results.values());
-	for (StandardRelease standardRls : config.getStandardReleases())
-	{
-	    if (standardRls.getScope() == Scope.ALWAYS)
-	    {
-		Release standardRlsWithMedia = new Release(srcRls.getMedia(), standardRls.getRelease().getTags(), standardRls.getRelease().getGroup());
-		existingRlss.add(standardRlsWithMedia);
-	    }
-	}
-
-	// Distinct, enrich, standardize
-	List<Release> foundRlss = processReleases(existingRlss);
-
-	// Filter
-	log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
-	List<Release> matchingRlss = foundRlss.stream()
-		.filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
-		.filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
-		.filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
-		.collect(Collectors.toList());
-	log.debug("Matching releases:");
-	matchingRlss.forEach(r -> log.debug(r));
-
+	// Created target object
 	SubtitleAdjustment convertedSubAdj = new SubtitleAdjustment();
 	convertedSubAdj.setHearingImpaired(srcSubAdj.isHearingImpaired());
 	for (Subtitle srcSub : srcSubAdj.getSubtitles())
@@ -290,8 +256,64 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
 	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(convertedSubAdj);
 	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
-
 	targetObject = convertedSubAdj;
+
+	// Querying
+	updateMessage("Querying release databases");
+	Release srcRls = srcSubAdj.getFirstMatchingRelease();
+	List<Media> queryObj = srcRls.getMedia();
+	ListMultimap<MetadataDb<Release>, Release> queyrResults = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
+	for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : queyrResults.asMap().entrySet())
+	{
+	    log.debug("Results of {}", entry.getKey().getName());
+	    entry.getValue().stream().forEach((r) -> log.debug(r));
+	}
+	if (queyrResults.isEmpty())
+	{
+	    log.info("Found no results in release databases");
+	}
+	if (isCancelled())
+	{
+	    return;
+	}
+	updateProgress(0.5d, 1d);
+
+	// Process query results
+	updateMessage("Processing query results");
+	// Add StandardReleases with Scope=ALWAYS
+	List<Release> existingRlss = new ArrayList<>(queyrResults.values().size());
+	existingRlss.addAll(queyrResults.values());
+	for (StandardRelease standardRls : config.getStandardReleases())
+	{
+	    if (standardRls.getScope() == Scope.ALWAYS)
+	    {
+		Release standardRlsWithMedia = new Release(srcRls.getMedia(), standardRls.getRelease().getTags(), standardRls.getRelease().getGroup());
+		existingRlss.add(standardRlsWithMedia);
+	    }
+	}
+
+	List<Release> processedExistingRlss;
+	List<Release> matchingRlss;
+	if (existingRlss.isEmpty())
+	{
+	    processedExistingRlss = ImmutableList.of();
+	    matchingRlss = ImmutableList.of();
+	}
+	else
+	{
+	    // Distinct, enrich, standardize
+	    processedExistingRlss = processReleases(existingRlss);
+
+	    // Filter
+	    log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
+	    matchingRlss = processedExistingRlss.stream()
+		    .filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
+		    .filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
+		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
+		    .collect(Collectors.toList());
+	    log.debug("Matching releases:");
+	    matchingRlss.forEach(r -> log.debug(r));
+	}
 
 	if (matchingRlss.isEmpty())
 	{
@@ -333,19 +355,20 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    if (config.isCompatibilityEnabled())
 	    {
 		log.debug("Search for compatible releases enabled. Searching");
-		addCompatibleReleases(matchingRlss, foundRlss);
+		addCompatibleReleases(matchingRlss, processedExistingRlss);
 	    }
 	    else
 	    {
 		log.debug("Search for compatible releases disabled");
 	    }
 	}
-
-	updateProgress(0.75d, 1d);
 	if (isCancelled())
 	{
 	    return;
 	}
+	updateProgress(0.75d, 1d);
+
+	// May clean up
 	if (config.isDeleteSource())
 	{
 	    try

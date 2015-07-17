@@ -108,7 +108,9 @@ public class ProcessingController extends AbstractController
     @FXML
     private Button						  releaseInfoBtn;
     @FXML
-    private Button						  clearBtn;
+    private Button						  cancelAllBtn;
+    @FXML
+    private Button						  removeAllBtn;
 
     public ProcessingController(MainController mainController)
     {
@@ -391,13 +393,11 @@ public class ProcessingController extends AbstractController
 	    }
 	});
 
-	clearBtn.disableProperty().bind(Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0));
-	clearBtn.setOnAction(evt ->
-
-	{
-	    cancelAllTasks();
-	    // processingTreeTable.getRoot().getChildren().clear();
-	});
+	BooleanBinding emptyProcessingTreeTable = Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0);
+	cancelAllBtn.disableProperty().bind(emptyProcessingTreeTable);
+	cancelAllBtn.setOnAction(evt -> cancelAllTasks());
+	removeAllBtn.disableProperty().bind(emptyProcessingTreeTable);
+	removeAllBtn.setOnAction(evt -> clearProcessingTreeTable());
 
     }
 
@@ -514,6 +514,11 @@ public class ProcessingController extends AbstractController
 	    processingExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
 	}
 	return processingExecutor;
+    }
+
+    public void clearProcessingTreeTable()
+    {
+	processingTreeTable.getRoot().getChildren().clear();
     }
 
     public void cancelAllTasks()
