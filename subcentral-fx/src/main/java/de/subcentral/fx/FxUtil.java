@@ -232,7 +232,7 @@ public class FxUtil
 	    DirectoryChooser dirChooser = new DirectoryChooser();
 	    dirChooser.setTitle(title);
 	    Path currentValue = textFormatter.getValue();
-	    if (currentValue != null && currentValue.isAbsolute())
+	    if (currentValue != null && Files.isDirectory(currentValue, LinkOption.NOFOLLOW_LINKS))
 	    {
 		dirChooser.setInitialDirectory(currentValue.toFile());
 	    }
