@@ -478,10 +478,10 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	{
 	    return ImmutableList.of();
 	}
-	// Sort
 
-	// Sort & Distinct
-	List<Release> processedRlss = rlss.stream().sorted().distinct().collect(Collectors.toList());
+	// Sort
+	List<Release> processedRlss = rlss.stream().sorted().collect(Collectors.toList());
+	processedRlss = ReleaseUtil.distinctByName(processedRlss);
 	logReleases(Level.DEBUG, "Distinct releases (by name):", processedRlss);
 
 	// Enrich

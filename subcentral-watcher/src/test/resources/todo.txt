@@ -1,0 +1,5 @@
+- Settings/Processing: Series alias (some series are listed under separate names for WEB-DL and HDTV)
+-- Add Media/Series section to settings
+- Processing: Option to reprocess a file (deletion of target files + processing of source file)
+- SystemTray: Allow to minimize the watcher to the system tray
+-- Settings/SystemTray: Option to show warnings on meta tags in releases / nuked releases

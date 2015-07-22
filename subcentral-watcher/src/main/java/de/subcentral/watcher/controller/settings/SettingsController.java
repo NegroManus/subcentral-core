@@ -51,6 +51,7 @@ public class SettingsController extends AbstractController
 
     public static final String WATCH_SECTION			       = "watch";
     public static final String PARSING_SECTION			       = "parsing";
+    public static final String MEDIA_SECTION			       = "media";
     public static final String RELEASE_SECTION			       = "release";
     public static final String RELEASE_DBS_SECTION		       = "release.dbs";
     public static final String RELEASE_GUESSING_SECTION		       = "release.guessing";
@@ -103,6 +104,11 @@ public class SettingsController extends AbstractController
 	parsingSection.setFxml("ParsingSettingsView.fxml");
 	ctrls.put(parsingSection.getName(), parsingSection);
 
+	Section mediaSection = new Section(MEDIA_SECTION);
+	mediaSection.setLabel("Media");
+	mediaSection.setImage("media_16.png");
+	ctrls.put(mediaSection.getName(), mediaSection);
+	
 	Section releaseSection = new Section(RELEASE_SECTION);
 	releaseSection.setLabel("Release");
 	releaseSection.setImage("archive_16.png");
@@ -199,6 +205,8 @@ public class SettingsController extends AbstractController
 	TreeItem<Section> watchTreeItem = new TreeItem<>(sections.get(WATCH_SECTION));
 
 	TreeItem<Section> parsingTreeItem = new TreeItem<>(sections.get(PARSING_SECTION));
+	
+	TreeItem<Section> mediaTreeItem = new TreeItem<>(sections.get(MEDIA_SECTION));
 
 	TreeItem<Section> releaseTreeItem = new TreeItem<>(sections.get(RELEASE_SECTION));
 	TreeItem<Section> releaseDatabasesTreeItem = new TreeItem<>(sections.get(RELEASE_DBS_SECTION));
@@ -216,6 +224,8 @@ public class SettingsController extends AbstractController
 	root.getChildren().add(watchTreeItem);
 	// Parsing
 	root.getChildren().add(parsingTreeItem);
+	// Media
+	root.getChildren().add(mediaTreeItem);
 	// Release
 	root.getChildren().add(releaseTreeItem);
 	releaseTreeItem.getChildren().add(releaseDatabasesTreeItem);

@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -46,6 +48,8 @@ public class Release implements Comparable<Release>
     public static final SimplePropDescriptor PROP_NFO_URL      = new SimplePropDescriptor(Release.class, PropNames.NFO_URL);
     public static final SimplePropDescriptor PROP_FURTHER_INFO = new SimplePropDescriptor(Release.class, PropNames.FURTHER_INFO);
 
+    public static final Comparator<Release> NAME_COMPARATOR = (Release r1, Release r2) -> (r1 == null ? (r2 == null ? 0 : 1) : r1.compareToByName(r2));
+    
     private String	       name;
     // In 99% of the cases, there is only one Media per Release
     private final List<Media>  media	   = new ArrayList<>(1);
@@ -398,7 +402,7 @@ public class Release implements Comparable<Release>
 
     // Object methods
     /**
-     * Compared by their {@link #getName() names}.
+     * Compared by their {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
      */
     @Override
     public boolean equals(Object obj)
@@ -409,18 +413,24 @@ public class Release implements Comparable<Release>
 	}
 	if (obj instanceof Release)
 	{
-	    return Objects.equals(name, ((Release) obj).name);
+	    Release o = (Release) obj;
+	    return media.equals(o.media) && tags.equals(o.tags) && Objects.equals(group, o.group);
 	}
 	return false;
     }
 
+    public boolean equalsByName(Release other)
+    {
+	return other == null ? false : name == null ? false : name.equalsIgnoreCase(other.name);
+    }
+
     /**
-     * Calculated from its {@link #getName() name}.
+     * Calculated from its {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
      */
     @Override
     public int hashCode()
     {
-	return new HashCodeBuilder(45, 7).append(name).toHashCode();
+	return new HashCodeBuilder(45, 7).append(media).append(tags).append(group).toHashCode();
     }
 
     /**
@@ -434,7 +444,23 @@ public class Release implements Comparable<Release>
 	{
 	    return 1;
 	}
-	return ComparisonChain.start().compare(name, o.name, Settings.STRING_ORDERING).result();
+	return ComparisonChain.start()
+		.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
+		.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+		.compare(group, o.group, Settings.createDefaultOrdering())
+		.result();
+    }
+    
+    public int compareToByName(Release o)
+    {
+	// nulls first
+	if (o == null)
+	{
+	    return 1;
+	}
+	return ComparisonChain.start()
+		.compare(name, o.name, Settings.STRING_ORDERING)
+		.result();
     }
 
     @Override

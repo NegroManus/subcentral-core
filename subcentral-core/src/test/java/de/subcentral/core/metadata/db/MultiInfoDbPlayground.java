@@ -16,6 +16,7 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.naming.ConditionalNamingService;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.MultiEpisodeNamer;
@@ -77,7 +78,7 @@ public class MultiInfoDbPlayground
 	}
 	executor.shutdown();
 
-	List<Release> reducedRlss = results.values().stream().distinct().collect(Collectors.toList());
+	List<Release> reducedRlss = ReleaseUtil.distinctByName(results.values());
 	reducedRlss.stream().forEach(e -> System.out.println(e));
     }
 }

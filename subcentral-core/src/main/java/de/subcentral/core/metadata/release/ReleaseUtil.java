@@ -1,5 +1,6 @@
 package de.subcentral.core.metadata.release;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -20,6 +21,32 @@ public class ReleaseUtil
 {
     private static final Logger log = LogManager.getLogger(ReleaseUtil.class);
 
+    public static List<Release> distinctByName(Collection<Release> releases)
+    {
+	if (releases.isEmpty())
+	{
+	    return ImmutableList.of();
+	}
+
+	List<Release> reducedList = new ArrayList<>();
+	for (Release rls : releases)
+	{
+	    boolean notListed = true;
+	    for (Release reducedEntry : reducedList)
+	    {
+		if (reducedEntry.equalsByName(rls))
+		{
+		    notListed = false;
+		}
+	    }
+	    if (notListed)
+	    {
+		reducedList.add(rls);
+	    }
+	}
+	return reducedList;
+    }
+    
     public static Predicate<Release> filterByTags(List<Tag> containedTags, Collection<Tag> metaTagsToIgnore)
     {
 	return (rls) -> TagUtil.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore);

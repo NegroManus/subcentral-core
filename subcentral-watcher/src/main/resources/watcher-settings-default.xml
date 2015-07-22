@@ -38,6 +38,8 @@
 			</databases>
 			<guessing enabled="true">
 				<standardReleases>
+					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
+					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="2HD" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="2HD" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="ASAP" scope="IF_GUESSING" />
@@ -53,8 +55,6 @@
 					<standardRelease tags="HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="EXCELLENCE" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE" scope="IF_GUESSING" />
-					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
-					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
 				</standardReleases>
 			</guessing>
 			<compatibility enabled="true">
