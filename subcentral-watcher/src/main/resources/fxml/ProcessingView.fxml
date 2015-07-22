@@ -59,9 +59,9 @@
 			<columns>
 				<TreeTableColumn fx:id="nameColumn" prefWidth="350.0" text="Name" />
 				<TreeTableColumn fx:id="filesColumn" prefWidth="60.0" text="Files" />
-				<TreeTableColumn fx:id="statusColumn" prefWidth="100.0" text="Status" />
-				<TreeTableColumn fx:id="progressColumn" prefWidth="75.0" text="Progress" />
-				<TreeTableColumn fx:id="infoColumn" prefWidth="200.0" text="Info" />
+				<TreeTableColumn fx:id="statusColumn" prefWidth="130.0" text="Status" />
+				<TreeTableColumn fx:id="progressColumn" prefWidth="80.0" text="Progress" />
+				<TreeTableColumn fx:id="infoColumn" prefWidth="220.0" text="Info" />
 			</columns>
 		</TreeTableView>
 	</center>

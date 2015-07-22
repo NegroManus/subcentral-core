@@ -185,7 +185,7 @@ public class WatcherFxUtil
 	}
 	try
 	{
-	    String host = new URL(rls.getFurtherInfoLinks().get(0)).getHost();
+	    String host = new URL(rls.getFurtherInfoLinks().get(0)).getHost().replace("www.", "");
 	    ImageView dbImg = new ImageView(FxUtil.loadImg("database_16.png"));
 	    Hyperlink hl = new Hyperlink(host, dbImg);
 	    hl.setVisited(true);
