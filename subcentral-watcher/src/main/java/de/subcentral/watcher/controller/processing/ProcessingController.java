@@ -41,6 +41,7 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.watcher.WatcherDialogs;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
@@ -49,12 +50,14 @@ import de.subcentral.watcher.settings.SettingsUtil;
 import de.subcentral.watcher.settings.StandardizerSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker.State;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
@@ -347,8 +350,38 @@ public class ProcessingController extends AbstractController
 
     private void initLowerButtonBar()
     {
-	protocolBtn.disableProperty().bind(processingTreeTable.getSelectionModel().selectedItemProperty().isNull());
-	protocolBtn.setOnAction(evt -> System.out.println(processingTreeTable.getSelectionModel().getSelectedItem().getValue()));
+	protocolBtn.disableProperty().bind(new BooleanBinding()
+	{
+	    {
+		super.bind(FxUtil.observePropertiesOfSelectedItem(processingTreeTable.getSelectionModel(), (TreeItem<ProcessingItem> treeItem) -> {
+		    ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
+		    if (task == null)
+		    {
+			return new Observable[] {};
+		    }
+		    return new Observable[] { task.stateProperty() };
+		}));
+	    }
+
+	    @Override
+	    protected boolean computeValue()
+	    {
+		ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
+		if (task == null)
+		{
+		    return true;
+		}
+		return State.SUCCEEDED != task.getState() && State.CANCELLED != task.getState() && State.FAILED != task.getState();
+	    }
+	});
+	protocolBtn.setOnAction((ActionEvent evt) -> {
+	    ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
+	    if (task == null)
+	    {
+		return;
+	    }
+	    WatcherDialogs.showProtocolView(task);
+	});
 
 	openDirectoryBtn.disableProperty().bind(new BooleanBinding()
 	{
@@ -398,7 +431,27 @@ public class ProcessingController extends AbstractController
 	cancelAllBtn.setOnAction(evt -> cancelAllTasks());
 	removeAllBtn.disableProperty().bind(emptyProcessingTreeTable);
 	removeAllBtn.setOnAction(evt -> clearProcessingTreeTable());
+    }
 
+    private ProcessingTask getProcessingTask(TreeItem<ProcessingItem> item)
+    {
+	if (item == null || item.getValue() == null)
+	{
+	    return null;
+	}
+	if (item.getValue() instanceof ProcessingTask)
+	{
+	    return (ProcessingTask) item.getValue();
+	}
+	else if (item.getValue() instanceof ProcessingResult)
+	{
+	    return ((ProcessingResult) item.getValue()).getTask();
+	}
+	else
+	{
+	    log.error("ProcessingItem is of unknown type: " + item);
+	    return null;
+	}
     }
 
     // getter

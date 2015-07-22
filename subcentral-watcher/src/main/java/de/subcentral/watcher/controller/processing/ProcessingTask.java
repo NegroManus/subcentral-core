@@ -78,15 +78,16 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     private final ListProperty<Path> files;
     private final StringProperty     info = new SimpleStringProperty(this, "info");
 
-    // is loaded on start of the task
-    private ProcessingConfig   config;
-    private SubtitleAdjustment sourceObject;
-    private SubtitleAdjustment targetObject;
-
-    // TreeTableView
+    // Config: is loaded on start of the task
+    private ProcessingConfig		   config;
+    // Important objects
     private final TreeItem<ProcessingItem> taskTreeItem;
-
-    private ListProperty<ProcessingResult> results = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
+    private SubtitleAdjustment		   sourceObject;
+    private SubtitleAdjustment		   targetObject;
+    private ListProperty<ProcessingResult> results		 = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
+    // Protocol
+    private List<Release>		   processedQueryResults = ImmutableList.of();
+    private List<Release>		   matchingReleases	 = ImmutableList.of();
 
     // package private
     ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
@@ -163,6 +164,16 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     public TreeItem<ProcessingItem> getTaskTreeItem()
     {
 	return taskTreeItem;
+    }
+
+    public List<Release> getProcessedQueryResults()
+    {
+	return processedQueryResults;
+    }
+
+    public List<Release> getMatchingReleases()
+    {
+	return matchingReleases;
     }
 
     @Override
@@ -292,29 +303,25 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    }
 	}
 
-	List<Release> processedExistingRlss;
-	List<Release> matchingRlss;
 	if (existingRlss.isEmpty())
 	{
-	    processedExistingRlss = ImmutableList.of();
-	    matchingRlss = ImmutableList.of();
 	    log.info("Found no existing or standard releases with Scope=ALWAYS");
 	    guess();
 	}
 	else
 	{
 	    // Distinct, enrich, standardize
-	    processedExistingRlss = processReleases(existingRlss);
+	    processedQueryResults = processReleases(existingRlss);
 
 	    // Filter
 	    log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
-	    matchingRlss = processedExistingRlss.stream()
+	    matchingReleases = processedQueryResults.stream()
 		    .filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
 		    .filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
 		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 		    .collect(Collectors.toList());
 
-	    if (matchingRlss.isEmpty())
+	    if (matchingReleases.isEmpty())
 	    {
 		log.info("Found no matching releases");
 		guess();
@@ -322,10 +329,10 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    else
 	    {
 		log.debug("Matching releases:");
-		matchingRlss.forEach(r -> log.debug(r));
+		matchingReleases.forEach(r -> log.debug(r));
 
 		// Add matching releases
-		for (Release rls : matchingRlss)
+		for (Release rls : matchingReleases)
 		{
 		    MatchingMethodInfo methodInfo = new MatchingMethodInfo();
 		    addMatchingRelease(rls, methodInfo);
@@ -333,7 +340,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		if (config.isCompatibilityEnabled())
 		{
 		    log.debug("Search for compatible releases enabled. Searching");
-		    addCompatibleReleases(matchingRlss, processedExistingRlss);
+		    addCompatibleReleases(matchingReleases, processedQueryResults);
 		}
 		else
 		{
@@ -471,10 +478,12 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     {
 	if (rlss.isEmpty())
 	{
-	    return new ArrayList<>(rlss);
+	    return ImmutableList.of();
 	}
-	// Distinct
-	List<Release> processedRlss = ReleaseUtil.distinctByName(rlss);
+	// Sort
+
+	// Sort & Distinct
+	List<Release> processedRlss = rlss.stream().sorted().distinct().collect(Collectors.toList());
 	logReleases(Level.DEBUG, "Distinct releases (by name):", processedRlss);
 
 	// Enrich
@@ -577,7 +586,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
     }
 
-    private String name(Object obj)
+    public String name(Object obj)
     {
 	return controller.getNamingService().name(obj, config.getNamingParameters());
     }

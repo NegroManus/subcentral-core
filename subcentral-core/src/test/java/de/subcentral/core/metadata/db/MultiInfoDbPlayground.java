@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -15,7 +16,6 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.naming.ConditionalNamingService;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.MultiEpisodeNamer;
@@ -77,7 +77,7 @@ public class MultiInfoDbPlayground
 	}
 	executor.shutdown();
 
-	List<Release> reducedRlss = ReleaseUtil.distinctByName(results.values());
+	List<Release> reducedRlss = results.values().stream().distinct().collect(Collectors.toList());
 	reducedRlss.stream().forEach(e -> System.out.println(e));
     }
 }

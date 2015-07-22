@@ -16,7 +16,6 @@ import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -399,7 +398,7 @@ public class Release implements Comparable<Release>
 
     // Object methods
     /**
-     * Compared by their {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
+     * Compared by their {@link #getName() names}.
      */
     @Override
     public boolean equals(Object obj)
@@ -410,24 +409,18 @@ public class Release implements Comparable<Release>
 	}
 	if (obj instanceof Release)
 	{
-	    Release o = (Release) obj;
-	    return media.equals(o.media) && tags.equals(o.tags) && Objects.equals(group, o.group);
+	    return Objects.equals(name, ((Release) obj).name);
 	}
 	return false;
     }
 
-    public boolean equalsByName(Release other)
-    {
-	return other == null ? false : name == null ? false : name.equalsIgnoreCase(other.name);
-    }
-
     /**
-     * Calculated from its {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
+     * Calculated from its {@link #getName() name}.
      */
     @Override
     public int hashCode()
     {
-	return new HashCodeBuilder(45, 7).append(media).append(tags).append(group).toHashCode();
+	return new HashCodeBuilder(45, 7).append(name).toHashCode();
     }
 
     /**
@@ -441,11 +434,7 @@ public class Release implements Comparable<Release>
 	{
 	    return 1;
 	}
-	return ComparisonChain.start()
-		.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
-		.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
-		.compare(group, o.group, Settings.createDefaultOrdering())
-		.result();
+	return ComparisonChain.start().compare(name, o.name, Settings.STRING_ORDERING).result();
     }
 
     @Override

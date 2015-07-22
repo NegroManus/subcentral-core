@@ -52,6 +52,7 @@ import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -758,6 +759,32 @@ public class FxUtil
 		}
 	    }
 	}
+    }
+
+    public static <E> Observable observePropertiesOfSelectedItem(SelectionModel<E> selectionModel, Function<E, Observable[]> propertiesExtractor)
+    {
+	ObservableObject obsv = new ObservableObject();
+	obsv.getDependencies().add(selectionModel.selectedItemProperty());
+	if (!selectionModel.isEmpty())
+	{
+	    obsv.getDependencies().addAll(propertiesExtractor.apply(selectionModel.getSelectedItem()));
+	}
+	selectionModel.selectedItemProperty().addListener(new ChangeListener<E>()
+	{
+	    @Override
+	    public void changed(ObservableValue<? extends E> observable, E oldValue, E newValue)
+	    {
+		if (oldValue != null)
+		{
+		    obsv.getDependencies().removeAll(propertiesExtractor.apply(oldValue));
+		}
+		if (newValue != null)
+		{
+		    obsv.getDependencies().addAll(propertiesExtractor.apply(newValue));
+		}
+	    }
+	});
+	return obsv;
     }
 
     public static <E> Observable observeProperties(ObservableList<E> beans, Function<E, Observable[]> propertiesExtractor)

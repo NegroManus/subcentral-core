@@ -1,6 +1,8 @@
 package de.subcentral.watcher;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -14,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
@@ -26,6 +29,7 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.controller.AbstractController;
+import de.subcentral.watcher.controller.processing.ProcessingTask;
 import de.subcentral.watcher.settings.LanguageTextMapping;
 import de.subcentral.watcher.settings.LanguageUserPattern;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
@@ -37,6 +41,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -44,6 +49,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -51,7 +57,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 
 public class WatcherDialogs
 {
@@ -65,7 +71,7 @@ public class WatcherDialogs
 	// View
 	protected final Dialog<T> dialog = new Dialog<>();
 	@FXML
-	protected GridPane	  inputPane;
+	protected Node		  contentPane;
 
 	private AbstractBeanDialogController(T bean)
 	{
@@ -81,28 +87,38 @@ public class WatcherDialogs
 	protected final void doInitialize()
 	{
 	    initDialog();
-	    initInputPaneControl();
+	    initComponents();
 	}
 
-	private final void initDialog()
+	protected void initDialog()
 	{
-	    String title = buildTitle();
+	    String title = getTitle();
 	    dialog.setTitle(title);
 	    dialog.setHeaderText(title);
-	    dialog.setWidth(350);
+	    dialog.setWidth(getWidth());
 
 	    // Set the button types.
-	    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
-	    dialog.getDialogPane().setContent(inputPane);
+	    dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
+	    dialog.getDialogPane().setContent(contentPane);
 
 	    Platform.runLater(() -> getDefaultFocusNode().requestFocus());
 	}
 
-	protected abstract String buildTitle();
+	protected abstract String getTitle();
+
+	protected double getWidth()
+	{
+	    return 350d;
+	}
+
+	protected ButtonType[] getButtonTypes()
+	{
+	    return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
+	}
 
 	protected abstract Node getDefaultFocusNode();
 
-	protected abstract void initInputPaneControl();
+	protected abstract void initComponents();
     }
 
     private static class StandardReleaseDialogController extends AbstractBeanDialogController<StandardRelease>
@@ -123,7 +139,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected String buildTitle()
+	protected String getTitle()
 	{
 	    if (bean == null)
 	    {
@@ -142,7 +158,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected void initInputPaneControl()
+	protected void initComponents()
 	{
 	    ToggleGroup scopeToggleGrp = new ToggleGroup();
 	    scopeToggleGrp.getToggles().addAll(ifGuessingRadioBtn, alwaysRadioBtn);
@@ -217,7 +233,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected String buildTitle()
+	protected String getTitle()
 	{
 	    if (bean == null)
 	    {
@@ -236,7 +252,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected void initInputPaneControl()
+	protected void initComponents()
 	{
 	    // Set initial values
 	    Group initialSourceGroup;
@@ -309,7 +325,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected String buildTitle()
+	protected String getTitle()
 	{
 	    if (bean == null)
 	    {
@@ -328,7 +344,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected void initInputPaneControl()
+	protected void initComponents()
 	{
 	    ToggleGroup patternModeToggleGrp = new ToggleGroup();
 	    patternModeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
@@ -426,7 +442,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected String buildTitle()
+	protected String getTitle()
 	{
 	    if (bean == null)
 	    {
@@ -445,7 +461,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected void initInputPaneControl()
+	protected void initComponents()
 	{
 	    ToggleGroup queryModeToggleGrp = new ToggleGroup();
 	    queryModeToggleGrp.getToggles().addAll(containRadioBtn, equalRadioBtn);
@@ -568,7 +584,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected String buildTitle()
+	protected String getTitle()
 	{
 	    return "Edit languages";
 	}
@@ -580,7 +596,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected void initInputPaneControl()
+	protected void initComponents()
 	{
 	    // Set initial values
 	    langsListView.setItems(initLangList());
@@ -673,7 +689,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected String buildTitle()
+	protected String getTitle()
 	{
 	    return bean == null ? "Add text to language mapping" : "Edit text to language mapping";
 	}
@@ -685,7 +701,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected void initInputPaneControl()
+	protected void initComponents()
 	{
 	    // initialize
 	    langComboBox.setItems(FxUtil.createListOfAvailableLocales(false, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
@@ -761,7 +777,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected String buildTitle()
+	protected String getTitle()
 	{
 	    return bean == null ? "Add language to text mapping" : "Edit language to text mapping";
 	}
@@ -773,7 +789,7 @@ public class WatcherDialogs
 	}
 
 	@Override
-	protected void initInputPaneControl()
+	protected void initComponents()
 	{
 	    // Set initial values
 	    langComboBox.setItems(FxUtil.createListOfAvailableLocales(true, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
@@ -806,6 +822,90 @@ public class WatcherDialogs
 		return null;
 	    });
 	}
+    }
+
+    private static class ProtocolController extends AbstractBeanDialogController<ProcessingTask>
+    {
+	@FXML
+	private ListView<Release> releaseQueryResultsListView;
+
+	@FXML
+	private ListView<Release> matchingReleasesListView;
+
+	public ProtocolController(ProcessingTask task)
+	{
+	    super(task);
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    return "Protocol";
+	}
+
+	@Override
+	protected ButtonType[] getButtonTypes()
+	{
+	    return new ButtonType[] { ButtonType.OK };
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return releaseQueryResultsListView;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    final Callback<ListView<Release>, ListCell<Release>> rlsCellFactory = new Callback<ListView<Release>, ListCell<Release>>()
+	    {
+		@Override
+		public ListCell<Release> call(ListView<Release> param)
+		{
+		    return new ListCell<Release>()
+		    {
+			@Override
+			protected void updateItem(Release rls, boolean empty)
+			{
+			    super.updateItem(rls, empty);
+
+			    if (empty || rls == null)
+			    {
+				setText("");
+				setGraphic(null);
+			    }
+			    else
+			    {
+				setText(bean.name(rls));
+				try
+				{
+				    String host = new URL(rls.getFurtherInfoLinks().get(0)).getHost();
+				    Hyperlink furtherInfoLink = new Hyperlink(host);
+				    furtherInfoLink.setOnAction((ActionEvent evt) -> FxUtil.browse(rls.getFurtherInfoLinks().get(0), bean.getController().getMainController().getCommonExecutor()));
+				    setGraphic(furtherInfoLink);
+				}
+				catch (MalformedURLException e)
+				{
+				    log.error("Exception while creating info button", e);
+				    setGraphic(null);
+				}
+			    }
+			}
+		    };
+		}
+	    };
+
+	    releaseQueryResultsListView.setItems(FXCollections.observableList(bean.getProcessedQueryResults()));
+	    releaseQueryResultsListView.setCellFactory(rlsCellFactory);
+
+	    matchingReleasesListView.setItems(FXCollections.observableList(bean.getMatchingReleases()));
+	    matchingReleasesListView.setCellFactory(rlsCellFactory);
+
+	    // Set ResultConverter
+	    dialog.setResultConverter((ButtonType pressedBtn) -> null);
+	}
+
     }
 
     public static Optional<StandardRelease> showStandardReleaseDefinitionDialog()
@@ -878,6 +978,12 @@ public class WatcherDialogs
     {
 	LanguageTextMappingEditorController ctrl = new LanguageTextMappingEditorController(mapping);
 	return showDialogAndWait(ctrl, "LanguageTextMappingEditor.fxml");
+    }
+
+    public static void showProtocolView(ProcessingTask processingTask)
+    {
+	ProtocolController ctrl = new ProtocolController(processingTask);
+	showDialogAndWait(ctrl, "ProtocolView.fxml");
     }
 
     private static <T> Optional<T> showDialogAndWait(AbstractBeanDialogController<T> ctrl, String fxmlFilename)
