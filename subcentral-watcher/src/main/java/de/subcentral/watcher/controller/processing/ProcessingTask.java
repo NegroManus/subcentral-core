@@ -290,8 +290,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	// Process query results
 	updateMessage("Processing query results");
 	// Add StandardReleases with Scope=ALWAYS
-	List<Release> existingRlss = new ArrayList<>(queryResults.values().size());
-	existingRlss.addAll(queryResults.values());
+	List<Release> existingRlss = new ArrayList<>(queryResults.values());
 	for (StandardRelease standardRls : config.getStandardReleases())
 	{
 	    if (standardRls.getScope() == Scope.ALWAYS)
@@ -303,7 +302,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 	if (existingRlss.isEmpty())
 	{
-	    log.info("Found no existing or standard releases with Scope=ALWAYS");
+	    log.info("No releases found in databases and no standard releases with Scope=ALWAYS");
 	    guess();
 	}
 	else
@@ -321,7 +320,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 	    if (matchingReleases.isEmpty())
 	    {
-		log.info("Found no matching releases");
+		log.info("No matching releases found");
 		guess();
 	    }
 	    else
@@ -395,7 +394,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
 	if (queryResults.isEmpty())
 	{
-	    log.info("Found no existing releases in databases");
+	    log.info("No releases found in databases");
 	}
 	return queryResults;
     }
@@ -436,14 +435,20 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	CompatibilityService compatibilityService = config.getCompatibilityService();
 	Map<Release, CompatibilityInfo> compatibleRlss = compatibilityService.findCompatibles(matchingRlss, existingReleases);
 
-	log.debug("Compatible releases:");
-	compatibleRlss.entrySet().forEach(e -> log.debug(e));
-
-	// Add compatible releases
-	for (Map.Entry<Release, CompatibilityInfo> entry : compatibleRlss.entrySet())
+	if(compatibleRlss.isEmpty())
 	{
-	    CompatibilityMethodInfo methodInfo = new CompatibilityMethodInfo(entry.getValue());
-	    addMatchingRelease(entry.getKey(), methodInfo);
+		log.debug("No compatible releases found");
+	}
+	else{
+		log.debug("Compatible releases:");
+		compatibleRlss.entrySet().forEach(e -> log.debug(e));
+
+		// Add compatible releases
+		for (Map.Entry<Release, CompatibilityInfo> entry : compatibleRlss.entrySet())
+		{
+		    CompatibilityMethodInfo methodInfo = new CompatibilityMethodInfo(entry.getValue());
+		    addMatchingRelease(entry.getKey(), methodInfo);
+		}
 	}
     }
 
