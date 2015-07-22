@@ -16,6 +16,13 @@
 			<BorderPane.margin>
 				<Insets bottom="5.0" />
 			</BorderPane.margin>
+         <graphic>
+            <ImageView pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/usa_16.png" />
+               </image>
+            </ImageView>
+         </graphic>
 		</Label>
 	</top>
 	<center>

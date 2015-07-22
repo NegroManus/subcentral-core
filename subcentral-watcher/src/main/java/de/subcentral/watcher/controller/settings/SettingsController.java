@@ -154,7 +154,7 @@ public class SettingsController extends AbstractController
 
 	Section fileTransformationSection = new Section(FILE_TRANSFORMATION_SECTION);
 	fileTransformationSection.setLabel("File transformation");
-	fileTransformationSection.setImage("transform_16.png");
+	fileTransformationSection.setImage("copy_file_16.png");
 	fileTransformationSection.setControllerConstructor(() -> new FileTransformationSettingsController(this));
 	fileTransformationSection.setFxml("FileTransformationSettingsView.fxml");
 	ctrls.put(fileTransformationSection.getName(), fileTransformationSection);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -23,6 +24,13 @@
 			<font>
 				<Font name="System Bold" size="12.0" />
 			</font>
+         <graphic>
+            <ImageView pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/couple_16.png" />
+               </image>
+            </ImageView>
+         </graphic>
 		</Label>
 		<CheckBox fx:id="compatibilityEnabledCheckBox" mnemonicParsing="false" text="Enable search for compatible releases" GridPane.rowIndex="1" />
 		<Label text="Releases of the same group are always compatible." GridPane.rowIndex="2" />

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="fileTransformationSettingsPane" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" vgap="5.0"
-	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="fileTransformationSettingsPane" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
@@ -31,6 +31,13 @@
 					<font>
 						<Font name="System Bold" size="12.0" />
 					</font>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/copy_file_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
 				</Label>
 				<Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
 			</children>
@@ -47,6 +54,13 @@
 					<font>
 						<Font name="System Bold" size="12.0" />
 					</font>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/books_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
 				</Label>
 				<Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
 			</children>

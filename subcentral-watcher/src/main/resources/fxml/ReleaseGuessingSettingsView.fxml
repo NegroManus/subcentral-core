@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -22,6 +23,13 @@
 			<font>
 				<Font name="System Bold" size="12.0" />
 			</font>
+         <graphic>
+            <ImageView pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/idea_16.png" />
+               </image>
+            </ImageView>
+         </graphic>
 		</Label>
 		<CheckBox fx:id="enableGuessingCheckBox" mnemonicParsing="false" text="Enable guessing" GridPane.rowIndex="1" />
 		<Label text="Standard releases:" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
