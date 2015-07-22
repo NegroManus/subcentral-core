@@ -87,872 +87,771 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
-public class ProcessingController extends AbstractController
-{
-    private static final Logger log = LogManager.getLogger(ProcessingController.class);
+public class ProcessingController extends AbstractController {
+	private static final Logger log = LogManager.getLogger(ProcessingController.class);
 
-    // Controlling properties
-    private final MainController mainController;
+	// Controlling properties
+	private final MainController mainController;
 
-    // Processing Config
-    private final Binding<ProcessingConfig> processingConfig		 = initProcessingCfgBinding();
-    private final NamingService		    namingService		 = initNamingService();
-    private final NamingService		    namingServiceForFiltering	 = initNamingServiceForFiltering();
-    private final Map<String, Object>	    namingParametersForFiltering = initNamingParametersForFiltering();
+	// Processing Config
+	private final Binding<ProcessingConfig> processingConfig = initProcessingCfgBinding();
+	private final NamingService namingService = initNamingService();
+	private final NamingService namingServiceForFiltering = initNamingServiceForFiltering();
+	private final Map<String, Object> namingParametersForFiltering = initNamingParametersForFiltering();
 
-    private ExecutorService processingExecutor;
+	private ExecutorService processingExecutor;
 
-    // View properties
-    // ProcessingTree
-    @FXML
-    private TreeTableView<ProcessingItem>			  processingTreeTable;
-    @FXML
-    private TreeTableColumn<ProcessingItem, String>		  nameColumn;
-    @FXML
-    private TreeTableColumn<ProcessingItem, ObservableList<Path>> filesColumn;
-    @FXML
-    private TreeTableColumn<ProcessingItem, String>		  statusColumn;
-    @FXML
-    private TreeTableColumn<ProcessingItem, Double>		  progressColumn;
-    @FXML
-    private TreeTableColumn<ProcessingItem, ProcessingInfo>	  infoColumn;
-    // Lower Button bar
-    @FXML
-    private Button						  protocolBtn;
-    @FXML
-    private Button						  openDirectoryBtn;
-    @FXML
-    private Button						  cancelAllBtn;
-    @FXML
-    private Button						  removeAllBtn;
+	// View properties
+	// ProcessingTree
+	@FXML
+	private TreeTableView<ProcessingItem> processingTreeTable;
+	@FXML
+	private TreeTableColumn<ProcessingItem, String> nameColumn;
+	@FXML
+	private TreeTableColumn<ProcessingItem, ObservableList<Path>> filesColumn;
+	@FXML
+	private TreeTableColumn<ProcessingItem, String> statusColumn;
+	@FXML
+	private TreeTableColumn<ProcessingItem, Double> progressColumn;
+	@FXML
+	private TreeTableColumn<ProcessingItem, ProcessingInfo> infoColumn;
+	// Lower Button bar
+	@FXML
+	private Button protocolBtn;
+	@FXML
+	private Button openDirectoryBtn;
+	@FXML
+	private Button cancelAllBtn;
+	@FXML
+	private Button removeAllBtn;
 
-    public ProcessingController(MainController mainController)
-    {
-	this.mainController = Objects.requireNonNull(mainController, "mainController");
-    }
-
-    private static Binding<ProcessingConfig> initProcessingCfgBinding()
-    {
-	return new ObjectBinding<ProcessingConfig>()
-	{
-	    {
-		super.bind(WatcherSettings.INSTANCE.getProcessingSettings());
-	    }
-
-	    @Override
-	    protected ProcessingConfig computeValue()
-	    {
-		final ProcessingConfig cfg = new ProcessingConfig();
-		FxUtil.runAndWait(() -> {
-		    // processingConfig.getValue() has to be executed in JavaFX
-		    // Application Thread for concurrency reasons
-		    // (all access to watcher settings has to be in JavaFX
-		    // Application Thread)
-		    long start = System.nanoTime();
-		    log.debug("Rebuilding ProcessingConfig due to changes in the processing settings");
-		    final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
-		    cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns()));
-		    cfg.setFilenameParsingServices(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices()));
-		    cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs()));
-		    cfg.setReleaseParsingServices(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseParsingServices()));
-		    cfg.setGuessingEnabled(settings.isGuessingEnabled());
-		    cfg.setReleaseMetaTags(ImmutableList.copyOf(settings.getReleaseMetaTags()));
-		    cfg.setStandardReleases(ImmutableList.copyOf(settings.getStandardReleases()));
-		    cfg.setCompatibilityEnabled(settings.isCompatibilityEnabled());
-		    cfg.setCompatibilityService(createCompatibilityService(settings));
-		    cfg.setBeforeQueryingStandardizingService(createBeforeQueryingStandardizingService(settings));
-		    cfg.setAfterQueryingStandardizingService(createAfterQueryingStandardizingService(settings));
-		    cfg.setNamingParameters(ImmutableMap.copyOf(settings.getNamingParameters()));
-		    cfg.setTargetDir(settings.getTargetDir());
-		    cfg.setDeleteSource(settings.isDeleteSource());
-		    cfg.setPackingEnabled(settings.isPackingEnabled());
-		    cfg.setWinRarLocateStrategy(settings.getWinRarLocateStrategy());
-		    cfg.setRarExe(settings.getRarExe());
-		    cfg.setPackingSourceDeletionMode(settings.getPackingSourceDeletionMode());
-		    log.debug("Rebuit ProcessingConfig in {} ms", TimeUtil.durationMillis(start));
-		});
-		return cfg;
-	    }
-
-	    @Override
-	    protected void onInvalidating()
-	    {
-		log.debug("Processing settings changed. ProcessingConfig will be rebuilt on next execution of ProcessingTask");
-	    }
-	};
-    }
-
-    private static CompatibilityService createCompatibilityService(ProcessingSettings settings)
-    {
-	CompatibilityService service = new CompatibilityService();
-	service.getCompatibilities().add(new SameGroupCompatibility());
-	WatcherFxUtil.bindCompatibilities(service, WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities());
-	return service;
-    }
-
-    private static TypeStandardizingService createBeforeQueryingStandardizingService(ProcessingSettings settings)
-    {
-	TypeStandardizingService service = new TypeStandardizingService("premetadatadb");
-	// Register default nested beans retrievers but not default
-	// standardizers
-	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers())
-	{
-	    if (entry.isBeforeQuerying())
-	    {
-		registerStandardizer(service, entry);
-	    }
+	public ProcessingController(MainController mainController) {
+		this.mainController = Objects.requireNonNull(mainController, "mainController");
 	}
-	// add subtitle language standardizer
-	service.registerStandardizer(Subtitle.class, settings.getSubtitleLanguageSettings().getSubtitleLanguageStandardizer());
-	// add subtitle tags standardizer
-	service.registerStandardizer(SubtitleAdjustment.class, SubtitleUtil::standardizeTags);
-	return service;
-    }
 
-    private static TypeStandardizingService createAfterQueryingStandardizingService(ProcessingSettings settings)
-    {
-	TypeStandardizingService service = new TypeStandardizingService("postmetadatadb");
-	// Register default nested beans retrievers but not default
-	// standardizers
-	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers())
-	{
-	    if (entry.isAfterQuerying())
-	    {
-		registerStandardizer(service, entry);
-	    }
+	private static Binding<ProcessingConfig> initProcessingCfgBinding() {
+		return new ObjectBinding<ProcessingConfig>() {
+			{
+				super.bind(WatcherSettings.INSTANCE.getProcessingSettings());
+			}
+
+			@Override
+			protected ProcessingConfig computeValue() {
+				final ProcessingConfig cfg = new ProcessingConfig();
+				FxUtil.runAndWait(() -> {
+					// processingConfig.getValue() has to be executed in JavaFX
+					// Application Thread for concurrency reasons
+					// (all access to watcher settings has to be in JavaFX
+					// Application Thread)
+					long start = System.nanoTime();
+					log.debug("Rebuilding ProcessingConfig due to changes in the processing settings");
+					final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+					cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns()));
+					cfg.setFilenameParsingServices(
+							SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices()));
+					cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs()));
+					cfg.setReleaseParsingServices(
+							SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseParsingServices()));
+					cfg.setGuessingEnabled(settings.isGuessingEnabled());
+					cfg.setReleaseMetaTags(ImmutableList.copyOf(settings.getReleaseMetaTags()));
+					cfg.setStandardReleases(ImmutableList.copyOf(settings.getStandardReleases()));
+					cfg.setCompatibilityEnabled(settings.isCompatibilityEnabled());
+					cfg.setCompatibilityService(createCompatibilityService(settings));
+					cfg.setBeforeQueryingStandardizingService(createBeforeQueryingStandardizingService(settings));
+					cfg.setAfterQueryingStandardizingService(createAfterQueryingStandardizingService(settings));
+					cfg.setNamingParameters(ImmutableMap.copyOf(settings.getNamingParameters()));
+					cfg.setTargetDir(settings.getTargetDir());
+					cfg.setDeleteSource(settings.isDeleteSource());
+					cfg.setPackingEnabled(settings.isPackingEnabled());
+					cfg.setWinRarLocateStrategy(settings.getWinRarLocateStrategy());
+					cfg.setRarExe(settings.getRarExe());
+					cfg.setPackingSourceDeletionMode(settings.getPackingSourceDeletionMode());
+					log.debug("Rebuit ProcessingConfig in {} ms", TimeUtil.durationMillis(start));
+				});
+				return cfg;
+			}
+
+			@Override
+			protected void onInvalidating() {
+				log.debug(
+						"Processing settings changed. ProcessingConfig will be rebuilt on next execution of ProcessingTask");
+			}
+		};
 	}
-	return service;
-    }
 
-    private static <T> void registerStandardizer(TypeStandardizingService service, StandardizerSettingEntry<T, ?> entry)
-    {
-	service.registerStandardizer(entry.getBeanType(), entry.getValue());
-    }
+	private static CompatibilityService createCompatibilityService(ProcessingSettings settings) {
+		CompatibilityService service = new CompatibilityService();
+		service.getCompatibilities().add(new SameGroupCompatibility());
+		WatcherFxUtil.bindCompatibilities(service,
+				WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities());
+		return service;
+	}
 
-    private static NamingService initNamingService()
-    {
-	return NamingDefaults.getDefaultNamingService();
-    }
-
-    private static NamingService initNamingServiceForFiltering()
-    {
-	return NamingDefaults.getDefaultNormalizingNamingService();
-    }
-
-    private static Map<String, Object> initNamingParametersForFiltering()
-    {
-	return ImmutableMap.of();
-    }
-
-    @Override
-    public void doInitialize()
-    {
-	initProcessingTreeTable();
-	initLowerButtonBar();
-    }
-
-    private void initProcessingTreeTable()
-    {
-	// init root
-	processingTreeTable.setRoot(new TreeItem<>());
-
-	// init columns
-	nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().nameProperty());
-
-	filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> features.getValue().getValue().getFiles());
-	filesColumn.setCellFactory((TreeTableColumn<ProcessingItem, ObservableList<Path>> param) -> {
-	    return new TreeTableCell<ProcessingItem, ObservableList<Path>>()
-	    {
-		@Override
-		protected void updateItem(ObservableList<Path> item, boolean empty)
-		{
-		    super.updateItem(item, empty);
-
-		    if (empty || item == null)
-		    {
-			setText("");
-		    }
-		    else
-		    {
-			StringJoiner joiner = new StringJoiner(", ");
-			for (Path file : item)
-			{
-			    joiner.add(IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1]);
+	private static TypeStandardizingService createBeforeQueryingStandardizingService(ProcessingSettings settings) {
+		TypeStandardizingService service = new TypeStandardizingService("premetadatadb");
+		// Register default nested beans retrievers but not default
+		// standardizers
+		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+		for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers()) {
+			if (entry.isBeforeQuerying()) {
+				registerStandardizer(service, entry);
 			}
-			setText(joiner.toString().replace(".", "").toUpperCase());
-		    }
-		};
-	    };
-	});
-
-	statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().statusProperty());
-
-	progressColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, Double> features) -> features.getValue().getValue().progressProperty().asObject());
-	progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
-
-	infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ProcessingInfo> features) -> features.getValue().getValue().infoProperty());
-	infoColumn.setCellFactory((TreeTableColumn<ProcessingItem, ProcessingInfo> param) -> {
-	    return new TreeTableCell<ProcessingItem, ProcessingInfo>()
-	    {
-		@Override
-		protected void updateItem(ProcessingInfo item, boolean empty)
-		{
-		    super.updateItem(item, empty);
-
-		    if (empty || item == null)
-		    {
-			setText("");
-			setGraphic(null);
-		    }
-		    else
-		    {
-			if (item instanceof ProcessingTaskInfo)
-			{
-			    ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
-			    setText(taskInfo.getInfo());
-			    setGraphic(null);
-			}
-			else if (item instanceof ProcessingResultInfo)
-			{
-			    ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
-			    HBox hbox = new HBox();
-			    hbox.setSpacing(5d);
-			    hbox.setAlignment(Pos.CENTER_LEFT);
-
-			    // method info
-			    switch (resultInfo.getMethodInfo().getMethod())
-			    {
-				case DATABASE:
-				{
-				    Hyperlink database = WatcherFxUtil.createFurtherInfoHyperlink(resultInfo.getProcessingResult().getRelease(),
-					    resultInfo.getProcessingResult().getTask().getController().getMainController().getCommonExecutor());
-				    database.setTooltip(new Tooltip("Found in release database"));
-				    hbox.getChildren().add(database);
-				    break;
-				}
-				case GUESSING:
-				{
-				    GuessingMethodInfo gmi = (GuessingMethodInfo) resultInfo.getMethodInfo();
-				    StringBuilder sb = new StringBuilder();
-				    sb.append("Guessed release");
-				    if (gmi.getStandardRelease() != null)
-				    {
-					sb.append(" (using standard release: ");
-					sb.append(resultInfo.getProcessingResult().getTask().name(gmi.getStandardRelease().getRelease()));
-					sb.append(')');
-				    }
-				    ImageView guessingImg = new ImageView(FxUtil.loadImg("idea_16.png"));
-				    Label guessing = new Label("", guessingImg);
-				    guessing.setTooltip(new Tooltip(sb.toString()));
-				    hbox.getChildren().add(guessing);
-				    break;
-				}
-				case COMPATIBILITY:
-				{
-				    CompatibilityMethodInfo cmi = (CompatibilityMethodInfo) resultInfo.getMethodInfo();
-				    StringBuilder txt = new StringBuilder();
-				    Compatibility c = cmi.getCompatibilityInfo().getCompatibility();
-				    if (c instanceof SameGroupCompatibility)
-				    {
-					txt.append("Same group");
-				    }
-				    else if (c instanceof CrossGroupCompatibility)
-				    {
-					txt.append(((CrossGroupCompatibility) c).toShortString());
-				    }
-
-				    ImageView compImg = new ImageView(FxUtil.loadImg("couple_16.png"));
-				    Label comp = new Label(txt.toString(), compImg);
-
-				    StringBuilder tooltip = new StringBuilder();
-				    tooltip.append("Compatible to ");
-				    tooltip.append(resultInfo.getProcessingResult().getTask().name(cmi.getCompatibilityInfo().getSource()));
-
-				    comp.setTooltip(new Tooltip(tooltip.toString()));
-				    hbox.getChildren().add(comp);
-				    break;
-				}
-				default:
-				    log.warn("Unknown method info type: " + resultInfo.getMethodInfo());
-				    break;
-			    }
-
-			    // nuke
-			    if (resultInfo.getProcessingResult().getRelease().isNuked())
-			    {
-				ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
-				Label nuked = new Label("", nukedImg);
-				StringJoiner joiner = new StringJoiner(", ");
-				for (Nuke nuke : resultInfo.getProcessingResult().getRelease().getNukes())
-				{
-				    joiner.add(nuke.getReason());
-				}
-				nuked.setTooltip(new Tooltip(joiner.toString()));
-				hbox.getChildren().add(nuked);
-			    }
-
-			    // meta tags
-			    List<Tag> containedMetaTags = TagUtil.getMetaTags(resultInfo.getProcessingResult().getRelease().getTags(),
-				    resultInfo.getProcessingResult().getTask().getConfig().getReleaseMetaTags());
-			    if (!containedMetaTags.isEmpty())
-			    {
-				String metaTagsTxt = Tag.listToString(containedMetaTags);
-				ImageView tagImg = new ImageView(FxUtil.loadImg("tag_16.png"));
-				Label metaTags = new Label(metaTagsTxt, tagImg);
-				metaTags.setTooltip(new Tooltip("Contains meta tags: " + metaTagsTxt));
-				hbox.getChildren().add(metaTags);
-			    }
-
-			    setText("");
-			    setGraphic(hbox);
-			}
-			else
-			{
-			    setText("");
-			    setGraphic(null);
-			}
-		    }
-		};
-	    };
-
-	});
-
-	initProcessingTreeTableDnD();
-    }
-
-    /**
-     * Set up handling of Drag & Drop events (drop events on processing tree table).
-     */
-    private void initProcessingTreeTableDnD()
-    {
-	final Border defaultBorder = processingTreeTable.getBorder();
-	final Border dragBorder = new Border(new BorderStroke(Color.CORNFLOWERBLUE, BorderStrokeStyle.SOLID, null, null));
-
-	// Handling a DRAG_OVER Event on a Target
-	processingTreeTable.setOnDragOver((DragEvent event) -> {
-	    /* data is dragged over the target */
-	    /*
-	     * accept it only if it is not dragged from the same node and if it has a files data
-	     */
-	    if (event.getGestureSource() != event.getTarget() && event.getDragboard().hasFiles())
-	    {
-		/*
-		 * allow for both copying and moving, whatever user chooses
-		 */
-		event.acceptTransferModes(TransferMode.COPY);
-	    }
-
-	    event.consume();
-	});
-
-	// Providing Visual Feedback by a Gesture Target
-	processingTreeTable.setOnDragEntered((DragEvent event) -> {
-	    Region target = (Region) event.getTarget();
-	    /* the drag-and-drop gesture entered the target */
-	    /* show to the user that it is an actual gesture target */
-	    if (event.getGestureSource() != target && event.getDragboard().hasFiles())
-	    {
-		target.setBorder(dragBorder);
-	    }
-
-	    event.consume();
-	});
-	processingTreeTable.setOnDragExited((DragEvent event) -> {
-	    Region target = (Region) event.getTarget();
-	    /* mouse moved away, remove the graphical cues */
-	    target.setBorder(defaultBorder);
-
-	    event.consume();
-	});
-
-	// Handling a DRAG_DROPPED Event on a Target
-	processingTreeTable.setOnDragDropped((DragEvent event) -> {
-	    /* data dropped */
-	    /* if there is a string data on dragboard, read it and use it */
-	    Dragboard db = event.getDragboard();
-	    boolean success = false;
-	    if (db.hasFiles())
-	    {
-		handleFiles(db.getFiles());
-		success = true;
-	    }
-	    /*
-	     * let the source know whether the string was successfully transferred and used
-	     */
-	    event.setDropCompleted(success);
-
-	    event.consume();
-	});
-    }
-
-    private void initLowerButtonBar()
-    {
-	protocolBtn.disableProperty().bind(new BooleanBinding()
-	{
-	    {
-		super.bind(FxUtil.observePropertiesOfSelectedItem(processingTreeTable.getSelectionModel(), (TreeItem<ProcessingItem> treeItem) -> {
-		    ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
-		    if (task == null)
-		    {
-			return new Observable[] {};
-		    }
-		    return new Observable[] { task.stateProperty() };
-		}));
-	    }
-
-	    @Override
-	    protected boolean computeValue()
-	    {
-		ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
-		if (task == null)
-		{
-		    return true;
 		}
-		return State.SUCCEEDED != task.getState() && State.CANCELLED != task.getState() && State.FAILED != task.getState();
-	    }
-	});
-	protocolBtn.setOnAction((ActionEvent evt) -> {
-	    ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
-	    if (task == null)
-	    {
-		return;
-	    }
-	    WatcherDialogs.showProtocolView(task);
-	});
-
-	openDirectoryBtn.disableProperty().bind(new BooleanBinding()
-	{
-	    {
-		super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
-	    }
-
-	    @Override
-	    protected boolean computeValue()
-	    {
-		TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
-		return selectedItem == null || selectedItem.getValue().getFiles().isEmpty();
-	    }
-	});
-	openDirectoryBtn.setOnAction(
-		evt -> FxUtil.browse(processingTreeTable.getSelectionModel().getSelectedItem().getValue().getFiles().get(0).getParent().toUri().toString(), mainController.getCommonExecutor()));
-
-	BooleanBinding emptyProcessingTreeTable = Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0);
-	cancelAllBtn.disableProperty().bind(emptyProcessingTreeTable);
-	cancelAllBtn.setOnAction(evt -> cancelAllTasks());
-	removeAllBtn.disableProperty().bind(emptyProcessingTreeTable);
-	removeAllBtn.setOnAction(evt -> clearProcessingTreeTable());
-    }
-
-    private ProcessingTask getProcessingTask(TreeItem<ProcessingItem> item)
-    {
-	if (item == null || item.getValue() == null)
-	{
-	    return null;
-	}
-	if (item.getValue() instanceof ProcessingTask)
-	{
-	    return (ProcessingTask) item.getValue();
-	}
-	else if (item.getValue() instanceof ProcessingResult)
-	{
-	    return ((ProcessingResult) item.getValue()).getTask();
-	}
-	else
-	{
-	    log.error("ProcessingItem is of unknown type: " + item);
-	    return null;
-	}
-    }
-
-    // getter
-    public MainController getMainController()
-    {
-	return mainController;
-    }
-
-    public NamingService getNamingService()
-    {
-	return namingService;
-    }
-
-    public NamingService getNamingServiceForFiltering()
-    {
-	return namingServiceForFiltering;
-    }
-
-    public Map<String, Object> getNamingParametersForFiltering()
-    {
-	return namingParametersForFiltering;
-    }
-
-    public TreeTableView<ProcessingItem> getProcessingTreeTable()
-    {
-	return processingTreeTable;
-    }
-
-    // other public methods
-    public void handleFiles(Path watchDir, Collection<Path> files)
-    {
-	log.info("Handling {} file(s) in {}", files.size(), watchDir);
-	for (Path file : files)
-	{
-	    handleFile(watchDir.resolve(file));
-	}
-    }
-
-    public void handleFiles(Collection<File> files)
-    {
-	log.info("Handling {} file(s)", files.size());
-	for (File file : files)
-	{
-	    handleFile(file.toPath());
-	}
-    }
-
-    public void handleFile(Path file)
-    {
-	Platform.runLater(() -> {
-	    if (!filter(file))
-	    {
-		return;
-	    }
-	    if (alreadyInProcess(file))
-	    {
-		log.info("Rejecting {} because that file is already in processing", file);
-		return;
-	    }
-
-	    TreeItem<ProcessingItem> taskItem = new TreeItem<>();
-	    ProcessingTask newTask = new ProcessingTask(file, this, taskItem);
-	    taskItem.setValue(newTask);
-	    processingTreeTable.getRoot().getChildren().add(taskItem);
-
-	    getProcessingExecutor().execute(newTask);
-	});
-    }
-
-    private boolean filter(Path file)
-    {
-	if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS))
-	{
-	    log.debug("Filtered out {} because it is no regular file", file);
-	    return false;
+		// add subtitle language standardizer
+		service.registerStandardizer(Subtitle.class,
+				settings.getSubtitleLanguageSettings().getSubtitleLanguageStandardizer());
+		// add subtitle tags standardizer
+		service.registerStandardizer(SubtitleAdjustment.class, SubtitleUtil::standardizeTags);
+		return service;
 	}
 
-	Pattern pattern = UserPattern.parseSimplePatterns(WatcherSettings.INSTANCE.getProcessingSettings().getFilenamePatterns());
-	if (pattern == null)
-	{
-	    log.debug("Filtered out {} because no pattern is specified", file);
-	    return false;
-	}
-	if (!pattern.matcher(file.getFileName().toString()).matches())
-	{
-	    log.debug("Filtered out {} because its name does not match the required pattern {}", file, pattern);
-	    return false;
-	}
-
-	return true;
-    }
-
-    /**
-     * @return <code>true</code> if file is already queued for or in process. <code>false</code> otherwise
-     */
-    private boolean alreadyInProcess(Path file)
-    {
-	for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
-	{
-	    ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
-	    if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING) && task.getSourceFile().equals(file))
-	    {
-		return true;
-	    }
-	}
-	return false;
-    }
-
-    private ExecutorService getProcessingExecutor()
-    {
-	if (processingExecutor == null || processingExecutor.isShutdown())
-	{
-	    processingExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
-	}
-	return processingExecutor;
-    }
-
-    public void clearProcessingTreeTable()
-    {
-	cancelAllTasks();
-	processingTreeTable.getRoot().getChildren().clear();
-    }
-
-    public void cancelAllTasks()
-    {
-	for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
-	{
-	    ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
-	    task.cancel(true);
-	}
-    }
-
-    @Override
-    public synchronized void shutdown() throws InterruptedException
-    {
-	if (processingExecutor != null)
-	{
-	    processingExecutor.shutdownNow();
-	    processingExecutor.awaitTermination(30, TimeUnit.SECONDS);
-	}
-    }
-
-    // package private
-    Binding<ProcessingConfig> getProcessingConfig()
-    {
-	return processingConfig;
-    }
-
-    // package private
-    static class ProcessingConfig
-    {
-	// parsing
-	private Pattern				   filenamePattern;
-	private ImmutableList<ParsingService>	   filenameParsingServices;
-	// release
-	private ImmutableList<Tag>		   releaseMetaTags;
-	// release - dbs
-	private ImmutableList<MetadataDb<Release>> releaseDbs;
-	private ImmutableList<ParsingService>	   releaseParsingServices;
-	// release - guessing
-	private boolean				   guessingEnabled;
-	private ImmutableList<StandardRelease>	   standardReleases;
-	// release - compatibility
-	private boolean				   compatibilityEnabled;
-	private CompatibilityService		   compatibilityService;
-	// standardizing
-	private StandardizingService		   beforeQueryingStandardizingService;
-	private StandardizingService		   afterQueryingStandardizingService;
-	// naming
-	private ImmutableMap<String, Object>	   namingParameters;
-	// File Transformation - General
-	private Path				   targetDir;
-	private boolean				   deleteSource;
-	// File Transformation - Packing
-	private boolean				   packingEnabled;
-	private Path				   rarExe;
-	private LocateStrategy			   winRarLocateStrategy;
-	private DeletionMode			   packingSourceDeletionMode;
-
-	// private
-	private ProcessingConfig()
-	{
-
+	private static TypeStandardizingService createAfterQueryingStandardizingService(ProcessingSettings settings) {
+		TypeStandardizingService service = new TypeStandardizingService("postmetadatadb");
+		// Register default nested beans retrievers but not default
+		// standardizers
+		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+		for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers()) {
+			if (entry.isAfterQuerying()) {
+				registerStandardizer(service, entry);
+			}
+		}
+		return service;
 	}
 
-	Pattern getFilenamePattern()
-	{
-	    return filenamePattern;
+	private static <T> void registerStandardizer(TypeStandardizingService service,
+			StandardizerSettingEntry<T, ?> entry) {
+		service.registerStandardizer(entry.getBeanType(), entry.getValue());
 	}
 
-	private void setFilenamePattern(Pattern filenamePattern)
-	{
-	    this.filenamePattern = filenamePattern;
+	private static NamingService initNamingService() {
+		return NamingDefaults.getDefaultNamingService();
 	}
 
-	ImmutableList<ParsingService> getFilenameParsingServices()
-	{
-	    return filenameParsingServices;
+	private static NamingService initNamingServiceForFiltering() {
+		return NamingDefaults.getDefaultNormalizingNamingService();
 	}
 
-	private void setFilenameParsingServices(ImmutableList<ParsingService> filenameParsingServices)
-	{
-	    this.filenameParsingServices = filenameParsingServices;
-	}
-
-	ImmutableList<MetadataDb<Release>> getReleaseDbs()
-	{
-	    return releaseDbs;
-	}
-
-	private void setReleaseDbs(ImmutableList<MetadataDb<Release>> releaseDbs)
-	{
-	    this.releaseDbs = releaseDbs;
-	}
-
-	ImmutableList<ParsingService> getReleaseParsingServices()
-	{
-	    return releaseParsingServices;
-	}
-
-	private void setReleaseParsingServices(ImmutableList<ParsingService> releaseParsingServices)
-	{
-	    this.releaseParsingServices = releaseParsingServices;
-	}
-
-	boolean isGuessingEnabled()
-	{
-	    return guessingEnabled;
-	}
-
-	private void setGuessingEnabled(boolean guessingEnabled)
-	{
-	    this.guessingEnabled = guessingEnabled;
-	}
-
-	ImmutableList<Tag> getReleaseMetaTags()
-	{
-	    return releaseMetaTags;
-	}
-
-	private void setReleaseMetaTags(ImmutableList<Tag> releaseMetaTags)
-	{
-	    this.releaseMetaTags = releaseMetaTags;
-	}
-
-	ImmutableList<StandardRelease> getStandardReleases()
-	{
-	    return standardReleases;
-	}
-
-	private void setStandardReleases(ImmutableList<StandardRelease> standardReleases)
-	{
-	    this.standardReleases = standardReleases;
-	}
-
-	boolean isCompatibilityEnabled()
-	{
-	    return compatibilityEnabled;
-	}
-
-	private void setCompatibilityEnabled(boolean compatibilityEnabled)
-	{
-	    this.compatibilityEnabled = compatibilityEnabled;
-	}
-
-	CompatibilityService getCompatibilityService()
-	{
-	    return compatibilityService;
-	}
-
-	private void setCompatibilityService(CompatibilityService compatibilityService)
-	{
-	    this.compatibilityService = compatibilityService;
-	}
-
-	StandardizingService getBeforeQueryingStandardizingService()
-	{
-	    return beforeQueryingStandardizingService;
-	}
-
-	private void setBeforeQueryingStandardizingService(StandardizingService beforeQueryingStandardizingService)
-	{
-	    this.beforeQueryingStandardizingService = beforeQueryingStandardizingService;
-	}
-
-	StandardizingService getAfterQueryingStandardizingService()
-	{
-	    return afterQueryingStandardizingService;
-	}
-
-	private void setAfterQueryingStandardizingService(StandardizingService afterQueryingStandardizingService)
-	{
-	    this.afterQueryingStandardizingService = afterQueryingStandardizingService;
-	}
-
-	ImmutableMap<String, Object> getNamingParameters()
-	{
-	    return namingParameters;
-	}
-
-	private void setNamingParameters(ImmutableMap<String, Object> namingParameters)
-	{
-	    this.namingParameters = namingParameters;
-	}
-
-	Path getTargetDir()
-	{
-	    return targetDir;
-	}
-
-	private void setTargetDir(Path targetDir)
-	{
-	    this.targetDir = targetDir;
-	}
-
-	boolean isDeleteSource()
-	{
-	    return deleteSource;
-	}
-
-	private void setDeleteSource(boolean deleteSource)
-	{
-	    this.deleteSource = deleteSource;
-	}
-
-	boolean isPackingEnabled()
-	{
-	    return packingEnabled;
-	}
-
-	private void setPackingEnabled(boolean packingEnabled)
-	{
-	    this.packingEnabled = packingEnabled;
-	}
-
-	Path getRarExe()
-	{
-	    return rarExe;
-	}
-
-	private void setRarExe(Path rarExe)
-	{
-	    this.rarExe = rarExe;
-	}
-
-	LocateStrategy getWinRarLocateStrategy()
-	{
-	    return winRarLocateStrategy;
-	}
-
-	private void setWinRarLocateStrategy(LocateStrategy winRarLocateStrategy)
-	{
-	    this.winRarLocateStrategy = winRarLocateStrategy;
-	}
-
-	DeletionMode getPackingSourceDeletionMode()
-	{
-	    return packingSourceDeletionMode;
-	}
-
-	private void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode)
-	{
-	    this.packingSourceDeletionMode = packingSourceDeletionMode;
+	private static Map<String, Object> initNamingParametersForFiltering() {
+		return ImmutableMap.of();
 	}
 
 	@Override
-	public String toString()
-	{
-	    return MoreObjects.toStringHelper(ProcessingConfig.class)
-		    .omitNullValues()
-		    .add("filenamePattern", filenamePattern)
-		    .add("filenameParsingServices", filenameParsingServices)
-		    .add("releaseMetaTags", releaseMetaTags)
-		    .add("releaseDbs", releaseDbs)
-		    .add("releaseParsingServices", releaseParsingServices)
-		    .add("guessingEnabled", guessingEnabled)
-		    .add("standardReleases", standardReleases)
-		    .add("compatibilityEnabled", compatibilityEnabled)
-		    .add("compatibilityService", compatibilityService)
-		    .add("beforeQueryingStandardizingService", beforeQueryingStandardizingService)
-		    .add("afterQueryingStandardizingService", afterQueryingStandardizingService)
-		    .add("namingParameters", namingParameters)
-		    .add("targetDir", targetDir)
-		    .add("deleteSource", deleteSource)
-		    .add("packingEnabled", packingEnabled)
-		    .add("rarExe", rarExe)
-		    .add("winRarLocateStrategy", winRarLocateStrategy)
-		    .add("packingSourceDeletionMode", packingSourceDeletionMode)
-		    .toString();
+	public void doInitialize() {
+		initProcessingTreeTable();
+		initLowerButtonBar();
 	}
-    }
+
+	private void initProcessingTreeTable() {
+		// init root
+		processingTreeTable.setRoot(new TreeItem<>());
+
+		// init columns
+		nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features
+				.getValue().getValue().nameProperty());
+
+		filesColumn.setCellValueFactory(
+				(TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> features.getValue()
+						.getValue().getFiles());
+		filesColumn.setCellFactory((TreeTableColumn<ProcessingItem, ObservableList<Path>> param) -> {
+			return new TreeTableCell<ProcessingItem, ObservableList<Path>>() {
+				@Override
+				protected void updateItem(ObservableList<Path> item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if (empty || item == null) {
+						setText("");
+					} else {
+						StringJoiner joiner = new StringJoiner(", ");
+						for (Path file : item) {
+							joiner.add(IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1]);
+						}
+						setText(joiner.toString().replace(".", "").toUpperCase());
+					}
+				};
+			};
+		});
+
+		statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features
+				.getValue().getValue().statusProperty());
+
+		progressColumn
+				.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, Double> features) -> features
+						.getValue().getValue().progressProperty().asObject());
+		progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
+
+		infoColumn.setCellValueFactory(
+				(TreeTableColumn.CellDataFeatures<ProcessingItem, ProcessingInfo> features) -> features.getValue()
+						.getValue().infoProperty());
+		infoColumn.setCellFactory((TreeTableColumn<ProcessingItem, ProcessingInfo> param) -> {
+			return new TreeTableCell<ProcessingItem, ProcessingInfo>() {
+				@Override
+				protected void updateItem(ProcessingInfo item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if (empty || item == null) {
+						setText("");
+						setGraphic(null);
+					} else {
+						if (item instanceof ProcessingTaskInfo) {
+							ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
+							setText(taskInfo.getInfo());
+							setGraphic(null);
+						} else if (item instanceof ProcessingResultInfo) {
+							ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
+							HBox hbox = new HBox();
+							hbox.setSpacing(5d);
+							hbox.setAlignment(Pos.CENTER_LEFT);
+
+							// method info
+							switch (resultInfo.getMethodInfo().getMethod()) {
+							case DATABASE: {
+								addDatabaseHyperlink(resultInfo, hbox);
+								break;
+							}
+							case GUESSING: {
+								GuessingMethodInfo gmi = (GuessingMethodInfo) resultInfo.getMethodInfo();
+								StringBuilder sb = new StringBuilder();
+								sb.append("Guessed release");
+								if (gmi.getStandardRelease() != null) {
+									sb.append(" (using standard release: ");
+									sb.append(resultInfo.getProcessingResult().getTask()
+											.name(gmi.getStandardRelease().getRelease()));
+									sb.append(')');
+								}
+								ImageView guessingImg = new ImageView(FxUtil.loadImg("idea_16.png"));
+								Label guessing = new Label("", guessingImg);
+								guessing.setTooltip(new Tooltip(sb.toString()));
+								hbox.getChildren().add(guessing);
+								break;
+							}
+							case COMPATIBILITY: {
+								// compatible releases may be listed in a database as well
+								addDatabaseHyperlink(resultInfo, hbox);
+								
+								CompatibilityMethodInfo cmi = (CompatibilityMethodInfo) resultInfo.getMethodInfo();
+								StringBuilder txt = new StringBuilder();
+								Compatibility c = cmi.getCompatibilityInfo().getCompatibility();
+								if (c instanceof SameGroupCompatibility) {
+									txt.append("Same group");
+								} else if (c instanceof CrossGroupCompatibility) {
+									txt.append(((CrossGroupCompatibility) c).toShortString());
+								}
+
+								ImageView compImg = new ImageView(FxUtil.loadImg("couple_16.png"));
+								Label comp = new Label(txt.toString(), compImg);
+
+								StringBuilder tooltip = new StringBuilder();
+								tooltip.append("Compatible to ");
+								tooltip.append(resultInfo.getProcessingResult().getTask()
+										.name(cmi.getCompatibilityInfo().getSource()));
+
+								comp.setTooltip(new Tooltip(tooltip.toString()));
+								hbox.getChildren().add(comp);
+								break;
+							}
+							default:
+								log.warn("Unknown method info type: " + resultInfo.getMethodInfo());
+								break;
+							}
+
+							// nuke
+							if (resultInfo.getProcessingResult().getRelease().isNuked()) {
+								ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
+								Label nuked = new Label("", nukedImg);
+								StringJoiner joiner = new StringJoiner(", ");
+								for (Nuke nuke : resultInfo.getProcessingResult().getRelease().getNukes()) {
+									joiner.add(nuke.getReason());
+								}
+								nuked.setTooltip(new Tooltip(joiner.toString()));
+								hbox.getChildren().add(nuked);
+							}
+
+							// meta tags
+							List<Tag> containedMetaTags = TagUtil.getMetaTags(
+									resultInfo.getProcessingResult().getRelease().getTags(),
+									resultInfo.getProcessingResult().getTask().getConfig().getReleaseMetaTags());
+							if (!containedMetaTags.isEmpty()) {
+								String metaTagsTxt = Tag.listToString(containedMetaTags);
+								ImageView tagImg = new ImageView(FxUtil.loadImg("tag_16.png"));
+								Label metaTags = new Label(metaTagsTxt, tagImg);
+								metaTags.setTooltip(new Tooltip("Contains meta tags: " + metaTagsTxt));
+								hbox.getChildren().add(metaTags);
+							}
+
+							setText("");
+							setGraphic(hbox);
+						} else {
+							setText("");
+							setGraphic(null);
+						}
+					}
+				}
+				
+				private void addDatabaseHyperlink(ProcessingResultInfo resultInfo, HBox hbox)
+				{
+					Hyperlink database = WatcherFxUtil.createFurtherInfoHyperlink(
+							resultInfo.getProcessingResult().getRelease(), resultInfo.getProcessingResult()
+									.getTask().getController().getMainController().getCommonExecutor());
+					if (database != null) {
+						database.setTooltip(new Tooltip("Found in release database"));
+						hbox.getChildren().add(database);
+					}
+				}
+			};
+
+		});
+
+		initProcessingTreeTableDnD();
+	}
+
+	/**
+	 * Set up handling of Drag & Drop events (drop events on processing tree
+	 * table).
+	 */
+	private void initProcessingTreeTableDnD() {
+		final Border defaultBorder = processingTreeTable.getBorder();
+		final Border dragBorder = new Border(
+				new BorderStroke(Color.CORNFLOWERBLUE, BorderStrokeStyle.SOLID, null, null));
+
+		// Handling a DRAG_OVER Event on a Target
+		processingTreeTable.setOnDragOver((DragEvent event) -> {
+			/* data is dragged over the target */
+			/*
+			 * accept it only if it is not dragged from the same node and if it
+			 * has a files data
+			 */
+			if (event.getGestureSource() != event.getTarget() && event.getDragboard().hasFiles()) {
+				/*
+				 * allow for both copying and moving, whatever user chooses
+				 */
+				event.acceptTransferModes(TransferMode.COPY);
+			}
+
+			event.consume();
+		});
+
+		// Providing Visual Feedback by a Gesture Target
+		processingTreeTable.setOnDragEntered((DragEvent event) -> {
+			Region target = (Region) event.getTarget();
+			/* the drag-and-drop gesture entered the target */
+			/* show to the user that it is an actual gesture target */
+			if (event.getGestureSource() != target && event.getDragboard().hasFiles()) {
+				target.setBorder(dragBorder);
+			}
+
+			event.consume();
+		});
+		processingTreeTable.setOnDragExited((DragEvent event) -> {
+			Region target = (Region) event.getTarget();
+			/* mouse moved away, remove the graphical cues */
+			target.setBorder(defaultBorder);
+
+			event.consume();
+		});
+
+		// Handling a DRAG_DROPPED Event on a Target
+		processingTreeTable.setOnDragDropped((DragEvent event) -> {
+			/* data dropped */
+			/* if there is a string data on dragboard, read it and use it */
+			Dragboard db = event.getDragboard();
+			boolean success = false;
+			if (db.hasFiles()) {
+				handleFiles(db.getFiles());
+				success = true;
+			}
+			/*
+			 * let the source know whether the string was successfully
+			 * transferred and used
+			 */
+			event.setDropCompleted(success);
+
+			event.consume();
+		});
+	}
+
+	private void initLowerButtonBar() {
+		protocolBtn.disableProperty().bind(new BooleanBinding() {
+			{
+				super.bind(FxUtil.observePropertiesOfSelectedItem(processingTreeTable.getSelectionModel(),
+						(TreeItem<ProcessingItem> treeItem) -> {
+					ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
+					if (task == null) {
+						return new Observable[] {};
+					}
+					return new Observable[] { task.stateProperty() };
+				}));
+			}
+
+			@Override
+			protected boolean computeValue() {
+				ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
+				if (task == null) {
+					return true;
+				}
+				return State.SUCCEEDED != task.getState() && State.CANCELLED != task.getState()
+						&& State.FAILED != task.getState();
+			}
+		});
+		protocolBtn.setOnAction((ActionEvent evt) -> {
+			ProcessingTask task = getProcessingTask(processingTreeTable.getSelectionModel().getSelectedItem());
+			if (task == null) {
+				return;
+			}
+			WatcherDialogs.showProtocolView(task);
+		});
+
+		openDirectoryBtn.disableProperty().bind(new BooleanBinding() {
+			{
+				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
+			}
+
+			@Override
+			protected boolean computeValue() {
+				TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
+				return selectedItem == null || selectedItem.getValue().getFiles().isEmpty();
+			}
+		});
+		openDirectoryBtn.setOnAction(evt -> FxUtil.browse(processingTreeTable.getSelectionModel().getSelectedItem()
+				.getValue().getFiles().get(0).getParent().toUri().toString(), mainController.getCommonExecutor()));
+
+		BooleanBinding emptyProcessingTreeTable = Bindings.size(processingTreeTable.getRoot().getChildren())
+				.isEqualTo(0);
+		cancelAllBtn.disableProperty().bind(emptyProcessingTreeTable);
+		cancelAllBtn.setOnAction(evt -> cancelAllTasks());
+		removeAllBtn.disableProperty().bind(emptyProcessingTreeTable);
+		removeAllBtn.setOnAction(evt -> clearProcessingTreeTable());
+	}
+
+	private ProcessingTask getProcessingTask(TreeItem<ProcessingItem> item) {
+		if (item == null || item.getValue() == null) {
+			return null;
+		}
+		if (item.getValue() instanceof ProcessingTask) {
+			return (ProcessingTask) item.getValue();
+		} else if (item.getValue() instanceof ProcessingResult) {
+			return ((ProcessingResult) item.getValue()).getTask();
+		} else {
+			log.error("ProcessingItem is of unknown type: " + item);
+			return null;
+		}
+	}
+
+	// getter
+	public MainController getMainController() {
+		return mainController;
+	}
+
+	public NamingService getNamingService() {
+		return namingService;
+	}
+
+	public NamingService getNamingServiceForFiltering() {
+		return namingServiceForFiltering;
+	}
+
+	public Map<String, Object> getNamingParametersForFiltering() {
+		return namingParametersForFiltering;
+	}
+
+	public TreeTableView<ProcessingItem> getProcessingTreeTable() {
+		return processingTreeTable;
+	}
+
+	// other public methods
+	public void handleFiles(Path watchDir, Collection<Path> files) {
+		log.info("Handling {} file(s) in {}", files.size(), watchDir);
+		for (Path file : files) {
+			handleFile(watchDir.resolve(file));
+		}
+	}
+
+	public void handleFiles(Collection<File> files) {
+		log.info("Handling {} file(s)", files.size());
+		for (File file : files) {
+			handleFile(file.toPath());
+		}
+	}
+
+	public void handleFile(Path file) {
+		Platform.runLater(() -> {
+			if (!filter(file)) {
+				return;
+			}
+			if (alreadyInProcess(file)) {
+				log.info("Rejecting {} because that file is already in processing", file);
+				return;
+			}
+
+			TreeItem<ProcessingItem> taskItem = new TreeItem<>();
+			ProcessingTask newTask = new ProcessingTask(file, this, taskItem);
+			taskItem.setValue(newTask);
+			processingTreeTable.getRoot().getChildren().add(taskItem);
+
+			getProcessingExecutor().execute(newTask);
+		});
+	}
+
+	private boolean filter(Path file) {
+		if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)) {
+			log.debug("Filtered out {} because it is no regular file", file);
+			return false;
+		}
+
+		Pattern pattern = UserPattern
+				.parseSimplePatterns(WatcherSettings.INSTANCE.getProcessingSettings().getFilenamePatterns());
+		if (pattern == null) {
+			log.debug("Filtered out {} because no pattern is specified", file);
+			return false;
+		}
+		if (!pattern.matcher(file.getFileName().toString()).matches()) {
+			log.debug("Filtered out {} because its name does not match the required pattern {}", file, pattern);
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @return <code>true</code> if file is already queued for or in process.
+	 *         <code>false</code> otherwise
+	 */
+	private boolean alreadyInProcess(Path file) {
+		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren()) {
+			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
+			if ((task.getState() == State.READY || task.getState() == State.SCHEDULED
+					|| task.getState() == State.RUNNING) && task.getSourceFile().equals(file)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private ExecutorService getProcessingExecutor() {
+		if (processingExecutor == null || processingExecutor.isShutdown()) {
+			processingExecutor = Executors
+					.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
+		}
+		return processingExecutor;
+	}
+
+	public void clearProcessingTreeTable() {
+		cancelAllTasks();
+		processingTreeTable.getRoot().getChildren().clear();
+	}
+
+	public void cancelAllTasks() {
+		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren()) {
+			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
+			task.cancel(true);
+		}
+	}
+
+	@Override
+	public synchronized void shutdown() throws InterruptedException {
+		if (processingExecutor != null) {
+			processingExecutor.shutdownNow();
+			processingExecutor.awaitTermination(30, TimeUnit.SECONDS);
+		}
+	}
+
+	// package private
+	Binding<ProcessingConfig> getProcessingConfig() {
+		return processingConfig;
+	}
+
+	// package private
+	static class ProcessingConfig {
+		// parsing
+		private Pattern filenamePattern;
+		private ImmutableList<ParsingService> filenameParsingServices;
+		// release
+		private ImmutableList<Tag> releaseMetaTags;
+		// release - dbs
+		private ImmutableList<MetadataDb<Release>> releaseDbs;
+		private ImmutableList<ParsingService> releaseParsingServices;
+		// release - guessing
+		private boolean guessingEnabled;
+		private ImmutableList<StandardRelease> standardReleases;
+		// release - compatibility
+		private boolean compatibilityEnabled;
+		private CompatibilityService compatibilityService;
+		// standardizing
+		private StandardizingService beforeQueryingStandardizingService;
+		private StandardizingService afterQueryingStandardizingService;
+		// naming
+		private ImmutableMap<String, Object> namingParameters;
+		// File Transformation - General
+		private Path targetDir;
+		private boolean deleteSource;
+		// File Transformation - Packing
+		private boolean packingEnabled;
+		private Path rarExe;
+		private LocateStrategy winRarLocateStrategy;
+		private DeletionMode packingSourceDeletionMode;
+
+		// private
+		private ProcessingConfig() {
+
+		}
+
+		Pattern getFilenamePattern() {
+			return filenamePattern;
+		}
+
+		private void setFilenamePattern(Pattern filenamePattern) {
+			this.filenamePattern = filenamePattern;
+		}
+
+		ImmutableList<ParsingService> getFilenameParsingServices() {
+			return filenameParsingServices;
+		}
+
+		private void setFilenameParsingServices(ImmutableList<ParsingService> filenameParsingServices) {
+			this.filenameParsingServices = filenameParsingServices;
+		}
+
+		ImmutableList<MetadataDb<Release>> getReleaseDbs() {
+			return releaseDbs;
+		}
+
+		private void setReleaseDbs(ImmutableList<MetadataDb<Release>> releaseDbs) {
+			this.releaseDbs = releaseDbs;
+		}
+
+		ImmutableList<ParsingService> getReleaseParsingServices() {
+			return releaseParsingServices;
+		}
+
+		private void setReleaseParsingServices(ImmutableList<ParsingService> releaseParsingServices) {
+			this.releaseParsingServices = releaseParsingServices;
+		}
+
+		boolean isGuessingEnabled() {
+			return guessingEnabled;
+		}
+
+		private void setGuessingEnabled(boolean guessingEnabled) {
+			this.guessingEnabled = guessingEnabled;
+		}
+
+		ImmutableList<Tag> getReleaseMetaTags() {
+			return releaseMetaTags;
+		}
+
+		private void setReleaseMetaTags(ImmutableList<Tag> releaseMetaTags) {
+			this.releaseMetaTags = releaseMetaTags;
+		}
+
+		ImmutableList<StandardRelease> getStandardReleases() {
+			return standardReleases;
+		}
+
+		private void setStandardReleases(ImmutableList<StandardRelease> standardReleases) {
+			this.standardReleases = standardReleases;
+		}
+
+		boolean isCompatibilityEnabled() {
+			return compatibilityEnabled;
+		}
+
+		private void setCompatibilityEnabled(boolean compatibilityEnabled) {
+			this.compatibilityEnabled = compatibilityEnabled;
+		}
+
+		CompatibilityService getCompatibilityService() {
+			return compatibilityService;
+		}
+
+		private void setCompatibilityService(CompatibilityService compatibilityService) {
+			this.compatibilityService = compatibilityService;
+		}
+
+		StandardizingService getBeforeQueryingStandardizingService() {
+			return beforeQueryingStandardizingService;
+		}
+
+		private void setBeforeQueryingStandardizingService(StandardizingService beforeQueryingStandardizingService) {
+			this.beforeQueryingStandardizingService = beforeQueryingStandardizingService;
+		}
+
+		StandardizingService getAfterQueryingStandardizingService() {
+			return afterQueryingStandardizingService;
+		}
+
+		private void setAfterQueryingStandardizingService(StandardizingService afterQueryingStandardizingService) {
+			this.afterQueryingStandardizingService = afterQueryingStandardizingService;
+		}
+
+		ImmutableMap<String, Object> getNamingParameters() {
+			return namingParameters;
+		}
+
+		private void setNamingParameters(ImmutableMap<String, Object> namingParameters) {
+			this.namingParameters = namingParameters;
+		}
+
+		Path getTargetDir() {
+			return targetDir;
+		}
+
+		private void setTargetDir(Path targetDir) {
+			this.targetDir = targetDir;
+		}
+
+		boolean isDeleteSource() {
+			return deleteSource;
+		}
+
+		private void setDeleteSource(boolean deleteSource) {
+			this.deleteSource = deleteSource;
+		}
+
+		boolean isPackingEnabled() {
+			return packingEnabled;
+		}
+
+		private void setPackingEnabled(boolean packingEnabled) {
+			this.packingEnabled = packingEnabled;
+		}
+
+		Path getRarExe() {
+			return rarExe;
+		}
+
+		private void setRarExe(Path rarExe) {
+			this.rarExe = rarExe;
+		}
+
+		LocateStrategy getWinRarLocateStrategy() {
+			return winRarLocateStrategy;
+		}
+
+		private void setWinRarLocateStrategy(LocateStrategy winRarLocateStrategy) {
+			this.winRarLocateStrategy = winRarLocateStrategy;
+		}
+
+		DeletionMode getPackingSourceDeletionMode() {
+			return packingSourceDeletionMode;
+		}
+
+		private void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode) {
+			this.packingSourceDeletionMode = packingSourceDeletionMode;
+		}
+
+		@Override
+		public String toString() {
+			return MoreObjects.toStringHelper(ProcessingConfig.class).omitNullValues()
+					.add("filenamePattern", filenamePattern).add("filenameParsingServices", filenameParsingServices)
+					.add("releaseMetaTags", releaseMetaTags).add("releaseDbs", releaseDbs)
+					.add("releaseParsingServices", releaseParsingServices).add("guessingEnabled", guessingEnabled)
+					.add("standardReleases", standardReleases).add("compatibilityEnabled", compatibilityEnabled)
+					.add("compatibilityService", compatibilityService)
+					.add("beforeQueryingStandardizingService", beforeQueryingStandardizingService)
+					.add("afterQueryingStandardizingService", afterQueryingStandardizingService)
+					.add("namingParameters", namingParameters).add("targetDir", targetDir)
+					.add("deleteSource", deleteSource).add("packingEnabled", packingEnabled).add("rarExe", rarExe)
+					.add("winRarLocateStrategy", winRarLocateStrategy)
+					.add("packingSourceDeletionMode", packingSourceDeletionMode).toString();
+		}
+	}
 }
