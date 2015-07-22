@@ -99,18 +99,18 @@ public class CompatibilityService
 
     public static class CompatibilityInfo
     {
-	private final Release	    compatibleTo;
+	private final Release	    source;
 	private final Compatibility compatibility;
 
-	public CompatibilityInfo(Release compatibleTo, Compatibility compatibility)
+	public CompatibilityInfo(Release source, Compatibility compatibility)
 	{
-	    this.compatibleTo = compatibleTo;
+	    this.source = source;
 	    this.compatibility = compatibility;
 	}
 
-	public Release getCompatibleTo()
+	public Release getSource()
 	{
-	    return compatibleTo;
+	    return source;
 	}
 
 	public Compatibility getCompatibility()
@@ -121,7 +121,7 @@ public class CompatibilityService
 	@Override
 	public String toString()
 	{
-	    return MoreObjects.toStringHelper(CompatibilityInfo.class).omitNullValues().add("compatibleTo", compatibleTo).add("compatibility", compatibility).toString();
+	    return MoreObjects.toStringHelper(CompatibilityInfo.class).omitNullValues().add("source", source).add("compatibility", compatibility).toString();
 	}
     }
 }

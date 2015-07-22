@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 
 public interface ProcessingItem
@@ -31,10 +32,10 @@ public interface ProcessingItem
 	return progressProperty().get();
     }
 
-    ReadOnlyStringProperty infoProperty();
+    ReadOnlyProperty<ProcessingInfo> infoProperty();
 
-    default String getInfo()
+    default ProcessingInfo getInfo()
     {
-	return infoProperty().get();
+	return infoProperty().getValue();
     }
 }

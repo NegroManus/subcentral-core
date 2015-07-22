@@ -12,10 +12,13 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -24,29 +27,26 @@ public class ProcessingResult implements ProcessingItem
 {
     public static enum Method
     {
-	MATCHING, GUESSING, COMPATIBILITY
+	DATABASE, GUESSING, COMPATIBILITY
     }
 
-    private final ProcessingTask task;
-    private final Release	 release;
-    private final MethodInfo	 methodInfo;
-
-    private final StringProperty     name;
-    private final ListProperty<Path> files    = new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
-    private final StringProperty     status   = new SimpleStringProperty(this, "status");
-    private final DoubleProperty     progress = new SimpleDoubleProperty(this, "progress");
-    private final StringProperty     info     = new SimpleStringProperty(this, "info");
+    private final ProcessingTask	   task;
+    private final Release		   release;
+    private final StringProperty	   name;
+    private final ListProperty<Path>	   files    = new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
+    private final StringProperty	   status   = new SimpleStringProperty(this, "status");
+    private final DoubleProperty	   progress = new SimpleDoubleProperty(this, "progress");
+    private final Property<ProcessingInfo> info	    = new SimpleObjectProperty<>(this, "info");
 
     /**
      * package protected
      */
-    ProcessingResult(ProcessingTask task, Release release, MethodInfo methodInfo)
+    ProcessingResult(ProcessingTask task, Release release)
     {
 	this.task = Objects.requireNonNull(task, "task");
 	this.release = Objects.requireNonNull(release, "release");
-	this.methodInfo = Objects.requireNonNull(methodInfo, "methodInfo");
 
-	name = new SimpleStringProperty(this, "name", generateName(release));
+	this.name = new SimpleStringProperty(this, "name", generateName(release));
     }
 
     private String generateName(Release rls)
@@ -65,11 +65,6 @@ public class ProcessingResult implements ProcessingItem
     public Release getRelease()
     {
 	return release;
-    }
-
-    public MethodInfo getMethodInfo()
-    {
-	return methodInfo;
     }
 
     @Override
@@ -121,14 +116,14 @@ public class ProcessingResult implements ProcessingItem
     }
 
     @Override
-    public ReadOnlyStringProperty infoProperty()
+    public ReadOnlyProperty<ProcessingInfo> infoProperty()
     {
 	return info;
     }
 
-    void updateInfo(final String info)
+    void updateInfo(final ProcessingResultInfo info)
     {
-	Platform.runLater(() -> ProcessingResult.this.info.set(info));
+	Platform.runLater(() -> ProcessingResult.this.info.setValue(info));
     }
 
     public static interface MethodInfo
@@ -136,12 +131,12 @@ public class ProcessingResult implements ProcessingItem
 	Method getMethod();
     }
 
-    public static class MatchingMethodInfo implements MethodInfo
+    public static class DatabaseMethodInfo implements MethodInfo
     {
 	@Override
 	public Method getMethod()
 	{
-	    return Method.MATCHING;
+	    return Method.DATABASE;
 	}
     }
 

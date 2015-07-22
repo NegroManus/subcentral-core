@@ -29,15 +29,6 @@
 						</ImageView>
 					</graphic>
 				</Button>
-				<Button fx:id="releaseInfoBtn" mnemonicParsing="false" text="Release info">
-					<graphic>
-						<ImageView pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../img/archive_16.png" />
-							</image>
-						</ImageView>
-					</graphic>
-				</Button>
 				<HBox maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
             <Button fx:id="cancelAllBtn" mnemonicParsing="false" text="Cancel all">
                <graphic>

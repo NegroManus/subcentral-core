@@ -1,12 +1,20 @@
 package de.subcentral.watcher;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
+import java.util.concurrent.ExecutorService;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.release.CompatibilityService;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.fx.DirectoryWatchService;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
@@ -17,9 +25,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.image.ImageView;
 
 public class WatcherFxUtil
 {
+    private static final Logger log = LogManager.getLogger(WatcherFxUtil.class);
 
     public static void bindWatchDirectories(final DirectoryWatchService service, final ObservableList<Path> directoryList) throws IOException
     {
@@ -163,6 +175,29 @@ public class WatcherFxUtil
 	    return "Subtitle";
 	}
 	return beanClass.getSimpleName();
+    }
+
+    public static Hyperlink createFurtherInfoHyperlink(Release rls, ExecutorService executorService)
+    {
+	if (rls.getFurtherInfoLinks().isEmpty())
+	{
+	    return null;
+	}
+	try
+	{
+	    String host = new URL(rls.getFurtherInfoLinks().get(0)).getHost();
+	    ImageView dbImg = new ImageView(FxUtil.loadImg("database_16.png"));
+	    Hyperlink hl = new Hyperlink(host, dbImg);
+	    hl.setVisited(true);
+	    hl.setOnAction((ActionEvent evt) -> FxUtil.browse(rls.getFurtherInfoLinks().get(0), executorService));
+	    return hl;
+	}
+	catch (MalformedURLException e)
+	{
+	    log.error("Could not create further info hyperlink", e);
+	    return null;
+	}
+
     }
 
     private WatcherFxUtil()

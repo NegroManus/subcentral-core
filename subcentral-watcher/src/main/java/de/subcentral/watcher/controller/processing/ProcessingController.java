@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -21,11 +22,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.db.MetadataDb;
+import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
+import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
@@ -45,6 +50,8 @@ import de.subcentral.watcher.WatcherDialogs;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibilityMethodInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.SettingsUtil;
 import de.subcentral.watcher.settings.StandardizerSettingEntry;
@@ -59,18 +66,24 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.ProgressBarTreeTableCell;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
@@ -102,14 +115,12 @@ public class ProcessingController extends AbstractController
     @FXML
     private TreeTableColumn<ProcessingItem, Double>		  progressColumn;
     @FXML
-    private TreeTableColumn<ProcessingItem, String>		  infoColumn;
+    private TreeTableColumn<ProcessingItem, ProcessingInfo>	  infoColumn;
     // Lower Button bar
     @FXML
     private Button						  protocolBtn;
     @FXML
     private Button						  openDirectoryBtn;
-    @FXML
-    private Button						  releaseInfoBtn;
     @FXML
     private Button						  cancelAllBtn;
     @FXML
@@ -249,6 +260,8 @@ public class ProcessingController extends AbstractController
 
 	// init columns
 	nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().nameProperty());
+
+	filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> features.getValue().getValue().getFiles());
 	filesColumn.setCellFactory((TreeTableColumn<ProcessingItem, ObservableList<Path>> param) -> {
 	    return new TreeTableCell<ProcessingItem, ObservableList<Path>>()
 	    {
@@ -273,12 +286,138 @@ public class ProcessingController extends AbstractController
 		};
 	    };
 	});
-	filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> features.getValue().getValue().getFiles());
 
 	statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().statusProperty());
-	progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
+
 	progressColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, Double> features) -> features.getValue().getValue().progressProperty().asObject());
-	infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().infoProperty());
+	progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
+
+	infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ProcessingInfo> features) -> features.getValue().getValue().infoProperty());
+	infoColumn.setCellFactory((TreeTableColumn<ProcessingItem, ProcessingInfo> param) -> {
+	    return new TreeTableCell<ProcessingItem, ProcessingInfo>()
+	    {
+		@Override
+		protected void updateItem(ProcessingInfo item, boolean empty)
+		{
+		    super.updateItem(item, empty);
+
+		    if (empty || item == null)
+		    {
+			setText("");
+			setGraphic(null);
+		    }
+		    else
+		    {
+			if (item instanceof ProcessingTaskInfo)
+			{
+			    ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
+			    setText(taskInfo.getInfo());
+			    setGraphic(null);
+			}
+			else if (item instanceof ProcessingResultInfo)
+			{
+			    ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
+			    HBox hbox = new HBox();
+			    hbox.setSpacing(5d);
+			    hbox.setAlignment(Pos.CENTER_LEFT);
+
+			    // method info
+			    switch (resultInfo.getMethodInfo().getMethod())
+			    {
+				case DATABASE:
+				{
+				    Hyperlink database = WatcherFxUtil.createFurtherInfoHyperlink(resultInfo.getProcessingResult().getRelease(),
+					    resultInfo.getProcessingResult().getTask().getController().getMainController().getCommonExecutor());
+				    database.setTooltip(new Tooltip("Found in release database"));
+				    hbox.getChildren().add(database);
+				    break;
+				}
+				case GUESSING:
+				{
+				    GuessingMethodInfo gmi = (GuessingMethodInfo) resultInfo.getMethodInfo();
+				    StringBuilder sb = new StringBuilder();
+				    sb.append("Guessed release");
+				    if (gmi.getStandardRelease() != null)
+				    {
+					sb.append(" (using standard release: ");
+					sb.append(resultInfo.getProcessingResult().getTask().name(gmi.getStandardRelease().getRelease()));
+					sb.append(')');
+				    }
+				    ImageView guessingImg = new ImageView(FxUtil.loadImg("idea_16.png"));
+				    Label guessing = new Label("", guessingImg);
+				    guessing.setTooltip(new Tooltip(sb.toString()));
+				    hbox.getChildren().add(guessing);
+				    break;
+				}
+				case COMPATIBILITY:
+				{
+				    CompatibilityMethodInfo cmi = (CompatibilityMethodInfo) resultInfo.getMethodInfo();
+				    StringBuilder txt = new StringBuilder();
+				    Compatibility c = cmi.getCompatibilityInfo().getCompatibility();
+				    if (c instanceof SameGroupCompatibility)
+				    {
+					txt.append("Same group");
+				    }
+				    else if (c instanceof CrossGroupCompatibility)
+				    {
+					txt.append(((CrossGroupCompatibility) c).toShortString());
+				    }
+
+				    ImageView compImg = new ImageView(FxUtil.loadImg("couple_16.png"));
+				    Label comp = new Label(txt.toString(), compImg);
+
+				    StringBuilder tooltip = new StringBuilder();
+				    tooltip.append("Compatible to ");
+				    tooltip.append(resultInfo.getProcessingResult().getTask().name(cmi.getCompatibilityInfo().getSource()));
+
+				    comp.setTooltip(new Tooltip(tooltip.toString()));
+				    hbox.getChildren().add(comp);
+				    break;
+				}
+				default:
+				    log.warn("Unknown method info type: " + resultInfo.getMethodInfo());
+				    break;
+			    }
+
+			    // nuke
+			    if (resultInfo.getProcessingResult().getRelease().isNuked())
+			    {
+				ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
+				Label nuked = new Label("", nukedImg);
+				StringJoiner joiner = new StringJoiner(", ");
+				for (Nuke nuke : resultInfo.getProcessingResult().getRelease().getNukes())
+				{
+				    joiner.add(nuke.getReason());
+				}
+				nuked.setTooltip(new Tooltip(joiner.toString()));
+				hbox.getChildren().add(nuked);
+			    }
+
+			    // meta tags
+			    List<Tag> containedMetaTags = TagUtil.getMetaTags(resultInfo.getProcessingResult().getRelease().getTags(),
+				    resultInfo.getProcessingResult().getTask().getConfig().getReleaseMetaTags());
+			    if (!containedMetaTags.isEmpty())
+			    {
+				String metaTagsTxt = Tag.listToString(containedMetaTags);
+				ImageView tagImg = new ImageView(FxUtil.loadImg("tag_16.png"));
+				Label metaTags = new Label(metaTagsTxt, tagImg);
+				metaTags.setTooltip(new Tooltip("Contains meta tags: " + metaTagsTxt));
+				hbox.getChildren().add(metaTags);
+			    }
+
+			    setText("");
+			    setGraphic(hbox);
+			}
+			else
+			{
+			    setText("");
+			    setGraphic(null);
+			}
+		    }
+		};
+	    };
+
+	});
 
 	initProcessingTreeTableDnD();
     }
@@ -398,33 +537,6 @@ public class ProcessingController extends AbstractController
 	});
 	openDirectoryBtn.setOnAction(
 		evt -> FxUtil.browse(processingTreeTable.getSelectionModel().getSelectedItem().getValue().getFiles().get(0).getParent().toUri().toString(), mainController.getCommonExecutor()));
-
-	releaseInfoBtn.disableProperty().bind(new BooleanBinding()
-	{
-	    {
-		super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
-	    }
-
-	    @Override
-	    protected boolean computeValue()
-	    {
-		TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
-		if (selectedItem != null && selectedItem.getValue() instanceof ProcessingResult)
-		{
-		    ProcessingResult subTargetItem = (ProcessingResult) selectedItem.getValue();
-		    return subTargetItem.getRelease().getFurtherInfoLinks().isEmpty();
-		}
-		return true;
-	    }
-	});
-	releaseInfoBtn.setOnAction(evt -> {
-	    TreeItem<ProcessingItem> selectedItem = processingTreeTable.getSelectionModel().getSelectedItem();
-	    if (selectedItem != null && selectedItem.getValue() instanceof ProcessingResult)
-	    {
-		ProcessingResult item = (ProcessingResult) selectedItem.getValue();
-		FxUtil.browse(item.getRelease().getFurtherInfoLinks().get(0), mainController.getCommonExecutor());
-	    }
-	});
 
 	BooleanBinding emptyProcessingTreeTable = Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0);
 	cancelAllBtn.disableProperty().bind(emptyProcessingTreeTable);

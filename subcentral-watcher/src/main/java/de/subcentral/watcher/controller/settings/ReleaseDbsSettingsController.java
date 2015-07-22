@@ -15,14 +15,17 @@ import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 public class ReleaseDbsSettingsController extends AbstractSettingsSectionController
 {
@@ -81,15 +84,24 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		    }
 		    else
 		    {
-			setText(item.getValue().getName());
 			if (item.getValue() instanceof AbstractHttpMetadataDb)
 			{
 			    try
 			    {
-				AbstractHttpMetadataDb<Release> rlsDb = (AbstractHttpMetadataDb<Release>) item.getValue();
-				URL rlsDbUrl = rlsDb.getHost();
+				AbstractHttpMetadataDb<Release> db = (AbstractHttpMetadataDb<Release>) item.getValue();
+
+				HBox hbox = new HBox();
+				hbox.setSpacing(5d);
+				hbox.setAlignment(Pos.CENTER_LEFT);
+
+				Label name = new Label(db.getName());
+
+				URL rlsDbUrl = db.getHost();
 				Hyperlink link = FxUtil.createUrlHyperlink(rlsDbUrl, settingsController.getMainController().getCommonExecutor());
-				setGraphic(link);
+				link.setMaxHeight(Double.MAX_VALUE);
+
+				hbox.getChildren().addAll(name, link);
+				setGraphic(hbox);
 			    }
 			    catch (URISyntaxException e)
 			    {

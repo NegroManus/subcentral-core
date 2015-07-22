@@ -25,13 +25,10 @@ import com.google.common.collect.ListMultimap;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbUtil;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
-import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.TagUtil;
@@ -55,15 +52,16 @@ import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.watcher.controller.processing.ProcessingController.ProcessingConfig;
 import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibilityMethodInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.MatchingMethodInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseMethodInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.MethodInfo;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.scene.control.TreeItem;
@@ -75,8 +73,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     private final ProcessingController controller;
 
     // for ProcessingItem implementation
-    private final ListProperty<Path> files;
-    private final StringProperty     info = new SimpleStringProperty(this, "info");
+    private final ListProperty<Path>	   files;
+    private final Property<ProcessingInfo> info	= new SimpleObjectProperty<>(this, "info");
 
     // Config: is loaded on start of the task
     private ProcessingConfig		   config;
@@ -136,14 +134,14 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     }
 
     @Override
-    public ReadOnlyStringProperty infoProperty()
+    public ReadOnlyProperty<ProcessingInfo> infoProperty()
     {
 	return info;
     }
 
-    private void updateInfo(final String info)
+    private void updateInfo(final ProcessingTaskInfo info)
     {
-	Platform.runLater(() -> ProcessingTask.this.info.set(info));
+	Platform.runLater(() -> ProcessingTask.this.info.setValue(info));
     }
 
     public SubtitleAdjustment getSourceObject()
@@ -221,7 +219,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     {
 	updateMessage("Failed");
 	updateProgress(1d, 1d);
-	updateInfo(getException().toString());
+	updateInfo(ProcessingTaskInfo.of(getException().toString()));
 	log.error("Processing of " + getSourceFile() + " failed", getException());
     }
 
@@ -334,7 +332,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		// Add matching releases
 		for (Release rls : matchingReleases)
 		{
-		    MatchingMethodInfo methodInfo = new MatchingMethodInfo();
+		    DatabaseMethodInfo methodInfo = new DatabaseMethodInfo();
 		    addMatchingRelease(rls, methodInfo);
 		}
 		if (config.isCompatibilityEnabled())
@@ -363,7 +361,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		updateMessage("Deleting source file");
 		Files.delete(getSourceFile());
 		log.info("Deleted source file {}", getSourceFile());
-		updateInfo("Source file deleted");
+		updateInfo(ProcessingTaskInfo.of("Source file deleted"));
 	    }
 	    catch (IOException e)
 	    {
@@ -531,59 +529,16 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
     }
 
-    private ProcessingResult addResult(Release rls, MethodInfo info)
+    private ProcessingResult addResult(Release rls, MethodInfo methodInfo)
     {
-	ProcessingResult result = new ProcessingResult(this, rls, info);
+	ProcessingResult result = new ProcessingResult(this, rls);
 	Platform.runLater(() -> {
-	    result.updateInfo(methodInfoToString(info));
+	    result.updateInfo(ProcessingResultInfo.of(result, methodInfo));
 	    results.add(result);
 	    taskTreeItem.getChildren().add(new TreeItem<ProcessingItem>(result));
 	    taskTreeItem.setExpanded(true);
 	});
 	return result;
-    }
-
-    private String methodInfoToString(MethodInfo info)
-    {
-	switch (info.getMethod())
-	{
-	    case MATCHING:
-		return "Matching release";
-	    case GUESSING:
-	    {
-		GuessingMethodInfo gmi = (GuessingMethodInfo) info;
-		StringBuilder sb = new StringBuilder();
-		sb.append("Guessed release");
-		if (gmi.getStandardRelease() != null)
-		{
-		    sb.append(" (standard release: ");
-		    sb.append(name(gmi.getStandardRelease().getRelease()));
-		    sb.append(')');
-		}
-		return sb.toString();
-	    }
-	    case COMPATIBILITY:
-	    {
-		CompatibilityMethodInfo cmi = (CompatibilityMethodInfo) info;
-		StringBuilder sb = new StringBuilder();
-		sb.append("Compatible release ");
-		Compatibility c = cmi.getCompatibilityInfo().getCompatibility();
-		if (c instanceof SameGroupCompatibility)
-		{
-		    sb.append("same group");
-		}
-		else if (c instanceof CrossGroupCompatibility)
-		{
-		    sb.append(((CrossGroupCompatibility) c).toShortString());
-		}
-		sb.append(", source: ");
-		sb.append(name(cmi.getCompatibilityInfo().getCompatibleTo()));
-		sb.append(')');
-		return sb.toString();
-	    }
-	    default:
-		throw new IllegalArgumentException("Unknown method: " + info.getMethod());
-	}
     }
 
     public String name(Object obj)
@@ -633,7 +588,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    if (packResult.failed())
 	    {
 		result.updateStatus("Packing failed");
-		result.updateInfo(packResult.getException().toString());
+		updateInfo(ProcessingTaskInfo.of(packResult.getException().toString()));
 	    }
 	    else
 	    {

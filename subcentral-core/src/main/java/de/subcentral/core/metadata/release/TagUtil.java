@@ -18,6 +18,13 @@ public class TagUtil
 	COMPLETE_LIST, MATCHED_SEQUENCE
     };
 
+    public static List<Tag> getMetaTags(List<Tag> tags, Collection<Tag> metaTags)
+    {
+	List<Tag> containedMetaTags = new ArrayList<>(4);
+	transferMetaTags(tags, containedMetaTags, metaTags);
+	return containedMetaTags;
+    }
+
     public static void transferMetaTags(List<Tag> sourceTags, List<Tag> targetTags, Collection<Tag> metaTags)
     {
 	// iterate the source tags in reverse order so that the order in the target tags is correct

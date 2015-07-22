@@ -1,8 +1,6 @@
 package de.subcentral.watcher;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -41,7 +39,6 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -49,7 +46,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -878,18 +874,7 @@ public class WatcherDialogs
 			    else
 			    {
 				setText(bean.name(rls));
-				try
-				{
-				    String host = new URL(rls.getFurtherInfoLinks().get(0)).getHost();
-				    Hyperlink furtherInfoLink = new Hyperlink(host);
-				    furtherInfoLink.setOnAction((ActionEvent evt) -> FxUtil.browse(rls.getFurtherInfoLinks().get(0), bean.getController().getMainController().getCommonExecutor()));
-				    setGraphic(furtherInfoLink);
-				}
-				catch (MalformedURLException e)
-				{
-				    log.error("Exception while creating info button", e);
-				    setGraphic(null);
-				}
+				setGraphic(WatcherFxUtil.createFurtherInfoHyperlink(rls, bean.getController().getMainController().getCommonExecutor()));
 			    }
 			}
 		    };
