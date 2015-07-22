@@ -311,7 +311,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    processedQueryResults = processReleases(existingRlss);
 
 	    // Filter
-	    log.debug("Filtering found releases: media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
+	    log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
 	    matchingReleases = processedQueryResults.stream()
 		    .filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
 		    .filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
