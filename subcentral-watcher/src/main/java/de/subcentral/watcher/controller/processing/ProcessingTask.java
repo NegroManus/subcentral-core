@@ -98,6 +98,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem {
 
 		updateTitle(sourceFile.getFileName().toString());
 		updateMessage("In queue");
+		// progress initial value already is -1 (intermediate)
 	}
 
 	public Path getSourceFile() {
