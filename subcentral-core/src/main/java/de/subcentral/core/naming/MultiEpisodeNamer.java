@@ -21,8 +21,13 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 
     public MultiEpisodeNamer(PropSequenceNameBuilder.Config config)
     {
+	this(config, null);
+    }
+
+    public MultiEpisodeNamer(PropSequenceNameBuilder.Config config, EpisodeNamer episodeNamer)
+    {
 	super(config);
-	this.episodeNamer = new EpisodeNamer(config);
+	this.episodeNamer = episodeNamer != null ? episodeNamer : new EpisodeNamer(config);
     }
 
     public EpisodeNamer getEpisodeNamer()

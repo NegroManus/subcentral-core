@@ -1,6 +1,5 @@
 package de.subcentral.core.naming;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,10 +14,8 @@ import de.subcentral.core.util.Separation;
 /**
  * {@code Thread-safe}
  */
-public class ConditionalNamingService implements NamingService, Serializable
+public class ConditionalNamingService implements NamingService
 {
-    private static final long serialVersionUID = 9198576853644862737L;
-
     private final String			  domain;
     private final List<ConditionalNamingEntry<?>> entries	   = new CopyOnWriteArrayList<>();
     private final AtomicReference<String>	  defaultSeparator = new AtomicReference<>(Separation.DEFAULT_SEPARATOR);

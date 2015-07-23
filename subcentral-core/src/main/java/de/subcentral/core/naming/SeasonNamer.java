@@ -22,8 +22,13 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 
     public SeasonNamer(PropSequenceNameBuilder.Config config)
     {
+	this(config, null);
+    }
+
+    public SeasonNamer(PropSequenceNameBuilder.Config config, SeriesNamer seriesNamer)
+    {
 	super(config);
-	this.seriesNamer = new SeriesNamer(config);
+	this.seriesNamer = seriesNamer != null ? seriesNamer : new SeriesNamer(config);
     }
 
     public SeriesNamer getSeriesNamer()

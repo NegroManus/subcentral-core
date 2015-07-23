@@ -36,9 +36,14 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 
     public EpisodeNamer(PropSequenceNameBuilder.Config config)
     {
+	this(config, null, null);
+    }
+
+    public EpisodeNamer(PropSequenceNameBuilder.Config config, SeriesNamer seriesNamer, SeasonNamer seasonNamer)
+    {
 	super(config);
-	this.seriesNamer = new SeriesNamer(config);
-	this.seasonNamer = new SeasonNamer(config);
+	this.seriesNamer = seriesNamer != null ? seriesNamer : new SeriesNamer(config);
+	this.seasonNamer = seasonNamer != null ? seasonNamer : new SeasonNamer(config);
     }
 
     public SeriesNamer getSeriesNamer()
