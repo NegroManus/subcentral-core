@@ -64,7 +64,7 @@ public class SubtitleAdjustmentNamer extends AbstractPropertySequenceNamer<Subti
 	b.appendIfNotNull(SubtitleAdjustment.PROP_VERSION, adj.getVersion());
 	if (sub != null)
 	{
-	    // read useName parameter
+	    // read includeGroup parameter
 	    boolean includeGroup = NamingUtil.readParameter(params, PARAM_INCLUDE_GROUP, Boolean.class, Boolean.TRUE);
 	    if (includeGroup)
 	    {

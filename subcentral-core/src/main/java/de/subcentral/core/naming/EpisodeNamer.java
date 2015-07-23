@@ -4,6 +4,7 @@ import java.util.Map;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
+import de.subcentral.core.metadata.media.Series;
 
 public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 {
@@ -14,10 +15,10 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
     public static final String PARAM_INCLUDE_SERIES = EpisodeNamer.class.getName() + ".includeSeries";
 
     /**
-     * The name of the parameter "preferSeriesTitle" of type {@link Boolean}. If set to {@code true}, the series title is preferred over its name. So
-     * the title is used if it is not {@code null}. The default value is {@code false}.
+     * The name of the parameter "seriesName" of type {@link String}. The specified name is used for naming the episode. The default value is the
+     * return value of {@link Series#getName()}. But for example any alias name may be used.
      */
-    public static final String PARAM_PREFER_SERIES_TITLE = EpisodeNamer.class.getName() + ".preferSeriesTitle";
+    public static final String PARAM_SERIES_NAME = EpisodeNamer.class.getName() + ".seriesName";
 
     /**
      * The name of the parameter "includeSeason" of type {@link Boolean}. If set to {@code true}, the episode's season is included in the name,
@@ -47,10 +48,10 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
     {
 	// add series
 	boolean includeSeries = NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
-	if (includeSeries && epi.isPartOfSeries())
+	if (includeSeries && epi.getSeries() != null)
 	{
-	    boolean preferSeriesTitle = NamingUtil.readParameter(params, PARAM_PREFER_SERIES_TITLE, Boolean.class, Boolean.FALSE);
-	    b.appendIfNotNull(Episode.PROP_SERIES, preferSeriesTitle ? epi.getSeries().getTitleOrName() : epi.getSeries().getName());
+	    String name = NamingUtil.readParameter(params, PARAM_SERIES_NAME, String.class, epi.getSeries().getName());
+	    b.appendIfNotNull(Series.PROP_NAME, name);
 	}
 
 	// add episode number / date

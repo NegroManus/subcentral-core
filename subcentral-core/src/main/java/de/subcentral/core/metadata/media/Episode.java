@@ -323,11 +323,6 @@ public class Episode extends AbstractMedia implements Comparable<Episode>
     }
 
     // Convenience
-    public boolean isPartOfSeries()
-    {
-	return series != null;
-    }
-
     public boolean isPartOfSeason()
     {
 	return season != null;
