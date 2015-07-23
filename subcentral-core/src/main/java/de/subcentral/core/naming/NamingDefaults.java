@@ -46,6 +46,7 @@ public class NamingDefaults
     private static SeasonNamer			  SEASON_NAMER;
     private static EpisodeNamer			  EPISODE_NAMER;
     private static MultiEpisodeNamer		  MULTI_EPISODE_NAMER;
+    private static MultiEpisodeNamer		  RANGE_ONLY_MULTI_EPISODE_NAMER;
     private static ReleaseNamer			  RELEASE_NAMER;
     private static SubtitleNamer		  SUBTITLE_NAMER;
     private static SubtitleAdjustmentNamer	  SUBTITLE_ADJUSTMENT_NAMER;
@@ -78,9 +79,16 @@ public class NamingDefaults
 	sepsBuilder.add(Separation.before(Subtitle.PROP_GROUP, "-"));
 	ImmutableSet<Separation> separations = sepsBuilder.build();
 
+	ImmutableSet.Builder<Separation> rangeOnlyMultiEpisodeSepsBuilder = ImmutableSet.builder();
+	rangeOnlyMultiEpisodeSepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
+	rangeOnlyMultiEpisodeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, "-"));
+	rangeOnlyMultiEpisodeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-"));
+	ImmutableSet<Separation> rangeOnlyMultiEpisodeSeparations = rangeOnlyMultiEpisodeSepsBuilder.build();
+
 	Config config = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, null);
 	Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, RELEASE_NAME_FORMATTER);
 	Config configWithSubAdjNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, SUBTITLE_ADJUSTMENT_NAME_FORMATTER);
+	Config configForRangeOnlyMultiEpisodeNamer = new Config(PROP_TO_STRING_SERVICE, rangeOnlyMultiEpisodeSeparations, Separation.DEFAULT_SEPARATOR, null);
 
 	// SeriesNamer
 	SERIES_NAMER = new SeriesNamer(config);
@@ -93,6 +101,9 @@ public class NamingDefaults
 
 	// MultiEpisodeNamer
 	MULTI_EPISODE_NAMER = new MultiEpisodeNamer(config, EPISODE_NAMER);
+
+	// MutliEpisodeNamer with only range separations "-"
+	RANGE_ONLY_MULTI_EPISODE_NAMER = new MultiEpisodeNamer(configForRangeOnlyMultiEpisodeNamer, EPISODE_NAMER);
 
 	// MediaNamer
 	MEDIA_NAMER = new MediaNamer(config);
@@ -208,6 +219,11 @@ public class NamingDefaults
     public static Namer<List<? extends Episode>> getDefaultMultiEpisodeNamer()
     {
 	return MULTI_EPISODE_NAMER;
+    }
+
+    public static Namer<List<? extends Episode>> getRangeOnlyMultiEpisodeNamer()
+    {
+	return RANGE_ONLY_MULTI_EPISODE_NAMER;
     }
 
     public static Namer<Release> getDefaultReleaseNamer()

@@ -8,21 +8,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.MultiEpisodeHelper;
-import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
-import de.subcentral.core.naming.ConditionalNamingService;
-import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
-import de.subcentral.core.naming.MultiEpisodeNamer;
-import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
-import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
 import de.subcentral.support.predbme.PreDbMeReleaseDb;
@@ -33,8 +23,7 @@ public class MultiInfoDbPlayground
 
     /**
      * <pre>
-     * -Dhttp.proxyHost=10.206.247.65
-     * -Dhttp.proxyHost=10.206.247.65
+     * -Dhttp.proxyHost=10.151.249.76 -Dhttp.proxyPort=8080
      * </pre>
      * 
      * @param args
@@ -46,17 +35,9 @@ public class MultiInfoDbPlayground
 	XRelToReleaseDb xrelTo = new XRelToReleaseDb();
 	OrlyDbComReleaseDb orlyDb = new OrlyDbComReleaseDb();
 	List<MetadataDb<Release>> infoDbs = new ArrayList<>(3);
-	infoDbs.add(preDbMe);
+	// infoDbs.add(preDbMe);
 	infoDbs.add(xrelTo);
-	infoDbs.add(orlyDb);
-
-	ConditionalNamingService alternateNs = new ConditionalNamingService("alternate");
-	Config cfg = new Config();
-	cfg.setSeparations(ImmutableSet.of(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, "")));
-	MultiEpisodeNamer alternameMeNamer = new MultiEpisodeNamer(cfg);
-	alternateNs.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, alternameMeNamer));
-	NamingService alternateMetadataDbNs = NamingDefaults.createNormalizingNamingService(alternateNs);
-	ImmutableList<NamingService> namingServices = ImmutableList.of(NamingDefaults.getDefaultNormalizingNamingService(), alternateMetadataDbNs);
+	// infoDbs.add(orlyDb);
 
 	Episode epi1 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 23);
 	Episode epi2 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 24);
@@ -67,7 +48,7 @@ public class MultiInfoDbPlayground
 
 	System.out.println("Querying");
 	long start = System.nanoTime();
-	ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtil.queryAll(infoDbs, query, namingServices, executor);
+	ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtil.queryAll(infoDbs, query, executor);
 	TimeUtil.printDurationMillis("queryAll", start);
 	for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
 	{

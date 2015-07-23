@@ -1,9 +1,9 @@
 package de.subcentral.core.metadata.db;
 
 import java.util.List;
+import java.util.Map;
 
-import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.core.naming.NamingService;
+import com.google.common.collect.ImmutableMap;
 
 public interface MetadataDb<T>
 {
@@ -19,24 +19,10 @@ public interface MetadataDb<T>
 
     public default List<T> queryName(Object metadataObj) throws MetadataDbUnavailableException, MetadataDbQueryException
     {
-	return queryName(metadataObj, NamingDefaults.getDefaultNormalizingNamingService());
+	return queryName(metadataObj, ImmutableMap.of());
     }
 
-    public default List<T> queryName(Object metadataObj, NamingService namingService) throws MetadataDbUnavailableException, MetadataDbQueryException
-    {
-	try
-	{
-	    return query(namingService.name(metadataObj));
-	}
-	catch (MetadataDbUnavailableException ue)
-	{
-	    throw ue;
-	}
-	catch (Exception e)
-	{
-	    throw new MetadataDbQueryException(this, metadataObj, e);
-	}
-    }
+    public List<T> queryName(Object metadataObj, Map<String, Object> namingParameters) throws MetadataDbUnavailableException, MetadataDbQueryException;
 
     public default Object get(String id) throws MetadataDbUnavailableException, MetadataDbQueryException
     {

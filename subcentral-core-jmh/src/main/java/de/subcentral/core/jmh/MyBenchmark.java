@@ -170,7 +170,7 @@ public class MyBenchmark
      * 
      * <pre>
      * Benchmark                                Mode  Cnt       Score      Error  Units
-     * MyBenchmark.testNaming                  thrpt   50   87103,480 ± 1934,612  ops/s
+     * MyBenchmark.testNaming                  thrpt   50   84270,786 ± 1888,604  ops/s
      * MyBenchmark.testParsingAddic7ed         thrpt   50  128588,327 ± 1569,210  ops/s
      * MyBenchmark.testParsingBestCase         thrpt   50  131312,053 ± 1883,485  ops/s
      * MyBenchmark.testParsingSubAdjBestCase   thrpt   50  121854,993 ± 2141,183  ops/s
