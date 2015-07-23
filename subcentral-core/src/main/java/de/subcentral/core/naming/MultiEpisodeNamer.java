@@ -17,12 +17,17 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
     public static final String SEPARATION_TYPE_ADDITION	= "addition";
     public static final String SEPARATION_TYPE_RANGE	= "range";
 
-    private final EpisodeNamer epiNamer;
+    private final EpisodeNamer episodeNamer;
 
     public MultiEpisodeNamer(PropSequenceNameBuilder.Config config)
     {
 	super(config);
-	this.epiNamer = new EpisodeNamer(config);
+	this.episodeNamer = new EpisodeNamer(config);
+    }
+
+    public EpisodeNamer getEpisodeNamer()
+    {
+	return episodeNamer;
     }
 
     @Override
@@ -34,7 +39,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 	}
 	MultiEpisodeHelper me = new MultiEpisodeHelper(episodes);
 	Episode firstEpi = me.get(0);
-	epiNamer.buildName(b, firstEpi, parameters);
+	episodeNamer.buildName(b, firstEpi, parameters);
 
 	if (me.getCommonSeries() != null)
 	{
@@ -57,7 +62,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		    for (int i = 1; i < me.size(); i++)
 		    {
 			Episode epi = me.get(i);
-			epiNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE, EpisodeNamer.PARAM_INCLUDE_SEASON, Boolean.FALSE));
+			episodeNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE, EpisodeNamer.PARAM_INCLUDE_SEASON, Boolean.FALSE));
 		    }
 		}
 	    }
@@ -81,7 +86,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		    for (int i = 1; i < me.size(); i++)
 		    {
 			Episode epi = me.get(i);
-			epiNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE));
+			episodeNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE));
 		    }
 		}
 	    }
@@ -91,7 +96,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		for (int i = 1; i < me.size(); i++)
 		{
 		    Episode epi = me.get(i);
-		    epiNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE));
+		    episodeNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE));
 		}
 	    }
 	}
@@ -101,7 +106,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 	    for (int i = 1; i < me.size(); i++)
 	    {
 		Episode epi = me.get(i);
-		String epiName = epiNamer.name(epi, ImmutableMap.of());
+		String epiName = episodeNamer.name(epi, ImmutableMap.of());
 		b.appendString(PROP_EPISODES, epiName);
 	    }
 	}

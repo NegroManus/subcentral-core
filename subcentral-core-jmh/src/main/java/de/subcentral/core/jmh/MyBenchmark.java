@@ -120,7 +120,7 @@ public class MyBenchmark
 	STANDARDIZING_SERVICE.standardize(SUB_ADJ);
     }
 
-    // @Benchmark
+    @Benchmark
     public void testNaming()
     {
 	NAMING_SERVICE.name(SUB_ADJ);
@@ -156,7 +156,7 @@ public class MyBenchmark
 	ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleAdjustment.class, PARSING_SERVICES_REVERSED);
     }
 
-    @Benchmark
+    // @Benchmark
     public void testParsingSubRipFile(Blackhole blackhole) throws IOException
     {
 	SubtitleFile data = SubtitleFileFormat.SUBRIP.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));

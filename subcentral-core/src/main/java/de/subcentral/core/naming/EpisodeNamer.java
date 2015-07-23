@@ -3,7 +3,6 @@ package de.subcentral.core.naming;
 import java.util.Map;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 
 public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
@@ -27,20 +26,29 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
     public static final String PARAM_INCLUDE_SEASON = EpisodeNamer.class.getName() + ".includeSeason";
 
     /**
-     * The name of the parameter "alwaysIncludeSeasonTitle" of type {@link Boolean}. If set to {@code true}, the title of the episode's season is
-     * always included in the name, otherwise only if the season is not numbered. The default value is {@code false}.
-     */
-    public static final String PARAM_ALWAYS_INCLUDE_SEASON_TITLE = EpisodeNamer.class.getName() + ".alwaysIncludeSeasonTitle";
-
-    /**
      * The name of the parameter "alwaysIncludeTitle" of type {@link Boolean}. If set to {@code true}, the episode's title is always included in the
      * name, otherwise only if the episode is not numbered. The default value is {@code false}.
      */
     public static final String PARAM_ALWAYS_INCLUDE_TITLE = EpisodeNamer.class.getName() + ".alwaysIncludeTitle";
 
+    private final SeriesNamer seriesNamer;
+    private final SeasonNamer seasonNamer;
+
     public EpisodeNamer(PropSequenceNameBuilder.Config config)
     {
 	super(config);
+	this.seriesNamer = new SeriesNamer(config);
+	this.seasonNamer = new SeasonNamer(config);
+    }
+
+    public SeriesNamer getSeriesNamer()
+    {
+	return seriesNamer;
+    }
+
+    public SeasonNamer getSeasonNamer()
+    {
+	return seasonNamer;
     }
 
     @Override
@@ -50,31 +58,19 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	boolean includeSeries = NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
 	if (includeSeries && epi.getSeries() != null)
 	{
-	    String name = NamingUtil.readParameter(params, PARAM_SERIES_NAME, String.class, epi.getSeries().getName());
-	    b.appendIfNotNull(Series.PROP_NAME, name);
+	    seriesNamer.buildName(b, epi.getSeries(), params);
 	}
 
-	// add episode number / date
 	boolean sufficientlyNamed = false;
+	// add season
 	if (epi.isPartOfSeason())
 	{
 	    boolean includeSeason = NamingUtil.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
 	    if (includeSeason)
 	    {
-		Season season = epi.getSeason();
-		if (season.isNumbered())
-		{
-		    b.append(Season.PROP_NUMBER, season.getNumber());
-		    boolean alwaysIncludeSeasonTitle = NamingUtil.readParameter(params, PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.class, Boolean.FALSE);
-		    if (season.isTitled() && alwaysIncludeSeasonTitle)
-		    {
-			b.append(Season.PROP_TITLE, season.getTitle());
-		    }
-		}
-		else
-		{
-		    b.appendIfNotNull(Season.PROP_TITLE, season.getTitle());
-		}
+		// season namer must not include series as it was already used
+		// so just use buildOwnName
+		seasonNamer.buildOwnName(b, epi.getSeason(), params);
 	    }
 	    if (epi.isNumberedInSeason())
 	    {
@@ -82,6 +78,7 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		sufficientlyNamed = true;
 	    }
 	}
+	// add episode number / date
 	else if (epi.isNumberedInSeries())
 	{
 	    b.append(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries());

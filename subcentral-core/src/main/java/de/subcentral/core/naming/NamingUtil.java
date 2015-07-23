@@ -87,7 +87,8 @@ public class NamingUtil
 	List<String> names = new ArrayList<>(parametersList.size());
 	for (Map<String, Object> parameters : parametersList)
 	{
-	    names.add(namingService.name(obj, parameters));
+	    String name = namingService.name(obj, parameters);
+	    names.add(name);
 	}
 	return names;
     }

@@ -208,22 +208,22 @@ public class NamingTest
 	epi.setNumberInSeason(null);
 	epi.setTitle(null);
 	names.add(namer.name(epi));
-	names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.TRUE)));
+	names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 	epi.setTitle("Pilot");
 	names.add(namer.name(epi));
-	names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.TRUE)));
+	names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 	epi.setNumberInSeason(1);
 	epi.setTitle(null);
 	names.add(namer.name(epi));
-	names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.TRUE)));
+	names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 	epi.setTitle("Pilot");
 	names.add(namer.name(epi));
 	names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
-	names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.TRUE)));
-	names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_SEASON_TITLE, Boolean.TRUE, EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+	names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+	names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE, EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 	for (String name : names)
 	{
