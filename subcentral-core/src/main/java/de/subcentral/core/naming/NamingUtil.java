@@ -1,7 +1,9 @@
 package de.subcentral.core.naming;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -41,16 +43,16 @@ public class NamingUtil
 	return valueClass.cast(parameters.getOrDefault(key, defaultValue));
     }
 
-    public static <T> Predicate<T> filterByName(T obj, NamingService mediaNamingService, Map<String, Object> namingParams)
+    public static <T> Predicate<T> filterByName(T obj, NamingService namingService, Map<String, Object> parameters)
     {
-	String requiredName = mediaNamingService.name(obj, namingParams);
-	return filterByName(requiredName, mediaNamingService, namingParams);
+	String requiredName = namingService.name(obj, parameters);
+	return filterByName(requiredName, namingService, parameters);
     }
 
-    public static <T> Predicate<T> filterByName(String requiredName, NamingService mediaNamingService, Map<String, Object> namingParams)
+    public static <T> Predicate<T> filterByName(String requiredName, NamingService namingService, Map<String, Object> parameters)
     {
 	return (T obj) -> {
-	    String nameOfCandidate = mediaNamingService.name(obj, namingParams);
+	    String nameOfCandidate = namingService.name(obj, parameters);
 	    boolean accepted = requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
 	    if (accepted)
 	    {
@@ -65,19 +67,29 @@ public class NamingUtil
 	};
     }
 
-    public static <T, U> Predicate<T> filterByNestedName(T obj, NamingService mediaNamingService, Map<String, Object> namingParams, Function<T, U> nestedObjRetriever)
+    public static <T, U> Predicate<T> filterByNestedName(T obj, NamingService namingService, Map<String, Object> parameters, Function<T, U> nestedObjRetriever)
     {
-	String requiredMediaName = mediaNamingService.name(nestedObjRetriever.apply(obj), namingParams);
-	return filterByNestedName(requiredMediaName, mediaNamingService, namingParams, nestedObjRetriever);
+	String requiredMediaName = namingService.name(nestedObjRetriever.apply(obj), parameters);
+	return filterByNestedName(requiredMediaName, namingService, parameters, nestedObjRetriever);
     }
 
-    public static <T, U> Predicate<T> filterByNestedName(String requiredName, NamingService mediaNamingService, Map<String, Object> namingParams, Function<T, U> nestedObjRetriever)
+    public static <T, U> Predicate<T> filterByNestedName(String requiredName, NamingService namingService, Map<String, Object> parameters, Function<T, U> nestedObjRetriever)
     {
 	return (T obj) -> {
-	    String nameOfCandidate = mediaNamingService.name(nestedObjRetriever.apply(obj), namingParams);
+	    String nameOfCandidate = namingService.name(nestedObjRetriever.apply(obj), parameters);
 	    boolean accepted = requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
 	    return accepted;
 	};
+    }
+
+    public static List<String> generateNames(Object obj, NamingService namingService, List<Map<String, Object>> parametersList)
+    {
+	List<String> names = new ArrayList<>(parametersList.size());
+	for (Map<String, Object> parameters : parametersList)
+	{
+	    names.add(namingService.name(obj, parameters));
+	}
+	return names;
     }
 
     private NamingUtil()
