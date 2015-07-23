@@ -34,13 +34,10 @@ public class MetadataDbUtil
     public static <R> ListMultimap<MetadataDb<R>, R> queryAll(List<MetadataDb<R>> metadataDbs, Object metadataObj, List<NamingService> namingServices, ExecutorService executor)
 	    throws InterruptedException
     {
-	if (metadataDbs.isEmpty() || metadataObj == null)
+	if (metadataObj == null)
 	{
+	    // if metadataObj is null, don't invoke any threads but return immediately
 	    return ImmutableListMultimap.of();
-	}
-	if (namingServices.isEmpty())
-	{
-	    throw new IllegalArgumentException("namingServices is empty. At least one NamingService must be specified");
 	}
 	List<Callable<List<R>>> tasks = new ArrayList<>(metadataDbs.size());
 	for (MetadataDb<R> metadataDb : metadataDbs)
