@@ -51,15 +51,6 @@ public abstract class AbstractHtmlHttpMetadataDb<T> extends AbstractHttpMetadata
 	log.trace("Retrieving contents of {}", url);
 	long start = System.nanoTime();
 	Document doc = setupConnection(url).get();
-	try
-	{
-	    Thread.sleep(2000);
-	}
-	catch (InterruptedException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
 	double duration = TimeUtil.durationMillis(start);
 	log.printf(Level.DEBUG, "Retrieved contents of %s in %.0f ms", url, duration);
 	log.printf(Level.TRACE, "Contents of %s were:%n%s%n", url, doc);
