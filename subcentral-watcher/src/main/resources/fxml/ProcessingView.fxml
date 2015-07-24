@@ -20,6 +20,15 @@
 						</ImageView>
 					</graphic>
 				</Button>
+            <Button fx:id="reprocessBtn" mnemonicParsing="false" text="Reprocess">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/reload_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
 				<Button fx:id="openDirectoryBtn" mnemonicParsing="false" text="Open folder">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">

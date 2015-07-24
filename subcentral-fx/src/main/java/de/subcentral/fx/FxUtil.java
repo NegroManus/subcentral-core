@@ -35,6 +35,7 @@ import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -52,7 +53,6 @@ import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -761,39 +761,20 @@ public class FxUtil
 	}
     }
 
-    public static <E> Observable observePropertiesOfSelectedItem(SelectionModel<E> selectionModel, Function<E, Observable[]> propertiesExtractor)
+    public static <E> Observable observeBeans(ObservableList<E> beans, Function<E, Observable[]> propertiesExtractor)
     {
 	ObservableObject obsv = new ObservableObject();
-	obsv.getDependencies().add(selectionModel.selectedItemProperty());
-	if (!selectionModel.isEmpty())
-	{
-	    obsv.getDependencies().addAll(propertiesExtractor.apply(selectionModel.getSelectedItem()));
-	}
-	selectionModel.selectedItemProperty().addListener(new ChangeListener<E>()
-	{
-	    @Override
-	    public void changed(ObservableValue<? extends E> observable, E oldValue, E newValue)
-	    {
-		if (oldValue != null)
-		{
-		    obsv.getDependencies().removeAll(propertiesExtractor.apply(oldValue));
-		}
-		if (newValue != null)
-		{
-		    obsv.getDependencies().addAll(propertiesExtractor.apply(newValue));
-		}
-	    }
-	});
-	return obsv;
-    }
-
-    public static <E> Observable observeProperties(ObservableList<E> beans, Function<E, Observable[]> propertiesExtractor)
-    {
-	ObservableObject obsv = new ObservableObject();
+	// Observe the list itself
+	obsv.getDependencies().add(beans);
+	// Observe the properties of the current list content
 	for (E bean : beans)
 	{
-	    obsv.getDependencies().addAll(propertiesExtractor.apply(bean));
+	    for (Observable o : propertiesExtractor.apply(bean))
+	    {
+		obsv.getDependencies().add(o);
+	    }
 	}
+	// React on list changes
 	beans.addListener(new ListChangeListener<E>()
 	{
 	    @Override
@@ -806,7 +787,10 @@ public class FxUtil
 			for (E bean : c.getRemoved())
 			{
 			    // remove listener for properties
-			    obsv.getDependencies().removeAll(propertiesExtractor.apply(bean));
+			    for (Observable o : propertiesExtractor.apply(bean))
+			    {
+				obsv.getDependencies().remove(o);
+			    }
 			}
 		    }
 		    if (c.wasAdded())
@@ -814,11 +798,51 @@ public class FxUtil
 			for (E bean : c.getAddedSubList())
 			{
 			    // add listener for properties
-			    obsv.getDependencies().addAll(propertiesExtractor.apply(bean));
+			    for (Observable o : propertiesExtractor.apply(bean))
+			    {
+				obsv.getDependencies().add(o);
+			    }
 			}
 		    }
 		}
+	    }
+	});
+	return obsv;
+    }
 
+    public static <E> Observable observeBean(ReadOnlyProperty<E> bean, Function<E, Observable[]> propertiesExtractor)
+    {
+	ObservableObject obsv = new ObservableObject();
+	// Observe the bean itself
+	obsv.getDependencies().add(bean);
+	// Observe the properties of the current bean
+	if (bean.getValue() != null)
+	{
+	    for (Observable o : propertiesExtractor.apply(bean.getValue()))
+	    {
+		obsv.getDependencies().add(o);
+	    }
+	}
+	// React on changes
+	bean.addListener(new ChangeListener<E>()
+	{
+	    @Override
+	    public void changed(ObservableValue<? extends E> observable, E oldValue, E newValue)
+	    {
+		if (oldValue != null)
+		{
+		    for (Observable o : propertiesExtractor.apply(oldValue))
+		    {
+			obsv.getDependencies().remove(o);
+		    }
+		}
+		if (newValue != null)
+		{
+		    for (Observable o : propertiesExtractor.apply(newValue))
+		    {
+			obsv.getDependencies().add(o);
+		    }
+		}
 	    }
 	});
 	return obsv;

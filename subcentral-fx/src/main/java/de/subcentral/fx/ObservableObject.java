@@ -1,49 +1,44 @@
 package de.subcentral.fx;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 
 public class ObservableObject implements Observable
 {
     private final InternalInvalidationListener internalInvalidationListener = new InternalInvalidationListener();
-    private final ObservableList<Observable>   dependencies		    = FXCollections.observableArrayList(new CopyOnWriteArrayList<>());
+    private final ObservableSet<Observable>    dependencies		    = FXCollections.observableSet(new LinkedHashSet<>());
     private final List<InvalidationListener>   listeners		    = new CopyOnWriteArrayList<>();
 
     public ObservableObject()
     {
-	dependencies.addListener((ListChangeListener.Change<? extends Observable> c) -> {
-	    while (c.next())
+	dependencies.addListener((SetChangeListener.Change<? extends Observable> c) -> {
+	    if (c.wasAdded())
 	    {
-		if (c.wasAdded())
-		{
-		    for (Observable added : c.getAddedSubList())
-		    {
-			added.addListener(internalInvalidationListener);
-		    }
-		}
-		else if (c.wasRemoved())
-		{
-		    for (Observable removedElem : c.getRemoved())
-		    {
-			removedElem.removeListener(internalInvalidationListener);
-		    }
-		}
+		c.getElementAdded().addListener(internalInvalidationListener);
+	    }
+	    if (c.wasRemoved())
+	    {
+		c.getElementRemoved().removeListener(internalInvalidationListener);
 	    }
 	});
     }
 
     protected void bind(Observable... properties)
     {
-	dependencies.addAll(properties);
+	for (Observable prop : properties)
+	{
+	    dependencies.add(prop);
+	}
     }
 
-    public ObservableList<Observable> getDependencies()
+    public ObservableSet<Observable> getDependencies()
     {
 	return dependencies;
     }

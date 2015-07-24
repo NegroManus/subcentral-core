@@ -1,9 +1,14 @@
 package de.subcentral.watcher.controller.processing;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.Release;
@@ -25,6 +30,8 @@ import javafx.collections.FXCollections;
 
 public class ProcessingResult implements ProcessingItem
 {
+    private static final Logger log = LogManager.getLogger(ProcessingResult.class);
+
     public static enum Method
     {
 	DATABASE, GUESSING, COMPATIBILITY
@@ -126,6 +133,17 @@ public class ProcessingResult implements ProcessingItem
 	Platform.runLater(() -> ProcessingResult.this.info.setValue(info));
     }
 
+    public void deleteFiles() throws IOException
+    {
+	log.debug("Deleting files of {}", this);
+	for (Path file : files)
+	{
+	    log.debug("Deleting {}", file);
+	    Files.deleteIfExists(file);
+	}
+    }
+
+    // inner classes
     public static interface MethodInfo
     {
 	Method getMethod();

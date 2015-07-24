@@ -112,6 +112,11 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	return controller;
     }
 
+    public TreeItem<ProcessingItem> getTaskTreeItem()
+    {
+	return taskTreeItem;
+    }
+
     public ProcessingConfig getConfig()
     {
 	return config;
@@ -161,11 +166,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	return results;
     }
 
-    public TreeItem<ProcessingItem> getTaskTreeItem()
-    {
-	return taskTreeItem;
-    }
-
     public List<Release> getProcessedQueryResults()
     {
 	return processedQueryResults;
@@ -174,6 +174,26 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     public List<Release> getMatchingReleases()
     {
 	return matchingReleases;
+    }
+
+    public String name(Object obj)
+    {
+	return controller.getNamingService().name(obj, config.getNamingParameters());
+    }
+
+    public void deleteSourceFile() throws IOException
+    {
+	log.info("Deleting source file {}", getSourceFile());
+	Files.deleteIfExists(getSourceFile());
+    }
+
+    public void deleteResultFiles() throws IOException
+    {
+	log.debug("Deleting result files of {}", this);
+	for (ProcessingResult result : results)
+	{
+	    result.deleteFiles();
+	}
     }
 
     @Override
@@ -203,6 +223,21 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    {
 		createTargetObject();
 		processParsed();
+
+		// May clean up
+		if (config.isDeleteSource())
+		{
+		    try
+		    {
+			updateMessage("Deleting source file");
+			deleteSourceFile();
+			updateInfo(ProcessingTaskInfo.of("Source file deleted"));
+		    }
+		    catch (IOException e)
+		    {
+			log.warn("Could not delete source file", e);
+		    }
+		}
 	    }
 	    return null;
 	}
@@ -302,15 +337,12 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    convertedSub.setGroup(srcSub.getGroup());
 	    convertedSubAdj.getSubtitles().add(convertedSub);
 	}
-	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(convertedSubAdj);
-	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
 	targetObject = convertedSubAdj;
     }
 
     private void processParsed() throws Exception
     {
 	// Querying
-
 	Release srcRls = sourceObject.getFirstMatchingRelease();
 	ListMultimap<MetadataDb<Release>, Release> queryResults = query(srcRls);
 	if (isCancelled())
@@ -332,6 +364,10 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    }
 	}
 
+	// standardize
+	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(targetObject);
+	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+
 	if (existingRlss.isEmpty())
 	{
 	    log.info("No releases found in databases and no standard releases with Scope=ALWAYS");
@@ -350,6 +386,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 		    .collect(Collectors.toList());
 
+	    // Guess
 	    if (matchingReleases.isEmpty())
 	    {
 		log.info("No matching releases found");
@@ -383,22 +420,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    throw new CancellationException();
 	}
 	updateProgress(0.75d, 1d);
-
-	// May clean up
-	if (config.isDeleteSource())
-	{
-	    try
-	    {
-		updateMessage("Deleting source file");
-		Files.delete(getSourceFile());
-		log.info("Deleted source file {}", getSourceFile());
-		updateInfo(ProcessingTaskInfo.of("Source file deleted"));
-	    }
-	    catch (IOException e)
-	    {
-		log.warn("Could not delete source file", e);
-	    }
-	}
 
 	if (isCancelled())
 	{
@@ -587,11 +608,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    taskTreeItem.setExpanded(true);
 	});
 	return result;
-    }
-
-    public String name(Object obj)
-    {
-	return controller.getNamingService().name(obj, config.getNamingParameters());
     }
 
     private void createFiles(ProcessingResult result) throws Exception
