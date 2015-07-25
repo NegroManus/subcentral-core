@@ -181,9 +181,30 @@ public class Addic7edCom
 	// matcher102.match("Psych (UK) - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k
 	// + " = " + v));
 
-	// TODO: match the following episode
+	// Release group, then tags in parenthesis
 	// Death in Paradise - 04x04 - Series 4, Episode 4.FoV (HDTV + 720p).English.C.orig.Addic7ed.com
-
+	// The Saboteurs (aka The Heavy Water War) - 01x06 - Episode 6 (Finale).TVC (HDTV).English.C.orig.Addic7ed.com
+	Pattern p107 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(\\w+)\\s+\\((.*?)\\)\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
+	ImmutableMap.Builder<Integer, SimplePropDescriptor> grps107 = ImmutableMap.builder();
+	grps107.put(0, SubtitleAdjustment.PROP_NAME);
+	grps107.put(1, Series.PROP_NAME);
+	grps107.put(2, Series.PROP_TITLE);
+	grps107.put(3, Series.PROP_DATE); // e.g. "2004"
+	grps107.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
+	grps107.put(5, Season.PROP_NUMBER);
+	grps107.put(6, Episode.PROP_NUMBER_IN_SEASON);
+	grps107.put(7, Episode.PROP_TITLE);
+	grps107.put(8, Release.PROP_GROUP);
+	grps107.put(9, Release.PROP_TAGS);
+	grps107.put(10, Subtitle.PROP_LANGUAGE);
+	grps107.put(11, SubtitleAdjustment.PROP_TAGS);
+	MappingMatcher<SimplePropDescriptor> matcher107 = new MappingMatcher<>(p107, grps107.build(), predefEpisodeMatches);
+	
+	// TODO: Actually "(HDTV + 720p)" are 2 releases "HDTV" and "720p.HDTV". Two releases should be matched.
+	// But thats not possible with current matching algorithm. It has to be possible to numerate the objects if multiple
+		
+	
+	
 	// Matchers
 	ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
 	episodeMatchers.add(matcher101);
@@ -192,6 +213,7 @@ public class Addic7edCom
 	episodeMatchers.add(matcher104);
 	episodeMatchers.add(matcher105);
 	episodeMatchers.add(matcher106);
+	episodeMatchers.add(matcher107);
 	episodeSubParser.setMatchers(episodeMatchers.build());
 
 	// --------------

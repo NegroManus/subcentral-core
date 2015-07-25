@@ -269,6 +269,37 @@ public class Addic7edParsingTest
 
 	compare("testEpisode16", adj, name);
     }
+    
+    @Test
+    public void testEpisode17()
+    {
+	String name = "Death in Paradise - 04x04 - Series 4, Episode 4.FoV (HDTV + 720p).English.C.orig.Addic7ed.com";
+
+	Episode epi = Episode.createSeasonedEpisode("Death in Paradise", 4, 4, "Series 4, Episode 4");
+	Release rls = Release.create(epi, "FoV", "HDTV", "720p");
+	Subtitle sub = new Subtitle(epi, "English");
+	sub.setSource("Addic7ed.com");
+	SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+	adj.setTags(Tag.list("C", "orig"));
+
+	compare("testEpisode17", adj, name);
+    }
+    
+    @Test
+    public void testEpisode18()
+    {
+	String name = "The Saboteurs (aka The Heavy Water War) - 01x06 - Episode 6 (Finale).TVC (HDTV).English.C.orig.Addic7ed.com";
+
+	Episode epi = Episode.createSeasonedEpisode("The Saboteurs (aka The Heavy Water War)", 1, 6, "Episode 6 (Finale)");
+	Release rls = Release.create(epi, "TVC", "HDTV");
+	Subtitle sub = new Subtitle(epi, "English");
+	sub.setSource("Addic7ed.com");
+	SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+	adj.setTags(Tag.list("C", "orig"));
+
+	compare("testEpisode18", adj, name);
+    }
+
 
     private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
     {

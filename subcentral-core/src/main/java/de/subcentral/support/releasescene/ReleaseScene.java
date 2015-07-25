@@ -258,7 +258,7 @@ public class ReleaseScene
     public static String buildKnownTagPattern()
     {
 	StringBuilder sb = new StringBuilder();
-	sb.append("(?:REAL|PROPER|REPACK|DiRFIX|NFOFIX|");
+	sb.append("(?:REAL|PROPER|REPACK|DiRFIX|NFOFIX|READNFO|");
 	sb.append(Joiner.on('|').join(getAllLanguageTags()));
 	sb.append("|3D|720p|1080i|1080p|RETAiL|HDTV|PDTV|WS|HR|WebHD|TS|(?:DVD|WEB|BD|BluRay)(?:-)?(?:Rip)?");
 	sb.append("|iNTERNAL)");
