@@ -463,7 +463,7 @@ public class SettingsController extends AbstractController
 	}
     }
 
-    public void saveSettings() throws ConfigurationException
+    public void saveSettings() throws ConfigurationException, IOException
     {
 	WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE));
 	defaultSettingsLoaded.set(false);

@@ -1,7 +1,10 @@
 package de.subcentral.watcher.settings;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -122,7 +125,7 @@ public class WatcherSettings extends ObservableObject
     }
 
     // Write methods
-    public void save(Path file) throws ConfigurationException
+    public void save(Path file) throws ConfigurationException, IOException
     {
 	log.info("Saving settings to {}", file.toAbsolutePath());
 
@@ -132,7 +135,7 @@ public class WatcherSettings extends ObservableObject
 	FxUtil.runAndWait(() -> save(cfg));
 
 	FileHandler cfgFileHandler = new FileHandler(cfg);
-	cfgFileHandler.save(file.toFile());
+	cfgFileHandler.save(Files.newOutputStream(file), Charset.forName("UTF-8").name());
 	changed.set(false);
     }
 

@@ -129,9 +129,9 @@ public class SubCentralFxUtil
 		switch (format)
 		{
 		    case NAME:
-			return "Language tag (Java)";
+			return "Java language tag (includes country)";
 		    case LANGUAGE_TAG:
-			return "Language tag (IETF)";
+			return "IETF Language tag (includes country)";
 		    case ISO2:
 			return "2-letter language code (ISO 639-1)";
 		    case ISO3:

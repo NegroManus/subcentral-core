@@ -91,7 +91,7 @@
 				<language tag="de" /> <!-- german -->
 				<language tag="zh" /> <!-- chinese -->
 			</parsingLanguages>
-			<ouputLanguageFormat>NAME</ouputLanguageFormat>
+			<ouputLanguageFormat>ISO2</ouputLanguageFormat>
 			<ouputLanguage tag="en" />
 			<customLanguagePatterns>
 				<languagePattern pattern="VO" patternMode="LITERAL" languageTag="en" />
