@@ -510,7 +510,7 @@ public class ProcessingController extends AbstractController
 	{
 	    {
 		Observable stateObsv = FxUtil.observeBean(processingTreeTable.getSelectionModel().selectedItemProperty(), (TreeItem<ProcessingItem> treeItem) -> {
-		    ProcessingTask task = getProcessingTask(treeItem, false);
+		    ProcessingTask task = getProcessingTask(treeItem, true);
 		    if (task == null)
 		    {
 			return new Observable[] {};
@@ -523,7 +523,7 @@ public class ProcessingController extends AbstractController
 	    @Override
 	    protected boolean computeValue()
 	    {
-		ProcessingTask task = getSelectedProcessingTask(false);
+		ProcessingTask task = getSelectedProcessingTask(true);
 		if (task == null)
 		{
 		    return true;
@@ -535,7 +535,7 @@ public class ProcessingController extends AbstractController
 	// Only enabled if a ProcessingTask or ProcessingResult is selected which has finished
 	protocolBtn.disableProperty().bind(finishedTaskSelected);
 	protocolBtn.setOnAction((ActionEvent evt) -> {
-	    ProcessingTask task = getSelectedProcessingTask(false);
+	    ProcessingTask task = getSelectedProcessingTask(true);
 	    if (task != null)
 	    {
 		showProtocol(task);
@@ -544,7 +544,7 @@ public class ProcessingController extends AbstractController
 
 	reprocessBtn.disableProperty().bind(finishedTaskSelected);
 	reprocessBtn.setOnAction((ActionEvent evt) -> {
-	    ProcessingTask task = getSelectedProcessingTask(false);
+	    ProcessingTask task = getSelectedProcessingTask(true);
 	    if (task != null)
 	    {
 		reprocess(task);
