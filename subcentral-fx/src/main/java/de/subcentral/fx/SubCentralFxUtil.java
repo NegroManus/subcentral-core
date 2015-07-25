@@ -131,7 +131,7 @@ public class SubCentralFxUtil
 		    case NAME:
 			return "Java language tag (includes country)";
 		    case LANGUAGE_TAG:
-			return "IETF Language tag (includes country)";
+			return "IETF language tag (includes country)";
 		    case ISO2:
 			return "2-letter language code (ISO 639-1)";
 		    case ISO3:
