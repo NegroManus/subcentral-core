@@ -15,28 +15,28 @@ import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInf
 
 public class CompatibilityServiceTest
 {
-    @Test
-    public void testFindCompatibles()
-    {
-	Episode epi = Episode.createSeasonedEpisode("Psych", 1, 1);
-	Release sourceRls = Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264");
+	@Test
+	public void testFindCompatibles()
+	{
+		Episode epi = Episode.createSeasonedEpisode("Psych", 1, 1);
+		Release sourceRls = Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264");
 
-	CompatibilityService compService = new CompatibilityService();
-	compService.getCompatibilities().add(new SameGroupCompatibility());
-	compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), true));
-	List<Release> existingRlss = new ArrayList<>(4);
-	existingRlss.add(Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264"));
-	existingRlss.add(Release.create("Psych.S01E01.PROPER.HDTV.x264-LOL", epi, "LOL", "PROPER", "HDTV", "x264"));
-	existingRlss.add(Release.create("Psych.S01E01.720p.HDTV.x264-DIMENSION", epi, "DIMENSION", "720p", "HDTV", "x264"));
-	existingRlss.add(Release.create("Psych.S01E01.720p.WEB-DL.H.264.DD5.1-KiNGS", epi, "KiNGS", "720p", "WEB-DL", "H.264", "DD5.1"));
+		CompatibilityService compService = new CompatibilityService();
+		compService.getCompatibilities().add(new SameGroupCompatibility());
+		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), true));
+		List<Release> existingRlss = new ArrayList<>(4);
+		existingRlss.add(Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264"));
+		existingRlss.add(Release.create("Psych.S01E01.PROPER.HDTV.x264-LOL", epi, "LOL", "PROPER", "HDTV", "x264"));
+		existingRlss.add(Release.create("Psych.S01E01.720p.HDTV.x264-DIMENSION", epi, "DIMENSION", "720p", "HDTV", "x264"));
+		existingRlss.add(Release.create("Psych.S01E01.720p.WEB-DL.H.264.DD5.1-KiNGS", epi, "KiNGS", "720p", "WEB-DL", "H.264", "DD5.1"));
 
-	Set<Release> expectedCompatibleRlss = new HashSet<>();
-	expectedCompatibleRlss.add(existingRlss.get(1)); // PROPER-LOL
-	expectedCompatibleRlss.add(existingRlss.get(2)); // DIMENSION
+		Set<Release> expectedCompatibleRlss = new HashSet<>();
+		expectedCompatibleRlss.add(existingRlss.get(1)); // PROPER-LOL
+		expectedCompatibleRlss.add(existingRlss.get(2)); // DIMENSION
 
-	Map<Release, CompatibilityInfo> compatibleRlss = compService.findCompatibles(sourceRls, existingRlss);
-	compatibleRlss.entrySet().forEach(e -> System.out.println(e));
+		Map<Release, CompatibilityInfo> compatibleRlss = compService.findCompatibles(sourceRls, existingRlss);
+		compatibleRlss.entrySet().forEach(e -> System.out.println(e));
 
-	assertEquals(expectedCompatibleRlss, compatibleRlss.keySet());
-    }
+		assertEquals(expectedCompatibleRlss, compatibleRlss.keySet());
+	}
 }

@@ -7,25 +7,25 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReflectiveMapper<T> implements Mapper<T>
 {
-    private final Class<T> beanType;
+	private final Class<T> beanType;
 
-    public ReflectiveMapper(Class<T> beanType)
-    {
-	this.beanType = Objects.requireNonNull(beanType, "beanType");
-    }
+	public ReflectiveMapper(Class<T> beanType)
+	{
+		this.beanType = Objects.requireNonNull(beanType, "beanType");
+	}
 
-    @Override
-    public T map(Map<SimplePropDescriptor, String> props, PropFromStringService propParsingService)
-    {
-	try
+	@Override
+	public T map(Map<SimplePropDescriptor, String> props, PropFromStringService propParsingService)
 	{
-	    T bean = beanType.newInstance();
-	    ParsingUtil.reflectiveMapping(bean, props, propParsingService);
-	    return bean;
+		try
+		{
+			T bean = beanType.newInstance();
+			ParsingUtil.reflectiveMapping(bean, props, propParsingService);
+			return bean;
+		}
+		catch (InstantiationException | IllegalAccessException e)
+		{
+			throw new MappingException(props, beanType, e);
+		}
 	}
-	catch (InstantiationException | IllegalAccessException e)
-	{
-	    throw new MappingException(props, beanType, e);
-	}
-    }
 }

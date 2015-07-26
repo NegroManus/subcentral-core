@@ -30,162 +30,167 @@ import javafx.scene.layout.HBox;
 
 public class WatchController extends AbstractController
 {
-    // Controlling properties
-    private final MainController mainController;
+	// Controlling properties
+	private final MainController mainController;
 
-    // View
-    @FXML
-    private Button startWatchButton;
-    @FXML
-    private Button stopWatchButton;
-    @FXML
-    private Label  watchStatusLabel;
-    @FXML
-    private HBox   watchDirectoriesHBox;
+	// View
+	@FXML
+	private Button	startWatchButton;
+	@FXML
+	private Button	stopWatchButton;
+	@FXML
+	private Label	watchStatusLabel;
+	@FXML
+	private HBox	watchDirectoriesHBox;
 
-    private final ImageView watchImg = new ImageView(FxUtil.loadImg("iris_16.png"));
+	private final ImageView watchImg = new ImageView(FxUtil.loadImg("iris_16.png"));
 
-    private DirectoryWatchService watchService;
-    private ExecutorService	  watchServiceExecutor;
+	private DirectoryWatchService	watchService;
+	private ExecutorService			watchServiceExecutor;
 
-    public WatchController(MainController mainController)
-    {
-	this.mainController = mainController;
-    }
-
-    public MainController getMainController()
-    {
-	return mainController;
-    }
-
-    @Override
-    protected void doInitialize() throws Exception
-    {
-	initWatchService();
-
-	startWatchButton.disableProperty().bind(new BooleanBinding()
+	public WatchController(MainController mainController)
 	{
-	    {
-		super.bind(watchService.runningProperty(), WatcherSettings.INSTANCE.watchDirectoriesProperty().emptyProperty());
-	    }
+		this.mainController = mainController;
+	}
 
-	    @Override
-	    protected boolean computeValue()
-	    {
-		return watchService.isRunning() || WatcherSettings.INSTANCE.watchDirectoriesProperty().isEmpty();
-	    }
-	});
-	startWatchButton.setOnAction(evt -> {
-	    watchService.restart();
-	    evt.consume();
-	});
-
-	stopWatchButton.disableProperty().bind(watchService.runningProperty().not());
-	stopWatchButton.setOnAction(evt -> {
-	    watchService.cancel();
-	    evt.consume();
-	});
-
-	watchStatusLabel.textProperty().bind(new StringBinding()
+	public MainController getMainController()
 	{
-	    {
-		super.bind(watchService.stateProperty());
-	    }
+		return mainController;
+	}
 
-	    @Override
-	    protected String computeValue()
-	    {
-		switch (watchService.getState())
+	@Override
+	protected void doInitialize() throws Exception
+	{
+		initWatchService();
+
+		startWatchButton.disableProperty().bind(new BooleanBinding()
 		{
-		    case READY:
-			// fall through
-		    case SCHEDULED:
-			// fall through
-		    case CANCELLED:
-			// fall through
-		    case SUCCEEDED:
-			return "Watch stopped";
-		    case RUNNING:
-			return "Watching";
-		    case FAILED:
-			return "Watch failed";
-		    default:
-			return "";
+			{
+				super.bind(watchService.runningProperty(), WatcherSettings.INSTANCE.watchDirectoriesProperty().emptyProperty());
+			}
+
+			@Override
+			protected boolean computeValue()
+			{
+				return watchService.isRunning() || WatcherSettings.INSTANCE.watchDirectoriesProperty().isEmpty();
+			}
+		});
+		startWatchButton.setOnAction(evt ->
+		{
+			watchService.restart();
+			evt.consume();
+		});
+
+		stopWatchButton.disableProperty().bind(watchService.runningProperty().not());
+		stopWatchButton.setOnAction(evt ->
+		{
+			watchService.cancel();
+			evt.consume();
+		});
+
+		watchStatusLabel.textProperty().bind(new StringBinding()
+		{
+			{
+				super.bind(watchService.stateProperty());
+			}
+
+			@Override
+			protected String computeValue()
+			{
+				switch (watchService.getState())
+				{
+				case READY:
+					// fall through
+				case SCHEDULED:
+					// fall through
+				case CANCELLED:
+					// fall through
+				case SUCCEEDED:
+					return "Watch stopped";
+				case RUNNING:
+					return "Watching";
+				case FAILED:
+					return "Watch failed";
+				default:
+					return "";
+				}
+			}
+		});
+
+		watchDirectoriesHBox.getChildren().add(watchImg);
+		updateWatchDirsHBox(WatcherSettings.INSTANCE.getWatchDirectories());
+		WatcherSettings.INSTANCE.watchDirectoriesProperty().addListener(new InvalidationListener()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public void invalidated(Observable o)
+			{
+				updateWatchDirsHBox((List<Path>) o);
+			}
+		});
+
+		watchService.setOnFailed((WorkerStateEvent event) ->
+		{
+			DirectoryWatchService watchService = (DirectoryWatchService) event.getSource();
+			Throwable ex = watchService.getException();
+			StringJoiner dirsString = new StringJoiner(", ");
+			for (Path dir : watchService.getWatchDirectories())
+			{
+				dirsString.add(dir.toString());
+			}
+			Alert alert = FxUtil.createExceptionAlert("Exception while watching", "An exception occured while watching " + dirsString + ".", ex);
+			alert.show();
+		});
+	}
+
+	private void updateWatchDirsHBox(List<Path> watchDirs)
+	{
+		watchDirectoriesHBox.getChildren().retainAll(watchImg);
+		if (watchDirs.isEmpty())
+		{
+			Hyperlink link = new Hyperlink("Configure watch directories");
+			link.setVisited(true);
+			link.setOnAction((ActionEvent evt) ->
+			{
+				mainController.selectTab(MainController.SETTINGS_TAB_INDEX);
+				mainController.getSettingsController().selectSection(SettingsController.WATCH_SECTION);
+			});
+			watchDirectoriesHBox.getChildren().add(link);
 		}
-	    }
-	});
-
-	watchDirectoriesHBox.getChildren().add(watchImg);
-	updateWatchDirsHBox(WatcherSettings.INSTANCE.getWatchDirectories());
-	WatcherSettings.INSTANCE.watchDirectoriesProperty().addListener(new InvalidationListener()
-	{
-	    @SuppressWarnings("unchecked")
-	    @Override
-	    public void invalidated(Observable o)
-	    {
-		updateWatchDirsHBox((List<Path>) o);
-	    }
-	});
-
-	watchService.setOnFailed((WorkerStateEvent event) -> {
-	    DirectoryWatchService watchService = (DirectoryWatchService) event.getSource();
-	    Throwable ex = watchService.getException();
-	    StringJoiner dirsString = new StringJoiner(", ");
-	    for (Path dir : watchService.getWatchDirectories())
-	    {
-		dirsString.add(dir.toString());
-	    }
-	    Alert alert = FxUtil.createExceptionAlert("Exception while watching", "An exception occured while watching " + dirsString + ".", ex);
-	    alert.show();
-	});
-    }
-
-    private void updateWatchDirsHBox(List<Path> watchDirs)
-    {
-	watchDirectoriesHBox.getChildren().retainAll(watchImg);
-	if (watchDirs.isEmpty())
-	{
-	    Hyperlink link = new Hyperlink("Configure watch directories");
-	    link.setVisited(true);
-	    link.setOnAction((ActionEvent evt) -> {
-		mainController.selectTab(MainController.SETTINGS_TAB_INDEX);
-		mainController.getSettingsController().selectSection(SettingsController.WATCH_SECTION);
-	    });
-	    watchDirectoriesHBox.getChildren().add(link);
+		else
+		{
+			for (Path dir : watchDirs)
+			{
+				watchDirectoriesHBox.getChildren().add(FxUtil.createPathHyperlink(dir, mainController.getCommonExecutor()));
+			}
+		}
 	}
-	else
-	{
-	    for (Path dir : watchDirs)
-	    {
-		watchDirectoriesHBox.getChildren().add(FxUtil.createPathHyperlink(dir, mainController.getCommonExecutor()));
-	    }
-	}
-    }
 
-    private void initWatchService() throws IOException
-    {
-	watchServiceExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-WatchService"));
-
-	watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFiles);
-	watchService.setExecutor(watchServiceExecutor);
-	WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.watchDirectoriesProperty());
-	watchService.setInitialScan(WatcherSettings.INSTANCE.isInitialScan());
-	WatcherSettings.INSTANCE.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-	    watchService.setInitialScan(newValue);
-	});
-    }
-
-    @Override
-    public void shutdown() throws InterruptedException
-    {
-	if (watchService != null)
+	private void initWatchService() throws IOException
 	{
-	    watchService.cancel();
+		watchServiceExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-WatchService"));
+
+		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFiles);
+		watchService.setExecutor(watchServiceExecutor);
+		WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.watchDirectoriesProperty());
+		watchService.setInitialScan(WatcherSettings.INSTANCE.isInitialScan());
+		WatcherSettings.INSTANCE.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+		{
+			watchService.setInitialScan(newValue);
+		});
 	}
-	if (watchServiceExecutor != null)
+
+	@Override
+	public void shutdown() throws InterruptedException
 	{
-	    watchServiceExecutor.shutdown();
-	    watchServiceExecutor.awaitTermination(10, TimeUnit.SECONDS);
+		if (watchService != null)
+		{
+			watchService.cancel();
+		}
+		if (watchServiceExecutor != null)
+		{
+			watchServiceExecutor.shutdown();
+			watchServiceExecutor.awaitTermination(10, TimeUnit.SECONDS);
+		}
 	}
-    }
 }

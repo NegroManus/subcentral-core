@@ -6,15 +6,15 @@ import de.subcentral.fx.ObservableObject;
 
 public class ObservableBeanWrapper<T> extends ObservableObject
 {
-    protected final T bean;
+	protected final T bean;
 
-    public ObservableBeanWrapper(T bean)
-    {
-	this.bean = Objects.requireNonNull(bean, "bean");
-    }
+	public ObservableBeanWrapper(T bean)
+	{
+		this.bean = Objects.requireNonNull(bean, "bean");
+	}
 
-    public T getBean()
-    {
-	return bean;
-    }
+	public T getBean()
+	{
+		return bean;
+	}
 }

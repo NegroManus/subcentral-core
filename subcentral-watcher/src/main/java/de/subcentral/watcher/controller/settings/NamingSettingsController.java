@@ -24,171 +24,171 @@ import javafx.scene.layout.GridPane;
 
 public class NamingSettingsController extends AbstractSettingsSectionController
 {
-    @FXML
-    private GridPane			      namingSettingsPane;
-    @FXML
-    private TableView<NamingParam>	      namingParamsTableView;
-    @FXML
-    private TableColumn<NamingParam, String>  namingParamsNameColumn;
-    @FXML
-    private TableColumn<NamingParam, Boolean> namingParamsValueColumn;
+	@FXML
+	private GridPane							namingSettingsPane;
+	@FXML
+	private TableView<NamingParam>				namingParamsTableView;
+	@FXML
+	private TableColumn<NamingParam, String>	namingParamsNameColumn;
+	@FXML
+	private TableColumn<NamingParam, Boolean>	namingParamsValueColumn;
 
-    public NamingSettingsController(SettingsController settingsController)
-    {
-	super(settingsController);
-    }
-
-    @Override
-    public GridPane getSectionRootPane()
-    {
-	return namingSettingsPane;
-    }
-
-    @Override
-    protected void doInitialize() throws Exception
-    {
-	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
-
-	// Naming parameters
-	// bind table items to settings
-	new NamingParamBinding(namingParamsTableView.getItems(), settings.namingParametersProperty());
-
-	namingParamsNameColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyProperty());
-	namingParamsValueColumn.setCellValueFactory((CellDataFeatures<NamingParam, Boolean> param) -> param.getValue().valueProperty());
-	namingParamsValueColumn.setCellFactory(CheckBoxTableCell.forTableColumn(namingParamsValueColumn));
-    }
-
-    public static class NamingParam
-    {
-	private final ReadOnlyStringWrapper key;
-	private final BooleanProperty	    value;
-
-	private NamingParam(String key, boolean value)
+	public NamingSettingsController(SettingsController settingsController)
 	{
-	    this.key = new ReadOnlyStringWrapper(this, "key", key);
-	    this.value = new SimpleBooleanProperty(this, "value", value);
+		super(settingsController);
 	}
 
-	public String getKey()
+	@Override
+	public GridPane getSectionRootPane()
 	{
-	    return key.get();
+		return namingSettingsPane;
 	}
 
-	public ReadOnlyStringProperty keyProperty()
+	@Override
+	protected void doInitialize() throws Exception
 	{
-	    return key.getReadOnlyProperty();
+		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+
+		// Naming parameters
+		// bind table items to settings
+		new NamingParamBinding(namingParamsTableView.getItems(), settings.namingParametersProperty());
+
+		namingParamsNameColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyProperty());
+		namingParamsValueColumn.setCellValueFactory((CellDataFeatures<NamingParam, Boolean> param) -> param.getValue().valueProperty());
+		namingParamsValueColumn.setCellFactory(CheckBoxTableCell.forTableColumn(namingParamsValueColumn));
 	}
 
-	public boolean getValue()
+	public static class NamingParam
 	{
-	    return value.get();
-	}
+		private final ReadOnlyStringWrapper	key;
+		private final BooleanProperty		value;
 
-	public void setValue(boolean value)
-	{
-	    this.value.set(value);
-	}
-
-	public BooleanProperty valueProperty()
-	{
-	    return value;
-	}
-    }
-
-    private class NamingParamBinding
-    {
-	private final ObservableList<NamingParam> list;
-	private final MapProperty<String, Object> map;
-	final ChangeListener<Boolean>		  listItemValueListener;
-	final MapChangeListener<String, Object>	  mapListener;
-	private boolean				  updating;
-
-	private NamingParamBinding(ObservableList<NamingParam> list, MapProperty<String, Object> map)
-	{
-	    this.list = list;
-	    this.map = map;
-
-	    // set initial value
-	    List<NamingParam> namingParams = new ArrayList<>();
-	    for (Map.Entry<String, Object> entries : map.entrySet())
-	    {
-		namingParams.add(new NamingParam(entries.getKey(), (Boolean) entries.getValue()));
-	    }
-	    list.setAll(namingParams);
-
-	    // init listeners and add them
-	    listItemValueListener = initListItemValueListener();
-	    mapListener = initMapListener();
-	    for (NamingParam param : list)
-	    {
-		param.valueProperty().addListener(listItemValueListener);
-	    }
-	    map.addListener(mapListener);
-	}
-
-	private void unbind()
-	{
-	    for (NamingParam param : list)
-	    {
-		param.valueProperty().removeListener(listItemValueListener);
-	    }
-	    map.removeListener(mapListener);
-	}
-
-	private ChangeListener<Boolean> initListItemValueListener()
-	{
-	    return new ChangeListener<Boolean>()
-	    {
-		@Override
-		public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+		private NamingParam(String key, boolean value)
 		{
-		    if (!updating)
-		    {
-			updating = true;
-			try
-			{
-			    NamingParam param = (NamingParam) ((BooleanProperty) observable).getBean();
-			    map.put(param.getKey(), param.getValue());
-			}
-			finally
-			{
-			    updating = false;
-			}
-		    }
+			this.key = new ReadOnlyStringWrapper(this, "key", key);
+			this.value = new SimpleBooleanProperty(this, "value", value);
 		}
-	    };
+
+		public String getKey()
+		{
+			return key.get();
+		}
+
+		public ReadOnlyStringProperty keyProperty()
+		{
+			return key.getReadOnlyProperty();
+		}
+
+		public boolean getValue()
+		{
+			return value.get();
+		}
+
+		public void setValue(boolean value)
+		{
+			this.value.set(value);
+		}
+
+		public BooleanProperty valueProperty()
+		{
+			return value;
+		}
 	}
 
-	private MapChangeListener<String, Object> initMapListener()
+	private class NamingParamBinding
 	{
-	    return new MapChangeListener<String, Object>()
-	    {
-		@Override
-		public void onChanged(MapChangeListener.Change<? extends String, ? extends Object> change)
+		private final ObservableList<NamingParam>	list;
+		private final MapProperty<String, Object>	map;
+		final ChangeListener<Boolean>				listItemValueListener;
+		final MapChangeListener<String, Object>		mapListener;
+		private boolean								updating;
+
+		private NamingParamBinding(ObservableList<NamingParam> list, MapProperty<String, Object> map)
 		{
-		    if (!updating)
-		    {
-			updating = true;
-			try
+			this.list = list;
+			this.map = map;
+
+			// set initial value
+			List<NamingParam> namingParams = new ArrayList<>();
+			for (Map.Entry<String, Object> entries : map.entrySet())
 			{
-			    if (change.wasAdded())
-			    {
-				for (NamingParam param : list)
+				namingParams.add(new NamingParam(entries.getKey(), (Boolean) entries.getValue()));
+			}
+			list.setAll(namingParams);
+
+			// init listeners and add them
+			listItemValueListener = initListItemValueListener();
+			mapListener = initMapListener();
+			for (NamingParam param : list)
+			{
+				param.valueProperty().addListener(listItemValueListener);
+			}
+			map.addListener(mapListener);
+		}
+
+		private void unbind()
+		{
+			for (NamingParam param : list)
+			{
+				param.valueProperty().removeListener(listItemValueListener);
+			}
+			map.removeListener(mapListener);
+		}
+
+		private ChangeListener<Boolean> initListItemValueListener()
+		{
+			return new ChangeListener<Boolean>()
+			{
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
 				{
-				    if (change.getKey().equals(param.getKey()))
-				    {
-					param.setValue((Boolean) change.getValueAdded());
-				    }
+					if (!updating)
+					{
+						updating = true;
+						try
+						{
+							NamingParam param = (NamingParam) ((BooleanProperty) observable).getBean();
+							map.put(param.getKey(), param.getValue());
+						}
+						finally
+						{
+							updating = false;
+						}
+					}
 				}
-			    }
-			}
-			finally
-			{
-			    updating = false;
-			}
-		    }
+			};
 		}
-	    };
+
+		private MapChangeListener<String, Object> initMapListener()
+		{
+			return new MapChangeListener<String, Object>()
+			{
+				@Override
+				public void onChanged(MapChangeListener.Change<? extends String, ? extends Object> change)
+				{
+					if (!updating)
+					{
+						updating = true;
+						try
+						{
+							if (change.wasAdded())
+							{
+								for (NamingParam param : list)
+								{
+									if (change.getKey().equals(param.getKey()))
+									{
+										param.setValue((Boolean) change.getValueAdded());
+									}
+								}
+							}
+						}
+						finally
+						{
+							updating = false;
+						}
+					}
+				}
+			};
+		}
 	}
-    }
 }

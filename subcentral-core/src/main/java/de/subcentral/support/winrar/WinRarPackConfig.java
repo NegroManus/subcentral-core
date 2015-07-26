@@ -6,182 +6,177 @@ import com.google.common.base.MoreObjects;
 
 public class WinRarPackConfig extends WinRarCommandConfig
 {
-    public static enum CompressionMethod
-    {
-	/**
-	 * Do not compress file when adding to archive.
-	 */
-	STORE(0, "Store", "Do not compress file when adding to archive."),
-	/**
-	 * Use fastest method (less compressive).
-	 */
-	FASTEST(1, "Fastest", "Use fastest method (less compressive)."),
-	/**
-	 * Use fast compression method.
-	 */
-	FAST(2, "Fast", "Use fast compression method."),
-	/**
-	 * Use normal (default) compression method.
-	 */
-	NORMAL(3, "Normal", "Use normal (default) compression method."),
-	/**
-	 * Use good compression method (more compressive, but slower).
-	 */
-	GOOD(4, "Good", "Use good compression method (more compressive, but slower)."),
-	/**
-	 * Use best compression method (slightly more compressive, but slowest).
-	 */
-	BEST(5, "Best", "Use best compression method (slightly more compressive, but slowest).");
-
-	private final int code;
-	private final String label;
-	private final String description;
-
-	private CompressionMethod(int code, String label, String description)
+	public static enum CompressionMethod
 	{
-	    this.code = code;
-	    this.label = label;
-	    this.description = description;
-	}
+		/**
+		 * Do not compress file when adding to archive.
+		 */
+		STORE(0, "Store", "Do not compress file when adding to archive."), /**
+																			 * Use fastest method (less compressive).
+																			 */
+		FASTEST(1, "Fastest", "Use fastest method (less compressive)."), /**
+																			 * Use fast compression method.
+																			 */
+		FAST(2, "Fast", "Use fast compression method."), /**
+															 * Use normal (default) compression method.
+															 */
+		NORMAL(3, "Normal", "Use normal (default) compression method."), /**
+																			 * Use good compression method (more compressive, but slower).
+																			 */
+		GOOD(4, "Good", "Use good compression method (more compressive, but slower)."), /**
+																						 * Use best compression method (slightly more compressive, but slowest).
+																						 */
+		BEST(5, "Best", "Use best compression method (slightly more compressive, but slowest).");
 
-	/**
-	 * The unique integer code.
-	 * 
-	 * @return the code
-	 */
-	public final int getCode()
-	{
-	    return code;
-	}
+		private final int code;
+		private final String label;
+		private final String description;
 
-	/**
-	 * The unique human readable label / name.
-	 * 
-	 * @return the label
-	 */
-	public String getLabel()
-	{
-	    return label;
-	}
-
-	/**
-	 * The description text.
-	 * 
-	 * @return the description
-	 */
-	public final String getDescription()
-	{
-	    return description;
-	}
-
-	public static final CompressionMethod of(int code) throws IllegalArgumentException
-	{
-	    for (CompressionMethod m : values())
-	    {
-		if (code == m.getCode())
+		private CompressionMethod(int code, String label, String description)
 		{
-		    return m;
+			this.code = code;
+			this.label = label;
+			this.description = description;
 		}
-	    }
-	    throw new IllegalArgumentException("Unknown code for compression method " + code);
+
+		/**
+		 * The unique integer code.
+		 * 
+		 * @return the code
+		 */
+		public final int getCode()
+		{
+			return code;
+		}
+
+		/**
+		 * The unique human readable label / name.
+		 * 
+		 * @return the label
+		 */
+		public String getLabel()
+		{
+			return label;
+		}
+
+		/**
+		 * The description text.
+		 * 
+		 * @return the description
+		 */
+		public final String getDescription()
+		{
+			return description;
+		}
+
+		public static final CompressionMethod of(int code) throws IllegalArgumentException
+		{
+			for (CompressionMethod m : values())
+			{
+				if (code == m.getCode())
+				{
+					return m;
+				}
+			}
+			throw new IllegalArgumentException("Unknown code for compression method " + code);
+		}
 	}
-    }
 
-    public static enum DeletionMode
-    {
+	public static enum DeletionMode
+	{
+		/**
+		 * Keep files.
+		 */
+		KEEP,
+
+		/**
+		 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only. If mode is specified on not Windows platforms, the files are
+		 * kept.
+		 */
+		RECYCLE,
+
+		/**
+		 * Delete files after archiving. Move files to archive.
+		 */
+		DELETE;
+	}
+
+	public static enum OverwriteMode
+	{
+		/**
+		 * Do not add already existing files to the archive.
+		 */
+		SKIP,
+
+		/**
+		 * Overwrite already existing files in the archive. Keep other files that may be in the target archive.
+		 */
+		UPDATE,
+
+		/**
+		 * If the target archive already exists, it is deleted first. So no old files will be in the new archive.
+		 */
+		REPLACE;
+	}
+
+	private CompressionMethod	compressionMethod	= CompressionMethod.NORMAL;
+	private OverwriteMode		targetOverwriteMode	= OverwriteMode.REPLACE;
+	private DeletionMode		sourceDeletionMode	= DeletionMode.KEEP;
+
 	/**
-	 * Keep files.
+	 * The default value is {@link CompressionMethod#NORMAL}.
+	 * 
+	 * @return the compression method
 	 */
-	KEEP,
+	public CompressionMethod getCompressionMethod()
+	{
+		return compressionMethod;
+	}
+
+	public void setCompressionMethod(CompressionMethod compressionMethod)
+	{
+		this.compressionMethod = Objects.requireNonNull(compressionMethod, "compressionMethod");
+	}
 
 	/**
-	 * Delete files to Recycle Bin. Delete files after archiving and place them to Recycle Bin. Available in Windows version only. If mode is
-	 * specified on not Windows platforms, the files are kept.
+	 * The default value is {@link OverwriteMode#REPLACE}.
+	 * 
+	 * @return the overwrite mode for the target package
 	 */
-	RECYCLE,
+	public OverwriteMode getTargetOverwriteMode()
+	{
+		return targetOverwriteMode;
+	}
+
+	public void setTargetOverwriteMode(OverwriteMode targetOverwriteMode)
+	{
+		this.targetOverwriteMode = Objects.requireNonNull(targetOverwriteMode, "targetOverwriteMode");
+	}
 
 	/**
-	 * Delete files after archiving. Move files to archive.
+	 * The default value is {@link DeletionMode#KEEP}.
+	 * 
+	 * @return the deletion mode for the source file
 	 */
-	DELETE;
-    }
+	public DeletionMode getSourceDeletionMode()
+	{
+		return sourceDeletionMode;
+	}
 
-    public static enum OverwriteMode
-    {
-	/**
-	 * Do not add already existing files to the archive.
-	 */
-	SKIP,
+	public void setSourceDeletionMode(DeletionMode sourceDeletionMode)
+	{
+		this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode, "sourceDeletionMode");
+	}
 
-	/**
-	 * Overwrite already existing files in the archive. Keep other files that may be in the target archive.
-	 */
-	UPDATE,
-
-	/**
-	 * If the target archive already exists, it is deleted first. So no old files will be in the new archive.
-	 */
-	REPLACE;
-    }
-
-    private CompressionMethod compressionMethod	  = CompressionMethod.NORMAL;
-    private OverwriteMode     targetOverwriteMode = OverwriteMode.REPLACE;
-    private DeletionMode      sourceDeletionMode  = DeletionMode.KEEP;
-
-    /**
-     * The default value is {@link CompressionMethod#NORMAL}.
-     * 
-     * @return the compression method
-     */
-    public CompressionMethod getCompressionMethod()
-    {
-	return compressionMethod;
-    }
-
-    public void setCompressionMethod(CompressionMethod compressionMethod)
-    {
-	this.compressionMethod = Objects.requireNonNull(compressionMethod, "compressionMethod");
-    }
-
-    /**
-     * The default value is {@link OverwriteMode#REPLACE}.
-     * 
-     * @return the overwrite mode for the target package
-     */
-    public OverwriteMode getTargetOverwriteMode()
-    {
-	return targetOverwriteMode;
-    }
-
-    public void setTargetOverwriteMode(OverwriteMode targetOverwriteMode)
-    {
-	this.targetOverwriteMode = Objects.requireNonNull(targetOverwriteMode, "targetOverwriteMode");
-    }
-
-    /**
-     * The default value is {@link DeletionMode#KEEP}.
-     * 
-     * @return the deletion mode for the source file
-     */
-    public DeletionMode getSourceDeletionMode()
-    {
-	return sourceDeletionMode;
-    }
-
-    public void setSourceDeletionMode(DeletionMode sourceDeletionMode)
-    {
-	this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode, "sourceDeletionMode");
-    }
-
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(WinRarPackConfig.class)
-		.omitNullValues()
-		.add("compressionMethod", compressionMethod)
-		.add("timeout", timeoutValue + " " + timeoutUnit)
-		.add("targetOverwriteMode", targetOverwriteMode)
-		.add("sourceDeletionMode", sourceDeletionMode)
-		.toString();
-    }
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(WinRarPackConfig.class)
+				.omitNullValues()
+				.add("compressionMethod", compressionMethod)
+				.add("timeout", timeoutValue + " " + timeoutUnit)
+				.add("targetOverwriteMode", targetOverwriteMode)
+				.add("sourceDeletionMode", sourceDeletionMode)
+				.toString();
+	}
 }

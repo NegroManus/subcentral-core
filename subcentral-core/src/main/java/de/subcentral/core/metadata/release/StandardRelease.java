@@ -9,64 +9,64 @@ import com.google.common.base.MoreObjects;
 
 public class StandardRelease
 {
-    public enum Scope
-    {
-	ALWAYS, IF_GUESSING
-    };
-
-    // private final Predicate<List<Media>> mediaFilter;
-    private final Release release;
-    private final Scope	  scope;
-
-    public StandardRelease(Release release, Scope scope)
-    {
-	this(release.getTags(), release.getGroup(), scope);
-    }
-
-    public StandardRelease(List<Tag> tags, Group group, Scope scope)
-    {
-	this.release = new Release(tags, group);
-	this.scope = Objects.requireNonNull(scope, "scope");
-    }
-
-    /**
-     * Only stores tags and group.
-     * 
-     * @return the standard release
-     */
-    public Release getRelease()
-    {
-	return release;
-    }
-
-    public Scope getScope()
-    {
-	return scope;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-	if (this == obj)
+	public enum Scope
 	{
-	    return true;
-	}
-	if (obj instanceof StandardRelease)
+		ALWAYS, IF_GUESSING
+	};
+
+	// private final Predicate<List<Media>> mediaFilter;
+	private final Release	release;
+	private final Scope		scope;
+
+	public StandardRelease(Release release, Scope scope)
 	{
-	    return release.equals(((StandardRelease) obj).release);
+		this(release.getTags(), release.getGroup(), scope);
 	}
-	return false;
-    }
 
-    @Override
-    public int hashCode()
-    {
-	return new HashCodeBuilder(53, 21).append(release).toHashCode();
-    }
+	public StandardRelease(List<Tag> tags, Group group, Scope scope)
+	{
+		this.release = new Release(tags, group);
+		this.scope = Objects.requireNonNull(scope, "scope");
+	}
 
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(StandardRelease.class).add("release", release).add("scope", scope).toString();
-    }
+	/**
+	 * Only stores tags and group.
+	 * 
+	 * @return the standard release
+	 */
+	public Release getRelease()
+	{
+		return release;
+	}
+
+	public Scope getScope()
+	{
+		return scope;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof StandardRelease)
+		{
+			return release.equals(((StandardRelease) obj).release);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(53, 21).append(release).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(StandardRelease.class).add("release", release).add("scope", scope).toString();
+	}
 }

@@ -35,183 +35,184 @@ import javafx.collections.ObservableList;
 
 public class WatcherSettings extends ObservableObject
 {
-    public static final WatcherSettings	INSTANCE = new WatcherSettings();
-    private static final Logger		log	 = LogManager.getLogger(WatcherSettings.class);
+	public static final WatcherSettings	INSTANCE	= new WatcherSettings();
+	private static final Logger			log			= LogManager.getLogger(WatcherSettings.class);
 
-    /**
-     * Whether the settings changed since initial load
-     */
-    private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
-
-    // Watch
-    private final ListProperty<Path> watchDirectories	= new SimpleListProperty<>(this, "watchDirectories");
-    private final BooleanProperty    initialScan	= new SimpleBooleanProperty(this, "initialScan");
-    // Processing
-    private final ProcessingSettings processingSettings	= new ProcessingSettings();
-
-    private WatcherSettings()
-    {
-	super.bind(watchDirectories, initialScan, processingSettings);
-
-	addListener((Observable o) -> changed.set(true));
-    }
-
-    public void load(Path path) throws ConfigurationException
-    {
-	try
-	{
-	    load(path.toUri().toURL());
-	}
-	catch (MalformedURLException e)
-	{
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-    }
-
-    public void load(URL file) throws ConfigurationException
-    {
-	log.info("Loading settings from {}", file);
-
-	XMLConfiguration cfg = new XMLConfiguration();
-	// cfg.addEventListener(Event.ANY, (Event event) -> {
-	// System.out.println(event);
-	// });
-
-	FileHandler cfgFileHandler = new FileHandler(cfg);
-	cfgFileHandler.load(file);
-
-	Platform.runLater(() -> {
-	    load(cfg);
-	    changed.set(false);
-	});
-    }
-
-    private void load(XMLConfiguration cfg)
-    {
-	if (!Platform.isFxApplicationThread())
-	{
-	    throw new IllegalStateException("The update of the runtime settings has to be executed on the JavaFX Application Thread");
-	}
-	// Watch
-	updateWatchDirs(cfg);
-	updateInitialScan(cfg);
-
-	// Processing
-	processingSettings.load(cfg);
-    }
-
-    private void updateWatchDirs(XMLConfiguration cfg)
-    {
-	Set<Path> dirs = new LinkedHashSet<>();
-	for (String watchDirPath : cfg.getList(String.class, "watch.directories.dir", ImmutableList.of()))
-	{
-	    try
-	    {
-		Path watchDir = Paths.get(watchDirPath);
-		dirs.add(watchDir);
-	    }
-	    catch (InvalidPathException e)
-	    {
-		log.warn("Invalid path for watch directory:" + watchDirPath + ". Ignoring the path", e);
-	    }
-	}
-	setWatchDirectories(FXCollections.observableArrayList(dirs));
-    }
-
-    private void updateInitialScan(XMLConfiguration cfg)
-    {
-	setInitialScan(cfg.getBoolean("watch.initialScan", false));
-    }
-
-    // Write methods
-    public void save(Path file) throws ConfigurationException, IOException
-    {
-	log.info("Saving settings to {}", file.toAbsolutePath());
-
-	XMLConfiguration cfg = new IndentingXMLConfiguration();
-	cfg.setRootElementName("watcherConfig");
-
-	FxUtil.runAndWait(() -> save(cfg));
-
-	FileHandler cfgFileHandler = new FileHandler(cfg);
-	cfgFileHandler.save(Files.newOutputStream(file), Charset.forName("UTF-8").name());
-	changed.set(false);
-    }
-
-    private void save(XMLConfiguration cfg)
-    {
-	if (!Platform.isFxApplicationThread())
-	{
-	    throw new IllegalStateException("The export of the runtime settings has to be executed on the JavaFX Application Thread");
-	}
+	/**
+	 * Whether the settings changed since initial load
+	 */
+	private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
 	// Watch
-	for (Path path : watchDirectories)
-	{
-	    ConfigurationHelper.addPath(cfg, "watch.directories.dir", path);
-	}
-	cfg.addProperty("watch.initialScan", isInitialScan());
-
+	private final ListProperty<Path>	watchDirectories	= new SimpleListProperty<>(this, "watchDirectories");
+	private final BooleanProperty		initialScan			= new SimpleBooleanProperty(this, "initialScan");
 	// Processing
-	processingSettings.save(cfg);
-    }
+	private final ProcessingSettings	processingSettings	= new ProcessingSettings();
 
-    // Getter and Setter
-    public BooleanProperty changedProperty()
-    {
-	return changed;
-    }
-
-    public boolean getChanged()
-    {
-	return changed.get();
-    }
-
-    public final ListProperty<Path> watchDirectoriesProperty()
-    {
-	return this.watchDirectories;
-    }
-
-    public final ObservableList<Path> getWatchDirectories()
-    {
-	return this.watchDirectoriesProperty().get();
-    }
-
-    public final void setWatchDirectories(final ObservableList<Path> watchDirectories)
-    {
-	this.watchDirectoriesProperty().set(watchDirectories);
-    }
-
-    public final BooleanProperty initialScanProperty()
-    {
-	return this.initialScan;
-    }
-
-    public final boolean isInitialScan()
-    {
-	return this.initialScanProperty().get();
-    }
-
-    public final void setInitialScan(final boolean initialScan)
-    {
-	this.initialScanProperty().set(initialScan);
-    }
-
-    public ProcessingSettings getProcessingSettings()
-    {
-	return processingSettings;
-    }
-
-    private static class IndentingXMLConfiguration extends XMLConfiguration
-    {
-	@Override
-	protected Transformer createTransformer() throws ConfigurationException
+	private WatcherSettings()
 	{
-	    Transformer transformer = super.createTransformer();
-	    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-	    return transformer;
+		super.bind(watchDirectories, initialScan, processingSettings);
+
+		addListener((Observable o) -> changed.set(true));
 	}
-    }
+
+	public void load(Path path) throws ConfigurationException
+	{
+		try
+		{
+			load(path.toUri().toURL());
+		}
+		catch (MalformedURLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void load(URL file) throws ConfigurationException
+	{
+		log.info("Loading settings from {}", file);
+
+		XMLConfiguration cfg = new XMLConfiguration();
+		// cfg.addEventListener(Event.ANY, (Event event) -> {
+		// System.out.println(event);
+		// });
+
+		FileHandler cfgFileHandler = new FileHandler(cfg);
+		cfgFileHandler.load(file);
+
+		Platform.runLater(() ->
+		{
+			load(cfg);
+			changed.set(false);
+		});
+	}
+
+	private void load(XMLConfiguration cfg)
+	{
+		if (!Platform.isFxApplicationThread())
+		{
+			throw new IllegalStateException("The update of the runtime settings has to be executed on the JavaFX Application Thread");
+		}
+		// Watch
+		updateWatchDirs(cfg);
+		updateInitialScan(cfg);
+
+		// Processing
+		processingSettings.load(cfg);
+	}
+
+	private void updateWatchDirs(XMLConfiguration cfg)
+	{
+		Set<Path> dirs = new LinkedHashSet<>();
+		for (String watchDirPath : cfg.getList(String.class, "watch.directories.dir", ImmutableList.of()))
+		{
+			try
+			{
+				Path watchDir = Paths.get(watchDirPath);
+				dirs.add(watchDir);
+			}
+			catch (InvalidPathException e)
+			{
+				log.warn("Invalid path for watch directory:" + watchDirPath + ". Ignoring the path", e);
+			}
+		}
+		setWatchDirectories(FXCollections.observableArrayList(dirs));
+	}
+
+	private void updateInitialScan(XMLConfiguration cfg)
+	{
+		setInitialScan(cfg.getBoolean("watch.initialScan", false));
+	}
+
+	// Write methods
+	public void save(Path file) throws ConfigurationException, IOException
+	{
+		log.info("Saving settings to {}", file.toAbsolutePath());
+
+		XMLConfiguration cfg = new IndentingXMLConfiguration();
+		cfg.setRootElementName("watcherConfig");
+
+		FxUtil.runAndWait(() -> save(cfg));
+
+		FileHandler cfgFileHandler = new FileHandler(cfg);
+		cfgFileHandler.save(Files.newOutputStream(file), Charset.forName("UTF-8").name());
+		changed.set(false);
+	}
+
+	private void save(XMLConfiguration cfg)
+	{
+		if (!Platform.isFxApplicationThread())
+		{
+			throw new IllegalStateException("The export of the runtime settings has to be executed on the JavaFX Application Thread");
+		}
+
+		// Watch
+		for (Path path : watchDirectories)
+		{
+			ConfigurationHelper.addPath(cfg, "watch.directories.dir", path);
+		}
+		cfg.addProperty("watch.initialScan", isInitialScan());
+
+		// Processing
+		processingSettings.save(cfg);
+	}
+
+	// Getter and Setter
+	public BooleanProperty changedProperty()
+	{
+		return changed;
+	}
+
+	public boolean getChanged()
+	{
+		return changed.get();
+	}
+
+	public final ListProperty<Path> watchDirectoriesProperty()
+	{
+		return this.watchDirectories;
+	}
+
+	public final ObservableList<Path> getWatchDirectories()
+	{
+		return this.watchDirectoriesProperty().get();
+	}
+
+	public final void setWatchDirectories(final ObservableList<Path> watchDirectories)
+	{
+		this.watchDirectoriesProperty().set(watchDirectories);
+	}
+
+	public final BooleanProperty initialScanProperty()
+	{
+		return this.initialScan;
+	}
+
+	public final boolean isInitialScan()
+	{
+		return this.initialScanProperty().get();
+	}
+
+	public final void setInitialScan(final boolean initialScan)
+	{
+		this.initialScanProperty().set(initialScan);
+	}
+
+	public ProcessingSettings getProcessingSettings()
+	{
+		return processingSettings;
+	}
+
+	private static class IndentingXMLConfiguration extends XMLConfiguration
+	{
+		@Override
+		protected Transformer createTransformer() throws ConfigurationException
+		{
+			Transformer transformer = super.createTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			return transformer;
+		}
+	}
 }

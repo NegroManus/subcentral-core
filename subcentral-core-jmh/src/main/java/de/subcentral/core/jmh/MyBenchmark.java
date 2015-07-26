@@ -80,117 +80,117 @@ import de.subcentral.support.subcentralde.SubCentralDe;
  */
 public class MyBenchmark
 {
-    private static final SubtitleAdjustment SUB_ADJ = SubtitleAdjustment.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"),
-	    "English",
-	    "SubCentral");
+	private static final SubtitleAdjustment SUB_ADJ = SubtitleAdjustment.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"),
+			"English",
+			"SubCentral");
 
-    private static final TypeStandardizingService      STANDARDIZING_SERVICE	 = buildService();
-    private static final NamingService		       NAMING_SERVICE		 = NamingDefaults.getDefaultNamingService();
-    private static final ParsingService		       ADDIC7ED_PARSING_SERVICE	 = Addic7edCom.getParsingService();
-    private static final ImmutableList<ParsingService> PARSING_SERVICES		 = ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
-	    SubCentralDe.getParsingService(),
-	    ItalianSubsNet.getParsingService(),
-	    ReleaseScene.getParsingService());
-    private static final ImmutableList<ParsingService> PARSING_SERVICES_REVERSED = ImmutableList.of(ReleaseScene.getParsingService(),
-	    ItalianSubsNet.getParsingService(),
-	    SubCentralDe.getParsingService(),
-	    ADDIC7ED_PARSING_SERVICE);
-    private static final URL			       SUBRIP_TEST_FILE		 = Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
+	private static final TypeStandardizingService		STANDARDIZING_SERVICE		= buildService();
+	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
+	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
+	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
+			SubCentralDe.getParsingService(),
+			ItalianSubsNet.getParsingService(),
+			ReleaseScene.getParsingService());
+	private static final ImmutableList<ParsingService>	PARSING_SERVICES_REVERSED	= ImmutableList.of(ReleaseScene.getParsingService(),
+			ItalianSubsNet.getParsingService(),
+			SubCentralDe.getParsingService(),
+			ADDIC7ED_PARSING_SERVICE);
+	private static final URL							SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
-    private static TypeStandardizingService buildService()
-    {
-	TypeStandardizingService service = new TypeStandardizingService("testing");
-	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	StandardizingDefaults.registerAllDefaultStandardizers(service);
-	service.registerStandardizer(Subtitle.class,
-		new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
-			LanguageFormat.NAME,
-			Locale.ENGLISH,
-			ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
-				new LanguagePattern(Pattern.compile("VF", Pattern.CASE_INSENSITIVE), Locale.FRENCH)),
-			ImmutableMap.of(Locale.ENGLISH, "VO"))));
-	return service;
-    }
+	private static TypeStandardizingService buildService()
+	{
+		TypeStandardizingService service = new TypeStandardizingService("testing");
+		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+		StandardizingDefaults.registerAllDefaultStandardizers(service);
+		service.registerStandardizer(Subtitle.class,
+				new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
+						LanguageFormat.NAME,
+						Locale.ENGLISH,
+						ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
+								new LanguagePattern(Pattern.compile("VF", Pattern.CASE_INSENSITIVE), Locale.FRENCH)),
+						ImmutableMap.of(Locale.ENGLISH, "VO"))));
+		return service;
+	}
 
-    // @Benchmark
-    // @BenchmarkMode(Mode.Throughput)
-    // @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void testStandardizing()
-    {
-	STANDARDIZING_SERVICE.standardize(SUB_ADJ);
-    }
+	// @Benchmark
+	// @BenchmarkMode(Mode.Throughput)
+	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
+	public void testStandardizing()
+	{
+		STANDARDIZING_SERVICE.standardize(SUB_ADJ);
+	}
 
-    @Benchmark
-    public void testNaming()
-    {
-	NAMING_SERVICE.name(SUB_ADJ);
-    }
+	@Benchmark
+	public void testNaming()
+	{
+		NAMING_SERVICE.name(SUB_ADJ);
+	}
 
-    // @Benchmark
-    public void testParsingAddic7ed()
-    {
-	ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
-    }
+	// @Benchmark
+	public void testParsingAddic7ed()
+	{
+		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
+	}
 
-    // @Benchmark
-    public void testParsingBestCase()
-    {
-	ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
-    }
+	// @Benchmark
+	public void testParsingBestCase()
+	{
+		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
+	}
 
-    // @Benchmark
-    public void testParsingWorstCase()
-    {
-	ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
-    }
+	// @Benchmark
+	public void testParsingWorstCase()
+	{
+		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
+	}
 
-    // @Benchmark
-    public void testParsingSubAdjBestCase()
-    {
-	ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleAdjustment.class, PARSING_SERVICES);
-    }
+	// @Benchmark
+	public void testParsingSubAdjBestCase()
+	{
+		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleAdjustment.class, PARSING_SERVICES);
+	}
 
-    // @Benchmark
-    public void testParsingSubAdjWorstCase()
-    {
-	ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleAdjustment.class, PARSING_SERVICES_REVERSED);
-    }
+	// @Benchmark
+	public void testParsingSubAdjWorstCase()
+	{
+		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleAdjustment.class, PARSING_SERVICES_REVERSED);
+	}
 
-    // @Benchmark
-    public void testParsingSubRipFile(Blackhole blackhole) throws IOException
-    {
-	SubtitleFile data = SubtitleFileFormat.SUBRIP.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
-	blackhole.consume(data);
-    }
+	// @Benchmark
+	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
+	{
+		SubtitleFile data = SubtitleFileFormat.SUBRIP.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
+		blackhole.consume(data);
+	}
 
-    /**
-     * http://openjdk.java.net/projects/code-tools/jmh/
-     * 
-     * Current results:
-     * 
-     * <pre>
-     * Benchmark                                Mode  Cnt       Score      Error  Units
-     * MyBenchmark.testNaming                  thrpt   50   84270,786 ± 1888,604  ops/s
-     * MyBenchmark.testParsingAddic7ed         thrpt   50  128588,327 ± 1569,210  ops/s
-     * MyBenchmark.testParsingBestCase         thrpt   50  131312,053 ± 1883,485  ops/s
-     * MyBenchmark.testParsingSubAdjBestCase   thrpt   50  121854,993 ± 2141,183  ops/s
-     * MyBenchmark.testParsingSubAdjWorstCase  thrpt   50    8434,303 ±   71,054  ops/s
-     * MyBenchmark.testParsingWorstCase        thrpt   50    4500,268 ±   48,533  ops/s
-     * MyBenchmark.testStandardizing           thrpt   50  669034,817 ± 4591,636  ops/s
-     * 
-     * Benchmark                           Mode  Cnt    Score    Error  Units
-     * MyBenchmark.testParsingSubRipFile  thrpt   50  474,739 ± 18,451  ops/s
-     * </pre>
-     * 
-     * 
-     * 
-     * @param args
-     * @throws RunnerException
-     */
-    public static void main(String[] args) throws RunnerException
-    {
-	Options opt = new OptionsBuilder().include(MyBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
+	/**
+	 * http://openjdk.java.net/projects/code-tools/jmh/
+	 * 
+	 * Current results:
+	 * 
+	 * <pre>
+	 * Benchmark                                Mode  Cnt       Score      Error  Units
+	 * MyBenchmark.testNaming                  thrpt   50   84270,786 ± 1888,604  ops/s
+	 * MyBenchmark.testParsingAddic7ed         thrpt   50  128588,327 ± 1569,210  ops/s
+	 * MyBenchmark.testParsingBestCase         thrpt   50  131312,053 ± 1883,485  ops/s
+	 * MyBenchmark.testParsingSubAdjBestCase   thrpt   50  121854,993 ± 2141,183  ops/s
+	 * MyBenchmark.testParsingSubAdjWorstCase  thrpt   50    8434,303 ±   71,054  ops/s
+	 * MyBenchmark.testParsingWorstCase        thrpt   50    4500,268 ±   48,533  ops/s
+	 * MyBenchmark.testStandardizing           thrpt   50  669034,817 ± 4591,636  ops/s
+	 * 
+	 * Benchmark                           Mode  Cnt    Score    Error  Units
+	 * MyBenchmark.testParsingSubRipFile  thrpt   50  474,739 ± 18,451  ops/s
+	 * </pre>
+	 * 
+	 * 
+	 * 
+	 * @param args
+	 * @throws RunnerException
+	 */
+	public static void main(String[] args) throws RunnerException
+	{
+		Options opt = new OptionsBuilder().include(MyBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
 
-	new Runner(opt).run();
-    }
+		new Runner(opt).run();
+	}
 }

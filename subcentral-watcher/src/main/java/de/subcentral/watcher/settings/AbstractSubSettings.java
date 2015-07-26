@@ -15,49 +15,49 @@ import javafx.beans.property.SimpleBooleanProperty;
  */
 abstract class AbstractSubSettings extends ObservableObject
 {
-    private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
+	private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
-    AbstractSubSettings()
-    {
-	addListener((Observable o) -> changed.set(true));
-    }
-
-    public abstract String getKey();
-
-    public BooleanProperty changedProperty()
-    {
-	return changed;
-    }
-
-    /**
-     * Whether the settings changed since initial load
-     */
-    public boolean getChanged()
-    {
-	return changed.get();
-    }
-
-    public final void load(XMLConfiguration cfg)
-    {
-	if (!Platform.isFxApplicationThread())
+	AbstractSubSettings()
 	{
-	    throw new IllegalStateException("load() has to be executed on the FX-Application-Thread");
+		addListener((Observable o) -> changed.set(true));
 	}
-	doLoad(cfg);
-	changed.set(false);
-    }
 
-    protected abstract void doLoad(XMLConfiguration cfg);
+	public abstract String getKey();
 
-    public final void save(XMLConfiguration cfg)
-    {
-	if (!Platform.isFxApplicationThread())
+	public BooleanProperty changedProperty()
 	{
-	    throw new IllegalStateException("The export of the runtime settings has to be executed on the FX-Application-Thread");
+		return changed;
 	}
-	doSave(cfg);
-	changed.set(false);
-    }
 
-    protected abstract void doSave(XMLConfiguration cfg);
+	/**
+	 * Whether the settings changed since initial load
+	 */
+	public boolean getChanged()
+	{
+		return changed.get();
+	}
+
+	public final void load(XMLConfiguration cfg)
+	{
+		if (!Platform.isFxApplicationThread())
+		{
+			throw new IllegalStateException("load() has to be executed on the FX-Application-Thread");
+		}
+		doLoad(cfg);
+		changed.set(false);
+	}
+
+	protected abstract void doLoad(XMLConfiguration cfg);
+
+	public final void save(XMLConfiguration cfg)
+	{
+		if (!Platform.isFxApplicationThread())
+		{
+			throw new IllegalStateException("The export of the runtime settings has to be executed on the FX-Application-Thread");
+		}
+		doSave(cfg);
+		changed.set(false);
+	}
+
+	protected abstract void doSave(XMLConfiguration cfg);
 }

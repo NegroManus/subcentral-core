@@ -9,33 +9,33 @@ import javafx.beans.property.ReadOnlyStringProperty;
 
 public interface ProcessingItem
 {
-    ReadOnlyStringProperty nameProperty();
+			ReadOnlyStringProperty nameProperty();
 
-    default String getName()
-    {
-	return nameProperty().get();
-    }
+	default String getName()
+	{
+		return nameProperty().get();
+	}
 
-    ListProperty<Path> getFiles();
+	ListProperty<Path> getFiles();
 
-    ReadOnlyStringProperty statusProperty();
+	ReadOnlyStringProperty statusProperty();
 
-    default String getStatus()
-    {
-	return statusProperty().get();
-    }
+	default String getStatus()
+	{
+		return statusProperty().get();
+	}
 
-    ReadOnlyDoubleProperty progressProperty();
+	ReadOnlyDoubleProperty progressProperty();
 
-    default double getProgress()
-    {
-	return progressProperty().get();
-    }
+	default double getProgress()
+	{
+		return progressProperty().get();
+	}
 
-    ReadOnlyProperty<ProcessingInfo> infoProperty();
+	ReadOnlyProperty<ProcessingInfo> infoProperty();
 
-    default ProcessingInfo getInfo()
-    {
-	return infoProperty().getValue();
-    }
+	default ProcessingInfo getInfo()
+	{
+		return infoProperty().getValue();
+	}
 }

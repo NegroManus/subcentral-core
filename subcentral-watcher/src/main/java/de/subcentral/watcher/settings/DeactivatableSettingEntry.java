@@ -4,9 +4,9 @@ import javafx.beans.property.BooleanProperty;
 
 public interface DeactivatableSettingEntry<T> extends SettingEntry<T>
 {
-    BooleanProperty enabledProperty();
+			BooleanProperty enabledProperty();
 
-    boolean isEnabled();
+	boolean isEnabled();
 
-    void setEnabled(final boolean enabled);
+	void setEnabled(final boolean enabled);
 }

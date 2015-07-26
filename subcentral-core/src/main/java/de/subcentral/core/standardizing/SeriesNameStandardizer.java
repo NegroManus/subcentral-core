@@ -13,65 +13,65 @@ import de.subcentral.core.metadata.media.Series;
  */
 public class SeriesNameStandardizer implements Standardizer<Series>
 {
-    private final Pattern namePattern;
-    private final String  nameReplacement;
-    private final String  titleReplacement;
+	private final Pattern	namePattern;
+	private final String	nameReplacement;
+	private final String	titleReplacement;
 
-    public SeriesNameStandardizer(Pattern namePattern, String nameReplacement)
-    {
-	this(namePattern, nameReplacement, null);
-    }
-
-    public SeriesNameStandardizer(Pattern namePattern, String nameReplacement, String titleReplacement)
-    {
-	this.namePattern = Objects.requireNonNull(namePattern, "namePattern");
-	this.nameReplacement = nameReplacement;
-	this.titleReplacement = titleReplacement;
-    }
-
-    public Pattern getNamePattern()
-    {
-	return namePattern;
-    }
-
-    public String getNameReplacement()
-    {
-	return nameReplacement;
-    }
-
-    public String getTitleReplacement()
-    {
-	return titleReplacement;
-    }
-
-    @Override
-    public void standardize(Series series, List<StandardizingChange> changes)
-    {
-	if (series == null || series.getName() == null)
+	public SeriesNameStandardizer(Pattern namePattern, String nameReplacement)
 	{
-	    return;
+		this(namePattern, nameReplacement, null);
 	}
-	String oldName = series.getName();
-	if (namePattern.matcher(oldName).matches())
+
+	public SeriesNameStandardizer(Pattern namePattern, String nameReplacement, String titleReplacement)
 	{
-	    if (!oldName.equals(nameReplacement))
-	    {
-		series.setName(nameReplacement);
-		changes.add(new StandardizingChange(series, Series.PROP_NAME.getPropName(), oldName, nameReplacement));
-	    }
-
-	    String oldTitle = series.getTitle();
-	    if (!Objects.equals(oldTitle, titleReplacement))
-	    {
-		series.setTitle(titleReplacement);
-		changes.add(new StandardizingChange(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement));
-	    }
+		this.namePattern = Objects.requireNonNull(namePattern, "namePattern");
+		this.nameReplacement = nameReplacement;
+		this.titleReplacement = titleReplacement;
 	}
-    }
 
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(SeriesNameStandardizer.class).add("namePattern", namePattern).add("nameReplacement", nameReplacement).add("titleReplacement", titleReplacement).toString();
-    }
+	public Pattern getNamePattern()
+	{
+		return namePattern;
+	}
+
+	public String getNameReplacement()
+	{
+		return nameReplacement;
+	}
+
+	public String getTitleReplacement()
+	{
+		return titleReplacement;
+	}
+
+	@Override
+	public void standardize(Series series, List<StandardizingChange> changes)
+	{
+		if (series == null || series.getName() == null)
+		{
+			return;
+		}
+		String oldName = series.getName();
+		if (namePattern.matcher(oldName).matches())
+		{
+			if (!oldName.equals(nameReplacement))
+			{
+				series.setName(nameReplacement);
+				changes.add(new StandardizingChange(series, Series.PROP_NAME.getPropName(), oldName, nameReplacement));
+			}
+
+			String oldTitle = series.getTitle();
+			if (!Objects.equals(oldTitle, titleReplacement))
+			{
+				series.setTitle(titleReplacement);
+				changes.add(new StandardizingChange(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement));
+			}
+		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(SeriesNameStandardizer.class).add("namePattern", namePattern).add("nameReplacement", nameReplacement).add("titleReplacement", titleReplacement).toString();
+	}
 }

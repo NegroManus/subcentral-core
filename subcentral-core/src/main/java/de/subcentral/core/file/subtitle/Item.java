@@ -6,65 +6,65 @@ import com.google.common.base.MoreObjects;
 
 public class Item
 {
-    private long   start;
-    private long   end;
-    private String text;
+	private long	start;
+	private long	end;
+	private String	text;
 
-    public long getStart()
-    {
-	return start;
-    }
-
-    public void setStart(long start)
-    {
-	if (start < 0)
+	public long getStart()
 	{
-	    throw new IllegalArgumentException("start cannot be negative");
+		return start;
 	}
-	this.start = start;
-    }
 
-    public long getEnd()
-    {
-	return end;
-    }
-
-    public void setEnd(long end)
-    {
-	if (start < 0)
+	public void setStart(long start)
 	{
-	    throw new IllegalArgumentException("end cannot be negative");
+		if (start < 0)
+		{
+			throw new IllegalArgumentException("start cannot be negative");
+		}
+		this.start = start;
 	}
-	this.end = end;
-    }
 
-    public String getText()
-    {
-	return text;
-    }
-
-    public void setText(String text)
-    {
-	this.text = text;
-    }
-
-    public long getDuration()
-    {
-	return end - start;
-    }
-
-    public void setDuration(long duration)
-    {
-	if (duration < 0)
+	public long getEnd()
 	{
-	    throw new IllegalArgumentException("duration cannot be negative");
+		return end;
 	}
-	this.end = start + duration;
-    }
 
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(Item.class).omitNullValues().add("start", Duration.ofMillis(start)).add("end", Duration.ofMillis(end)).add("text", text.replace('\n', '|')).toString();
-    }
+	public void setEnd(long end)
+	{
+		if (start < 0)
+		{
+			throw new IllegalArgumentException("end cannot be negative");
+		}
+		this.end = end;
+	}
+
+	public String getText()
+	{
+		return text;
+	}
+
+	public void setText(String text)
+	{
+		this.text = text;
+	}
+
+	public long getDuration()
+	{
+		return end - start;
+	}
+
+	public void setDuration(long duration)
+	{
+		if (duration < 0)
+		{
+			throw new IllegalArgumentException("duration cannot be negative");
+		}
+		this.end = start + duration;
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(Item.class).omitNullValues().add("start", Duration.ofMillis(start)).add("end", Duration.ofMillis(end)).add("text", text.replace('\n', '|')).toString();
+	}
 }

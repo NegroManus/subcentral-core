@@ -16,66 +16,66 @@ import de.subcentral.core.util.TemporalComparator;
 
 public class Nuke implements Comparable<Nuke>
 {
-    private final String   reason;
-    private final Temporal date;
+	private final String	reason;
+	private final Temporal	date;
 
-    public Nuke(String reason)
-    {
-	this(reason, null);
-    }
-
-    public Nuke(String reason, Temporal date) throws IllegalArgumentException
-    {
-	this.reason = reason;
-	this.date = BeanUtil.validateTemporalClass(date);
-    }
-
-    public String getReason()
-    {
-	return reason;
-    }
-
-    public Temporal getDate()
-    {
-	return date;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-	if (this == obj)
+	public Nuke(String reason)
 	{
-	    return true;
+		this(reason, null);
 	}
-	if (obj instanceof Nuke)
+
+	public Nuke(String reason, Temporal date) throws IllegalArgumentException
 	{
-	    Nuke o = (Nuke) obj;
-	    return StringUtils.equalsIgnoreCase(reason, o.reason) && Objects.equals(date, o.date);
+		this.reason = reason;
+		this.date = BeanUtil.validateTemporalClass(date);
 	}
-	return false;
-    }
 
-    @Override
-    public int hashCode()
-    {
-	return new HashCodeBuilder(9, 71).append(StringUtils.lowerCase(reason, Locale.ENGLISH)).append(date).toHashCode();
-    }
-
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(Nuke.class).omitNullValues().add("reason", reason).add("date", date).toString();
-    }
-
-    @Override
-    public int compareTo(Nuke o)
-    {
-	// nulls first
-	if (o == null)
+	public String getReason()
 	{
-	    return 1;
+		return reason;
 	}
-	// sort by date, then reason
-	return ComparisonChain.start().compare(date, o.date, TemporalComparator.INSTANCE).compare(reason, o.reason, Settings.STRING_ORDERING).result();
-    }
+
+	public Temporal getDate()
+	{
+		return date;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof Nuke)
+		{
+			Nuke o = (Nuke) obj;
+			return StringUtils.equalsIgnoreCase(reason, o.reason) && Objects.equals(date, o.date);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(9, 71).append(StringUtils.lowerCase(reason, Locale.ENGLISH)).append(date).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(Nuke.class).omitNullValues().add("reason", reason).add("date", date).toString();
+	}
+
+	@Override
+	public int compareTo(Nuke o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		// sort by date, then reason
+		return ComparisonChain.start().compare(date, o.date, TemporalComparator.INSTANCE).compare(reason, o.reason, Settings.STRING_ORDERING).result();
+	}
 }

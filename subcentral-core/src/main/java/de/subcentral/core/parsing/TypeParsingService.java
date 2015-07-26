@@ -19,208 +19,208 @@ import com.google.common.collect.ImmutableList;
  */
 public class TypeParsingService implements ParsingService
 {
-    private final String	       domain;
-    private final List<ParserEntry<?>> parserEntries = new CopyOnWriteArrayList<>();
+	private final String				domain;
+	private final List<ParserEntry<?>>	parserEntries	= new CopyOnWriteArrayList<>();
 
-    public TypeParsingService(String domain)
-    {
-	this.domain = Objects.requireNonNull(domain, "domain");
-    }
-
-    @Override
-    public String getDomain()
-    {
-	return domain;
-    }
-
-    @Override
-    public Set<Class<?>> getTargetTypes()
-    {
-	return parserEntries.stream().map((entry) -> entry.targetType).collect(Collectors.toSet());
-    }
-
-    public List<ParserEntry<?>> getParserEntries()
-    {
-	return parserEntries;
-    }
-
-    public ImmutableList<Parser<?>> getParsers()
-    {
-	ImmutableList.Builder<Parser<?>> parsers = ImmutableList.builder();
-	for (ParserEntry<?> entry : parserEntries)
+	public TypeParsingService(String domain)
 	{
-	    parsers.add(entry.parser);
+		this.domain = Objects.requireNonNull(domain, "domain");
 	}
-	return parsers.build();
-    }
 
-    public <T> ImmutableList<Parser<? extends T>> getParsersForType(Class<T> targetType)
-    {
-	Objects.requireNonNull(targetType, "targetType");
-	ImmutableList.Builder<Parser<? extends T>> parsers = ImmutableList.builder();
-	for (ParserEntry<?> entry : parserEntries)
+	@Override
+	public String getDomain()
 	{
-	    if (targetType.isAssignableFrom(entry.targetType))
-	    {
-		// safe cast because targetType is superClass of parser's target type
-		@SuppressWarnings("unchecked")
-		Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
-		parsers.add(parser);
-	    }
+		return domain;
 	}
-	return parsers.build();
-    }
 
-    public <T> void registerAllParsers(Class<T> targetType, Iterable<Parser<T>> parsers)
-    {
-	for (Parser<T> p : parsers)
+	@Override
+	public Set<Class<?>> getTargetTypes()
 	{
-	    registerParser(targetType, p);
+		return parserEntries.stream().map((entry) -> entry.targetType).collect(Collectors.toSet());
 	}
-    }
 
-    public boolean unregisterAllParsers(Iterable<Parser<?>> parsers)
-    {
-	boolean changed = false;
-	for (Parser<?> p : parsers)
+	public List<ParserEntry<?>> getParserEntries()
 	{
-	    if (unregisterParser(p))
-	    {
-		changed = true;
-	    }
+		return parserEntries;
 	}
-	return changed;
-    }
 
-    public <T> void registerParser(Class<T> targetType, Parser<T> parser)
-    {
-	parserEntries.add(new ParserEntry<T>(parser, targetType));
-    }
-
-    public boolean unregisterParser(Parser<?> parser)
-    {
-	Iterator<ParserEntry<?>> iter = parserEntries.iterator();
-	while (iter.hasNext())
+	public ImmutableList<Parser<?>> getParsers()
 	{
-	    ParserEntry<?> entry = iter.next();
-	    if (entry.parser.equals(parser))
-	    {
-		iter.remove();
-		return true;
-	    }
-	}
-	return false;
-    }
-
-    public void unregisterAllParsers()
-    {
-	parserEntries.clear();
-    }
-
-    @Override
-    public Object parse(String text) throws ParsingException
-    {
-	if (StringUtils.isBlank(text))
-	{
-	    return null;
-	}
-	for (ParserEntry<?> entry : parserEntries)
-	{
-	    Object parsedObj = entry.parser.parse(text);
-	    if (parsedObj != null)
-	    {
-		System.out.println("Parser succeeded:" + entry.parser + " - " + text);
-		return parsedObj;
-	    }
-	}
-	return null;
-    }
-
-    @Override
-    public <T> T parse(String text, Class<T> targetType) throws ParsingException
-    {
-	if (StringUtils.isBlank(text))
-	{
-	    return null;
-	}
-	Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
-	for (ParserEntry<?> entry : parserEntries)
-	{
-	    if (targetType.isAssignableFrom(entry.targetType))
-	    {
-		// save cast because targetClass is superClass of parsers type
-		@SuppressWarnings("unchecked")
-		Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
-		T parsedObj = parser.parse(text);
-		if (parsedObj != null)
+		ImmutableList.Builder<Parser<?>> parsers = ImmutableList.builder();
+		for (ParserEntry<?> entry : parserEntries)
 		{
-		    return parsedObj;
+			parsers.add(entry.parser);
 		}
-	    }
+		return parsers.build();
 	}
-	return null;
-    }
 
-    @Override
-    public Object parse(String text, Set<Class<?>> targetTypes) throws ParsingException
-    {
-	if (StringUtils.isBlank(text))
+	public <T> ImmutableList<Parser<? extends T>> getParsersForType(Class<T> targetType)
 	{
-	    return null;
-	}
-	if (targetTypes.isEmpty())
-	{
-	    return parse(text);
-	}
-	for (ParserEntry<?> entry : parserEntries)
-	{
-	    for (Class<?> targetType : targetTypes)
-	    {
-		if (targetType.isAssignableFrom(entry.targetType))
+		Objects.requireNonNull(targetType, "targetType");
+		ImmutableList.Builder<Parser<? extends T>> parsers = ImmutableList.builder();
+		for (ParserEntry<?> entry : parserEntries)
 		{
-		    Parser<?> parser = entry.parser;
-		    Object parsedObj = parser.parse(text);
-		    if (parsedObj != null)
-		    {
-			return parsedObj;
-		    }
+			if (targetType.isAssignableFrom(entry.targetType))
+			{
+				// safe cast because targetType is superClass of parser's target type
+				@SuppressWarnings("unchecked")
+				Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
+				parsers.add(parser);
+			}
 		}
-	    }
-	}
-	return null;
-    }
-
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(TypeParsingService.class).add("domain", domain).toString();
-    }
-
-    public static final class ParserEntry<T>
-    {
-	private final Parser<T>	parser;
-	private final Class<T>	targetType;
-
-	private ParserEntry(Parser<T> parser, Class<T> targetType)
-	{
-	    this.parser = Objects.requireNonNull(parser, "parser");
-	    this.targetType = Objects.requireNonNull(targetType, "targetType");
+		return parsers.build();
 	}
 
-	public Parser<T> getParser()
+	public <T> void registerAllParsers(Class<T> targetType, Iterable<Parser<T>> parsers)
 	{
-	    return parser;
+		for (Parser<T> p : parsers)
+		{
+			registerParser(targetType, p);
+		}
 	}
 
-	public Class<T> getTargetType()
+	public boolean unregisterAllParsers(Iterable<Parser<?>> parsers)
 	{
-	    return targetType;
+		boolean changed = false;
+		for (Parser<?> p : parsers)
+		{
+			if (unregisterParser(p))
+			{
+				changed = true;
+			}
+		}
+		return changed;
+	}
+
+	public <T> void registerParser(Class<T> targetType, Parser<T> parser)
+	{
+		parserEntries.add(new ParserEntry<T>(parser, targetType));
+	}
+
+	public boolean unregisterParser(Parser<?> parser)
+	{
+		Iterator<ParserEntry<?>> iter = parserEntries.iterator();
+		while (iter.hasNext())
+		{
+			ParserEntry<?> entry = iter.next();
+			if (entry.parser.equals(parser))
+			{
+				iter.remove();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void unregisterAllParsers()
+	{
+		parserEntries.clear();
+	}
+
+	@Override
+	public Object parse(String text) throws ParsingException
+	{
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
+		for (ParserEntry<?> entry : parserEntries)
+		{
+			Object parsedObj = entry.parser.parse(text);
+			if (parsedObj != null)
+			{
+				System.out.println("Parser succeeded:" + entry.parser + " - " + text);
+				return parsedObj;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public <T> T parse(String text, Class<T> targetType) throws ParsingException
+	{
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
+		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
+		for (ParserEntry<?> entry : parserEntries)
+		{
+			if (targetType.isAssignableFrom(entry.targetType))
+			{
+				// save cast because targetClass is superClass of parsers type
+				@SuppressWarnings("unchecked")
+				Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
+				T parsedObj = parser.parse(text);
+				if (parsedObj != null)
+				{
+					return parsedObj;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object parse(String text, Set<Class<?>> targetTypes) throws ParsingException
+	{
+		if (StringUtils.isBlank(text))
+		{
+			return null;
+		}
+		if (targetTypes.isEmpty())
+		{
+			return parse(text);
+		}
+		for (ParserEntry<?> entry : parserEntries)
+		{
+			for (Class<?> targetType : targetTypes)
+			{
+				if (targetType.isAssignableFrom(entry.targetType))
+				{
+					Parser<?> parser = entry.parser;
+					Object parsedObj = parser.parse(text);
+					if (parsedObj != null)
+					{
+						return parsedObj;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public String toString()
 	{
-	    return MoreObjects.toStringHelper(ParserEntry.class).add("parser", parser).add("targetType", targetType).toString();
+		return MoreObjects.toStringHelper(TypeParsingService.class).add("domain", domain).toString();
 	}
-    }
+
+	public static final class ParserEntry<T>
+	{
+		private final Parser<T>	parser;
+		private final Class<T>	targetType;
+
+		private ParserEntry(Parser<T> parser, Class<T> targetType)
+		{
+			this.parser = Objects.requireNonNull(parser, "parser");
+			this.targetType = Objects.requireNonNull(targetType, "targetType");
+		}
+
+		public Parser<T> getParser()
+		{
+			return parser;
+		}
+
+		public Class<T> getTargetType()
+		{
+			return targetType;
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(ParserEntry.class).add("parser", parser).add("targetType", targetType).toString();
+		}
+	}
 }

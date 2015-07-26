@@ -22,88 +22,94 @@ import javafx.scene.layout.GridPane;
 
 public class ReleaseGuessingSettingsController extends AbstractSettingsSectionController
 {
-    @FXML
-    private GridPane				 releaseGuessingSettingsPane;
-    @FXML
-    private CheckBox				 enableGuessingCheckBox;
-    @FXML
-    private TableView<StandardRelease>		 standardReleasesTableView;
-    @FXML
-    private TableColumn<StandardRelease, String> standardReleasesTagsColumn;
-    @FXML
-    private TableColumn<StandardRelease, String> standardReleasesGroupColumn;
-    @FXML
-    private TableColumn<StandardRelease, String> standardReleasesScopeColumn;
+	@FXML
+	private GridPane								releaseGuessingSettingsPane;
+	@FXML
+	private CheckBox								enableGuessingCheckBox;
+	@FXML
+	private TableView<StandardRelease>				standardReleasesTableView;
+	@FXML
+	private TableColumn<StandardRelease, String>	standardReleasesTagsColumn;
+	@FXML
+	private TableColumn<StandardRelease, String>	standardReleasesGroupColumn;
+	@FXML
+	private TableColumn<StandardRelease, String>	standardReleasesScopeColumn;
 
-    @FXML
-    private Button addStandardReleaseButton;
-    @FXML
-    private Button editStandardReleaseButton;
-    @FXML
-    private Button removeStandardReleaseButton;
+	@FXML
+	private Button	addStandardReleaseButton;
+	@FXML
+	private Button	editStandardReleaseButton;
+	@FXML
+	private Button	removeStandardReleaseButton;
 
-    public ReleaseGuessingSettingsController(SettingsController settingsController)
-    {
-	super(settingsController);
-    }
+	public ReleaseGuessingSettingsController(SettingsController settingsController)
+	{
+		super(settingsController);
+	}
 
-    @Override
-    public GridPane getSectionRootPane()
-    {
-	return releaseGuessingSettingsPane;
-    }
+	@Override
+	public GridPane getSectionRootPane()
+	{
+		return releaseGuessingSettingsPane;
+	}
 
-    @Override
-    protected void doInitialize() throws Exception
-    {
-	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+	@Override
+	protected void doInitialize() throws Exception
+	{
+		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
-	enableGuessingCheckBox.selectedProperty().bindBidirectional(settings.guessingEnabledProperty());
+		enableGuessingCheckBox.selectedProperty().bindBidirectional(settings.guessingEnabledProperty());
 
-	// Standard releases
-	standardReleasesTableView.setItems(settings.standardReleasesProperty());
+		// Standard releases
+		standardReleasesTableView.setItems(settings.standardReleasesProperty());
 
-	standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
-	    return FxUtil.constantBinding(Tag.listToString(param.getValue().getRelease().getTags()));
-	});
-	standardReleasesGroupColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
-	    return FxUtil.constantBinding(Group.toSafeString(param.getValue().getRelease().getGroup()));
-	});
-	standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
-	    String value;
-	    switch (param.getValue().getScope())
-	    {
-		case IF_GUESSING:
-		    value = "If guessing";
-		    break;
-		case ALWAYS:
-		    value = "Always";
-		    break;
-		default:
-		    value = param.getValue().getScope().name();
-	    }
-	    return FxUtil.constantBinding(value);
-	});
+		standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
+		{
+			return FxUtil.constantBinding(Tag.listToString(param.getValue().getRelease().getTags()));
+		});
+		standardReleasesGroupColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
+		{
+			return FxUtil.constantBinding(Group.toSafeString(param.getValue().getRelease().getGroup()));
+		});
+		standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
+		{
+			String value;
+			switch (param.getValue().getScope())
+			{
+			case IF_GUESSING:
+				value = "If guessing";
+				break;
+			case ALWAYS:
+				value = "Always";
+				break;
+			default:
+				value = param.getValue().getScope().name();
+			}
+			return FxUtil.constantBinding(value);
+		});
 
-	addStandardReleaseButton.setOnAction((ActionEvent event) -> {
-	    Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseDefinitionDialog();
-	    FxUtil.handleDistinctAdd(standardReleasesTableView, result);
-	});
+		addStandardReleaseButton.setOnAction((ActionEvent event) ->
+		{
+			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseDefinitionDialog();
+			FxUtil.handleDistinctAdd(standardReleasesTableView, result);
+		});
 
-	final BooleanBinding noSelection = standardReleasesTableView.getSelectionModel().selectedItemProperty().isNull();
+		final BooleanBinding noSelection = standardReleasesTableView.getSelectionModel().selectedItemProperty().isNull();
 
-	editStandardReleaseButton.disableProperty().bind(noSelection);
-	editStandardReleaseButton.setOnAction((ActionEvent event) -> {
-	    StandardRelease def = standardReleasesTableView.getSelectionModel().getSelectedItem();
-	    Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseDefinitionDialog(def);
-	    FxUtil.handleDistinctEdit(standardReleasesTableView, result);
-	});
+		editStandardReleaseButton.disableProperty().bind(noSelection);
+		editStandardReleaseButton.setOnAction((ActionEvent event) ->
+		{
+			StandardRelease def = standardReleasesTableView.getSelectionModel().getSelectedItem();
+			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseDefinitionDialog(def);
+			FxUtil.handleDistinctEdit(standardReleasesTableView, result);
+		});
 
-	removeStandardReleaseButton.disableProperty().bind(noSelection);
-	removeStandardReleaseButton.setOnAction((ActionEvent event) -> {
-	    FxUtil.handleDelete(standardReleasesTableView, "standard release", SubCentralFxUtil.STANDARD_RELEASE_STRING_CONVERTER);
-	});
+		removeStandardReleaseButton.disableProperty().bind(noSelection);
+		removeStandardReleaseButton.setOnAction((ActionEvent event) ->
+		{
+			FxUtil.handleDelete(standardReleasesTableView, "standard release", SubCentralFxUtil.STANDARD_RELEASE_STRING_CONVERTER);
+		});
 
-	FxUtil.setStandardMouseAndKeyboardSupportForTableView(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);
-    }
+		FxUtil.setStandardMouseAndKeyboardSupportForTableView(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);
+	}
 }

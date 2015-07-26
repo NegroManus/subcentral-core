@@ -19,60 +19,60 @@ import de.subcentral.core.standardizing.StandardizingChange;
 
 public class Repository
 {
-    private static final Logger log = LogManager.getLogger(Repository.class);
+	private static final Logger log = LogManager.getLogger(Repository.class);
 
-    private final SortedSet<Series>		series	  = new TreeSet<>();
-    private final SortedSet<Season>		seasons	  = new TreeSet<>();
-    private final SortedSet<Episode>		episodes  = new TreeSet<>();
-    private final SortedSet<Subber>		subbers	  = new TreeSet<>();
-    private final SortedSet<Release>		releases  = new TreeSet<>();
-    private final SortedSet<SubtitleAdjustment>	subtitles = new TreeSet<>();
+	private final SortedSet<Series>				series		= new TreeSet<>();
+	private final SortedSet<Season>				seasons		= new TreeSet<>();
+	private final SortedSet<Episode>			episodes	= new TreeSet<>();
+	private final SortedSet<Subber>				subbers		= new TreeSet<>();
+	private final SortedSet<Release>			releases	= new TreeSet<>();
+	private final SortedSet<SubtitleAdjustment>	subtitles	= new TreeSet<>();
 
-    public SortedSet<Series> getSeries()
-    {
-	return series;
-    }
+	public SortedSet<Series> getSeries()
+	{
+		return series;
+	}
 
-    public SortedSet<Season> getSeasons()
-    {
-	return seasons;
-    }
+	public SortedSet<Season> getSeasons()
+	{
+		return seasons;
+	}
 
-    public SortedSet<Episode> getEpisodes()
-    {
-	return episodes;
-    }
+	public SortedSet<Episode> getEpisodes()
+	{
+		return episodes;
+	}
 
-    public SortedSet<Subber> getSubbers()
-    {
-	return subbers;
-    }
+	public SortedSet<Subber> getSubbers()
+	{
+		return subbers;
+	}
 
-    public SortedSet<Release> getReleases()
-    {
-	return releases;
-    }
+	public SortedSet<Release> getReleases()
+	{
+		return releases;
+	}
 
-    public SortedSet<SubtitleAdjustment> getSubtitles()
-    {
-	return subtitles;
-    }
+	public SortedSet<SubtitleAdjustment> getSubtitles()
+	{
+		return subtitles;
+	}
 
-    public Optional<Series> findSeries(Series candidate)
-    {
-	List<StandardizingChange> changes = MigrationSettings.INSTANCE.getStandardizingService().standardize(candidate);
-	changes.stream().forEach((c) -> log.debug("Changed Series {}", c));
-	return series.stream().filter(NamingUtil.filterByName(candidate, NamingDefaults.getDefaultNormalizingNamingService(), MigrationSettings.INSTANCE.getNamingParams())).findAny();
-    }
+	public Optional<Series> findSeries(Series candidate)
+	{
+		List<StandardizingChange> changes = MigrationSettings.INSTANCE.getStandardizingService().standardize(candidate);
+		changes.stream().forEach((c) -> log.debug("Changed Series {}", c));
+		return series.stream().filter(NamingUtil.filterByName(candidate, NamingDefaults.getDefaultNormalizingNamingService(), MigrationSettings.INSTANCE.getNamingParams())).findAny();
+	}
 
-    public static void main(String[] args)
-    {
-	Repository repo = new Repository();
-	repo.getSeries().add(new Series("Psych"));
-	repo.getSeries().add(new Series("How I Met Your Mother"));
-	repo.getSeries().add(new Series("Game of Thrones"));
-	repo.getSeries().add(new Series("Veep"));
+	public static void main(String[] args)
+	{
+		Repository repo = new Repository();
+		repo.getSeries().add(new Series("Psych"));
+		repo.getSeries().add(new Series("How I Met Your Mother"));
+		repo.getSeries().add(new Series("Game of Thrones"));
+		repo.getSeries().add(new Series("Veep"));
 
-	System.out.println(repo.findSeries(new Series("how.i.met.your.mother")));
-    }
+		System.out.println(repo.findSeries(new Series("how.i.met.your.mother")));
+	}
 }

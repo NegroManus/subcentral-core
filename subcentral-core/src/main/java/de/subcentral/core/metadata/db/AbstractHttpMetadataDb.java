@@ -12,106 +12,106 @@ import java.util.List;
 
 public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 {
-    public static final int DEFAULT_TIMEOUT = 10000;
+	public static final int DEFAULT_TIMEOUT = 10000;
 
-    protected final URL	host;
-    protected int	timeout	= DEFAULT_TIMEOUT;
+	protected final URL	host;
+	protected int		timeout	= DEFAULT_TIMEOUT;
 
-    public AbstractHttpMetadataDb()
-    {
-	try
+	public AbstractHttpMetadataDb()
 	{
-	    this.host = initHost();
+		try
+		{
+			this.host = initHost();
+		}
+		catch (MalformedURLException e)
+		{
+			throw new AssertionError("Host URL malformed", e);
+		}
 	}
-	catch (MalformedURLException e)
+
+	/**
+	 * 
+	 * @return the URL of the host of this lookup, not null
+	 * @throws MalformedURLException
+	 */
+	protected abstract URL initHost() throws MalformedURLException;
+
+	public URL getHost()
 	{
-	    throw new AssertionError("Host URL malformed", e);
+		return host;
 	}
-    }
 
-    /**
-     * 
-     * @return the URL of the host of this lookup, not null
-     * @throws MalformedURLException
-     */
-    protected abstract URL initHost() throws MalformedURLException;
-
-    public URL getHost()
-    {
-	return host;
-    }
-
-    public int getTimeout()
-    {
-	return timeout;
-    }
-
-    public void setTimeout(int timeout)
-    {
-	this.timeout = timeout;
-    }
-
-    @Override
-    public boolean isAvailable()
-    {
-	try
+	public int getTimeout()
 	{
-	    HttpURLConnection connection = (HttpURLConnection) initHost().openConnection();
-	    connection.setConnectTimeout(timeout);
-	    connection.setReadTimeout(timeout);
-	    int responseCode = connection.getResponseCode();
-	    return (200 <= responseCode && responseCode <= 399);
+		return timeout;
 	}
-	catch (IOException exception)
+
+	public void setTimeout(int timeout)
 	{
-	    return false;
+		this.timeout = timeout;
 	}
-    }
 
-    @Override
-    public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
-    {
-	try
+	@Override
+	public boolean isAvailable()
 	{
-	    return queryUrl(buildQueryUrl(query));
+		try
+		{
+			HttpURLConnection connection = (HttpURLConnection) initHost().openConnection();
+			connection.setConnectTimeout(timeout);
+			connection.setReadTimeout(timeout);
+			int responseCode = connection.getResponseCode();
+			return (200 <= responseCode && responseCode <= 399);
+		}
+		catch (IOException exception)
+		{
+			return false;
+		}
 	}
-	catch (MetadataDbUnavailableException ue)
+
+	@Override
+	public List<T> query(String query) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
-	    throw ue;
+		try
+		{
+			return queryUrl(buildQueryUrl(query));
+		}
+		catch (MetadataDbUnavailableException ue)
+		{
+			throw ue;
+		}
+		catch (Exception e)
+		{
+			throw new MetadataDbQueryException(this, query, e);
+		}
 	}
-	catch (Exception e)
+
+	public abstract List<T> queryUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
+
+	protected abstract URL buildQueryUrl(String query) throws Exception;
+
+	/**
+	 * 
+	 * @param path
+	 *            the path for the URL. Not null. Must start with "/"
+	 * @param query
+	 *            the query for the URL. Not null
+	 * @return An URL build of the host of this lookup and the given path and query
+	 * @throws URISyntaxException
+	 * @throws UnsupportedEncodingException
+	 * @throws MalformedURLException
+	 */
+	protected URL buildUrl(String path, String query) throws UnsupportedEncodingException, URISyntaxException, MalformedURLException
 	{
-	    throw new MetadataDbQueryException(this, query, e);
+		URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
+		return uri.toURL();
 	}
-    }
 
-    public abstract List<T> queryUrl(URL query) throws MetadataDbUnavailableException, MetadataDbQueryException;
-
-    protected abstract URL buildQueryUrl(String query) throws Exception;
-
-    /**
-     * 
-     * @param path
-     *            the path for the URL. Not null. Must start with "/"
-     * @param query
-     *            the query for the URL. Not null
-     * @return An URL build of the host of this lookup and the given path and query
-     * @throws URISyntaxException
-     * @throws UnsupportedEncodingException
-     * @throws MalformedURLException
-     */
-    protected URL buildUrl(String path, String query) throws UnsupportedEncodingException, URISyntaxException, MalformedURLException
-    {
-	URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
-	return uri.toURL();
-    }
-
-    protected String formatQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException
-    {
-	StringBuilder sb = new StringBuilder();
-	sb.append(queryPrefix);
-	// URLEncoder is just for encoding queries, not for the whole URL
-	sb.append(queryStr == null ? "" : URLEncoder.encode(queryStr, "UTF-8"));
-	return sb.toString();
-    }
+	protected String formatQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(queryPrefix);
+		// URLEncoder is just for encoding queries, not for the whole URL
+		sb.append(queryStr == null ? "" : URLEncoder.encode(queryStr, "UTF-8"));
+		return sb.toString();
+	}
 }

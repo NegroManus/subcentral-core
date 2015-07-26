@@ -6,29 +6,29 @@ import java.util.List;
 
 public abstract class AbstractNamedMedia extends AbstractMedia
 {
-    protected String	   name;
-    protected List<String> aliasNames = new ArrayList<>(0);
+	protected String		name;
+	protected List<String>	aliasNames	= new ArrayList<>(0);
 
-    @Override
-    public String getName()
-    {
-	return name;
-    }
+	@Override
+	public String getName()
+	{
+		return name;
+	}
 
-    public void setName(String name)
-    {
-	this.name = name;
-    }
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
-    @Override
-    public List<String> getAliasNames()
-    {
-	return aliasNames;
-    }
+	@Override
+	public List<String> getAliasNames()
+	{
+		return aliasNames;
+	}
 
-    public void setAliasNames(Collection<? extends String> aliasNames)
-    {
-	this.aliasNames.clear();
-	this.aliasNames.addAll(aliasNames);
-    }
+	public void setAliasNames(Collection<? extends String> aliasNames)
+	{
+		this.aliasNames.clear();
+		this.aliasNames.addAll(aliasNames);
+	}
 }

@@ -258,24 +258,33 @@ a {
 	<div class="multi-download">
 		<b>Multidownload</b>
 		<div class="filter-box">
-			Sprache: <select id="lang-filter" onchange="javascript:filterByLangAndSource();">
+			Sprache: <select id="lang-filter"
+				onchange="javascript:filterByLangAndSource();">
 				<option value="">-</option>
 				<option value="de">Deutsch</option>
 				<option value="en">English</option>
-			</select> Quelle: <select id="source-filter" onchange="javascript:filterByLangAndSource();">
+			</select> Quelle: <select id="source-filter"
+				onchange="javascript:filterByLangAndSource();">
 				<option value="">-</option>
 				<option value="SubCentral.de">SubCentral</option>
 				<option value="Addic7ed.com">Addic7ed.com</option>
-			</select> Release: <input id="rls-filter" type="text" onchange="javascript:filterByRls();" onkeyup="javascript:filterByRls()" onpaste="javascript:filterByRls()" oninput="javascript:filterByRls()" /> <input
-				type="button" value="Zurücksetzen" onclick="resetFilter()" />
+			</select> Release: <input id="rls-filter" type="text"
+				onchange="javascript:filterByRls();"
+				onkeyup="javascript:filterByRls()"
+				onpaste="javascript:filterByRls()"
+				oninput="javascript:filterByRls()" /> <input type="button"
+				value="Zurücksetzen" onclick="resetFilter()" />
 		</div>
 		<div>
-			<input type="button" value="Eingeblendete Releases selektieren" onclick="javascript:selectReleases(true, true);" /> <input type="button" value="Selektion aufheben"
+			<input type="button" value="Eingeblendete Releases selektieren"
+				onclick="javascript:selectReleases(true, true);" /> <input
+				type="button" value="Selektion aufheben"
 				onclick="selectReleases(false, false);" />
 		</div>
 		<div>
 			<textarea id="download-list" disabled="disabled"></textarea>
-			<input id="multi-download-button" type="button" value="Multidownload" disabled="disabled" onclick="multiDownload()" />
+			<input id="multi-download-button" type="button" value="Multidownload"
+				disabled="disabled" onclick="multiDownload()" />
 		</div>
 	</div>
 
@@ -283,38 +292,56 @@ a {
 
 	<br />
 	<div>
-		<input type="button" value="Alle Episoden aufklappen" onclick="expandAllSubs()" /> <input type="button" value="Alle Episoden zuklappen" onclick="collapseAllSubs()" />
+		<input type="button" value="Alle Episoden aufklappen"
+			onclick="expandAllSubs()" /> <input type="button"
+			value="Alle Episoden zuklappen" onclick="collapseAllSubs()" />
 	</div>
 	<div class="epis">
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e01-subs');">E01 - "Lock, Stock, Some Smoking Barrels and Burton Guster’s Goblet of Fire"</a></span> <span class="airdate">08. Jan. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
+				href="javascript:toggleExpand('e01-subs');">E01 - "Lock, Stock,
+					Some Smoking Barrels and Burton Guster’s Goblet of Fire"</a></span> <span
+				class="airdate">08. Jan. 2014</span>
 		</div>
 		<div id="e01-subs" class="subs released" style="display: none">
 			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<a href="javascript:toggleExpand('sub01_de-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+					<a href="javascript:toggleExpand('sub01_de-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/de.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub01_de-body" class="sub-body" style="display: block">
 					<div class="sub-contributions">
 						<div class="contribution">
-							<span class="contribution-type">Übersetzung:</span> Fischchen (50 %), Perian (50 %)
+							<span class="contribution-type">Übersetzung:</span> Fischchen (50
+							%), Perian (50 %)
 						</div>
 						<div class="contribution">
 							<span class="contribution-type">Korrektur</span>: Invisible
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E01.PROPER.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E01.PROPER.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 					<div class="sub-notes">
@@ -327,7 +354,10 @@ a {
 			</div>
 			<div class="sub" data-lang="en" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub01_en-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub01_en-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/usa.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub01_en-body" class="sub-body" style="display: block">
@@ -340,15 +370,24 @@ a {
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E01.PROPER.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E01.PROPER.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E01.PROPER.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E01.PROPER.720p.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 				</div>
@@ -356,13 +395,19 @@ a {
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e02-subs');">E02 - "S.E.I.Z.E. the Day"</a></span> <span class="airdate">15. Jan. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
+				href="javascript:toggleExpand('e02-subs');">E02 - "S.E.I.Z.E.
+					the Day"</a></span> <span class="airdate">15. Jan. 2014</span>
 		</div>
 		<div id="e02-subs" class="subs released" style="display: none">
 			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub02_de-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub02_de-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/de.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub02_de-body" class="sub-body" style="display: block">
@@ -375,22 +420,34 @@ a {
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E02.PROPER.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E02.PROPER.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="sub" data-lang="en" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub02_en-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub02_en-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/usa.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub02_en-body" class="sub-body" style="display: block">
@@ -403,15 +460,24 @@ a {
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E02.PROPER.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E02.PROPER.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E02.PROPER.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E02.PROPER.720p.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E02.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 				</div>
@@ -419,34 +485,49 @@ a {
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e03-subs');">E03 - "Cloudy… With a Chance of Improvement"</a></span> <span class="airdate">22. Jan. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
+				href="javascript:toggleExpand('e03-subs');">E03 - "Cloudy… With
+					a Chance of Improvement"</a></span> <span class="airdate">22. Jan. 2014</span>
 		</div>
 		<div id="e03-subs" class="subs released" style="display: none">
 			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<a href="javascript:toggleExpand('sub03_de-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+					<a href="javascript:toggleExpand('sub03_de-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/de.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub03_de-body" class="sub-body" style="display: block">
 					<div class="sub-contributions">
 						<div class="contribution">
-							<span class="contribution-type">Übersetzung:</span> Fischchen (50 %), Perian (50 %)
+							<span class="contribution-type">Übersetzung:</span> Fischchen (50
+							%), Perian (50 %)
 						</div>
 						<div class="contribution">
 							<span class="contribution-type">Korrektur</span>: Invisible
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E03.PROPER.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E03.PROPER.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 					<div class="sub-notes">
@@ -459,7 +540,10 @@ a {
 			</div>
 			<div class="sub" data-lang="en" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub03_en-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub03_en-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/usa.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub03_en-body" class="sub-body" style="display: block">
@@ -472,15 +556,24 @@ a {
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E03.PROPER.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E03.PROPER.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E03.PROPER.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E03.PROPER.720p.HDTV.x264-KILLERS</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E03.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 				</div>
@@ -488,13 +581,19 @@ a {
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
-				href="javascript:toggleExpand('e04-subs');">E04 - "Someone’s Got a Woody"</a></span> <span class="airdate">29. Jan. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
+				href="javascript:toggleExpand('e04-subs');">E04 - "Someone’s Got
+					a Woody"</a></span> <span class="airdate">29. Jan. 2014</span>
 		</div>
 		<div id="e04-subs" class="subs released" style="display: none">
 			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub04_de-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub04_de-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/de.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub04_de-body" class="sub-body" style="display: block">
@@ -507,22 +606,34 @@ a {
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="sub" data-lang="en" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub02_en-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> SubCentral
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub02_en-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/usa.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub04_en-body" class="sub-body" style="display: block">
@@ -535,15 +646,24 @@ a {
 						</div>
 					</div>
 					<div class="sub-releases">
-						<div class="sub-rls" data-rls="Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E04.PROPER.HDTV.x264-EXCELLENCE</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E04.PROPER.720p.HDTV.x264-REMARKABLE</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a> - <span class="contribution-type">Anpassung:</span>
-							NegroManus
+						<div class="sub-rls"
+							data-rls="Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E04.720p.WEB-DL.DD5.1.H.264-ECI</a>
+							- <span class="contribution-type">Anpassung:</span> NegroManus
 						</div>
 					</div>
 				</div>
@@ -551,34 +671,51 @@ a {
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E05 - "Cog
-				Blocked"</span> <span class="airdate">05. Feb. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E05
+				- "Cog Blocked"</span> <span class="airdate">05. Feb. 2014</span>
 		</div>
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E06 - "1967: A
-				Psych Odyssey"</span> <span class="airdate">26. Feb. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E06
+				- "1967: A Psych Odyssey"</span> <span class="airdate">26. Feb. 2014</span>
 		</div>
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E07 - "Shawn and
-				Gus Truck Things Up"</span> <span class="airdate">05. Mär. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E07
+				- "Shawn and Gus Truck Things Up"</span> <span class="airdate">05.
+				Mär. 2014</span>
 		</div>
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E08 - "A Touch of
-				Sweevil"</span> <span class="airdate">12. Mär. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E08
+				- "A Touch of Sweevil"</span> <span class="airdate">12. Mär. 2014</span>
 		</div>
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E09 - "A Nightmare
-				on State Street"</span> <span class="airdate">19. Mär. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/de.png" /> <img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span>E09
+				- "A Nightmare on State Street"</span> <span class="airdate">19.
+				Mär. 2014</span>
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a href="javascript:toggleExpand('e10-subs');">E10 - "The Breakup"</a></span> <span
-				class="airdate">26. Mär. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
+				href="javascript:toggleExpand('e10-subs');">E10 - "The Breakup"</a></span>
+			<span class="airdate">26. Mär. 2014</span>
 		</div>
 		<div id="e10-subs" class="subs in-progress" style="display: block">
 			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub10_de-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub10_de-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/de.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub10_de-body" class="sub-body" style="display: block">
@@ -599,19 +736,30 @@ a {
 			</div>
 			<div class="sub" data-lang="en" data-source="Addic7ed.com">
 				<div class="sub-head">
-					<span class="center-helper"></span><a href="javascript:toggleExpand('sub10_en-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> Addic7ed.com
+					<span class="center-helper"></span><a
+						href="javascript:toggleExpand('sub10_en-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/usa.png" />
+						Addic7ed.com
 					</a>
 				</div>
 				<div id="sub10_en-body" class="sub-body" style="display: block">
 					<div class="sub-releases">
 						<div class="sub-rls" data-rls="Psych.S08E10.HDTV.x264-EXCELLENCE">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E10.HDTV.x264-EXCELLENCE</a>
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E10.HDTV.x264-EXCELLENCE</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E10.PROPER.720p.HDTV.x264-REMARKABLE">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E10.PROPER.720p.HDTV.x264-REMARKABLE</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E10.PROPER.720p.HDTV.x264-REMARKABLE">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E10.PROPER.720p.HDTV.x264-REMARKABLE</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.S08E10.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.S08E10.720p.WEB-DL.DD5.1.H.264-ECI</a>
+						<div class="sub-rls"
+							data-rls="Psych.S08E10.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.S08E10.720p.WEB-DL.DD5.1.H.264-ECI</a>
 						</div>
 					</div>
 				</div>
@@ -619,19 +767,24 @@ a {
 		</div>
 
 		<div class="epi">
-			<span class="langs"><img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a href="javascript:toggleExpand('e11-subs');">Special - "After Pshow"</a></span> <span
-				class="airdate">26. Mär. 2014</span>
+			<span class="langs"><img
+				src="http://www.subcentral.de/creative/bilder/flags/usa.png" /></span> <span><a
+				href="javascript:toggleExpand('e11-subs');">Special - "After
+					Pshow"</a></span> <span class="airdate">26. Mär. 2014</span>
 		</div>
 		<div id="e11-subs" class="subs in-progress" style="display: block">
 			<div class="sub" data-lang="de" data-source="SubCentral.de">
 				<div class="sub-head">
-					<a href="javascript:toggleExpand('sub11_de-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/de.png" /> SubCentral
+					<a href="javascript:toggleExpand('sub11_de-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/de.png" />
+						SubCentral
 					</a>
 				</div>
 				<div id="sub11_de-body" class="sub-body" style="display: block">
 					<div class="sub-contributions">
 						<div class="contribution">
-							<span class="contribution-type">Übersetzung:</span> NegroManus (50 %), Fischchen (50 %)
+							<span class="contribution-type">Übersetzung:</span> NegroManus
+							(50 %), Fischchen (50 %)
 						</div>
 					</div>
 					<div class="sub-progress">
@@ -642,19 +795,29 @@ a {
 			</div>
 			<div class="sub" data-lang="en" data-source="Addic7ed.com">
 				<div class="sub-head">
-					<a href="javascript:toggleExpand('sub11_en-body');"> <img src="http://www.subcentral.de/creative/bilder/flags/usa.png" /> Addic7ed.com
+					<a href="javascript:toggleExpand('sub11_en-body');"> <img
+						src="http://www.subcentral.de/creative/bilder/flags/usa.png" />
+						Addic7ed.com
 					</a>
 				</div>
 				<div id="sub11_en-body" class="sub-body" style="display: block">
 					<div class="sub-releases">
 						<div class="sub-rls" data-rls="Psych.After.Pshow.HDTV.x264-BATV">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.After.Pshow.HDTV.x264-BATV</a>
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.After.Pshow.HDTV.x264-BATV</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.After.Pshow.720p.HDTV.x264-BATV">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.After.Pshow.720p.HDTV.x264-BATV</a>
+						<div class="sub-rls"
+							data-rls="Psych.After.Pshow.720p.HDTV.x264-BATV">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.After.Pshow.720p.HDTV.x264-BATV</a>
 						</div>
-						<div class="sub-rls" data-rls="Psych.After.Pshow.720p.WEB-DL.DD5.1.H.264-ECI">
-							<input type="checkbox" onchange="javascript:updateMultiDownload();" /><a href="http://www.subcentral.de">Psych.After.Pshow.720p.WEB-DL.DD5.1.H.264-ECI</a>
+						<div class="sub-rls"
+							data-rls="Psych.After.Pshow.720p.WEB-DL.DD5.1.H.264-ECI">
+							<input type="checkbox"
+								onchange="javascript:updateMultiDownload();" /><a
+								href="http://www.subcentral.de">Psych.After.Pshow.720p.WEB-DL.DD5.1.H.264-ECI</a>
 						</div>
 					</div>
 				</div>

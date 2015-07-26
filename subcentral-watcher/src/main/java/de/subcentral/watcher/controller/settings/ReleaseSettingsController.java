@@ -9,29 +9,29 @@ import javafx.scene.layout.GridPane;
 
 public class ReleaseSettingsController extends AbstractSettingsSectionController
 {
-    @FXML
-    private GridPane  releaseSettingsPane;
-    @FXML
-    private TextField metaTagsTextField;
+	@FXML
+	private GridPane	releaseSettingsPane;
+	@FXML
+	private TextField	metaTagsTextField;
 
-    public ReleaseSettingsController(SettingsController settingsController)
-    {
-	super(settingsController);
-    }
+	public ReleaseSettingsController(SettingsController settingsController)
+	{
+		super(settingsController);
+	}
 
-    @Override
-    public GridPane getSectionRootPane()
-    {
-	return releaseSettingsPane;
-    }
+	@Override
+	public GridPane getSectionRootPane()
+	{
+		return releaseSettingsPane;
+	}
 
-    @Override
-    protected void doInitialize() throws Exception
-    {
-	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+	@Override
+	protected void doInitialize() throws Exception
+	{
+		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
-	// Meta tags
-	SubCentralFxUtil.bindTagsToTextField(metaTagsTextField, settings.releaseMetaTagsProperty());
-	metaTagsTextField.setPromptText(SubCentralFxUtil.DEFAULT_TAGS_PROMPT_TEXT);
-    }
+		// Meta tags
+		SubCentralFxUtil.bindTagsToTextField(metaTagsTextField, settings.releaseMetaTagsProperty());
+		metaTagsTextField.setPromptText(SubCentralFxUtil.DEFAULT_TAGS_PROMPT_TEXT);
+	}
 }

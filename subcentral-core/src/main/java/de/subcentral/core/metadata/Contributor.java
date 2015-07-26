@@ -6,16 +6,16 @@ import de.subcentral.core.Settings;
 
 public interface Contributor extends Comparable<Contributor>
 {
-    public String getName();
+	public String getName();
 
-    @Override
-    public default int compareTo(Contributor o)
-    {
-	// nulls first
-	if (o == null)
+	@Override
+	public default int compareTo(Contributor o)
 	{
-	    return 1;
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start().compare(getName(), o.getName(), Settings.STRING_ORDERING).result();
 	}
-	return ComparisonChain.start().compare(getName(), o.getName(), Settings.STRING_ORDERING).result();
-    }
 }

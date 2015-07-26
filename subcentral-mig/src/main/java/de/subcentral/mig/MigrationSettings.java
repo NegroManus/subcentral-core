@@ -42,207 +42,207 @@ import javafx.collections.FXCollections;
  */
 public class MigrationSettings
 {
-    public static final MigrationSettings INSTANCE = new MigrationSettings();
-    private static final Logger		  log	   = LogManager.getLogger(MigrationSettings.class);
+	public static final MigrationSettings	INSTANCE	= new MigrationSettings();
+	private static final Logger				log			= LogManager.getLogger(MigrationSettings.class);
 
-    private final ListProperty<Series>			series			 = new SimpleListProperty<>(this, "series", FXCollections.observableArrayList());
-    private final ListProperty<ContributionPattern>	contributionPatterns	 = new SimpleListProperty<>(this, "contributionPatterns", FXCollections.observableArrayList());
-    private final ListProperty<ContributionTypePattern>	contributionTypePatterns = new SimpleListProperty<>(this, "contributionTypePatterns", FXCollections.observableArrayList());
-    private final ListProperty<ContributorPattern>	contributorPatterns	 = new SimpleListProperty<>(this, "contributorPatterns", FXCollections.observableArrayList());
-    private final ListProperty<Pattern>			irrelevantPatterns	 = new SimpleListProperty<>(this, "irrelevantPatterns", FXCollections.observableArrayList());
-    private final Property<StandardizingService>	standardizingService	 = new SimpleObjectProperty<>(this, "standardizingService");
-    private final Map<String, Object>			namingParams		 = new HashMap<>();
+	private final ListProperty<Series>					series						= new SimpleListProperty<>(this, "series", FXCollections.observableArrayList());
+	private final ListProperty<ContributionPattern>		contributionPatterns		= new SimpleListProperty<>(this, "contributionPatterns", FXCollections.observableArrayList());
+	private final ListProperty<ContributionTypePattern>	contributionTypePatterns	= new SimpleListProperty<>(this, "contributionTypePatterns", FXCollections.observableArrayList());
+	private final ListProperty<ContributorPattern>		contributorPatterns			= new SimpleListProperty<>(this, "contributorPatterns", FXCollections.observableArrayList());
+	private final ListProperty<Pattern>					irrelevantPatterns			= new SimpleListProperty<>(this, "irrelevantPatterns", FXCollections.observableArrayList());
+	private final Property<StandardizingService>		standardizingService		= new SimpleObjectProperty<>(this, "standardizingService");
+	private final Map<String, Object>					namingParams				= new HashMap<>();
 
-    private MigrationSettings()
-    {
-
-    }
-
-    public void load(URL file) throws ConfigurationException
-    {
-	log.info("Loading settings from {}", file);
-
-	XMLConfiguration cfg = new XMLConfiguration();
-	// cfg.addEventListener(Event.ANY, (Event event) -> {
-	// System.out.println(event);
-	// });
-
-	FileHandler cfgFileHandler = new FileHandler(cfg);
-	cfgFileHandler.load(file);
-
-	load(cfg);
-    }
-
-    private void load(XMLConfiguration cfg) throws ConfigurationException
-    {
-	series.setAll(loadSeries(cfg, "series.series"));
-	contributionPatterns.setAll(loadContributionPatterns(cfg, "subtitles.contributionPatterns.contributionPattern"));
-	contributionTypePatterns.setAll(loadContributionTypePatterns(cfg, "subtitles.contributionTypePatterns.contributionTypePattern"));
-	contributorPatterns.setAll(loadContributorPatterns(cfg, "subtitles.contributorPatterns.contributorPattern"));
-	irrelevantPatterns.setAll(loadUserPatterns(cfg, "subtitles.irrelevantPatterns.irrelevantPattern"));
-	standardizingService.setValue(loadStandardizingService(cfg));
-    }
-
-    private static List<Series> loadSeries(XMLConfiguration cfg, String key)
-    {
-	ArrayList<Series> seriesList = new ArrayList<>();
-	List<HierarchicalConfiguration<ImmutableNode>> seriesCfgs = cfg.configurationsAt(key);
-	for (HierarchicalConfiguration<ImmutableNode> seriesCfg : seriesCfgs)
+	private MigrationSettings()
 	{
-	    String name = seriesCfg.getString("[@name]");
-	    int thetvdbId = seriesCfg.getInt("[@thetvdbId]");
-	    Series series = new Series(name);
-	    series.getAttributes().put(TheTvDbMediaDb.ATTRIBUTE_THETVDB_ID, thetvdbId);
-	    seriesList.add(series);
-	}
-	seriesList.trimToSize();
-	return seriesList;
-    }
 
-    private static List<ContributionPattern> loadContributionPatterns(XMLConfiguration cfg, String key)
-    {
-	ArrayList<ContributionPattern> patterns = new ArrayList<>();
-	List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
-	for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+	}
+
+	public void load(URL file) throws ConfigurationException
 	{
-	    Pattern pattern = Pattern.compile(patternCfg.getString("[@pattern]"), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-	    int confidence = patternCfg.getInt("[@confidence]", 2);
-	    int contributionTypeGroup = patternCfg.getInt("[@contributionTypeGroup]");
-	    int contributorGroup = patternCfg.getInt("[@contributorGroup]");
-	    patterns.add(new ContributionPattern(pattern, contributionTypeGroup, contributorGroup, confidence));
-	}
-	patterns.trimToSize();
-	return patterns;
-    }
+		log.info("Loading settings from {}", file);
 
-    private static List<ContributionTypePattern> loadContributionTypePatterns(XMLConfiguration cfg, String key)
-    {
-	ArrayList<ContributionTypePattern> patterns = new ArrayList<>();
-	List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
-	for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+		XMLConfiguration cfg = new XMLConfiguration();
+		// cfg.addEventListener(Event.ANY, (Event event) -> {
+		// System.out.println(event);
+		// });
+
+		FileHandler cfgFileHandler = new FileHandler(cfg);
+		cfgFileHandler.load(file);
+
+		load(cfg);
+	}
+
+	private void load(XMLConfiguration cfg) throws ConfigurationException
 	{
-	    Pattern pattern = Pattern.compile(patternCfg.getString("[@pattern]"), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-	    int confidence = patternCfg.getInt("[@confidence]", 3);
-	    String contributionType = StringUtils.trimToNull(patternCfg.getString("[@type]"));
-	    patterns.add(new ContributionTypePattern(pattern, confidence, contributionType));
+		series.setAll(loadSeries(cfg, "series.series"));
+		contributionPatterns.setAll(loadContributionPatterns(cfg, "subtitles.contributionPatterns.contributionPattern"));
+		contributionTypePatterns.setAll(loadContributionTypePatterns(cfg, "subtitles.contributionTypePatterns.contributionTypePattern"));
+		contributorPatterns.setAll(loadContributorPatterns(cfg, "subtitles.contributorPatterns.contributorPattern"));
+		irrelevantPatterns.setAll(loadUserPatterns(cfg, "subtitles.irrelevantPatterns.irrelevantPattern"));
+		standardizingService.setValue(loadStandardizingService(cfg));
 	}
-	patterns.trimToSize();
-	return patterns;
-    }
 
-    private static List<ContributorPattern> loadContributorPatterns(XMLConfiguration cfg, String key) throws ConfigurationException
-    {
-	ArrayList<ContributorPattern> patterns = new ArrayList<>();
-	List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
-	for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+	private static List<Series> loadSeries(XMLConfiguration cfg, String key)
 	{
-	    String pattern = patternCfg.getString("[@pattern]");
-	    UserPattern.Mode mode = UserPattern.Mode.valueOf(patternCfg.getString("[@patternMode]"));
-	    UserPattern userPattern = new UserPattern(pattern, mode);
-
-	    int confidence = patternCfg.getInt("[@confidence]", 2);
-
-	    Contributor contributor = null;
-	    String name = patternCfg.getString("[@name]");
-	    String type = patternCfg.getString("[@type]", "SUBBER");
-	    switch (type)
-	    {
-		case "SUBBER":
-		    Subber subber = new Subber();
-		    subber.setName(name);
-		    int scUserId = patternCfg.getInt("[@scUserId]", 0);
-		    subber.setId(scUserId);
-		    contributor = subber;
-		    break;
-		case "GROUP":
-		    SubtitleGroup group = new SubtitleGroup();
-		    group.setName(name);
-		    contributor = group;
-		    break;
-		default:
-		    throw new ConfigurationException("Illegal type: " + type);
-
-	    }
-
-	    patterns.add(new ContributorPattern(userPattern.toPattern(), confidence, contributor));
+		ArrayList<Series> seriesList = new ArrayList<>();
+		List<HierarchicalConfiguration<ImmutableNode>> seriesCfgs = cfg.configurationsAt(key);
+		for (HierarchicalConfiguration<ImmutableNode> seriesCfg : seriesCfgs)
+		{
+			String name = seriesCfg.getString("[@name]");
+			int thetvdbId = seriesCfg.getInt("[@thetvdbId]");
+			Series series = new Series(name);
+			series.getAttributes().put(TheTvDbMediaDb.ATTRIBUTE_THETVDB_ID, thetvdbId);
+			seriesList.add(series);
+		}
+		seriesList.trimToSize();
+		return seriesList;
 	}
-	patterns.trimToSize();
-	return patterns;
-    }
 
-    private static List<Pattern> loadUserPatterns(XMLConfiguration cfg, String key)
-    {
-	ArrayList<Pattern> patterns = new ArrayList<>();
-	List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
-	for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+	private static List<ContributionPattern> loadContributionPatterns(XMLConfiguration cfg, String key)
 	{
-	    String pattern = patternCfg.getString("[@pattern]");
-	    UserPattern.Mode mode = UserPattern.Mode.valueOf(patternCfg.getString("[@patternMode]"));
-	    UserPattern userPattern = new UserPattern(pattern, mode);
-	    patterns.add(userPattern.toPattern());
+		ArrayList<ContributionPattern> patterns = new ArrayList<>();
+		List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
+		for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+		{
+			Pattern pattern = Pattern.compile(patternCfg.getString("[@pattern]"), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+			int confidence = patternCfg.getInt("[@confidence]", 2);
+			int contributionTypeGroup = patternCfg.getInt("[@contributionTypeGroup]");
+			int contributorGroup = patternCfg.getInt("[@contributorGroup]");
+			patterns.add(new ContributionPattern(pattern, contributionTypeGroup, contributorGroup, confidence));
+		}
+		patterns.trimToSize();
+		return patterns;
 	}
-	patterns.trimToSize();
-	return patterns;
-    }
 
-    private static StandardizingService loadStandardizingService(XMLConfiguration cfg)
-    {
-	TypeStandardizingService service = new TypeStandardizingService("migration");
-	for (PatternStringReplacer seriesNameReplacer : loadPatternStringReplacers(cfg, "series.seriesNameReplacers.replacer"))
+	private static List<ContributionTypePattern> loadContributionTypePatterns(XMLConfiguration cfg, String key)
 	{
-	    service.registerStandardizer(Series.class, new SeriesNameStandardizer(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
+		ArrayList<ContributionTypePattern> patterns = new ArrayList<>();
+		List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
+		for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+		{
+			Pattern pattern = Pattern.compile(patternCfg.getString("[@pattern]"), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+			int confidence = patternCfg.getInt("[@confidence]", 3);
+			String contributionType = StringUtils.trimToNull(patternCfg.getString("[@type]"));
+			patterns.add(new ContributionTypePattern(pattern, confidence, contributionType));
+		}
+		patterns.trimToSize();
+		return patterns;
 	}
-	for (PatternStringReplacer contributorNameReplacer : loadPatternStringReplacers(cfg, "subtitles.contributorNameReplacers.replacer"))
+
+	private static List<ContributorPattern> loadContributorPatterns(XMLConfiguration cfg, String key) throws ConfigurationException
 	{
-	    service.registerStandardizer(Subber.class, new ReflectiveStandardizer<Subber, String>(Subber.class, "name", contributorNameReplacer));
-	}
-	return service;
-    }
+		ArrayList<ContributorPattern> patterns = new ArrayList<>();
+		List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
+		for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+		{
+			String pattern = patternCfg.getString("[@pattern]");
+			UserPattern.Mode mode = UserPattern.Mode.valueOf(patternCfg.getString("[@patternMode]"));
+			UserPattern userPattern = new UserPattern(pattern, mode);
 
-    private static List<PatternStringReplacer> loadPatternStringReplacers(XMLConfiguration cfg, String key)
-    {
-	ArrayList<PatternStringReplacer> replacers = new ArrayList<>();
-	List<HierarchicalConfiguration<ImmutableNode>> replacerCfgs = cfg.configurationsAt(key);
-	for (HierarchicalConfiguration<ImmutableNode> replacerCfg : replacerCfgs)
+			int confidence = patternCfg.getInt("[@confidence]", 2);
+
+			Contributor contributor = null;
+			String name = patternCfg.getString("[@name]");
+			String type = patternCfg.getString("[@type]", "SUBBER");
+			switch (type)
+			{
+			case "SUBBER":
+				Subber subber = new Subber();
+				subber.setName(name);
+				int scUserId = patternCfg.getInt("[@scUserId]", 0);
+				subber.setId(scUserId);
+				contributor = subber;
+				break;
+			case "GROUP":
+				SubtitleGroup group = new SubtitleGroup();
+				group.setName(name);
+				contributor = group;
+				break;
+			default:
+				throw new ConfigurationException("Illegal type: " + type);
+
+			}
+
+			patterns.add(new ContributorPattern(userPattern.toPattern(), confidence, contributor));
+		}
+		patterns.trimToSize();
+		return patterns;
+	}
+
+	private static List<Pattern> loadUserPatterns(XMLConfiguration cfg, String key)
 	{
-	    String pattern = replacerCfg.getString("[@pattern]");
-	    UserPattern.Mode mode = UserPattern.Mode.valueOf(replacerCfg.getString("[@patternMode]"));
-	    String replacement = replacerCfg.getString("[@replacement]");
-	    UserPattern userPattern = new UserPattern(pattern, mode);
-	    replacers.add(new PatternStringReplacer(userPattern.toPattern(), replacement, Mode.REPLACE_COMPLETE));
+		ArrayList<Pattern> patterns = new ArrayList<>();
+		List<HierarchicalConfiguration<ImmutableNode>> patternCfgs = cfg.configurationsAt(key);
+		for (HierarchicalConfiguration<ImmutableNode> patternCfg : patternCfgs)
+		{
+			String pattern = patternCfg.getString("[@pattern]");
+			UserPattern.Mode mode = UserPattern.Mode.valueOf(patternCfg.getString("[@patternMode]"));
+			UserPattern userPattern = new UserPattern(pattern, mode);
+			patterns.add(userPattern.toPattern());
+		}
+		patterns.trimToSize();
+		return patterns;
 	}
-	replacers.trimToSize();
-	return replacers;
-    }
 
-    public ListProperty<ContributionPattern> contributionPatternsProperty()
-    {
-	return contributionPatterns;
-    }
+	private static StandardizingService loadStandardizingService(XMLConfiguration cfg)
+	{
+		TypeStandardizingService service = new TypeStandardizingService("migration");
+		for (PatternStringReplacer seriesNameReplacer : loadPatternStringReplacers(cfg, "series.seriesNameReplacers.replacer"))
+		{
+			service.registerStandardizer(Series.class, new SeriesNameStandardizer(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
+		}
+		for (PatternStringReplacer contributorNameReplacer : loadPatternStringReplacers(cfg, "subtitles.contributorNameReplacers.replacer"))
+		{
+			service.registerStandardizer(Subber.class, new ReflectiveStandardizer<Subber, String>(Subber.class, "name", contributorNameReplacer));
+		}
+		return service;
+	}
 
-    public ListProperty<ContributionTypePattern> contributionTypePatternsProperty()
-    {
-	return contributionTypePatterns;
-    }
+	private static List<PatternStringReplacer> loadPatternStringReplacers(XMLConfiguration cfg, String key)
+	{
+		ArrayList<PatternStringReplacer> replacers = new ArrayList<>();
+		List<HierarchicalConfiguration<ImmutableNode>> replacerCfgs = cfg.configurationsAt(key);
+		for (HierarchicalConfiguration<ImmutableNode> replacerCfg : replacerCfgs)
+		{
+			String pattern = replacerCfg.getString("[@pattern]");
+			UserPattern.Mode mode = UserPattern.Mode.valueOf(replacerCfg.getString("[@patternMode]"));
+			String replacement = replacerCfg.getString("[@replacement]");
+			UserPattern userPattern = new UserPattern(pattern, mode);
+			replacers.add(new PatternStringReplacer(userPattern.toPattern(), replacement, Mode.REPLACE_COMPLETE));
+		}
+		replacers.trimToSize();
+		return replacers;
+	}
 
-    public ListProperty<ContributorPattern> contributorPatternsProperty()
-    {
-	return contributorPatterns;
-    }
+	public ListProperty<ContributionPattern> contributionPatternsProperty()
+	{
+		return contributionPatterns;
+	}
 
-    public ListProperty<Pattern> irrelevantPatternsProperty()
-    {
-	return irrelevantPatterns;
-    }
+	public ListProperty<ContributionTypePattern> contributionTypePatternsProperty()
+	{
+		return contributionTypePatterns;
+	}
 
-    public StandardizingService getStandardizingService()
-    {
-	return standardizingService.getValue();
-    }
+	public ListProperty<ContributorPattern> contributorPatternsProperty()
+	{
+		return contributorPatterns;
+	}
 
-    public Map<String, Object> getNamingParams()
-    {
-	return namingParams;
-    }
+	public ListProperty<Pattern> irrelevantPatternsProperty()
+	{
+		return irrelevantPatterns;
+	}
+
+	public StandardizingService getStandardizingService()
+	{
+		return standardizingService.getValue();
+	}
+
+	public Map<String, Object> getNamingParams()
+	{
+		return namingParams;
+	}
 
 }

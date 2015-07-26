@@ -11,64 +11,64 @@ import de.subcentral.core.Settings;
 
 public class NamedLink implements Comparable<NamedLink>
 {
-    private final String name;
-    private final String link;
+	private final String	name;
+	private final String	link;
 
-    public NamedLink(String link)
-    {
-	this(link, null);
-    }
-
-    public NamedLink(String link, String name)
-    {
-	this.link = Objects.requireNonNull(link, "link");
-	this.name = name;
-    }
-
-    public String getLink()
-    {
-	return link;
-    }
-
-    public String getName()
-    {
-	return name;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-	if (this == obj)
+	public NamedLink(String link)
 	{
-	    return true;
+		this(link, null);
 	}
-	if (obj instanceof NamedLink)
+
+	public NamedLink(String link, String name)
 	{
-	    return link.equalsIgnoreCase(((NamedLink) obj).link);
+		this.link = Objects.requireNonNull(link, "link");
+		this.name = name;
 	}
-	return false;
-    }
 
-    @Override
-    public int hashCode()
-    {
-	return new HashCodeBuilder(61, 53).append(link.toLowerCase(Locale.ENGLISH)).toHashCode();
-    }
-
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(NamedLink.class).omitNullValues().add("link", link).add("name", name).toString();
-    }
-
-    @Override
-    public int compareTo(NamedLink o)
-    {
-	// nulls first
-	if (o == null)
+	public String getLink()
 	{
-	    return 1;
+		return link;
 	}
-	return Settings.STRING_ORDERING.compare(link, o.link);
-    }
+
+	public String getName()
+	{
+		return name;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof NamedLink)
+		{
+			return link.equalsIgnoreCase(((NamedLink) obj).link);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(61, 53).append(link.toLowerCase(Locale.ENGLISH)).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(NamedLink.class).omitNullValues().add("link", link).add("name", name).toString();
+	}
+
+	@Override
+	public int compareTo(NamedLink o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return Settings.STRING_ORDERING.compare(link, o.link);
+	}
 }

@@ -10,77 +10,77 @@ import de.subcentral.core.util.TimeUtil;
 
 public class ObservableNamableBeanWrapper<T> extends ObservableNamedBeanWrapper<T>
 {
-    private final StringBinding	   name;
-    private final Property<String> actualName	    = new SimpleStringProperty(this, "actualName");
-    private final BooleanProperty  preferActualName = new SimpleBooleanProperty(this, "preferActualName");
+	private final StringBinding		name;
+	private final Property<String>	actualName			= new SimpleStringProperty(this, "actualName");
+	private final BooleanProperty	preferActualName	= new SimpleBooleanProperty(this, "preferActualName");
 
-    public ObservableNamableBeanWrapper(T bean, NamingService namingService)
-    {
-	super(bean, namingService);
-	name = new StringBinding()
+	public ObservableNamableBeanWrapper(T bean, NamingService namingService)
 	{
-	    {
-		super.bind(computedName, actualName, preferActualName);
-	    }
-
-	    @Override
-	    protected String computeValue()
-	    {
-		long start = System.nanoTime();
-		String nameValue;
-		if (preferActualName.get() && actualName.getValue() != null)
+		super(bean, namingService);
+		name = new StringBinding()
 		{
-		    nameValue = actualName.getValue();
-		}
-		else
-		{
-		    nameValue = computedName.getValue();
-		}
-		TimeUtil.printDurationMillis("NamableBean.name.computeValue(): " + nameValue, start);
-		return nameValue;
-	    }
-	};
-    }
+			{
+				super.bind(computedName, actualName, preferActualName);
+			}
 
-    @Override
-    public String getName()
-    {
-	return name.getValue();
-    }
+			@Override
+			protected String computeValue()
+			{
+				long start = System.nanoTime();
+				String nameValue;
+				if (preferActualName.get() && actualName.getValue() != null)
+				{
+					nameValue = actualName.getValue();
+				}
+				else
+				{
+					nameValue = computedName.getValue();
+				}
+				TimeUtil.printDurationMillis("NamableBean.name.computeValue(): " + nameValue, start);
+				return nameValue;
+			}
+		};
+	}
 
-    @Override
-    public StringBinding nameBinding()
-    {
-	return name;
-    }
+	@Override
+	public String getName()
+	{
+		return name.getValue();
+	}
 
-    public final String getActualName()
-    {
-	return actualName.getValue();
-    }
+	@Override
+	public StringBinding nameBinding()
+	{
+		return name;
+	}
 
-    public final void setActualName(final String actualName)
-    {
-	this.actualName.setValue(actualName);
-    }
+	public final String getActualName()
+	{
+		return actualName.getValue();
+	}
 
-    public final Property<String> actualNameProperty()
-    {
-	return actualName;
-    }
+	public final void setActualName(final String actualName)
+	{
+		this.actualName.setValue(actualName);
+	}
 
-    public final boolean getPreferActualName()
-    {
-	return preferActualName.get();
-    }
+	public final Property<String> actualNameProperty()
+	{
+		return actualName;
+	}
 
-    public final void setPreferActualName(final boolean preferActualName)
-    {
-	this.preferActualName.set(preferActualName);
-    }
+	public final boolean getPreferActualName()
+	{
+		return preferActualName.get();
+	}
 
-    public final Property<Boolean> preferActualNameProperty()
-    {
-	return preferActualName;
-    }
+	public final void setPreferActualName(final boolean preferActualName)
+	{
+		this.preferActualName.set(preferActualName);
+	}
+
+	public final Property<Boolean> preferActualNameProperty()
+	{
+		return preferActualName;
+	}
 }

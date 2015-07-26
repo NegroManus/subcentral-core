@@ -19,68 +19,68 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 public class NamingPlayground
 {
 
-    public static void main(String[] args)
-    {
-	// Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com
+	public static void main(String[] args)
+	{
+		// Psych - 01x01 - Pilot.DiMENSION.English.orig.Addic7ed.com
 
-	Series series = new Series();
-	series.setName("How I Met Your Mother");
-	series.setType(Series.TYPE_SEASONED);
+		Series series = new Series();
+		series.setName("How I Met Your Mother");
+		series.setType(Series.TYPE_SEASONED);
 
-	Season s2 = new Season(series);
-	s2.setNumber(2);
-	s2.setTitle("Webisodes");
+		Season s2 = new Season(series);
+		s2.setNumber(2);
+		s2.setTitle("Webisodes");
 
-	Episode epi = new Episode(series, s2);
-	epi.setNumberInSeason(1);
-	epi.setNumberInSeries(17);
-	epi.setTitle("Weekend at Barney's");
-	epi.setDate(LocalDateTime.now());
+		Episode epi = new Episode(series, s2);
+		epi.setNumberInSeason(1);
+		epi.setNumberInSeries(17);
+		epi.setTitle("Weekend at Barney's");
+		epi.setDate(LocalDateTime.now());
 
-	Episode epi2 = new Episode(series);
-	epi2.setNumberInSeries(18);
+		Episode epi2 = new Episode(series);
+		epi2.setNumberInSeries(18);
 
-	RegularMedia movie = new RegularMedia();
-	movie.setName("The Lord of the Rings");
-	movie.setDate(Year.of(2002));
+		RegularMedia movie = new RegularMedia();
+		movie.setName("The Lord of the Rings");
+		movie.setDate(Year.of(2002));
 
-	MultiEpisodeHelper epis = new MultiEpisodeHelper();
-	epis.add(Episode.createMiniSeriesEpisode("Psych", 1));
-	epis.add(Episode.createMiniSeriesEpisode("Psych", 3));
-	epis.add(Episode.createMiniSeriesEpisode("Psych", 3));
+		MultiEpisodeHelper epis = new MultiEpisodeHelper();
+		epis.add(Episode.createMiniSeriesEpisode("Psych", 1));
+		epis.add(Episode.createMiniSeriesEpisode("Psych", 3));
+		epis.add(Episode.createMiniSeriesEpisode("Psych", 3));
 
-	// Media release
-	Release rel = new Release();
-	rel.setName("Psych.S01E01.HDTV.XviD-LOL");
-	rel.setMedia(ImmutableList.of(movie));
-	rel.setGroup(new Group("DIMENSION"));
-	rel.setTags(Tag.list("720p", "HDTV", "x264"));
+		// Media release
+		Release rel = new Release();
+		rel.setName("Psych.S01E01.HDTV.XviD-LOL");
+		rel.setMedia(ImmutableList.of(movie));
+		rel.setGroup(new Group("DIMENSION"));
+		rel.setTags(Tag.list("720p", "HDTV", "x264"));
 
-	// Subtitle
-	Subtitle sub1 = new Subtitle();
-	sub1.setMedia(epi);
-	sub1.setLanguage("VO");
-	sub1.setGroup(new Group("SubCentral"));
+		// Subtitle
+		Subtitle sub1 = new Subtitle();
+		sub1.setMedia(epi);
+		sub1.setLanguage("VO");
+		sub1.setGroup(new Group("SubCentral"));
 
-	// Subtitle release
-	SubtitleAdjustment subAdj = new SubtitleAdjustment();
-	subAdj.setSingleSubtitle(sub1);
-	subAdj.setTags(Tag.list("orig", "C"));
-	subAdj.setSingleMatchingRelease(rel);
+		// Subtitle release
+		SubtitleAdjustment subAdj = new SubtitleAdjustment();
+		subAdj.setSingleSubtitle(sub1);
+		subAdj.setTags(Tag.list("orig", "C"));
+		subAdj.setSingleMatchingRelease(rel);
 
-	System.out.println(NamingDefaults.getDefaultNamingService().name(epis));
-	// long overallStart = System.nanoTime();
-	// for (int i = 0; i < 1000; i++)
-	// {
-	// long start = System.nanoTime();
-	// String name = NamingDefaults.NAMING_SERVICE.name(subRel); // ns.name(epi);//
-	// double duration = TimeUtil.durationMillis(start, System.nanoTime());
-	// System.out.println(name);
-	// System.out.println(duration + " ms");
-	// }
-	// double overallDuration = TimeUtil.durationMillis(overallStart, System.nanoTime());
-	// System.out.println("Overall duration: " + overallDuration + " ms");
+		System.out.println(NamingDefaults.getDefaultNamingService().name(epis));
+		// long overallStart = System.nanoTime();
+		// for (int i = 0; i < 1000; i++)
+		// {
+		// long start = System.nanoTime();
+		// String name = NamingDefaults.NAMING_SERVICE.name(subRel); // ns.name(epi);//
+		// double duration = TimeUtil.durationMillis(start, System.nanoTime());
+		// System.out.println(name);
+		// System.out.println(duration + " ms");
+		// }
+		// double overallDuration = TimeUtil.durationMillis(overallStart, System.nanoTime());
+		// System.out.println("Overall duration: " + overallDuration + " ms");
 
-	System.out.println(epi);
-    }
+		System.out.println(epi);
+	}
 }

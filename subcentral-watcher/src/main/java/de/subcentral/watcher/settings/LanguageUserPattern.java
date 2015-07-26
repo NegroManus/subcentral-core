@@ -13,85 +13,85 @@ import de.subcentral.fx.UserPattern;
 
 public class LanguageUserPattern implements Comparable<LanguageUserPattern>
 {
-    public static final StringConverter<LanguageUserPattern> STRING_CONVERTER = initStringConverter();
+	public static final StringConverter<LanguageUserPattern> STRING_CONVERTER = initStringConverter();
 
-    private static StringConverter<LanguageUserPattern> initStringConverter()
-    {
-	return new StringConverter<LanguageUserPattern>()
+	private static StringConverter<LanguageUserPattern> initStringConverter()
 	{
-	    @Override
-	    public String toString(LanguageUserPattern pattern)
-	    {
-		return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
-	    }
+		return new StringConverter<LanguageUserPattern>()
+		{
+			@Override
+			public String toString(LanguageUserPattern pattern)
+			{
+				return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
+			}
 
-	    @Override
-	    public LanguageUserPattern fromString(String string)
-	    {
-		throw new UnsupportedOperationException();
-	    }
-	};
-    }
-
-    private final UserPattern pattern;
-    private final Locale      language;
-
-    public LanguageUserPattern(UserPattern pattern, Locale language)
-    {
-	this.pattern = pattern;
-	this.language = language;
-    }
-
-    public UserPattern getPattern()
-    {
-	return pattern;
-    }
-
-    public Locale getLanguage()
-    {
-	return language;
-    }
-
-    public LanguagePattern toLanguagePattern()
-    {
-	return new LanguagePattern(pattern.toPattern(), language);
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-	if (this == obj)
-	{
-	    return true;
+			@Override
+			public LanguageUserPattern fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
-	if (obj instanceof LanguageUserPattern)
+
+	private final UserPattern	pattern;
+	private final Locale		language;
+
+	public LanguageUserPattern(UserPattern pattern, Locale language)
 	{
-	    LanguageUserPattern o = (LanguageUserPattern) obj;
-	    return pattern.equals(o.pattern);
+		this.pattern = pattern;
+		this.language = language;
 	}
-	return false;
-    }
 
-    @Override
-    public int hashCode()
-    {
-	return new HashCodeBuilder(73, 113).append(pattern).toHashCode();
-    }
-
-    @Override
-    public int compareTo(LanguageUserPattern o)
-    {
-	// nulls first
-	if (o == null)
+	public UserPattern getPattern()
 	{
-	    return 1;
+		return pattern;
 	}
-	return pattern.compareTo(o.pattern);
-    }
 
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(LanguageUserPattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
-    }
+	public Locale getLanguage()
+	{
+		return language;
+	}
+
+	public LanguagePattern toLanguagePattern()
+	{
+		return new LanguagePattern(pattern.toPattern(), language);
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof LanguageUserPattern)
+		{
+			LanguageUserPattern o = (LanguageUserPattern) obj;
+			return pattern.equals(o.pattern);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(73, 113).append(pattern).toHashCode();
+	}
+
+	@Override
+	public int compareTo(LanguageUserPattern o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return pattern.compareTo(o.pattern);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(LanguageUserPattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
+	}
 }

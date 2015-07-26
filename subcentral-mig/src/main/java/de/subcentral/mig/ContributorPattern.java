@@ -6,16 +6,16 @@ import de.subcentral.core.metadata.Contributor;
 
 public class ContributorPattern extends ConfidencePattern
 {
-    private final Contributor contributor;
+	private final Contributor contributor;
 
-    public ContributorPattern(Pattern pattern, int confidence, Contributor contributor)
-    {
-	super(pattern, confidence);
-	this.contributor = contributor;
-    }
+	public ContributorPattern(Pattern pattern, int confidence, Contributor contributor)
+	{
+		super(pattern, confidence);
+		this.contributor = contributor;
+	}
 
-    public Contributor getContributor()
-    {
-	return contributor;
-    }
+	public Contributor getContributor()
+	{
+		return contributor;
+	}
 }

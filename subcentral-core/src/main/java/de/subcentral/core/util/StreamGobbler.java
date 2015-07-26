@@ -6,30 +6,30 @@ import java.io.OutputStream;
 
 public class StreamGobbler extends Thread
 {
-    private final InputStream input;
-    private OutputStream      output;
+	private final InputStream	input;
+	private OutputStream		output;
 
-    public StreamGobbler(InputStream input, OutputStream output)
-    {
-	this.input = input;
-	this.output = output;
-    }
+	public StreamGobbler(InputStream input, OutputStream output)
+	{
+		this.input = input;
+		this.output = output;
+	}
 
-    @Override
-    public void run()
-    {
-	try
+	@Override
+	public void run()
 	{
-	    byte[] buffer = new byte[1024]; // Adjust if you want
-	    int bytesRead;
-	    while ((bytesRead = input.read(buffer)) != -1)
-	    {
-		output.write(buffer, 0, bytesRead);
-	    }
+		try
+		{
+			byte[] buffer = new byte[1024]; // Adjust if you want
+			int bytesRead;
+			while ((bytesRead = input.read(buffer)) != -1)
+			{
+				output.write(buffer, 0, bytesRead);
+			}
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
 	}
-	catch (IOException ioe)
-	{
-	    ioe.printStackTrace();
-	}
-    }
 }

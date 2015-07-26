@@ -29,94 +29,95 @@ import javafx.scene.layout.GridPane;
 
 public class FileTransformationSettingsController extends AbstractSettingsSectionController
 {
-    @FXML
-    private GridPane		    fileTransformationSettingsPane;
-    @FXML
-    private TextField		    targetDirTxtFld;
-    @FXML
-    private Button		    chooseTargetDirBtn;
-    @FXML
-    private CheckBox		    deleteSourceCheckBox;
-    @FXML
-    private CheckBox		    packingEnabledCheckBox;
-    @FXML
-    private RadioButton		    locateRadioBtn;
-    @FXML
-    private Button		    testLocateBtn;
-    @FXML
-    private RadioButton		    specifyRadioBtn;
-    @FXML
-    private TextField		    rarExeTxtFld;
-    @FXML
-    private Button		    chooseRarExeBtn;
-    @FXML
-    private ChoiceBox<DeletionMode> packingSourceDeletionModeChoiceBox;
+	@FXML
+	private GridPane				fileTransformationSettingsPane;
+	@FXML
+	private TextField				targetDirTxtFld;
+	@FXML
+	private Button					chooseTargetDirBtn;
+	@FXML
+	private CheckBox				deleteSourceCheckBox;
+	@FXML
+	private CheckBox				packingEnabledCheckBox;
+	@FXML
+	private RadioButton				locateRadioBtn;
+	@FXML
+	private Button					testLocateBtn;
+	@FXML
+	private RadioButton				specifyRadioBtn;
+	@FXML
+	private TextField				rarExeTxtFld;
+	@FXML
+	private Button					chooseRarExeBtn;
+	@FXML
+	private ChoiceBox<DeletionMode>	packingSourceDeletionModeChoiceBox;
 
-    public FileTransformationSettingsController(SettingsController settingsController)
-    {
-	super(settingsController);
-    }
+	public FileTransformationSettingsController(SettingsController settingsController)
+	{
+		super(settingsController);
+	}
 
-    @Override
-    public GridPane getSectionRootPane()
-    {
-	return fileTransformationSettingsPane;
-    }
+	@Override
+	public GridPane getSectionRootPane()
+	{
+		return fileTransformationSettingsPane;
+	}
 
-    @Override
-    protected void doInitialize() throws Exception
-    {
-	final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+	@Override
+	protected void doInitialize() throws Exception
+	{
+		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
-	final TextFormatter<Path> targetDirFormatter = FxUtil.bindPathToTextField(targetDirTxtFld, settings.targetDirProperty());
-	FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory");
+		final TextFormatter<Path> targetDirFormatter = FxUtil.bindPathToTextField(targetDirTxtFld, settings.targetDirProperty());
+		FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory");
 
-	deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.deleteSourceProperty());
+		deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.deleteSourceProperty());
 
-	packingEnabledCheckBox.selectedProperty().bindBidirectional(settings.packingEnabledProperty());
+		packingEnabledCheckBox.selectedProperty().bindBidirectional(settings.packingEnabledProperty());
 
-	ToggleGroup winRarLocateStrategy = new ToggleGroup();
-	winRarLocateStrategy.getToggles().addAll(locateRadioBtn, specifyRadioBtn);
+		ToggleGroup winRarLocateStrategy = new ToggleGroup();
+		winRarLocateStrategy.getToggles().addAll(locateRadioBtn, specifyRadioBtn);
 
-	// bind toggle button to settings
-	new ToggleEnumBinding<>(winRarLocateStrategy, settings.winRarLocateStrategyProperty(), ImmutableMap.of(locateRadioBtn, LocateStrategy.LOCATE, specifyRadioBtn, LocateStrategy.SPECIFY));
+		// bind toggle button to settings
+		new ToggleEnumBinding<>(winRarLocateStrategy, settings.winRarLocateStrategyProperty(), ImmutableMap.of(locateRadioBtn, LocateStrategy.LOCATE, specifyRadioBtn, LocateStrategy.SPECIFY));
 
-	final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
-	testLocateBtn.setOnAction((ActionEvent event) -> {
-	    Path winRarLocation = WinRar.tryLocateRarExecutable();
-	    if (winRarLocation != null)
-	    {
-		Alert locateDialog = new Alert(AlertType.INFORMATION);
-		locateDialog.setTitle("Successfully located RAR executable");
-		locateDialog.setHeaderText("Found RAR executable at: " + winRarLocation);
-		locateDialog.setContentText("Do you want to remember this location?");
-		locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-		if (locateDialog.showAndWait().get() == ButtonType.YES)
+		final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
+		testLocateBtn.setOnAction((ActionEvent event) ->
 		{
-		    winRarLocateStrategy.selectToggle(specifyRadioBtn);
-		    rarExeFormatter.setValue(winRarLocation);
-		}
-	    }
-	    else
-	    {
-		Alert locateDialog = new Alert(AlertType.WARNING);
-		locateDialog.setTitle("Failed to locate RAR executable");
-		locateDialog.setHeaderText("Could not locate RAR executable.");
-		locateDialog.setContentText("Please install WinRAR or specify the path to the RAR executable.");
-		locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
-		locateDialog.showAndWait();
-	    }
-	});
+			Path winRarLocation = WinRar.tryLocateRarExecutable();
+			if (winRarLocation != null)
+			{
+				Alert locateDialog = new Alert(AlertType.INFORMATION);
+				locateDialog.setTitle("Successfully located RAR executable");
+				locateDialog.setHeaderText("Found RAR executable at: " + winRarLocation);
+				locateDialog.setContentText("Do you want to remember this location?");
+				locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+				if (locateDialog.showAndWait().get() == ButtonType.YES)
+				{
+					winRarLocateStrategy.selectToggle(specifyRadioBtn);
+					rarExeFormatter.setValue(winRarLocation);
+				}
+			}
+			else
+			{
+				Alert locateDialog = new Alert(AlertType.WARNING);
+				locateDialog.setTitle("Failed to locate RAR executable");
+				locateDialog.setHeaderText("Could not locate RAR executable.");
+				locateDialog.setContentText("Please install WinRAR or specify the path to the RAR executable.");
+				locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+				locateDialog.showAndWait();
+			}
+		});
 
-	FxUtil.setChooseFileAction(chooseRarExeBtn,
-		rarExeFormatter,
-		settingsController.getMainController().getPrimaryStage(),
-		"Select rar executable",
-		"RAR executable",
-		WinRar.getRarExecutableFilename());
+		FxUtil.setChooseFileAction(chooseRarExeBtn,
+				rarExeFormatter,
+				settingsController.getMainController().getPrimaryStage(),
+				"Select rar executable",
+				"RAR executable",
+				WinRar.getRarExecutableFilename());
 
-	packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
-	packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.packingSourceDeletionModeProperty());
-	packingSourceDeletionModeChoiceBox.setConverter(SubCentralFxUtil.DELETION_MODE_STRING_CONVERTER);
-    }
+		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
+		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.packingSourceDeletionModeProperty());
+		packingSourceDeletionModeChoiceBox.setConverter(SubCentralFxUtil.DELETION_MODE_STRING_CONVERTER);
+	}
 }

@@ -35,15 +35,18 @@ import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.subcentralde.SubCentralDe;
 
-public class Migration {
-	private static final Logger log = LogManager.getLogger(Migration.class);
-	private static final SubRip subRip = SubtitleFileFormat.SUBRIP;
+public class Migration
+{
+	private static final Logger	log		= LogManager.getLogger(Migration.class);
+	private static final SubRip	subRip	= SubtitleFileFormat.SUBRIP;
 
-	private static final ContributionParser CONTRIBUTION_PARSER = initContributionParser();
-	private static final List<ParsingService> PARSING_SERVICES = initParsingServices();
+	private static final ContributionParser		CONTRIBUTION_PARSER	= initContributionParser();
+	private static final List<ParsingService>	PARSING_SERVICES	= initParsingServices();
 
-	private static ContributionParser initContributionParser() {
-		try {
+	private static ContributionParser initContributionParser()
+	{
+		try
+		{
 			MigrationSettings settings = MigrationSettings.INSTANCE;
 
 			settings.load(Resources.getResource("de/subcentral/mig/migration-settings.xml"));
@@ -55,37 +58,44 @@ public class Migration {
 			parser.setIrrelevantPatterns(settings.irrelevantPatternsProperty());
 			parser.setStandardizingService(settings.getStandardizingService());
 			return parser;
-		} catch (ConfigurationException e) {
+		}
+		catch (ConfigurationException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	private static List<ParsingService> initParsingServices() {
+	private static List<ParsingService> initParsingServices()
+	{
 		ImmutableList.Builder<ParsingService> services = ImmutableList.builder();
 		services.add(Addic7edCom.getParsingService());
 		services.add(SubCentralDe.getParsingService());
 		return services.build();
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException
+	{
 		// "D:\\Downloads\\!sc-target"
 		// "C:\\Users\\mhertram\\Downloads\\!sc-target"
 		Path srcDir = Paths.get("D:\\Downloads\\!sc-target");
 
 		long startTotal = System.nanoTime();
 		List<Path> files = new ArrayList<>();
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir)) {
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir))
+		{
 			stream.forEach(file -> files.add(file));
 		}
 		List<SubtitleAdjustment> parsed = files.parallelStream().map(Migration::processFile).collect(Collectors.toList());
 		double duration = TimeUtil.durationMillis(startTotal);
-		log.info("Processed {} files in {} ms ({} ms per file}", files.size(), duration, (duration/files.size()));
+		log.info("Processed {} files in {} ms ({} ms per file}", files.size(), duration, (duration / files.size()));
 	}
 
-	private static SubtitleAdjustment processFile(Path file) {
-		try {
+	private static SubtitleAdjustment processFile(Path file)
+	{
+		try
+		{
 			long startSingle = System.nanoTime();
 			log.info("Processing {}", file);
 			String name = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
@@ -102,20 +112,24 @@ public class Migration {
 			log.info("---------------------");
 			log.info("---------------------");
 			return metadata;
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	private static List<Contribution> parseContributions(SubtitleFile data) {
+	private static List<Contribution> parseContributions(SubtitleFile data)
+	{
 		List<Contribution> contributions = CONTRIBUTION_PARSER.parse(data);
 		log.info("Parsed contributions:");
-		for (Map.Entry<String, Collection<Contribution>> entry : ContributionUtil.groupByType(contributions).asMap()
-				.entrySet()) {
+		for (Map.Entry<String, Collection<Contribution>> entry : ContributionUtil.groupByType(contributions).asMap().entrySet())
+		{
 			StringJoiner contributors = new StringJoiner(", ");
-			for (Contribution c : entry.getValue()) {
+			for (Contribution c : entry.getValue())
+			{
 				contributors.add(c.getContributor().getName());
 			}
 			log.info("{}: {}", entry.getKey().isEmpty() ? "<unspecified>" : entry.getKey(), contributors.toString());

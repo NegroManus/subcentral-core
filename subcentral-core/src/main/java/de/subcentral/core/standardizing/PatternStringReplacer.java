@@ -10,70 +10,70 @@ import com.google.common.base.MoreObjects;
 public class PatternStringReplacer implements UnaryOperator<String>
 {
 
-    public static enum Mode
-    {
-	REPLACE_ALL, REPLACE_COMPLETE
-    }
-
-    private final Pattern pattern;
-    private final String  replacement;
-    private final Mode	  mode;
-
-    public PatternStringReplacer(Pattern pattern, String replacement)
-    {
-	this(pattern, replacement, Mode.REPLACE_ALL);
-    }
-
-    public PatternStringReplacer(Pattern pattern, String replacement, Mode mode)
-    {
-	this.pattern = pattern;
-	this.replacement = replacement;
-	this.mode = Objects.requireNonNull(mode, "mode");
-    }
-
-    public Pattern getPattern()
-    {
-	return pattern;
-    }
-
-    public String getReplacement()
-    {
-	return replacement;
-    }
-
-    public Mode getMode()
-    {
-	return mode;
-    }
-
-    @Override
-    public String apply(String s)
-    {
-	if (s == null)
+	public static enum Mode
 	{
-	    return null;
+		REPLACE_ALL, REPLACE_COMPLETE
 	}
-	switch (mode)
+
+	private final Pattern	pattern;
+	private final String	replacement;
+	private final Mode		mode;
+
+	public PatternStringReplacer(Pattern pattern, String replacement)
 	{
-	    case REPLACE_ALL:
-		return pattern.matcher(s).replaceAll(replacement);
-	    case REPLACE_COMPLETE:
-		Matcher m = pattern.matcher(s);
-		if (m.matches())
+		this(pattern, replacement, Mode.REPLACE_ALL);
+	}
+
+	public PatternStringReplacer(Pattern pattern, String replacement, Mode mode)
+	{
+		this.pattern = pattern;
+		this.replacement = replacement;
+		this.mode = Objects.requireNonNull(mode, "mode");
+	}
+
+	public Pattern getPattern()
+	{
+		return pattern;
+	}
+
+	public String getReplacement()
+	{
+		return replacement;
+	}
+
+	public Mode getMode()
+	{
+		return mode;
+	}
+
+	@Override
+	public String apply(String s)
+	{
+		if (s == null)
 		{
-		    StringBuffer sb = new StringBuffer();
-		    m.appendReplacement(sb, replacement);
-		    return sb.toString();
+			return null;
 		}
-		return s;
-	    default:
-		throw new AssertionError();
+		switch (mode)
+		{
+		case REPLACE_ALL:
+			return pattern.matcher(s).replaceAll(replacement);
+		case REPLACE_COMPLETE:
+			Matcher m = pattern.matcher(s);
+			if (m.matches())
+			{
+				StringBuffer sb = new StringBuffer();
+				m.appendReplacement(sb, replacement);
+				return sb.toString();
+			}
+			return s;
+		default:
+			throw new AssertionError();
+		}
 	}
-    }
 
-    @Override
-    public String toString()
-    {
-	return MoreObjects.toStringHelper(PatternStringReplacer.class).add("pattern", pattern).add("replacement", replacement).add("mode", mode).toString();
-    }
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(PatternStringReplacer.class).add("pattern", pattern).add("replacement", replacement).add("mode", mode).toString();
+	}
 }
