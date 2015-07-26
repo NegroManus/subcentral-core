@@ -168,7 +168,7 @@ public class OrlyDbComReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	rls.setName(releaseSpan.text());
 	if (sectionSpan != null)
 	{
-	    rls.setSection(sectionSpan.text());
+	    rls.setCategory(sectionSpan.text());
 	}
 	if (timestampSpan != null)
 	{

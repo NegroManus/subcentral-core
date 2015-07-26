@@ -239,7 +239,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	    {
 		cats.add(catAnchor.text());
 	    }
-	    rls.setSection(Joiner.on('-').join(cats));
+	    rls.setCategory(Joiner.on('-').join(cats));
 	}
 
 	Element titleAnchor = rlsDiv.select("a[class*=title]").first();
@@ -496,9 +496,9 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 
 	// If media was not determined yet (e.g. Episode),
 	// try to determine it via the section (category)
-	if (media == null && rls.getSection() != null)
+	if (media == null && rls.getCategory() != null)
 	{
-	    String section = rls.getSection();
+	    String section = rls.getCategory();
 	    if (section.startsWith("Movies"))
 	    {
 		RegularMedia movie = new RegularMedia(mediaTitle);
