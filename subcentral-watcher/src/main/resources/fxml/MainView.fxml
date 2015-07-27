@@ -7,13 +7,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="rootBorderPane" prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="rootBorderPane" prefHeight="600.0"
+	prefWidth="850.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<center>
-		<TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+		<TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE"
+			BorderPane.alignment="CENTER">
 			<tabs>
 				<Tab text="Processing">
 					<content>
-						<AnchorPane fx:id="processingRootPane" minHeight="0.0" minWidth="0.0" />
+						<AnchorPane fx:id="processingRootPane" minHeight="0.0"
+							minWidth="0.0" />
 					</content>
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
@@ -25,7 +28,8 @@
 				</Tab>
 				<Tab text="Settings">
 					<content>
-						<AnchorPane fx:id="settingsRootPane" minHeight="0.0" minWidth="0.0" />
+						<AnchorPane fx:id="settingsRootPane" minHeight="0.0"
+							minWidth="0.0" />
 					</content>
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
