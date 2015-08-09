@@ -1,5 +1,6 @@
 package de.subcentral.core.metadata.media;
 
+import java.io.Serializable;
 import java.time.Year;
 import java.time.temporal.Temporal;
 import java.util.List;
@@ -63,7 +64,7 @@ import de.subcentral.core.util.TimeUtil;
  * @implSpec All (non-standard) implementations should implement {@link Comparable}.
  *
  */
-public interface Media
+public interface Media extends Serializable
 {
 	public static final String	MEDIA_TYPE_EPISODE			= "episode";
 	public static final String	MEDIA_TYPE_SERIES			= "series";

@@ -6,38 +6,52 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<ScrollPane fx:id="contentPane" fitToWidth="true" maxHeight="-Infinity"
-	maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-	prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40"
-	xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="contentPane" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<content>
 		<GridPane>
 			<columnConstraints>
-				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
-					prefWidth="100.0" />
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 			</columnConstraints>
 			<rowConstraints>
-				<RowConstraints maxHeight="-Infinity" minHeight="-Infinity"
-					vgrow="NEVER" />
-				<RowConstraints maxHeight="-Infinity" minHeight="-Infinity"
-					vgrow="NEVER" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+				<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+				<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
 				<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-				<RowConstraints maxHeight="-Infinity" minHeight="-Infinity"
-					vgrow="SOMETIMES" />
+				<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 				<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<Label text="Release" underline="true">
+				<Label text="Release" underline="true" GridPane.rowIndex="5">
 					<font>
 						<Font name="System Bold" size="12.0" />
 					</font>
 				</Label>
-				<Label text="Found releases" GridPane.rowIndex="1" />
-				<ListView fx:id="releaseQueryResultsListView" prefHeight="200.0"
-					GridPane.rowIndex="2" />
-				<ListView fx:id="matchingReleasesListView" prefHeight="100.0"
-					GridPane.rowIndex="4" />
-				<Label text="Matching releases" GridPane.rowIndex="3" />
+				<Label text="Found releases" GridPane.rowIndex="6" />
+				<ListView fx:id="releaseQueryResultsListView" prefHeight="200.0" GridPane.rowIndex="7" />
+				<ListView fx:id="matchingReleasesListView" prefHeight="100.0" GridPane.rowIndex="9" />
+				<Label text="Matching releases" GridPane.rowIndex="8" />
+            <Label text="Parsing" underline="true">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label text="Parsed object" GridPane.rowIndex="1" />
+            <TextField fx:id="parsedObjTextField" editable="false" GridPane.rowIndex="2" />
+            <Label text="Corrections" GridPane.rowIndex="3" />
+            <TableView fx:id="parseCorrectionsTable" prefHeight="100.0" GridPane.rowIndex="4">
+              <columns>
+                <TableColumn fx:id="attributeParsedCorrectionsColumn" prefWidth="75.0" text="Attribute" />
+                <TableColumn fx:id="oldValueParsedCorrectionsColumn" prefWidth="75.0" text="Old value" />
+                  <TableColumn fx:id="newValueParsedCorrectionsColumn" prefWidth="75.0" text="New Value" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
 			</children>
 		</GridPane>
 	</content>

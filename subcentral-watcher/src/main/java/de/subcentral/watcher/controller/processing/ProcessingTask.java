@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -336,7 +337,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		for (Subtitle srcSub : sourceObject.getSubtitles())
 		{
 			Subtitle convertedSub = new Subtitle();
-			convertedSub.setMedia(srcSub.getMedia());
+			convertedSub.setMedia(SerializationUtils.clone(srcSub.getMedia()));
 			convertedSub.setLanguage(srcSub.getLanguage());
 			convertedSub.setGroup(srcSub.getGroup());
 			convertedSubAdj.getSubtitles().add(convertedSub);

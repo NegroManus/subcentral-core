@@ -835,6 +835,9 @@ public class WatcherDialogs
 	private static class ProtocolController extends AbstractBeanDialogController<ProcessingTask>
 	{
 		@FXML
+		private TextField parsedObjTextField;
+
+		@FXML
 		private ListView<Release> releaseQueryResultsListView;
 
 		@FXML
@@ -893,6 +896,8 @@ public class WatcherDialogs
 					};
 				}
 			};
+
+			parsedObjTextField.setText(bean.name(bean.getSourceObject()));
 
 			releaseQueryResultsListView.setItems(FXCollections.observableList(bean.getProcessedQueryResults()));
 			releaseQueryResultsListView.setCellFactory(rlsCellFactory);
