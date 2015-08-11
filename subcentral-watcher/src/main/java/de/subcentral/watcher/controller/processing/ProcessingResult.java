@@ -61,7 +61,7 @@ public class ProcessingResult implements ProcessingItem
 		Map<String, Object> effectiveParams = new HashMap<>();
 		effectiveParams.putAll(task.getConfig().getNamingParameters());
 		effectiveParams.put(SubtitleAdjustmentNamer.PARAM_RELEASE, rls);
-		return task.getController().getNamingService().name(task.getTargetObject(), effectiveParams);
+		return task.getController().getNamingService().name(task.getResultObject(), effectiveParams);
 	}
 
 	public ProcessingTask getTask()
