@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
@@ -22,13 +21,11 @@ import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
-import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.controller.AbstractController;
-import de.subcentral.watcher.controller.processing.ProcessingTask;
 import de.subcentral.watcher.settings.LanguageTextMapping;
 import de.subcentral.watcher.settings.LanguageUserPattern;
 import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
@@ -51,18 +48,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.util.Callback;
 
 public class WatcherDialogs
 {
     private static final Logger log = LogManager.getLogger(WatcherDialogs.class);
 
-    private static abstract class AbstractBeanDialogController<T> extends AbstractController
+    static abstract class AbstractBeanDialogController<T> extends AbstractController
     {
 	// Model
 	protected final T bean;
@@ -823,101 +817,6 @@ public class WatcherDialogs
 	}
     }
 
-    private static class ProtocolController extends AbstractBeanDialogController<ProcessingTask>
-    {
-	@FXML
-	private Label					 sourceFileLabel;
-	@FXML
-	private TextField				 parsedObjTextField;
-	@FXML
-	private TableView<StandardizingChange>		 parsingCorrectionsTable;
-	@FXML
-	private TableColumn<StandardizingChange, String> parsingCorrectionsAttributeColumn;
-	@FXML
-	private TableColumn<StandardizingChange, Object> parsingCorrectionsOldValueColumn;
-	@FXML
-	private TableColumn<StandardizingChange, Object> parsingCorrectionsNewValueColumn;
-	@FXML
-	private ListView<Release>			 releaseQueryResultsListView;
-	@FXML
-	private ListView<Release>			 matchingReleasesListView;
-
-	public ProtocolController(ProcessingTask task)
-	{
-	    super(task);
-	}
-
-	@Override
-	protected String getTitle()
-	{
-	    return "Processing protocol";
-	}
-
-	@Override
-	protected ButtonType[] getButtonTypes()
-	{
-	    return new ButtonType[] { ButtonType.OK };
-	}
-
-	@Override
-	protected Node getDefaultFocusNode()
-	{
-	    return releaseQueryResultsListView;
-	}
-
-	@Override
-	protected void initComponents()
-	{
-	    final Callback<ListView<Release>, ListCell<Release>> rlsCellFactory = (ListView<Release> param) -> {
-		return new ListCell<Release>()
-		{
-		    @Override
-		    protected void updateItem(Release rls, boolean empty)
-		    {
-			super.updateItem(rls, empty);
-
-			if (empty || rls == null)
-			{
-			    setText("");
-			    setGraphic(null);
-			}
-			else
-			{
-			    setText(rls.getName());
-			    setGraphic(WatcherFxUtil.createFurtherInfoHyperlink(rls, bean.getController().getMainController().getCommonExecutor()));
-			}
-		    }
-		};
-	    };
-
-	    sourceFileLabel.setText(bean.getSourceFile().getFileName().toString());
-
-	    parsedObjTextField.setText(bean.name(bean.getParsedObject()));
-
-	    parsingCorrectionsTable.setItems(FXCollections.observableList(bean.getParsingCorrections()));
-	    parsingCorrectionsAttributeColumn.setCellValueFactory((TableColumn.CellDataFeatures<StandardizingChange, String> features) -> {
-		StandardizingChange c = features.getValue();
-		return FxUtil.constantStringBinding(WatcherFxUtil.beanTypeToString(c.getBean().getClass()) + ": " + c.getPropertyName());
-	    });
-	    parsingCorrectionsOldValueColumn.setCellValueFactory((TableColumn.CellDataFeatures<StandardizingChange, Object> features) -> {
-		return FxUtil.constantBinding(features.getValue().getOldValue());
-	    });
-	    parsingCorrectionsNewValueColumn.setCellValueFactory((TableColumn.CellDataFeatures<StandardizingChange, Object> features) -> {
-		return FxUtil.constantBinding(features.getValue().getNewValue());
-	    });
-
-	    releaseQueryResultsListView.setItems(FXCollections.observableList(bean.getProcessedQueryResults()));
-	    releaseQueryResultsListView.setCellFactory(rlsCellFactory);
-
-	    matchingReleasesListView.setItems(FXCollections.observableList(bean.getMatchingReleases()));
-	    matchingReleasesListView.setCellFactory(rlsCellFactory);
-
-	    // Set ResultConverter
-	    dialog.setResultConverter((ButtonType pressedBtn) -> null);
-	}
-
-    }
-
     public static Optional<StandardRelease> showStandardReleaseDefinitionDialog()
     {
 	return showStandardReleaseDefinitionDialog(null);
@@ -988,12 +887,6 @@ public class WatcherDialogs
     {
 	LanguageTextMappingEditorController ctrl = new LanguageTextMappingEditorController(mapping);
 	return showDialogAndWait(ctrl, "LanguageTextMappingEditor.fxml");
-    }
-
-    public static void showProtocolView(ProcessingTask processingTask)
-    {
-	ProtocolController ctrl = new ProtocolController(processingTask);
-	showDialogAndWait(ctrl, "ProtocolView.fxml");
     }
 
     private static <T> Optional<T> showDialogAndWait(AbstractBeanDialogController<T> ctrl, String fxmlFilename)

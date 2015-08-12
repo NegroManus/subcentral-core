@@ -26,26 +26,34 @@
 				<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
 				<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 				<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="50.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
 				<Label text="Release" underline="true" GridPane.rowIndex="7">
 					<font>
 						<Font name="System Bold" size="12.0" />
 					</font>
+               <GridPane.margin>
+                  <Insets top="15.0" />
+               </GridPane.margin>
 				</Label>
 				<Label text="Found releases" GridPane.rowIndex="8" />
-				<ListView fx:id="releaseQueryResultsListView" prefHeight="200.0" GridPane.rowIndex="9" />
-				<ListView fx:id="matchingReleasesListView" prefHeight="100.0" GridPane.rowIndex="11" />
+				<ListView fx:id="foundReleasesListView" prefHeight="150.0" GridPane.rowIndex="9" />
 				<Label text="Matching releases" GridPane.rowIndex="10" />
+				<ListView fx:id="matchingReleasesListView" prefHeight="75.0" GridPane.rowIndex="11" />
             <Label text="Parsing" underline="true" GridPane.rowIndex="2">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
+               <GridPane.margin>
+                  <Insets top="15.0" />
+               </GridPane.margin>
             </Label>
             <Label text="Parsed object" GridPane.rowIndex="3" />
             <TextField fx:id="parsedObjTextField" editable="false" GridPane.rowIndex="4" />
             <Label text="Corrections" GridPane.rowIndex="5" />
-            <TableView fx:id="parsingCorrectionsTable" prefHeight="100.0" GridPane.rowIndex="6">
+            <TableView fx:id="parsingCorrectionsTableView" prefHeight="100.0" GridPane.rowIndex="6">
               <columns>
                 <TableColumn fx:id="parsingCorrectionsAttributeColumn" prefWidth="75.0" text="Attribute" />
                 <TableColumn fx:id="parsingCorrectionsOldValueColumn" prefWidth="75.0" text="Old value" />
@@ -55,7 +63,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
                <GridPane.margin>
-                  <Insets bottom="15.0" />
+                  <Insets />
                </GridPane.margin>
             </TableView>
             <Label text="Source file" underline="true">
@@ -65,10 +73,15 @@
             </Label>
             <Label fx:id="sourceFileLabel" text="-" GridPane.rowIndex="1">
                <GridPane.margin>
-                  <Insets bottom="15.0" />
+                  <Insets />
                </GridPane.margin>
             </Label>
+            <Label text="Compatible releases" GridPane.rowIndex="12" />
+            <ListView fx:id="compatibleReleasesListView" prefHeight="75.0" GridPane.rowIndex="13" />
 			</children>
 		</GridPane>
 	</content>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
 </ScrollPane>

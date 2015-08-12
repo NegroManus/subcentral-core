@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.db.MetadataDb;
@@ -79,15 +80,17 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     private final Property<ProcessingInfo> info	= new SimpleObjectProperty<>(this, "info");
 
     // Config: is loaded on start of the task
-    private ProcessingConfig		   config;
+    private ProcessingConfig		    config;
     // Important objects for processing and protocol
-    private final TreeItem<ProcessingItem> taskTreeItem;
-    private SubtitleAdjustment		   parsedObject;
-    private List<StandardizingChange>	   parsingCorrections	 = ImmutableList.of();
-    private List<Release>		   processedQueryResults = ImmutableList.of();
-    private List<Release>		   matchingReleases	 = ImmutableList.of();
-    private SubtitleAdjustment		   resultObject;
-    private ListProperty<ProcessingResult> results		 = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
+    private final TreeItem<ProcessingItem>  taskTreeItem;
+    private SubtitleAdjustment		    parsedObject;
+    private List<StandardizingChange>	    parsingCorrections	  = ImmutableList.of();
+    private List<Release>		    foundReleases	  = ImmutableList.of();
+    private List<Release>		    filteredFoundReleases = ImmutableList.of();
+    private List<Release>		    matchingReleases	  = ImmutableList.of();
+    private Map<Release, CompatibilityInfo> compatibleReleases	  = ImmutableMap.of();
+    private SubtitleAdjustment		    resultObject;
+    private ListProperty<ProcessingResult>  results		  = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
 
     // package private
     ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
@@ -162,14 +165,24 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	return parsingCorrections;
     }
 
-    public List<Release> getProcessedQueryResults()
+    public List<Release> getFoundReleases()
     {
-	return processedQueryResults;
+	return foundReleases;
+    }
+
+    public List<Release> getFilteredFoundReleases()
+    {
+	return filteredFoundReleases;
     }
 
     public List<Release> getMatchingReleases()
     {
 	return matchingReleases;
+    }
+
+    public Map<Release, CompatibilityInfo> getCompatibleReleases()
+    {
+	return compatibleReleases;
     }
 
     public SubtitleAdjustment getResultObject()
@@ -386,12 +399,16 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	else
 	{
 	    // Distinct, enrich, standardize
-	    processedQueryResults = processReleases(existingRlss);
+	    foundReleases = processReleases(existingRlss);
 
-	    // Filter
-	    log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
-	    matchingReleases = processedQueryResults.stream()
+	    // Filter by Media
+	    filteredFoundReleases = foundReleases.stream()
 		    .filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
+		    .collect(Collectors.toList());
+
+	    // Filter by Release Tags and Group (matching releases)
+	    log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
+	    matchingReleases = filteredFoundReleases.stream()
 		    .filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
 		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 		    .collect(Collectors.toList());
@@ -411,12 +428,12 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		for (Release rls : matchingReleases)
 		{
 		    DatabaseMethodInfo methodInfo = new DatabaseMethodInfo();
-		    addMatchingRelease(rls, methodInfo);
+		    addReleaseToResult(rls, methodInfo);
 		}
 		if (config.isCompatibilityEnabled())
 		{
 		    log.debug("Search for compatible releases enabled. Searching");
-		    addCompatibleReleases(matchingReleases, processedQueryResults);
+		    addCompatibleReleases(matchingReleases, filteredFoundReleases);
 		}
 		else
 		{
@@ -479,7 +496,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    for (Map.Entry<Release, StandardRelease> entry : guessedRlss.entrySet())
 	    {
 		GuessingMethodInfo methodInfo = new GuessingMethodInfo(entry.getValue());
-		addMatchingRelease(entry.getKey(), methodInfo);
+		addReleaseToResult(entry.getKey(), methodInfo);
 
 		if (isCancelled())
 		{
@@ -502,31 +519,31 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
     }
 
-    private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> existingReleases) throws Exception
+    private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> foundReleases) throws Exception
     {
 	// Find compatibles
 	CompatibilityService compatibilityService = config.getCompatibilityService();
-	Map<Release, CompatibilityInfo> compatibleRlss = compatibilityService.findCompatibles(matchingRlss, existingReleases);
+	compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
 
-	if (compatibleRlss.isEmpty())
+	if (compatibleReleases.isEmpty())
 	{
 	    log.debug("No compatible releases found");
 	}
 	else
 	{
 	    log.debug("Compatible releases:");
-	    compatibleRlss.entrySet().forEach(e -> log.debug(e));
+	    compatibleReleases.entrySet().forEach(e -> log.debug(e));
 
 	    // Add compatible releases
-	    for (Map.Entry<Release, CompatibilityInfo> entry : compatibleRlss.entrySet())
+	    for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
 	    {
 		CompatibilityMethodInfo methodInfo = new CompatibilityMethodInfo(entry.getValue());
-		addMatchingRelease(entry.getKey(), methodInfo);
+		addReleaseToResult(entry.getKey(), methodInfo);
 	    }
 	}
     }
 
-    private void addMatchingRelease(Release rls, MethodInfo methodInfo) throws Exception
+    private void addReleaseToResult(Release rls, MethodInfo methodInfo) throws Exception
     {
 	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(rls);
 	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
