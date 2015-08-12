@@ -3,6 +3,7 @@ package de.subcentral.watcher.controller.settings;
 import java.io.File;
 import java.nio.file.Path;
 
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -12,7 +13,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
-import de.subcentral.watcher.settings.WatcherSettings;
 
 public class WatchSettingsController extends AbstractSettingsSectionController
 {
@@ -47,7 +47,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 		{
 			DirectoryChooser dirChooser = new DirectoryChooser();
 			dirChooser.setTitle("Add watch directory");
-			File selectedDirectory = dirChooser.showDialog(settingsController.getMainController().getPrimaryStage());
+			File selectedDirectory = dirChooser.showDialog(settingsController.getMainController().getWatcherApp().getPrimaryStage());
 			if (selectedDirectory == null)
 			{
 				return;

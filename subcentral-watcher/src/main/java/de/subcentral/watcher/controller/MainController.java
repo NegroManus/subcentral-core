@@ -5,8 +5,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.WatcherApp;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.fxml.FXML;
@@ -14,24 +18,25 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
 public class MainController extends AbstractController
 {
+	private static final Logger log = LogManager.getLogger(MainController.class);
+
 	public static final int	PROCESSING_TAB_INDEX	= 0;
 	public static final int	SETTINGS_TAB_INDEX		= 1;
 
 	// View
 	// UI components are automatically injected before initialize()
-	private final Stage	primaryStage;
+	private final WatcherApp	watcherApp;
 	@FXML
-	private BorderPane	rootBorderPane;
+	private BorderPane			rootBorderPane;
 	@FXML
-	private TabPane		tabPane;
+	private TabPane				tabPane;
 	@FXML
-	private AnchorPane	processingRootPane;
+	private AnchorPane			processingRootPane;
 	@FXML
-	private AnchorPane	settingsRootPane;
+	private AnchorPane			settingsRootPane;
 
 	// Controller
 	private WatchController				watchController;
@@ -39,9 +44,9 @@ public class MainController extends AbstractController
 	private SettingsController			settingsController;
 	private ScheduledExecutorService	commonExecutor;
 
-	public MainController(Stage primaryStage)
+	public MainController(WatcherApp watcherApp)
 	{
-		this.primaryStage = primaryStage;
+		this.watcherApp = watcherApp;
 	}
 
 	@Override
@@ -49,15 +54,15 @@ public class MainController extends AbstractController
 	{
 		commonExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2, new NamedThreadFactory("Watcher-CommonExecutor-Thread", false));
 
-		// initialize order
+		// initializing order important
 		initSettingsController();
 		initProcessingController();
 		initWatchController();
 	}
 
-	public Stage getPrimaryStage()
+	public WatcherApp getWatcherApp()
 	{
-		return primaryStage;
+		return watcherApp;
 	}
 
 	public ScheduledExecutorService getCommonExecutor()

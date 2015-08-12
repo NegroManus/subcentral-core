@@ -1,11 +1,14 @@
 package de.subcentral.watcher;
 
+import java.awt.AWTException;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Locale;
-
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +17,12 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class WatcherApp extends Application
 {
@@ -41,7 +50,7 @@ public class WatcherApp extends Application
 		log.info("User dir: {}", SystemUtils.USER_DIR);
 		long start = System.nanoTime();
 
-		this.mainController = new MainController(primaryStage);
+		this.mainController = new MainController(this);
 		mainView = FxUtil.loadFromFxml("MainView.fxml", "MainView", Locale.ENGLISH, mainController);
 
 		log.info("Initialized {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
@@ -65,6 +74,72 @@ public class WatcherApp extends Application
 	{
 		primaryStage.setTitle("Watcher");
 		primaryStage.getIcons().addAll(FxUtil.loadImg("watcher_16.png"), FxUtil.loadImg("watcher_32.png"), FxUtil.loadImg("watcher_64.png"));
+
+		initSystemTrayIcon();
+	}
+
+	private void initSystemTrayIcon()
+	{
+		// Explicit exit because use of SystemTray starts AWTEventThread
+		Platform.setImplicitExit(false);
+		primaryStage.setOnCloseRequest((WindowEvent) ->
+		{
+			Platform.exit();
+		});
+
+		// Check the SystemTray is supported
+		if (!SystemTray.isSupported())
+		{
+			log.warn("SystemTray is not supported");
+			return;
+		}
+
+		try
+		{
+			SystemTray tray = SystemTray.getSystemTray();
+
+			java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
+			TrayIcon trayIcon = new TrayIcon(trayImg);
+
+			PopupMenu popup = new PopupMenu();
+
+			MenuItem showHideItem = new MenuItem("Hide");
+			ActionListener showHideListener = (ActionEvent e) ->
+			{
+				Platform.runLater(() ->
+				{
+					if (primaryStage.isShowing())
+					{
+						primaryStage.hide();
+						showHideItem.setLabel("Show");
+					}
+					else
+					{
+						primaryStage.show();
+						showHideItem.setLabel("Hide");
+					}
+				});
+			};
+			showHideItem.addActionListener(showHideListener);
+
+			MenuItem exitItem = new MenuItem("Exit");
+			exitItem.addActionListener((ActionEvent e) -> Platform.runLater(() -> primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))));
+
+			// Add components to pop-up menu
+			popup.add(showHideItem);
+			popup.addSeparator();
+			popup.add(exitItem);
+
+			trayIcon.setPopupMenu(popup);
+			// Show/Hide on double-click
+			trayIcon.addActionListener(showHideListener);
+
+			tray.add(trayIcon);
+		}
+		catch (IOException | AWTException e)
+		{
+			log.warn("TrayIcon could not be added", e);
+		}
 	}
 
 	/**
@@ -78,6 +153,11 @@ public class WatcherApp extends Application
 		primaryStage.setTitle(APP_INFO);
 
 		primaryStage.show();
+	}
+
+	public MainController getMainController()
+	{
+		return mainController;
 	}
 
 	/**
@@ -99,6 +179,9 @@ public class WatcherApp extends Application
 		mainController.shutdown();
 
 		log.info("Stopped {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
+
+		// To also close AWT Thread
+		System.exit(0);
 	}
 
 	public static void main(String[] args)

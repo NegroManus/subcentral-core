@@ -69,7 +69,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
 		final TextFormatter<Path> targetDirFormatter = FxUtil.bindPathToTextField(targetDirTxtFld, settings.targetDirProperty());
-		FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory");
+		FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getWatcherApp().getPrimaryStage(), "Choose target directory");
 
 		deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.deleteSourceProperty());
 
@@ -111,7 +111,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 
 		FxUtil.setChooseFileAction(chooseRarExeBtn,
 				rarExeFormatter,
-				settingsController.getMainController().getPrimaryStage(),
+				settingsController.getMainController().getWatcherApp().getPrimaryStage(),
 				"Select rar executable",
 				"RAR executable",
 				WinRar.getRarExecutableFilename());
