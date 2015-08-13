@@ -12,7 +12,8 @@
 		<filenamePatterns>*.srt</filenamePatterns>
 		<parsingServices>
 			<parsingService enabled="true">addic7ed.com</parsingService>
-			<parsingService enabled="false">italiansubs.net</parsingService>
+			<parsingService enabled="false">italiansubs.net
+			</parsingService>
 			<parsingService enabled="true">subcentral.de</parsingService>
 		</parsingServices>
 	</parsing>
@@ -21,7 +22,8 @@
 	<metadata>
 		<release>
 			<parsingServices>
-				<parsingService enabled="true">release.scene</parsingService>
+				<parsingService enabled="true">release.scene
+				</parsingService>
 			</parsingServices>
 			<metaTags>
 				<tag>REAL</tag>
@@ -39,52 +41,31 @@
 			</databases>
 			<guessing enabled="true">
 				<standardReleases>
-					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, WEB-DL, DD5.1, H.264"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264" group="2HD"
-						scope="IF_GUESSING" />
-					<standardRelease tags="HDTV, x264" group="2HD"
-						scope="IF_GUESSING" />
-					<standardRelease tags="HDTV, x264" group="ASAP"
-						scope="IF_GUESSING" />
-					<standardRelease tags="1080p, HDTV, x264" group="BATV"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264" group="BATV"
-						scope="IF_GUESSING" />
-					<standardRelease tags="1080i, HDTV, MPEG2, DD5.1"
-						group="CtrlHD" scope="IF_GUESSING" />
-					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264" group="DIMENSION"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264" group="DON"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV x264" group="IMMERSE"
-						scope="IF_GUESSING" />
-					<standardRelease tags="HDTV, x264" group="LOL"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264" group="KILLERS"
-						scope="IF_GUESSING" />
-					<standardRelease tags="HDTV, x264" group="KILLERS"
-						scope="IF_GUESSING" />
-					<standardRelease tags="HDTV, x264" group="EXCELLENCE"
-						scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE"
-						scope="IF_GUESSING" />
+					<standardRelease tags="1080p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
+					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="2HD" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="2HD" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="ASAP" scope="IF_GUESSING" />
+					<standardRelease tags="1080p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
+					<standardRelease tags="1080i, HDTV, MPEG2, DD5.1" group="CtrlHD" scope="IF_GUESSING" />
+					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="DON" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV x264" group="IMMERSE" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="LOL" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="EXCELLENCE" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE" scope="IF_GUESSING" />
 				</standardReleases>
 			</guessing>
 			<compatibility enabled="true">
 				<compatibilities>
-					<crossGroupCompatibility enabled="true"
-						sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
-					<crossGroupCompatibility enabled="true"
-						sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
-					<crossGroupCompatibility enabled="true"
-						sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />
-					<crossGroupCompatibility enabled="true"
-						sourceGroup="REMARKABLE" compatibleGroup="EXCELLENCE" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />
+					<crossGroupCompatibility enabled="true" sourceGroup="REMARKABLE" compatibleGroup="EXCELLENCE" symmetric="true" />
 				</compatibilities>
 			</compatibility>
 		</release>
@@ -92,39 +73,28 @@
 
 	<standardizing>
 		<standardizers>
-			<seriesNameStandardizer namePattern="Castle"
-				namePatternMode="LITERAL" nameReplacement="Castle (2009)"
-				beforeQuerying="true" afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Good Wife"
-				namePatternMode="LITERAL" nameReplacement="The Good Wife"
-				beforeQuerying="false" afterQuerying="true" />
-			<seriesNameStandardizer namePattern="Scandal"
-				namePatternMode="LITERAL" nameReplacement="Scandal (US)"
-				beforeQuerying="true" afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Scream"
-				namePatternMode="LITERAL" nameReplacement="Scream The TV Series"
+			<seriesNameStandardizer namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true"
+				afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Good Wife" namePatternMode="LITERAL" nameReplacement="The Good Wife" beforeQuerying="false"
+				afterQuerying="true" />
+			<seriesNameStandardizer namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true"
+				afterQuerying="false" />
+			<seriesNameStandardizer namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series"
 				beforeQuerying="true" afterQuerying="false" />
 
-			<releaseTagsStandardizer queryTags="AAC2, 0"
-				replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
+			<releaseTagsStandardizer queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
 				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="DD5, 1"
-				replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
+			<releaseTagsStandardizer queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
 				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H, 264"
-				replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
+			<releaseTagsStandardizer queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
 				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H, 265"
-				replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
+			<releaseTagsStandardizer queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
 				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H264"
-				replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
+			<releaseTagsStandardizer queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
 				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H265"
-				replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
+			<releaseTagsStandardizer queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
 				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="WEB, DL"
-				replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
+			<releaseTagsStandardizer queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
 				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
 		</standardizers>
 
@@ -137,16 +107,11 @@
 			<ouputLanguageFormat>ISO2</ouputLanguageFormat>
 			<ouputLanguage tag="en" />
 			<customLanguagePatterns>
-				<languagePattern pattern="VO" patternMode="LITERAL"
-					languageTag="en" />
-				<languagePattern pattern="VF" patternMode="LITERAL"
-					languageTag="fr" />
-				<languagePattern pattern="ger" patternMode="LITERAL"
-					languageTag="de" />
-				<languagePattern pattern="简体" patternMode="LITERAL"
-					languageTag="zh-CN" /> <!-- simplified chinese -->
-				<languagePattern pattern="繁体" patternMode="LITERAL"
-					languageTag="zh-TW" /> <!-- traditional chinese -->
+				<languagePattern pattern="VO" patternMode="LITERAL" languageTag="en" />
+				<languagePattern pattern="VF" patternMode="LITERAL" languageTag="fr" />
+				<languagePattern pattern="ger" patternMode="LITERAL" languageTag="de" />
+				<languagePattern pattern="简体" patternMode="LITERAL" languageTag="zh-CN" /> <!-- simplified chinese -->
+				<languagePattern pattern="繁体" patternMode="LITERAL" languageTag="zh-TW" /> <!-- traditional chinese -->
 			</customLanguagePatterns>
 			<customLanguageTextMappings>
 				<languageTextMapping languageTag="en" text="VO" />
@@ -156,13 +121,9 @@
 
 	<naming>
 		<parameters>
-			<param key="de.subcentral.core.naming.EpisodeNamer.alwaysIncludeTitle"
-				value="false" />
-			<param key="de.subcentral.core.naming.ReleaseNamer.preferName"
-				value="true" />
-			<param
-				key="de.subcentral.core.naming.SubtitleAdjustmentNamer.includeGroup"
-				value="true" />
+			<param key="de.subcentral.core.naming.EpisodeNamer.alwaysIncludeTitle" value="false" />
+			<param key="de.subcentral.core.naming.ReleaseNamer.preferName" value="true" />
+			<param key="de.subcentral.core.naming.SubtitleAdjustmentNamer.includeGroup" value="true" />
 		</parameters>
 	</naming>
 
@@ -177,5 +138,13 @@
 			</winrar>
 		</packing>
 	</fileTransformation>
+
+	<userInterface>
+		<warnings>
+			<guessing enabled="true" />
+			<metaTagsInRelease enabled="true" />
+			<nukedRelease enabled="true" />
+		</warnings>
+	</userInterface>
 
 </watcherConfig>
