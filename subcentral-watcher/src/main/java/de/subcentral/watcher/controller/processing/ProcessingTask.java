@@ -1,5 +1,6 @@
 package de.subcentral.watcher.controller.processing;
 
+import java.awt.TrayIcon.MessageType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,6 +35,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -490,6 +492,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	if (config.isGuessingEnabled())
 	{
 	    log.info("Guessing enabled");
+	    displayTrayMessage("Guessing", getSourceFile().getFileName().toString(), MessageType.WARNING);
+
 	    List<StandardRelease> stdRlss = config.getStandardReleases();
 	    Map<Release, StandardRelease> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
 	    logReleases(Level.DEBUG, "Guessed releases:", guessedRlss.keySet());
@@ -547,6 +551,25 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     {
 	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(rls);
 	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+
+	if (rls.isNuked())
+	{
+	    displayTrayMessage("Nuked release", name(rls), MessageType.WARNING);
+	}
+	List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
+	if (!containedMetaTags.isEmpty())
+	{
+	    String caption;
+	    if (containedMetaTags.size() == 1)
+	    {
+		caption = "Contains meta tag ";
+	    }
+	    else
+	    {
+		caption = "Contains meta tags ";
+	    }
+	    displayTrayMessage(caption + Tag.listToString(containedMetaTags), name(rls), MessageType.WARNING);
+	}
 
 	resultObject.getMatchingReleases().add(rls);
 	ProcessingResult result = addResult(rls, methodInfo);
@@ -704,5 +727,10 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	{
 	    throw new CancellationException();
 	}
+    }
+
+    private void displayTrayMessage(String caption, String text, MessageType messageType)
+    {
+	Platform.runLater(() -> controller.getMainController().getWatcherApp().getTrayIcon().displayMessage(caption, text, messageType));
     }
 }
