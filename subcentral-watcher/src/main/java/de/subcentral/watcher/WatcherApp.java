@@ -33,6 +33,13 @@ public class WatcherApp extends Application
 
     private static final Logger log = LogManager.getLogger(WatcherApp.class);
 
+    private static WatcherApp instance;
+
+    public static WatcherApp getInstance()
+    {
+	return instance;
+    }
+
     private MainController mainController;
 
     private Stage      primaryStage;
@@ -42,6 +49,8 @@ public class WatcherApp extends Application
     @Override
     public void init() throws Exception
     {
+	instance = this;
+
 	log.info("Initializing {} ...", APP_INFO);
 	log.info("Operating system: {} {} {}", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
 	log.info("Java version: {}", SystemUtils.JAVA_VERSION);

@@ -18,7 +18,6 @@
 		</parsingServices>
 	</parsing>
 
-
 	<metadata>
 		<release>
 			<parsingServices>
@@ -37,7 +36,7 @@
 			<databases>
 				<db enabled="true">predb.me</db>
 				<db enabled="true">xrel.to</db>
-				<db enabled="true">orlydb.com</db>
+				<db enabled="false">orlydb.com</db>
 			</databases>
 			<guessing enabled="true">
 				<standardReleases>
@@ -71,32 +70,26 @@
 		</release>
 	</metadata>
 
-	<standardizing>
-		<standardizers>
-			<seriesNameStandardizer namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true"
-				afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Good Wife" namePatternMode="LITERAL" nameReplacement="The Good Wife" beforeQuerying="false"
-				afterQuerying="true" />
-			<seriesNameStandardizer namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true"
-				afterQuerying="false" />
-			<seriesNameStandardizer namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series"
-				beforeQuerying="true" afterQuerying="false" />
+	<correction>
+		<rules>
+			<seriesNameCorrectionRule namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameCorrectionRule namePattern="Good Wife" namePatternMode="LITERAL" nameReplacement="The Good Wife" beforeQuerying="false" afterQuerying="true" />
+			<seriesNameCorrectionRule namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameCorrectionRule namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series" beforeQuerying="true" afterQuerying="false" />
 
-			<releaseTagsStandardizer queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
-				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
-				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
-				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
-				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
-				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
-				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsStandardizer queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE"
-				ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-		</standardizers>
+			<releaseTagsCorrectionRule queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+				afterQuerying="true" />
+			<releaseTagsCorrectionRule queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+				afterQuerying="true" />
+			<releaseTagsCorrectionRule queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+				afterQuerying="true" />
+			<releaseTagsCorrectionRule queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+				afterQuerying="true" />
+			<releaseTagsCorrectionRule queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+				afterQuerying="true" />
+		</rules>
 
 		<subtitleLanguage>
 			<parsingLanguages>
@@ -117,7 +110,7 @@
 				<languageTextMapping languageTag="en" text="VO" />
 			</customLanguageTextMappings>
 		</subtitleLanguage>
-	</standardizing>
+	</correction>
 
 	<naming>
 		<parameters>
@@ -139,12 +132,12 @@
 		</packing>
 	</fileTransformation>
 
-	<userInterface>
-		<warnings>
-			<guessing enabled="true" />
-			<metaTagsInRelease enabled="true" />
-			<nukedRelease enabled="true" />
+	<ui>
+		<warnings enabled="true">
+			<guessingWarning enabled="true" />
+			<metaTaggedReleaseWarning enabled="true" />
+			<nukedReleaseWarning enabled="true" />
 		</warnings>
-	</userInterface>
+	</ui>
 
 </watcherConfig>

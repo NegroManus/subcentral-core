@@ -28,8 +28,8 @@ import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.settings.LanguageTextMapping;
 import de.subcentral.watcher.settings.LanguageUserPattern;
-import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
-import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
 import javafx.application.Platform;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
@@ -51,874 +51,915 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 
 public class WatcherDialogs
 {
-	private static final Logger log = LogManager.getLogger(WatcherDialogs.class);
+    private static final Logger log = LogManager.getLogger(WatcherDialogs.class);
 
-	static abstract class AbstractBeanDialogController<T> extends AbstractController
+    static abstract class AbstractBeanEditController<T> extends AbstractController
+    {
+	// Model
+	protected final T bean;
+
+	// View
+	protected final Dialog<T> dialog = new Dialog<>();
+	@FXML
+	protected Node		  rootPane;
+
+	private AbstractBeanEditController(T bean)
 	{
-		// Model
-		protected final T bean;
-
-		// View
-		protected final Dialog<T>	dialog	= new Dialog<>();
-		@FXML
-		protected Node				contentPane;
-
-		private AbstractBeanDialogController(T bean)
-		{
-			this.bean = bean;
-			this.dialog.initOwner(null);
-		}
-
-		private Dialog<T> getDialog()
-		{
-			return dialog;
-		}
-
-		@Override
-		protected final void doInitialize()
-		{
-			initDialog();
-			initComponents();
-		}
-
-		protected void initDialog()
-		{
-			String title = getTitle();
-			dialog.setTitle(title);
-			dialog.setHeaderText(title);
-			dialog.setWidth(getWidth());
-
-			// Set the button types.
-			dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
-			dialog.getDialogPane().setContent(contentPane);
-
-			Platform.runLater(() -> getDefaultFocusNode().requestFocus());
-		}
-
-		protected abstract String getTitle();
-
-		protected double getWidth()
-		{
-			return 350d;
-		}
-
-		protected ButtonType[] getButtonTypes()
-		{
-			return new ButtonType[]
-			{ ButtonType.APPLY, ButtonType.CANCEL };
-		}
-
-		protected abstract Node getDefaultFocusNode();
-
-		protected abstract void initComponents();
+	    this.bean = bean;
+	    this.dialog.initOwner(WatcherApp.getInstance().getPrimaryStage());
 	}
 
-	private static class StandardReleaseDialogController extends AbstractBeanDialogController<StandardRelease>
+	private Dialog<T> getDialog()
 	{
-		// View
-		@FXML
-		private TextField	tagsTxtFld;
-		@FXML
-		private TextField	groupTxtFld;
-		@FXML
-		private RadioButton	ifGuessingRadioBtn;
-		@FXML
-		private RadioButton	alwaysRadioBtn;
+	    return dialog;
+	}
 
-		private StandardReleaseDialogController(StandardRelease commonReleaseDef)
+	@Override
+	protected final void doInitialize()
+	{
+	    initDialog();
+	    initComponents();
+	}
+
+	protected void initDialog()
+	{
+	    String title = getTitle();
+	    dialog.setTitle(title);
+	    String imgPath = getImagePath();
+	    if (imgPath != null)
+	    {
+		dialog.setGraphic(new ImageView(FxUtil.loadImg(imgPath)));
+	    }
+	    dialog.setHeaderText(title);
+	    dialog.setWidth(getWidth());
+
+	    // Set the button types.
+	    dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
+	    dialog.getDialogPane().setContent(rootPane);
+
+	    Platform.runLater(() -> getDefaultFocusNode().requestFocus());
+	}
+
+	protected abstract String getTitle();
+
+	protected String getImagePath()
+	{
+	    return null;
+	}
+
+	protected double getWidth()
+	{
+	    return 350d;
+	}
+
+	protected ButtonType[] getButtonTypes()
+	{
+	    return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
+	}
+
+	protected abstract Node getDefaultFocusNode();
+
+	protected abstract void initComponents();
+    }
+
+    private static class StandardReleaseEditController extends AbstractBeanEditController<StandardRelease>
+    {
+	// View
+	@FXML
+	private TextField   tagsTxtFld;
+	@FXML
+	private TextField   groupTxtFld;
+	@FXML
+	private RadioButton ifGuessingRadioBtn;
+	@FXML
+	private RadioButton alwaysRadioBtn;
+
+	private StandardReleaseEditController(StandardRelease commonReleaseDef)
+	{
+	    super(commonReleaseDef);
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    if (bean == null)
+	    {
+		return "Add standard release";
+	    }
+	    else
+	    {
+		return "Edit standard release";
+	    }
+	}
+
+	@Override
+	protected String getImagePath()
+	{
+	    return "release_16.png";
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return tagsTxtFld;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    ToggleGroup scopeToggleGrp = new ToggleGroup();
+	    scopeToggleGrp.getToggles().addAll(ifGuessingRadioBtn, alwaysRadioBtn);
+
+	    // Set initial values
+	    List<Tag> initialTags;
+	    Group initialGroup;
+	    Toggle initialScope;
+	    if (bean == null)
+	    {
+		initialTags = ImmutableList.of();
+		initialGroup = null;
+		initialScope = ifGuessingRadioBtn;
+	    }
+	    else
+	    {
+		initialTags = bean.getRelease().getTags();
+		initialGroup = bean.getRelease().getGroup();
+		switch (bean.getScope())
 		{
-			super(commonReleaseDef);
+		    case IF_GUESSING:
+			initialScope = ifGuessingRadioBtn;
+			break;
+		    case ALWAYS:
+			initialScope = alwaysRadioBtn;
+			break;
+		    default:
+			initialScope = ifGuessingRadioBtn;
+		}
+	    }
+	    ListProperty<Tag> tags = SubCentralFxUtil.tagPropertyForTextField(tagsTxtFld, initialTags);
+	    Property<Group> group = SubCentralFxUtil.groupPropertyForTextField(groupTxtFld, initialGroup);
+	    scopeToggleGrp.selectToggle(initialScope);
+
+	    // Bindings
+	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+	    // At least tags need to be specified
+	    applyButton.disableProperty().bind(tags.emptyProperty());
+
+	    // ResultConverter
+	    dialog.setResultConverter(dialogButton -> {
+		if (dialogButton == ButtonType.APPLY)
+		{
+		    Scope scope;
+		    if (scopeToggleGrp.getSelectedToggle() == alwaysRadioBtn)
+		    {
+			scope = Scope.ALWAYS;
+		    }
+		    else
+		    {
+			scope = Scope.IF_GUESSING;
+		    }
+		    return new StandardRelease(tags.get(), group.getValue(), scope);
+		}
+		return null;
+	    });
+	}
+    }
+
+    private static class CrossGroupCompatibilityEditController extends AbstractBeanEditController<CrossGroupCompatibility>
+    {
+	@FXML
+	private TextField compatibleGroupTxtFld;
+	@FXML
+	private TextField sourceGroupTxtFld;
+	@FXML
+	private CheckBox  symmetricCheckBox;
+
+	private CrossGroupCompatibilityEditController(CrossGroupCompatibility bean)
+	{
+	    super(bean);
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    if (bean == null)
+	    {
+		return "Add cross-group compatibility";
+	    }
+	    else
+	    {
+		return "Edit cross-group compatibility";
+	    }
+	}
+
+	@Override
+	protected String getImagePath()
+	{
+	    return "couple_16.png";
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return sourceGroupTxtFld;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    // Set initial values
+	    Group initialSourceGroup;
+	    Group initialCompatibleGroup;
+	    boolean initialSymmetric;
+	    if (bean == null)
+	    {
+		initialSourceGroup = null;
+		initialCompatibleGroup = null;
+		initialSymmetric = false;
+	    }
+	    else
+	    {
+		initialSourceGroup = bean.getSourceGroup();
+		initialCompatibleGroup = bean.getCompatibleGroup();
+		initialSymmetric = bean.isSymmetric();
+	    }
+	    Property<Group> sourceGroup = SubCentralFxUtil.groupPropertyForTextField(sourceGroupTxtFld, initialSourceGroup);
+	    Property<Group> compatibleGroup = SubCentralFxUtil.groupPropertyForTextField(compatibleGroupTxtFld, initialCompatibleGroup);
+	    symmetricCheckBox.setSelected(initialSymmetric);
+
+	    // Do Bindings
+	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+	    applyButton.disableProperty().bind(new BooleanBinding()
+	    {
+		{
+		    super.bind(compatibleGroup, sourceGroup);
 		}
 
 		@Override
-		protected String getTitle()
+		protected boolean computeValue()
 		{
-			if (bean == null)
+		    // Both groups need to be specified and not equal to each other
+		    return sourceGroup.getValue() == null || compatibleGroup.getValue() == null || sourceGroup.getValue().equals(compatibleGroup.getValue());
+		}
+	    });
+
+	    // Set ResultConverter
+	    dialog.setResultConverter(dialogButton -> {
+		if (dialogButton == ButtonType.APPLY)
+		{
+		    Group sourceGrp = sourceGroup.getValue();
+		    Group compatibleGrp = compatibleGroup.getValue();
+		    boolean symmetric = symmetricCheckBox.isSelected();
+		    return new CrossGroupCompatibility(sourceGrp, compatibleGrp, symmetric);
+		}
+		return null;
+	    });
+	}
+    }
+
+    private static class SeriesNameCorrectionRuleEditController extends AbstractBeanEditController<SeriesNameCorrectionRuleSettingEntry>
+    {
+	@FXML
+	private RadioButton literalRadioBtn;
+	@FXML
+	private RadioButton simplePatternRadioBtn;
+	@FXML
+	private RadioButton regexRadioBtn;
+	@FXML
+	private TextField   namePatternTxtFld;
+	@FXML
+	private Label	    patternErrorLbl;
+	@FXML
+	private TextField   nameReplacementTxtFld;
+
+	private SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingEntry bean)
+	{
+	    super(bean);
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    if (bean == null)
+	    {
+		return "Add correction rule for: " + SeriesNameCorrectionRuleSettingEntry.getRuleType();
+	    }
+	    else
+	    {
+		return "Edit correction rule for: " + SeriesNameCorrectionRuleSettingEntry.getRuleType();
+	    }
+	}
+
+	@Override
+	protected String getImagePath()
+	{
+	    return "edit_16.png";
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return namePatternTxtFld;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    ToggleGroup patternModeToggleGrp = new ToggleGroup();
+	    patternModeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
+
+	    // Initial values
+	    Toggle initialPatternMode;
+	    String initialNamePattern;
+	    String initialNameReplacement;
+	    if (bean == null)
+	    {
+		initialPatternMode = literalRadioBtn;
+		initialNamePattern = null;
+		initialNameReplacement = null;
+	    }
+	    else
+	    {
+		switch (bean.getNameUserPattern().getMode())
+		{
+		    case LITERAL:
+			initialPatternMode = literalRadioBtn;
+			break;
+		    case SIMPLE:
+			initialPatternMode = simplePatternRadioBtn;
+			break;
+		    case REGEX:
+			initialPatternMode = regexRadioBtn;
+			break;
+		    default:
+			initialPatternMode = literalRadioBtn;
+		}
+		initialNamePattern = bean.getNameUserPattern().getPattern();
+		initialNameReplacement = bean.getValue().getNameReplacement();
+	    }
+	    patternModeToggleGrp.selectToggle(initialPatternMode);
+	    namePatternTxtFld.setText(initialNamePattern);
+	    nameReplacementTxtFld.setText(initialNameReplacement);
+
+	    // Bindings
+	    Binding<UserPattern> namePatternBinding = FxUtil.createUiPatternTextFieldBinding(patternModeToggleGrp,
+		    literalRadioBtn,
+		    simplePatternRadioBtn,
+		    regexRadioBtn,
+		    namePatternTxtFld,
+		    patternErrorLbl);
+
+	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+	    applyButton.disableProperty().bind(new BooleanBinding()
+	    {
+		{
+		    super.bind(namePatternBinding, nameReplacementTxtFld.textProperty());
+		}
+
+		@Override
+		protected boolean computeValue()
+		{
+		    return namePatternBinding.getValue() == null || StringUtils.isBlank(nameReplacementTxtFld.getText());
+		}
+	    });
+
+	    // ResultConverter
+	    dialog.setResultConverter(dialogButton -> {
+		if (dialogButton == ButtonType.APPLY)
+		{
+		    String nameReplacement = StringUtils.trimToNull(nameReplacementTxtFld.getText());
+		    boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
+		    boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
+		    return new SeriesNameCorrectionRuleSettingEntry(namePatternBinding.getValue(), nameReplacement, beforeQuerying, afterQuerying);
+		}
+		return null;
+	    });
+
+	}
+    }
+
+    private static class ReleaseTagsCorrectionRuleEditController extends AbstractBeanEditController<ReleaseTagsCorrectionRuleSettingEntry>
+    {
+	@FXML
+	private RadioButton containRadioBtn;
+	@FXML
+	private RadioButton equalRadioBtn;
+	@FXML
+	private TextField   queryTagsTxtFld;
+	@FXML
+	private CheckBox    ignoreOrderCheckBox;
+	@FXML
+	private RadioButton matchRadioBtn;
+	@FXML
+	private RadioButton completeRadioBtn;
+	@FXML
+	private TextField   replacementTxtFld;
+
+	private ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectionRuleSettingEntry bean)
+	{
+	    super(bean);
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    if (bean == null)
+	    {
+		return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getStandardizerTypeString();
+	    }
+	    else
+	    {
+		return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getStandardizerTypeString();
+	    }
+	}
+
+	@Override
+	protected String getImagePath()
+	{
+	    return "edit_16.png";
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return queryTagsTxtFld;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    ToggleGroup queryModeToggleGrp = new ToggleGroup();
+	    queryModeToggleGrp.getToggles().addAll(containRadioBtn, equalRadioBtn);
+
+	    ToggleGroup replaceWithToggleGrp = new ToggleGroup();
+	    replaceWithToggleGrp.getToggles().addAll(matchRadioBtn, completeRadioBtn);
+
+	    // Initial values
+	    Toggle initialQueryModeToggle;
+	    List<Tag> initialQueryTags;
+	    boolean initialIgnoreOrder;
+	    Toggle initialReplaceWithToggle;
+	    List<Tag> initialReplacement;
+	    if (bean == null)
+	    {
+		initialQueryModeToggle = containRadioBtn;
+		initialQueryTags = ImmutableList.of();
+		initialIgnoreOrder = false;
+		initialReplaceWithToggle = matchRadioBtn;
+		initialReplacement = ImmutableList.of();
+	    }
+	    else
+	    {
+		TagsReplacer replacer = bean.getValue().getReplacer();
+		switch (replacer.getQueryMode())
+		{
+		    case CONTAIN:
+			initialQueryModeToggle = containRadioBtn;
+			break;
+		    case EQUAL:
+			initialQueryModeToggle = equalRadioBtn;
+			break;
+		    default:
+			initialQueryModeToggle = containRadioBtn;
+		}
+		initialQueryTags = replacer.getQueryTags();
+		initialIgnoreOrder = replacer.getIgnoreOrder();
+		switch (replacer.getReplaceMode())
+		{
+		    case MATCHED_SEQUENCE:
+			initialReplaceWithToggle = matchRadioBtn;
+			break;
+		    case COMPLETE_LIST:
+			initialReplaceWithToggle = completeRadioBtn;
+			break;
+		    default:
+			initialReplaceWithToggle = matchRadioBtn;
+		}
+		initialReplacement = replacer.getReplacement();
+	    }
+	    queryModeToggleGrp.selectToggle(initialQueryModeToggle);
+	    ignoreOrderCheckBox.setSelected(initialIgnoreOrder);
+	    replaceWithToggleGrp.selectToggle(initialReplaceWithToggle);
+	    ListProperty<Tag> queryTags = SubCentralFxUtil.tagPropertyForTextField(queryTagsTxtFld, initialQueryTags);
+	    ListProperty<Tag> replacement = SubCentralFxUtil.tagPropertyForTextField(replacementTxtFld, initialReplacement);
+
+	    // Bindings
+	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+	    applyButton.disableProperty().bind(queryTags.emptyProperty());
+
+	    ignoreOrderCheckBox.disableProperty().bind(queryTags.sizeProperty().lessThan(2));
+
+	    matchRadioBtn.setDisable(equalRadioBtn.isSelected());
+	    equalRadioBtn.selectedProperty().addListener((observable, oldValue, newValue) -> {
+		matchRadioBtn.setDisable(newValue);
+		if (newValue)
+		{
+		    replaceWithToggleGrp.selectToggle(completeRadioBtn);
+		}
+	    });
+
+	    // ResultConverter
+	    dialog.setResultConverter(dialogButton -> {
+		if (dialogButton == ButtonType.APPLY)
+		{
+		    TagUtil.QueryMode queryMode;
+		    if (queryModeToggleGrp.getSelectedToggle() == equalRadioBtn)
+		    {
+			queryMode = QueryMode.EQUAL;
+		    }
+		    else
+		    {
+			queryMode = QueryMode.CONTAIN;
+		    }
+		    ReplaceMode replaceWith;
+		    if (replaceWithToggleGrp.getSelectedToggle() == completeRadioBtn)
+		    {
+			replaceWith = ReplaceMode.COMPLETE_LIST;
+		    }
+		    else
+		    {
+			replaceWith = ReplaceMode.MATCHED_SEQUENCE;
+		    }
+		    boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
+		    boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
+		    boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
+		    return new ReleaseTagsCorrectionRuleSettingEntry(new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
+			    beforeQuerying,
+			    afterQuerying);
+		}
+		return null;
+	    });
+	}
+    }
+
+    private static class LocaleListEditController extends AbstractBeanEditController<List<Locale>>
+    {
+	@FXML
+	private ListView<Locale> langsListView;
+	@FXML
+	private ComboBox<Locale> addableLangsComboBox;
+	@FXML
+	private Button		 addLangBtn;
+	@FXML
+	private Button		 removeLangBtn;
+
+	private LocaleListEditController(List<Locale> bean)
+	{
+	    super(Objects.requireNonNull(bean));
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    return "Edit languages";
+	}
+
+	@Override
+	protected String getImagePath()
+	{
+	    return "usa_flag_16.png";
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return langsListView;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    // Set initial values
+	    langsListView.setItems(initLangList());
+	    langsListView.setCellFactory((ListView<Locale> param) -> {
+		return new ListCell<Locale>()
+		{
+		    @Override
+		    protected void updateItem(Locale lang, boolean empty)
+		    {
+			super.updateItem(lang, empty);
+			if (empty || lang == null)
 			{
-				return "Add standard release";
+			    setText(null);
+			    setGraphic(null);
 			}
 			else
 			{
-				return "Edit standard release";
+			    setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
 			}
+		    }
+		};
+	    });
+
+	    addableLangsComboBox.setItems(initAddableLangList());
+	    addableLangsComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+
+	    // Bindings
+	    addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
+	    addLangBtn.setOnAction((ActionEvent) -> {
+		// remove lang from addable langs
+		Locale langToAdd = addableLangsComboBox.getItems().remove(addableLangsComboBox.getSelectionModel().getSelectedIndex());
+		// add lang to lang list
+		langsListView.getItems().add(langToAdd);
+		langsListView.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+	    });
+
+	    removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
+	    removeLangBtn.setOnAction((ActionEvent) -> {
+		// remove lang from lang list
+		Locale removedLang = langsListView.getItems().remove(langsListView.getSelectionModel().getSelectedIndex());
+		// add lang to addable langs
+		addableLangsComboBox.getItems().add(removedLang);
+		addableLangsComboBox.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+	    });
+
+	    // Set ResultConverter
+	    dialog.setResultConverter(dialogButton -> {
+		if (dialogButton == ButtonType.APPLY)
+		{
+		    return langsListView.getItems();
+		}
+		return null;
+	    });
+	}
+
+	private ObservableList<Locale> initLangList()
+	{
+	    ObservableList<Locale> langList = FXCollections.observableArrayList(bean);
+	    langList.sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+	    return langList;
+	}
+
+	private ObservableList<Locale> initAddableLangList()
+	{
+	    ObservableList<Locale> addableLangList = FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+	    // already selected langs are not addable
+	    addableLangList.removeAll(bean);
+	    return addableLangList;
+	}
+    }
+
+    private static class TextLanguageMappingEditController extends AbstractBeanEditController<LanguageUserPattern>
+    {
+	@FXML
+	private RadioButton	 literalRadioBtn;
+	@FXML
+	private RadioButton	 simplePatternRadioBtn;
+	@FXML
+	private RadioButton	 regexRadioBtn;
+	@FXML
+	private TextField	 textTxtFld;
+	@FXML
+	private Label		 patternErrorLbl;
+	@FXML
+	private ComboBox<Locale> langComboBox;
+
+	private TextLanguageMappingEditController(LanguageUserPattern bean)
+	{
+	    super(bean);
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    return bean == null ? "Add text to language mapping" : "Edit text to language mapping";
+	}
+
+	@Override
+	protected String getImagePath()
+	{
+	    return "usa_flag_16.png";
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return textTxtFld;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    // initialize
+	    langComboBox.setItems(FxUtil.createListOfAvailableLocales(false, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+	    langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+
+	    // Set initial values
+
+	    ToggleGroup modeToggleGrp = new ToggleGroup();
+	    modeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
+
+	    if (bean != null)
+	    {
+		switch (bean.getPattern().getMode())
+		{
+		    case LITERAL:
+			modeToggleGrp.selectToggle(literalRadioBtn);
+			break;
+		    case SIMPLE:
+			modeToggleGrp.selectToggle(simplePatternRadioBtn);
+			break;
+		    case REGEX:
+			modeToggleGrp.selectToggle(regexRadioBtn);
+			break;
+		    default:
+			modeToggleGrp.selectToggle(literalRadioBtn);
+		}
+		textTxtFld.setText(bean.getPattern().getPattern());
+		langComboBox.setValue(bean.getLanguage());
+	    }
+	    else
+	    {
+		modeToggleGrp.selectToggle(literalRadioBtn);
+	    }
+
+	    // Bindings
+	    final Binding<UserPattern> patternBinding = FxUtil.createUiPatternTextFieldBinding(modeToggleGrp, literalRadioBtn, simplePatternRadioBtn, regexRadioBtn, textTxtFld, patternErrorLbl);
+
+	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+	    applyButton.disableProperty().bind(new BooleanBinding()
+	    {
+		{
+		    super.bind(patternBinding, textTxtFld.textProperty(), langComboBox.valueProperty());
 		}
 
 		@Override
-		protected Node getDefaultFocusNode()
+		protected boolean computeValue()
 		{
-			return tagsTxtFld;
+		    return patternBinding.getValue() == null || StringUtils.isBlank(textTxtFld.getText()) || langComboBox.getValue() == null;
+		}
+	    });
+
+	    // Set ResultConverter
+	    dialog.setResultConverter(dialogButton -> {
+		if (dialogButton == ButtonType.APPLY)
+		{
+		    return new LanguageUserPattern(patternBinding.getValue(), langComboBox.getValue());
+		}
+		return null;
+	    });
+	}
+    }
+
+    private static class LanguageTextMappingEditController extends AbstractBeanEditController<LanguageTextMapping>
+    {
+	@FXML
+	private ComboBox<Locale> langComboBox;
+	@FXML
+	private TextField	 textTxtFld;
+
+	private LanguageTextMappingEditController(LanguageTextMapping bean)
+	{
+	    super(bean);
+	}
+
+	@Override
+	protected String getTitle()
+	{
+	    return bean == null ? "Add language to text mapping" : "Edit language to text mapping";
+	}
+
+	@Override
+	protected String getImagePath()
+	{
+	    return "usa_flag_16.png";
+	}
+
+	@Override
+	protected Node getDefaultFocusNode()
+	{
+	    return textTxtFld;
+	}
+
+	@Override
+	protected void initComponents()
+	{
+	    // Set initial values
+	    langComboBox.setItems(FxUtil.createListOfAvailableLocales(true, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+	    langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+	    langComboBox.setValue(bean != null ? bean.getLanguage() : null);
+
+	    textTxtFld.setText(bean != null ? bean.getText() : "");
+
+	    // Bindings
+	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+	    applyButton.disableProperty().bind(new BooleanBinding()
+	    {
+		{
+		    super.bind(langComboBox.valueProperty(), textTxtFld.textProperty());
 		}
 
 		@Override
-		protected void initComponents()
+		protected boolean computeValue()
 		{
-			ToggleGroup scopeToggleGrp = new ToggleGroup();
-			scopeToggleGrp.getToggles().addAll(ifGuessingRadioBtn, alwaysRadioBtn);
-
-			// Set initial values
-			List<Tag> initialTags;
-			Group initialGroup;
-			Toggle initialScope;
-			if (bean == null)
-			{
-				initialTags = ImmutableList.of();
-				initialGroup = null;
-				initialScope = ifGuessingRadioBtn;
-			}
-			else
-			{
-				initialTags = bean.getRelease().getTags();
-				initialGroup = bean.getRelease().getGroup();
-				switch (bean.getScope())
-				{
-				case IF_GUESSING:
-					initialScope = ifGuessingRadioBtn;
-					break;
-				case ALWAYS:
-					initialScope = alwaysRadioBtn;
-					break;
-				default:
-					initialScope = ifGuessingRadioBtn;
-				}
-			}
-			ListProperty<Tag> tags = SubCentralFxUtil.tagPropertyForTextField(tagsTxtFld, initialTags);
-			Property<Group> group = SubCentralFxUtil.groupPropertyForTextField(groupTxtFld, initialGroup);
-			scopeToggleGrp.selectToggle(initialScope);
-
-			// Bindings
-			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-			// At least tags need to be specified
-			applyButton.disableProperty().bind(tags.emptyProperty());
-
-			// ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					Scope scope;
-					if (scopeToggleGrp.getSelectedToggle() == alwaysRadioBtn)
-					{
-						scope = Scope.ALWAYS;
-					}
-					else
-					{
-						scope = Scope.IF_GUESSING;
-					}
-					return new StandardRelease(tags.get(), group.getValue(), scope);
-				}
-				return null;
-			});
+		    return langComboBox.getValue() == null || StringUtils.isBlank(textTxtFld.getText());
 		}
-	}
+	    });
 
-	private static class CrossGroupCompatibilityDialogController extends AbstractBeanDialogController<CrossGroupCompatibility>
+	    // Set ResultConverter
+	    dialog.setResultConverter(dialogButton -> {
+		if (dialogButton == ButtonType.APPLY)
+		{
+		    return new LanguageTextMapping(langComboBox.getValue(), textTxtFld.getText());
+		}
+		return null;
+	    });
+	}
+    }
+
+    public static Optional<StandardRelease> showStandardReleaseEditView()
+    {
+	return showStandardReleaseEditView(null);
+    }
+
+    public static Optional<StandardRelease> showStandardReleaseEditView(StandardRelease standardRls)
+    {
+	StandardReleaseEditController ctrl = new StandardReleaseEditController(standardRls);
+	return showEditViewAndWait(ctrl, "StandardReleaseEditView.fxml");
+    }
+
+    public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView()
+    {
+	return showCrossGroupCompatibilityEditView(null);
+    }
+
+    public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(CrossGroupCompatibility crossGroupCompatibility)
+    {
+	CrossGroupCompatibilityEditController ctrl = new CrossGroupCompatibilityEditController(crossGroupCompatibility);
+	return showEditViewAndWait(ctrl, "CrossGroupCompatibilityEditView.fxml");
+    }
+
+    public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView()
+    {
+	return showSeriesNameCorrectionRuleEditView(null);
+    }
+
+    public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectionRuleSettingEntry entry)
+    {
+	SeriesNameCorrectionRuleEditController ctrl = new SeriesNameCorrectionRuleEditController(entry);
+	return showEditViewAndWait(ctrl, "SeriesNameCorrectionRuleEditView.fxml");
+    }
+
+    public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView()
+    {
+	return showReleaseTagsCorrectionRuleEditView(null);
+    }
+
+    public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView(ReleaseTagsCorrectionRuleSettingEntry entry)
+    {
+	ReleaseTagsCorrectionRuleEditController ctrl = new ReleaseTagsCorrectionRuleEditController(entry);
+	return showEditViewAndWait(ctrl, "ReleaseTagsCorrectionRuleEditView.fxml");
+    }
+
+    public static Optional<List<Locale>> showLocaleListEditView(List<Locale> languages)
+    {
+	LocaleListEditController ctrl = new LocaleListEditController(languages);
+	return showEditViewAndWait(ctrl, "LocaleListEditView.fxml");
+    }
+
+    public static Optional<LanguageUserPattern> showTextLanguageMappingEditView()
+    {
+	return showTextLanguageMappingEditView(null);
+    }
+
+    public static Optional<LanguageUserPattern> showTextLanguageMappingEditView(LanguageUserPattern mapping)
+    {
+	TextLanguageMappingEditController ctrl = new TextLanguageMappingEditController(mapping);
+	return showEditViewAndWait(ctrl, "TextLanguageMappingEditView.fxml");
+    }
+
+    public static Optional<LanguageTextMapping> showLanguageTextMappingEditView()
+    {
+	return showLanguageTextMappingEditView(null);
+    }
+
+    public static Optional<LanguageTextMapping> showLanguageTextMappingEditView(LanguageTextMapping mapping)
+    {
+	LanguageTextMappingEditController ctrl = new LanguageTextMappingEditController(mapping);
+	return showEditViewAndWait(ctrl, "LanguageTextMappingEditView.fxml");
+    }
+
+    private static <T> Optional<T> showEditViewAndWait(AbstractBeanEditController<T> ctrl, String fxmlFilename)
+    {
+	try
 	{
-		@FXML
-		private TextField	compatibleGroupTxtFld;
-		@FXML
-		private TextField	sourceGroupTxtFld;
-		@FXML
-		private CheckBox	symmetricCheckBox;
-
-		private CrossGroupCompatibilityDialogController(CrossGroupCompatibility bean)
-		{
-			super(bean);
-		}
-
-		@Override
-		protected String getTitle()
-		{
-			if (bean == null)
-			{
-				return "Add cross-group compatibility";
-			}
-			else
-			{
-				return "Edit cross-group compatibility";
-			}
-		}
-
-		@Override
-		protected Node getDefaultFocusNode()
-		{
-			return sourceGroupTxtFld;
-		}
-
-		@Override
-		protected void initComponents()
-		{
-			// Set initial values
-			Group initialSourceGroup;
-			Group initialCompatibleGroup;
-			boolean initialSymmetric;
-			if (bean == null)
-			{
-				initialSourceGroup = null;
-				initialCompatibleGroup = null;
-				initialSymmetric = false;
-			}
-			else
-			{
-				initialSourceGroup = bean.getSourceGroup();
-				initialCompatibleGroup = bean.getCompatibleGroup();
-				initialSymmetric = bean.isSymmetric();
-			}
-			Property<Group> sourceGroup = SubCentralFxUtil.groupPropertyForTextField(sourceGroupTxtFld, initialSourceGroup);
-			Property<Group> compatibleGroup = SubCentralFxUtil.groupPropertyForTextField(compatibleGroupTxtFld, initialCompatibleGroup);
-			symmetricCheckBox.setSelected(initialSymmetric);
-
-			// Do Bindings
-			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-			applyButton.disableProperty().bind(new BooleanBinding()
-			{
-				{
-					super.bind(compatibleGroup, sourceGroup);
-				}
-
-				@Override
-				protected boolean computeValue()
-				{
-					// Both groups need to be specified and not equal to each other
-					return sourceGroup.getValue() == null || compatibleGroup.getValue() == null || sourceGroup.getValue().equals(compatibleGroup.getValue());
-				}
-			});
-
-			// Set ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					Group sourceGrp = sourceGroup.getValue();
-					Group compatibleGrp = compatibleGroup.getValue();
-					boolean symmetric = symmetricCheckBox.isSelected();
-					return new CrossGroupCompatibility(sourceGrp, compatibleGrp, symmetric);
-				}
-				return null;
-			});
-		}
+	    FxUtil.loadFromFxml(fxmlFilename, null, null, ctrl);
 	}
-
-	private static class SeriesNameStandardizerSettingEntryDialogController extends AbstractBeanDialogController<SeriesNameStandardizerSettingEntry>
+	catch (IOException e)
 	{
-		@FXML
-		private RadioButton	literalRadioBtn;
-		@FXML
-		private RadioButton	simplePatternRadioBtn;
-		@FXML
-		private RadioButton	regexRadioBtn;
-		@FXML
-		private TextField	namePatternTxtFld;
-		@FXML
-		private Label		patternErrorLbl;
-		@FXML
-		private TextField	nameReplacementTxtFld;
-
-		private SeriesNameStandardizerSettingEntryDialogController(SeriesNameStandardizerSettingEntry bean)
-		{
-			super(bean);
-		}
-
-		@Override
-		protected String getTitle()
-		{
-			if (bean == null)
-			{
-				return "Add standardizing rule for: " + SeriesNameStandardizerSettingEntry.getStandardizerTypeString();
-			}
-			else
-			{
-				return "Edit standardizing rule for: " + SeriesNameStandardizerSettingEntry.getStandardizerTypeString();
-			}
-		}
-
-		@Override
-		protected Node getDefaultFocusNode()
-		{
-			return namePatternTxtFld;
-		}
-
-		@Override
-		protected void initComponents()
-		{
-			ToggleGroup patternModeToggleGrp = new ToggleGroup();
-			patternModeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
-
-			// Initial values
-			Toggle initialPatternMode;
-			String initialNamePattern;
-			String initialNameReplacement;
-			if (bean == null)
-			{
-				initialPatternMode = literalRadioBtn;
-				initialNamePattern = null;
-				initialNameReplacement = null;
-			}
-			else
-			{
-				switch (bean.getNameUserPattern().getMode())
-				{
-				case LITERAL:
-					initialPatternMode = literalRadioBtn;
-					break;
-				case SIMPLE:
-					initialPatternMode = simplePatternRadioBtn;
-					break;
-				case REGEX:
-					initialPatternMode = regexRadioBtn;
-					break;
-				default:
-					initialPatternMode = literalRadioBtn;
-				}
-				initialNamePattern = bean.getNameUserPattern().getPattern();
-				initialNameReplacement = bean.getValue().getNameReplacement();
-			}
-			patternModeToggleGrp.selectToggle(initialPatternMode);
-			namePatternTxtFld.setText(initialNamePattern);
-			nameReplacementTxtFld.setText(initialNameReplacement);
-
-			// Bindings
-			Binding<UserPattern> namePatternBinding = FxUtil.createUiPatternTextFieldBinding(patternModeToggleGrp,
-					literalRadioBtn,
-					simplePatternRadioBtn,
-					regexRadioBtn,
-					namePatternTxtFld,
-					patternErrorLbl);
-
-			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-			applyButton.disableProperty().bind(new BooleanBinding()
-			{
-				{
-					super.bind(namePatternBinding, nameReplacementTxtFld.textProperty());
-				}
-
-				@Override
-				protected boolean computeValue()
-				{
-					return namePatternBinding.getValue() == null || StringUtils.isBlank(nameReplacementTxtFld.getText());
-				}
-			});
-
-			// ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					String nameReplacement = StringUtils.trimToNull(nameReplacementTxtFld.getText());
-					boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
-					boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-					return new SeriesNameStandardizerSettingEntry(namePatternBinding.getValue(), nameReplacement, beforeQuerying, afterQuerying);
-				}
-				return null;
-			});
-
-		}
+	    log.error("Error while loading FXML " + fxmlFilename + " with controller " + ctrl, e);
+	    return Optional.empty();
 	}
+	return ctrl.getDialog().showAndWait();
+    }
 
-	private static class ReleaseTagsStandardizerSettingEntryDialogController extends AbstractBeanDialogController<ReleaseTagsStandardizerSettingEntry>
-	{
-		@FXML
-		private RadioButton	containRadioBtn;
-		@FXML
-		private RadioButton	equalRadioBtn;
-		@FXML
-		private TextField	queryTagsTxtFld;
-		@FXML
-		private CheckBox	ignoreOrderCheckBox;
-		@FXML
-		private RadioButton	matchRadioBtn;
-		@FXML
-		private RadioButton	completeRadioBtn;
-		@FXML
-		private TextField	replacementTxtFld;
-
-		private ReleaseTagsStandardizerSettingEntryDialogController(ReleaseTagsStandardizerSettingEntry bean)
-		{
-			super(bean);
-		}
-
-		@Override
-		protected String getTitle()
-		{
-			if (bean == null)
-			{
-				return "Add standardizing rule for: " + ReleaseTagsStandardizerSettingEntry.getStandardizerTypeString();
-			}
-			else
-			{
-				return "Edit standardizing rule for: " + ReleaseTagsStandardizerSettingEntry.getStandardizerTypeString();
-			}
-		}
-
-		@Override
-		protected Node getDefaultFocusNode()
-		{
-			return queryTagsTxtFld;
-		}
-
-		@Override
-		protected void initComponents()
-		{
-			ToggleGroup queryModeToggleGrp = new ToggleGroup();
-			queryModeToggleGrp.getToggles().addAll(containRadioBtn, equalRadioBtn);
-
-			ToggleGroup replaceWithToggleGrp = new ToggleGroup();
-			replaceWithToggleGrp.getToggles().addAll(matchRadioBtn, completeRadioBtn);
-
-			// Initial values
-			Toggle initialQueryModeToggle;
-			List<Tag> initialQueryTags;
-			boolean initialIgnoreOrder;
-			Toggle initialReplaceWithToggle;
-			List<Tag> initialReplacement;
-			if (bean == null)
-			{
-				initialQueryModeToggle = containRadioBtn;
-				initialQueryTags = ImmutableList.of();
-				initialIgnoreOrder = false;
-				initialReplaceWithToggle = matchRadioBtn;
-				initialReplacement = ImmutableList.of();
-			}
-			else
-			{
-				TagsReplacer replacer = bean.getValue().getReplacer();
-				switch (replacer.getQueryMode())
-				{
-				case CONTAIN:
-					initialQueryModeToggle = containRadioBtn;
-					break;
-				case EQUAL:
-					initialQueryModeToggle = equalRadioBtn;
-					break;
-				default:
-					initialQueryModeToggle = containRadioBtn;
-				}
-				initialQueryTags = replacer.getQueryTags();
-				initialIgnoreOrder = replacer.getIgnoreOrder();
-				switch (replacer.getReplaceMode())
-				{
-				case MATCHED_SEQUENCE:
-					initialReplaceWithToggle = matchRadioBtn;
-					break;
-				case COMPLETE_LIST:
-					initialReplaceWithToggle = completeRadioBtn;
-					break;
-				default:
-					initialReplaceWithToggle = matchRadioBtn;
-				}
-				initialReplacement = replacer.getReplacement();
-			}
-			queryModeToggleGrp.selectToggle(initialQueryModeToggle);
-			ignoreOrderCheckBox.setSelected(initialIgnoreOrder);
-			replaceWithToggleGrp.selectToggle(initialReplaceWithToggle);
-			ListProperty<Tag> queryTags = SubCentralFxUtil.tagPropertyForTextField(queryTagsTxtFld, initialQueryTags);
-			ListProperty<Tag> replacement = SubCentralFxUtil.tagPropertyForTextField(replacementTxtFld, initialReplacement);
-
-			// Bindings
-			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-			applyButton.disableProperty().bind(queryTags.emptyProperty());
-
-			ignoreOrderCheckBox.disableProperty().bind(queryTags.sizeProperty().lessThan(2));
-
-			matchRadioBtn.setDisable(equalRadioBtn.isSelected());
-			equalRadioBtn.selectedProperty().addListener((observable, oldValue, newValue) ->
-			{
-				matchRadioBtn.setDisable(newValue);
-				if (newValue)
-				{
-					replaceWithToggleGrp.selectToggle(completeRadioBtn);
-				}
-			});
-
-			// ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					TagUtil.QueryMode queryMode;
-					if (queryModeToggleGrp.getSelectedToggle() == equalRadioBtn)
-					{
-						queryMode = QueryMode.EQUAL;
-					}
-					else
-					{
-						queryMode = QueryMode.CONTAIN;
-					}
-					ReplaceMode replaceWith;
-					if (replaceWithToggleGrp.getSelectedToggle() == completeRadioBtn)
-					{
-						replaceWith = ReplaceMode.COMPLETE_LIST;
-					}
-					else
-					{
-						replaceWith = ReplaceMode.MATCHED_SEQUENCE;
-					}
-					boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
-					boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
-					boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-					return new ReleaseTagsStandardizerSettingEntry(new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
-							beforeQuerying,
-							afterQuerying);
-				}
-				return null;
-			});
-		}
-	}
-
-	private static class LocaleListEditorController extends AbstractBeanDialogController<List<Locale>>
-	{
-		@FXML
-		private ListView<Locale>	langsListView;
-		@FXML
-		private ComboBox<Locale>	addableLangsComboBox;
-		@FXML
-		private Button				addLangBtn;
-		@FXML
-		private Button				removeLangBtn;
-
-		private LocaleListEditorController(List<Locale> bean)
-		{
-			super(Objects.requireNonNull(bean));
-		}
-
-		@Override
-		protected String getTitle()
-		{
-			return "Edit languages";
-		}
-
-		@Override
-		protected Node getDefaultFocusNode()
-		{
-			return langsListView;
-		}
-
-		@Override
-		protected void initComponents()
-		{
-			// Set initial values
-			langsListView.setItems(initLangList());
-			langsListView.setCellFactory((ListView<Locale> param) ->
-			{
-				return new ListCell<Locale>()
-				{
-					@Override
-					protected void updateItem(Locale lang, boolean empty)
-					{
-						super.updateItem(lang, empty);
-						if (empty || lang == null)
-						{
-							setText(null);
-							setGraphic(null);
-						}
-						else
-						{
-							setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-						}
-					}
-				};
-			});
-
-			addableLangsComboBox.setItems(initAddableLangList());
-			addableLangsComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-
-			// Bindings
-			addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
-			addLangBtn.setOnAction((ActionEvent) ->
-			{
-				// remove lang from addable langs
-				Locale langToAdd = addableLangsComboBox.getItems().remove(addableLangsComboBox.getSelectionModel().getSelectedIndex());
-				// add lang to lang list
-				langsListView.getItems().add(langToAdd);
-				langsListView.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			});
-
-			removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
-			removeLangBtn.setOnAction((ActionEvent) ->
-			{
-				// remove lang from lang list
-				Locale removedLang = langsListView.getItems().remove(langsListView.getSelectionModel().getSelectedIndex());
-				// add lang to addable langs
-				addableLangsComboBox.getItems().add(removedLang);
-				addableLangsComboBox.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			});
-
-			// Set ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					return langsListView.getItems();
-				}
-				return null;
-			});
-		}
-
-		private ObservableList<Locale> initLangList()
-		{
-			ObservableList<Locale> langList = FXCollections.observableArrayList(bean);
-			langList.sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			return langList;
-		}
-
-		private ObservableList<Locale> initAddableLangList()
-		{
-			ObservableList<Locale> addableLangList = FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			// already selected langs are not addable
-			addableLangList.removeAll(bean);
-			return addableLangList;
-		}
-	}
-
-	private static class TextLanguageMappingEditorController extends AbstractBeanDialogController<LanguageUserPattern>
-	{
-		@FXML
-		private RadioButton			literalRadioBtn;
-		@FXML
-		private RadioButton			simplePatternRadioBtn;
-		@FXML
-		private RadioButton			regexRadioBtn;
-		@FXML
-		private TextField			textTxtFld;
-		@FXML
-		private Label				patternErrorLbl;
-		@FXML
-		private ComboBox<Locale>	langComboBox;
-
-		private TextLanguageMappingEditorController(LanguageUserPattern bean)
-		{
-			super(bean);
-		}
-
-		@Override
-		protected String getTitle()
-		{
-			return bean == null ? "Add text to language mapping" : "Edit text to language mapping";
-		}
-
-		@Override
-		protected Node getDefaultFocusNode()
-		{
-			return textTxtFld;
-		}
-
-		@Override
-		protected void initComponents()
-		{
-			// initialize
-			langComboBox.setItems(FxUtil.createListOfAvailableLocales(false, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
-			langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-
-			// Set initial values
-
-			ToggleGroup modeToggleGrp = new ToggleGroup();
-			modeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
-
-			if (bean != null)
-			{
-				switch (bean.getPattern().getMode())
-				{
-				case LITERAL:
-					modeToggleGrp.selectToggle(literalRadioBtn);
-					break;
-				case SIMPLE:
-					modeToggleGrp.selectToggle(simplePatternRadioBtn);
-					break;
-				case REGEX:
-					modeToggleGrp.selectToggle(regexRadioBtn);
-					break;
-				default:
-					modeToggleGrp.selectToggle(literalRadioBtn);
-				}
-				textTxtFld.setText(bean.getPattern().getPattern());
-				langComboBox.setValue(bean.getLanguage());
-			}
-			else
-			{
-				modeToggleGrp.selectToggle(literalRadioBtn);
-			}
-
-			// Bindings
-			final Binding<UserPattern> patternBinding = FxUtil.createUiPatternTextFieldBinding(modeToggleGrp, literalRadioBtn, simplePatternRadioBtn, regexRadioBtn, textTxtFld, patternErrorLbl);
-
-			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-			applyButton.disableProperty().bind(new BooleanBinding()
-			{
-				{
-					super.bind(patternBinding, textTxtFld.textProperty(), langComboBox.valueProperty());
-				}
-
-				@Override
-				protected boolean computeValue()
-				{
-					return patternBinding.getValue() == null || StringUtils.isBlank(textTxtFld.getText()) || langComboBox.getValue() == null;
-				}
-			});
-
-			// Set ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					return new LanguageUserPattern(patternBinding.getValue(), langComboBox.getValue());
-				}
-				return null;
-			});
-		}
-	}
-
-	private static class LanguageTextMappingEditorController extends AbstractBeanDialogController<LanguageTextMapping>
-	{
-		@FXML
-		private ComboBox<Locale>	langComboBox;
-		@FXML
-		private TextField			textTxtFld;
-
-		private LanguageTextMappingEditorController(LanguageTextMapping bean)
-		{
-			super(bean);
-		}
-
-		@Override
-		protected String getTitle()
-		{
-			return bean == null ? "Add language to text mapping" : "Edit language to text mapping";
-		}
-
-		@Override
-		protected Node getDefaultFocusNode()
-		{
-			return textTxtFld;
-		}
-
-		@Override
-		protected void initComponents()
-		{
-			// Set initial values
-			langComboBox.setItems(FxUtil.createListOfAvailableLocales(true, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
-			langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-			langComboBox.setValue(bean != null ? bean.getLanguage() : null);
-
-			textTxtFld.setText(bean != null ? bean.getText() : "");
-
-			// Bindings
-			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-			applyButton.disableProperty().bind(new BooleanBinding()
-			{
-				{
-					super.bind(langComboBox.valueProperty(), textTxtFld.textProperty());
-				}
-
-				@Override
-				protected boolean computeValue()
-				{
-					return langComboBox.getValue() == null || StringUtils.isBlank(textTxtFld.getText());
-				}
-			});
-
-			// Set ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					return new LanguageTextMapping(langComboBox.getValue(), textTxtFld.getText());
-				}
-				return null;
-			});
-		}
-	}
-
-	public static Optional<StandardRelease> showStandardReleaseDefinitionDialog()
-	{
-		return showStandardReleaseDefinitionDialog(null);
-	}
-
-	public static Optional<StandardRelease> showStandardReleaseDefinitionDialog(StandardRelease standardRls)
-	{
-		StandardReleaseDialogController ctrl = new StandardReleaseDialogController(standardRls);
-		return showDialogAndWait(ctrl, "StandardReleaseDialog.fxml");
-	}
-
-	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityDialog()
-	{
-		return showCrossGroupCompatibilityDialog(null);
-	}
-
-	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityDialog(CrossGroupCompatibility crossGroupCompatibility)
-	{
-		CrossGroupCompatibilityDialogController ctrl = new CrossGroupCompatibilityDialogController(crossGroupCompatibility);
-		return showDialogAndWait(ctrl, "CrossGroupCompatibilityDialog.fxml");
-	}
-
-	public static Optional<SeriesNameStandardizerSettingEntry> showSeriesNameStandardizerSettingEntryDialog()
-	{
-		return showSeriesNameStandardizerSettingEntryDialog(null);
-	}
-
-	public static Optional<SeriesNameStandardizerSettingEntry> showSeriesNameStandardizerSettingEntryDialog(SeriesNameStandardizerSettingEntry entry)
-	{
-		SeriesNameStandardizerSettingEntryDialogController ctrl = new SeriesNameStandardizerSettingEntryDialogController(entry);
-		return showDialogAndWait(ctrl, "SeriesNameStandardizerSettingEntryDialog.fxml");
-	}
-
-	public static Optional<ReleaseTagsStandardizerSettingEntry> showReleaseTagsStandardizerSettingEntryDialog()
-	{
-		return showReleaseTagsStandardizerSettingEntryDialog(null);
-	}
-
-	public static Optional<ReleaseTagsStandardizerSettingEntry> showReleaseTagsStandardizerSettingEntryDialog(ReleaseTagsStandardizerSettingEntry entry)
-	{
-		ReleaseTagsStandardizerSettingEntryDialogController ctrl = new ReleaseTagsStandardizerSettingEntryDialogController(entry);
-		return showDialogAndWait(ctrl, "ReleaseTagsStandardizerSettingEntryDialog.fxml");
-	}
-
-	public static Optional<List<Locale>> showLocaleListEditor(List<Locale> languages)
-	{
-		LocaleListEditorController ctrl = new LocaleListEditorController(languages);
-		return showDialogAndWait(ctrl, "LocaleListEditor.fxml");
-	}
-
-	public static Optional<LanguageUserPattern> showTextLanguageMappingEditor()
-	{
-		return showTextLanguageMappingEditor(null);
-	}
-
-	public static Optional<LanguageUserPattern> showTextLanguageMappingEditor(LanguageUserPattern mapping)
-	{
-		TextLanguageMappingEditorController ctrl = new TextLanguageMappingEditorController(mapping);
-		return showDialogAndWait(ctrl, "TextLanguageMappingEditor.fxml");
-	}
-
-	public static Optional<LanguageTextMapping> showLanguageTextMappingEditor()
-	{
-		return showLanguageTextMappingEditor(null);
-	}
-
-	public static Optional<LanguageTextMapping> showLanguageTextMappingEditor(LanguageTextMapping mapping)
-	{
-		LanguageTextMappingEditorController ctrl = new LanguageTextMappingEditorController(mapping);
-		return showDialogAndWait(ctrl, "LanguageTextMappingEditor.fxml");
-	}
-
-	private static <T> Optional<T> showDialogAndWait(AbstractBeanDialogController<T> ctrl, String fxmlFilename)
-	{
-		try
-		{
-			FxUtil.loadFromFxml(fxmlFilename, null, null, ctrl);
-		}
-		catch (IOException e)
-		{
-			log.error("Error while loading FXML " + fxmlFilename + " with controller " + ctrl, e);
-			return Optional.empty();
-		}
-		return ctrl.getDialog().showAndWait();
-	}
-
-	private WatcherDialogs()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
+    private WatcherDialogs()
+    {
+	throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+    }
 
 }

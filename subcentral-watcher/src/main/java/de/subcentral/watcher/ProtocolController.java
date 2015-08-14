@@ -90,7 +90,6 @@ public class ProtocolController extends AbstractController
 
 	foundReleasesListView.setItems(FXCollections.observableList(task.getFoundReleases()));
 	foundReleasesListView.setCellFactory(rlsCellFactory);
-	FxUtil.fitHeightToContent(foundReleasesListView);
 
 	matchingReleasesListView.setItems(FXCollections.observableList(task.getMatchingReleases()));
 	matchingReleasesListView.setCellFactory(rlsCellFactory);

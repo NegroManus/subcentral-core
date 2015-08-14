@@ -16,9 +16,9 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;
-import de.subcentral.watcher.settings.ReleaseTagsStandardizerSettingEntry;
-import de.subcentral.watcher.settings.SeriesNameStandardizerSettingEntry;
-import de.subcentral.watcher.settings.StandardizerSettingEntry;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -151,19 +151,19 @@ public class WatcherFxUtil
 		return service.getCompatibilities().remove(entry.getValue());
 	}
 
-	public static String standardizingRuleTypeToString(Class<? extends StandardizerSettingEntry<?, ?>> type)
+	public static String standardizingRuleTypeToString(Class<? extends CorrectionRuleSettingEntry<?, ?>> type)
 	{
 		if (type == null)
 		{
 			return "";
 		}
-		else if (type == SeriesNameStandardizerSettingEntry.class)
+		else if (type == SeriesNameCorrectionRuleSettingEntry.class)
 		{
-			return SeriesNameStandardizerSettingEntry.getStandardizerTypeString();
+			return SeriesNameCorrectionRuleSettingEntry.getRuleType();
 		}
-		else if (type == ReleaseTagsStandardizerSettingEntry.class)
+		else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
 		{
-			return ReleaseTagsStandardizerSettingEntry.getStandardizerTypeString();
+			return ReleaseTagsCorrectionRuleSettingEntry.getStandardizerTypeString();
 		}
 		return type.getSimpleName();
 	}

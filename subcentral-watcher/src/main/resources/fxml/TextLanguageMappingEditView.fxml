@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="350.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40"
+	xmlns:fx="http://javafx.com/fxml/1">
+	<columnConstraints>
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+	</rowConstraints>
+	<children>
+		<VBox maxHeight="-Infinity" maxWidth="-Infinity" spacing="3.0" GridPane.rowIndex="1">
+			<children>
+				<RadioButton fx:id="literalRadioBtn" mnemonicParsing="false" text="the literal string" />
+				<RadioButton fx:id="simplePatternRadioBtn" mnemonicParsing="false" text="the pattern (* = any string)" />
+				<RadioButton fx:id="regexRadioBtn" mnemonicParsing="false" text="the regular expression" />
+			</children>
+		</VBox>
+		<TextField fx:id="textTxtFld" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.rowIndex="2" />
+		<Label fx:id="patternErrorLbl" minHeight="-Infinity" prefHeight="25.0" textFill="RED" GridPane.rowIndex="3" />
+		<Label text="then the language is:" GridPane.rowIndex="4" />
+		<Label text="If the language text matches" />
+		<ComboBox fx:id="langComboBox" minWidth="100.0" GridPane.rowIndex="5" />
+	</children>
+</GridPane>

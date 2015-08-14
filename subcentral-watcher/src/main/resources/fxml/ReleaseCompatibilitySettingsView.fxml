@@ -7,30 +7,20 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="releaseCompatibilitySettingsPane" hgap="5.0"
-	maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="400.0" vgap="5.0"
-	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="400.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308"
-			minWidth="10.0" prefWidth="100.0" />
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"
-			minWidth="-Infinity" />
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+		<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
 	</columnConstraints>
 	<rowConstraints>
-		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity"
-			vgrow="SOMETIMES" />
-		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity"
-			vgrow="SOMETIMES" />
-		<RowConstraints maxHeight="-Infinity" minHeight="30.0"
-			valignment="BOTTOM" vgrow="SOMETIMES" />
-		<RowConstraints maxHeight="-Infinity" minHeight="30.0"
-			valignment="BOTTOM" vgrow="SOMETIMES" />
-		<RowConstraints maxHeight="1.7976931348623157E308"
-			minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label text="Release compatibility" underline="true"
-			GridPane.columnSpan="2147483647">
+		<Label text="Release compatibility" underline="true" GridPane.columnSpan="2147483647">
 			<font>
 				<Font name="System Bold" size="12.0" />
 			</font>
@@ -42,33 +32,20 @@
 				</ImageView>
 			</graphic>
 		</Label>
-		<CheckBox fx:id="compatibilityEnabledCheckBox"
-			mnemonicParsing="false" text="Enable search for compatible releases"
-			GridPane.rowIndex="1" />
-		<Label text="Releases of the same group are always compatible."
-			GridPane.rowIndex="2" />
-		<Label text="Cross-group compatibilities:" GridPane.columnSpan="2147483647"
-			GridPane.rowIndex="3" />
-		<TableView fx:id="crossGroupCompatibilitiesTableView"
-			editable="true" prefHeight="200.0" prefWidth="200.0"
-			GridPane.rowIndex="4">
+		<CheckBox fx:id="compatibilityEnabledCheckBox" mnemonicParsing="false" text="Enable search for compatible releases" GridPane.rowIndex="1" />
+		<Label text="Releases of the same group are always compatible." GridPane.rowIndex="2" />
+		<Label text="Cross-group compatibilities:" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+		<TableView fx:id="crossGroupCompatibilitiesTableView" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
 			<columns>
-				<TableColumn fx:id="crossGroupCompatibilitiesEnabledColumn"
-					prefWidth="60.0" text="Enabled" />
-				<TableColumn fx:id="crossGroupCompatibilitiesCompatibilityColumn"
-					prefWidth="300.0" text="Cross-group compatibility" />
+				<TableColumn fx:id="crossGroupCompatibilitiesEnabledColumn" prefWidth="60.0" text="Enabled" />
+				<TableColumn fx:id="crossGroupCompatibilitiesCompatibilityColumn" prefWidth="300.0" text="Cross-group compatibility" />
 			</columns>
 		</TableView>
-		<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity"
-			minHeight="-Infinity" minWidth="-Infinity" spacing="5.0"
-			GridPane.columnIndex="1" GridPane.rowIndex="4">
+		<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
 			<children>
-				<Button fx:id="addCrossGroupCompatibility" mnemonicParsing="false"
-					text="Add" />
-				<Button fx:id="editCrossGroupCompatibility" mnemonicParsing="false"
-					text="Edit" />
-				<Button fx:id="removeCrossGroupCompatibility"
-					mnemonicParsing="false" text="Remove" />
+				<Button fx:id="addCrossGroupCompatibility" mnemonicParsing="false" text="Add" />
+				<Button fx:id="editCrossGroupCompatibility" mnemonicParsing="false" text="Edit" />
+				<Button fx:id="removeCrossGroupCompatibility" mnemonicParsing="false" text="Remove" />
 			</children>
 		</VBox>
 	</children>

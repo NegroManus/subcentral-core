@@ -55,7 +55,7 @@ import de.subcentral.watcher.controller.processing.ProcessingResult.Compatibilit
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.SettingsUtil;
-import de.subcentral.watcher.settings.StandardizerSettingEntry;
+import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -203,7 +203,7 @@ public class ProcessingController extends AbstractController
 	// Register default nested beans retrievers but not default
 	// standardizers
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers())
+	for (CorrectionRuleSettingEntry<?, ?> entry : settings.getCorrectionRules())
 	{
 	    if (entry.isBeforeQuerying())
 	    {
@@ -211,7 +211,7 @@ public class ProcessingController extends AbstractController
 	    }
 	}
 	// add subtitle language standardizer
-	service.registerStandardizer(Subtitle.class, settings.getSubtitleLanguageSettings().getSubtitleLanguageStandardizer());
+	service.registerStandardizer(Subtitle.class, settings.getSubtitleLanguageCorrectionSettings().getSubtitleLanguageStandardizer());
 	// add subtitle tags standardizer
 	service.registerStandardizer(SubtitleAdjustment.class, SubtitleUtil::standardizeTags);
 	return service;
@@ -223,7 +223,7 @@ public class ProcessingController extends AbstractController
 	// Register default nested beans retrievers but not default
 	// standardizers
 	StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-	for (StandardizerSettingEntry<?, ?> entry : settings.getStandardizers())
+	for (CorrectionRuleSettingEntry<?, ?> entry : settings.getCorrectionRules())
 	{
 	    if (entry.isAfterQuerying())
 	    {
@@ -233,7 +233,7 @@ public class ProcessingController extends AbstractController
 	return service;
     }
 
-    private static <T> void registerStandardizer(TypeStandardizingService service, StandardizerSettingEntry<T, ?> entry)
+    private static <T> void registerStandardizer(TypeStandardizingService service, CorrectionRuleSettingEntry<T, ?> entry)
     {
 	service.registerStandardizer(entry.getBeanType(), entry.getValue());
     }
@@ -706,7 +706,10 @@ public class ProcessingController extends AbstractController
 	    Parent root = FxUtil.loadFromFxml("ProtocolView.fxml", null, null, protocolCtrl);
 	    Scene scene = new Scene(root);
 
+	    Stage owner = mainController.getWatcherApp().getPrimaryStage();
 	    Stage stage = new Stage();
+	    stage.initOwner(owner);
+	    stage.getIcons().add(FxUtil.loadImg("file_search_16.png"));
 	    stage.setTitle("Processing protocol");
 	    stage.setScene(scene);
 

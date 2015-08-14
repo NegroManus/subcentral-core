@@ -59,7 +59,9 @@ import de.subcentral.watcher.controller.processing.ProcessingResult.Compatibilit
 import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseMethodInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.MethodInfo;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyListProperty;
@@ -492,7 +494,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	if (config.isGuessingEnabled())
 	{
 	    log.info("Guessing enabled");
-	    displayTrayMessage("Guessing", getSourceFile().getFileName().toString(), MessageType.WARNING);
+	    displayTrayMessage("Guessing", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
 
 	    List<StandardRelease> stdRlss = config.getStandardReleases();
 	    Map<Release, StandardRelease> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
@@ -554,7 +556,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 	if (rls.isNuked())
 	{
-	    displayTrayMessage("Nuked release", name(rls), MessageType.WARNING);
+	    displayTrayMessage("Nuked release", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.nukedReleaseWarningEnabledProperty());
 	}
 	List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 	if (!containedMetaTags.isEmpty())
@@ -568,7 +570,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    {
 		caption = "Contains meta tags ";
 	    }
-	    displayTrayMessage(caption + Tag.listToString(containedMetaTags), name(rls), MessageType.WARNING);
+	    displayTrayMessage(caption + Tag.listToString(containedMetaTags), name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.metaTaggedReleaseWarningEnabledProperty());
 	}
 
 	resultObject.getMatchingReleases().add(rls);
@@ -729,8 +731,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
     }
 
-    private void displayTrayMessage(String caption, String text, MessageType messageType)
+    private void displayTrayMessage(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)
     {
-	Platform.runLater(() -> controller.getMainController().getWatcherApp().getTrayIcon().displayMessage(caption, text, messageType));
+	Platform.runLater(() -> {
+	    if (WatcherSettings.INSTANCE.isWarningsEnabled() && warningEnabledProperty.get())
+	    {
+		controller.getMainController().getWatcherApp().getTrayIcon().displayMessage(caption, text, messageType);
+	    }
+	});
     }
 }
