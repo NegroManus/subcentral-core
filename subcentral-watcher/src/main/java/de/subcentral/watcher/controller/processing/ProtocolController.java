@@ -1,12 +1,12 @@
-package de.subcentral.watcher;
+package de.subcentral.watcher.controller.processing;
 
 import java.util.Objects;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
-import de.subcentral.watcher.controller.processing.ProcessingTask;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
