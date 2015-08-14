@@ -412,7 +412,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    // Filter by Release Tags and Group (matching releases)
 	    log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
 	    matchingReleases = filteredFoundReleases.stream()
-		    .filter(ReleaseUtil.filterByTags(srcRls.getTags(), config.getReleaseMetaTags()))
+		    .filter(ReleaseUtil.filterByTags(srcRls.getTags()))
 		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 		    .collect(Collectors.toList());
 
@@ -433,15 +433,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		    DatabaseMethodInfo methodInfo = new DatabaseMethodInfo();
 		    addReleaseToResult(rls, methodInfo);
 		}
-		if (config.isCompatibilityEnabled())
-		{
-		    log.debug("Search for compatible releases enabled. Searching");
-		    addCompatibleReleases(matchingReleases, filteredFoundReleases);
-		}
-		else
-		{
-		    log.debug("Search for compatible releases disabled");
-		}
+
+		addCompatibleReleases(matchingReleases, filteredFoundReleases);
 	    }
 	}
 
@@ -526,25 +519,33 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
     private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> foundReleases) throws Exception
     {
-	// Find compatibles
-	CompatibilityService compatibilityService = config.getCompatibilityService();
-	compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
-
-	if (compatibleReleases.isEmpty())
+	if (config.isCompatibilityEnabled())
 	{
-	    log.debug("No compatible releases found");
+	    log.debug("Search for compatible releases enabled");
+	    // Find compatibles
+	    CompatibilityService compatibilityService = config.getCompatibilityService();
+	    compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
+
+	    if (compatibleReleases.isEmpty())
+	    {
+		log.debug("No compatible releases found");
+	    }
+	    else
+	    {
+		log.debug("Compatible releases:");
+		compatibleReleases.entrySet().forEach(e -> log.debug(e));
+
+		// Add compatible releases
+		for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
+		{
+		    CompatibilityMethodInfo methodInfo = new CompatibilityMethodInfo(entry.getValue());
+		    addReleaseToResult(entry.getKey(), methodInfo);
+		}
+	    }
 	}
 	else
 	{
-	    log.debug("Compatible releases:");
-	    compatibleReleases.entrySet().forEach(e -> log.debug(e));
-
-	    // Add compatible releases
-	    for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
-	    {
-		CompatibilityMethodInfo methodInfo = new CompatibilityMethodInfo(entry.getValue());
-		addReleaseToResult(entry.getKey(), methodInfo);
-	    }
+	    log.debug("Search for compatible releases disabled");
 	}
     }
 
