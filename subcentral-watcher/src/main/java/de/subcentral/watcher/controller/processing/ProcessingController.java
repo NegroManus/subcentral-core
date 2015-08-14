@@ -18,18 +18,14 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Nuke;
-import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
-import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -37,24 +33,21 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.standardizing.StandardizingDefaults;
-import de.subcentral.core.standardizing.StandardizingService;
 import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.support.winrar.WinRar.LocateStrategy;
-import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibilityMethodInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
+import de.subcentral.watcher.settings.CompatibilitySettingEntry;
+import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.SettingsUtil;
-import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -192,7 +185,13 @@ public class ProcessingController extends AbstractController
     {
 	CompatibilityService service = new CompatibilityService();
 	service.getCompatibilities().add(new SameGroupCompatibility());
-	WatcherFxUtil.bindCompatibilities(service, WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities());
+	for (CompatibilitySettingEntry entry : WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities())
+	{
+	    if (entry.isEnabled())
+	    {
+		service.getCompatibilities().add(entry.getValue());
+	    }
+	}
 	return service;
     }
 
@@ -850,249 +849,5 @@ public class ProcessingController extends AbstractController
     Binding<ProcessingConfig> getProcessingConfig()
     {
 	return processingConfig;
-    }
-
-    // package private
-    static class ProcessingConfig
-    {
-	// parsing
-	private Pattern				   filenamePattern;
-	private ImmutableList<ParsingService>	   filenameParsingServices;
-	// release
-	private ImmutableList<Tag>		   releaseMetaTags;
-	// release - dbs
-	private ImmutableList<MetadataDb<Release>> releaseDbs;
-	private ImmutableList<ParsingService>	   releaseParsingServices;
-	// release - guessing
-	private boolean				   guessingEnabled;
-	private ImmutableList<StandardRelease>	   standardReleases;
-	// release - compatibility
-	private boolean				   compatibilityEnabled;
-	private CompatibilityService		   compatibilityService;
-	// standardizing
-	private StandardizingService		   beforeQueryingStandardizingService;
-	private StandardizingService		   afterQueryingStandardizingService;
-	// naming
-	private ImmutableMap<String, Object>	   namingParameters;
-	// File Transformation - General
-	private Path				   targetDir;
-	private boolean				   deleteSource;
-	// File Transformation - Packing
-	private boolean				   packingEnabled;
-	private Path				   rarExe;
-	private LocateStrategy			   winRarLocateStrategy;
-	private DeletionMode			   packingSourceDeletionMode;
-
-	// private
-	private ProcessingConfig()
-	{
-
-	}
-
-	Pattern getFilenamePattern()
-	{
-	    return filenamePattern;
-	}
-
-	private void setFilenamePattern(Pattern filenamePattern)
-	{
-	    this.filenamePattern = filenamePattern;
-	}
-
-	ImmutableList<ParsingService> getFilenameParsingServices()
-	{
-	    return filenameParsingServices;
-	}
-
-	private void setFilenameParsingServices(ImmutableList<ParsingService> filenameParsingServices)
-	{
-	    this.filenameParsingServices = filenameParsingServices;
-	}
-
-	ImmutableList<MetadataDb<Release>> getReleaseDbs()
-	{
-	    return releaseDbs;
-	}
-
-	private void setReleaseDbs(ImmutableList<MetadataDb<Release>> releaseDbs)
-	{
-	    this.releaseDbs = releaseDbs;
-	}
-
-	ImmutableList<ParsingService> getReleaseParsingServices()
-	{
-	    return releaseParsingServices;
-	}
-
-	private void setReleaseParsingServices(ImmutableList<ParsingService> releaseParsingServices)
-	{
-	    this.releaseParsingServices = releaseParsingServices;
-	}
-
-	boolean isGuessingEnabled()
-	{
-	    return guessingEnabled;
-	}
-
-	private void setGuessingEnabled(boolean guessingEnabled)
-	{
-	    this.guessingEnabled = guessingEnabled;
-	}
-
-	ImmutableList<Tag> getReleaseMetaTags()
-	{
-	    return releaseMetaTags;
-	}
-
-	private void setReleaseMetaTags(ImmutableList<Tag> releaseMetaTags)
-	{
-	    this.releaseMetaTags = releaseMetaTags;
-	}
-
-	ImmutableList<StandardRelease> getStandardReleases()
-	{
-	    return standardReleases;
-	}
-
-	private void setStandardReleases(ImmutableList<StandardRelease> standardReleases)
-	{
-	    this.standardReleases = standardReleases;
-	}
-
-	boolean isCompatibilityEnabled()
-	{
-	    return compatibilityEnabled;
-	}
-
-	private void setCompatibilityEnabled(boolean compatibilityEnabled)
-	{
-	    this.compatibilityEnabled = compatibilityEnabled;
-	}
-
-	CompatibilityService getCompatibilityService()
-	{
-	    return compatibilityService;
-	}
-
-	private void setCompatibilityService(CompatibilityService compatibilityService)
-	{
-	    this.compatibilityService = compatibilityService;
-	}
-
-	StandardizingService getBeforeQueryingStandardizingService()
-	{
-	    return beforeQueryingStandardizingService;
-	}
-
-	private void setBeforeQueryingStandardizingService(StandardizingService beforeQueryingStandardizingService)
-	{
-	    this.beforeQueryingStandardizingService = beforeQueryingStandardizingService;
-	}
-
-	StandardizingService getAfterQueryingStandardizingService()
-	{
-	    return afterQueryingStandardizingService;
-	}
-
-	private void setAfterQueryingStandardizingService(StandardizingService afterQueryingStandardizingService)
-	{
-	    this.afterQueryingStandardizingService = afterQueryingStandardizingService;
-	}
-
-	ImmutableMap<String, Object> getNamingParameters()
-	{
-	    return namingParameters;
-	}
-
-	private void setNamingParameters(ImmutableMap<String, Object> namingParameters)
-	{
-	    this.namingParameters = namingParameters;
-	}
-
-	Path getTargetDir()
-	{
-	    return targetDir;
-	}
-
-	private void setTargetDir(Path targetDir)
-	{
-	    this.targetDir = targetDir;
-	}
-
-	boolean isDeleteSource()
-	{
-	    return deleteSource;
-	}
-
-	private void setDeleteSource(boolean deleteSource)
-	{
-	    this.deleteSource = deleteSource;
-	}
-
-	boolean isPackingEnabled()
-	{
-	    return packingEnabled;
-	}
-
-	private void setPackingEnabled(boolean packingEnabled)
-	{
-	    this.packingEnabled = packingEnabled;
-	}
-
-	Path getRarExe()
-	{
-	    return rarExe;
-	}
-
-	private void setRarExe(Path rarExe)
-	{
-	    this.rarExe = rarExe;
-	}
-
-	LocateStrategy getWinRarLocateStrategy()
-	{
-	    return winRarLocateStrategy;
-	}
-
-	private void setWinRarLocateStrategy(LocateStrategy winRarLocateStrategy)
-	{
-	    this.winRarLocateStrategy = winRarLocateStrategy;
-	}
-
-	DeletionMode getPackingSourceDeletionMode()
-	{
-	    return packingSourceDeletionMode;
-	}
-
-	private void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode)
-	{
-	    this.packingSourceDeletionMode = packingSourceDeletionMode;
-	}
-
-	@Override
-	public String toString()
-	{
-	    return MoreObjects.toStringHelper(ProcessingConfig.class)
-		    .omitNullValues()
-		    .add("filenamePattern", filenamePattern)
-		    .add("filenameParsingServices", filenameParsingServices)
-		    .add("releaseMetaTags", releaseMetaTags)
-		    .add("releaseDbs", releaseDbs)
-		    .add("releaseParsingServices", releaseParsingServices)
-		    .add("guessingEnabled", guessingEnabled)
-		    .add("standardReleases", standardReleases)
-		    .add("compatibilityEnabled", compatibilityEnabled)
-		    .add("compatibilityService", compatibilityService)
-		    .add("beforeQueryingStandardizingService", beforeQueryingStandardizingService)
-		    .add("afterQueryingStandardizingService", afterQueryingStandardizingService)
-		    .add("namingParameters", namingParameters)
-		    .add("targetDir", targetDir)
-		    .add("deleteSource", deleteSource)
-		    .add("packingEnabled", packingEnabled)
-		    .add("rarExe", rarExe)
-		    .add("winRarLocateStrategy", winRarLocateStrategy)
-		    .add("packingSourceDeletionMode", packingSourceDeletionMode)
-		    .toString();
-	}
     }
 }

@@ -54,7 +54,6 @@ import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
-import de.subcentral.watcher.controller.processing.ProcessingController.ProcessingConfig;
 import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibilityMethodInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseMethodInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
