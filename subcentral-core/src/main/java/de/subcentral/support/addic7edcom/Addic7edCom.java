@@ -114,12 +114,16 @@ public class Addic7edCom
 		grps103.put(12, SubtitleAdjustment.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
 
-		// Episode title may contain dots, then a dot, then release tags, then a non-wordchar delimiter, then "WEB-DL" or a group
+		// Episode title may contain dots, then a dot, then
+		// a) either "WEB-DL" or
+		// b) release tags, then a non-wordchar delimiter, then
+		// b1) either "WEB-DL" or
+		// b2) a group
 		// Examples:
-		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264-DIMENSION.English.HI.Addic7ed.com
-		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264.DIMENSION.English.HI.Addic7ed.com
-		// 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.WEB-DL.English.HI.Addic7ed.com
-		Pattern p104 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.([\\w+\\.-]+?)\\W(?:(WEB[.-]DL)|(\\w+))\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
+		// a) Hannibal - 03x10 - ...And the Woman Clothed in Sun.WEB-DL.English.HI.C.orig.Addic7ed.com
+		// b1) 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.HDTV.x264-DIMENSION.English.HI.Addic7ed.com
+		// b2) 10 Things I Hate About You - 01x01 - Pilot... And Another Pilot.720p.WEB-DL.English.HI.Addic7ed.com
+		Pattern p104 = Pattern.compile(seriesSeasonEpiNumsPattern + "(.+?)\\.(?:(WEB[.-]DL)|([\\w+\\.-]+?)\\W(?:(WEB[.-]DL)|(\\w+)))\\." + langTagsSourcePattern, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps104 = ImmutableMap.builder();
 		grps104.put(0, SubtitleAdjustment.PROP_NAME);
 		grps104.put(1, Series.PROP_NAME);
@@ -131,9 +135,10 @@ public class Addic7edCom
 		grps104.put(7, Episode.PROP_TITLE);
 		grps104.put(8, Release.PROP_TAGS);
 		grps104.put(9, Release.PROP_TAGS);
-		grps104.put(10, Release.PROP_GROUP);
-		grps104.put(11, Subtitle.PROP_LANGUAGE);
-		grps104.put(12, SubtitleAdjustment.PROP_TAGS);
+		grps104.put(10, Release.PROP_TAGS);
+		grps104.put(11, Release.PROP_GROUP);
+		grps104.put(12, Subtitle.PROP_LANGUAGE);
+		grps104.put(13, SubtitleAdjustment.PROP_TAGS);
 
 		MappingMatcher<SimplePropDescriptor> matcher104 = new MappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
 
@@ -177,10 +182,6 @@ public class Addic7edCom
 		grps106.put(10, SubtitleAdjustment.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher106 = new MappingMatcher<>(p106, grps106.build(), predefEpisodeMatches);
 
-		// FOR TESTING
-		// matcher102.match("Psych (UK) - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k
-		// + " = " + v));
-
 		// Release group, then tags in parenthesis
 		// Death in Paradise - 04x04 - Series 4, Episode 4.FoV (HDTV + 720p).English.C.orig.Addic7ed.com
 		// The Saboteurs (aka The Heavy Water War) - 01x06 - Episode 6 (Finale).TVC (HDTV).English.C.orig.Addic7ed.com
@@ -213,6 +214,9 @@ public class Addic7edCom
 		episodeMatchers.add(matcher106);
 		episodeMatchers.add(matcher107);
 		episodeSubParser.setMatchers(episodeMatchers.build());
+
+		// FOR TESTING
+		// matcher104.match("Hannibal - 03x10 - ...And the Woman Clothed in Sun.WEB-DL.English.HI.C.orig.Addic7ed.com").forEach((k, v) -> System.out.println(k + " = " + v));
 
 		// --------------
 		// Movie Parser
@@ -258,5 +262,10 @@ public class Addic7edCom
 	private Addic7edCom()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
+	public static void main(String[] args)
+	{
+		Addic7edCom.getParsingService();
 	}
 }

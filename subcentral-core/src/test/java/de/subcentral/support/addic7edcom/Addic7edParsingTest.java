@@ -300,13 +300,28 @@ public class Addic7edParsingTest
 		compare("testEpisode18", adj, name);
 	}
 
-	private static final void compare(String testName, SubtitleAdjustment expected, String nameToParse)
+	@Test
+	public void testEpisode19()
+	{
+		String name = "Hannibal - 03x10 - ...And the Woman Clothed in Sun.WEB-DL.English.HI.C.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("Hannibal", 3, 10, "...And the Woman Clothed in Sun");
+		Release rls = Release.create(epi, null, "WEB-DL");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		adj.setTags(Tag.list("HI", "C", "orig"));
+
+		compare("testEpisode19", adj, name);
+	}
+
+	private static final void compare(String testMethodName, SubtitleAdjustment expected, String nameToParse)
 	{
 		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);
 		List<StandardizingChange> changes = StandardizingDefaults.getDefaultStandardizingService().standardize(parsed);
 		changes.stream().forEach(c -> System.out.println(c));
 
-		System.out.println("Results for test: " + testName);
+		System.out.println("Results for test: " + testMethodName);
 		System.out.println("Expected: " + expected);
 		System.out.println("Parsed  : " + parsed);
 		Assert.assertEquals(expected.toString(), parsed.toString());
