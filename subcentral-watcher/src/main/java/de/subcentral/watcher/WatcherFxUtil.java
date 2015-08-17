@@ -14,6 +14,8 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
@@ -22,6 +24,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 
 public class WatcherFxUtil
@@ -114,7 +117,19 @@ public class WatcherFxUtil
 	    log.error("Could not create further info hyperlink", e);
 	    return null;
 	}
+    }
 
+    public static Hyperlink createSettingsHyperlink(SettingsController settingsCtrl, String section, String text)
+    {
+	ImageView img = new ImageView(FxUtil.loadImg("settings_16.png"));
+	Hyperlink link = new Hyperlink(text, img);
+	link.setTooltip(new Tooltip("Show settings"));
+	link.setVisited(true);
+	link.setOnAction((ActionEvent evt) -> {
+	    settingsCtrl.getMainController().selectTab(MainController.SETTINGS_TAB_INDEX);
+	    settingsCtrl.getMainController().getSettingsController().selectSection(section);
+	});
+	return link;
     }
 
     private WatcherFxUtil()

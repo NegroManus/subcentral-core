@@ -49,17 +49,17 @@ public class SettingsController extends AbstractController
     private static final String	SETTINGS_FILE	      = "watcher-settings.xml";
     private static final String	DEFAULT_SETTINGS_FILE = "watcher-settings-default.xml";
 
-    public static final String WATCH_SECTION			       = "watch";
-    public static final String PARSING_SECTION			       = "parsing";
-    public static final String RELEASE_SECTION			       = "release";
-    public static final String RELEASE_DBS_SECTION		       = "release.dbs";
-    public static final String RELEASE_GUESSING_SECTION		       = "release.guessing";
-    public static final String RELEASE_COMPATIBILITY_SECTION	       = "release.compatibility";
-    public static final String STANDARDIZING_SECTION		       = "standardizing";
-    public static final String STANDARDIZING_SUBTITLE_LANGUAGE_SECTION = "standardizing.subtitleLanguage";
-    public static final String NAMING_SECTION			       = "naming";
-    public static final String FILE_TRANSFORMATION_SECTION	       = "filetransformation";
-    public static final String UI_SECTION			       = "ui";
+    public static final String WATCH_SECTION			    = "watch";
+    public static final String PARSING_SECTION			    = "parsing";
+    public static final String RELEASE_SECTION			    = "release";
+    public static final String RELEASE_DBS_SECTION		    = "release.dbs";
+    public static final String RELEASE_GUESSING_SECTION		    = "release.guessing";
+    public static final String RELEASE_COMPATIBILITY_SECTION	    = "release.compatibility";
+    public static final String CORRECTION_SECTION		    = "correction";
+    public static final String CORRECTION_SUBTITLE_LANGUAGE_SECTION = "correction.subtitleLanguage";
+    public static final String NAMING_SECTION			    = "naming";
+    public static final String FILE_TRANSFORMATION_SECTION	    = "filetransformation";
+    public static final String UI_SECTION			    = "ui";
 
     // Controllers
     private final MainController       mainController;
@@ -132,19 +132,19 @@ public class SettingsController extends AbstractController
 	releaseCompatibilitySection.setFxml("ReleaseCompatibilitySettingsView.fxml");
 	ctrls.put(releaseCompatibilitySection.getName(), releaseCompatibilitySection);
 
-	Section standardizingSection = new Section(STANDARDIZING_SECTION);
-	standardizingSection.setLabel("Correction");
-	standardizingSection.setImage("edit_16.png");
-	standardizingSection.setControllerConstructor(() -> new CorrectionSettingsController(this));
-	standardizingSection.setFxml("CorrectionSettingsView.fxml");
-	ctrls.put(standardizingSection.getName(), standardizingSection);
+	Section correctionSection = new Section(CORRECTION_SECTION);
+	correctionSection.setLabel("Correction");
+	correctionSection.setImage("edit_16.png");
+	correctionSection.setControllerConstructor(() -> new CorrectionSettingsController(this));
+	correctionSection.setFxml("CorrectionSettingsView.fxml");
+	ctrls.put(correctionSection.getName(), correctionSection);
 
-	Section standardizingSubtitleLanguageSection = new Section(STANDARDIZING_SUBTITLE_LANGUAGE_SECTION);
-	standardizingSubtitleLanguageSection.setLabel("Subtitle language");
-	standardizingSubtitleLanguageSection.setImage("usa_flag_16.png");
-	standardizingSubtitleLanguageSection.setControllerConstructor(() -> new SubtitleLanguageCorrectionSettingsController(this));
-	standardizingSubtitleLanguageSection.setFxml("SubtitleLanguageCorrectionSettingsView.fxml");
-	ctrls.put(standardizingSubtitleLanguageSection.getName(), standardizingSubtitleLanguageSection);
+	Section correctionSubtitleLanguageSection = new Section(CORRECTION_SUBTITLE_LANGUAGE_SECTION);
+	correctionSubtitleLanguageSection.setLabel("Subtitle language");
+	correctionSubtitleLanguageSection.setImage("usa_flag_16.png");
+	correctionSubtitleLanguageSection.setControllerConstructor(() -> new SubtitleLanguageCorrectionSettingsController(this));
+	correctionSubtitleLanguageSection.setFxml("SubtitleLanguageCorrectionSettingsView.fxml");
+	ctrls.put(correctionSubtitleLanguageSection.getName(), correctionSubtitleLanguageSection);
 
 	Section namingSection = new Section(NAMING_SECTION);
 	namingSection.setLabel("Naming");
@@ -213,8 +213,8 @@ public class SettingsController extends AbstractController
 	TreeItem<Section> releaseGuessingTreeItem = new TreeItem<>(sections.get(RELEASE_GUESSING_SECTION));
 	TreeItem<Section> releaseCompatibilityTreeItem = new TreeItem<>(sections.get(RELEASE_COMPATIBILITY_SECTION));
 
-	TreeItem<Section> standardizingTreeItem = new TreeItem<>(sections.get(STANDARDIZING_SECTION));
-	TreeItem<Section> subtitleLanguageStandardizingTreeItem = new TreeItem<>(sections.get(STANDARDIZING_SUBTITLE_LANGUAGE_SECTION));
+	TreeItem<Section> correctionTreeItem = new TreeItem<>(sections.get(CORRECTION_SECTION));
+	TreeItem<Section> correctionSubtitleLanguageTreeItem = new TreeItem<>(sections.get(CORRECTION_SUBTITLE_LANGUAGE_SECTION));
 
 	TreeItem<Section> namingTreeItem = new TreeItem<>(sections.get(NAMING_SECTION));
 
@@ -231,9 +231,9 @@ public class SettingsController extends AbstractController
 	releaseTreeItem.getChildren().add(releaseDatabasesTreeItem);
 	releaseTreeItem.getChildren().add(releaseGuessingTreeItem);
 	releaseTreeItem.getChildren().add(releaseCompatibilityTreeItem);
-	// Standardizing
-	root.getChildren().add(standardizingTreeItem);
-	standardizingTreeItem.getChildren().add(subtitleLanguageStandardizingTreeItem);
+	// Correction
+	root.getChildren().add(correctionTreeItem);
+	correctionTreeItem.getChildren().add(correctionSubtitleLanguageTreeItem);
 	// Naming
 	root.getChildren().add(namingTreeItem);
 	// File transformation
@@ -382,6 +382,11 @@ public class SettingsController extends AbstractController
     public MainController getMainController()
     {
 	return mainController;
+    }
+
+    public Map<String, Section> getSections()
+    {
+	return sections;
     }
 
     public void selectSection(String section)
