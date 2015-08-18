@@ -392,7 +392,7 @@ public class XRelToReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		}
 		catch (NumberFormatException e)
 		{
-			log.warn("Could not parse release size string '" + sizeSpan.text() + "'", e);
+			log.warn("Could not parse release size string '" + sizeSpan.text() + "' (URL=" + doc.baseUri() + ")", e);
 		}
 
 		rls.getFurtherInfoLinks().add(doc.baseUri());

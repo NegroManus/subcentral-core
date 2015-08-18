@@ -13,7 +13,7 @@
 		<HBox maxWidth="1.7976931348623157E308" spacing="5.0"
 			BorderPane.alignment="CENTER">
 			<children>
-				<Button fx:id="protocolBtn" mnemonicParsing="false" text="Protocol">
+				<Button fx:id="detailsBtn" mnemonicParsing="false" text="Details">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>

@@ -28,9 +28,9 @@
       </GridPane>
       <Accordion fx:id="sectionsAccordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" VBox.vgrow="SOMETIMES">
         <panes>
-          <TitledPane animated="false" text="Parsing">
+          <TitledPane animated="false" text="Parsing results">
                <content>
-                  <ScrollPane fx:id="parsingRootPane" fitToWidth="true">
+                  <ScrollPane fx:id="parsingResultsRootPane" fitToWidth="true">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
@@ -48,9 +48,9 @@
                      </content></ScrollPane>
                </content>
           </TitledPane>
-          <TitledPane animated="false" text="Release metadata">
+          <TitledPane animated="false" text="Database results">
                <content>
-                  <ScrollPane fx:id="releaseMetadataRootPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                  <ScrollPane fx:id="databaseResultsRootPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding></ScrollPane>
