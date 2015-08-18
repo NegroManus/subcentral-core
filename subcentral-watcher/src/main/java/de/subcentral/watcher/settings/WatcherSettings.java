@@ -52,8 +52,8 @@ public class WatcherSettings extends ObservableObject
     // UI - Warnings
     private final BooleanProperty    warningsEnabled		     = new SimpleBooleanProperty(this, "warningsEnabled");
     private final BooleanProperty    guessingWarningEnabled	     = new SimpleBooleanProperty(this, "guessingWarningEnabled");
-    private final BooleanProperty    metaTaggedReleaseWarningEnabled = new SimpleBooleanProperty(this, "metaTaggedReleaseWarningEnabled");
-    private final BooleanProperty    nukedReleaseWarningEnabled	     = new SimpleBooleanProperty(this, "nukedReleaseWarningEnabled");
+    private final BooleanProperty    releaseMetaTaggedWarningEnabled = new SimpleBooleanProperty(this, "releaseMetaTaggedWarningEnabled");
+    private final BooleanProperty    releaseNukedWarningEnabled	     = new SimpleBooleanProperty(this, "releaseNukedWarningEnabled");
 
     private WatcherSettings()
     {
@@ -138,8 +138,8 @@ public class WatcherSettings extends ObservableObject
     {
 	setWarningsEnabled(cfg.getBoolean("ui.warnings[@enabled]"));
 	setGuessingWarningEnabled(cfg.getBoolean("ui.warnings.guessingWarning[@enabled]"));
-	setMetaTaggedReleaseWarningEnabled(cfg.getBoolean("ui.warnings.metaTaggedReleaseWarning[@enabled]"));
-	setNukedReleaseWarningEnabled(cfg.getBoolean("ui.warnings.nukedReleaseWarning[@enabled]"));
+	setReleaseMetaTaggedWarningEnabled(cfg.getBoolean("ui.warnings.releaseMetaTaggedWarning[@enabled]"));
+	setReleaseNukedWarningEnabled(cfg.getBoolean("ui.warnings.releaseNukedWarning[@enabled]"));
     }
 
     // Write methods
@@ -178,8 +178,8 @@ public class WatcherSettings extends ObservableObject
 	// UI - Warnings
 	cfg.addProperty("ui.warnings[@enabled]", isWarningsEnabled());
 	cfg.addProperty("ui.warnings.guessingWarning[@enabled]", isGuessingWarningEnabled());
-	cfg.addProperty("ui.warnings.metaTaggedReleaseWarning[@enabled]", isMetaTaggedReleaseWarningEnabled());
-	cfg.addProperty("ui.warnings.nukedReleaseWarning[@enabled]", isNukedReleaseWarningEnabled());
+	cfg.addProperty("ui.warnings.releaseMetaTaggedWarning[@enabled]", isReleaseMetaTaggedWarningEnabled());
+	cfg.addProperty("ui.warnings.releaseNukedWarning[@enabled]", isReleaseNukedWarningEnabled());
     }
 
     // Getter and Setter
@@ -258,34 +258,34 @@ public class WatcherSettings extends ObservableObject
 	this.guessingWarningEnabledProperty().set(guessingWarningEnabled);
     }
 
-    public final BooleanProperty metaTaggedReleaseWarningEnabledProperty()
+    public final BooleanProperty releaseMetaTaggedWarningEnabledProperty()
     {
-	return this.metaTaggedReleaseWarningEnabled;
+	return this.releaseMetaTaggedWarningEnabled;
     }
 
-    public final boolean isMetaTaggedReleaseWarningEnabled()
+    public final boolean isReleaseMetaTaggedWarningEnabled()
     {
-	return this.metaTaggedReleaseWarningEnabledProperty().get();
+	return this.releaseMetaTaggedWarningEnabledProperty().get();
     }
 
-    public final void setMetaTaggedReleaseWarningEnabled(final boolean metaTaggedReleaseWarningEnabled)
+    public final void setReleaseMetaTaggedWarningEnabled(final boolean releaseMetaTaggedWarningEnabled)
     {
-	this.metaTaggedReleaseWarningEnabledProperty().set(metaTaggedReleaseWarningEnabled);
+	this.releaseMetaTaggedWarningEnabledProperty().set(releaseMetaTaggedWarningEnabled);
     }
 
-    public final BooleanProperty nukedReleaseWarningEnabledProperty()
+    public final BooleanProperty releaseNukedWarningEnabledProperty()
     {
-	return this.nukedReleaseWarningEnabled;
+	return this.releaseNukedWarningEnabled;
     }
 
-    public final boolean isNukedReleaseWarningEnabled()
+    public final boolean isReleaseNukedWarningEnabled()
     {
-	return this.nukedReleaseWarningEnabledProperty().get();
+	return this.releaseNukedWarningEnabledProperty().get();
     }
 
-    public final void setNukedReleaseWarningEnabled(final boolean nukedReleaseWarningEnabled)
+    public final void setReleaseNukedWarningEnabled(final boolean releaseNukedWarningEnabled)
     {
-	this.nukedReleaseWarningEnabledProperty().set(nukedReleaseWarningEnabled);
+	this.releaseNukedWarningEnabledProperty().set(releaseNukedWarningEnabled);
     }
 
     private static class IndentingXMLConfiguration extends XMLConfiguration

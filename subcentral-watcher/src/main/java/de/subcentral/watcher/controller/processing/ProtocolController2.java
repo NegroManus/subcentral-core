@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
@@ -17,11 +20,12 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class ProtocolController2 extends AbstractController
 {
@@ -37,11 +41,13 @@ public class ProtocolController2 extends AbstractController
     private ScrollPane parsingRootPane;
     @FXML
     private ScrollPane releaseMetadataRootPane;
-    @FXML
-    private ScrollPane fileTransformationRootPane;
 
-    public ProtocolController2(ProcessingTask task)
+    // Control
+    private final ProcessingController processingController;
+
+    public ProtocolController2(ProcessingController processingController, ProcessingTask task)
     {
+	this.processingController = Objects.requireNonNull(processingController, "processingController");
 	this.task = Objects.requireNonNull(task, "task");
     }
 
@@ -76,10 +82,26 @@ public class ProtocolController2 extends AbstractController
 	// parsingPane.setGridLinesVisible(true);
 
 	// Parsed object
+	SubtitleAdjustment subAdj = task.getParsedObject();
+	Subtitle sub = subAdj.getFirstSubtitle();
+	Release rls = subAdj.getFirstMatchingRelease();
+
 	contentPane.add(createHeadline("Parsed object", false, SettingsController.PARSING_SECTION), 0, rowCounter++);
-	TextField parsedObjTxtFld = new TextField(task.name(task.getParsedObject()));
-	parsedObjTxtFld.setEditable(false);
-	contentPane.add(parsedObjTxtFld, 0, rowCounter++, GridPane.REMAINING, 1);
+	contentPane.add(new Label(task.name(subAdj)), 0, rowCounter++, GridPane.REMAINING, 1);
+	contentPane.add(new Label("Media:"), 0, rowCounter);
+	contentPane.add(new Label(task.name(rls.getMedia())), 1, rowCounter++);
+	contentPane.add(new Label("Release tags:"), 0, rowCounter);
+	contentPane.add(new Label(Tag.listToString(rls.getTags())), 1, rowCounter++);
+	contentPane.add(new Label("Release group:"), 0, rowCounter);
+	contentPane.add(new Label(rls.getGroup() != null ? rls.getGroup().toString() : ""), 1, rowCounter++);
+	contentPane.add(new Label("Subtitle language:"), 0, rowCounter);
+	contentPane.add(new Label(sub.getLanguage() != null ? sub.getLanguage() : ""), 1, rowCounter++);
+	contentPane.add(new Label("Subtitle tags:"), 0, rowCounter);
+	contentPane.add(new Label(Tag.listToString(subAdj.getTags())), 1, rowCounter++);
+	contentPane.add(new Label("Subtitle source:"), 0, rowCounter);
+	contentPane.add(new Label(sub.getSource() != null ? sub.getSource() : ""), 1, rowCounter++);
+	contentPane.add(new Label("Subtitle group:"), 0, rowCounter);
+	contentPane.add(new Label(sub.getGroup() != null ? sub.getGroup().toString() : ""), 1, rowCounter++);
 
 	// Corrections
 	contentPane.add(createHeadline("Corrections", true, SettingsController.CORRECTION_SECTION), 0, rowCounter++, GridPane.REMAINING, 1);
@@ -93,7 +115,7 @@ public class ProtocolController2 extends AbstractController
 	    {
 		StringBuilder sb = new StringBuilder();
 		sb.append(WatcherFxUtil.beanTypeToString(c.getBean().getClass()));
-		sb.append('.');
+		sb.append(' ');
 		sb.append(c.getPropertyName());
 		sb.append(": ");
 		contentPane.add(new Label(sb.toString()), 0, rowCounter, 1, 1);
@@ -121,16 +143,32 @@ public class ProtocolController2 extends AbstractController
 	contentPane.setVgap(3d);
 
 	// Release DBs
-	contentPane.add(createHeadline("Releases databases results", false, SettingsController.RELEASE_DBS_SECTION), 0, rowCounter++);
+	contentPane.add(createHeadline("Release databases results", false, SettingsController.RELEASE_DBS_SECTION), 0, rowCounter++);
 
-	List<Media> queryObj = task.getParsedObject().getFirstMatchingRelease().getMedia();
-	String query = task.name(queryObj);
+	Release queryRls = task.getParsedObject().getFirstMatchingRelease();
+	List<Media> queryMedia = task.getParsedObject().getFirstMatchingRelease().getMedia();
+	String mediaName = task.name(queryMedia);
 
 	// Found releases
-	contentPane.add(new Label("Found " + task.getFoundReleases().size() + " releases for \"" + query + "\""), 0, rowCounter++, GridPane.REMAINING, 1);
+	contentPane.add(new Label(task.getFoundReleases().size() + " release(s) were found for \"" + mediaName + "\""), 0, rowCounter++);
 	for (Release rls : task.getFoundReleases())
 	{
-	    contentPane.add(new Label(task.name(rls)), 0, rowCounter++, 1, 1);
+	    contentPane.add(createReleaseHBox(rls), 0, rowCounter++, 1, 1);
+	}
+
+	// Matching releases
+	if (!task.getFoundReleases().isEmpty())
+	{
+	    contentPane.add(createHeadline("Matching releases", true, null), 0, rowCounter++);
+	    contentPane.add(new Label(task.getMatchingReleases().size() + " release(s) matched the filter criteria"), 0, rowCounter++);
+	    contentPane.add(new Label("- Media: " + mediaName), 0, rowCounter++);
+	    contentPane.add(new Label("- Release tags:  " + Tag.listToString(queryRls.getTags())), 0, rowCounter++, GridPane.REMAINING, 1);
+	    contentPane.add(new Label("- Release group: " + (queryRls.getGroup() != null ? queryRls.getGroup().toString() : "")), 0, rowCounter++);
+
+	    for (Release rls : task.getMatchingReleases())
+	    {
+		contentPane.add(createReleaseHBox(rls), 0, rowCounter++);
+	    }
 	}
 
 	releaseMetadataRootPane.setContent(contentPane);
@@ -148,7 +186,7 @@ public class ProtocolController2 extends AbstractController
 
 	Label lbl = new Label(headline);
 	lbl.setUnderline(true);
-	// lbl.setFont(Font.font(null, FontWeight.BOLD, -1d));
+	lbl.setFont(Font.font(null, FontWeight.BOLD, -1d));
 	hbox.getChildren().add(lbl);
 	if (settingsSection != null)
 	{
@@ -156,6 +194,46 @@ public class ProtocolController2 extends AbstractController
 	    hbox.getChildren().add(settingsLink);
 	}
 	return hbox;
+    }
+
+    private HBox createReleaseHBox(Release rls)
+    {
+	HBox hbox = new HBox();
+	hbox.setSpacing(5d);
+	hbox.setAlignment(Pos.CENTER_LEFT);
+
+	Hyperlink furtherInfoLink = WatcherFxUtil.createFurtherInfoHyperlink(rls, processingController.getMainController().getCommonExecutor());
+	if (furtherInfoLink != null)
+	{
+	    hbox.getChildren().add(furtherInfoLink);
+	}
+
+	hbox.getChildren().add(new Label(task.name(rls)));
+
+	// nuke
+	Label nukedLbl = WatcherFxUtil.createNukedLabel(rls);
+	if (nukedLbl != null)
+	{
+	    hbox.getChildren().add(nukedLbl);
+	}
+
+	// meta tags
+	Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(rls, task.getConfig().getReleaseMetaTags());
+	if (metaTagsLbl != null)
+	{
+	    hbox.getChildren().add(metaTagsLbl);
+	}
+	return hbox;
+    }
+
+    public ProcessingTask getTask()
+    {
+	return task;
+    }
+
+    public ProcessingController getProcessingController()
+    {
+	return processingController;
     }
 
 }

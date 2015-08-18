@@ -54,10 +54,10 @@ import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
-import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibilityMethodInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseMethodInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.MethodInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibleInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.GuessedInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.ReleaseOriginInfo;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -87,13 +87,14 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
     // Important objects for processing and protocol
     private final TreeItem<ProcessingItem>  taskTreeItem;
     private SubtitleAdjustment		    parsedObject;
-    private List<StandardizingChange>	    parsingCorrections	  = ImmutableList.of();
-    private List<Release>		    foundReleases	  = ImmutableList.of();
-    private List<Release>		    filteredFoundReleases = ImmutableList.of();
-    private List<Release>		    matchingReleases	  = ImmutableList.of();
-    private Map<Release, CompatibilityInfo> compatibleReleases	  = ImmutableMap.of();
+    private List<StandardizingChange>	    parsingCorrections	       = ImmutableList.of();
+    private List<Release>		    foundReleases	       = ImmutableList.of();
+    private List<Release>		    mediaFilteredFoundReleases = ImmutableList.of();
+    private List<Release>		    matchingReleases	       = ImmutableList.of();
+    Map<Release, StandardRelease>	    guessedReleases	       = ImmutableMap.of();
+    private Map<Release, CompatibilityInfo> compatibleReleases	       = ImmutableMap.of();
     private SubtitleAdjustment		    resultObject;
-    private ListProperty<ProcessingResult>  results		  = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
+    private ListProperty<ProcessingResult>  results		       = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
 
     // package private
     ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
@@ -173,14 +174,19 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	return foundReleases;
     }
 
-    public List<Release> getFilteredFoundReleases()
+    public List<Release> getMediaFilteredFoundReleases()
     {
-	return filteredFoundReleases;
+	return mediaFilteredFoundReleases;
     }
 
     public List<Release> getMatchingReleases()
     {
 	return matchingReleases;
+    }
+
+    public Map<Release, StandardRelease> getGuessedReleases()
+    {
+	return guessedReleases;
     }
 
     public Map<Release, CompatibilityInfo> getCompatibleReleases()
@@ -253,7 +259,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		    {
 			updateMessage("Deleting source file");
 			deleteSourceFile();
-			updateInfo(ProcessingTaskInfo.of("Source file deleted"));
+			updateInfo(ProcessingTaskInfo.of("Origin file deleted"));
 		    }
 		    catch (IOException e)
 		    {
@@ -405,13 +411,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    foundReleases = processReleases(existingRlss);
 
 	    // Filter by Media
-	    filteredFoundReleases = foundReleases.stream()
+	    mediaFilteredFoundReleases = foundReleases.stream()
 		    .filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
 		    .collect(Collectors.toList());
 
 	    // Filter by Release Tags and Group (matching releases)
 	    log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
-	    matchingReleases = filteredFoundReleases.stream()
+	    matchingReleases = mediaFilteredFoundReleases.stream()
 		    .filter(ReleaseUtil.filterByTags(srcRls.getTags()))
 		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 		    .collect(Collectors.toList());
@@ -430,11 +436,11 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		// Add matching releases
 		for (Release rls : matchingReleases)
 		{
-		    DatabaseMethodInfo methodInfo = new DatabaseMethodInfo();
+		    DatabaseInfo methodInfo = new DatabaseInfo();
 		    addReleaseToResult(rls, methodInfo);
 		}
 
-		addCompatibleReleases(matchingReleases, filteredFoundReleases);
+		addCompatibleReleases(matchingReleases, mediaFilteredFoundReleases);
 	    }
 	}
 
@@ -486,14 +492,14 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	if (config.isGuessingEnabled())
 	{
 	    log.info("Guessing enabled");
-	    displayTrayMessage("Guessing", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
+	    displayTrayMessage("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
 
 	    List<StandardRelease> stdRlss = config.getStandardReleases();
-	    Map<Release, StandardRelease> guessedRlss = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
-	    logReleases(Level.DEBUG, "Guessed releases:", guessedRlss.keySet());
-	    for (Map.Entry<Release, StandardRelease> entry : guessedRlss.entrySet())
+	    guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
+	    logReleases(Level.DEBUG, "Guessed releases:", guessedReleases.keySet());
+	    for (Map.Entry<Release, StandardRelease> entry : guessedReleases.entrySet())
 	    {
-		GuessingMethodInfo methodInfo = new GuessingMethodInfo(entry.getValue());
+		GuessedInfo methodInfo = new GuessedInfo(entry.getValue());
 		addReleaseToResult(entry.getKey(), methodInfo);
 
 		if (isCancelled())
@@ -509,7 +515,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
 		stdRlssWithMediaAndMetaTags.add(rls);
 	    }
-	    addCompatibleReleases(guessedRlss.keySet(), stdRlssWithMediaAndMetaTags);
+	    addCompatibleReleases(guessedReleases.keySet(), stdRlssWithMediaAndMetaTags);
 	}
 	else
 	{
@@ -538,7 +544,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		// Add compatible releases
 		for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
 		{
-		    CompatibilityMethodInfo methodInfo = new CompatibilityMethodInfo(entry.getValue());
+		    CompatibleInfo methodInfo = new CompatibleInfo(entry.getValue());
 		    addReleaseToResult(entry.getKey(), methodInfo);
 		}
 	    }
@@ -549,28 +555,20 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
     }
 
-    private void addReleaseToResult(Release rls, MethodInfo methodInfo) throws Exception
+    private void addReleaseToResult(Release rls, ReleaseOriginInfo methodInfo) throws Exception
     {
 	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(rls);
 	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
 
 	if (rls.isNuked())
 	{
-	    displayTrayMessage("Nuked release", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.nukedReleaseWarningEnabledProperty());
+	    displayTrayMessage("Release is nuked", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
 	}
 	List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 	if (!containedMetaTags.isEmpty())
 	{
-	    String caption;
-	    if (containedMetaTags.size() == 1)
-	    {
-		caption = "Contains meta tag ";
-	    }
-	    else
-	    {
-		caption = "Contains meta tags ";
-	    }
-	    displayTrayMessage(caption + Tag.listToString(containedMetaTags), name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.metaTaggedReleaseWarningEnabledProperty());
+	    String caption = "Release is meta-tagged: " + Tag.listToString(containedMetaTags);
+	    displayTrayMessage(caption, name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
 	}
 
 	resultObject.getMatchingReleases().add(rls);
@@ -601,7 +599,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
 
 	// Sort
-	List<Release> processedRlss = rlss.stream().sorted().collect(Collectors.toList());
+	List<Release> processedRlss = rlss.stream().sorted(Release.NAME_COMPARATOR).collect(Collectors.toList());
 	processedRlss = ReleaseUtil.distinctByName(processedRlss);
 	logReleases(Level.DEBUG, "Distinct releases (by name):", processedRlss);
 
@@ -650,7 +648,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
     }
 
-    private ProcessingResult addResult(Release rls, MethodInfo methodInfo)
+    private ProcessingResult addResult(Release rls, ReleaseOriginInfo methodInfo)
     {
 	ProcessingResult result = new ProcessingResult(this, rls);
 	Platform.runLater(() -> {

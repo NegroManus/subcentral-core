@@ -37,8 +37,8 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 
 	warningsEnabledCheckBox.selectedProperty().bindBidirectional(settings.warningsEnabledProperty());
 	guessingWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.guessingWarningEnabledProperty());
-	metaTaggedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.metaTaggedReleaseWarningEnabledProperty());
-	nukedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.nukedReleaseWarningEnabledProperty());
+	metaTaggedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.releaseMetaTaggedWarningEnabledProperty());
+	nukedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.releaseNukedWarningEnabledProperty());
 
 	final BooleanBinding warningsDisabledBinding = warningsEnabledCheckBox.selectedProperty().not();
 	guessingWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);

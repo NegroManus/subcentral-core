@@ -24,10 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
-import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
-import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
@@ -42,8 +39,8 @@ import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
-import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibilityMethodInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.GuessingMethodInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibleInfo;
+import de.subcentral.watcher.controller.processing.ProcessingResult.GuessedInfo;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;
 import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.ProcessingSettings;
@@ -327,23 +324,23 @@ public class ProcessingController extends AbstractController
 			    hbox.setSpacing(5d);
 			    hbox.setAlignment(Pos.CENTER_LEFT);
 
-			    // method info
-			    switch (resultInfo.getMethodInfo().getMethod())
+			    // origin info
+			    switch (resultInfo.getOriginInfo().getOrigin())
 			    {
 				case DATABASE:
 				{
 				    addDatabaseHyperlink(resultInfo, hbox);
 				    break;
 				}
-				case GUESSING:
+				case GUESSED:
 				{
-				    GuessingMethodInfo gmi = (GuessingMethodInfo) resultInfo.getMethodInfo();
+				    GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
 				    StringBuilder sb = new StringBuilder();
-				    sb.append("Guessed release");
-				    if (gmi.getStandardRelease() != null)
+				    sb.append("Guessed");
+				    if (gi.getStandardRelease() != null)
 				    {
 					sb.append(" (using standard release: ");
-					sb.append(resultInfo.getProcessingResult().getTask().name(gmi.getStandardRelease().getRelease()));
+					sb.append(resultInfo.getProcessingResult().getTask().name(gi.getStandardRelease().getRelease()));
 					sb.append(')');
 				    }
 				    ImageView guessingImg = new ImageView(FxUtil.loadImg("idea_16.png"));
@@ -352,14 +349,14 @@ public class ProcessingController extends AbstractController
 				    hbox.getChildren().add(guessing);
 				    break;
 				}
-				case COMPATIBILITY:
+				case COMPATIBLE:
 				{
 				    // compatible releases may be listed in a database as well
 				    addDatabaseHyperlink(resultInfo, hbox);
 
-				    CompatibilityMethodInfo cmi = (CompatibilityMethodInfo) resultInfo.getMethodInfo();
+				    CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
 				    StringBuilder txt = new StringBuilder();
-				    Compatibility c = cmi.getCompatibilityInfo().getCompatibility();
+				    Compatibility c = ci.getCompatibilityInfo().getCompatibility();
 				    if (c instanceof SameGroupCompatibility)
 				    {
 					txt.append("Same group");
@@ -374,41 +371,30 @@ public class ProcessingController extends AbstractController
 
 				    StringBuilder tooltip = new StringBuilder();
 				    tooltip.append("Compatible to ");
-				    tooltip.append(resultInfo.getProcessingResult().getTask().name(cmi.getCompatibilityInfo().getSource()));
+				    tooltip.append(resultInfo.getProcessingResult().getTask().name(ci.getCompatibilityInfo().getSource()));
 
 				    comp.setTooltip(new Tooltip(tooltip.toString()));
 				    hbox.getChildren().add(comp);
 				    break;
 				}
 				default:
-				    log.warn("Unknown method info type: " + resultInfo.getMethodInfo());
+				    log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
 				    break;
 			    }
 
 			    // nuke
-			    if (resultInfo.getProcessingResult().getRelease().isNuked())
+			    Label nukedLbl = WatcherFxUtil.createNukedLabel(resultInfo.getProcessingResult().getRelease());
+			    if (nukedLbl != null)
 			    {
-				ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
-				Label nuked = new Label("", nukedImg);
-				StringJoiner joiner = new StringJoiner(", ");
-				for (Nuke nuke : resultInfo.getProcessingResult().getRelease().getNukes())
-				{
-				    joiner.add(nuke.getReason());
-				}
-				nuked.setTooltip(new Tooltip(joiner.toString()));
-				hbox.getChildren().add(nuked);
+				hbox.getChildren().add(nukedLbl);
 			    }
 
 			    // meta tags
-			    List<Tag> containedMetaTags = TagUtil.getMetaTags(resultInfo.getProcessingResult().getRelease().getTags(),
+			    Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(resultInfo.getProcessingResult().getRelease(),
 				    resultInfo.getProcessingResult().getTask().getConfig().getReleaseMetaTags());
-			    if (!containedMetaTags.isEmpty())
+			    if (metaTagsLbl != null)
 			    {
-				String metaTagsTxt = Tag.listToString(containedMetaTags);
-				ImageView tagImg = new ImageView(FxUtil.loadImg("tag_16.png"));
-				Label metaTags = new Label(metaTagsTxt, tagImg);
-				metaTags.setTooltip(new Tooltip("Contains meta tags: " + metaTagsTxt));
-				hbox.getChildren().add(metaTags);
+				hbox.getChildren().add(metaTagsLbl);
 			    }
 
 			    setText("");
@@ -699,7 +685,7 @@ public class ProcessingController extends AbstractController
     {
 	try
 	{
-	    ProtocolController2 protocolCtrl = new ProtocolController2(task);
+	    ProtocolController2 protocolCtrl = new ProtocolController2(this, task);
 
 	    Parent root = FxUtil.loadFromFxml("ProtocolView2.fxml", null, null, protocolCtrl);
 	    Scene scene = new Scene(root);

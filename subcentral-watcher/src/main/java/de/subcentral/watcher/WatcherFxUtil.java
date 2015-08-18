@@ -5,12 +5,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
+import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
@@ -24,6 +29,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 
@@ -119,6 +125,37 @@ public class WatcherFxUtil
 	}
     }
 
+    public static Label createNukedLabel(Release rls)
+    {
+	if (rls.isNuked())
+	{
+	    ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
+	    Label nukedLbl = new Label("", nukedImg);
+	    StringJoiner joiner = new StringJoiner(", ", "Nuked: ", "");
+	    for (Nuke nuke : rls.getNukes())
+	    {
+		joiner.add(nuke.getReason());
+	    }
+	    nukedLbl.setTooltip(new Tooltip(joiner.toString()));
+	    return nukedLbl;
+	}
+	return null;
+    }
+
+    public static Label createMetaTaggedLabel(Release rls, List<Tag> metaTags)
+    {
+	List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), metaTags);
+	if (!containedMetaTags.isEmpty())
+	{
+	    String metaTagsTxt = Tag.listToString(containedMetaTags);
+	    ImageView tagImg = new ImageView(FxUtil.loadImg("tag_16.png"));
+	    Label metaTagsLbl = new Label(metaTagsTxt, tagImg);
+	    metaTagsLbl.setTooltip(new Tooltip("Tagged with meta tags: " + metaTagsTxt));
+	    return metaTagsLbl;
+	}
+	return null;
+    }
+
     public static Hyperlink createSettingsHyperlink(SettingsController settingsCtrl, String section, String text)
     {
 	ImageView img = new ImageView(FxUtil.loadImg("settings_16.png"));
@@ -127,7 +164,7 @@ public class WatcherFxUtil
 	link.setVisited(true);
 	link.setOnAction((ActionEvent evt) -> {
 	    settingsCtrl.getMainController().selectTab(MainController.SETTINGS_TAB_INDEX);
-	    settingsCtrl.getMainController().getSettingsController().selectSection(section);
+	    settingsCtrl.selectSection(section);
 	});
 	return link;
     }

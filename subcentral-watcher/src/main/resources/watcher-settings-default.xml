@@ -135,8 +135,8 @@
 	<ui>
 		<warnings enabled="true">
 			<guessingWarning enabled="true" />
-			<metaTaggedReleaseWarning enabled="true" />
-			<nukedReleaseWarning enabled="true" />
+			<releaseMetaTaggedWarning enabled="true" />
+			<releaseNukedWarning enabled="true" />
 		</warnings>
 	</ui>
 

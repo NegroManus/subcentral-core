@@ -30,175 +30,173 @@ import javafx.collections.FXCollections;
 
 public class ProcessingResult implements ProcessingItem
 {
-	private static final Logger log = LogManager.getLogger(ProcessingResult.class);
+    private static final Logger log = LogManager.getLogger(ProcessingResult.class);
 
-	public static enum Method
+    private final ProcessingTask	   task;
+    private final Release		   release;
+    private final StringProperty	   name;
+    private final ListProperty<Path>	   files    = new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
+    private final StringProperty	   status   = new SimpleStringProperty(this, "status");
+    private final DoubleProperty	   progress = new SimpleDoubleProperty(this, "progress");
+    private final Property<ProcessingInfo> info	    = new SimpleObjectProperty<>(this, "info");
+
+    /**
+     * package protected
+     */
+    ProcessingResult(ProcessingTask task, Release release)
+    {
+	this.task = Objects.requireNonNull(task, "task");
+	this.release = Objects.requireNonNull(release, "release");
+
+	this.name = new SimpleStringProperty(this, "name", generateName(release));
+    }
+
+    private String generateName(Release rls)
+    {
+	Map<String, Object> effectiveParams = new HashMap<>();
+	effectiveParams.putAll(task.getConfig().getNamingParameters());
+	effectiveParams.put(SubtitleAdjustmentNamer.PARAM_RELEASE, rls);
+	return task.getController().getNamingService().name(task.getResultObject(), effectiveParams);
+    }
+
+    public ProcessingTask getTask()
+    {
+	return task;
+    }
+
+    public Release getRelease()
+    {
+	return release;
+    }
+
+    @Override
+    public ReadOnlyStringProperty nameProperty()
+    {
+	return name;
+    }
+
+    @Override
+    public ListProperty<Path> getFiles()
+    {
+	return files;
+    }
+
+    void addFile(Path file)
+    {
+	Platform.runLater(() -> {
+	    files.add(file);
+	});
+    }
+
+    void removeFile(Path file)
+    {
+	Platform.runLater(() -> {
+	    files.remove(file);
+	});
+    }
+
+    @Override
+    public ReadOnlyStringProperty statusProperty()
+    {
+	return status;
+    }
+
+    void updateStatus(final String status)
+    {
+	Platform.runLater(() -> ProcessingResult.this.status.set(status));
+    }
+
+    @Override
+    public ReadOnlyDoubleProperty progressProperty()
+    {
+	return progress;
+    }
+
+    void updateProgress(final double progress)
+    {
+	Platform.runLater(() -> ProcessingResult.this.progress.set(progress));
+    }
+
+    @Override
+    public ReadOnlyProperty<ProcessingInfo> infoProperty()
+    {
+	return info;
+    }
+
+    void updateInfo(final ProcessingResultInfo info)
+    {
+	Platform.runLater(() -> ProcessingResult.this.info.setValue(info));
+    }
+
+    public void deleteFiles() throws IOException
+    {
+	log.debug("Deleting files of {}", this);
+	for (Path file : files)
 	{
-		DATABASE, GUESSING, COMPATIBILITY
+	    log.debug("Deleting {}", file);
+	    Files.deleteIfExists(file);
+	}
+    }
+
+    // inner classes
+    public static interface ReleaseOriginInfo
+    {
+	public static enum Origin
+	{
+	    DATABASE, GUESSED, COMPATIBLE
 	}
 
-	private final ProcessingTask			task;
-	private final Release					release;
-	private final StringProperty			name;
-	private final ListProperty<Path>		files		= new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
-	private final StringProperty			status		= new SimpleStringProperty(this, "status");
-	private final DoubleProperty			progress	= new SimpleDoubleProperty(this, "progress");
-	private final Property<ProcessingInfo>	info		= new SimpleObjectProperty<>(this, "info");
+	public Origin getOrigin();
+    }
 
-	/**
-	 * package protected
-	 */
-	ProcessingResult(ProcessingTask task, Release release)
+    public static class DatabaseInfo implements ReleaseOriginInfo
+    {
+	@Override
+	public Origin getOrigin()
 	{
-		this.task = Objects.requireNonNull(task, "task");
-		this.release = Objects.requireNonNull(release, "release");
-
-		this.name = new SimpleStringProperty(this, "name", generateName(release));
+	    return Origin.DATABASE;
 	}
+    }
 
-	private String generateName(Release rls)
-	{
-		Map<String, Object> effectiveParams = new HashMap<>();
-		effectiveParams.putAll(task.getConfig().getNamingParameters());
-		effectiveParams.put(SubtitleAdjustmentNamer.PARAM_RELEASE, rls);
-		return task.getController().getNamingService().name(task.getResultObject(), effectiveParams);
-	}
+    public static class GuessedInfo implements ReleaseOriginInfo
+    {
+	private final StandardRelease standardRelease;
 
-	public ProcessingTask getTask()
+	GuessedInfo(StandardRelease standardRelease)
 	{
-		return task;
-	}
-
-	public Release getRelease()
-	{
-		return release;
+	    this.standardRelease = standardRelease;
 	}
 
 	@Override
-	public ReadOnlyStringProperty nameProperty()
+	public Origin getOrigin()
 	{
-		return name;
+	    return Origin.GUESSED;
+	}
+
+	public StandardRelease getStandardRelease()
+	{
+	    return standardRelease;
+	}
+    }
+
+    public static class CompatibleInfo implements ReleaseOriginInfo
+    {
+	private final CompatibilityInfo compatibilityInfo;
+
+	CompatibleInfo(CompatibilityInfo compatibilityInfo)
+	{
+	    this.compatibilityInfo = compatibilityInfo;
 	}
 
 	@Override
-	public ListProperty<Path> getFiles()
+	public Origin getOrigin()
 	{
-		return files;
+	    return Origin.COMPATIBLE;
 	}
 
-	void addFile(Path file)
+	public CompatibilityInfo getCompatibilityInfo()
 	{
-		Platform.runLater(() ->
-		{
-			files.add(file);
-		});
+	    return compatibilityInfo;
 	}
-
-	void removeFile(Path file)
-	{
-		Platform.runLater(() ->
-		{
-			files.remove(file);
-		});
-	}
-
-	@Override
-	public ReadOnlyStringProperty statusProperty()
-	{
-		return status;
-	}
-
-	void updateStatus(final String status)
-	{
-		Platform.runLater(() -> ProcessingResult.this.status.set(status));
-	}
-
-	@Override
-	public ReadOnlyDoubleProperty progressProperty()
-	{
-		return progress;
-	}
-
-	void updateProgress(final double progress)
-	{
-		Platform.runLater(() -> ProcessingResult.this.progress.set(progress));
-	}
-
-	@Override
-	public ReadOnlyProperty<ProcessingInfo> infoProperty()
-	{
-		return info;
-	}
-
-	void updateInfo(final ProcessingResultInfo info)
-	{
-		Platform.runLater(() -> ProcessingResult.this.info.setValue(info));
-	}
-
-	public void deleteFiles() throws IOException
-	{
-		log.debug("Deleting files of {}", this);
-		for (Path file : files)
-		{
-			log.debug("Deleting {}", file);
-			Files.deleteIfExists(file);
-		}
-	}
-
-	// inner classes
-	public static interface MethodInfo
-	{
-				Method getMethod();
-	}
-
-	public static class DatabaseMethodInfo implements MethodInfo
-	{
-		@Override
-		public Method getMethod()
-		{
-			return Method.DATABASE;
-		}
-	}
-
-	public static class GuessingMethodInfo implements MethodInfo
-	{
-		private final StandardRelease standardRelease;
-
-		GuessingMethodInfo(StandardRelease standardRelease)
-		{
-			this.standardRelease = standardRelease;
-		}
-
-		@Override
-		public Method getMethod()
-		{
-			return Method.GUESSING;
-		}
-
-		public StandardRelease getStandardRelease()
-		{
-			return standardRelease;
-		}
-	}
-
-	public static class CompatibilityMethodInfo implements MethodInfo
-	{
-		private final CompatibilityInfo compatibilityInfo;
-
-		CompatibilityMethodInfo(CompatibilityInfo compatibilityInfo)
-		{
-			this.compatibilityInfo = compatibilityInfo;
-		}
-
-		@Override
-		public Method getMethod()
-		{
-			return Method.COMPATIBILITY;
-		}
-
-		public CompatibilityInfo getCompatibilityInfo()
-		{
-			return compatibilityInfo;
-		}
-	}
+    }
 }
