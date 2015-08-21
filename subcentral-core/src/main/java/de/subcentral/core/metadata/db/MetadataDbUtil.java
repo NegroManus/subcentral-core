@@ -27,7 +27,7 @@ public class MetadataDbUtil
 		List<Callable<List<R>>> tasks = new ArrayList<>(metadataDbs.size());
 		for (MetadataDb<R> metadataDb : metadataDbs)
 		{
-			tasks.add(() -> metadataDb.queryName(metadataObj));
+			tasks.add(() -> metadataDb.queryWithObj(metadataObj));
 		}
 
 		List<Future<List<R>>> futures = executor.invokeAll(tasks);

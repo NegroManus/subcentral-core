@@ -172,7 +172,7 @@ public class ParsingPlayground
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							System.out.println("Querying release info db ...");
 							start = System.nanoTime();
-							List<Release> releases = rlsInfoDb.queryName(subAdj.getFirstMatchingRelease().getMedia());
+							List<Release> releases = rlsInfoDb.queryWithObj(subAdj.getFirstMatchingRelease().getMedia());
 							TimeUtil.printDurationMillis("Querying release info db", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));

@@ -74,670 +74,668 @@ import javafx.scene.control.TreeItem;
 
 public class ProcessingTask extends Task<Void>implements ProcessingItem
 {
-	private static final Logger log = LogManager.getLogger(ProcessingTask.class);
+    private static final Logger log = LogManager.getLogger(ProcessingTask.class);
 
-	private final ProcessingController controller;
+    private final ProcessingController controller;
 
-	// for ProcessingItem implementation
-	private final ListProperty<Path>		files;
-	private final Property<ProcessingInfo>	info	= new SimpleObjectProperty<>(this, "info");
+    // for ProcessingItem implementation
+    private final ListProperty<Path>	   files;
+    private final Property<ProcessingInfo> info	= new SimpleObjectProperty<>(this, "info");
 
-	// Config: is loaded on start of the task
-	private ProcessingConfig				config;
-	// Important objects for processing and protocol
-	private final TreeItem<ProcessingItem>	taskTreeItem;
-	private SubtitleAdjustment				parsedObject;
-	private List<StandardizingChange>		parsingCorrections			= ImmutableList.of();
-	private List<Release>					foundReleases				= ImmutableList.of();
-	private List<Release>					mediaFilteredFoundReleases	= ImmutableList.of();
-	private List<Release>					matchingReleases			= ImmutableList.of();
-	Map<Release, StandardRelease>			guessedReleases				= ImmutableMap.of();
-	private Map<Release, CompatibilityInfo>	compatibleReleases			= ImmutableMap.of();
-	private SubtitleAdjustment				resultObject;
-	private ListProperty<ProcessingResult>	results						= new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
+    // Config: is loaded on start of the task
+    private ProcessingConfig		    config;
+    // Important objects for processing and protocol
+    private final TreeItem<ProcessingItem>  taskTreeItem;
+    private SubtitleAdjustment		    parsedObject;
+    private List<StandardizingChange>	    parsingCorrections	       = ImmutableList.of();
+    private List<Release>		    foundReleases	       = ImmutableList.of();
+    private List<Release>		    mediaFilteredFoundReleases = ImmutableList.of();
+    private List<Release>		    matchingReleases	       = ImmutableList.of();
+    Map<Release, StandardRelease>	    guessedReleases	       = ImmutableMap.of();
+    private Map<Release, CompatibilityInfo> compatibleReleases	       = ImmutableMap.of();
+    private SubtitleAdjustment		    resultObject;
+    private ListProperty<ProcessingResult>  results		       = new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
 
-	// package private
-	ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
+    // package private
+    ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
+    {
+	this.controller = Objects.requireNonNull(controller, "controller");
+
+	this.files = new SimpleListProperty<>(this, "files", FXCollections.singletonObservableList(sourceFile));
+
+	this.taskTreeItem = taskTreeItem;
+
+	updateTitle(sourceFile.getFileName().toString());
+	updateMessage("In queue");
+	// progress initial value already is -1 (intermediate)
+    }
+
+    public Path getSourceFile()
+    {
+	return files.get(0);
+    }
+
+    public ProcessingController getController()
+    {
+	return controller;
+    }
+
+    public TreeItem<ProcessingItem> getTaskTreeItem()
+    {
+	return taskTreeItem;
+    }
+
+    public ProcessingConfig getConfig()
+    {
+	return config;
+    }
+
+    @Override
+    public ReadOnlyStringProperty nameProperty()
+    {
+	return titleProperty();
+    }
+
+    @Override
+    public ListProperty<Path> getFiles()
+    {
+	return files;
+    }
+
+    @Override
+    public ReadOnlyStringProperty statusProperty()
+    {
+	return messageProperty();
+    }
+
+    @Override
+    public ReadOnlyProperty<ProcessingInfo> infoProperty()
+    {
+	return info;
+    }
+
+    private void updateInfo(final ProcessingTaskInfo info)
+    {
+	Platform.runLater(() -> ProcessingTask.this.info.setValue(info));
+    }
+
+    public SubtitleAdjustment getParsedObject()
+    {
+	return parsedObject;
+    }
+
+    public List<StandardizingChange> getParsingCorrections()
+    {
+	return parsingCorrections;
+    }
+
+    public List<Release> getFoundReleases()
+    {
+	return foundReleases;
+    }
+
+    public List<Release> getMediaFilteredFoundReleases()
+    {
+	return mediaFilteredFoundReleases;
+    }
+
+    public List<Release> getMatchingReleases()
+    {
+	return matchingReleases;
+    }
+
+    public Map<Release, StandardRelease> getGuessedReleases()
+    {
+	return guessedReleases;
+    }
+
+    public Map<Release, CompatibilityInfo> getCompatibleReleases()
+    {
+	return compatibleReleases;
+    }
+
+    public SubtitleAdjustment getResultObject()
+    {
+	return resultObject;
+    }
+
+    public ReadOnlyListProperty<ProcessingResult> resultsProperty()
+    {
+	return results;
+    }
+
+    public String name(Object obj)
+    {
+	return controller.getNamingService().name(obj, config.getNamingParameters());
+    }
+
+    public void deleteSourceFile() throws IOException
+    {
+	log.info("Deleting source file {}", getSourceFile());
+	Files.deleteIfExists(getSourceFile());
+    }
+
+    public void deleteResultFiles() throws IOException
+    {
+	log.debug("Deleting result files of {}", this);
+	for (ProcessingResult result : results)
 	{
-		this.controller = Objects.requireNonNull(controller, "controller");
-
-		this.files = new SimpleListProperty<>(this, "files", FXCollections.singletonObservableList(sourceFile));
-
-		this.taskTreeItem = taskTreeItem;
-
-		updateTitle(sourceFile.getFileName().toString());
-		updateMessage("In queue");
-		// progress initial value already is -1 (intermediate)
+	    result.deleteFiles();
 	}
+    }
 
-	public Path getSourceFile()
+    @Override
+    protected Void call() throws Exception
+    {
+	long start = System.nanoTime();
+	log.debug("Processing {}", getSourceFile());
+	try
 	{
-		return files.get(0);
-	}
+	    // Load config
+	    loadCurrentProcessingConfig();
+	    if (isCancelled())
+	    {
+		return null;
+	    }
 
-	public ProcessingController getController()
-	{
-		return controller;
-	}
+	    // Parse
+	    parsedObject = parse(getSourceFile());
+	    if (isCancelled())
+	    {
+		return null;
+	    }
+	    updateProgress(0.25d, 1d);
 
-	public TreeItem<ProcessingItem> getTaskTreeItem()
-	{
-		return taskTreeItem;
-	}
+	    // Process
+	    if (parsedObject != null)
+	    {
+		createResultObject();
+		processParsed();
 
-	public ProcessingConfig getConfig()
-	{
-		return config;
-	}
-
-	@Override
-	public ReadOnlyStringProperty nameProperty()
-	{
-		return titleProperty();
-	}
-
-	@Override
-	public ListProperty<Path> getFiles()
-	{
-		return files;
-	}
-
-	@Override
-	public ReadOnlyStringProperty statusProperty()
-	{
-		return messageProperty();
-	}
-
-	@Override
-	public ReadOnlyProperty<ProcessingInfo> infoProperty()
-	{
-		return info;
-	}
-
-	private void updateInfo(final ProcessingTaskInfo info)
-	{
-		Platform.runLater(() -> ProcessingTask.this.info.setValue(info));
-	}
-
-	public SubtitleAdjustment getParsedObject()
-	{
-		return parsedObject;
-	}
-
-	public List<StandardizingChange> getParsingCorrections()
-	{
-		return parsingCorrections;
-	}
-
-	public List<Release> getFoundReleases()
-	{
-		return foundReleases;
-	}
-
-	public List<Release> getMediaFilteredFoundReleases()
-	{
-		return mediaFilteredFoundReleases;
-	}
-
-	public List<Release> getMatchingReleases()
-	{
-		return matchingReleases;
-	}
-
-	public Map<Release, StandardRelease> getGuessedReleases()
-	{
-		return guessedReleases;
-	}
-
-	public Map<Release, CompatibilityInfo> getCompatibleReleases()
-	{
-		return compatibleReleases;
-	}
-
-	public SubtitleAdjustment getResultObject()
-	{
-		return resultObject;
-	}
-
-	public ReadOnlyListProperty<ProcessingResult> resultsProperty()
-	{
-		return results;
-	}
-
-	public String name(Object obj)
-	{
-		return controller.getNamingService().name(obj, config.getNamingParameters());
-	}
-
-	public void deleteSourceFile() throws IOException
-	{
-		log.info("Deleting source file {}", getSourceFile());
-		Files.deleteIfExists(getSourceFile());
-	}
-
-	public void deleteResultFiles() throws IOException
-	{
-		log.debug("Deleting result files of {}", this);
-		for (ProcessingResult result : results)
+		// May clean up
+		if (config.isDeleteSource())
 		{
-			result.deleteFiles();
+		    try
+		    {
+			updateMessage("Deleting source file");
+			deleteSourceFile();
+			updateInfo(ProcessingTaskInfo.of("Origin file deleted"));
+		    }
+		    catch (IOException e)
+		    {
+			log.warn("Could not delete source file", e);
+		    }
 		}
+	    }
+	    return null;
 	}
-
-	@Override
-	protected Void call() throws Exception
+	catch (CancellationException e)
 	{
-		long start = System.nanoTime();
-		log.debug("Processing {}", getSourceFile());
-		try
-		{
-			// Load config
-			loadCurrentProcessingConfig();
-			if (isCancelled())
-			{
-				return null;
-			}
-
-			// Parse
-			parsedObject = parse(getSourceFile());
-			if (isCancelled())
-			{
-				return null;
-			}
-			updateProgress(0.25d, 1d);
-
-			// Process
-			if (parsedObject != null)
-			{
-				createResultObject();
-				processParsed();
-
-				// May clean up
-				if (config.isDeleteSource())
-				{
-					try
-					{
-						updateMessage("Deleting source file");
-						deleteSourceFile();
-						updateInfo(ProcessingTaskInfo.of("Origin file deleted"));
-					}
-					catch (IOException e)
-					{
-						log.warn("Could not delete source file", e);
-					}
-				}
-			}
-			return null;
-		}
-		catch (CancellationException e)
-		{
-			// ignore if due to cancellation of task
-			if (!isCancelled())
-			{
-				throw e;
-			}
-			return null;
-		}
-		finally
-		{
-			log.debug("Processed {} in {} ms", getSourceFile(), TimeUtil.durationMillis(start));
-
-			// To ensure the message is "Cancelled":
-			// Sometimes the task does not get interrupted immediately
-			// and updates the message after the cancellation.
-			// So we set the message again just in case.
-			if (isCancelled())
-			{
-				updateMessage("Cancelled");
-			}
-		}
+	    // ignore if due to cancellation of task
+	    if (!isCancelled())
+	    {
+		throw e;
+	    }
+	    return null;
 	}
-
-	@Override
-	protected void cancelled()
+	finally
 	{
-		updateProgress(1d, 1d);
+	    log.debug("Processed {} in {} ms", getSourceFile(), TimeUtil.durationMillis(start));
+
+	    // To ensure the message is "Cancelled":
+	    // Sometimes the task does not get interrupted immediately
+	    // and updates the message after the cancellation.
+	    // So we set the message again just in case.
+	    if (isCancelled())
+	    {
 		updateMessage("Cancelled");
-		log.info("Cancelled: Processing of " + getSourceFile(), getException());
+	    }
+	}
+    }
+
+    @Override
+    protected void cancelled()
+    {
+	updateProgress(1d, 1d);
+	updateMessage("Cancelled");
+	log.info("Cancelled: Processing of " + getSourceFile(), getException());
+    }
+
+    @Override
+    protected void failed()
+    {
+	updateProgress(1d, 1d);
+	updateMessage("Failed");
+	updateInfo(ProcessingTaskInfo.of(getException().toString()));
+	log.error("Failed: Processing of " + getSourceFile(), getException());
+    }
+
+    @Override
+    protected void succeeded()
+    {
+	updateProgress(1d, 1d);
+	if (parsedObject == null)
+	{
+	    updateMessage("Filename not recognized");
+	}
+	if (results.isEmpty())
+	{
+	    updateMessage("Nothing done - See protocol");
+	}
+	else
+	{
+	    updateMessage("Done");
+	}
+    }
+
+    private void loadCurrentProcessingConfig()
+    {
+	// get the current ProcessingConfig> and use it for the entire process
+	config = controller.getProcessingConfig().getValue();
+	log.debug("Using processing config: {}", config);
+    }
+
+    private SubtitleAdjustment parse(Path file)
+    {
+	updateMessage("Parsing filename");
+	List<ParsingService> parsingServices = config.getFilenameParsingServices();
+
+	String filenameWithoutExt = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
+	log.trace("Trying to parse {} with {} to ", filenameWithoutExt, parsingServices, SubtitleAdjustment.class.getSimpleName());
+	SubtitleAdjustment parsed = ParsingUtil.parse(filenameWithoutExt, SubtitleAdjustment.class, parsingServices);
+	log.debug("Parsed {} to {}", file, parsed);
+	if (parsed == null)
+	{
+	    log.info("No parser could parse the filename of " + file);
+	    return null;
 	}
 
-	@Override
-	protected void failed()
+	parsingCorrections = config.getBeforeQueryingStandardizingService().standardize(parsed);
+	parsingCorrections.forEach(c -> log.debug("Corrected the parsed object: {}", c));
+
+	return parsed;
+    }
+
+    private void createResultObject()
+    {
+	// Created result object
+	SubtitleAdjustment convertedSubAdj = new SubtitleAdjustment();
+	convertedSubAdj.setHearingImpaired(parsedObject.isHearingImpaired());
+	for (Subtitle srcSub : parsedObject.getSubtitles())
 	{
-		updateProgress(1d, 1d);
-		updateMessage("Failed");
-		updateInfo(ProcessingTaskInfo.of(getException().toString()));
-		log.error("Failed: Processing of " + getSourceFile(), getException());
+	    Subtitle convertedSub = new Subtitle();
+	    convertedSub.setMedia(SerializationUtils.clone(srcSub.getMedia()));
+	    convertedSub.setLanguage(srcSub.getLanguage());
+	    convertedSub.setGroup(srcSub.getGroup());
+	    convertedSubAdj.getSubtitles().add(convertedSub);
+	}
+	resultObject = convertedSubAdj;
+    }
+
+    private void processParsed() throws Exception
+    {
+	// Querying
+	Release srcRls = parsedObject.getFirstMatchingRelease();
+	ListMultimap<MetadataDb<Release>, Release> queryResults = query(srcRls);
+	if (isCancelled())
+	{
+	    throw new CancellationException();
+	}
+	updateProgress(0.5d, 1d);
+
+	// Process query results
+	updateMessage("Processing query results");
+	// Add StandardReleases with Scope=ALWAYS
+	List<Release> existingRlss = new ArrayList<>(queryResults.values());
+	for (StandardRelease standardRls : config.getStandardReleases())
+	{
+	    if (standardRls.getScope() == Scope.ALWAYS)
+	    {
+		Release standardRlsWithMedia = new Release(srcRls.getMedia(), standardRls.getRelease().getTags(), standardRls.getRelease().getGroup());
+		existingRlss.add(standardRlsWithMedia);
+	    }
 	}
 
-	@Override
-	protected void succeeded()
+	// standardize
+	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(resultObject);
+	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+
+	if (existingRlss.isEmpty())
 	{
-		updateProgress(1d, 1d);
-		if (parsedObject == null)
+	    log.info("No releases found in databases and no standard releases with Scope=ALWAYS");
+	    guess();
+	}
+	else
+	{
+	    // Distinct, enrich, standardize
+	    foundReleases = processReleases(existingRlss);
+
+	    // Filter by Media
+	    mediaFilteredFoundReleases = foundReleases.stream()
+		    .filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
+		    .collect(Collectors.toList());
+
+	    // Filter by Release Tags and Group (matching releases)
+	    log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
+	    matchingReleases = mediaFilteredFoundReleases.stream()
+		    .filter(ReleaseUtil.filterByTags(srcRls.getTags()))
+		    .filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
+		    .collect(Collectors.toList());
+
+	    // Guess
+	    if (matchingReleases.isEmpty())
+	    {
+		log.info("No matching releases found");
+		guess();
+	    }
+	    else
+	    {
+		log.debug("Matching releases:");
+		matchingReleases.forEach(r -> log.debug(r));
+
+		// Add matching releases
+		for (Release rls : matchingReleases)
 		{
-			updateMessage("Filename not recognized");
+		    DatabaseInfo methodInfo = new DatabaseInfo();
+		    addReleaseToResult(rls, methodInfo);
 		}
-		if (results.isEmpty())
-		{
-			updateMessage("Nothing done - See protocol");
-		}
-		else
-		{
-			updateMessage("Done");
-		}
+
+		addCompatibleReleases(matchingReleases, mediaFilteredFoundReleases);
+	    }
 	}
 
-	private void loadCurrentProcessingConfig()
+	if (isCancelled())
 	{
-		// get the current ProcessingConfig> and use it for the entire process
-		config = controller.getProcessingConfig().getValue();
-		log.debug("Using processing config: {}", config);
+	    throw new CancellationException();
+	}
+	updateProgress(0.75d, 1d);
+
+	if (isCancelled())
+	{
+	    throw new CancellationException();
+	}
+    }
+
+    private ListMultimap<MetadataDb<Release>, Release> query(Release rls) throws InterruptedException
+    {
+	if (config.getReleaseDbs().isEmpty())
+	{
+	    log.info("No release databases configured");
+	    return ImmutableListMultimap.of();
 	}
 
-	private SubtitleAdjustment parse(Path file)
+	StringJoiner rlsDbs = new StringJoiner(", ");
+	for (MetadataDb<Release> rlsDb : config.getReleaseDbs())
 	{
-		updateMessage("Parsing filename");
-		List<ParsingService> parsingServices = config.getFilenameParsingServices();
-
-		String filenameWithoutExt = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
-		log.trace("Trying to parse {} with {} to ", filenameWithoutExt, parsingServices, SubtitleAdjustment.class.getSimpleName());
-		SubtitleAdjustment parsed = ParsingUtil.parse(filenameWithoutExt, SubtitleAdjustment.class, parsingServices);
-		log.debug("Parsed {} to {}", file, parsed);
-		if (parsed == null)
-		{
-			log.info("No parser could parse the filename of " + file);
-			return null;
-		}
-
-		parsingCorrections = config.getBeforeQueryingStandardizingService().standardize(parsed);
-		parsingCorrections.forEach(c -> log.debug("Corrected the parsed object: {}", c));
-
-		return parsed;
+	    rlsDbs.add(rlsDb.getName());
 	}
 
-	private void createResultObject()
+	updateMessage("Querying " + rlsDbs.toString());
+	log.debug("Querying release databases " + rlsDbs.toString());
+	List<Media> queryObj = rls.getMedia();
+	ListMultimap<MetadataDb<Release>, Release> queryResults = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
+	for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : queryResults.asMap().entrySet())
 	{
-		// Created result object
-		SubtitleAdjustment convertedSubAdj = new SubtitleAdjustment();
-		convertedSubAdj.setHearingImpaired(parsedObject.isHearingImpaired());
-		for (Subtitle srcSub : parsedObject.getSubtitles())
-		{
-			Subtitle convertedSub = new Subtitle();
-			convertedSub.setMedia(SerializationUtils.clone(srcSub.getMedia()));
-			convertedSub.setLanguage(srcSub.getLanguage());
-			convertedSub.setGroup(srcSub.getGroup());
-			convertedSubAdj.getSubtitles().add(convertedSub);
-		}
-		resultObject = convertedSubAdj;
+	    log.debug("Results of {}", entry.getKey().getName());
+	    entry.getValue().stream().forEach((r) -> log.debug(r));
 	}
-
-	private void processParsed() throws Exception
+	if (queryResults.isEmpty())
 	{
-		// Querying
-		Release srcRls = parsedObject.getFirstMatchingRelease();
-		ListMultimap<MetadataDb<Release>, Release> queryResults = query(srcRls);
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
-		updateProgress(0.5d, 1d);
-
-		// Process query results
-		updateMessage("Processing query results");
-		// Add StandardReleases with Scope=ALWAYS
-		List<Release> existingRlss = new ArrayList<>(queryResults.values());
-		for (StandardRelease standardRls : config.getStandardReleases())
-		{
-			if (standardRls.getScope() == Scope.ALWAYS)
-			{
-				Release standardRlsWithMedia = new Release(srcRls.getMedia(), standardRls.getRelease().getTags(), standardRls.getRelease().getGroup());
-				existingRlss.add(standardRlsWithMedia);
-			}
-		}
-
-		// standardize
-		List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(resultObject);
-		changes.forEach(c -> log.debug("Standardized after querying: {}", c));
-
-		if (existingRlss.isEmpty())
-		{
-			log.info("No releases found in databases and no standard releases with Scope=ALWAYS");
-			guess();
-		}
-		else
-		{
-			// Distinct, enrich, standardize
-			foundReleases = processReleases(existingRlss);
-
-			// Filter by Media
-			mediaFilteredFoundReleases = foundReleases.stream()
-					.filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
-					.collect(Collectors.toList());
-
-			// Filter by Release Tags and Group (matching releases)
-			log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
-			matchingReleases = mediaFilteredFoundReleases.stream()
-					.filter(ReleaseUtil.filterByTags(srcRls.getTags()))
-					.filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
-					.collect(Collectors.toList());
-
-			// Guess
-			if (matchingReleases.isEmpty())
-			{
-				log.info("No matching releases found");
-				guess();
-			}
-			else
-			{
-				log.debug("Matching releases:");
-				matchingReleases.forEach(r -> log.debug(r));
-
-				// Add matching releases
-				for (Release rls : matchingReleases)
-				{
-					DatabaseInfo methodInfo = new DatabaseInfo();
-					addReleaseToResult(rls, methodInfo);
-				}
-
-				addCompatibleReleases(matchingReleases, mediaFilteredFoundReleases);
-			}
-		}
-
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
-		updateProgress(0.75d, 1d);
-
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
+	    log.info("No releases found in databases");
 	}
+	return queryResults;
+    }
 
-	private ListMultimap<MetadataDb<Release>, Release> query(Release rls) throws InterruptedException
+    private void guess() throws Exception
+    {
+	Release srcRls = parsedObject.getFirstMatchingRelease();
+	if (config.isGuessingEnabled())
 	{
-		if (config.getReleaseDbs().isEmpty())
-		{
-			log.info("No release databases configured");
-			return ImmutableListMultimap.of();
-		}
+	    log.info("Guessing enabled");
+	    displayTrayMessage("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
 
-		StringJoiner rlsDbs = new StringJoiner(", ");
-		for (MetadataDb<Release> rlsDb : config.getReleaseDbs())
-		{
-			rlsDbs.add(rlsDb.getName());
-		}
-
-		updateMessage("Querying " + rlsDbs.toString());
-		log.debug("Querying release databases " + rlsDbs.toString());
-		List<Media> queryObj = rls.getMedia();
-		ListMultimap<MetadataDb<Release>, Release> queryResults = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
-		for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : queryResults.asMap().entrySet())
-		{
-			log.debug("Results of {}", entry.getKey().getName());
-			entry.getValue().stream().forEach((r) -> log.debug(r));
-		}
-		if (queryResults.isEmpty())
-		{
-			log.info("No releases found in databases");
-		}
-		return queryResults;
-	}
-
-	private void guess() throws Exception
-	{
-		Release srcRls = parsedObject.getFirstMatchingRelease();
-		if (config.isGuessingEnabled())
-		{
-			log.info("Guessing enabled");
-			displayTrayMessage("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
-
-			List<StandardRelease> stdRlss = config.getStandardReleases();
-			guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
-			logReleases(Level.DEBUG, "Guessed releases:", guessedReleases.keySet());
-			for (Map.Entry<Release, StandardRelease> entry : guessedReleases.entrySet())
-			{
-				GuessedInfo methodInfo = new GuessedInfo(entry.getValue());
-				addReleaseToResult(entry.getKey(), methodInfo);
-
-				if (isCancelled())
-				{
-					return;
-				}
-			}
-
-			List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
-			for (StandardRelease stdRls : stdRlss)
-			{
-				Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
-				TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
-				stdRlssWithMediaAndMetaTags.add(rls);
-			}
-			addCompatibleReleases(guessedReleases.keySet(), stdRlssWithMediaAndMetaTags);
-		}
-		else
-		{
-			log.info("Guessing disabled");
-		}
-	}
-
-	private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> foundReleases) throws Exception
-	{
-		if (config.isCompatibilityEnabled())
-		{
-			log.debug("Search for compatible releases enabled");
-			// Find compatibles
-			CompatibilityService compatibilityService = config.getCompatibilityService();
-			compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
-
-			if (compatibleReleases.isEmpty())
-			{
-				log.debug("No compatible releases found");
-			}
-			else
-			{
-				log.debug("Compatible releases:");
-				compatibleReleases.entrySet().forEach(e -> log.debug(e));
-
-				// Add compatible releases
-				for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
-				{
-					CompatibleInfo methodInfo = new CompatibleInfo(entry.getValue());
-					addReleaseToResult(entry.getKey(), methodInfo);
-				}
-			}
-		}
-		else
-		{
-			log.debug("Search for compatible releases disabled");
-		}
-	}
-
-	private void addReleaseToResult(Release rls, ReleaseOriginInfo methodInfo) throws Exception
-	{
-		List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(rls);
-		changes.forEach(c -> log.debug("Standardized after querying: {}", c));
-
-		if (rls.isNuked())
-		{
-			displayTrayMessage("Release is nuked", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
-		}
-		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
-		if (!containedMetaTags.isEmpty())
-		{
-			String caption = "Release is meta-tagged: " + Tag.listToString(containedMetaTags);
-			displayTrayMessage(caption, name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
-		}
-
-		resultObject.getMatchingReleases().add(rls);
-		ProcessingResult result = addResult(rls, methodInfo);
-		updateMessage("Creating files");
-		result.updateStatus("Creating files");
-		try
-		{
-			createFiles(result);
-			result.updateStatus("Done");
-		}
-		catch (IOException | TimeoutException e)
-		{
-			result.updateStatus("Failed to create files: " + e);
-			log.warn("Failed to create files for " + result, e);
-		}
-		finally
-		{
-			result.updateProgress(1d);
-		}
-	}
-
-	private List<Release> processReleases(Collection<Release> rlss)
-	{
-		if (rlss.isEmpty())
-		{
-			return ImmutableList.of();
-		}
-
-		// Sort
-		List<Release> processedRlss = rlss.stream().sorted(Release.NAME_COMPARATOR).collect(Collectors.toList());
-		processedRlss = ReleaseUtil.distinctByName(processedRlss);
-		logReleases(Level.DEBUG, "Distinct releases (by name):", processedRlss);
-
-		// Enrich
-		for (Release r : processedRlss)
-		{
-			try
-			{
-				// the info from the parsed name should overwrite the info from
-				// the release db
-				// because if matters how the series name is in the release (not
-				// how it is listed on tvrage or sth else)
-				// therefore overwrite=true
-				// For example a Series may be listed as "Good Wife" but the
-				// official release name is "The Good Wife"
-				// TODO: sadly all the extra information about series and
-				// episodes (episode title) is overwritten
-				// on the other hands, those mistakes can be corrected by
-				// standardizers
-				ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), true);
-			}
-			catch (ParsingException e)
-			{
-				log.warn("Could not enrich " + r, e);
-			}
-		}
-		logReleases(Level.DEBUG, "Enriched releases:", processedRlss);
-
-		// Standardize
-		for (Release r : processedRlss)
-		{
-			List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(r);
-			changes.forEach(c -> log.debug("Standardized after querying: {}", c));
-		}
-		logReleases(Level.DEBUG, "Standardized releases:", processedRlss);
-
-		return processedRlss;
-	}
-
-	private static void logReleases(Level logLevel, String headline, Iterable<Release> rlss)
-	{
-		log.log(logLevel, headline);
-		for (Release r : rlss)
-		{
-			log.log(logLevel, r);
-		}
-	}
-
-	private ProcessingResult addResult(Release rls, ReleaseOriginInfo methodInfo)
-	{
-		ProcessingResult result = new ProcessingResult(this, rls);
-		Platform.runLater(() ->
-		{
-			result.updateInfo(ProcessingResultInfo.of(result, methodInfo));
-			results.add(result);
-			taskTreeItem.getChildren().add(new TreeItem<ProcessingItem>(result));
-			taskTreeItem.setExpanded(true);
-		});
-		return result;
-	}
-
-	private void createFiles(ProcessingResult result) throws Exception
-	{
-		Path srcFile = getSourceFile();
-		Path targetDir;
-		if (config.getTargetDir() != null)
-		{
-			targetDir = srcFile.resolveSibling(config.getTargetDir());
-		}
-		else
-		{
-			targetDir = srcFile.getParent();
-		}
-
-		Files.createDirectories(targetDir);
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
-
-		String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
-		Path targetFile = targetDir.resolve(result.getName() + fileExtension);
-
-		IOUtil.waitUntilCompletelyWritten(srcFile, 1, TimeUnit.MINUTES);
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
-
-		Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
-		result.addFile(newFile);
-		log.debug("Copied {} to {}", srcFile, targetFile);
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
-
-		if (config.isPackingEnabled())
-		{
-			final Path newRar = newFile.resolveSibling(result.getName() + ".rar");
-			LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
-			WinRarPackager packager = WinRar.getPackager(locateStrategy, config.getRarExe());
-			WinRarPackConfig cfg = new WinRarPackConfig();
-			cfg.setCompressionMethod(CompressionMethod.BEST);
-			cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
-			cfg.setTimeout(1, TimeUnit.MINUTES);
-			cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
-			WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
-			if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
-			{
-				result.removeFile(newFile);
-			}
-			if (packResult.failed() && !isCancelled())
-			{
-				result.updateStatus("Packing failed");
-				updateInfo(ProcessingTaskInfo.of(packResult.getException().toString()));
-			}
-			else
-			{
-				result.addFile(newRar);
-				log.debug("Packed {} to {} {}", newFile, newRar, packResult);
-			}
-		}
+	    List<StandardRelease> stdRlss = config.getStandardReleases();
+	    guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
+	    logReleases(Level.DEBUG, "Guessed releases:", guessedReleases.keySet());
+	    for (Map.Entry<Release, StandardRelease> entry : guessedReleases.entrySet())
+	    {
+		GuessedInfo methodInfo = new GuessedInfo(entry.getValue());
+		addReleaseToResult(entry.getKey(), methodInfo);
 
 		if (isCancelled())
 		{
-			throw new CancellationException();
+		    return;
 		}
+	    }
+
+	    List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
+	    for (StandardRelease stdRls : stdRlss)
+	    {
+		Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
+		TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
+		stdRlssWithMediaAndMetaTags.add(rls);
+	    }
+	    addCompatibleReleases(guessedReleases.keySet(), stdRlssWithMediaAndMetaTags);
+	}
+	else
+	{
+	    log.info("Guessing disabled");
+	}
+    }
+
+    private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> foundReleases) throws Exception
+    {
+	if (config.isCompatibilityEnabled())
+	{
+	    log.debug("Search for compatible releases enabled");
+	    // Find compatibles
+	    CompatibilityService compatibilityService = config.getCompatibilityService();
+	    compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
+
+	    if (compatibleReleases.isEmpty())
+	    {
+		log.debug("No compatible releases found");
+	    }
+	    else
+	    {
+		log.debug("Compatible releases:");
+		compatibleReleases.entrySet().forEach(e -> log.debug(e));
+
+		// Add compatible releases
+		for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
+		{
+		    CompatibleInfo methodInfo = new CompatibleInfo(entry.getValue());
+		    addReleaseToResult(entry.getKey(), methodInfo);
+		}
+	    }
+	}
+	else
+	{
+	    log.debug("Search for compatible releases disabled");
+	}
+    }
+
+    private void addReleaseToResult(Release rls, ReleaseOriginInfo methodInfo) throws Exception
+    {
+	List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(rls);
+	changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+
+	if (rls.isNuked())
+	{
+	    displayTrayMessage("Release is nuked", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
+	}
+	List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
+	if (!containedMetaTags.isEmpty())
+	{
+	    String caption = "Release is meta-tagged: " + Tag.listToString(containedMetaTags);
+	    displayTrayMessage(caption, name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
 	}
 
-	private void displayTrayMessage(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)
+	resultObject.getMatchingReleases().add(rls);
+	ProcessingResult result = addResult(rls, methodInfo);
+	updateMessage("Creating files");
+	result.updateStatus("Creating files");
+	try
 	{
-		Platform.runLater(() ->
-		{
-			if (WatcherSettings.INSTANCE.isWarningsEnabled() && warningEnabledProperty.get())
-			{
-				controller.getMainController().getWatcherApp().getTrayIcon().displayMessage(caption, text, messageType);
-			}
-		});
+	    createFiles(result);
+	    result.updateStatus("Done");
 	}
+	catch (IOException | TimeoutException e)
+	{
+	    result.updateStatus("Failed to create files: " + e);
+	    log.warn("Failed to create files for " + result, e);
+	}
+	finally
+	{
+	    result.updateProgress(1d);
+	}
+    }
+
+    private List<Release> processReleases(Collection<Release> rlss)
+    {
+	if (rlss.isEmpty())
+	{
+	    return ImmutableList.of();
+	}
+
+	// Sort
+	List<Release> processedRlss = rlss.stream().sorted(Release.NAME_COMPARATOR).collect(Collectors.toList());
+	processedRlss = ReleaseUtil.distinctByName(processedRlss);
+	logReleases(Level.DEBUG, "Distinct releases (by name):", processedRlss);
+
+	// Enrich
+	for (Release r : processedRlss)
+	{
+	    try
+	    {
+		// the info from the parsed name should overwrite the info from
+		// the release db
+		// because if matters how the series name is in the release (not
+		// how it is listed on tvrage or sth else)
+		// therefore overwrite=true
+		// For example a Series may be listed as "Good Wife" but the
+		// official release name is "The Good Wife"
+		// TODO: sadly all the extra information about series and
+		// episodes (episode title) is overwritten
+		// on the other hands, those mistakes can be corrected by
+		// standardizers
+		ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), true);
+	    }
+	    catch (ParsingException e)
+	    {
+		log.warn("Could not enrich " + r, e);
+	    }
+	}
+	logReleases(Level.DEBUG, "Enriched releases:", processedRlss);
+
+	// Standardize
+	for (Release r : processedRlss)
+	{
+	    List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(r);
+	    changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+	}
+	logReleases(Level.DEBUG, "Standardized releases:", processedRlss);
+
+	return processedRlss;
+    }
+
+    private static void logReleases(Level logLevel, String headline, Iterable<Release> rlss)
+    {
+	log.log(logLevel, headline);
+	for (Release r : rlss)
+	{
+	    log.log(logLevel, r);
+	}
+    }
+
+    private ProcessingResult addResult(Release rls, ReleaseOriginInfo methodInfo)
+    {
+	ProcessingResult result = new ProcessingResult(this, rls);
+	Platform.runLater(() -> {
+	    result.updateInfo(ProcessingResultInfo.of(result, methodInfo));
+	    results.add(result);
+	    taskTreeItem.getChildren().add(new TreeItem<ProcessingItem>(result));
+	    taskTreeItem.setExpanded(true);
+	});
+	return result;
+    }
+
+    private void createFiles(ProcessingResult result) throws Exception
+    {
+	Path srcFile = getSourceFile();
+	Path targetDir;
+	if (config.getTargetDir() != null)
+	{
+	    targetDir = srcFile.resolveSibling(config.getTargetDir());
+	}
+	else
+	{
+	    targetDir = srcFile.getParent();
+	}
+
+	Files.createDirectories(targetDir);
+	if (isCancelled())
+	{
+	    throw new CancellationException();
+	}
+
+	String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
+	Path targetFile = targetDir.resolve(result.getName() + fileExtension);
+
+	IOUtil.waitUntilCompletelyWritten(srcFile, 1, TimeUnit.MINUTES);
+	if (isCancelled())
+	{
+	    throw new CancellationException();
+	}
+
+	Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+	result.addFile(newFile);
+	log.debug("Copied {} to {}", srcFile, targetFile);
+	if (isCancelled())
+	{
+	    throw new CancellationException();
+	}
+
+	if (config.isPackingEnabled())
+	{
+	    final Path newRar = newFile.resolveSibling(result.getName() + ".rar");
+	    LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
+	    WinRarPackager packager = WinRar.getPackager(locateStrategy, config.getRarExe());
+	    WinRarPackConfig cfg = new WinRarPackConfig();
+	    cfg.setCompressionMethod(CompressionMethod.BEST);
+	    cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
+	    cfg.setTimeout(1, TimeUnit.MINUTES);
+	    cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
+	    WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
+	    if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
+	    {
+		result.removeFile(newFile);
+	    }
+	    if (packResult.failed() && !isCancelled())
+	    {
+		result.updateStatus("Packing failed");
+		updateInfo(ProcessingTaskInfo.of(packResult.getException().toString()));
+	    }
+	    else
+	    {
+		result.addFile(newRar);
+		log.debug("Packed {} to {} {}", newFile, newRar, packResult);
+	    }
+	}
+
+	if (isCancelled())
+	{
+	    throw new CancellationException();
+	}
+    }
+
+    private void displayTrayMessage(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)
+    {
+	Platform.runLater(() -> {
+	    if (WatcherSettings.INSTANCE.isWarningsEnabled() && warningEnabledProperty.get())
+	    {
+		controller.getMainController().getWatcherApp().getTrayIcon().displayMessage(caption, text, messageType);
+	    }
+	});
+    }
 }
