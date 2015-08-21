@@ -320,7 +320,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	}
 	if (results.isEmpty())
 	{
-	    updateMessage("Nothing done - See protocol");
+	    updateMessage("Nothing done - See details");
 	}
 	else
 	{

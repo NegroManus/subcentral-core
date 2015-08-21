@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.subcentral.core.naming.EpisodeNamer;
+import de.subcentral.core.naming.ReleaseNamer;
+import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.property.BooleanProperty;
@@ -16,6 +19,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -29,7 +33,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
     @FXML
     private TableView<NamingParam>	      namingParamsTableView;
     @FXML
-    private TableColumn<NamingParam, String>  namingParamsNameColumn;
+    private TableColumn<NamingParam, String>  namingParamsKeyColumn;
     @FXML
     private TableColumn<NamingParam, Boolean> namingParamsValueColumn;
 
@@ -53,7 +57,40 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 	// bind table items to settings
 	new NamingParamBinding(namingParamsTableView.getItems(), settings.namingParametersProperty());
 
-	namingParamsNameColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyProperty());
+	namingParamsKeyColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyProperty());
+	namingParamsKeyColumn.setCellFactory((TableColumn<NamingParam, String> column) -> {
+	    return new TableCell<NamingParam, String>()
+	    {
+		@Override
+		public void updateItem(String item, boolean empty)
+		{
+		    super.updateItem(item, empty);
+		    if (empty || item == null)
+		    {
+			setText(null);
+		    }
+		    else
+		    {
+			if (EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE.equals(item))
+			{
+			    setText("Episode: Always include episode title");
+			}
+			else if (ReleaseNamer.PARAM_PREFER_NAME.equals(item))
+			{
+			    setText("Release: Prefer release name over computed name");
+			}
+			else if (SubtitleAdjustmentNamer.PARAM_INCLUDE_GROUP.equals(item))
+			{
+			    setText("Subtitle: Include group / source");
+			}
+			else
+			{
+			    setText(item);
+			}
+		    }
+		}
+	    };
+	});
 	namingParamsValueColumn.setCellValueFactory((CellDataFeatures<NamingParam, Boolean> param) -> param.getValue().valueProperty());
 	namingParamsValueColumn.setCellFactory(CheckBoxTableCell.forTableColumn(namingParamsValueColumn));
     }
