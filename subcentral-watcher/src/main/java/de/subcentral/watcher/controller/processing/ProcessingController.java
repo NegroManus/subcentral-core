@@ -21,9 +21,8 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -69,7 +68,6 @@ import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.ProgressBarTreeTableCell;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -338,18 +336,8 @@ public class ProcessingController extends AbstractController
 							case GUESSED:
 							{
 								GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
-								StringBuilder sb = new StringBuilder();
-								sb.append("Guessed");
-								if (gi.getStandardRelease() != null)
-								{
-									sb.append(" (using standard release: ");
-									sb.append(resultInfo.getProcessingResult().getTask().name(gi.getStandardRelease().getRelease()));
-									sb.append(')');
-								}
-								ImageView guessingImg = new ImageView(FxUtil.loadImg("idea_16.png"));
-								Label guessing = new Label("", guessingImg);
-								guessing.setTooltip(new Tooltip(sb.toString()));
-								hbox.getChildren().add(guessing);
+								Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
+								hbox.getChildren().add(guessedLbl);
 								break;
 							}
 							case COMPATIBLE:
@@ -358,26 +346,9 @@ public class ProcessingController extends AbstractController
 								addDatabaseHyperlink(resultInfo, hbox);
 
 								CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
-								StringBuilder txt = new StringBuilder();
-								Compatibility c = ci.getCompatibilityInfo().getCompatibility();
-								if (c instanceof SameGroupCompatibility)
-								{
-									txt.append("Same group");
-								}
-								else if (c instanceof CrossGroupCompatibility)
-								{
-									txt.append(((CrossGroupCompatibility) c).toShortString());
-								}
 
-								ImageView compImg = new ImageView(FxUtil.loadImg("couple_16.png"));
-								Label comp = new Label(txt.toString(), compImg);
-
-								StringBuilder tooltip = new StringBuilder();
-								tooltip.append("Compatible to ");
-								tooltip.append(resultInfo.getProcessingResult().getTask().name(ci.getCompatibilityInfo().getSource()));
-
-								comp.setTooltip(new Tooltip(tooltip.toString()));
-								hbox.getChildren().add(comp);
+								Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
+								hbox.getChildren().add(compLbl);
 								break;
 							}
 							default:
