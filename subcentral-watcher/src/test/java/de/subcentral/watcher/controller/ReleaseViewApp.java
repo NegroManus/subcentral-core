@@ -1,13 +1,15 @@
 package de.subcentral.watcher.controller;
 
+import java.time.LocalDateTime;
+
+import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.fx.FxUtil;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.release.Release;
-import de.subcentral.fx.FxUtil;
 
 public class ReleaseViewApp extends Application
 {
@@ -37,7 +39,7 @@ public class ReleaseViewApp extends Application
 		// Episode epi2 = Episode.createSeasonedEpisode("Psych", 8, 2);
 		Release rls = Release.create("Psych.8x01.HDTV.x264-KILLERS", epi1, "KILLERS", "HDTV", "x264");
 		// rls.getMedia().add(epi2);
-		rls.nukeNow("because of");
+		rls.nuke("because of", LocalDateTime.now());
 		rls.nuke("another nuke reason");
 		ObservableRelease obsvRls = new ObservableRelease(rls);
 		return obsvRls;

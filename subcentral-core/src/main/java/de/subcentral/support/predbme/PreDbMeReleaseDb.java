@@ -34,6 +34,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Unnuke;
 import de.subcentral.core.util.ByteUtil;
 
 /**
@@ -251,12 +252,28 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			detailsUrl = titleAnchor.attr("abs:href");
 		}
 
+		/**
+		 * 
+		 * <pre>
+		 * <span rel="nofollow" class="tb tb-nuked" title="Nuked: invalid.proper_TRiPS.AR.is.within.rules"></span>
+		 * </pre>
+		 * 
+		 * <pre>
+		 * <span rel="nofollow" class="tb tb-unnuked" title="Unnuked: fine_ar.is.acceptable"></span>
+		 * </pre>
+		 */
 		Element nukedSpan = rlsDiv.select("span[class*=nuked]").first();
 		if (nukedSpan != null)
 		{
 			String nukeSpanTitle = nukedSpan.attr("title");
-			Pattern nukeReasonPattern = Pattern.compile("Nuked:\\s*(.+)", Pattern.CASE_INSENSITIVE);
-			Matcher mNukeReason = nukeReasonPattern.matcher(nukeSpanTitle);
+			Pattern pUnnukeReason = Pattern.compile("Unnuked:\\s*(.+)", Pattern.CASE_INSENSITIVE);
+			Matcher mUnnukeReason = pUnnukeReason.matcher(nukeSpanTitle);
+			if (mUnnukeReason.matches())
+			{
+				rls.unnuke(mUnnukeReason.group(1));
+			}
+			Pattern pNukeReason = Pattern.compile("Nuked:\\s*(.+)", Pattern.CASE_INSENSITIVE);
+			Matcher mNukeReason = pNukeReason.matcher(nukeSpanTitle);
 			if (mNukeReason.matches())
 			{
 				rls.nuke(mNukeReason.group(1));
@@ -367,6 +384,12 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 					 * <ol class='nuke-list'> <li value='2'><span class='nuked'>get.dirfix</span> <small class='nuke-time' data='1405980397.037'>- <span class='t-n-d'>2.8</span> <span
 					 * class='t-u'>days</span></small></li> <li value='1'><span class='nuked'>mislabeled.2014</span> <small class='nuke-time' data='1405980000.098'>- <span class='t-n-d'>2.8</span>
 					 * <span class='t-u'>days</span></small></li> </ol> </div> </div> </div> </pre>
+					 * 
+					 * Unnuked <pre> <div class="pb-c  pb-l">
+					 * Nukes</div> <div class="pb-c  pb-d">
+					 * <ol class='nuke-list'> <li value='2'><span class='unnuked'>fine_ar.is.acceptable</span> <small class='nuke-time' data='1363455322'>- <span
+					 * class='t-d'>2013-Mar-16</span></small></li> <li value='1'><span class='unnuked'>ar.is.within.rules</span> <small class='nuke-time' data='1363301166'>- <span
+					 * class='t-d'>2013-Mar-14</span></small></li> </ol> </div> </pre>
 					 */
 
 					Element nukeListOl = valueDiv.getElementsByClass("nuke-list").first();
@@ -374,27 +397,52 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 					{
 						Elements nukeLis = nukeListOl.getElementsByTag("li");
 						List<Nuke> nukes = new ArrayList<>(nukeLis.size());
+						List<Unnuke> unnukes = new ArrayList<>(nukeLis.size());
 						for (Element nukeLi : nukeLis)
 						{
-							String nukeReason = nukeLi.getElementsByClass("nuked").first().text();
+							String nukeReason = null;
+							String unnukeReason = null;
+							Element nukedSpan = nukeLi.getElementsByClass("nuked").first();
+							if (nukedSpan != null)
+							{
+								nukeReason = nukedSpan.text();
+							}
+							Element unnukedSpan = nukeLi.getElementsByClass("unnuked").first();
+							if (unnukedSpan != null)
+							{
+								unnukeReason = unnukedSpan.text();
+							}
+
 							ZonedDateTime nukeDate = null;
-							Element nukeTimeSpan = nukeLi.getElementsByClass("nuke-time").first();
-							if (nukeTimeSpan != null)
+							Element nukeTimeElem = nukeLi.getElementsByClass("nuke-time").first();
+							if (nukeTimeElem != null)
 							{
 								try
 								{
-									double nukeTimeEpochSeconds = Double.parseDouble(nukeTimeSpan.attr("data"));
+									double nukeTimeEpochSeconds = Double.parseDouble(nukeTimeElem.attr("data"));
 									long nukeTimeEpochMillis = (long) nukeTimeEpochSeconds * 1000L;
 									nukeDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(nukeTimeEpochMillis), TIME_ZONE);
 								}
 								catch (NumberFormatException e)
 								{
-									log.warn("Could not parse release nuke date epoch seconds string '" + nukeTimeSpan.attr("data") + "'", e);
+									log.warn("Could not parse release nuke date epoch seconds string '" + nukeTimeElem.attr("data") + "'", e);
 								}
 							}
-							nukes.add(new Nuke(nukeReason, nukeDate));
+							if (nukeReason != null)
+							{
+								nukes.add(new Nuke(nukeReason, nukeDate));
+							}
+							else if (unnukeReason != null)
+							{
+								unnukes.add(new Unnuke(unnukeReason, nukeDate));
+							}
+							else
+							{
+								log.warn("No nuke reason given: " + nukeLi);
+							}
 						}
 						rls.setNukes(nukes);
+						rls.setUnnukes(unnukes);
 					}
 				}
 				else if ("Title".equals(key))

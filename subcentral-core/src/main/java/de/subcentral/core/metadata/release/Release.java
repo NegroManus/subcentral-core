@@ -1,6 +1,5 @@
 package de.subcentral.core.metadata.release;
 
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +61,7 @@ public class Release implements Comparable<Release>
 	private long				size		= 0L;
 	private int					fileCount	= 0;
 	private final List<Nuke>	nukes		= new ArrayList<>(0);
+	private final List<Unnuke>	unnukes		= new ArrayList<>(0);
 	private String				nfo;
 	private String				nfoLink;
 	private final List<String>	furtherInfo	= new ArrayList<>(4);
@@ -319,6 +319,22 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
+	 * The unukes. If a Release was wrongfully nuked, it gets unnuked.
+	 * 
+	 * @return the unnukes
+	 */
+	public List<Unnuke> getUnnukes()
+	{
+		return unnukes;
+	}
+
+	public void setUnnukes(Collection<Unnuke> unnukes)
+	{
+		this.unnukes.clear();
+		this.unnukes.addAll(unnukes);
+	}
+
+	/**
 	 * The release information (content of the NFO file).
 	 * 
 	 * @return the NFO
@@ -395,9 +411,19 @@ public class Release implements Comparable<Release>
 		nukes.add(new Nuke(nukeReason, date));
 	}
 
-	public void nukeNow(String nukeReason)
+	public boolean isUnnuked()
 	{
-		nukes.add(new Nuke(nukeReason, ZonedDateTime.now()));
+		return !unnukes.isEmpty();
+	}
+
+	public void unnuke(String unnukeReason)
+	{
+		unnukes.add(new Unnuke(unnukeReason));
+	}
+
+	public void unnuke(String unnukeReason, Temporal date)
+	{
+		unnukes.add(new Unnuke(unnukeReason, date));
 	}
 
 	// Object methods

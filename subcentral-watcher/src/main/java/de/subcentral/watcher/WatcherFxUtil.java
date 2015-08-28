@@ -22,6 +22,7 @@ import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
+import de.subcentral.core.metadata.release.Unnuke;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
@@ -144,6 +145,18 @@ public class WatcherFxUtil
 			}
 			nukedLbl.setTooltip(new Tooltip(joiner.toString()));
 			return nukedLbl;
+		}
+		if (rls.isUnnuked())
+		{
+			ImageView unnukedImg = new ImageView(FxUtil.loadImg("unnuked_16.png"));
+			Label unnukedLbl = new Label("", unnukedImg);
+			StringJoiner joiner = new StringJoiner(", ", "Unnuked: ", "");
+			for (Unnuke unnuke : rls.getUnnukes())
+			{
+				joiner.add(unnuke.getReason());
+			}
+			unnukedLbl.setTooltip(new Tooltip(joiner.toString()));
+			return unnukedLbl;
 		}
 		return null;
 	}
