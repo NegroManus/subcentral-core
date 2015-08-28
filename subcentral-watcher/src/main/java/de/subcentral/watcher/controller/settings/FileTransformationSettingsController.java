@@ -8,8 +8,8 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.FxUtil.ToggleEnumBinding;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.support.winrar.WinRar;
-import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.collections.FXCollections;
@@ -83,9 +83,10 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 
 	final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
 	testLocateBtn.setOnAction((ActionEvent event) -> {
-	    Path winRarLocation = WinRar.tryLocateRarExecutable();
-	    if (winRarLocation != null)
+	    try
 	    {
+		Path winRarLocation = WinRar.getInstance().getPackager(LocateStrategy.LOCATE).getRarExecutable();
+
 		Alert locateDialog = new Alert(AlertType.INFORMATION);
 		locateDialog.setTitle("Successfully located RAR executable");
 		locateDialog.setHeaderText("Found RAR executable at: " + winRarLocation);
@@ -97,7 +98,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		    rarExeFormatter.setValue(winRarLocation);
 		}
 	    }
-	    else
+	    catch (Exception e)
 	    {
 		Alert locateDialog = new Alert(AlertType.WARNING);
 		locateDialog.setTitle("Failed to locate RAR executable");
@@ -113,7 +114,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		settingsController.getMainController().getWatcherApp().getPrimaryStage(),
 		"Select rar executable",
 		"RAR executable",
-		WinRar.getRarExecutableFilename());
+		WinRar.getInstance().getRarExecutableFilename().toString());
 
 	packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
 	packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.packingSourceDeletionModeProperty());

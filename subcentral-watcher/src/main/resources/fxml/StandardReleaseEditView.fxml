@@ -5,8 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40"
-	xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
@@ -19,10 +18,10 @@
 	</rowConstraints>
 	<children>
 		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Tags:" />
-		<TextField fx:id="tagsTxtFld" promptText="tags (separated by comma)" GridPane.columnIndex="1" />
+		<TextField fx:id="tagsTxtFld" prefWidth="250.0" promptText="tags (separated by comma)" GridPane.columnIndex="1" />
 		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Group:" GridPane.rowIndex="1" />
-		<TextField fx:id="groupTxtFld" maxWidth="1.7976931348623157E308" promptText="group" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-		<Label text="Scope:" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+		<TextField fx:id="groupTxtFld" prefWidth="200.0" promptText="group" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+		<Label text="Scope (when to add it to the listed releases):" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
 		<VBox spacing="3.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
 			<children>
 				<RadioButton fx:id="ifGuessingRadioBtn" mnemonicParsing="false" text="If guessing" />

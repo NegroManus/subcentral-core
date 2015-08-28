@@ -54,7 +54,7 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 	sb.append(nameUserPattern.getPattern());
 	sb.append("\" (");
 	sb.append(nameUserPattern.getMode().name());
-	sb.append("), with ");
+	sb.append(") with ");
 	sb.append(StringUtil.quoteString(standardizer.getNameReplacement()));
 	return sb.toString();
     }

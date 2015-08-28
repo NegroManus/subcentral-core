@@ -44,7 +44,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
@@ -52,6 +51,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 
 public class WatcherDialogs
 {
@@ -95,9 +95,7 @@ public class WatcherDialogs
 		dialog.setGraphic(new ImageView(FxUtil.loadImg(imgPath)));
 	    }
 	    dialog.setHeaderText(title);
-	    dialog.setWidth(getWidth());
 
-	    // Set the button types.
 	    dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
 	    dialog.getDialogPane().setContent(rootPane);
 
@@ -109,11 +107,6 @@ public class WatcherDialogs
 	protected String getImagePath()
 	{
 	    return null;
-	}
-
-	protected double getWidth()
-	{
-	    return 350d;
 	}
 
 	protected ButtonType[] getButtonTypes()
@@ -332,7 +325,7 @@ public class WatcherDialogs
 	@FXML
 	private TextField   namePatternTxtFld;
 	@FXML
-	private Label	    patternErrorLbl;
+	private Text	    patternErrorTxt;
 	@FXML
 	private TextField   nameReplacementTxtFld;
 
@@ -411,7 +404,7 @@ public class WatcherDialogs
 		    simplePatternRadioBtn,
 		    regexRadioBtn,
 		    namePatternTxtFld,
-		    patternErrorLbl);
+		    patternErrorTxt);
 
 	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
 	    applyButton.disableProperty().bind(new BooleanBinding()
@@ -714,7 +707,7 @@ public class WatcherDialogs
 	@FXML
 	private TextField	 textTxtFld;
 	@FXML
-	private Label		 patternErrorLbl;
+	private Text		 patternErrorTxt;
 	@FXML
 	private ComboBox<Locale> langComboBox;
 
@@ -778,7 +771,7 @@ public class WatcherDialogs
 	    }
 
 	    // Bindings
-	    final Binding<UserPattern> patternBinding = FxUtil.createUiPatternTextFieldBinding(modeToggleGrp, literalRadioBtn, simplePatternRadioBtn, regexRadioBtn, textTxtFld, patternErrorLbl);
+	    final Binding<UserPattern> patternBinding = FxUtil.createUiPatternTextFieldBinding(modeToggleGrp, literalRadioBtn, simplePatternRadioBtn, regexRadioBtn, textTxtFld, patternErrorTxt);
 
 	    Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
 	    applyButton.disableProperty().bind(new BooleanBinding()

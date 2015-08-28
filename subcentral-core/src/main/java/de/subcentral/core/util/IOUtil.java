@@ -64,7 +64,7 @@ public class IOUtil
     public static CommandResult executeCommand(List<String> command, long timeoutValue, TimeUnit timeoutUnit) throws IOException, InterruptedException, TimeoutException
     {
 	ProcessBuilder processBuilder = new ProcessBuilder(command);
-	log.debug("Executing {} (timeout {} {})", command, timeoutValue, timeoutUnit);
+	log.debug("Executing {} (timeout={} {}; environment={})", command, timeoutValue, timeoutUnit, processBuilder.environment());
 	Process process = processBuilder.start();
 	process.getOutputStream().close();
 

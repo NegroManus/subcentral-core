@@ -70,6 +70,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -461,7 +462,7 @@ public class FxUtil
     }
 
     public static Binding<UserPattern> createUiPatternTextFieldBinding(ToggleGroup patternModeToggleGrp, Toggle literalToggle, Toggle simpleToggle, Toggle regexToggle, TextField patternTxtFld,
-	    Label patternErrorLbl)
+	    Text patternErrorTxt)
     {
 	return new ObjectBinding<UserPattern>()
 	{
@@ -475,7 +476,7 @@ public class FxUtil
 		String pattern = patternTxtFld.getText();
 		if (StringUtils.isBlank(pattern))
 		{
-		    patternErrorLbl.setText("");
+		    patternErrorTxt.setText("");
 		    return null;
 		}
 		Mode mode;
@@ -496,13 +497,15 @@ public class FxUtil
 		    UserPattern p = new UserPattern(pattern, mode);
 		    // try to convert -> may throw an exception
 		    p.toPattern();
-		    patternErrorLbl.setText("");
+		    patternErrorTxt.setText("");
 		    return p;
 		}
 		catch (Exception e)
 		{
-		    e.printStackTrace();
-		    patternErrorLbl.setText("Invalid pattern: " + e.getMessage().split("\\n", 2)[0]);
+		    log.debug("Could not compile UserPattern due to invalid pattern string. Exception: " + e);
+		    // Only use the first line
+		    String errorMsg = e.getMessage().split("(\\r)?\\n", 2)[0];
+		    patternErrorTxt.setText("Invalid pattern: " + errorMsg);
 		    return null;
 		}
 	    }

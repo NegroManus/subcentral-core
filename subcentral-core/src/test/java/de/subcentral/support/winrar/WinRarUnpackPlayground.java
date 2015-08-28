@@ -5,15 +5,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
-import de.subcentral.support.winrar.WinRar.LocateStrategy;
+import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class WinRarUnpackPlayground
 {
-	public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
-	{
-		WinRarPackager packager = WinRar.getPackager(LocateStrategy.RESOURCE);
-		Path archive = Paths.get("C:\\Users\\mhertram\\Downloads\\Lost S01 Part 1.zip");
-		packager.unpack(archive, archive.getParent());
-	}
+    public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
+    {
+	WinRarPackager packager = WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
+	Path archive = Paths.get("C:\\Users\\mhertram\\Downloads\\Lost S01 Part 1.zip");
+	packager.unpack(archive, archive.getParent());
+    }
 
 }

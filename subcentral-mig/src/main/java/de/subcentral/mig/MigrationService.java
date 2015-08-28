@@ -42,214 +42,214 @@ import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
 import de.subcentral.support.winrar.WinRar;
-import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackager;
+import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class MigrationService
 {
-	private static final Logger log = LogManager.getLogger(MigrationService.class);
+    private static final Logger log = LogManager.getLogger(MigrationService.class);
 
-	private final WinRarPackager		winrar				= WinRar.getPackager(LocateStrategy.RESOURCE);
-	private final SubCentralApi			scApi				= new SubCentralHttpApi();
-	private final List<ParsingService>	subParsingServices	= ImmutableList.of(SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
-	private final List<ParsingService>	rlsParsingServices	= ImmutableList.of(ReleaseScene.getParsingService());
-	private final ContributionParser	contributionParser;
+    private final WinRarPackager       winrar		  = WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
+    private final SubCentralApi	       scApi		  = new SubCentralHttpApi();
+    private final List<ParsingService> subParsingServices = ImmutableList.of(SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
+    private final List<ParsingService> rlsParsingServices = ImmutableList.of(ReleaseScene.getParsingService());
+    private final ContributionParser   contributionParser;
 
-	/**
-	 * Resources.getResource("de/subcentral/mig/migration-settings.xml")
-	 * 
-	 * @param settingsFile
-	 * @throws ConfigurationException
-	 */
-	public MigrationService(URL settingsFile) throws ConfigurationException
+    /**
+     * Resources.getResource("de/subcentral/mig/migration-settings.xml")
+     * 
+     * @param settingsFile
+     * @throws ConfigurationException
+     */
+    public MigrationService(URL settingsFile) throws ConfigurationException
+    {
+	MigrationSettings settings = MigrationSettings.INSTANCE;
+	settings.load(settingsFile);
+
+	contributionParser = initContributionParser(settings);
+    }
+
+    private ContributionParser initContributionParser(MigrationSettings settings)
+    {
+	ContributionParser parser = new ContributionParser();
+	parser.setContributionPatterns(settings.contributionPatternsProperty());
+	parser.setContributorPatterns(settings.contributorPatternsProperty());
+	parser.setContributionTypePatterns(settings.contributionTypePatternsProperty());
+	parser.setIrrelevantPatterns(settings.irrelevantPatternsProperty());
+	parser.setStandardizingService(settings.getStandardizingService());
+	return parser;
+    }
+
+    public void downloadSubtitles(List<Integer> attachmentIds, Path dir) throws IOException
+    {
+	for (Integer attachmentId : attachmentIds)
 	{
-		MigrationSettings settings = MigrationSettings.INSTANCE;
-		settings.load(settingsFile);
-
-		contributionParser = initContributionParser(settings);
+	    scApi.downloadAttachment(attachmentId, dir);
 	}
+    }
 
-	private ContributionParser initContributionParser(MigrationSettings settings)
-	{
-		ContributionParser parser = new ContributionParser();
-		parser.setContributionPatterns(settings.contributionPatternsProperty());
-		parser.setContributorPatterns(settings.contributorPatternsProperty());
-		parser.setContributionTypePatterns(settings.contributionTypePatternsProperty());
-		parser.setIrrelevantPatterns(settings.irrelevantPatternsProperty());
-		parser.setStandardizingService(settings.getStandardizingService());
-		return parser;
-	}
+    public void unpackSubtitles(Path srcDir, Path targetDir) throws IOException, InterruptedException, TimeoutException
+    {
+	// create output directory if not exists
+	Files.createDirectories(targetDir);
 
-	public void downloadSubtitles(List<Integer> attachmentIds, Path dir) throws IOException
+	copyAllSrtFiles(srcDir, targetDir);
+
+	unpackAllRecursively(srcDir, targetDir, winrar);
+    }
+
+    public List<SubFile> parseSubtitles(Path dir) throws IOException
+    {
+	return parseAll(dir, subParsingServices, rlsParsingServices, contributionParser);
+    }
+
+    /*
+     * private methods
+     * 
+     * 
+     */
+    private static void copyAllSrtFiles(Path srcDir, Path targetDir) throws IOException
+    {
+	try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir))
 	{
-		for (Integer attachmentId : attachmentIds)
+	    for (Path file : stream)
+	    {
+		String ext = com.google.common.io.Files.getFileExtension(file.getFileName().toString());
+		if ("srt".equals(ext))
 		{
-			scApi.downloadAttachment(attachmentId, dir);
+		    Files.copy(file, targetDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
 		}
+	    }
 	}
+    }
 
-	public void unpackSubtitles(Path srcDir, Path targetDir) throws IOException, InterruptedException, TimeoutException
+    private static void unpackAllRecursively(Path srcDir, Path targetDir, WinRarPackager winrar) throws IOException, InterruptedException, TimeoutException
+    {
+	// extract all from srcDir to targetDir
+	unpackAll(srcDir, targetDir, false, winrar);
+	// extract all archives in targetDir and delete them afterwards
+	// (necessary if there were archives in the archives that were extracted to the srcDir)
+	boolean unpackedFiles = true;
+	while (unpackedFiles)
 	{
-		// create output directory if not exists
-		Files.createDirectories(targetDir);
-
-		copyAllSrtFiles(srcDir, targetDir);
-
-		unpackAllRecursively(srcDir, targetDir, winrar);
+	    unpackedFiles = unpackAll(targetDir, targetDir, true, winrar);
 	}
+    }
 
-	public List<SubFile> parseSubtitles(Path dir) throws IOException
+    private static boolean unpackAll(Path srcDir, Path targetDir, boolean deleteArchiveAfterUnpacking, WinRarPackager winrar) throws IOException, InterruptedException, TimeoutException
+    {
+	boolean unpackedFiles = false;
+	try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir))
 	{
-		return parseAll(dir, subParsingServices, rlsParsingServices, contributionParser);
-	}
-
-	/*
-	 * private methods
-	 * 
-	 * 
-	 */
-	private static void copyAllSrtFiles(Path srcDir, Path targetDir) throws IOException
-	{
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir))
+	    for (Path file : stream)
+	    {
+		if (unpack(file, targetDir, deleteArchiveAfterUnpacking, winrar))
 		{
-			for (Path file : stream)
-			{
-				String ext = com.google.common.io.Files.getFileExtension(file.getFileName().toString());
-				if ("srt".equals(ext))
-				{
-					Files.copy(file, targetDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-				}
-			}
+		    unpackedFiles = true;
 		}
+	    }
 	}
+	return unpackedFiles;
+    }
 
-	private static void unpackAllRecursively(Path srcDir, Path targetDir, WinRarPackager winrar) throws IOException, InterruptedException, TimeoutException
+    private static boolean unpack(Path file, Path targetDir, boolean deleteArchiveAfterUnpacking, WinRarPackager winrar) throws IOException, InterruptedException, TimeoutException
+    {
+	if (Files.isRegularFile(file))
 	{
-		// extract all from srcDir to targetDir
-		unpackAll(srcDir, targetDir, false, winrar);
-		// extract all archives in targetDir and delete them afterwards
-		// (necessary if there were archives in the archives that were extracted to the srcDir)
-		boolean unpackedFiles = true;
-		while (unpackedFiles)
+	    String fileExt = com.google.common.io.Files.getFileExtension(file.toString());
+	    if ("zip".equalsIgnoreCase(fileExt))
+	    {
+		IOUtil.unzip(file, targetDir, true);
+		if (deleteArchiveAfterUnpacking)
 		{
-			unpackedFiles = unpackAll(targetDir, targetDir, true, winrar);
+		    Files.delete(file);
 		}
-	}
-
-	private static boolean unpackAll(Path srcDir, Path targetDir, boolean deleteArchiveAfterUnpacking, WinRarPackager winrar) throws IOException, InterruptedException, TimeoutException
-	{
-		boolean unpackedFiles = false;
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir))
+		return true;
+	    }
+	    else if ("rar".equalsIgnoreCase(fileExt))
+	    {
+		winrar.unpack(file, targetDir);
+		if (deleteArchiveAfterUnpacking)
 		{
-			for (Path file : stream)
-			{
-				if (unpack(file, targetDir, deleteArchiveAfterUnpacking, winrar))
-				{
-					unpackedFiles = true;
-				}
-			}
+		    Files.delete(file);
 		}
-		return unpackedFiles;
+		return true;
+	    }
 	}
+	return false;
+    }
 
-	private static boolean unpack(Path file, Path targetDir, boolean deleteArchiveAfterUnpacking, WinRarPackager winrar) throws IOException, InterruptedException, TimeoutException
+    private static List<SubFile> parseAll(Path dir, List<ParsingService> subParsingServices, List<ParsingService> rlsParsingServices, ContributionParser contributionParser) throws IOException
+    {
+	Map<Long, SubFile> checkSums = new HashMap<>();
+	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir))
 	{
-		if (Files.isRegularFile(file))
+	    for (Path file : stream)
+	    {
+		HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
+		long hashAsLong = hash.asLong();
+		String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
+		SubtitleAdjustment subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleAdjustment.class, subParsingServices);
+		if (subAdj == null)
 		{
-			String fileExt = com.google.common.io.Files.getFileExtension(file.toString());
-			if ("zip".equalsIgnoreCase(fileExt))
-			{
-				IOUtil.unzip(file, targetDir, true);
-				if (deleteArchiveAfterUnpacking)
-				{
-					Files.delete(file);
-				}
-				return true;
-			}
-			else if ("rar".equalsIgnoreCase(fileExt))
-			{
-				winrar.unpack(file, targetDir);
-				if (deleteArchiveAfterUnpacking)
-				{
-					Files.delete(file);
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static List<SubFile> parseAll(Path dir, List<ParsingService> subParsingServices, List<ParsingService> rlsParsingServices, ContributionParser contributionParser) throws IOException
-	{
-		Map<Long, SubFile> checkSums = new HashMap<>();
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir))
-		{
-			for (Path file : stream)
-			{
-				HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
-				long hashAsLong = hash.asLong();
-				String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
-				SubtitleAdjustment subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleAdjustment.class, subParsingServices);
-				if (subAdj == null)
-				{
-					Release rls = ParsingUtil.parse(filenameWithoutExt, Release.class, rlsParsingServices);
-					if (rls != null)
-					{
-						subAdj = SubtitleAdjustment.create(rls, null, null);
-					}
-				}
-
-				log.debug("Parsed filename {} to {}", filenameWithoutExt, subAdj);
-				SubFile newSubFile = new SubFile(subAdj, file);
-				checkSums.merge(hashAsLong, newSubFile, ((SubFile oldValue, SubFile newValue) -> oldValue.updateWithMatchingRelease(newValue)));
-			}
+		    Release rls = ParsingUtil.parse(filenameWithoutExt, Release.class, rlsParsingServices);
+		    if (rls != null)
+		    {
+			subAdj = SubtitleAdjustment.create(rls, null, null);
+		    }
 		}
 
-		// parse content
-		for (SubFile sub : checkSums.values())
-		{
-			CharsetDetector csDetector = new CharsetDetector();
-			Path file = sub.getFiles().iterator().next();
-			byte[] bytes = Files.readAllBytes(file);
-			csDetector.setText(bytes);
-			CharsetMatch match = csDetector.detect();
-			log.trace("Analyzed {}: charset={}, language={}, confidence={}", file, match.getName(), match.getLanguage(), match.getConfidence());
-
-			SubtitleFileFormat format = SubtitleFileFormat.SUBRIP;
-
-			SubtitleFile data = format.read(bytes, Charset.forName(match.getName()));
-			log.debug("Parsed content of {} with charset {} and format {} to SubtitleFile ({} items)", file, match.getName(), format.getName(), data.getItems().size());
-			sub.updateWithData(data);
-
-			List<Contribution> contributions = contributionParser.parse(data);
-			log.debug("Parsed contributions:");
-			for (Map.Entry<String, Collection<Contribution>> entry : ContributionUtil.groupByType(contributions).asMap().entrySet())
-			{
-				StringJoiner contributors = new StringJoiner(", ");
-				for (Contribution c : entry.getValue())
-				{
-					contributors.add(c.getContributor().getName());
-				}
-				log.debug("{}: {}", entry.getKey().isEmpty() ? "<unspecified>" : entry.getKey(), contributors.toString());
-			}
-			sub.updateWithContributions(contributions);
-		}
-
-		List<SubFile> parsedSubtitles = new ArrayList<>(checkSums.values());
-		parsedSubtitles.sort(null);
-		return parsedSubtitles;
+		log.debug("Parsed filename {} to {}", filenameWithoutExt, subAdj);
+		SubFile newSubFile = new SubFile(subAdj, file);
+		checkSums.merge(hashAsLong, newSubFile, ((SubFile oldValue, SubFile newValue) -> oldValue.updateWithMatchingRelease(newValue)));
+	    }
 	}
 
-	public static void main(String[] args) throws ConfigurationException, IOException
+	// parse content
+	for (SubFile sub : checkSums.values())
 	{
-		Path dir = Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-target");
-		URL settingsFile = Resources.getResource("de/subcentral/mig/migration-settings.xml");
-		MigrationService service = new MigrationService(settingsFile);
-		List<SubFile> files = service.parseSubtitles(dir);
-		for (SubFile file : files)
+	    CharsetDetector csDetector = new CharsetDetector();
+	    Path file = sub.getFiles().iterator().next();
+	    byte[] bytes = Files.readAllBytes(file);
+	    csDetector.setText(bytes);
+	    CharsetMatch match = csDetector.detect();
+	    log.trace("Analyzed {}: charset={}, language={}, confidence={}", file, match.getName(), match.getLanguage(), match.getConfidence());
+
+	    SubtitleFileFormat format = SubtitleFileFormat.SUBRIP;
+
+	    SubtitleFile data = format.read(bytes, Charset.forName(match.getName()));
+	    log.debug("Parsed content of {} with charset {} and format {} to SubtitleFile ({} items)", file, match.getName(), format.getName(), data.getItems().size());
+	    sub.updateWithData(data);
+
+	    List<Contribution> contributions = contributionParser.parse(data);
+	    log.debug("Parsed contributions:");
+	    for (Map.Entry<String, Collection<Contribution>> entry : ContributionUtil.groupByType(contributions).asMap().entrySet())
+	    {
+		StringJoiner contributors = new StringJoiner(", ");
+		for (Contribution c : entry.getValue())
 		{
-			System.out.println(file);
-			System.out.println();
+		    contributors.add(c.getContributor().getName());
 		}
+		log.debug("{}: {}", entry.getKey().isEmpty() ? "<unspecified>" : entry.getKey(), contributors.toString());
+	    }
+	    sub.updateWithContributions(contributions);
 	}
+
+	List<SubFile> parsedSubtitles = new ArrayList<>(checkSums.values());
+	parsedSubtitles.sort(null);
+	return parsedSubtitles;
+    }
+
+    public static void main(String[] args) throws ConfigurationException, IOException
+    {
+	Path dir = Paths.get("C:\\Users\\mhertram\\Downloads\\!sc-target");
+	URL settingsFile = Resources.getResource("de/subcentral/mig/migration-settings.xml");
+	MigrationService service = new MigrationService(settingsFile);
+	List<SubFile> files = service.parseSubtitles(dir);
+	for (SubFile file : files)
+	{
+	    System.out.println(file);
+	    System.out.println();
+	}
+    }
 }

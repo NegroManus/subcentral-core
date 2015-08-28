@@ -80,7 +80,7 @@ public class SettingsController extends AbstractController
     private BooleanProperty defaultSettingsLoaded = new SimpleBooleanProperty();
     private BooleanProperty customSettingsExist	  = new SimpleBooleanProperty();
 
-    public SettingsController(MainController mainController) throws Exception
+    public SettingsController(MainController mainController)
     {
 	this.mainController = mainController;
 	sections = initSections();

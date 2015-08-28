@@ -12,8 +12,8 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -326,12 +326,12 @@ public class ProcessingSettings extends AbstractSubSettings
 	return this.winRarLocateStrategy;
     }
 
-    public final de.subcentral.support.winrar.WinRar.LocateStrategy getWinRarLocateStrategy()
+    public final LocateStrategy getWinRarLocateStrategy()
     {
 	return this.winRarLocateStrategyProperty().getValue();
     }
 
-    public final void setWinRarLocateStrategy(final de.subcentral.support.winrar.WinRar.LocateStrategy winRarLocateStrategy)
+    public final void setWinRarLocateStrategy(final LocateStrategy winRarLocateStrategy)
     {
 	this.winRarLocateStrategyProperty().setValue(winRarLocateStrategy);
     }

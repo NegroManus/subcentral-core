@@ -1,5 +1,6 @@
 package de.subcentral.watcher.controller;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -90,7 +91,7 @@ public class MainController extends AbstractController
 	tabPane.getSelectionModel().select(index);
     }
 
-    private void initSettingsController() throws Exception
+    private void initSettingsController() throws IOException
     {
 	settingsController = new SettingsController(this);
 	BorderPane settingsPane = FxUtil.loadFromFxml("SettingsView.fxml", "SettingsView", Locale.ENGLISH, settingsController);
@@ -101,18 +102,23 @@ public class MainController extends AbstractController
 	settingsRootPane.getChildren().add(settingsPane);
     }
 
-    private void initProcessingController() throws Exception
+    private void initProcessingController() throws IOException
     {
 	processingController = new ProcessingController(this);
+	loadProcessingPane();
+    }
+
+    public void loadProcessingPane() throws IOException
+    {
 	BorderPane processingPane = FxUtil.loadFromFxml("ProcessingView.fxml", "ProcessingView", Locale.ENGLISH, processingController);
 	AnchorPane.setTopAnchor(processingPane, 0.0d);
 	AnchorPane.setRightAnchor(processingPane, 0.0d);
 	AnchorPane.setBottomAnchor(processingPane, 0.0d);
 	AnchorPane.setLeftAnchor(processingPane, 0.0d);
-	processingRootPane.getChildren().add(processingPane);
+	processingRootPane.getChildren().setAll(processingPane);
     }
 
-    private void initWatchController() throws Exception
+    private void initWatchController() throws IOException
     {
 	watchController = new WatchController(this);
 	HBox watchPane = FxUtil.loadFromFxml("WatchPane.fxml", null, Locale.ENGLISH, watchController);

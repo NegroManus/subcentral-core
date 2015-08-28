@@ -50,9 +50,9 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 		sb.append("equal ");
 		break;
 	}
-	sb.append('{');
+	sb.append('[');
 	Joiner.on(", ").appendTo(sb, replacer.getQueryTags());
-	sb.append('}');
+	sb.append(']');
 	if (replacer.getIgnoreOrder())
 	{
 	    sb.append(" (in any order)");
@@ -67,9 +67,9 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 		sb.append("set the tags to ");
 		break;
 	}
-	sb.append('{');
+	sb.append('[');
 	Joiner.on(", ").appendTo(sb, replacer.getReplacement());
-	sb.append('}');
+	sb.append(']');
 	return sb.toString();
     }
 }

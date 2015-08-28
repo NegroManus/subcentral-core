@@ -47,13 +47,13 @@ import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRar;
-import de.subcentral.support.winrar.WinRar.LocateStrategy;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
+import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibleInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessedInfo;
@@ -367,6 +367,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	    convertedSub.setMedia(SerializationUtils.clone(srcSub.getMedia()));
 	    convertedSub.setLanguage(srcSub.getLanguage());
 	    convertedSub.setGroup(srcSub.getGroup());
+	    convertedSub.setSource(srcSub.getSource());
 	    convertedSubAdj.getSubtitles().add(convertedSub);
 	}
 	resultObject = convertedSubAdj;
@@ -575,20 +576,9 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	ProcessingResult result = addResult(rls, methodInfo);
 	updateMessage("Creating files");
 	result.updateStatus("Creating files");
-	try
-	{
-	    createFiles(result);
-	    result.updateStatus("Done");
-	}
-	catch (IOException | TimeoutException e)
-	{
-	    result.updateStatus("Failed to create files: " + e);
-	    log.warn("Failed to create files for " + result, e);
-	}
-	finally
-	{
-	    result.updateProgress(1d);
-	}
+
+	createFiles(result);
+
     }
 
     private List<Release> processReleases(Collection<Release> rlss)
@@ -662,71 +652,103 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
     private void createFiles(ProcessingResult result) throws Exception
     {
-	Path srcFile = getSourceFile();
-	Path targetDir;
-	if (config.getTargetDir() != null)
+	try
 	{
-	    targetDir = srcFile.resolveSibling(config.getTargetDir());
-	}
-	else
-	{
-	    targetDir = srcFile.getParent();
-	}
-
-	Files.createDirectories(targetDir);
-	if (isCancelled())
-	{
-	    throw new CancellationException();
-	}
-
-	String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
-	Path targetFile = targetDir.resolve(result.getName() + fileExtension);
-
-	IOUtil.waitUntilCompletelyWritten(srcFile, 1, TimeUnit.MINUTES);
-	if (isCancelled())
-	{
-	    throw new CancellationException();
-	}
-
-	Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
-	result.addFile(newFile);
-	log.debug("Copied {} to {}", srcFile, targetFile);
-	if (isCancelled())
-	{
-	    throw new CancellationException();
-	}
-
-	if (config.isPackingEnabled())
-	{
-	    final Path newRar = newFile.resolveSibling(result.getName() + ".rar");
-	    LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
-	    WinRarPackager packager = WinRar.getPackager(locateStrategy, config.getRarExe());
-	    WinRarPackConfig cfg = new WinRarPackConfig();
-	    cfg.setCompressionMethod(CompressionMethod.BEST);
-	    cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
-	    cfg.setTimeout(1, TimeUnit.MINUTES);
-	    cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
-	    WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
-	    if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
+	    Path srcFile = getSourceFile();
+	    Path targetDir;
+	    if (config.getTargetDir() != null)
 	    {
-		result.removeFile(newFile);
-	    }
-	    if (packResult.failed() && !isCancelled())
-	    {
-		result.updateStatus("Packing failed");
-		updateInfo(ProcessingTaskInfo.of(packResult.getException().toString()));
+		targetDir = srcFile.resolveSibling(config.getTargetDir());
 	    }
 	    else
 	    {
-		result.addFile(newRar);
-		log.debug("Packed {} to {} {}", newFile, newRar, packResult);
+		targetDir = srcFile.getParent();
+	    }
+
+	    Files.createDirectories(targetDir);
+	    if (isCancelled())
+	    {
+		throw new CancellationException();
+	    }
+
+	    String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
+	    Path targetFile = targetDir.resolve(result.getName() + fileExtension);
+
+	    IOUtil.waitUntilCompletelyWritten(srcFile, 1, TimeUnit.MINUTES);
+	    if (isCancelled())
+	    {
+		throw new CancellationException();
+	    }
+
+	    Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+	    result.addFile(newFile);
+	    log.debug("Copied {} to {}", srcFile, targetFile);
+	    if (isCancelled())
+	    {
+		throw new CancellationException();
+	    }
+
+	    if (config.isPackingEnabled())
+	    {
+		Exception packingException = null;
+		try
+		{
+		    final Path newRar = newFile.resolveSibling(result.getName() + ".rar");
+		    LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
+		    WinRarPackager packager = WinRar.getInstance().getPackager(locateStrategy, config.getRarExe());
+		    WinRarPackConfig cfg = new WinRarPackConfig();
+		    cfg.setCompressionMethod(CompressionMethod.BEST);
+		    cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
+		    cfg.setTimeout(1, TimeUnit.MINUTES);
+		    cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
+		    WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
+		    if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
+		    {
+			result.removeFile(newFile);
+		    }
+		    if (packResult.failed())
+		    {
+			packingException = packResult.getException();
+		    }
+		    else
+		    {
+			log.debug("Packed {} to {} {}", newFile, newRar, packResult);
+			result.addFile(newRar);
+			result.updateStatus("Done");
+		    }
+		}
+		catch (Exception e)
+		{
+		    packingException = e;
+		}
+		if (packingException != null && !isCancelled())
+		{
+		    log.error("Packing failed", packingException);
+		    result.updateStatus("Packing failed");
+		    updateInfo(ProcessingTaskInfo.of(packingException.toString()));
+		}
+	    }
+	    else
+	    {
+		result.updateStatus("Done");
+	    }
+
+	    if (isCancelled())
+	    {
+		throw new CancellationException();
 	    }
 	}
-
-	if (isCancelled())
+	catch (IOException | TimeoutException e)
 	{
-	    throw new CancellationException();
+	    log.error("File transformation failed for " + result, e);
+	    result.updateStatus("File transformation failed");
+	    updateInfo(ProcessingTaskInfo.of(e.toString()));
 	}
+	finally
+	{
+	    result.updateProgress(1d);
+	}
+
     }
 
     private void displayTrayMessage(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)

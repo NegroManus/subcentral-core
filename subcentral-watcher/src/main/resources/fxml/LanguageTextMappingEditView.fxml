@@ -16,9 +16,9 @@
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label text="If the language is:" />
-		<ComboBox fx:id="langComboBox" minWidth="100.0" prefWidth="150.0" GridPane.rowIndex="1" />
-		<Label text="then use the text:" GridPane.rowIndex="2" />
-		<TextField fx:id="textTxtFld" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.rowIndex="3" />
+		<Label text="If the language is" />
+		<ComboBox fx:id="langComboBox" prefWidth="250.0" GridPane.rowIndex="1" />
+		<Label text="then use the text" GridPane.rowIndex="2" />
+		<TextField fx:id="textTxtFld" prefWidth="250.0" GridPane.rowIndex="3" />
 	</children>
 </GridPane>

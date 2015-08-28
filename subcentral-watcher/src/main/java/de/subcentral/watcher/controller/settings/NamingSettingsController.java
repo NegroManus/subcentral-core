@@ -6,7 +6,7 @@ import java.util.Map;
 
 import de.subcentral.core.naming.EpisodeNamer;
 import de.subcentral.core.naming.ReleaseNamer;
-import de.subcentral.core.naming.SubtitleAdjustmentNamer;
+import de.subcentral.core.naming.SubtitleNamer;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.property.BooleanProperty;
@@ -79,9 +79,13 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 			{
 			    setText("Release: Prefer release name over computed name");
 			}
-			else if (SubtitleAdjustmentNamer.PARAM_INCLUDE_GROUP.equals(item))
+			else if (SubtitleNamer.PARAM_INCLUDE_GROUP.equals(item))
 			{
-			    setText("Subtitle: Include group / source");
+			    setText("Subtitle: Include group (such as \"SubCentral\")");
+			}
+			else if (SubtitleNamer.PARAM_INCLUDE_SOURCE.equals(item))
+			{
+			    setText("Subtitle: Include source (such as \"Addic7ed.com\")");
 			}
 			else
 			{
