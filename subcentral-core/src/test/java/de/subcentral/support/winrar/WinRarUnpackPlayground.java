@@ -9,11 +9,11 @@ import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class WinRarUnpackPlayground
 {
-    public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
-    {
-	WinRarPackager packager = WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
-	Path archive = Paths.get("C:\\Users\\mhertram\\Downloads\\Lost S01 Part 1.zip");
-	packager.unpack(archive, archive.getParent());
-    }
+	public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
+	{
+		WinRarPackager packager = WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
+		Path archive = Paths.get("C:\\Users\\mhertram\\Downloads\\Lost S01 Part 1.zip");
+		packager.unpack(archive, archive.getParent());
+	}
 
 }

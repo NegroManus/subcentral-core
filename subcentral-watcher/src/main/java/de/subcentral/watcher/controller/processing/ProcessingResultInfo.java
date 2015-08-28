@@ -6,27 +6,27 @@ import de.subcentral.watcher.controller.processing.ProcessingResult.ReleaseOrigi
 
 public class ProcessingResultInfo implements ProcessingInfo
 {
-    private final ProcessingResult  processingResult;
-    private final ReleaseOriginInfo originInfo;
+	private final ProcessingResult	processingResult;
+	private final ReleaseOriginInfo	originInfo;
 
-    private ProcessingResultInfo(ProcessingResult processingResult, ReleaseOriginInfo originInfo)
-    {
-	this.processingResult = Objects.requireNonNull(processingResult, "processingResult");
-	this.originInfo = Objects.requireNonNull(originInfo, "originInfo");
-    }
+	private ProcessingResultInfo(ProcessingResult processingResult, ReleaseOriginInfo originInfo)
+	{
+		this.processingResult = Objects.requireNonNull(processingResult, "processingResult");
+		this.originInfo = Objects.requireNonNull(originInfo, "originInfo");
+	}
 
-    public ProcessingResult getProcessingResult()
-    {
-	return processingResult;
-    }
+	public ProcessingResult getProcessingResult()
+	{
+		return processingResult;
+	}
 
-    public ReleaseOriginInfo getOriginInfo()
-    {
-	return originInfo;
-    }
+	public ReleaseOriginInfo getOriginInfo()
+	{
+		return originInfo;
+	}
 
-    public static ProcessingResultInfo of(ProcessingResult processingResult, ReleaseOriginInfo methodInfo)
-    {
-	return new ProcessingResultInfo(processingResult, methodInfo);
-    }
+	public static ProcessingResultInfo of(ProcessingResult processingResult, ReleaseOriginInfo methodInfo)
+	{
+		return new ProcessingResultInfo(processingResult, methodInfo);
+	}
 }

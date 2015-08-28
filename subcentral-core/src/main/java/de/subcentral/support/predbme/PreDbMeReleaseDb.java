@@ -288,8 +288,8 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	 * "post-body-table img-adjacent" > <div class="pb-r "> <div class= "pb-c  pb-l">Rlsname</div> <div class="pb-c  pb-d">Psych.S06E05.HDTV.XviD-P0W4</div> </div> <div class="pb-r "> <div class=
 	 * "pb-c  pb-l" >Group</div> <div class= "pb-c  pb-d"> <a class='term t-g' href='http://predb.me/?group=p0w4'>P0W4</a> </div> </div> <div class= "pb-r " > <div class="pb-c  pb-l">Tags</div>
 	 * <div class= "pb-c  pb-d" > <a class='term' href='http://predb.me/?tag=aired'>Aired</a>, <a class='term' href='http://predb.me/?tag=xvid'>XviD</a> </div> </div> <div class="pb-r "> <div class=
-	 * "pb-c  pb-l">Size</div> <div class="pb-c  pb-d"> 349.3 MB <small>in</small> 25 <small>files</small> </div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Nukes</div> <div class="pb-c  pb-d"
-	 * >
+	 * "pb-c  pb-l">Size</div> <div class="pb-c  pb-d"> 349.3 MB <small>in</small> 25 <small>files</small> </div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Nukes</div> <div class=
+	 * "pb-c  pb-d" >
 	 * <ol class='nuke-list'> <li value='1'><span class='nuked'>contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></li> </ol> </div> </div> <div class="pb-r ">
 	 * <div class="pb-c  pb-l pb-s"></div> <div class="pb-c  pb-d pb-s"></div> </div> <div class="pb-r "> <div class="pb-c  pb-l">Title</div> <div class=
 	 * "pb-c  pb-d" > <a class='term t-t' href='http://predb.me/?title=psych'>Psych</a> </div> </div> <div class="pb-r "> <div class= "pb-c  pb-l">Episode</div> <div class="pb-c  pb-d"> (

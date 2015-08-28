@@ -8,41 +8,41 @@ import javafx.scene.layout.GridPane;
 
 public class UserInterfaceSettingsController extends AbstractSettingsSectionController
 {
-    @FXML
-    private GridPane rootPane;
-    @FXML
-    private CheckBox warningsEnabledCheckBox;
-    @FXML
-    private CheckBox guessingWarningEnabledCheckBox;
-    @FXML
-    private CheckBox metaTaggedReleaseWarningEnabledCheckBox;
-    @FXML
-    private CheckBox nukedReleaseWarningEnabledCheckBox;
+	@FXML
+	private GridPane	rootPane;
+	@FXML
+	private CheckBox	warningsEnabledCheckBox;
+	@FXML
+	private CheckBox	guessingWarningEnabledCheckBox;
+	@FXML
+	private CheckBox	metaTaggedReleaseWarningEnabledCheckBox;
+	@FXML
+	private CheckBox	nukedReleaseWarningEnabledCheckBox;
 
-    public UserInterfaceSettingsController(SettingsController settingsController)
-    {
-	super(settingsController);
-    }
+	public UserInterfaceSettingsController(SettingsController settingsController)
+	{
+		super(settingsController);
+	}
 
-    @Override
-    public GridPane getSectionRootPane()
-    {
-	return rootPane;
-    }
+	@Override
+	public GridPane getSectionRootPane()
+	{
+		return rootPane;
+	}
 
-    @Override
-    protected void doInitialize() throws Exception
-    {
-	WatcherSettings settings = WatcherSettings.INSTANCE;
+	@Override
+	protected void doInitialize() throws Exception
+	{
+		WatcherSettings settings = WatcherSettings.INSTANCE;
 
-	warningsEnabledCheckBox.selectedProperty().bindBidirectional(settings.warningsEnabledProperty());
-	guessingWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.guessingWarningEnabledProperty());
-	metaTaggedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.releaseMetaTaggedWarningEnabledProperty());
-	nukedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.releaseNukedWarningEnabledProperty());
+		warningsEnabledCheckBox.selectedProperty().bindBidirectional(settings.warningsEnabledProperty());
+		guessingWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.guessingWarningEnabledProperty());
+		metaTaggedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.releaseMetaTaggedWarningEnabledProperty());
+		nukedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.releaseNukedWarningEnabledProperty());
 
-	final BooleanBinding warningsDisabledBinding = warningsEnabledCheckBox.selectedProperty().not();
-	guessingWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
-	metaTaggedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
-	nukedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
-    }
+		final BooleanBinding warningsDisabledBinding = warningsEnabledCheckBox.selectedProperty().not();
+		guessingWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
+		metaTaggedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
+		nukedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
+	}
 }
