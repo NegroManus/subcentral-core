@@ -261,5 +261,4 @@ public class IOUtil
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
-
 }
