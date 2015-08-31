@@ -57,8 +57,8 @@
 					<standardRelease tags="HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="EXCELLENCE" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE" scope="IF_GUESSING" />
-					<standardRelease tags="720p_HDTV_x264" group="FoV" scope="IF_GUESSING" />
-					<standardRelease tags="HDTV_x264" group="FoV" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="FoV" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="FoV" scope="IF_GUESSING" />
 				</standardReleases>
 			</guessing>
 			<compatibility enabled="true">
