@@ -25,7 +25,7 @@ class WindowsWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected boolean isRecyclingAvailable()
+	protected boolean isRecyclingSupported()
 	{
 		return true;
 	}

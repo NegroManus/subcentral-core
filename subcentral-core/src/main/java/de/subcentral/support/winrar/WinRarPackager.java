@@ -77,7 +77,7 @@ public abstract class WinRarPackager
 	 * 
 	 * @return
 	 */
-	protected abstract boolean isRecyclingAvailable();
+	protected abstract boolean isRecyclingSupported();
 
 	public boolean validate(Path archive)
 	{
@@ -106,7 +106,7 @@ public abstract class WinRarPackager
 		// POSIX expects a command list which contains:
 		// 1) the executable as first element
 		// 2)-n) each argument as an element
-		return ImmutableList.of(rarExecutable.toString(), "t", StringUtil.quoteString(archive.toString()));
+		return ImmutableList.of(rarExecutable.toString(), "t", archive.toString());
 	}
 
 	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException, TimeoutException
@@ -127,7 +127,7 @@ public abstract class WinRarPackager
 		// POSIX expects a command list which contains:
 		// 1) the executable as first element
 		// 2)-n) each argument as an element
-		return ImmutableList.of(rarExecutable.toString(), "e", "-o+", StringUtil.quoteString(archive.toString()), "*", StringUtil.quoteString(targetDir.toString()));
+		return ImmutableList.of(rarExecutable.toString(), "e", "-o+", archive.toString(), "*", StringUtil.quoteString(targetDir.toString()));
 	}
 
 	/**
@@ -239,7 +239,7 @@ public abstract class WinRarPackager
 			// don't add a delete switch
 			break;
 		case RECYCLE:
-			if (isRecyclingAvailable())
+			if (isRecyclingSupported())
 			{
 				log.warn("Configuration value sourceDelectionMode={} is ignored. This option is not available on this operating system. Files are kept.", DeletionMode.RECYCLE);
 			}
@@ -258,10 +258,10 @@ public abstract class WinRarPackager
 		}
 
 		// target package
-		args.add(StringUtil.quoteString(target.toString()));
+		args.add(target.toString());
 
 		// source file
-		args.add(StringUtil.quoteString(source.toString()));
+		args.add(source.toString());
 
 		// POSIX expects a command list which contains:
 		// 1) the executable as first element

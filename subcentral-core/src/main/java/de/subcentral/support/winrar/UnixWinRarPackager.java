@@ -38,7 +38,7 @@ class UnixWinRarPackager extends WinRarPackager
 	}
 
 	@Override
-	protected boolean isRecyclingAvailable()
+	protected boolean isRecyclingSupported()
 	{
 		return false;
 	}
