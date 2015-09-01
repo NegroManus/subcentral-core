@@ -493,7 +493,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		if (config.isGuessingEnabled())
 		{
 			log.info("Guessing enabled");
-			displayTrayMessage("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
+			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
 
 			List<StandardRelease> stdRlss = config.getStandardReleases();
 			guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
@@ -563,13 +563,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 		if (rls.isNuked())
 		{
-			displayTrayMessage("Release is nuked", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
+			displaySystemTrayNotification("Release is nuked", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
 		}
 		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 		if (!containedMetaTags.isEmpty())
 		{
 			String caption = "Release is meta-tagged: " + Tag.listToString(containedMetaTags);
-			displayTrayMessage(caption, name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
+			displaySystemTrayNotification(caption, name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
 		}
 
 		resultObject.getMatchingReleases().add(rls);
@@ -752,14 +752,17 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 	}
 
-	private void displayTrayMessage(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)
+	private void displaySystemTrayNotification(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)
 	{
-		Platform.runLater(() ->
+		if (controller.getMainController().getWatcherApp().isSystemTrayAvailable())
 		{
-			if (WatcherSettings.INSTANCE.isWarningsEnabled() && warningEnabledProperty.get())
+			Platform.runLater(() ->
 			{
-				controller.getMainController().getWatcherApp().getTrayIcon().displayMessage(caption, text, messageType);
-			}
-		});
+				if (WatcherSettings.INSTANCE.isWarningsEnabled() && warningEnabledProperty.get())
+				{
+					controller.getMainController().getWatcherApp().displaySystemTrayNotification(caption, text, messageType);
+				}
+			});
+		}
 	}
 }

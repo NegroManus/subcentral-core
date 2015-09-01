@@ -5,6 +5,7 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -180,9 +181,17 @@ public class WatcherApp extends Application
 		return primaryStage;
 	}
 
-	public TrayIcon getTrayIcon()
+	public boolean isSystemTrayAvailable()
 	{
-		return trayIcon;
+		return trayIcon != null;
+	}
+
+	public void displaySystemTrayNotification(String caption, String text, MessageType messageType)
+	{
+		if (isSystemTrayAvailable())
+		{
+			trayIcon.displayMessage(caption, text, messageType);
+		}
 	}
 
 	@Override
