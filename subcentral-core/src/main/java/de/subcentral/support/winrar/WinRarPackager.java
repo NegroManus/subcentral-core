@@ -46,7 +46,8 @@ public abstract class WinRarPackager
 			switch (locateStrategy)
 			{
 			case SPECIFY:
-				this.rarExecutable = this.winRar.validateRarExecutable(rarExecutable);
+				// do not validate because it can be a non-absolute path
+				this.rarExecutable = rarExecutable;
 				break;
 			case LOCATE:
 				this.rarExecutable = this.winRar.locateRarExecutable();
