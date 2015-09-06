@@ -1,13 +1,5 @@
 package de.subcentral.watcher;
 
-import java.awt.AWTException;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
-import java.awt.TrayIcon.MessageType;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -19,11 +11,9 @@ import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class WatcherApp extends Application
 {
@@ -34,24 +24,16 @@ public class WatcherApp extends Application
 
 	private static final Logger log = LogManager.getLogger(WatcherApp.class);
 
-	private static WatcherApp instance;
-
-	public static WatcherApp getInstance()
-	{
-		return instance;
-	}
-
-	private MainController mainController;
-
+	// View
 	private Stage		primaryStage;
 	private BorderPane	mainView;
-	private TrayIcon	trayIcon;
+
+	// Control
+	private MainController mainController;
 
 	@Override
 	public void init() throws Exception
 	{
-		instance = this;
-
 		log.info("Initializing {} ...", APP_INFO);
 		log.info("Operating system: {} {} {}", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
 		log.info("Java version: {}", SystemUtils.JAVA_VERSION);
@@ -61,108 +43,41 @@ public class WatcherApp extends Application
 		log.info("User dir: {}", SystemUtils.USER_DIR);
 		long start = System.nanoTime();
 
-		this.mainController = new MainController(this);
-		mainView = FxUtil.loadFromFxml("MainView.fxml", "MainView", Locale.ENGLISH, mainController);
-
 		log.info("Initialized {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
 	}
 
 	@Override
-	public void start(Stage primaryStage)
+	public void start(Stage primaryStage) throws Exception
 	{
 		log.info("Starting {} ...", APP_INFO);
 		long start = System.nanoTime();
 
 		this.primaryStage = primaryStage;
 
+		// Order is important
 		initPrimaryStage();
-		initMainViewAndShow();
+		initMainController();
+		initSceneAndShow();
 
 		log.info("Started {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
 	}
 
 	private void initPrimaryStage()
 	{
-		primaryStage.setTitle("Watcher");
+		primaryStage.setTitle(APP_INFO);
 		primaryStage.getIcons().addAll(FxUtil.loadImg("watcher_16.png"), FxUtil.loadImg("watcher_32.png"), FxUtil.loadImg("watcher_64.png"));
-
-		initSystemTrayIcon();
 	}
 
-	private void initSystemTrayIcon()
+	private void initMainController() throws IOException
 	{
-		// Explicit exit because use of SystemTray starts AWTEventThread
-		Platform.setImplicitExit(false);
-		primaryStage.setOnCloseRequest((WindowEvent) ->
-		{
-			Platform.exit();
-		});
-
-		// Check the SystemTray is supported
-		if (!SystemTray.isSupported())
-		{
-			log.warn("SystemTray is not supported");
-			return;
-		}
-
-		try
-		{
-			SystemTray tray = SystemTray.getSystemTray();
-
-			java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
-			trayIcon = new TrayIcon(trayImg);
-
-			PopupMenu popup = new PopupMenu();
-
-			MenuItem showHideItem = new MenuItem("Hide");
-			ActionListener showHideListener = (ActionEvent e) ->
-			{
-				Platform.runLater(() ->
-				{
-					if (primaryStage.isShowing())
-					{
-						primaryStage.hide();
-						showHideItem.setLabel("Show");
-					}
-					else
-					{
-						primaryStage.show();
-						showHideItem.setLabel("Hide");
-					}
-				});
-			};
-			showHideItem.addActionListener(showHideListener);
-
-			MenuItem exitItem = new MenuItem("Exit");
-			exitItem.addActionListener((ActionEvent e) -> Platform.runLater(() -> primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))));
-
-			// Add components to pop-up menu
-			popup.add(showHideItem);
-			popup.addSeparator();
-			popup.add(exitItem);
-
-			trayIcon.setPopupMenu(popup);
-			// Show/Hide on double-click
-			trayIcon.addActionListener(showHideListener);
-
-			tray.add(trayIcon);
-		}
-		catch (IOException | AWTException e)
-		{
-			log.warn("TrayIcon could not be added", e);
-		}
+		this.mainController = new MainController(primaryStage);
+		mainView = FxUtil.loadFromFxml("MainView.fxml", "MainView", Locale.ENGLISH, mainController);
 	}
 
-	/**
-	 * Initializes the root layout.
-	 */
-	private void initMainViewAndShow()
+	private void initSceneAndShow()
 	{
-		// Show the scene containing the root layout.
 		Scene scene = new Scene(mainView);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle(APP_INFO);
-
 		primaryStage.show();
 	}
 
@@ -179,19 +94,6 @@ public class WatcherApp extends Application
 	public Stage getPrimaryStage()
 	{
 		return primaryStage;
-	}
-
-	public boolean isSystemTrayAvailable()
-	{
-		return trayIcon != null;
-	}
-
-	public void displaySystemTrayNotification(String caption, String text, MessageType messageType)
-	{
-		if (isSystemTrayAvailable())
-		{
-			trayIcon.displayMessage(caption, text, messageType);
-		}
 	}
 
 	@Override

@@ -674,7 +674,7 @@ public class ProcessingController extends AbstractController
 			Parent root = FxUtil.loadFromFxml("DetailsView.fxml", null, null, protocolCtrl);
 			Scene scene = new Scene(root);
 
-			Stage owner = mainController.getWatcherApp().getPrimaryStage();
+			Stage owner = mainController.getPrimaryStage();
 			Stage stage = new Stage();
 			stage.initOwner(owner);
 			stage.getIcons().add(FxUtil.loadImg("file_search_16.png"));

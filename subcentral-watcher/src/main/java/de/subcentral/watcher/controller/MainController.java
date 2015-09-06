@@ -1,5 +1,13 @@
 package de.subcentral.watcher.controller;
 
+import java.awt.AWTException;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -11,14 +19,16 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.WatcherApp;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class MainController extends AbstractController
 {
@@ -27,17 +37,20 @@ public class MainController extends AbstractController
 	public static final int	PROCESSING_TAB_INDEX	= 0;
 	public static final int	SETTINGS_TAB_INDEX		= 1;
 
+	private final Stage primaryStage;
+
 	// View
 	// UI components are automatically injected before initialize()
-	private final WatcherApp	watcherApp;
 	@FXML
-	private BorderPane			rootPane;
+	private BorderPane	rootPane;
 	@FXML
-	private TabPane				tabPane;
+	private TabPane		tabPane;
 	@FXML
-	private AnchorPane			processingRootPane;
+	private AnchorPane	processingRootPane;
 	@FXML
-	private AnchorPane			settingsRootPane;
+	private AnchorPane	settingsRootPane;
+
+	private TrayIcon trayIcon;
 
 	// Controller
 	private WatchController				watchController;
@@ -45,9 +58,9 @@ public class MainController extends AbstractController
 	private SettingsController			settingsController;
 	private ScheduledExecutorService	commonExecutor;
 
-	public MainController(WatcherApp watcherApp)
+	public MainController(Stage primaryStage)
 	{
-		this.watcherApp = watcherApp;
+		this.primaryStage = primaryStage;
 	}
 
 	@Override
@@ -55,15 +68,18 @@ public class MainController extends AbstractController
 	{
 		commonExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2, new NamedThreadFactory("Watcher-CommonExecutor-Thread", false));
 
-		// initializing order important
+		// initializing o4rder important
 		initSettingsController();
 		initProcessingController();
 		initWatchController();
+
+		// System Tray
+		initSystemTrayIcon();
 	}
 
-	public WatcherApp getWatcherApp()
+	public Stage getPrimaryStage()
 	{
-		return watcherApp;
+		return primaryStage;
 	}
 
 	public ScheduledExecutorService getCommonExecutor()
@@ -123,6 +139,83 @@ public class MainController extends AbstractController
 		watchController = new WatchController(this);
 		HBox watchPane = FxUtil.loadFromFxml("WatchPane.fxml", null, Locale.ENGLISH, watchController);
 		rootPane.setTop(watchPane);
+	}
+
+	private void initSystemTrayIcon()
+	{
+		// Explicit exit because use of SystemTray starts AWTEventThread
+		Platform.setImplicitExit(false);
+		primaryStage.setOnCloseRequest((WindowEvent) ->
+		{
+			Platform.exit();
+		});
+
+		// Check the SystemTray is supported
+		if (!SystemTray.isSupported())
+		{
+			log.warn("SystemTray is not supported");
+			return;
+		}
+
+		try
+		{
+			SystemTray tray = SystemTray.getSystemTray();
+
+			java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
+			trayIcon = new TrayIcon(trayImg);
+
+			PopupMenu popup = new PopupMenu();
+
+			MenuItem showHideItem = new MenuItem("Hide");
+			ActionListener showHideListener = (ActionEvent e) ->
+			{
+				Platform.runLater(() ->
+				{
+					if (getPrimaryStage().isShowing())
+					{
+						primaryStage.hide();
+						showHideItem.setLabel("Show");
+					}
+					else
+					{
+						primaryStage.show();
+						showHideItem.setLabel("Hide");
+					}
+				});
+			};
+			showHideItem.addActionListener(showHideListener);
+
+			MenuItem exitItem = new MenuItem("Exit");
+			exitItem.addActionListener((ActionEvent e) -> Platform.runLater(() -> primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))));
+
+			// Add components to pop-up menu
+			popup.add(showHideItem);
+			popup.addSeparator();
+			popup.add(exitItem);
+
+			trayIcon.setPopupMenu(popup);
+			// Show/Hide on double-click
+			trayIcon.addActionListener(showHideListener);
+
+			tray.add(trayIcon);
+		}
+		catch (IOException | AWTException e)
+		{
+			log.warn("TrayIcon could not be added", e);
+		}
+	}
+
+	public boolean isSystemTrayAvailable()
+	{
+		return trayIcon != null;
+	}
+
+	public void displaySystemTrayNotification(String caption, String text, MessageType messageType)
+	{
+		if (isSystemTrayAvailable())
+		{
+			trayIcon.displayMessage(caption, text, messageType);
+		}
 	}
 
 	@Override

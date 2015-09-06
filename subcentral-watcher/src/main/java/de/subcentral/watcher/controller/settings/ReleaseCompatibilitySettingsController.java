@@ -68,7 +68,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 
 		addCrossGroupCompatibility.setOnAction((ActionEvent event) ->
 		{
-			Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView();
+			Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView(settingsController.getMainController().getPrimaryStage());
 			FxUtil.handleDistinctAdd(crossGroupCompatibilitiesTableView, result, (CrossGroupCompatibility c) -> new CompatibilitySettingEntry(c, true));
 		});
 
@@ -80,7 +80,8 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 			CompatibilitySettingEntry selectedEntry = crossGroupCompatibilitiesTableView.getSelectionModel().getSelectedItem();
 			if (selectedEntry.getValue() instanceof CrossGroupCompatibility)
 			{
-				Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView((CrossGroupCompatibility) selectedEntry.getValue());
+				Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView((CrossGroupCompatibility) selectedEntry.getValue(),
+						settingsController.getMainController().getPrimaryStage());
 				FxUtil.handleDistinctEdit(crossGroupCompatibilitiesTableView, result, (CrossGroupCompatibility c) -> new CompatibilitySettingEntry(c, selectedEntry.isEnabled()));
 			}
 		});

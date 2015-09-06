@@ -754,13 +754,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 	private void displaySystemTrayNotification(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)
 	{
-		if (controller.getMainController().getWatcherApp().isSystemTrayAvailable())
+		if (controller.getMainController().isSystemTrayAvailable())
 		{
 			Platform.runLater(() ->
 			{
 				if (WatcherSettings.INSTANCE.isWarningsEnabled() && warningEnabledProperty.get())
 				{
-					controller.getMainController().getWatcherApp().displaySystemTrayNotification(caption, text, messageType);
+					controller.getMainController().displaySystemTrayNotification(caption, text, messageType);
 				}
 			});
 		}

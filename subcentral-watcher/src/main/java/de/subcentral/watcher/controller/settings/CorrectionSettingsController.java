@@ -97,11 +97,11 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			Optional<? extends CorrectionRuleSettingEntry<?, ?>> result;
 			if (SeriesNameCorrectionRuleSettingEntry.class == selectedStandardizerType)
 			{
-				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView();
+				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
 			}
 			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedStandardizerType)
 			{
-				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView();
+				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
 			}
 			else
 			{
@@ -119,11 +119,11 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			Optional<? extends CorrectionRuleSettingEntry<?, ?>> result;
 			if (SeriesNameCorrectionRuleSettingEntry.class == selectedStandardizer.getClass())
 			{
-				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectionRuleSettingEntry) selectedStandardizer);
+				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectionRuleSettingEntry) selectedStandardizer, settingsController.getMainController().getPrimaryStage());
 			}
 			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedStandardizer.getClass())
 			{
-				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectionRuleSettingEntry) selectedStandardizer);
+				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectionRuleSettingEntry) selectedStandardizer, settingsController.getMainController().getPrimaryStage());
 			}
 			else
 			{

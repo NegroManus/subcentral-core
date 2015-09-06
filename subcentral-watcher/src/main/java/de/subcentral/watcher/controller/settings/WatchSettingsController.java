@@ -47,7 +47,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 		{
 			DirectoryChooser dirChooser = new DirectoryChooser();
 			dirChooser.setTitle("Add watch directory");
-			File selectedDirectory = dirChooser.showDialog(settingsController.getMainController().getWatcherApp().getPrimaryStage());
+			File selectedDirectory = dirChooser.showDialog(settingsController.getMainController().getPrimaryStage());
 			if (selectedDirectory == null)
 			{
 				return;

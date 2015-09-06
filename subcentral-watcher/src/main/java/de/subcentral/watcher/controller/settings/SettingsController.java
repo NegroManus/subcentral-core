@@ -475,7 +475,7 @@ public class SettingsController extends AbstractController
 
 	public void saveSettings() throws ConfigurationException, IOException
 	{
-		WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE));
+		WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE), mainController.getCommonExecutor());
 		defaultSettingsLoaded.set(false);
 		customSettingsExist.set(true);
 	}
@@ -504,14 +504,14 @@ public class SettingsController extends AbstractController
 
 	public void loadDefaultSettings() throws Exception
 	{
-		WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE));
+		WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE), mainController.getCommonExecutor());
 		defaultSettingsLoaded.set(true);
 	}
 
 	public void loadCustomSettings(Path settingsFile) throws Exception
 	{
 		log.debug("Loading custom settings from {}", settingsFile);
-		WatcherSettings.INSTANCE.load(settingsFile);
+		WatcherSettings.INSTANCE.load(settingsFile, mainController.getCommonExecutor());
 		defaultSettingsLoaded.set(false);
 		customSettingsExist.set(true);
 	}

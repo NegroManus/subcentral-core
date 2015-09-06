@@ -52,6 +52,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.stage.Window;
 
 public class WatcherDialogs
 {
@@ -67,10 +68,10 @@ public class WatcherDialogs
 		@FXML
 		protected Node				rootPane;
 
-		private AbstractBeanEditController(T bean)
+		private AbstractBeanEditController(T bean, Window owner)
 		{
 			this.bean = bean;
-			this.dialog.initOwner(WatcherApp.getInstance().getPrimaryStage());
+			this.dialog.initOwner(owner);
 		}
 
 		private Dialog<T> getDialog()
@@ -132,9 +133,9 @@ public class WatcherDialogs
 		@FXML
 		private RadioButton	alwaysRadioBtn;
 
-		private StandardReleaseEditController(StandardRelease commonReleaseDef)
+		private StandardReleaseEditController(StandardRelease commonReleaseDef, Window window)
 		{
-			super(commonReleaseDef);
+			super(commonReleaseDef, window);
 		}
 
 		@Override
@@ -233,9 +234,9 @@ public class WatcherDialogs
 		@FXML
 		private CheckBox	symmetricCheckBox;
 
-		private CrossGroupCompatibilityEditController(CrossGroupCompatibility bean)
+		private CrossGroupCompatibilityEditController(CrossGroupCompatibility bean, Window window)
 		{
-			super(bean);
+			super(bean, window);
 		}
 
 		@Override
@@ -332,9 +333,9 @@ public class WatcherDialogs
 		@FXML
 		private TextField	nameReplacementTxtFld;
 
-		private SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingEntry bean)
+		private SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingEntry bean, Window window)
 		{
-			super(bean);
+			super(bean, window);
 		}
 
 		@Override
@@ -456,9 +457,9 @@ public class WatcherDialogs
 		@FXML
 		private TextField	replacementTxtFld;
 
-		private ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectionRuleSettingEntry bean)
+		private ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectionRuleSettingEntry bean, Window window)
 		{
-			super(bean);
+			super(bean, window);
 		}
 
 		@Override
@@ -606,9 +607,9 @@ public class WatcherDialogs
 		@FXML
 		private Button				removeLangBtn;
 
-		private LocaleListEditController(List<Locale> bean)
+		private LocaleListEditController(List<Locale> bean, Window window)
 		{
-			super(Objects.requireNonNull(bean));
+			super(Objects.requireNonNull(bean), window);
 		}
 
 		@Override
@@ -721,9 +722,9 @@ public class WatcherDialogs
 		@FXML
 		private ComboBox<Locale>	langComboBox;
 
-		private TextLanguageMappingEditController(LanguageUserPattern bean)
+		private TextLanguageMappingEditController(LanguageUserPattern bean, Window window)
 		{
-			super(bean);
+			super(bean, window);
 		}
 
 		@Override
@@ -816,9 +817,9 @@ public class WatcherDialogs
 		@FXML
 		private TextField			textTxtFld;
 
-		private LanguageTextMappingEditController(LanguageTextMapping bean)
+		private LanguageTextMappingEditController(LanguageTextMapping bean, Window window)
 		{
-			super(bean);
+			super(bean, window);
 		}
 
 		@Override
@@ -876,75 +877,75 @@ public class WatcherDialogs
 		}
 	}
 
-	public static Optional<StandardRelease> showStandardReleaseEditView()
+	public static Optional<StandardRelease> showStandardReleaseEditView(Window window)
 	{
-		return showStandardReleaseEditView(null);
+		return showStandardReleaseEditView(null, window);
 	}
 
-	public static Optional<StandardRelease> showStandardReleaseEditView(StandardRelease standardRls)
+	public static Optional<StandardRelease> showStandardReleaseEditView(StandardRelease standardRls, Window window)
 	{
-		StandardReleaseEditController ctrl = new StandardReleaseEditController(standardRls);
+		StandardReleaseEditController ctrl = new StandardReleaseEditController(standardRls, window);
 		return showEditViewAndWait(ctrl, "StandardReleaseEditView.fxml");
 	}
 
-	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView()
+	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(Window window)
 	{
 		return showCrossGroupCompatibilityEditView(null);
 	}
 
-	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(CrossGroupCompatibility crossGroupCompatibility)
+	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(CrossGroupCompatibility crossGroupCompatibility, Window window)
 	{
-		CrossGroupCompatibilityEditController ctrl = new CrossGroupCompatibilityEditController(crossGroupCompatibility);
+		CrossGroupCompatibilityEditController ctrl = new CrossGroupCompatibilityEditController(crossGroupCompatibility, window);
 		return showEditViewAndWait(ctrl, "CrossGroupCompatibilityEditView.fxml");
 	}
 
-	public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView()
+	public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView(Window window)
 	{
-		return showSeriesNameCorrectionRuleEditView(null);
+		return showSeriesNameCorrectionRuleEditView(null, window);
 	}
 
-	public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectionRuleSettingEntry entry)
+	public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectionRuleSettingEntry entry, Window window)
 	{
-		SeriesNameCorrectionRuleEditController ctrl = new SeriesNameCorrectionRuleEditController(entry);
+		SeriesNameCorrectionRuleEditController ctrl = new SeriesNameCorrectionRuleEditController(entry, window);
 		return showEditViewAndWait(ctrl, "SeriesNameCorrectionRuleEditView.fxml");
 	}
 
-	public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView()
+	public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView(Window window)
 	{
-		return showReleaseTagsCorrectionRuleEditView(null);
+		return showReleaseTagsCorrectionRuleEditView(null, window);
 	}
 
-	public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView(ReleaseTagsCorrectionRuleSettingEntry entry)
+	public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView(ReleaseTagsCorrectionRuleSettingEntry entry, Window window)
 	{
-		ReleaseTagsCorrectionRuleEditController ctrl = new ReleaseTagsCorrectionRuleEditController(entry);
+		ReleaseTagsCorrectionRuleEditController ctrl = new ReleaseTagsCorrectionRuleEditController(entry, window);
 		return showEditViewAndWait(ctrl, "ReleaseTagsCorrectionRuleEditView.fxml");
 	}
 
-	public static Optional<List<Locale>> showLocaleListEditView(List<Locale> languages)
+	public static Optional<List<Locale>> showLocaleListEditView(List<Locale> languages, Window window)
 	{
-		LocaleListEditController ctrl = new LocaleListEditController(languages);
+		LocaleListEditController ctrl = new LocaleListEditController(languages, window);
 		return showEditViewAndWait(ctrl, "LocaleListEditView.fxml");
 	}
 
-	public static Optional<LanguageUserPattern> showTextLanguageMappingEditView()
+	public static Optional<LanguageUserPattern> showTextLanguageMappingEditView(Window window)
 	{
-		return showTextLanguageMappingEditView(null);
+		return showTextLanguageMappingEditView(null, window);
 	}
 
-	public static Optional<LanguageUserPattern> showTextLanguageMappingEditView(LanguageUserPattern mapping)
+	public static Optional<LanguageUserPattern> showTextLanguageMappingEditView(LanguageUserPattern mapping, Window window)
 	{
-		TextLanguageMappingEditController ctrl = new TextLanguageMappingEditController(mapping);
+		TextLanguageMappingEditController ctrl = new TextLanguageMappingEditController(mapping, window);
 		return showEditViewAndWait(ctrl, "TextLanguageMappingEditView.fxml");
 	}
 
-	public static Optional<LanguageTextMapping> showLanguageTextMappingEditView()
+	public static Optional<LanguageTextMapping> showLanguageTextMappingEditView(Window window)
 	{
-		return showLanguageTextMappingEditView(null);
+		return showLanguageTextMappingEditView(null, window);
 	}
 
-	public static Optional<LanguageTextMapping> showLanguageTextMappingEditView(LanguageTextMapping mapping)
+	public static Optional<LanguageTextMapping> showLanguageTextMappingEditView(LanguageTextMapping mapping, Window window)
 	{
-		LanguageTextMappingEditController ctrl = new LanguageTextMappingEditController(mapping);
+		LanguageTextMappingEditController ctrl = new LanguageTextMappingEditController(mapping, window);
 		return showEditViewAndWait(ctrl, "LanguageTextMappingEditView.fxml");
 	}
 
