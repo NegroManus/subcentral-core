@@ -46,7 +46,7 @@ public class SettingsController extends AbstractController
 {
 	private static final Logger log = LogManager.getLogger(SettingsController.class);
 
-	private static final String	SETTINGS_FILE			= "watcher-settings.xml";
+	private static final Path	CUSTOM_SETTINGS_FILE	= Paths.get("watcher-settings.xml").toAbsolutePath();
 	private static final String	DEFAULT_SETTINGS_FILE	= "watcher-settings-default.xml";
 
 	public static final String	WATCH_SECTION							= "watch";
@@ -467,39 +467,42 @@ public class SettingsController extends AbstractController
 
 	public void saveSettings()
 	{
-		Path file = Paths.get(SETTINGS_FILE);
 		try
 		{
-			WatcherSettings.INSTANCE.save(file);
+			WatcherSettings.INSTANCE.save(CUSTOM_SETTINGS_FILE);
 			defaultSettingsLoaded.set(false);
 			customSettingsExist.set(true);
 		}
 		catch (ConfigurationException e)
 		{
-			FxUtil.createExceptionAlert("Failed to save settings", "Exception while saving settings to " + file, e).showAndWait();
+			FxUtil.createExceptionAlert("Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILE, e).showAndWait();
 		}
 	}
 
 	public void loadSettings() throws Exception
 	{
-		Path settingsFile = Paths.get(SETTINGS_FILE).toAbsolutePath();
-		if (Files.exists(settingsFile, LinkOption.NOFOLLOW_LINKS))
+		if (Files.exists(CUSTOM_SETTINGS_FILE, LinkOption.NOFOLLOW_LINKS))
 		{
 			try
 			{
-				loadCustomSettings(settingsFile);
+				loadCustomSettings(CUSTOM_SETTINGS_FILE);
 				return;
 			}
 			catch (Exception e)
 			{
-				log.error("Failed to load custom settings from " + settingsFile + ". Will load default settings", e);
-				loadDefaultSettings();
+				log.error("Failed to load custom settings from " + CUSTOM_SETTINGS_FILE + ". Will load default settings", e);
+				FxUtil.createExceptionAlert("Failed to load custom settings",
+						"Failed to load custom settings from " + CUSTOM_SETTINGS_FILE
+								+ ". Default settings will be used.\nIf you would like to try and fix the custom settings, close the application without saving the settings, fix the custom settings and try again.",
+						e).showAndWait();
 			}
 		}
 		else
 		{
-			log.debug("No custom settings found at {}. Will load default settings", settingsFile);
+			log.debug("No custom settings found at {}. Will load default settings", CUSTOM_SETTINGS_FILE);
 		}
+
+		// if did not hit "return;", load default settings
 		loadDefaultSettings();
 	}
 
@@ -512,7 +515,6 @@ public class SettingsController extends AbstractController
 		}
 		catch (Exception e)
 		{
-			// cannot happen
 			log.error("Exception while loading default settings", e);
 		}
 	}
@@ -530,10 +532,9 @@ public class SettingsController extends AbstractController
 		if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
-			// alert.getDialogPane().setPrefWidth(600d);
 			alert.setTitle("Save watcher settings?");
-			alert.setHeaderText("Save watcher settings?");
-			alert.setContentText("You have unsaved changes in the settings. Do you want to save them?");
+			alert.setHeaderText("Do you want to save the watcher settings?");
+			alert.setContentText("You have unsaved changes in the settings. Do you want to save them?\n(" + CUSTOM_SETTINGS_FILE + ")");
 			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 			Optional<ButtonType> result = alert.showAndWait();

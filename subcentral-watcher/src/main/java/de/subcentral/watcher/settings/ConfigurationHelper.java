@@ -61,10 +61,17 @@ class ConfigurationHelper
 
 	static XMLConfiguration load(Path file) throws ConfigurationException
 	{
-		XMLConfiguration cfg = new XMLConfiguration();
-		FileHandler cfgFileHandler = new FileHandler(cfg);
-		cfgFileHandler.load(file.toFile());
-		return cfg;
+		try
+		{
+			XMLConfiguration cfg = new XMLConfiguration();
+			FileHandler cfgFileHandler = new FileHandler(cfg);
+			cfgFileHandler.load(Files.newInputStream(file), Charset.forName("UTF-8").name());
+			return cfg;
+		}
+		catch (IOException e)
+		{
+			throw new ConfigurationException(e);
+		}
 	}
 
 	// GETTER
