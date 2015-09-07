@@ -215,6 +215,14 @@ public class FxUtil
 		};
 	}
 
+	public static void checkJavaFxApplicationThread() throws IllegalStateException
+	{
+		if (!Platform.isFxApplicationThread())
+		{
+			throw new IllegalStateException("This methods needs to be called from the JavaFX Application Thread");
+		}
+	}
+
 	public static boolean isJavaFxLauncherThread()
 	{
 		return Thread.currentThread().getName().equals("JavaFX-Launcher");
@@ -345,7 +353,9 @@ public class FxUtil
 	public static void runAndWait(Runnable action)
 	{
 		if (action == null)
+		{
 			throw new NullPointerException("action");
+		}
 
 		// run synchronously on JavaFX thread
 		if (Platform.isFxApplicationThread())
@@ -781,6 +791,12 @@ public class FxUtil
 				{
 					toggleGroup.selectToggle(entry.getKey());
 				}
+				break;
+			}
+			// if non found, select default (which is the first)
+			if (!mapping.keySet().isEmpty())
+			{
+				toggleGroup.selectToggle(mapping.keySet().iterator().next());
 			}
 		}
 	}

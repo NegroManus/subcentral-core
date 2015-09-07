@@ -1,32 +1,24 @@
 package de.subcentral.watcher.settings;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.ObservableObject;
-import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -46,7 +38,7 @@ public class WatcherSettings extends ObservableObject
 	private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
 	// Watch
-	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories");
+	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories", FXCollections.emptyObservableList());
 	private final BooleanProperty		initialScan						= new SimpleBooleanProperty(this, "initialScan");
 	// Processing
 	private final ProcessingSettings	processingSettings				= new ProcessingSettings();
@@ -64,64 +56,31 @@ public class WatcherSettings extends ObservableObject
 		addListener((Observable o) -> changed.set(true));
 	}
 
-	public void load(Path path, ExecutorService executor) throws ConfigurationException
+	/**
+	 * Must be called in the JavaFX Application thread.
+	 * 
+	 * @param file
+	 * @throws ConfigurationException
+	 */
+	public void load(Path file) throws ConfigurationException
 	{
-		try
-		{
-			load(path.toUri().toURL(), executor);
-		}
-		catch (MalformedURLException e)
-		{
-			throw new ConfigurationException(e);
-		}
+		FxUtil.checkJavaFxApplicationThread();
+
+		XMLConfiguration cfg = ConfigurationHelper.load(file);
+		loadFromCfg(cfg);
+		changed.set(false);
+
+		log.info("Loaded settings from {}", file);
 	}
 
-	public void load(URL file, ExecutorService executor) throws ConfigurationException
+	/**
+	 * <b>HAS</b> to be called in the FX-Application-Thread.
+	 * 
+	 * @param cfg
+	 *            the cfg from which the settings should be loaded
+	 */
+	private void loadFromCfg(XMLConfiguration cfg)
 	{
-		log.info("Loading settings from {}", file);
-
-		// cfg.addEventListener(Event.ANY, (Event event) -> {
-		// System.out.println(event);
-		// });
-
-		// Load from file in background thread
-		Future<XMLConfiguration> cfgFuture = executor.submit(() ->
-		{
-			XMLConfiguration cfg = new XMLConfiguration();
-			FileHandler cfgFileHandler = new FileHandler(cfg);
-			cfgFileHandler.load(file);
-			return cfg;
-		});
-
-		// Wait on completion
-		try
-		{
-			XMLConfiguration cfg = cfgFuture.get();
-			load(cfg);
-			changed.set(false);
-			log.info("Loaded settings from {}", file);
-		}
-		catch (InterruptedException e)
-		{
-			throw new ConfigurationException(e);
-		}
-		catch (ExecutionException e)
-		{
-			if (e.getCause() instanceof ConfigurationException)
-			{
-				throw (ConfigurationException) e.getCause();
-			}
-			throw new ConfigurationException(e.getCause());
-		}
-	}
-
-	private void load(XMLConfiguration cfg)
-	{
-		if (!Platform.isFxApplicationThread())
-		{
-			throw new IllegalStateException("The loading of the runtime settings has to be executed on the JavaFX Application Thread");
-		}
-
 		// Watch
 		updateWatchDirs(cfg);
 		updateInitialScan(cfg);
@@ -166,50 +125,28 @@ public class WatcherSettings extends ObservableObject
 	}
 
 	// Write methods
-	public void save(Path file, ExecutorService executor) throws ConfigurationException, IOException
+	/**
+	 * Must be called in the JavaFX Application thread.
+	 * 
+	 * @param file
+	 * @throws ConfigurationException
+	 * @throws IOException
+	 */
+	public void save(Path file) throws ConfigurationException
 	{
-		log.info("Saving settings to {}", file.toAbsolutePath());
+		FxUtil.checkJavaFxApplicationThread();
 
-		XMLConfiguration cfg = new IndentingXMLConfiguration();
-		cfg.setRootElementName("watcherConfig");
+		XMLConfiguration cfg = saveToCfg();
+		ConfigurationHelper.save(cfg, file);
+		FxUtil.runAndWait(() -> changed.set(false));
 
-		save(cfg);
-
-		// Save to file in background thread
-		Future<Void> saveFuture = executor.submit(() ->
-		{
-			FileHandler cfgFileHandler = new FileHandler(cfg);
-			cfgFileHandler.save(Files.newOutputStream(file), Charset.forName("UTF-8").name());
-			return null;
-		});
-
-		// Wait on completion
-		try
-		{
-			saveFuture.get();
-			log.info("Saved settings to {}", file);
-		}
-		catch (InterruptedException e)
-		{
-			throw new ConfigurationException(e);
-		}
-		catch (ExecutionException e)
-		{
-			if (e.getCause() instanceof ConfigurationException)
-			{
-				throw (ConfigurationException) e.getCause();
-			}
-			throw new ConfigurationException(e.getCause());
-		}
-		changed.set(false);
+		log.info("Saved settings to {}", file.toAbsolutePath());
 	}
 
-	private void save(XMLConfiguration cfg)
+	private XMLConfiguration saveToCfg()
 	{
-		if (!Platform.isFxApplicationThread())
-		{
-			throw new IllegalStateException("The export of the runtime settings has to be executed on the JavaFX Application Thread");
-		}
+		XMLConfiguration cfg = new IndentingXMLConfiguration();
+		cfg.setRootElementName("watcherConfig");
 
 		// Watch
 		for (Path path : watchDirectories)
@@ -227,6 +164,8 @@ public class WatcherSettings extends ObservableObject
 		cfg.addProperty("ui.warnings.guessingWarning[@enabled]", isGuessingWarningEnabled());
 		cfg.addProperty("ui.warnings.releaseMetaTaggedWarning[@enabled]", isReleaseMetaTaggedWarningEnabled());
 		cfg.addProperty("ui.warnings.releaseNukedWarning[@enabled]", isReleaseNukedWarningEnabled());
+
+		return cfg;
 	}
 
 	// Getter and Setter

@@ -450,34 +450,34 @@ public class SettingsController extends AbstractController
 
 	public void confirmRestoreDefaultSettings()
 	{
-		try
-		{
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			// alert.getDialogPane().setPrefWidth(600d);
-			alert.setTitle("Restore defaults?");
-			alert.setHeaderText("Do you want to restore the default settings?");
-			alert.setContentText(
-					"The current settings will be replaced with the default settings.\nBut nothing will be saved until you choose to do so. You can always return to the last saved settings.");
-			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		// alert.getDialogPane().setPrefWidth(600d);
+		alert.setTitle("Restore defaults?");
+		alert.setHeaderText("Do you want to restore the default settings?");
+		alert.setContentText(
+				"The current settings will be replaced with the default settings.\nBut nothing will be saved until you choose to do so. You can always return to the last saved settings.");
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.YES)
-			{
-				loadDefaultSettings();
-			}
-		}
-		catch (Exception e1)
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			loadDefaultSettings();
 		}
 	}
 
-	public void saveSettings() throws ConfigurationException, IOException
+	public void saveSettings()
 	{
-		WatcherSettings.INSTANCE.save(Paths.get(SETTINGS_FILE), mainController.getCommonExecutor());
-		defaultSettingsLoaded.set(false);
-		customSettingsExist.set(true);
+		Path file = Paths.get(SETTINGS_FILE);
+		try
+		{
+			WatcherSettings.INSTANCE.save(file);
+			defaultSettingsLoaded.set(false);
+			customSettingsExist.set(true);
+		}
+		catch (ConfigurationException e)
+		{
+			FxUtil.createExceptionAlert("Failed to save settings", "Exception while saving settings to " + file, e).showAndWait();
+		}
 	}
 
 	public void loadSettings() throws Exception
@@ -493,6 +493,7 @@ public class SettingsController extends AbstractController
 			catch (Exception e)
 			{
 				log.error("Failed to load custom settings from " + settingsFile + ". Will load default settings", e);
+				loadDefaultSettings();
 			}
 		}
 		else
@@ -502,21 +503,29 @@ public class SettingsController extends AbstractController
 		loadDefaultSettings();
 	}
 
-	public void loadDefaultSettings() throws Exception
+	public void loadDefaultSettings()
 	{
-		WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE), mainController.getCommonExecutor());
-		defaultSettingsLoaded.set(true);
+		try
+		{
+			WatcherSettings.INSTANCE.load(Paths.get(Resources.getResource(DEFAULT_SETTINGS_FILE).toURI()));
+			defaultSettingsLoaded.set(true);
+		}
+		catch (Exception e)
+		{
+			// cannot happen
+			log.error("Exception while loading default settings", e);
+		}
 	}
 
-	public void loadCustomSettings(Path settingsFile) throws Exception
+	public void loadCustomSettings(Path file) throws ConfigurationException
 	{
-		log.debug("Loading custom settings from {}", settingsFile);
-		WatcherSettings.INSTANCE.load(settingsFile, mainController.getCommonExecutor());
+		log.debug("Loading custom settings from {}", file);
+		WatcherSettings.INSTANCE.load(file);
 		defaultSettingsLoaded.set(false);
 		customSettingsExist.set(true);
 	}
 
-	private void confirmSaveUnsavedSettings() throws ConfigurationException, IOException
+	private void confirmSaveUnsavedSettings() throws ConfigurationException
 	{
 		if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
 		{

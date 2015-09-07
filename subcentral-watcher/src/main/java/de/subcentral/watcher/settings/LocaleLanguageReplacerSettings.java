@@ -28,11 +28,11 @@ import javafx.collections.ObservableList;
 
 public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 {
-	private final ListProperty<Locale>				parsingLanguages			= new SimpleListProperty<>(this, "parsingLanguages");
-	private final Property<LanguageFormat>			outputLanguageFormat		= new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.NAME);
+	private final ListProperty<Locale>				parsingLanguages			= new SimpleListProperty<>(this, "parsingLanguages", FXCollections.emptyObservableList());
+	private final Property<LanguageFormat>			outputLanguageFormat		= new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.ISO2);
 	private final Property<Locale>					outputLanguage				= new SimpleObjectProperty<>(this, "outputLanguage", Locale.ENGLISH);
-	private final ListProperty<LanguageUserPattern>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns");
-	private final ListProperty<LanguageTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings");
+	private final ListProperty<LanguageUserPattern>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.emptyObservableList());
+	private final ListProperty<LanguageTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.emptyObservableList());
 
 	private final Binding<LocaleSubtitleLanguageStandardizer> subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
 

@@ -25,27 +25,30 @@ import javafx.beans.property.SimpleMapProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class ProcessingSettings extends AbstractSubSettings
 {
 	// Parsing
 	private final StringProperty									filenamePatterns					= new SimpleStringProperty(this, "filenamePatterns");
-	private final ListProperty<ParsingServiceSettingEntry>			filenameParsingServices				= new SimpleListProperty<>(this, "filenameParsingServices");
+	private final ListProperty<ParsingServiceSettingEntry>			filenameParsingServices				= new SimpleListProperty<>(this,
+			"filenameParsingServices",
+			FXCollections.emptyObservableList());
 	// Metadata
 	// Metadata - Release
-	private final ListProperty<ParsingServiceSettingEntry>			releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices");
-	private final ListProperty<Tag>									releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags");
+	private final ListProperty<ParsingServiceSettingEntry>			releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.emptyObservableList());
+	private final ListProperty<Tag>									releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags", FXCollections.emptyObservableList());
 	// Metadata - Release - Databases
-	private final ListProperty<MetadataDbSettingEntry<Release>>		releaseDbs							= new SimpleListProperty<>(this, "releaseDbs");
+	private final ListProperty<MetadataDbSettingEntry<Release>>		releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.emptyObservableList());
 	// Metadata - Release - Guessing
 	private final BooleanProperty									guessingEnabled						= new SimpleBooleanProperty(this, "guessingEnabled");
-	private final ListProperty<StandardRelease>						standardReleases					= new SimpleListProperty<>(this, "standardReleases");
+	private final ListProperty<StandardRelease>						standardReleases					= new SimpleListProperty<>(this, "standardReleases", FXCollections.emptyObservableList());
 	// Metadata - Release - Compatibility
 	private final BooleanProperty									compatibilityEnabled				= new SimpleBooleanProperty(this, "compatibilityEnabled");
-	private final ListProperty<CompatibilitySettingEntry>			compatibilities						= new SimpleListProperty<>(this, "compatibilities");
+	private final ListProperty<CompatibilitySettingEntry>			compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.emptyObservableList());
 	// Correction - Rules
-	private final ListProperty<CorrectionRuleSettingEntry<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules");
+	private final ListProperty<CorrectionRuleSettingEntry<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.emptyObservableList());
 	// Correction - Subtitle language
 	private final LocaleLanguageReplacerSettings					subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 
@@ -54,12 +57,12 @@ public class ProcessingSettings extends AbstractSubSettings
 
 	// File Transformation
 	// File Transformation - General
-	private final Property<Path>			targetDir					= new SimpleObjectProperty<>(this, "targetDir", null);
+	private final Property<Path>			targetDir					= new SimpleObjectProperty<>(this, "targetDir");
 	private final BooleanProperty			deleteSource				= new SimpleBooleanProperty(this, "deleteSource");
 	// File Transformation - Packing
 	private final BooleanProperty			packingEnabled				= new SimpleBooleanProperty(this, "packingEnabled");
-	private final Property<Path>			rarExe						= new SimpleObjectProperty<>(this, "rarExe", null);
-	private final Property<LocateStrategy>	winRarLocateStrategy		= new SimpleObjectProperty<>(this, "winRarLocateStrategy");
+	private final Property<Path>			rarExe						= new SimpleObjectProperty<>(this, "rarExe");
+	private final Property<LocateStrategy>	winRarLocateStrategy		= new SimpleObjectProperty<>(this, "winRarLocateStrategy", LocateStrategy.LOCATE);
 	private final Property<DeletionMode>	packingSourceDeletionMode	= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
 
 	// package protected (should only be instantiated by WatcherSettings)

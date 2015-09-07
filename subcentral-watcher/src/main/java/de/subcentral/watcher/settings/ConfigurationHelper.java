@@ -1,5 +1,8 @@
 package de.subcentral.watcher.settings;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -12,6 +15,8 @@ import java.util.Set;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
@@ -41,6 +46,27 @@ import javafx.collections.ObservableMap;
 // package private
 class ConfigurationHelper
 {
+	static void save(XMLConfiguration cfg, Path file) throws ConfigurationException
+	{
+		try
+		{
+			FileHandler cfgFileHandler = new FileHandler(cfg);
+			cfgFileHandler.save(Files.newOutputStream(file), Charset.forName("UTF-8").name());
+		}
+		catch (IOException e)
+		{
+			throw new ConfigurationException(e);
+		}
+	}
+
+	static XMLConfiguration load(Path file) throws ConfigurationException
+	{
+		XMLConfiguration cfg = new XMLConfiguration();
+		FileHandler cfgFileHandler = new FileHandler(cfg);
+		cfgFileHandler.load(file.toFile());
+		return cfg;
+	}
+
 	// GETTER
 	// Static config getter
 	static Path getPath(Configuration cfg, String key)
