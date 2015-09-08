@@ -55,7 +55,6 @@ import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackager;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class ParsingPlayground
 {
@@ -119,7 +118,7 @@ public class ParsingPlayground
 		packCfg.setSourceDeletionMode(DeletionMode.DELETE);
 		packCfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
-		final WinRarPackager packager = WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
+		final WinRarPackager packager = WinRar.getInstance().getPackager();
 
 		final TypeCorrectionService parsedToInfoDbStdzService = new TypeCorrectionService("after parsing");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);

@@ -794,8 +794,8 @@ public class FxUtil
 				if (enumValue == entry.getValue())
 				{
 					toggleGroup.selectToggle(entry.getKey());
+					return;
 				}
-				break;
 			}
 			// if non found, select default (which is the first)
 			if (!mapping.keySet().isEmpty())

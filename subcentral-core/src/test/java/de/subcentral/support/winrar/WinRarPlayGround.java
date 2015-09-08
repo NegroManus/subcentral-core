@@ -8,7 +8,6 @@ import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class WinRarPlayGround
 {
@@ -23,7 +22,7 @@ public class WinRarPlayGround
 		Path target = Paths.get("C:\\Users\\mhertram\\Downloads\\Chicago.Fire.S03E09.720p.WEB-DL.DD5.1.H.264-KiNGS.de-SC&TV4U.rar");
 
 		long start = System.nanoTime();
-		WinRarPackager packer = WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
+		WinRarPackager packer = WinRar.getInstance().getPackager();
 		WinRarPackResult result = packer.pack(src, target, cfg);
 		TimeUtil.printDurationMillis("Packaging", start);
 		System.out.println(result);

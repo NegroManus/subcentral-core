@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.IOUtil;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class WindowsWinRar extends WinRar
 {
@@ -43,7 +43,6 @@ public class WindowsWinRar extends WinRar
 		Path rarExecutable = searchRarExecutableInWellKnownDirectories();
 		if (rarExecutable != null)
 		{
-			log.info("Found valid RAR executable: {}", rarExecutable);
 			return rarExecutable;
 		}
 
@@ -51,16 +50,17 @@ public class WindowsWinRar extends WinRar
 		rarExecutable = queryWindowsRegistryForRarExecutable();
 		if (rarExecutable != null)
 		{
-			log.info("Found valid RAR executable: {}", rarExecutable);
 			return rarExecutable;
 		}
-		throw new IllegalStateException("Could not locate RAR executable");
+		return null;
 	}
 
 	private Path searchRarExecutableInWellKnownDirectories()
 	{
 		// The typical WinRAR installation directories on Windows.
-		return returnFirstValidRarExecutable(ImmutableSet.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR")));
+		Set<Path> wellKnownDirs = ImmutableSet.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR"));
+		log.debug("Trying to locate RAR executable in well known directories: {}", wellKnownDirs);
+		return returnFirstValidRarExecutable(wellKnownDirs);
 	}
 
 	/**
@@ -124,6 +124,7 @@ public class WindowsWinRar extends WinRar
 						log.debug("Found \"exe*\" entry in registry: \"{}\" -> \"{}\"", exe, exePath);
 						winRarExecutable = Paths.get(exePath);
 						rarExecutable = winRarExecutable.resolveSibling(WindowsWinRar.RAR_EXECUTABLE_FILENAME);
+						log.info("Found RAR executable: {}", rarExecutable);
 						break;
 					}
 				}
@@ -166,8 +167,23 @@ public class WindowsWinRar extends WinRar
 	}
 
 	@Override
-	public WinRarPackager getPackager(LocateStrategy locateStrategy, Path rarExecutable)
+	public WinRarPackager getPackager(Path rarExecutable)
 	{
-		return new WindowsWinRarPackager(this, locateStrategy, rarExecutable);
+		return new WindowsWinRarPackager(rarExecutable);
 	}
+
+	private static class WindowsWinRarPackager extends WinRarPackager
+	{
+		private WindowsWinRarPackager(Path rarExecutable)
+		{
+			super(rarExecutable);
+		}
+
+		@Override
+		protected boolean isRecyclingSupported()
+		{
+			return true;
+		}
+	}
+
 }

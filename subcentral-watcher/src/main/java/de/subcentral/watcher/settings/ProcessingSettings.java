@@ -13,7 +13,6 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -30,6 +29,11 @@ import javafx.collections.ObservableList;
 
 public class ProcessingSettings extends AbstractSubSettings
 {
+	public static enum WinRarLocateStrategy
+	{
+		SPECIFY, AUTO_LOCATE;
+	}
+
 	// Parsing
 	private final StringProperty									filenamePatterns					= new SimpleStringProperty(this, "filenamePatterns");
 	private final ListProperty<ParsingServiceSettingEntry>			filenameParsingServices				= new SimpleListProperty<>(this,
@@ -57,13 +61,13 @@ public class ProcessingSettings extends AbstractSubSettings
 
 	// File Transformation
 	// File Transformation - General
-	private final Property<Path>			targetDir					= new SimpleObjectProperty<>(this, "targetDir");
-	private final BooleanProperty			deleteSource				= new SimpleBooleanProperty(this, "deleteSource");
+	private final Property<Path>					targetDir					= new SimpleObjectProperty<>(this, "targetDir");
+	private final BooleanProperty					deleteSource				= new SimpleBooleanProperty(this, "deleteSource");
 	// File Transformation - Packing
-	private final BooleanProperty			packingEnabled				= new SimpleBooleanProperty(this, "packingEnabled");
-	private final Property<Path>			rarExe						= new SimpleObjectProperty<>(this, "rarExe");
-	private final Property<LocateStrategy>	winRarLocateStrategy		= new SimpleObjectProperty<>(this, "winRarLocateStrategy", LocateStrategy.LOCATE);
-	private final Property<DeletionMode>	packingSourceDeletionMode	= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
+	private final BooleanProperty					packingEnabled				= new SimpleBooleanProperty(this, "packingEnabled");
+	private final Property<Path>					rarExe						= new SimpleObjectProperty<>(this, "rarExe");
+	private final Property<WinRarLocateStrategy>	winRarLocateStrategy		= new SimpleObjectProperty<>(this, "winRarLocateStrategy", WinRarLocateStrategy.AUTO_LOCATE);
+	private final Property<DeletionMode>			packingSourceDeletionMode	= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
 
 	// package protected (should only be instantiated by WatcherSettings)
 	ProcessingSettings()
@@ -329,17 +333,17 @@ public class ProcessingSettings extends AbstractSubSettings
 		this.rarExe.setValue(rarExe);
 	}
 
-	public final Property<LocateStrategy> winRarLocateStrategyProperty()
+	public final Property<WinRarLocateStrategy> winRarLocateStrategyProperty()
 	{
 		return this.winRarLocateStrategy;
 	}
 
-	public final LocateStrategy getWinRarLocateStrategy()
+	public final WinRarLocateStrategy getWinRarLocateStrategy()
 	{
 		return this.winRarLocateStrategyProperty().getValue();
 	}
 
-	public final void setWinRarLocateStrategy(final LocateStrategy winRarLocateStrategy)
+	public final void setWinRarLocateStrategy(final WinRarLocateStrategy winRarLocateStrategy)
 	{
 		this.winRarLocateStrategyProperty().setValue(winRarLocateStrategy);
 	}
@@ -477,7 +481,7 @@ public class ProcessingSettings extends AbstractSubSettings
 
 	private void loadAutoLocateWinRar(XMLConfiguration cfg)
 	{
-		setWinRarLocateStrategy(LocateStrategy.valueOf(cfg.getString("fileTransformation.packing.winrar.locateStrategy")));
+		setWinRarLocateStrategy(WinRarLocateStrategy.valueOf(cfg.getString("fileTransformation.packing.winrar.locateStrategy")));
 	}
 
 	private void loadRarExe(XMLConfiguration cfg)

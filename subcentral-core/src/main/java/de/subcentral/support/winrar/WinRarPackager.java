@@ -1,11 +1,9 @@
 package de.subcentral.support.winrar;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -29,49 +27,19 @@ public abstract class WinRarPackager
 {
 	private static final Logger log = LogManager.getLogger(WinRarPackager.class.getName());
 
-	public static enum LocateStrategy
-	{
-		SPECIFY, LOCATE, RESOURCE;
-	}
+	protected final Path rarExecutable;
 
-	protected final WinRar	winRar;
-	protected final Path	rarExecutable;
-
-	WinRarPackager(WinRar winRar, LocateStrategy locateStrategy, Path rarExecutable)
+	WinRarPackager(Path rarExecutable)
 	{
-		this.winRar = winRar;
-		Objects.requireNonNull(locateStrategy, "locateStrategy");
-		try
-		{
-			switch (locateStrategy)
-			{
-			case SPECIFY:
-				// do not validate because it can be a non-absolute path
-				this.rarExecutable = rarExecutable;
-				break;
-			case LOCATE:
-				this.rarExecutable = this.winRar.locateRarExecutable();
-				break;
-			case RESOURCE:
-				this.rarExecutable = loadResource(determineRarExecutableResourceFilename());
-				break;
-			default:
-				throw new IllegalArgumentException("Invalid value for locateStrategy: " + locateStrategy);
-			}
-			log.info("Using rar executable at {}", this.rarExecutable);
-		}
-		catch (Exception e)
-		{
-			throw new IllegalArgumentException("Exception while initializing rar executable: " + e, e);
-		}
+		// do not validate because it can be a non-absolute path
+		this.rarExecutable = Objects.requireNonNull(rarExecutable, "rarExecutable");
+		log.debug("Using RAR executable at {}", this.rarExecutable);
 	}
 
 	public Path getRarExecutable()
 	{
 		return rarExecutable;
 	}
-
-	protected abstract String determineRarExecutableResourceFilename();
 
 	/**
 	 * "Available in Windows version only."
@@ -272,10 +240,4 @@ public abstract class WinRarPackager
 		command.addAll(args);
 		return command;
 	}
-
-	private static final Path loadResource(String filename) throws URISyntaxException
-	{
-		return Paths.get(WinRarPackager.class.getClassLoader().getResource("de/subcentral/support/winrar/" + filename).toURI());
-	}
-
 }

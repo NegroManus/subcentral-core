@@ -44,13 +44,12 @@ import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackager;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class MigrationService
 {
 	private static final Logger log = LogManager.getLogger(MigrationService.class);
 
-	private final WinRarPackager		winrar				= WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
+	private final WinRarPackager		winrar				= WinRar.getInstance().getPackager();
 	private final SubCentralApi			scApi				= new SubCentralHttpApi();
 	private final List<ParsingService>	subParsingServices	= ImmutableList.of(SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
 	private final List<ParsingService>	rlsParsingServices	= ImmutableList.of(ReleaseScene.getParsingService());

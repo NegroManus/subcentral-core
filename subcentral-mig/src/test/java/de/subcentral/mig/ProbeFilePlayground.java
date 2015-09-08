@@ -26,11 +26,10 @@ import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackager;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
 public class ProbeFilePlayground
 {
-	private static final WinRarPackager			WINRAR					= WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
+	private static final WinRarPackager			WINRAR					= WinRar.getInstance().getPackager();
 	private static final List<ParsingService>	SUB_PARSING_SERVICES	= ImmutableList.of(SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
 
 	public static void main(String[] args) throws IOException, InterruptedException, TimeoutException

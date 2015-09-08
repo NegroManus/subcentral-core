@@ -10,8 +10,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
-
 public abstract class WinRar
 {
 	private static final Logger log = LogManager.getLogger(WinRar.class.getName());
@@ -45,32 +43,17 @@ public abstract class WinRar
 
 	public abstract Path locateRarExecutable();
 
-	public WinRarPackager getPackager(LocateStrategy locateStrategy)
+	public WinRarPackager getPackager()
 	{
-		return getPackager(locateStrategy, null);
-	}
-
-	public abstract WinRarPackager getPackager(LocateStrategy locateStrategy, Path rarExecutable);
-
-	protected Path returnFirstValidRarExecutable(Set<Path> possibleWinRarDirectories)
-	{
-		log.debug("Trying to locate RAR executable in directories: {}", possibleWinRarDirectories);
-		for (Path path : possibleWinRarDirectories)
+		Path locatedRarExe = locateRarExecutable();
+		if (locatedRarExe == null)
 		{
-			Path candidate = path.resolve(getRarExecutableFilename());
-			try
-			{
-				validateRarExecutable(candidate);
-				return candidate;
-			}
-			catch (Exception e)
-			{
-				log.debug("{} was no valid RAR executable: {}", candidate, e.toString());
-			}
+			throw new IllegalStateException("Could not locate rar executable");
 		}
-		log.debug("Could not locate RAR executable in directories {}", possibleWinRarDirectories);
-		return null;
+		return getPackager(locatedRarExe);
 	}
+
+	public abstract WinRarPackager getPackager(Path rarExecutable);
 
 	public Path validateRarExecutable(Path exe) throws NullPointerException, NoSuchFileException, SecurityException
 	{
@@ -88,4 +71,25 @@ public abstract class WinRar
 		}
 		return exe;
 	}
+
+	protected Path returnFirstValidRarExecutable(Set<Path> possibleWinRarDirectories)
+	{
+		for (Path path : possibleWinRarDirectories)
+		{
+			Path candidate = path.resolve(getRarExecutableFilename());
+			try
+			{
+				validateRarExecutable(candidate);
+				log.debug("Found RAR executable: {}", candidate);
+				return candidate;
+			}
+			catch (Exception e)
+			{
+				log.debug("{} was no valid RAR executable: {}", candidate, e.toString());
+			}
+		}
+		log.debug("Could not locate RAR executable in directories {}", possibleWinRarDirectories);
+		return null;
+	}
+
 }

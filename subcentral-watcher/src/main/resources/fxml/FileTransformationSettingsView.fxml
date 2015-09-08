@@ -36,7 +36,7 @@
 		<Label text="WinRAR location" GridPane.rowIndex="6" />
 		<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
 			<children>
-				<RadioButton fx:id="locateRadioBtn" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Locate automatically" />
+				<RadioButton fx:id="autoLocateRadioBtn" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Locate automatically" />
 				<Button fx:id="testLocateBtn" mnemonicParsing="false" text="Test" />
 			</children>
 		</HBox>

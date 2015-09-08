@@ -129,7 +129,7 @@
 		<packing enabled="true">
 			<sourceDeletionMode>DELETE</sourceDeletionMode>
 			<winrar>
-				<locateStrategy>LOCATE</locateStrategy>
+				<locateStrategy>AUTO_LOCATE</locateStrategy>
 				<rarExe></rarExe>
 			</winrar>
 		</packing>

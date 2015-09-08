@@ -15,7 +15,7 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
+import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 
 // package private
 class ProcessingConfig
@@ -45,7 +45,7 @@ class ProcessingConfig
 	// File Transformation - Packing
 	private boolean								packingEnabled;
 	private Path								rarExe;
-	private LocateStrategy						winRarLocateStrategy;
+	private WinRarLocateStrategy				winRarLocateStrategy;
 	private DeletionMode						packingSourceDeletionMode;
 
 	// private
@@ -214,12 +214,12 @@ class ProcessingConfig
 		this.rarExe = rarExe;
 	}
 
-	LocateStrategy getWinRarLocateStrategy()
+	WinRarLocateStrategy getWinRarLocateStrategy()
 	{
 		return winRarLocateStrategy;
 	}
 
-	void setWinRarLocateStrategy(LocateStrategy winRarLocateStrategy)
+	void setWinRarLocateStrategy(WinRarLocateStrategy winRarLocateStrategy)
 	{
 		this.winRarLocateStrategy = winRarLocateStrategy;
 	}

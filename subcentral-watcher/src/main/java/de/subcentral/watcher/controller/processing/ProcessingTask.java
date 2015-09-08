@@ -53,11 +53,11 @@ import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibleInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessedInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.ReleaseOriginInfo;
+import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -695,8 +695,18 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 				try
 				{
 					final Path newRar = newFile.resolveSibling(result.getName() + ".rar");
-					LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
-					WinRarPackager packager = WinRar.getInstance().getPackager(locateStrategy, config.getRarExe());
+					WinRarLocateStrategy locateStrategy = config.getWinRarLocateStrategy();
+					WinRarPackager packager;
+					switch (locateStrategy)
+					{
+					case SPECIFY:
+						packager = WinRar.getInstance().getPackager(config.getRarExe());
+						break;
+					case AUTO_LOCATE:
+						// fall through
+					default:
+						packager = WinRar.getInstance().getPackager();
+					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);
 					cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);

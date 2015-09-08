@@ -9,8 +9,8 @@ import de.subcentral.fx.FxUtil.ToggleEnumBinding;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
-import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 import de.subcentral.watcher.settings.ProcessingSettings;
+import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -40,7 +40,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	@FXML
 	private CheckBox				packingEnabledCheckBox;
 	@FXML
-	private RadioButton				locateRadioBtn;
+	private RadioButton				autoLocateRadioBtn;
 	@FXML
 	private Button					testLocateBtn;
 	@FXML
@@ -76,30 +76,32 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		packingEnabledCheckBox.selectedProperty().bindBidirectional(settings.packingEnabledProperty());
 
 		ToggleGroup winRarLocateStrategy = new ToggleGroup();
-		winRarLocateStrategy.getToggles().addAll(locateRadioBtn, specifyRadioBtn);
+		winRarLocateStrategy.getToggles().addAll(autoLocateRadioBtn, specifyRadioBtn);
 
 		// bind toggle button to settings
-		new ToggleEnumBinding<>(winRarLocateStrategy, settings.winRarLocateStrategyProperty(), ImmutableMap.of(locateRadioBtn, LocateStrategy.LOCATE, specifyRadioBtn, LocateStrategy.SPECIFY));
+		new ToggleEnumBinding<>(winRarLocateStrategy,
+				settings.winRarLocateStrategyProperty(),
+				ImmutableMap.of(autoLocateRadioBtn, WinRarLocateStrategy.AUTO_LOCATE, specifyRadioBtn, WinRarLocateStrategy.SPECIFY));
 
 		final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
 		testLocateBtn.setOnAction((ActionEvent event) ->
 		{
-			try
+			Path rarLocation = WinRar.getInstance().locateRarExecutable();
+			if (rarLocation != null)
 			{
-				Path winRarLocation = WinRar.getInstance().getPackager(LocateStrategy.LOCATE).getRarExecutable();
 
 				Alert locateDialog = new Alert(AlertType.INFORMATION);
 				locateDialog.setTitle("Successfully located RAR executable");
-				locateDialog.setHeaderText("Found RAR executable at: " + winRarLocation);
+				locateDialog.setHeaderText("Found RAR executable at: " + rarLocation);
 				locateDialog.setContentText("Do you want to remember this location?");
 				locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 				if (locateDialog.showAndWait().get() == ButtonType.YES)
 				{
 					winRarLocateStrategy.selectToggle(specifyRadioBtn);
-					rarExeFormatter.setValue(winRarLocation);
+					rarExeFormatter.setValue(rarLocation);
 				}
 			}
-			catch (Exception e)
+			else
 			{
 				Alert locateDialog = new Alert(AlertType.WARNING);
 				locateDialog.setTitle("Failed to locate RAR executable");
