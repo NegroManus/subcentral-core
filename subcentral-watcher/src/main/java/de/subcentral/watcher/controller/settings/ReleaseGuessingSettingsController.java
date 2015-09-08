@@ -48,7 +48,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 	}
 
 	@Override
-	public GridPane getSectionRootPane()
+	public GridPane getContentPane()
 	{
 		return rootPane;
 	}

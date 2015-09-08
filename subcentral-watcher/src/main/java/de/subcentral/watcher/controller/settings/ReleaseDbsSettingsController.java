@@ -54,7 +54,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	}
 
 	@Override
-	public GridPane getSectionRootPane()
+	public GridPane getContentPane()
 	{
 		return rootPane;
 	}

@@ -25,7 +25,7 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 	}
 
 	@Override
-	public GridPane getSectionRootPane()
+	public GridPane getContentPane()
 	{
 		return rootPane;
 	}

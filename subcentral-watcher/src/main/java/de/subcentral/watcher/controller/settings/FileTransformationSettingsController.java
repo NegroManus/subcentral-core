@@ -58,7 +58,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	}
 
 	@Override
-	public GridPane getSectionRootPane()
+	public GridPane getContentPane()
 	{
 		return rootPane;
 	}

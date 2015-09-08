@@ -605,12 +605,13 @@ public class ProcessingController extends AbstractController
 
 	private void handleFile(Path file)
 	{
+		if (!filter(file))
+		{
+			return;
+		}
+
 		Platform.runLater(() ->
 		{
-			if (!filter(file))
-			{
-				return;
-			}
 			if (alreadyInProcess(file))
 			{
 				log.info("Rejecting {} because that file is already in processing", file);

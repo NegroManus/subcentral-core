@@ -83,7 +83,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 	}
 
 	@Override
-	public BorderPane getSectionRootPane()
+	public BorderPane getContentPane()
 	{
 		return rootPane;
 	}

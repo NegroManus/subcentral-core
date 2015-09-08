@@ -15,8 +15,10 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 
+import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
@@ -316,7 +318,7 @@ public class SettingsController extends AbstractController
 		{
 			if (section.isControllerLoaded())
 			{
-				sectionRootPane.getChildren().setAll(section.getController().getSectionRootPane());
+				sectionRootPane.getChildren().setAll(section.getController().getContentPane());
 			}
 			else
 			{
@@ -361,8 +363,10 @@ public class SettingsController extends AbstractController
 			@Override
 			protected void succeeded()
 			{
-				log.debug("Loaded settings section {}", section);
-				sectionRootPane.getChildren().setAll(getValue().getSectionRootPane());
+				log.debug("Loaded settings section: {}", section);
+				long start = System.nanoTime();
+				sectionRootPane.getChildren().setAll(getValue().getContentPane());
+				TimeUtil.printDurationMillis("adding section to view", start);
 			}
 
 			@Override
@@ -663,6 +667,12 @@ public class SettingsController extends AbstractController
 		public void setResourceBundle(String resourceBundle)
 		{
 			this.resourceBundle = resourceBundle;
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(Section.class).add("name", name).toString();
 		}
 	}
 }

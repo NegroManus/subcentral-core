@@ -17,6 +17,6 @@ public abstract class AbstractSettingsSectionController extends AbstractControll
 		return settingsController;
 	}
 
-	public abstract Node getSectionRootPane();
+	public abstract Node getContentPane();
 
 }

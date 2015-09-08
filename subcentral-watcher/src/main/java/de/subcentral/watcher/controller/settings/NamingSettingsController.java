@@ -43,7 +43,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 	}
 
 	@Override
-	public GridPane getSectionRootPane()
+	public GridPane getContentPane()
 	{
 		return rootPane;
 	}

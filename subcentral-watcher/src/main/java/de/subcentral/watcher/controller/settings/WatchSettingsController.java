@@ -33,7 +33,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	}
 
 	@Override
-	public GridPane getSectionRootPane()
+	public GridPane getContentPane()
 	{
 		return rootPane;
 	}
