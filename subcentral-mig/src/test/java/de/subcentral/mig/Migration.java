@@ -11,9 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +22,6 @@ import com.google.common.io.Resources;
 
 import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleFile;
-import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -38,7 +35,7 @@ import de.subcentral.support.subcentralde.SubCentralDe;
 public class Migration
 {
 	private static final Logger	log		= LogManager.getLogger(Migration.class);
-	private static final SubRip	subRip	= SubtitleFileFormat.SUBRIP;
+	private static final SubRip	subRip	= SubRip.INSTANCE;
 
 	private static final ContributionParser		CONTRIBUTION_PARSER	= initContributionParser();
 	private static final List<ParsingService>	PARSING_SERVICES	= initParsingServices();

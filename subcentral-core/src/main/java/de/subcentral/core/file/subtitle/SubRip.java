@@ -30,6 +30,18 @@ public class SubRip implements SubtitleFileFormat
 	}
 
 	@Override
+	public String getExtension()
+	{
+		return "srt";
+	}
+
+	@Override
+	public String getContentType()
+	{
+		return "text/plain";
+	}
+
+	@Override
 	public SubtitleFile read(BufferedReader reader) throws IOException
 	{
 		/**

@@ -21,6 +21,10 @@ public interface SubtitleFileFormat
 {
 	public String getName();
 
+	public String getExtension();
+
+	public String getContentType();
+
 	public default SubtitleFile read(Path file, Charset charset) throws IOException
 	{
 		return read(Files.newBufferedReader(file, charset));
