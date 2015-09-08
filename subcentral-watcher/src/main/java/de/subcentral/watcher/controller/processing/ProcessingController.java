@@ -579,7 +579,7 @@ public class ProcessingController extends AbstractController
 	{
 		if (processingExecutor == null || processingExecutor.isShutdown())
 		{
-			processingExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
+			processingExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-File-Processor"));
 		}
 		return processingExecutor;
 	}
@@ -603,7 +603,7 @@ public class ProcessingController extends AbstractController
 		}
 	}
 
-	public void handleFile(Path file)
+	private void handleFile(Path file)
 	{
 		Platform.runLater(() ->
 		{
@@ -622,7 +622,7 @@ public class ProcessingController extends AbstractController
 			taskItem.setValue(newTask);
 			processingTreeTable.getRoot().getChildren().add(taskItem);
 
-			getProcessingExecutor().execute(newTask);
+			getProcessingExecutor().submit(newTask);
 		});
 	}
 
@@ -770,7 +770,7 @@ public class ProcessingController extends AbstractController
 		if (processingExecutor != null)
 		{
 			processingExecutor.shutdownNow();
-			processingExecutor.awaitTermination(30, TimeUnit.SECONDS);
+			processingExecutor.awaitTermination(10, TimeUnit.SECONDS);
 		}
 	}
 

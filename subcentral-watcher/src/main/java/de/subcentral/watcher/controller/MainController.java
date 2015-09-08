@@ -50,7 +50,9 @@ public class MainController extends AbstractController
 	@FXML
 	private AnchorPane	settingsRootPane;
 
-	private TrayIcon trayIcon;
+	// SystemTray handling
+	private SystemTray	systemTray;
+	private TrayIcon	trayIcon;
 
 	// Controller
 	private WatchController				watchController;
@@ -66,9 +68,9 @@ public class MainController extends AbstractController
 	@Override
 	public void doInitialize() throws Exception
 	{
-		commonExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2, new NamedThreadFactory("Watcher-CommonExecutor-Thread", false));
-
-		// initializing o4rder important
+		initCommonExecutor();
+		initCloseHandling();
+		// initializing order important
 		initSettingsController();
 		initProcessingController();
 		initWatchController();
@@ -107,6 +109,18 @@ public class MainController extends AbstractController
 		tabPane.getSelectionModel().select(index);
 	}
 
+	private void initCommonExecutor()
+	{
+		commonExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2, new NamedThreadFactory("Watcher-Worker", false));
+	}
+
+	private void initCloseHandling()
+	{
+		// Explicit exit because application can be hidden and shown again
+		Platform.setImplicitExit(false);
+		primaryStage.setOnCloseRequest((WindowEvent) -> Platform.exit());
+	}
+
 	private void initSettingsController() throws IOException
 	{
 		settingsController = new SettingsController(this);
@@ -143,66 +157,64 @@ public class MainController extends AbstractController
 
 	private void initSystemTrayIcon()
 	{
-		// Explicit exit because use of SystemTray starts AWTEventThread
-		Platform.setImplicitExit(false);
-		primaryStage.setOnCloseRequest((WindowEvent) ->
+		javax.swing.SwingUtilities.invokeLater(() ->
 		{
-			Platform.exit();
-		});
-
-		// Check the SystemTray is supported
-		if (!SystemTray.isSupported())
-		{
-			log.warn("SystemTray is not supported");
-			return;
-		}
-
-		try
-		{
-			SystemTray tray = SystemTray.getSystemTray();
-
-			java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
-			trayIcon = new TrayIcon(trayImg);
-
-			PopupMenu popup = new PopupMenu();
-
-			MenuItem showHideItem = new MenuItem("Hide");
-			ActionListener showHideListener = (ActionEvent e) ->
+			// Check the SystemTray is supported
+			if (!SystemTray.isSupported())
 			{
-				Platform.runLater(() ->
+				log.warn("SystemTray is not supported");
+				return;
+			}
+
+			try
+			{
+				// Convention for tray icons: set the default icon for opening the application stage in a bold font
+				java.awt.Font defaultFont = java.awt.Font.decode(null);
+				java.awt.Font boldFont = defaultFont.deriveFont(java.awt.Font.BOLD);
+
+				systemTray = SystemTray.getSystemTray();
+				java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
+				trayIcon = new TrayIcon(trayImg);
+
+				PopupMenu popup = new PopupMenu();
+				MenuItem showHideItem = new MenuItem("Hide");
+				ActionListener showHideListener = (ActionEvent e) -> Platform.runLater(() ->
 				{
-					if (getPrimaryStage().isShowing())
+					if (primaryStage.isShowing())
 					{
 						primaryStage.hide();
 						showHideItem.setLabel("Show");
+						showHideItem.setFont(boldFont);
 					}
 					else
 					{
 						primaryStage.show();
 						showHideItem.setLabel("Hide");
+						showHideItem.setFont(defaultFont);
 					}
 				});
-			};
-			showHideItem.addActionListener(showHideListener);
+				showHideItem.addActionListener(showHideListener);
 
-			MenuItem exitItem = new MenuItem("Exit");
-			exitItem.addActionListener((ActionEvent e) -> Platform.runLater(() -> primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))));
+				MenuItem exitItem = new MenuItem("Exit");
+				exitItem.addActionListener((ActionEvent e) -> Platform.runLater(() -> primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))));
 
-			// Add components to pop-up menu
-			popup.add(showHideItem);
-			popup.addSeparator();
-			popup.add(exitItem);
+				// Add components to pop-up menu
+				popup.add(showHideItem);
+				popup.addSeparator();
+				popup.add(exitItem);
 
-			trayIcon.setPopupMenu(popup);
-			// Show/Hide on double-click
-			trayIcon.addActionListener(showHideListener);
+				trayIcon.setPopupMenu(popup);
+				// Show/Hide on double-click
+				trayIcon.addActionListener(showHideListener);
 
-			tray.add(trayIcon);
-		}
-		catch (IOException | AWTException e)
-		{
-			log.warn("TrayIcon could not be added", e);
-		}
+				systemTray.add(trayIcon);
+				log.info("Added SystemTray icon");
+			}
+			catch (IOException | AWTException e)
+			{
+				log.warn("SystemTray icon could not be added", e);
+			}
+		});
 	}
 
 	public boolean isSystemTrayAvailable()
@@ -214,7 +226,7 @@ public class MainController extends AbstractController
 	{
 		if (isSystemTrayAvailable())
 		{
-			trayIcon.displayMessage(caption, text, messageType);
+			javax.swing.SwingUtilities.invokeLater(() -> trayIcon.displayMessage(caption, text, messageType));
 		}
 	}
 
@@ -230,5 +242,8 @@ public class MainController extends AbstractController
 			commonExecutor.shutdown();
 			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
 		}
+
+		// Remove the SystemTray icon to shutdown AWT EventQueue
+		javax.swing.SwingUtilities.invokeLater(() -> systemTray.remove(trayIcon));
 	}
 }

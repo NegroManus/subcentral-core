@@ -34,6 +34,7 @@ public class WatcherApp extends Application
 	@Override
 	public void init() throws Exception
 	{
+		long start = System.nanoTime();
 		log.info("Initializing {} ...", APP_INFO);
 		log.info("Operating system: {} {} {}", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
 		log.info("Java version: {}", SystemUtils.JAVA_VERSION);
@@ -41,7 +42,6 @@ public class WatcherApp extends Application
 		log.info("Java VM: {} ({}) - Vendor: {}, Version: {}", SystemUtils.JAVA_VM_NAME, SystemUtils.JAVA_VM_INFO, SystemUtils.JAVA_VM_VENDOR, SystemUtils.JAVA_VM_VERSION);
 		log.info("Java home: {}", SystemUtils.JAVA_HOME);
 		log.info("User dir: {}", SystemUtils.USER_DIR);
-		long start = System.nanoTime();
 
 		log.info("Initialized {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
 	}
@@ -105,14 +105,15 @@ public class WatcherApp extends Application
 		mainController.shutdown();
 
 		log.info("Stopped {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
-
-		// To also close AWT Thread
-		System.exit(0);
 	}
 
 	public static void main(String[] args)
 	{
-		System.setProperty("log4j.configurationFile", "/subcentral-watcher/src/main/resources/log4j2.xml");
+		System.setProperty("javafx.embed.singleThread", "true");
+
+		// Ensure awt toolkit is initialized
+		java.awt.Toolkit.getDefaultToolkit();
+
 		launch(args);
 	}
 }

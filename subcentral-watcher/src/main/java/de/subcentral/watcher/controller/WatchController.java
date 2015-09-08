@@ -137,7 +137,7 @@ public class WatchController extends AbstractController
 			{
 				dirsString.add(dir.toString());
 			}
-			Alert alert = FxUtil.createExceptionAlert("Exception while watching", "An exception occured while watching " + dirsString + ".", ex);
+			Alert alert = FxUtil.createExceptionAlert("Watch failed", "Failed to watch " + dirsString + ".", ex);
 			alert.show();
 		});
 	}
@@ -167,10 +167,7 @@ public class WatchController extends AbstractController
 		watchService.setExecutor(watchServiceExecutor);
 		WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.watchDirectoriesProperty());
 		watchService.setInitialScan(WatcherSettings.INSTANCE.isInitialScan());
-		WatcherSettings.INSTANCE.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-		{
-			watchService.setInitialScan(newValue);
-		});
+		WatcherSettings.INSTANCE.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> watchService.setInitialScan(newValue));
 	}
 
 	@Override
@@ -182,7 +179,7 @@ public class WatchController extends AbstractController
 		}
 		if (watchServiceExecutor != null)
 		{
-			watchServiceExecutor.shutdown();
+			watchServiceExecutor.shutdownNow();
 			watchServiceExecutor.awaitTermination(10, TimeUnit.SECONDS);
 		}
 	}

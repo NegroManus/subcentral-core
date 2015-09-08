@@ -298,7 +298,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	{
 		updateProgress(1d, 1d);
 		updateMessage("Cancelled");
-		log.info("Cancelled: Processing of " + getSourceFile(), getException());
+		log.info("Processing of file was cancelled: " + getSourceFile(), getException());
 	}
 
 	@Override
@@ -307,7 +307,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		updateProgress(1d, 1d);
 		updateMessage("Failed");
 		updateInfo(ProcessingTaskInfo.of(getException().toString()));
-		log.error("Failed: Processing of " + getSourceFile(), getException());
+		log.error("Processing of file failed: " + getSourceFile(), getException());
 	}
 
 	@Override
