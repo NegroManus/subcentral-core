@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
+import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbUtil;
 import de.subcentral.core.metadata.media.Media;
@@ -43,7 +44,6 @@ import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
-import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRar;
@@ -87,7 +87,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	// Important objects for processing and protocol
 	private final TreeItem<ProcessingItem>	taskTreeItem;
 	private SubtitleAdjustment				parsedObject;
-	private List<StandardizingChange>		parsingCorrections			= ImmutableList.of();
+	private List<Correction>				parsingCorrections			= ImmutableList.of();
 	private List<Release>					foundReleases				= ImmutableList.of();
 	private List<Release>					mediaFilteredFoundReleases	= ImmutableList.of();
 	private List<Release>					matchingReleases			= ImmutableList.of();
@@ -164,7 +164,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		return parsedObject;
 	}
 
-	public List<StandardizingChange> getParsingCorrections()
+	public List<Correction> getParsingCorrections()
 	{
 		return parsingCorrections;
 	}
@@ -350,8 +350,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			return null;
 		}
 
-		parsingCorrections = config.getBeforeQueryingStandardizingService().standardize(parsed);
-		parsingCorrections.forEach(c -> log.debug("Corrected the parsed object: {}", c));
+		parsingCorrections = config.getBeforeQueryingCorrectionService().correct(parsed);
+		parsingCorrections.forEach(c -> log.debug("Before querying correction: {}", c));
 
 		return parsed;
 	}
@@ -398,8 +398,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		}
 
 		// standardize
-		List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(resultObject);
-		changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+		List<Correction> corrections = config.getAfterQueryingCorrectionService().correct(resultObject);
+		corrections.forEach(c -> log.debug("After querying correction: {}", c));
 
 		if (existingRlss.isEmpty())
 		{
@@ -558,8 +558,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 	private void addReleaseToResult(Release rls, ReleaseOriginInfo methodInfo) throws Exception
 	{
-		List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(rls);
-		changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+		List<Correction> corrections = config.getAfterQueryingCorrectionService().correct(rls);
+		corrections.forEach(c -> log.debug("After querying correction: {}", c));
 
 		if (rls.isNuked())
 		{
@@ -621,8 +621,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		// Standardize
 		for (Release r : processedRlss)
 		{
-			List<StandardizingChange> changes = config.getAfterQueryingStandardizingService().standardize(r);
-			changes.forEach(c -> log.debug("Standardized after querying: {}", c));
+			List<Correction> corrections = config.getAfterQueryingCorrectionService().correct(r);
+			corrections.forEach(c -> log.debug("After querying correction: {}", c));
 		}
 		logReleases(Level.DEBUG, "Standardized releases:", processedRlss);
 

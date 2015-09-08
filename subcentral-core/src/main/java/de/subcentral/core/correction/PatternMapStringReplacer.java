@@ -1,4 +1,4 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import java.util.Map;
 import java.util.function.UnaryOperator;

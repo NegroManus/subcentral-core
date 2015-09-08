@@ -2,21 +2,21 @@ package de.subcentral.watcher.settings;
 
 import com.google.common.base.Joiner;
 
+import de.subcentral.core.correction.ReleaseTagsCorrector;
+import de.subcentral.core.correction.TagsReplacer;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
-import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.FxUtil;
 import javafx.beans.binding.StringBinding;
 
-public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSettingEntry<Release, ReleaseTagsStandardizer>
+public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSettingEntry<Release, ReleaseTagsCorrector>
 {
 	private static final StringBinding	ruleType	= FxUtil.constantStringBinding("Release tags");
 	private final StringBinding			rule;
 
-	public ReleaseTagsCorrectionRuleSettingEntry(ReleaseTagsStandardizer standardizer, boolean beforeQuerying, boolean afterQuerying)
+	public ReleaseTagsCorrectionRuleSettingEntry(ReleaseTagsCorrector corrector, boolean beforeQuerying, boolean afterQuerying)
 	{
-		super(Release.class, standardizer, beforeQuerying, afterQuerying);
-		rule = FxUtil.constantStringBinding(formatRule(standardizer));
+		super(Release.class, corrector, beforeQuerying, afterQuerying);
+		rule = FxUtil.constantStringBinding(formatRule(corrector));
 	}
 
 	@Override
@@ -31,17 +31,17 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 		return rule;
 	}
 
-	public static String getStandardizerTypeString()
+	public static String getCorrectorTypeString()
 	{
 		return ruleType.get();
 	}
 
-	private static String formatRule(ReleaseTagsStandardizer standardizer)
+	private static String formatRule(ReleaseTagsCorrector corrector)
 	{
-		TagsReplacer replacer = standardizer.getReplacer();
+		TagsReplacer replacer = corrector.getReplacer();
 		StringBuilder sb = new StringBuilder();
 		sb.append("If tags ");
-		switch (replacer.getQueryMode())
+		switch (replacer.getSearchMode())
 		{
 		case CONTAIN:
 			sb.append("contain ");
@@ -51,7 +51,7 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 			break;
 		}
 		sb.append('[');
-		Joiner.on(", ").appendTo(sb, replacer.getQueryTags());
+		Joiner.on(", ").appendTo(sb, replacer.getSearchTags());
 		sb.append(']');
 		if (replacer.getIgnoreOrder())
 		{

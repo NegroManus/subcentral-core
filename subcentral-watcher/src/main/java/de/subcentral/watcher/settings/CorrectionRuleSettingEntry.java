@@ -2,12 +2,12 @@ package de.subcentral.watcher.settings;
 
 import java.util.Objects;
 
-import de.subcentral.core.standardizing.Standardizer;
+import de.subcentral.core.correction.Corrector;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class CorrectionRuleSettingEntry<T, S extends Standardizer<? super T>> extends AbstractSettingEntry<S>
+public abstract class CorrectionRuleSettingEntry<T, S extends Corrector<? super T>> extends AbstractSettingEntry<S>
 {
 	protected final Class<T>		beanType;
 	protected final BooleanProperty	beforeQuerying;

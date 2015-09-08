@@ -10,10 +10,10 @@ import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
-import de.subcentral.core.standardizing.LocaleLanguageReplacer;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
+import de.subcentral.core.correction.LocaleLanguageReplacer;
+import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
+import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
@@ -34,7 +34,7 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 	private final ListProperty<LanguageUserPattern>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.emptyObservableList());
 	private final ListProperty<LanguageTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.emptyObservableList());
 
-	private final Binding<LocaleSubtitleLanguageStandardizer> subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
+	private final Binding<LocaleSubtitleLanguageCorrector> subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
 
 	// package protected (should only be instantiated by WatcherSettings)
 	LocaleLanguageReplacerSettings()
@@ -42,16 +42,16 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		super.bind(parsingLanguages, outputLanguageFormat, outputLanguage, customLanguagePatterns, customLanguageTextMappings);
 	}
 
-	private Binding<LocaleSubtitleLanguageStandardizer> initSubtitleLanguageStandardizerBinding()
+	private Binding<LocaleSubtitleLanguageCorrector> initSubtitleLanguageStandardizerBinding()
 	{
-		return new ObjectBinding<LocaleSubtitleLanguageStandardizer>()
+		return new ObjectBinding<LocaleSubtitleLanguageCorrector>()
 		{
 			{
 				super.bind(LocaleLanguageReplacerSettings.this);
 			}
 
 			@Override
-			protected LocaleSubtitleLanguageStandardizer computeValue()
+			protected LocaleSubtitleLanguageCorrector computeValue()
 			{
 				List<LanguagePattern> langPatterns = new ArrayList<>(customLanguagePatterns.size());
 				for (LanguageUserPattern uiPattern : customLanguagePatterns)
@@ -63,7 +63,7 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 				{
 					langTextMappings.put(mapping.getLanguage(), mapping.getText());
 				}
-				return new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(parsingLanguages, outputLanguageFormat.getValue(), outputLanguage.getValue(), langPatterns, langTextMappings));
+				return new LocaleSubtitleLanguageCorrector(new LocaleLanguageReplacer(parsingLanguages, outputLanguageFormat.getValue(), outputLanguage.getValue(), langPatterns, langTextMappings));
 			}
 		};
 	}
@@ -165,7 +165,7 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		return this.outputLanguageFormatProperty().getValue();
 	}
 
-	public final void setOutputLanguageFormat(final de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat outputLanguageFormat)
+	public final void setOutputLanguageFormat(final de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat outputLanguageFormat)
 	{
 		this.outputLanguageFormatProperty().setValue(outputLanguageFormat);
 	}
@@ -215,12 +215,12 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		this.customLanguageTextMappingsProperty().set(customLanguageTextMappings);
 	}
 
-	public Binding<LocaleSubtitleLanguageStandardizer> subtitleLanguageStandardizerBinding()
+	public Binding<LocaleSubtitleLanguageCorrector> subtitleLanguageStandardizerBinding()
 	{
 		return subtitleLanguageStandardizerBinding;
 	}
 
-	public LocaleSubtitleLanguageStandardizer getSubtitleLanguageStandardizer()
+	public LocaleSubtitleLanguageCorrector getSubtitleLanguageStandardizer()
 	{
 		return subtitleLanguageStandardizerBinding.getValue();
 	}

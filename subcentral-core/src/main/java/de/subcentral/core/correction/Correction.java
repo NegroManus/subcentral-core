@@ -1,17 +1,17 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class StandardizingChange
+public class Correction
 {
 	private final Object	bean;
 	private final String	propertyName;
 	private final Object	oldValue;
 	private final Object	newValue;
 
-	public StandardizingChange(Object bean, String propertyName, Object oldValue, Object newValue)
+	public Correction(Object bean, String propertyName, Object oldValue, Object newValue)
 	{
 		this.bean = Objects.requireNonNull(bean, "bean");
 		this.propertyName = Objects.requireNonNull(propertyName, "propertyName");
@@ -42,6 +42,6 @@ public class StandardizingChange
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(StandardizingChange.class).add("propertyName", propertyName).add("oldValue", oldValue).add("newValue", newValue).add("bean", bean).toString();
+		return MoreObjects.toStringHelper(Correction.class).add("propertyName", propertyName).add("oldValue", oldValue).add("newValue", newValue).add("bean", bean).toString();
 	}
 }

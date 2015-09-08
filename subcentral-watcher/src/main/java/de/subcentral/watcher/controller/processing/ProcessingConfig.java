@@ -7,13 +7,13 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.standardizing.StandardizingService;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackager.LocateStrategy;
 
@@ -35,8 +35,8 @@ class ProcessingConfig
 	private boolean								compatibilityEnabled;
 	private CompatibilityService				compatibilityService;
 	// standardizing
-	private StandardizingService				beforeQueryingStandardizingService;
-	private StandardizingService				afterQueryingStandardizingService;
+	private CorrectionService					beforeQueryingCorrectionService;
+	private CorrectionService					afterQueryingCorrectionService;
 	// naming
 	private ImmutableMap<String, Object>		namingParameters;
 	// File Transformation - General
@@ -144,24 +144,24 @@ class ProcessingConfig
 		this.compatibilityService = compatibilityService;
 	}
 
-	StandardizingService getBeforeQueryingStandardizingService()
+	CorrectionService getBeforeQueryingCorrectionService()
 	{
-		return beforeQueryingStandardizingService;
+		return beforeQueryingCorrectionService;
 	}
 
-	void setBeforeQueryingStandardizingService(StandardizingService beforeQueryingStandardizingService)
+	void setBeforeQueryingStandardizingService(CorrectionService beforeQueryingStandardizingService)
 	{
-		this.beforeQueryingStandardizingService = beforeQueryingStandardizingService;
+		this.beforeQueryingCorrectionService = beforeQueryingStandardizingService;
 	}
 
-	StandardizingService getAfterQueryingStandardizingService()
+	CorrectionService getAfterQueryingCorrectionService()
 	{
-		return afterQueryingStandardizingService;
+		return afterQueryingCorrectionService;
 	}
 
-	void setAfterQueryingStandardizingService(StandardizingService afterQueryingStandardizingService)
+	void setAfterQueryingStandardizingService(CorrectionService afterQueryingStandardizingService)
 	{
-		this.afterQueryingStandardizingService = afterQueryingStandardizingService;
+		this.afterQueryingCorrectionService = afterQueryingStandardizingService;
 	}
 
 	ImmutableMap<String, Object> getNamingParameters()
@@ -248,8 +248,8 @@ class ProcessingConfig
 				.add("standardReleases", standardReleases)
 				.add("compatibilityEnabled", compatibilityEnabled)
 				.add("compatibilityService", compatibilityService)
-				.add("beforeQueryingStandardizingService", beforeQueryingStandardizingService)
-				.add("afterQueryingStandardizingService", afterQueryingStandardizingService)
+				.add("beforeQueryingCorrectionService", beforeQueryingCorrectionService)
+				.add("afterQueryingCorrectionService", afterQueryingCorrectionService)
 				.add("namingParameters", namingParameters)
 				.add("targetDir", targetDir)
 				.add("deleteSource", deleteSource)

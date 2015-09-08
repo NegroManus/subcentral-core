@@ -9,6 +9,12 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import de.subcentral.core.correction.Correction;
+import de.subcentral.core.correction.CorrectionDefaults;
+import de.subcentral.core.correction.CorrectionService;
+import de.subcentral.core.correction.ReflectiveCorrector;
+import de.subcentral.core.correction.SeriesNameCorrector;
+import de.subcentral.core.correction.TypeCorrectionService;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -18,12 +24,12 @@ public class StandardizingTest
 	@Test
 	public void testDefaultStandardizingService()
 	{
-		StandardizingService service = StandardizingDefaults.getDefaultStandardizingService();
+		CorrectionService service = CorrectionDefaults.getDefaultCorrectionService();
 
 		Release rls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H", "264", "DD5", "1");
 		Release expectedRls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H.264", "DD5.1");
 
-		List<StandardizingChange> changes = service.standardize(rls);
+		List<Correction> changes = service.correct(rls);
 		changes.stream().forEach(c -> System.out.println(c));
 		assertEquals(expectedRls, rls);
 	}
@@ -31,24 +37,24 @@ public class StandardizingTest
 	@Test
 	public void testCustomStandardizingService()
 	{
-		TypeStandardizingService service = new TypeStandardizingService("test");
-		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+		TypeCorrectionService service = new TypeCorrectionService("test");
+		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		service.registerStandardizer(Episode.class, (e, changes) ->
 		{
 			if (!e.isSpecial())
 			{
 				e.setSpecial(true);
-				changes.add(new StandardizingChange(e, Episode.PROP_SPECIAL.getPropName(), false, true));
+				changes.add(new Correction(e, Episode.PROP_SPECIAL.getPropName(), false, true));
 			}
 
 		});
-		service.registerStandardizer(Series.class, new SeriesNameStandardizer(Pattern.compile("Psych"), "Psych (2001)", "Psych"));
+		service.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Psych"), "Psych (2001)", "Psych"));
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 2, 2);
 		Episode expectedEpi = Episode.createSeasonedEpisode("Psych (2001)", 2, 2);
 		expectedEpi.setSpecial(true);
 
-		List<StandardizingChange> changes = service.standardize(epi);
+		List<Correction> changes = service.correct(epi);
 		changes.stream().forEach(c -> System.out.println(c));
 
 		assertEquals(expectedEpi, epi);
@@ -57,13 +63,13 @@ public class StandardizingTest
 	@Test
 	public void testReflectiveStandardizing()
 	{
-		ReflectiveStandardizer<Series, String> stdzer = new ReflectiveStandardizer<>(Series.class, "name", (String name) -> StringUtils.upperCase(name));
+		ReflectiveCorrector<Series, String> stdzer = new ReflectiveCorrector<>(Series.class, "name", (String name) -> StringUtils.upperCase(name));
 
 		Series series = new Series("Psych");
 		Series expectedSeries = new Series("PSYCH");
 
-		List<StandardizingChange> changes = new ArrayList<>();
-		stdzer.standardize(series, changes);
+		List<Correction> changes = new ArrayList<>();
+		stdzer.correct(series, changes);
 		changes.stream().forEach(c -> System.out.println(c));
 
 		assertEquals(expectedSeries, series);
@@ -72,8 +78,8 @@ public class StandardizingTest
 	@Test(expected = IllegalArgumentException.class)
 	public void testReflectiveStandardizingFail()
 	{
-		ReflectiveStandardizer<Series, String> stdzer = new ReflectiveStandardizer<>(Series.class, "notExistingProp", (String s) -> s);
-		List<StandardizingChange> changes = new ArrayList<>();
-		stdzer.standardize(new Series("Psych"), changes);
+		ReflectiveCorrector<Series, String> stdzer = new ReflectiveCorrector<>(Series.class, "notExistingProp", (String s) -> s);
+		List<Correction> changes = new ArrayList<>();
+		stdzer.correct(new Series("Psych"), changes);
 	}
 }

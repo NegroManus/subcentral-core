@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 
 public class TagUtil
 {
-	public static enum QueryMode
+	public static enum SearchMode
 	{
 		CONTAIN, EQUAL
 	};
@@ -90,7 +90,7 @@ public class TagUtil
 		return (tags.retainAll(metaTagsToRetain) | tags.addAll(newTags));
 	}
 
-	public static boolean replace(List<Tag> tags, List<Tag> queryTags, List<Tag> replacement, QueryMode queryMode, ReplaceMode replaceMode, boolean ignoreOrder)
+	public static boolean replace(List<Tag> tags, List<Tag> queryTags, List<Tag> replacement, SearchMode queryMode, ReplaceMode replaceMode, boolean ignoreOrder)
 	{
 		switch (queryMode)
 		{

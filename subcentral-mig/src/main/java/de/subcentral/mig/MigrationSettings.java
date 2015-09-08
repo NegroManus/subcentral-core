@@ -16,14 +16,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.subcentral.core.correction.CorrectionService;
+import de.subcentral.core.correction.PatternStringReplacer;
+import de.subcentral.core.correction.ReflectiveCorrector;
+import de.subcentral.core.correction.SeriesNameCorrector;
+import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.PatternStringReplacer.Mode;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.standardizing.PatternStringReplacer;
-import de.subcentral.core.standardizing.PatternStringReplacer.Mode;
-import de.subcentral.core.standardizing.ReflectiveStandardizer;
-import de.subcentral.core.standardizing.SeriesNameStandardizer;
-import de.subcentral.core.standardizing.StandardizingService;
-import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.support.thetvdbcom.TheTvDbMediaDb;
 import javafx.beans.property.ListProperty;
@@ -50,7 +50,7 @@ public class MigrationSettings
 	private final ListProperty<ContributionTypePattern>	contributionTypePatterns	= new SimpleListProperty<>(this, "contributionTypePatterns", FXCollections.observableArrayList());
 	private final ListProperty<ContributorPattern>		contributorPatterns			= new SimpleListProperty<>(this, "contributorPatterns", FXCollections.observableArrayList());
 	private final ListProperty<Pattern>					irrelevantPatterns			= new SimpleListProperty<>(this, "irrelevantPatterns", FXCollections.observableArrayList());
-	private final Property<StandardizingService>		standardizingService		= new SimpleObjectProperty<>(this, "standardizingService");
+	private final Property<CorrectionService>		standardizingService		= new SimpleObjectProperty<>(this, "standardizingService");
 	private final Map<String, Object>					namingParams				= new HashMap<>();
 
 	private MigrationSettings()
@@ -185,16 +185,16 @@ public class MigrationSettings
 		return patterns;
 	}
 
-	private static StandardizingService loadStandardizingService(XMLConfiguration cfg)
+	private static CorrectionService loadStandardizingService(XMLConfiguration cfg)
 	{
-		TypeStandardizingService service = new TypeStandardizingService("migration");
+		TypeCorrectionService service = new TypeCorrectionService("migration");
 		for (PatternStringReplacer seriesNameReplacer : loadPatternStringReplacers(cfg, "series.seriesNameReplacers.replacer"))
 		{
-			service.registerStandardizer(Series.class, new SeriesNameStandardizer(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
+			service.registerStandardizer(Series.class, new SeriesNameCorrector(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
 		}
 		for (PatternStringReplacer contributorNameReplacer : loadPatternStringReplacers(cfg, "subtitles.contributorNameReplacers.replacer"))
 		{
-			service.registerStandardizer(Subber.class, new ReflectiveStandardizer<Subber, String>(Subber.class, "name", contributorNameReplacer));
+			service.registerStandardizer(Subber.class, new ReflectiveCorrector<Subber, String>(Subber.class, "name", contributorNameReplacer));
 		}
 		return service;
 	}
@@ -235,7 +235,7 @@ public class MigrationSettings
 		return irrelevantPatterns;
 	}
 
-	public StandardizingService getStandardizingService()
+	public CorrectionService getStandardizingService()
 	{
 		return standardizingService.getValue();
 	}

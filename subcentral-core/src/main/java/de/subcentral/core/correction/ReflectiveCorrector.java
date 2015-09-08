@@ -1,4 +1,4 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class ReflectiveStandardizer<T, P> implements Standardizer<T>
+public class ReflectiveCorrector<T, P> implements Corrector<T>
 {
 	private final Class<T>			beanType;
 	private final String			propertyName;
 	private final Function<P, P>	replacer;
 
-	public ReflectiveStandardizer(Class<T> beanType, String propertyName, Function<P, P> replacer)
+	public ReflectiveCorrector(Class<T> beanType, String propertyName, Function<P, P> replacer)
 	{
 		this.beanType = Objects.requireNonNull(beanType, "beanType");
 		this.propertyName = Objects.requireNonNull(propertyName, "propertyName");
@@ -36,21 +36,21 @@ public class ReflectiveStandardizer<T, P> implements Standardizer<T>
 	}
 
 	@Override
-	public void standardize(T bean, List<StandardizingChange> changes) throws IllegalArgumentException
+	public void correct(T bean, List<Correction> corrections) throws IllegalArgumentException
 	{
 		if (bean == null)
 		{
 			return;
 		}
-		StandardizingChange change = standardizeProperty(bean, propertyName, replacer);
+		Correction change = standardizeProperty(bean, propertyName, replacer);
 		if (change != null)
 		{
-			changes.add(change);
+			corrections.add(change);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private StandardizingChange standardizeProperty(Object bean, String propName, Function<P, P> operator) throws IllegalArgumentException
+	private Correction standardizeProperty(Object bean, String propName, Function<P, P> operator) throws IllegalArgumentException
 	{
 		try
 		{
@@ -62,7 +62,7 @@ public class ReflectiveStandardizer<T, P> implements Standardizer<T>
 				return null;
 			}
 			propDescr.getWriteMethod().invoke(bean, newVal);
-			return new StandardizingChange(bean, propName, oldVal, newVal);
+			return new Correction(bean, propName, oldVal, newVal);
 		}
 		catch (IntrospectionException | IllegalAccessException | InvocationTargetException | RuntimeException e)
 		{

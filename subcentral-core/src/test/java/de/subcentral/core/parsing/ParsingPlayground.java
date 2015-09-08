@@ -23,6 +23,10 @@ import org.apache.logging.log4j.core.lookup.JavaLookup;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.correction.Correction;
+import de.subcentral.core.correction.CorrectionDefaults;
+import de.subcentral.core.correction.SeriesNameCorrector;
+import de.subcentral.core.correction.TypeCorrectionService;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.CompatibilityService;
@@ -39,10 +43,6 @@ import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
-import de.subcentral.core.standardizing.SeriesNameStandardizer;
-import de.subcentral.core.standardizing.StandardizingChange;
-import de.subcentral.core.standardizing.StandardizingDefaults;
-import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -121,16 +121,16 @@ public class ParsingPlayground
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 		final WinRarPackager packager = WinRar.getInstance().getPackager(LocateStrategy.RESOURCE);
 
-		final TypeStandardizingService parsedToInfoDbStdzService = new TypeStandardizingService("after parsing");
-		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
-		parsedToInfoDbStdzService.registerStandardizer(Series.class, new SeriesNameStandardizer(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", "Scandal"));
+		final TypeCorrectionService parsedToInfoDbStdzService = new TypeCorrectionService("after parsing");
+		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
+		parsedToInfoDbStdzService.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", "Scandal"));
 		parsedToInfoDbStdzService.registerStandardizer(Series.class,
-				new SeriesNameStandardizer(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE), "Last Man Standing (US)", "Last Man Standing"));
+				new SeriesNameCorrector(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE), "Last Man Standing (US)", "Last Man Standing"));
 		SubCentralDe.registerSubtitleLanguageStandardizers(parsedToInfoDbStdzService);
 
-		final TypeStandardizingService infoDbToCustomStdzService = new TypeStandardizingService("after infoDb");
-		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
-		infoDbToCustomStdzService.registerStandardizer(Series.class, new SeriesNameStandardizer(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", null));
+		final TypeCorrectionService infoDbToCustomStdzService = new TypeCorrectionService("after infoDb");
+		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
+		infoDbToCustomStdzService.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", null));
 
 		TimeUtil.printDurationMillis("Initialization", totalStart);
 
@@ -162,7 +162,7 @@ public class ParsingPlayground
 						System.out.println(nameOfParsed);
 
 						start = System.nanoTime();
-						List<StandardizingChange> parsedChanges = parsedToInfoDbStdzService.standardize(parsed);
+						List<Correction> parsedChanges = parsedToInfoDbStdzService.correct(parsed);
 						parsedChanges.forEach(c -> System.out.println("Changed: " + c));
 						TimeUtil.printDurationMillis("Standardizing parsed", start);
 
@@ -180,7 +180,7 @@ public class ParsingPlayground
 							start = System.nanoTime();
 							releases.forEach(r ->
 							{
-								List<StandardizingChange> rlsChanges = infoDbToCustomStdzService.standardize(r);
+								List<Correction> rlsChanges = infoDbToCustomStdzService.correct(r);
 								rlsChanges.forEach(c -> System.out.println("Changed: " + c));
 							});
 							TimeUtil.printDurationMillis("Standardizing info db results", start);

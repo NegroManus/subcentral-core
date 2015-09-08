@@ -1,4 +1,4 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import java.util.Objects;
 import java.util.function.UnaryOperator;
@@ -11,7 +11,7 @@ public class StringReplacer implements UnaryOperator<String>
 {
 	public static enum Mode
 	{
-		REPLACE_ALL, REPLACE_COMPLETE
+		ALL_OCCURENCES, COMPLETE
 	}
 
 	private final String	searchString;
@@ -21,7 +21,7 @@ public class StringReplacer implements UnaryOperator<String>
 
 	public StringReplacer(String searchString, String replacement)
 	{
-		this(searchString, replacement, Mode.REPLACE_ALL);
+		this(searchString, replacement, Mode.ALL_OCCURENCES);
 	}
 
 	public StringReplacer(String searchString, String replacement, Mode mode)
@@ -51,9 +51,9 @@ public class StringReplacer implements UnaryOperator<String>
 	{
 		switch (mode)
 		{
-		case REPLACE_ALL:
+		case ALL_OCCURENCES:
 			return StringUtils.replace(text, searchString, replacement);
-		case REPLACE_COMPLETE:
+		case COMPLETE:
 			if (Objects.equals(text, searchString))
 			{
 				return replacement;

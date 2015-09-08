@@ -48,6 +48,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
+import de.subcentral.core.correction.CorrectionDefaults;
+import de.subcentral.core.correction.LocaleLanguageReplacer;
+import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
+import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.media.Episode;
@@ -58,12 +64,6 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
-import de.subcentral.core.standardizing.LocaleSubtitleLanguageStandardizer;
-import de.subcentral.core.standardizing.StandardizingDefaults;
-import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.releasescene.ReleaseScene;
@@ -84,7 +84,7 @@ public class MyBenchmark
 			"English",
 			"SubCentral");
 
-	private static final TypeStandardizingService		STANDARDIZING_SERVICE		= buildService();
+	private static final TypeCorrectionService		STANDARDIZING_SERVICE		= buildService();
 	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
@@ -97,13 +97,13 @@ public class MyBenchmark
 			ADDIC7ED_PARSING_SERVICE);
 	private static final URL							SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
-	private static TypeStandardizingService buildService()
+	private static TypeCorrectionService buildService()
 	{
-		TypeStandardizingService service = new TypeStandardizingService("testing");
-		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		StandardizingDefaults.registerAllDefaultStandardizers(service);
+		TypeCorrectionService service = new TypeCorrectionService("testing");
+		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
+		CorrectionDefaults.registerAllDefaultCorrectors(service);
 		service.registerStandardizer(Subtitle.class,
-				new LocaleSubtitleLanguageStandardizer(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
+				new LocaleSubtitleLanguageCorrector(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
 						LanguageFormat.NAME,
 						Locale.ENGLISH,
 						ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
@@ -117,7 +117,7 @@ public class MyBenchmark
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testStandardizing()
 	{
-		STANDARDIZING_SERVICE.standardize(SUB_ADJ);
+		STANDARDIZING_SERVICE.correct(SUB_ADJ);
 	}
 
 	@Benchmark

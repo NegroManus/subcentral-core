@@ -79,18 +79,18 @@
 			<seriesNameCorrectionRule namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series" beforeQuerying="true" afterQuerying="false" />
 
-			<releaseTagsCorrectionRule queryTags="AAC2, 0" replacement="AAC2.0" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+			<releaseTagsCorrectionRule searchTags="AAC2, 0" replacement="AAC2.0" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
 				afterQuerying="true" />
-			<releaseTagsCorrectionRule queryTags="DD5, 1" replacement="DD5.1" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+			<releaseTagsCorrectionRule searchTags="DD5, 1" replacement="DD5.1" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
 				afterQuerying="true" />
-			<releaseTagsCorrectionRule queryTags="H, 264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+			<releaseTagsCorrectionRule searchTags="H, 264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
 				afterQuerying="true" />
-			<releaseTagsCorrectionRule queryTags="H, 265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+			<releaseTagsCorrectionRule searchTags="H, 265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
 				afterQuerying="true" />
-			<releaseTagsCorrectionRule queryTags="H264" replacement="H.264" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsCorrectionRule queryTags="H265" replacement="H.265" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsCorrectionRule queryTags="WEB, DL" replacement="WEB-DL" queryMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="WEB, DL" replacement="WEB-DL" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+	afterQuerying="true" />
 		</rules>
 
 		<subtitleLanguage>

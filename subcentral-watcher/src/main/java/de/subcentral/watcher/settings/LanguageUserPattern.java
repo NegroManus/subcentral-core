@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguagePattern;
+import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.fx.UserPattern;
 
 public class LanguageUserPattern implements Comparable<LanguageUserPattern>

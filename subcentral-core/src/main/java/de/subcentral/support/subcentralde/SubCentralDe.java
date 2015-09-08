@@ -8,6 +8,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.correction.PatternStringReplacer;
+import de.subcentral.core.correction.PatternSubtitleLanguageCorrector;
+import de.subcentral.core.correction.TypeCorrectionService;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -20,9 +23,6 @@ import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
 import de.subcentral.core.parsing.TypeParsingService;
 import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
-import de.subcentral.core.standardizing.PatternStringReplacer;
-import de.subcentral.core.standardizing.PatternSubtitleLanguageStandardizer;
-import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.releasescene.ReleaseScene;
 
@@ -146,10 +146,10 @@ public class SubCentralDe
 		return PARSING_SERVICE.getParserEntries();
 	}
 
-	public static void registerSubtitleLanguageStandardizers(TypeStandardizingService service)
+	public static void registerSubtitleLanguageStandardizers(TypeCorrectionService service)
 	{
-		service.registerStandardizer(Subtitle.class, new PatternSubtitleLanguageStandardizer(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
-		service.registerStandardizer(Subtitle.class, new PatternSubtitleLanguageStandardizer(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
+		service.registerStandardizer(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
+		service.registerStandardizer(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
 	}
 
 	private SubCentralDe()

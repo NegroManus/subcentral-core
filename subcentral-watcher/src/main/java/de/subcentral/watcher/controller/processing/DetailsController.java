@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.Release;
@@ -11,7 +12,6 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.standardizing.StandardizingChange;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.settings.SettingsController;
@@ -121,7 +121,7 @@ public class DetailsController extends AbstractController
 			}
 			else
 			{
-				for (StandardizingChange c : task.getParsingCorrections())
+				for (Correction c : task.getParsingCorrections())
 				{
 					StringBuilder sb = new StringBuilder();
 					sb.append(WatcherFxUtil.beanTypeToString(c.getBean().getClass()));

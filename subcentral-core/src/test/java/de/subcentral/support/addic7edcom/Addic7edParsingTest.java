@@ -8,13 +8,13 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.correction.Correction;
+import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.core.standardizing.StandardizingChange;
-import de.subcentral.core.standardizing.StandardizingDefaults;
 
 public class Addic7edParsingTest
 {
@@ -333,7 +333,7 @@ public class Addic7edParsingTest
 	private static final void compare(String testMethodName, SubtitleAdjustment expected, String nameToParse)
 	{
 		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);
-		List<StandardizingChange> changes = StandardizingDefaults.getDefaultStandardizingService().standardize(parsed);
+		List<Correction> changes = CorrectionDefaults.getDefaultCorrectionService().correct(parsed);
 		changes.stream().forEach(c -> System.out.println(c));
 
 		System.out.println("Results for test: " + testMethodName);

@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
@@ -23,7 +24,6 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
-import de.subcentral.core.standardizing.StandardizingDefaults;
 import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
@@ -132,28 +132,28 @@ public class NamingDefaults
 
 	private static Function<String, String> initReleaseNameFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER)
-				.andThen(StandardizingDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER)
-				.andThen(StandardizingDefaults.DOT_HYPHEN_DOT_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER)
+				.andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER)
+				.andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	private static Function<String, String> initReleaseMediaFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER)
-				.andThen(StandardizingDefaults.ALNUM_DOT_HYPEN_REPLACER)
-				.andThen(StandardizingDefaults.DOT_HYPHEN_DOT_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER)
+				.andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_REPLACER)
+				.andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	private static Function<String, String> initSubtitleAdjustmentNameFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER).andThen(StandardizingDefaults.DOT_HYPHEN_DOT_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER).andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	private static Function<String, String> initNormalizingFormatter()
 	{
-		return StandardizingDefaults.ACCENT_REPLACER.andThen(StandardizingDefaults.AND_REPLACER)
-				.andThen(StandardizingDefaults.ALNUM_BLANK_REPLACER)
-				.andThen(StandardizingDefaults.TO_LOWERCASE_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER)
+				.andThen(CorrectionDefaults.ALNUM_BLANK_REPLACER)
+				.andThen(CorrectionDefaults.TO_LOWERCASE_REPLACER);
 	}
 
 	public static Function<String, String> getDefaultReleaseNameFormatter()

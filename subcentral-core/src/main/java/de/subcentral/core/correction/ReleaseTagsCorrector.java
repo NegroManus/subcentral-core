@@ -1,4 +1,4 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 
-public class ReleaseTagsStandardizer extends SinglePropertyStandardizer<Release, List<Tag>>
+public class ReleaseTagsCorrector extends SinglePropertyCorrector<Release, List<Tag>>
 {
-	public ReleaseTagsStandardizer(TagsReplacer replacer)
+	public ReleaseTagsCorrector(TagsReplacer replacer)
 	{
 		super(replacer);
 	}
@@ -43,5 +43,4 @@ public class ReleaseTagsStandardizer extends SinglePropertyStandardizer<Release,
 	{
 		return (TagsReplacer) super.getReplacer();
 	}
-
 }

@@ -11,12 +11,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.SubtitleAdjustmentNamer;
-import de.subcentral.core.standardizing.StandardizingChange;
 
 public class SubtitleUtil
 {
@@ -48,7 +48,7 @@ public class SubtitleUtil
 		return media.build();
 	}
 
-	public static void standardizeTags(SubtitleAdjustment subAdj, List<StandardizingChange> changes)
+	public static void standardizeTags(SubtitleAdjustment subAdj, List<Correction> changes)
 	{
 		if (subAdj == null || subAdj.getTags().isEmpty())
 		{
@@ -69,7 +69,7 @@ public class SubtitleUtil
 				subAdj.setVersion(newRev);
 				if (!Objects.equals(oldRev, newRev))
 				{
-					changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_VERSION.getPropName(), oldRev, newRev));
+					changes.add(new Correction(subAdj, SubtitleAdjustment.PROP_VERSION.getPropName(), oldRev, newRev));
 				}
 				iter.remove();
 				tagsChanged = true;
@@ -77,7 +77,7 @@ public class SubtitleUtil
 		}
 		if (tagsChanged)
 		{
-			changes.add(new StandardizingChange(subAdj, SubtitleAdjustment.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
+			changes.add(new Correction(subAdj, SubtitleAdjustment.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
 		}
 	}
 

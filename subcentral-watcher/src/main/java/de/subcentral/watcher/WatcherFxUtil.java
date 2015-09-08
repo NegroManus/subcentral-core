@@ -96,7 +96,7 @@ public class WatcherFxUtil
 		}
 		else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
 		{
-			return ReleaseTagsCorrectionRuleSettingEntry.getStandardizerTypeString();
+			return ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
 		}
 		return type.getSimpleName();
 	}

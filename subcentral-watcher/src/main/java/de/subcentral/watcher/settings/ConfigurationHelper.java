@@ -19,17 +19,17 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
+import de.subcentral.core.correction.ReleaseTagsCorrector;
+import de.subcentral.core.correction.SeriesNameCorrector;
+import de.subcentral.core.correction.TagsReplacer;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.metadata.release.TagUtil.QueryMode;
+import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
-import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
-import de.subcentral.core.standardizing.SeriesNameStandardizer;
-import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.support.addic7edcom.Addic7edCom;
@@ -136,14 +136,14 @@ class ConfigurationHelper
 		List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsCorrectionRule");
 		for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : rlsTagsStdzerCfgs)
 		{
-			List<Tag> queryTags = Tag.parseList(stdzerCfg.getString("[@queryTags]"));
+			List<Tag> queryTags = Tag.parseList(stdzerCfg.getString("[@searchTags]"));
 			List<Tag> replacement = Tag.parseList(stdzerCfg.getString("[@replacement]"));
-			QueryMode queryMode = QueryMode.valueOf(stdzerCfg.getString("[@queryMode]"));
+			SearchMode queryMode = SearchMode.valueOf(stdzerCfg.getString("[@searchMode]"));
 			ReplaceMode replaceMode = ReplaceMode.valueOf(stdzerCfg.getString("[@replaceMode]"));
 			boolean ignoreOrder = stdzerCfg.getBoolean("[@ignoreOrder]", false);
 			boolean beforeQuerying = stdzerCfg.getBoolean("[@beforeQuerying]");
 			boolean afterQuerying = stdzerCfg.getBoolean("[@afterQuerying]");
-			ReleaseTagsStandardizer stdzer = new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
+			ReleaseTagsCorrector stdzer = new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
 			stdzers.add(new ReleaseTagsCorrectionRuleSettingEntry(stdzer, beforeQuerying, afterQuerying));
 		}
 		stdzers.trimToSize();
@@ -268,7 +268,7 @@ class ConfigurationHelper
 			if (genericEntry instanceof SeriesNameCorrectionRuleSettingEntry)
 			{
 				SeriesNameCorrectionRuleSettingEntry entry = (SeriesNameCorrectionRuleSettingEntry) genericEntry;
-				SeriesNameStandardizer stdzer = entry.getValue();
+				SeriesNameCorrector stdzer = entry.getValue();
 				UserPattern namePattern = entry.getNameUserPattern();
 
 				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@namePattern]", namePattern.getPattern());
@@ -283,9 +283,9 @@ class ConfigurationHelper
 				ReleaseTagsCorrectionRuleSettingEntry entry = (ReleaseTagsCorrectionRuleSettingEntry) genericEntry;
 				TagsReplacer replacer = entry.getValue().getReplacer();
 
-				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@queryTags]", Tag.listToString(replacer.getQueryTags()));
+				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.listToString(replacer.getSearchTags()));
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replacement]", Tag.listToString(replacer.getReplacement()));
-				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@queryMode]", replacer.getQueryMode());
+				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchMode]", replacer.getSearchMode());
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replaceMode]", replacer.getReplaceMode());
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@ignoreOrder]", replacer.getIgnoreOrder());
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());

@@ -20,12 +20,12 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.correction.Correction;
+import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.file.subtitle.Item;
 import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
-import de.subcentral.core.standardizing.StandardizingChange;
-import de.subcentral.core.standardizing.StandardizingService;
 
 public class ContributionParser
 {
@@ -35,7 +35,7 @@ public class ContributionParser
 	private ImmutableList<ContributionTypePattern>	contributionTypePatterns	= ImmutableList.of();
 	private ImmutableList<ContributorPattern>		contributorPatterns			= ImmutableList.of();
 	private ImmutableList<Pattern>					irrelevantPatterns			= ImmutableList.of();
-	private StandardizingService					standardizingService		= null;
+	private CorrectionService					standardizingService		= null;
 
 	public ImmutableList<ContributionPattern> getContributionPatterns()
 	{
@@ -77,12 +77,12 @@ public class ContributionParser
 		this.irrelevantPatterns = ImmutableList.copyOf(irrelevantPatterns);
 	}
 
-	public StandardizingService getStandardizingService()
+	public CorrectionService getStandardizingService()
 	{
 		return standardizingService;
 	}
 
-	public void setStandardizingService(StandardizingService standardizingService)
+	public void setStandardizingService(CorrectionService standardizingService)
 	{
 		this.standardizingService = standardizingService;
 	}
@@ -186,7 +186,7 @@ public class ContributionParser
 	{
 		if (standardizingService != null)
 		{
-			List<StandardizingChange> changes = standardizingService.standardize(contributor);
+			List<Correction> changes = standardizingService.correct(contributor);
 			changes.forEach((c) -> log.debug("Standardized contributor: {}", c));
 		}
 		list.add(new Contribution(contributor, contributionType));

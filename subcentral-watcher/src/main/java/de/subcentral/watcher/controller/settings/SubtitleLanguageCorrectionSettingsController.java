@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import de.subcentral.core.standardizing.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;

@@ -12,16 +12,16 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.correction.ReleaseTagsCorrector;
+import de.subcentral.core.correction.TagsReplacer;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
-import de.subcentral.core.metadata.release.TagUtil.QueryMode;
+import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
-import de.subcentral.core.standardizing.ReleaseTagsStandardizer;
-import de.subcentral.core.standardizing.TagsReplacer;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
@@ -467,11 +467,11 @@ public class WatcherDialogs
 		{
 			if (bean == null)
 			{
-				return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getStandardizerTypeString();
+				return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
 			}
 			else
 			{
-				return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getStandardizerTypeString();
+				return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
 			}
 		}
 
@@ -513,7 +513,7 @@ public class WatcherDialogs
 			else
 			{
 				TagsReplacer replacer = bean.getValue().getReplacer();
-				switch (replacer.getQueryMode())
+				switch (replacer.getSearchMode())
 				{
 				case CONTAIN:
 					initialQueryModeToggle = containRadioBtn;
@@ -524,7 +524,7 @@ public class WatcherDialogs
 				default:
 					initialQueryModeToggle = containRadioBtn;
 				}
-				initialQueryTags = replacer.getQueryTags();
+				initialQueryTags = replacer.getSearchTags();
 				initialIgnoreOrder = replacer.getIgnoreOrder();
 				switch (replacer.getReplaceMode())
 				{
@@ -566,14 +566,14 @@ public class WatcherDialogs
 			{
 				if (dialogButton == ButtonType.APPLY)
 				{
-					TagUtil.QueryMode queryMode;
+					TagUtil.SearchMode queryMode;
 					if (queryModeToggleGrp.getSelectedToggle() == equalRadioBtn)
 					{
-						queryMode = QueryMode.EQUAL;
+						queryMode = SearchMode.EQUAL;
 					}
 					else
 					{
-						queryMode = QueryMode.CONTAIN;
+						queryMode = SearchMode.CONTAIN;
 					}
 					ReplaceMode replaceWith;
 					if (replaceWithToggleGrp.getSelectedToggle() == completeRadioBtn)
@@ -587,7 +587,7 @@ public class WatcherDialogs
 					boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
 					boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 					boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-					return new ReleaseTagsCorrectionRuleSettingEntry(new ReleaseTagsStandardizer(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
+					return new ReleaseTagsCorrectionRuleSettingEntry(new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
 							beforeQuerying,
 							afterQuerying);
 				}

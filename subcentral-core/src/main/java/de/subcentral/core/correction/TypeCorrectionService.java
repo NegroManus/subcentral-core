@@ -1,4 +1,4 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ import com.google.common.collect.ImmutableList;
  * @implSpec #thread-safe
  *
  */
-public class TypeStandardizingService implements StandardizingService
+public class TypeCorrectionService implements CorrectionService
 {
 	private final String												domain;
 	private final List<StandardizerEntry<?>>							standardizerEntries		= new CopyOnWriteArrayList<>();
 	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
-	public TypeStandardizingService(String domain)
+	public TypeCorrectionService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 	}
@@ -41,12 +41,12 @@ public class TypeStandardizingService implements StandardizingService
 		return standardizerEntries;
 	}
 
-	public <T> void registerStandardizer(Class<T> beanType, Standardizer<? super T> standardizer)
+	public <T> void registerStandardizer(Class<T> beanType, Corrector<? super T> standardizer)
 	{
 		standardizerEntries.add(new StandardizerEntry<T>(standardizer, beanType));
 	}
 
-	public boolean unregisterStandardizer(Standardizer<?> standardizer)
+	public boolean unregisterStandardizer(Corrector<?> standardizer)
 	{
 		for (StandardizerEntry<?> entry : standardizerEntries)
 		{
@@ -65,13 +65,13 @@ public class TypeStandardizingService implements StandardizingService
 	}
 
 	@Override
-	public List<StandardizingChange> standardize(Object bean)
+	public List<Correction> correct(Object bean)
 	{
 		if (bean == null)
 		{
 			return ImmutableList.of();
 		}
-		List<StandardizingChange> changes = new ArrayList<>();
+		List<Correction> changes = new ArrayList<>();
 		// keep track which beans were already standardized
 		// to not end in an infinite loop because two beans had a bidirectional relationship
 		IdentityHashMap<Object, Boolean> alreadyStdizedBeans = new IdentityHashMap<>();
@@ -89,14 +89,14 @@ public class TypeStandardizingService implements StandardizingService
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> void doStandardize(T bean, List<StandardizingChange> changes)
+	private <T> void doStandardize(T bean, List<Correction> changes)
 	{
 		for (StandardizerEntry<?> entry : standardizerEntries)
 		{
 			if (entry.beanType.isAssignableFrom(bean.getClass()))
 			{
-				Standardizer<? super T> standardizer = (Standardizer<? super T>) entry.standardizer;
-				standardizer.standardize(bean, changes);
+				Corrector<? super T> standardizer = (Corrector<? super T>) entry.standardizer;
+				standardizer.correct(bean, changes);
 			}
 		}
 	}
@@ -125,21 +125,21 @@ public class TypeStandardizingService implements StandardizingService
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(TypeStandardizingService.class).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(TypeCorrectionService.class).add("domain", domain).toString();
 	}
 
 	public static final class StandardizerEntry<T>
 	{
-		private final Standardizer<? super T>	standardizer;
+		private final Corrector<? super T>	standardizer;
 		private final Class<T>					beanType;
 
-		private StandardizerEntry(Standardizer<? super T> standardizer, Class<T> beanType)
+		private StandardizerEntry(Corrector<? super T> standardizer, Class<T> beanType)
 		{
 			this.standardizer = Objects.requireNonNull(standardizer, "standardizer");
 			this.beanType = Objects.requireNonNull(beanType, "beanType");
 		}
 
-		public Standardizer<? super T> getStandardizer()
+		public Corrector<? super T> getStandardizer()
 		{
 			return standardizer;
 		}

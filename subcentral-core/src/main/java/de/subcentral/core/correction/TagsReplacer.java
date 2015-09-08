@@ -1,4 +1,4 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,34 +10,34 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
-import de.subcentral.core.metadata.release.TagUtil.QueryMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
+import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 
 public class TagsReplacer implements UnaryOperator<List<Tag>>
 {
-	private final ImmutableList<Tag>	queryTags;
+	private final ImmutableList<Tag>	searchTags;
 	private final ImmutableList<Tag>	replacement;
-	private final QueryMode				queryMode;
+	private final SearchMode			searchMode;
 	private final ReplaceMode			replaceMode;
 	private final boolean				ignoreOrder;
 
-	public TagsReplacer(List<Tag> queryTags, List<Tag> replacement)
+	public TagsReplacer(List<Tag> searchTags, List<Tag> replacement)
 	{
-		this(queryTags, replacement, QueryMode.CONTAIN, ReplaceMode.MATCHED_SEQUENCE, false);
+		this(searchTags, replacement, SearchMode.CONTAIN, ReplaceMode.MATCHED_SEQUENCE, false);
 	}
 
-	public TagsReplacer(List<Tag> queryTags, List<Tag> replacement, QueryMode queryMode, ReplaceMode replaceMode, boolean ignoreOrder)
+	public TagsReplacer(List<Tag> searchTags, List<Tag> replacement, SearchMode searchMode, ReplaceMode replaceMode, boolean ignoreOrder)
 	{
-		this.queryTags = ImmutableList.copyOf(queryTags);
+		this.searchTags = ImmutableList.copyOf(searchTags);
 		this.replacement = ImmutableList.copyOf(replacement);
-		this.queryMode = Objects.requireNonNull(queryMode, "queryMode");
+		this.searchMode = Objects.requireNonNull(searchMode, "searchMode");
 		this.replaceMode = Objects.requireNonNull(replaceMode, "replaceMode");
 		this.ignoreOrder = ignoreOrder;
 	}
 
-	public ImmutableList<Tag> getQueryTags()
+	public ImmutableList<Tag> getSearchTags()
 	{
-		return queryTags;
+		return searchTags;
 	}
 
 	public ImmutableList<Tag> getReplacement()
@@ -45,9 +45,9 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 		return replacement;
 	}
 
-	public QueryMode getQueryMode()
+	public SearchMode getSearchMode()
 	{
-		return queryMode;
+		return searchMode;
 	}
 
 	public ReplaceMode getReplaceMode()
@@ -64,7 +64,7 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 	public List<Tag> apply(List<Tag> tags)
 	{
 		List<Tag> copy = new ArrayList<>(tags);
-		TagUtil.replace(copy, queryTags, replacement, queryMode, replaceMode, ignoreOrder);
+		TagUtil.replace(copy, searchTags, replacement, searchMode, replaceMode, ignoreOrder);
 		return copy;
 	}
 
@@ -72,9 +72,9 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(TagsReplacer.class)
-				.add("queryTags", queryTags)
+				.add("searchTags", searchTags)
 				.add("replacement", replacement)
-				.add("queryMode", queryMode)
+				.add("searchMode", searchMode)
 				.add("replaceMode", replaceMode)
 				.add("ignoreOrder", ignoreOrder)
 				.toString();

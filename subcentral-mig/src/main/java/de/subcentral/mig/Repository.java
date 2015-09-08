@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
@@ -15,7 +16,6 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingUtil;
-import de.subcentral.core.standardizing.StandardizingChange;
 
 public class Repository
 {
@@ -60,7 +60,7 @@ public class Repository
 
 	public Optional<Series> findSeries(Series candidate)
 	{
-		List<StandardizingChange> changes = MigrationSettings.INSTANCE.getStandardizingService().standardize(candidate);
+		List<Correction> changes = MigrationSettings.INSTANCE.getStandardizingService().correct(candidate);
 		changes.stream().forEach((c) -> log.debug("Changed Series {}", c));
 		return series.stream().filter(NamingUtil.filterByName(candidate, NamingDefaults.getDefaultNormalizingNamingService(), MigrationSettings.INSTANCE.getNamingParams())).findAny();
 	}

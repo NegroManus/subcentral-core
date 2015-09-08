@@ -21,6 +21,8 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.correction.CorrectionDefaults;
+import de.subcentral.core.correction.TypeCorrectionService;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
@@ -29,8 +31,6 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.standardizing.StandardizingDefaults;
-import de.subcentral.core.standardizing.TypeStandardizingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
@@ -191,12 +191,12 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private static TypeStandardizingService createBeforeQueryingStandardizingService(ProcessingSettings settings)
+	private static TypeCorrectionService createBeforeQueryingStandardizingService(ProcessingSettings settings)
 	{
-		TypeStandardizingService service = new TypeStandardizingService("premetadatadb");
+		TypeCorrectionService service = new TypeCorrectionService("premetadatadb");
 		// Register default nested beans retrievers but not default
 		// standardizers
-		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		for (CorrectionRuleSettingEntry<?, ?> entry : settings.getCorrectionRules())
 		{
 			if (entry.isBeforeQuerying())
@@ -211,12 +211,12 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private static TypeStandardizingService createAfterQueryingStandardizingService(ProcessingSettings settings)
+	private static TypeCorrectionService createAfterQueryingStandardizingService(ProcessingSettings settings)
 	{
-		TypeStandardizingService service = new TypeStandardizingService("postmetadatadb");
+		TypeCorrectionService service = new TypeCorrectionService("postmetadatadb");
 		// Register default nested beans retrievers but not default
 		// standardizers
-		StandardizingDefaults.registerAllDefaultNestedBeansRetrievers(service);
+		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		for (CorrectionRuleSettingEntry<?, ?> entry : settings.getCorrectionRules())
 		{
 			if (entry.isAfterQuerying())
@@ -227,7 +227,7 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private static <T> void registerStandardizer(TypeStandardizingService service, CorrectionRuleSettingEntry<T, ?> entry)
+	private static <T> void registerStandardizer(TypeCorrectionService service, CorrectionRuleSettingEntry<T, ?> entry)
 	{
 		service.registerStandardizer(entry.getBeanType(), entry.getValue());
 	}
