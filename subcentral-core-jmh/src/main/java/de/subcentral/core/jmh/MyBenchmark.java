@@ -50,12 +50,12 @@ import com.google.common.io.Resources;
 
 import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.correction.LocaleLanguageReplacer;
-import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
-import de.subcentral.core.correction.TypeCorrectionService;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
+import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
+import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleFile;
-import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -84,7 +84,7 @@ public class MyBenchmark
 			"English",
 			"SubCentral");
 
-	private static final TypeCorrectionService		STANDARDIZING_SERVICE		= buildService();
+	private static final TypeCorrectionService			STANDARDIZING_SERVICE		= buildService();
 	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
@@ -159,7 +159,7 @@ public class MyBenchmark
 	// @Benchmark
 	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
 	{
-		SubtitleFile data = SubtitleFileFormat.SUBRIP.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
+		SubtitleFile data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
 		blackhole.consume(data);
 	}
 

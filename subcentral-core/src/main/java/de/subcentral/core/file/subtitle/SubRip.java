@@ -16,8 +16,9 @@ import de.subcentral.core.util.IOUtil;
 
 public class SubRip implements SubtitleFileFormat
 {
-	// package visibility
-	SubRip()
+	public static final SubRip INSTANCE = new SubRip();
+
+	private SubRip()
 	{
 
 	}

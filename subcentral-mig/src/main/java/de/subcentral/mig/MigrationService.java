@@ -27,6 +27,7 @@ import com.google.common.io.Resources;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
+import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleFile;
 import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.Contribution;
@@ -215,7 +216,7 @@ public class MigrationService
 			CharsetMatch match = csDetector.detect();
 			log.trace("Analyzed {}: charset={}, language={}, confidence={}", file, match.getName(), match.getLanguage(), match.getConfidence());
 
-			SubtitleFileFormat format = SubtitleFileFormat.SUBRIP;
+			SubtitleFileFormat format = SubRip.INSTANCE;
 
 			SubtitleFile data = format.read(bytes, Charset.forName(match.getName()));
 			log.debug("Parsed content of {} with charset {} and format {} to SubtitleFile ({} items)", file, match.getName(), format.getName(), data.getItems().size());

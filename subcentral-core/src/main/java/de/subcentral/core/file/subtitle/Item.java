@@ -48,6 +48,7 @@ public class Item
 		this.text = text;
 	}
 
+	// Convenience
 	public long getDuration()
 	{
 		return end - start;
@@ -55,10 +56,6 @@ public class Item
 
 	public void setDuration(long duration)
 	{
-		if (duration < 0)
-		{
-			throw new IllegalArgumentException("duration cannot be negative");
-		}
 		this.end = start + duration;
 	}
 

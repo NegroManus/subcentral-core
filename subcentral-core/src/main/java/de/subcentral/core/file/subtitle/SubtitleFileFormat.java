@@ -19,8 +19,6 @@ import java.nio.file.Path;
 
 public interface SubtitleFileFormat
 {
-	public static final SubRip SUBRIP = new SubRip();
-
 	public String getName();
 
 	public default SubtitleFile read(Path file, Charset charset) throws IOException
