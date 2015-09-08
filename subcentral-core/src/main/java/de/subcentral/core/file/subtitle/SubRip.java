@@ -44,84 +44,91 @@ public class SubRip implements SubtitleFileFormat
 	@Override
 	public SubtitleFile read(BufferedReader reader) throws IOException
 	{
-		/**
-		 * <pre>
-		 * 1
-		 * 00:00:03,799 --> 00:00:05,679
-		 * - Here we go.
-		 * - Hey, good morning.
-		 * </pre>
-		 */
-		final Matcher numMatcher = Pattern.compile("\\s*\\d+\\s*").matcher("");
-		final Matcher timingsMatcher = Pattern.compile("\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*-->\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*").matcher("");
-		String lastNumLine = null;
-		long start = -1L;
-		long end = -1L;
-		final List<String> textLines = new ArrayList<>();
-		final List<Item> items = new ArrayList<>();
-		boolean firstLine = true;
-		for (;;)
+		try
 		{
-			String line = reader.readLine();
-			if (line == null)
+			/**
+			 * <pre>
+			 * 1
+			 * 00:00:03,799 --> 00:00:05,679
+			 * - Here we go.
+			 * - Hey, good morning.
+			 * </pre>
+			 */
+			final Matcher numMatcher = Pattern.compile("\\s*\\d+\\s*").matcher("");
+			final Matcher timingsMatcher = Pattern.compile("\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*-->\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*").matcher("");
+			String lastNumLine = null;
+			long start = -1L;
+			long end = -1L;
+			final List<String> textLines = new ArrayList<>();
+			final List<Item> items = new ArrayList<>();
+			boolean firstLine = true;
+			for (;;)
 			{
-				// if at the end of the stream, add the last item that was read (if any)
-				if (start != -1L)
+				String line = reader.readLine();
+				if (line == null)
 				{
-					addItem(items, start, end, textLines);
+					// if at the end of the stream, add the last item that was read (if any)
+					if (start != -1L)
+					{
+						addItem(items, start, end, textLines);
+					}
+					break;
 				}
-				break;
-			}
-			if (firstLine)
-			{
-				// remove the UTF-8 BOM that may appear at the start of the content
-				line = IOUtil.removeUTF8BOM(line);
-				firstLine = false;
-			}
-			if (numMatcher.reset(line).matches())
-			{
-				if (lastNumLine != null)
+				if (firstLine)
 				{
-					// if there already was a num line before this num line, that line is considered to be text
-					textLines.add(lastNumLine);
+					// remove the UTF-8 BOM that may appear at the start of the content
+					line = IOUtil.removeUTF8BOM(line);
+					firstLine = false;
 				}
-				lastNumLine = line;
-			}
-			else if (timingsMatcher.reset(line).matches() && lastNumLine != null)
-			{
-				// add previous item if new item is encountered
-				if (start != -1L)
+				if (numMatcher.reset(line).matches())
 				{
-					addItem(items, start, end, textLines);
+					if (lastNumLine != null)
+					{
+						// if there already was a num line before this num line, that line is considered to be text
+						textLines.add(lastNumLine);
+					}
+					lastNumLine = line;
 				}
-				// reset
-				lastNumLine = null;
-				start = parseTimepoint(timingsMatcher.group(1), timingsMatcher.group(2), timingsMatcher.group(3), timingsMatcher.group(4));
-				end = parseTimepoint(timingsMatcher.group(5), timingsMatcher.group(6), timingsMatcher.group(7), timingsMatcher.group(8));
-				textLines.clear();
-			}
-			else if (StringUtils.isBlank(line))
-			{
-				// blank lines are interpreted as text but the lastNum is not reset
-				// because blank lines also may appear between num line and timings line
-				textLines.add(line);
-			}
-			else
-			{
-				if (lastNumLine != null)
+				else if (timingsMatcher.reset(line).matches() && lastNumLine != null)
 				{
-					// if there is a num line (last line) followed by text (this line),
-					// that num line is considered to be text and not as an item number
-					textLines.add(lastNumLine);
+					// add previous item if new item is encountered
+					if (start != -1L)
+					{
+						addItem(items, start, end, textLines);
+					}
+					// reset
 					lastNumLine = null;
+					start = parseTimepoint(timingsMatcher.group(1), timingsMatcher.group(2), timingsMatcher.group(3), timingsMatcher.group(4));
+					end = parseTimepoint(timingsMatcher.group(5), timingsMatcher.group(6), timingsMatcher.group(7), timingsMatcher.group(8));
+					textLines.clear();
 				}
-				textLines.add(line);
+				else if (StringUtils.isBlank(line))
+				{
+					// blank lines are interpreted as text but the lastNum is not reset
+					// because blank lines also may appear between num line and timings line
+					textLines.add(line);
+				}
+				else
+				{
+					if (lastNumLine != null)
+					{
+						// if there is a num line (last line) followed by text (this line),
+						// that num line is considered to be text and not as an item number
+						textLines.add(lastNumLine);
+						lastNumLine = null;
+					}
+					textLines.add(line);
+				}
 			}
+
+			SubtitleFile sub = new SubtitleFile();
+			sub.setItems(items);
+			return sub;
 		}
-		reader.close();
-		SubtitleFile sub = new SubtitleFile();
-		sub.setItems(items);
-		return sub;
+		finally
+		{
+			reader.close();
+		}
 	}
 
 	private static long parseTimepoint(String hours, String minutes, String seconds, String milliseconds)
@@ -163,40 +170,46 @@ public class SubRip implements SubtitleFileFormat
 	@Override
 	public void write(SubtitleFile sub, BufferedWriter writer) throws IOException
 	{
-		/**
-		 * <pre>
-		 * 1
-		 * 00:00:03,799 --> 00:00:05,679
-		 * - Here we go.
-		 * - Hey, good morning.
-		 * </pre>
-		 */
-		for (int i = 0; i < sub.getItems().size(); i++)
+		try
 		{
-			Item item = sub.getItems().get(i);
-			writer.write(Integer.toString(i + 1));
-			writer.newLine();
-			Object[] args = new Object[8];
-			int argsIndex = 0;
-			for (long arg : splitIntoHoursMinsSecsMillis(item.getStart()))
+			/**
+			 * <pre>
+			 * 1
+			 * 00:00:03,799 --> 00:00:05,679
+			 * - Here we go.
+			 * - Hey, good morning.
+			 * </pre>
+			 */
+			for (int i = 0; i < sub.getItems().size(); i++)
 			{
-				args[argsIndex++] = arg;
-			}
-			for (long arg : splitIntoHoursMinsSecsMillis(item.getEnd()))
-			{
-				args[argsIndex++] = arg;
-			}
-			writer.write(String.format("%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d", args));
-			writer.newLine();
-			String text = item.getText().replace("\n", SystemUtils.LINE_SEPARATOR);
-			writer.write(text);
-			if (i < sub.getItems().size() - 1)
-			{
+				Item item = sub.getItems().get(i);
+				writer.write(Integer.toString(i + 1));
 				writer.newLine();
+				Object[] args = new Object[8];
+				int argsIndex = 0;
+				for (long arg : splitIntoHoursMinsSecsMillis(item.getStart()))
+				{
+					args[argsIndex++] = arg;
+				}
+				for (long arg : splitIntoHoursMinsSecsMillis(item.getEnd()))
+				{
+					args[argsIndex++] = arg;
+				}
+				writer.write(String.format("%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d", args));
 				writer.newLine();
+				String text = item.getText().replace("\n", SystemUtils.LINE_SEPARATOR);
+				writer.write(text);
+				if (i < sub.getItems().size() - 1)
+				{
+					writer.newLine();
+					writer.newLine();
+				}
 			}
 		}
-		writer.close();
+		finally
+		{
+			writer.close();
+		}
 	}
 
 	private static long[] splitIntoHoursMinsSecsMillis(long millis)
