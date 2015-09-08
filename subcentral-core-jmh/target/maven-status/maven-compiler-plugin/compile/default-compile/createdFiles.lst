@@ -1,9 +1,9 @@
 org\openjdk\jmh\infra\generated\Blackhole_jmh_B1.class
 org\openjdk\jmh\infra\generated\Blackhole_jmh_B2.class
 de\subcentral\core\jmh\generated\MyBenchmark_jmh.class
+de\subcentral\core\jmh\generated\MyBenchmark_testParsingSubRipFile.class
 de\subcentral\core\jmh\generated\MyBenchmark_jmh_B3.class
 org\openjdk\jmh\infra\generated\Blackhole_jmh.class
-de\subcentral\core\jmh\generated\MyBenchmark_testNaming.class
 org\openjdk\jmh\infra\generated\Blackhole_jmh_B3.class
 META-INF\BenchmarkList
 de\subcentral\core\jmh\generated\MyBenchmark_jmh_B2.class
