@@ -589,6 +589,10 @@ public class FxUtil
 
 	public static java.awt.Image loadAwtImg(String img) throws IOException
 	{
+		if (img == null)
+		{
+			return null;
+		}
 		return ImageIO.read(Resources.getResource("img/" + img));
 	}
 
