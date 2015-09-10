@@ -13,6 +13,7 @@ import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -86,30 +87,44 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
 		testLocateBtn.setOnAction((ActionEvent event) ->
 		{
-			Path rarLocation = WinRar.getInstance().locateRarExecutable();
-			if (rarLocation != null)
+			Task<Path> locateRarTask = new Task<Path>()
 			{
-
-				Alert locateDialog = new Alert(AlertType.INFORMATION);
-				locateDialog.setTitle("Successfully located RAR executable");
-				locateDialog.setHeaderText("Found RAR executable at: " + rarLocation);
-				locateDialog.setContentText("Do you want to remember this location?");
-				locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-				if (locateDialog.showAndWait().get() == ButtonType.YES)
+				@Override
+				protected Path call() throws Exception
 				{
-					winRarLocateStrategy.selectToggle(specifyRadioBtn);
-					rarExeFormatter.setValue(rarLocation);
+					return WinRar.getInstance().locateRarExecutable();
 				}
-			}
-			else
-			{
-				Alert locateDialog = new Alert(AlertType.WARNING);
-				locateDialog.setTitle("Failed to locate RAR executable");
-				locateDialog.setHeaderText("Could not locate RAR executable.");
-				locateDialog.setContentText("Please install WinRAR or specify the path to the RAR executable.");
-				locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
-				locateDialog.showAndWait();
-			}
+
+				@Override
+				protected void succeeded()
+				{
+					Path rarLocation = getValue();
+					if (rarLocation != null)
+					{
+						Alert locateDialog = new Alert(AlertType.INFORMATION);
+						locateDialog.setTitle("Successfully located RAR executable");
+						locateDialog.setHeaderText("Found RAR executable at: " + rarLocation);
+						locateDialog.setContentText("Do you want to remember this location?");
+						locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+						if (locateDialog.showAndWait().get() == ButtonType.YES)
+						{
+							winRarLocateStrategy.selectToggle(specifyRadioBtn);
+							rarExeFormatter.setValue(rarLocation);
+						}
+					}
+					else
+					{
+						Alert locateDialog = new Alert(AlertType.WARNING);
+						locateDialog.setTitle("Failed to locate RAR executable");
+						locateDialog.setHeaderText("Could not locate RAR executable.");
+						locateDialog.setContentText("Please install WinRAR or specify the path to the RAR executable.");
+						locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+						locateDialog.showAndWait();
+					}
+				}
+			};
+			locateRarTask.setOnFailed(FxUtil.DEFAULT_TASK_FAILED_HANDLER);
+			settingsController.getMainController().getCommonExecutor().submit(locateRarTask);
 		});
 
 		FxUtil.setChooseFileAction(chooseRarExeBtn,

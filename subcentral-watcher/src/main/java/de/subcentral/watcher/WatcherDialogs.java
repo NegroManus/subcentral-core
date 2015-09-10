@@ -20,8 +20,8 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
-import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
+import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
@@ -890,7 +890,7 @@ public class WatcherDialogs
 
 	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(Window window)
 	{
-		return showCrossGroupCompatibilityEditView(null);
+		return showCrossGroupCompatibilityEditView(null, window);
 	}
 
 	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(CrossGroupCompatibility crossGroupCompatibility, Window window)
