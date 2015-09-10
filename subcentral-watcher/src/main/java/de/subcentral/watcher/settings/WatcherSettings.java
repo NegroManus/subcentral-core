@@ -1,6 +1,7 @@
 package de.subcentral.watcher.settings;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,6 +55,23 @@ public class WatcherSettings extends ObservableObject
 		super.bind(watchDirectories, initialScan, processingSettings, warningsEnabled, guessingWarningEnabled, releaseMetaTaggedWarningEnabled, releaseNukedWarningEnabled);
 
 		addListener((Observable o) -> changed.set(true));
+	}
+
+	/**
+	 * Must be called in the JavaFX Application thread.
+	 * 
+	 * @param file
+	 * @throws ConfigurationException
+	 */
+	public void load(URL file) throws ConfigurationException
+	{
+		FxUtil.checkJavaFxApplicationThread();
+
+		XMLConfiguration cfg = ConfigurationHelper.load(file);
+		loadFromCfg(cfg);
+		changed.set(false);
+
+		log.info("Loaded settings from {}", file);
 	}
 
 	/**

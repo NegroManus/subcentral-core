@@ -514,7 +514,9 @@ public class SettingsController extends AbstractController
 	{
 		try
 		{
-			WatcherSettings.INSTANCE.load(Paths.get(Resources.getResource(DEFAULT_SETTINGS_FILE).toURI()));
+			// A resource has to be loaded via URL
+			// because building a Path for a JAR intern resource file results in a FileSystem exception.
+			WatcherSettings.INSTANCE.load((Resources.getResource(DEFAULT_SETTINGS_FILE)));
 			defaultSettingsLoaded.set(true);
 		}
 		catch (Exception e)

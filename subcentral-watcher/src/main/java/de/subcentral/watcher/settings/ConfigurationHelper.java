@@ -1,6 +1,7 @@
 package de.subcentral.watcher.settings;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,8 +29,8 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
+import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.support.addic7edcom.Addic7edCom;
@@ -52,6 +53,21 @@ class ConfigurationHelper
 		{
 			FileHandler cfgFileHandler = new FileHandler(cfg);
 			cfgFileHandler.save(Files.newOutputStream(file), Charset.forName("UTF-8").name());
+		}
+		catch (IOException e)
+		{
+			throw new ConfigurationException(e);
+		}
+	}
+
+	static XMLConfiguration load(URL file) throws ConfigurationException
+	{
+		try
+		{
+			XMLConfiguration cfg = new XMLConfiguration();
+			FileHandler cfgFileHandler = new FileHandler(cfg);
+			cfgFileHandler.load(file.openStream(), Charset.forName("UTF-8").name());
+			return cfg;
 		}
 		catch (IOException e)
 		{

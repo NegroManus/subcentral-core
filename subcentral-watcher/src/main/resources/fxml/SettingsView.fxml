@@ -29,7 +29,7 @@
 	<bottom>
 		<HBox spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
-				<Button fx:id="saveBtn" mnemonicParsing="false" text="Save">
+				<Button fx:id="saveBtn" mnemonicParsing="false" text="Save to file">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>
