@@ -2,14 +2,13 @@ package de.subcentral.support.winrar;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
 public class UnixWinRar extends WinRar
 {
@@ -32,27 +31,25 @@ public class UnixWinRar extends WinRar
 	@Override
 	public Path locateRarExecutable()
 	{
-		// 1. try the well known WinRAR directories
-		Path rarExecutable = searchRarExecutableInWellKnownDirectories();
-		if (rarExecutable != null)
+		// 1. try the default strategy
+		Path rarExe = super.locateRarExecutable();
+		if (rarExe != null)
 		{
-			return rarExecutable;
+			return rarExe;
 		}
-		// 2. if that fails, search in PATH environment variable
-		rarExecutable = searchRarExecutableInPathEnvironmentVariable();
-		if (rarExecutable != null)
+		// 2. try the os-specific strategy
+		rarExe = searchRarExecutableInPathEnvironmentVariable();
+		if (rarExe != null)
 		{
-			return rarExecutable;
+			return rarExe;
 		}
 		return null;
 	}
 
-	private Path searchRarExecutableInWellKnownDirectories()
+	@Override
+	protected List<Path> getWinRarStandardInstallationDirectories()
 	{
-		// The typical WinRAR installation directories on Unix
-		Set<Path> wellKnownDirs = ImmutableSet.of(Paths.get("/usr/bin"));
-		log.debug("Trying to locate RAR executable in well known directories: {}", wellKnownDirs);
-		return returnFirstValidRarExecutable(wellKnownDirs);
+		return ImmutableList.of(Paths.get("/usr/bin"));
 	}
 
 	private Path searchRarExecutableInPathEnvironmentVariable()
@@ -60,7 +57,7 @@ public class UnixWinRar extends WinRar
 		// for example: PATH=/opt/bin:/usr/bin
 		String pathValue = System.getenv("PATH");
 		log.debug("Trying to locate RAR executable in PATH environment  variable: {}", pathValue);
-		return returnFirstValidRarExecutable(Arrays.stream(pathValue.split(":")).map((String path) -> Paths.get(path)).collect(Collectors.toSet()));
+		return returnFirstValidRarExecutable(Pattern.compile(":").splitAsStream(pathValue).map((String path) -> Paths.get(path))::iterator);
 	}
 
 	private static class UnixWinRarPackager extends WinRarPackager

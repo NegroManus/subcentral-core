@@ -4,7 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,60 @@ public abstract class WinRar
 
 	public abstract Path getRarExecutableFilename();
 
-	public abstract Path locateRarExecutable();
+	/**
+	 * Simple locate strategy. Child classes may extend this algorithm.
+	 * 
+	 * @return the located rar executable or <code>null</code> if it could not be located.
+	 */
+	public Path locateRarExecutable()
+	{
+		return locateRarExecutableInStandardInstallationDirectories();
+	}
+
+	protected Path locateRarExecutableInStandardInstallationDirectories()
+	{
+		List<Path> standardDirs = getWinRarStandardInstallationDirectories();
+		log.debug("Trying to locate RAR executable in standard installation directories: {}", standardDirs);
+		return returnFirstValidRarExecutable(standardDirs);
+	}
+
+	protected abstract List<Path> getWinRarStandardInstallationDirectories();
+
+	protected Path returnFirstValidRarExecutable(Iterable<Path> possibleWinRarDirectories)
+	{
+		for (Path path : possibleWinRarDirectories)
+		{
+			Path candidate = path.resolve(getRarExecutableFilename());
+			try
+			{
+				validateRarExecutable(candidate);
+				log.debug("Found RAR executable at {}", candidate);
+				return candidate;
+			}
+			catch (Exception e)
+			{
+				log.trace("{} was no valid RAR executable: {}", candidate, e.toString());
+			}
+		}
+		return null;
+	}
+
+	public Path validateRarExecutable(Path exe) throws NullPointerException, NoSuchFileException, SecurityException
+	{
+		if (exe == null)
+		{
+			throw new NullPointerException("Rar executable cannot be null");
+		}
+		if (!Files.isRegularFile(exe, LinkOption.NOFOLLOW_LINKS))
+		{
+			throw new NoSuchFileException(exe.toString());
+		}
+		if (!Files.isExecutable(exe))
+		{
+			throw new SecurityException("Rar executable is not executable: " + exe);
+		}
+		return exe;
+	}
 
 	public WinRarPackager getPackager()
 	{
@@ -54,42 +107,4 @@ public abstract class WinRar
 	}
 
 	public abstract WinRarPackager getPackager(Path rarExecutable);
-
-	public Path validateRarExecutable(Path exe) throws NullPointerException, NoSuchFileException, SecurityException
-	{
-		if (exe == null)
-		{
-			throw new NullPointerException("Executable cannot be null");
-		}
-		if (!Files.isRegularFile(exe, LinkOption.NOFOLLOW_LINKS))
-		{
-			throw new NoSuchFileException(exe.toString());
-		}
-		if (!Files.isExecutable(exe))
-		{
-			throw new SecurityException("Executable is not executable: " + exe);
-		}
-		return exe;
-	}
-
-	protected Path returnFirstValidRarExecutable(Set<Path> possibleWinRarDirectories)
-	{
-		for (Path path : possibleWinRarDirectories)
-		{
-			Path candidate = path.resolve(getRarExecutableFilename());
-			try
-			{
-				validateRarExecutable(candidate);
-				log.debug("Found RAR executable: {}", candidate);
-				return candidate;
-			}
-			catch (Exception e)
-			{
-				log.debug("{} was no valid RAR executable: {}", candidate, e.toString());
-			}
-		}
-		log.debug("Could not locate RAR executable in directories {}", possibleWinRarDirectories);
-		return null;
-	}
-
 }

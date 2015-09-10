@@ -26,13 +26,13 @@ public class IOUtil
 {
 	private static final Logger log = LogManager.getLogger(IOUtil.class.getName());
 
-	public static final class CommandResult
+	public static final class ProcessResult
 	{
 		private final int		exitValue;
 		private final String	stdOut;
 		private final String	stdErr;
 
-		private CommandResult(int exitValue, String logMessage, String errorMessage)
+		private ProcessResult(int exitValue, String logMessage, String errorMessage)
 		{
 			this.exitValue = exitValue;
 			this.stdOut = logMessage;
@@ -44,11 +44,19 @@ public class IOUtil
 			return exitValue;
 		}
 
+		/**
+		 * 
+		 * @return the standard output or <code>null</code> if none
+		 */
 		public String getStdOut()
 		{
 			return stdOut;
 		}
 
+		/**
+		 * 
+		 * @return the standard error output or <code>null</code> if none
+		 */
 		public String getStdErr()
 		{
 			return stdErr;
@@ -57,15 +65,14 @@ public class IOUtil
 		@Override
 		public String toString()
 		{
-			return MoreObjects.toStringHelper(CommandResult.class).omitNullValues().add("exitValue", exitValue).add("stdOut", stdOut).add("stdErr", stdErr).toString();
+			return MoreObjects.toStringHelper(ProcessResult.class).omitNullValues().add("exitValue", exitValue).add("stdOut", stdOut).add("stdErr", stdErr).toString();
 		}
 	}
 
-	public static CommandResult executeCommand(List<String> command, long timeoutValue, TimeUnit timeoutUnit) throws IOException, InterruptedException, TimeoutException
+	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit) throws IOException, InterruptedException, TimeoutException
 	{
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
-		log.debug("Executing {}", command);
-		log.debug("ProcessBuilder settings: directory={}; environment={}; timeout={}", processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
+		log.debug("Executing {} with directory={}; environment={}; timeout={}", command, processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
 		Process process = processBuilder.start();
 		process.getOutputStream().close();
 
@@ -80,12 +87,12 @@ public class IOUtil
 		boolean exitedBeforeTimeout = process.waitFor(timeoutValue, timeoutUnit);
 		if (!exitedBeforeTimeout)
 		{
-			throw new TimeoutException("Command execution did not finish before timeout was reached. command=" + command + ", timeout=" + timeoutValue + " " + timeoutUnit);
+			throw new TimeoutException("Process execution did not finish before timeout was reached. command=" + command + ", timeout=" + timeoutValue + " " + timeoutUnit);
 		}
 		String stdOut = StringUtils.stripToNull(stdOutStream.toString(Charset.defaultCharset().name()));
 		String stdErr = StringUtils.stripToNull(stdErrStream.toString(Charset.defaultCharset().name()));
-		CommandResult result = new CommandResult(process.exitValue(), stdOut, stdErr);
-		log.debug("Command execution result: {}", result);
+		ProcessResult result = new ProcessResult(process.exitValue(), stdOut, stdErr);
+		log.debug("Process execution result: {}", result);
 		return result;
 	}
 

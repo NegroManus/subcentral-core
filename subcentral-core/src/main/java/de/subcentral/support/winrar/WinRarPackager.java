@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.util.IOUtil;
-import de.subcentral.core.util.IOUtil.CommandResult;
+import de.subcentral.core.util.IOUtil.ProcessResult;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
@@ -52,7 +52,7 @@ public abstract class WinRarPackager
 	{
 		try
 		{
-			return IOUtil.executeCommand(buildValidateCommand(archive), 1, TimeUnit.MINUTES).getExitValue() == 0;
+			return IOUtil.executeProcess(buildValidateCommand(archive), 1, TimeUnit.MINUTES).getExitValue() == 0;
 		}
 		catch (IOException | InterruptedException | TimeoutException e)
 		{
@@ -80,7 +80,7 @@ public abstract class WinRarPackager
 
 	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException, TimeoutException
 	{
-		IOUtil.executeCommand(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS);
+		IOUtil.executeProcess(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS);
 	}
 
 	protected List<String> buildUnpackCommand(Path archive, Path targetDir)
@@ -132,7 +132,7 @@ public abstract class WinRarPackager
 					Files.delete(target);
 				}
 			}
-			CommandResult result = IOUtil.executeCommand(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit());
+			ProcessResult result = IOUtil.executeProcess(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit());
 			exitValue = result.getExitValue();
 			logMsg = result.getStdOut();
 			errMsg = result.getStdErr();
