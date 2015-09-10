@@ -51,7 +51,7 @@ public class WatcherSettings extends ObservableObject
 
 	private WatcherSettings()
 	{
-		super.bind(watchDirectories, initialScan, processingSettings);
+		super.bind(watchDirectories, initialScan, processingSettings, warningsEnabled, guessingWarningEnabled, releaseMetaTaggedWarningEnabled, releaseNukedWarningEnabled);
 
 		addListener((Observable o) -> changed.set(true));
 	}

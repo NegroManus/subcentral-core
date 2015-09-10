@@ -1,8 +1,9 @@
 package de.subcentral.fx;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.google.common.collect.Sets;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -13,7 +14,9 @@ import javafx.collections.SetChangeListener;
 public class ObservableObject implements Observable
 {
 	private final InternalInvalidationListener	internalInvalidationListener	= new InternalInvalidationListener();
-	private final ObservableSet<Observable>		dependencies					= FXCollections.observableSet(new LinkedHashSet<>());
+	// VERY IMPORTANT to use a IdentityHashSet here
+	// because otherwise Observables like ListProperties cannot be identified if their content changed
+	private final ObservableSet<Observable>		dependencies					= FXCollections.observableSet(Sets.newIdentityHashSet());
 	private final List<InvalidationListener>	listeners						= new CopyOnWriteArrayList<>();
 
 	public ObservableObject()
