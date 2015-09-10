@@ -57,6 +57,11 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	 */
 	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
 
+	/**
+	 * Whether the detailed page should be opened and parsed. TODO: make it configurable.
+	 */
+	private boolean parseDetails = false;
+
 	@Override
 	public String getName()
 	{
@@ -283,7 +288,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 		rls.getFurtherInfoLinks().add(detailsUrl);
 
 		// Parse details
-		if (detailsUrl != null)
+		if (parseDetails && detailsUrl != null)
 		{
 			Document detailsDoc = getDocument(new URL(detailsUrl));
 			parseReleaseDetails(detailsDoc, rls);
