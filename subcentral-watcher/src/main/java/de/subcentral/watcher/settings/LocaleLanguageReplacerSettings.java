@@ -11,9 +11,9 @@ import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 import de.subcentral.core.correction.LocaleLanguageReplacer;
-import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
+import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
@@ -28,11 +28,11 @@ import javafx.collections.ObservableList;
 
 public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 {
-	private final ListProperty<Locale>				parsingLanguages			= new SimpleListProperty<>(this, "parsingLanguages", FXCollections.emptyObservableList());
+	private final ListProperty<Locale>				parsingLanguages			= new SimpleListProperty<>(this, "parsingLanguages", FXCollections.observableArrayList());
 	private final Property<LanguageFormat>			outputLanguageFormat		= new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.ISO2);
 	private final Property<Locale>					outputLanguage				= new SimpleObjectProperty<>(this, "outputLanguage", Locale.ENGLISH);
-	private final ListProperty<LanguageUserPattern>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.emptyObservableList());
-	private final ListProperty<LanguageTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.emptyObservableList());
+	private final ListProperty<LanguageUserPattern>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.observableArrayList());
+	private final ListProperty<LanguageTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.observableArrayList());
 
 	private final Binding<LocaleSubtitleLanguageCorrector> subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
 

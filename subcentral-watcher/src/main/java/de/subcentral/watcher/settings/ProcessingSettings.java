@@ -38,21 +38,21 @@ public class ProcessingSettings extends AbstractSubSettings
 	private final StringProperty									filenamePatterns					= new SimpleStringProperty(this, "filenamePatterns");
 	private final ListProperty<ParsingServiceSettingEntry>			filenameParsingServices				= new SimpleListProperty<>(this,
 			"filenameParsingServices",
-			FXCollections.emptyObservableList());
+			FXCollections.observableArrayList());
 	// Metadata
 	// Metadata - Release
-	private final ListProperty<ParsingServiceSettingEntry>			releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.emptyObservableList());
-	private final ListProperty<Tag>									releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags", FXCollections.emptyObservableList());
+	private final ListProperty<ParsingServiceSettingEntry>			releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.observableArrayList());
+	private final ListProperty<Tag>									releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags", FXCollections.observableArrayList());
 	// Metadata - Release - Databases
-	private final ListProperty<MetadataDbSettingEntry<Release>>		releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.emptyObservableList());
+	private final ListProperty<MetadataDbSettingEntry<Release>>		releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.observableArrayList());
 	// Metadata - Release - Guessing
 	private final BooleanProperty									guessingEnabled						= new SimpleBooleanProperty(this, "guessingEnabled");
-	private final ListProperty<StandardRelease>						standardReleases					= new SimpleListProperty<>(this, "standardReleases", FXCollections.emptyObservableList());
+	private final ListProperty<StandardRelease>						standardReleases					= new SimpleListProperty<>(this, "standardReleases", FXCollections.observableArrayList());
 	// Metadata - Release - Compatibility
 	private final BooleanProperty									compatibilityEnabled				= new SimpleBooleanProperty(this, "compatibilityEnabled");
-	private final ListProperty<CompatibilitySettingEntry>			compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.emptyObservableList());
+	private final ListProperty<CompatibilitySettingEntry>			compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.observableArrayList());
 	// Correction - Rules
-	private final ListProperty<CorrectionRuleSettingEntry<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.emptyObservableList());
+	private final ListProperty<CorrectionRuleSettingEntry<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
 	// Correction - Subtitle language
 	private final LocaleLanguageReplacerSettings					subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 

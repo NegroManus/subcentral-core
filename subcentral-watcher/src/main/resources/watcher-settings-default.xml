@@ -12,8 +12,7 @@
 		<filenamePatterns>*.srt</filenamePatterns>
 		<parsingServices>
 			<parsingService enabled="true">addic7ed.com</parsingService>
-			<parsingService enabled="false">italiansubs.net
-			</parsingService>
+			<parsingService enabled="false">italiansubs.net</parsingService>
 			<parsingService enabled="true">subcentral.de</parsingService>
 		</parsingServices>
 	</parsing>
@@ -21,8 +20,7 @@
 	<metadata>
 		<release>
 			<parsingServices>
-				<parsingService enabled="true">release.scene
-				</parsingService>
+				<parsingService enabled="true">release.scene</parsingService>
 			</parsingServices>
 			<metaTags>
 				<tag>REAL</tag>
@@ -87,10 +85,12 @@
 				afterQuerying="true" />
 			<releaseTagsCorrectionRule searchTags="H, 265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
 				afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="H264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="H265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+				afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
+				afterQuerying="true" />
 			<releaseTagsCorrectionRule searchTags="WEB, DL" replacement="WEB-DL" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-	afterQuerying="true" />
+				afterQuerying="true" />
 		</rules>
 
 		<subtitleLanguage>

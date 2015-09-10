@@ -38,7 +38,7 @@ public class WatcherSettings extends ObservableObject
 	private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
 	// Watch
-	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories", FXCollections.emptyObservableList());
+	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories", FXCollections.observableArrayList());
 	private final BooleanProperty		initialScan						= new SimpleBooleanProperty(this, "initialScan");
 	// Processing
 	private final ProcessingSettings	processingSettings				= new ProcessingSettings();
