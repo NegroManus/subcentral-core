@@ -15,7 +15,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
- * For any media item that has no own class. For audio / video media items see {@link RegularMedia}.
+ * For any media item that has no own class, like a movie.
  *
  */
 public class RegularMedia extends AbstractNamedMedia
