@@ -608,7 +608,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 				// on the other hand, different series name in the release and by the database
 				// can be corrected by standardizers
 				// TODO: sadly all the extra information about series and
-				// episodes (episode title) is overwritten
+				// episodes (episode title) is overwritten if true
 				boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), false);
 				if (!successful)
 				{
