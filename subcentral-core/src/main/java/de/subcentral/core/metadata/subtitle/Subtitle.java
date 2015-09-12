@@ -41,7 +41,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final String	STATE_TRANSCRIPT	= "TRANSCRIPT";
 	public static final String	STATE_TIMINGS		= "TIMINGS";
 	public static final String	STATE_TRANSLATION	= "TRANSLATION";
-	public static final String	STATE_REVISION		= "VERSION";
+	public static final String	STATE_REVISION		= "REVISION";
 	public static final String	STATE_RELEASED		= "RELEASED";
 
 	/**
