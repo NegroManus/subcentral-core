@@ -600,20 +600,24 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			{
 				// the info from the parsed name should overwrite the info from
 				// the release db
-				// because if matters how the series name is in the release (not
+				// because it matters how the series name is in the release (not
 				// how it is listed on tvrage or sth else)
 				// therefore overwrite=true
 				// For example a Series may be listed as "Good Wife" but the
 				// official release name is "The Good Wife"
+				// on the other hand, different series name in the release and by the database
+				// can be corrected by standardizers
 				// TODO: sadly all the extra information about series and
 				// episodes (episode title) is overwritten
-				// on the other hands, those mistakes can be corrected by
-				// standardizers
-				ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), true);
+				boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), false);
+				if (!successful)
+				{
+					log.warn("Could not enrich " + r + " because no parser could parse the release name");
+				}
 			}
 			catch (ParsingException e)
 			{
-				log.warn("Could not enrich " + r, e);
+				log.warn("Could not enrich " + r + " due to an exception", e);
 			}
 		}
 		logReleases(Level.DEBUG, "Enriched releases:", processedRlss);
