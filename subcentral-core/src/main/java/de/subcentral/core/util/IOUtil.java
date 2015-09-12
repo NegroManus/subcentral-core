@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -262,6 +266,56 @@ public class IOUtil
 			s = s.substring(1);
 		}
 		return s;
+	}
+
+	public static boolean pingHttp(URL url, int timeout)
+	{
+		return pingHttp(url.toExternalForm(), timeout);
+	}
+
+	/**
+	 * Pings a HTTP URL. This effectively sends a HEAD request and returns <code>true</code> if the response code is in the 200-399 range.
+	 * 
+	 * @param url
+	 *            The HTTP URL to be pinged.
+	 * @param timeout
+	 *            The timeout in millis for both the connection timeout and the response read timeout. Note that the total timeout is effectively two times the given timeout.
+	 * @return <code>true</code> if the given HTTP URL has returned response code 200-399 on a HEAD request within the given timeout, otherwise <code>false</code>.
+	 */
+	public static boolean pingHttp(String url, int timeout)
+	{
+		// Otherwise an exception may be thrown on invalid SSL certificates:
+		url = url.replaceFirst("^https", "http");
+
+		try
+		{
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setConnectTimeout(timeout);
+			connection.setReadTimeout(timeout);
+			connection.setRequestMethod("HEAD");
+			int responseCode = connection.getResponseCode();
+			return (200 <= responseCode && responseCode <= 399);
+		}
+		catch (IOException exception)
+		{
+			return false;
+		}
+	}
+
+	public static String getDomainName(URL url) throws URISyntaxException
+	{
+		return getDomainName(url.toURI());
+	}
+
+	public static String getDomainName(String url) throws URISyntaxException
+	{
+		return getDomainName(new URI(url));
+	}
+
+	public static String getDomainName(URI uri)
+	{
+		String domain = uri.getHost();
+		return domain.startsWith("www.") ? domain.substring(4) : domain;
 	}
 
 	private IOUtil()

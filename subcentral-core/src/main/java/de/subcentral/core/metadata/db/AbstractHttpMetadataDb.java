@@ -1,14 +1,14 @@
 package de.subcentral.core.metadata.db;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
+
+import de.subcentral.core.util.IOUtil;
 
 public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 {
@@ -41,6 +41,19 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 		return host;
 	}
 
+	@Override
+	public String getDomain()
+	{
+		try
+		{
+			return IOUtil.getDomainName(host);
+		}
+		catch (URISyntaxException e)
+		{
+			throw new IllegalStateException("Invalid host", e);
+		}
+	}
+
 	public int getTimeout()
 	{
 		return timeout;
@@ -54,18 +67,7 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	@Override
 	public boolean isAvailable()
 	{
-		try
-		{
-			HttpURLConnection connection = (HttpURLConnection) initHost().openConnection();
-			connection.setConnectTimeout(timeout);
-			connection.setReadTimeout(timeout);
-			int responseCode = connection.getResponseCode();
-			return (200 <= responseCode && responseCode <= 399);
-		}
-		catch (IOException exception)
-		{
-			return false;
-		}
+		return IOUtil.pingHttp(host, timeout);
 	}
 
 	@Override

@@ -95,7 +95,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 								hbox.setSpacing(5d);
 								hbox.setAlignment(Pos.CENTER_LEFT);
 
-								Label name = new Label(db.getName());
+								Label name = new Label(db.getDisplayName());
 
 								URL rlsDbUrl = db.getHost();
 								Hyperlink link = FxUtil.createUrlHyperlink(rlsDbUrl, settingsController.getMainController().getCommonExecutor());

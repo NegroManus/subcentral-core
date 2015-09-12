@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
-import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
 
@@ -218,7 +217,7 @@ public class Episode extends AbstractMedia implements Comparable<Episode>
 	@Override
 	public String getName()
 	{
-		return NamingDefaults.getDefaultEpisodeNamer().name(this);
+		return null;
 	}
 
 	@Override

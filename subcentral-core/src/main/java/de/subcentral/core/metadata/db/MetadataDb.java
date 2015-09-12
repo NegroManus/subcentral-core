@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface MetadataDb<T>
 {
-	public String getName();
-
 	public String getDomain();
+
+	public String getDisplayName();
 
 	public boolean isAvailable();
 

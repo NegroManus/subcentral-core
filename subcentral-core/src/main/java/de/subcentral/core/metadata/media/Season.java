@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
-import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends AbstractMedia implements Comparable<Season>
@@ -65,7 +64,7 @@ public class Season extends AbstractMedia implements Comparable<Season>
 	@Override
 	public String getName()
 	{
-		return NamingDefaults.getDefaultSeasonNamer().name(this);
+		return null;
 	}
 
 	@Override

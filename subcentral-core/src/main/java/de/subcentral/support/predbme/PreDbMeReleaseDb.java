@@ -63,15 +63,9 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	private boolean parseDetails = false;
 
 	@Override
-	public String getName()
+	public String getDisplayName()
 	{
 		return "PreDB.me";
-	}
-
-	@Override
-	public String getDomain()
-	{
-		return DOMAIN;
 	}
 
 	@Override
@@ -613,5 +607,4 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 
 		return rls;
 	}
-
 }

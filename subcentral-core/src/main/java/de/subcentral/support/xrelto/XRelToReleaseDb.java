@@ -54,7 +54,7 @@ public class XRelToReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	private static final ZoneId TIME_ZONE = ZoneId.of("Europe/Berlin");
 
 	@Override
-	public String getName()
+	public String getDisplayName()
 	{
 		return "xREL.to";
 	}

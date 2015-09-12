@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 
-import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
@@ -364,9 +363,7 @@ public class SettingsController extends AbstractController
 			protected void succeeded()
 			{
 				log.debug("Loaded settings section: {}", section);
-				long start = System.nanoTime();
 				sectionRootPane.getChildren().setAll(getValue().getContentPane());
-				TimeUtil.printDurationMillis("adding section to view", start);
 			}
 
 			@Override

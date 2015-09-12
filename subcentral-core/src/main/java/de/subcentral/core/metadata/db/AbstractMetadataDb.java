@@ -40,12 +40,6 @@ public abstract class AbstractMetadataDb<T> implements MetadataDb<T>
 	}
 
 	@Override
-	public String toString()
-	{
-		return getName();
-	}
-
-	@Override
 	public List<T> queryWithObj(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException
 	{
 		try
@@ -78,5 +72,11 @@ public abstract class AbstractMetadataDb<T> implements MetadataDb<T>
 		{
 			throw new MetadataDbQueryException(this, obj, e);
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return getDisplayName();
 	}
 }

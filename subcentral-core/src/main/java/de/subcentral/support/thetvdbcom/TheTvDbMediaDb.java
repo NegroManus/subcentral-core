@@ -22,7 +22,6 @@ import org.jsoup.select.Elements;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbQueryException;
@@ -33,14 +32,10 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.naming.EpisodeNamer;
-import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.core.naming.SeasonNamer;
 import de.subcentral.core.util.TemporalComparator;
 
 public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 {
-	public static final String	DOMAIN					= "thetvdb.com";
 	/**
 	 * Value is of type Integer.
 	 */
@@ -82,13 +77,7 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 	}
 
 	@Override
-	public String getDomain()
-	{
-		return DOMAIN;
-	}
-
-	@Override
-	public String getName()
+	public String getDisplayName()
 	{
 		return "TheTVDB";
 	}
@@ -657,24 +646,6 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 			this.airsBeforeSeason = airsBeforeSeason;
 			this.airsAfterSeason = airsAfterSeason;
 			this.airsBeforeEpisode = airsBeforeEpisode;
-		}
-	}
-
-	public static void main(String[] args) throws IOException
-	{
-		TheTvDbMediaDb db = new TheTvDbMediaDb();
-		List<Media> queryResult = db.query("psych");
-		db.setApiKey("A3ACA9D28A27792D");
-		SeriesRecord psych = db.get(queryResult.get(0).getAttributeValue(ATTRIBUTE_THETVDB_ID), SeriesRecord.class);
-		System.out.println(psych.getSeries());
-		for (Season season : psych.getSeasons())
-		{
-			System.out.println(NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
-		}
-		for (Episode epi : psych.getEpisodes())
-		{
-			System.out.println(NamingDefaults.getDefaultEpisodeNamer().name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)) + " " + epi.getDate()
-					+ (epi.isSpecial() ? " [Special]" : ""));
 		}
 	}
 }

@@ -50,15 +50,9 @@ public class OrlyDbComReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
 
 	@Override
-	public String getName()
+	public String getDisplayName()
 	{
 		return "ORLYDB.com";
-	}
-
-	@Override
-	public String getDomain()
-	{
-		return DOMAIN;
 	}
 
 	@Override
