@@ -18,6 +18,7 @@
 			<artifactId>subcentral-core</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<!-- For UserPattern -->
 		<dependency>
 			<groupId>de.subcentral</groupId>
 			<artifactId>subcentral-fx</artifactId>
