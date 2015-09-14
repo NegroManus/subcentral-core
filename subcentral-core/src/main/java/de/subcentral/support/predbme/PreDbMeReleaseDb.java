@@ -26,11 +26,13 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbQueryException;
+import de.subcentral.core.metadata.media.AbstractSingleMedia;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.media.RegularMedia;
+import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.media.SimpleMedia;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
@@ -536,26 +538,24 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			String section = rls.getCategory();
 			if (section.startsWith("Movies"))
 			{
-				RegularMedia movie = new RegularMedia(mediaTitle);
-				movie.setMediaType(Media.MEDIA_TYPE_MOVIE);
-				movie.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+				Movie movie = new Movie(mediaTitle);
 				media = movie;
 			}
 			else if (section.startsWith("Music"))
 			{
-				RegularMedia regularMedia = new RegularMedia(mediaTitle);
-				regularMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
-				media = regularMedia;
+				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
+				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
+				media = simpleMedia;
 			}
 			else if (section.startsWith("TV"))
 			{
-				RegularMedia regularMedia = new RegularMedia(mediaTitle);
-				regularMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
-				media = regularMedia;
+				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
+				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+				media = simpleMedia;
 			}
 			else
 			{
-				media = new RegularMedia(mediaTitle);
+				media = new SimpleMedia(mediaTitle);
 			}
 		}
 
@@ -581,10 +581,10 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL, mediaImageUrl);
 			}
 		}
-		else if (media instanceof RegularMedia)
+		else if (media instanceof AbstractSingleMedia)
 		{
-			// also for RegularMedia
-			RegularMedia regularMediaItem = (RegularMedia) media;
+			// also for AbstractSingleMedia
+			AbstractSingleMedia regularMediaItem = (AbstractSingleMedia) media;
 			if (plot != null)
 			{
 				regularMediaItem.setDescription(plot);

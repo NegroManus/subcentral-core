@@ -7,8 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.media.RegularMedia;
+import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -42,7 +41,7 @@ public class Addic7edCom
 		String langPttrn = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian\\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 		String langSubTagsSrcPttrn = langPttrn + "\\.(.+)\\.Addic7ed\\.com";
 		String rlsTagsPttrn = "WEB[.-]?(?:DL|Rip)";
-		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE, "Addic7ed.com", RegularMedia.PROP_MEDIA_CONTENT_TYPE, Media.MEDIA_CONTENT_TYPE_VIDEO);
+		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE, "Addic7ed.com");
 
 		// --------------
 		// Episode Parser
@@ -222,20 +221,19 @@ public class Addic7edCom
 
 		// --------------
 		// Movie Parser
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListRegularMediaMapper());
+		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListMovieMapper());
 
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);
-		predefMovieMatchesBuilder.put(RegularMedia.PROP_MEDIA_TYPE, Media.MEDIA_TYPE_MOVIE);
 		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefEpisodeMatchesBuilder.build();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
 		Pattern p201 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
 		grps201.put(0, SubtitleAdjustment.PROP_NAME);
-		grps201.put(1, RegularMedia.PROP_NAME);
-		grps201.put(2, RegularMedia.PROP_TITLE);
-		grps201.put(3, RegularMedia.PROP_DATE);
+		grps201.put(1, Movie.PROP_NAME);
+		grps201.put(2, Movie.PROP_TITLE);
+		grps201.put(3, Movie.PROP_DATE);
 		grps201.put(4, Release.PROP_TAGS);
 		grps201.put(5, Subtitle.PROP_LANGUAGE);
 		grps201.put(6, SubtitleAdjustment.PROP_TAGS);
