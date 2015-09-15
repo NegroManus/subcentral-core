@@ -22,11 +22,13 @@ import org.jsoup.select.Elements;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.db.HtmlHttpMetadataDb2;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
@@ -36,7 +38,9 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Unnuke;
+import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.ByteUtil;
+import de.subcentral.core.util.NetUtil;
 
 /**
  * @implSpec #immutable #thread-safe
@@ -89,11 +93,71 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	}
 
 	@Override
+	public <T> List<T> searchWithObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		if (Release.class.equals(recordType))
+		{
+			if (queryObj instanceof Media)
+			{
+				if (queryObj instanceof Episode)
+				{
+					Episode epi = (Episode) queryObj;
+					// Only if series, season number and episode number are set
+					if (epi.getSeries() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
+					{
+						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
+						// TODO
+						// Using search=... instead of title=... for now
+						// because the title needs to be formatted with hyphens "-", f.ex. "Scream-the-TV-Series".
+						queryPairs.put("title", formatSeriesForSearch(epi.getSeries()));
+						queryPairs.put("episode", epi.getNumberInSeason().toString());
+						queryPairs.put("season", epi.getSeason().getNumber().toString());
+						URL searchUrl = buildUrl(NetUtil.formatQueryString(queryPairs.build()));
+						return parseSearchResults(searchUrl, recordType);
+					}
+				}
+				else if (queryObj instanceof Season)
+				{
+					Season sns = (Season) queryObj;
+					if (sns.getSeries() != null && sns.isNumbered())
+					{
+						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
+						queryPairs.put("title", formatSeriesForSearch(sns.getSeries()));
+						queryPairs.put("season", sns.getNumber().toString());
+						URL searchUrl = buildUrl(NetUtil.formatQueryString(queryPairs.build()));
+						return parseSearchResults(searchUrl, recordType);
+					}
+				}
+				else if (queryObj instanceof Series)
+				{
+					Series series = (Series) queryObj;
+					String seriesValue = formatSeriesForSearch(series);
+					URL searchUrl = buildUrl(NetUtil.formatQueryString("title", seriesValue));
+					return parseSearchResults(searchUrl, recordType);
+				}
+			}
+			Media singletonMedia = MediaUtil.getMediaOfSingletonIterable(queryObj);
+			if (singletonMedia != null)
+			{
+				return searchWithObject(singletonMedia, recordType);
+			}
+			// Otherwise use the default implementation
+			return super.searchWithObject(queryObj, recordType);
+		}
+		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
+	}
+
+	private String formatSeriesForSearch(Series series)
+	{
+		return NamingDefaults.getDefaultNormalizingFormatter().apply(series.getName()).replace(' ', '-');
+	}
+
+	@Override
 	protected URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException
 	{
 		if (Release.class.equals(recordType))
 		{
-			return buildUrl(formatQuery("search=", query));
+			return buildUrl(NetUtil.formatQueryString("search", query));
 		}
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
@@ -114,7 +178,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	{
 		if (Release.class.equals(recordType))
 		{
-			return buildUrl(formatQuery("post=", id));
+			return buildUrl(NetUtil.formatQueryString("post", id));
 		}
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
@@ -613,5 +677,12 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		rls.setSingleMedia(media);
 
 		return rls;
+	}
+
+	public static void main(String[] args) throws IllegalArgumentException, IOException
+	{
+		PreDbMeReleaseDb2 db = new PreDbMeReleaseDb2();
+		List<Release> rlss = db.searchWithObject(Episode.createSeasonedEpisode("Doc Martin", 6, 1), Release.class);
+		rlss.stream().forEach((Release rls) -> System.out.println(rls));
 	}
 }

@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 
 import de.subcentral.core.util.IOUtil;
@@ -114,22 +113,6 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 			return uri.toURL();
 		}
 		catch (URISyntaxException | MalformedURLException e)
-		{
-			throw new IllegalArgumentException(e);
-		}
-	}
-
-	protected String formatQuery(String queryPrefix, String queryStr)
-	{
-		try
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.append(queryPrefix);
-			// URLEncoder is just for encoding queries, not for the whole URL
-			sb.append(queryStr == null ? "" : URLEncoder.encode(queryStr, "UTF-8"));
-			return sb.toString();
-		}
-		catch (UnsupportedEncodingException e)
 		{
 			throw new IllegalArgumentException(e);
 		}
