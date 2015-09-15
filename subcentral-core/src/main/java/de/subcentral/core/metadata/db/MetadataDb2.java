@@ -16,7 +16,7 @@ public interface MetadataDb2
 	// Status
 	public boolean isAvailable();
 
-	// Search
+	// Search records
 	public default List<Object> search(String query) throws IllegalArgumentException, IOException
 	{
 		return search(query, Object.class);
@@ -31,10 +31,11 @@ public interface MetadataDb2
 
 	public <T> List<T> searchWithObject(Object obj, Class<T> recordType) throws IllegalArgumentException, IOException;
 
-	public default List<Object> get(Object obj) throws IllegalArgumentException, IOException
+	// Get record
+	public default Object get(String id) throws IllegalArgumentException, IOException
 	{
-		return get(obj, Object.class);
+		return get(id, Object.class);
 	}
 
-	public <T> List<T> get(Object obj, Class<T> recordType) throws IllegalArgumentException, IOException;
+	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException;
 }

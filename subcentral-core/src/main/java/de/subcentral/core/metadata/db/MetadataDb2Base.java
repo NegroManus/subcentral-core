@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,5 +76,10 @@ public abstract class MetadataDb2Base implements MetadataDb2
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(this).add("domain", getDomain()).add("displayName", getDisplayName()).toString();
+	}
+
+	protected static <T> T throwUnsupportedRecordTypeException(Class<?> unsupportedType, Set<Class<?>> supportedTypes) throws IllegalArgumentException
+	{
+		throw new IllegalArgumentException("The record type is not supported: " + unsupportedType + "(supported: " + supportedTypes + ")");
 	}
 }

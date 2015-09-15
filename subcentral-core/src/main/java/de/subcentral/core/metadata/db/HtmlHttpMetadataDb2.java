@@ -17,13 +17,22 @@ public abstract class HtmlHttpMetadataDb2 extends HttpMetadataDb2
 {
 	private static final Logger log = LogManager.getLogger(HtmlHttpMetadataDb2.class);
 
+	// Search
 	@Override
-	public <T> List<T> parseSearchResults(URL query, Class<T> resultType) throws IllegalArgumentException, IOException
+	public <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		return parseSearchResults(getDocument(query), resultType);
+		return parseSearchResults(getDocument(query), recordType);
 	}
 
-	public abstract <T> List<T> parseSearchResults(Document doc, Class<T> resultType) throws IllegalArgumentException, IOException;
+	protected abstract <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException;
+
+	// Get
+	protected <T> T parseRecord(URL url, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		return parseRecord(getDocument(url), recordType);
+	}
+
+	protected abstract <T> T parseRecord(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	protected Document getDocument(URL url) throws IOException
 	{

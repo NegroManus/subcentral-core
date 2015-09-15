@@ -76,27 +76,25 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 
 	protected abstract URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException;
 
-	@Override
-	public <T> List<T> searchWithObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
-	{
-		return parseSearchResults(buildSearchUrl(queryObj, recordType), recordType);
-	}
-
-	protected abstract URL buildSearchUrl(Object queryObj, Class<?> recordType) throws IllegalArgumentException, IOException;
-
-	public abstract <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException;
+	protected abstract <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	// Get
+	@Override
 	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		return parseRecord(buildGetUrl(id, recordType), recordType);
 	}
 
-	protected abstract <T> URL buildGetUrl(String id, Class<T> recordType) throws IllegalArgumentException, IOException;
+	protected abstract <T> URL buildGetUrl(String id, Class<T> recordType) throws IllegalArgumentException;
 
 	protected abstract <T> T parseRecord(URL url, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	// Utility methods for child classes
+	protected URL buildUrl(String query) throws IllegalArgumentException
+	{
+		return buildUrl("/", query);
+	}
+
 	/**
 	 * 
 	 * @param path
@@ -108,18 +106,32 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 */
-	protected URL buildUrl(String path, String query) throws URISyntaxException, MalformedURLException
+	protected URL buildUrl(String path, String query) throws IllegalArgumentException
 	{
-		URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
-		return uri.toURL();
+		try
+		{
+			URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
+			return uri.toURL();
+		}
+		catch (URISyntaxException | MalformedURLException e)
+		{
+			throw new IllegalArgumentException(e);
+		}
 	}
 
-	protected String formatQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException
+	protected String formatQuery(String queryPrefix, String queryStr)
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(queryPrefix);
-		// URLEncoder is just for encoding queries, not for the whole URL
-		sb.append(queryStr == null ? "" : URLEncoder.encode(queryStr, "UTF-8"));
-		return sb.toString();
+		try
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append(queryPrefix);
+			// URLEncoder is just for encoding queries, not for the whole URL
+			sb.append(queryStr == null ? "" : URLEncoder.encode(queryStr, "UTF-8"));
+			return sb.toString();
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new IllegalArgumentException(e);
+		}
 	}
 }
