@@ -11,31 +11,25 @@ import java.util.List;
 
 import de.subcentral.core.util.IOUtil;
 
-public abstract class AbstractHttpMetadataDb2 extends AbstractMetadataDb2
+public abstract class HttpMetadataDb2 extends MetadataDb2Base
 {
 	public static final int DEFAULT_TIMEOUT = 10000;
 
 	protected final URL	host;
 	protected int		timeout	= DEFAULT_TIMEOUT;
 
-	public AbstractHttpMetadataDb2()
+	public HttpMetadataDb2()
 	{
-		try
-		{
-			this.host = initHost();
-		}
-		catch (MalformedURLException e)
-		{
-			throw new AssertionError("Host URL malformed", e);
-		}
+		this.host = initHost();
 	}
 
+	// Metadata
 	/**
 	 * 
 	 * @return the URL of the host of this lookup, not null
 	 * @throws MalformedURLException
 	 */
-	protected abstract URL initHost() throws MalformedURLException;
+	protected abstract URL initHost();
 
 	public URL getHost()
 	{
@@ -55,6 +49,7 @@ public abstract class AbstractHttpMetadataDb2 extends AbstractMetadataDb2
 		}
 	}
 
+	// Config
 	public int getTimeout()
 	{
 		return timeout;
@@ -65,22 +60,43 @@ public abstract class AbstractHttpMetadataDb2 extends AbstractMetadataDb2
 		this.timeout = timeout;
 	}
 
+	// Status
 	@Override
 	public boolean isAvailable()
 	{
 		return IOUtil.pingHttp(host, timeout);
 	}
 
+	// Search
 	@Override
-	public <T> List<T> search(String query, Class<T> resultType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		return searchWithUrl(buildSearchUrl(query, resultType), resultType);
+		return parseSearchResults(buildSearchUrl(query, recordType), recordType);
 	}
 
-	public abstract <T> List<T> searchWithUrl(URL query, Class<T> resultType) throws IllegalArgumentException, IOException;
+	protected abstract URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException;
 
-	protected abstract URL buildSearchUrl(String query, Class<?> resultType) throws IllegalArgumentException;
+	@Override
+	public <T> List<T> searchWithObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		return parseSearchResults(buildSearchUrl(queryObj, recordType), recordType);
+	}
 
+	protected abstract URL buildSearchUrl(Object queryObj, Class<?> recordType) throws IllegalArgumentException, IOException;
+
+	public abstract <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException;
+
+	// Get
+	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		return parseRecord(buildGetUrl(id, recordType), recordType);
+	}
+
+	protected abstract <T> URL buildGetUrl(String id, Class<T> recordType) throws IllegalArgumentException, IOException;
+
+	protected abstract <T> T parseRecord(URL url, Class<T> recordType) throws IllegalArgumentException, IOException;
+
+	// Utility methods for child classes
 	/**
 	 * 
 	 * @param path
@@ -92,17 +108,10 @@ public abstract class AbstractHttpMetadataDb2 extends AbstractMetadataDb2
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 */
-	protected URL buildUrl(String path, String query) throws IllegalArgumentException
+	protected URL buildUrl(String path, String query) throws URISyntaxException, MalformedURLException
 	{
-		try
-		{
-			URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
-			return uri.toURL();
-		}
-		catch (URISyntaxException | MalformedURLException e)
-		{
-			throw new IllegalArgumentException(e);
-		}
+		URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
+		return uri.toURL();
 	}
 
 	protected String formatQuery(String queryPrefix, String queryStr) throws UnsupportedEncodingException

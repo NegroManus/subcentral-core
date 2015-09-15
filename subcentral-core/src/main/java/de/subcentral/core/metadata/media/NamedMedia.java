@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class AbstractNamedMedia extends AbstractMedia
+public abstract class NamedMedia extends MediaBase
 {
 	protected String		name;
 	protected List<String>	aliasNames	= new ArrayList<>(0);

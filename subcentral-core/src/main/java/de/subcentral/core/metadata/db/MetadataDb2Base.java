@@ -15,7 +15,7 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NoNamerRegisteredException;
 
-public abstract class AbstractMetadataDb2 implements MetadataDb2
+public abstract class MetadataDb2Base implements MetadataDb2
 {
 	private final List<NamingService>	namingServices		= initNamingServices();
 	private final Map<String, Object>	namingParameters	= initNamingParameters();
@@ -41,7 +41,7 @@ public abstract class AbstractMetadataDb2 implements MetadataDb2
 	}
 
 	@Override
-	public <T> List<T> searchWithObject(Object obj, Class<T> resultType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchWithObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		List<T> results = new ArrayList<>();
 		int noNamerRegisteredExceptionCount = 0;
@@ -49,8 +49,8 @@ public abstract class AbstractMetadataDb2 implements MetadataDb2
 		{
 			try
 			{
-				String name = ns.name(obj, namingParameters);
-				results.addAll(search(name, resultType));
+				String name = ns.name(queryObj, namingParameters);
+				results.addAll(search(name, recordType));
 			}
 			catch (NoNamerRegisteredException e)
 			{
@@ -59,7 +59,7 @@ public abstract class AbstractMetadataDb2 implements MetadataDb2
 		}
 		if (noNamerRegisteredExceptionCount == namingServices.size())
 		{
-			throw new IllegalArgumentException(new NoNamerRegisteredException(obj, "None of the NamingServices " + namingServices + " had an appropriate namer registered"));
+			throw new IllegalArgumentException(new NoNamerRegisteredException(queryObj, "None of the NamingServices " + namingServices + " had an appropriate namer registered"));
 		}
 		return results;
 	}

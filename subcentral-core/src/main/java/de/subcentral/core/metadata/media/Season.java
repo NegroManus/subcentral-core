@@ -19,7 +19,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Season extends AbstractMedia implements Comparable<Season>
+public class Season extends MediaBase implements Comparable<Season>
 {
 	public static final SimplePropDescriptor	PROP_SERIES			= new SimplePropDescriptor(Season.class, PropNames.SERIES);
 	public static final SimplePropDescriptor	PROP_NUMBER			= new SimplePropDescriptor(Season.class, PropNames.NUMBER);

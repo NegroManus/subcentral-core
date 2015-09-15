@@ -20,7 +20,7 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
 
-public class Episode extends AbstractMedia implements Comparable<Episode>
+public class Episode extends MediaBase implements Comparable<Episode>
 {
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Episode.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Episode.class, PropNames.SERIES);

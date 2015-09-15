@@ -12,7 +12,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.BeanUtil;
 
-public abstract class AbstractMedia implements Media
+public abstract class MediaBase implements Media
 {
 	protected String								title;
 	protected Temporal								date;

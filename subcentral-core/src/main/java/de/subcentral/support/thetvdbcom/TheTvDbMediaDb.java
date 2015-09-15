@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbQueryException;
 import de.subcentral.core.metadata.db.MetadataDbUnavailableException;
-import de.subcentral.core.metadata.media.AbstractMedia;
+import de.subcentral.core.metadata.media.MediaBase;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
@@ -583,7 +583,7 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 		}
 	}
 
-	private static void addDateAsLocaleDate(AbstractMedia media, Element parentElem, String tag)
+	private static void addDateAsLocaleDate(MediaBase media, Element parentElem, String tag)
 	{
 		String dateTxt = getTextFromChild(parentElem, tag);
 		if (dateTxt != null)

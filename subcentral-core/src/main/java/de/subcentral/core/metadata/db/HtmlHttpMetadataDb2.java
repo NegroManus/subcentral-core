@@ -13,17 +13,17 @@ import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.TimeUtil;
 
-public abstract class AbstractHtmlHttpMetadataDb2 extends AbstractHttpMetadataDb2
+public abstract class HtmlHttpMetadataDb2 extends HttpMetadataDb2
 {
-	private static final Logger log = LogManager.getLogger(AbstractHtmlHttpMetadataDb2.class);
+	private static final Logger log = LogManager.getLogger(HtmlHttpMetadataDb2.class);
 
 	@Override
-	public <T> List<T> searchWithUrl(URL query, Class<T> resultType) throws IllegalArgumentException, IOException
+	public <T> List<T> parseSearchResults(URL query, Class<T> resultType) throws IllegalArgumentException, IOException
 	{
-		return searchDocument(getDocument(query), resultType);
+		return parseSearchResults(getDocument(query), resultType);
 	}
 
-	public abstract <T> List<T> searchDocument(Document doc, Class<T> resultType) throws IllegalArgumentException, IOException;
+	public abstract <T> List<T> parseSearchResults(Document doc, Class<T> resultType) throws IllegalArgumentException, IOException;
 
 	protected Document getDocument(URL url) throws IOException
 	{

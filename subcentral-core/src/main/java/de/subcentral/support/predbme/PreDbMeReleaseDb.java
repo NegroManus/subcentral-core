@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbQueryException;
-import de.subcentral.core.metadata.media.AbstractSingleMedia;
+import de.subcentral.core.metadata.media.SingleMedia;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Movie;
@@ -581,10 +581,10 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL, mediaImageUrl);
 			}
 		}
-		else if (media instanceof AbstractSingleMedia)
+		else if (media instanceof SingleMedia)
 		{
 			// also for AbstractSingleMedia
-			AbstractSingleMedia regularMediaItem = (AbstractSingleMedia) media;
+			SingleMedia regularMediaItem = (SingleMedia) media;
 			if (plot != null)
 			{
 				regularMediaItem.setDescription(plot);

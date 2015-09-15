@@ -13,7 +13,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For any media type that has no own class, like a movie, or if the media type could not be determined.
  *
  */
-public class SimpleMedia extends AbstractSingleMedia
+public class SimpleMedia extends SingleMedia
 {
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(SimpleMedia.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(SimpleMedia.class, PropNames.TITLE);

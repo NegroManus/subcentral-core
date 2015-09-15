@@ -11,7 +11,7 @@ public interface MetadataDb2
 
 	public String getDisplayName();
 
-	public Set<Class<?>> getResultTypes();
+	public Set<Class<?>> getRecordTypes();
 
 	// Status
 	public boolean isAvailable();
@@ -22,19 +22,19 @@ public interface MetadataDb2
 		return search(query, Object.class);
 	}
 
-	public <T> List<T> search(String query, Class<T> resultType) throws IllegalArgumentException, IOException;
+	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	public default List<Object> searchWithObject(Object obj) throws IllegalArgumentException, IOException
 	{
 		return searchWithObject(obj, Object.class);
 	}
 
-	public <T> List<T> searchWithObject(Object obj, Class<T> resultType) throws IllegalArgumentException, IOException;
+	public <T> List<T> searchWithObject(Object obj, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	public default List<Object> get(Object obj) throws IllegalArgumentException, IOException
 	{
 		return get(obj, Object.class);
 	}
 
-	public <T> List<T> get(Object obj, Class<T> resultType) throws IllegalArgumentException, IOException;
+	public <T> List<T> get(Object obj, Class<T> recordType) throws IllegalArgumentException, IOException;
 }
