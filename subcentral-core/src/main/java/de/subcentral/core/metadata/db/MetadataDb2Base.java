@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -17,6 +21,8 @@ import de.subcentral.core.naming.NoNamerRegisteredException;
 
 public abstract class MetadataDb2Base implements MetadataDb2
 {
+	private static final Logger log = LogManager.getLogger(MetadataDb2Base.class);
+
 	private final List<NamingService>	namingServices		= initNamingServices();
 	private final Map<String, Object>	namingParameters	= initNamingParameters();
 
@@ -50,6 +56,7 @@ public abstract class MetadataDb2Base implements MetadataDb2
 			try
 			{
 				String name = ns.name(queryObj, namingParameters);
+				log.debug("Searching with name \"{}\" of query object {} (named by {})", name, queryObj, ns);
 				results.addAll(search(name, recordType));
 			}
 			catch (NoNamerRegisteredException e)
@@ -67,6 +74,6 @@ public abstract class MetadataDb2Base implements MetadataDb2
 	@Override
 	public String toString()
 	{
-		return getDisplayName();
+		return MoreObjects.toStringHelper(this).add("domain", getDomain()).add("displayName", getDisplayName()).toString();
 	}
 }
