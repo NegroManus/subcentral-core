@@ -109,9 +109,9 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 						// TODO
 						// Using search=... instead of title=... for now
 						// because the title needs to be formatted with hyphens "-", f.ex. "Scream-the-TV-Series".
-						queryPairs.put("title", formatSeriesForSearch(epi.getSeries()));
-						queryPairs.put("episode", epi.getNumberInSeason().toString());
+						queryPairs.put("title", formatSeriesQueryValue(epi.getSeries()));
 						queryPairs.put("season", epi.getSeason().getNumber().toString());
+						queryPairs.put("episode", epi.getNumberInSeason().toString());
 						URL searchUrl = buildUrl(NetUtil.formatQueryString(queryPairs.build()));
 						return parseSearchResults(searchUrl, recordType);
 					}
@@ -122,7 +122,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 					if (sns.getSeries() != null && sns.isNumbered())
 					{
 						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
-						queryPairs.put("title", formatSeriesForSearch(sns.getSeries()));
+						queryPairs.put("title", formatSeriesQueryValue(sns.getSeries()));
 						queryPairs.put("season", sns.getNumber().toString());
 						URL searchUrl = buildUrl(NetUtil.formatQueryString(queryPairs.build()));
 						return parseSearchResults(searchUrl, recordType);
@@ -131,7 +131,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 				else if (queryObj instanceof Series)
 				{
 					Series series = (Series) queryObj;
-					String seriesValue = formatSeriesForSearch(series);
+					String seriesValue = formatSeriesQueryValue(series);
 					URL searchUrl = buildUrl(NetUtil.formatQueryString("title", seriesValue));
 					return parseSearchResults(searchUrl, recordType);
 				}
@@ -147,7 +147,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
 
-	private String formatSeriesForSearch(Series series)
+	private String formatSeriesQueryValue(Series series)
 	{
 		return NamingDefaults.getDefaultNormalizingFormatter().apply(series.getName()).replace(' ', '-');
 	}
