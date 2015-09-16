@@ -46,7 +46,11 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 {
-	public static final String DOMAIN = "predb.me";
+	public static final String	DOMAIN					= "predb.me";
+	/**
+	 * Value is of type Integer.
+	 */
+	public static final String	ATTRIBUTE_PREDBME_ID	= "PREDBME_ID";
 
 	private static final Logger log = LogManager.getLogger(PreDbMeReleaseDb2.class);
 
@@ -60,11 +64,6 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * The release dates are in UTC.
 	 */
 	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
-
-	/**
-	 * Whether the record page should be opened and parsed. TODO: make it configurable.
-	 */
-	private boolean getFullRecordWhenSearching = false;
 
 	@Override
 	public String getDisplayName()
@@ -176,24 +175,24 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	}
 
 	@Override
-	protected URL buildStringSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException
+	protected URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException
 	{
 		if (Release.class.equals(recordType))
 		{
 			return buildRelativeUrl("search", query);
 		}
-		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
+		return throwUnsupportedRecordTypeException(recordType, getSearchableRecordTypes());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException
+	protected <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException
 	{
 		if (Release.class.equals(recordType))
 		{
 			return (List<T>) parseReleaseSearchResults(doc);
 		}
-		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
+		return throwUnsupportedRecordTypeException(recordType, getSearchableRecordTypes());
 	}
 
 	@Override
@@ -208,7 +207,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <T> T parseRecord(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException
+	protected <T> T parseRecord(Document doc, Class<T> recordType) throws IllegalArgumentException
 	{
 		if (Release.class.equals(recordType))
 		{
@@ -237,20 +236,16 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private List<Release> parseReleaseSearchResults(Document doc) throws MalformedURLException, IOException
+	private List<Release> parseReleaseSearchResults(Document doc)
 	{
 		Elements rlsDivs = doc.getElementsByClass("post");
-		if (rlsDivs.isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
+		ImmutableList.Builder<Release> rlss = ImmutableList.builder();
 		for (Element rlsDiv : rlsDivs)
 		{
 			Release rls = parseReleaseSearchResult(doc, rlsDiv);
 			rlss.add(rls);
 		}
-		return rlss;
+		return rlss.build();
 	}
 
 	/**
@@ -302,9 +297,12 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private Release parseReleaseSearchResult(Document doc, Element rlsDiv) throws MalformedURLException, IOException
+	private Release parseReleaseSearchResult(Document doc, Element rlsDiv)
 	{
 		Release rls = new Release();
+
+		String id = rlsDiv.attr("id");
+		// TODO store on rls
 
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -354,14 +352,6 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		}
 
 		rls.getFurtherInfoLinks().add(detailsUrl);
-
-		// Parse details
-		if (getFullRecordWhenSearching && detailsUrl != null)
-		{
-			Document detailsDoc = getDocument(new URL(detailsUrl));
-			return parseReleaseRecord(detailsDoc);
-		}
-
 		return rls;
 	}
 

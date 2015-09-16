@@ -24,7 +24,7 @@ public abstract class HtmlHttpMetadataDb2 extends HttpMetadataDb2
 		return parseSearchResults(getDocument(query), recordType);
 	}
 
-	protected abstract <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException;
+	protected abstract <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException;
 
 	// Get
 	protected <T> T parseRecord(URL url, Class<T> recordType) throws IllegalArgumentException, IOException
@@ -32,7 +32,7 @@ public abstract class HtmlHttpMetadataDb2 extends HttpMetadataDb2
 		return parseRecord(getDocument(url), recordType);
 	}
 
-	protected abstract <T> T parseRecord(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException;
+	protected abstract <T> T parseRecord(Document doc, Class<T> recordType) throws IllegalArgumentException;
 
 	protected Document getDocument(URL url) throws IOException
 	{

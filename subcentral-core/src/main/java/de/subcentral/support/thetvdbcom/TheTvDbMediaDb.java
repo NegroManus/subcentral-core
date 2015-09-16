@@ -9,32 +9,31 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.metadata.db.AbstractHtmlHttpMetadataDb;
-import de.subcentral.core.metadata.db.MetadataDbQueryException;
-import de.subcentral.core.metadata.db.MetadataDbUnavailableException;
-import de.subcentral.core.metadata.media.MediaBase;
+import de.subcentral.core.metadata.db.HtmlHttpMetadataDb2;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.media.MediaBase;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.util.TemporalComparator;
 
-public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
+public class TheTvDbMediaDb extends HtmlHttpMetadataDb2
 {
 	/**
 	 * Value is of type Integer.
@@ -71,9 +70,16 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 	}
 
 	@Override
-	protected URL initHost() throws MalformedURLException
+	protected URL initHost()
 	{
-		return new URL(BASE_PATH);
+		try
+		{
+			return new URL(BASE_PATH);
+		}
+		catch (MalformedURLException e)
+		{
+			throw new AssertionError(e);
+		}
 	}
 
 	@Override
@@ -83,13 +89,86 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 	}
 
 	@Override
-	public Class<Media> getResultType()
+	public Set<Class<?>> getRecordTypes()
 	{
-		return Media.class;
+		return ImmutableSet.of(Series.class, Episode.class);
 	}
 
 	@Override
-	public List<Media> queryDocument(Document doc) throws MetadataDbUnavailableException, MetadataDbQueryException
+	public Set<Class<?>> getSearchableRecordTypes()
+	{
+		return ImmutableSet.of(Series.class);
+	}
+
+	@Override
+	protected URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException
+	{
+		if (Series.class.equals(recordType))
+		{
+			return buildRelativeUrl("/api/GetSeries.php", "seriesname", query);
+		}
+		return throwUnsupportedRecordTypeException(recordType, getSearchableRecordTypes());
+	}
+
+	@Override
+	protected <T> URL buildGetUrl(String id, Class<T> recordType) throws IllegalArgumentException
+	{
+		return buildGetUrl(id, recordType, null, true);
+	}
+
+	protected <T> URL buildGetUrl(String id, Class<T> recordType, String language, boolean full) throws IllegalArgumentException
+	{
+		try
+		{
+			StringBuilder urlSpec = new StringBuilder();
+			urlSpec.append(getApiPathWithKey(apiKey));
+			if (Series.class.equals(recordType))
+			{
+				urlSpec.append("series/");
+				urlSpec.append(id);
+				urlSpec.append('/');
+				if (full)
+				{
+					urlSpec.append("all/");
+				}
+			}
+			else if (Episode.class.equals(recordType))
+			{
+				urlSpec.append("episodes/");
+				urlSpec.append(id);
+				urlSpec.append('/');
+			}
+			else
+			{
+				return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
+			}
+
+			if (language != null)
+			{
+				urlSpec.append(language);
+				urlSpec.append(".xml");
+			}
+
+			return new URL(urlSpec.toString());
+		}
+		catch (MalformedURLException e)
+		{
+			throw new IllegalArgumentException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException
+	{
+		if (Series.class.equals(recordType))
+		{
+			return (List<T>) parseSeriesSearchResults(doc);
+		}
+		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
+	}
+
+	private List<Series> parseSeriesSearchResults(Document doc)
 	{
 		/**
 		 * <pre>
@@ -119,7 +198,7 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 		 */
 
 		Elements seriesElems = doc.getElementsByTag("series");
-		ImmutableList.Builder<Media> seriesList = ImmutableList.builder();
+		ImmutableList.Builder<Series> seriesList = ImmutableList.builder();
 		for (Element seriesElem : seriesElems)
 		{
 			Series series = new Series();
@@ -150,47 +229,24 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 		return seriesList.build();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected URL buildQueryUrl(String query) throws Exception
+	protected <T> T parseRecord(Document doc, Class<T> recordType)
 	{
-		return buildUrl("/api/GetSeries.php", formatQuery("seriesname=", query));
+		if (SeriesRecord.class.equals(recordType))
+		{
+			return (T) parseSeriesRecord(doc);
+		}
+		else if (Episode.class.equals(recordType))
+		{
+			// TODO
+			return null;
+		}
+		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
 
-	@Override
-	public <E> E get(String id, Class<E> type) throws MetadataDbUnavailableException, MetadataDbQueryException
+	protected SeriesRecord parseSeriesRecord(Document doc)
 	{
-		if (SeriesRecord.class.equals(type))
-		{
-			try
-			{
-				return type.cast(getSeries(Integer.parseInt(id), "en", true));
-			}
-			catch (NumberFormatException | IOException e)
-			{
-				throw new MetadataDbQueryException(this, id, e);
-			}
-		}
-		throw new IllegalArgumentException("Unknown type " + type.getName() + ". Known are [" + SeriesRecord.class.getName() + "]");
-	}
-
-	public SeriesRecord getSeries(int id, String language, boolean full) throws IOException
-	{
-		StringBuilder urlSpec = new StringBuilder();
-		urlSpec.append(getApiPathWithKey(apiKey));
-		urlSpec.append("series/");
-		urlSpec.append(id);
-		urlSpec.append('/');
-		if (full)
-		{
-			urlSpec.append("all/");
-			// TODO use zip instead of xml for full record
-		}
-		urlSpec.append(language);
-		urlSpec.append(".xml");
-		URL url = new URL(urlSpec.toString());
-		log.debug("Requesting {}", url);
-		Document doc = Jsoup.parse(url, 5000);
-
 		Series series = new Series();
 		List<Season> seasons = new ArrayList<>();
 		List<Episode> episodes = new ArrayList<>();
@@ -648,4 +704,6 @@ public class TheTvDbMediaDb extends AbstractHtmlHttpMetadataDb<Media>
 			this.airsBeforeEpisode = airsBeforeEpisode;
 		}
 	}
+
+	// A3ACA9D28A27792D
 }

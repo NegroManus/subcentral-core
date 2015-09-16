@@ -13,6 +13,11 @@ public interface MetadataDb2
 
 	public Set<Class<?>> getRecordTypes();
 
+	public default Set<Class<?>> getSearchableRecordTypes()
+	{
+		return getRecordTypes();
+	}
+
 	// Status
 	public boolean isAvailable();
 
