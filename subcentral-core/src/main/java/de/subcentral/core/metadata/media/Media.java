@@ -197,9 +197,9 @@ public interface Media extends Serializable
 
 	/**
 	 * 
-	 * @return a set of links (typically URLs) where further information about this media can be found
+	 * @return a set of links (typically URIs) where further information about this media can be found
 	 */
-	public List<String> getFurtherInfo();
+	public List<String> getFurtherInfoLinks();
 
 	/**
 	 * Additional attributes that have no designated property can be stored in the ListMultimap of getAttributes().

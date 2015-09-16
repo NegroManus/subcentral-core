@@ -187,7 +187,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException
+	protected <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		if (Release.class.equals(recordType))
 		{
@@ -394,7 +394,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @return
 	 * @throws IOException
 	 */
-	protected Release parseReleaseRecord(Document doc)
+	private Release parseReleaseRecord(Document doc)
 	{
 		Release rls = new Release();
 
@@ -570,7 +570,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 					if (episodeTitleAnchor != null)
 					{
 						epi.setTitle(episodeTitleAnchor.text());
-						epi.getFurtherInfo().add(episodeTitleAnchor.attr("href"));
+						epi.getFurtherInfoLinks().add(episodeTitleAnchor.attr("href"));
 					}
 					Element airdateElement = valueDiv.getElementsByClass("airdate").first();
 					if (airdateElement != null)
@@ -633,18 +633,18 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		if (media == null && rls.getCategory() != null)
 		{
 			String section = rls.getCategory();
-			if (section.startsWith("Movies"))
+			if (section.startsWith("movies"))
 			{
 				Movie movie = new Movie(mediaTitle);
 				media = movie;
 			}
-			else if (section.startsWith("Music"))
+			else if (section.startsWith("music"))
 			{
 				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
 				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
 				media = simpleMedia;
 			}
-			else if (section.startsWith("TV"))
+			else if (section.startsWith("tv"))
 			{
 				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
 				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
@@ -671,7 +671,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 			if (links != null)
 			{
 				// the ext-links for episode releases belong to the series
-				epi.getSeries().getFurtherInfo().addAll(links);
+				epi.getSeries().getFurtherInfoLinks().addAll(links);
 			}
 			if (mediaImageUrl != null)
 			{
@@ -692,7 +692,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 			}
 			if (links != null)
 			{
-				regularMediaItem.getFurtherInfo().addAll(links);
+				regularMediaItem.getFurtherInfoLinks().addAll(links);
 			}
 			if (mediaImageUrl != null)
 			{

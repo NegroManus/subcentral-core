@@ -21,18 +21,18 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends MediaBase implements Comparable<Season>
 {
-	public static final SimplePropDescriptor	PROP_SERIES			= new SimplePropDescriptor(Season.class, PropNames.SERIES);
-	public static final SimplePropDescriptor	PROP_NUMBER			= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
-	public static final SimplePropDescriptor	PROP_TITLE			= new SimplePropDescriptor(Season.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_SPECIAL		= new SimplePropDescriptor(Season.class, PropNames.SPECIAL);
-	public static final SimplePropDescriptor	PROP_DATE			= new SimplePropDescriptor(Series.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_FINALE_DATE	= new SimplePropDescriptor(Series.class, PropNames.FINALE_DATE);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION	= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_IMAGES			= new SimplePropDescriptor(Season.class, PropNames.IMAGES);
-	public static final SimplePropDescriptor	PROP_RATINGS		= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
-	public static final SimplePropDescriptor	PROP_CONTENT_RATING	= new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO);
-	public static final SimplePropDescriptor	PROP_ATTRIBUTES		= new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
+	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
+	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
+	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Season.class, PropNames.TITLE);
+	public static final SimplePropDescriptor	PROP_SPECIAL			= new SimplePropDescriptor(Season.class, PropNames.SPECIAL);
+	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(Series.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_FINALE_DATE		= new SimplePropDescriptor(Series.class, PropNames.FINALE_DATE);
+	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
+	public static final SimplePropDescriptor	PROP_IMAGES				= new SimplePropDescriptor(Season.class, PropNames.IMAGES);
+	public static final SimplePropDescriptor	PROP_RATINGS			= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
+	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO_LINKS);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
 
 	private Series		series;
 	private Integer		number;
@@ -228,7 +228,7 @@ public class Season extends MediaBase implements Comparable<Season>
 				.add("ratings", BeanUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
 				.add("images", BeanUtil.nullIfEmpty(images))
-				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
+				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

@@ -480,7 +480,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 					if (episodeTitleAnchor != null)
 					{
 						epi.setTitle(episodeTitleAnchor.text());
-						epi.getFurtherInfo().add(episodeTitleAnchor.attr("href"));
+						epi.getFurtherInfoLinks().add(episodeTitleAnchor.attr("href"));
 					}
 					Element airdateElement = valueDiv.getElementsByClass("airdate").first();
 					if (airdateElement != null)
@@ -574,7 +574,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			if (seriesInfoUrls != null)
 			{
 				// the ext-links for episode releases belong to the series
-				epi.getSeries().getFurtherInfo().addAll(seriesInfoUrls);
+				epi.getSeries().getFurtherInfoLinks().addAll(seriesInfoUrls);
 			}
 			if (mediaImageUrl != null)
 			{
@@ -595,7 +595,7 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			}
 			if (seriesInfoUrls != null)
 			{
-				regularMediaItem.getFurtherInfo().addAll(seriesInfoUrls);
+				regularMediaItem.getFurtherInfoLinks().addAll(seriesInfoUrls);
 			}
 			if (mediaImageUrl != null)
 			{

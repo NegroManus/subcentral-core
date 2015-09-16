@@ -35,7 +35,7 @@ public class Series extends NamedMedia implements Comparable<Series>
 	public static final SimplePropDescriptor	PROP_RATINGS				= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Series.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Series.class, PropNames.IMAGES);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO			= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS		= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO_LINKS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(Series.class, PropNames.ATTRIBUTES);
 
 	/**
@@ -327,7 +327,7 @@ public class Series extends NamedMedia implements Comparable<Series>
 				.add("ratings", BeanUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
 				.add("images", BeanUtil.nullIfEmpty(images))
-				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
+				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

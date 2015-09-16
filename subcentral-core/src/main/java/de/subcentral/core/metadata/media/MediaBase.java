@@ -17,11 +17,11 @@ public abstract class MediaBase implements Media
 	protected String								title;
 	protected Temporal								date;
 	protected String								description;
-	protected Map<String, Float>					ratings		= new HashMap<>(2);
+	protected Map<String, Float>					ratings				= new HashMap<>(2);
 	protected String								contentRating;
-	protected final ListMultimap<String, String>	images		= LinkedListMultimap.create(0);
-	protected final List<String>					furtherInfo	= new ArrayList<>(4);
-	protected final ListMultimap<String, Object>	attributes	= LinkedListMultimap.create(0);
+	protected final ListMultimap<String, String>	images				= LinkedListMultimap.create(0);
+	protected final List<String>					furtherInfoLinks	= new ArrayList<>(4);
+	protected final ListMultimap<String, Object>	attributes			= LinkedListMultimap.create(0);
 
 	@Override
 	public String getTitle()
@@ -92,15 +92,15 @@ public abstract class MediaBase implements Media
 	}
 
 	@Override
-	public List<String> getFurtherInfo()
+	public List<String> getFurtherInfoLinks()
 	{
-		return furtherInfo;
+		return furtherInfoLinks;
 	}
 
-	public void setFurtherInfo(Collection<String> furtherInfo)
+	public void setFurtherInfoLinks(Collection<String> furtherInfoLinks)
 	{
-		this.furtherInfo.clear();
-		this.furtherInfo.addAll(furtherInfo);
+		this.furtherInfoLinks.clear();
+		this.furtherInfoLinks.addAll(furtherInfoLinks);
 	}
 
 	@Override

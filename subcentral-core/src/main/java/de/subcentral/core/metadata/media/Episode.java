@@ -38,7 +38,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	public static final SimplePropDescriptor	PROP_RATINGS			= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(Episode.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_IMAGES				= new SimplePropDescriptor(Episode.class, PropNames.IMAGES);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO		= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO);
+	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Episode.class, PropNames.FURTHER_INFO_LINKS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Episode.class, PropNames.ATTRIBUTES);
 
 	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
@@ -398,7 +398,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("contentRating", contentRating)
 				.add("ratings", BeanUtil.nullIfEmpty(ratings))
-				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
+				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

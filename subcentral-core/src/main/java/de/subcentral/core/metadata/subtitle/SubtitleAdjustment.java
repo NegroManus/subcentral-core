@@ -36,7 +36,7 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_SIZE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SIZE);
 	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO);
-	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO_URL);
+	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO_LINK);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.CONTRIBUTIONS);
 
 	public static final Tag HEARING_IMPAIRED_TAG = new Tag("HI", "Hearing Impaired");

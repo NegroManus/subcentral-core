@@ -34,7 +34,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE	= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
 	public static final SimplePropDescriptor	PROP_BASIS				= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
 	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(Subtitle.class, PropNames.NFO);
-	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(Subtitle.class, PropNames.NFO_URL);
+	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(Subtitle.class, PropNames.NFO_LINK);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
 
 	public static final String	STATE_PLANNED		= "PLANNED";

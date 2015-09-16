@@ -19,7 +19,7 @@ public abstract class HtmlHttpMetadataDb2 extends HttpMetadataDb2
 
 	// Search
 	@Override
-	public <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException
+	protected <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		return parseSearchResults(getDocument(query), recordType);
 	}

@@ -19,7 +19,9 @@ public class PreDbMePlayground
 		URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");
 		Document doc = Jsoup.parse(url.openStream(), "UTF-8", lookup.getHost().toExternalForm());
 
-		Release rls = lookup.parseReleaseRecord(doc);
+		Release rls = lookup.parseRecord(doc, Release.class);
+
+		lookup.get("");
 		System.out.println(rls);
 	}
 }
