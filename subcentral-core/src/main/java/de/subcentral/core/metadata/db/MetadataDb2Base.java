@@ -80,6 +80,6 @@ public abstract class MetadataDb2Base implements MetadataDb2
 
 	protected static <T> T throwUnsupportedRecordTypeException(Class<?> unsupportedType, Set<Class<?>> supportedTypes) throws IllegalArgumentException
 	{
-		throw new IllegalArgumentException("The record type is not supported: " + unsupportedType + "(supported: " + supportedTypes + ")");
+		throw new IllegalArgumentException("The record type is not supported: " + unsupportedType + " (supported: " + supportedTypes + ")");
 	}
 }

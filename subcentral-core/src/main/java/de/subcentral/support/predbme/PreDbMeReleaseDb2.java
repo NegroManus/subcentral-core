@@ -177,7 +177,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	@Override
 	protected URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException
 	{
-		if (Release.class.equals(recordType))
+		if (Release.class.equals(recordType) || Object.class.equals(recordType))
 		{
 			return buildRelativeUrl("search", query);
 		}
@@ -188,7 +188,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	@Override
 	protected <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException
 	{
-		if (Release.class.equals(recordType))
+		if (Release.class.equals(recordType) || Object.class.equals(recordType))
 		{
 			return (List<T>) parseReleaseSearchResults(doc);
 		}
@@ -198,7 +198,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	@Override
 	protected <T> URL buildGetUrl(String id, Class<T> recordType) throws IllegalArgumentException
 	{
-		if (Release.class.equals(recordType))
+		if (Release.class.equals(recordType) || Object.class.equals(recordType))
 		{
 			return buildRelativeUrl("post", id);
 		}
@@ -209,7 +209,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	@Override
 	protected <T> T parseRecord(Document doc, Class<T> recordType) throws IllegalArgumentException
 	{
-		if (Release.class.equals(recordType))
+		if (Release.class.equals(recordType) || Object.class.equals(recordType))
 		{
 			return (T) parseReleaseRecord(doc);
 		}

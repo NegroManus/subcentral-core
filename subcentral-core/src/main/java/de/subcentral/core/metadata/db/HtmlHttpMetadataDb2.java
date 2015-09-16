@@ -39,7 +39,6 @@ public abstract class HtmlHttpMetadataDb2 extends HttpMetadataDb2
 		log.debug("Connecting to {}", url);
 		long start = System.nanoTime();
 		Connection con = setupConnection(url);
-		log.trace("Connected to {}: {}", url, con);
 		Document doc = con.get();
 		double duration = TimeUtil.durationMillis(start);
 		log.printf(Level.DEBUG, "Retrieved contents of %s in %.0f ms", url, duration);

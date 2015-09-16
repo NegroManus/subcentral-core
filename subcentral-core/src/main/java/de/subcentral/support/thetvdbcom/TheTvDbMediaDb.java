@@ -704,6 +704,4 @@ public class TheTvDbMediaDb extends HtmlHttpMetadataDb2
 			this.airsBeforeEpisode = airsBeforeEpisode;
 		}
 	}
-
-	// A3ACA9D28A27792D
 }

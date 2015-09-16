@@ -1,12 +1,8 @@
 package de.subcentral.support.predbme;
 
-import java.net.URL;
+import java.util.List;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import com.google.common.io.Resources;
-
+import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 
 public class PreDbMePlayground
@@ -14,14 +10,16 @@ public class PreDbMePlayground
 
 	public static void main(String[] args) throws Exception
 	{
-		PreDbMeReleaseDb2 lookup = new PreDbMeReleaseDb2();
+		PreDbMeReleaseDb2 db = new PreDbMeReleaseDb2();
 
-		URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");
-		Document doc = Jsoup.parse(url.openStream(), "UTF-8", lookup.getHost().toExternalForm());
+		// URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");
+		// Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost().toExternalForm());
+		//
+		// Release rls = db.parseRecord(doc, Release.class);
+		// System.out.println(rls);
 
-		Release rls = lookup.parseRecord(doc, Release.class);
+		List<Release> rlss = db.searchWithObject(new Series("Psych"), Release.class);
+		rlss.stream().forEach((Release r) -> System.out.println(r));
 
-		lookup.get("");
-		System.out.println(rls);
 	}
 }
