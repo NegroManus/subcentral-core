@@ -71,10 +71,10 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	@Override
 	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		return parseSearchResults(buildSearchUrl(query, recordType), recordType);
+		return parseSearchResults(buildStringSearchUrl(query, recordType), recordType);
 	}
 
-	protected abstract URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException;
+	protected abstract URL buildStringSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException;
 
 	protected abstract <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException;
 

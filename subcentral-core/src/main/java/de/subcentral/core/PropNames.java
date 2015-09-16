@@ -46,5 +46,6 @@ public interface PropNames
 	public static final String	TAGS					= "tags";
 	public static final String	TITLE					= "title";
 	public static final String	TYPE					= "type";
+	public static final String	UNNUKES					= "unnukes";
 	public static final String	VERSION					= "version";
 }

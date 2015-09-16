@@ -1,6 +1,5 @@
 package de.subcentral.support.predbme;
 
-import java.io.File;
 import java.net.URL;
 
 import org.jsoup.Jsoup;
@@ -15,13 +14,12 @@ public class PreDbMePlayground
 
 	public static void main(String[] args) throws Exception
 	{
-		PreDbMeReleaseDb lookup = new PreDbMeReleaseDb();
+		PreDbMeReleaseDb2 lookup = new PreDbMeReleaseDb2();
 
-		URL url = Resources.getResource("de/subcentral/support/predbme/icarly.s01e10_details_formatted.html");
-		File resource = new File(url.toURI());
-		Document doc = Jsoup.parse(resource, "UTF-8", lookup.getHost().toExternalForm());
+		URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");
+		Document doc = Jsoup.parse(url.openStream(), "UTF-8", lookup.getHost().toExternalForm());
 
-		Release rls = lookup.parseReleaseDetails(doc, new Release());
+		Release rls = lookup.parseReleaseRecord(doc);
 		System.out.println(rls);
 	}
 }

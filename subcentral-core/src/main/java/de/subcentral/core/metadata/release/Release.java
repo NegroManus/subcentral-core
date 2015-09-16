@@ -43,6 +43,7 @@ public class Release implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_SIZE			= new SimplePropDescriptor(Release.class, PropNames.SIZE);
 	public static final SimplePropDescriptor	PROP_FILE_COUNT		= new SimplePropDescriptor(Release.class, PropNames.FILE_COUNT);
 	public static final SimplePropDescriptor	PROP_NUKES			= new SimplePropDescriptor(Release.class, PropNames.NUKES);
+	public static final SimplePropDescriptor	PROP_UNNUKES		= new SimplePropDescriptor(Release.class, PropNames.UNNUKES);
 	public static final SimplePropDescriptor	PROP_NFO			= new SimplePropDescriptor(Release.class, PropNames.NFO);
 	public static final SimplePropDescriptor	PROP_NFO_URL		= new SimplePropDescriptor(Release.class, PropNames.NFO_URL);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO	= new SimplePropDescriptor(Release.class, PropNames.FURTHER_INFO);
@@ -242,7 +243,7 @@ public class Release implements Comparable<Release>
 	}
 
 	/**
-	 * The release category / category.
+	 * The release category (section).
 	 * 
 	 * @return the category
 	 */
@@ -251,9 +252,9 @@ public class Release implements Comparable<Release>
 		return category;
 	}
 
-	public void setCategory(String section)
+	public void setCategory(String category)
 	{
-		this.category = section;
+		this.category = category;
 	}
 
 	/**
@@ -502,6 +503,7 @@ public class Release implements Comparable<Release>
 				.add("size", BeanUtil.nullIfZero(size))
 				.add("fileCount", BeanUtil.nullIfZero(fileCount))
 				.add("nukes", BeanUtil.nullIfEmpty(nukes))
+				.add("unnukes", BeanUtil.nullIfEmpty(unnukes))
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
 				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfo))
