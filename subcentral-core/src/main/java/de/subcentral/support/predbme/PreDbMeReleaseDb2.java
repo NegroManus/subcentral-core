@@ -40,7 +40,6 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Unnuke;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.ByteUtil;
-import de.subcentral.core.util.NetUtil;
 
 /**
  * @implSpec #immutable #thread-safe
@@ -103,28 +102,26 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 				{
 					Episode epi = (Episode) queryObj;
 					// Only if series, season number and episode number are set
+					// Otherwise predb.me mostly does not parse the release name properly
 					if (epi.getSeries() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
 					{
 						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
-						// TODO
-						// Using search=... instead of title=... for now
-						// because the title needs to be formatted with hyphens "-", f.ex. "Scream-the-TV-Series".
 						queryPairs.put("title", formatSeriesQueryValue(epi.getSeries()));
 						queryPairs.put("season", epi.getSeason().getNumber().toString());
 						queryPairs.put("episode", epi.getNumberInSeason().toString());
-						URL searchUrl = buildUrl(NetUtil.formatQueryString(queryPairs.build()));
+						URL searchUrl = buildRelativeUrl(queryPairs.build());
 						return parseSearchResults(searchUrl, recordType);
 					}
 				}
 				else if (queryObj instanceof Season)
 				{
-					Season sns = (Season) queryObj;
-					if (sns.getSeries() != null && sns.isNumbered())
+					Season season = (Season) queryObj;
+					if (season.getSeries() != null && season.isNumbered())
 					{
 						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
-						queryPairs.put("title", formatSeriesQueryValue(sns.getSeries()));
-						queryPairs.put("season", sns.getNumber().toString());
-						URL searchUrl = buildUrl(NetUtil.formatQueryString(queryPairs.build()));
+						queryPairs.put("title", formatSeriesQueryValue(season.getSeries()));
+						queryPairs.put("season", season.getNumber().toString());
+						URL searchUrl = buildRelativeUrl(queryPairs.build());
 						return parseSearchResults(searchUrl, recordType);
 					}
 				}
@@ -132,15 +129,18 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 				{
 					Series series = (Series) queryObj;
 					String seriesValue = formatSeriesQueryValue(series);
-					URL searchUrl = buildUrl(NetUtil.formatQueryString("title", seriesValue));
+					URL searchUrl = buildRelativeUrl("title", seriesValue);
 					return parseSearchResults(searchUrl, recordType);
 				}
 			}
-			Media singletonMedia = MediaUtil.getMediaOfSingletonIterable(queryObj);
+
+			// Check whether the queryObj is an Iterable of a single Media
+			Media singletonMedia = MediaUtil.getSingletonMediaFromIterable(queryObj);
 			if (singletonMedia != null)
 			{
 				return searchWithObject(singletonMedia, recordType);
 			}
+
 			// Otherwise use the default implementation
 			return super.searchWithObject(queryObj, recordType);
 		}
@@ -157,7 +157,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	{
 		if (Release.class.equals(recordType))
 		{
-			return buildUrl(NetUtil.formatQueryString("search", query));
+			return buildRelativeUrl("search", query);
 		}
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
@@ -168,7 +168,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	{
 		if (Release.class.equals(recordType))
 		{
-			return (List<T>) parseReleases(doc);
+			return (List<T>) parseSearchResultsReleases(doc);
 		}
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
@@ -178,7 +178,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	{
 		if (Release.class.equals(recordType))
 		{
-			return buildUrl(NetUtil.formatQueryString("post", id));
+			return buildRelativeUrl("post", id);
 		}
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
@@ -214,7 +214,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private List<Release> parseReleases(Document doc) throws MalformedURLException, IOException
+	private List<Release> parseSearchResultsReleases(Document doc) throws MalformedURLException, IOException
 	{
 		Elements rlsDivs = doc.getElementsByClass("post");
 		if (rlsDivs.isEmpty())
@@ -224,7 +224,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
-			Release rls = parseRelease(doc, rlsDiv);
+			Release rls = parseSearchResultRelease(doc, rlsDiv);
 			rlss.add(rls);
 		}
 		return rlss;
@@ -279,7 +279,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private Release parseRelease(Document doc, Element rlsDiv) throws MalformedURLException, IOException
+	private Release parseSearchResultRelease(Document doc, Element rlsDiv) throws MalformedURLException, IOException
 	{
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -416,7 +416,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		String mediaTitle = null;
 		String plot = null;
 		List<String> genres = null;
-		List<String> seriesInfoUrls = null;
+		List<String> links = null;
 		for (Element keyValueDiv : keyValueDivs)
 		{
 			Element keyDiv = keyValueDiv.getElementsByClass("pb-l").first();
@@ -593,10 +593,10 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 					 * href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a> </div> </pre>
 					 */
 					Elements extLinksAnchors = valueDiv.select("a.ext-link");
-					seriesInfoUrls = new ArrayList<>(extLinksAnchors.size());
+					links = new ArrayList<>(extLinksAnchors.size());
 					for (Element extLinkAnchor : extLinksAnchors)
 					{
-						seriesInfoUrls.add(extLinkAnchor.attr("href"));
+						links.add(extLinkAnchor.attr("href"));
 					}
 				}
 			}
@@ -642,19 +642,19 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 			{
 				epi.getSeries().getGenres().addAll(genres);
 			}
-			if (seriesInfoUrls != null)
+			if (links != null)
 			{
 				// the ext-links for episode releases belong to the series
-				epi.getSeries().getFurtherInfo().addAll(seriesInfoUrls);
+				epi.getSeries().getFurtherInfo().addAll(links);
 			}
 			if (mediaImageUrl != null)
 			{
 				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL, mediaImageUrl);
 			}
 		}
+		// For both Movie and SimpleMedia
 		else if (media instanceof SingleMedia)
 		{
-			// also for AbstractSingleMedia
 			SingleMedia regularMediaItem = (SingleMedia) media;
 			if (plot != null)
 			{
@@ -664,9 +664,9 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 			{
 				regularMediaItem.getGenres().addAll(genres);
 			}
-			if (seriesInfoUrls != null)
+			if (links != null)
 			{
-				regularMediaItem.getFurtherInfo().addAll(seriesInfoUrls);
+				regularMediaItem.getFurtherInfo().addAll(links);
 			}
 			if (mediaImageUrl != null)
 			{

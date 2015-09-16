@@ -7,8 +7,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
-import de.subcentral.core.util.IOUtil;
+import de.subcentral.core.util.NetUtil;
 
 public abstract class HttpMetadataDb2 extends MetadataDb2Base
 {
@@ -40,7 +41,7 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	{
 		try
 		{
-			return IOUtil.getDomainName(host);
+			return NetUtil.getDomainName(host);
 		}
 		catch (URISyntaxException e)
 		{
@@ -63,7 +64,7 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	@Override
 	public boolean isAvailable()
 	{
-		return IOUtil.pingHttp(host, timeout);
+		return NetUtil.pingHttp(host, timeout);
 	}
 
 	// Search
@@ -89,9 +90,24 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	protected abstract <T> T parseRecord(URL url, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	// Utility methods for child classes
-	protected URL buildUrl(String query) throws IllegalArgumentException
+	protected URL buildRelativeUrl(String queryKey, String queryValue) throws IllegalArgumentException
 	{
-		return buildUrl("/", query);
+		return buildRelativeUrlImpl("/", NetUtil.formatQueryString(queryKey, queryValue));
+	}
+
+	protected URL buildRelativeUrl(Map<String, String> queryKeyValuePairs) throws IllegalArgumentException
+	{
+		return buildRelativeUrlImpl("/", NetUtil.formatQueryString(queryKeyValuePairs));
+	}
+
+	protected URL buildRelativeUrl(String path, String queryKey, String queryValue) throws IllegalArgumentException
+	{
+		return buildRelativeUrlImpl(path, NetUtil.formatQueryString(queryKey, queryValue));
+	}
+
+	protected URL buildRelativeUrl(String path, Map<String, String> queryKeyValuePairs) throws IllegalArgumentException
+	{
+		return buildRelativeUrlImpl(path, NetUtil.formatQueryString(queryKeyValuePairs));
 	}
 
 	/**
@@ -105,7 +121,7 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 */
-	protected URL buildUrl(String path, String query) throws IllegalArgumentException
+	private URL buildRelativeUrlImpl(String path, String query) throws IllegalArgumentException
 	{
 		try
 		{

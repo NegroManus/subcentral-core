@@ -8,7 +8,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-import de.subcentral.core.util.IOUtil;
+import de.subcentral.core.util.NetUtil;
 
 public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 {
@@ -46,7 +46,7 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	{
 		try
 		{
-			return IOUtil.getDomainName(host);
+			return NetUtil.getDomainName(host);
 		}
 		catch (URISyntaxException e)
 		{
@@ -67,7 +67,7 @@ public abstract class AbstractHttpMetadataDb<T> extends AbstractMetadataDb<T>
 	@Override
 	public boolean isAvailable()
 	{
-		return IOUtil.pingHttp(host, timeout);
+		return NetUtil.pingHttp(host, timeout);
 	}
 
 	@Override

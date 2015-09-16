@@ -22,10 +22,10 @@ public class MediaUtil
 
 	public static boolean isSingletonMediaIterable(Object obj)
 	{
-		return getMediaOfSingletonIterable(obj) != null;
+		return getSingletonMediaFromIterable(obj) != null;
 	}
 
-	public static Media getMediaOfSingletonIterable(Object obj)
+	public static Media getSingletonMediaFromIterable(Object obj)
 	{
 		if (obj instanceof Iterable)
 		{
