@@ -57,7 +57,7 @@ public abstract class MetadataDb2Base implements MetadataDb2
 			try
 			{
 				String name = ns.name(queryObj, namingParameters);
-				log.debug("Searching with name \"{}\" of query object {} (named by {})", name, queryObj, ns);
+				log.debug("Searching for a record of type {} with the generated name for the query object {}: \"{}\"", recordType.getName(), queryObj, name);
 				results.addAll(search(name, recordType));
 			}
 			catch (NoNamerRegisteredException e)

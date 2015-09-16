@@ -36,9 +36,11 @@ public abstract class HtmlHttpMetadataDb2 extends HttpMetadataDb2
 
 	protected Document getDocument(URL url) throws IOException
 	{
-		log.trace("Retrieving contents of {}", url);
+		log.debug("Connecting to {}", url);
 		long start = System.nanoTime();
-		Document doc = setupConnection(url).get();
+		Connection con = setupConnection(url);
+		log.trace("Connected to {}: {}", url, con);
+		Document doc = con.get();
 		double duration = TimeUtil.durationMillis(start);
 		log.printf(Level.DEBUG, "Retrieved contents of %s in %.0f ms", url, duration);
 		log.printf(Level.TRACE, "Contents of %s were:%n%s%n", url, doc);

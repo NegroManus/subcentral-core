@@ -101,36 +101,59 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 				if (queryObj instanceof Episode)
 				{
 					Episode epi = (Episode) queryObj;
-					// Only if series, season number and episode number are set
+					// Only if series name, season number and episode number are set
 					// Otherwise predb.me mostly does not parse the release name properly
-					if (epi.getSeries() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
+					if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
 					{
 						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
-						queryPairs.put("title", formatSeriesQueryValue(epi.getSeries()));
+						queryPairs.put("title", formatTitleQueryValue(epi.getSeries().getName()));
 						queryPairs.put("season", epi.getSeason().getNumber().toString());
 						queryPairs.put("episode", epi.getNumberInSeason().toString());
+						queryPairs.put("cats", "tv");
 						URL searchUrl = buildRelativeUrl(queryPairs.build());
+						log.debug("Searching for releases of episode {} using url {}", epi, searchUrl);
 						return parseSearchResults(searchUrl, recordType);
 					}
 				}
 				else if (queryObj instanceof Season)
 				{
 					Season season = (Season) queryObj;
-					if (season.getSeries() != null && season.isNumbered())
+					if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
 					{
 						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
-						queryPairs.put("title", formatSeriesQueryValue(season.getSeries()));
+						queryPairs.put("title", formatTitleQueryValue(season.getSeries().getName()));
 						queryPairs.put("season", season.getNumber().toString());
+						queryPairs.put("cats", "tv");
 						URL searchUrl = buildRelativeUrl(queryPairs.build());
+						log.debug("Searching for releases of season {} using url {}", season, searchUrl);
 						return parseSearchResults(searchUrl, recordType);
 					}
 				}
 				else if (queryObj instanceof Series)
 				{
 					Series series = (Series) queryObj;
-					String seriesValue = formatSeriesQueryValue(series);
-					URL searchUrl = buildRelativeUrl("title", seriesValue);
-					return parseSearchResults(searchUrl, recordType);
+					if (series.getName() != null)
+					{
+						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
+						queryPairs.put("title", formatTitleQueryValue(series.getName()));
+						queryPairs.put("cats", "tv");
+						URL searchUrl = buildRelativeUrl(queryPairs.build());
+						log.debug("Searching for releases of series {} using url {}", series, searchUrl);
+						return parseSearchResults(searchUrl, recordType);
+					}
+				}
+				else if (queryObj instanceof Movie)
+				{
+					Movie mov = (Movie) queryObj;
+					if (mov.getName() != null)
+					{
+						ImmutableMap.Builder<String, String> queryPairs = ImmutableMap.builder();
+						queryPairs.put("title", formatTitleQueryValue(mov.getName()));
+						queryPairs.put("cats", "movie");
+						URL searchUrl = buildRelativeUrl(queryPairs.build());
+						log.debug("Searching for release of movie {} using url {}", mov, searchUrl);
+						return parseSearchResults(searchUrl, recordType);
+					}
 				}
 			}
 
@@ -147,9 +170,9 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
 
-	private String formatSeriesQueryValue(Series series)
+	private String formatTitleQueryValue(String title)
 	{
-		return NamingDefaults.getDefaultNormalizingFormatter().apply(series.getName()).replace(' ', '-');
+		return NamingDefaults.getDefaultNormalizingFormatter().apply(title).replace(' ', '-');
 	}
 
 	@Override
@@ -168,7 +191,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	{
 		if (Release.class.equals(recordType))
 		{
-			return (List<T>) parseSearchResultsReleases(doc);
+			return (List<T>) parseReleaseSearchResults(doc);
 		}
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
@@ -189,7 +212,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	{
 		if (Release.class.equals(recordType))
 		{
-			return (T) parseReleaseDetails(doc, new Release());
+			return (T) parseReleaseRecord(doc, new Release());
 		}
 		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
@@ -214,7 +237,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private List<Release> parseSearchResultsReleases(Document doc) throws MalformedURLException, IOException
+	private List<Release> parseReleaseSearchResults(Document doc) throws MalformedURLException, IOException
 	{
 		Elements rlsDivs = doc.getElementsByClass("post");
 		if (rlsDivs.isEmpty())
@@ -224,7 +247,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
 		for (Element rlsDiv : rlsDivs)
 		{
-			Release rls = parseSearchResultRelease(doc, rlsDiv);
+			Release rls = parseReleaseSearchResult(doc, rlsDiv);
 			rlss.add(rls);
 		}
 		return rlss;
@@ -279,7 +302,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private Release parseSearchResultRelease(Document doc, Element rlsDiv) throws MalformedURLException, IOException
+	private Release parseReleaseSearchResult(Document doc, Element rlsDiv) throws MalformedURLException, IOException
 	{
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -358,7 +381,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		if (parseDetails && detailsUrl != null)
 		{
 			Document detailsDoc = getDocument(new URL(detailsUrl));
-			parseReleaseDetails(detailsDoc, rls);
+			parseReleaseRecord(detailsDoc, rls);
 		}
 
 		return rls;
@@ -393,7 +416,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @return
 	 * @throws IOException
 	 */
-	protected Release parseReleaseDetails(Document doc, Release rls)
+	protected Release parseReleaseRecord(Document doc, Release rls)
 	{
 		/**
 		 * <pre>
@@ -682,7 +705,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	public static void main(String[] args) throws IllegalArgumentException, IOException
 	{
 		PreDbMeReleaseDb2 db = new PreDbMeReleaseDb2();
-		List<Release> rlss = db.searchWithObject(Episode.createSeasonedEpisode("Doc Martin", 6, 1), Release.class);
+		List<Release> rlss = db.searchWithObject(ImmutableList.of(new Movie("Batman")), Release.class);
 		rlss.stream().forEach((Release rls) -> System.out.println(rls));
 	}
 }
