@@ -19,7 +19,7 @@ public class WatcherApp extends Application
 {
 	public static final String	APP_NAME			= "Watcher";
 	public static final String	APP_VERSION			= "2.0";
-	public static final String	APP_VERSION_DATE	= "2015-09-10 18:30";
+	public static final String	APP_VERSION_DATE	= "2015-09-17 21:00";
 	public static final String	APP_INFO			= APP_NAME + " " + APP_VERSION + " (" + APP_VERSION_DATE + ")";
 
 	private static final Logger log = LogManager.getLogger(WatcherApp.class);
