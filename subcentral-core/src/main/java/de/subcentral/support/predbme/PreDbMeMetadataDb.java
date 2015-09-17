@@ -625,15 +625,15 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 			}
 			else if (section.startsWith("music"))
 			{
-				GenericMedia simpleMedia = new GenericMedia(mediaTitle);
-				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
-				media = simpleMedia;
+				GenericMedia genericMedia = new GenericMedia(mediaTitle);
+				genericMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
+				media = genericMedia;
 			}
 			else if (section.startsWith("tv"))
 			{
-				GenericMedia simpleMedia = new GenericMedia(mediaTitle);
-				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
-				media = simpleMedia;
+				GenericMedia genericMedia = new GenericMedia(mediaTitle);
+				genericMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
+				media = genericMedia;
 			}
 			else
 			{
