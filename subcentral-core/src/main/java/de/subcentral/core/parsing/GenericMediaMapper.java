@@ -4,15 +4,15 @@ import java.time.temporal.Temporal;
 import java.util.Map;
 
 import de.subcentral.core.metadata.media.Movie;
-import de.subcentral.core.metadata.media.SimpleMedia;
+import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SimpleMediaMapper implements Mapper<SimpleMedia>
+public class GenericMediaMapper implements Mapper<GenericMedia>
 {
 	@Override
-	public SimpleMedia map(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
+	public GenericMedia map(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
-		SimpleMedia media = new SimpleMedia();
+		GenericMedia media = new GenericMedia();
 		media.setName(props.get(Movie.PROP_NAME));
 		media.setTitle(props.get(Movie.PROP_TITLE));
 		media.setDate(propFromStringService.parse(props, Movie.PROP_DATE, Temporal.class));

@@ -29,19 +29,6 @@ public abstract class HttpMetadataDb2 extends AbstractMetadataDb2
 	// Metadata
 	public abstract String getHost();
 
-	@Override
-	public String getName()
-	{
-		try
-		{
-			return NetUtil.getDomainName(getHost());
-		}
-		catch (URISyntaxException e)
-		{
-			throw new IllegalStateException("Invalid host", e);
-		}
-	}
-
 	// Config
 	public int getTimeout()
 	{

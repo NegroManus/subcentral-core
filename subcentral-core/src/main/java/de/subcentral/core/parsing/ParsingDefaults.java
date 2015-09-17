@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
-import de.subcentral.core.metadata.media.SimpleMedia;
+import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -30,8 +30,8 @@ public class ParsingDefaults
 	private static final MultiEpisodeMapper			MULTI_EPISODE_MAPPER				= new MultiEpisodeMapper(EPISODE_MAPPER);
 	private static final MovieMapper				MOVIE_MAPPER						= new MovieMapper();
 	private static final Mapper<List<Movie>>		SINGLETON_LIST_MOVIE_MAPPER			= createSingletonListMapper(MOVIE_MAPPER);
-	private static final SimpleMediaMapper			SIMPLE_MEDIA_MAPPER					= new SimpleMediaMapper();
-	private static final Mapper<List<SimpleMedia>>	SINGLETON_LIST_SIMPLE_MEDIA_MAPPER	= createSingletonListMapper(SIMPLE_MEDIA_MAPPER);
+	private static final GenericMediaMapper			GENERIC_MEDIA_MAPPER					= new GenericMediaMapper();
+	private static final Mapper<List<GenericMedia>>	SINGLETON_LIST_GENERIC_MEDIA_MAPPER	= createSingletonListMapper(GENERIC_MEDIA_MAPPER);
 	private static final ReleaseMapper				RELEASE_MAPPER						= new ReleaseMapper();
 	private static final SubtitleMapper				SUBTITLE_MAPPER						= new SubtitleMapper();
 	private static final SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleAdjustmentMapper();
@@ -66,14 +66,14 @@ public class ParsingDefaults
 		return SINGLETON_LIST_MOVIE_MAPPER;
 	}
 
-	public static SimpleMediaMapper getDefaultSimpleMediaMapper()
+	public static GenericMediaMapper getDefaultGenericMediaMapper()
 	{
-		return SIMPLE_MEDIA_MAPPER;
+		return GENERIC_MEDIA_MAPPER;
 	}
 
-	public static Mapper<List<SimpleMedia>> getDefaultSingletonListSimpleMediaMapper()
+	public static Mapper<List<GenericMedia>> getDefaultSingletonListGenericMediaMapper()
 	{
-		return SINGLETON_LIST_SIMPLE_MEDIA_MAPPER;
+		return SINGLETON_LIST_GENERIC_MEDIA_MAPPER;
 	}
 
 	public static final Mapper<Release> getDefaultReleaseMapper()

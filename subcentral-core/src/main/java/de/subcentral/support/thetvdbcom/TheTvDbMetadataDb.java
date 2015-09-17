@@ -36,15 +36,16 @@ import de.subcentral.core.util.TemporalComparator;
 
 public class TheTvDbMetadataDb extends HttpMetadataDb2
 {
+	public static final String NAME = "thetvdb.com";
+
 	/**
 	 * Value is of type Integer.
 	 */
-	public static final String	ATTRIBUTE_THETVDB_ID	= "THETVDB_ID";
+	public static final String	ATTRIBUTE_THETVDB_ID			= "THETVDB_ID";
 	/**
 	 * Value is of type String.
 	 */
-	public static final String	ATTRIBUTE_IMDB_ID		= "IMDB_ID";
-
+	public static final String	ATTRIBUTE_IMDB_ID				= "IMDB_ID";
 	/**
 	 * An unsigned integer indicating the season number this episode comes after. This field is only available for special episodes. Can be null.
 	 */
@@ -54,12 +55,11 @@ public class TheTvDbMetadataDb extends HttpMetadataDb2
 	 * available for special episodes. Can be null.
 	 */
 	public static final String	ATTRIBUTE_AIRSBEFORE_EPISODE	= "airsbefore_episode";
-
 	/**
 	 * An unsigned integer indicating the season number this special episode airs before. Should be used in conjunction with airsbefore_episode for exact placement. This field is only available for
 	 * special episodes. Can be null.
 	 */
-	public static final String ATTRIBUTE_AIRSBEFORE_SEASON = "airsbefore_season";
+	public static final String	ATTRIBUTE_AIRSBEFORE_SEASON		= "airsbefore_season";
 
 	public static final String	IMAGE_TYPE_BANNER			= "banner";
 	public static final String	IMAGE_TYPE_FANART			= "fanart";
@@ -68,7 +68,8 @@ public class TheTvDbMetadataDb extends HttpMetadataDb2
 
 	public static final String RATING_AGENCY_THETVDB = "thetvdb.com";
 
-	private static final Logger		log				= LogManager.getLogger(TheTvDbMetadataDb.class);
+	private static final Logger log = LogManager.getLogger(TheTvDbMetadataDb.class);
+
 	private static final String		API_SUB_PATH	= "/api/";
 	private static final String		IMG_SUB_PATH	= "/banners/";
 	private static final Splitter	LIST_SPLITTER	= Splitter.on('|').trimResults().omitEmptyStrings();
@@ -86,15 +87,21 @@ public class TheTvDbMetadataDb extends HttpMetadataDb2
 	}
 
 	@Override
-	public String getHost()
+	public String getName()
 	{
-		return "http://thetvdb.com/";
+		return NAME;
 	}
 
 	@Override
 	public String getDisplayName()
 	{
 		return "TheTVDB";
+	}
+
+	@Override
+	public String getHost()
+	{
+		return "http://thetvdb.com/";
 	}
 
 	@Override

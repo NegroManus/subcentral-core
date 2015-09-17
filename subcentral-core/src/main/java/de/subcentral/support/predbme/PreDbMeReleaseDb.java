@@ -32,7 +32,7 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.metadata.media.SimpleMedia;
+import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
@@ -543,19 +543,19 @@ public class PreDbMeReleaseDb extends AbstractHtmlHttpMetadataDb<Release>
 			}
 			else if (section.startsWith("Music"))
 			{
-				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
+				GenericMedia simpleMedia = new GenericMedia(mediaTitle);
 				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
 				media = simpleMedia;
 			}
 			else if (section.startsWith("TV"))
 			{
-				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
+				GenericMedia simpleMedia = new GenericMedia(mediaTitle);
 				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
 				media = simpleMedia;
 			}
 			else
 			{
-				media = new SimpleMedia(mediaTitle);
+				media = new GenericMedia(mediaTitle);
 			}
 		}
 

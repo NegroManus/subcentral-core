@@ -85,6 +85,12 @@ public abstract class AbstractMetadataDb2 implements MetadataDb2
 	}
 
 	@Override
+	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(this).add("name", getName()).add("displayName", getDisplayName()).toString();

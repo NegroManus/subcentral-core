@@ -32,7 +32,7 @@ import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.metadata.media.SimpleMedia;
+import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.media.SingleMedia;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
@@ -46,7 +46,7 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class PreDbMeMetadataDb extends HttpMetadataDb2
 {
-	public static final String	DOMAIN					= "predb.me";
+	public static final String	NAME					= "predb.me";
 	/**
 	 * Value is of type Integer.
 	 */
@@ -54,16 +54,16 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 
 	private static final Logger log = LogManager.getLogger(PreDbMeMetadataDb.class);
 
-	// DateTimeFormatter not needed because using the epoch seconds
-	// /**
-	// * The release dates are ISO-formatted with an @. Example: "2011-11-10 @ 09:16:10 ( UTC )"
-	// */
-	// private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd '@' HH:mm:ss", Locale.US);
-
 	/**
 	 * The release dates are in UTC.
 	 */
 	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
+
+	@Override
+	public String getName()
+	{
+		return NAME;
+	}
 
 	@Override
 	public String getDisplayName()
@@ -623,19 +623,19 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 			}
 			else if (section.startsWith("music"))
 			{
-				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
+				GenericMedia simpleMedia = new GenericMedia(mediaTitle);
 				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
 				media = simpleMedia;
 			}
 			else if (section.startsWith("tv"))
 			{
-				SimpleMedia simpleMedia = new SimpleMedia(mediaTitle);
+				GenericMedia simpleMedia = new GenericMedia(mediaTitle);
 				simpleMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
 				media = simpleMedia;
 			}
 			else
 			{
-				media = new SimpleMedia(mediaTitle);
+				media = new GenericMedia(mediaTitle);
 			}
 		}
 
@@ -661,7 +661,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL, mediaImageUrl);
 			}
 		}
-		// For both Movie and SimpleMedia
+		// For both Movie and GenericMedia
 		else if (media instanceof SingleMedia)
 		{
 			SingleMedia regularMediaItem = (SingleMedia) media;
