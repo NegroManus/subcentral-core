@@ -18,7 +18,7 @@ public class TheTvDbComPlayground
 	{
 		// A3ACA9D28A27792D
 
-		TheTvDbMediaDb db = new TheTvDbMediaDb();
+		TheTvDbMetadataDb db = new TheTvDbMetadataDb();
 		db.setApiKey("A3ACA9D28A27792D");
 		List<? extends Object> results = db.searchByObject(new Series("Psych"));
 		results.stream().forEach((Object obj) -> System.out.println(obj));

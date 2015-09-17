@@ -10,8 +10,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class NetUtil
 {
+	private static final Logger log = LogManager.getLogger(NetUtil.class);
+
 	public static String formatQueryString(Map<String, String> keyValuePairs)
 	{
 		StringBuilder query = new StringBuilder();
@@ -85,12 +90,13 @@ public class NetUtil
 			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 			connection.setConnectTimeout(timeout);
 			connection.setReadTimeout(timeout);
-			connection.setRequestMethod("HEAD");
+			connection.setRequestMethod("GET");
 			int responseCode = connection.getResponseCode();
 			return (200 <= responseCode && responseCode <= 399);
 		}
-		catch (IOException exception)
+		catch (IOException e)
 		{
+			log.debug("Http ping failed", e);
 			return false;
 		}
 	}

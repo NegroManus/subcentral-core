@@ -18,7 +18,7 @@ import org.jsoup.nodes.Document;
 import de.subcentral.core.util.NetUtil;
 import de.subcentral.core.util.TimeUtil;
 
-public abstract class HttpMetadataDb2 extends MetadataDb2Base
+public abstract class HttpMetadataDb2 extends AbstractMetadataDb2
 {
 	public static final int DEFAULT_TIMEOUT = 10000;
 

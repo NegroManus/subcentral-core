@@ -34,7 +34,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.TemporalComparator;
 
-public class TheTvDbMediaDb extends HttpMetadataDb2
+public class TheTvDbMetadataDb extends HttpMetadataDb2
 {
 	/**
 	 * Value is of type Integer.
@@ -68,7 +68,7 @@ public class TheTvDbMediaDb extends HttpMetadataDb2
 
 	public static final String RATING_AGENCY_THETVDB = "thetvdb.com";
 
-	private static final Logger		log				= LogManager.getLogger(TheTvDbMediaDb.class);
+	private static final Logger		log				= LogManager.getLogger(TheTvDbMetadataDb.class);
 	private static final String		API_SUB_PATH	= "/api/";
 	private static final String		IMG_SUB_PATH	= "/banners/";
 	private static final Splitter	LIST_SPLITTER	= Splitter.on('|').trimResults().omitEmptyStrings();
@@ -185,13 +185,13 @@ public class TheTvDbMediaDb extends HttpMetadataDb2
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		switch (externalSource)
 		{
-			case "imdb":
-				query.put("imdbid", id);
-				break;
-			case "zap2it":
-				query.put("zap2it", id);
-			default:
-				throw createUnsupportedExternalSource(externalSource);
+		case "imdb":
+			query.put("imdbid", id);
+			break;
+		case "zap2it":
+			query.put("zap2it", id);
+		default:
+			throw createUnsupportedExternalSource(externalSource);
 		}
 		if (language != null)
 		{

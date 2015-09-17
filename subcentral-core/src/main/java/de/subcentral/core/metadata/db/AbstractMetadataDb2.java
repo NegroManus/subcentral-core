@@ -18,7 +18,7 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NoNamerRegisteredException;
 
-public abstract class MetadataDb2Base implements MetadataDb2
+public abstract class AbstractMetadataDb2 implements MetadataDb2
 {
 	private final List<NamingService>	namingServices		= initNamingServices();
 	private final Map<String, Object>	namingParameters	= initNamingParameters();
