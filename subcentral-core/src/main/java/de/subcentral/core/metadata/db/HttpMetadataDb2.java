@@ -6,42 +6,35 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import de.subcentral.core.util.NetUtil;
+import de.subcentral.core.util.TimeUtil;
 
 public abstract class HttpMetadataDb2 extends MetadataDb2Base
 {
 	public static final int DEFAULT_TIMEOUT = 10000;
 
-	protected final URL	host;
-	protected int		timeout	= DEFAULT_TIMEOUT;
+	private static final Logger log = LogManager.getLogger(HttpMetadataDb2.class);
 
-	public HttpMetadataDb2()
-	{
-		this.host = initHost();
-	}
+	protected int timeout = DEFAULT_TIMEOUT;
 
 	// Metadata
-	/**
-	 * 
-	 * @return the URL of the host of this lookup, not null
-	 * @throws MalformedURLException
-	 */
-	protected abstract URL initHost();
-
-	public URL getHost()
-	{
-		return host;
-	}
+	public abstract String getHost();
 
 	@Override
-	public String getDomain()
+	public String getName()
 	{
 		try
 		{
-			return NetUtil.getDomainName(host);
+			return NetUtil.getDomainName(getHost());
 		}
 		catch (URISyntaxException e)
 		{
@@ -64,40 +57,23 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	@Override
 	public boolean isAvailable()
 	{
-		return NetUtil.pingHttp(host, timeout);
+		return NetUtil.pingHttp(getHost(), timeout);
 	}
-
-	// Search
-	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
-	{
-		return parseSearchResults(buildSearchUrl(query, recordType), recordType);
-	}
-
-	protected abstract URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException;
-
-	protected abstract <T> List<T> parseSearchResults(URL query, Class<T> recordType) throws IllegalArgumentException, IOException;
-
-	// Get
-	@Override
-	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
-	{
-		return parseRecord(buildGetUrl(id, recordType), recordType);
-	}
-
-	protected abstract <T> URL buildGetUrl(String id, Class<T> recordType) throws IllegalArgumentException;
-
-	protected abstract <T> T parseRecord(URL url, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	// Utility methods for child classes
+	protected URL buildRelativeUrl(String path) throws IllegalArgumentException
+	{
+		return buildRelativeUrlImpl(path, null);
+	}
+
 	protected URL buildRelativeUrl(String queryKey, String queryValue) throws IllegalArgumentException
 	{
-		return buildRelativeUrlImpl("/", NetUtil.formatQueryString(queryKey, queryValue));
+		return buildRelativeUrlImpl(null, NetUtil.formatQueryString(queryKey, queryValue));
 	}
 
 	protected URL buildRelativeUrl(Map<String, String> queryKeyValuePairs) throws IllegalArgumentException
 	{
-		return buildRelativeUrlImpl("/", NetUtil.formatQueryString(queryKeyValuePairs));
+		return buildRelativeUrlImpl(null, NetUtil.formatQueryString(queryKeyValuePairs));
 	}
 
 	protected URL buildRelativeUrl(String path, String queryKey, String queryValue) throws IllegalArgumentException
@@ -125,12 +101,40 @@ public abstract class HttpMetadataDb2 extends MetadataDb2Base
 	{
 		try
 		{
-			URI uri = new URI(host.getProtocol(), host.getUserInfo(), host.getHost(), host.getPort(), path, query, null);
+			URI uri = new URI(getHost());
+			uri = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, query, uri.getFragment());
 			return uri.toURL();
 		}
 		catch (URISyntaxException | MalformedURLException e)
 		{
 			throw new IllegalArgumentException(e);
 		}
+	}
+
+	protected Document getDocument(URL url) throws IOException
+	{
+		log.trace("Connecting to {}", url);
+		long start = System.nanoTime();
+		Connection con = setupConnection(url);
+		Document doc = con.get();
+		double duration = TimeUtil.durationMillis(start);
+		log.printf(Level.DEBUG, "Retrieved contents of %s in %.0f ms", url, duration);
+		log.printf(Level.TRACE, "Contents of %s were:%n%s%n", url, doc);
+		return doc;
+	}
+
+	/**
+	 * The default implementation sets up a connection with the timeout.
+	 * <p>
+	 * Subclasses may override this method, call super.setupConnection() and then set other configurations like cookies or user-agent info.
+	 * </p>
+	 * 
+	 * @param url
+	 *            thr url to connect to
+	 * @return a connection
+	 */
+	protected Connection setupConnection(URL url)
+	{
+		return Jsoup.connect(url.toExternalForm()).timeout(timeout);
 	}
 }

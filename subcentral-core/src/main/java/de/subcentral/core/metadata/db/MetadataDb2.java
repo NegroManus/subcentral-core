@@ -7,7 +7,7 @@ import java.util.Set;
 public interface MetadataDb2
 {
 	// Metadata
-	public String getDomain();
+	public String getName();
 
 	public String getDisplayName();
 
@@ -18,23 +18,35 @@ public interface MetadataDb2
 		return getRecordTypes();
 	}
 
+	public Set<String> getSupportedExternalSources();
+
 	// Status
 	public boolean isAvailable();
 
 	// Search records
-	public default List<Object> search(String query) throws IllegalArgumentException, IOException
+	// Search by Text
+	public default List<? extends Object> search(String query) throws IllegalArgumentException, IOException
 	{
 		return search(query, Object.class);
 	}
 
-	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException;
+	public <T> List<? extends T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException;
 
-	public default List<Object> searchWithObject(Object obj) throws IllegalArgumentException, IOException
+	// Search by object
+	public default List<? extends Object> searchByObject(Object queryObj) throws IllegalArgumentException, IOException
 	{
-		return searchWithObject(obj, Object.class);
+		return searchByObject(queryObj, Object.class);
 	}
 
-	public <T> List<T> searchWithObject(Object obj, Class<T> recordType) throws IllegalArgumentException, IOException;
+	public <T> List<? extends T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException;
+
+	// Search by external id
+	public default List<? extends Object> searchByExternalId(String externalSource, String id) throws IllegalArgumentException, IOException
+	{
+		return searchByExternalId(externalSource, id, Object.class);
+	}
+
+	public <T> List<? extends T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws IllegalArgumentException, IOException;
 
 	// Get record
 	public default Object get(String id) throws IllegalArgumentException, IOException

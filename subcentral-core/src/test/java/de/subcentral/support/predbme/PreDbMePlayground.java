@@ -2,7 +2,6 @@ package de.subcentral.support.predbme;
 
 import java.util.List;
 
-import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 
 public class PreDbMePlayground
@@ -18,7 +17,7 @@ public class PreDbMePlayground
 		// Release rls = db.parseRecord(doc, Release.class);
 		// System.out.println(rls);
 
-		List<Release> rlss = db.searchWithObject(new Series("Psych"), Release.class);
+		List<Release> rlss = db.searchReleasesBySeries("psych");
 		rlss.stream().forEach((Release r) -> System.out.println(r));
 
 	}

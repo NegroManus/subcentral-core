@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.metadata.db.HtmlHttpMetadataDb2;
+import de.subcentral.core.metadata.db.HttpMetadataDb2;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.MediaUtil;
@@ -44,7 +44,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
+public class PreDbMeReleaseDb2 extends HttpMetadataDb2
 {
 	public static final String	DOMAIN					= "predb.me";
 	/**
@@ -72,16 +72,9 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	}
 
 	@Override
-	protected URL initHost()
+	public String getHost()
 	{
-		try
-		{
-			return new URL("http://www.predb.me/");
-		}
-		catch (MalformedURLException e)
-		{
-			throw new AssertionError(e);
-		}
+		return "http://www.predb.me/";
 	}
 
 	@Override
@@ -90,69 +83,57 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 		return ImmutableSet.of(Release.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchWithObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<? extends T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		if (Release.class.equals(recordType))
+		if (recordType.isAssignableFrom(Release.class))
 		{
-			if (queryObj instanceof Media)
+			URL url = buildRelativeUrl("search", query);
+			log.debug("Searching for releases with query \"{}\" using url {}", query, url);
+			return (List<? extends T>) parseReleaseSearchResults(getDocument(url));
+		}
+		throw createRecordTypeNotSearchableException(recordType);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> List<? extends T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		if (recordType.isAssignableFrom(Release.class))
+		{
+			if (queryObj instanceof Episode)
 			{
-				if (queryObj instanceof Episode)
+				Episode epi = (Episode) queryObj;
+				// Only if series name, season number and episode number are set
+				// Otherwise predb.me mostly does not parse the release name properly
+				if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
 				{
-					Episode epi = (Episode) queryObj;
-					// Only if series name, season number and episode number are set
-					// Otherwise predb.me mostly does not parse the release name properly
-					if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
-					{
-						ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-						query.put("title", formatTitleQueryValue(epi.getSeries().getName()));
-						query.put("season", epi.getSeason().getNumber().toString());
-						query.put("episode", epi.getNumberInSeason().toString());
-						query.put("cats", "tv");
-						URL searchUrl = buildRelativeUrl(query.build());
-						log.debug("Searching for releases of episode {} using url {}", epi, searchUrl);
-						return parseSearchResults(searchUrl, recordType);
-					}
+					return (List<? extends T>) searchReleasesByEpisode(epi.getSeries().getName(), epi.getSeason().getNumber(), epi.getNumberInSeason());
 				}
-				else if (queryObj instanceof Season)
+			}
+			else if (queryObj instanceof Season)
+			{
+				Season season = (Season) queryObj;
+				if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
 				{
-					Season season = (Season) queryObj;
-					if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
-					{
-						ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-						query.put("title", formatTitleQueryValue(season.getSeries().getName()));
-						query.put("season", season.getNumber().toString());
-						query.put("cats", "tv");
-						URL searchUrl = buildRelativeUrl(query.build());
-						log.debug("Searching for releases of season {} using url {}", season, searchUrl);
-						return parseSearchResults(searchUrl, recordType);
-					}
+					return (List<? extends T>) searchReleasesBySeason(season.getSeries().getName(), season.getNumber());
 				}
-				else if (queryObj instanceof Series)
+			}
+			else if (queryObj instanceof Series)
+			{
+				Series series = (Series) queryObj;
+				if (series.getName() != null)
 				{
-					Series series = (Series) queryObj;
-					if (series.getName() != null)
-					{
-						ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-						query.put("title", formatTitleQueryValue(series.getName()));
-						query.put("cats", "tv");
-						URL searchUrl = buildRelativeUrl(query.build());
-						log.debug("Searching for releases of series {} using url {}", series, searchUrl);
-						return parseSearchResults(searchUrl, recordType);
-					}
+					return (List<? extends T>) searchReleasesBySeries(series.getName());
 				}
-				else if (queryObj instanceof Movie)
+			}
+			else if (queryObj instanceof Movie)
+			{
+				Movie mov = (Movie) queryObj;
+				if (mov.getName() != null)
 				{
-					Movie mov = (Movie) queryObj;
-					if (mov.getName() != null)
-					{
-						ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-						query.put("title", formatTitleQueryValue(mov.getName()));
-						query.put("cats", "movie");
-						URL searchUrl = buildRelativeUrl(query.build());
-						log.debug("Searching for release of movie {} using url {}", mov, searchUrl);
-						return parseSearchResults(searchUrl, recordType);
-					}
+					return (List<? extends T>) searchReleasesByMovie(mov.getName());
 				}
 			}
 
@@ -160,60 +141,72 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 			Media singletonMedia = MediaUtil.getSingletonMediaFromIterable(queryObj);
 			if (singletonMedia != null)
 			{
-				return searchWithObject(singletonMedia, recordType);
+				return searchByObject(singletonMedia, recordType);
 			}
 
 			// Otherwise use the default implementation
-			return super.searchWithObject(queryObj, recordType);
+			return super.searchByObject(queryObj, recordType);
 		}
-		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
+		throw createRecordTypeNotSearchableException(recordType);
 	}
 
-	private String formatTitleQueryValue(String title)
+	public List<Release> searchReleasesByEpisode(String seriesName, int seasonNumber, int episodeNumber) throws IOException
+	{
+		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
+		query.put("title", normalizeTitleQueryValue(seriesName));
+		query.put("season", Integer.toString(seasonNumber));
+		query.put("episode", Integer.toString(episodeNumber));
+		URL url = buildRelativeUrl(query.build());
+		log.debug("Searching for releases by episode (seriesName={}, seasonNumber={}, episodeNumber={}) using url {}", seriesName, seasonNumber, episodeNumber, url);
+		return parseReleaseSearchResults(getDocument(url));
+	}
+
+	public List<Release> searchReleasesBySeason(String seriesName, int seasonNumber) throws IOException
+	{
+		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
+		query.put("title", normalizeTitleQueryValue(seriesName));
+		query.put("season", Integer.toString(seasonNumber));
+		URL url = buildRelativeUrl(query.build());
+		log.debug("Searching for releases by season (seriesName={}, seasonNumber={}) using url {}", seriesName, seasonNumber, url);
+		return parseReleaseSearchResults(getDocument(url));
+	}
+
+	public List<Release> searchReleasesBySeries(String seriesName) throws IOException
+	{
+		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
+		query.put("title", normalizeTitleQueryValue(seriesName));
+		query.put("cats", "tv");
+		URL url = buildRelativeUrl(query.build());
+		log.debug("Searching for releases by series (seriesName={}) using url {}", seriesName, url);
+		return parseReleaseSearchResults(getDocument(url));
+	}
+
+	public List<Release> searchReleasesByMovie(String movieName) throws IOException
+	{
+		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
+		query.put("title", normalizeTitleQueryValue(movieName));
+		query.put("cats", "movie");
+		URL url = buildRelativeUrl(query.build());
+		log.debug("Searching for releases by movie (movieName={}) using url {}", movieName, url);
+		return parseReleaseSearchResults(getDocument(url));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		if (recordType.isAssignableFrom(Release.class))
+		{
+			URL url = buildRelativeUrl("post", id);
+			log.debug("Getting release with id {} using url {}", id, url);
+			return (T) parseReleaseRecord(getDocument(url));
+		}
+		throw createUnsupportedRecordTypeException(recordType);
+	}
+
+	private String normalizeTitleQueryValue(String title)
 	{
 		return NamingDefaults.getDefaultNormalizingFormatter().apply(title).replace(' ', '-');
-	}
-
-	@Override
-	protected URL buildSearchUrl(String query, Class<?> recordType) throws IllegalArgumentException, IOException
-	{
-		if (Release.class.equals(recordType) || Object.class.equals(recordType))
-		{
-			return buildRelativeUrl("search", query);
-		}
-		return throwUnsupportedRecordTypeException(recordType, getSearchableRecordTypes());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected <T> List<T> parseSearchResults(Document doc, Class<T> recordType) throws IllegalArgumentException
-	{
-		if (Release.class.equals(recordType) || Object.class.equals(recordType))
-		{
-			return (List<T>) parseReleaseSearchResults(doc);
-		}
-		return throwUnsupportedRecordTypeException(recordType, getSearchableRecordTypes());
-	}
-
-	@Override
-	protected <T> URL buildGetUrl(String id, Class<T> recordType) throws IllegalArgumentException
-	{
-		if (Release.class.equals(recordType) || Object.class.equals(recordType))
-		{
-			return buildRelativeUrl("post", id);
-		}
-		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected <T> T parseRecord(Document doc, Class<T> recordType) throws IllegalArgumentException
-	{
-		if (Release.class.equals(recordType) || Object.class.equals(recordType))
-		{
-			return (T) parseReleaseRecord(doc);
-		}
-		return throwUnsupportedRecordTypeException(recordType, getRecordTypes());
 	}
 
 	/**
@@ -236,13 +229,13 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private List<Release> parseReleaseSearchResults(Document doc)
+	protected List<Release> parseReleaseSearchResults(Document doc)
 	{
 		Elements rlsDivs = doc.getElementsByClass("post");
 		ImmutableList.Builder<Release> rlss = ImmutableList.builder();
 		for (Element rlsDiv : rlsDivs)
 		{
-			Release rls = parseReleaseSearchResult(doc, rlsDiv);
+			Release rls = parseReleaseSearchResult(rlsDiv);
 			rlss.add(rls);
 		}
 		return rlss.build();
@@ -297,7 +290,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private Release parseReleaseSearchResult(Document doc, Element rlsDiv)
+	private Release parseReleaseSearchResult(Element rlsDiv)
 	{
 		Release rls = new Release();
 
@@ -320,7 +313,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 			String title = titleAnchor.text();
 			rls.setName(title);
 
-			detailsUrl = titleAnchor.attr("abs:href");
+			detailsUrl = titleAnchor.absUrl("href");
 		}
 
 		/**
@@ -384,7 +377,7 @@ public class PreDbMeReleaseDb2 extends HtmlHttpMetadataDb2
 	 * @return
 	 * @throws IOException
 	 */
-	private Release parseReleaseRecord(Document doc)
+	protected Release parseReleaseRecord(Document doc)
 	{
 		Release rls = new Release();
 

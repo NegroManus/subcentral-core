@@ -32,11 +32,13 @@ public class Series extends NamedMedia implements Comparable<Series>
 	public static final SimplePropDescriptor	PROP_GENRES					= new SimplePropDescriptor(Series.class, PropNames.GENRES);
 	public static final SimplePropDescriptor	PROP_NETWORKS				= new SimplePropDescriptor(Series.class, PropNames.NETWORKS);
 	public static final SimplePropDescriptor	PROP_DESCRIPTION			= new SimplePropDescriptor(Series.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_RATINGS				= new SimplePropDescriptor(Episode.class, PropNames.RATINGS);
+	public static final SimplePropDescriptor	PROP_RATINGS				= new SimplePropDescriptor(Series.class, PropNames.RATINGS);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING			= new SimplePropDescriptor(Series.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_IMAGES					= new SimplePropDescriptor(Series.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS		= new SimplePropDescriptor(Series.class, PropNames.FURTHER_INFO_LINKS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES				= new SimplePropDescriptor(Series.class, PropNames.ATTRIBUTES);
+	public static final SimplePropDescriptor	PROP_EPISODES				= new SimplePropDescriptor(Series.class, PropNames.EPISODES);
+	public static final SimplePropDescriptor	PROP_SEASONS				= new SimplePropDescriptor(Series.class, PropNames.SEASONS);
 
 	/**
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical examples are the TV series "Breaking Bad",
@@ -62,6 +64,9 @@ public class Series extends NamedMedia implements Comparable<Series>
 	// HashMap / HashSet initial capacities should be a power of 2
 	private final Set<String>	genres				= new HashSet<>(4);
 	private final List<Network>	networks			= new ArrayList<>(1);
+	// Episodes/Seasons
+	private final List<Episode>	episodes			= new ArrayList<>(0);
+	private final List<Season>	seasons				= new ArrayList<>(0);
 
 	public Series()
 	{
@@ -275,6 +280,42 @@ public class Series extends NamedMedia implements Comparable<Series>
 		return new Season(this, title);
 	}
 
+	/*
+	 * Episodes, Seasons
+	 */
+	public List<Episode> getEpisodes()
+	{
+		return episodes;
+	}
+
+	public void setEpisodes(Collection<Episode> episodes)
+	{
+		this.episodes.clear();
+		this.episodes.addAll(episodes);
+	}
+
+	public List<Season> getSeasons()
+	{
+		return seasons;
+	}
+
+	public void setSeasons(Collection<Season> seasons)
+	{
+		this.seasons.clear();
+		this.seasons.addAll(seasons);
+	}
+
+	// Convenience
+	public Episode addEpisode()
+	{
+		return new Episode(this);
+	}
+
+	public Season addSeason()
+	{
+		return new Season(this);
+	}
+
 	// Object methods
 	@Override
 	public boolean equals(Object obj)
@@ -329,6 +370,8 @@ public class Series extends NamedMedia implements Comparable<Series>
 				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
+				.add("episodes.size()", episodes.size())
+				.add("seasons.size()", seasons.size())
 				.toString();
 	}
 }

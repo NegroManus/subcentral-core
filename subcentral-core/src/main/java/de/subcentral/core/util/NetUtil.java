@@ -50,12 +50,6 @@ public class NetUtil
 		}
 	}
 
-	public static String getDomainName(URI uri)
-	{
-		String domain = uri.getHost();
-		return domain.startsWith("www.") ? domain.substring(4) : domain;
-	}
-
 	public static String getDomainName(String url) throws URISyntaxException
 	{
 		return getDomainName(new URI(url));
@@ -64,6 +58,12 @@ public class NetUtil
 	public static String getDomainName(URL url) throws URISyntaxException
 	{
 		return getDomainName(url.toURI());
+	}
+
+	public static String getDomainName(URI uri)
+	{
+		String domain = uri.getHost();
+		return domain.startsWith("www.") ? domain.substring(4) : domain;
 	}
 
 	/**

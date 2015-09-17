@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.naming.ConditionalNamingService;
@@ -22,8 +20,6 @@ import de.subcentral.core.naming.NoNamerRegisteredException;
 
 public abstract class MetadataDb2Base implements MetadataDb2
 {
-	private static final Logger log = LogManager.getLogger(MetadataDb2Base.class);
-
 	private final List<NamingService>	namingServices		= initNamingServices();
 	private final Map<String, Object>	namingParameters	= initNamingParameters();
 
@@ -48,7 +44,18 @@ public abstract class MetadataDb2Base implements MetadataDb2
 	}
 
 	@Override
-	public <T> List<T> searchWithObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	public Set<String> getSupportedExternalSources()
+	{
+		return ImmutableSet.of();
+	}
+
+	@Override
+	public <T> List<? extends T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		return searchByObjectsName(queryObj, recordType);
+	}
+
+	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		List<T> results = new ArrayList<>();
 		int noNamerRegisteredExceptionCount = 0;
@@ -57,7 +64,6 @@ public abstract class MetadataDb2Base implements MetadataDb2
 			try
 			{
 				String name = ns.name(queryObj, namingParameters);
-				log.debug("Searching for a record of type {} with the generated name for the query object {}: \"{}\"", recordType.getName(), queryObj, name);
 				results.addAll(search(name, recordType));
 			}
 			catch (NoNamerRegisteredException e)
@@ -73,13 +79,29 @@ public abstract class MetadataDb2Base implements MetadataDb2
 	}
 
 	@Override
-	public String toString()
+	public <T> List<? extends T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		return MoreObjects.toStringHelper(this).add("domain", getDomain()).add("displayName", getDisplayName()).toString();
+		throw new UnsupportedOperationException();
 	}
 
-	protected static <T> T throwUnsupportedRecordTypeException(Class<?> unsupportedType, Set<Class<?>> supportedTypes) throws IllegalArgumentException
+	@Override
+	public String toString()
 	{
-		throw new IllegalArgumentException("The record type is not supported: " + unsupportedType + " (supported: " + supportedTypes + ")");
+		return MoreObjects.toStringHelper(this).add("name", getName()).add("displayName", getDisplayName()).toString();
+	}
+
+	protected IllegalArgumentException createUnsupportedRecordTypeException(Class<?> unsupportedType) throws IllegalArgumentException
+	{
+		return new IllegalArgumentException("The record type is not supported: " + unsupportedType + " (record types: " + getRecordTypes() + ")");
+	}
+
+	protected IllegalArgumentException createRecordTypeNotSearchableException(Class<?> unsupportedType) throws IllegalArgumentException
+	{
+		return new IllegalArgumentException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
+	}
+
+	protected IllegalArgumentException createUnsupportedExternalSource(String unsupportedExternalSource) throws IllegalArgumentException
+	{
+		return new IllegalArgumentException("The external source is not supported: " + unsupportedExternalSource + " (supported external sources: " + getSupportedExternalSources() + ")");
 	}
 }
