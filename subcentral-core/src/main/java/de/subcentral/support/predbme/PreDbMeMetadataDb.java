@@ -44,7 +44,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PreDbMetadataDb extends HttpMetadataDb2
+public class PreDbMeMetadataDb extends HttpMetadataDb2
 {
 	public static final String	DOMAIN					= "predb.me";
 	/**
@@ -52,7 +52,7 @@ public class PreDbMetadataDb extends HttpMetadataDb2
 	 */
 	public static final String	ATTRIBUTE_PREDBME_ID	= "PREDBME_ID";
 
-	private static final Logger log = LogManager.getLogger(PreDbMetadataDb.class);
+	private static final Logger log = LogManager.getLogger(PreDbMeMetadataDb.class);
 
 	// DateTimeFormatter not needed because using the epoch seconds
 	// /**
