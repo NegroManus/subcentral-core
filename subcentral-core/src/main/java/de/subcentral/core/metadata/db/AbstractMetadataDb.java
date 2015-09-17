@@ -1,11 +1,15 @@
 package de.subcentral.core.metadata.db;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.naming.ConditionalNamingService;
@@ -14,7 +18,7 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NoNamerRegisteredException;
 
-public abstract class AbstractMetadataDb<T> implements MetadataDb<T>
+public abstract class AbstractMetadataDb implements MetadataDb
 {
 	private final List<NamingService>	namingServices		= initNamingServices();
 	private final Map<String, Object>	namingParameters	= initNamingParameters();
@@ -40,43 +44,70 @@ public abstract class AbstractMetadataDb<T> implements MetadataDb<T>
 	}
 
 	@Override
-	public List<T> queryWithObj(Object obj) throws MetadataDbUnavailableException, MetadataDbQueryException
+	public Set<String> getSupportedExternalSources()
 	{
-		try
+		return ImmutableSet.of();
+	}
+
+	@Override
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		return searchByObjectsName(queryObj, recordType);
+	}
+
+	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		List<T> results = new ArrayList<>();
+		int noNamerRegisteredExceptionCount = 0;
+		for (NamingService ns : namingServices)
 		{
-			List<T> results = new ArrayList<>();
-			int noNamerRegisteredExceptionCount = 0;
-			for (NamingService ns : namingServices)
+			try
 			{
-				try
-				{
-					String name = ns.name(obj, namingParameters);
-					results.addAll(query(name));
-				}
-				catch (NoNamerRegisteredException e)
-				{
-					noNamerRegisteredExceptionCount++;
-				}
+				String name = ns.name(queryObj, namingParameters);
+				results.addAll(search(name, recordType));
 			}
-			if (noNamerRegisteredExceptionCount == namingServices.size())
+			catch (NoNamerRegisteredException e)
 			{
-				throw new NoNamerRegisteredException(obj, "None of the NamingServices " + namingServices + " had an appropriate namer registered");
+				noNamerRegisteredExceptionCount++;
 			}
-			return results;
 		}
-		catch (MetadataDbUnavailableException ue)
+		if (noNamerRegisteredExceptionCount == namingServices.size())
 		{
-			throw ue;
+			throw new IllegalArgumentException(new NoNamerRegisteredException(queryObj, "None of the NamingServices " + namingServices + " had an appropriate namer registered"));
 		}
-		catch (Exception e)
-		{
-			throw new MetadataDbQueryException(this, obj, e);
-		}
+		return results;
+	}
+
+	@Override
+	public <T> List<T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String toString()
 	{
-		return getDisplayName();
+		return MoreObjects.toStringHelper(this).add("name", getName()).add("displayName", getDisplayName()).toString();
+	}
+
+	protected IllegalArgumentException createUnsupportedRecordTypeException(Class<?> unsupportedType) throws IllegalArgumentException
+	{
+		return new IllegalArgumentException("The record type is not supported: " + unsupportedType + " (record types: " + getRecordTypes() + ")");
+	}
+
+	protected IllegalArgumentException createRecordTypeNotSearchableException(Class<?> unsupportedType) throws IllegalArgumentException
+	{
+		return new IllegalArgumentException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
+	}
+
+	protected IllegalArgumentException createUnsupportedExternalSource(String unsupportedExternalSource) throws IllegalArgumentException
+	{
+		return new IllegalArgumentException("The external source is not supported: " + unsupportedExternalSource + " (supported external sources: " + getSupportedExternalSources() + ")");
 	}
 }

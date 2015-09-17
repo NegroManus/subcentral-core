@@ -7,7 +7,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -23,7 +22,7 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.metadata.db.HttpMetadataDb2;
+import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.ByteUtil;
 
@@ -32,7 +31,7 @@ import de.subcentral.core.util.ByteUtil;
  * @implSpec #immutable #thread-safe
  *
  */
-public class OrlyDbMetadataDb extends HttpMetadataDb2
+public class OrlyDbMetadataDb extends HttpMetadataDb
 {
 	public static final String NAME = "orlydb.com";
 
@@ -74,13 +73,13 @@ public class OrlyDbMetadataDb extends HttpMetadataDb2
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<? extends T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		if (recordType.isAssignableFrom(Release.class))
+		if (Release.class.equals(recordType))
 		{
 			URL url = buildRelativeUrl("q", query);
 			log.debug("Searching for releases with query \"{}\" using url {}", query, url);
-			return (List<? extends T>) parseReleaseSearchResults(getDocument(url));
+			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
 		throw createRecordTypeNotSearchableException(recordType);
 	}
@@ -100,24 +99,17 @@ public class OrlyDbMetadataDb extends HttpMetadataDb2
 	 */
 	protected List<Release> parseReleaseSearchResults(Document doc)
 	{
-		Element rlssDiv = doc.getElementById("releases");
-		if (rlssDiv == null)
-		{
-			return ImmutableList.of();
-		}
-		// Search for elements with tag "div" on the children list
-		// If searched in rlssDiv, the rlssDiv itself will be returned too.
-		Elements rlsDivs = rlssDiv.children().tagName("div");
-		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
+		Elements rlsDivs = doc.select("div#releases > div");
+		ImmutableList.Builder<Release> results = ImmutableList.builder();
 		for (Element rlsDiv : rlsDivs)
 		{
 			Release rls = parseReleaseSearchResult(doc, rlsDiv);
 			if (rls != null)
 			{
-				rlss.add(rls);
+				results.add(rls);
 			}
 		}
-		return rlss;
+		return results.build();
 	}
 
 	/**

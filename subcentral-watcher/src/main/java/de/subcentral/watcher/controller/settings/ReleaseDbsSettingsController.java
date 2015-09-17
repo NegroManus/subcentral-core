@@ -6,7 +6,7 @@ import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.metadata.db.AbstractHttpMetadataDb;
+import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.MetadataDbSettingEntry;
@@ -85,11 +85,11 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 					}
 					else
 					{
-						if (item.getValue() instanceof AbstractHttpMetadataDb)
+						if (item.getValue() instanceof HttpMetadataDb)
 						{
 							try
 							{
-								AbstractHttpMetadataDb<Release> db = (AbstractHttpMetadataDb<Release>) item.getValue();
+								HttpMetadataDb db = (HttpMetadataDb) item.getValue();
 
 								HBox hbox = new HBox();
 								hbox.setSpacing(5d);
@@ -97,8 +97,8 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 
 								Label name = new Label(db.getDisplayName());
 
-								URL rlsDbUrl = db.getHost();
-								Hyperlink link = FxUtil.createUrlHyperlink(rlsDbUrl, settingsController.getMainController().getCommonExecutor());
+								URL host = db.getHostUrl();
+								Hyperlink link = FxUtil.createUrlHyperlink(host, settingsController.getMainController().getCommonExecutor());
 								link.setMaxHeight(Double.MAX_VALUE);
 
 								hbox.getChildren().addAll(name, link);

@@ -7,7 +7,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -20,9 +19,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.metadata.db.HttpMetadataDb2;
+import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.media.Media;
@@ -34,7 +34,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class XRelMetadataDb extends HttpMetadataDb2
+public class XRelMetadataDb extends HttpMetadataDb
 {
 	public static final String NAME = "xrel.to";
 
@@ -76,13 +76,13 @@ public class XRelMetadataDb extends HttpMetadataDb2
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<? extends T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		if (recordType.isAssignableFrom(Release.class))
+		if (Release.class.equals(recordType))
 		{
 			URL url = buildRelativeUrl("/search.html", "xrel_search_query", query);
 			log.debug("Searching for releases with query \"{}\" using url {}", query, url);
-			return (List<? extends T>) parseReleaseSearchResults(getDocument(url));
+			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
 		throw createRecordTypeNotSearchableException(recordType);
 	}
@@ -105,13 +105,13 @@ public class XRelMetadataDb extends HttpMetadataDb2
 	{
 		// Search for elements with tag "div" and class "release_item" on the doc
 		Elements rlsDivs = doc.select("div.release_item");
-		List<Release> rlss = new ArrayList<Release>(rlsDivs.size());
+		ImmutableList.Builder<Release> results = ImmutableList.builder();
 		for (Element rlsDiv : rlsDivs)
 		{
 			Release rls = parseReleaseSearchResult(doc, rlsDiv);
-			rlss.add(rls);
+			results.add(rls);
 		}
-		return rlss;
+		return results.build();
 	}
 
 	/**

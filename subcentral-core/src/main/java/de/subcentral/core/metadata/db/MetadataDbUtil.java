@@ -17,22 +17,22 @@ public class MetadataDbUtil
 {
 	private static final Logger log = LogManager.getLogger(MetadataDbUtil.class);
 
-	public static <R> ListMultimap<MetadataDb<R>, R> queryAll(List<MetadataDb<R>> metadataDbs, Object metadataObj, ExecutorService executor) throws InterruptedException
+	public static <T> ListMultimap<MetadataDb, T> searchInAll(List<MetadataDb> metadataDbs, Object queryObj, Class<T> recordType, ExecutorService executor) throws InterruptedException
 	{
-		if (metadataObj == null)
+		if (queryObj == null)
 		{
 			// if metadataObj is null, don't invoke any threads but return immediately
 			return ImmutableListMultimap.of();
 		}
-		List<Callable<List<R>>> tasks = new ArrayList<>(metadataDbs.size());
-		for (MetadataDb<R> metadataDb : metadataDbs)
+		List<Callable<List<T>>> tasks = new ArrayList<>(metadataDbs.size());
+		for (MetadataDb metadataDb : metadataDbs)
 		{
-			tasks.add(() -> metadataDb.queryWithObj(metadataObj));
+			tasks.add(() -> metadataDb.searchByObject(queryObj, recordType));
 		}
 
-		List<Future<List<R>>> futures = executor.invokeAll(tasks);
+		List<Future<List<T>>> futures = executor.invokeAll(tasks);
 
-		ImmutableListMultimap.Builder<MetadataDb<R>, R> results = ImmutableListMultimap.builder();
+		ImmutableListMultimap.Builder<MetadataDb, T> results = ImmutableListMultimap.builder();
 		for (int i = 0; i < metadataDbs.size(); i++)
 		{
 			try
@@ -41,7 +41,9 @@ public class MetadataDbUtil
 			}
 			catch (ExecutionException e)
 			{
-				log.debug("Exception while querying metadata database " + metadataDbs.get(i) + " with query " + metadataObj + ". Skipping this metadata database.", e);
+				log.debug(
+						"Exception while searching metadata database " + metadataDbs.get(i) + " for records of type " + recordType.getName() + " by " + queryObj + ". Skipping this metadata database.",
+						e);
 			}
 		}
 		return results.build();

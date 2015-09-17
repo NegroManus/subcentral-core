@@ -11,13 +11,13 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 
-public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry<MetadataDb<T>>
+public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry<MetadataDb>
 {
 	private static final Logger log = LogManager.getLogger(MetadataDbSettingEntry.class);
 
 	private final BooleanProperty available;
 
-	public MetadataDbSettingEntry(MetadataDb<T> database, boolean enabled)
+	public MetadataDbSettingEntry(MetadataDb database, boolean enabled)
 	{
 		super(database, enabled);
 		this.available = new SimpleBooleanProperty(this, "available", false);

@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.metadata.db.HttpMetadataDb2;
+import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.MediaBase;
@@ -34,7 +34,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.TemporalComparator;
 
-public class TheTvDbMetadataDb extends HttpMetadataDb2
+public class TheTvDbMetadataDb extends HttpMetadataDb
 {
 	public static final String NAME = "thetvdb.com";
 
@@ -124,27 +124,27 @@ public class TheTvDbMetadataDb extends HttpMetadataDb2
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<? extends T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		if (recordType.isAssignableFrom(Series.class))
+		if (Series.class.equals(recordType))
 		{
-			return (List<? extends T>) searchSeries(query);
+			return (List<T>) searchSeries(query);
 		}
 		throw createRecordTypeNotSearchableException(recordType);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<? extends T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		if (recordType.isAssignableFrom(Series.class))
+		if (Series.class.equals(recordType))
 		{
 			if (queryObj instanceof Series)
 			{
 				Series series = (Series) queryObj;
 				if (series.getName() != null)
 				{
-					return (List<? extends T>) searchSeries(series.getName());
+					return (List<T>) searchSeries(series.getName());
 				}
 			}
 		}
@@ -173,11 +173,11 @@ public class TheTvDbMetadataDb extends HttpMetadataDb2
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<? extends T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		if (recordType.isAssignableFrom(Series.class))
 		{
-			return (List<? extends T>) searchSeriesByExternalId(externalSource, id);
+			return (List<T>) searchSeriesByExternalId(externalSource, id);
 		}
 		throw createUnsupportedRecordTypeException(recordType);
 	}
@@ -300,7 +300,7 @@ public class TheTvDbMetadataDb extends HttpMetadataDb2
 		 */
 
 		Elements seriesElems = doc.getElementsByTag("series");
-		ImmutableList.Builder<Series> seriesList = ImmutableList.builder();
+		ImmutableList.Builder<Series> results = ImmutableList.builder();
 		for (Element seriesElem : seriesElems)
 		{
 			Series series = new Series();
@@ -326,9 +326,9 @@ public class TheTvDbMetadataDb extends HttpMetadataDb2
 
 			addImdbId(series, seriesElem, "imdb_id");
 
-			seriesList.add(series);
+			results.add(series);
 		}
-		return seriesList.build();
+		return results.build();
 	}
 
 	protected Series parseSeriesRecord(Document doc)

@@ -18,16 +18,28 @@ import org.jsoup.nodes.Document;
 import de.subcentral.core.util.NetUtil;
 import de.subcentral.core.util.TimeUtil;
 
-public abstract class HttpMetadataDb2 extends AbstractMetadataDb2
+public abstract class HttpMetadataDb extends AbstractMetadataDb
 {
 	public static final int DEFAULT_TIMEOUT = 10000;
 
-	private static final Logger log = LogManager.getLogger(HttpMetadataDb2.class);
+	private static final Logger log = LogManager.getLogger(HttpMetadataDb.class);
 
 	protected int timeout = DEFAULT_TIMEOUT;
 
 	// Metadata
 	public abstract String getHost();
+
+	public URL getHostUrl()
+	{
+		try
+		{
+			return new URL(getHost());
+		}
+		catch (MalformedURLException e)
+		{
+			throw new IllegalStateException(e);
+		}
+	}
 
 	// Config
 	public int getTimeout()

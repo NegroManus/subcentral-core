@@ -14,9 +14,9 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
-import de.subcentral.support.predbme.PreDbMeReleaseDb;
-import de.subcentral.support.xrelto.XRelToReleaseDb;
+import de.subcentral.support.orlydbcom.OrlyDbMetadataDb;
+import de.subcentral.support.predbme.PreDbMeMetadataDb;
+import de.subcentral.support.xrelto.XRelMetadataDb;
 
 public class MultiInfoDbPlayground
 {
@@ -31,13 +31,13 @@ public class MultiInfoDbPlayground
 	 */
 	public static void main(String[] args) throws InterruptedException
 	{
-		PreDbMeReleaseDb preDbMe = new PreDbMeReleaseDb();
-		XRelToReleaseDb xrelTo = new XRelToReleaseDb();
-		OrlyDbComReleaseDb orlyDb = new OrlyDbComReleaseDb();
-		List<MetadataDb<Release>> infoDbs = new ArrayList<>(3);
-		// infoDbs.add(preDbMe);
-		infoDbs.add(xrelTo);
-		// infoDbs.add(orlyDb);
+		PreDbMeMetadataDb preDbMe = new PreDbMeMetadataDb();
+		XRelMetadataDb xrelTo = new XRelMetadataDb();
+		OrlyDbMetadataDb orlyDb = new OrlyDbMetadataDb();
+		List<MetadataDb> dbs = new ArrayList<>(3);
+		dbs.add(preDbMe);
+		dbs.add(xrelTo);
+		dbs.add(orlyDb);
 
 		Episode epi1 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 23);
 		Episode epi2 = Episode.createSeasonedEpisode("How I Met Your Mother", 9, 24);
@@ -48,16 +48,17 @@ public class MultiInfoDbPlayground
 
 		System.out.println("Querying");
 		long start = System.nanoTime();
-		ListMultimap<MetadataDb<Release>, Release> results = MetadataDbUtil.queryAll(infoDbs, query, executor);
+		ListMultimap<MetadataDb, Release> results = MetadataDbUtil.searchInAll(dbs, query, Release.class, executor);
 		TimeUtil.printDurationMillis("queryAll", start);
-		for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : results.asMap().entrySet())
+		for (Map.Entry<MetadataDb, Collection<Release>> entry : results.asMap().entrySet())
 		{
-			System.out.println("Results of " + entry.getKey().getDisplayName() + " " + entry.getKey().getDomain());
+			System.out.println("Results of " + entry.getKey().getName());
 			entry.getValue().stream().forEach((r) -> System.out.println(r));
 			System.out.println();
 		}
 		executor.shutdown();
 
+		System.out.println("All results combined");
 		List<Release> reducedRlss = ReleaseUtil.distinctByName(results.values());
 		reducedRlss.stream().forEach(e -> System.out.println(e));
 	}

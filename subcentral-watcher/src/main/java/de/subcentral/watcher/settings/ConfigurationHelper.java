@@ -35,11 +35,11 @@ import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
-import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
-import de.subcentral.support.predbme.PreDbMeReleaseDb;
+import de.subcentral.support.orlydbcom.OrlyDbMetadataDb;
+import de.subcentral.support.predbme.PreDbMeMetadataDb;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
-import de.subcentral.support.xrelto.XRelToReleaseDb;
+import de.subcentral.support.xrelto.XRelMetadataDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -172,21 +172,21 @@ class ConfigurationHelper
 		List<HierarchicalConfiguration<ImmutableNode>> rlsDbCfgs = cfg.configurationsAt(key + ".db");
 		for (HierarchicalConfiguration<ImmutableNode> rlsDbCfg : rlsDbCfgs)
 		{
-			String domain = rlsDbCfg.getString("");
+			String name = rlsDbCfg.getString("");
 			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
-			switch (domain)
+			switch (name)
 			{
-			case OrlyDbComReleaseDb.DOMAIN:
-				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComReleaseDb(), enabled));
+			case PreDbMeMetadataDb.NAME:
+				dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
 				break;
-			case PreDbMeReleaseDb.DOMAIN:
-				dbs.add(new MetadataDbSettingEntry<>(new PreDbMeReleaseDb(), enabled));
+			case XRelMetadataDb.NAME:
+				dbs.add(new MetadataDbSettingEntry<>(new XRelMetadataDb(), enabled));
 				break;
-			case XRelToReleaseDb.DOMAIN:
-				dbs.add(new MetadataDbSettingEntry<>(new XRelToReleaseDb(), enabled));
+			case OrlyDbMetadataDb.NAME:
+				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbMetadataDb(), enabled));
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown metadata database. domain=" + domain);
+				throw new IllegalArgumentException("Unknown metadata database: " + name);
 			}
 		}
 		dbs.trimToSize();

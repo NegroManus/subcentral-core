@@ -46,7 +46,7 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
-import de.subcentral.support.orlydbcom.OrlyDbComReleaseDb;
+import de.subcentral.support.orlydbcom.OrlyDbMetadataDb;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
@@ -105,7 +105,7 @@ public class ParsingPlayground
 
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
 
-		final MetadataDb<Release> rlsInfoDb = new OrlyDbComReleaseDb();
+		final MetadataDb rlsInfoDb = new OrlyDbMetadataDb();
 		final NamingService mediaNsForFiltering = NamingDefaults.getDefaultNormalizingNamingService();
 
 		final CompatibilityService compService = new CompatibilityService();
@@ -171,7 +171,7 @@ public class ParsingPlayground
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							System.out.println("Querying release info db ...");
 							start = System.nanoTime();
-							List<Release> releases = rlsInfoDb.queryWithObj(subAdj.getFirstMatchingRelease().getMedia());
+							List<Release> releases = rlsInfoDb.searchByObject(subAdj.getFirstMatchingRelease().getMedia(), Release.class);
 							TimeUtil.printDurationMillis("Querying release info db", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));

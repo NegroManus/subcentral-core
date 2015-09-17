@@ -377,7 +377,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	{
 		// Querying
 		Release srcRls = parsedObject.getFirstMatchingRelease();
-		ListMultimap<MetadataDb<Release>, Release> queryResults = query(srcRls);
+		ListMultimap<MetadataDb, Release> queryResults = query(srcRls);
 		if (isCancelled())
 		{
 			throw new CancellationException();
@@ -457,7 +457,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		}
 	}
 
-	private ListMultimap<MetadataDb<Release>, Release> query(Release rls) throws InterruptedException
+	private ListMultimap<MetadataDb, Release> query(Release rls) throws InterruptedException
 	{
 		if (config.getReleaseDbs().isEmpty())
 		{
@@ -466,7 +466,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		}
 
 		StringJoiner rlsDbs = new StringJoiner(", ");
-		for (MetadataDb<Release> rlsDb : config.getReleaseDbs())
+		for (MetadataDb rlsDb : config.getReleaseDbs())
 		{
 			rlsDbs.add(rlsDb.getDisplayName());
 		}
@@ -474,10 +474,10 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		updateMessage("Querying " + rlsDbs.toString());
 		log.debug("Querying release databases " + rlsDbs.toString());
 		List<Media> queryObj = rls.getMedia();
-		ListMultimap<MetadataDb<Release>, Release> queryResults = MetadataDbUtil.queryAll(config.getReleaseDbs(), queryObj, controller.getMainController().getCommonExecutor());
-		for (Map.Entry<MetadataDb<Release>, Collection<Release>> entry : queryResults.asMap().entrySet())
+		ListMultimap<MetadataDb, Release> queryResults = MetadataDbUtil.searchInAll(config.getReleaseDbs(), queryObj, Release.class, controller.getMainController().getCommonExecutor());
+		for (Map.Entry<MetadataDb, Collection<Release>> entry : queryResults.asMap().entrySet())
 		{
-			log.debug("Results of {}", entry.getKey().getDisplayName());
+			log.debug("Results of {}", entry.getKey().getName());
 			entry.getValue().stream().forEach((r) -> log.debug(r));
 		}
 		if (queryResults.isEmpty())

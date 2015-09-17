@@ -25,14 +25,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.metadata.db.HttpMetadataDb2;
+import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.media.SingleMedia;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
@@ -44,7 +44,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PreDbMeMetadataDb extends HttpMetadataDb2
+public class PreDbMeMetadataDb extends HttpMetadataDb
 {
 	public static final String	NAME					= "predb.me";
 	/**
@@ -85,22 +85,22 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<? extends T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		if (recordType.isAssignableFrom(Release.class))
 		{
 			URL url = buildRelativeUrl("search", query);
 			log.debug("Searching for releases with query \"{}\" using url {}", query, url);
-			return (List<? extends T>) parseReleaseSearchResults(getDocument(url));
+			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
 		throw createRecordTypeNotSearchableException(recordType);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<? extends T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
-		if (recordType.isAssignableFrom(Release.class))
+		if (Release.class.equals(recordType))
 		{
 			if (queryObj instanceof Episode)
 			{
@@ -109,7 +109,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 				// Otherwise predb.me mostly does not parse the release name properly
 				if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
 				{
-					return (List<? extends T>) searchReleasesByEpisode(epi.getSeries().getName(), epi.getSeason().getNumber(), epi.getNumberInSeason());
+					return (List<T>) searchReleasesByEpisode(epi.getSeries().getName(), epi.getSeason().getNumber(), epi.getNumberInSeason());
 				}
 			}
 			else if (queryObj instanceof Season)
@@ -117,7 +117,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 				Season season = (Season) queryObj;
 				if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
 				{
-					return (List<? extends T>) searchReleasesBySeason(season.getSeries().getName(), season.getNumber());
+					return (List<T>) searchReleasesBySeason(season.getSeries().getName(), season.getNumber());
 				}
 			}
 			else if (queryObj instanceof Series)
@@ -125,7 +125,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 				Series series = (Series) queryObj;
 				if (series.getName() != null)
 				{
-					return (List<? extends T>) searchReleasesBySeries(series.getName());
+					return (List<T>) searchReleasesBySeries(series.getName());
 				}
 			}
 			else if (queryObj instanceof Movie)
@@ -133,7 +133,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 				Movie mov = (Movie) queryObj;
 				if (mov.getName() != null)
 				{
-					return (List<? extends T>) searchReleasesByMovie(mov.getName());
+					return (List<T>) searchReleasesByMovie(mov.getName());
 				}
 			}
 
@@ -153,7 +153,9 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 	public List<Release> searchReleasesByEpisode(String seriesName, int seasonNumber, int episodeNumber) throws IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		query.put("title", normalizeTitleQueryValue(seriesName));
+		// IMPORTANT: DO NOT use "title" instead of search
+		// because if the title is not matched exactly, predb.me just shows the main page which lists all recent results
+		query.put("search", seriesName);
 		query.put("season", Integer.toString(seasonNumber));
 		query.put("episode", Integer.toString(episodeNumber));
 		URL url = buildRelativeUrl(query.build());
@@ -164,7 +166,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 	public List<Release> searchReleasesBySeason(String seriesName, int seasonNumber) throws IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		query.put("title", normalizeTitleQueryValue(seriesName));
+		query.put("search", seriesName);
 		query.put("season", Integer.toString(seasonNumber));
 		URL url = buildRelativeUrl(query.build());
 		log.debug("Searching for releases by season (seriesName={}, seasonNumber={}) using url {}", seriesName, seasonNumber, url);
@@ -174,7 +176,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 	public List<Release> searchReleasesBySeries(String seriesName) throws IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		query.put("title", normalizeTitleQueryValue(seriesName));
+		query.put("search", seriesName);
 		query.put("cats", "tv");
 		URL url = buildRelativeUrl(query.build());
 		log.debug("Searching for releases by series (seriesName={}) using url {}", seriesName, url);
@@ -184,7 +186,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 	public List<Release> searchReleasesByMovie(String movieName) throws IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		query.put("title", normalizeTitleQueryValue(movieName));
+		query.put("search", movieName);
 		query.put("cats", "movie");
 		URL url = buildRelativeUrl(query.build());
 		log.debug("Searching for releases by movie (movieName={}) using url {}", movieName, url);
@@ -232,13 +234,13 @@ public class PreDbMeMetadataDb extends HttpMetadataDb2
 	protected List<Release> parseReleaseSearchResults(Document doc)
 	{
 		Elements rlsDivs = doc.getElementsByClass("post");
-		ImmutableList.Builder<Release> rlss = ImmutableList.builder();
+		ImmutableList.Builder<Release> results = ImmutableList.builder();
 		for (Element rlsDiv : rlsDivs)
 		{
 			Release rls = parseReleaseSearchResult(rlsDiv);
-			rlss.add(rls);
+			results.add(rls);
 		}
-		return rlss.build();
+		return results.build();
 	}
 
 	/**

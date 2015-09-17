@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.release.CompatibilityService;
-import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.parsing.ParsingService;
@@ -21,32 +20,32 @@ import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 class ProcessingConfig
 {
 	// parsing
-	private Pattern								filenamePattern;
-	private ImmutableList<ParsingService>		filenameParsingServices;
+	private Pattern							filenamePattern;
+	private ImmutableList<ParsingService>	filenameParsingServices;
 	// release
-	private ImmutableList<Tag>					releaseMetaTags;
+	private ImmutableList<Tag>				releaseMetaTags;
 	// release - dbs
-	private ImmutableList<MetadataDb<Release>>	releaseDbs;
-	private ImmutableList<ParsingService>		releaseParsingServices;
+	private ImmutableList<MetadataDb>		releaseDbs;
+	private ImmutableList<ParsingService>	releaseParsingServices;
 	// release - guessing
-	private boolean								guessingEnabled;
-	private ImmutableList<StandardRelease>		standardReleases;
+	private boolean							guessingEnabled;
+	private ImmutableList<StandardRelease>	standardReleases;
 	// release - compatibility
-	private boolean								compatibilityEnabled;
-	private CompatibilityService				compatibilityService;
+	private boolean							compatibilityEnabled;
+	private CompatibilityService			compatibilityService;
 	// standardizing
-	private CorrectionService					beforeQueryingCorrectionService;
-	private CorrectionService					afterQueryingCorrectionService;
+	private CorrectionService				beforeQueryingCorrectionService;
+	private CorrectionService				afterQueryingCorrectionService;
 	// naming
-	private ImmutableMap<String, Object>		namingParameters;
+	private ImmutableMap<String, Object>	namingParameters;
 	// File Transformation - General
-	private Path								targetDir;
-	private boolean								deleteSource;
+	private Path							targetDir;
+	private boolean							deleteSource;
 	// File Transformation - Packing
-	private boolean								packingEnabled;
-	private Path								rarExe;
-	private WinRarLocateStrategy				winRarLocateStrategy;
-	private DeletionMode						packingSourceDeletionMode;
+	private boolean							packingEnabled;
+	private Path							rarExe;
+	private WinRarLocateStrategy			winRarLocateStrategy;
+	private DeletionMode					packingSourceDeletionMode;
 
 	// private
 	ProcessingConfig()
@@ -74,12 +73,12 @@ class ProcessingConfig
 		this.filenameParsingServices = filenameParsingServices;
 	}
 
-	ImmutableList<MetadataDb<Release>> getReleaseDbs()
+	ImmutableList<MetadataDb> getReleaseDbs()
 	{
 		return releaseDbs;
 	}
 
-	void setReleaseDbs(ImmutableList<MetadataDb<Release>> releaseDbs)
+	void setReleaseDbs(ImmutableList<MetadataDb> releaseDbs)
 	{
 		this.releaseDbs = releaseDbs;
 	}
