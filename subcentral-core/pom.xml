@@ -4,7 +4,7 @@
 	<groupId>de.subcentral</groupId>
 	<artifactId>subcentral-core</artifactId>
 	<version>1.0</version>
-	<name>SubCentral Core</name>
+	<name>SubCentral Core Librabry</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
