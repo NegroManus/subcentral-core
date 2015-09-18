@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +37,19 @@ public abstract class WinRar
 					"Operating system " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH + " not supported. Only Windows and Unix like systems are supported.");
 		}
 		return instance;
+	}
+
+	// non-static
+	protected ExecutorService processExecutor;
+
+	public ExecutorService getProcessExecutor()
+	{
+		return processExecutor;
+	}
+
+	public void setProcessExecutor(ExecutorService processExecutor)
+	{
+		this.processExecutor = processExecutor;
 	}
 
 	public abstract Path getRarExecutableFilename();

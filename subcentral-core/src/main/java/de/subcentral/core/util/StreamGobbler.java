@@ -4,10 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class StreamGobbler extends Thread
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class StreamGobbler implements Runnable
 {
+	private static final Logger log = LogManager.getLogger(StreamGobbler.class);
+
 	private final InputStream	input;
-	private OutputStream		output;
+	private final OutputStream	output;
 
 	public StreamGobbler(InputStream input, OutputStream output)
 	{
@@ -26,10 +31,11 @@ public class StreamGobbler extends Thread
 			{
 				output.write(buffer, 0, bytesRead);
 			}
+			// log.debug("Completely written input {} to output {}", input, output);
 		}
-		catch (IOException ioe)
+		catch (IOException e)
 		{
-			ioe.printStackTrace();
+			log.error("Exception while writing from input " + input + " to output " + output, e);
 		}
 	}
 }

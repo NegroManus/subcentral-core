@@ -48,6 +48,12 @@ public class WindowsWinRar extends WinRar
 		return null;
 	}
 
+	@Override
+	public WinRarPackager getPackager(Path rarExecutable)
+	{
+		return new WindowsWinRarPackager(this, rarExecutable);
+	}
+
 	private Path searchRarExeInStandardDirs()
 	{
 		List<Path> standardDirs = ImmutableList.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR"));
@@ -83,7 +89,7 @@ public class WindowsWinRar extends WinRar
 		List<String> command = ImmutableList.of("reg", "query", "HKEY_LOCAL_MACHINE\\Software\\WinRAR");
 		try
 		{
-			ProcessResult result = IOUtil.executeProcess(command, 1, TimeUnit.MINUTES);
+			ProcessResult result = IOUtil.executeProcess(command, 1, TimeUnit.MINUTES, processExecutor);
 			if (result.getExitValue() != 0 || result.getStdErr() != null)
 			{
 				log.warn("Could not locate WinRAR installation directory using Windows registry: Command {} exited with value {} and standard error output was \"{}\". Returning null",
@@ -124,17 +130,11 @@ public class WindowsWinRar extends WinRar
 		}
 	}
 
-	@Override
-	public WinRarPackager getPackager(Path rarExecutable)
-	{
-		return new WindowsWinRarPackager(rarExecutable);
-	}
-
 	private static class WindowsWinRarPackager extends WinRarPackager
 	{
-		private WindowsWinRarPackager(Path rarExecutable)
+		private WindowsWinRarPackager(WindowsWinRar winRar, Path rarExecutable)
 		{
-			super(rarExecutable);
+			super(winRar, rarExecutable);
 		}
 
 		@Override

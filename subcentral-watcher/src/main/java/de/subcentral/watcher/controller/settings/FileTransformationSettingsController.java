@@ -132,7 +132,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 				settingsController.getMainController().getPrimaryStage(),
 				"Select rar executable",
 				"RAR executable",
-				WinRar.getInstance().getRarExecutableFilename().toString());
+				settingsController.getMainController().getWinRar().getRarExecutableFilename().toString());
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
 		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.packingSourceDeletionModeProperty());

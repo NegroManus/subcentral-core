@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.zip.ZipEntry;
@@ -24,7 +25,7 @@ import com.google.common.base.MoreObjects;
 
 public class IOUtil
 {
-	private static final Logger log = LogManager.getLogger(IOUtil.class.getName());
+	private static final Logger log = LogManager.getLogger(IOUtil.class);
 
 	public static final class ProcessResult
 	{
@@ -71,6 +72,24 @@ public class IOUtil
 
 	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit) throws IOException, InterruptedException, TimeoutException
 	{
+		return executeProcess(command, timeoutValue, timeoutUnit, null);
+	}
+
+	/**
+	 * 
+	 * @param command
+	 * @param timeoutValue
+	 * @param timeoutUnit
+	 * @param executor
+	 *            if you want to use threads of an ExecutorService to gobble the stdOut and stdErr streams. <b>IMPORTANT:</b> The executor has to have 2 threads available otherwise the sub process
+	 *            won't exit because its streams are not closed.
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws TimeoutException
+	 */
+	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit, ExecutorService executor) throws IOException, InterruptedException, TimeoutException
+	{
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		log.debug("Executing {} with directory={}; environment={}; timeout={}", command, processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
 		Process process = processBuilder.start();
@@ -81,8 +100,17 @@ public class IOUtil
 		StreamGobbler stdOutGobbler = new StreamGobbler(process.getInputStream(), stdOutStream);
 		ByteArrayOutputStream stdErrStream = new ByteArrayOutputStream();
 		StreamGobbler stdErrGobbler = new StreamGobbler(process.getErrorStream(), stdErrStream);
-		stdOutGobbler.start();
-		stdErrGobbler.start();
+
+		if (executor != null)
+		{
+			executor.submit(stdOutGobbler);
+			executor.submit(stdErrGobbler);
+		}
+		else
+		{
+			new Thread(stdOutGobbler).start();
+			new Thread(stdErrGobbler).start();
+		}
 
 		boolean exitedBeforeTimeout = process.waitFor(timeoutValue, timeoutUnit);
 		if (!exitedBeforeTimeout)

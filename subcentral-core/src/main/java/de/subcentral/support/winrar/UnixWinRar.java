@@ -23,12 +23,6 @@ public class UnixWinRar extends WinRar
 	}
 
 	@Override
-	public WinRarPackager getPackager(Path rarExecutable)
-	{
-		return new UnixWinRarPackager(rarExecutable);
-	}
-
-	@Override
 	public Path locateRarExecutable()
 	{
 		// 1. try the default strategy
@@ -44,6 +38,12 @@ public class UnixWinRar extends WinRar
 			return rarExe;
 		}
 		return null;
+	}
+
+	@Override
+	public WinRarPackager getPackager(Path rarExecutable)
+	{
+		return new UnixWinRarPackager(this, rarExecutable);
 	}
 
 	private Path searchRarExeInStandardDirs()
@@ -63,9 +63,9 @@ public class UnixWinRar extends WinRar
 
 	private static class UnixWinRarPackager extends WinRarPackager
 	{
-		private UnixWinRarPackager(Path rarExecutable)
+		private UnixWinRarPackager(UnixWinRar winRar, Path rarExecutable)
 		{
-			super(rarExecutable);
+			super(winRar, rarExecutable);
 		}
 
 		@Override

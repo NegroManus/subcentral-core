@@ -10,8 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.support.winrar.WinRar;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.application.Platform;
@@ -55,10 +60,10 @@ public class MainController extends AbstractController
 	private TrayIcon	trayIcon;
 
 	// Controller
-	private WatchController				watchController;
-	private ProcessingController		processingController;
-	private SettingsController			settingsController;
-	private ScheduledExecutorService	commonExecutor;
+	private WatchController			watchController;
+	private ProcessingController	processingController;
+	private SettingsController		settingsController;
+	private ExecutorService			commonExecutor;
 
 	public MainController(Stage primaryStage)
 	{
@@ -84,9 +89,16 @@ public class MainController extends AbstractController
 		return primaryStage;
 	}
 
-	public ScheduledExecutorService getCommonExecutor()
+	public ExecutorService getCommonExecutor()
 	{
 		return commonExecutor;
+	}
+
+	public WinRar getWinRar()
+	{
+		WinRar winRar = WinRar.getInstance();
+		winRar.setProcessExecutor(commonExecutor);
+		return winRar;
 	}
 
 	public WatchController getWatchController()
@@ -111,7 +123,15 @@ public class MainController extends AbstractController
 
 	private void initCommonExecutor()
 	{
-		commonExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2, new NamedThreadFactory("Watcher-Worker", false));
+		int cpus = Runtime.getRuntime().availableProcessors();
+		int coreSize = 1 * cpus;
+		int maxSize = 8 * cpus;
+		long idleTimeout = 60;
+		BlockingQueue<Runnable> workQueue = new SynchronousQueue<Runnable>();
+		ThreadFactory threadFactory = new NamedThreadFactory("Watcher-Worker", false);
+		RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();
+		ThreadPoolExecutor pool = new ThreadPoolExecutor(coreSize, maxSize, idleTimeout, TimeUnit.SECONDS, workQueue, threadFactory, handler);
+		commonExecutor = pool;
 	}
 
 	private void initCloseHandling()

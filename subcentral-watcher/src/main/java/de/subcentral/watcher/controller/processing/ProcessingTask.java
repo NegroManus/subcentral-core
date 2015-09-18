@@ -46,7 +46,6 @@ import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
@@ -703,13 +702,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-						case SPECIFY:
-							packager = WinRar.getInstance().getPackager(config.getRarExe());
-							break;
-						case AUTO_LOCATE:
-							// fall through
-						default:
-							packager = WinRar.getInstance().getPackager();
+					case SPECIFY:
+						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+						break;
+					case AUTO_LOCATE:
+						// fall through
+					default:
+						packager = controller.getMainController().getWinRar().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);

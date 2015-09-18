@@ -27,10 +27,12 @@ public abstract class WinRarPackager
 {
 	private static final Logger log = LogManager.getLogger(WinRarPackager.class.getName());
 
-	protected final Path rarExecutable;
+	protected final WinRar	winRar;
+	protected final Path	rarExecutable;
 
-	WinRarPackager(Path rarExecutable)
+	WinRarPackager(WinRar winRar, Path rarExecutable)
 	{
+		this.winRar = Objects.requireNonNull(winRar, "winRar");
 		// do not validate because it can be a non-absolute path
 		this.rarExecutable = Objects.requireNonNull(rarExecutable, "rarExecutable");
 		log.debug("Using RAR executable at {}", this.rarExecutable);
@@ -52,7 +54,7 @@ public abstract class WinRarPackager
 	{
 		try
 		{
-			return IOUtil.executeProcess(buildValidateCommand(archive), 1, TimeUnit.MINUTES).getExitValue() == 0;
+			return IOUtil.executeProcess(buildValidateCommand(archive), 1, TimeUnit.MINUTES, winRar.getProcessExecutor()).getExitValue() == 0;
 		}
 		catch (IOException | InterruptedException | TimeoutException e)
 		{
@@ -80,7 +82,7 @@ public abstract class WinRarPackager
 
 	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException, TimeoutException
 	{
-		IOUtil.executeProcess(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS);
+		IOUtil.executeProcess(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS, winRar.getProcessExecutor());
 	}
 
 	protected List<String> buildUnpackCommand(Path archive, Path targetDir)
@@ -132,7 +134,7 @@ public abstract class WinRarPackager
 					Files.delete(target);
 				}
 			}
-			ProcessResult result = IOUtil.executeProcess(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit());
+			ProcessResult result = IOUtil.executeProcess(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit(), winRar.getProcessExecutor());
 			exitValue = result.getExitValue();
 			logMsg = result.getStdOut();
 			errMsg = result.getStdErr();
