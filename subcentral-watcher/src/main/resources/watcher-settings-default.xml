@@ -73,6 +73,7 @@
 	<correction>
 		<rules>
 			<seriesNameCorrectionRule namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameCorrectionRule namePattern="From Dusk Till Dawn- The Series" namePatternMode="LITERAL" nameReplacement="From Dusk Till Dawn" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Good Wife" namePatternMode="LITERAL" nameReplacement="The Good Wife" beforeQuerying="false" afterQuerying="true" />
 			<seriesNameCorrectionRule namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series" beforeQuerying="true" afterQuerying="false" />

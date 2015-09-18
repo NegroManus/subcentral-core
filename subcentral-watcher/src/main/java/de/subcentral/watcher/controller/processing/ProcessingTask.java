@@ -603,13 +603,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 				// because it matters how the series name is in the release (not
 				// how it is listed on tvrage or sth else)
 				// therefore overwrite=true
-				// For example a Series may be listed as "Good Wife" but the
-				// official release name is "The Good Wife"
+				// For example a Series may be listed as "Good Wife" at XRel.to but the
+				// official release name is "The Good Wife" (another example is XRel title name: "From Dusk Till Dawn: The Series", series name in release "From.Dusk.Till.Dawn")
 				// on the other hand, different series name in the release and by the database
 				// can be corrected by standardizers
 				// TODO: sadly all the extra information about series and
 				// episodes (episode title) is overwritten if true
-				boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), false);
+				boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), true);
 				if (!successful)
 				{
 					log.warn("Could not enrich " + r + " because no parser could parse the release name");
@@ -703,13 +703,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-					case SPECIFY:
-						packager = WinRar.getInstance().getPackager(config.getRarExe());
-						break;
-					case AUTO_LOCATE:
-						// fall through
-					default:
-						packager = WinRar.getInstance().getPackager();
+						case SPECIFY:
+							packager = WinRar.getInstance().getPackager(config.getRarExe());
+							break;
+						case AUTO_LOCATE:
+							// fall through
+						default:
+							packager = WinRar.getInstance().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);
