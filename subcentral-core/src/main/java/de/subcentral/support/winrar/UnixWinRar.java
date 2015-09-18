@@ -32,13 +32,13 @@ public class UnixWinRar extends WinRar
 	public Path locateRarExecutable()
 	{
 		// 1. try the default strategy
-		Path rarExe = super.locateRarExecutable();
+		Path rarExe = searchRarExeInStandardDirs();
 		if (rarExe != null)
 		{
 			return rarExe;
 		}
 		// 2. try the os-specific strategy
-		rarExe = searchRarExecutableInPathEnvironmentVariable();
+		rarExe = searchRarExeInPathEnvironmentVariable();
 		if (rarExe != null)
 		{
 			return rarExe;
@@ -46,13 +46,14 @@ public class UnixWinRar extends WinRar
 		return null;
 	}
 
-	@Override
-	protected List<Path> getWinRarStandardInstallationDirectories()
+	private Path searchRarExeInStandardDirs()
 	{
-		return ImmutableList.of(Paths.get("/usr/bin"));
+		List<Path> standardDirs = ImmutableList.of(Paths.get("/usr/bin"));
+		log.debug("Trying to locate RAR executable in standard installation directories: {}", standardDirs);
+		return returnFirstValidRarExecutable(standardDirs);
 	}
 
-	private Path searchRarExecutableInPathEnvironmentVariable()
+	private Path searchRarExeInPathEnvironmentVariable()
 	{
 		// for example: PATH=/opt/bin:/usr/bin
 		String pathValue = System.getenv("PATH");

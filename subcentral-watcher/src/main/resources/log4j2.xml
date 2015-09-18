@@ -2,12 +2,10 @@
 <Configuration status="WARN">
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%t] %logger{36} - %msg%n" />
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%t] %logger{1.} - %msg%n" />
 		</Console>
 		<File name="File" fileName="watcher.log" append="false">
-			<PatternLayout>
-				<Pattern>%date %-5level [%t] %logger{1.} - %msg%n</Pattern>
-			</PatternLayout>
+			<PatternLayout pattern="%date %-5level [%t] %logger{1.} - %msg%n" />
 		</File>
 	</Appenders>
 	<Loggers>

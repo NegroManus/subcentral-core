@@ -90,7 +90,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		if (recordType.isAssignableFrom(Release.class))
 		{
 			URL url = buildRelativeUrl("search", query);
-			log.debug("Searching for releases with query \"{}\" using url {}", query, url);
+			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
 		throw createRecordTypeNotSearchableException(recordType);

@@ -78,7 +78,7 @@ public class OrlyDbMetadataDb extends HttpMetadataDb
 		if (Release.class.equals(recordType))
 		{
 			URL url = buildRelativeUrl("q", query);
-			log.debug("Searching for releases with query \"{}\" using url {}", query, url);
+			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
 		throw createRecordTypeNotSearchableException(recordType);

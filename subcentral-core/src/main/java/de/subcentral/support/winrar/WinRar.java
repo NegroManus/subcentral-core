@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -42,23 +41,11 @@ public abstract class WinRar
 	public abstract Path getRarExecutableFilename();
 
 	/**
-	 * Simple locate strategy. Child classes may extend this algorithm.
+	 *
 	 * 
 	 * @return the located rar executable or <code>null</code> if it could not be located.
 	 */
-	public Path locateRarExecutable()
-	{
-		return locateRarExecutableInStandardInstallationDirectories();
-	}
-
-	protected Path locateRarExecutableInStandardInstallationDirectories()
-	{
-		List<Path> standardDirs = getWinRarStandardInstallationDirectories();
-		log.debug("Trying to locate RAR executable in standard installation directories: {}", standardDirs);
-		return returnFirstValidRarExecutable(standardDirs);
-	}
-
-	protected abstract List<Path> getWinRarStandardInstallationDirectories();
+	public abstract Path locateRarExecutable();
 
 	protected Path returnFirstValidRarExecutable(Iterable<Path> possibleWinRarDirectories)
 	{
@@ -68,7 +55,7 @@ public abstract class WinRar
 			try
 			{
 				validateRarExecutable(candidate);
-				log.debug("Found RAR executable at {}", candidate);
+				log.trace("Found RAR executable at {}", candidate);
 				return candidate;
 			}
 			catch (Exception e)

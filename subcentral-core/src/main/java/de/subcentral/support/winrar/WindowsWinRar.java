@@ -33,8 +33,8 @@ public class WindowsWinRar extends WinRar
 	@Override
 	public Path locateRarExecutable() throws IllegalStateException
 	{
-		// 1. try the default strategy
-		Path rarExe = super.locateRarExecutable();
+		// 1. try the standard dirs
+		Path rarExe = searchRarExeInStandardDirs();
 		if (rarExe != null)
 		{
 			return rarExe;
@@ -48,10 +48,11 @@ public class WindowsWinRar extends WinRar
 		return null;
 	}
 
-	@Override
-	protected List<Path> getWinRarStandardInstallationDirectories()
+	private Path searchRarExeInStandardDirs()
 	{
-		return ImmutableList.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR"));
+		List<Path> standardDirs = ImmutableList.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR"));
+		log.debug("Trying to locate RAR executable in standard installation directories: {}", standardDirs);
+		return returnFirstValidRarExecutable(standardDirs);
 	}
 
 	/**
