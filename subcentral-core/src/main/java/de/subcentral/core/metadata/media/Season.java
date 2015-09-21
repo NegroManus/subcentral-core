@@ -61,18 +61,6 @@ public class Season extends MediaBase implements Comparable<Season>
 		setTitle(title);
 	}
 
-	@Override
-	public String getName()
-	{
-		return null;
-	}
-
-	@Override
-	public List<String> getAliasNames()
-	{
-		return ImmutableList.of();
-	}
-
 	public Series getSeries()
 	{
 		return series;

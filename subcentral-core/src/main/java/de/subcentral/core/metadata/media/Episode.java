@@ -22,7 +22,6 @@ import de.subcentral.core.util.TemporalComparator;
 
 public class Episode extends MediaBase implements Comparable<Episode>
 {
-	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Episode.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Episode.class, PropNames.SERIES);
 	public static final SimplePropDescriptor	PROP_NUMBER_IN_SERIES	= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SERIES);
 	public static final SimplePropDescriptor	PROP_SEASON				= new SimplePropDescriptor(Episode.class, PropNames.SEASON);
@@ -212,18 +211,6 @@ public class Episode extends MediaBase implements Comparable<Episode>
 		setSeason(season);
 		setNumberInSeason(numberInSeason);
 		setTitle(title);
-	}
-
-	@Override
-	public String getName()
-	{
-		return null;
-	}
-
-	@Override
-	public List<String> getAliasNames()
-	{
-		return ImmutableList.of();
 	}
 
 	public Series getSeries()

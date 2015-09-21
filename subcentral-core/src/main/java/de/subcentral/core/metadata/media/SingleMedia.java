@@ -9,7 +9,7 @@ import java.util.Set;
  * For any media type that has no own class, like a movie, or if the media type could not be determined.
  *
  */
-public abstract class SingleMedia extends NamedMedia
+public abstract class SingleMedia extends NamedMediaBase
 {
 	protected final List<String>	languages	= new ArrayList<>(1);
 	protected final List<String>	countries	= new ArrayList<>(1);

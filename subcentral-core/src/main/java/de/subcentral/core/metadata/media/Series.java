@@ -18,7 +18,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Series extends NamedMedia implements Comparable<Series>
+public class Series extends NamedMediaBase implements Comparable<Series>
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Series.class, PropNames.TITLE);
