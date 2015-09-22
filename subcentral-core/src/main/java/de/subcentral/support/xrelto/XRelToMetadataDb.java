@@ -34,11 +34,9 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class XRelMetadataDb extends HttpMetadataDb
+public class XRelToMetadataDb extends HttpMetadataDb
 {
-	public static final String NAME = "xrel.to";
-
-	private static final Logger log = LogManager.getLogger(XRelMetadataDb.class);
+	private static final Logger log = LogManager.getLogger(XRelToMetadataDb.class);
 
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
@@ -51,9 +49,9 @@ public class XRelMetadataDb extends HttpMetadataDb
 	private static final ZoneId TIME_ZONE = ZoneId.of("Europe/Berlin");
 
 	@Override
-	public String getName()
+	public String getSourceId()
 	{
-		return NAME;
+		return XRelTo.SOURCE_ID;
 	}
 
 	@Override

@@ -513,7 +513,7 @@ public class ProcessingSettings extends AbstractSubSettings
 		for (int i = 0; i < releaseDbs.size(); i++)
 		{
 			MetadataDbSettingEntry<Release> db = releaseDbs.get(i);
-			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getValue().getName());
+			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getValue().getSourceId());
 			cfg.addProperty("metadata.release.databases.db(" + i + ")[@enabled]", db.isEnabled());
 		}
 

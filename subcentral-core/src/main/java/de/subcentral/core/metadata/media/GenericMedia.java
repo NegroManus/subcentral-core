@@ -29,6 +29,7 @@ public class GenericMedia extends SingleMedia implements Comparable<GenericMedia
 	public static final SimplePropDescriptor	PROP_IMAGES				= new SimplePropDescriptor(GenericMedia.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(GenericMedia.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(GenericMedia.class, PropNames.FURTHER_INFO_LINKS);
+	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(GenericMedia.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(GenericMedia.class, PropNames.ATTRIBUTES);
 
 	private String	mediaType;
@@ -118,6 +119,7 @@ public class GenericMedia extends SingleMedia implements Comparable<GenericMedia
 				.add("contentRating", contentRating)
 				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", ids)
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

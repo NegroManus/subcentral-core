@@ -7,11 +7,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
+import de.subcentral.core.BeanUtil;
+import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
+import de.subcentral.core.metadata.MetadataBase;
+import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Network implements Comparable<Network>
+public class Network extends MetadataBase implements Comparable<Network>
 {
-	private String name;
+	public static final SimplePropDescriptor	PROP_NAME	= new SimplePropDescriptor(Network.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_IDS	= new SimplePropDescriptor(Network.class, PropNames.IDS);
+	private String								name;
 
 	public Network()
 	{
@@ -68,6 +74,6 @@ public class Network implements Comparable<Network>
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).toString();
+		return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).add("ids", BeanUtil.nullIfEmpty(ids)).toString();
 	}
 }

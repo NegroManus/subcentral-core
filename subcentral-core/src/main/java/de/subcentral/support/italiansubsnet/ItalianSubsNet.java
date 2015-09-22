@@ -23,9 +23,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ItalianSubsNet
 {
-	public static final String DOMAIN = "italiansubs.net";
+	public static final String SOURCE_ID = "italiansubs.net";
 
-	private static final TypeParsingService PARSING_SERVICE = new TypeParsingService(DOMAIN);
+	private static final TypeParsingService PARSING_SERVICE = new TypeParsingService(SOURCE_ID);
 
 	static
 	{
@@ -35,7 +35,7 @@ public class ItalianSubsNet
 	private static List<Parser<SubtitleAdjustment>> initParsers()
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
-		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, DOMAIN);
+		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, SOURCE_ID);
 		commonPredefMatchesBuilder.put(Subtitle.PROP_LANGUAGE, "italian");
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = commonPredefMatchesBuilder.build();
 

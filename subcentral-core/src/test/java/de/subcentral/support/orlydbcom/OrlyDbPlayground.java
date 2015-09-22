@@ -15,7 +15,7 @@ public class OrlyDbPlayground
 {
 	public static void main(String[] args) throws IOException
 	{
-		OrlyDbMetadataDb db = new OrlyDbMetadataDb();
+		OrlyDbComMetadataDb db = new OrlyDbComMetadataDb();
 
 		URL url = Resources.getResource("de/subcentral/support/orlydbcom/psych.s06e05.html");
 		Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost());

@@ -32,8 +32,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseScene
 {
-	public static final String				DOMAIN			= "release.scene";
-	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(DOMAIN);
+	public static final String				SOURCE_ID		= "release.scene";
+	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(SOURCE_ID);
 
 	static
 	{

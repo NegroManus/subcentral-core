@@ -28,10 +28,10 @@ import de.subcentral.support.releasescene.ReleaseScene;
 
 public class SubCentralDe
 {
-	public static final String DOMAIN = "subcentral.de";
+	public static final String SOURCE_ID = "subcentral.de";
 
 	private static final Logger				log				= LogManager.getLogger(SubCentralDe.class.getName());
-	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(DOMAIN);
+	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(SOURCE_ID);
 
 	static
 	{

@@ -31,11 +31,9 @@ import de.subcentral.core.util.ByteUtil;
  * @implSpec #immutable #thread-safe
  *
  */
-public class OrlyDbMetadataDb extends HttpMetadataDb
+public class OrlyDbComMetadataDb extends HttpMetadataDb
 {
-	public static final String NAME = "orlydb.com";
-
-	private static final Logger log = LogManager.getLogger(OrlyDbMetadataDb.class);
+	private static final Logger log = LogManager.getLogger(OrlyDbComMetadataDb.class);
 
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
@@ -48,9 +46,9 @@ public class OrlyDbMetadataDb extends HttpMetadataDb
 	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
 
 	@Override
-	public String getName()
+	public String getSourceId()
 	{
-		return NAME;
+		return OrlyDbCom.SOURCE_ID;
 	}
 
 	@Override

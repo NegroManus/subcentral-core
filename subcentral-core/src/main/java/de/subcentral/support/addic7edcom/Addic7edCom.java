@@ -24,9 +24,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7edCom
 {
-	public static final String DOMAIN = "addic7ed.com";
+	public static final String SOURCE_ID = "addic7ed.com";
 
-	private static final TypeParsingService PARSING_SERVICE = new TypeParsingService(DOMAIN);
+	private static final TypeParsingService PARSING_SERVICE = new TypeParsingService(SOURCE_ID);
 
 	static
 	{

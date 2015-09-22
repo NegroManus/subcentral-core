@@ -14,9 +14,9 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.support.orlydbcom.OrlyDbMetadataDb;
+import de.subcentral.support.orlydbcom.OrlyDbComMetadataDb;
 import de.subcentral.support.predbme.PreDbMeMetadataDb;
-import de.subcentral.support.xrelto.XRelMetadataDb;
+import de.subcentral.support.xrelto.XRelToMetadataDb;
 
 public class MultiInfoDbPlayground
 {
@@ -32,8 +32,8 @@ public class MultiInfoDbPlayground
 	public static void main(String[] args) throws InterruptedException
 	{
 		PreDbMeMetadataDb preDbMe = new PreDbMeMetadataDb();
-		XRelMetadataDb xrelTo = new XRelMetadataDb();
-		OrlyDbMetadataDb orlyDb = new OrlyDbMetadataDb();
+		XRelToMetadataDb xrelTo = new XRelToMetadataDb();
+		OrlyDbComMetadataDb orlyDb = new OrlyDbComMetadataDb();
 		List<MetadataDb> dbs = new ArrayList<>(3);
 		dbs.add(preDbMe);
 		dbs.add(xrelTo);
@@ -52,7 +52,7 @@ public class MultiInfoDbPlayground
 		TimeUtil.printDurationMillis("queryAll", start);
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : results.asMap().entrySet())
 		{
-			System.out.println("Results of " + entry.getKey().getName());
+			System.out.println("Results of " + entry.getKey().getSourceId());
 			entry.getValue().stream().forEach((r) -> System.out.println(r));
 			System.out.println();
 		}

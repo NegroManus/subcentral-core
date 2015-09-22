@@ -46,12 +46,6 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class PreDbMeMetadataDb extends HttpMetadataDb
 {
-	public static final String	NAME					= "predb.me";
-	/**
-	 * Value is of type Integer.
-	 */
-	public static final String	ATTRIBUTE_PREDBME_ID	= "PREDBME_ID";
-
 	private static final Logger log = LogManager.getLogger(PreDbMeMetadataDb.class);
 
 	/**
@@ -60,9 +54,9 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
 
 	@Override
-	public String getName()
+	public String getSourceId()
 	{
-		return NAME;
+		return PreDbMe.SOURCE_ID;
 	}
 
 	@Override
@@ -316,6 +310,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 			rls.setName(title);
 
 			detailsUrl = titleAnchor.absUrl("href");
+			rls.getIds().put(PreDbMe.SOURCE_ID, parseId(titleAnchor));
 		}
 
 		/**
@@ -688,6 +683,19 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		rls.setSingleMedia(media);
 
 		return rls;
+	}
+
+	/**
+	 * <a rel="nofollow" href="http://predb.me?post=4097303" class="tb tb-perma" title="Visit the permanent page for this release."></a>
+	 */
+	private static String parseId(Element postAnchor)
+	{
+		if (postAnchor != null)
+		{
+			String postLink = postAnchor.attr("href");
+			return postLink.substring(postLink.indexOf("post=") + 5); // 5 = length of string "post="
+		}
+		return null;
 	}
 
 	private static ZonedDateTime parseReleaseDate(Element timeSpan)

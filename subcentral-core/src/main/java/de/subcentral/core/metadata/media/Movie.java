@@ -31,6 +31,7 @@ public class Movie extends SingleMedia implements Comparable<Movie>
 	public static final SimplePropDescriptor	PROP_IMAGES				= new SimplePropDescriptor(Movie.class, PropNames.IMAGES);
 	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(Movie.class, PropNames.CONTENT_RATING);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Movie.class, PropNames.FURTHER_INFO_LINKS);
+	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Movie.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Movie.class, PropNames.ATTRIBUTES);
 
 	public Movie()
@@ -111,6 +112,7 @@ public class Movie extends SingleMedia implements Comparable<Movie>
 				.add("contentRating", contentRating)
 				.add("images", BeanUtil.nullIfEmpty(images))
 				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", BeanUtil.nullIfEmpty(ids))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}

@@ -35,11 +35,14 @@ import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
-import de.subcentral.support.orlydbcom.OrlyDbMetadataDb;
+import de.subcentral.support.orlydbcom.OrlyDbCom;
+import de.subcentral.support.orlydbcom.OrlyDbComMetadataDb;
+import de.subcentral.support.predbme.PreDbMe;
 import de.subcentral.support.predbme.PreDbMeMetadataDb;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
-import de.subcentral.support.xrelto.XRelMetadataDb;
+import de.subcentral.support.xrelto.XRelTo;
+import de.subcentral.support.xrelto.XRelToMetadataDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -115,16 +118,16 @@ class ConfigurationHelper
 			boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
 			switch (domain)
 			{
-			case Addic7edCom.DOMAIN:
+			case Addic7edCom.SOURCE_ID:
 				services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
 				break;
-			case ItalianSubsNet.DOMAIN:
+			case ItalianSubsNet.SOURCE_ID:
 				services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
 				break;
-			case ReleaseScene.DOMAIN:
+			case ReleaseScene.SOURCE_ID:
 				services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
 				break;
-			case SubCentralDe.DOMAIN:
+			case SubCentralDe.SOURCE_ID:
 				services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
 				break;
 			default:
@@ -176,14 +179,14 @@ class ConfigurationHelper
 			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
 			switch (name)
 			{
-			case PreDbMeMetadataDb.NAME:
+			case PreDbMe.SOURCE_ID:
 				dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
 				break;
-			case XRelMetadataDb.NAME:
-				dbs.add(new MetadataDbSettingEntry<>(new XRelMetadataDb(), enabled));
+			case XRelTo.SOURCE_ID:
+				dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
 				break;
-			case OrlyDbMetadataDb.NAME:
-				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbMetadataDb(), enabled));
+			case OrlyDbCom.SOURCE_ID:
+				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown metadata database: " + name);

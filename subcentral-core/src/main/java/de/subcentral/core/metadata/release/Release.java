@@ -15,6 +15,7 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
+import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -31,7 +32,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * So, every Release contains a set of media, has a list of release tags and is released by its release group.
  *
  */
-public class Release implements Comparable<Release>
+public class Release extends MetadataBase implements Comparable<Release>
 {
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Release.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_MEDIA				= new SimplePropDescriptor(Release.class, PropNames.MEDIA);
@@ -47,6 +48,7 @@ public class Release implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(Release.class, PropNames.NFO);
 	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(Release.class, PropNames.NFO_LINK);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Release.class, PropNames.FURTHER_INFO_LINKS);
+	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Release.class, PropNames.IDS);
 
 	public static final Comparator<Release> NAME_COMPARATOR = (Release r1, Release r2) -> (r1 == null ? (r2 == null ? 0 : 1) : r1.compareToByName(r2));
 
@@ -507,6 +509,7 @@ public class Release implements Comparable<Release>
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
 				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", BeanUtil.nullIfEmpty(ids))
 				.toString();
 	}
 }

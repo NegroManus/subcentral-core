@@ -46,7 +46,7 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
-import de.subcentral.support.orlydbcom.OrlyDbMetadataDb;
+import de.subcentral.support.orlydbcom.OrlyDbComMetadataDb;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
@@ -105,7 +105,7 @@ public class ParsingPlayground
 
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
 
-		final MetadataDb rlsInfoDb = new OrlyDbMetadataDb();
+		final MetadataDb rlsInfoDb = new OrlyDbComMetadataDb();
 		final NamingService mediaNsForFiltering = NamingDefaults.getDefaultNormalizingNamingService();
 
 		final CompatibilityService compService = new CompatibilityService();

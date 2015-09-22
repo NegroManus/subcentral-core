@@ -79,7 +79,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	}
 
 	@Override
-	public <T> List<T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByExternalId(String sourceId, String id, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -93,7 +93,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(this).add("name", getName()).add("displayName", getDisplayName()).toString();
+		return MoreObjects.toStringHelper(this).add("sourceId", getSourceId()).add("displayName", getDisplayName()).toString();
 	}
 
 	protected IllegalArgumentException createUnsupportedRecordTypeException(Class<?> unsupportedType) throws IllegalArgumentException

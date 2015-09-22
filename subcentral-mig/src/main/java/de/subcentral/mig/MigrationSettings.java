@@ -18,14 +18,14 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.correction.PatternStringReplacer;
+import de.subcentral.core.correction.PatternStringReplacer.Mode;
 import de.subcentral.core.correction.ReflectiveCorrector;
 import de.subcentral.core.correction.SeriesNameCorrector;
 import de.subcentral.core.correction.TypeCorrectionService;
-import de.subcentral.core.correction.PatternStringReplacer.Mode;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.support.thetvdbcom.TheTvDbMetadataDb;
+import de.subcentral.support.thetvdbcom.TheTvDbCom;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
@@ -50,7 +50,7 @@ public class MigrationSettings
 	private final ListProperty<ContributionTypePattern>	contributionTypePatterns	= new SimpleListProperty<>(this, "contributionTypePatterns", FXCollections.observableArrayList());
 	private final ListProperty<ContributorPattern>		contributorPatterns			= new SimpleListProperty<>(this, "contributorPatterns", FXCollections.observableArrayList());
 	private final ListProperty<Pattern>					irrelevantPatterns			= new SimpleListProperty<>(this, "irrelevantPatterns", FXCollections.observableArrayList());
-	private final Property<CorrectionService>		standardizingService		= new SimpleObjectProperty<>(this, "standardizingService");
+	private final Property<CorrectionService>			standardizingService		= new SimpleObjectProperty<>(this, "standardizingService");
 	private final Map<String, Object>					namingParams				= new HashMap<>();
 
 	private MigrationSettings()
@@ -90,9 +90,9 @@ public class MigrationSettings
 		for (HierarchicalConfiguration<ImmutableNode> seriesCfg : seriesCfgs)
 		{
 			String name = seriesCfg.getString("[@name]");
-			int thetvdbId = seriesCfg.getInt("[@thetvdbId]");
+			String thetvdbId = seriesCfg.getString("[@thetvdbId]");
 			Series series = new Series(name);
-			series.getAttributes().put(TheTvDbMetadataDb.ATTRIBUTE_THETVDB_ID, thetvdbId);
+			series.getIds().put(TheTvDbCom.SOURCE_ID, thetvdbId);
 			seriesList.add(series);
 		}
 		seriesList.trimToSize();

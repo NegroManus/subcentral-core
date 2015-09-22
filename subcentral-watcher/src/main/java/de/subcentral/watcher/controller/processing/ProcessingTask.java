@@ -476,7 +476,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		ListMultimap<MetadataDb, Release> queryResults = MetadataDbUtil.searchInAll(config.getReleaseDbs(), queryObj, Release.class, controller.getMainController().getCommonExecutor());
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : queryResults.asMap().entrySet())
 		{
-			log.debug("Results of {}", entry.getKey().getName());
+			log.debug("Results of {}", entry.getKey().getSourceId());
 			entry.getValue().stream().forEach((r) -> log.debug(r));
 		}
 		if (queryResults.isEmpty())

@@ -5,12 +5,12 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.metadata.Metadata;
 import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
@@ -33,19 +34,10 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.TemporalComparator;
+import de.subcentral.support.StandardSources;
 
-public class TheTvDbMetadataDb extends HttpMetadataDb
+public class TheTvDbComMetadataDb extends HttpMetadataDb
 {
-	public static final String NAME = "thetvdb.com";
-
-	/**
-	 * Value is of type Integer.
-	 */
-	public static final String	ATTRIBUTE_THETVDB_ID			= "THETVDB_ID";
-	/**
-	 * Value is of type String.
-	 */
-	public static final String	ATTRIBUTE_IMDB_ID				= "IMDB_ID";
 	/**
 	 * An unsigned integer indicating the season number this episode comes after. This field is only available for special episodes. Can be null.
 	 */
@@ -66,9 +58,7 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 	public static final String	IMAGE_TYPE_POSTER			= "poster";
 	public static final String	IMAGE_TYPE_EPISODE_IMAGE	= "episode_image";
 
-	public static final String RATING_AGENCY_THETVDB = "thetvdb.com";
-
-	private static final Logger log = LogManager.getLogger(TheTvDbMetadataDb.class);
+	private static final Logger log = LogManager.getLogger(TheTvDbComMetadataDb.class);
 
 	private static final String		API_SUB_PATH	= "/api/";
 	private static final String		IMG_SUB_PATH	= "/banners/";
@@ -87,9 +77,9 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 	}
 
 	@Override
-	public String getName()
+	public String getSourceId()
 	{
-		return NAME;
+		return TheTvDbCom.SOURCE_ID;
 	}
 
 	@Override
@@ -119,7 +109,7 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 	@Override
 	public Set<String> getSupportedExternalSources()
 	{
-		return ImmutableSet.of("imdb", "zap2it");
+		return ImmutableSet.of(StandardSources.IMDB_COM, StandardSources.ZAP2IT_COM);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -173,39 +163,39 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByExternalId(String sourceId, String id, Class<T> recordType) throws IllegalArgumentException, IOException
 	{
 		if (recordType.isAssignableFrom(Series.class))
 		{
-			return (List<T>) searchSeriesByExternalId(externalSource, id);
+			return (List<T>) searchSeriesByExternalId(sourceId, id);
 		}
 		throw createUnsupportedRecordTypeException(recordType);
 	}
 
-	public List<Series> searchSeriesByExternalId(String externalSource, String id) throws IllegalArgumentException, IOException
+	public List<Series> searchSeriesByExternalId(String sourceId, String id) throws IllegalArgumentException, IOException
 	{
-		return searchSeriesByExternalId(externalSource, id, null);
+		return searchSeriesByExternalId(sourceId, id, null);
 	}
 
-	public List<Series> searchSeriesByExternalId(String externalSource, String id, String language) throws IllegalArgumentException, IOException
+	public List<Series> searchSeriesByExternalId(String sourceId, String id, String language) throws IllegalArgumentException, IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		switch (externalSource)
+		switch (sourceId)
 		{
-		case "imdb":
+		case StandardSources.IMDB_COM:
 			query.put("imdbid", id);
 			break;
-		case "zap2it":
+		case StandardSources.ZAP2IT_COM:
 			query.put("zap2it", id);
 		default:
-			throw createUnsupportedExternalSource(externalSource);
+			throw createUnsupportedExternalSource(sourceId);
 		}
 		if (language != null)
 		{
 			query.put("language", language);
 		}
 		URL url = buildRelativeUrl(API_SUB_PATH + "GetSeriesByRemoteID.php", query.build());
-		log.debug("Searching for series ({} id={}) using url {}", externalSource, id, url);
+		log.debug("Searching for series ({} id={}) using url {}", sourceId, id, url);
 		return parseSeriesSearchResults(getDocument(url));
 	}
 
@@ -305,7 +295,7 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 		{
 			Series series = new Series();
 
-			addTvDbId(series, seriesElem, "seriesid");
+			addId(series, seriesElem, "seriesid", TheTvDbCom.SOURCE_ID);
 
 			series.setName(getTextFromChild(seriesElem, "seriesname"));
 
@@ -324,7 +314,8 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 
 			addNetwork(series, seriesElem, "network");
 
-			addImdbId(series, seriesElem, "imdb_id");
+			addId(series, seriesElem, "imdb_id", StandardSources.IMDB_COM);
+			addId(series, seriesElem, "zap2it_id", StandardSources.ZAP2IT_COM);
 
 			results.add(series);
 		}
@@ -399,7 +390,7 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 
 		Series series = new Series();
 
-		addTvDbId(series, seriesElem, "id");
+		addId(series, seriesElem, "id", TheTvDbCom.SOURCE_ID);
 
 		series.setContentRating(getTextFromChild(seriesElem, "contentrating"));
 
@@ -409,13 +400,14 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 		List<String> genres = LIST_SPLITTER.splitToList(genresTxt);
 		series.setGenres(genres);
 
-		addImdbId(series, seriesElem, "imdb_id");
+		addId(series, seriesElem, "imdb_id", StandardSources.IMDB_COM);
+		addId(series, seriesElem, "zap2it_id", StandardSources.ZAP2IT_COM);
 
 		addNetwork(series, seriesElem, "network");
 
 		addDescription(series, seriesElem, "overview");
 
-		addTheTvDbRating(series, seriesElem, "rating");
+		addRating(series, seriesElem, "rating", TheTvDbCom.SOURCE_ID);
 
 		String runtimeTxt = getTextFromChild(seriesElem, "runtime");
 		int runtime = Integer.parseInt(runtimeTxt);
@@ -520,7 +512,8 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 	{
 		Elements epiElems = superElem.getElementsByTag("episode");
 		// using a map for the seasons to allow using special map methods
-		SortedMap<Integer, Season> seasons = new TreeMap<>();
+		// use LinkedHashMap to keep insertion order
+		Map<String, Season> seasons = new LinkedHashMap<>();
 		// a list for all episodes (regular and specials)
 		List<Episode> episodes = new ArrayList<>(epiElems.size());
 		// a list only for specials, as they are sorted into the complete episode list afterwards
@@ -534,11 +527,13 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 			epi.setSeries(series);
 
 			// Overwrite season
-			Season possiblyNewSeason = series.newSeason(epi.getSeason().getNumber());
-			// Check whether this season is already stored, if yes, return it, if no return the new season
-			Season season = seasons.computeIfAbsent(epi.getSeason().getAttributeValue(ATTRIBUTE_THETVDB_ID), (Integer key) -> possiblyNewSeason);
-			epi.setSeason(season);
-
+			if (epi.getSeason() != null)
+			{
+				Season possiblyNewSeason = series.newSeason(epi.getSeason().getNumber());
+				// Check whether this season is already stored, if yes, return it, if no return the new season
+				Season season = seasons.computeIfAbsent(epi.getSeason().getIds().get(TheTvDbCom.SOURCE_ID), (String key) -> possiblyNewSeason);
+				epi.setSeason(season);
+			}
 			// May add to special episode list
 			if (epi.isSpecial())
 			{
@@ -552,26 +547,27 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 			{
 				episodes.add(epi);
 			}
-
-			// sort the episodes in natural order (Series, Season number, Episode number))
-			// should not be necessary as episodes are returned in that order but better be safe than sorry
-			Collections.sort(episodes);
-
-			// sort the specials by date
-			specials.sort((SpecialEpisodeRecord r1, SpecialEpisodeRecord r2) -> TemporalComparator.INSTANCE.compare(r1.episode.getDate(), r2.episode.getDate()));
-
-			insertSpecials(episodes, specials);
-
-			// Add to the series
-			series.setEpisodes(episodes);
-			series.setSeasons(seasons.values());
 		}
+
+		// sort the episodes in natural order (Series, Season number, Episode number))
+		// should not be necessary as episodes are returned in that order but better be safe than sorry
+		Collections.sort(episodes);
+
+		// sort the specials by date
+		specials.sort((SpecialEpisodeRecord r1, SpecialEpisodeRecord r2) -> TemporalComparator.INSTANCE.compare(r1.episode.getDate(), r2.episode.getDate()));
+
+		insertSpecials(episodes, specials);
+
+		// Add to the series
+		series.setEpisodes(episodes);
+		series.setSeasons(seasons.values());
+
 	}
 
 	private Episode parseBaseEpisodeRecord(Element epiElem)
 	{
 		Series series = new Series();
-		addTheTvDbRating(series, epiElem, "seriesid");
+		addId(series, epiElem, "seriesid", TheTvDbCom.SOURCE_ID);
 
 		Episode epi = series.newEpisode();
 
@@ -589,7 +585,7 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 			Integer airsBeforeEpisode = getIntegerFromChild(epiElem, "airsbefore_episode");
 			if (airsBeforeEpisode != null)
 			{
-				epi.getAttributes().put(ATTRIBUTE_AIRSBEFORE_EPISODE, airsAfterSeason);
+				epi.getAttributes().put(ATTRIBUTE_AIRSBEFORE_EPISODE, airsBeforeEpisode);
 			}
 			Integer airsBeforeSeason = getIntegerFromChild(epiElem, "airsbefore_season");
 			if (airsBeforeSeason != null)
@@ -600,23 +596,23 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 		else
 		{
 			Season season = new Season(series, seasonNum);
-			addTvDbId(season, epiElem, "seasonid");
+			addId(season, epiElem, "seasonid", TheTvDbCom.SOURCE_ID);
 
 			epi.setSeason(season);
 			epi.setNumberInSeason(getIntegerFromChild(epiElem, "episodenumber"));
 		}
 		// add rest of the properties
-		addTvDbId(epi, epiElem, "id");
+		addId(epi, epiElem, "id", TheTvDbCom.SOURCE_ID);
 
 		epi.setTitle(getTextFromChild(epiElem, "episodename"));
 
 		addDateAsLocaleDate(epi, epiElem, "firstaired");
 
-		addImdbId(epi, epiElem, "imdb_id");
+		addId(epi, epiElem, "imdb_id", StandardSources.IMDB_COM);
 
 		addDescription(epi, epiElem, "overview");
 
-		addTheTvDbRating(epi, epiElem, "rating");
+		addRating(epi, epiElem, "rating", TheTvDbCom.SOURCE_ID);
 
 		addImage(epi, epiElem, "filename", IMAGE_TYPE_EPISODE_IMAGE);
 
@@ -758,12 +754,12 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 		return Integer.parseInt(txt);
 	}
 
-	private static void addTvDbId(Media media, Element parentElem, String tag)
+	private static void addId(Metadata metadata, Element parentElem, String tag, String sourceId)
 	{
 		String idTxt = getTextFromChild(parentElem, tag);
 		if (idTxt != null)
 		{
-			media.getAttributes().put(ATTRIBUTE_THETVDB_ID, Integer.parseInt(idTxt));
+			metadata.getIds().put(sourceId, idTxt);
 		}
 	}
 
@@ -802,22 +798,13 @@ public class TheTvDbMetadataDb extends HttpMetadataDb
 		}
 	}
 
-	private static void addImdbId(Media media, Element parentElem, String tag)
-	{
-		String imdbIdTxt = getTextFromChild(parentElem, tag);
-		if (imdbIdTxt != null)
-		{
-			media.getAttributes().put(ATTRIBUTE_IMDB_ID, imdbIdTxt);
-		}
-	}
-
-	private static void addTheTvDbRating(Media media, Element parentElem, String tag)
+	private static void addRating(Media media, Element parentElem, String tag, String sourceId)
 	{
 		String ratingTxt = getTextFromChild(parentElem, tag);
 		if (ratingTxt != null)
 		{
 			float rating = Float.parseFloat(ratingTxt);
-			media.getRatings().put(RATING_AGENCY_THETVDB, rating);
+			media.getRatings().put(sourceId, rating);
 		}
 	}
 

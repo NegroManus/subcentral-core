@@ -12,9 +12,10 @@ public interface PropNames
 	public static final String	EPISODES				= "episodes";
 	public static final String	FILE_COUNT				= "fileCount";
 	public static final String	FINALE_DATE				= "finaleDate";
-	public static final String	FURTHER_INFO_LINKS			= "furtherInfo";
+	public static final String	FURTHER_INFO_LINKS		= "furtherInfo";
 	public static final String	GENRES					= "genres";
 	public static final String	GROUP					= "group";
+	public static final String	IDS						= "ids";
 	public static final String	IMAGES					= "images";
 	public static final String	LANGUAGE				= "language";
 	public static final String	LANGUAGES				= "languages";
@@ -25,7 +26,7 @@ public interface PropNames
 	public static final String	NAME					= "name";
 	public static final String	NETWORKS				= "networks";
 	public static final String	NFO						= "nfo";
-	public static final String	NFO_LINK					= "nfoUrl";
+	public static final String	NFO_LINK				= "nfoUrl";
 	public static final String	NUKES					= "nukes";
 	public static final String	NUMBER					= "number";
 	public static final String	NUMBER_IN_SEASON		= "numberInSeason";

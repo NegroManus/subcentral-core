@@ -1,6 +1,5 @@
 package de.subcentral.core.metadata.media;
 
-import java.io.Serializable;
 import java.time.Year;
 import java.time.temporal.Temporal;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Set;
 
 import com.google.common.collect.ListMultimap;
 
+import de.subcentral.core.metadata.Metadata;
 import de.subcentral.core.util.TimeUtil;
 
 /**
@@ -17,7 +17,7 @@ import de.subcentral.core.util.TimeUtil;
  * @implSpec All implementations should implement {@link Comparable}.
  *
  */
-public interface Media extends Serializable
+public interface Media extends Metadata
 {
 	public static final String	MEDIA_TYPE_EPISODE			= "episode";
 	public static final String	MEDIA_TYPE_SERIES			= "series";
@@ -49,7 +49,7 @@ public interface Media extends Serializable
 
 	// Property accessors
 	/**
-	 * Normally a media only has a {@link #getName() name} which is in fact its title with some context. The title is only set if it differs from the name (like name: "The Office (UK)", title:
+	 * Normally a media only has a {@link #getSourceId() name} which is in fact its title with some context. The title is only set if it differs from the name (like name: "The Office (UK)", title:
 	 * "The Office").<br>
 	 * In case of numbered media, like an {@link Episode} or a Song, the title may be optional to identify the media.
 	 * 

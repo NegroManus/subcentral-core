@@ -11,8 +11,9 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.BeanUtil;
+import de.subcentral.core.metadata.MetadataBase;
 
-public abstract class MediaBase implements Media
+public abstract class MediaBase extends MetadataBase implements Media
 {
 	protected String								title;
 	protected Temporal								date;
