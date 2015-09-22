@@ -7,13 +7,14 @@ import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
+import de.subcentral.core.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
  * For any media type that has no own class, like a movie, or if the media type could not be determined.
  *
  */
-public class GenericMedia extends SingleMedia
+public class GenericMedia extends SingleMedia implements Comparable<GenericMedia>
 {
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(GenericMedia.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(GenericMedia.class, PropNames.TITLE);
@@ -84,6 +85,17 @@ public class GenericMedia extends SingleMedia
 	public int hashCode()
 	{
 		return new HashCodeBuilder(17, 23).append(StringUtils.lowerCase(name)).toHashCode();
+	}
+
+	@Override
+	public int compareTo(GenericMedia o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return Settings.STRING_ORDERING.compare(name, o.name);
 	}
 
 	@Override

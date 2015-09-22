@@ -9,13 +9,14 @@ import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
+import de.subcentral.core.Settings;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
  * For Movies.
  *
  */
-public class Movie extends SingleMedia
+public class Movie extends SingleMedia implements Comparable<Movie>
 {
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Movie.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Movie.class, PropNames.TITLE);
@@ -79,6 +80,17 @@ public class Movie extends SingleMedia
 	public int hashCode()
 	{
 		return new HashCodeBuilder(19, 201).append(StringUtils.lowerCase(name)).toHashCode();
+	}
+
+	@Override
+	public int compareTo(Movie o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return Settings.STRING_ORDERING.compare(name, o.name);
 	}
 
 	@Override
