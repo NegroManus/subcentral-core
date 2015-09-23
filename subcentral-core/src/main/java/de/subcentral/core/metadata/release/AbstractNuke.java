@@ -42,7 +42,7 @@ public abstract class AbstractNuke implements Comparable<AbstractNuke>
 		{
 			return true;
 		}
-		if (getClass() == obj.getClass())
+		if (obj != null && getClass() == obj.getClass())
 		{
 			AbstractNuke o = (AbstractNuke) obj;
 			return StringUtils.equalsIgnoreCase(reason, o.reason) && Objects.equals(date, o.date);
