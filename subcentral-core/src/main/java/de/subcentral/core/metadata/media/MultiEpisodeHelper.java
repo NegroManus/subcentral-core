@@ -54,6 +54,29 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		return false;
 	}
 
+	public static MultiEpisodeHelper of(Object episodes) throws IllegalArgumentException
+	{
+		if (episodes != null && episodes instanceof Iterable)
+		{
+			List<Episode> epis = null;
+			for (Object o : (Iterable<?>) episodes)
+			{
+				if (o instanceof Episode)
+				{
+					if (epis == null)
+					{
+						epis = new ArrayList<>(2);
+					}
+					epis.add((Episode) o);
+					continue;
+				}
+				return null;
+			}
+			return new MultiEpisodeHelper(epis);
+		}
+		return null;
+	}
+
 	public static MultiEpisodeHelper of(Iterable<? super Episode> episodes) throws IllegalArgumentException
 	{
 		return of(episodes, 2);

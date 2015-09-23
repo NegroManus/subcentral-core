@@ -29,7 +29,7 @@ public class NamingTest
 	{
 		Movie movie = new Movie(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
-		String name = NamingDefaults.getDefaultNamedMediaNamer().name(movie);
+		String name = NamingDefaults.getDefaultMovieNamer().name(movie);
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_NAME, name);
 	}
@@ -40,10 +40,10 @@ public class NamingTest
 		Movie movie = new Movie(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Release rel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
-		String name = NamingDefaults.getDefaultReleaseNamer().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
+		String name = NamingDefaults.getDefaultReleaseNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_REL_NAME, name);
-		Assert.assertEquals(MOVIE_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+		Assert.assertEquals(MOVIE_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
 	}
 
 	@Test
@@ -67,10 +67,10 @@ public class NamingTest
 
 		Release mediaRel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		SubtitleAdjustment rel = SubtitleAdjustment.create(mediaRel, "de", "SubCentral");
-		String name = NamingDefaults.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
+		String name = NamingDefaults.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
-		Assert.assertEquals(MOVIE_SUB_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(NamedMediaNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+		Assert.assertEquals(MOVIE_SUB_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
 	}
 
 	/**

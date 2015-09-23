@@ -92,4 +92,9 @@ public interface NamedMedia extends Media
 	{
 		return isTitled() ? getTitle() : getName();
 	}
+
+	public default boolean hasAliases()
+	{
+		return !getAliasNames().isEmpty();
+	}
 }

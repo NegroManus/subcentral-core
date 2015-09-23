@@ -15,8 +15,8 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
-import de.subcentral.core.metadata.media.NamedMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -41,7 +41,7 @@ public class NamingDefaults
 	// some namers
 	private static final ConditionalNamingService	NAMING_SERVICE				= new ConditionalNamingService(DEFAULT_DOMAIN);
 	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(NAMING_SERVICE);
-	private static NamedMediaNamer					NAMED_MEDIA_NAMER;
+	private static MovieNamer						MOVIE_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
 	private static EpisodeNamer						EPISODE_NAMER;
@@ -105,8 +105,8 @@ public class NamingDefaults
 		// MutliEpisodeNamer with only range separations "-"
 		RANGE_ONLY_MULTI_EPISODE_NAMER = new MultiEpisodeNamer(configForRangeOnlyMultiEpisodeNamer, EPISODE_NAMER);
 
-		// NamedMediaNamer
-		NAMED_MEDIA_NAMER = new NamedMediaNamer(config);
+		// MovieNamer
+		MOVIE_NAMER = new MovieNamer(config);
 
 		// ReleaseNamer
 		RELEASE_NAMER = new ReleaseNamer(configWithRlsNameFormatter, NAMING_SERVICE);
@@ -124,7 +124,7 @@ public class NamingDefaults
 		namers.add(ConditionalNamingEntry.of(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER));
 		namers.add(ConditionalNamingEntry.of(Series.class, SERIES_NAMER));
 		namers.add(ConditionalNamingEntry.of(Season.class, SEASON_NAMER));
-		namers.add(ConditionalNamingEntry.of(NamedMedia.class, NAMED_MEDIA_NAMER));
+		namers.add(ConditionalNamingEntry.of(Movie.class, MOVIE_NAMER));
 		namers.add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
 		namers.add(ConditionalNamingEntry.of(Subtitle.class, SUBTITLE_NAMER));
 		NAMING_SERVICE.getConditionalNamingEntries().addAll(namers);
@@ -192,9 +192,9 @@ public class NamingDefaults
 		return NORMALIZING_NAMING_SERVICE;
 	}
 
-	public static Namer<NamedMedia> getDefaultNamedMediaNamer()
+	public static Namer<Movie> getDefaultMovieNamer()
 	{
-		return NAMED_MEDIA_NAMER;
+		return MOVIE_NAMER;
 	}
 
 	public static Namer<Episode> getDefaultEpisodeNamer()
