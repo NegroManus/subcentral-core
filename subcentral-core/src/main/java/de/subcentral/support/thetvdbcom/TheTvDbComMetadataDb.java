@@ -145,17 +145,14 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	public List<Series> searchSeries(String name) throws IllegalArgumentException, IOException
 	{
-		return searchSeries(name, null);
+		return searchSeries(name, "en");
 	}
 
 	public List<Series> searchSeries(String name, String language) throws IllegalArgumentException, IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		query.put("seriesname", formatSeriesNameQueryValue(name));
-		if (language != null)
-		{
-			query.put("language", language);
-		}
+		query.put("language", (language != null ? language : "all"));
 		URL url = buildRelativeUrl(API_SUB_PATH + "GetSeries.php", query.build());
 		log.debug("Searching for series (name={}) using url {}", name, url);
 		return parseSeriesSearchResults(getDocument(url));
@@ -182,13 +179,13 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		switch (sourceId)
 		{
-		case StandardSources.IMDB_COM:
-			query.put("imdbid", id);
-			break;
-		case StandardSources.ZAP2IT_COM:
-			query.put("zap2it", id);
-		default:
-			throw createUnsupportedExternalSource(sourceId);
+			case StandardSources.IMDB_COM:
+				query.put("imdbid", id);
+				break;
+			case StandardSources.ZAP2IT_COM:
+				query.put("zap2it", id);
+			default:
+				throw createUnsupportedExternalSource(sourceId);
 		}
 		if (language != null)
 		{
