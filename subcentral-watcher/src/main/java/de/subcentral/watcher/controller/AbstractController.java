@@ -35,7 +35,7 @@ public abstract class AbstractController
 		catch (Exception e)
 		{
 			log.error("Initialization of " + getClass().getSimpleName() + " failed", e);
-			throw new ExceptionInInitializerError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
