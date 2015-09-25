@@ -34,7 +34,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class MainController extends AbstractController
 {
@@ -77,12 +76,12 @@ public class MainController extends AbstractController
 	{
 		initCommonExecutor();
 		initCloseHandling();
+
 		// initializing order important
 		initSettingsController();
 		initProcessingController();
 		initWatchController();
 
-		// System Tray
 		initSystemTrayIcon();
 	}
 
@@ -103,7 +102,7 @@ public class MainController extends AbstractController
 	{
 		// Explicit exit because application can be hidden and shown again
 		Platform.setImplicitExit(false);
-		primaryStage.setOnCloseRequest((WindowEvent) -> Platform.exit());
+		primaryStage.setOnCloseRequest((WindowEvent) -> exit());
 	}
 
 	private void initSettingsController() throws IOException
@@ -286,7 +285,8 @@ public class MainController extends AbstractController
 
 	public void exit()
 	{
-		primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+		// Explicit exit: Causes shutdown()
+		Platform.exit();
 	}
 
 	@Override
