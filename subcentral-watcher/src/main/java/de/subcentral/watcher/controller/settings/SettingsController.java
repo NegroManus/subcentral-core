@@ -369,15 +369,15 @@ public class SettingsController extends AbstractController
 			@Override
 			protected void failed()
 			{
-				sectionRootPane.getChildren().clear();
 				log.error("Loading of settings section " + section + "failed", getException());
+				sectionRootPane.getChildren().clear();
 			}
 
 			@Override
 			protected void cancelled()
 			{
+				log.warn("Loading of settings section " + section + " was cancelled", getException());
 				sectionRootPane.getChildren().clear();
-				log.warn("Loading of settings section {} was cancelled", section);
 			}
 		};
 	}
