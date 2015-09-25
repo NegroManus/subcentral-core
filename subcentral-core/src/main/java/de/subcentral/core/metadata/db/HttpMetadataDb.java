@@ -16,10 +16,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.NetUtil;
+import de.subcentral.core.util.TimeUtil;
 
 public abstract class HttpMetadataDb extends AbstractMetadataDb
 {
-	public static final int DEFAULT_TIMEOUT = 10000;
+	/**
+	 * 10 seconds.
+	 */
+	public static final int DEFAULT_TIMEOUT = 10_000;
 
 	private static final Logger log = LogManager.getLogger(HttpMetadataDb.class);
 
@@ -55,7 +59,7 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 	@Override
 	public boolean isAvailable()
 	{
-		return NetUtil.pingHttp(getHost(), timeout);
+		return NetUtil.pingHttp(getHost(), timeout) >= 0;
 	}
 
 	// Utility methods for child classes
@@ -112,10 +116,10 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 	protected Document getDocument(URL url) throws IOException
 	{
 		log.trace("Connecting to {}", url);
-		long start = System.currentTimeMillis();
+		long start = System.nanoTime();
 		Connection con = setupConnection(url);
 		Document doc = con.get();
-		log.debug("Retrieved contents of {} in {} ms", url, (System.currentTimeMillis() - start));
+		log.debug("Retrieved contents of {} in {} ms", url, TimeUtil.durationMillis(start));
 		log.printf(Level.TRACE, "Contents of %s were:%n%s%n", url, doc);
 		return doc;
 	}

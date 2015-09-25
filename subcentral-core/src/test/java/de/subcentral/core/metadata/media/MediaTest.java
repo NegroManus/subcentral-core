@@ -23,10 +23,10 @@ public class MediaTest
 
 			long start = System.nanoTime();
 			media.sort(Settings.createDefaultOrdering());
-			System.out.println(TimeUtil.durationMillis(start, System.nanoTime()));
+			System.out.println(TimeUtil.durationMillisDouble(start, System.nanoTime()));
 
 			media.forEach(s -> System.out.println(NamingDefaults.getDefaultEpisodeNamer().name(s)));
-			System.out.println(TimeUtil.durationMillis(start, System.nanoTime()));
+			System.out.println(TimeUtil.durationMillisDouble(start, System.nanoTime()));
 		}
 	}
 }

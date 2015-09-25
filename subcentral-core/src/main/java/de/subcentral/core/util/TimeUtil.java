@@ -16,12 +16,27 @@ public class TimeUtil
 		System.out.println("Duration of " + operation + ": " + durationMillis(startNanos) + " ms");
 	}
 
-	public static double durationMillis(long startNanos)
+	public static long durationMillis(long startNanos)
 	{
 		return durationMillis(startNanos, System.nanoTime());
 	}
 
-	public static double durationMillis(long startNanos, long endNanos)
+	public static long durationMillis(long startNanos, long endNanos)
+	{
+		return (endNanos - startNanos) / 1_000_000L;
+	}
+
+	public static void printDurationMillisDouble(String operation, long startNanos)
+	{
+		System.out.println("Duration of " + operation + ": " + durationMillisDouble(startNanos) + " ms");
+	}
+
+	public static double durationMillisDouble(long startNanos)
+	{
+		return durationMillisDouble(startNanos, System.nanoTime());
+	}
+
+	public static double durationMillisDouble(long startNanos, long endNanos)
 	{
 		return (endNanos - startNanos) / 1_000_000d;
 	}
@@ -89,7 +104,7 @@ public class TimeUtil
 
 	public static void main(String[] args)
 	{
-		System.out.println(durationMillis(1_000_000, 2_000_000));
+		System.out.println(durationMillisDouble(1_000_000, 2_000_000));
 	}
 
 	private TimeUtil()

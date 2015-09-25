@@ -29,7 +29,7 @@ public class ObservableNamedBeanWrapper<T> extends ObservableBeanWrapper<T>
 			{
 				long start = System.nanoTime();
 				String name = namingService.name(bean, namingParameters);
-				TimeUtil.printDurationMillis("NamedBean.computedName.computeValue(): " + name, start);
+				TimeUtil.printDurationMillisDouble("NamedBean.computedName.computeValue(): " + name, start);
 				return name;
 			}
 		};

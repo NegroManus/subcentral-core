@@ -72,15 +72,16 @@ public class NetUtil
 	}
 
 	/**
-	 * Pings a HTTP URL. This effectively sends a HEAD request and returns <code>true</code> if the response code is in the 200-399 range.
+	 * Pings a HTTP URL. This effectively sends a GET request and returns the response time if the response code is in the 200-399 range.
 	 * 
 	 * @param url
 	 *            The HTTP URL to be pinged.
 	 * @param timeout
 	 *            The timeout in millis for both the connection timeout and the response read timeout. Note that the total timeout is effectively two times the given timeout.
-	 * @return <code>true</code> if the given HTTP URL has returned response code 200-399 on a HEAD request within the given timeout, otherwise <code>false</code>.
+	 * @return the response time in milliseconds if the url could be pinged (otherwise <code>-1</code>) and the response code was between 200 and 399 (if not, this method returns the response code *
+	 *         -1)
 	 */
-	public static boolean pingHttp(String url, int timeout)
+	public static int pingHttp(String url, int timeout)
 	{
 		// Otherwise an exception may be thrown on invalid SSL certificates:
 		url = url.replaceFirst("^https", "http");
@@ -91,17 +92,29 @@ public class NetUtil
 			connection.setConnectTimeout(timeout);
 			connection.setReadTimeout(timeout);
 			connection.setRequestMethod("GET");
+			long start = System.nanoTime();
 			int responseCode = connection.getResponseCode();
-			return (200 <= responseCode && responseCode <= 399);
+			int responseTime = (int) TimeUtil.durationMillis(start);
+			if (200 <= responseCode && responseCode <= 399)
+			{
+				log.debug("Successfully pinged {} in {} ms. Response code was {}", url, responseTime, responseCode);
+				return responseTime;
+			}
+			else
+			{
+				log.debug("Unsuccessfully pinged {} in {} ms: Bad response code: {}", url, responseTime, responseTime);
+				return -responseCode;
+			}
+
 		}
 		catch (IOException e)
 		{
-			log.debug("Http ping failed", e);
-			return false;
+			log.debug("Unsuccessfully pinged " + url, e);
+			return -1;
 		}
 	}
 
-	public static boolean pingHttp(URL url, int timeout)
+	public static int pingHttp(URL url, int timeout)
 	{
 		return pingHttp(url.toExternalForm(), timeout);
 	}

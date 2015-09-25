@@ -250,49 +250,49 @@ public class ObservableEpisode extends ObservableNamedBeanWrapper<Episode>
 		long totalStart = System.nanoTime();
 		long start = System.nanoTime();
 		System.out.println(epi.getName());
-		TimeUtil.printDurationMillis("compute name", start);
+		TimeUtil.printDurationMillisDouble("compute name", start);
 
 		start = System.nanoTime();
 		epi.setSeriesName("Psych");
 		epi.setSeasonNumber(8);
 		epi.setNumberInSeason(1);
-		TimeUtil.printDurationMillis("setting of 3 attributes", start);
+		TimeUtil.printDurationMillisDouble("setting of 3 attributes", start);
 
 		start = System.nanoTime();
 		System.out.println(epi.getName());
-		TimeUtil.printDurationMillis("compute name", start);
+		TimeUtil.printDurationMillisDouble("compute name", start);
 
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("get name", start);
+		TimeUtil.printDurationMillisDouble("get name", start);
 
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("get name", start);
+		TimeUtil.printDurationMillisDouble("get name", start);
 
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("get name", start);
+		TimeUtil.printDurationMillisDouble("get name", start);
 
 		epi.setSeriesType(Series.TYPE_SEASONED);
 		epi.setTitle("Lock, Stock");
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("compute name", start);
+		TimeUtil.printDurationMillisDouble("compute name", start);
 
 		epi.getNamingParameters().put(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("compute name", start);
+		TimeUtil.printDurationMillisDouble("compute name", start);
 
 		epi.setTitle(null);
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("compute name", start);
+		TimeUtil.printDurationMillisDouble("compute name", start);
 
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("get name", start);
+		TimeUtil.printDurationMillisDouble("get name", start);
 
 		epi.setSeriesName("How I Met Your Mother");
 		epi.setSeasonNumber(5);
@@ -301,8 +301,8 @@ public class ObservableEpisode extends ObservableNamedBeanWrapper<Episode>
 
 		start = System.nanoTime();
 		System.out.println(epi.getComputedName());
-		TimeUtil.printDurationMillis("compute name", start);
+		TimeUtil.printDurationMillisDouble("compute name", start);
 
-		TimeUtil.printDurationMillis("total", totalStart);
+		TimeUtil.printDurationMillisDouble("total", totalStart);
 	}
 }

@@ -31,7 +31,7 @@ public class LambdaPerfTest
 			}
 		}
 
-		System.out.println(TimeUtil.durationMillis(start));
+		System.out.println(TimeUtil.durationMillisDouble(start));
 	}
 
 	// 80

@@ -27,7 +27,7 @@ public class ParsingPerformanceTest
 			Object o2 = ps.parse(name2);
 			Object o3 = ps.parse(name3);
 		}
-		double duration = TimeUtil.durationMillis(start);
+		double duration = TimeUtil.durationMillisDouble(start);
 		double durationPerTime = duration / times / 3;
 		System.out.println("duration: " + duration);
 		System.out.println("durationPerTime: " + durationPerTime);

@@ -91,7 +91,8 @@ public class IOUtil
 	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit, ExecutorService executor) throws IOException, InterruptedException, TimeoutException
 	{
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
-		log.debug("Executing {} with directory={}; environment={}; timeout={}", command, processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
+		log.debug("Executing process {} with directory={}; environment={}; timeout={}", command, processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
+		long start = System.nanoTime();
 		Process process = processBuilder.start();
 		process.getOutputStream().close();
 
@@ -120,7 +121,7 @@ public class IOUtil
 		String stdOut = StringUtils.stripToNull(stdOutStream.toString(Charset.defaultCharset().name()));
 		String stdErr = StringUtils.stripToNull(stdErrStream.toString(Charset.defaultCharset().name()));
 		ProcessResult result = new ProcessResult(process.exitValue(), stdOut, stdErr);
-		log.debug("Process execution result: {}", result);
+		log.debug("Executed process {} in {} ms with result: {}", command, TimeUtil.durationMillis(start), result);
 		return result;
 	}
 

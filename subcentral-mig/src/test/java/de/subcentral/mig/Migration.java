@@ -85,7 +85,7 @@ public class Migration
 			stream.forEach(file -> files.add(file));
 		}
 		List<SubtitleAdjustment> parsed = files.parallelStream().map(Migration::processFile).collect(Collectors.toList());
-		double duration = TimeUtil.durationMillis(startTotal);
+		double duration = TimeUtil.durationMillisDouble(startTotal);
 		log.info("Processed {} files in {} ms ({} ms per file}", files.size(), duration, (duration / files.size()));
 	}
 
@@ -105,7 +105,7 @@ public class Migration
 			log.info("Read {} items", data.getItems().size());
 			List<Contribution> contributions = parseContributions(data);
 			metadata.setContributions(contributions);
-			log.info("Processed {} in {} ms", file, TimeUtil.durationMillis(startSingle));
+			log.info("Processed {} in {} ms", file, TimeUtil.durationMillisDouble(startSingle));
 			log.info("---------------------");
 			log.info("---------------------");
 			return metadata;
