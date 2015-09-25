@@ -63,20 +63,20 @@ public class SettingsController extends AbstractController
 	public static final String	UI_SECTION								= "ui";
 
 	// Controllers
-	private final MainController		mainController;
-	private final Map<String, Section>	sections;
+	private final MainController				mainController;
+	private final Map<String, SettingsSection>	sections;
 
 	// View
 	@FXML
-	private TreeView<Section>	sectionSelectionTreeView;
+	private TreeView<SettingsSection>	sectionSelectionTreeView;
 	@FXML
-	private AnchorPane			sectionRootPane;
+	private AnchorPane					sectionRootPane;
 	@FXML
-	private Button				saveBtn;
+	private Button						saveBtn;
 	@FXML
-	private Button				restoreLastSavedBtn;
+	private Button						restoreLastSavedBtn;
 	@FXML
-	private Button				restoreDefaultsBtn;
+	private Button						restoreDefaultsBtn;
 
 	private BooleanProperty	defaultSettingsLoaded	= new SimpleBooleanProperty();
 	private BooleanProperty	customSettingsExist		= new SimpleBooleanProperty();
@@ -87,81 +87,81 @@ public class SettingsController extends AbstractController
 		sections = initSections();
 	}
 
-	private Map<String, Section> initSections()
+	private Map<String, SettingsSection> initSections()
 	{
-		Map<String, Section> ctrls = new HashMap<>();
+		Map<String, SettingsSection> ctrls = new HashMap<>();
 
-		Section watchSection = new Section(WATCH_SECTION);
+		SettingsSection watchSection = new SettingsSection(WATCH_SECTION);
 		watchSection.setLabel("Watch");
 		watchSection.setImage("iris_16.png");
 		watchSection.setControllerConstructor(() -> new WatchSettingsController(this));
 		watchSection.setFxml("WatchSettingsView.fxml");
 		ctrls.put(watchSection.getName(), watchSection);
 
-		Section parsingSection = new Section(PARSING_SECTION);
+		SettingsSection parsingSection = new SettingsSection(PARSING_SECTION);
 		parsingSection.setLabel("Parsing");
 		parsingSection.setImage("file_search_16.png");
 		parsingSection.setControllerConstructor(() -> new ParsingSettingsController(this));
 		parsingSection.setFxml("ParsingSettingsView.fxml");
 		ctrls.put(parsingSection.getName(), parsingSection);
 
-		Section releaseSection = new Section(RELEASE_SECTION);
+		SettingsSection releaseSection = new SettingsSection(RELEASE_SECTION);
 		releaseSection.setLabel("Release");
 		releaseSection.setImage("release_16.png");
 		releaseSection.setControllerConstructor(() -> new ReleaseSettingsController(this));
 		releaseSection.setFxml("ReleaseSettingsView.fxml");
 		ctrls.put(releaseSection.getName(), releaseSection);
 
-		Section releaseDbsSection = new Section(RELEASE_DBS_SECTION);
+		SettingsSection releaseDbsSection = new SettingsSection(RELEASE_DBS_SECTION);
 		releaseDbsSection.setLabel("Databases");
 		releaseDbsSection.setImage("database_16.png");
 		releaseDbsSection.setControllerConstructor(() -> new ReleaseDbsSettingsController(this));
 		releaseDbsSection.setFxml("ReleaseDbsSettingsView.fxml");
 		ctrls.put(releaseDbsSection.getName(), releaseDbsSection);
 
-		Section releaseGuessingSection = new Section(RELEASE_GUESSING_SECTION);
+		SettingsSection releaseGuessingSection = new SettingsSection(RELEASE_GUESSING_SECTION);
 		releaseGuessingSection.setLabel("Guessing");
 		releaseGuessingSection.setImage("idea_16.png");
 		releaseGuessingSection.setControllerConstructor(() -> new ReleaseGuessingSettingsController(this));
 		releaseGuessingSection.setFxml("ReleaseGuessingSettingsView.fxml");
 		ctrls.put(releaseGuessingSection.getName(), releaseGuessingSection);
 
-		Section releaseCompatibilitySection = new Section(RELEASE_COMPATIBILITY_SECTION);
+		SettingsSection releaseCompatibilitySection = new SettingsSection(RELEASE_COMPATIBILITY_SECTION);
 		releaseCompatibilitySection.setLabel("Compatibility");
 		releaseCompatibilitySection.setImage("couple_16.png");
 		releaseCompatibilitySection.setControllerConstructor(() -> new ReleaseCompatibilitySettingsController(this));
 		releaseCompatibilitySection.setFxml("ReleaseCompatibilitySettingsView.fxml");
 		ctrls.put(releaseCompatibilitySection.getName(), releaseCompatibilitySection);
 
-		Section correctionSection = new Section(CORRECTION_SECTION);
+		SettingsSection correctionSection = new SettingsSection(CORRECTION_SECTION);
 		correctionSection.setLabel("Correction");
 		correctionSection.setImage("edit_16.png");
 		correctionSection.setControllerConstructor(() -> new CorrectionSettingsController(this));
 		correctionSection.setFxml("CorrectionSettingsView.fxml");
 		ctrls.put(correctionSection.getName(), correctionSection);
 
-		Section correctionSubtitleLanguageSection = new Section(CORRECTION_SUBTITLE_LANGUAGE_SECTION);
+		SettingsSection correctionSubtitleLanguageSection = new SettingsSection(CORRECTION_SUBTITLE_LANGUAGE_SECTION);
 		correctionSubtitleLanguageSection.setLabel("Subtitle language");
 		correctionSubtitleLanguageSection.setImage("usa_flag_16.png");
 		correctionSubtitleLanguageSection.setControllerConstructor(() -> new SubtitleLanguageCorrectionSettingsController(this));
 		correctionSubtitleLanguageSection.setFxml("SubtitleLanguageCorrectionSettingsView.fxml");
 		ctrls.put(correctionSubtitleLanguageSection.getName(), correctionSubtitleLanguageSection);
 
-		Section namingSection = new Section(NAMING_SECTION);
+		SettingsSection namingSection = new SettingsSection(NAMING_SECTION);
 		namingSection.setLabel("Naming");
 		namingSection.setImage("font_16.png");
 		namingSection.setControllerConstructor(() -> new NamingSettingsController(this));
 		namingSection.setFxml("NamingSettingsView.fxml");
 		ctrls.put(namingSection.getName(), namingSection);
 
-		Section fileTransformationSection = new Section(FILE_TRANSFORMATION_SECTION);
+		SettingsSection fileTransformationSection = new SettingsSection(FILE_TRANSFORMATION_SECTION);
 		fileTransformationSection.setLabel("File transformation");
 		fileTransformationSection.setImage("copy_file_16.png");
 		fileTransformationSection.setControllerConstructor(() -> new FileTransformationSettingsController(this));
 		fileTransformationSection.setFxml("FileTransformationSettingsView.fxml");
 		ctrls.put(fileTransformationSection.getName(), fileTransformationSection);
 
-		Section uiSection = new Section(UI_SECTION);
+		SettingsSection uiSection = new SettingsSection(UI_SECTION);
 		uiSection.setLabel("User interface");
 		uiSection.setImage("ui_16.png");
 		uiSection.setControllerConstructor(() -> new UserInterfaceSettingsController(this));
@@ -181,14 +181,14 @@ public class SettingsController extends AbstractController
 
 	private void initSettingsTree()
 	{
-		final TreeItem<Section> root = new TreeItem<>();
+		final TreeItem<SettingsSection> root = new TreeItem<>();
 		sectionSelectionTreeView.setRoot(root);
-		sectionSelectionTreeView.setCellFactory((TreeView<Section> param) ->
+		sectionSelectionTreeView.setCellFactory((TreeView<SettingsSection> param) ->
 		{
-			return new TreeCell<Section>()
+			return new TreeCell<SettingsSection>()
 			{
 				@Override
-				protected void updateItem(Section item, boolean empty)
+				protected void updateItem(SettingsSection item, boolean empty)
 				{
 					super.updateItem(item, empty);
 
@@ -206,23 +206,23 @@ public class SettingsController extends AbstractController
 			};
 		});
 
-		TreeItem<Section> watchTreeItem = new TreeItem<>(sections.get(WATCH_SECTION));
+		TreeItem<SettingsSection> watchTreeItem = new TreeItem<>(sections.get(WATCH_SECTION));
 
-		TreeItem<Section> parsingTreeItem = new TreeItem<>(sections.get(PARSING_SECTION));
+		TreeItem<SettingsSection> parsingTreeItem = new TreeItem<>(sections.get(PARSING_SECTION));
 
-		TreeItem<Section> releaseTreeItem = new TreeItem<>(sections.get(RELEASE_SECTION));
-		TreeItem<Section> releaseDatabasesTreeItem = new TreeItem<>(sections.get(RELEASE_DBS_SECTION));
-		TreeItem<Section> releaseGuessingTreeItem = new TreeItem<>(sections.get(RELEASE_GUESSING_SECTION));
-		TreeItem<Section> releaseCompatibilityTreeItem = new TreeItem<>(sections.get(RELEASE_COMPATIBILITY_SECTION));
+		TreeItem<SettingsSection> releaseTreeItem = new TreeItem<>(sections.get(RELEASE_SECTION));
+		TreeItem<SettingsSection> releaseDatabasesTreeItem = new TreeItem<>(sections.get(RELEASE_DBS_SECTION));
+		TreeItem<SettingsSection> releaseGuessingTreeItem = new TreeItem<>(sections.get(RELEASE_GUESSING_SECTION));
+		TreeItem<SettingsSection> releaseCompatibilityTreeItem = new TreeItem<>(sections.get(RELEASE_COMPATIBILITY_SECTION));
 
-		TreeItem<Section> correctionTreeItem = new TreeItem<>(sections.get(CORRECTION_SECTION));
-		TreeItem<Section> correctionSubtitleLanguageTreeItem = new TreeItem<>(sections.get(CORRECTION_SUBTITLE_LANGUAGE_SECTION));
+		TreeItem<SettingsSection> correctionTreeItem = new TreeItem<>(sections.get(CORRECTION_SECTION));
+		TreeItem<SettingsSection> correctionSubtitleLanguageTreeItem = new TreeItem<>(sections.get(CORRECTION_SUBTITLE_LANGUAGE_SECTION));
 
-		TreeItem<Section> namingTreeItem = new TreeItem<>(sections.get(NAMING_SECTION));
+		TreeItem<SettingsSection> namingTreeItem = new TreeItem<>(sections.get(NAMING_SECTION));
 
-		TreeItem<Section> filetransformationTreeItem = new TreeItem<>(sections.get(FILE_TRANSFORMATION_SECTION));
+		TreeItem<SettingsSection> filetransformationTreeItem = new TreeItem<>(sections.get(FILE_TRANSFORMATION_SECTION));
 
-		TreeItem<Section> uiTreeItem = new TreeItem<>(sections.get(UI_SECTION));
+		TreeItem<SettingsSection> uiTreeItem = new TreeItem<>(sections.get(UI_SECTION));
 
 		// Watch
 		root.getChildren().add(watchTreeItem);
@@ -245,7 +245,7 @@ public class SettingsController extends AbstractController
 
 		sectionSelectionTreeView.getSelectionModel()
 				.selectedItemProperty()
-				.addListener((ObservableValue<? extends TreeItem<Section>> observable, TreeItem<Section> oldValue, TreeItem<Section> newValue) ->
+				.addListener((ObservableValue<? extends TreeItem<SettingsSection>> observable, TreeItem<SettingsSection> oldValue, TreeItem<SettingsSection> newValue) ->
 				{
 					if (newValue != null)
 					{
@@ -312,7 +312,7 @@ public class SettingsController extends AbstractController
 
 	private void showSection(String sectionName)
 	{
-		Section section = sections.get(sectionName);
+		SettingsSection section = sections.get(sectionName);
 		if (section != null && section.hasController())
 		{
 			if (section.isControllerLoaded())
@@ -349,7 +349,7 @@ public class SettingsController extends AbstractController
 		return loadingPane;
 	}
 
-	private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final Section section)
+	private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final SettingsSection section)
 	{
 		return new Task<AbstractSettingsSectionController>()
 		{
@@ -362,7 +362,6 @@ public class SettingsController extends AbstractController
 			@Override
 			protected void succeeded()
 			{
-				log.debug("Loaded settings section: {}", section);
 				sectionRootPane.getChildren().setAll(getValue().getContentPane());
 			}
 
@@ -387,7 +386,7 @@ public class SettingsController extends AbstractController
 		return mainController;
 	}
 
-	public Map<String, Section> getSections()
+	public Map<String, SettingsSection> getSections()
 	{
 		return sections;
 	}
@@ -398,8 +397,8 @@ public class SettingsController extends AbstractController
 		{
 			sectionSelectionTreeView.getSelectionModel().clearSelection();
 		}
-		TreeItem<Section> itemToSelect = FxUtil.findTreeItem(sectionSelectionTreeView.getRoot(),
-				(TreeItem<Section> item) -> item.getValue() != null ? section.equals(item.getValue().getName()) : false);
+		TreeItem<SettingsSection> itemToSelect = FxUtil.findTreeItem(sectionSelectionTreeView.getRoot(),
+				(TreeItem<SettingsSection> item) -> item.getValue() != null ? section.equals(item.getValue().getName()) : false);
 		sectionSelectionTreeView.getSelectionModel().select(itemToSelect);
 	}
 
@@ -558,7 +557,7 @@ public class SettingsController extends AbstractController
 		confirmSaveUnsavedSettings();
 	}
 
-	public static class Section
+	public static class SettingsSection
 	{
 		private final String											name;
 		private Supplier<? extends AbstractSettingsSectionController>	controllerConstructor;
@@ -568,7 +567,7 @@ public class SettingsController extends AbstractController
 		private String													fxml;
 		private String													resourceBundle;
 
-		public Section(String name)
+		public SettingsSection(String name)
 		{
 			this.name = name;
 		}
@@ -671,7 +670,7 @@ public class SettingsController extends AbstractController
 		@Override
 		public String toString()
 		{
-			return MoreObjects.toStringHelper(Section.class).add("name", name).toString();
+			return MoreObjects.toStringHelper(SettingsSection.class).add("name", name).toString();
 		}
 	}
 }
