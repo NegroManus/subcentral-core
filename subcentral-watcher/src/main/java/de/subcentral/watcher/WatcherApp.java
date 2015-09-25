@@ -49,7 +49,7 @@ public class WatcherApp extends Application
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
-		log.info("Starting {} ...", APP_INFO);
+		log.debug("Starting {} ...", APP_INFO);
 		long start = System.nanoTime();
 
 		this.primaryStage = primaryStage;
