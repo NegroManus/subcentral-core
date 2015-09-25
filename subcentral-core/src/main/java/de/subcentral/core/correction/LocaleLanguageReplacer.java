@@ -26,18 +26,26 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		/**
 		 * Well-formed IETF BCP 47 language tag. e.g. "pt-BR". See {@link Locale#toLanguageTag()}.
 		 */
-		LANGUAGE_TAG, /**
-						 * ISO 639-1 two-letter code. See {@link Locale#getLanguage()}.
-						 */
-		ISO2, /**
-				 * ISO 639-2/T three-letter lowercase code. See {@link Locale#getISO3Language()}.
-				 */
-		ISO3, /**
-				 * Display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
-				 */
-		DISPLAY_NAME, /**
-						 * Display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
-						 */
+		LANGUAGE_TAG,
+
+		/**
+		 * ISO 639-1 two-letter code. See {@link Locale#getLanguage()}.
+		 */
+		ISO2,
+
+		/**
+		 * ISO 639-2/T three-letter lowercase code. See {@link Locale#getISO3Language()}.
+		 */
+		ISO3,
+
+		/**
+		 * Display name. The whole name. e.g. "Portuguese (Brazil)". See {@link Locale#getDisplayName()}.
+		 */
+		DISPLAY_NAME,
+
+		/**
+		 * Display language. Only the language. e.g. "Portuguese". See {@link Locale#getDisplayLanguage()}.
+		 */
 		DISPLAY_LANGUAGE
 	};
 
@@ -123,10 +131,12 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		// 2. try "parsing" the locale
 		for (Locale locale : Locale.getAvailableLocales())
 		{
+			// Java language tag
 			if (locale.toString().equalsIgnoreCase(lang))
 			{
 				return locale;
 			}
+			// IETF language tag
 			// cannot use Locale.forLanguageTag() because it accepts any string (not only valid languages)
 			if (locale.toLanguageTag().equalsIgnoreCase(lang))
 			{
