@@ -285,7 +285,7 @@ public class MainController extends AbstractController
 
 	public void exit()
 	{
-		// Explicit exit: Causes shutdown()
+		// Explicit exit: Causes Application.stop()
 		Platform.exit();
 	}
 

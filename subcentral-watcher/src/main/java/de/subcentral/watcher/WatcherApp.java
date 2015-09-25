@@ -81,21 +81,6 @@ public class WatcherApp extends Application
 		primaryStage.show();
 	}
 
-	public MainController getMainController()
-	{
-		return mainController;
-	}
-
-	/**
-	 * Returns the main stage.
-	 * 
-	 * @return
-	 */
-	public Stage getPrimaryStage()
-	{
-		return primaryStage;
-	}
-
 	@Override
 	public void stop() throws Exception
 	{
