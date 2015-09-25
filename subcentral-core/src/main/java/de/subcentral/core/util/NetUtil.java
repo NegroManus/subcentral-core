@@ -9,9 +9,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.function.Function;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.Connection;
+import org.jsoup.nodes.Document;
 
 public class NetUtil
 {
@@ -117,5 +121,16 @@ public class NetUtil
 	public static int pingHttp(URL url, int timeout)
 	{
 		return pingHttp(url.toExternalForm(), timeout);
+	}
+
+	public static Document getDocument(URL url, Function<URL, Connection> connectionSetup) throws IOException
+	{
+		log.trace("Requesting HTML of {}", url);
+		long start = System.nanoTime();
+		Connection con = connectionSetup.apply(url);
+		Document doc = con.get();
+		log.debug("Retrieved HTML of {} in {} ms", url, TimeUtil.durationMillis(start));
+		log.printf(Level.TRACE, "HTML of %s were:%n%s%n", url, doc);
+		return doc;
 	}
 }

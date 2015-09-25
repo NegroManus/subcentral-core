@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
@@ -16,7 +15,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.NetUtil;
-import de.subcentral.core.util.TimeUtil;
 
 public abstract class HttpMetadataDb extends AbstractMetadataDb
 {
@@ -115,13 +113,7 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 
 	protected Document getDocument(URL url) throws IOException
 	{
-		log.trace("Connecting to {}", url);
-		long start = System.nanoTime();
-		Connection con = setupConnection(url);
-		Document doc = con.get();
-		log.debug("Retrieved contents of {} in {} ms", url, TimeUtil.durationMillis(start));
-		log.printf(Level.TRACE, "Contents of %s were:%n%s%n", url, doc);
-		return doc;
+		return NetUtil.getDocument(url, this::setupConnection);
 	}
 
 	/**
