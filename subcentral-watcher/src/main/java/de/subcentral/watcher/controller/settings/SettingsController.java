@@ -230,11 +230,13 @@ public class SettingsController extends AbstractController
 		root.getChildren().add(parsingTreeItem);
 		// Release
 		root.getChildren().add(releaseTreeItem);
+		releaseTreeItem.setExpanded(true);
 		releaseTreeItem.getChildren().add(releaseDatabasesTreeItem);
 		releaseTreeItem.getChildren().add(releaseGuessingTreeItem);
 		releaseTreeItem.getChildren().add(releaseCompatibilityTreeItem);
 		// Correction
 		root.getChildren().add(correctionTreeItem);
+		correctionTreeItem.setExpanded(true);
 		correctionTreeItem.getChildren().add(correctionSubtitleLanguageTreeItem);
 		// Naming
 		root.getChildren().add(namingTreeItem);
