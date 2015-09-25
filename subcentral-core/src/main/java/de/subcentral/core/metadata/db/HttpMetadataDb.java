@@ -16,7 +16,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.NetUtil;
-import de.subcentral.core.util.TimeUtil;
 
 public abstract class HttpMetadataDb extends AbstractMetadataDb
 {
@@ -113,11 +112,10 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 	protected Document getDocument(URL url) throws IOException
 	{
 		log.trace("Connecting to {}", url);
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		Connection con = setupConnection(url);
 		Document doc = con.get();
-		double duration = TimeUtil.durationMillis(start);
-		log.printf(Level.DEBUG, "Retrieved contents of %s in %.0f ms", url, duration);
+		log.debug("Retrieved contents of {} in {} ms", url, (System.currentTimeMillis() - start));
 		log.printf(Level.TRACE, "Contents of %s were:%n%s%n", url, doc);
 		return doc;
 	}

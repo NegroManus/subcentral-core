@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.util.TimeUtil;
 import javafx.fxml.FXML;
 
 public abstract class AbstractController
@@ -23,19 +22,19 @@ public abstract class AbstractController
 	 * Initializes the controller class. This method is automatically called after the fxml file has been loaded.
 	 */
 	@FXML
-	public void initialize()
+	public void initialize() throws Exception
 	{
 		log.debug("Initializing {} (location={}, resources={}) ...", getClass().getSimpleName(), location, resources == null ? null : resources.getBaseBundleName());
 		try
 		{
-			long start = System.nanoTime();
+			long start = System.currentTimeMillis();
 			doInitialize();
-			log.debug("Initialized {} in {} ms", getClass().getSimpleName(), TimeUtil.durationMillis(start));
+			log.debug("Initialized {} in {} ms", getClass().getSimpleName(), (System.currentTimeMillis() - start));
 		}
 		catch (Exception e)
 		{
 			log.error("Initialization of " + getClass().getSimpleName() + " failed", e);
-			throw new RuntimeException(e);
+			throw e;
 		}
 	}
 

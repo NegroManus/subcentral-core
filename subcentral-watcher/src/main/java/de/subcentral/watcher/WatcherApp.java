@@ -7,7 +7,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
 import javafx.application.Application;
@@ -35,7 +34,7 @@ public class WatcherApp extends Application
 	public void init() throws Exception
 	{
 		log.info("Initializing {} ...", APP_INFO);
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 
 		log.info("Operating system: {} {} {}", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
 		log.info("Java version: {}", SystemUtils.JAVA_VERSION);
@@ -44,14 +43,14 @@ public class WatcherApp extends Application
 		log.info("Java home: {}", SystemUtils.JAVA_HOME);
 		log.info("User dir: {}", SystemUtils.USER_DIR);
 
-		log.info("Initialized {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
+		log.info("Initialized {} in {} ms", APP_INFO, (System.currentTimeMillis() - start));
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
 		log.debug("Starting {} ...", APP_INFO);
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 
 		this.primaryStage = primaryStage;
 
@@ -60,7 +59,7 @@ public class WatcherApp extends Application
 		initMainController();
 		initSceneAndShow();
 
-		log.info("Started {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
+		log.info("Started {} in {} ms", APP_INFO, (System.currentTimeMillis() - start));
 	}
 
 	private void initPrimaryStage()
@@ -86,11 +85,11 @@ public class WatcherApp extends Application
 	public void stop() throws Exception
 	{
 		log.debug("Stopping {} ...", APP_INFO);
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 
 		mainController.shutdown();
 
-		log.info("Stopped {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
+		log.info("Stopped {} in {} ms", APP_INFO, (System.currentTimeMillis() - start));
 	}
 
 	public static void main(String[] args)

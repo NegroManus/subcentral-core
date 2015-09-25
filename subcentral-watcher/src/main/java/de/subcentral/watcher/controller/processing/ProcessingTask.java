@@ -45,7 +45,6 @@ import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
-import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
@@ -226,7 +225,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 	@Override
 	protected Void call() throws Exception
 	{
-		long start = System.nanoTime();
+		long start = System.currentTimeMillis();
 		log.debug("Processing {}", getSourceFile());
 		try
 		{
@@ -279,7 +278,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		}
 		finally
 		{
-			log.debug("Processed {} in {} ms", getSourceFile(), TimeUtil.durationMillis(start));
+			log.debug("Processed {} in {} ms", getSourceFile(), (System.currentTimeMillis() - start));
 
 			// To ensure the message is "Cancelled":
 			// Sometimes the task does not get interrupted immediately
@@ -702,13 +701,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-					case SPECIFY:
-						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
-						break;
-					case AUTO_LOCATE:
-						// fall through
-					default:
-						packager = controller.getMainController().getWinRar().getPackager();
+						case SPECIFY:
+							packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+							break;
+						case AUTO_LOCATE:
+							// fall through
+						default:
+							packager = controller.getMainController().getWinRar().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);
