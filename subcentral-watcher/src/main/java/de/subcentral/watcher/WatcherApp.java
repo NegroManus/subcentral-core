@@ -34,8 +34,9 @@ public class WatcherApp extends Application
 	@Override
 	public void init() throws Exception
 	{
-		long start = System.nanoTime();
 		log.info("Initializing {} ...", APP_INFO);
+		long start = System.nanoTime();
+
 		log.info("Operating system: {} {} {}", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
 		log.info("Java version: {}", SystemUtils.JAVA_VERSION);
 		log.info("Java runtime: {} {}", SystemUtils.JAVA_RUNTIME_NAME, SystemUtils.JAVA_RUNTIME_VERSION);
