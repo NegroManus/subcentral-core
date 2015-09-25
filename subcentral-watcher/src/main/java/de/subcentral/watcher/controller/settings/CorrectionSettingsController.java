@@ -135,7 +135,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		removeStandardizerButton.disableProperty().bind(noSelection);
 		removeStandardizerButton.setOnAction((ActionEvent event) ->
 		{
-			FxUtil.handleDelete(standardizersTableView, "standardizing rule", new StringConverter<CorrectionRuleSettingEntry<?, ?>>()
+			FxUtil.handleConfirmedDelete(standardizersTableView, "standardizing rule", new StringConverter<CorrectionRuleSettingEntry<?, ?>>()
 			{
 				@Override
 				public String toString(CorrectionRuleSettingEntry<?, ?> entry)

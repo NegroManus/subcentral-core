@@ -32,14 +32,14 @@
 			</graphic>
 		</Label>
 		<Label text="Release databases (ordered by priority):" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-		<TableView fx:id="releaseDbsTableView" editable="true" prefHeight="100.0" GridPane.rowIndex="2">
+		<TableView fx:id="releaseDbsTableView" editable="true" prefHeight="200.0" GridPane.rowIndex="2">
 			<columns>
 				<TableColumn fx:id="releaseDbsEnabledColumn" prefWidth="60.0" text="Enabled" />
 				<TableColumn fx:id="releaseDbsNameColumn" editable="false" prefWidth="250.0" text="Release database" />
 				<TableColumn fx:id="releaseDbsAvailableColumn" editable="false" prefWidth="75.0" text="Available" />
 			</columns>
 		</TableView>
-		<VBox prefHeight="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+		<VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
 			<children>
 				<Button fx:id="moveUpReleaseDbButton" mnemonicParsing="false" text="Move up" />
 				<Button fx:id="moveDownReleaseDbButton" mnemonicParsing="false" text="Move down" />

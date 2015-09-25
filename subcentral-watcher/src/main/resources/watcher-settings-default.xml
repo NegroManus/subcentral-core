@@ -98,8 +98,7 @@
 		<subtitleLanguage>
 			<parsingLanguages>
 				<language tag="en" />
-				<language tag="de" /> <!-- german -->
-				<language tag="zh" /> <!-- chinese -->
+				<language tag="de" />
 			</parsingLanguages>
 			<ouputLanguageFormat>ISO2</ouputLanguageFormat>
 			<ouputLanguage tag="en" />

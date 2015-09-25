@@ -55,8 +55,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -413,38 +416,48 @@ public class FxUtil
 		});
 	}
 
-	public static void bindMoveButtonsForSingleSelection(final TableView<?> tableView, final ButtonBase moveUpBtn, final ButtonBase moveDownBtn)
+	public static void bindMoveButtonsForSingleSelection(ListView<?> list, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
 	{
-		updateMoveBtnsDisabilityForSingleSelection(tableView, moveUpBtn, moveDownBtn);
-		tableView.getSelectionModel().selectedIndexProperty().addListener((Observable observable) -> updateMoveBtnsDisabilityForSingleSelection(tableView, moveUpBtn, moveDownBtn));
+		bindMoveButtonsForSingleSelection(list.getItems(), list.getSelectionModel(), moveUpBtn, moveDownBtn);
+	}
+
+	public static void bindMoveButtonsForSingleSelection(TableView<?> table, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
+	{
+		bindMoveButtonsForSingleSelection(table.getItems(), table.getSelectionModel(), moveUpBtn, moveDownBtn);
+	}
+
+	public static void bindMoveButtonsForSingleSelection(ObservableList<?> items, SelectionModel<?> selectionModel, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
+	{
+		updateMoveBtnsDisabilityForSingleSelection(items, selectionModel, moveUpBtn, moveDownBtn);
+		selectionModel.selectedIndexProperty().addListener((Observable observable) -> updateMoveBtnsDisabilityForSingleSelection(items, selectionModel, moveUpBtn, moveDownBtn));
 
 		moveUpBtn.setOnAction((ActionEvent evt) ->
 		{
-			int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+			int selectedIndex = selectionModel.getSelectedIndex();
 			if (selectedIndex < 1)
 			{
 				return;
 			}
-			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex - 1);
-			tableView.getSelectionModel().select(selectedIndex - 1);
+			Collections.swap(items, selectedIndex, selectedIndex - 1);
+			selectionModel.select(selectedIndex - 1);
 		});
 		moveDownBtn.setOnAction((ActionEvent evt) ->
 		{
-			int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
-			if (selectedIndex >= tableView.getItems().size() - 1 || selectedIndex < 0)
+			int selectedIndex = selectionModel.getSelectedIndex();
+			if (selectedIndex >= items.size() - 1 || selectedIndex < 0)
 			{
 				return;
 			}
-			Collections.swap(tableView.getItems(), selectedIndex, selectedIndex + 1);
-			tableView.getSelectionModel().select(selectedIndex + 1);
+			Collections.swap(items, selectedIndex, selectedIndex + 1);
+			selectionModel.select(selectedIndex + 1);
 		});
 	}
 
-	private static void updateMoveBtnsDisabilityForSingleSelection(TableView<?> tableView, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
+	private static void updateMoveBtnsDisabilityForSingleSelection(ObservableList<?> items, SelectionModel<?> selectionModel, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
 	{
-		int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+		int selectedIndex = selectionModel.getSelectedIndex();
 		moveUpBtn.setDisable(selectedIndex < 1);
-		moveDownBtn.setDisable(selectedIndex >= tableView.getItems().size() - 1 || selectedIndex < 0);
+		moveDownBtn.setDisable(selectedIndex >= items.size() - 1 || selectedIndex < 0);
 	}
 
 	public static Alert createExceptionAlert(String title, String headerText, Throwable exception)
@@ -558,7 +571,7 @@ public class FxUtil
 		};
 	}
 
-	public static ObservableList<Locale> createListOfAvailableLocales(boolean includeEmptyLocale, boolean includeVariants, Comparator<Locale> sortOrder)
+	public static ObservableList<Locale> createListOfAvailableLocales(boolean includeEmptyLocale, boolean includeVariants, Comparator<Locale> initialSortOrder)
 	{
 		Locale[] allLocales = Locale.getAvailableLocales(); // ca. 160 (without variants 45)
 		int estimatedSize = includeVariants ? allLocales.length : (int) (allLocales.length / 3.5f);
@@ -571,9 +584,9 @@ public class FxUtil
 			}
 		}
 		filteredLocales.trimToSize();
-		if (sortOrder != null)
+		if (initialSortOrder != null)
 		{
-			filteredLocales.sort(sortOrder);
+			filteredLocales.sort(initialSortOrder);
 		}
 		return FXCollections.observableList(filteredLocales);
 	}
@@ -615,69 +628,117 @@ public class FxUtil
 		return loader.load();
 	}
 
+	public static <E, F> void handleDistinctAdd(ListView<E> list, Optional<F> addDialogResult, Function<F, E> converter)
+	{
+		handleDistinctAdd(list.getItems(), list.getSelectionModel(), addDialogResult, converter);
+	}
+
 	public static <E, F> void handleDistinctAdd(TableView<E> table, Optional<F> addDialogResult, Function<F, E> converter)
+	{
+		handleDistinctAdd(table.getItems(), table.getSelectionModel(), addDialogResult, converter);
+	}
+
+	public static <E, F> void handleDistinctAdd(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<F> addDialogResult, Function<F, E> converter)
 	{
 		if (addDialogResult.isPresent())
 		{
-			handleDistinctAdd(table, Optional.of(converter.apply(addDialogResult.get())));
+			handleDistinctAdd(items, selectionModel, Optional.of(converter.apply(addDialogResult.get())));
 		}
+	}
+
+	public static <E> void handleDistinctAdd(ListView<E> list, Optional<? extends E> addDialogResult)
+	{
+		handleDistinctAdd(list.getItems(), list.getSelectionModel(), addDialogResult);
 	}
 
 	public static <E> void handleDistinctAdd(TableView<E> table, Optional<? extends E> addDialogResult)
 	{
+		handleDistinctAdd(table.getItems(), table.getSelectionModel(), addDialogResult);
+	}
+
+	public static <E> void handleDistinctAdd(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<? extends E> addDialogResult)
+	{
 		if (addDialogResult.isPresent())
 		{
 			E newItem = addDialogResult.get();
-			int newItemIndex = table.getItems().indexOf(newItem);
+			int newItemIndex = items.indexOf(newItem);
 			if (newItemIndex == -1)
 			{
 				// if newItem not already exists
-				table.getItems().add(newItem);
+				newItemIndex = selectionModel.getSelectedIndex() + 1;
+				items.add(selectionModel.getSelectedIndex() + 1, newItem);
 			}
 			else
 			{
 				// if newItem already exists
-				table.getItems().set(newItemIndex, newItem);
+				items.set(newItemIndex, newItem);
 			}
+			// select the newly added item
+			selectionModel.select(newItemIndex);
 		}
+	}
+
+	public static <E, F> void handleDistinctEdit(ListView<E> list, Optional<F> editDialogResult, Function<F, E> converter)
+	{
+		handleDistinctEdit(list.getItems(), list.getSelectionModel(), editDialogResult, converter);
 	}
 
 	public static <E, F> void handleDistinctEdit(TableView<E> table, Optional<F> editDialogResult, Function<F, E> converter)
 	{
+		handleDistinctEdit(table.getItems(), table.getSelectionModel(), editDialogResult, converter);
+	}
+
+	public static <E, F> void handleDistinctEdit(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<F> editDialogResult, Function<F, E> converter)
+	{
 		if (editDialogResult.isPresent())
 		{
-			handleDistinctEdit(table, Optional.of(converter.apply(editDialogResult.get())));
+			handleDistinctEdit(items, selectionModel, Optional.of(converter.apply(editDialogResult.get())));
 		}
+	}
+
+	public static <E> void handleDistinctEdit(ListView<E> list, Optional<? extends E> editDialogResult)
+	{
+		handleDistinctEdit(list.getItems(), list.getSelectionModel(), editDialogResult);
 	}
 
 	public static <E> void handleDistinctEdit(TableView<E> table, Optional<? extends E> editDialogResult)
 	{
+		handleDistinctEdit(table.getItems(), table.getSelectionModel(), editDialogResult);
+	}
+
+	public static <E> void handleDistinctEdit(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<? extends E> editDialogResult)
+	{
 		if (editDialogResult.isPresent())
 		{
 			E newItem = editDialogResult.get();
-			int newItemIndex = table.getItems().indexOf(newItem);
-			int selectionIndex = table.getSelectionModel().getSelectedIndex();
+			int newItemIndex = items.indexOf(newItem);
+			int selectionIndex = selectionModel.getSelectedIndex();
 			// if the updated item is not equal to any existing item or equal to the item which was opened for edit
 			if (newItemIndex == -1 || newItemIndex == selectionIndex)
 			{
 				// replace
-				table.getItems().set(selectionIndex, newItem);
+				items.set(selectionIndex, newItem);
 			}
 			else
 			{
 				// if updatedItem already exists elsewhere
 				// then replace the selected item with the updatedItem ...
-				table.getItems().set(selectionIndex, newItem);
+				items.set(selectionIndex, newItem);
 				// ... and remove the "old" item
-				table.getItems().remove(newItemIndex);
-				table.getSelectionModel().select(newItem);
+				items.remove(newItemIndex);
+				selectionModel.select(newItem);
 			}
 		}
 	}
 
-	public static <E> void handleDelete(TableView<E> table, String elementType, StringConverter<E> elemToStringConverter)
+	public static <E> E handleConfirmedDelete(TableView<E> table, String elementType, StringConverter<E> elemToStringConverter)
 	{
-		E selectedElem = table.getSelectionModel().getSelectedItem();
+		return handleConfirmedDelete(table.getItems(), table.getSelectionModel(), elementType, elemToStringConverter);
+	}
+
+	public static <E> E handleConfirmedDelete(ObservableList<E> items, SelectionModel<E> selectionModel, String elementType, StringConverter<E> elemToStringConverter)
+	{
+		E selectedElem = selectionModel.getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 		alert.setResizable(true);
@@ -688,9 +749,25 @@ public class FxUtil
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.YES)
 		{
-			int selectedIndex = table.getSelectionModel().getSelectedIndex();
-			table.getItems().remove(selectedIndex);
+			return handleDelete(items, selectionModel);
 		}
+		return null;
+	}
+
+	public static <E> E handleDelete(ComboBox<E> comboBox)
+	{
+		return handleDelete(comboBox.getItems(), comboBox.getSelectionModel());
+	}
+
+	public static <E> E handleDelete(ListView<E> list)
+	{
+		return handleDelete(list.getItems(), list.getSelectionModel());
+	}
+
+	public static <E> E handleDelete(ObservableList<E> items, SelectionModel<E> selectionModel)
+	{
+		int selectedIndex = selectionModel.getSelectedIndex();
+		return items.remove(selectedIndex);
 	}
 
 	public static <T> TreeItem<T> findTreeItem(TreeItem<T> treeItem, Predicate<TreeItem<T>> predicate)

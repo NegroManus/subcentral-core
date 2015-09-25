@@ -174,7 +174,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		removeTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		removeTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			FxUtil.handleDelete(textLangMappingsTableView, "text to language mapping", LanguageUserPattern.STRING_CONVERTER);
+			FxUtil.handleConfirmedDelete(textLangMappingsTableView, "text to language mapping", LanguageUserPattern.STRING_CONVERTER);
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupportForTableView(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);
@@ -272,7 +272,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		removeLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
 		removeLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			FxUtil.handleDelete(langTextMappingsTableView, "language to text mapping", LanguageTextMapping.STRING_CONVERTER);
+			FxUtil.handleConfirmedDelete(langTextMappingsTableView, "language to text mapping", LanguageTextMapping.STRING_CONVERTER);
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupportForTableView(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);

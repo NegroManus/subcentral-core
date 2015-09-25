@@ -601,6 +601,10 @@ public class WatcherDialogs
 		@FXML
 		private ListView<Locale>	langsListView;
 		@FXML
+		private Button				moveDownLangBtn;
+		@FXML
+		private Button				moveUpLangBtn;
+		@FXML
 		private ComboBox<Locale>	addableLangsComboBox;
 		@FXML
 		private Button				addLangBtn;
@@ -659,24 +663,26 @@ public class WatcherDialogs
 			addableLangsComboBox.setItems(initAddableLangList());
 			addableLangsComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 
+			FxUtil.bindMoveButtonsForSingleSelection(langsListView, moveUpLangBtn, moveDownLangBtn);
+
 			// Bindings
 			addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
 			addLangBtn.setOnAction((ActionEvent) ->
 			{
 				// remove lang from addable langs
-				Locale langToAdd = addableLangsComboBox.getItems().remove(addableLangsComboBox.getSelectionModel().getSelectedIndex());
+				Locale langToAdd = FxUtil.handleDelete(addableLangsComboBox);
 				// add lang to lang list
-				langsListView.getItems().add(langToAdd);
-				langsListView.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+				FxUtil.handleDistinctAdd(langsListView, Optional.of(langToAdd));
 			});
 
 			removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
 			removeLangBtn.setOnAction((ActionEvent) ->
 			{
 				// remove lang from lang list
-				Locale removedLang = langsListView.getItems().remove(langsListView.getSelectionModel().getSelectedIndex());
+				Locale removedLang = FxUtil.handleDelete(langsListView);
 				// add lang to addable langs
 				addableLangsComboBox.getItems().add(removedLang);
+				// After adding a language to the addable language that list needs to be sorted again
 				addableLangsComboBox.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 			});
 
@@ -693,9 +699,7 @@ public class WatcherDialogs
 
 		private ObservableList<Locale> initLangList()
 		{
-			ObservableList<Locale> langList = FXCollections.observableArrayList(bean);
-			langList.sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
-			return langList;
+			return FXCollections.observableArrayList(bean);
 		}
 
 		private ObservableList<Locale> initAddableLangList()

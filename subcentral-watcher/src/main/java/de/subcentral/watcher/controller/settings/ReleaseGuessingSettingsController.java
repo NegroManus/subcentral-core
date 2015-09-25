@@ -107,7 +107,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 		removeStandardReleaseButton.disableProperty().bind(noSelection);
 		removeStandardReleaseButton.setOnAction((ActionEvent event) ->
 		{
-			FxUtil.handleDelete(standardReleasesTableView, "standard release", SubCentralFxUtil.STANDARD_RELEASE_STRING_CONVERTER);
+			FxUtil.handleConfirmedDelete(standardReleasesTableView, "standard release", SubCentralFxUtil.STANDARD_RELEASE_STRING_CONVERTER);
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupportForTableView(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);

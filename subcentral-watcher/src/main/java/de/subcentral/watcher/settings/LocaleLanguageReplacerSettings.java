@@ -14,7 +14,6 @@ import de.subcentral.core.correction.LocaleLanguageReplacer;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
-import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import javafx.beans.binding.Binding;
@@ -85,7 +84,6 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		{
 			parsingLangs.add(Locale.forLanguageTag(parsingLangCfg.getString("[@tag]")));
 		}
-		parsingLangs.sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 		setParsingLanguages(FXCollections.observableList(parsingLangs));
 
 		LanguageFormat outputFormat = LanguageFormat.valueOf(cfg.getString(key + ".ouputLanguageFormat"));
