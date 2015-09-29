@@ -588,7 +588,7 @@ public class ProcessingController extends AbstractController
 	// Controlling methods
 	public void handleFiles(Path watchDir, Collection<Path> files)
 	{
-		log.info("Handling {} file(s) in {}", files.size(), watchDir);
+		log.debug("Handling {} file(s) in {}", files.size(), watchDir);
 		for (Path file : files)
 		{
 			handleFile(watchDir.resolve(file));
@@ -597,7 +597,7 @@ public class ProcessingController extends AbstractController
 
 	public void handleFiles(Collection<File> files)
 	{
-		log.info("Handling {} file(s)", files.size());
+		log.debug("Handling {} file(s)", files.size());
 		for (File file : files)
 		{
 			handleFile(file.toPath());
@@ -620,7 +620,7 @@ public class ProcessingController extends AbstractController
 
 			if (alreadyInProcess(file))
 			{
-				log.info("Rejecting {} because that file is already in processing", file);
+				log.info("Rejected {} because that file is already in processing", file);
 				return;
 			}
 

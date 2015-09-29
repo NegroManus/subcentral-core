@@ -20,15 +20,15 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
+
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 
 public class DirectoryWatchService extends Service<Void>
 {
@@ -184,7 +184,7 @@ public class DirectoryWatchService extends Service<Void>
 						@SuppressWarnings("unchecked")
 						WatchEvent<Path> evt = (WatchEvent<Path>) event;
 						Path dir = (Path) currentKey.watchable();
-						log.debug("New file in {}: {} ({}, count: {})", dir, evt.context(), evt.kind(), evt.count());
+						log.debug("New event in {}: file={}, eventKind={}, count={}", dir, evt.context(), evt.kind(), evt.count());
 						newFiles.put(dir, evt.context());
 					}
 					for (Map.Entry<Path, Collection<Path>> entry : newFiles.asMap().entrySet())
