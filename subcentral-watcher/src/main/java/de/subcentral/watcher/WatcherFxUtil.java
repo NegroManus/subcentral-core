@@ -48,7 +48,7 @@ public class WatcherFxUtil
 	{
 		for (Path dir : WatcherSettings.INSTANCE.getWatchDirectories())
 		{
-			service.registerDirectory(dir, StandardWatchEventKinds.ENTRY_CREATE);
+			service.registerDirectory(dir, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
 		}
 		directoryList.addListener(new ListChangeListener<Path>()
 		{
@@ -70,7 +70,7 @@ public class WatcherFxUtil
 						{
 							try
 							{
-								service.registerDirectory(addedDir, StandardWatchEventKinds.ENTRY_CREATE);
+								service.registerDirectory(addedDir, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
 							}
 							catch (IOException e)
 							{

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -605,13 +606,18 @@ public class ProcessingController extends AbstractController
 
 	private void handleFile(Path file)
 	{
-		if (!filter(file))
+		if (!filterByFileAttributes(file))
 		{
 			return;
 		}
 
 		Platform.runLater(() ->
 		{
+			if (!filterByName(file))
+			{
+				return;
+			}
+
 			if (alreadyInProcess(file))
 			{
 				log.info("Rejecting {} because that file is already in processing", file);
@@ -627,14 +633,33 @@ public class ProcessingController extends AbstractController
 		});
 	}
 
-	private boolean filter(Path file)
+	private boolean filterByFileAttributes(Path file)
 	{
-		if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS))
+		try
 		{
-			log.debug("Filtered out {} because it is no regular file", file);
+			BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+			if (!attrs.isRegularFile())
+			{
+				log.debug("Filtered out {} because it is no regular file", file);
+				return false;
+			}
+			if (attrs.size() == 0)
+			{
+				log.debug("Filtered out {} because it is empty", file);
+				return false;
+			}
+		}
+		catch (IOException e)
+		{
+			log.debug("Filtered out " + file + " because its attributes could not be read", e);
 			return false;
 		}
 
+		return true;
+	}
+
+	private boolean filterByName(Path file)
+	{
 		Pattern pattern = UserPattern.parseSimplePatterns(WatcherSettings.INSTANCE.getProcessingSettings().getFilenamePatterns());
 		if (pattern == null)
 		{
@@ -646,7 +671,6 @@ public class ProcessingController extends AbstractController
 			log.debug("Filtered out {} because its name does not match the required pattern {}", file, pattern);
 			return false;
 		}
-
 		return true;
 	}
 
