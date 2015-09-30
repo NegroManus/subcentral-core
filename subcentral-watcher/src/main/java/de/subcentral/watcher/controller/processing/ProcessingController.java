@@ -117,6 +117,10 @@ public class ProcessingController extends AbstractController
 	@FXML
 	private Button													openDirectoryBtn;
 	@FXML
+	private Button													cancelBtn;
+	@FXML
+	private Button													removeBtn;
+	@FXML
 	private Button													cancelAllBtn;
 	@FXML
 	private Button													removeAllBtn;
@@ -472,20 +476,23 @@ public class ProcessingController extends AbstractController
 
 	private void initLowerButtonBar()
 	{
-		final BooleanBinding finishedTaskSelected = new BooleanBinding()
+		final BooleanBinding noItemSelectedBinding = processingTreeTable.getSelectionModel().selectedItemProperty().isNull();
+
+		Observable stateOfSelectedItemObservable = FxUtil.observeBean(processingTreeTable.getSelectionModel().selectedItemProperty(), (TreeItem<ProcessingItem> treeItem) ->
+		{
+			ProcessingTask task = getProcessingTask(treeItem, true);
+			if (task == null)
+			{
+				return new Observable[] {};
+			}
+			return new Observable[]
+			{ task.stateProperty() };
+		});
+
+		final BooleanBinding noFinishedTaskSelectedBinding = new BooleanBinding()
 		{
 			{
-				Observable stateObsv = FxUtil.observeBean(processingTreeTable.getSelectionModel().selectedItemProperty(), (TreeItem<ProcessingItem> treeItem) ->
-				{
-					ProcessingTask task = getProcessingTask(treeItem, true);
-					if (task == null)
-					{
-						return new Observable[] {};
-					}
-					return new Observable[]
-					{ task.stateProperty() };
-				});
-				super.bind(stateObsv);
+				super.bind(stateOfSelectedItemObservable);
 			}
 
 			@Override
@@ -500,8 +507,26 @@ public class ProcessingController extends AbstractController
 			}
 		};
 
+		final BooleanBinding noUnfinishedTaskSelectedBinding = new BooleanBinding()
+		{
+			{
+				super.bind(stateOfSelectedItemObservable);
+			}
+
+			@Override
+			protected boolean computeValue()
+			{
+				ProcessingTask task = getSelectedProcessingTask(true);
+				if (task == null)
+				{
+					return true;
+				}
+				return State.SUCCEEDED == task.getState() || State.CANCELLED == task.getState() || State.FAILED == task.getState();
+			}
+		};
+
 		// Only enabled if a ProcessingTask or ProcessingResult is selected which has finished
-		detailsBtn.disableProperty().bind(finishedTaskSelected);
+		detailsBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
 		detailsBtn.setOnAction((ActionEvent evt) ->
 		{
 			ProcessingTask task = getSelectedProcessingTask(true);
@@ -511,7 +536,7 @@ public class ProcessingController extends AbstractController
 			}
 		});
 
-		reprocessBtn.disableProperty().bind(finishedTaskSelected);
+		reprocessBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
 		reprocessBtn.setOnAction((ActionEvent evt) ->
 		{
 			ProcessingTask task = getSelectedProcessingTask(true);
@@ -541,6 +566,18 @@ public class ProcessingController extends AbstractController
 			{
 				openDirectory(item);
 			}
+		});
+
+		cancelBtn.disableProperty().bind(noUnfinishedTaskSelectedBinding);
+		cancelBtn.setOnAction((ActionEvent evt) ->
+		{
+			cancelSelectedTask();
+		});
+
+		removeBtn.disableProperty().bind(noItemSelectedBinding);
+		removeBtn.setOnAction((ActionEvent evt) ->
+		{
+			removeSelectedTask();
 		});
 
 		BooleanBinding emptyProcessingTreeTable = Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0);
@@ -772,6 +809,18 @@ public class ProcessingController extends AbstractController
 			return ((ProcessingResult) treeItem.getValue()).getTask();
 		}
 		return null;
+	}
+
+	public void cancelSelectedTask()
+	{
+		ProcessingTask task = getSelectedProcessingTask(true);
+		task.cancel(true);
+	}
+
+	public void removeSelectedTask()
+	{
+		TreeItem<ProcessingItem> selectedTreeItem = getSelectedProcessingTaskTreeItem(true);
+		processingTreeTable.getRoot().getChildren().remove(selectedTreeItem);
 	}
 
 	public void clearProcessingTreeTable()

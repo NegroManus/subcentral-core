@@ -713,7 +713,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);
 					cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
-					cfg.setTimeout(1, TimeUnit.MINUTES);
+					cfg.setTimeout(10, TimeUnit.MINUTES);
 					cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
 					WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
 					if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
