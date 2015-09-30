@@ -110,7 +110,7 @@ public class Migration
 			log.info("---------------------");
 			return metadata;
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
