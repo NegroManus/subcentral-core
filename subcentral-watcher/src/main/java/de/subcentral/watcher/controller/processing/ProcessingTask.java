@@ -678,7 +678,8 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
 			Path targetFile = targetDir.resolve(result.getName() + fileExtension);
 
-			IOUtil.waitUntilCompletelyWritten(srcFile, 1, TimeUnit.MINUTES);
+			// If file is currently downloaded/copied/moved, wait until the operation is finished
+			IOUtil.waitUntilUnlocked(srcFile, 10, TimeUnit.MINUTES);
 			if (isCancelled())
 			{
 				throw new CancellationException();
@@ -702,13 +703,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-					case SPECIFY:
-						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
-						break;
-					case AUTO_LOCATE:
-						// fall through
-					default:
-						packager = controller.getMainController().getWinRar().getPackager();
+						case SPECIFY:
+							packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+							break;
+						case AUTO_LOCATE:
+							// fall through
+						default:
+							packager = controller.getMainController().getWinRar().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);

@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -190,26 +193,65 @@ public class IOUtil
 		return false;
 	}
 
-	public static boolean waitUntilCompletelyWritten(Path file, long timeout, TimeUnit timeoutUnit) throws TimeoutException
+	public static boolean isLocked(Path file) throws IOException
+	{
+		try (SeekableByteChannel channel = Files.newByteChannel(file, StandardOpenOption.WRITE))
+		{
+			return false;
+		}
+		catch (FileSystemException e)
+		{
+			// ignore the exception that the file is locked and return false
+			return true;
+		}
+	}
+
+	public static boolean waitUntilUnlocked(Path file, long timeout, TimeUnit timeoutUnit) throws IOException, TimeoutException, InterruptedException
 	{
 		long start = System.currentTimeMillis();
-		while (!isCompletelyWritten(file))
+		boolean waited = false;
+		while (isLocked(file))
+		{
+			if (waited == false)
+			{
+				waited = true;
+			}
+			if (System.currentTimeMillis() >= start + timeoutUnit.toMillis(timeout))
+			{
+				throw new TimeoutException("Timed out after " + timeout + " " + timeoutUnit + " while waiting for file " + file + " to become unlocked");
+			}
+			log.debug("Waiting on file {} to be written", file);
+			Thread.sleep(100);
+		}
+		return waited;
+	}
+
+	public static boolean waitUntilSizeRemainsUnchanged(Path file, long checkPeriod, long timeout, TimeUnit timeoutUnit) throws IOException, TimeoutException, InterruptedException
+	{
+		long start = System.currentTimeMillis();
+		boolean waited = false;
+		for (;;)
 		{
 			if (System.currentTimeMillis() >= start + timeoutUnit.toMillis(timeout))
 			{
-				throw new TimeoutException("Timed out after " + timeout + " " + timeoutUnit + " while waiting for file " + file + " to become completely written (unlocked)");
+				throw new TimeoutException("Timed out after " + timeout + " " + timeoutUnit + " while waiting for file size of " + file + " to remain unchanged for " + checkPeriod + " ms");
 			}
-			try
+
+			long oldSize = Files.size(file);
+			Thread.sleep(checkPeriod);
+			long newSize = Files.size(file);
+			if (oldSize == newSize)
 			{
-				Thread.sleep(50);
+				break;
 			}
-			catch (InterruptedException e)
+
+			if (waited == false)
 			{
-				// ignore
-				e.printStackTrace();
+				waited = true;
 			}
+			log.debug("Waiting until file size of {} remains unchanged for {} ms", file, checkPeriod);
 		}
-		return true;
+		return waited;
 	}
 
 	public static void unzip(Path archive, Path targetDir, boolean flat) throws IOException
