@@ -7,11 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0"
-	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<bottom>
-		<HBox maxWidth="1.7976931348623157E308" spacing="5.0"
-			BorderPane.alignment="CENTER">
+		<HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
 				<Button fx:id="detailsBtn" mnemonicParsing="false" text="Details">
 					<graphic>
@@ -31,8 +29,7 @@
 						</ImageView>
 					</graphic>
 				</Button>
-				<Button fx:id="openDirectoryBtn" mnemonicParsing="false"
-					text="Open folder">
+				<Button fx:id="openDirectoryBtn" mnemonicParsing="false" text="Open folder">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>
@@ -41,6 +38,24 @@
 						</ImageView>
 					</graphic>
 				</Button>
+            <Button fx:id="cancelBtn" mnemonicParsing="false" text="Cancel">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/cancel_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="removeBtn" mnemonicParsing="false" text="Remove">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/remove_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
 				<HBox maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
 				<Button fx:id="cancelAllBtn" mnemonicParsing="false" text="Cancel all">
 					<graphic>
@@ -67,19 +82,13 @@
 		</HBox>
 	</bottom>
 	<center>
-		<TreeTableView fx:id="processingTreeTable" showRoot="false"
-			tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+		<TreeTableView fx:id="processingTreeTable" showRoot="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
 			<columns>
-				<TreeTableColumn fx:id="nameColumn" prefWidth="350.0"
-					text="Name" />
-				<TreeTableColumn fx:id="filesColumn" prefWidth="60.0"
-					text="Files" />
-				<TreeTableColumn fx:id="statusColumn" prefWidth="130.0"
-					text="Status" />
-				<TreeTableColumn fx:id="progressColumn" prefWidth="80.0"
-					text="Progress" />
-				<TreeTableColumn fx:id="infoColumn" prefWidth="220.0"
-					text="Info" />
+				<TreeTableColumn fx:id="nameColumn" prefWidth="350.0" text="Name" />
+				<TreeTableColumn fx:id="filesColumn" prefWidth="60.0" text="Files" />
+				<TreeTableColumn fx:id="statusColumn" prefWidth="130.0" text="Status" />
+				<TreeTableColumn fx:id="progressColumn" prefWidth="80.0" text="Progress" />
+				<TreeTableColumn fx:id="infoColumn" prefWidth="220.0" text="Info" />
 			</columns>
 		</TreeTableView>
 	</center>
