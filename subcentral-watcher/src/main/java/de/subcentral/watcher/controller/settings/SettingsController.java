@@ -47,7 +47,7 @@ public class SettingsController extends AbstractController
 {
 	private static final Logger log = LogManager.getLogger(SettingsController.class);
 
-	private static final Path	CUSTOM_SETTINGS_FILE	= Paths.get("watcher-settings.xml").toAbsolutePath();
+	private static final String	CUSTOM_SETTINGS_FILE	= "watcher-settings.xml";
 	private static final String	DEFAULT_SETTINGS_FILE	= "watcher-settings-default.xml";
 
 	public static final String	WATCH_SECTION							= "watch";
@@ -429,24 +429,16 @@ public class SettingsController extends AbstractController
 
 	public void confirmRestoreLastSavedSettings()
 	{
-		try
-		{
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Restore last saved settings?");
-			alert.setHeaderText("Do you want restore the last saved settings?");
-			alert.setContentText("The current settings will be replaced with the content of the settings file.");
-			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Restore last saved settings?");
+		alert.setHeaderText("Do you want restore the last saved settings?");
+		alert.setContentText("The current settings will be replaced with the content of the settings file.");
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.YES)
-			{
-				loadSettings();
-			}
-		}
-		catch (Exception e1)
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			loadSettings();
 		}
 	}
 
@@ -471,7 +463,8 @@ public class SettingsController extends AbstractController
 	{
 		try
 		{
-			WatcherSettings.INSTANCE.save(CUSTOM_SETTINGS_FILE);
+			Path settingsFile = getCustomSettingsPath();
+			WatcherSettings.INSTANCE.save(settingsFile);
 			defaultSettingsLoaded.set(false);
 			customSettingsExist.set(true);
 		}
@@ -481,20 +474,21 @@ public class SettingsController extends AbstractController
 		}
 	}
 
-	public void loadSettings() throws Exception
+	public void loadSettings()
 	{
-		if (Files.exists(CUSTOM_SETTINGS_FILE, LinkOption.NOFOLLOW_LINKS))
+		Path settingsFile = getCustomSettingsPath();
+		if (Files.exists(settingsFile, LinkOption.NOFOLLOW_LINKS))
 		{
 			try
 			{
-				loadCustomSettings(CUSTOM_SETTINGS_FILE);
+				loadCustomSettings(settingsFile);
 				return;
 			}
 			catch (Exception e)
 			{
-				log.error("Failed to load custom settings from " + CUSTOM_SETTINGS_FILE + ". Will load default settings", e);
+				log.error("Failed to load custom settings from " + settingsFile + ". Will load default settings", e);
 				FxUtil.createExceptionAlert("Failed to load custom settings",
-						"Failed to load custom settings from " + CUSTOM_SETTINGS_FILE
+						"Failed to load custom settings from " + settingsFile
 								+ ". Default settings will be used.\nIf you would like to try and fix the custom settings, close the application without saving the settings, fix the custom settings and try again.",
 						e).showAndWait();
 			}
@@ -514,7 +508,7 @@ public class SettingsController extends AbstractController
 		{
 			// A resource has to be loaded via URL
 			// because building a Path for a JAR intern resource file results in a FileSystem exception.
-			WatcherSettings.INSTANCE.load((Resources.getResource(DEFAULT_SETTINGS_FILE)));
+			WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE));
 			defaultSettingsLoaded.set(true);
 		}
 		catch (Exception e)
@@ -551,6 +545,11 @@ public class SettingsController extends AbstractController
 				log.debug("User chose not to save changed settings");
 			}
 		}
+	}
+
+	private Path getCustomSettingsPath()
+	{
+		return Paths.get("watcher-settings.xml").toAbsolutePath();
 	}
 
 	@Override

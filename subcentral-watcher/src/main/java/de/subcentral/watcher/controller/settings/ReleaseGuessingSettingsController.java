@@ -110,6 +110,6 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 			FxUtil.handleConfirmedDelete(standardReleasesTableView, "standard release", SubCentralFxUtil.STANDARD_RELEASE_STRING_CONVERTER);
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupportForTableView(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);
+		FxUtil.setStandardMouseAndKeyboardSupport(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);
 	}
 }

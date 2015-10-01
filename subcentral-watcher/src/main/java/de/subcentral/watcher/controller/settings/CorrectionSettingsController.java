@@ -158,6 +158,6 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			});
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupportForTableView(standardizersTableView, editStandardizerButton, removeStandardizerButton);
+		FxUtil.setStandardMouseAndKeyboardSupport(standardizersTableView, editStandardizerButton, removeStandardizerButton);
 	}
 }

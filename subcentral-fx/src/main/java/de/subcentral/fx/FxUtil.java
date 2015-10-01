@@ -412,7 +412,21 @@ public class FxUtil
 		}
 	}
 
-	public static void setStandardMouseAndKeyboardSupportForTableView(final TableView<?> tableView, final ButtonBase editButton, final ButtonBase removeButton)
+	public static void setStandardMouseAndKeyboardSupport(final ListView<?> list, final ButtonBase removeButton)
+	{
+		list.setOnKeyPressed((KeyEvent evt) ->
+		{
+			if (!list.getSelectionModel().isEmpty())
+			{
+				if (evt.getCode().equals(KeyCode.DELETE))
+				{
+					removeButton.fire();
+				}
+			}
+		});
+	}
+
+	public static void setStandardMouseAndKeyboardSupport(final TableView<?> tableView, final ButtonBase editButton, final ButtonBase removeButton)
 	{
 		tableView.setOnMouseClicked((MouseEvent evt) ->
 		{

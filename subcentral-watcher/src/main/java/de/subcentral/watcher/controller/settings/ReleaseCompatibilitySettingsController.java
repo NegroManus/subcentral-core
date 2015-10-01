@@ -92,6 +92,6 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 			FxUtil.handleConfirmedDelete(crossGroupCompatibilitiesTableView, "cross-group compatibility", CompatibilitySettingEntry.STRING_CONVERTER);
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupportForTableView(crossGroupCompatibilitiesTableView, editCrossGroupCompatibility, removeCrossGroupCompatibility);
+		FxUtil.setStandardMouseAndKeyboardSupport(crossGroupCompatibilitiesTableView, editCrossGroupCompatibility, removeCrossGroupCompatibility);
 	}
 }
