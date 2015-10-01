@@ -44,27 +44,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	{
 		watchDirectoriesListView.setItems(WatcherSettings.INSTANCE.watchDirectoriesProperty());
 
-		addWatchDirectoryButton.setOnAction((ActionEvent event) ->
-		{
-			DirectoryChooser dirChooser = new DirectoryChooser();
-			dirChooser.setTitle("Add watch directory");
-			File selectedDirectory = dirChooser.showDialog(settingsController.getMainController().getPrimaryStage());
-			if (selectedDirectory == null)
-			{
-				return;
-			}
-			Path newWatchDir = selectedDirectory.toPath();
-			if (watchDirectoriesListView.getItems().contains(newWatchDir))
-			{
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Chosen directory already on watch list");
-				alert.setHeaderText("The chosen directory is already on the watch list.");
-				alert.setContentText("The directory " + newWatchDir + " is already on the watch list.");
-				alert.show();
-				return;
-			}
-			watchDirectoriesListView.getItems().add(newWatchDir);
-		});
+		addWatchDirectoryButton.setOnAction((ActionEvent event) -> addWatchDirectory());
 
 		removeWatchDirectoryButton.disableProperty().bind(watchDirectoriesListView.getSelectionModel().selectedItemProperty().isNull());
 		removeWatchDirectoryButton.setOnAction((ActionEvent event) ->
@@ -75,5 +55,27 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 		FxUtil.setStandardMouseAndKeyboardSupport(watchDirectoriesListView, removeWatchDirectoryButton);
 
 		initialScanCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.initialScanProperty());
+	}
+
+	public void addWatchDirectory()
+	{
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle("Add watch directory");
+		File selectedDirectory = dirChooser.showDialog(settingsController.getMainController().getPrimaryStage());
+		if (selectedDirectory == null)
+		{
+			return;
+		}
+		Path newWatchDir = selectedDirectory.toPath();
+		if (watchDirectoriesListView.getItems().contains(newWatchDir))
+		{
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Chosen directory already on watch list");
+			alert.setHeaderText("The chosen directory is already on the watch list.");
+			alert.setContentText("The directory " + newWatchDir + " is already on the watch list.");
+			alert.show();
+			return;
+		}
+		watchDirectoriesListView.getItems().add(newWatchDir);
 	}
 }

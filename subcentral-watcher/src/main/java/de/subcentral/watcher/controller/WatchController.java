@@ -12,6 +12,7 @@ import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
+import de.subcentral.watcher.controller.settings.WatchSettingsController;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -19,6 +20,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -147,8 +149,19 @@ public class WatchController extends AbstractController
 		watchDirectoriesHBox.getChildren().retainAll(watchImg);
 		if (watchDirs.isEmpty())
 		{
-			Hyperlink settingsLink = WatcherFxUtil.createSettingsHyperlink(mainController.getSettingsController(), SettingsController.WATCH_SECTION, "Add watch directories");
-			watchDirectoriesHBox.getChildren().add(settingsLink);
+			ImageView img = new ImageView(FxUtil.loadImg("settings_16.png"));
+			Hyperlink link = new Hyperlink("Add watch directory", img);
+			link.setVisited(true);
+			link.setOnAction((ActionEvent evt) ->
+			{
+				// Open settings
+				mainController.selectTab(MainController.SETTINGS_TAB_INDEX);
+				mainController.getSettingsController().selectSection(SettingsController.WATCH_SECTION);
+				WatchSettingsController watchSettingsCtrl = (WatchSettingsController) mainController.getSettingsController().getSections().get(SettingsController.WATCH_SECTION).getController();
+				// Open directory chooser
+				watchSettingsCtrl.addWatchDirectory();
+			});
+			watchDirectoriesHBox.getChildren().add(link);
 		}
 		else
 		{
