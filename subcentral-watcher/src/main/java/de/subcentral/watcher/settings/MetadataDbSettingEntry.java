@@ -6,50 +6,53 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.db.MetadataDb;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 
 public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry<MetadataDb>
 {
+	public static enum Availability
+	{
+		UNKNOWN, CHECKING, AVAILABLE, NOT_AVAILABLE
+	}
+
 	private static final Logger log = LogManager.getLogger(MetadataDbSettingEntry.class);
 
-	private final BooleanProperty available;
+	private final Property<Availability> availability = new SimpleObjectProperty<>(this, "availability", Availability.UNKNOWN);
 
 	public MetadataDbSettingEntry(MetadataDb database, boolean enabled)
 	{
 		super(database, enabled);
-		this.available = new SimpleBooleanProperty(this, "available", false);
 	}
 
-	public ReadOnlyBooleanProperty availableProperty()
+	public Property<Availability> availabilityProperty()
 	{
-		return available;
+		return availability;
 	}
 
-	public boolean isAvailable()
+	public Availability getAvailability()
 	{
-		return available.get();
+		return availability.getValue();
 	}
 
 	public void updateAvailability(ExecutorService executor)
 	{
-		available.set(false);
-		Task<Boolean> updateAvailibilityTask = new Task<Boolean>()
+		availability.setValue(Availability.CHECKING);
+		Task<Availability> updateAvailibilityTask = new Task<Availability>()
 		{
 			@Override
-			protected Boolean call() throws Exception
+			protected Availability call() throws Exception
 			{
-				boolean isAvailable = value.isAvailable();
-				log.debug("Availibility for {}: {}", value, isAvailable);
-				return isAvailable;
+				Availability availibity = value.isAvailable() ? Availability.AVAILABLE : Availability.NOT_AVAILABLE;
+				log.debug("Availibility for {}: {}", value, availibity);
+				return availibity;
 			}
 
 			@Override
 			protected void succeeded()
 			{
-				available.set(getValue());
+				availability.setValue(getValue());
 			}
 		};
 		executor.submit(updateAvailibilityTask);

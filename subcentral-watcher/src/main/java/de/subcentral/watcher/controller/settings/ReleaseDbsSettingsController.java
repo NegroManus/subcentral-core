@@ -10,6 +10,7 @@ import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.MetadataDbSettingEntry;
+import de.subcentral.watcher.settings.MetadataDbSettingEntry.Availability;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.Observable;
@@ -19,13 +20,16 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 
 public class ReleaseDbsSettingsController extends AbstractSettingsSectionController
 {
@@ -42,7 +46,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	@FXML
 	private TableColumn<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>>	releaseDbsNameColumn;
 	@FXML
-	private TableColumn<MetadataDbSettingEntry<Release>, Boolean>							releaseDbsAvailableColumn;
+	private TableColumn<MetadataDbSettingEntry<Release>, Availability>						releaseDbsAvailableColumn;
 	@FXML
 	private Button																			moveUpReleaseDbButton;
 	@FXML
@@ -69,7 +73,6 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 		releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().enabledProperty());
 
-		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> param) -> FxUtil.constantBinding(param.getValue()));
 		releaseDbsNameColumn.setCellFactory((TableColumn<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> arg0) ->
 		{
 			return new TableCell<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>>()
@@ -80,7 +83,6 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 					super.updateItem(item, empty);
 					if (empty || item == null)
 					{
-						setText(null);
 						setGraphic(null);
 					}
 					else
@@ -113,9 +115,54 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 				}
 			};
 		});
+		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> param) -> FxUtil.constantBinding(param.getValue()));
 
-		releaseDbsAvailableColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsAvailableColumn));
-		releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().availableProperty());
+		releaseDbsAvailableColumn.setCellFactory(new Callback<TableColumn<MetadataDbSettingEntry<Release>, Availability>, TableCell<MetadataDbSettingEntry<Release>, Availability>>()
+		{
+			@Override
+			public TableCell<MetadataDbSettingEntry<Release>, Availability> call(TableColumn<MetadataDbSettingEntry<Release>, Availability> param)
+			{
+				return new TableCell<MetadataDbSettingEntry<Release>, Availability>()
+				{
+					{
+						// set height to limit the height of the process indicator
+						super.setPrefHeight(16d);
+						// center the cell content
+						super.setAlignment(Pos.CENTER);
+					}
+
+					protected void updateItem(MetadataDbSettingEntry.Availability item, boolean empty)
+					{
+						super.updateItem(item, empty);
+						if (empty || item == null)
+						{
+							setGraphic(null);
+						}
+						else
+						{
+							switch (item)
+							{
+							case UNKNOWN:
+								setGraphic(null);
+								break;
+							case CHECKING:
+								setGraphic(new ProgressIndicator());
+								break;
+							case AVAILABLE:
+								setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
+								break;
+							case NOT_AVAILABLE:
+								setGraphic(new ImageView(FxUtil.loadImg("cross_16.png")));
+								break;
+							default:
+								setGraphic(null);
+							}
+						}
+					}
+				};
+			}
+		});
+		releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Availability> param) -> param.getValue().availabilityProperty());
 
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
 
