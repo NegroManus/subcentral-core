@@ -3,7 +3,6 @@ package de.subcentral.core.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +29,7 @@ public class StreamGobbler implements Runnable
 			int bytesRead;
 			while ((bytesRead = input.read(buffer)) != -1)
 			{
-				System.out.println(new String(buffer, StandardCharsets.ISO_8859_1));
+				// System.out.println(new String(buffer, StandardCharsets.ISO_8859_1));
 				output.write(buffer, 0, bytesRead);
 			}
 			// log.debug("Completely written input {} to output {}", input, output);

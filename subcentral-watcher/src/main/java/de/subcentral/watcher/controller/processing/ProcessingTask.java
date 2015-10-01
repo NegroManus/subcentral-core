@@ -232,17 +232,11 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		{
 			// Load config
 			loadCurrentProcessingConfig();
-			if (isCancelled())
-			{
-				return null;
-			}
+			checkCancelled();
 
 			// Parse
 			parsedObject = parse(getSourceFile());
-			if (isCancelled())
-			{
-				return null;
-			}
+			checkCancelled();
 			updateProgress(0.25d, 1d);
 
 			// Process
@@ -502,10 +496,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 				GuessedInfo methodInfo = new GuessedInfo(entry.getValue());
 				addReleaseToResult(entry.getKey(), methodInfo);
 
-				if (isCancelled())
-				{
-					return;
-				}
+				checkCancelled();
 			}
 
 			List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
@@ -670,28 +661,19 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			}
 
 			Files.createDirectories(targetDir);
-			if (isCancelled())
-			{
-				throw new CancellationException();
-			}
+			checkCancelled();
 
 			String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
 			Path targetFile = targetDir.resolve(result.getName() + fileExtension);
 
-			// If file is currently downloaded/copied/moved, wait until the operation is finished
+			// If file is currently written and locked, wait until the operation is finished
 			IOUtil.waitUntilUnlocked(srcFile, 10, TimeUnit.MINUTES);
-			if (isCancelled())
-			{
-				throw new CancellationException();
-			}
+			checkCancelled();
 
 			Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
 			result.addFile(newFile);
 			log.debug("Copied {} to {}", srcFile, targetFile);
-			if (isCancelled())
-			{
-				throw new CancellationException();
-			}
+			checkCancelled();
 
 			if (config.isPackingEnabled())
 			{
@@ -703,13 +685,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-						case SPECIFY:
-							packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
-							break;
-						case AUTO_LOCATE:
-							// fall through
-						default:
-							packager = controller.getMainController().getWinRar().getPackager();
+					case SPECIFY:
+						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+						break;
+					case AUTO_LOCATE:
+						// fall through
+					default:
+						packager = controller.getMainController().getWinRar().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);
@@ -732,11 +714,15 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 						result.updateStatus("Done");
 					}
 				}
+				catch (CancellationException e)
+				{
+					throw e;
+				}
 				catch (Exception e)
 				{
 					packingException = e;
 				}
-				if (packingException != null && !isCancelled())
+				if (packingException != null)
 				{
 					log.error("Packing failed", packingException);
 					result.updateStatus("Packing failed");
@@ -748,10 +734,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 				result.updateStatus("Done");
 			}
 
-			if (isCancelled())
-			{
-				throw new CancellationException();
-			}
+			checkCancelled();
 		}
 		catch (IOException | TimeoutException e)
 		{
@@ -777,6 +760,14 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					controller.getMainController().displaySystemTrayNotification(caption, text, messageType);
 				}
 			});
+		}
+	}
+
+	private void checkCancelled() throws CancellationException
+	{
+		if (isCancelled())
+		{
+			throw new CancellationException();
 		}
 	}
 }
