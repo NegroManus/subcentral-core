@@ -125,8 +125,6 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 				return new TableCell<MetadataDbSettingEntry<Release>, Availability>()
 				{
 					{
-						// set height to limit the height of the process indicator
-						super.setPrefHeight(16d);
 						// center the cell content
 						super.setAlignment(Pos.CENTER);
 					}
@@ -146,7 +144,10 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 								setGraphic(null);
 								break;
 							case CHECKING:
-								setGraphic(new ProgressIndicator());
+								ProgressIndicator progressIndicator = new ProgressIndicator();
+								progressIndicator.setPrefWidth(16d);
+								progressIndicator.setPrefHeight(16d);
+								setGraphic(progressIndicator);
 								break;
 							case AVAILABLE:
 								setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
@@ -166,11 +167,13 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
 
-		updateAvailibities();
 		// if the items change update the availibilities (happens on load of settings)
 		releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());
 
 		FxUtil.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
+
+		// init
+		updateAvailibities();
 	}
 
 	private void updateAvailibities()

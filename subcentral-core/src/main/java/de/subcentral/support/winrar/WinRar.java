@@ -33,8 +33,8 @@ public abstract class WinRar
 	{
 		if (instance == null)
 		{
-			throw new UnsupportedOperationException(
-					"Operating system " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH + " not supported. Only Windows and Unix like systems are supported.");
+			throw new UnsupportedOperationException("Unsupported operating system: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH
+					+ " not supported. Only Windows and Unix like systems are supported.");
 		}
 		return instance;
 	}
@@ -69,7 +69,7 @@ public abstract class WinRar
 			try
 			{
 				validateRarExecutable(candidate);
-				log.trace("Found RAR executable at {}", candidate);
+				log.debug("Found RAR executable at {}", candidate);
 				return candidate;
 			}
 			catch (Exception e)

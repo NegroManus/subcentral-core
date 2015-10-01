@@ -27,7 +27,7 @@
 	<children>
 		<Label text="Target directory" GridPane.rowIndex="1" />
 		<TextField fx:id="targetDirTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-		<Button fx:id="chooseTargetDirBtn" mnemonicParsing="false" text="Choose" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+		<Button fx:id="chooseTargetDirBtn" minWidth="-Infinity" mnemonicParsing="false" text="Choose" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 		<Label text="(absolute or relative to directory of source file; leave empty to use source directory)" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
 		<Label text="Delete source files" GridPane.rowIndex="3" />
 		<CheckBox fx:id="deleteSourceCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
@@ -36,15 +36,20 @@
 		<Label text="WinRAR location" GridPane.rowIndex="6" />
 		<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
 			<children>
-				<RadioButton fx:id="autoLocateRadioBtn" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Locate automatically" />
-				<Button fx:id="testLocateBtn" mnemonicParsing="false" text="Test" />
+				<RadioButton fx:id="autoLocateRadioBtn" maxHeight="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="Locate automatically:" />
+            <HBox fx:id="locateRarResultRootPane" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="2.0" HBox.hgrow="SOMETIMES">
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin></HBox>
+            <Button fx:id="rememberRarLocationBtn" minWidth="-Infinity" mnemonicParsing="false" text="Remember" />
+				<Button fx:id="retryLocateRarBtn" minWidth="-Infinity" mnemonicParsing="false" text="Recheck" />
 			</children>
 		</HBox>
 		<HBox spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
 			<children>
-				<RadioButton fx:id="specifyRadioBtn" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Specify:" />
-				<TextField fx:id="rarExeTxtFld" maxWidth="1.7976931348623157E308" promptText="Rar.exe on Windows, rar on Unix/Linux/Mac" HBox.hgrow="SOMETIMES" />
-				<Button fx:id="chooseRarExeBtn" mnemonicParsing="false" text="Choose" />
+				<RadioButton fx:id="specifyRadioBtn" maxHeight="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="Specify:" />
+				<TextField fx:id="specifiedRarTxtFld" maxWidth="1.7976931348623157E308" promptText="Rar.exe on Windows, rar on Unix/Linux/Mac" HBox.hgrow="SOMETIMES" />
+				<Button fx:id="chooseRarExeBtn" minWidth="-Infinity" mnemonicParsing="false" text="Choose" />
 			</children>
 		</HBox>
 		<Label text="After packing:" GridPane.rowIndex="8" />

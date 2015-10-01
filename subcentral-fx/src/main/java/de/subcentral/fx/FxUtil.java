@@ -66,6 +66,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -265,7 +266,7 @@ public class FxUtil
 		});
 	}
 
-	public static void setChooseFileAction(Button chooseFileBtn, TextFormatter<Path> textFormatter, Stage stage, String title, String filterDescription, String filter)
+	public static void setChooseFileAction(Button chooseFileBtn, TextFormatter<Path> textFormatter, Stage stage, String title, ExtensionFilter... extensionFilters)
 	{
 		chooseFileBtn.setOnAction((ActionEvent event) ->
 		{
@@ -280,9 +281,11 @@ public class FxUtil
 					fileChooser.setInitialDirectory(potentialParentDir.toFile());
 				}
 			}
-			ExtensionFilter exeFilter = new ExtensionFilter(filterDescription, filter);
-			fileChooser.getExtensionFilters().add(exeFilter);
-			fileChooser.setSelectedExtensionFilter(exeFilter);
+			if (extensionFilters.length > 0)
+			{
+				fileChooser.getExtensionFilters().addAll(extensionFilters);
+				fileChooser.setSelectedExtensionFilter(extensionFilters[0]);
+			}
 
 			File selectedFile = fileChooser.showOpenDialog(stage);
 			if (selectedFile != null)
@@ -315,17 +318,34 @@ public class FxUtil
 		executor.submit(browseTask);
 	}
 
-	public static Hyperlink createPathHyperlink(Path file, ExecutorService executor)
+	public static Hyperlink createParentDirectoryHyperlink(Path file, ExecutorService executor)
+	{
+		return createParentDirectoryHyperlink(file, executor, DEFAULT_TASK_FAILED_HANDLER);
+	}
+
+	public static Hyperlink createParentDirectoryHyperlink(Path file, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
+	{
+		Hyperlink link = new Hyperlink();
+		link.setVisited(true);
+		link.setText(file.toString());
+		link.setTooltip(new Tooltip("Show " + file));
+		String uri = file.getParent().toUri().toString();
+		link.setOnAction((ActionEvent evt) -> FxUtil.browse(uri, executor, onFailedHandler));
+		return link;
+	}
+
+	public static Hyperlink createFileHyperlink(Path file, ExecutorService executor)
 	{
 		return createFileHyperlink(file, executor, DEFAULT_TASK_FAILED_HANDLER);
 	}
 
 	public static Hyperlink createFileHyperlink(Path file, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
 	{
-		String uri = file.toUri().toString();
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
+		link.setTooltip(new Tooltip("Open " + file));
+		String uri = file.toUri().toString();
 		link.setOnAction((ActionEvent evt) -> FxUtil.browse(uri, executor, onFailedHandler));
 		return link;
 	}
@@ -341,6 +361,7 @@ public class FxUtil
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(url.toString());
+		link.setTooltip(new Tooltip("Open " + url));
 		link.setOnAction((ActionEvent evt) -> FxUtil.browse(uri, executor, onFailedHandler));
 		return link;
 	}

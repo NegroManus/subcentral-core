@@ -192,7 +192,7 @@ public class MainController extends AbstractController
 		return commonExecutor;
 	}
 
-	public WinRar getWinRar()
+	public WinRar getWinRar() throws UnsupportedOperationException
 	{
 		WinRar winRar = WinRar.getInstance();
 		winRar.setProcessExecutor(commonExecutor);

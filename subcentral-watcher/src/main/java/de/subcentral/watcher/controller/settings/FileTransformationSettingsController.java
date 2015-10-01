@@ -2,6 +2,9 @@ package de.subcentral.watcher.controller.settings;
 
 import java.nio.file.Path;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.fx.FxUtil;
@@ -16,20 +19,29 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class FileTransformationSettingsController extends AbstractSettingsSectionController
 {
+	private static final Logger log = LogManager.getLogger(FileTransformationSettingsController.class);
+
+	// Model
+	private Path locatedRarExe = null;
+
+	// View
 	@FXML
 	private GridPane				rootPane;
 	@FXML
@@ -43,11 +55,15 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	@FXML
 	private RadioButton				autoLocateRadioBtn;
 	@FXML
-	private Button					testLocateBtn;
+	private HBox					locateRarResultRootPane;
+	@FXML
+	private Button					rememberRarLocationBtn;
+	@FXML
+	private Button					retryLocateRarBtn;
 	@FXML
 	private RadioButton				specifyRadioBtn;
 	@FXML
-	private TextField				rarExeTxtFld;
+	private TextField				specifiedRarTxtFld;
 	@FXML
 	private Button					chooseRarExeBtn;
 	@FXML
@@ -84,58 +100,94 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 				settings.winRarLocateStrategyProperty(),
 				ImmutableMap.of(autoLocateRadioBtn, WinRarLocateStrategy.AUTO_LOCATE, specifyRadioBtn, WinRarLocateStrategy.SPECIFY));
 
-		final TextFormatter<Path> rarExeFormatter = FxUtil.bindPathToTextField(rarExeTxtFld, settings.rarExeProperty());
-		testLocateBtn.setOnAction((ActionEvent event) ->
-		{
-			Task<Path> locateRarTask = new Task<Path>()
-			{
-				@Override
-				protected Path call() throws Exception
-				{
-					return WinRar.getInstance().locateRarExecutable();
-				}
+		final TextFormatter<Path> specifiedRarFormatter = FxUtil.bindPathToTextField(specifiedRarTxtFld, settings.rarExeProperty());
 
-				@Override
-				protected void succeeded()
-				{
-					Path rarLocation = getValue();
-					if (rarLocation != null)
-					{
-						Alert locateDialog = new Alert(AlertType.INFORMATION);
-						locateDialog.setTitle("Successfully located RAR executable");
-						locateDialog.setHeaderText("Found RAR executable at: " + rarLocation);
-						locateDialog.setContentText("Do you want to remember this location?");
-						locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-						if (locateDialog.showAndWait().get() == ButtonType.YES)
-						{
-							winRarLocateStrategy.selectToggle(specifyRadioBtn);
-							rarExeFormatter.setValue(rarLocation);
-						}
-					}
-					else
-					{
-						Alert locateDialog = new Alert(AlertType.WARNING);
-						locateDialog.setTitle("Failed to locate RAR executable");
-						locateDialog.setHeaderText("Could not locate RAR executable.");
-						locateDialog.setContentText("Please install WinRAR or specify the path to the RAR executable.");
-						locateDialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
-						locateDialog.showAndWait();
-					}
-				}
-			};
-			locateRarTask.setOnFailed(FxUtil.DEFAULT_TASK_FAILED_HANDLER);
-			settingsController.getMainController().getCommonExecutor().submit(locateRarTask);
+		rememberRarLocationBtn.setDisable(true);
+		rememberRarLocationBtn.setOnAction((ActionEvent evt) ->
+		{
+			winRarLocateStrategy.selectToggle(specifyRadioBtn);
+			specifiedRarFormatter.setValue(locatedRarExe);
 		});
 
-		FxUtil.setChooseFileAction(chooseRarExeBtn,
-				rarExeFormatter,
-				settingsController.getMainController().getPrimaryStage(),
-				"Select rar executable",
-				"RAR executable",
-				settingsController.getMainController().getWinRar().getRarExecutableFilename().toString());
+		retryLocateRarBtn.setOnAction((ActionEvent evt) -> locateWinRar());
+
+		ExtensionFilter[] filters;
+		try
+		{
+			filters = new ExtensionFilter[] { new ExtensionFilter("RAR executable", settingsController.getMainController().getWinRar().getRarExecutableFilename().toString()) };
+		}
+		catch (UnsupportedOperationException e)
+		{
+			filters = new ExtensionFilter[] {};
+		}
+
+		FxUtil.setChooseFileAction(chooseRarExeBtn, specifiedRarFormatter, settingsController.getMainController().getPrimaryStage(), "Select rar executable", filters);
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
 		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.packingSourceDeletionModeProperty());
 		packingSourceDeletionModeChoiceBox.setConverter(SubCentralFxUtil.DELETION_MODE_STRING_CONVERTER);
+
+		// init
+		locateWinRar();
+	}
+
+	private void locateWinRar()
+	{
+		ProgressIndicator progressIndicator = new ProgressIndicator();
+		progressIndicator.setPrefWidth(16d);
+		progressIndicator.setPrefHeight(16d);
+		locateRarResultRootPane.getChildren().setAll(progressIndicator);
+		Task<Path> locateWinRarTask = new Task<Path>()
+		{
+			@Override
+			protected Path call() throws Exception
+			{
+				return WinRar.getInstance().locateRarExecutable();
+			}
+
+			@Override
+			protected void succeeded()
+			{
+				locatedRarExe = getValue();
+				updateUi();
+			}
+
+			@Override
+			protected void cancelled()
+			{
+				locatedRarExe = null;
+				updateUi();
+			}
+
+			@Override
+			protected void failed()
+			{
+				log.error("Exception while locating WinRAR", getException());
+				locatedRarExe = null;
+				updateUi();
+			}
+
+			private void updateUi()
+			{
+				if (locatedRarExe != null)
+				{
+					ImageView img = new ImageView(FxUtil.loadImg("checked_16.png"));
+					Hyperlink hl = FxUtil.createParentDirectoryHyperlink(locatedRarExe, settingsController.getMainController().getCommonExecutor());
+					hl.setMaxHeight(Double.MAX_VALUE);
+					locateRarResultRootPane.getChildren().setAll(img, hl);
+				}
+				else
+				{
+					ImageView img = new ImageView(FxUtil.loadImg("cross_16.png"));
+					Label lbl = new Label("Could not locate WinRar");
+					lbl.setMaxHeight(Double.MAX_VALUE);
+					locateRarResultRootPane.getChildren().setAll(img, lbl);
+				}
+
+				// Enabled/Disabled "Remember" button
+				rememberRarLocationBtn.setDisable(locatedRarExe == null);
+			}
+		};
+		settingsController.getMainController().getCommonExecutor().submit(locateWinRarTask);
 	}
 }

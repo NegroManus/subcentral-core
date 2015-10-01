@@ -154,7 +154,7 @@ public class WatchController extends AbstractController
 		{
 			for (Path dir : watchDirs)
 			{
-				watchDirectoriesHBox.getChildren().add(FxUtil.createPathHyperlink(dir, mainController.getCommonExecutor()));
+				watchDirectoriesHBox.getChildren().add(FxUtil.createFileHyperlink(dir, mainController.getCommonExecutor()));
 			}
 		}
 	}
