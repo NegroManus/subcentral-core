@@ -37,12 +37,12 @@ public abstract class NamedMediaBase extends MediaBase implements NamedMedia
 	@Override
 	public List<String> getAllNames()
 	{
-		ImmutableList.Builder<String> names = ImmutableList.builder();
-		if (getName() != null)
+		ImmutableList.Builder<String> allNames = ImmutableList.builder();
+		if (name != null)
 		{
-			names.add(getName());
+			allNames.add(name);
 		}
-		names.addAll(getAliasNames());
-		return names.build();
+		allNames.addAll(aliasNames);
+		return allNames.build();
 	}
 }
