@@ -28,9 +28,6 @@ import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
-import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -82,23 +79,6 @@ public class WatcherFxUtil
 				}
 			}
 		});
-	}
-
-	public static String standardizingRuleTypeToString(Class<? extends CorrectionRuleSettingEntry<?, ?>> type)
-	{
-		if (type == null)
-		{
-			return "";
-		}
-		else if (type == SeriesNameCorrectionRuleSettingEntry.class)
-		{
-			return SeriesNameCorrectionRuleSettingEntry.getRuleType();
-		}
-		else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
-		{
-			return ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
-		}
-		return type.getSimpleName();
 	}
 
 	public static String beanTypeToString(Class<?> beanClass)

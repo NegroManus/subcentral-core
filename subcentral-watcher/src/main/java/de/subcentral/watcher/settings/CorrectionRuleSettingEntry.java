@@ -7,15 +7,15 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class CorrectionRuleSettingEntry<T, S extends Corrector<? super T>> extends AbstractSettingEntry<S>
+public abstract class CorrectionRuleSettingEntry<T, C extends Corrector<? super T>> extends AbstractSettingEntry<C>
 {
 	protected final Class<T>		beanType;
 	protected final BooleanProperty	beforeQuerying;
 	protected final BooleanProperty	afterQuerying;
 
-	public CorrectionRuleSettingEntry(Class<T> beanType, S standardizer, boolean beforeQuerying, boolean afterQuerying)
+	public CorrectionRuleSettingEntry(Class<T> beanType, C corrector, boolean beforeQuerying, boolean afterQuerying)
 	{
-		super(standardizer);
+		super(corrector);
 		this.beanType = Objects.requireNonNull(beanType, "beanType");
 		this.beforeQuerying = new SimpleBooleanProperty(this, "beforeQuerying", beforeQuerying);
 		this.afterQuerying = new SimpleBooleanProperty(this, "afterQuerying", afterQuerying);

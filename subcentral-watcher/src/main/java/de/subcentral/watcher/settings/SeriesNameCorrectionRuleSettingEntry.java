@@ -20,11 +20,6 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 		this.nameUserPattern = nameUiPattern;
 	}
 
-	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement)
-	{
-		return new SeriesNameCorrector(namePattern.toPattern(), nameReplacement, null);
-	}
-
 	@Override
 	public StringBinding ruleTypeStringBinding()
 	{
@@ -45,6 +40,11 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 	public static String getRuleType()
 	{
 		return ruleType.get();
+	}
+
+	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement)
+	{
+		return new SeriesNameCorrector(namePattern.toPattern(), nameReplacement, null);
 	}
 
 	private static String formatRule(SeriesNameCorrector corrector, UserPattern nameUserPattern)

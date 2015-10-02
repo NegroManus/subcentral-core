@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherDialogs;
-import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
@@ -78,7 +77,19 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			@Override
 			public String toString(Class<? extends CorrectionRuleSettingEntry<?, ?>> type)
 			{
-				return WatcherFxUtil.standardizingRuleTypeToString(type) + " rule";
+				if (type == null)
+				{
+					return "";
+				}
+				else if (type == SeriesNameCorrectionRuleSettingEntry.class)
+				{
+					return SeriesNameCorrectionRuleSettingEntry.getRuleType();
+				}
+				else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
+				{
+					return ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
+				}
+				return type.getSimpleName();
 			}
 
 			@Override
