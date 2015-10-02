@@ -2,6 +2,7 @@ package de.subcentral.core;
 
 public interface PropNames
 {
+	public static final String	ALIAS_NAMES				= "aliasNames";
 	public static final String	ATTRIBUTES				= "attributes";
 	public static final String	BASIS					= "basis";
 	public static final String	CONTENT_RATING			= "contentRating";

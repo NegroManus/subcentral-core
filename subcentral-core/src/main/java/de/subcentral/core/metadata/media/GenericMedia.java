@@ -17,6 +17,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class GenericMedia extends SingleMedia implements Comparable<GenericMedia>
 {
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(GenericMedia.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_ALIAS_NAMES		= new SimplePropDescriptor(GenericMedia.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(GenericMedia.class, PropNames.TITLE);
 	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE	= new SimplePropDescriptor(GenericMedia.class, PropNames.MEDIA_CONTENT_TYPE);
 	public static final SimplePropDescriptor	PROP_MEDIA_TYPE			= new SimplePropDescriptor(GenericMedia.class, PropNames.MEDIA_TYPE);

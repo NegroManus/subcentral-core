@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.correction.CorrectionService;
@@ -48,7 +50,7 @@ public class StandardizingTest
 			}
 
 		});
-		service.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Psych"), "Psych (2001)", "Psych"));
+		service.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Psych"), "Psych (2001)", ImmutableList.of(), "Psych"));
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 2, 2);
 		Episode expectedEpi = Episode.createSeasonedEpisode("Psych (2001)", 2, 2);

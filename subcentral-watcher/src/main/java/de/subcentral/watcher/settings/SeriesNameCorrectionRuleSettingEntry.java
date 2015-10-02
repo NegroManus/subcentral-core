@@ -44,7 +44,7 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 
 	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement)
 	{
-		return new SeriesNameCorrector(namePattern.toPattern(), nameReplacement, null);
+		return new SeriesNameCorrector(namePattern.toPattern(), nameReplacement);
 	}
 
 	private static String formatRule(SeriesNameCorrector corrector, UserPattern nameUserPattern)

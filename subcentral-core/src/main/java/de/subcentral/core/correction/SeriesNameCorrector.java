@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Series;
 
@@ -13,19 +14,21 @@ import de.subcentral.core.metadata.media.Series;
  */
 public class SeriesNameCorrector implements Corrector<Series>
 {
-	private final Pattern	namePattern;
-	private final String	nameReplacement;
-	private final String	titleReplacement;
+	private final Pattern				namePattern;
+	private final String				nameReplacement;
+	private final ImmutableList<String>	aliasNamesReplacement;
+	private final String				titleReplacement;
 
 	public SeriesNameCorrector(Pattern namePattern, String nameReplacement)
 	{
-		this(namePattern, nameReplacement, null);
+		this(namePattern, nameReplacement, ImmutableList.of(), null);
 	}
 
-	public SeriesNameCorrector(Pattern namePattern, String nameReplacement, String titleReplacement)
+	public SeriesNameCorrector(Pattern namePattern, String nameReplacement, Iterable<String> aliasNamesReplacement, String titleReplacement)
 	{
 		this.namePattern = Objects.requireNonNull(namePattern, "namePattern");
 		this.nameReplacement = nameReplacement;
+		this.aliasNamesReplacement = ImmutableList.copyOf(aliasNamesReplacement);
 		this.titleReplacement = titleReplacement;
 	}
 
@@ -37,6 +40,11 @@ public class SeriesNameCorrector implements Corrector<Series>
 	public String getNameReplacement()
 	{
 		return nameReplacement;
+	}
+
+	public ImmutableList<String> getAliasNamesReplacement()
+	{
+		return aliasNamesReplacement;
 	}
 
 	public String getTitleReplacement()
@@ -58,6 +66,13 @@ public class SeriesNameCorrector implements Corrector<Series>
 			{
 				series.setName(nameReplacement);
 				corrections.add(new Correction(series, Series.PROP_NAME.getPropName(), oldName, nameReplacement));
+			}
+
+			ImmutableList<String> oldAliasNames = ImmutableList.copyOf(series.getAliasNames());
+			if (!oldAliasNames.equals(aliasNamesReplacement))
+			{
+				series.setAliasNames(aliasNamesReplacement);
+				corrections.add(new Correction(series, Series.PROP_ALIAS_NAMES.getPropName(), oldAliasNames, aliasNamesReplacement));
 			}
 
 			String oldTitle = series.getTitle();
