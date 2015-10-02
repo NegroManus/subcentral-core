@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
+import com.sun.nio.file.ExtendedCopyOption;
 
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.db.MetadataDb;
@@ -209,6 +210,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 	public void deleteSourceFile() throws IOException
 	{
+		checkCancelled();
 		log.info("Deleting source file {}", getSourceFile());
 		Files.deleteIfExists(getSourceFile());
 	}
@@ -230,15 +232,17 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		try
 		{
 			// Load config
-			loadCurrentProcessingConfig();
 			checkCancelled();
+			loadCurrentProcessingConfig();
 
 			// Parse
-			parsedObject = parse(getSourceFile());
 			checkCancelled();
+			parsedObject = parse(getSourceFile());
+
 			updateProgress(0.25d, 1d);
 
 			// Process
+			checkCancelled();
 			if (parsedObject != null)
 			{
 				createResultObject();
@@ -258,15 +262,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 						log.warn("Could not delete source file", e);
 					}
 				}
-			}
-			return null;
-		}
-		catch (CancellationException e)
-		{
-			// ignore if due to cancellation of task
-			if (!isCancelled())
-			{
-				throw e;
 			}
 			return null;
 		}
@@ -370,10 +365,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		// Querying
 		Release srcRls = parsedObject.getFirstMatchingRelease();
 		ListMultimap<MetadataDb, Release> queryResults = query(srcRls);
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
 		updateProgress(0.5d, 1d);
 
 		// Process query results
@@ -436,17 +427,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 				addCompatibleReleases(matchingReleases, mediaFilteredFoundReleases);
 			}
 		}
-
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
 		updateProgress(0.75d, 1d);
-
-		if (isCancelled())
-		{
-			throw new CancellationException();
-		}
 	}
 
 	private ListMultimap<MetadataDb, Release> query(Release rls) throws InterruptedException
@@ -466,7 +447,10 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		updateMessage("Querying " + rlsDbs.toString());
 		log.debug("Querying release databases " + rlsDbs.toString());
 		List<Media> queryObj = rls.getMedia();
+
+		checkCancelled();
 		ListMultimap<MetadataDb, Release> queryResults = MetadataDbUtil.searchInAll(config.getReleaseDbs(), queryObj, Release.class, controller.getMainController().getCommonExecutor());
+
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : queryResults.asMap().entrySet())
 		{
 			log.debug("Results of {}", entry.getKey().getSourceId());
@@ -494,8 +478,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			{
 				GuessedInfo methodInfo = new GuessedInfo(entry.getValue());
 				addReleaseToResult(entry.getKey(), methodInfo);
-
-				checkCancelled();
 			}
 
 			List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
@@ -659,16 +641,17 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 				targetDir = srcFile.getParent();
 			}
 
-			Files.createDirectories(targetDir);
 			checkCancelled();
+			Files.createDirectories(targetDir);
 
 			String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
 			Path targetFile = targetDir.resolve(result.getName() + fileExtension);
 
-			Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+			checkCancelled();
+			Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING, ExtendedCopyOption.INTERRUPTIBLE);
+
 			result.addFile(newFile);
 			log.debug("Copied {} to {}", srcFile, targetFile);
-			checkCancelled();
 
 			if (config.isPackingEnabled())
 			{
@@ -693,7 +676,10 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 					cfg.setTimeout(10, TimeUnit.MINUTES);
 					cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
+
+					checkCancelled();
 					WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
+
 					if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
 					{
 						result.removeFile(newFile);
@@ -709,33 +695,43 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 						result.updateStatus("Done");
 					}
 				}
-				catch (CancellationException e)
-				{
-					throw e;
-				}
 				catch (Exception e)
 				{
 					packingException = e;
 				}
 				if (packingException != null)
 				{
-					log.error("Packing failed", packingException);
-					result.updateStatus("Packing failed");
-					updateInfo(ProcessingTaskInfo.of(packingException.toString()));
+					if (isCancelled())
+					{
+						log.debug("Cancelled while packing. Exception: {}", packingException.toString());
+						result.updateStatus("Cancelled");
+					}
+					else
+					{
+						log.error("Packing failed", packingException);
+						result.updateStatus("Packing failed");
+						updateInfo(ProcessingTaskInfo.of(packingException.toString()));
+					}
 				}
 			}
 			else
 			{
 				result.updateStatus("Done");
 			}
-
-			checkCancelled();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
-			log.error("File transformation failed for " + result, e);
-			result.updateStatus("File transformation failed");
-			updateInfo(ProcessingTaskInfo.of(e.toString()));
+			if (isCancelled())
+			{
+				log.debug("Cancelled while transforming files. Exception: {}", e.toString());
+				result.updateStatus("Cancelled");
+			}
+			else
+			{
+				log.error("File transformation failed for " + result, e);
+				result.updateStatus("File transformation failed");
+				updateInfo(ProcessingTaskInfo.of(e.toString()));
+			}
 		}
 		finally
 		{
