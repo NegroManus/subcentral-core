@@ -333,32 +333,32 @@ public class ProcessingController extends AbstractController
 							// origin info
 							switch (resultInfo.getOriginInfo().getOrigin())
 							{
-							case DATABASE:
-							{
-								addDatabaseHyperlink(resultInfo, hbox);
-								break;
-							}
-							case GUESSED:
-							{
-								GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
-								Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
-								hbox.getChildren().add(guessedLbl);
-								break;
-							}
-							case COMPATIBLE:
-							{
-								// compatible releases may be listed in a database as well
-								addDatabaseHyperlink(resultInfo, hbox);
+								case DATABASE:
+								{
+									addDatabaseHyperlink(resultInfo, hbox);
+									break;
+								}
+								case GUESSED:
+								{
+									GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
+									Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
+									hbox.getChildren().add(guessedLbl);
+									break;
+								}
+								case COMPATIBLE:
+								{
+									// compatible releases may be listed in a database as well
+									addDatabaseHyperlink(resultInfo, hbox);
 
-								CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
+									CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
 
-								Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
-								hbox.getChildren().add(compLbl);
-								break;
-							}
-							default:
-								log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
-								break;
+									Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
+									hbox.getChildren().add(compLbl);
+									break;
+								}
+								default:
+									log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
+									break;
 							}
 
 							// nuke
@@ -683,6 +683,11 @@ public class ProcessingController extends AbstractController
 			if (attrs.size() == 0)
 			{
 				log.debug("Filtered out {} because it is empty", file);
+				return false;
+			}
+			if (IOUtil.isLocked(file))
+			{
+				log.debug("Filtered out {} because it is currently locked", file);
 				return false;
 			}
 		}

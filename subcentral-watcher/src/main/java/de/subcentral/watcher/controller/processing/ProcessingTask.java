@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -666,10 +665,6 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			String fileExtension = IOUtil.splitIntoFilenameAndExtension(srcFile.getFileName().toString())[1];
 			Path targetFile = targetDir.resolve(result.getName() + fileExtension);
 
-			// If file is currently written and locked, wait until the operation is finished
-			IOUtil.waitUntilUnlocked(srcFile, 10, TimeUnit.MINUTES);
-			checkCancelled();
-
 			Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
 			result.addFile(newFile);
 			log.debug("Copied {} to {}", srcFile, targetFile);
@@ -685,13 +680,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-					case SPECIFY:
-						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
-						break;
-					case AUTO_LOCATE:
-						// fall through
-					default:
-						packager = controller.getMainController().getWinRar().getPackager();
+						case SPECIFY:
+							packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+							break;
+						case AUTO_LOCATE:
+							// fall through
+						default:
+							packager = controller.getMainController().getWinRar().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);
@@ -736,7 +731,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 			checkCancelled();
 		}
-		catch (IOException | TimeoutException e)
+		catch (IOException e)
 		{
 			log.error("File transformation failed for " + result, e);
 			result.updateStatus("File transformation failed");
