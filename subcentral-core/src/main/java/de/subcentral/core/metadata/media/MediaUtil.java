@@ -1,6 +1,9 @@
 package de.subcentral.core.metadata.media;
 
 import java.util.Iterator;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 public class MediaUtil
 {
@@ -40,6 +43,17 @@ public class MediaUtil
 			}
 		}
 		return null;
+	}
+
+	public static List<String> getAllNames(NamedMedia media)
+	{
+		ImmutableList.Builder<String> names = ImmutableList.builder();
+		if (media.getName() != null)
+		{
+			names.add(media.getName());
+		}
+		names.addAll(media.getAliasNames());
+		return names.build();
 	}
 
 	private MediaUtil()
