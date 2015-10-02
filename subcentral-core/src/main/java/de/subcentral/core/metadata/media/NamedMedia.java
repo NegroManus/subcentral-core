@@ -2,8 +2,6 @@ package de.subcentral.core.metadata.media;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * Some medias have explicit names (like {@link Movie} or {@link Series}).
  * 
@@ -76,16 +74,7 @@ public interface NamedMedia extends Media
 	 */
 	public List<String> getAliasNames();
 
-	public default List<String> getAllNames()
-	{
-		ImmutableList.Builder<String> names = ImmutableList.builder();
-		if (getName() != null)
-		{
-			names.add(getName());
-		}
-		names.addAll(getAliasNames());
-		return names.build();
-	}
+	public List<String> getAllNames();
 
 	// Convenience
 	/**
