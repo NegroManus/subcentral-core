@@ -29,7 +29,7 @@
 			</children>
 		</VBox>
 		<Label text="the tag sequence" GridPane.rowIndex="2" />
-		<TextField fx:id="queryTagsTxtFld" prefWidth="250.0" promptText="tags (separated by comma)" GridPane.rowIndex="3" />
+		<TextField fx:id="queryTagsTxtFld" prefWidth="300.0" promptText="tags (separated by comma)" GridPane.rowIndex="3" />
 		<CheckBox fx:id="ignoreOrderCheckBox" mnemonicParsing="false" text="in any order" GridPane.rowIndex="4" />
 		<Label text="then" GridPane.rowIndex="5">
          <GridPane.margin>
@@ -41,6 +41,6 @@
 				<RadioButton fx:id="completeRadioBtn" mnemonicParsing="false" text="set the release's tags to" />
 			</children>
 		</VBox>
-		<TextField fx:id="replacementTxtFld" prefWidth="250.0" promptText="tags (separated by comma)" GridPane.rowIndex="7" />
+		<TextField fx:id="replacementTxtFld" prefWidth="300.0" promptText="tags (separated by comma)" GridPane.rowIndex="7" />
 	</children>
 </GridPane>

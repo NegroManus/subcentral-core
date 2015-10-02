@@ -151,8 +151,8 @@
 				</Label>
 				<Label text="Input language text" GridPane.rowIndex="2" />
 				<Label text="Output language text" GridPane.rowIndex="3" />
-				<TextField fx:id="testingInputTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-				<TextField fx:id="testingOutputTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+				<TextField fx:id="testingInputTxtFld" promptText="type in a language to test the correction" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+				<TextField fx:id="testingOutputTxtFld" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 				<Separator prefWidth="200.0" GridPane.columnSpan="2147483647" />
 			</children>
 			<BorderPane.margin>

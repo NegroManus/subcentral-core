@@ -30,9 +30,9 @@
 				<Insets />
 			</GridPane.margin>
 		</VBox>
-		<TextField fx:id="namePatternTxtFld" prefWidth="250.0" promptText="series name" GridPane.rowIndex="2" />
+		<TextField fx:id="namePatternTxtFld" prefWidth="300.0" promptText="series name" GridPane.rowIndex="2" />
       <Text fx:id="patternErrorTxt" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="3" />
 		<Label text="then replace it with" GridPane.rowIndex="4" />
-		<TextField fx:id="nameReplacementTxtFld" prefWidth="250.0" promptText="series name replacement" GridPane.rowIndex="5" />
+		<TextField fx:id="nameReplacementTxtFld" prefWidth="300.0" promptText="series name replacement" GridPane.rowIndex="5" />
 	</children>
 </GridPane>
