@@ -302,7 +302,7 @@ public class MainController extends AbstractController
 			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
 		}
 
-		SwingUtilities.invokeLater(this::removeSystemTrayIcon);
+		SwingUtilities.invokeAndWait(this::removeSystemTrayIcon);
 	}
 
 	/**

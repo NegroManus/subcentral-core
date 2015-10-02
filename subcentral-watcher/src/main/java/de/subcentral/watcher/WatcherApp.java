@@ -91,6 +91,8 @@ public class WatcherApp extends Application
 		mainController.shutdown();
 
 		log.info("Stopped {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
+
+		// Platform.exit();
 	}
 
 	public static void main(String[] args)

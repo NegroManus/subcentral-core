@@ -705,6 +705,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					{
 						log.debug("Cancelled while packing. Exception: {}", packingException.toString());
 						result.updateStatus("Cancelled");
+						throw packingException;
 					}
 					else
 					{
@@ -725,6 +726,7 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			{
 				log.debug("Cancelled while transforming files. Exception: {}", e.toString());
 				result.updateStatus("Cancelled");
+				throw e;
 			}
 			else
 			{

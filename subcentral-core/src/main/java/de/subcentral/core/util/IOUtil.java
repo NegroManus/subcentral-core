@@ -93,38 +93,51 @@ public class IOUtil
 	 */
 	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit, ExecutorService executor) throws IOException, InterruptedException, TimeoutException
 	{
-		ProcessBuilder processBuilder = new ProcessBuilder(command);
-		log.debug("Executing process {} with directory={}; environment={}; timeout={} {}", command, processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
-		long start = System.nanoTime();
-		Process process = processBuilder.start();
-		process.getOutputStream().close();
+		Process process = null;
+		try
+		{
+			ProcessBuilder processBuilder = new ProcessBuilder(command);
+			log.debug("Executing process {} with directory={}; environment={}; timeout={} {}", command, processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
+			long start = System.nanoTime();
+			process = processBuilder.start();
+			process.getOutputStream().close();
 
-		// StdOut and StdErr can be written in parallel so they need be read in dedicated Threads
-		ByteArrayOutputStream stdOutStream = new ByteArrayOutputStream();
-		StreamGobbler stdOutGobbler = new StreamGobbler(process.getInputStream(), stdOutStream);
-		ByteArrayOutputStream stdErrStream = new ByteArrayOutputStream();
-		StreamGobbler stdErrGobbler = new StreamGobbler(process.getErrorStream(), stdErrStream);
-		if (executor != null)
-		{
-			executor.submit(stdOutGobbler);
-			executor.submit(stdErrGobbler);
-		}
-		else
-		{
-			new Thread(stdOutGobbler).start();
-			new Thread(stdErrGobbler).start();
-		}
+			// StdOut and StdErr can be written in parallel so they need be read in dedicated Threads
+			ByteArrayOutputStream stdOutStream = new ByteArrayOutputStream();
+			StreamGobbler stdOutGobbler = new StreamGobbler(process.getInputStream(), stdOutStream);
+			ByteArrayOutputStream stdErrStream = new ByteArrayOutputStream();
+			StreamGobbler stdErrGobbler = new StreamGobbler(process.getErrorStream(), stdErrStream);
+			if (executor != null)
+			{
+				executor.submit(stdOutGobbler);
+				executor.submit(stdErrGobbler);
+			}
+			else
+			{
+				new Thread(stdOutGobbler).start();
+				new Thread(stdErrGobbler).start();
+			}
 
-		boolean exitedBeforeTimeout = process.waitFor(timeoutValue, timeoutUnit);
-		if (!exitedBeforeTimeout)
-		{
-			throw new TimeoutException("Process execution did not finish before timeout was reached. command=" + command + ", timeout=" + timeoutValue + " " + timeoutUnit);
+			boolean exitedBeforeTimeout = process.waitFor(timeoutValue, timeoutUnit);
+			if (!exitedBeforeTimeout)
+			{
+				throw new TimeoutException("Process execution did not finish before timeout was reached. command=" + command + ", timeout=" + timeoutValue + " " + timeoutUnit);
+			}
+			String stdOut = StringUtils.stripToNull(stdOutStream.toString(Charset.defaultCharset().name()));
+			String stdErr = StringUtils.stripToNull(stdErrStream.toString(Charset.defaultCharset().name()));
+			ProcessResult result = new ProcessResult(process.exitValue(), stdOut, stdErr);
+			log.debug("Executed process {} in {} ms with result: {}", command, TimeUtil.durationMillis(start), result);
+			return result;
 		}
-		String stdOut = StringUtils.stripToNull(stdOutStream.toString(Charset.defaultCharset().name()));
-		String stdErr = StringUtils.stripToNull(stdErrStream.toString(Charset.defaultCharset().name()));
-		ProcessResult result = new ProcessResult(process.exitValue(), stdOut, stdErr);
-		log.debug("Executed process {} in {} ms with result: {}", command, TimeUtil.durationMillis(start), result);
-		return result;
+		catch (Exception e)
+		{
+			// Clean up
+			if (process != null)
+			{
+				process.destroy();
+			}
+			throw e;
+		}
 	}
 
 	/**
