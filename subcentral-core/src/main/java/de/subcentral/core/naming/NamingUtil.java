@@ -1,9 +1,7 @@
 package de.subcentral.core.naming;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -82,17 +80,6 @@ public class NamingUtil
 			boolean accepted = requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
 			return accepted;
 		};
-	}
-
-	public static List<String> generateNames(Object obj, NamingService namingService, List<Map<String, Object>> parametersList)
-	{
-		List<String> names = new ArrayList<>(parametersList.size());
-		for (Map<String, Object> parameters : parametersList)
-		{
-			String name = namingService.name(obj, parameters);
-			names.add(name);
-		}
-		return names;
 	}
 
 	private NamingUtil()

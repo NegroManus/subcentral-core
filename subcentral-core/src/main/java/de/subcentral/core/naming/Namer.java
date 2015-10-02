@@ -1,13 +1,9 @@
 package de.subcentral.core.naming;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
-import de.subcentral.core.util.StringUtil;
 
 public interface Namer<T> extends Function<T, String>
 {
@@ -28,30 +24,9 @@ public interface Namer<T> extends Function<T, String>
 	 */
 	public String name(T obj, Map<String, Object> parameters) throws NamingException;
 
-	public default String nameAll(Iterable<? extends T> objects, String separator, Map<String, Object> parameters) throws NamingException
-	{
-		StringBuilder name = new StringBuilder();
-		for (T candidate : objects)
-		{
-			name.append(name(candidate, parameters));
-			name.append(separator);
-		}
-		return StringUtil.stripEnd(name, separator).toString();
-	}
-
-	public default List<String> nameEach(Iterable<? extends T> objects, Map<String, Object> parameters) throws NamingException
-	{
-		ImmutableList.Builder<String> names = ImmutableList.builder();
-		for (T candidate : objects)
-		{
-			names.add(name(candidate, parameters));
-		}
-		return names.build();
-	}
-
 	@Override
-	public default String apply(T entity)
+	public default String apply(T obj)
 	{
-		return name(entity);
+		return name(obj);
 	}
 }
