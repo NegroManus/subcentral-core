@@ -3,7 +3,6 @@ package de.subcentral.core.naming;
 import java.util.Map;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.Series;
 
 public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 {
@@ -12,12 +11,6 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	 * {@code true}.
 	 */
 	public static final String PARAM_INCLUDE_SERIES = EpisodeNamer.class.getName() + ".includeSeries";
-
-	/**
-	 * The name of the parameter "seriesName" of type {@link String}. The specified name is used for naming the episode. The default value is the return value of {@link Series#getName()}. But for
-	 * example any alias name may be used.
-	 */
-	public static final String PARAM_SERIES_NAME = EpisodeNamer.class.getName() + ".seriesName";
 
 	/**
 	 * The name of the parameter "includeSeason" of type {@link Boolean}. If set to {@code true}, the episode's season is included in the name, otherwise it is excluded. The default value is

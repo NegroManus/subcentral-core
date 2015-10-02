@@ -3,7 +3,6 @@ package de.subcentral.core.metadata.media;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,30 +10,8 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.naming.EpisodeNamer;
-import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.NamingUtil;
-
 public class SeriesUtil
 {
-	public List<String> generateNamesIncludingSeriesAliases(Episode epi, NamingService namingService, Map<String, Object> parameters)
-	{
-		Series series = epi.getSeries();
-		if (series == null || series.getAliasNames().isEmpty())
-		{
-			return ImmutableList.of(namingService.name(epi, parameters));
-		}
-		List<Map<String, Object>> parametersList = new ArrayList<>(1 + series.getAliasNames().size());
-		parametersList.add(parameters);
-		for (String alias : series.getAliasNames())
-		{
-			Map<String, Object> aliasParams = new HashMap<>(parameters);
-			aliasParams.put(EpisodeNamer.PARAM_SERIES_NAME, alias);
-			parametersList.add(aliasParams);
-		}
-		return NamingUtil.generateNames(epi, namingService, parametersList);
-	}
-
 	// Seasons and Episode
 	public List<Episode> filterEpisodesBySeason(List<Episode> episodes, Season season)
 	{

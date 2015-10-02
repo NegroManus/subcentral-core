@@ -4,7 +4,7 @@ import java.util.Map;
 
 import de.subcentral.core.metadata.media.Series;
 
-public class SeriesNamer extends AbstractPropertySequenceNamer<Series>
+public class SeriesNamer extends AbstractNamedMediaNamer<Series>
 {
 	public SeriesNamer(PropSequenceNameBuilder.Config config)
 	{
@@ -14,6 +14,7 @@ public class SeriesNamer extends AbstractPropertySequenceNamer<Series>
 	@Override
 	public void buildName(PropSequenceNameBuilder b, Series series, Map<String, Object> params)
 	{
-		b.appendIfNotNull(Series.PROP_NAME, series.getName());
+		String name = NamingUtil.readParameter(params, PARAM_NAME, String.class, series.getName());
+		b.appendIfNotNull(Series.PROP_NAME, name);
 	}
 }
