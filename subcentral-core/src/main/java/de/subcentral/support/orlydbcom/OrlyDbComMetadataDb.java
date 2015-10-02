@@ -71,7 +71,7 @@ public class OrlyDbComMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (Release.class.equals(recordType))
 		{

@@ -114,7 +114,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (Series.class.equals(recordType))
 		{
@@ -125,7 +125,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (Series.class.equals(recordType))
 		{
@@ -143,12 +143,12 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		return super.searchByObject(queryObj, recordType);
 	}
 
-	public List<Series> searchSeries(String name) throws IllegalArgumentException, IOException
+	public List<Series> searchSeries(String name) throws IOException
 	{
 		return searchSeries(name, "en");
 	}
 
-	public List<Series> searchSeries(String name, String language) throws IllegalArgumentException, IOException
+	public List<Series> searchSeries(String name, String language) throws IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		query.put("seriesname", formatSeriesNameQueryValue(name));
@@ -160,7 +160,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByExternalId(String sourceId, String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByExternalId(String sourceId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (recordType.isAssignableFrom(Series.class))
 		{
@@ -169,12 +169,12 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		throw createUnsupportedRecordTypeException(recordType);
 	}
 
-	public List<Series> searchSeriesByExternalId(String sourceId, String id) throws IllegalArgumentException, IOException
+	public List<Series> searchSeriesByExternalId(String sourceId, String id) throws UnsupportedOperationException, IOException
 	{
 		return searchSeriesByExternalId(sourceId, id, null);
 	}
 
-	public List<Series> searchSeriesByExternalId(String sourceId, String id, String language) throws IllegalArgumentException, IOException
+	public List<Series> searchSeriesByExternalId(String sourceId, String id, String language) throws UnsupportedOperationException, IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		switch (sourceId)
@@ -198,7 +198,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> T get(String id, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (Series.class.equals(recordType))
 		{

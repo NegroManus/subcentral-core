@@ -79,7 +79,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (recordType.isAssignableFrom(Release.class))
 		{
@@ -92,7 +92,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (Release.class.equals(recordType))
 		{
@@ -189,7 +189,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> T get(String id, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (recordType.isAssignableFrom(Release.class))
 		{

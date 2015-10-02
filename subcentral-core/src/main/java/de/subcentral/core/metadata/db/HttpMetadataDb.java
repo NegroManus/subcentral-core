@@ -38,7 +38,7 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 		}
 		catch (MalformedURLException e)
 		{
-			throw new IllegalStateException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

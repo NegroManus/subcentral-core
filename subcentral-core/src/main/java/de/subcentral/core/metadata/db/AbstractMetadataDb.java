@@ -50,12 +50,12 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	}
 
 	@Override
-	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		return searchByObjectsName(queryObj, recordType);
 	}
 
-	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws IllegalArgumentException, IOException
+	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		List<T> results = new ArrayList<>();
 		int noNamerRegisteredExceptionCount = 0;
@@ -79,13 +79,13 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	}
 
 	@Override
-	public <T> List<T> searchByExternalId(String sourceId, String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> List<T> searchByExternalId(String sourceId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <T> T get(String id, Class<T> recordType) throws IllegalArgumentException, IOException
+	public <T> T get(String id, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -96,18 +96,18 @@ public abstract class AbstractMetadataDb implements MetadataDb
 		return MoreObjects.toStringHelper(this).add("sourceId", getSourceId()).add("displayName", getDisplayName()).toString();
 	}
 
-	protected IllegalArgumentException createUnsupportedRecordTypeException(Class<?> unsupportedType) throws IllegalArgumentException
+	protected UnsupportedOperationException createUnsupportedRecordTypeException(Class<?> unsupportedType) throws UnsupportedOperationException
 	{
-		return new IllegalArgumentException("The record type is not supported: " + unsupportedType + " (record types: " + getRecordTypes() + ")");
+		return new UnsupportedOperationException("The record type is not supported: " + unsupportedType + " (record types: " + getRecordTypes() + ")");
 	}
 
-	protected IllegalArgumentException createRecordTypeNotSearchableException(Class<?> unsupportedType) throws IllegalArgumentException
+	protected UnsupportedOperationException createRecordTypeNotSearchableException(Class<?> unsupportedType) throws UnsupportedOperationException
 	{
-		return new IllegalArgumentException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
+		return new UnsupportedOperationException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
 	}
 
-	protected IllegalArgumentException createUnsupportedExternalSource(String unsupportedExternalSource) throws IllegalArgumentException
+	protected UnsupportedOperationException createUnsupportedExternalSource(String unsupportedExternalSource) throws UnsupportedOperationException
 	{
-		return new IllegalArgumentException("The external source is not supported: " + unsupportedExternalSource + " (supported external sources: " + getSupportedExternalSources() + ")");
+		return new UnsupportedOperationException("The external source is not supported: " + unsupportedExternalSource + " (supported external sources: " + getSupportedExternalSources() + ")");
 	}
 }
