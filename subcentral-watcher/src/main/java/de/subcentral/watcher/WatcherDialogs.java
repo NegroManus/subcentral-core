@@ -467,11 +467,11 @@ public class WatcherDialogs
 		{
 			if (bean == null)
 			{
-				return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
+				return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
 			}
 			else
 			{
-				return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
+				return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
 			}
 		}
 

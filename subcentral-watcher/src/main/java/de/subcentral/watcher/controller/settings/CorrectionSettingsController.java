@@ -60,9 +60,9 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		// Standardizers
 		standardizersTableView.setItems(WatcherSettings.INSTANCE.getProcessingSettings().correctionRulesProperty());
 
-		standardizersTypeColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleTypeStringBinding());
+		standardizersTypeColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
 
-		standardizersRuleColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleStringBinding());
+		standardizersRuleColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleBinding());
 
 		standardizersBeforeQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(standardizersBeforeQueryingColumn));
 		standardizersBeforeQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, Boolean> param) -> param.getValue().beforeQueryingProperty());
@@ -87,7 +87,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 				}
 				else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
 				{
-					return ReleaseTagsCorrectionRuleSettingEntry.getCorrectorTypeString();
+					return ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
 				}
 				return type.getSimpleName();
 			}
@@ -153,10 +153,10 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 				{
 					StringBuilder sb = new StringBuilder();
 					sb.append("Rule type: ");
-					sb.append(entry.ruleTypeStringBinding().get());
+					sb.append(entry.ruleTypeBinding().get());
 					sb.append("\n");
 					sb.append("Rule: ");
-					sb.append(entry.ruleStringBinding().get());
+					sb.append(entry.ruleBinding().get());
 					return sb.toString();
 				}
 

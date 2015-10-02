@@ -20,20 +20,20 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 	}
 
 	@Override
-	public StringBinding ruleTypeStringBinding()
+	public StringBinding ruleTypeBinding()
 	{
 		return ruleType;
 	}
 
-	@Override
-	public StringBinding ruleStringBinding()
-	{
-		return rule;
-	}
-
-	public static String getCorrectorTypeString()
+	public static String getRuleType()
 	{
 		return ruleType.get();
+	}
+
+	@Override
+	public StringBinding ruleBinding()
+	{
+		return rule;
 	}
 
 	private static String formatRule(ReleaseTagsCorrector corrector)
@@ -43,12 +43,12 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 		sb.append("If tags ");
 		switch (replacer.getSearchMode())
 		{
-		case CONTAIN:
-			sb.append("contain ");
-			break;
-		case EQUAL:
-			sb.append("equal ");
-			break;
+			case CONTAIN:
+				sb.append("contain ");
+				break;
+			case EQUAL:
+				sb.append("equal ");
+				break;
 		}
 		sb.append('[');
 		Joiner.on(", ").appendTo(sb, replacer.getSearchTags());
@@ -60,12 +60,12 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 		sb.append(", then ");
 		switch (replacer.getReplaceMode())
 		{
-		case MATCHED_SEQUENCE:
-			sb.append("replace those with ");
-			break;
-		case COMPLETE_LIST:
-			sb.append("set the tags to ");
-			break;
+			case MATCHED_SEQUENCE:
+				sb.append("replace those with ");
+				break;
+			case COMPLETE_LIST:
+				sb.append("set the tags to ");
+				break;
 		}
 		sb.append('[');
 		Joiner.on(", ").appendTo(sb, replacer.getReplacement());

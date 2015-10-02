@@ -26,9 +26,9 @@ public abstract class CorrectionRuleSettingEntry<T, C extends Corrector<? super 
 		return beanType;
 	}
 
-	public abstract StringBinding ruleTypeStringBinding();
+	public abstract StringBinding ruleTypeBinding();
 
-	public abstract StringBinding ruleStringBinding();
+	public abstract StringBinding ruleBinding();
 
 	public final BooleanProperty beforeQueryingProperty()
 	{

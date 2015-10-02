@@ -21,13 +21,18 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 	}
 
 	@Override
-	public StringBinding ruleTypeStringBinding()
+	public StringBinding ruleTypeBinding()
 	{
 		return ruleType;
 	}
 
+	public static String getRuleType()
+	{
+		return ruleType.get();
+	}
+
 	@Override
-	public StringBinding ruleStringBinding()
+	public StringBinding ruleBinding()
 	{
 		return rule;
 	}
@@ -35,11 +40,6 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 	public UserPattern getNameUserPattern()
 	{
 		return nameUserPattern;
-	}
-
-	public static String getRuleType()
-	{
-		return ruleType.get();
 	}
 
 	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement)
