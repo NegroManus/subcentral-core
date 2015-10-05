@@ -46,12 +46,12 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class PreDbMeMetadataDb extends HttpMetadataDb
 {
-	private static final Logger log = LogManager.getLogger(PreDbMeMetadataDb.class);
+	private static final Logger	log			= LogManager.getLogger(PreDbMeMetadataDb.class);
 
 	/**
 	 * The release dates are in UTC.
 	 */
-	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
+	private static final ZoneId	TIME_ZONE	= ZoneId.of("UTC");
 
 	@Override
 	public String getSourceId()
@@ -96,46 +96,44 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 	{
 		if (Release.class.equals(recordType))
 		{
-			if (queryObj instanceof Episode)
+			// Check whether the queryObj is a Media or an Iterable of a single Media
+			Media media = MediaUtil.getSingletonMedia(queryObj);
+			if (media != null)
 			{
-				Episode epi = (Episode) queryObj;
-				// Only if series name, season number and episode number are set
-				// Otherwise predb.me mostly does not parse the release name properly
-				if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
+				if (media instanceof Episode)
 				{
-					return (List<T>) searchReleasesByEpisode(epi.getSeries().getName(), epi.getSeason().getNumber(), epi.getNumberInSeason());
+					Episode epi = (Episode) media;
+					// Only if series name, season number and episode number are set
+					// Otherwise predb.me mostly does not parse the release name properly
+					if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
+					{
+						return (List<T>) searchReleasesByEpisode(epi.getSeries().getName(), epi.getSeason().getNumber(), epi.getNumberInSeason());
+					}
 				}
-			}
-			else if (queryObj instanceof Season)
-			{
-				Season season = (Season) queryObj;
-				if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
+				else if (media instanceof Season)
 				{
-					return (List<T>) searchReleasesBySeason(season.getSeries().getName(), season.getNumber());
+					Season season = (Season) media;
+					if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
+					{
+						return (List<T>) searchReleasesBySeason(season.getSeries().getName(), season.getNumber());
+					}
 				}
-			}
-			else if (queryObj instanceof Series)
-			{
-				Series series = (Series) queryObj;
-				if (series.getName() != null)
+				else if (media instanceof Series)
 				{
-					return (List<T>) searchReleasesBySeries(series.getName());
+					Series series = (Series) media;
+					if (series.getName() != null)
+					{
+						return (List<T>) searchReleasesBySeries(series.getName());
+					}
 				}
-			}
-			else if (queryObj instanceof Movie)
-			{
-				Movie mov = (Movie) queryObj;
-				if (mov.getName() != null)
+				else if (media instanceof Movie)
 				{
-					return (List<T>) searchReleasesByMovie(mov.getName());
+					Movie mov = (Movie) media;
+					if (mov.getName() != null)
+					{
+						return (List<T>) searchReleasesByMovie(mov.getName());
+					}
 				}
-			}
-
-			// Check whether the queryObj is an Iterable of a single Media
-			Media singletonMedia = MediaUtil.getSingletonMediaFromIterable(queryObj);
-			if (singletonMedia != null)
-			{
-				return searchByObject(singletonMedia, recordType);
 			}
 
 			// Otherwise use the default implementation
@@ -367,7 +365,8 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 	 * "pb-r " > <div class="pb-c  pb-l pb-s"></div> <div class="pb-c  pb-d pb-s"></div> </div> <div class="pb-r "> <div class="pb-c  pb-l pb-e">Links</div> <div class=
 	 * "pb-c  pb-d pb-e" > <small>&middot;&middot;&middot;</small> </div> </div> <div class="pb-r pb-search"> <div class="pb-c  pb-l">Search</div> <div class=
 	 * "pb-c  pb-d" > <a rel='nofollow' target='_blank' class='ext-link' href='http://thepiratebay.se/search/Psych.S06E05.HDTV.XviD-P0W4'>Torrent</a>, <a rel='nofollow' target='_blank'
-	 * class='ext-link' href='http://nzbindex.nl/search/?q=Psych.S06E05.HDTV.XviD-P0W4'>Usenet</a> </div> </div> </div> </div> </div> </pre>
+	 * class='ext-link' href='http://nzbindex.nl/search/?q=Psych.S06E05.HDTV.XviD-P0W4'>Usenet</a> </div> </div> </div> </div> </div>
+	 * </pre>
 	 * 
 	 * @param doc
 	 * @param rls
@@ -380,7 +379,8 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 
 		/**
 		 * <pre>
-		 * <div class="p-c p-c-time"> <span class="p-time" data="1320916570" title="2011-11-10 @ 09:16:10 ( UTC )"><span class='t-d'>2011-Nov-10</span></span> </div> </pre>
+		 * <div class="p-c p-c-time"> <span class="p-time" data="1320916570" title="2011-11-10 @ 09:16:10 ( UTC )"><span class='t-d'>2011-Nov-10</span></span> </div>
+		 * </pre>
 		 */
 		Element timeSpan = doc.select("span[class*=time]").first();
 		rls.setDate(parseReleaseDate(timeSpan));
@@ -462,13 +462,18 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					 * <div class="pb-r "> <div class="pb-c  pb-l">Nukes</div> <div class="pb-c  pb-d">
 					 * <ol class='nuke-list'> <li value='2'><span class='nuked'>get.dirfix</span> <small class='nuke-time' data='1405980397.037'>- <span class='t-n-d'>2.8</span> <span
 					 * class='t-u'>days</span></small></li> <li value='1'><span class='nuked'>mislabeled.2014</span> <small class='nuke-time' data='1405980000.098'>- <span class='t-n-d'>2.8</span>
-					 * <span class='t-u'>days</span></small></li> </ol> </div> </div> </div> </pre>
+					 * <span class='t-u'>days</span></small></li> </ol> </div> </div> </div>
+					 * </pre>
 					 * 
-					 * Unnuked <pre> <div class="pb-c  pb-l">
+					 * Unnuked
+					 * 
+					 * <pre>
+					 *  <div class="pb-c  pb-l">
 					 * Nukes</div> <div class="pb-c  pb-d">
 					 * <ol class='nuke-list'> <li value='2'><span class='unnuked'>fine_ar.is.acceptable</span> <small class='nuke-time' data='1363455322'>- <span
 					 * class='t-d'>2013-Mar-16</span></small></li> <li value='1'><span class='unnuked'>ar.is.within.rules</span> <small class='nuke-time' data='1363301166'>- <span
-					 * class='t-d'>2013-Mar-14</span></small></li> </ol> </div> </pre>
+					 * class='t-d'>2013-Mar-14</span></small></li> </ol> </div>
+					 * </pre>
 					 */
 
 					Element nukeListOl = valueDiv.getElementsByClass("nuke-list").first();
@@ -574,7 +579,8 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 				{
 					/**
 					 * <pre>
-					 * <div class="pb-c  pb-l">Genres</div> <div class= "pb-c  pb-d" > <a class='term t-gn' href='http://predb.me/?genre=trance'>Trance</a> </div> </div> </pre>
+					 * <div class="pb-c  pb-l">Genres</div> <div class= "pb-c  pb-d" > <a class='term t-gn' href='http://predb.me/?genre=trance'>Trance</a> </div> </div>
+					 * </pre>
 					 */
 					Elements genreAnchors = valueDiv.getElementsByTag("a");
 					genres = new ArrayList<>(genreAnchors.size());
@@ -589,7 +595,8 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					 * <pre>
 					 * <div class="pb-c  pb-l">Links</div> <div class=
 					 * "pb-c  pb-d" > <a rel='nofollow' target='_blank' class='ext-link' href='http://www.tvrage.com/iCarly'>TVRage</a>, <a rel='nofollow' target='_blank' class='ext-link'
-					 * href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a> </div> </pre>
+					 * href='http://en.wikipedia.org/wiki/ICarly'>Wikipedia</a> </div>
+					 * </pre>
 					 */
 					Elements extLinksAnchors = valueDiv.select("a.ext-link");
 					links = new ArrayList<>(extLinksAnchors.size());

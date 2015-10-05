@@ -19,7 +19,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class Movie extends SingleMedia implements Comparable<Movie>
 {
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Movie.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_ALIAS_NAMES		= new SimplePropDescriptor(Movie.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_ALIAS_NAMES		= new SimplePropDescriptor(Movie.class, PropNames.ALIAS_NAMES);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Movie.class, PropNames.TITLE);
 	public static final SimplePropDescriptor	PROP_MEDIA_CONTENT_TYPE	= new SimplePropDescriptor(Movie.class, PropNames.MEDIA_CONTENT_TYPE);
 	public static final SimplePropDescriptor	PROP_MEDIA_TYPE			= new SimplePropDescriptor(Movie.class, PropNames.MEDIA_TYPE);

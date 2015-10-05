@@ -1,27 +1,26 @@
 package de.subcentral.core.metadata.db;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.naming.ConditionalNamingService;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.naming.NoNamerRegisteredException;
 
 public abstract class AbstractMetadataDb implements MetadataDb
 {
-	private final List<NamingService>	namingServices		= initNamingServices();
-	private final Map<String, Object>	namingParameters	= initNamingParameters();
+	private final List<NamingService> namingServices = initNamingServices();
 
 	protected List<NamingService> initNamingServices()
 	{
@@ -38,11 +37,6 @@ public abstract class AbstractMetadataDb implements MetadataDb
 		return services.build();
 	}
 
-	protected Map<String, Object> initNamingParameters()
-	{
-		return ImmutableMap.of();
-	}
-
 	@Override
 	public Set<String> getSupportedExternalSources()
 	{
@@ -57,25 +51,17 @@ public abstract class AbstractMetadataDb implements MetadataDb
 
 	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
-		List<T> results = new ArrayList<>();
-		int noNamerRegisteredExceptionCount = 0;
-		for (NamingService ns : namingServices)
-		{
-			try
-			{
-				String name = ns.name(queryObj, namingParameters);
-				results.addAll(search(name, recordType));
-			}
-			catch (NoNamerRegisteredException e)
-			{
-				noNamerRegisteredExceptionCount++;
-			}
-		}
-		if (noNamerRegisteredExceptionCount == namingServices.size())
+		Set<T> results = new LinkedHashSet<>();
+		Set<String> names = NamingUtil.generateNames(queryObj, namingServices, MediaUtil.generateNamingParametersForAllNames(queryObj));
+		if (names.isEmpty())
 		{
 			throw new IllegalArgumentException(new NoNamerRegisteredException(queryObj, "None of the NamingServices " + namingServices + " had an appropriate namer registered"));
 		}
-		return results;
+		for (String name : names)
+		{
+			results.addAll(search(name, recordType));
+		}
+		return ImmutableList.copyOf(results);
 	}
 
 	@Override
@@ -110,4 +96,5 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	{
 		return new UnsupportedOperationException("The external source is not supported: " + unsupportedExternalSource + " (supported external sources: " + getSupportedExternalSources() + ")");
 	}
+
 }

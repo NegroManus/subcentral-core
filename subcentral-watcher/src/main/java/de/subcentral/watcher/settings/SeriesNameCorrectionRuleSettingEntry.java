@@ -1,5 +1,7 @@
 package de.subcentral.watcher.settings;
 
+import java.util.List;
+
 import de.subcentral.core.correction.SeriesNameCorrector;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.util.StringUtil;
@@ -13,9 +15,9 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 	private final StringBinding			rule;
 	private final UserPattern			nameUserPattern;
 
-	public SeriesNameCorrectionRuleSettingEntry(UserPattern nameUiPattern, String nameReplacement, boolean beforeQuerying, boolean afterQuerying)
+	public SeriesNameCorrectionRuleSettingEntry(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying)
 	{
-		super(Series.class, buildCorrector(nameUiPattern, nameReplacement), beforeQuerying, afterQuerying);
+		super(Series.class, buildCorrector(nameUiPattern, nameReplacement, aliasNamesReplacement), beforeQuerying, afterQuerying);
 		rule = FxUtil.constantStringBinding(formatRule(value, nameUiPattern));
 		this.nameUserPattern = nameUiPattern;
 	}
@@ -42,20 +44,26 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 		return nameUserPattern;
 	}
 
-	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement)
+	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement, List<String> aliasNamesReplacement)
 	{
-		return new SeriesNameCorrector(namePattern.toPattern(), nameReplacement);
+		return new SeriesNameCorrector(namePattern.toPattern(), nameReplacement, aliasNamesReplacement, null);
 	}
 
 	private static String formatRule(SeriesNameCorrector corrector, UserPattern nameUserPattern)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("Replace \"");
+		sb.append("\"");
 		sb.append(nameUserPattern.getPattern());
 		sb.append("\" (");
-		sb.append(nameUserPattern.getMode().name());
-		sb.append(") with ");
+		sb.append(nameUserPattern.getMode().name().charAt(0));
+		sb.append(") -> ");
 		sb.append(StringUtil.quoteString(corrector.getNameReplacement()));
+		if (!corrector.getAliasNamesReplacement().isEmpty())
+		{
+			sb.append(" (aka ");
+			StringUtil.COMMA_JOINER.appendTo(sb, corrector.getAliasNamesReplacement().stream().map((String alias) -> StringUtil.quoteString(alias)).iterator());
+			sb.append(')');
+		}
 		return sb.toString();
 	}
 }

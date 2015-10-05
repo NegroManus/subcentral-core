@@ -85,11 +85,38 @@ public class FxUtil
 {
 	private static final Logger log = LogManager.getLogger(FxUtil.class);
 
+	public static final StringConverter<String>					REJECT_BLANK_STRING_CONVERTER		= initRejectBlankStringConverter();
 	public static final StringConverter<Path>					PATH_STRING_CONVERTER				= initPathStringConverter();
 	public static final StringConverter<Locale>					LOCALE_DISPLAY_NAME_CONVERTER		= initLocaleDisplayNameConverter();
 	public static final StringConverter<ObservableList<Locale>>	LOCALE_LIST_DISPLAY_NAME_CONVERTER	= initLocaleListDisplayNameConverter();
 	public static final Comparator<Locale>						LOCALE_DISPLAY_NAME_COMPARATOR		= initLocaleDisplayNameComparator();
 	public static final EventHandler<WorkerStateEvent>			DEFAULT_TASK_FAILED_HANDLER			= initDefaultTaskFailedHandler();
+
+	private static StringConverter<String> initRejectBlankStringConverter()
+	{
+		return new StringConverter<String>()
+		{
+			@Override
+			public String toString(String s)
+			{
+				if (s == null)
+				{
+					return "";
+				}
+				return s.toString();
+			}
+
+			@Override
+			public String fromString(String s)
+			{
+				if (StringUtils.isBlank(s))
+				{
+					throw new IllegalArgumentException();
+				}
+				return s;
+			}
+		};
+	}
 
 	private static StringConverter<Path> initPathStringConverter()
 	{

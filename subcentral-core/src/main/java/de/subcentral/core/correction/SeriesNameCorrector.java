@@ -24,6 +24,11 @@ public class SeriesNameCorrector implements Corrector<Series>
 		this(namePattern, nameReplacement, ImmutableList.of(), null);
 	}
 
+	public SeriesNameCorrector(Pattern namePattern, String nameReplacement, Iterable<String> aliasNamesReplacement)
+	{
+		this(namePattern, nameReplacement, aliasNamesReplacement, null);
+	}
+
 	public SeriesNameCorrector(Pattern namePattern, String nameReplacement, Iterable<String> aliasNamesReplacement, String titleReplacement)
 	{
 		this.namePattern = Objects.requireNonNull(namePattern, "namePattern");

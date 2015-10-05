@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
@@ -82,18 +81,17 @@ import javafx.stage.Stage;
 
 public class ProcessingController extends AbstractController
 {
-	private static final Logger log = LogManager.getLogger(ProcessingController.class);
+	private static final Logger										log							= LogManager.getLogger(ProcessingController.class);
 
 	// Controlling properties
-	private final MainController mainController;
+	private final MainController									mainController;
 
 	// Processing Config
-	private final Binding<ProcessingConfig>	processingConfig				= initProcessingCfgBinding();
-	private final NamingService				namingService					= initNamingService();
-	private final NamingService				namingServiceForFiltering		= initNamingServiceForFiltering();
-	private final Map<String, Object>		namingParametersForFiltering	= initNamingParametersForFiltering();
+	private final Binding<ProcessingConfig>							processingConfig			= initProcessingCfgBinding();
+	private final NamingService										namingService				= initNamingService();
+	private final NamingService										namingServiceForFiltering	= initNamingServiceForFiltering();
 
-	private ExecutorService processingExecutor;
+	private ExecutorService											processingExecutor;
 
 	// View properties
 	// ProcessingTree
@@ -247,11 +245,6 @@ public class ProcessingController extends AbstractController
 		return NamingDefaults.getDefaultNormalizingNamingService();
 	}
 
-	private static Map<String, Object> initNamingParametersForFiltering()
-	{
-		return ImmutableMap.of();
-	}
-
 	@Override
 	public void doInitialize()
 	{
@@ -333,32 +326,32 @@ public class ProcessingController extends AbstractController
 							// origin info
 							switch (resultInfo.getOriginInfo().getOrigin())
 							{
-								case DATABASE:
-								{
-									addDatabaseHyperlink(resultInfo, hbox);
-									break;
-								}
-								case GUESSED:
-								{
-									GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
-									Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
-									hbox.getChildren().add(guessedLbl);
-									break;
-								}
-								case COMPATIBLE:
-								{
-									// compatible releases may be listed in a database as well
-									addDatabaseHyperlink(resultInfo, hbox);
+							case DATABASE:
+							{
+								addDatabaseHyperlink(resultInfo, hbox);
+								break;
+							}
+							case GUESSED:
+							{
+								GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
+								Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
+								hbox.getChildren().add(guessedLbl);
+								break;
+							}
+							case COMPATIBLE:
+							{
+								// compatible releases may be listed in a database as well
+								addDatabaseHyperlink(resultInfo, hbox);
 
-									CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
+								CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
 
-									Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(), (Release rls) -> resultInfo.getProcessingResult().getTask().name(rls));
-									hbox.getChildren().add(compLbl);
-									break;
-								}
-								default:
-									log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
-									break;
+								Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(), (Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
+								hbox.getChildren().add(compLbl);
+								break;
+							}
+							default:
+								log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
+								break;
 							}
 
 							// nuke
@@ -485,8 +478,7 @@ public class ProcessingController extends AbstractController
 			{
 				return new Observable[] {};
 			}
-			return new Observable[]
-			{ task.stateProperty() };
+			return new Observable[] { task.stateProperty() };
 		});
 
 		final BooleanBinding noFinishedTaskSelectedBinding = new BooleanBinding()
@@ -598,14 +590,9 @@ public class ProcessingController extends AbstractController
 		return namingService;
 	}
 
-	public NamingService getNamingServiceForFiltering()
+	public NamingService getNamingServicesForFiltering()
 	{
 		return namingServiceForFiltering;
-	}
-
-	public Map<String, Object> getNamingParametersForFiltering()
-	{
-		return namingParametersForFiltering;
 	}
 
 	public TreeTableView<ProcessingItem> getProcessingTreeTable()
@@ -895,7 +882,7 @@ public class ProcessingController extends AbstractController
 	}
 
 	// package private
-			Binding<ProcessingConfig> getProcessingConfig()
+	Binding<ProcessingConfig> getProcessingConfig()
 	{
 		return processingConfig;
 	}

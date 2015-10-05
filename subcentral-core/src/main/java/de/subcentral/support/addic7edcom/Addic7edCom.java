@@ -24,9 +24,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7edCom
 {
-	public static final String SOURCE_ID = "addic7ed.com";
+	public static final String				SOURCE_ID		= "addic7ed.com";
 
-	private static final TypeParsingService PARSING_SERVICE = new TypeParsingService(SOURCE_ID);
+	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(SOURCE_ID);
 
 	static
 	{
@@ -52,6 +52,25 @@ public class Addic7edCom
 		predefEpisodeMatchesBuilder.putAll(commonPredefMatches);
 		predefEpisodeMatchesBuilder.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
 		ImmutableMap<SimplePropDescriptor, String> predefEpisodeMatches = predefEpisodeMatchesBuilder.build();
+
+		// (WEB-DL|Rip), then a non-word-char, then only one "tag" -> the group in most of the cases
+		// Examples:
+		// From Dusk Till Dawn_ The Series - 01x01 - Pilot.Webrip.2HD.English.C.orig.Addic7ed.com
+		Pattern p100 = Pattern.compile(srSsnEpiNumsPttrn + "(.+?)\\.(" + rlsTagsPttrn + ")\\W([\\w]+)\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps100 = ImmutableMap.builder();
+		grps100.put(0, SubtitleAdjustment.PROP_NAME);
+		grps100.put(1, Series.PROP_NAME);
+		grps100.put(2, Series.PROP_TITLE);
+		grps100.put(3, Series.PROP_DATE); // e.g. "2004"
+		grps100.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
+		grps100.put(5, Season.PROP_NUMBER);
+		grps100.put(6, Episode.PROP_NUMBER_IN_SEASON);
+		grps100.put(7, Episode.PROP_TITLE);
+		grps100.put(8, Release.PROP_TAGS);
+		grps100.put(9, Release.PROP_GROUP);
+		grps100.put(10, Subtitle.PROP_LANGUAGE);
+		grps100.put(11, SubtitleAdjustment.PROP_TAGS);
+		MappingMatcher<SimplePropDescriptor> matcher100 = new MappingMatcher<>(p100, grps100.build(), predefEpisodeMatches);
 
 		// WEB-DL|Rip but then no "-" after that (which would indicate a group)
 		// Examples:
@@ -206,6 +225,7 @@ public class Addic7edCom
 
 		// Matchers
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
+		episodeMatchers.add(matcher100);
 		episodeMatchers.add(matcher101);
 		episodeMatchers.add(matcher102);
 		episodeMatchers.add(matcher103);

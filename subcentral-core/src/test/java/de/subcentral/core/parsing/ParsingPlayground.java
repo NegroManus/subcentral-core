@@ -192,7 +192,7 @@ public class ParsingPlayground
 							start = System.nanoTime();
 
 							List<Release> filteredReleases = releases.stream()
-									.filter(NamingUtil.filterByNestedName(subAdjRls, mediaNsForFiltering, ImmutableMap.of(), (Release rls) -> rls.getMedia()))
+									.filter(NamingUtil.filterByNestedName(subAdjRls, (Release rls) -> rls.getMedia(), mediaNsForFiltering, ImmutableList.of(ImmutableMap.of())))
 									.filter(ReleaseUtil.filterByTags(subAdjRls.getTags(), ImmutableList.of()))
 									.filter(ReleaseUtil.filterByGroup(subAdjRls.getGroup(), false))
 									.collect(Collectors.toList());

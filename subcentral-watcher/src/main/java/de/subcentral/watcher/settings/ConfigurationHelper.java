@@ -142,15 +142,23 @@ class ConfigurationHelper
 	{
 		ArrayList<CorrectionRuleSettingEntry<?, ?>> stdzers = new ArrayList<>();
 		List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule");
+		int seriesNameIndex = 0;
 		for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : seriesStdzerCfgs)
 		{
 			String namePatternStr = stdzerCfg.getString("[@namePattern]");
 			Mode namePatternMode = Mode.valueOf(stdzerCfg.getString("[@namePatternMode]"));
 			UserPattern nameUiPattern = new UserPattern(namePatternStr, namePatternMode);
 			String nameReplacement = stdzerCfg.getString("[@nameReplacement]");
+			List<HierarchicalConfiguration<ImmutableNode>> aliasNameCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasName");
+			List<String> aliasNameReplacements = new ArrayList<>(aliasNameCfgs.size());
+			for (HierarchicalConfiguration<ImmutableNode> aliasNameCfg : aliasNameCfgs)
+			{
+				aliasNameReplacements.add(aliasNameCfg.getString(""));
+			}
 			boolean enabledPreMetadataDb = stdzerCfg.getBoolean("[@beforeQuerying]");
 			boolean enabledPostMetadataDb = stdzerCfg.getBoolean("[@afterQuerying]");
-			stdzers.add(new SeriesNameCorrectionRuleSettingEntry(nameUiPattern, nameReplacement, enabledPreMetadataDb, enabledPostMetadataDb));
+			stdzers.add(new SeriesNameCorrectionRuleSettingEntry(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
+			seriesNameIndex++;
 		}
 		List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsCorrectionRule");
 		for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : rlsTagsStdzerCfgs)
@@ -287,14 +295,18 @@ class ConfigurationHelper
 			if (genericEntry instanceof SeriesNameCorrectionRuleSettingEntry)
 			{
 				SeriesNameCorrectionRuleSettingEntry entry = (SeriesNameCorrectionRuleSettingEntry) genericEntry;
-				SeriesNameCorrector stdzer = entry.getValue();
+				SeriesNameCorrector corrector = entry.getValue();
 				UserPattern namePattern = entry.getNameUserPattern();
 
 				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@namePattern]", namePattern.getPattern());
 				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@namePatternMode]", namePattern.getMode());
-				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@nameReplacement]", stdzer.getNameReplacement());
+				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@nameReplacement]", corrector.getNameReplacement());
 				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());
 				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@afterQuerying]", entry.isAfterQuerying());
+				for (String aliasName : corrector.getAliasNamesReplacement())
+				{
+					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasName", aliasName);
+				}
 				seriesNameIndex++;
 			}
 			else if (genericEntry instanceof ReleaseTagsCorrectionRuleSettingEntry)

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +31,7 @@ import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.db.MetadataDbUtil;
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.Release;
@@ -71,15 +73,15 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.scene.control.TreeItem;
 
-public class ProcessingTask extends Task<Void>implements ProcessingItem
+public class ProcessingTask extends Task<Void> implements ProcessingItem
 {
-	private static final Logger log = LogManager.getLogger(ProcessingTask.class);
+	private static final Logger				log							= LogManager.getLogger(ProcessingTask.class);
 
-	private final ProcessingController controller;
+	private final ProcessingController		controller;
 
 	// for ProcessingItem implementation
 	private final ListProperty<Path>		files;
-	private final Property<ProcessingInfo>	info	= new SimpleObjectProperty<>(this, "info");
+	private final Property<ProcessingInfo>	info						= new SimpleObjectProperty<>(this, "info");
 
 	// Config: is loaded on start of the task
 	private ProcessingConfig				config;
@@ -203,9 +205,14 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 		return results;
 	}
 
-	public String name(Object obj)
+	public String generateDisplayName(Object obj)
 	{
 		return controller.getNamingService().name(obj, config.getNamingParameters());
+	}
+
+	public Set<String> generateFilteringDisplayNames(Object obj)
+	{
+		return NamingUtil.generateNames(obj, ImmutableList.of(controller.getNamingService()), MediaUtil.generateNamingParametersForAllNames(obj));
 	}
 
 	public void deleteSourceFile() throws IOException
@@ -395,8 +402,9 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 			foundReleases = processReleases(existingRlss);
 
 			// Filter by Media
+			List<Map<String, Object>> namingParamsForFiltering = MediaUtil.generateNamingParametersForAllNames(srcRls.getMedia());
 			mediaFilteredFoundReleases = foundReleases.stream()
-					.filter(NamingUtil.filterByNestedName(srcRls, controller.getNamingServiceForFiltering(), controller.getNamingParametersForFiltering(), (Release rls) -> rls.getMedia()))
+					.filter(NamingUtil.filterByNestedName(srcRls, (Release rls) -> rls.getMedia(), controller.getNamingServicesForFiltering(), namingParamsForFiltering))
 					.collect(Collectors.toList());
 
 			// Filter by Release Tags and Group (matching releases)
@@ -534,13 +542,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 
 		if (rls.isNuked())
 		{
-			displaySystemTrayNotification("Release is nuked", name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
+			displaySystemTrayNotification("Release is nuked", generateDisplayName(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
 		}
 		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 		if (!containedMetaTags.isEmpty())
 		{
 			String caption = "Release is meta-tagged: " + Tag.listToString(containedMetaTags);
-			displaySystemTrayNotification(caption, name(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
+			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
 		}
 
 		resultObject.getMatchingReleases().add(rls);
@@ -663,13 +671,13 @@ public class ProcessingTask extends Task<Void>implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-						case SPECIFY:
-							packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
-							break;
-						case AUTO_LOCATE:
-							// fall through
-						default:
-							packager = controller.getMainController().getWinRar().getPackager();
+					case SPECIFY:
+						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+						break;
+					case AUTO_LOCATE:
+						// fall through
+					default:
+						packager = controller.getMainController().getWinRar().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);

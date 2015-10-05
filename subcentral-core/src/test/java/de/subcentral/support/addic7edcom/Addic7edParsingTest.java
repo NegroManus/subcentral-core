@@ -330,6 +330,21 @@ public class Addic7edParsingTest
 		compare("testEpisode20", adj, name);
 	}
 
+	@Test
+	public void testEpisode21()
+	{
+		String name = "From Dusk Till Dawn_ The Series - 01x01 - Pilot.Webrip.2HD.English.C.orig.Addic7ed.com";
+
+		Episode epi = Episode.createSeasonedEpisode("From Dusk Till Dawn_ The Series", 1, 1, "Pilot");
+		Release rls = Release.create(epi, "2HD", "Webrip");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setSource("Addic7ed.com");
+		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		adj.setTags(Tag.list("C", "orig"));
+
+		compare("testEpisode21", adj, name);
+	}
+
 	private static final void compare(String testMethodName, SubtitleAdjustment expected, String nameToParse)
 	{
 		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);

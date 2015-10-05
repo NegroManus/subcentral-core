@@ -21,7 +21,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class Series extends NamedMediaBase implements Comparable<Series>
 {
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_ALIAS_NAMES			= new SimplePropDescriptor(Series.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_ALIAS_NAMES			= new SimplePropDescriptor(Series.class, PropNames.ALIAS_NAMES);
 	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Series.class, PropNames.TITLE);
 	public static final SimplePropDescriptor	PROP_TYPE					= new SimplePropDescriptor(Series.class, PropNames.TYPE);
 	public static final SimplePropDescriptor	PROP_STATE					= new SimplePropDescriptor(Series.class, PropNames.STATE);

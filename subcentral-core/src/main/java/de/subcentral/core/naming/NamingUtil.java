@@ -1,11 +1,17 @@
 package de.subcentral.core.naming;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.media.Media;
@@ -19,9 +25,9 @@ public class NamingUtil
 	public static final class MediaNameComparator implements Comparator<Media>, Serializable
 	{
 		// Comparators should be Serializable
-		private static final long serialVersionUID = -3197188465533525469L;
+		private static final long	serialVersionUID	= -3197188465533525469L;
 
-		private final NamingService namingService;
+		private final NamingService	namingService;
 
 		public MediaNameComparator(NamingService namingService)
 		{
@@ -66,20 +72,48 @@ public class NamingUtil
 		};
 	}
 
-	public static <T, U> Predicate<T> filterByNestedName(T obj, NamingService namingService, Map<String, Object> parameters, Function<T, U> nestedObjRetriever)
+	public static <T, U> Predicate<T> filterByNestedName(T obj, Function<T, U> nestedObjRetriever, NamingService namingService, List<Map<String, Object>> parameters)
 	{
-		String requiredMediaName = namingService.name(nestedObjRetriever.apply(obj), parameters);
-		return filterByNestedName(requiredMediaName, namingService, parameters, nestedObjRetriever);
+		// acceptedNames can be empty. Then no restriction is made and all names are valid
+		Set<String> requiredNames = generateNames(nestedObjRetriever.apply(obj), ImmutableList.of(namingService), parameters);
+		return filterByNestedName(requiredNames, nestedObjRetriever, namingService, parameters);
 	}
 
-	public static <T, U> Predicate<T> filterByNestedName(String requiredName, NamingService namingService, Map<String, Object> parameters, Function<T, U> nestedObjRetriever)
+	public static <T, U> Predicate<T> filterByNestedName(Set<String> requiredNames, Function<T, U> nestedObjRetriever, NamingService namingServices, List<Map<String, Object>> parameters)
 	{
 		return (T obj) ->
 		{
-			String nameOfCandidate = namingService.name(nestedObjRetriever.apply(obj), parameters);
-			boolean accepted = requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
+			// System.out.println("RequiredNames=" + requiredNames);
+			Set<String> candidateNames = generateNames(nestedObjRetriever.apply(obj), ImmutableList.of(namingServices), parameters);
+			// If requiredNames is empty, all names are accepted. Otherwise return true, if any of the candidate's names matches a required name
+			boolean accepted = requiredNames.isEmpty() ? true : !Collections.disjoint(requiredNames, candidateNames);
 			return accepted;
 		};
+	}
+
+	public static Set<String> generateNames(Object obj, List<NamingService> namingServices, List<Map<String, Object>> parameters)
+	{
+		// LinkedHashSet to keep insertion order
+		Set<String> names = new LinkedHashSet<>();
+		for (NamingService ns : namingServices)
+		{
+			try
+			{
+				for (Map<String, Object> params : parameters)
+				{
+					String name = ns.name(obj, params);
+					if (!name.isEmpty())
+					{
+						names.add(name);
+					}
+				}
+			}
+			catch (NoNamerRegisteredException e)
+			{
+				// ignore
+			}
+		}
+		return names;
 	}
 
 	private NamingUtil()

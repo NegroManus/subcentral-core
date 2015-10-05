@@ -1,8 +1,10 @@
 package de.subcentral.watcher.controller.processing;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.media.Media;
@@ -12,6 +14,7 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.util.StringUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.settings.SettingsController;
@@ -34,20 +37,20 @@ import javafx.scene.text.FontWeight;
 public class DetailsController extends AbstractController
 {
 	// Model
-	private final ProcessingTask task;
+	private final ProcessingTask		task;
 
 	// View
 	@FXML
-	private Label		sourceFileLabel;
+	private Label						sourceFileLabel;
 	@FXML
-	private Accordion	sectionsAccordion;
+	private Accordion					sectionsAccordion;
 	@FXML
-	private ScrollPane	parsingResultsRootPane;
+	private ScrollPane					parsingResultsRootPane;
 	@FXML
-	private ScrollPane	releaseResultsRootPane;
+	private ScrollPane					releaseResultsRootPane;
 
 	// Control
-	private final ProcessingController processingController;
+	private final ProcessingController	processingController;
 
 	public DetailsController(ProcessingController processingController, ProcessingTask task)
 	{
@@ -92,12 +95,12 @@ public class DetailsController extends AbstractController
 
 		if (subAdj != null)
 		{
-			contentPane.add(new Label(task.name(subAdj)), 0, rowCounter++, GridPane.REMAINING, 1);
+			contentPane.add(new Label(task.generateDisplayName(subAdj)), 0, rowCounter++, GridPane.REMAINING, 1);
 
 			Subtitle sub = subAdj.getFirstSubtitle();
 			Release rls = subAdj.getFirstMatchingRelease();
 			contentPane.add(new Label("Media:"), 0, rowCounter);
-			contentPane.add(new Label(task.name(rls.getMedia())), 1, rowCounter++);
+			contentPane.add(new Label(task.generateDisplayName(rls.getMedia())), 1, rowCounter++);
 			contentPane.add(new Label("Release tags:"), 0, rowCounter);
 			contentPane.add(new Label(Tag.listToString(rls.getTags())), 1, rowCounter++);
 			contentPane.add(new Label("Release group:"), 0, rowCounter);
@@ -170,11 +173,16 @@ public class DetailsController extends AbstractController
 		contentPane.add(createHeadline("Listed releases", SettingsController.RELEASE_DBS_SECTION), 0, rowCounter++, GridPane.REMAINING, 1);
 
 		Release queryRls = task.getParsedObject().getFirstMatchingRelease();
-		List<Media> queryMedia = task.getParsedObject().getFirstMatchingRelease().getMedia();
-		String mediaName = task.name(queryMedia);
+		List<Media> queryMedia = queryRls.getMedia();
+		Set<String> mediaNames = task.generateFilteringDisplayNames(queryMedia);
 
 		// Found releases
-		contentPane.add(new Label(task.getFoundReleases().size() + " release(s) were found for \"" + mediaName + "\""), 0, rowCounter++, GridPane.REMAINING, 1);
+		contentPane.add(new Label(
+				task.getFoundReleases().size() + " release(s) were found for " + StringUtil.COMMA_JOINER.join(mediaNames.stream().map((String name) -> StringUtil.quoteString(name)).iterator())),
+				0,
+				rowCounter++,
+				GridPane.REMAINING,
+				1);
 		for (Release rls : task.getFoundReleases())
 		{
 			contentPane.add(createReleaseHBox(rls), 0, rowCounter++, GridPane.REMAINING, 1);
@@ -186,9 +194,16 @@ public class DetailsController extends AbstractController
 			contentPane.add(createSeparator(true), 0, rowCounter++, GridPane.REMAINING, 1);
 			contentPane.add(createHeadline("Matching releases", null), 0, rowCounter++, GridPane.REMAINING, 1);
 
+			Iterator<String> namesIter = mediaNames.iterator();
+
 			contentPane.add(new Label("Filter criteria"), 0, rowCounter++, GridPane.REMAINING, 1);
 			contentPane.add(new Label("- Media:"), 0, rowCounter);
-			contentPane.add(new Label(task.name(queryRls.getMedia())), 1, rowCounter++);
+			contentPane.add(new Label((namesIter.hasNext() ? namesIter.next() : "")), 1, rowCounter++);
+			while (namesIter.hasNext())
+			{
+				contentPane.add(new Label(""), 0, rowCounter);
+				contentPane.add(new Label(namesIter.next()), 1, rowCounter++);
+			}
 			contentPane.add(new Label("- Release tags:"), 0, rowCounter);
 			contentPane.add(new Label(Tag.listToString(queryRls.getTags())), 1, rowCounter++);
 			contentPane.add(new Label("- Release group:"), 0, rowCounter);
@@ -216,7 +231,7 @@ public class DetailsController extends AbstractController
 				for (Map.Entry<Release, StandardRelease> entry : task.getGuessedReleases().entrySet())
 				{
 					HBox releaseHBox = createReleaseHBox(entry.getKey());
-					Label guessedLbl = WatcherFxUtil.createGuessedLabel(entry.getValue(), (Release rls) -> task.name(rls));
+					Label guessedLbl = WatcherFxUtil.createGuessedLabel(entry.getValue(), (Release rls) -> task.generateDisplayName(rls));
 					releaseHBox.getChildren().add(guessedLbl);
 					contentPane.add(releaseHBox, 0, rowCounter++, GridPane.REMAINING, 1);
 				}
@@ -232,7 +247,7 @@ public class DetailsController extends AbstractController
 			for (Map.Entry<Release, CompatibilityInfo> c : task.getCompatibleReleases().entrySet())
 			{
 				HBox releaseHBox = createReleaseHBox(c.getKey());
-				Label compLbl = WatcherFxUtil.createCompatibilityLabel(c.getValue(), (Release rls) -> task.name(rls));
+				Label compLbl = WatcherFxUtil.createCompatibilityLabel(c.getValue(), (Release rls) -> task.generateDisplayName(rls));
 				releaseHBox.getChildren().add(compLbl);
 				contentPane.add(releaseHBox, 0, rowCounter++, GridPane.REMAINING, 1);
 			}
@@ -280,7 +295,7 @@ public class DetailsController extends AbstractController
 			hbox.getChildren().add(furtherInfoLink);
 		}
 
-		hbox.getChildren().add(new Label(task.name(rls)));
+		hbox.getChildren().add(new Label(task.generateDisplayName(rls)));
 
 		// nuke
 		Label nukedLbl = WatcherFxUtil.createNukedLabel(rls);
