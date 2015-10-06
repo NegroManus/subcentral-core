@@ -106,7 +106,7 @@ public class NetUtil
 			}
 			else
 			{
-				log.debug("Unsuccessfully pinged {} in {} ms: Bad response code: {}", url, responseTime, responseTime);
+				log.debug("Unsuccessfully pinged {} in {} ms: Response code was: {}", url, responseTime, responseCode);
 				return -responseCode;
 			}
 
