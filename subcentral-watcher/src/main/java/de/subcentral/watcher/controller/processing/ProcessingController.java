@@ -813,9 +813,8 @@ public class ProcessingController extends AbstractController
 	{
 		cancelSelectedTask();
 		TreeItem<ProcessingItem> selectedTreeItem = getSelectedProcessingTaskTreeItem(true);
-		selectedTreeItem.setValue(null);
 		processingTreeTable.getRoot().getChildren().remove(selectedTreeItem);
-		// processingTreeTable.getSelectionModel().clearSelection();
+		processingTreeTable.getSelectionModel().clearSelection();
 	}
 
 	public void clearProcessingTreeTable()
@@ -823,7 +822,16 @@ public class ProcessingController extends AbstractController
 		cancelAllTasks();
 		processingTreeTable.getRoot().getChildren().clear();
 		processingTreeTable.setRoot(new TreeItem<>());
-		// processingTreeTable.getSelectionModel().clearSelection();
+		processingTreeTable.getSelectionModel().clearSelection();
+		// try
+		// {
+		// mainController.reloadProcessingPane();
+		// }
+		// catch (IOException e)
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 	}
 
 	public void cancelAllTasks()
