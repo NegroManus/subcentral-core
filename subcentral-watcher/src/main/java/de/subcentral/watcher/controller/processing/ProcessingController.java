@@ -723,9 +723,9 @@ public class ProcessingController extends AbstractController
 	{
 		try
 		{
-			DetailsController protocolCtrl = new DetailsController(this, task);
+			DetailsController detailsCtrl = new DetailsController(this, task);
 
-			Parent root = FxUtil.loadFromFxml("DetailsView.fxml", null, null, protocolCtrl);
+			Parent root = FxUtil.loadFromFxml("DetailsView.fxml", null, null, detailsCtrl);
 			Scene scene = new Scene(root);
 
 			Stage owner = mainController.getPrimaryStage();

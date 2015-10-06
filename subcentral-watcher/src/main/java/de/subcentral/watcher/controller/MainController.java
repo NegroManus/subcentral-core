@@ -37,28 +37,28 @@ import javafx.stage.Stage;
 
 public class MainController extends AbstractController
 {
-	private static final Logger log = LogManager.getLogger(MainController.class);
+	private static final Logger		log						= LogManager.getLogger(MainController.class);
 
-	public static final int	PROCESSING_TAB_INDEX	= 0;
-	public static final int	SETTINGS_TAB_INDEX		= 1;
+	public static final int			PROCESSING_TAB_INDEX	= 0;
+	public static final int			SETTINGS_TAB_INDEX		= 1;
 
-	private final Stage primaryStage;
+	private final Stage				primaryStage;
 
 	// View
 	// UI components are automatically injected before initialize()
 	@FXML
-	private BorderPane	rootPane;
+	private BorderPane				rootPane;
 	@FXML
-	private TabPane		tabPane;
+	private TabPane					tabPane;
 	@FXML
-	private AnchorPane	processingRootPane;
+	private AnchorPane				processingRootPane;
 	@FXML
-	private AnchorPane	settingsRootPane;
+	private AnchorPane				settingsRootPane;
 
 	// SystemTray handling
-	private SystemTray	systemTray;
-	private TrayIcon	systemTrayIcon;
-	private MenuItem	systemTrayShowHideMenuItem;
+	private SystemTray				systemTray;
+	private TrayIcon				systemTrayIcon;
+	private MenuItem				systemTrayShowHideMenuItem;
 
 	// Controller
 	private WatchController			watchController;
@@ -256,6 +256,7 @@ public class MainController extends AbstractController
 
 	public void reloadProcessingPane() throws IOException
 	{
+		// log.debug("Reloading the processing pane");
 		BorderPane processingPane = FxUtil.loadFromFxml("ProcessingView.fxml", "ProcessingView", Locale.ENGLISH, processingController);
 		AnchorPane.setTopAnchor(processingPane, 0.0d);
 		AnchorPane.setRightAnchor(processingPane, 0.0d);
