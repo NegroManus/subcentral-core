@@ -168,14 +168,15 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 			map.addListener(mapListener);
 		}
 
-		private void unbind()
-		{
-			for (NamingParam param : list)
-			{
-				param.valueProperty().removeListener(listItemValueListener);
-			}
-			map.removeListener(mapListener);
-		}
+		// not currently used because NamingParamBinding is initialized once and never removed
+		// private void unbind()
+		// {
+		// for (NamingParam param : list)
+		// {
+		// param.valueProperty().removeListener(listItemValueListener);
+		// }
+		// map.removeListener(mapListener);
+		// }
 
 		private ChangeListener<Boolean> initListItemValueListener()
 		{

@@ -63,7 +63,7 @@ public class WatcherDialogs
 	static abstract class AbstractBeanEditController<T> extends AbstractController
 	{
 		// Model
-		protected final T bean;
+		protected final T			bean;
 
 		// View
 		protected final Dialog<T>	dialog	= new Dialog<>();
@@ -114,7 +114,8 @@ public class WatcherDialogs
 
 		protected ButtonType[] getButtonTypes()
 		{
-			return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
+			return new ButtonType[]
+			{ ButtonType.APPLY, ButtonType.CANCEL };
 		}
 
 		protected abstract Node getDefaultFocusNode();
@@ -186,14 +187,14 @@ public class WatcherDialogs
 				initialGroup = bean.getRelease().getGroup();
 				switch (bean.getScope())
 				{
-				case IF_GUESSING:
-					initialScope = ifGuessingRadioBtn;
-					break;
-				case ALWAYS:
-					initialScope = alwaysRadioBtn;
-					break;
-				default:
-					initialScope = ifGuessingRadioBtn;
+					case IF_GUESSING:
+						initialScope = ifGuessingRadioBtn;
+						break;
+					case ALWAYS:
+						initialScope = alwaysRadioBtn;
+						break;
+					default:
+						initialScope = ifGuessingRadioBtn;
 				}
 			}
 			ListProperty<Tag> tags = SubCentralFxUtil.tagPropertyForTextField(tagsTxtFld, initialTags);
@@ -322,128 +323,6 @@ public class WatcherDialogs
 	private static class SeriesNameCorrectionRuleEditController extends AbstractBeanEditController<SeriesNameCorrectionRuleSettingEntry>
 	{
 		@FXML
-		private RadioButton	literalRadioBtn;
-		@FXML
-		private RadioButton	simplePatternRadioBtn;
-		@FXML
-		private RadioButton	regexRadioBtn;
-		@FXML
-		private TextField	namePatternTxtFld;
-		@FXML
-		private Text		patternErrorTxt;
-		@FXML
-		private TextField	nameReplacementTxtFld;
-
-		private SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingEntry bean, Window window)
-		{
-			super(bean, window);
-		}
-
-		@Override
-		protected String getTitle()
-		{
-			if (bean == null)
-			{
-				return "Add correction rule for: " + SeriesNameCorrectionRuleSettingEntry.getRuleType();
-			}
-			else
-			{
-				return "Edit correction rule for: " + SeriesNameCorrectionRuleSettingEntry.getRuleType();
-			}
-		}
-
-		@Override
-		protected String getImagePath()
-		{
-			return "edit_16.png";
-		}
-
-		@Override
-		protected Node getDefaultFocusNode()
-		{
-			return namePatternTxtFld;
-		}
-
-		@Override
-		protected void initComponents()
-		{
-			ToggleGroup patternModeToggleGrp = new ToggleGroup();
-			patternModeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
-
-			// Initial values
-			Toggle initialPatternMode;
-			String initialNamePattern;
-			String initialNameReplacement;
-			if (bean == null)
-			{
-				initialPatternMode = literalRadioBtn;
-				initialNamePattern = null;
-				initialNameReplacement = null;
-			}
-			else
-			{
-				switch (bean.getNameUserPattern().getMode())
-				{
-				case LITERAL:
-					initialPatternMode = literalRadioBtn;
-					break;
-				case SIMPLE:
-					initialPatternMode = simplePatternRadioBtn;
-					break;
-				case REGEX:
-					initialPatternMode = regexRadioBtn;
-					break;
-				default:
-					initialPatternMode = literalRadioBtn;
-				}
-				initialNamePattern = bean.getNameUserPattern().getPattern();
-				initialNameReplacement = bean.getValue().getNameReplacement();
-			}
-			patternModeToggleGrp.selectToggle(initialPatternMode);
-			namePatternTxtFld.setText(initialNamePattern);
-			nameReplacementTxtFld.setText(initialNameReplacement);
-
-			// Bindings
-			Binding<UserPattern> namePatternBinding = FxUtil.createUiPatternTextFieldBinding(patternModeToggleGrp,
-					literalRadioBtn,
-					simplePatternRadioBtn,
-					regexRadioBtn,
-					namePatternTxtFld,
-					patternErrorTxt);
-
-			Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-			applyButton.disableProperty().bind(new BooleanBinding()
-			{
-				{
-					super.bind(namePatternBinding, nameReplacementTxtFld.textProperty());
-				}
-
-				@Override
-				protected boolean computeValue()
-				{
-					return namePatternBinding.getValue() == null || StringUtils.isBlank(nameReplacementTxtFld.getText());
-				}
-			});
-
-			// ResultConverter
-			dialog.setResultConverter(dialogButton ->
-			{
-				if (dialogButton == ButtonType.APPLY)
-				{
-					String nameReplacement = StringUtils.trimToNull(nameReplacementTxtFld.getText());
-					boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
-					boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-					return new SeriesNameCorrectionRuleSettingEntry(namePatternBinding.getValue(), nameReplacement, ImmutableList.of(), beforeQuerying, afterQuerying);
-				}
-				return null;
-			});
-
-		}
-	}
-
-	private static class SeriesNameCorrectionRuleEditController2 extends AbstractBeanEditController<SeriesNameCorrectionRuleSettingEntry>
-	{
-		@FXML
 		private RadioButton			literalRadioBtn;
 		@FXML
 		private RadioButton			simplePatternRadioBtn;
@@ -464,7 +343,7 @@ public class WatcherDialogs
 		@FXML
 		private Button				removeNameBtn;
 
-		private SeriesNameCorrectionRuleEditController2(SeriesNameCorrectionRuleSettingEntry bean, Window window)
+		private SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingEntry bean, Window window)
 		{
 			super(bean, window);
 		}
@@ -516,17 +395,17 @@ public class WatcherDialogs
 			{
 				switch (bean.getNameUserPattern().getMode())
 				{
-				case LITERAL:
-					initialPatternMode = literalRadioBtn;
-					break;
-				case SIMPLE:
-					initialPatternMode = simplePatternRadioBtn;
-					break;
-				case REGEX:
-					initialPatternMode = regexRadioBtn;
-					break;
-				default:
-					initialPatternMode = literalRadioBtn;
+					case LITERAL:
+						initialPatternMode = literalRadioBtn;
+						break;
+					case SIMPLE:
+						initialPatternMode = simplePatternRadioBtn;
+						break;
+					case REGEX:
+						initialPatternMode = regexRadioBtn;
+						break;
+					default:
+						initialPatternMode = literalRadioBtn;
 				}
 				initialNamePattern = bean.getNameUserPattern().getPattern();
 				initialNameReplacement = bean.getValue().getNameReplacement();
@@ -676,27 +555,27 @@ public class WatcherDialogs
 				TagsReplacer replacer = bean.getValue().getReplacer();
 				switch (replacer.getSearchMode())
 				{
-				case CONTAIN:
-					initialQueryModeToggle = containRadioBtn;
-					break;
-				case EQUAL:
-					initialQueryModeToggle = equalRadioBtn;
-					break;
-				default:
-					initialQueryModeToggle = containRadioBtn;
+					case CONTAIN:
+						initialQueryModeToggle = containRadioBtn;
+						break;
+					case EQUAL:
+						initialQueryModeToggle = equalRadioBtn;
+						break;
+					default:
+						initialQueryModeToggle = containRadioBtn;
 				}
 				initialQueryTags = replacer.getSearchTags();
 				initialIgnoreOrder = replacer.getIgnoreOrder();
 				switch (replacer.getReplaceMode())
 				{
-				case MATCHED_SEQUENCE:
-					initialReplaceWithToggle = matchRadioBtn;
-					break;
-				case COMPLETE_LIST:
-					initialReplaceWithToggle = completeRadioBtn;
-					break;
-				default:
-					initialReplaceWithToggle = matchRadioBtn;
+					case MATCHED_SEQUENCE:
+						initialReplaceWithToggle = matchRadioBtn;
+						break;
+					case COMPLETE_LIST:
+						initialReplaceWithToggle = completeRadioBtn;
+						break;
+					default:
+						initialReplaceWithToggle = matchRadioBtn;
 				}
 				initialReplacement = replacer.getReplacement();
 			}
@@ -926,17 +805,17 @@ public class WatcherDialogs
 			{
 				switch (bean.getPattern().getMode())
 				{
-				case LITERAL:
-					modeToggleGrp.selectToggle(literalRadioBtn);
-					break;
-				case SIMPLE:
-					modeToggleGrp.selectToggle(simplePatternRadioBtn);
-					break;
-				case REGEX:
-					modeToggleGrp.selectToggle(regexRadioBtn);
-					break;
-				default:
-					modeToggleGrp.selectToggle(literalRadioBtn);
+					case LITERAL:
+						modeToggleGrp.selectToggle(literalRadioBtn);
+						break;
+					case SIMPLE:
+						modeToggleGrp.selectToggle(simplePatternRadioBtn);
+						break;
+					case REGEX:
+						modeToggleGrp.selectToggle(regexRadioBtn);
+						break;
+					default:
+						modeToggleGrp.selectToggle(literalRadioBtn);
 				}
 				textTxtFld.setText(bean.getPattern().getPattern());
 				langComboBox.setValue(bean.getLanguage());
@@ -1071,8 +950,8 @@ public class WatcherDialogs
 
 	public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectionRuleSettingEntry entry, Window window)
 	{
-		SeriesNameCorrectionRuleEditController2 ctrl = new SeriesNameCorrectionRuleEditController2(entry, window);
-		return showEditViewAndWait(ctrl, "SeriesNameCorrectionRuleEditView2.fxml");
+		SeriesNameCorrectionRuleEditController ctrl = new SeriesNameCorrectionRuleEditController(entry, window);
+		return showEditViewAndWait(ctrl, "SeriesNameCorrectionRuleEditView.fxml");
 	}
 
 	public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView(Window window)
