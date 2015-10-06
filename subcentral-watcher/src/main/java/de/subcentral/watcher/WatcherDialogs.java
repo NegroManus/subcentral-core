@@ -417,9 +417,9 @@ public class WatcherDialogs
 			nameReplacementTxtFld.setText(initialNameReplacement);
 
 			// replacement names
+			// TextFieldListCell.forListView(FxUtil.REJECT_BLANK_STRING_CONVERTER)
 			aliasNamesReplacementListView.setCellFactory(TextFieldListCell.forListView(FxUtil.REJECT_BLANK_STRING_CONVERTER));
 			aliasNamesReplacementListView.setItems(aliasNamesReplacement);
-
 			addNameBtn.setOnAction((ActionEvent evt) ->
 			{
 				String newAliasName = StringUtils.isBlank(nameReplacementTxtFld.getText()) ? "alias name" : nameReplacementTxtFld.getText();
@@ -438,6 +438,8 @@ public class WatcherDialogs
 			{
 				FxUtil.handleDelete(aliasNamesReplacementListView);
 			});
+
+			FxUtil.setStandardMouseAndKeyboardSupportForEditable(aliasNamesReplacementListView, removeNameBtn);
 
 			// Bindings
 			Binding<UserPattern> namePatternBinding = FxUtil.createUiPatternTextFieldBinding(patternModeToggleGrp,

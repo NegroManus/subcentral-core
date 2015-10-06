@@ -118,20 +118,20 @@ class ConfigurationHelper
 			boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
 			switch (domain)
 			{
-			case Addic7edCom.SOURCE_ID:
-				services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
-				break;
-			case ItalianSubsNet.SOURCE_ID:
-				services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
-				break;
-			case ReleaseScene.SOURCE_ID:
-				services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
-				break;
-			case SubCentralDe.SOURCE_ID:
-				services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown parsing service. domain=" + domain);
+				case Addic7edCom.SOURCE_ID:
+					services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
+					break;
+				case ItalianSubsNet.SOURCE_ID:
+					services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
+					break;
+				case ReleaseScene.SOURCE_ID:
+					services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
+					break;
+				case SubCentralDe.SOURCE_ID:
+					services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown parsing service. domain=" + domain);
 			}
 		}
 		services.trimToSize();
@@ -149,7 +149,7 @@ class ConfigurationHelper
 			Mode namePatternMode = Mode.valueOf(stdzerCfg.getString("[@namePatternMode]"));
 			UserPattern nameUiPattern = new UserPattern(namePatternStr, namePatternMode);
 			String nameReplacement = stdzerCfg.getString("[@nameReplacement]");
-			List<HierarchicalConfiguration<ImmutableNode>> aliasNameCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasName");
+			List<HierarchicalConfiguration<ImmutableNode>> aliasNameCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasNames.aliasName");
 			List<String> aliasNameReplacements = new ArrayList<>(aliasNameCfgs.size());
 			for (HierarchicalConfiguration<ImmutableNode> aliasNameCfg : aliasNameCfgs)
 			{
@@ -187,17 +187,17 @@ class ConfigurationHelper
 			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
 			switch (name)
 			{
-			case PreDbMe.SOURCE_ID:
-				dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
-				break;
-			case XRelTo.SOURCE_ID:
-				dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
-				break;
-			case OrlyDbCom.SOURCE_ID:
-				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown metadata database: " + name);
+				case PreDbMe.SOURCE_ID:
+					dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
+					break;
+				case XRelTo.SOURCE_ID:
+					dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
+					break;
+				case OrlyDbCom.SOURCE_ID:
+					dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown metadata database: " + name);
 			}
 		}
 		dbs.trimToSize();
@@ -305,7 +305,7 @@ class ConfigurationHelper
 				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@afterQuerying]", entry.isAfterQuerying());
 				for (String aliasName : corrector.getAliasNamesReplacement())
 				{
-					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasName", aliasName);
+					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasNames.aliasName", aliasName);
 				}
 				seriesNameIndex++;
 			}

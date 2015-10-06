@@ -69,8 +69,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -83,7 +83,7 @@ import javafx.util.StringConverter;
 
 public class FxUtil
 {
-	private static final Logger log = LogManager.getLogger(FxUtil.class);
+	private static final Logger									log									= LogManager.getLogger(FxUtil.class);
 
 	public static final StringConverter<String>					REJECT_BLANK_STRING_CONVERTER		= initRejectBlankStringConverter();
 	public static final StringConverter<Path>					PATH_STRING_CONVERTER				= initPathStringConverter();
@@ -439,41 +439,102 @@ public class FxUtil
 		}
 	}
 
-	public static void setStandardMouseAndKeyboardSupport(final ListView<?> list, final ButtonBase removeButton)
+	public static void setStandardMouseAndKeyboardSupportForEditable(final ListView<?> list, final ButtonBase removeButton)
 	{
 		list.setOnKeyPressed((KeyEvent evt) ->
 		{
-			if (!list.getSelectionModel().isEmpty())
+			switch (evt.getCode())
 			{
-				if (evt.getCode().equals(KeyCode.DELETE))
-				{
-					removeButton.fire();
-				}
+				// FIXFOR: Pressing the escape key when editing a cell cancels the edit but also closes the dialog.
+				// The KeyEvent sadly never reaches the KeyEvent handler in javafx.scene.control.cell.CellUtils.createTextField(Cell<T>, StringConverter<T>)
+				// so we need to take actions ourselves
+				// -> If a cell is currently edited and the ESCAPE key is pressed, we consume the ESCAPE event
+				case ESCAPE:
+					if (list.getEditingIndex() >= 0)
+					{
+						evt.consume();
+					}
+					break;
+				case DELETE:
+					if (!list.getSelectionModel().isEmpty())
+					{
+						removeButton.fire();
+					}
+					break;
+				default:
+					break;
 			}
 		});
 	}
 
-	public static void setStandardMouseAndKeyboardSupport(final TableView<?> tableView, final ButtonBase editButton, final ButtonBase removeButton)
+	public static void setStandardMouseAndKeyboardSupport(final ListView<?> list, final ButtonBase editButton, final ButtonBase removeButton)
 	{
-		tableView.setOnMouseClicked((MouseEvent evt) ->
+		list.setOnMouseClicked((MouseEvent evt) ->
 		{
-			if (evt.getClickCount() == 2 && (!tableView.getSelectionModel().isEmpty()))
+			if (evt.getClickCount() == 2 && (!list.getSelectionModel().isEmpty()))
 			{
 				editButton.fire();
 			}
 		});
-		tableView.setOnKeyPressed((KeyEvent evt) ->
+		list.setOnKeyPressed((KeyEvent evt) ->
 		{
-			if (!tableView.getSelectionModel().isEmpty())
+			switch (evt.getCode())
 			{
-				if (evt.getCode().equals(KeyCode.ENTER))
-				{
-					editButton.fire();
-				}
-				else if (evt.getCode().equals(KeyCode.DELETE))
-				{
-					removeButton.fire();
-				}
+				case ENTER:
+					if (!list.getSelectionModel().isEmpty())
+					{
+						editButton.fire();
+					}
+					break;
+				// FIXFOR: Pressing the escape key when editing a cell cancels the edit but also closes the dialog.
+				// The KeyEvent sadly never reaches the KeyEvent handler in javafx.scene.control.cell.CellUtils.createTextField(Cell<T>, StringConverter<T>)
+				// so we need to take actions ourselves
+				// -> If a cell is currently edited and the ESCAPE key is pressed, we consume the ESCAPE event
+				case ESCAPE:
+					if (list.getEditingIndex() >= 0)
+					{
+						evt.consume();
+					}
+					break;
+				case DELETE:
+					if (!list.getSelectionModel().isEmpty())
+					{
+						removeButton.fire();
+					}
+					break;
+				default:
+					break;
+			}
+		});
+	}
+
+	public static void setStandardMouseAndKeyboardSupport(final TableView<?> table, final ButtonBase editButton, final ButtonBase removeButton)
+	{
+		table.setOnMouseClicked((MouseEvent evt) ->
+		{
+			if (evt.getButton() == MouseButton.PRIMARY && evt.getClickCount() == 2 && (!table.getSelectionModel().isEmpty()))
+			{
+				editButton.fire();
+			}
+		});
+		table.setOnKeyPressed((KeyEvent evt) ->
+		{
+			switch (evt.getCode())
+			{
+				case ENTER:
+					if (!table.getSelectionModel().isEmpty())
+					{
+						editButton.fire();
+					}
+					break;
+				case DELETE:
+					if (!table.getSelectionModel().isEmpty())
+					{
+						removeButton.fire();
+					}
+					break;
+				default:
+					break;
 			}
 		});
 	}

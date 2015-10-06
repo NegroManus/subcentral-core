@@ -12,7 +12,8 @@
 		<filenamePatterns>*.srt</filenamePatterns>
 		<parsingServices>
 			<parsingService enabled="true">addic7ed.com</parsingService>
-			<parsingService enabled="false">italiansubs.net</parsingService>
+			<parsingService enabled="false">italiansubs.net
+			</parsingService>
 			<parsingService enabled="true">subcentral.de</parsingService>
 		</parsingServices>
 	</parsing>
@@ -73,33 +74,29 @@
 	<correction>
 		<rules>
 			<seriesNameCorrectionRule namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
-            <seriesNameCorrectionRule namePattern="From Dusk Till Dawn*The Series" namePatternMode="SIMPLE" nameReplacement="From Dusk Till Dawn: The Series" beforeQuerying="true" afterQuerying="false">
-                <aliasName>From Dusk Till Dawn</aliasName>
-            </seriesNameCorrectionRule>
-			<seriesNameCorrectionRule namePattern="Good Wife" namePatternMode="LITERAL" nameReplacement="The Good Wife" beforeQuerying="false" afterQuerying="true" />
+			<seriesNameCorrectionRule namePattern="From Dusk Till Dawn*The Series" namePatternMode="SIMPLE" nameReplacement="From Dusk Till Dawn: The Series" beforeQuerying="true" afterQuerying="false">
+				<aliasNames>
+					<aliasName>From Dusk Till Dawn</aliasName>
+				</aliasNames>
+			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Last Man Standing" namePatternMode="LITERAL" nameReplacement="Last Man Standing (US)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true" afterQuerying="false" />
-            <seriesNameCorrectionRule namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series" beforeQuerying="true" afterQuerying="false">
-                <aliasName>Scream (2015)</aliasName>
-                <aliasName>Scream</aliasName>
-            </seriesNameCorrectionRule>
+			<seriesNameCorrectionRule namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series" beforeQuerying="true" afterQuerying="false">
+				<aliasNames>
+					<aliasName>Scream (2015)</aliasName>
+					<aliasName>Scream</aliasName>
+				</aliasNames>
+			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Scream Queens" namePatternMode="LITERAL" nameReplacement="Scream Queens (2015)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="You're the Worst (2014)" namePatternMode="LITERAL" nameReplacement="You're the Worst" beforeQuerying="true" afterQuerying="false" />
 
-			<releaseTagsCorrectionRule searchTags="AAC2, 0" replacement="AAC2.0" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="DD5, 1" replacement="DD5.1" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="H, 264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="H, 265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="H264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="H265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
-			<releaseTagsCorrectionRule searchTags="WEB, DL" replacement="WEB-DL" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true"
-				afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="AAC2, 0" replacement="AAC2.0" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="DD5, 1" replacement="DD5.1" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H, 264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H, 265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="H265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="WEB, DL" replacement="WEB-DL" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
 		</rules>
 
 		<subtitleLanguage>
