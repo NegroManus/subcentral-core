@@ -848,7 +848,6 @@ public class ProcessingController extends AbstractController
 	public void reprocess(ProcessingTask task)
 	{
 		// Cancel the current task
-
 		task.cancel(true);
 		TreeItem<ProcessingItem> treeItem = task.getTaskTreeItem();
 
