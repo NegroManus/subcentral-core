@@ -3,6 +3,7 @@ package de.subcentral.core.metadata.media;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -38,16 +39,25 @@ public class MediaUtil
 		{
 			return (Media) obj;
 		}
-		else if (obj instanceof Iterable)
+		Iterator<?> iter;
+		if (obj instanceof Iterable)
 		{
-			Iterator<?> iter = ((Iterable<?>) obj).iterator();
-			if (iter.hasNext())
+			iter = ((Iterable<?>) obj).iterator();
+		}
+		else if (obj instanceof Stream)
+		{
+			iter = ((Stream<?>) obj).iterator();
+		}
+		else
+		{
+			iter = null;
+		}
+		if (iter != null && iter.hasNext())
+		{
+			Object firstElem = iter.next();
+			if (firstElem instanceof Media && !iter.hasNext())
 			{
-				Object firstElem = iter.next();
-				if (firstElem instanceof Media && !iter.hasNext())
-				{
-					return (Media) firstElem;
-				}
+				return (Media) firstElem;
 			}
 		}
 		return null;
