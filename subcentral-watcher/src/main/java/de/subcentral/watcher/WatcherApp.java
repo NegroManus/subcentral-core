@@ -19,17 +19,17 @@ public class WatcherApp extends Application
 {
 	public static final String	APP_NAME			= "Watcher";
 	public static final String	APP_VERSION			= "2.0";
-	public static final String	APP_VERSION_DATE	= "2015-10-01 20:00";
+	public static final String	APP_VERSION_DATE	= "2015-10-06 20:00";
 	public static final String	APP_INFO			= APP_NAME + " " + APP_VERSION + " (" + APP_VERSION_DATE + ")";
 
-	private static final Logger log = LogManager.getLogger(WatcherApp.class);
+	private static final Logger	log					= LogManager.getLogger(WatcherApp.class);
 
 	// View
-	private Stage		primaryStage;
-	private BorderPane	mainView;
+	private Stage				primaryStage;
+	private BorderPane			mainView;
 
 	// Control
-	private MainController mainController;
+	private MainController		mainController;
 
 	@Override
 	public void init() throws Exception
