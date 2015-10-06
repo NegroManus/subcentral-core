@@ -9,19 +9,21 @@ import java.util.Set;
  * For any media type that has no own class, like a movie, or if the media type could not be determined.
  *
  */
-public abstract class SingleMedia extends NamedMediaBase
+public abstract class StandaloneMedia extends NamedMediaBase
 {
-	protected final List<String>	languages	= new ArrayList<>(1);
-	protected final List<String>	countries	= new ArrayList<>(1);
-	protected final Set<String>		genres		= new HashSet<>(3);
-	protected int					runningTime	= 0;
+	private static final long		serialVersionUID	= -136233241033139839L;
 
-	public SingleMedia()
+	protected final List<String>	languages			= new ArrayList<>(1);
+	protected final List<String>	countries			= new ArrayList<>(1);
+	protected final Set<String>		genres				= new HashSet<>(3);
+	protected int					runningTime			= 0;
+
+	public StandaloneMedia()
 	{
 
 	}
 
-	public SingleMedia(String name)
+	public StandaloneMedia(String name)
 	{
 		this.name = name;
 	}

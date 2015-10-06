@@ -15,6 +15,8 @@ import de.subcentral.core.metadata.MetadataBase;
 
 public abstract class MediaBase extends MetadataBase implements Media
 {
+	private static final long						serialVersionUID	= 1648358057912659544L;
+
 	protected String								title;
 	protected Temporal								date;
 	protected String								description;

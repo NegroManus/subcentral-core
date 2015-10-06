@@ -14,8 +14,10 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For any media type that has no own class, like a movie, or if the media type could not be determined.
  *
  */
-public class GenericMedia extends SingleMedia implements Comparable<GenericMedia>
+public class GenericMedia extends StandaloneMedia implements Comparable<GenericMedia>
 {
+	private static final long					serialVersionUID		= 466506490140852772L;
+
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(GenericMedia.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_ALIAS_NAMES		= new SimplePropDescriptor(GenericMedia.class, PropNames.ALIAS_NAMES);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(GenericMedia.class, PropNames.TITLE);
@@ -33,8 +35,8 @@ public class GenericMedia extends SingleMedia implements Comparable<GenericMedia
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(GenericMedia.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(GenericMedia.class, PropNames.ATTRIBUTES);
 
-	private String	mediaType;
-	private String	mediaContentType;
+	private String								mediaType;
+	private String								mediaContentType;
 
 	public GenericMedia()
 	{

@@ -34,6 +34,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
  */
 public class Release extends MetadataBase implements Comparable<Release>
 {
+	private static final long					serialVersionUID		= 3021851008940378834L;
+
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Release.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_MEDIA				= new SimplePropDescriptor(Release.class, PropNames.MEDIA);
 	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(Release.class, PropNames.TAGS);
@@ -50,24 +52,24 @@ public class Release extends MetadataBase implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Release.class, PropNames.FURTHER_INFO_LINKS);
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Release.class, PropNames.IDS);
 
-	public static final Comparator<Release> NAME_COMPARATOR = (Release r1, Release r2) -> (r1 == null ? (r2 == null ? 0 : 1) : r1.compareToByName(r2));
+	public static final Comparator<Release>		NAME_COMPARATOR			= (Release r1, Release r2) -> (r1 == null ? (r2 == null ? 0 : 1) : r1.compareToByName(r2));
 
-	private String				name;
+	private String								name;
 	// In 99% of the cases, there is only one Media per Release
-	private final List<Media>	media				= new ArrayList<>(1);
+	private final List<Media>					media					= new ArrayList<>(1);
 	// Normally there are 2 to 4 Tags per Release
-	private final List<Tag>		tags				= new ArrayList<>(4);
-	private Group				group;
-	private final List<String>	languages			= new ArrayList<>(1);
-	private String				category;
-	private Temporal			date;
-	private long				size				= 0L;
-	private int					fileCount			= 0;
-	private final List<Nuke>	nukes				= new ArrayList<>(0);
-	private final List<Unnuke>	unnukes				= new ArrayList<>(0);
-	private String				nfo;
-	private String				nfoLink;
-	private final List<String>	furtherInfoLinks	= new ArrayList<>(4);
+	private final List<Tag>						tags					= new ArrayList<>(4);
+	private Group								group;
+	private final List<String>					languages				= new ArrayList<>(1);
+	private String								category;
+	private Temporal							date;
+	private long								size					= 0L;
+	private int									fileCount				= 0;
+	private final List<Nuke>					nukes					= new ArrayList<>(0);
+	private final List<Unnuke>					unnukes					= new ArrayList<>(0);
+	private String								nfo;
+	private String								nfoLink;
+	private final List<String>					furtherInfoLinks		= new ArrayList<>(4);
 
 	public static Release create(String group, String... tags)
 	{

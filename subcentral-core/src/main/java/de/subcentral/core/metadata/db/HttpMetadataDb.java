@@ -8,8 +8,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,13 +17,11 @@ import de.subcentral.core.util.NetUtil;
 public abstract class HttpMetadataDb extends AbstractMetadataDb
 {
 	/**
-	 * 10 seconds.
+	 * Default timeout: 10 seconds.
 	 */
-	public static final int DEFAULT_TIMEOUT = 10_000;
+	public static final int	DEFAULT_TIMEOUT	= 10_000;
 
-	private static final Logger log = LogManager.getLogger(HttpMetadataDb.class);
-
-	protected int timeout = DEFAULT_TIMEOUT;
+	protected int			timeout			= DEFAULT_TIMEOUT;
 
 	// Metadata
 	public abstract String getHost();

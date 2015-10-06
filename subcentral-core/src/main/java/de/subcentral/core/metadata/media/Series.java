@@ -20,6 +20,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Series extends NamedMediaBase implements Comparable<Series>
 {
+	private static final long					serialVersionUID			= -3817853387927606602L;
+
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_ALIAS_NAMES			= new SimplePropDescriptor(Series.class, PropNames.ALIAS_NAMES);
 	public static final SimplePropDescriptor	PROP_TITLE					= new SimplePropDescriptor(Series.class, PropNames.TITLE);
@@ -46,29 +48,29 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	 * A type of series which episodes are organized in seasons. Typically, episodes belong to a season and are numbered in that season. Typical examples are the TV series "Breaking Bad",
 	 * "Game of Thrones" and "Psych".
 	 */
-	public static final String TYPE_SEASONED = "SEASONED";
+	public static final String					TYPE_SEASONED				= "SEASONED";
 
 	/**
 	 * A type of series which has a limited set of episodes and these episodes are therefore not organized in seasons. A typical example is the TV mini-series "Band of Brothers".
 	 */
-	public static final String TYPE_MINI_SERIES = "MINI_SERIES";
+	public static final String					TYPE_MINI_SERIES			= "MINI_SERIES";
 
 	/**
 	 * A type of series which episodes usually have no numbers. Instead the main identifier is their air date. Typical examples are (daily) shows or sports events.
 	 */
-	public static final String TYPE_DATED = "DATED";
+	public static final String					TYPE_DATED					= "DATED";
 
-	private String				type;
-	private Temporal			finaleDate;
-	private final List<String>	languages			= new ArrayList<>(1);
-	private final List<String>	countries			= new ArrayList<>(1);
-	private int					regularRunningTime	= 0;
+	private String								type;
+	private Temporal							finaleDate;
+	private final List<String>					languages					= new ArrayList<>(1);
+	private final List<String>					countries					= new ArrayList<>(1);
+	private int									regularRunningTime			= 0;
 	// HashMap / HashSet initial capacities should be a power of 2
-	private final Set<String>	genres				= new HashSet<>(4);
-	private final List<Network>	networks			= new ArrayList<>(1);
+	private final Set<String>					genres						= new HashSet<>(4);
+	private final List<Network>					networks					= new ArrayList<>(1);
 	// Episodes/Seasons
-	private final List<Episode>	episodes			= new ArrayList<>(0);
-	private final List<Season>	seasons				= new ArrayList<>(0);
+	private final List<Episode>					episodes					= new ArrayList<>(0);
+	private final List<Season>					seasons						= new ArrayList<>(0);
 
 	public Series()
 	{

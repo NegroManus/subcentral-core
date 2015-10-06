@@ -8,8 +8,10 @@ import com.google.common.collect.ImmutableList;
 
 public abstract class NamedMediaBase extends MediaBase implements NamedMedia
 {
-	protected String		name;
-	protected List<String>	aliasNames	= new ArrayList<>(0);
+	private static final long	serialVersionUID	= 3863044665770766455L;
+
+	protected String			name;
+	protected List<String>		aliasNames			= new ArrayList<>(0);
 
 	@Override
 	public String getName()

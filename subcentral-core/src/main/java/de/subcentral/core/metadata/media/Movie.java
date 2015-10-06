@@ -16,8 +16,10 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For Movies.
  *
  */
-public class Movie extends SingleMedia implements Comparable<Movie>
+public class Movie extends StandaloneMedia implements Comparable<Movie>
 {
+	private static final long					serialVersionUID		= -8383150114871587705L;
+
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Movie.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_ALIAS_NAMES		= new SimplePropDescriptor(Movie.class, PropNames.ALIAS_NAMES);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Movie.class, PropNames.TITLE);

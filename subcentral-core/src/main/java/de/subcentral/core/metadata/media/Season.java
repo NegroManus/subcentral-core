@@ -21,6 +21,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends MediaBase implements Comparable<Season>
 {
+	private static final long					serialVersionUID		= -2449905100119202184L;
+
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
 	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
 	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Season.class, PropNames.TITLE);
@@ -35,10 +37,10 @@ public class Season extends MediaBase implements Comparable<Season>
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Season.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
 
-	private Series		series;
-	private Integer		number;
-	private boolean		special;
-	private Temporal	finaleDate;
+	private Series								series;
+	private Integer								number;
+	private boolean								special;
+	private Temporal							finaleDate;
 
 	public Season()
 	{

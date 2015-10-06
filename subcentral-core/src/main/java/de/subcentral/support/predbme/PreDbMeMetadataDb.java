@@ -34,12 +34,11 @@ import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.metadata.media.SingleMedia;
+import de.subcentral.core.metadata.media.StandaloneMedia;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Unnuke;
-import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.ByteUtil;
 
 /**
@@ -219,10 +218,11 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		throw createUnsupportedRecordTypeException(recordType);
 	}
 
-	private String normalizeTitleQueryValue(String title)
-	{
-		return NamingDefaults.getDefaultNormalizingFormatter().apply(title).replace(' ', '-');
-	}
+	// Not needed currently because searching with an explicit title yields strange results sometimes
+	// private String normalizeTitleQueryValue(String title)
+	// {
+	// return NamingDefaults.getDefaultNormalizingFormatter().apply(title).replace(' ', '-');
+	// }
 
 	/**
 	 * <pre>
@@ -310,7 +310,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		Release rls = new Release();
 
 		String id = rlsDiv.attr("id");
-		// TODO store on rls
+		rls.getIds().put(PreDbMe.SOURCE_ID, id);
 
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -687,9 +687,9 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 			}
 		}
 		// For both Movie and GenericMedia
-		else if (media instanceof SingleMedia)
+		else if (media instanceof StandaloneMedia)
 		{
-			SingleMedia regularMediaItem = (SingleMedia) media;
+			StandaloneMedia regularMediaItem = (StandaloneMedia) media;
 			if (plot != null)
 			{
 				regularMediaItem.setDescription(plot);

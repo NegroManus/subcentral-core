@@ -5,7 +5,9 @@ import java.util.Map;
 
 public class MetadataBase implements Metadata
 {
-	protected final Map<String, String> ids = new HashMap<>(2);
+	private static final long			serialVersionUID	= -5801764606343001L;
+
+	protected final Map<String, String>	ids					= new HashMap<>(2);
 
 	@Override
 	public Map<String, String> getIds()

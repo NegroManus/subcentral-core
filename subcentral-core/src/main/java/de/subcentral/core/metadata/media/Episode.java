@@ -22,6 +22,8 @@ import de.subcentral.core.util.TemporalComparator;
 
 public class Episode extends MediaBase implements Comparable<Episode>
 {
+	private static final long					serialVersionUID		= -5816825595994228543L;
+
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Episode.class, PropNames.SERIES);
 	public static final SimplePropDescriptor	PROP_NUMBER_IN_SERIES	= new SimplePropDescriptor(Episode.class, PropNames.NUMBER_IN_SERIES);
 	public static final SimplePropDescriptor	PROP_SEASON				= new SimplePropDescriptor(Episode.class, PropNames.SEASON);
