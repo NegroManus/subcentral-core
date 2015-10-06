@@ -1,7 +1,7 @@
 package de.subcentral.core.metadata.db;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +51,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 
 	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
-		Set<T> results = new LinkedHashSet<>();
+		List<T> results = new ArrayList<>();
 		Set<String> names = NamingUtil.generateNames(queryObj, namingServices, MediaUtil.generateNamingParametersForAllNames(queryObj));
 		if (names.isEmpty())
 		{

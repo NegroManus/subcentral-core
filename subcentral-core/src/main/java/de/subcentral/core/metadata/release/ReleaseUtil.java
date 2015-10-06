@@ -21,6 +21,26 @@ public class ReleaseUtil
 {
 	private static final Logger log = LogManager.getLogger(ReleaseUtil.class);
 
+	public static void addAllDistinctByName(Collection<Release> distinctReleases, Iterable<Release> releasesToAdd)
+	{
+		for (Release newRls : releasesToAdd)
+		{
+			boolean notContained = true;
+			for (Release rls : distinctReleases)
+			{
+				if (rls.equalsByName(newRls))
+				{
+					notContained = false;
+					break;
+				}
+			}
+			if (notContained)
+			{
+				distinctReleases.add(newRls);
+			}
+		}
+	}
+
 	public static List<Release> distinctByName(Collection<Release> releases)
 	{
 		if (releases.isEmpty())

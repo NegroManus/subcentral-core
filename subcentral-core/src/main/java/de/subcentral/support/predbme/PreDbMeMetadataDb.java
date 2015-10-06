@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -38,6 +37,7 @@ import de.subcentral.core.metadata.media.StandaloneMedia;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.Unnuke;
 import de.subcentral.core.util.ByteUtil;
 
@@ -107,10 +107,11 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					// Otherwise predb.me mostly does not parse the release name properly
 					if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
 					{
-						Set<Release> results = new LinkedHashSet<>();
+						List<Release> results = new ArrayList<>();
 						for (String seriesName : epi.getSeries().getAllNames())
 						{
-							results.addAll(searchReleasesByEpisode(seriesName, epi.getSeason().getNumber(), epi.getNumberInSeason()));
+							List<Release> newResults = searchReleasesByEpisode(seriesName, epi.getSeason().getNumber(), epi.getNumberInSeason());
+							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
 						return (List<T>) ImmutableList.copyOf(results);
 					}
@@ -120,10 +121,11 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					Season season = (Season) media;
 					if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
 					{
-						Set<Release> results = new LinkedHashSet<>();
+						List<Release> results = new ArrayList<>();
 						for (String seriesName : season.getSeries().getAllNames())
 						{
-							results.addAll(searchReleasesBySeason(seriesName, season.getNumber()));
+							List<Release> newResults = searchReleasesBySeason(seriesName, season.getNumber());
+							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
 						return (List<T>) ImmutableList.copyOf(results);
 					}
@@ -133,10 +135,11 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					Series series = (Series) media;
 					if (series.getName() != null)
 					{
-						Set<Release> results = new LinkedHashSet<>();
+						List<Release> results = new ArrayList<>();
 						for (String seriesName : series.getAllNames())
 						{
-							results.addAll(searchReleasesBySeries(seriesName));
+							List<Release> newResults = searchReleasesBySeries(seriesName);
+							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
 						return (List<T>) ImmutableList.copyOf(results);
 					}
@@ -146,10 +149,11 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					Movie mov = (Movie) media;
 					if (mov.getName() != null)
 					{
-						Set<Release> results = new LinkedHashSet<>();
+						List<Release> results = new ArrayList<>();
 						for (String movName : mov.getAllNames())
 						{
-							results.addAll(searchReleasesByMovie(movName));
+							List<Release> newResults = searchReleasesByMovie(movName);
+							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
 						return (List<T>) ImmutableList.copyOf(results);
 					}
