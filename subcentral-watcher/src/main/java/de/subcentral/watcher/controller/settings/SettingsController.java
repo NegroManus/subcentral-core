@@ -45,22 +45,22 @@ import javafx.scene.layout.StackPane;
 
 public class SettingsController extends AbstractController
 {
-	private static final Logger log = LogManager.getLogger(SettingsController.class);
+	private static final Logger					log										= LogManager.getLogger(SettingsController.class);
 
-	private static final String	CUSTOM_SETTINGS_FILE	= "watcher-settings.xml";
-	private static final String	DEFAULT_SETTINGS_FILE	= "watcher-settings-default.xml";
+	private static final String					CUSTOM_SETTINGS_FILE					= "watcher-settings.xml";
+	private static final String					DEFAULT_SETTINGS_FILE					= "watcher-settings-default.xml";
 
-	public static final String	WATCH_SECTION							= "watch";
-	public static final String	PARSING_SECTION							= "parsing";
-	public static final String	RELEASE_SECTION							= "release";
-	public static final String	RELEASE_DBS_SECTION						= "release.dbs";
-	public static final String	RELEASE_GUESSING_SECTION				= "release.guessing";
-	public static final String	RELEASE_COMPATIBILITY_SECTION			= "release.compatibility";
-	public static final String	CORRECTION_SECTION						= "correction";
-	public static final String	CORRECTION_SUBTITLE_LANGUAGE_SECTION	= "correction.subtitleLanguage";
-	public static final String	NAMING_SECTION							= "naming";
-	public static final String	FILE_TRANSFORMATION_SECTION				= "filetransformation";
-	public static final String	UI_SECTION								= "ui";
+	public static final String					WATCH_SECTION							= "watch";
+	public static final String					PARSING_SECTION							= "parsing";
+	public static final String					RELEASE_SECTION							= "release";
+	public static final String					RELEASE_DBS_SECTION						= "release.dbs";
+	public static final String					RELEASE_GUESSING_SECTION				= "release.guessing";
+	public static final String					RELEASE_COMPATIBILITY_SECTION			= "release.compatibility";
+	public static final String					CORRECTION_SECTION						= "correction";
+	public static final String					CORRECTION_SUBTITLE_LANGUAGE_SECTION	= "correction.subtitleLanguage";
+	public static final String					NAMING_SECTION							= "naming";
+	public static final String					FILE_TRANSFORMATION_SECTION				= "filetransformation";
+	public static final String					UI_SECTION								= "ui";
 
 	// Controllers
 	private final MainController				mainController;
@@ -68,18 +68,18 @@ public class SettingsController extends AbstractController
 
 	// View
 	@FXML
-	private TreeView<SettingsSection>	sectionSelectionTreeView;
+	private TreeView<SettingsSection>			sectionSelectionTreeView;
 	@FXML
-	private AnchorPane					sectionRootPane;
+	private AnchorPane							sectionRootPane;
 	@FXML
-	private Button						saveBtn;
+	private Button								saveBtn;
 	@FXML
-	private Button						restoreLastSavedBtn;
+	private Button								restoreLastSavedBtn;
 	@FXML
-	private Button						restoreDefaultsBtn;
+	private Button								restoreDefaultsBtn;
 
-	private BooleanProperty	defaultSettingsLoaded	= new SimpleBooleanProperty();
-	private BooleanProperty	customSettingsExist		= new SimpleBooleanProperty();
+	private BooleanProperty						defaultSettingsLoaded					= new SimpleBooleanProperty();
+	private BooleanProperty						customSettingsExist						= new SimpleBooleanProperty();
 
 	public SettingsController(MainController mainController)
 	{
@@ -409,6 +409,7 @@ public class SettingsController extends AbstractController
 		try
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.initOwner(mainController.getPrimaryStage());
 			alert.setTitle("Save settings?");
 			alert.setHeaderText("Do you want to save the current settings?");
 			alert.setContentText("The current settings will be stored in the settings file.");
@@ -430,6 +431,7 @@ public class SettingsController extends AbstractController
 	public void confirmRestoreLastSavedSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.initOwner(mainController.getPrimaryStage());
 		alert.setTitle("Restore last saved settings?");
 		alert.setHeaderText("Do you want restore the last saved settings?");
 		alert.setContentText("The current settings will be replaced with the content of the settings file.");
@@ -445,7 +447,7 @@ public class SettingsController extends AbstractController
 	public void confirmRestoreDefaultSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
-		// alert.getDialogPane().setPrefWidth(600d);
+		alert.initOwner(mainController.getPrimaryStage());
 		alert.setTitle("Restore defaults?");
 		alert.setHeaderText("Do you want to restore the default settings?");
 		alert.setContentText(
@@ -530,6 +532,7 @@ public class SettingsController extends AbstractController
 		if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.initOwner(mainController.getPrimaryStage());
 			alert.setTitle("Save watcher settings?");
 			alert.setHeaderText("Do you want to save the watcher settings?");
 			alert.setContentText("You have unsaved changes in the settings. Do you want to save them?\n(" + CUSTOM_SETTINGS_FILE + ")");
