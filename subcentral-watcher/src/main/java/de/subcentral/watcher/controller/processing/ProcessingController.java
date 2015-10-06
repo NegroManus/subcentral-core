@@ -850,7 +850,6 @@ public class ProcessingController extends AbstractController
 		// Cancel the current task
 
 		task.cancel(true);
-
 		TreeItem<ProcessingItem> treeItem = task.getTaskTreeItem();
 
 		// Delete files on background thread and then create and execute new task
