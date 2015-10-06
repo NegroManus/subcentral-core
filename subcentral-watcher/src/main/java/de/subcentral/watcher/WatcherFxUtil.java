@@ -101,6 +101,7 @@ public class WatcherFxUtil
 			String host = new URL(rls.getFurtherInfoLinks().get(0)).getHost().replace("www.", "");
 			ImageView dbImg = new ImageView(FxUtil.loadImg("database_16.png"));
 			Hyperlink hl = new Hyperlink(host, dbImg);
+			hl.setTooltip(new Tooltip("Show further info"));
 			hl.setVisited(true);
 			hl.setOnAction((ActionEvent evt) -> FxUtil.browse(rls.getFurtherInfoLinks().get(0), executorService));
 			return hl;
@@ -118,7 +119,7 @@ public class WatcherFxUtil
 		{
 			ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
 			Label nukedLbl = new Label("", nukedImg);
-			StringJoiner joiner = new StringJoiner(", ", "Nuked: ", "");
+			StringJoiner joiner = new StringJoiner(", ", "Nuke reason: ", "");
 			for (Nuke nuke : rls.getNukes())
 			{
 				joiner.add(nuke.getReason());
@@ -130,7 +131,7 @@ public class WatcherFxUtil
 		{
 			ImageView unnukedImg = new ImageView(FxUtil.loadImg("unnuked_16.png"));
 			Label unnukedLbl = new Label("", unnukedImg);
-			StringJoiner joiner = new StringJoiner(", ", "Unnuked: ", "");
+			StringJoiner joiner = new StringJoiner(", ", "Unnuke reason: ", "");
 			for (Unnuke unnuke : rls.getUnnukes())
 			{
 				joiner.add(unnuke.getReason());

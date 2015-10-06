@@ -62,7 +62,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
@@ -111,9 +110,9 @@ public class ProcessingController extends AbstractController
 	@FXML
 	private Button													detailsBtn;
 	@FXML
-	private Button													reprocessBtn;
-	@FXML
 	private Button													openDirectoryBtn;
+	@FXML
+	private Button													reprocessBtn;
 	@FXML
 	private Button													cancelBtn;
 	@FXML
@@ -326,32 +325,33 @@ public class ProcessingController extends AbstractController
 							// origin info
 							switch (resultInfo.getOriginInfo().getOrigin())
 							{
-							case DATABASE:
-							{
-								addDatabaseHyperlink(resultInfo, hbox);
-								break;
-							}
-							case GUESSED:
-							{
-								GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
-								Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
-								hbox.getChildren().add(guessedLbl);
-								break;
-							}
-							case COMPATIBLE:
-							{
-								// compatible releases may be listed in a database as well
-								addDatabaseHyperlink(resultInfo, hbox);
+								case DATABASE:
+								{
+									addDatabaseHyperlink(resultInfo, hbox);
+									break;
+								}
+								case GUESSED:
+								{
+									GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
+									Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
+									hbox.getChildren().add(guessedLbl);
+									break;
+								}
+								case COMPATIBLE:
+								{
+									// compatible releases may be listed in a database as well
+									addDatabaseHyperlink(resultInfo, hbox);
 
-								CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
+									CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
 
-								Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(), (Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
-								hbox.getChildren().add(compLbl);
-								break;
-							}
-							default:
-								log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
-								break;
+									Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(),
+											(Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
+									hbox.getChildren().add(compLbl);
+									break;
+								}
+								default:
+									log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
+									break;
 							}
 
 							// nuke
@@ -386,7 +386,6 @@ public class ProcessingController extends AbstractController
 							resultInfo.getProcessingResult().getTask().getController().getMainController().getCommonExecutor());
 					if (database != null)
 					{
-						database.setTooltip(new Tooltip("Found in release database"));
 						hbox.getChildren().add(database);
 					}
 				}
@@ -478,7 +477,8 @@ public class ProcessingController extends AbstractController
 			{
 				return new Observable[] {};
 			}
-			return new Observable[] { task.stateProperty() };
+			return new Observable[]
+			{ task.stateProperty() };
 		});
 
 		final BooleanBinding noFinishedTaskSelectedBinding = new BooleanBinding()
@@ -528,16 +528,6 @@ public class ProcessingController extends AbstractController
 			}
 		});
 
-		reprocessBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
-		reprocessBtn.setOnAction((ActionEvent evt) ->
-		{
-			ProcessingTask task = getSelectedProcessingTask(true);
-			if (task != null)
-			{
-				reprocess(task);
-			}
-		});
-
 		openDirectoryBtn.disableProperty().bind(new BooleanBinding()
 		{
 			{
@@ -557,6 +547,16 @@ public class ProcessingController extends AbstractController
 			if (item != null)
 			{
 				openDirectory(item);
+			}
+		});
+
+		reprocessBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
+		reprocessBtn.setOnAction((ActionEvent evt) ->
+		{
+			ProcessingTask task = getSelectedProcessingTask(true);
+			if (task != null)
+			{
+				reprocess(task);
 			}
 		});
 
@@ -811,14 +811,19 @@ public class ProcessingController extends AbstractController
 
 	public void removeSelectedTask()
 	{
+		cancelSelectedTask();
 		TreeItem<ProcessingItem> selectedTreeItem = getSelectedProcessingTaskTreeItem(true);
+		selectedTreeItem.setValue(null);
 		processingTreeTable.getRoot().getChildren().remove(selectedTreeItem);
+		// processingTreeTable.getSelectionModel().clearSelection();
 	}
 
 	public void clearProcessingTreeTable()
 	{
 		cancelAllTasks();
 		processingTreeTable.getRoot().getChildren().clear();
+		processingTreeTable.setRoot(new TreeItem<>());
+		// processingTreeTable.getSelectionModel().clearSelection();
 	}
 
 	public void cancelAllTasks()
