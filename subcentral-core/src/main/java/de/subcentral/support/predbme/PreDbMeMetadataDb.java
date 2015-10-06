@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -97,7 +98,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		if (Release.class.equals(recordType))
 		{
 			// Check whether the queryObj is a Media or an Iterable of a single Media
-			Media media = MediaUtil.getSingletonMedia(queryObj);
+			Media media = MediaUtil.toSingletonMedia(queryObj);
 			if (media != null)
 			{
 				if (media instanceof Episode)
@@ -107,7 +108,12 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					// Otherwise predb.me mostly does not parse the release name properly
 					if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
 					{
-						return (List<T>) searchReleasesByEpisode(epi.getSeries().getName(), epi.getSeason().getNumber(), epi.getNumberInSeason());
+						Set<Release> results = new LinkedHashSet<>();
+						for (String seriesName : epi.getSeries().getAllNames())
+						{
+							results.addAll(searchReleasesByEpisode(seriesName, epi.getSeason().getNumber(), epi.getNumberInSeason()));
+						}
+						return (List<T>) ImmutableList.copyOf(results);
 					}
 				}
 				else if (media instanceof Season)
@@ -115,7 +121,12 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					Season season = (Season) media;
 					if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
 					{
-						return (List<T>) searchReleasesBySeason(season.getSeries().getName(), season.getNumber());
+						Set<Release> results = new LinkedHashSet<>();
+						for (String seriesName : season.getSeries().getAllNames())
+						{
+							results.addAll(searchReleasesBySeason(seriesName, season.getNumber()));
+						}
+						return (List<T>) ImmutableList.copyOf(results);
 					}
 				}
 				else if (media instanceof Series)
@@ -123,7 +134,12 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					Series series = (Series) media;
 					if (series.getName() != null)
 					{
-						return (List<T>) searchReleasesBySeries(series.getName());
+						Set<Release> results = new LinkedHashSet<>();
+						for (String seriesName : series.getAllNames())
+						{
+							results.addAll(searchReleasesBySeries(seriesName));
+						}
+						return (List<T>) ImmutableList.copyOf(results);
 					}
 				}
 				else if (media instanceof Movie)
@@ -131,7 +147,12 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					Movie mov = (Movie) media;
 					if (mov.getName() != null)
 					{
-						return (List<T>) searchReleasesByMovie(mov.getName());
+						Set<Release> results = new LinkedHashSet<>();
+						for (String movName : mov.getAllNames())
+						{
+							results.addAll(searchReleasesByMovie(movName));
+						}
+						return (List<T>) ImmutableList.copyOf(results);
 					}
 				}
 			}

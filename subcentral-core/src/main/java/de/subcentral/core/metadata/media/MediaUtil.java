@@ -29,16 +29,16 @@ public class MediaUtil
 
 	public static boolean isSingletonMedia(Object obj)
 	{
-		return getSingletonMedia(obj) != null;
+		return toSingletonMedia(obj) != null;
 	}
 
-	public static Media getSingletonMedia(Object obj)
+	public static Media toSingletonMedia(Object obj)
 	{
 		if (obj instanceof Media)
 		{
 			return (Media) obj;
 		}
-		if (obj instanceof Iterable)
+		else if (obj instanceof Iterable)
 		{
 			Iterator<?> iter = ((Iterable<?>) obj).iterator();
 			if (iter.hasNext())
@@ -64,14 +64,9 @@ public class MediaUtil
 		return names.build();
 	}
 
-	private MediaUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
-
 	public static List<Map<String, Object>> generateNamingParametersForAllNames(Object obj)
 	{
-		Media singleMedia = getSingletonMedia(obj);
+		Media singleMedia = toSingletonMedia(obj);
 		if (singleMedia != null)
 		{
 			if (obj instanceof NamedMedia)
@@ -103,4 +98,8 @@ public class MediaUtil
 		return params.build();
 	}
 
+	private MediaUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
 }
