@@ -96,6 +96,8 @@
 			<releaseTagsCorrectionRule searchTags="H, 265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
 			<releaseTagsCorrectionRule searchTags="H264" replacement="H.264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
 			<releaseTagsCorrectionRule searchTags="H265" replacement="H.265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="x, 264" replacement="x264" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
+			<releaseTagsCorrectionRule searchTags="x, 265" replacement="x265" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
 			<releaseTagsCorrectionRule searchTags="WEB, DL" replacement="WEB-DL" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />
 		</rules>
 
