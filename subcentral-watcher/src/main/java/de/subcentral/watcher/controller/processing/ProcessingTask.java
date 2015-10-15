@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -402,9 +403,10 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			foundReleases = processReleases(existingRlss);
 
 			// Filter by Media
-			List<Map<String, Object>> namingParamsForFiltering = MediaUtil.generateNamingParametersForAllNames(srcRls.getMedia());
+			Function<Release, List<Media>> nestedObjRetriever = (Release rls) -> rls.getMedia();
+			Function<List<Media>, List<Map<String, Object>>> parameterGenerator = (List<Media> m) -> MediaUtil.generateNamingParametersForAllNames(m);
 			mediaFilteredFoundReleases = foundReleases.stream()
-					.filter(NamingUtil.filterByNestedName(srcRls, (Release rls) -> rls.getMedia(), controller.getNamingServicesForFiltering(), namingParamsForFiltering))
+					.filter(NamingUtil.filterByNestedName(srcRls, nestedObjRetriever, controller.getNamingServicesForFiltering(), parameterGenerator))
 					.collect(Collectors.toList());
 
 			// Filter by Release Tags and Group (matching releases)
@@ -671,13 +673,13 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 					WinRarPackager packager;
 					switch (locateStrategy)
 					{
-					case SPECIFY:
-						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
-						break;
-					case AUTO_LOCATE:
-						// fall through
-					default:
-						packager = controller.getMainController().getWinRar().getPackager();
+						case SPECIFY:
+							packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+							break;
+						case AUTO_LOCATE:
+							// fall through
+						default:
+							packager = controller.getMainController().getWinRar().getPackager();
 					}
 					WinRarPackConfig cfg = new WinRarPackConfig();
 					cfg.setCompressionMethod(CompressionMethod.BEST);

@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.media.Media;
@@ -72,19 +73,24 @@ public class NamingUtil
 		};
 	}
 
-	public static <T, U> Predicate<T> filterByNestedName(T obj, Function<T, U> nestedObjRetriever, NamingService namingService, List<Map<String, Object>> parameters)
+	public static <T, U> Predicate<T> filterByNestedName(T obj, Function<T, U> nestedObjRetriever, NamingService namingService, Function<U, List<Map<String, Object>>> parameterGenerator)
 	{
 		// acceptedNames can be empty. Then no restriction is made and all names are valid
-		Set<String> requiredNames = generateNames(nestedObjRetriever.apply(obj), ImmutableList.of(namingService), parameters);
-		return filterByNestedName(requiredNames, nestedObjRetriever, namingService, parameters);
+		U nestedObj = nestedObjRetriever.apply(obj);
+		Set<String> requiredNames = generateNames(nestedObj, ImmutableList.of(namingService), parameterGenerator.apply(nestedObj));
+		return filterByNestedName(requiredNames, nestedObjRetriever, namingService, parameterGenerator);
 	}
 
-	public static <T, U> Predicate<T> filterByNestedName(Set<String> requiredNames, Function<T, U> nestedObjRetriever, NamingService namingServices, List<Map<String, Object>> parameters)
+	public static <T, U> Predicate<T> filterByNestedName(Set<String> requiredNames,
+			Function<T, U> nestedObjRetriever,
+			NamingService namingServices,
+			Function<U, List<Map<String, Object>>> parameterGenerator)
 	{
 		return (T obj) ->
 		{
-			// System.out.println("RequiredNames=" + requiredNames);
-			Set<String> candidateNames = generateNames(nestedObjRetriever.apply(obj), ImmutableList.of(namingServices), parameters);
+			System.out.println("RequiredNames=" + requiredNames);
+			U nestedObj = nestedObjRetriever.apply(obj);
+			Set<String> candidateNames = generateNames(nestedObj, ImmutableList.of(namingServices), parameterGenerator.apply(nestedObj));
 			// If requiredNames is empty, all names are accepted. Otherwise return true, if any of the candidate's names matches a required name
 			boolean accepted = requiredNames.isEmpty() ? true : !Collections.disjoint(requiredNames, candidateNames);
 			return accepted;
@@ -114,6 +120,11 @@ public class NamingUtil
 			}
 		}
 		return names;
+	}
+
+	public static <T> Function<T, List<Map<String, Object>>> getDefaultParameterGenerator()
+	{
+		return (T obj) -> ImmutableList.of(ImmutableMap.of());
 	}
 
 	private NamingUtil()
