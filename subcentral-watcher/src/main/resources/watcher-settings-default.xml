@@ -81,6 +81,11 @@
 				</aliasNames>
 			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Last Man Standing" namePatternMode="LITERAL" nameReplacement="Last Man Standing (US)" beforeQuerying="true" afterQuerying="false" />
+						<seriesNameCorrectionRule namePattern="Nashville" namePatternMode="SIMPLE" nameReplacement="Nashville (2012)" beforeQuerying="true" afterQuerying="false">
+				<aliasNames>
+					<aliasName>Nashville</aliasName>
+				</aliasNames>
+			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Scandal" namePatternMode="LITERAL" nameReplacement="Scandal (US)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Scream" namePatternMode="LITERAL" nameReplacement="Scream The TV Series" beforeQuerying="true" afterQuerying="false">
 				<aliasNames>
