@@ -86,14 +86,14 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 	// Config: is loaded on start of the task
 	private ProcessingConfig				config;
-	// Important objects for processing and protocol
+	// Important objects for processing and details
 	private final TreeItem<ProcessingItem>	taskTreeItem;
 	private SubtitleAdjustment				parsedObject;
 	private List<Correction>				parsingCorrections			= ImmutableList.of();
 	private List<Release>					foundReleases				= ImmutableList.of();
 	private List<Release>					mediaFilteredFoundReleases	= ImmutableList.of();
 	private List<Release>					matchingReleases			= ImmutableList.of();
-	Map<Release, StandardRelease>			guessedReleases				= ImmutableMap.of();
+	private Map<Release, StandardRelease>	guessedReleases				= ImmutableMap.of();
 	private Map<Release, CompatibilityInfo>	compatibleReleases			= ImmutableMap.of();
 	private SubtitleAdjustment				resultObject;
 	private ListProperty<ProcessingResult>	results						= new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
@@ -109,7 +109,9 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		updateTitle(sourceFile.getFileName().toString());
 		updateMessage("In queue");
-		// progress initial value already is -1 (intermediate)
+		// progress initial value is -1 (intermediate) -> set it to zero
+		// reason: if many tasks are added the animation overhead can get quite big and it's very confusing to watch
+		updateProgress(0d, 1d);
 	}
 
 	public Path getSourceFile()
