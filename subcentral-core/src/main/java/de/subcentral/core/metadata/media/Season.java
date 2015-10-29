@@ -1,6 +1,8 @@
 package de.subcentral.core.metadata.media;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -41,6 +43,8 @@ public class Season extends MediaBase implements Comparable<Season>
 	private Integer								number;
 	private boolean								special;
 	private Temporal							finaleDate;
+
+	private final List<Episode>					episodes				= new ArrayList<>(0);
 
 	public Season()
 	{
@@ -167,6 +171,28 @@ public class Season extends MediaBase implements Comparable<Season>
 		return new Episode(series, this, numberInSeason, title);
 	}
 
+	/*
+	 * Episodes, Seasons
+	 */
+	public List<Episode> getEpisodes()
+	{
+		return episodes;
+	}
+
+	public void setEpisodes(Collection<Episode> episodes)
+	{
+		this.episodes.clear();
+		this.episodes.addAll(episodes);
+	}
+
+	// Convenience
+	public Episode addEpisode()
+	{
+		Episode epi = new Episode(series, this);
+		episodes.add(epi);
+		return epi;
+	}
+
 	// Object methods
 	@Override
 	public boolean equals(Object obj)
@@ -222,6 +248,7 @@ public class Season extends MediaBase implements Comparable<Season>
 				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
 				.add("ids", BeanUtil.nullIfEmpty(ids))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
+				.add("episodes.size()", BeanUtil.nullIfZero(episodes.size()))
 				.toString();
 	}
 }

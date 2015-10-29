@@ -13,8 +13,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javafx.concurrent.Task;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -30,18 +28,16 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.mig.SeriesListParser.SeriesListContent;
 
-public class SeriesListParser extends Task<SeriesListContent>
+public class SeriesListParser
 {
-	private static final Logger	log	= LogManager.getLogger(SeriesListParser.class);
-	private static final String	URL	= "http://subcentral.de/index.php?page=Thread&postID=29261#post29261";
+	private static final Logger	log					= LogManager.getLogger(SeriesListParser.class);
+	private static final String	URL					= "http://subcentral.de/index.php?page=Thread&postID=29261#post29261";
 
 	public static final String	ATTRIBUTE_BOARD_ID	= "SUBCENTRAL_BOARD_ID";
 	public static final String	ATTRIBUTE_THREAD_ID	= "SUBCENTRAL_THREAD_ID";
 
-	@Override
-	protected SeriesListContent call() throws IOException
+	public SeriesListContent parse() throws IOException
 	{
 		final Pattern boardIdPattern = Pattern.compile("boardID=(\\d+)");
 		final Pattern threadIdPattern = Pattern.compile("threadID=(\\d+)");
@@ -126,11 +122,11 @@ public class SeriesListParser extends Task<SeriesListContent>
 				Elements seasonAnchors = seasonsCell.getElementsByTag("a");
 				for (Element seasonAnchor : seasonAnchors)
 				{
-					List<Season> seasonsOfSeries = new ArrayList<>();
+					List<Season> seasonsInAnchor = new ArrayList<>();
 					String seasonLabel = seasonAnchor.text();
 					try
 					{
-						seasonsOfSeries.add(series.newSeason(Integer.parseInt(seasonLabel)));
+						seasonsInAnchor.add(series.newSeason(Integer.parseInt(seasonLabel)));
 					}
 					catch (NumberFormatException e)
 					{
@@ -140,8 +136,8 @@ public class SeriesListParser extends Task<SeriesListContent>
 							Matcher seasonAdditionMatcher = seasonAdditionPattern.matcher(seasonLabel);
 							if (seasonAdditionMatcher.find())
 							{
-								seasonsOfSeries.add(series.newSeason(Integer.parseInt(seasonAdditionMatcher.group(1))));
-								seasonsOfSeries.add(series.newSeason(Integer.parseInt(seasonAdditionMatcher.group(2))));
+								seasonsInAnchor.add(series.newSeason(Integer.parseInt(seasonAdditionMatcher.group(1))));
+								seasonsInAnchor.add(series.newSeason(Integer.parseInt(seasonAdditionMatcher.group(2))));
 								break;
 							}
 
@@ -152,19 +148,19 @@ public class SeriesListParser extends Task<SeriesListContent>
 								int end = Integer.parseInt(seasonRangeMatcher.group(2));
 								for (int i = start; i <= end; i++)
 								{
-									seasonsOfSeries.add(series.newSeason(i));
+									seasonsInAnchor.add(series.newSeason(i));
 								}
 								break;
 							}
 
 							Season specialSeason = series.newSeason(seasonLabel);
 							specialSeason.setSpecial(true);
-							seasonsOfSeries.add(specialSeason);
+							seasonsInAnchor.add(specialSeason);
 							break;
 						}
 					}
 
-					for (Season season : seasonsOfSeries)
+					for (Season season : seasonsInAnchor)
 					{
 						String threadUrl = seasonAnchor.attr("href");
 						Matcher threadIdMatcher = threadIdPattern.matcher(threadUrl);
@@ -177,7 +173,8 @@ public class SeriesListParser extends Task<SeriesListContent>
 							log.warn("Couldn't find a thread ID for season {}. Content of season anchor: {}", season, seasonAnchor);
 						}
 					}
-					seasonList.addAll(seasonsOfSeries);
+					series.getSeasons().addAll(seasonsInAnchor);
+					seasonList.addAll(seasonsInAnchor);
 				}
 
 				/**
@@ -249,8 +246,8 @@ public class SeriesListParser extends Task<SeriesListContent>
 
 	public static void main(String[] args) throws Exception
 	{
-		SeriesListParser task = new SeriesListParser();
-		SeriesListContent content = task.call();
+		SeriesListParser parser = new SeriesListParser();
+		SeriesListContent content = parser.parse();
 		int i = 0;
 		// for (Series series : content.getSeries())
 		// {

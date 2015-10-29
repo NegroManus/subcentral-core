@@ -4,12 +4,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import com.google.common.base.Joiner;
 
@@ -26,8 +30,22 @@ public class SubCentralHttpApi implements SubCentralApi
 {
 	private static final Logger		log		= LogManager.getLogger(SubCentralHttpApi.class);
 	private static final Charset	UTF_8	= Charset.forName("UTF-8");
+	private static final URL		host	= initHost();
 
-	private String					cookies;
+	private static URL initHost()
+	{
+		try
+		{
+			return new URL("http://subcentral.de/");
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private String cookies;
 
 	/*
 	 * (non-Javadoc)
@@ -39,7 +57,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	{
 		String body = "loginUsername=" + URLEncoder.encode(username, UTF_8.name()) + "&loginPassword=" + URLEncoder.encode(password, UTF_8.name());
 
-		URL loginUrl = new URL("http://subcentral.de/index.php?form=UserLogin");
+		URL loginUrl = new URL(host, "index.php?form=UserLogin");
 		HttpURLConnection conn = openConnection(loginUrl);
 		conn.setRequestMethod("POST");
 		conn.setDoInput(true);
@@ -87,12 +105,19 @@ public class SubCentralHttpApi implements SubCentralApi
 	@Deprecated
 	public void logout() throws IOException
 	{
-		HttpURLConnection conn = openConnection(new URL("http://subcentral.de/index.php?action=UserLogout"));
+		HttpURLConnection conn = openConnection(new URL(host, "index.php?action=UserLogout"));
 		conn.connect();
 		String oldCookies = cookies;
 		cookies = null;
 		printHeaders(conn);
 		log.debug("Logged out (Cookies: {})", oldCookies);
+	}
+
+	@Override
+	public Document getContent(String url) throws IOException
+	{
+		HttpURLConnection conn = openConnection(new URL(host, url));
+		return Jsoup.parse(conn.getInputStream(), StandardCharsets.UTF_8.name(), host.toExternalForm());
 	}
 
 	/*
@@ -103,7 +128,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	@Override
 	public Path downloadAttachment(int attachmentId, Path directory) throws IOException
 	{
-		HttpURLConnection conn = openConnection(new URL("http://subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId));
+		HttpURLConnection conn = openConnection(new URL(host + "index.php?page=Attachment&attachmentID=" + attachmentId));
 
 		/**
 		 * Header

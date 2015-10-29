@@ -312,12 +312,16 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	// Convenience
 	public Episode addEpisode()
 	{
-		return new Episode(this);
+		Episode epi = new Episode(this);
+		episodes.add(epi);
+		return epi;
 	}
 
 	public Season addSeason()
 	{
-		return new Season(this);
+		Season season = new Season(this);
+		seasons.add(season);
+		return season;
 	}
 
 	// Object methods
@@ -375,8 +379,8 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
 				.add("ids", BeanUtil.nullIfEmpty(ids))
 				.add("attributes", BeanUtil.nullIfEmpty(attributes))
-				.add("episodes.size()", episodes.size())
-				.add("seasons.size()", seasons.size())
+				.add("episodes.size()", BeanUtil.nullIfZero(episodes.size()))
+				.add("seasons.size()", BeanUtil.nullIfZero(seasons.size()))
 				.toString();
 	}
 }
