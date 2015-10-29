@@ -27,7 +27,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	private static final Logger		log		= LogManager.getLogger(SubCentralHttpApi.class);
 	private static final Charset	UTF_8	= Charset.forName("UTF-8");
 
-	private String cookies;
+	private String					cookies;
 
 	/*
 	 * (non-Javadoc)
@@ -101,7 +101,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	 * @see de.subcentral.support.subcentralde.SubCentralApi#downloadAttachment(int, java.nio.file.Path)
 	 */
 	@Override
-	public void downloadAttachment(int attachmentId, Path directory) throws IOException
+	public Path downloadAttachment(int attachmentId, Path directory) throws IOException
 	{
 		HttpURLConnection conn = openConnection(new URL("http://subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId));
 
@@ -125,7 +125,7 @@ public class SubCentralHttpApi implements SubCentralApi
 		String contentDisposition = conn.getHeaderField("Content-disposition");
 		if (contentDisposition != null)
 		{
-			Pattern filenamePattern = Pattern.compile("filename=\"(.*)\"");
+			Pattern filenamePattern = Pattern.compile("filename=\"(.*?)\"");
 			Matcher filenameMatcher = filenamePattern.matcher(contentDisposition);
 			if (filenameMatcher.find())
 			{
@@ -138,12 +138,14 @@ public class SubCentralHttpApi implements SubCentralApi
 		log.debug("Downloading attachment. id={}, filename={}, contentType={}, contentLength={}", attachmentId, filename, contentType, contentLength);
 		long start = System.currentTimeMillis();
 		ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
-		try (FileOutputStream fos = new FileOutputStream(directory.resolve(filename).toFile());)
+		Path target = directory.resolve(filename);
+		try (FileOutputStream fos = new FileOutputStream(target.toFile());)
 		{
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		}
 		long duration = System.currentTimeMillis() - start;
-		log.debug("Downloaded attachment in {}ms. id={}, filename={}, contentType={}, contentLength={}", duration, attachmentId, filename, contentType, contentLength);
+		log.debug("Downloaded attachment in {} ms. id={}, filename={}, contentType={}, contentLength={}", duration, attachmentId, filename, contentType, contentLength);
+		return target;
 	}
 
 	private HttpURLConnection openConnection(URL url) throws IOException
@@ -154,7 +156,7 @@ public class SubCentralHttpApi implements SubCentralApi
 			conn.setRequestProperty("Cookie", cookies);
 		}
 		// fake mozilla user agent
-		conn.setRequestProperty("User-Agent", "User-Agent:	Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0");
+		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0");
 		return (HttpURLConnection) conn;
 	}
 
