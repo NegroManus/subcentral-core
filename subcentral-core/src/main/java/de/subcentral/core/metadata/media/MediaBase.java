@@ -24,7 +24,6 @@ public abstract class MediaBase extends MetadataBase implements Media
 	protected String								contentRating;
 	protected final ListMultimap<String, String>	images				= LinkedListMultimap.create(0);
 	protected final List<String>					furtherInfoLinks	= new ArrayList<>(4);
-	protected final ListMultimap<String, Object>	attributes			= LinkedListMultimap.create(0);
 
 	@Override
 	public String getTitle()
@@ -104,17 +103,5 @@ public abstract class MediaBase extends MetadataBase implements Media
 	{
 		this.furtherInfoLinks.clear();
 		this.furtherInfoLinks.addAll(furtherInfoLinks);
-	}
-
-	@Override
-	public ListMultimap<String, Object> getAttributes()
-	{
-		return attributes;
-	}
-
-	public void setAttributes(ListMultimap<String, Object> attributes)
-	{
-		this.attributes.clear();
-		this.attributes.putAll(attributes);
 	}
 }

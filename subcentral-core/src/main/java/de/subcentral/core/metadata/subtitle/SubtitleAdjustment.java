@@ -18,6 +18,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
+import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
@@ -26,20 +27,24 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
+public class SubtitleAdjustment extends MetadataBase implements Work, Comparable<SubtitleAdjustment>
 {
+	private static final long					serialVersionUID		= 3266903304683246434L;
+
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_SUBTITLES			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SUBTITLES);
 	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.TAGS);
 	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES	= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.MATCHING_RELEASES);
-	public static final SimplePropDescriptor	PROP_VERSION			= new SimplePropDescriptor(Subtitle.class, PropNames.VERSION);
+	public static final SimplePropDescriptor	PROP_VERSION			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.VERSION);
 	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.DATE);
 	public static final SimplePropDescriptor	PROP_SIZE				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.SIZE);
 	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO);
 	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.NFO_LINK);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.IDS);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.ATTRIBUTES);
 
-	public static final Tag HEARING_IMPAIRED_TAG = new Tag("HI", "Hearing Impaired");
+	public static final Tag						HEARING_IMPAIRED_TAG	= new Tag("HI", "Hearing Impaired");
 
 	public static enum ForeignParts
 	{
@@ -69,12 +74,12 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 	/**
 	 * Adjustment of the timings so the subtitle fits on a specific video.
 	 */
-	public static final String CONTRIBUTION_TYPE_ADJUSTMENT = "ADJUSTMENT";
+	public static final String	CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
 
 	/**
 	 * Textual customization of a subtitle (for example adding/removal of Hearing Impaired parts, foreign language parts, ...).
 	 */
-	public static final String CONTRIBUTION_TYPE_CUSTOMIZATION = "CUSTOMIZATION";
+	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
 	public static SubtitleAdjustment create(Release matchingRelease, String language, String group)
 	{
@@ -429,6 +434,8 @@ public class SubtitleAdjustment implements Work, Comparable<SubtitleAdjustment>
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
 				.add("contributions", BeanUtil.nullIfEmpty(contributions))
+				.add("ids", BeanUtil.nullIfEmpty(ids))
+				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }

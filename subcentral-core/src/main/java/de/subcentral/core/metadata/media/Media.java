@@ -19,28 +19,28 @@ import de.subcentral.core.util.TimeUtil;
  */
 public interface Media extends Metadata
 {
-	public static final String	MEDIA_TYPE_EPISODE			= "episode";
-	public static final String	MEDIA_TYPE_SERIES			= "series";
-	public static final String	MEDIA_TYPE_SEASON			= "season";
-	public static final String	MEDIA_TYPE_MOVIE			= "movie";
-	public static final String	MEDIA_TYPE_GAME				= "game";
-	public static final String	MEDIA_TYPE_SOFTWARE			= "software";
-	public static final String	MEDIA_TYPE_DOCUMENTATION	= "documentation";
-	public static final String	MEDIA_TYPE_SHOW				= "show";
-	public static final String	MEDIA_TYPE_CONCERT			= "concert";
-	public static final String	MEDIA_TYPE_SONG				= "song";
-	public static final String	MEDIA_TYPE_ALBUM			= "album";
-	public static final String	MEDIA_TYPE_IMAGE_SET		= "image_set";
-	public static final String	MEDIA_TYPE_MUSIC_VIDEO		= "music_video";
-	public static final String	MEDIA_TYPE_IMAGE			= "image";
-	public static final String	MEDIA_TYPE_EBOOK			= "ebook";
-	public static final String	MEDIA_TYPE_AUDIOBOOK		= "audiobook";
+	public static final String	MEDIA_TYPE_EPISODE					= "episode";
+	public static final String	MEDIA_TYPE_SERIES					= "series";
+	public static final String	MEDIA_TYPE_SEASON					= "season";
+	public static final String	MEDIA_TYPE_MOVIE					= "movie";
+	public static final String	MEDIA_TYPE_GAME						= "game";
+	public static final String	MEDIA_TYPE_SOFTWARE					= "software";
+	public static final String	MEDIA_TYPE_DOCUMENTATION			= "documentation";
+	public static final String	MEDIA_TYPE_SHOW						= "show";
+	public static final String	MEDIA_TYPE_CONCERT					= "concert";
+	public static final String	MEDIA_TYPE_SONG						= "song";
+	public static final String	MEDIA_TYPE_ALBUM					= "album";
+	public static final String	MEDIA_TYPE_IMAGE_SET				= "image_set";
+	public static final String	MEDIA_TYPE_MUSIC_VIDEO				= "music_video";
+	public static final String	MEDIA_TYPE_IMAGE					= "image";
+	public static final String	MEDIA_TYPE_EBOOK					= "ebook";
+	public static final String	MEDIA_TYPE_AUDIOBOOK				= "audiobook";
 
-	public static final String	MEDIA_CONTENT_TYPE_TEXT			= "text";
-	public static final String	MEDIA_CONTENT_TYPE_IMAGE		= "image";
-	public static final String	MEDIA_CONTENT_TYPE_AUDIO		= "audio";
-	public static final String	MEDIA_CONTENT_TYPE_VIDEO		= "video";
-	public static final String	MEDIA_CONTENT_TYPE_APPLICATION	= "application";
+	public static final String	MEDIA_CONTENT_TYPE_TEXT				= "text";
+	public static final String	MEDIA_CONTENT_TYPE_IMAGE			= "image";
+	public static final String	MEDIA_CONTENT_TYPE_AUDIO			= "audio";
+	public static final String	MEDIA_CONTENT_TYPE_VIDEO			= "video";
+	public static final String	MEDIA_CONTENT_TYPE_APPLICATION		= "application";
 
 	public static final String	MEDIA_IMAGE_TYPE_WALLPAPER			= "wallpaper";
 	public static final String	MEDIA_IMAGE_TYPE_POSTER_VERTICAL	= "poster_vertical";
@@ -137,13 +137,6 @@ public interface Media extends Metadata
 	 */
 	public List<String> getFurtherInfoLinks();
 
-	/**
-	 * Additional attributes that have no designated property can be stored in the ListMultimap of getAttributes().
-	 * 
-	 * @return the additional attributes of this media
-	 */
-	public ListMultimap<String, Object> getAttributes();
-
 	// Convenience
 	/**
 	 * 
@@ -188,18 +181,5 @@ public interface Media extends Metadata
 	public default String getPrimaryCountryOfOrigin()
 	{
 		return !getCountries().isEmpty() ? getCountries().get(0) : null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public default <T> T getAttributeValue(String key) throws ClassCastException
-	{
-		List<Object> values = getAttributes().get(key);
-		return values.isEmpty() ? null : (T) values.get(0);
-	}
-
-	@SuppressWarnings("unchecked")
-	public default <T> List<T> getAttributeValues(String key) throws ClassCastException
-	{
-		return (List<T>) getAttributes().get(key);
 	}
 }

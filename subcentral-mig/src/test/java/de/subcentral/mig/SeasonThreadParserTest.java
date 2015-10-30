@@ -16,7 +16,7 @@ public class SeasonThreadParserTest
 	private SeasonThreadParser parser = new SeasonThreadParser();
 
 	@Test
-	public void parseMrRobotS01() throws Exception
+	public void testParseMrRobotS01() throws Exception
 	{
 		Document doc = parseDoc("thread-mrrobot_s01.html");
 		Season parsedSeason = parser.parse(doc);

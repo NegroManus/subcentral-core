@@ -18,61 +18,64 @@ import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.Contribution;
+import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Subtitle implements Work, Comparable<Subtitle>
+public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 {
-	public static final SimplePropDescriptor	PROP_MEDIA				= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA);
-	public static final SimplePropDescriptor	PROP_LANGUAGE			= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
-	public static final SimplePropDescriptor	PROP_GROUP				= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
-	public static final SimplePropDescriptor	PROP_SOURCE				= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
-	public static final SimplePropDescriptor	PROP_STATE				= new SimplePropDescriptor(Subtitle.class, PropNames.STATE);
-	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE	= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
-	public static final SimplePropDescriptor	PROP_BASIS				= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
-	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(Subtitle.class, PropNames.NFO);
-	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(Subtitle.class, PropNames.NFO_LINK);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_MEDIA						= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA);
+	public static final SimplePropDescriptor	PROP_LANGUAGE					= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
+	public static final SimplePropDescriptor	PROP_GROUP						= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_SOURCE						= new SimplePropDescriptor(Subtitle.class, PropNames.SOURCE);
+	public static final SimplePropDescriptor	PROP_STATE						= new SimplePropDescriptor(Subtitle.class, PropNames.STATE);
+	public static final SimplePropDescriptor	PROP_PRODUCTION_TYPE			= new SimplePropDescriptor(Subtitle.class, PropNames.PRODUCTION_TYPE);
+	public static final SimplePropDescriptor	PROP_BASIS						= new SimplePropDescriptor(Subtitle.class, PropNames.BASIS);
+	public static final SimplePropDescriptor	PROP_NFO						= new SimplePropDescriptor(Subtitle.class, PropNames.NFO);
+	public static final SimplePropDescriptor	PROP_NFO_LINK					= new SimplePropDescriptor(Subtitle.class, PropNames.NFO_LINK);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_IDS						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.IDS);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES					= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.ATTRIBUTES);
 
-	public static final String	STATE_PLANNED		= "PLANNED";
-	public static final String	STATE_TRANSCRIPT	= "TRANSCRIPT";
-	public static final String	STATE_TIMINGS		= "TIMINGS";
-	public static final String	STATE_TRANSLATION	= "TRANSLATION";
-	public static final String	STATE_REVISION		= "REVISION";
-	public static final String	STATE_RELEASED		= "RELEASED";
+	public static final String					STATE_PLANNED					= "PLANNED";
+	public static final String					STATE_TRANSCRIPT				= "TRANSCRIPT";
+	public static final String					STATE_TIMINGS					= "TIMINGS";
+	public static final String					STATE_TRANSLATION				= "TRANSLATION";
+	public static final String					STATE_REVISION					= "REVISION";
+	public static final String					STATE_RELEASED					= "RELEASED";
 
 	/**
 	 * If a transcript was the source of the subtitle.
 	 */
-	public static final String PRODUCTION_TYPE_TRANSCRIPT = "TRANSCRIPT";
+	public static final String					PRODUCTION_TYPE_TRANSCRIPT		= "TRANSCRIPT";
 
 	/**
 	 * If the subtitles was created by hearing what is said.
 	 */
-	public static final String PRODUCTION_TYPE_LISTENING = "LISTENING";
+	public static final String					PRODUCTION_TYPE_LISTENING		= "LISTENING";
 
 	/**
 	 * If the subtitle was ripped from a retail source (DVD, BluRay, CD, etc).
 	 */
-	public static final String PRODUCTION_TYPE_RETAIL = "RETAIL";
+	public static final String					PRODUCTION_TYPE_RETAIL			= "RETAIL";
 
 	/**
 	 * If the subtitle is an modification (improvement or customization) of another subtitle.
 	 */
-	public static final String PRODUCTION_TYPE_MODIFICATION = "MODIFICATION";
+	public static final String					PRODUCTION_TYPE_MODIFICATION	= "MODIFICATION";
 
 	/**
 	 * If the subtitle is a translation of another subtitle.
 	 */
-	public static final String PRODUCTION_TYPE_TRANSLATION = "TRANSLATION";
+	public static final String					PRODUCTION_TYPE_TRANSLATION		= "TRANSLATION";
 
 	/**
 	 * If the subtitle was produced automatically by a machine. For example by speech-to-text or translation software.
 	 */
-	public static final String PRODUCTION_TYPE_MACHINE = "MACHINE";
+	public static final String					PRODUCTION_TYPE_MACHINE			= "MACHINE";
 
 	public static enum TranslationType
 	{
@@ -96,22 +99,22 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	/**
 	 * The making of a transcript.
 	 */
-	public static final String CONTRIBUTION_TYPE_TRANSCRIPT = "TRANSCRIPT";
+	public static final String			CONTRIBUTION_TYPE_TRANSCRIPT	= "TRANSCRIPT";
 
 	/**
 	 * The syncing of a subtitle.
 	 */
-	public static final String CONTRIBUTION_TYPE_TIMINGS = "TIMINGS";
+	public static final String			CONTRIBUTION_TYPE_TIMINGS		= "TIMINGS";
 
 	/**
 	 * The actual translation of a subtitle to another language.
 	 */
-	public static final String CONTRIBUTION_TYPE_TRANSLATION = "TRANSLATION";
+	public static final String			CONTRIBUTION_TYPE_TRANSLATION	= "TRANSLATION";
 
 	/**
 	 * Internal revision before the release.
 	 */
-	public static final String CONTRIBUTION_TYPE_REVISION = "REVISION";
+	public static final String			CONTRIBUTION_TYPE_REVISION		= "REVISION";
 
 	private Media						media;
 	private String						language;
@@ -123,7 +126,7 @@ public class Subtitle implements Work, Comparable<Subtitle>
 	private String						nfo;
 	private String						nfoLink;
 	// More than 4 contributions per subtitle is very rare
-	private final List<Contribution>	contributions	= new ArrayList<>(4);
+	private final List<Contribution>	contributions					= new ArrayList<>(4);
 
 	public Subtitle()
 	{
@@ -400,6 +403,8 @@ public class Subtitle implements Work, Comparable<Subtitle>
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
 				.add("contributions", BeanUtil.nullIfEmpty(contributions))
+				.add("ids", BeanUtil.nullIfEmpty(ids))
+				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }

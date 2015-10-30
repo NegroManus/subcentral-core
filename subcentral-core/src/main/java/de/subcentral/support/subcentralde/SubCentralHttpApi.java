@@ -48,6 +48,11 @@ public class SubCentralHttpApi implements SubCentralApi
 		}
 	}
 
+	public static URL getHost()
+	{
+		return host;
+	}
+
 	private String cookies;
 
 	/*

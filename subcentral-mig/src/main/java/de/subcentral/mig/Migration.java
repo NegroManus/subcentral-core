@@ -34,11 +34,16 @@ import de.subcentral.support.subcentralde.SubCentralDe;
 
 public class Migration
 {
-	private static final Logger	log		= LogManager.getLogger(Migration.class);
-	private static final SubRip	subRip	= SubRip.INSTANCE;
+	public static final String					LANGUAGE_GERMAN							= "de";
+	public static final String					LANGUAGE_ENGLISH						= "en";
+	public static final String					IMG_TYPE_SEASON_HEADER					= "season_header";
+	public static final String					SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID	= "attachment_id";
 
-	private static final ContributionParser		CONTRIBUTION_PARSER	= initContributionParser();
-	private static final List<ParsingService>	PARSING_SERVICES	= initParsingServices();
+	private static final Logger					log										= LogManager.getLogger(Migration.class);
+	private static final SubRip					subRip									= SubRip.INSTANCE;
+
+	private static final ContributionParser		CONTRIBUTION_PARSER						= initContributionParser();
+	private static final List<ParsingService>	PARSING_SERVICES						= initParsingServices();
 
 	private static ContributionParser initContributionParser()
 	{

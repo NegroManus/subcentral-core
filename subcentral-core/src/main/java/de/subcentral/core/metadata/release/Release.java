@@ -51,6 +51,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(Release.class, PropNames.NFO_LINK);
 	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Release.class, PropNames.FURTHER_INFO_LINKS);
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Release.class, PropNames.IDS);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Release.class, PropNames.ATTRIBUTES);
 
 	public static final Comparator<Release>		NAME_COMPARATOR			= (Release r1, Release r2) -> (r1 == null ? (r2 == null ? 0 : 1) : r1.compareToByName(r2));
 
@@ -512,6 +513,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 				.add("nfoLink", nfoLink)
 				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfoLinks))
 				.add("ids", BeanUtil.nullIfEmpty(ids))
+				.add("attributes", BeanUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }
