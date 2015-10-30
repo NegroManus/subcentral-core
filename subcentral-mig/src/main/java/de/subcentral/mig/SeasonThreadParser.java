@@ -1,10 +1,7 @@
 package de.subcentral.mig;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -14,34 +11,51 @@ import de.subcentral.support.subcentralde.SubCentralHttpApi;
 
 public class SeasonThreadParser
 {
-	public Season parse(SubCentralApi api, Season season) throws IOException
+	public Season getAndParse(int threadId, SubCentralApi api) throws IOException
 	{
-		Integer threadId = season.getAttributeValue(SeriesListParser.ATTRIBUTE_THREAD_ID);
-		if (threadId == null)
-		{
-			throw new IllegalArgumentException("No threadID set for this season");
-		}
-
 		Document doc = api.getContent("index.php?page=Thread&threadID=" + threadId);
+		return parse(doc);
+	}
 
-		Element postContentElem = doc.getElementsByClass("messageBody").first();
-		System.out.println(postContentElem);
+	public Season parse(Document threadHtml)
+	{
+		// Get title and content of first post
+		Element postTitleDiv = threadHtml.getElementsByClass("messageTitle").first();
+		Element postContentDiv = threadHtml.getElementsByClass("messageBody").first();
+		if (postTitleDiv == null || postContentDiv == null)
+		{
+			throw new IllegalArgumentException("Invalid thread html: No post found");
+		}
+		Element postTextDiv = postContentDiv.child(0);
+
+		return parse(postTitleDiv.text(), postTextDiv.html());
+	}
+
+	public Season parse(String postTitle, String postContent)
+	{
+		Season season = new Season();
+
+		System.out.println(postTitle);
+		System.out.println(postContent);
 
 		return season;
+	}
+
+	/**
+	 * <pre>
+	 * Mr. Robot - Staffel 1 - [DE-Subs: 10 | VO-Subs: 10] - [Komplett] - [+ Deleted Scenes]
+	 * </pre>
+	 * 
+	 */
+	private void parsePostTitle(Season season, String postTitle)
+	{
+
 	}
 
 	public static void main(String[] args) throws IOException
 	{
 		SubCentralApi api = new SubCentralHttpApi();
 		api.login("NegroManus", "xxx");
-
-		Path attachment = api.downloadAttachment(30462, Paths.get(SystemUtils.USER_HOME));
-		System.out.println("Downloaded attachment to " + attachment);
-
-		// Season season = new Season(new Series("Mr. Robot"), 1);
-		// season.getAttributes().put(SeriesListParser.ATTRIBUTE_THREAD_ID, 42616);
-		//
-		// SeasonThreadParser parser = new SeasonThreadParser();
-		// parser.parse(api, season);
+		new SeasonThreadParser().getAndParse(43334, api);
 	}
 }

@@ -7,9 +7,7 @@ import org.jsoup.nodes.Document;
 
 public interface SubCentralApi
 {
-	/**
-	 * @deprecated Currently not working (login requires recaptcha)
-	 */
+
 	public void login(String username, String password) throws IOException;
 
 	/**
@@ -19,9 +17,6 @@ public interface SubCentralApi
 
 	public Document getContent(String url) throws IOException;
 
-	/**
-	 * @deprecated Currently not working (requires login which is not working)
-	 */
 	public Path downloadAttachment(int attachmentId, Path directory) throws IOException;
 
 }

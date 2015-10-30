@@ -37,7 +37,12 @@ public class SeriesListParser
 	public static final String	ATTRIBUTE_BOARD_ID	= "SUBCENTRAL_BOARD_ID";
 	public static final String	ATTRIBUTE_THREAD_ID	= "SUBCENTRAL_THREAD_ID";
 
-	public SeriesListContent parse() throws IOException
+	public SeriesListContent getAndParse() throws IOException
+	{
+		return parse(Jsoup.parse(new URL(URL), 5000));
+	}
+
+	public SeriesListContent parse(Document doc) throws IOException
 	{
 		final Pattern boardIdPattern = Pattern.compile("boardID=(\\d+)");
 		final Pattern threadIdPattern = Pattern.compile("threadID=(\\d+)");
@@ -54,7 +59,6 @@ public class SeriesListParser
 		// have to use a map for putIfAbsent() method
 		final SortedMap<Network, Network> networkList = new TreeMap<>();
 
-		Document doc = Jsoup.parse(new URL(URL), 5000);
 		Element table = doc.getElementById("qltable");
 		Elements rows = table.getElementsByTag("tr");
 		for (Element row : rows)
@@ -242,27 +246,5 @@ public class SeriesListParser
 		{
 			return networks;
 		}
-	}
-
-	public static void main(String[] args) throws Exception
-	{
-		SeriesListParser parser = new SeriesListParser();
-		SeriesListContent content = parser.parse();
-		int i = 0;
-		// for (Series series : content.getSeries())
-		// {
-		// System.out.println(++i + " " + series);
-		// }
-		// i = 0;
-		// for (Season season : content.getSeasons())
-		// {
-		// System.out.println(++i + " " + NamingDefaults.getDefaultSeasonNamer().name(season));
-		// }
-		// i = 0;
-		for (Network network : content.getNetworks())
-		{
-			System.out.println(++i + " " + network);
-		}
-		System.out.println(content.getSeries().size());
 	}
 }
