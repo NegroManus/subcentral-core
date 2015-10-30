@@ -1,7 +1,10 @@
 package de.subcentral.support.subcentralde;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -75,6 +78,17 @@ public class SubCentralHttpApi implements SubCentralApi
 		{
 			throw new IllegalStateException("Login failed. Server did not return response code 200: " + conn.getHeaderField(null));
 		}
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		String line;
+		Matcher errorMatcher = Pattern.compile("<p class=\"error\">(.*?)</p>").matcher("");
+		while ((line = reader.readLine()) != null)
+		{
+			if (errorMatcher.reset(line).find())
+			{
+				throw new IllegalArgumentException("Login failed: " + errorMatcher.group(1));
+			}
+		}
 
 		List<String> cookieList = new ArrayList<>(4);
 		Map<String, List<String>> map = conn.getHeaderFields();
@@ -86,9 +100,9 @@ public class SubCentralHttpApi implements SubCentralApi
 			}
 		}
 
-		// printHeaders(conn);
+		printHeaders(conn);
 
-		cookies = Joiner.on("; ").join(cookieList);
+		cookies = Joiner.on("; ").join(cookieList).replace("; HttpOnly", "");
 		if (cookies.isEmpty())
 		{
 			throw new IllegalStateException("Login failed. Server failed to send session cookie.");
