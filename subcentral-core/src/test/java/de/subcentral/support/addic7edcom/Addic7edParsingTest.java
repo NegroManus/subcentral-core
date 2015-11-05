@@ -345,6 +345,13 @@ public class Addic7edParsingTest
 		compare("testEpisode21", adj, name);
 	}
 
+	@Test
+	public void testEpisode22()
+	{
+		String name = "CSI_ Cyber - 02x05 - hack E.R..DIMENSION.English.C.orig.Addic7ed.com";
+		// TODO
+	}
+
 	private static final void compare(String testMethodName, SubtitleAdjustment expected, String nameToParse)
 	{
 		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);
