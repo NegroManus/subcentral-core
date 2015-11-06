@@ -51,7 +51,7 @@ public class SeasonThreadParser
 	 * <li>030 - S04E03 - The Power of the Daleks (Verschollen)</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_WITH_TITLE			= Pattern.compile("(?:S(\\d+))?E(\\d+)\\s*-\\s*(?:\\\")?(.*)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_WITH_TITLE			= Pattern.compile("(?:S(\\d+))?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -107,8 +107,6 @@ public class SeasonThreadParser
 		parseSeasonHeader(data, content);
 		parseDescription(data, content);
 		parseSubtitleTable(data, content);
-
-		System.out.println(postContent);
 
 		return new SeasonThreadData(data.seasons.keySet(), data.subtitleAdjustments);
 	}
@@ -325,7 +323,7 @@ public class SeasonThreadParser
 
 				int rowspan = 1;
 				String rowspanAttr = cell.attr("rowspan");
-				if (rowspanAttr != null)
+				if (!rowspanAttr.isEmpty())
 				{
 					rowspan = Integer.parseInt(rowspanAttr);
 					cell.attr("rowspan", "1");
@@ -339,7 +337,7 @@ public class SeasonThreadParser
 				// Cleanup colspan
 				int colspan = 1;
 				String colspanAttr = cell.attr("colspan");
-				if (colspanAttr != null)
+				if (!rowspanAttr.isEmpty())
 				{
 					colspan = Integer.parseInt(colspanAttr);
 					cell.attr("colspan", "1");
@@ -357,12 +355,15 @@ public class SeasonThreadParser
 
 	private static boolean parseStandardTableRow(Data data, List<Element> tdElems, ColumnType[] columns)
 	{
-		Episode epi = null;
-		// Each top-level list represents a column, each nested List represents the subtitles in that column
-		List<List<MarkedValue<SubtitleAdjustment>>> subs = new ArrayList<>();
-		// Each top-level list represents a division of contributions (the divisions are divided by "|"), each nested List represents the contributions inside a division
-		List<List<Contribution>> contributions = new ArrayList<>();
-		List<MarkedValue<String>> sources = new ArrayList<>();
+		Episode parsedEpi = null;
+		// Each top-level list represents a column,
+		// each 2nd-level list represents the subtitles in that column
+		List<List<MarkedValue<SubtitleAdjustment>>> parsedSubs = new ArrayList<>();
+		// Each top-level list represents a column,
+		// each 2nd-level list represents a division within that column (the divisions are divided by "|")
+		// each 3rd-level list represents the contributions inside a division
+		List<List<List<Contribution>>> parsedContributions = new ArrayList<>();
+		List<MarkedValue<String>> parsedSources = new ArrayList<>();
 
 		for (int i = 0; i < tdElems.size(); i++)
 		{
@@ -371,32 +372,146 @@ public class SeasonThreadParser
 			switch (colType)
 			{
 				case EPISODE:
-					epi = parseEpisodeCell(data, td.text());
+					parsedEpi = parseEpisodeCell(data, td.text());
 					break;
 				case GERMAN_SUBS:
 					// fall through
 				case ENGLISH_SUBS:
-					parseSubsCell(subs, td, colType);
+					parseSubsCell(parsedSubs, td, colType);
 					break;
 				case TRANSLATION:
 					// fall through
 				case REVISION:
 					// fall through
 				case ADJUSTMENT:
-					parseContributionsCell(contributions, td, colType);
+					parseContributionsCell(parsedContributions, td, colType);
 					break;
 				case SOURCE:
-					parseSourcesCell(sources, td);
+					parseSourcesCell(parsedSources, td);
 					break;
 				default:
 					// cancel on UNKNOWN columns
 					return false;
 			}
 		}
-		
-		epi = data.episodes.putIfAbsent(epi, epi)
-		
+
+		// Add episode
+		Episode epi = data.episodes.putIfAbsent(parsedEpi, parsedEpi);
+		if (epi == null)
+		{
+			epi = parsedEpi;
+		}
+
+		// Add contributions to subtitles
+		int numSubColumns = parsedSubs.size();
+		// For each contribution column
+		for (List<List<Contribution>> columnContributions : parsedContributions)
+		{
+			int numContributionDivisions = columnContributions.size();
+			// If number of contributionDivisions = 1
+			// -> map all contributions in that division to all subtitles
+			// [LOL][DIM] <-> [SubberA]
+			// [LOL][DIM] <-> [SubberA, SubberB]
+			if (numContributionDivisions == 1)
+			{
+				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
+				{
+					for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
+					{
+						addContributions(subAdj.value, columnContributions.get(0));
+					}
+				}
+			}
+			// If number of subColumns == number of contributionDivisions
+			// -> map each contributionDivision to a sub in a column
+			// [LOL][DIM] <-> [SubberA | SubberB]
+			else if (numSubColumns == numContributionDivisions)
+			{
+				for (int i = 0; i < numSubColumns; i++)
+				{
+					List<MarkedValue<SubtitleAdjustment>> columnSubs = parsedSubs.get(i);
+					List<Contribution> divisionContributions = columnContributions.get(i);
+					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
+					{
+						SubtitleAdjustment subAdj = markedSubAdj.value;
+						addContributions(subAdj, divisionContributions);
+					}
+				}
+			}
+			// If only one sub column AND number of subDivision = number of contributionDivisions
+			// -> map each contributionDivision to a subDivision
+			// [DIM | WEB-DL] <-> [SubberA | SubberB]
+			else if (numSubColumns == 1 && parsedSubs.get(0).size() == columnContributions.size())
+			{
+				List<MarkedValue<SubtitleAdjustment>> columnSubs = parsedSubs.get(0);
+				for (int i = 0; i < columnSubs.size(); i++)
+				{
+					MarkedValue<SubtitleAdjustment> subAdj = columnSubs.get(i);
+					List<Contribution> divisionContributions = columnContributions.get(i);
+					addContributions(subAdj.value, divisionContributions);
+				}
+			}
+			// If more subColumns than contributionDivisions
+			// -> Add the first contributionDivision to the subColumns from index 0 to n,
+			// where n is = numSubColumns - numContributionDivisions
+			// [720p][1080p][WEB-DL] <-> [SubberA | SubberB]
+			else if (numSubColumns > numContributionDivisions && numContributionDivisions > 1)
+			{
+				int diff = numSubColumns - numContributionDivisions;
+				for (int i = 0; i < numSubColumns; i++)
+				{
+					List<MarkedValue<SubtitleAdjustment>> columnSubs = parsedSubs.get(i);
+					int contributionDivisionIndex = Math.max(0, i - diff);
+					List<Contribution> divisionContributions = columnContributions.get(contributionDivisionIndex);
+					for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
+					{
+						addContributions(subAdj.value, divisionContributions);
+					}
+				}
+			}
+			// Add every contribution to every sub
+			else
+			{
+				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
+				{
+					for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
+					{
+						for (List<Contribution> divisionContributions : columnContributions)
+						{
+							addContributions(subAdj.value, divisionContributions);
+						}
+					}
+				}
+			}
+		}
+
+		// Add subtitles
+		for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
+		{
+			for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
+			{
+				subAdj.value.getFirstSubtitle().setMedia(epi);
+				data.subtitleAdjustments.add(subAdj.value);
+			}
+		}
+
 		return true;
+	}
+
+	private static void addContributions(SubtitleAdjustment subAdj, List<Contribution> contributions)
+	{
+		for (Contribution c : contributions)
+		{
+			if (Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TIMINGS.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TRANSLATION.equals(c.getType())
+					|| Subtitle.CONTRIBUTION_TYPE_REVISION.equals(c.getType()))
+			{
+				subAdj.getFirstSubtitle().getContributions().add(c);
+			}
+			else
+			{
+				subAdj.getContributions().add(c);
+			}
+		}
 	}
 
 	private static Episode parseEpisodeCell(Data data, String text)
@@ -414,7 +529,7 @@ public class SeasonThreadParser
 				seasonNumber = Integer.valueOf(epiMatcher.group(1));
 			}
 			numberInSeason = Integer.valueOf(epiMatcher.group(2));
-			title = epiMatcher.group(2);
+			title = epiMatcher.group(3);
 			parseSuccessful = true;
 		}
 		if (!parseSuccessful)
@@ -500,10 +615,7 @@ public class SeasonThreadParser
 			subAdj.setSingleMatchingRelease(rls);
 			subAdj.getAttributes().put(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID, attachmentId);
 
-			System.out.println(subAdj);
-
 			MarkedValue<SubtitleAdjustment> markedSubAdj = new MarkedValue<>(subAdj, marker);
-
 			subAdjs.add(markedSubAdj);
 		}
 
@@ -519,50 +631,44 @@ public class SeasonThreadParser
 	 * Grollbringer | Negro & Sogge377
 	 * </pre>
 	 */
-	private static void parseContributionsCell(List<List<Contribution>> contributions, Element td, ColumnType colType)
+	private static void parseContributionsCell(List<List<List<Contribution>>> contributions, Element td, ColumnType colType)
 	{
+		String contributionType;
+		switch (colType)
+		{
+			case TRANSLATION:
+				contributionType = Subtitle.CONTRIBUTION_TYPE_TRANSLATION;
+				break;
+			case REVISION:
+				contributionType = Subtitle.CONTRIBUTION_TYPE_REVISION;
+				break;
+			case ADJUSTMENT:
+				contributionType = SubtitleAdjustment.CONTRIBUTION_TYPE_ADJUSTMENT;
+				break;
+			default:
+				contributionType = null;
+		}
+		List<List<Contribution>> contributionsForColumn = new ArrayList<>();
 		String text = td.text();
-		Iterable<String> divisions = SPLITTER_PIPE.split(text);
-		int divNum = 0;
-		for (String division : divisions)
+		for (String division : SPLITTER_PIPE.split(text))
 		{
 			if (division.isEmpty() || division.equals("-"))
 			{
-				continue;
+				contributionsForColumn.add(ImmutableList.of());
 			}
 			else
 			{
-				List<Contribution> divContributions = contributions.get(divNum);
-				if (divContributions == null)
-				{
-					divContributions = new ArrayList<>();
-					contributions.set(divNum, divContributions);
-				}
+				List<Contribution> divContributions = new ArrayList<>();
 				for (String contributorName : SPLITTER_LIST.split(division))
 				{
 					Subber contributor = new Subber();
 					contributor.setName(contributorName);
-					String contributionType;
-					switch (colType)
-					{
-						case TRANSLATION:
-							contributionType = Subtitle.CONTRIBUTION_TYPE_TRANSLATION;
-							break;
-						case REVISION:
-							contributionType = Subtitle.CONTRIBUTION_TYPE_REVISION;
-							break;
-						case ADJUSTMENT:
-							contributionType = SubtitleAdjustment.CONTRIBUTION_TYPE_ADJUSTMENT;
-							break;
-						default:
-							contributionType = null;
-					}
 					divContributions.add(new Contribution(contributor, contributionType));
 				}
+				contributionsForColumn.add(divContributions);
 			}
-			divNum++;
 		}
-
+		contributions.add(contributionsForColumn);
 	}
 
 	private static void parseSourcesCell(List<MarkedValue<String>> sources, Element td)
