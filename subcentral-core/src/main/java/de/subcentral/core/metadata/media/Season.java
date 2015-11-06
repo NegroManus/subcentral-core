@@ -193,6 +193,20 @@ public class Season extends MediaBase implements Comparable<Season>
 		return epi;
 	}
 
+	public Episode addEpisode(Integer numberInSeason)
+	{
+		Episode epi = new Episode(series, this, numberInSeason);
+		episodes.add(epi);
+		return epi;
+	}
+
+	public Episode addEpisode(Integer numberInSeason, String title)
+	{
+		Episode epi = new Episode(series, this, numberInSeason, title);
+		episodes.add(epi);
+		return epi;
+	}
+
 	// Object methods
 	@Override
 	public boolean equals(Object obj)

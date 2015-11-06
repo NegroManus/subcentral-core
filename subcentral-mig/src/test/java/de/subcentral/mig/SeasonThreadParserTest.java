@@ -9,18 +9,18 @@ import org.junit.Test;
 
 import com.google.common.io.Resources;
 
-import de.subcentral.core.metadata.media.Season;
+import de.subcentral.mig.SeasonThreadParser.SeasonThreadData;
 
 public class SeasonThreadParserTest
 {
 	private SeasonThreadParser parser = new SeasonThreadParser();
 
 	@Test
-	public void testParseMrRobotS01() throws Exception
+	public void testParseMrRobotS01() throws IOException
 	{
 		Document doc = parseDoc("thread-mrrobot_s01.html");
-		Season parsedSeason = parser.parse(doc);
-		System.out.println(parsedSeason);
+		SeasonThreadData data = parser.parse(doc);
+		System.out.println(data);
 	}
 
 	private Document parseDoc(String filename) throws IOException
