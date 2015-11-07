@@ -30,6 +30,30 @@ public class SeasonThreadParserTest
 		printSeasonThreadContent(data);
 	}
 
+	@Test
+	public void testCastleS08Incomplete() throws IOException
+	{
+		Document doc = MigTestUtil.parseDoc(getClass(), "thread-castle_s08_incomplete.html");
+		SeasonThreadData data = parser.parse(doc);
+		printSeasonThreadContent(data);
+	}
+
+	@Test
+	public void testHimymS09() throws IOException
+	{
+		Document doc = MigTestUtil.parseDoc(getClass(), "thread-himym_s09.html");
+		SeasonThreadData data = parser.parse(doc);
+		printSeasonThreadContent(data);
+	}
+
+	@Test
+	public void testGotS04() throws IOException
+	{
+		Document doc = MigTestUtil.parseDoc(getClass(), "thread-got_s04.html");
+		SeasonThreadData data = parser.parse(doc);
+		printSeasonThreadContent(data);
+	}
+
 	private void printSeasonThreadContent(SeasonThreadData content)
 	{
 		System.out.println("Seasons:");

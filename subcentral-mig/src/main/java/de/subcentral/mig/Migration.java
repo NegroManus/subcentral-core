@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import de.subcentral.support.subcentralde.SubCentralDe;
 
 public class Migration
 {
+	public static final Locale					LOCALE_GERMAN							= Locale.GERMAN;
 	public static final String					LANGUAGE_GERMAN							= "de";
 	public static final String					LANGUAGE_ENGLISH						= "en";
 	public static final String					IMG_TYPE_SEASON_HEADER					= "season_header";

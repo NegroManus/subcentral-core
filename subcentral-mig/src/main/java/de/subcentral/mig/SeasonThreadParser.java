@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.StringJoiner;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +31,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 import de.subcentral.support.subcentralde.SubCentralApi;
+import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
 
 public class SeasonThreadParser
@@ -37,7 +40,7 @@ public class SeasonThreadParser
 
 	private static enum ColumnType
 	{
-		UNKNOWN, EPISODE, GERMAN_SUBS, ENGLISH_SUBS, TRANSLATION, REVISION, ADJUSTMENT, SOURCE
+		UNKNOWN, EPISODE, GERMAN_SUBS, ENGLISH_SUBS, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
 	};
 
 	private static final Splitter					SPLITTER_PIPE						= Splitter.on('|').trimResults();
@@ -55,11 +58,18 @@ public class SeasonThreadParser
 
 	/**
 	 * <ul>
+	 * <li>Special - "Wicked is Coming"</li>
+	 * <ul>
+	 */
+	private static final Pattern					PATTERN_EPISODE_SPECIAL				= Pattern.compile("Special\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+
+	/**
+	 * <ul>
 	 * <li>S04E03</li>
 	 * <li>E01:</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_ONLY_NUM			= Pattern.compile("S(\\d+)E(\\d+)");
+	private static final Pattern					PATTERN_EPISODE_ONLY_NUM			= Pattern.compile("(?:S(\\d+))?E(\\d+)");
 
 	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS				= createColumnTypePatternMap();
 
@@ -71,6 +81,7 @@ public class SeasonThreadParser
 		map.put(Pattern.compile(".*?flags/(usa|uk|ca|aus)\\.png.*"), ColumnType.ENGLISH_SUBS);
 		map.put(Pattern.compile("Übersetzung"), ColumnType.TRANSLATION);
 		map.put(Pattern.compile("Korrektur"), ColumnType.REVISION);
+		map.put(Pattern.compile("Timings"), ColumnType.TIMINGS);
 		map.put(Pattern.compile("Anpassung"), ColumnType.ADJUSTMENT);
 		map.put(Pattern.compile("Quelle"), ColumnType.SOURCE);
 		return map.build();
@@ -108,7 +119,120 @@ public class SeasonThreadParser
 		parseDescription(data, content);
 		parseSubtitleTable(data, content);
 
+		cleanupData(data);
+
 		return new SeasonThreadData(data.seasons.keySet(), data.subtitleAdjustments);
+	}
+
+	private void cleanupData(Data data)
+	{
+		// Add episodes to season
+		// For single-season threads
+		if (data.seasons.size() == 1)
+		{
+			data.seasons.keySet().iterator().next().getEpisodes().addAll(data.episodes.keySet());
+		}
+		// For multi-season threads
+		else
+		{
+			for (Episode epi : data.episodes.keySet())
+			{
+				if (epi.isPartOfSeason())
+				{
+					boolean foundSeason = false;
+					for (Season season : data.seasons.keySet())
+					{
+						if (season.getNumber().equals(epi.getSeason().getNumber()))
+						{
+							season.getEpisodes().add(epi);
+							foundSeason = true;
+						}
+					}
+					if (!foundSeason)
+					{
+						Season newSeason = epi.getSeason();
+						newSeason.getEpisodes().add(epi);
+						data.seasons.put(newSeason, newSeason);
+					}
+				}
+				else
+				{
+					Season newUnknownSeason = new Season(data.series, Migration.UNKNOWN_SEASON);
+					Season alreadyStoredSeason = data.seasons.putIfAbsent(newUnknownSeason, newUnknownSeason);
+					if (alreadyStoredSeason != null)
+					{
+						alreadyStoredSeason.getEpisodes().add(epi);
+					}
+					else
+					{
+						newUnknownSeason.getEpisodes().add(epi);
+					}
+				}
+			}
+		}
+
+		// For SubtitleAdjustments that reference the same Subtitle (same Episode, language and source)
+		// link the Subtitle of the first SubtitleAdjustment of those matching SubtitleAdjustments to all the other SubtitleAdjustments, too
+		// Because only for the first SubtitleAdjustment the Subtitle's contributions are specified. Not for all other SubtitleAdjustments
+		Map<Subtitle, Subtitle> distinctSubs = new HashMap<>();
+		for (SubtitleAdjustment subAdj : data.subtitleAdjustments)
+		{
+			Subtitle sub = subAdj.getFirstSubtitle();
+			Subtitle storedSub = distinctSubs.putIfAbsent(sub, sub);
+			if (storedSub != null)
+			{
+				subAdj.setSingleSubtitle(storedSub);
+			}
+		}
+
+		// For all SubtitleAdjustments that reference the same attachmentID:
+		// a) If the SubtitleAdjustments are equal -> remove all but the first (happens due to colspan)
+		// b) If they have a different Subtitle (different Episode)
+		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
+		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
+		Map<Integer, SubtitleAdjustment> mapAttachmentsToSubs = new HashMap<>();
+		ListIterator<SubtitleAdjustment> subAdjIter = data.subtitleAdjustments.listIterator();
+		while (subAdjIter.hasNext())
+		{
+			SubtitleAdjustment subAdj = subAdjIter.next();
+			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID);
+			SubtitleAdjustment storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
+			if (storedSubAdj != null)
+			{
+				// a) Equal -> remove duplicate
+				if (subAdj.equals(storedSubAdj))
+				{
+					subAdjIter.remove();
+				}
+				// a) differ in Subtitle -> add other Subtitle to first SubtitleAdjustment
+				else if (!subAdj.getFirstSubtitle().equals(storedSubAdj.getFirstSubtitle()))
+				{
+					storedSubAdj.getSubtitles().add(subAdj.getFirstSubtitle());
+					subAdjIter.remove();
+				}
+			}
+		}
+
+		// Cleanup sub.source
+		// 1) lower-case all sources
+		// Add source=SubCentral.de to all german subs without a source
+		for (SubtitleAdjustment subAdj : data.subtitleAdjustments)
+		{
+			for (Subtitle sub : subAdj.getSubtitles())
+			{
+				if (sub.getSource() == null)
+				{
+					if (Migration.LANGUAGE_GERMAN.equals(sub.getLanguage()))
+					{
+						sub.setSource(SubCentralDe.SOURCE_ID);
+					}
+				}
+				else
+				{
+					sub.setSource(sub.getSource().toLowerCase(Migration.LOCALE_GERMAN));
+				}
+			}
+		}
 	}
 
 	/**
@@ -297,30 +421,35 @@ public class SeasonThreadParser
 		// Stores for each columnIndex the remaining rows which the Element should span
 		int[] rowspanRemainingRows = new int[numColumns];
 
-		int colIndex;
-		ListIterator<List<Element>> rowIter = rows.listIterator();
-		while (rowIter.hasNext())
+		for (List<Element> row : rows)
 		{
-			colIndex = 0;
-			List<Element> row = rowIter.next();
+			// Cleanup rowspan
+			for (int i = 0; i < numColumns; i++)
+			{
+				Element rowSpanCell = rowSpanCells[i];
+				if (rowSpanCell != null)
+				{
+					row.add(i, rowSpanCell);
+					int remainingRows = rowspanRemainingRows[i] - 1;
+					rowspanRemainingRows[i] = remainingRows;
+					if (remainingRows == 0)
+					{
+						rowSpanCells[i] = null;
+					}
+				}
+			}
+			if (row.size() != numColumns)
+			{
+				throw new IllegalArgumentException("row does not have the same number of columns (" + row.size() + ") as it should have (" + numColumns + "). row: " + row);
+			}
+
 			ListIterator<Element> cellIter = row.listIterator();
+			int colIndex = 0;
 			while (cellIter.hasNext())
 			{
 				Element cell = cellIter.next();
 
-				// Cleanup rowspan
-				Element rowSpanCell = rowSpanCells[colIndex];
-				if (rowSpanCell != null)
-				{
-					cellIter.add(rowSpanCell);
-					int remainingRows = rowspanRemainingRows[colIndex] - 1;
-					rowspanRemainingRows[colIndex] = remainingRows;
-					if (remainingRows == 0)
-					{
-						rowSpanCells[colIndex] = null;
-					}
-				}
-
+				// Check for rowspan
 				int rowspan = 1;
 				String rowspanAttr = cell.attr("rowspan");
 				if (!rowspanAttr.isEmpty())
@@ -334,15 +463,15 @@ public class SeasonThreadParser
 					rowspanRemainingRows[colIndex] = rowspan - 1;
 				}
 
-				// Cleanup colspan
+				// Check for colspan
 				int colspan = 1;
 				String colspanAttr = cell.attr("colspan");
-				if (!rowspanAttr.isEmpty())
+				if (!colspanAttr.isEmpty())
 				{
 					colspan = Integer.parseInt(colspanAttr);
 					cell.attr("colspan", "1");
 				}
-				// insert columns
+				// Cleanup colspan
 				for (int i = 0; i < colspan - 1; i++)
 				{
 					cellIter.add(cell);
@@ -363,6 +492,7 @@ public class SeasonThreadParser
 		// each 2nd-level list represents a division within that column (the divisions are divided by "|")
 		// each 3rd-level list represents the contributions inside a division
 		List<List<List<Contribution>>> parsedContributions = new ArrayList<>();
+		// Each top-level list represents a division
 		List<MarkedValue<String>> parsedSources = new ArrayList<>();
 
 		for (int i = 0; i < tdElems.size(); i++)
@@ -382,6 +512,8 @@ public class SeasonThreadParser
 				case TRANSLATION:
 					// fall through
 				case REVISION:
+					// fall through
+				case TIMINGS:
 					// fall through
 				case ADJUSTMENT:
 					parseContributionsCell(parsedContributions, td, colType);
@@ -438,6 +570,7 @@ public class SeasonThreadParser
 					}
 				}
 			}
+			// TODO [2HD] [PublicHD | DON] <-> [Grizzly | Eric | NegroManus]
 			// If only one sub column AND number of subDivision = number of contributionDivisions
 			// -> map each contributionDivision to a subDivision
 			// [DIM | WEB-DL] <-> [SubberA | SubberB]
@@ -485,6 +618,25 @@ public class SeasonThreadParser
 			}
 		}
 
+		// Add sources to subtitles
+		if (!parsedSources.isEmpty())
+		{
+			// If only one source, add it to all the subtitles
+			if (parsedSources.size() == 1)
+			{
+				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
+				{
+					for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
+					{
+						addSource(subAdj.value, parsedSources.get(0).value);
+					}
+				}
+			}
+		}
+
+		// Add episodes
+		data.episodes.put(epi, epi);
+
 		// Add subtitles
 		for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
 		{
@@ -496,6 +648,11 @@ public class SeasonThreadParser
 		}
 
 		return true;
+	}
+
+	private static void addSource(SubtitleAdjustment subAdj, String source)
+	{
+		subAdj.getFirstSubtitle().setSource(source);
 	}
 
 	private static void addContributions(SubtitleAdjustment subAdj, List<Contribution> contributions)
@@ -519,6 +676,7 @@ public class SeasonThreadParser
 		Integer seasonNumber = null;
 		Integer numberInSeason = null;
 		String title = null;
+		boolean special = false;
 
 		boolean parseSuccessful = false;
 		Matcher epiMatcher = PATTERN_EPISODE_WITH_TITLE.matcher(text);
@@ -530,6 +688,17 @@ public class SeasonThreadParser
 			}
 			numberInSeason = Integer.valueOf(epiMatcher.group(2));
 			title = epiMatcher.group(3);
+			parseSuccessful = true;
+		}
+		if (!parseSuccessful)
+		{
+			epiMatcher.reset();
+			epiMatcher.usePattern(PATTERN_EPISODE_SPECIAL);
+			if (epiMatcher.matches())
+			{
+				title = epiMatcher.group(1);
+				special = true;
+			}
 			parseSuccessful = true;
 		}
 		if (!parseSuccessful)
@@ -556,7 +725,9 @@ public class SeasonThreadParser
 		{
 			season = new Season(data.series, seasonNumber);
 		}
-		return new Episode(data.series, season, numberInSeason, title);
+		Episode epi = new Episode(data.series, season, numberInSeason, title);
+		epi.setSpecial(special);
+		return epi;
 	}
 
 	private static void parseSubsCell(List<List<MarkedValue<SubtitleAdjustment>>> subs, Element td, ColumnType colType)
@@ -619,7 +790,14 @@ public class SeasonThreadParser
 			subAdjs.add(markedSubAdj);
 		}
 
-		subs.add(subAdjs);
+		// Only add the subColumn to the subColumn list if it is not empty
+		// because empty columns are not respected in the contributionDivisions
+		// F.e. [DIM][-][WEB-DL] <-> [- | Grollbringer] means that Grollbringer adjusted the WEB-DL,
+		// not the non-existing sub in the empty column
+		if (!subAdjs.isEmpty())
+		{
+			subs.add(subAdjs);
+		}
 	}
 
 	/**
@@ -641,6 +819,9 @@ public class SeasonThreadParser
 				break;
 			case REVISION:
 				contributionType = Subtitle.CONTRIBUTION_TYPE_REVISION;
+				break;
+			case TIMINGS:
+				contributionType = Subtitle.CONTRIBUTION_TYPE_TIMINGS;
 				break;
 			case ADJUSTMENT:
 				contributionType = SubtitleAdjustment.CONTRIBUTION_TYPE_ADJUSTMENT;
@@ -709,7 +890,7 @@ public class SeasonThreadParser
 
 	private static void parseNonStandardTable(Data data, Element table)
 	{
-		System.out.println("Non standard table");
+		// TODO
 	}
 
 	public static class SeasonThreadData
@@ -736,10 +917,10 @@ public class SeasonThreadParser
 
 	private static final class Data
 	{
-		private Series							series				= new Series(Migration.UNKNOWN_SERIES);
-		private final HashMap<Season, Season>	seasons				= new HashMap<>();
-		private final HashMap<Episode, Episode>	episodes			= new HashMap<>();
-		private final List<SubtitleAdjustment>	subtitleAdjustments	= new ArrayList<>();
+		private Series								series				= new Series(Migration.UNKNOWN_SERIES);
+		private final SortedMap<Season, Season>		seasons				= new TreeMap<>();
+		private final SortedMap<Episode, Episode>	episodes			= new TreeMap<>();
+		private final List<SubtitleAdjustment>		subtitleAdjustments	= new ArrayList<>();
 	}
 
 	/**
