@@ -17,39 +17,54 @@ public class SeasonThreadParserTest
 	@Test
 	public void testParseMrRobotS01() throws IOException
 	{
-		Document doc = MigTestUtil.parseDoc(getClass(), "thread-mrrobot_s01.html");
-		SeasonThreadData data = parser.parse(doc);
-		printSeasonThreadContent(data);
+		parse("thread-mrrobot_s01.html");
 	}
 
 	@Test
 	public void testParseAtlantis2013S02() throws IOException
 	{
-		Document doc = MigTestUtil.parseDoc(getClass(), "thread-atlantis2013_s02.html");
-		SeasonThreadData data = parser.parse(doc);
-		printSeasonThreadContent(data);
+		parse("thread-atlantis2013_s02.html");
 	}
 
 	@Test
 	public void testCastleS08Incomplete() throws IOException
 	{
-		Document doc = MigTestUtil.parseDoc(getClass(), "thread-castle_s08_incomplete.html");
-		SeasonThreadData data = parser.parse(doc);
-		printSeasonThreadContent(data);
+		parse("thread-castle_s08_incomplete.html");
 	}
 
 	@Test
 	public void testHimymS09() throws IOException
 	{
-		Document doc = MigTestUtil.parseDoc(getClass(), "thread-himym_s09.html");
-		SeasonThreadData data = parser.parse(doc);
-		printSeasonThreadContent(data);
+		parse("thread-himym_s09.html");
 	}
 
 	@Test
 	public void testGotS04() throws IOException
 	{
-		Document doc = MigTestUtil.parseDoc(getClass(), "thread-got_s04.html");
+		parse("thread-got_s04.html");
+	}
+
+	@Test
+	public void testDontTrustTheBitchS02() throws IOException
+	{
+		parse("thread-donttrustthebitch_s02.html");
+	}
+
+	@Test
+	public void testPsychS07() throws IOException
+	{
+		parse("thread-psych_s07.html");
+	}
+
+	@Test
+	public void testPsychS08() throws IOException
+	{
+		parse("thread-psych_s08.html");
+	}
+
+	private void parse(String resourceFilename) throws IOException
+	{
+		Document doc = MigTestUtil.parseDoc(getClass(), resourceFilename);
 		SeasonThreadData data = parser.parse(doc);
 		printSeasonThreadContent(data);
 	}

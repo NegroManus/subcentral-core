@@ -207,6 +207,12 @@ public class Season extends MediaBase implements Comparable<Season>
 		return epi;
 	}
 
+	public void addEpisode(Episode epi)
+	{
+		episodes.add(epi);
+		epi.setSeason(this);
+	}
+
 	// Object methods
 	@Override
 	public boolean equals(Object obj)
@@ -249,7 +255,7 @@ public class Season extends MediaBase implements Comparable<Season>
 	{
 		return MoreObjects.toStringHelper(Season.class)
 				.omitNullValues()
-				.add("series", series)
+				.add("series.name", series != null ? series.name : null)
 				.add("number", number)
 				.add("title", title)
 				.add("special", special)

@@ -317,11 +317,23 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 		return epi;
 	}
 
+	public void addEpisode(Episode epi)
+	{
+		episodes.add(epi);
+		epi.setSeries(this);
+	}
+
 	public Season addSeason()
 	{
 		Season season = new Season(this);
 		seasons.add(season);
 		return season;
+	}
+
+	public void addSeason(Season season)
+	{
+		seasons.add(season);
+		season.setSeries(this);
 	}
 
 	// Object methods

@@ -130,7 +130,11 @@ public class SeasonThreadParser
 		// For single-season threads
 		if (data.seasons.size() == 1)
 		{
-			data.seasons.keySet().iterator().next().getEpisodes().addAll(data.episodes.keySet());
+			Season season = data.seasons.keySet().iterator().next();
+			data.episodes.keySet().stream().forEach((Episode epi) ->
+			{
+				season.addEpisode(epi);
+			});
 		}
 		// For multi-season threads
 		else
@@ -144,14 +148,14 @@ public class SeasonThreadParser
 					{
 						if (season.getNumber().equals(epi.getSeason().getNumber()))
 						{
-							season.getEpisodes().add(epi);
+							season.addEpisode(epi);
 							foundSeason = true;
 						}
 					}
 					if (!foundSeason)
 					{
 						Season newSeason = epi.getSeason();
-						newSeason.getEpisodes().add(epi);
+						newSeason.addEpisode(epi);
 						data.seasons.put(newSeason, newSeason);
 					}
 				}
@@ -161,11 +165,11 @@ public class SeasonThreadParser
 					Season alreadyStoredSeason = data.seasons.putIfAbsent(newUnknownSeason, newUnknownSeason);
 					if (alreadyStoredSeason != null)
 					{
-						alreadyStoredSeason.getEpisodes().add(epi);
+						alreadyStoredSeason.addEpisode(epi);
 					}
 					else
 					{
-						newUnknownSeason.getEpisodes().add(epi);
+						newUnknownSeason.addEpisode(epi);
 					}
 				}
 			}
@@ -233,6 +237,9 @@ public class SeasonThreadParser
 				}
 			}
 		}
+
+		// Sort subtitleAdjustments
+		data.subtitleAdjustments.sort(null);
 	}
 
 	/**
@@ -361,26 +368,30 @@ public class SeasonThreadParser
 		Elements tables = postContent.getElementsByTag("table");
 		for (Element table : tables)
 		{
-			boolean success = parseStandardTable(data, table);
-			if (!success)
+			try
 			{
+				parseStandardTable(data, table);
+			}
+			catch (Exception e)
+			{
+				log.warn("Exception while trying to parse table as standard table. Parsing as non-standard table", e);
 				parseNonStandardTable(data, table);
 			}
 		}
 	}
 
-	private static boolean parseStandardTable(Data data, Element table)
+	private static void parseStandardTable(Data data, Element table)
 	{
 		// Determine ColumnTypes
 		Element thead = table.getElementsByTag("thead").first();
 		if (thead == null)
 		{
-			return false;
+			throw new IllegalArgumentException("no thead element found");
 		}
 		Elements thElems = thead.getElementsByTag("th");
 		if (thElems.isEmpty())
 		{
-			return false;
+			throw new IllegalArgumentException("no th elements found");
 		}
 		ColumnType[] columns = new ColumnType[thElems.size()];
 		for (int i = 0; i < thElems.size(); i++)
@@ -393,7 +404,7 @@ public class SeasonThreadParser
 		Element tbody = table.getElementsByTag("tbody").first();
 		if (tbody == null)
 		{
-			return false;
+			throw new IllegalArgumentException("no tbody element found");
 		}
 		List<List<Element>> rows = new ArrayList<>();
 		for (Element tr : tbody.getElementsByTag("tr"))
@@ -405,13 +416,8 @@ public class SeasonThreadParser
 
 		for (List<Element> tdElems : rows)
 		{
-			boolean success = parseStandardTableRow(data, tdElems, columns);
-			if (!success)
-			{
-				return false;
-			}
+			parseStandardTableRow(data, tdElems, columns);
 		}
-		return true;
 	}
 
 	protected static void cleanupTable(List<List<Element>> rows, int numColumns)
@@ -482,7 +488,7 @@ public class SeasonThreadParser
 		}
 	}
 
-	private static boolean parseStandardTableRow(Data data, List<Element> tdElems, ColumnType[] columns)
+	private static void parseStandardTableRow(Data data, List<Element> tdElems, ColumnType[] columns)
 	{
 		Episode parsedEpi = null;
 		// Each top-level list represents a column,
@@ -523,7 +529,7 @@ public class SeasonThreadParser
 					break;
 				default:
 					// cancel on UNKNOWN columns
-					return false;
+					throw new IllegalArgumentException("Unknown column");
 			}
 		}
 
@@ -536,6 +542,7 @@ public class SeasonThreadParser
 
 		// Add contributions to subtitles
 		int numSubColumns = parsedSubs.size();
+		int numSubs = parsedSubs.stream().mapToInt((List<MarkedValue<SubtitleAdjustment>> subsPerColumn) -> subsPerColumn.size()).sum();
 		// For each contribution column
 		for (List<List<Contribution>> columnContributions : parsedContributions)
 		{
@@ -565,23 +572,25 @@ public class SeasonThreadParser
 					List<Contribution> divisionContributions = columnContributions.get(i);
 					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
 					{
-						SubtitleAdjustment subAdj = markedSubAdj.value;
-						addContributions(subAdj, divisionContributions);
+						addContributions(markedSubAdj.value, divisionContributions);
 					}
 				}
 			}
-			// TODO [2HD] [PublicHD | DON] <-> [Grizzly | Eric | NegroManus]
-			// If only one sub column AND number of subDivision = number of contributionDivisions
-			// -> map each contributionDivision to a subDivision
+			// If number of subs == number of contributionDivisions
+			// -> map each contributionDivision to a sub
 			// [DIM | WEB-DL] <-> [SubberA | SubberB]
-			else if (numSubColumns == 1 && parsedSubs.get(0).size() == columnContributions.size())
+			// [2HD] [PublicHD | DON] <-> [Grizzly | Eric | NegroManus]
+			else if (numSubs == columnContributions.size())
 			{
-				List<MarkedValue<SubtitleAdjustment>> columnSubs = parsedSubs.get(0);
-				for (int i = 0; i < columnSubs.size(); i++)
+				int index = 0;
+				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
 				{
-					MarkedValue<SubtitleAdjustment> subAdj = columnSubs.get(i);
-					List<Contribution> divisionContributions = columnContributions.get(i);
-					addContributions(subAdj.value, divisionContributions);
+					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
+					{
+						List<Contribution> divisionContributions = columnContributions.get(index);
+						addContributions(markedSubAdj.value, divisionContributions);
+						index++;
+					}
 				}
 			}
 			// If more subColumns than contributionDivisions
@@ -602,16 +611,16 @@ public class SeasonThreadParser
 					}
 				}
 			}
-			// Add every contribution to every sub
+			// Else: Add every contribution to every sub
 			else
 			{
 				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
+					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
 					{
 						for (List<Contribution> divisionContributions : columnContributions)
 						{
-							addContributions(subAdj.value, divisionContributions);
+							addContributions(markedSubAdj.value, divisionContributions);
 						}
 					}
 				}
@@ -621,14 +630,81 @@ public class SeasonThreadParser
 		// Add sources to subtitles
 		if (!parsedSources.isEmpty())
 		{
-			// If only one source, add it to all the subtitles
-			if (parsedSources.size() == 1)
+			boolean someSourcesMarked = parsedSources.stream().mapToInt((MarkedValue<String> source) -> source.marker == null ? 0 : 1).sum() > 0;
+			// If any markers
+			if (someSourcesMarked)
 			{
+				// Map<Marker->List<Sources>)
+				Map<String, String> mapMarkerToSource = new HashMap<>(2);
+				for (MarkedValue<String> source : parsedSources)
+				{
+					String storedSource = mapMarkerToSource.put(source.marker, source.value);
+					if (storedSource != null)
+					{
+						throw new IllegalArgumentException("Multiple sources marked with marker " + source.marker + ":" + storedSource + ", " + source);
+					}
+				}
 				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
 				{
 					for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
 					{
-						addSource(subAdj.value, parsedSources.get(0).value);
+						addSource(subAdj.value, mapMarkerToSource.get(subAdj.marker));
+					}
+				}
+			}
+			// If only one source, add it to all the subtitles
+			else if (parsedSources.size() == 1)
+			{
+				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
+				{
+					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
+					{
+						addSource(markedSubAdj.value, parsedSources.get(0).value);
+					}
+				}
+			}
+			// If number of sub columns == number of sources
+			// -> add each source to all subs in a column
+			// [DIM][WEB-DL] <-> [Addic7ed.com | SubCentral.de]
+			else if (numSubColumns == parsedSources.size())
+			{
+				for (int i = 0; i < numSubColumns; i++)
+				{
+					List<MarkedValue<SubtitleAdjustment>> columnSubs = parsedSubs.get(i);
+					MarkedValue<String> markedSource = parsedSources.get(i);
+					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
+					{
+						addSource(markedSubAdj.value, markedSource.value);
+					}
+				}
+			}
+			// If number of subs == number of contributionDivisions
+			// -> map each source to a sub
+			// [DIM | WEB-DL] <-> [Addic7ed.com | SubCentral.de]
+			else if (numSubs == parsedSources.size())
+			{
+				int index = 0;
+				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
+				{
+					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
+					{
+						MarkedValue<String> markedSource = parsedSources.get(index);
+						addSource(markedSubAdj.value, markedSource.value);
+						index++;
+					}
+				}
+			}
+			// Else: Add every source to every sub
+			else
+			{
+				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
+				{
+					for (MarkedValue<SubtitleAdjustment> markedSubAdj : columnSubs)
+					{
+						for (MarkedValue<String> markedSource : parsedSources)
+						{
+							addSource(markedSubAdj.value, markedSource.value);
+						}
 					}
 				}
 			}
@@ -646,8 +722,6 @@ public class SeasonThreadParser
 				data.subtitleAdjustments.add(subAdj.value);
 			}
 		}
-
-		return true;
 	}
 
 	private static void addSource(SubtitleAdjustment subAdj, String source)
