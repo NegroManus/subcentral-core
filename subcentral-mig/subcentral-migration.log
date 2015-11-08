@@ -1,15 +1,15 @@
-2015-11-07 18:30:48,352 WARN  [main] d.s.m.SeasonThreadParser - Exception while trying to parse table as standard table. Parsing as non-standard table
+2015-11-08 14:15:06,068 WARN  [main] d.s.m.SeasonThreadParser - Exception while trying to parse table as standard table. Parsing as non-standard table
 java.lang.IllegalArgumentException: no thead element found
-	at de.subcentral.mig.SeasonThreadParser.parseStandardTable(SeasonThreadParser.java:389) ~[classes/:?]
-	at de.subcentral.mig.SeasonThreadParser.parseSubtitleTable(SeasonThreadParser.java:373) [classes/:?]
-	at de.subcentral.mig.SeasonThreadParser.parse(SeasonThreadParser.java:120) [classes/:?]
-	at de.subcentral.mig.SeasonThreadParser.parse(SeasonThreadParser.java:107) [classes/:?]
+	at de.subcentral.mig.SeasonThreadParser.parseStandardTable(SeasonThreadParser.java:281) ~[classes/:?]
+	at de.subcentral.mig.SeasonThreadParser.parseSubtitleTable(SeasonThreadParser.java:265) [classes/:?]
+	at de.subcentral.mig.SeasonThreadParser.parse(SeasonThreadParser.java:130) [classes/:?]
+	at de.subcentral.mig.SeasonThreadParser.parse(SeasonThreadParser.java:117) [classes/:?]
 	at de.subcentral.mig.SeasonThreadParserTest.parse(SeasonThreadParserTest.java:68) [test-classes/:?]
-	at de.subcentral.mig.SeasonThreadParserTest.testPsychS07(SeasonThreadParserTest.java:56) [test-classes/:?]
+	at de.subcentral.mig.SeasonThreadParserTest.testHimymS09(SeasonThreadParserTest.java:38) [test-classes/:?]
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_65]
-	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[?:1.8.0_65]
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[?:1.8.0_65]
-	at java.lang.reflect.Method.invoke(Unknown Source) ~[?:1.8.0_65]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_65]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_65]
+	at java.lang.reflect.Method.invoke(Method.java:497) ~[?:1.8.0_65]
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50) [junit-4.12.jar:4.12]
 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12) [junit-4.12.jar:4.12]
 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47) [junit-4.12.jar:4.12]
@@ -29,4 +29,4 @@ java.lang.IllegalArgumentException: no thead element found
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675) [.cp/:?]
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382) [.cp/:?]
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192) [.cp/:?]
-2015-11-07 18:30:48,451 INFO  [main] d.s.m.MigrationSettings - Loading settings from file:/E:/Java/git/subcentral-core/subcentral-mig/target/classes/de/subcentral/mig/migration-settings.xml
+2015-11-08 14:15:06,196 INFO  [main] d.s.m.MigrationSettings - Loading settings from file:/E:/Java/git/subcentral-core/subcentral-mig/target/classes/de/subcentral/mig/migration-settings.xml

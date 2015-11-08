@@ -39,7 +39,7 @@ public class SeriesListParser
 
 	public SeriesListContent getAndParse() throws IOException
 	{
-		return parse(Jsoup.parse(new URL(URL), 5000));
+		return parse(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
 	}
 
 	public SeriesListContent parse(Document doc) throws IOException

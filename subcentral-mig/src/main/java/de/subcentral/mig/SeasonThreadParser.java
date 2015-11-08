@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -48,13 +49,22 @@ public class SeasonThreadParser
 	private static final Pattern					PATTERN_POST_TITLE_NUMBERED_SEASON	= Pattern.compile("(.*)\\s+-\\s*Staffel\\s+(\\d+)\\s*-\\s*.*");
 	private static final Pattern					PATTERN_POST_TITLE_SPECIAL_SEASON	= Pattern.compile("(.*)\\s+-\\s*([\\w\\s]+)\\s*-\\s*.*");
 	private static final Pattern					PATTERN_POST_TITLE_MULTIPLE_SEASONS	= Pattern.compile("(.*)\\s+-\\s*Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s*-\\s*.*");
+
+	/**
+	 * <ul>
+	 * <li>E23-E24 - "Alternate Cut"</li>
+	 * <li>E15-E16 - "Psych - The Musical"</li>
+	 * <ul>
+	 */
+	private static final Pattern					PATTERN_EPISODE_MULTI				= Pattern.compile("(?:S(\\d+))?E(\\d+)-E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+
 	/**
 	 * <ul>
 	 * <li>E01 - "Pilot"</li>
-	 * <li>030 - S04E03 - The Power of the Daleks (Verschollen)</li>
+	 * <li>S04E03 - The Power of the Daleks (Verschollen)</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_WITH_TITLE			= Pattern.compile("(?:S(\\d+))?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_REGULAR				= Pattern.compile("(?:S(\\d+))?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -122,124 +132,6 @@ public class SeasonThreadParser
 		cleanupData(data);
 
 		return new SeasonThreadData(data.seasons.keySet(), data.subtitleAdjustments);
-	}
-
-	private void cleanupData(Data data)
-	{
-		// Add episodes to season
-		// For single-season threads
-		if (data.seasons.size() == 1)
-		{
-			Season season = data.seasons.keySet().iterator().next();
-			data.episodes.keySet().stream().forEach((Episode epi) ->
-			{
-				season.addEpisode(epi);
-			});
-		}
-		// For multi-season threads
-		else
-		{
-			for (Episode epi : data.episodes.keySet())
-			{
-				if (epi.isPartOfSeason())
-				{
-					boolean foundSeason = false;
-					for (Season season : data.seasons.keySet())
-					{
-						if (season.getNumber().equals(epi.getSeason().getNumber()))
-						{
-							season.addEpisode(epi);
-							foundSeason = true;
-						}
-					}
-					if (!foundSeason)
-					{
-						Season newSeason = epi.getSeason();
-						newSeason.addEpisode(epi);
-						data.seasons.put(newSeason, newSeason);
-					}
-				}
-				else
-				{
-					Season newUnknownSeason = new Season(data.series, Migration.UNKNOWN_SEASON);
-					Season alreadyStoredSeason = data.seasons.putIfAbsent(newUnknownSeason, newUnknownSeason);
-					if (alreadyStoredSeason != null)
-					{
-						alreadyStoredSeason.addEpisode(epi);
-					}
-					else
-					{
-						newUnknownSeason.addEpisode(epi);
-					}
-				}
-			}
-		}
-
-		// For SubtitleAdjustments that reference the same Subtitle (same Episode, language and source)
-		// link the Subtitle of the first SubtitleAdjustment of those matching SubtitleAdjustments to all the other SubtitleAdjustments, too
-		// Because only for the first SubtitleAdjustment the Subtitle's contributions are specified. Not for all other SubtitleAdjustments
-		Map<Subtitle, Subtitle> distinctSubs = new HashMap<>();
-		for (SubtitleAdjustment subAdj : data.subtitleAdjustments)
-		{
-			Subtitle sub = subAdj.getFirstSubtitle();
-			Subtitle storedSub = distinctSubs.putIfAbsent(sub, sub);
-			if (storedSub != null)
-			{
-				subAdj.setSingleSubtitle(storedSub);
-			}
-		}
-
-		// For all SubtitleAdjustments that reference the same attachmentID:
-		// a) If the SubtitleAdjustments are equal -> remove all but the first (happens due to colspan)
-		// b) If they have a different Subtitle (different Episode)
-		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
-		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
-		Map<Integer, SubtitleAdjustment> mapAttachmentsToSubs = new HashMap<>();
-		ListIterator<SubtitleAdjustment> subAdjIter = data.subtitleAdjustments.listIterator();
-		while (subAdjIter.hasNext())
-		{
-			SubtitleAdjustment subAdj = subAdjIter.next();
-			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID);
-			SubtitleAdjustment storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
-			if (storedSubAdj != null)
-			{
-				// a) Equal -> remove duplicate
-				if (subAdj.equals(storedSubAdj))
-				{
-					subAdjIter.remove();
-				}
-				// a) differ in Subtitle -> add other Subtitle to first SubtitleAdjustment
-				else if (!subAdj.getFirstSubtitle().equals(storedSubAdj.getFirstSubtitle()))
-				{
-					storedSubAdj.getSubtitles().add(subAdj.getFirstSubtitle());
-					subAdjIter.remove();
-				}
-			}
-		}
-
-		// Cleanup sub.source
-		// 1) lower-case all sources
-		// Add source=SubCentral.de to all german subs without a source
-		for (SubtitleAdjustment subAdj : data.subtitleAdjustments)
-		{
-			for (Subtitle sub : subAdj.getSubtitles())
-			{
-				if (sub.getSource() == null)
-				{
-					if (Migration.LANGUAGE_GERMAN.equals(sub.getLanguage()))
-					{
-						sub.setSource(SubCentralDe.SOURCE_ID);
-					}
-				}
-				else
-				{
-					sub.setSource(sub.getSource().toLowerCase(Migration.LOCALE_GERMAN));
-				}
-			}
-		}
-
-		// Sort subtitleAdjustments
-		data.subtitleAdjustments.sort(null);
 	}
 
 	/**
@@ -427,8 +319,11 @@ public class SeasonThreadParser
 		// Stores for each columnIndex the remaining rows which the Element should span
 		int[] rowspanRemainingRows = new int[numColumns];
 
-		for (List<Element> row : rows)
+		ListIterator<List<Element>> rowIter = rows.listIterator();
+		while (rowIter.hasNext())
 		{
+			List<Element> row = rowIter.next();
+
 			// Cleanup rowspan
 			for (int i = 0; i < numColumns; i++)
 			{
@@ -465,7 +360,7 @@ public class SeasonThreadParser
 				}
 				if (rowspan > 1)
 				{
-					rowSpanCells[colIndex] = cell;
+					rowSpanCells[colIndex] = cell.clone();
 					rowspanRemainingRows[colIndex] = rowspan - 1;
 				}
 
@@ -477,6 +372,7 @@ public class SeasonThreadParser
 					colspan = Integer.parseInt(colspanAttr);
 					cell.attr("colspan", "1");
 				}
+
 				// Cleanup colspan
 				for (int i = 0; i < colspan - 1; i++)
 				{
@@ -490,7 +386,7 @@ public class SeasonThreadParser
 
 	private static void parseStandardTableRow(Data data, List<Element> tdElems, ColumnType[] columns)
 	{
-		Episode parsedEpi = null;
+		List<Episode> parsedEpis = new ArrayList<>();
 		// Each top-level list represents a column,
 		// each 2nd-level list represents the subtitles in that column
 		List<List<MarkedValue<SubtitleAdjustment>>> parsedSubs = new ArrayList<>();
@@ -508,7 +404,7 @@ public class SeasonThreadParser
 			switch (colType)
 			{
 				case EPISODE:
-					parsedEpi = parseEpisodeCell(data, td.text());
+					parseEpisodeCell(parsedEpis, data, td.text());
 					break;
 				case GERMAN_SUBS:
 					// fall through
@@ -533,11 +429,17 @@ public class SeasonThreadParser
 			}
 		}
 
-		// Add episode
-		Episode epi = data.episodes.putIfAbsent(parsedEpi, parsedEpi);
-		if (epi == null)
+		// Add episode (if not added yet)
+		ListIterator<Episode> parsedEpisIter = parsedEpis.listIterator();
+		while (parsedEpisIter.hasNext())
 		{
-			epi = parsedEpi;
+			Episode parsedEpi = parsedEpisIter.next();
+			Episode storedEpi = data.episodes.putIfAbsent(parsedEpi, parsedEpi);
+			if (storedEpi != null)
+			{
+				parsedEpisIter.set(storedEpi);
+				System.out.println(parsedEpi.compareTo(storedEpi));
+			}
 		}
 
 		// Add contributions to subtitles
@@ -710,16 +612,27 @@ public class SeasonThreadParser
 			}
 		}
 
-		// Add episodes
-		data.episodes.put(epi, epi);
-
 		// Add subtitles
 		for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
 		{
 			for (MarkedValue<SubtitleAdjustment> subAdj : columnSubs)
 			{
-				subAdj.value.getFirstSubtitle().setMedia(epi);
+				Episode firstEpi = parsedEpis.get(0);
+				subAdj.value.getFirstSubtitle().setMedia(firstEpi);
 				data.subtitleAdjustments.add(subAdj.value);
+
+				// In case of a multiple episodes in that row, for each more episode,
+				// add a clone of the parsed subtitle with that episode
+				if (parsedEpis.size() > 1)
+				{
+					for (int i = 1; i < parsedEpis.size(); i++)
+					{
+						SubtitleAdjustment copy = SerializationUtils.clone(subAdj.value);
+						Episode epi = parsedEpis.get(i);
+						copy.getFirstSubtitle().setMedia(epi);
+						data.subtitleAdjustments.add(copy);
+					}
+				}
 			}
 		}
 	}
@@ -745,63 +658,72 @@ public class SeasonThreadParser
 		}
 	}
 
-	private static Episode parseEpisodeCell(Data data, String text)
+	private static void parseEpisodeCell(List<Episode> epis, Data data, String text)
 	{
-		Integer seasonNumber = null;
-		Integer numberInSeason = null;
-		String title = null;
-		boolean special = false;
-
-		boolean parseSuccessful = false;
-		Matcher epiMatcher = PATTERN_EPISODE_WITH_TITLE.matcher(text);
+		Matcher epiMatcher = PATTERN_EPISODE_MULTI.matcher(text);
 		if (epiMatcher.matches())
 		{
+			Season season = null;
 			if (epiMatcher.group(1) != null)
 			{
-				seasonNumber = Integer.valueOf(epiMatcher.group(1));
+				Integer seasonNumber = Integer.valueOf(epiMatcher.group(1));
+				season = new Season(data.series, seasonNumber);
 			}
-			numberInSeason = Integer.valueOf(epiMatcher.group(2));
-			title = epiMatcher.group(3);
-			parseSuccessful = true;
-		}
-		if (!parseSuccessful)
-		{
-			epiMatcher.reset();
-			epiMatcher.usePattern(PATTERN_EPISODE_SPECIAL);
-			if (epiMatcher.matches())
+			int firstEpiNum = Integer.parseInt(epiMatcher.group(2));
+			int lastEpiNum = Integer.parseInt(epiMatcher.group(3));
+			String title = epiMatcher.group(4);
+			for (int i = firstEpiNum; i <= lastEpiNum; i++)
 			{
-				title = epiMatcher.group(1);
-				special = true;
+				epis.add(new Episode(data.series, season, i, title));
 			}
-			parseSuccessful = true;
-		}
-		if (!parseSuccessful)
-		{
-			epiMatcher.reset();
-			epiMatcher.usePattern(PATTERN_EPISODE_ONLY_NUM);
-			if (epiMatcher.matches())
-			{
-				if (epiMatcher.group(1) != null)
-				{
-					seasonNumber = Integer.valueOf(epiMatcher.group(1));
-				}
-				numberInSeason = Integer.valueOf(epiMatcher.group(2));
-			}
-			parseSuccessful = true;
-		}
-		if (!parseSuccessful)
-		{
-			title = text;
+			return;
 		}
 
-		Season season = null;
-		if (seasonNumber != null)
+		epiMatcher.reset();
+		epiMatcher.usePattern(PATTERN_EPISODE_REGULAR);
+		if (epiMatcher.matches())
 		{
-			season = new Season(data.series, seasonNumber);
+			Season season = null;
+			if (epiMatcher.group(1) != null)
+			{
+				Integer seasonNumber = Integer.valueOf(epiMatcher.group(1));
+				season = new Season(data.series, seasonNumber);
+			}
+			Integer numberInSeason = Integer.valueOf(epiMatcher.group(2));
+			String title = epiMatcher.group(3);
+			epis.add(new Episode(data.series, season, numberInSeason, title));
+			return;
 		}
-		Episode epi = new Episode(data.series, season, numberInSeason, title);
-		epi.setSpecial(special);
-		return epi;
+
+		epiMatcher.reset();
+		epiMatcher.usePattern(PATTERN_EPISODE_SPECIAL);
+		if (epiMatcher.matches())
+		{
+			String title = epiMatcher.group(1);
+			Episode epi = new Episode(data.series, title);
+			epi.setSpecial(true);
+			epis.add(epi);
+		}
+
+		epiMatcher.reset();
+		epiMatcher.usePattern(PATTERN_EPISODE_ONLY_NUM);
+		if (epiMatcher.matches())
+		{
+			Season season = null;
+			if (epiMatcher.group(1) != null)
+			{
+				Integer seasonNumber = Integer.valueOf(epiMatcher.group(1));
+				season = new Season(data.series, seasonNumber);
+			}
+			Integer numberInSeason = Integer.valueOf(epiMatcher.group(2));
+			epis.add(new Episode(data.series, season, numberInSeason));
+			return;
+		}
+		String title = text;
+		Episode epi = new Episode(data.series, title);
+		epi.setSpecial(true);
+		epis.add(epi);
+		return;
 	}
 
 	private static void parseSubsCell(List<List<MarkedValue<SubtitleAdjustment>>> subs, Element td, ColumnType colType)
@@ -965,6 +887,124 @@ public class SeasonThreadParser
 	private static void parseNonStandardTable(Data data, Element table)
 	{
 		// TODO
+	}
+
+	private static void cleanupData(Data data)
+	{
+		// Add episodes to season
+		// For single-season threads
+		if (data.seasons.size() == 1)
+		{
+			Season season = data.seasons.keySet().iterator().next();
+			data.episodes.keySet().stream().forEach((Episode epi) ->
+			{
+				season.addEpisode(epi);
+			});
+		}
+		// For multi-season threads
+		else
+		{
+			for (Episode epi : data.episodes.keySet())
+			{
+				if (epi.isPartOfSeason())
+				{
+					boolean foundSeason = false;
+					for (Season season : data.seasons.keySet())
+					{
+						if (season.getNumber().equals(epi.getSeason().getNumber()))
+						{
+							season.addEpisode(epi);
+							foundSeason = true;
+						}
+					}
+					if (!foundSeason)
+					{
+						Season newSeason = epi.getSeason();
+						newSeason.addEpisode(epi);
+						data.seasons.put(newSeason, newSeason);
+					}
+				}
+				else
+				{
+					Season newUnknownSeason = new Season(data.series, Migration.UNKNOWN_SEASON);
+					Season alreadyStoredSeason = data.seasons.putIfAbsent(newUnknownSeason, newUnknownSeason);
+					if (alreadyStoredSeason != null)
+					{
+						alreadyStoredSeason.addEpisode(epi);
+					}
+					else
+					{
+						newUnknownSeason.addEpisode(epi);
+					}
+				}
+			}
+		}
+
+		// For SubtitleAdjustments that reference the same Subtitle (same Episode, language and source)
+		// link the Subtitle of the first SubtitleAdjustment of those matching SubtitleAdjustments to all the other SubtitleAdjustments, too
+		// Because only for the first SubtitleAdjustment the Subtitle's contributions are specified. Not for all other SubtitleAdjustments
+		Map<Subtitle, Subtitle> distinctSubs = new HashMap<>();
+		for (SubtitleAdjustment subAdj : data.subtitleAdjustments)
+		{
+			Subtitle sub = subAdj.getFirstSubtitle();
+			Subtitle storedSub = distinctSubs.putIfAbsent(sub, sub);
+			if (storedSub != null)
+			{
+				subAdj.setSingleSubtitle(storedSub);
+			}
+		}
+
+		// For all SubtitleAdjustments that reference the same attachmentID:
+		// a) If the SubtitleAdjustments are equal -> remove all but the first (happens due to colspan)
+		// b) If they have a different Subtitle (different Episode)
+		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
+		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
+		Map<Integer, SubtitleAdjustment> mapAttachmentsToSubs = new HashMap<>();
+		ListIterator<SubtitleAdjustment> subAdjIter = data.subtitleAdjustments.listIterator();
+		while (subAdjIter.hasNext())
+		{
+			SubtitleAdjustment subAdj = subAdjIter.next();
+			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID);
+			SubtitleAdjustment storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
+			if (storedSubAdj != null)
+			{
+				// a) Equal -> remove duplicate
+				if (subAdj.equals(storedSubAdj))
+				{
+					subAdjIter.remove();
+				}
+				// a) differ in Subtitle -> add other Subtitle to first SubtitleAdjustment
+				else if (!subAdj.getFirstSubtitle().equals(storedSubAdj.getFirstSubtitle()))
+				{
+					storedSubAdj.getSubtitles().add(subAdj.getFirstSubtitle());
+					subAdjIter.remove();
+				}
+			}
+		}
+
+		// Cleanup sub.source
+		// 1) lower-case all sources
+		// Add source=SubCentral.de to all german subs without a source
+		for (SubtitleAdjustment subAdj : data.subtitleAdjustments)
+		{
+			for (Subtitle sub : subAdj.getSubtitles())
+			{
+				if (sub.getSource() == null)
+				{
+					if (Migration.LANGUAGE_GERMAN.equals(sub.getLanguage()))
+					{
+						sub.setSource(SubCentralDe.SOURCE_ID);
+					}
+				}
+				else
+				{
+					sub.setSource(sub.getSource().toLowerCase(Migration.LOCALE_GERMAN));
+				}
+			}
+		}
+
+		// Sort subtitleAdjustments
+		data.subtitleAdjustments.sort(null);
 	}
 
 	public static class SeasonThreadData

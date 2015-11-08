@@ -43,6 +43,7 @@ public class Migration
 	public static final String					UNKNOWN_SERIES							= "UNKNOWN_SERIES";
 	public static final String					UNKNOWN_SEASON							= "UNKNOWN_SEASON";
 	public static final String					UNKNOWN_EPISODE							= "UNKNOWN_EPISODE";
+	public static final int						TIMEOUT_MILLIS							= 10_000;
 
 	private static final Logger					log										= LogManager.getLogger(Migration.class);
 	private static final SubRip					subRip									= SubRip.INSTANCE;

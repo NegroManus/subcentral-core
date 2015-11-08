@@ -1,5 +1,6 @@
 package de.subcentral.core.metadata;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,15 +10,17 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
 
-public class Contribution implements Comparable<Contribution>
+public class Contribution implements Serializable, Comparable<Contribution>
 {
-	public static final int AMOUNT_NOT_MEASURABLE = 0;
+	private static final long	serialVersionUID		= 8988760112562101666L;
 
-	private Contributor	contributor;
-	private String		type;
-	private String		description;
-	private int			amount		= 1;
-	private float		progress	= 1.0f;
+	public static final int		AMOUNT_NOT_MEASURABLE	= 0;
+
+	private Contributor			contributor;
+	private String				type;
+	private String				description;
+	private int					amount					= 1;
+	private float				progress				= 1.0f;
 
 	public Contribution()
 	{

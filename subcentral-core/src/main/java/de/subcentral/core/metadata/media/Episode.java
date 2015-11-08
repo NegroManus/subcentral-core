@@ -370,7 +370,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 				.compare(numberInSeason, o.numberInSeason, Settings.createDefaultOrdering())
 				.compare(numberInSeries, o.numberInSeries, Settings.createDefaultOrdering())
 				.compare(date, o.date, TemporalComparator.INSTANCE)
-				.compare(title, title, Settings.STRING_ORDERING)
+				.compare(title, o.title, Settings.STRING_ORDERING)
 				.result();
 	}
 

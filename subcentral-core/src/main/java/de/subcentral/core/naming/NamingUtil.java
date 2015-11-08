@@ -22,6 +22,7 @@ public class NamingUtil
 {
 	public static final Comparator<Media>			DEFAULT_MEDIA_NAME_COMPARATOR			= new MediaNameComparator(NamingDefaults.getDefaultNamingService());
 	public static final Comparator<Iterable<Media>>	DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR	= IterableComparator.create(DEFAULT_MEDIA_NAME_COMPARATOR);
+	private static final Map<String, Object>		DEFAULT_MEDIA_NAME_PARAMS				= ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
 
 	public static final class MediaNameComparator implements Comparator<Media>, Serializable
 	{
@@ -39,7 +40,7 @@ public class NamingUtil
 		public int compare(Media o1, Media o2)
 		{
 			// nulls first as naming of null results in an empty string "" and an empty string always comes first
-			return Settings.STRING_ORDERING.compare(namingService.name(o1), namingService.name(o2));
+			return Settings.STRING_ORDERING.compare(namingService.name(o1, DEFAULT_MEDIA_NAME_PARAMS), namingService.name(o2, DEFAULT_MEDIA_NAME_PARAMS));
 		}
 	}
 
