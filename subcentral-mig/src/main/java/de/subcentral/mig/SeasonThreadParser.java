@@ -438,7 +438,6 @@ public class SeasonThreadParser
 			if (storedEpi != null)
 			{
 				parsedEpisIter.set(storedEpi);
-				System.out.println(parsedEpi.compareTo(storedEpi));
 			}
 		}
 
@@ -703,6 +702,7 @@ public class SeasonThreadParser
 			Episode epi = new Episode(data.series, title);
 			epi.setSpecial(true);
 			epis.add(epi);
+			return;
 		}
 
 		epiMatcher.reset();

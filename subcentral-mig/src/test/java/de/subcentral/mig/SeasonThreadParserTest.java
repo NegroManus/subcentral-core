@@ -15,12 +15,6 @@ public class SeasonThreadParserTest
 	private SeasonThreadParser parser = new SeasonThreadParser();
 
 	@Test
-	public void testParseMrRobotS01() throws IOException
-	{
-		parse("thread-mrrobot_s01.html");
-	}
-
-	@Test
 	public void testParseAtlantis2013S02() throws IOException
 	{
 		parse("thread-atlantis2013_s02.html");
@@ -33,9 +27,9 @@ public class SeasonThreadParserTest
 	}
 
 	@Test
-	public void testHimymS09() throws IOException
+	public void testDontTrustTheBitchS02() throws IOException
 	{
-		parse("thread-himym_s09.html");
+		parse("thread-donttrustthebitch_s02.html");
 	}
 
 	@Test
@@ -45,9 +39,27 @@ public class SeasonThreadParserTest
 	}
 
 	@Test
-	public void testDontTrustTheBitchS02() throws IOException
+	public void testHimymS09() throws IOException
 	{
-		parse("thread-donttrustthebitch_s02.html");
+		parse("thread-himym_s09.html");
+	}
+
+	@Test
+	public void testParseMrRobotS01() throws IOException
+	{
+		parse("thread-mrrobot_s01.html");
+	}
+
+	@Test
+	public void testParseOnceUponATimeS03() throws IOException
+	{
+		parse("thread-onceuponatime_s03.html");
+	}
+
+	@Test
+	public void testParseOnceUponATimeS04() throws IOException
+	{
+		parse("thread-onceuponatime_s04.html");
 	}
 
 	@Test
@@ -71,10 +83,12 @@ public class SeasonThreadParserTest
 
 	private void printSeasonThreadContent(SeasonThreadData content)
 	{
+		System.out.println();
 		System.out.println("Seasons:");
 		for (Season season : content.getSeasons())
 		{
 			System.out.println(season);
+			System.out.println();
 			System.out.println("Episodes:");
 			for (Episode epi : season.getEpisodes())
 			{
@@ -82,6 +96,7 @@ public class SeasonThreadParserTest
 			}
 		}
 
+		System.out.println();
 		System.out.println("Subs:");
 		for (SubtitleAdjustment subAdj : content.getSubtitleAdjustments())
 		{
