@@ -8,7 +8,7 @@ import org.junit.Test;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
-import de.subcentral.mig.SeasonThreadParser.SeasonThreadData;
+import de.subcentral.mig.SeasonThreadParser.SeasonThreadContent;
 
 public class SeasonThreadParserTest
 {
@@ -21,27 +21,33 @@ public class SeasonThreadParserTest
 	}
 
 	@Test
-	public void testCastleS08Incomplete() throws IOException
+	public void testParseCastleS08Incomplete() throws IOException
 	{
 		parse("thread-castle_s08_incomplete.html");
 	}
 
 	@Test
-	public void testDontTrustTheBitchS02() throws IOException
+	public void testParseDontTrustTheBitchS02() throws IOException
 	{
 		parse("thread-donttrustthebitch_s02.html");
 	}
 
 	@Test
-	public void testGotS04() throws IOException
+	public void testParseGameOfThronesS04() throws IOException
 	{
-		parse("thread-got_s04.html");
+		parse("thread-gameofthrones_s04.html");
 	}
 
 	@Test
-	public void testHimymS09() throws IOException
+	public void testParseHowIMetYourMotherS09() throws IOException
 	{
-		parse("thread-himym_s09.html");
+		parse("thread-howimetyourmother_s09.html");
+	}
+
+	@Test
+	public void testParseLostS06() throws IOException
+	{
+		parse("thread-lost_s06.html");
 	}
 
 	@Test
@@ -63,25 +69,31 @@ public class SeasonThreadParserTest
 	}
 
 	@Test
-	public void testPsychS07() throws IOException
+	public void testParsePsychS07() throws IOException
 	{
 		parse("thread-psych_s07.html");
 	}
 
 	@Test
-	public void testPsychS08() throws IOException
+	public void testParsePsychS08() throws IOException
 	{
 		parse("thread-psych_s08.html");
+	}
+
+	@Test
+	public void testParseTheMentalistS01() throws IOException
+	{
+		parse("thread-thementalist_s01.html");
 	}
 
 	private void parse(String resourceFilename) throws IOException
 	{
 		Document doc = MigTestUtil.parseDoc(getClass(), resourceFilename);
-		SeasonThreadData data = parser.parse(doc);
+		SeasonThreadContent data = parser.parse(doc);
 		printSeasonThreadContent(data);
 	}
 
-	private void printSeasonThreadContent(SeasonThreadData content)
+	private void printSeasonThreadContent(SeasonThreadContent content)
 	{
 		System.out.println();
 		System.out.println("Seasons:");

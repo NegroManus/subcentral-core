@@ -46,9 +46,12 @@ public class SeasonThreadParser
 
 	private static final Splitter					SPLITTER_PIPE						= Splitter.on('|').trimResults();
 	private static final Splitter					SPLITTER_LIST						= Splitter.on(Pattern.compile("(?:,|&)")).trimResults();
+
 	private static final Pattern					PATTERN_POST_TITLE_NUMBERED_SEASON	= Pattern.compile("(.*)\\s+-\\s*Staffel\\s+(\\d+)\\s*-\\s*.*");
 	private static final Pattern					PATTERN_POST_TITLE_SPECIAL_SEASON	= Pattern.compile("(.*)\\s+-\\s*([\\w\\s]+)\\s*-\\s*.*");
 	private static final Pattern					PATTERN_POST_TITLE_MULTIPLE_SEASONS	= Pattern.compile("(.*)\\s+-\\s*Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s*-\\s*.*");
+
+	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS				= createColumnTypePatternMap();
 
 	/**
 	 * <ul>
@@ -81,7 +84,8 @@ public class SeasonThreadParser
 	 */
 	private static final Pattern					PATTERN_EPISODE_ONLY_NUM			= Pattern.compile("(?:S(\\d+))?E(\\d+)");
 
-	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS				= createColumnTypePatternMap();
+	private static final Pattern					PATTERN_ATTACHMENT_ID				= Pattern.compile("attachmentID=(\\d+)");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED	= Pattern.compile("([*])?<a href=.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
 
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
 	{
@@ -97,13 +101,13 @@ public class SeasonThreadParser
 		return map.build();
 	}
 
-	public SeasonThreadData getAndParse(int threadId, SubCentralApi api) throws IOException
+	public SeasonThreadContent getAndParse(int threadId, SubCentralApi api) throws IOException
 	{
 		Document doc = api.getContent("index.php?page=Thread&threadID=" + threadId);
 		return parse(doc);
 	}
 
-	public SeasonThreadData parse(Document threadHtml)
+	public SeasonThreadContent parse(Document threadHtml)
 	{
 		// Get title and content of first post
 		Element postTitleDiv = threadHtml.getElementsByClass("messageTitle").first();
@@ -117,7 +121,7 @@ public class SeasonThreadParser
 		return parse(postTitleDiv.text(), postTextDiv.html());
 	}
 
-	public SeasonThreadData parse(String postTitle, String postContent)
+	public SeasonThreadContent parse(String postTitle, String postContent)
 	{
 		// Title
 		Data data = new Data();
@@ -131,7 +135,7 @@ public class SeasonThreadParser
 
 		cleanupData(data);
 
-		return new SeasonThreadData(data.seasons.keySet(), data.subtitleAdjustments);
+		return new SeasonThreadContent(data.seasons.keySet(), data.subtitleAdjustments);
 	}
 
 	/**
@@ -150,38 +154,40 @@ public class SeasonThreadParser
 	 */
 	private void parsePostTitle(Data data, String postTitle)
 	{
-		Matcher numberedMatcher = PATTERN_POST_TITLE_NUMBERED_SEASON.matcher(postTitle);
-		if (numberedMatcher.matches())
+		Matcher titleMatcher = PATTERN_POST_TITLE_NUMBERED_SEASON.matcher(postTitle);
+		if (titleMatcher.matches())
 		{
-			Series series = new Series(numberedMatcher.group(1));
+			Series series = new Series(titleMatcher.group(1));
 			data.series = series;
 			Season season = series.newSeason();
-			Integer number = Integer.valueOf(numberedMatcher.group(2));
+			Integer number = Integer.valueOf(titleMatcher.group(2));
 			season.setNumber(number);
 			data.seasons.put(season, season);
 			return;
 		}
 
-		Matcher specialMatcher = PATTERN_POST_TITLE_SPECIAL_SEASON.matcher(postTitle);
-		if (specialMatcher.matches())
+		titleMatcher.reset();
+		titleMatcher.usePattern(PATTERN_POST_TITLE_SPECIAL_SEASON);
+		if (titleMatcher.matches())
 		{
-			Series series = new Series(specialMatcher.group(1));
+			Series series = new Series(titleMatcher.group(1));
 			data.series = series;
 			Season season = series.newSeason();
-			String title = specialMatcher.group(2);
+			String title = titleMatcher.group(2);
 			season.setTitle(title);
 			season.setSpecial(true);
 			data.seasons.put(season, season);
 			return;
 		}
 
-		Matcher multipleMatcher = PATTERN_POST_TITLE_MULTIPLE_SEASONS.matcher(postTitle);
-		if (multipleMatcher.matches())
+		titleMatcher.reset();
+		titleMatcher.usePattern(PATTERN_POST_TITLE_MULTIPLE_SEASONS);
+		if (titleMatcher.matches())
 		{
-			Series series = new Series(multipleMatcher.group(1));
+			Series series = new Series(titleMatcher.group(1));
 			data.series = series;
-			int firstSeasonNum = Integer.parseInt(multipleMatcher.group(2));
-			int lastSeasonNum = Integer.parseInt(multipleMatcher.group(3));
+			int firstSeasonNum = Integer.parseInt(titleMatcher.group(2));
+			int lastSeasonNum = Integer.parseInt(titleMatcher.group(3));
 			for (int i = firstSeasonNum; i <= lastSeasonNum; i++)
 			{
 				Season season = series.newSeason(i);
@@ -266,7 +272,7 @@ public class SeasonThreadParser
 			}
 			catch (Exception e)
 			{
-				log.warn("Exception while trying to parse table as standard table. Parsing as non-standard table", e);
+				log.warn("Exception while trying to parse subtitle table as standard table: {}. Parsing as non-standard table", e.toString());
 				parseNonStandardTable(data, table);
 			}
 		}
@@ -278,17 +284,22 @@ public class SeasonThreadParser
 		Element thead = table.getElementsByTag("thead").first();
 		if (thead == null)
 		{
-			throw new IllegalArgumentException("no thead element found");
+			throw new IllegalArgumentException("No thead element found");
 		}
 		Elements thElems = thead.getElementsByTag("th");
 		if (thElems.isEmpty())
 		{
-			throw new IllegalArgumentException("no th elements found");
+			throw new IllegalArgumentException("No th elements found");
 		}
 		ColumnType[] columns = new ColumnType[thElems.size()];
 		for (int i = 0; i < thElems.size(); i++)
 		{
-			ColumnType colType = determineColumnType(thElems.get(i).html());
+			Element th = thElems.get(i);
+			ColumnType colType = determineColumnType(th.html());
+			if (ColumnType.UNKNOWN.equals(colType))
+			{
+				throw new IllegalArgumentException("Column type could not be determined: " + th);
+			}
 			columns[i] = colType;
 		}
 
@@ -296,7 +307,7 @@ public class SeasonThreadParser
 		Element tbody = table.getElementsByTag("tbody").first();
 		if (tbody == null)
 		{
-			throw new IllegalArgumentException("no tbody element found");
+			throw new IllegalArgumentException("No tbody element found");
 		}
 		List<List<Element>> rows = new ArrayList<>();
 		for (Element tr : tbody.getElementsByTag("tr"))
@@ -304,12 +315,25 @@ public class SeasonThreadParser
 			List<Element> tdElems = new ArrayList<>(tr.getElementsByTag("td"));
 			rows.add(tdElems);
 		}
+
 		cleanupTable(rows, columns.length);
 
 		for (List<Element> tdElems : rows)
 		{
 			parseStandardTableRow(data, tdElems, columns);
 		}
+	}
+
+	private static ColumnType determineColumnType(String columnTitle)
+	{
+		for (Map.Entry<Pattern, ColumnType> entries : COLUMN_TYPE_PATTERNS.entrySet())
+		{
+			if (entries.getKey().matcher(columnTitle).matches())
+			{
+				return entries.getValue();
+			}
+		}
+		return ColumnType.UNKNOWN;
 	}
 
 	protected static void cleanupTable(List<List<Element>> rows, int numColumns)
@@ -341,7 +365,7 @@ public class SeasonThreadParser
 			}
 			if (row.size() != numColumns)
 			{
-				throw new IllegalArgumentException("row does not have the same number of columns (" + row.size() + ") as it should have (" + numColumns + "). row: " + row);
+				throw new IllegalArgumentException("Row does not have the correct number of columns (correct: " + numColumns + ", has: " + row.size() + "). row: " + row);
 			}
 
 			ListIterator<Element> cellIter = row.listIterator();
@@ -424,8 +448,8 @@ public class SeasonThreadParser
 					parseSourcesCell(parsedSources, td);
 					break;
 				default:
-					// cancel on UNKNOWN columns
-					throw new IllegalArgumentException("Unknown column");
+					// Cannot happen
+					throw new IllegalArgumentException("Unknown column type: " + colType);
 			}
 		}
 
@@ -542,7 +566,7 @@ public class SeasonThreadParser
 					String storedSource = mapMarkerToSource.put(source.marker, source.value);
 					if (storedSource != null)
 					{
-						throw new IllegalArgumentException("Multiple sources marked with marker " + source.marker + ":" + storedSource + ", " + source);
+						throw new IllegalArgumentException("Multiple sources marked with marker " + source.marker + ": " + storedSource + ", " + source);
 					}
 				}
 				for (List<MarkedValue<SubtitleAdjustment>> columnSubs : parsedSubs)
@@ -636,27 +660,6 @@ public class SeasonThreadParser
 		}
 	}
 
-	private static void addSource(SubtitleAdjustment subAdj, String source)
-	{
-		subAdj.getFirstSubtitle().setSource(source);
-	}
-
-	private static void addContributions(SubtitleAdjustment subAdj, List<Contribution> contributions)
-	{
-		for (Contribution c : contributions)
-		{
-			if (Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TIMINGS.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TRANSLATION.equals(c.getType())
-					|| Subtitle.CONTRIBUTION_TYPE_REVISION.equals(c.getType()))
-			{
-				subAdj.getFirstSubtitle().getContributions().add(c);
-			}
-			else
-			{
-				subAdj.getContributions().add(c);
-			}
-		}
-	}
-
 	private static void parseEpisodeCell(List<Episode> epis, Data data, String text)
 	{
 		Matcher epiMatcher = PATTERN_EPISODE_MULTI.matcher(text);
@@ -743,9 +746,8 @@ public class SeasonThreadParser
 
 		String cellContent = td.html();
 		List<MarkedValue<SubtitleAdjustment>> subAdjs = new ArrayList<>();
-		Pattern PATTERN_SUB_ADJ_ANCHOR = Pattern.compile("([*])?<a href=.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
 
-		Matcher subAdjAnchorMatcher = PATTERN_SUB_ADJ_ANCHOR.matcher(cellContent);
+		Matcher subAdjAnchorMatcher = PATTERN_ATTACHMENT_ANCHOR_MARKED.matcher(cellContent);
 		while (subAdjAnchorMatcher.find())
 		{
 			String marker;
@@ -872,21 +874,46 @@ public class SeasonThreadParser
 		}
 	}
 
-	private static ColumnType determineColumnType(String columnTitle)
+	private static void addSource(SubtitleAdjustment subAdj, String source)
 	{
-		for (Map.Entry<Pattern, ColumnType> entries : COLUMN_TYPE_PATTERNS.entrySet())
+		subAdj.getFirstSubtitle().setSource(source);
+	}
+
+	private static void addContributions(SubtitleAdjustment subAdj, List<Contribution> contributions)
+	{
+		for (Contribution c : contributions)
 		{
-			if (entries.getKey().matcher(columnTitle).matches())
+			if (Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TIMINGS.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TRANSLATION.equals(c.getType())
+					|| Subtitle.CONTRIBUTION_TYPE_REVISION.equals(c.getType()))
 			{
-				return entries.getValue();
+				subAdj.getFirstSubtitle().getContributions().add(c);
+			}
+			else
+			{
+				subAdj.getContributions().add(c);
 			}
 		}
-		return ColumnType.UNKNOWN;
 	}
 
 	private static void parseNonStandardTable(Data data, Element table)
 	{
-		// TODO
+		// Just add all attachment anchors as subtitles
+		// <a href="http://www.subcentral.de/index.php?page=Attachment&attachmentID=46749">POW4</a>
+		Elements attachmentAnchors = table.select("a[href*=attachmentID]");
+		Matcher attachmentIdMatcher = PATTERN_ATTACHMENT_ID.matcher("");
+		for (Element attachmentAnchor : attachmentAnchors)
+		{
+			String href = attachmentAnchor.attr("href");
+			if (attachmentIdMatcher.reset(href).find())
+			{
+				Integer attachmentId = Integer.valueOf(attachmentIdMatcher.group(1));
+				String label = attachmentAnchor.text();
+				SubtitleAdjustment subAdj = new SubtitleAdjustment();
+				subAdj.setSingleMatchingRelease(new Release(label));
+				subAdj.getAttributes().put(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID, attachmentId);
+				data.subtitleAdjustments.add(subAdj);
+			}
+		}
 	}
 
 	private static void cleanupData(Data data)
@@ -896,10 +923,7 @@ public class SeasonThreadParser
 		if (data.seasons.size() == 1)
 		{
 			Season season = data.seasons.keySet().iterator().next();
-			data.episodes.keySet().stream().forEach((Episode epi) ->
-			{
-				season.addEpisode(epi);
-			});
+			data.episodes.keySet().stream().forEach((Episode epi) -> season.addEpisode(epi));
 		}
 		// For multi-season threads
 		else
@@ -947,10 +971,14 @@ public class SeasonThreadParser
 		for (SubtitleAdjustment subAdj : data.subtitleAdjustments)
 		{
 			Subtitle sub = subAdj.getFirstSubtitle();
-			Subtitle storedSub = distinctSubs.putIfAbsent(sub, sub);
-			if (storedSub != null)
+			// sub can be null if parsed from non-standard-table
+			if (sub != null)
 			{
-				subAdj.setSingleSubtitle(storedSub);
+				Subtitle storedSub = distinctSubs.putIfAbsent(sub, sub);
+				if (storedSub != null)
+				{
+					subAdj.setSingleSubtitle(storedSub);
+				}
 			}
 		}
 
@@ -974,7 +1002,7 @@ public class SeasonThreadParser
 					subAdjIter.remove();
 				}
 				// a) differ in Subtitle -> add other Subtitle to first SubtitleAdjustment
-				else if (!subAdj.getFirstSubtitle().equals(storedSubAdj.getFirstSubtitle()))
+				else if (!subAdj.getSubtitles().isEmpty() && !subAdj.getFirstSubtitle().equals(storedSubAdj.getFirstSubtitle()))
 				{
 					storedSubAdj.getSubtitles().add(subAdj.getFirstSubtitle());
 					subAdjIter.remove();
@@ -1007,12 +1035,12 @@ public class SeasonThreadParser
 		data.subtitleAdjustments.sort(null);
 	}
 
-	public static class SeasonThreadData
+	public static final class SeasonThreadContent
 	{
 		private final ImmutableList<Season>				seasons;
 		private final ImmutableList<SubtitleAdjustment>	subtitleAdjustments;
 
-		public SeasonThreadData(Iterable<Season> seasons, Iterable<SubtitleAdjustment> subtitleAdjustments)
+		public SeasonThreadContent(Iterable<Season> seasons, Iterable<SubtitleAdjustment> subtitleAdjustments)
 		{
 			this.seasons = ImmutableList.copyOf(seasons);
 			this.subtitleAdjustments = ImmutableList.copyOf(subtitleAdjustments);
