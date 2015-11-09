@@ -23,7 +23,7 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.release.Unnuke;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
@@ -83,7 +83,7 @@ public class WatcherFxUtil
 
 	public static String beanTypeToString(Class<?> beanClass)
 	{
-		if (SubtitleVariant.class == beanClass)
+		if (SubtitleFile.class == beanClass)
 		{
 			return "Subtitle";
 		}

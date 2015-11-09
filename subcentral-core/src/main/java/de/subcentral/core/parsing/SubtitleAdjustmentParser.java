@@ -13,15 +13,15 @@ import com.google.common.base.Splitter;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleVariant>
+public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleFile>
 {
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
 	private final Mapper<Release>							releaseMapper				= ParsingDefaults.getDefaultReleaseMapper();
 	private final Mapper<Subtitle>							subtitleMapper				= ParsingDefaults.getDefaultSubtitleMapper();
-	private final Mapper<SubtitleVariant>				subtitleAdjustmentMapper	= ParsingDefaults.getDefaultSubtitleAdjustmentMapper();
+	private final Mapper<SubtitleFile>				subtitleAdjustmentMapper	= ParsingDefaults.getDefaultSubtitleAdjustmentMapper();
 
 	public SubtitleAdjustmentParser(Mapper<? extends List<? extends Media>> mediaMapper)
 	{
@@ -43,13 +43,13 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleVari
 		return subtitleMapper;
 	}
 
-	public Mapper<SubtitleVariant> getSubtitleAdjustmentMapper()
+	public Mapper<SubtitleFile> getSubtitleAdjustmentMapper()
 	{
 		return subtitleAdjustmentMapper;
 	}
 
 	@Override
-	public SubtitleVariant map(Map<SimplePropDescriptor, String> props)
+	public SubtitleFile map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
 		List<? extends Media> media = mediaMapper.map(props, propFromStringService);
@@ -67,7 +67,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleVari
 		}
 
 		// SubtitleAdjustment
-		SubtitleVariant subAdj = subtitleAdjustmentMapper.map(props, propFromStringService);
+		SubtitleFile subAdj = subtitleAdjustmentMapper.map(props, propFromStringService);
 		subAdj.getSubtitles().addAll(subs);
 		subAdj.getMatchingReleases().addAll(matchingRlss);
 		return subAdj;

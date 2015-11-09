@@ -30,7 +30,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
@@ -413,7 +413,7 @@ public class SeasonThreadParser
 		List<Episode> parsedEpis = new ArrayList<>();
 		// Each top-level list represents a column,
 		// each 2nd-level list represents the subtitles in that column
-		List<List<MarkedValue<SubtitleVariant>>> parsedSubs = new ArrayList<>();
+		List<List<MarkedValue<SubtitleFile>>> parsedSubs = new ArrayList<>();
 		// Each top-level list represents a column,
 		// each 2nd-level list represents a division within that column (the divisions are divided by "|")
 		// each 3rd-level list represents the contributions inside a division
@@ -467,7 +467,7 @@ public class SeasonThreadParser
 
 		// Add contributions to subtitles
 		int numSubColumns = parsedSubs.size();
-		int numSubs = parsedSubs.stream().mapToInt((List<MarkedValue<SubtitleVariant>> subsPerColumn) -> subsPerColumn.size()).sum();
+		int numSubs = parsedSubs.stream().mapToInt((List<MarkedValue<SubtitleFile>> subsPerColumn) -> subsPerColumn.size()).sum();
 		// For each contribution column
 		for (List<List<Contribution>> columnContributions : parsedContributions)
 		{
@@ -478,9 +478,9 @@ public class SeasonThreadParser
 			// [LOL][DIM] <-> [SubberA, SubberB]
 			if (numContributionDivisions == 1)
 			{
-				for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleVariant> subAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> subAdj : columnSubs)
 					{
 						addContributions(subAdj.value, columnContributions.get(0));
 					}
@@ -493,9 +493,9 @@ public class SeasonThreadParser
 			{
 				for (int i = 0; i < numSubColumns; i++)
 				{
-					List<MarkedValue<SubtitleVariant>> columnSubs = parsedSubs.get(i);
+					List<MarkedValue<SubtitleFile>> columnSubs = parsedSubs.get(i);
 					List<Contribution> divisionContributions = columnContributions.get(i);
-					for (MarkedValue<SubtitleVariant> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
 					{
 						addContributions(markedSubAdj.value, divisionContributions);
 					}
@@ -508,9 +508,9 @@ public class SeasonThreadParser
 			else if (numSubs == columnContributions.size())
 			{
 				int index = 0;
-				for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleVariant> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
 					{
 						List<Contribution> divisionContributions = columnContributions.get(index);
 						addContributions(markedSubAdj.value, divisionContributions);
@@ -527,10 +527,10 @@ public class SeasonThreadParser
 				int diff = numSubColumns - numContributionDivisions;
 				for (int i = 0; i < numSubColumns; i++)
 				{
-					List<MarkedValue<SubtitleVariant>> columnSubs = parsedSubs.get(i);
+					List<MarkedValue<SubtitleFile>> columnSubs = parsedSubs.get(i);
 					int contributionDivisionIndex = Math.max(0, i - diff);
 					List<Contribution> divisionContributions = columnContributions.get(contributionDivisionIndex);
-					for (MarkedValue<SubtitleVariant> subAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> subAdj : columnSubs)
 					{
 						addContributions(subAdj.value, divisionContributions);
 					}
@@ -539,9 +539,9 @@ public class SeasonThreadParser
 			// Else: Add every contribution to every sub
 			else
 			{
-				for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleVariant> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
 					{
 						for (List<Contribution> divisionContributions : columnContributions)
 						{
@@ -569,9 +569,9 @@ public class SeasonThreadParser
 						throw new IllegalArgumentException("Multiple sources marked with marker " + source.marker + ": " + storedSource + ", " + source);
 					}
 				}
-				for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleVariant> subAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> subAdj : columnSubs)
 					{
 						addSource(subAdj.value, mapMarkerToSource.get(subAdj.marker));
 					}
@@ -580,9 +580,9 @@ public class SeasonThreadParser
 			// If only one source, add it to all the subtitles
 			else if (parsedSources.size() == 1)
 			{
-				for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleVariant> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
 					{
 						addSource(markedSubAdj.value, parsedSources.get(0).value);
 					}
@@ -595,9 +595,9 @@ public class SeasonThreadParser
 			{
 				for (int i = 0; i < numSubColumns; i++)
 				{
-					List<MarkedValue<SubtitleVariant>> columnSubs = parsedSubs.get(i);
+					List<MarkedValue<SubtitleFile>> columnSubs = parsedSubs.get(i);
 					MarkedValue<String> markedSource = parsedSources.get(i);
-					for (MarkedValue<SubtitleVariant> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
 					{
 						addSource(markedSubAdj.value, markedSource.value);
 					}
@@ -609,9 +609,9 @@ public class SeasonThreadParser
 			else if (numSubs == parsedSources.size())
 			{
 				int index = 0;
-				for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleVariant> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
 					{
 						MarkedValue<String> markedSource = parsedSources.get(index);
 						addSource(markedSubAdj.value, markedSource.value);
@@ -622,9 +622,9 @@ public class SeasonThreadParser
 			// Else: Add every source to every sub
 			else
 			{
-				for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleVariant> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
 					{
 						for (MarkedValue<String> markedSource : parsedSources)
 						{
@@ -636,9 +636,9 @@ public class SeasonThreadParser
 		}
 
 		// Add subtitles
-		for (List<MarkedValue<SubtitleVariant>> columnSubs : parsedSubs)
+		for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
 		{
-			for (MarkedValue<SubtitleVariant> subAdj : columnSubs)
+			for (MarkedValue<SubtitleFile> subAdj : columnSubs)
 			{
 				Episode firstEpi = parsedEpis.get(0);
 				subAdj.value.getFirstSubtitle().setMedia(firstEpi);
@@ -650,7 +650,7 @@ public class SeasonThreadParser
 				{
 					for (int i = 1; i < parsedEpis.size(); i++)
 					{
-						SubtitleVariant copy = SerializationUtils.clone(subAdj.value);
+						SubtitleFile copy = SerializationUtils.clone(subAdj.value);
 						Episode epi = parsedEpis.get(i);
 						copy.getFirstSubtitle().setMedia(epi);
 						data.subtitles.add(copy);
@@ -729,7 +729,7 @@ public class SeasonThreadParser
 		return;
 	}
 
-	private static void parseSubsCell(List<List<MarkedValue<SubtitleVariant>>> subs, Element td, ColumnType colType)
+	private static void parseSubsCell(List<List<MarkedValue<SubtitleFile>>> subs, Element td, ColumnType colType)
 	{
 		String language;
 		switch (colType)
@@ -745,7 +745,7 @@ public class SeasonThreadParser
 		}
 
 		String cellContent = td.html();
-		List<MarkedValue<SubtitleVariant>> subAdjs = new ArrayList<>();
+		List<MarkedValue<SubtitleFile>> subAdjs = new ArrayList<>();
 
 		Matcher subAdjAnchorMatcher = PATTERN_ATTACHMENT_ANCHOR_MARKED.matcher(cellContent);
 		while (subAdjAnchorMatcher.find())
@@ -779,12 +779,12 @@ public class SeasonThreadParser
 
 			Release rls = new Release(label);
 
-			SubtitleVariant subAdj = new SubtitleVariant();
+			SubtitleFile subAdj = new SubtitleFile();
 			subAdj.setSingleSubtitle(sub);
 			subAdj.setSingleMatchingRelease(rls);
 			subAdj.getAttributes().put(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID, attachmentId);
 
-			MarkedValue<SubtitleVariant> markedSubAdj = new MarkedValue<>(subAdj, marker);
+			MarkedValue<SubtitleFile> markedSubAdj = new MarkedValue<>(subAdj, marker);
 			subAdjs.add(markedSubAdj);
 		}
 
@@ -822,7 +822,7 @@ public class SeasonThreadParser
 				contributionType = Subtitle.CONTRIBUTION_TYPE_TIMINGS;
 				break;
 			case ADJUSTMENT:
-				contributionType = SubtitleVariant.CONTRIBUTION_TYPE_ADJUSTMENT;
+				contributionType = SubtitleFile.CONTRIBUTION_TYPE_ADJUSTMENT;
 				break;
 			default:
 				contributionType = null;
@@ -874,12 +874,12 @@ public class SeasonThreadParser
 		}
 	}
 
-	private static void addSource(SubtitleVariant subAdj, String source)
+	private static void addSource(SubtitleFile subAdj, String source)
 	{
 		subAdj.getFirstSubtitle().setSource(source);
 	}
 
-	private static void addContributions(SubtitleVariant subAdj, List<Contribution> contributions)
+	private static void addContributions(SubtitleFile subAdj, List<Contribution> contributions)
 	{
 		for (Contribution c : contributions)
 		{
@@ -908,7 +908,7 @@ public class SeasonThreadParser
 			{
 				Integer attachmentId = Integer.valueOf(attachmentIdMatcher.group(1));
 				String label = attachmentAnchor.text();
-				SubtitleVariant subAdj = new SubtitleVariant();
+				SubtitleFile subAdj = new SubtitleFile();
 				subAdj.setSingleMatchingRelease(new Release(label));
 				subAdj.getAttributes().put(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID, attachmentId);
 				data.subtitles.add(subAdj);
@@ -968,7 +968,7 @@ public class SeasonThreadParser
 		// link the Subtitle of the first SubtitleAdjustment of those matching SubtitleAdjustments to all the other SubtitleAdjustments, too
 		// Because only for the first SubtitleAdjustment the Subtitle's contributions are specified. Not for all other SubtitleAdjustments
 		Map<Subtitle, Subtitle> distinctSubs = new HashMap<>();
-		for (SubtitleVariant subAdj : data.subtitles)
+		for (SubtitleFile subAdj : data.subtitles)
 		{
 			Subtitle sub = subAdj.getFirstSubtitle();
 			// sub can be null if parsed from non-standard-table
@@ -987,13 +987,13 @@ public class SeasonThreadParser
 		// b) If they have a different Subtitle (different Episode)
 		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
 		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
-		Map<Integer, SubtitleVariant> mapAttachmentsToSubs = new HashMap<>();
-		ListIterator<SubtitleVariant> subAdjIter = data.subtitles.listIterator();
+		Map<Integer, SubtitleFile> mapAttachmentsToSubs = new HashMap<>();
+		ListIterator<SubtitleFile> subAdjIter = data.subtitles.listIterator();
 		while (subAdjIter.hasNext())
 		{
-			SubtitleVariant subAdj = subAdjIter.next();
+			SubtitleFile subAdj = subAdjIter.next();
 			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID);
-			SubtitleVariant storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
+			SubtitleFile storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
 			if (storedSubAdj != null)
 			{
 				// a) Equal -> remove duplicate
@@ -1013,7 +1013,7 @@ public class SeasonThreadParser
 		// Cleanup sub.source
 		// 1) lower-case all sources
 		// Add source=SubCentral.de to all german subs without a source
-		for (SubtitleVariant subAdj : data.subtitles)
+		for (SubtitleFile subAdj : data.subtitles)
 		{
 			for (Subtitle sub : subAdj.getSubtitles())
 			{
@@ -1038,9 +1038,9 @@ public class SeasonThreadParser
 	public static final class SeasonThreadContent
 	{
 		private final ImmutableList<Season>				seasons;
-		private final ImmutableList<SubtitleVariant>	subtitleAdjustments;
+		private final ImmutableList<SubtitleFile>	subtitleAdjustments;
 
-		public SeasonThreadContent(Iterable<Season> seasons, Iterable<SubtitleVariant> subtitleAdjustments)
+		public SeasonThreadContent(Iterable<Season> seasons, Iterable<SubtitleFile> subtitleAdjustments)
 		{
 			this.seasons = ImmutableList.copyOf(seasons);
 			this.subtitleAdjustments = ImmutableList.copyOf(subtitleAdjustments);
@@ -1051,7 +1051,7 @@ public class SeasonThreadParser
 			return seasons;
 		}
 
-		public ImmutableList<SubtitleVariant> getSubtitleAdjustments()
+		public ImmutableList<SubtitleFile> getSubtitleAdjustments()
 		{
 			return subtitleAdjustments;
 		}
@@ -1062,7 +1062,7 @@ public class SeasonThreadParser
 		private Series								series		= new Series(Migration.UNKNOWN_SERIES);
 		private final SortedMap<Season, Season>		seasons		= new TreeMap<>();
 		private final SortedMap<Episode, Episode>	episodes	= new TreeMap<>();
-		private final List<SubtitleVariant>			subtitles	= new ArrayList<>();
+		private final List<SubtitleFile>			subtitles	= new ArrayList<>();
 	}
 
 	/**

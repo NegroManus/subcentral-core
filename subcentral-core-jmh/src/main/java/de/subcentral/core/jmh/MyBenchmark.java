@@ -59,7 +59,7 @@ import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.ParsingService;
@@ -80,7 +80,7 @@ import de.subcentral.support.subcentralde.SubCentralDe;
  */
 public class MyBenchmark
 {
-	private static final SubtitleVariant SUB_ADJ = SubtitleVariant.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"),
+	private static final SubtitleFile SUB_ADJ = SubtitleFile.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"),
 			"English",
 			"SubCentral");
 
@@ -147,13 +147,13 @@ public class MyBenchmark
 	// @Benchmark
 	public void testParsingSubAdjBestCase()
 	{
-		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleVariant.class, PARSING_SERVICES);
+		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleFile.class, PARSING_SERVICES);
 	}
 
 	// @Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
-		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleVariant.class, PARSING_SERVICES_REVERSED);
+		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleFile.class, PARSING_SERVICES_REVERSED);
 	}
 
 	@Benchmark

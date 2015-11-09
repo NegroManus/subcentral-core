@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.naming.SubtitleAdjustmentNamer;
+import de.subcentral.core.naming.SubtitleFileNamer;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ListProperty;
@@ -55,7 +55,7 @@ public class ProcessingResult implements ProcessingItem
 	{
 		Map<String, Object> effectiveParams = new HashMap<>();
 		effectiveParams.putAll(task.getConfig().getNamingParameters());
-		effectiveParams.put(SubtitleAdjustmentNamer.PARAM_RELEASE, rls);
+		effectiveParams.put(SubtitleFileNamer.PARAM_RELEASE, rls);
 		return task.getController().getNamingService().name(task.getResultObject(), effectiveParams);
 	}
 

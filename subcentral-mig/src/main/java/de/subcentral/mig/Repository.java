@@ -13,7 +13,7 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingUtil;
 
@@ -26,7 +26,7 @@ public class Repository
 	private final SortedSet<Episode>			episodes	= new TreeSet<>();
 	private final SortedSet<Subber>				subbers		= new TreeSet<>();
 	private final SortedSet<Release>			releases	= new TreeSet<>();
-	private final SortedSet<SubtitleVariant>	subtitles	= new TreeSet<>();
+	private final SortedSet<SubtitleFile>	subtitles	= new TreeSet<>();
 
 	public SortedSet<Series> getSeries()
 	{
@@ -53,7 +53,7 @@ public class Repository
 		return releases;
 	}
 
-	public SortedSet<SubtitleVariant> getSubtitles()
+	public SortedSet<SubtitleFile> getSubtitles()
 	{
 		return subtitles;
 	}

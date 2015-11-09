@@ -27,7 +27,7 @@ import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
@@ -209,7 +209,7 @@ public class ProcessingController extends AbstractController
 		// add subtitle language standardizer
 		service.registerStandardizer(Subtitle.class, settings.getSubtitleLanguageCorrectionSettings().getSubtitleLanguageStandardizer());
 		// add subtitle tags standardizer
-		service.registerStandardizer(SubtitleVariant.class, SubtitleUtil::standardizeTags);
+		service.registerStandardizer(SubtitleFile.class, SubtitleUtil::standardizeTags);
 		return service;
 	}
 

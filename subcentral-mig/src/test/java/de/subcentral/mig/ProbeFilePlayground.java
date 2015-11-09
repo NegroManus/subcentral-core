@@ -17,7 +17,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
@@ -129,13 +129,13 @@ public class ProbeFilePlayground
 				HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
 				long hashAsLong = hash.asLong();
 				String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
-				SubtitleVariant subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleVariant.class, SUB_PARSING_SERVICES);
+				SubtitleFile subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleFile.class, SUB_PARSING_SERVICES);
 				if (subAdj == null)
 				{
 					Release rls = ReleaseScene.getParsingService().parse(filenameWithoutExt, Release.class);
 					if (rls != null)
 					{
-						subAdj = SubtitleVariant.create(rls, null, null);
+						subAdj = SubtitleFile.create(rls, null, null);
 					}
 				}
 

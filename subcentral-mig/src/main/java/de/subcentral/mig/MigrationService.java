@@ -33,7 +33,7 @@ import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
@@ -189,13 +189,13 @@ public class MigrationService
 				HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
 				long hashAsLong = hash.asLong();
 				String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
-				SubtitleVariant subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleVariant.class, subParsingServices);
+				SubtitleFile subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleFile.class, subParsingServices);
 				if (subAdj == null)
 				{
 					Release rls = ParsingUtil.parse(filenameWithoutExt, Release.class, rlsParsingServices);
 					if (rls != null)
 					{
-						subAdj = SubtitleVariant.create(rls, null, null);
+						subAdj = SubtitleFile.create(rls, null, null);
 					}
 				}
 

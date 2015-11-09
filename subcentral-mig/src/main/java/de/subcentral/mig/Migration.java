@@ -25,7 +25,7 @@ import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
@@ -95,19 +95,19 @@ public class Migration
 		{
 			stream.forEach(file -> files.add(file));
 		}
-		List<SubtitleVariant> parsed = files.parallelStream().map(Migration::processFile).collect(Collectors.toList());
+		List<SubtitleFile> parsed = files.parallelStream().map(Migration::processFile).collect(Collectors.toList());
 		double duration = TimeUtil.durationMillisDouble(startTotal);
 		log.info("Processed {} files in {} ms ({} ms per file}", files.size(), duration, (duration / files.size()));
 	}
 
-	private static SubtitleVariant processFile(Path file)
+	private static SubtitleFile processFile(Path file)
 	{
 		try
 		{
 			long startSingle = System.nanoTime();
 			log.info("Processing {}", file);
 			String name = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
-			SubtitleVariant metadata = ParsingUtil.parse(name, SubtitleVariant.class, PARSING_SERVICES);
+			SubtitleFile metadata = ParsingUtil.parse(name, SubtitleFile.class, PARSING_SERVICES);
 			log.info("Parsed metadata: {}", metadata);
 			SubtitleContent data;
 

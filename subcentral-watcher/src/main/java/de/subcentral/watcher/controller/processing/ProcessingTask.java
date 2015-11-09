@@ -42,7 +42,7 @@ import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleVariant;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
@@ -88,14 +88,14 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	private ProcessingConfig				config;
 	// Important objects for processing and details
 	private final TreeItem<ProcessingItem>	taskTreeItem;
-	private SubtitleVariant				parsedObject;
+	private SubtitleFile				parsedObject;
 	private List<Correction>				parsingCorrections			= ImmutableList.of();
 	private List<Release>					foundReleases				= ImmutableList.of();
 	private List<Release>					mediaFilteredFoundReleases	= ImmutableList.of();
 	private List<Release>					matchingReleases			= ImmutableList.of();
 	private Map<Release, StandardRelease>	guessedReleases				= ImmutableMap.of();
 	private Map<Release, CompatibilityInfo>	compatibleReleases			= ImmutableMap.of();
-	private SubtitleVariant				resultObject;
+	private SubtitleFile				resultObject;
 	private ListProperty<ProcessingResult>	results						= new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
 
 	// package private
@@ -163,7 +163,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		Platform.runLater(() -> ProcessingTask.this.info.setValue(info));
 	}
 
-	public SubtitleVariant getParsedObject()
+	public SubtitleFile getParsedObject()
 	{
 		return parsedObject;
 	}
@@ -198,7 +198,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		return compatibleReleases;
 	}
 
-	public SubtitleVariant getResultObject()
+	public SubtitleFile getResultObject()
 	{
 		return resultObject;
 	}
@@ -332,14 +332,14 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		log.debug("Using processing config: {}", config);
 	}
 
-	private SubtitleVariant parse(Path file)
+	private SubtitleFile parse(Path file)
 	{
 		updateMessage("Parsing filename");
 		List<ParsingService> parsingServices = config.getFilenameParsingServices();
 
 		String filenameWithoutExt = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
-		log.trace("Trying to parse {} with {} to ", filenameWithoutExt, parsingServices, SubtitleVariant.class.getSimpleName());
-		SubtitleVariant parsed = ParsingUtil.parse(filenameWithoutExt, SubtitleVariant.class, parsingServices);
+		log.trace("Trying to parse {} with {} to ", filenameWithoutExt, parsingServices, SubtitleFile.class.getSimpleName());
+		SubtitleFile parsed = ParsingUtil.parse(filenameWithoutExt, SubtitleFile.class, parsingServices);
 		log.debug("Parsed {} to {}", file, parsed);
 		if (parsed == null)
 		{
@@ -356,7 +356,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	private void createResultObject()
 	{
 		// Created result object
-		SubtitleVariant convertedSubAdj = new SubtitleVariant();
+		SubtitleFile convertedSubAdj = new SubtitleFile();
 		convertedSubAdj.setHearingImpaired(parsedObject.isHearingImpaired());
 		for (Subtitle srcSub : parsedObject.getSubtitles())
 		{
