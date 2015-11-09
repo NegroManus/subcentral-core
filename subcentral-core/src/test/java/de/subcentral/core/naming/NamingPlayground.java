@@ -14,7 +14,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleVariant;
 
 public class NamingPlayground
 {
@@ -63,7 +63,7 @@ public class NamingPlayground
 		sub1.setGroup(new Group("SubCentral"));
 
 		// Subtitle release
-		SubtitleAdjustment subAdj = new SubtitleAdjustment();
+		SubtitleVariant subAdj = new SubtitleVariant();
 		subAdj.setSingleSubtitle(sub1);
 		subAdj.setTags(Tag.list("orig", "C"));
 		subAdj.setSingleMatchingRelease(rel);

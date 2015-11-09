@@ -13,7 +13,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleVariant;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 
 public class CorrectionDefaults
@@ -80,7 +80,7 @@ public class CorrectionDefaults
 		return ImmutableList.of();
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(SubtitleAdjustment subAdj)
+	public static List<? extends Object> retrieveNestedBeans(SubtitleVariant subAdj)
 	{
 		List<Object> nestedBeans = new ArrayList<>(subAdj.getSubtitles().size() + subAdj.getMatchingReleases().size());
 		nestedBeans.addAll(subAdj.getSubtitles());
@@ -94,12 +94,12 @@ public class CorrectionDefaults
 		service.registerNestedBeansRetriever(Season.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Release.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Subtitle.class, CorrectionDefaults::retrieveNestedBeans);
-		service.registerNestedBeansRetriever(SubtitleAdjustment.class, CorrectionDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(SubtitleVariant.class, CorrectionDefaults::retrieveNestedBeans);
 	}
 
 	public static void registerAllDefaultCorrectors(TypeCorrectionService service)
 	{
-		service.registerStandardizer(SubtitleAdjustment.class, SubtitleUtil::standardizeTags);
+		service.registerStandardizer(SubtitleVariant.class, SubtitleUtil::standardizeTags);
 		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("AAC2", "0"), Tag.list("AAC2.0"))));
 		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("DD5", "1"), Tag.list("DD5.1"))));
 		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "264"), Tag.list("H.264"))));

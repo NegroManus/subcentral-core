@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleVariant;
 import de.subcentral.mig.SeasonThreadParser.SeasonThreadContent;
 
 public class SeasonThreadParserTest
@@ -110,7 +110,7 @@ public class SeasonThreadParserTest
 
 		System.out.println();
 		System.out.println("Subs:");
-		for (SubtitleAdjustment subAdj : content.getSubtitleAdjustments())
+		for (SubtitleVariant subAdj : content.getSubtitleAdjustments())
 		{
 			System.out.println(subAdj);
 		}

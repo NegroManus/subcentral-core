@@ -37,8 +37,8 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	public static final SimplePropDescriptor	PROP_NFO						= new SimplePropDescriptor(Subtitle.class, PropNames.NFO);
 	public static final SimplePropDescriptor	PROP_NFO_LINK					= new SimplePropDescriptor(Subtitle.class, PropNames.NFO_LINK);
 	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS				= new SimplePropDescriptor(Subtitle.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_IDS						= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.IDS);
-	public static final SimplePropDescriptor	PROP_ATTRIBUTES					= new SimplePropDescriptor(SubtitleAdjustment.class, PropNames.ATTRIBUTES);
+	public static final SimplePropDescriptor	PROP_IDS						= new SimplePropDescriptor(SubtitleVariant.class, PropNames.IDS);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES					= new SimplePropDescriptor(SubtitleVariant.class, PropNames.ATTRIBUTES);
 
 	public static final String					STATE_PLANNED					= "PLANNED";
 	public static final String					STATE_TRANSCRIPT				= "TRANSCRIPT";

@@ -20,7 +20,7 @@ import de.subcentral.core.naming.SubtitleAdjustmentNamer;
 
 public class SubtitleUtil
 {
-	public static Set<String> buildNamesForMatchingReleases(SubtitleAdjustment subAdj, NamingService namingService)
+	public static Set<String> buildNamesForMatchingReleases(SubtitleVariant subAdj, NamingService namingService)
 	{
 		if (subAdj == null || subAdj.getMatchingReleases().isEmpty())
 		{
@@ -34,7 +34,7 @@ public class SubtitleUtil
 		return names.build();
 	}
 
-	public static List<Media> getMediaFromSubtitles(SubtitleAdjustment subAdj)
+	public static List<Media> getMediaFromSubtitles(SubtitleVariant subAdj)
 	{
 		if (subAdj == null || subAdj.getSubtitles().isEmpty())
 		{
@@ -48,7 +48,7 @@ public class SubtitleUtil
 		return media.build();
 	}
 
-	public static void standardizeTags(SubtitleAdjustment subAdj, List<Correction> changes)
+	public static void standardizeTags(SubtitleVariant subAdj, List<Correction> changes)
 	{
 		if (subAdj == null || subAdj.getTags().isEmpty())
 		{
@@ -69,7 +69,7 @@ public class SubtitleUtil
 				subAdj.setVersion(newRev);
 				if (!Objects.equals(oldRev, newRev))
 				{
-					changes.add(new Correction(subAdj, SubtitleAdjustment.PROP_VERSION.getPropName(), oldRev, newRev));
+					changes.add(new Correction(subAdj, SubtitleVariant.PROP_VERSION.getPropName(), oldRev, newRev));
 				}
 				iter.remove();
 				tagsChanged = true;
@@ -77,7 +77,7 @@ public class SubtitleUtil
 		}
 		if (tagsChanged)
 		{
-			changes.add(new Correction(subAdj, SubtitleAdjustment.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
+			changes.add(new Correction(subAdj, SubtitleVariant.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
 		}
 	}
 

@@ -14,7 +14,7 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleVariant;
 
 public class Addic7edParsingTest
 {
@@ -34,7 +34,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, null, "WEB-DL", "x264", "AAC");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode01", adj, name);
@@ -49,7 +49,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "EVOLVE");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode02", adj, name);
@@ -64,7 +64,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setHearingImpaired(true);
 
 		compare("testEpisode03", adj, name);
@@ -79,7 +79,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "EXCELLENCE", "HDTV", "x264");
 		Subtitle sub = new Subtitle(epi, "Dutch");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("orig"));
 
 		compare("testEpisode04", adj, name);
@@ -94,7 +94,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "2HD", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode05", adj, name);
@@ -110,7 +110,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "mSD", "480p", "WEB-DL", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode06", adj, name);
@@ -125,7 +125,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("orig"));
 
 		compare("testEpisode07", adj, name);
@@ -140,7 +140,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "FQM");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode08", adj, name);
@@ -156,7 +156,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "LOL");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("orig"));
 
 		compare("testEpisode09", adj, name);
@@ -172,7 +172,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "LOL");
 		Subtitle sub = new Subtitle(epi, "German");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "updated"));
 
 		compare("testEpisode10", adj, name);
@@ -187,7 +187,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, null, "WEB-DL");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("orig"));
 
 		compare("testEpisode11", adj, name);
@@ -202,7 +202,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setHearingImpaired(true);
 
 		compare("testEpisode12", adj, name);
@@ -217,7 +217,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setHearingImpaired(true);
 
 		compare("testEpisode13", adj, name);
@@ -232,7 +232,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, null, "720p", "WEB-DL");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setHearingImpaired(true);
 
 		compare("testEpisode14", adj, name);
@@ -248,7 +248,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("orig"));
 
 		compare("testEpisode15", adj, name);
@@ -264,7 +264,7 @@ public class Addic7edParsingTest
 		Release rls2 = Release.create(epi, "MSD");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, ImmutableSet.of(rls1, rls2));
+		SubtitleVariant adj = new SubtitleVariant(name, sub, ImmutableSet.of(rls1, rls2));
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode16", adj, name);
@@ -279,7 +279,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "FoV", "HDTV", "720p");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode17", adj, name);
@@ -294,7 +294,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "TVC", "HDTV");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode18", adj, name);
@@ -309,7 +309,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, null, "WEB-DL");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("HI", "C", "orig"));
 
 		compare("testEpisode19", adj, name);
@@ -324,7 +324,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, null, "WEBRip");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode20", adj, name);
@@ -339,7 +339,7 @@ public class Addic7edParsingTest
 		Release rls = Release.create(epi, "2HD", "Webrip");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource("Addic7ed.com");
-		SubtitleAdjustment adj = new SubtitleAdjustment(name, sub, rls);
+		SubtitleVariant adj = new SubtitleVariant(name, sub, rls);
 		adj.setTags(Tag.list("C", "orig"));
 
 		compare("testEpisode21", adj, name);
@@ -352,7 +352,7 @@ public class Addic7edParsingTest
 		// TODO
 	}
 
-	private static final void compare(String testMethodName, SubtitleAdjustment expected, String nameToParse)
+	private static final void compare(String testMethodName, SubtitleVariant expected, String nameToParse)
 	{
 		Object parsed = Addic7edCom.getParsingService().parse(nameToParse);
 		List<Correction> changes = CorrectionDefaults.getDefaultCorrectionService().correct(parsed);

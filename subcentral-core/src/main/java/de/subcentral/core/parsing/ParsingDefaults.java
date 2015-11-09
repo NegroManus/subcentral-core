@@ -9,7 +9,7 @@ import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleVariant;
 
 public class ParsingDefaults
 {
@@ -86,7 +86,7 @@ public class ParsingDefaults
 		return SUBTITLE_MAPPER;
 	}
 
-	public static final Mapper<SubtitleAdjustment> getDefaultSubtitleAdjustmentMapper()
+	public static final Mapper<SubtitleVariant> getDefaultSubtitleAdjustmentMapper()
 	{
 		return SUBTITLE_ADJUSTMENT_MAPPER;
 	}

@@ -15,7 +15,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleVariant;
 
 public class NamingTest
 {
@@ -66,7 +66,7 @@ public class NamingTest
 		movie.setDate(Year.of(2001));
 
 		Release mediaRel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
-		SubtitleAdjustment rel = SubtitleAdjustment.create(mediaRel, "de", "SubCentral");
+		SubtitleVariant rel = SubtitleVariant.create(mediaRel, "de", "SubCentral");
 		String name = NamingDefaults.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);

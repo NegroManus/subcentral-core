@@ -21,7 +21,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
+import de.subcentral.core.metadata.subtitle.SubtitleVariant;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
 import de.subcentral.core.util.Separation;
@@ -69,7 +69,7 @@ public class NamingDefaults
 		// Release
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Release.PROP_MEDIA, RELEASE_MEDIA_FORMATTER);
 		// Subtitle
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(SubtitleAdjustment.PROP_VERSION, (String rev) -> "V" + rev);
+		PROP_TO_STRING_SERVICE.getPropToStringFns().put(SubtitleVariant.PROP_VERSION, (String rev) -> "V" + rev);
 
 		ImmutableSet.Builder<Separation> sepsBuilder = ImmutableSet.builder();
 		sepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
@@ -121,7 +121,7 @@ public class NamingDefaults
 		List<ConditionalNamingEntry<?>> namers = new ArrayList<>(8);
 		namers.add(ConditionalNamingEntry.of(Episode.class, EPISODE_NAMER));
 		namers.add(ConditionalNamingEntry.of(Release.class, RELEASE_NAMER));
-		namers.add(ConditionalNamingEntry.of(SubtitleAdjustment.class, SUBTITLE_ADJUSTMENT_NAMER));
+		namers.add(ConditionalNamingEntry.of(SubtitleVariant.class, SUBTITLE_ADJUSTMENT_NAMER));
 		namers.add(ConditionalNamingEntry.of(Series.class, SERIES_NAMER));
 		namers.add(ConditionalNamingEntry.of(Season.class, SEASON_NAMER));
 		namers.add(ConditionalNamingEntry.of(Movie.class, MOVIE_NAMER));
@@ -232,7 +232,7 @@ public class NamingDefaults
 		return SUBTITLE_NAMER;
 	}
 
-	public static Namer<SubtitleAdjustment> getDefaultSubtitleAdjustmentNamer()
+	public static Namer<SubtitleVariant> getDefaultSubtitleAdjustmentNamer()
 	{
 		return SUBTITLE_ADJUSTMENT_NAMER;
 	}
