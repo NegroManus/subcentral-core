@@ -3,28 +3,20 @@ package de.subcentral.mig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.junit.Test;
 
 public class DbPlayground
 {
-	private final String	userName	= "xxx";
+	private final String	userName	= "sc1_dev";
 	private final String	password	= "xxx";
-	private final String	url			= "xxx";
+	private final String	url			= "jdbc:mysql://localhost:3306/sc_wbb316_dev";
 
 	@Test
-	public Connection getConnection() throws SQLException
+	public void getConnection() throws SQLException
 	{
+		Connection conn = DriverManager.getConnection(this.url, userName, password);
 
-		Connection conn = null;
-		Properties connectionProps = new Properties();
-		connectionProps.put("user", this.userName);
-		connectionProps.put("password", this.password);
-
-		conn = DriverManager.getConnection(this.url, connectionProps);
-
-		System.out.println("Connected to database");
-		return conn;
+		System.out.println("Connected to database: " + conn);
 	}
 }
