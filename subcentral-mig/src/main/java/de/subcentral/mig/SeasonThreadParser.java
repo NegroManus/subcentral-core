@@ -135,7 +135,7 @@ public class SeasonThreadParser
 
 		cleanupData(data);
 
-		return new SeasonThreadContent(data.seasons.keySet(), data.subtitleAdjustments);
+		return new SeasonThreadContent(data.seasons.keySet(), data.subtitles);
 	}
 
 	/**
@@ -642,7 +642,7 @@ public class SeasonThreadParser
 			{
 				Episode firstEpi = parsedEpis.get(0);
 				subAdj.value.getFirstSubtitle().setMedia(firstEpi);
-				data.subtitleAdjustments.add(subAdj.value);
+				data.subtitles.add(subAdj.value);
 
 				// In case of a multiple episodes in that row, for each more episode,
 				// add a clone of the parsed subtitle with that episode
@@ -653,7 +653,7 @@ public class SeasonThreadParser
 						SubtitleVariant copy = SerializationUtils.clone(subAdj.value);
 						Episode epi = parsedEpis.get(i);
 						copy.getFirstSubtitle().setMedia(epi);
-						data.subtitleAdjustments.add(copy);
+						data.subtitles.add(copy);
 					}
 				}
 			}
@@ -911,7 +911,7 @@ public class SeasonThreadParser
 				SubtitleVariant subAdj = new SubtitleVariant();
 				subAdj.setSingleMatchingRelease(new Release(label));
 				subAdj.getAttributes().put(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID, attachmentId);
-				data.subtitleAdjustments.add(subAdj);
+				data.subtitles.add(subAdj);
 			}
 		}
 	}
@@ -968,7 +968,7 @@ public class SeasonThreadParser
 		// link the Subtitle of the first SubtitleAdjustment of those matching SubtitleAdjustments to all the other SubtitleAdjustments, too
 		// Because only for the first SubtitleAdjustment the Subtitle's contributions are specified. Not for all other SubtitleAdjustments
 		Map<Subtitle, Subtitle> distinctSubs = new HashMap<>();
-		for (SubtitleVariant subAdj : data.subtitleAdjustments)
+		for (SubtitleVariant subAdj : data.subtitles)
 		{
 			Subtitle sub = subAdj.getFirstSubtitle();
 			// sub can be null if parsed from non-standard-table
@@ -988,7 +988,7 @@ public class SeasonThreadParser
 		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
 		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
 		Map<Integer, SubtitleVariant> mapAttachmentsToSubs = new HashMap<>();
-		ListIterator<SubtitleVariant> subAdjIter = data.subtitleAdjustments.listIterator();
+		ListIterator<SubtitleVariant> subAdjIter = data.subtitles.listIterator();
 		while (subAdjIter.hasNext())
 		{
 			SubtitleVariant subAdj = subAdjIter.next();
@@ -1013,7 +1013,7 @@ public class SeasonThreadParser
 		// Cleanup sub.source
 		// 1) lower-case all sources
 		// Add source=SubCentral.de to all german subs without a source
-		for (SubtitleVariant subAdj : data.subtitleAdjustments)
+		for (SubtitleVariant subAdj : data.subtitles)
 		{
 			for (Subtitle sub : subAdj.getSubtitles())
 			{
@@ -1032,7 +1032,7 @@ public class SeasonThreadParser
 		}
 
 		// Sort subtitleAdjustments
-		data.subtitleAdjustments.sort(null);
+		data.subtitles.sort(null);
 	}
 
 	public static final class SeasonThreadContent
@@ -1059,10 +1059,10 @@ public class SeasonThreadParser
 
 	private static final class Data
 	{
-		private Series								series				= new Series(Migration.UNKNOWN_SERIES);
-		private final SortedMap<Season, Season>		seasons				= new TreeMap<>();
-		private final SortedMap<Episode, Episode>	episodes			= new TreeMap<>();
-		private final List<SubtitleVariant>		subtitleAdjustments	= new ArrayList<>();
+		private Series								series		= new Series(Migration.UNKNOWN_SERIES);
+		private final SortedMap<Season, Season>		seasons		= new TreeMap<>();
+		private final SortedMap<Episode, Episode>	episodes	= new TreeMap<>();
+		private final List<SubtitleVariant>			subtitles	= new ArrayList<>();
 	}
 
 	/**
