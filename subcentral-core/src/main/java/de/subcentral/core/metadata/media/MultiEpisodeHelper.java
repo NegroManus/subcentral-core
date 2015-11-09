@@ -222,7 +222,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		return season;
 	}
 
-	public boolean areAllNumberedInSeries()
+	public boolean allNumberedInSeries()
 	{
 		if (isEmpty())
 		{
@@ -238,7 +238,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		return true;
 	}
 
-	public boolean areAllNumberedInSeason()
+	public boolean allNumberedInSeason()
 	{
 		if (isEmpty())
 		{
@@ -308,7 +308,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		return titles;
 	}
 
-	public ListMultimap<Series, Episode> splitBySeries()
+	public ListMultimap<Series, Episode> orderedBySeries()
 	{
 		if (isEmpty())
 		{
@@ -322,7 +322,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		return multimap;
 	}
 
-	public ListMultimap<Season, Episode> splitBySeason()
+	public ListMultimap<Season, Episode> orderedBySeason()
 	{
 		if (isEmpty())
 		{

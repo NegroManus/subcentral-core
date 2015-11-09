@@ -50,7 +50,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		{
 			if (me.getCommonSeason() != null)
 			{
-				if (me.areAllNumberedInSeason())
+				if (me.allNumberedInSeason())
 				{
 					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeason());
 					// append first
@@ -74,7 +74,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 			else if (me.getSeasons().isEmpty())
 			{
 				// no seasons at all
-				if (me.areAllNumberedInSeries())
+				if (me.allNumberedInSeries())
 				{
 					List<List<Integer>> numberRanges = MultiEpisodeHelper.splitIntoConsecutiveRanges(me.getNumbersInSeries());
 					// append first
