@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 
-public class SubtitleFile
+public class SubtitleContent
 {
 	private List<Item> items = new ArrayList<>();
 
@@ -24,6 +24,6 @@ public class SubtitleFile
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(SubtitleFile.class).add("items", Joiner.on('\n').join(items)).toString();
+		return MoreObjects.toStringHelper(SubtitleContent.class).add("items", Joiner.on('\n').join(items)).toString();
 	}
 }

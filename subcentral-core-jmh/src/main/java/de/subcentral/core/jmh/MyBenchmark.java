@@ -55,7 +55,7 @@ import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
 import de.subcentral.core.correction.TypeCorrectionService;
 import de.subcentral.core.file.subtitle.SubRip;
-import de.subcentral.core.file.subtitle.SubtitleFile;
+import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -159,7 +159,7 @@ public class MyBenchmark
 	@Benchmark
 	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
 	{
-		SubtitleFile data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
+		SubtitleContent data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
 		blackhole.consume(data);
 	}
 

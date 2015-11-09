@@ -42,7 +42,7 @@ public class SubRip implements SubtitleFileFormat
 	}
 
 	@Override
-	public SubtitleFile read(BufferedReader reader) throws IOException
+	public SubtitleContent read(BufferedReader reader) throws IOException
 	{
 		try
 		{
@@ -121,7 +121,7 @@ public class SubRip implements SubtitleFileFormat
 				}
 			}
 
-			SubtitleFile sub = new SubtitleFile();
+			SubtitleContent sub = new SubtitleContent();
 			sub.setItems(items);
 			return sub;
 		}
@@ -168,7 +168,7 @@ public class SubRip implements SubtitleFileFormat
 	}
 
 	@Override
-	public void write(SubtitleFile sub, BufferedWriter writer) throws IOException
+	public void write(SubtitleContent sub, BufferedWriter writer) throws IOException
 	{
 		try
 		{

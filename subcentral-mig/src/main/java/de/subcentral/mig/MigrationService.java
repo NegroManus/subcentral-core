@@ -28,7 +28,7 @@ import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
 import de.subcentral.core.file.subtitle.SubRip;
-import de.subcentral.core.file.subtitle.SubtitleFile;
+import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
@@ -217,7 +217,7 @@ public class MigrationService
 
 			SubtitleFileFormat format = SubRip.INSTANCE;
 
-			SubtitleFile data = format.read(bytes, Charset.forName(match.getName()));
+			SubtitleContent data = format.read(bytes, Charset.forName(match.getName()));
 			log.debug("Parsed content of {} with charset {} and format {} to SubtitleFile ({} items)", file, match.getName(), format.getName(), data.getItems().size());
 			sub.updateWithData(data);
 

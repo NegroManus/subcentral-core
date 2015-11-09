@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.file.subtitle.Item;
-import de.subcentral.core.file.subtitle.SubtitleFile;
+import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
 
@@ -87,7 +87,7 @@ public class ContributionParser
 		this.standardizingService = standardizingService;
 	}
 
-	public List<Contribution> parse(SubtitleFile data)
+	public List<Contribution> parse(SubtitleContent data)
 	{
 		List<Contribution> contributions = new ArrayList<>();
 		for (Item item : data.getItems())

@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 
 import de.subcentral.core.file.subtitle.SubRip;
-import de.subcentral.core.file.subtitle.SubtitleFile;
+import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -109,7 +109,7 @@ public class Migration
 			String name = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
 			SubtitleAdjustment metadata = ParsingUtil.parse(name, SubtitleAdjustment.class, PARSING_SERVICES);
 			log.info("Parsed metadata: {}", metadata);
-			SubtitleFile data;
+			SubtitleContent data;
 
 			data = subRip.read(file, Charset.forName("Cp1252"));
 
@@ -129,7 +129,7 @@ public class Migration
 		}
 	}
 
-	private static List<Contribution> parseContributions(SubtitleFile data)
+	private static List<Contribution> parseContributions(SubtitleContent data)
 	{
 		List<Contribution> contributions = CONTRIBUTION_PARSER.parse(data);
 		log.info("Parsed contributions:");

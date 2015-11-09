@@ -9,7 +9,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.file.subtitle.SubtitleFile;
+import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
@@ -17,7 +17,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleAdjustment;
 public class SubFile implements Comparable<SubFile>
 {
 	private final SubtitleAdjustment	subtitleMetadata;
-	private SubtitleFile				subtitleData;
+	private SubtitleContent				subtitleData;
 	private final Set<Path>				files	= new HashSet<>(4);
 
 	public SubFile(SubtitleAdjustment subtitleMetadata, Path file)
@@ -57,12 +57,12 @@ public class SubFile implements Comparable<SubFile>
 		return subtitleMetadata;
 	}
 
-	public SubtitleFile getSubtitleData()
+	public SubtitleContent getSubtitleData()
 	{
 		return subtitleData;
 	}
 
-	public void updateWithData(SubtitleFile subtitleData)
+	public void updateWithData(SubtitleContent subtitleData)
 	{
 		this.subtitleData = subtitleData;
 	}
