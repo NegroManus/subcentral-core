@@ -2,7 +2,6 @@ package de.subcentral.mig;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -59,7 +58,7 @@ public class SubCentralDbApi
 		}
 	}
 
-	public Path downloadAttachment(int attachmentId, Path targetDirectory) throws SQLException
+	public Attachment getAttachment(int attachmentId) throws SQLException
 	{
 		checkConnected();
 		try (PreparedStatement stmt = conn.prepareStatement("SELECT attachmentName, attachmentSize FROM wcf1_attachment WHERE attachmentID=?"))
@@ -69,8 +68,11 @@ public class SubCentralDbApi
 			{
 				if (rs.next())
 				{
-					System.out.println(rs.getString(1));
-					System.out.println(rs.getInt(2));
+					Attachment attachment = new Attachment();
+					attachment.id = attachmentId;
+					attachment.name = rs.getString(1);
+					attachment.size = rs.getInt(2);
+					return attachment;
 				}
 			}
 		}
@@ -99,6 +101,28 @@ public class SubCentralDbApi
 		public String getMessage()
 		{
 			return message;
+		}
+	}
+
+	public static class Attachment
+	{
+		private int		id;
+		private String	name;
+		private int		size;
+
+		public int getId()
+		{
+			return id;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public int getSize()
+		{
+			return size;
 		}
 	}
 }

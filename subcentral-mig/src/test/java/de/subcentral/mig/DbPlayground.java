@@ -20,7 +20,7 @@ public class DbPlayground
 		// System.out.println(post.getTopic());
 		// System.out.println(post.getMessage());
 
-		api.downloadAttachment(182270, null);
+		api.getAttachment(182270);
 
 		api.disconnect();
 	}
