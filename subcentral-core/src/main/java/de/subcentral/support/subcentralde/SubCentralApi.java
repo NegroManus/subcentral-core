@@ -7,8 +7,7 @@ import org.jsoup.nodes.Document;
 
 public interface SubCentralApi
 {
-
-	public void login(String username, String password) throws IOException;
+	public void login(String username, String password, boolean stayLoggedIn) throws IOException;
 
 	/**
 	 * @deprecated Currently not working (gets 404 because Cookies userID and password (hash) are missing)

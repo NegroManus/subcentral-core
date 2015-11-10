@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -39,7 +41,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	{
 		try
 		{
-			return new URL("http://subcentral.de/");
+			return new URL("https://www.subcentral.de/");
 		}
 		catch (MalformedURLException e)
 		{
@@ -61,11 +63,20 @@ public class SubCentralHttpApi implements SubCentralApi
 	 * @see de.subcentral.support.subcentralde.SubCentralApi#login(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void login(String username, String password) throws IOException
+	public void login(String username, String password, boolean stayLoggedIn) throws IOException
 	{
-		String body = "loginUsername=" + URLEncoder.encode(username, UTF_8.name()) + "&loginPassword=" + URLEncoder.encode(password, UTF_8.name());
-
+		log.debug("Loggin in as {}", username);
 		URL loginUrl = new URL(host, "index.php?form=UserLogin");
+		StringBuilder body = new StringBuilder();
+		body.append("loginUsername=");
+		body.append(URLEncoder.encode(username, UTF_8.name()));
+		body.append("&loginPassword=");
+		body.append(URLEncoder.encode(password, UTF_8.name()));
+		if (stayLoggedIn)
+		{
+			body.append("&useCookies=1");
+		}
+
 		HttpURLConnection conn = openConnection(loginUrl);
 		conn.setRequestMethod("POST");
 		conn.setDoInput(true);
@@ -76,7 +87,7 @@ public class SubCentralHttpApi implements SubCentralApi
 
 		try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), UTF_8);)
 		{
-			writer.write(body);
+			writer.write(body.toString());
 		}
 
 		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
@@ -86,13 +97,34 @@ public class SubCentralHttpApi implements SubCentralApi
 		InputStream is = conn.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String line;
+		boolean success = false;
+		/**
+		 * <pre>
+		 * <div class="success">
+		<p>Sie wurden erfolgreich angemeldet.</p>
+		<p><a href="index.php?s=fbc3ebe533737773a6a95a0f016bbf488fad601c">Falls die automatische Weiterleitung nicht funktioniert, klicken Sie bitte hier!</a></p>
+		</div>
+		 * </pre>
+		 */
+		Matcher successMatcher = Pattern.compile("<div class=\"success\">").matcher("");
 		Matcher errorMatcher = Pattern.compile("<p class=\"error\">(.*?)</p>").matcher("");
+
 		while ((line = reader.readLine()) != null)
 		{
-			if (errorMatcher.reset(line).find())
+			if (successMatcher.reset(line).find())
+			{
+				success = true;
+				break;
+
+			}
+			else if (errorMatcher.reset(line).find())
 			{
 				throw new IllegalArgumentException("Login failed: " + errorMatcher.group(1));
 			}
+		}
+		if (success == false)
+		{
+			throw new IllegalArgumentException("Login failed. No success message");
 		}
 
 		List<String> cookieList = new ArrayList<>(4);
@@ -104,8 +136,6 @@ public class SubCentralHttpApi implements SubCentralApi
 				cookieList.addAll(entry.getValue());
 			}
 		}
-
-		printHeaders(conn);
 
 		cookies = Joiner.on("; ").join(cookieList).replace("; HttpOnly", "");
 		if (cookies.isEmpty())
@@ -124,19 +154,26 @@ public class SubCentralHttpApi implements SubCentralApi
 	@Deprecated
 	public void logout() throws IOException
 	{
-		HttpURLConnection conn = openConnection(new URL(host, "index.php?action=UserLogout"));
+		// TODO
+		HttpsURLConnection conn = openConnection(new URL(host, "index.php?action=UserLogout&t=" + "logoutId"));
 		conn.connect();
+		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
+		{
+			throw new IllegalStateException("Logout failed. Server did not return response code 200: " + conn.getHeaderField(null));
+		}
 		String oldCookies = cookies;
 		cookies = null;
-		printHeaders(conn);
 		log.debug("Logged out (Cookies: {})", oldCookies);
 	}
 
 	@Override
 	public Document getContent(String url) throws IOException
 	{
-		HttpURLConnection conn = openConnection(new URL(host, url));
-		return Jsoup.parse(conn.getInputStream(), StandardCharsets.UTF_8.name(), host.toExternalForm());
+		log.debug("Getting content of {}", url);
+		HttpsURLConnection conn = openConnection(new URL(host, url));
+		Document doc = Jsoup.parse(conn.getInputStream(), StandardCharsets.UTF_8.name(), host.toExternalForm());
+		log.debug("Got content of {}", url);
+		return doc;
 	}
 
 	/*
@@ -147,7 +184,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	@Override
 	public Path downloadAttachment(int attachmentId, Path directory) throws IOException
 	{
-		HttpURLConnection conn = openConnection(new URL(host + "index.php?page=Attachment&attachmentID=" + attachmentId));
+		HttpsURLConnection conn = openConnection(new URL(host + "index.php?page=Attachment&attachmentID=" + attachmentId));
 
 		/**
 		 * Header
@@ -192,7 +229,7 @@ public class SubCentralHttpApi implements SubCentralApi
 		return target;
 	}
 
-	private HttpURLConnection openConnection(URL url) throws IOException
+	private HttpsURLConnection openConnection(URL url) throws IOException
 	{
 		URLConnection conn = url.openConnection();
 		if (cookies != null)
@@ -201,7 +238,7 @@ public class SubCentralHttpApi implements SubCentralApi
 		}
 		// fake mozilla user agent
 		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0");
-		return (HttpURLConnection) conn;
+		return (HttpsURLConnection) conn;
 	}
 
 	private void printHeaders(URLConnection conn)

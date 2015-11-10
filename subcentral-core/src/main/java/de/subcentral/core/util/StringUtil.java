@@ -1,5 +1,8 @@
 package de.subcentral.core.util;
 
+import java.io.IOException;
+import java.io.Reader;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.CharMatcher;
@@ -8,10 +11,10 @@ import com.google.common.base.Splitter;
 
 public class StringUtil
 {
-	public static final Joiner		COMMA_JOINER	= Joiner.on(", ").skipNulls();
-	public static final Splitter	COMMA_SPLITTER	= Splitter.on(',').omitEmptyStrings().trimResults();
+	public static final Joiner		COMMA_JOINER		= Joiner.on(", ").skipNulls();
+	public static final Splitter	COMMA_SPLITTER		= Splitter.on(',').omitEmptyStrings().trimResults();
 
-	public static final Splitter WHITESPACE_SPLITTER = Splitter.on(CharMatcher.WHITESPACE);
+	public static final Splitter	WHITESPACE_SPLITTER	= Splitter.on(CharMatcher.WHITESPACE);
 
 	public static boolean startsWith(StringBuilder sb, char c)
 	{
@@ -115,6 +118,24 @@ public class StringUtil
 			return null;
 		}
 		return '"' + s + '"';
+	}
+
+	public static String readerToString(Reader reader) throws IOException
+	{
+		StringBuilder builder = new StringBuilder();
+		int charsRead = -1;
+		char[] chars = new char[1024];
+		do
+		{
+			charsRead = reader.read(chars, 0, chars.length);
+			// if we have valid chars, append them to end of string.
+			if (charsRead > 0)
+			{
+				builder.append(chars, 0, charsRead);
+			}
+		}
+		while (charsRead > 0);
+		return builder.toString();
 	}
 
 	private StringUtil()

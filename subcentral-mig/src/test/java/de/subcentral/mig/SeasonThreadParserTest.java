@@ -9,6 +9,8 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.SeasonThreadParser.SeasonThreadContent;
+import de.subcentral.support.subcentralde.SubCentralApi;
+import de.subcentral.support.subcentralde.SubCentralHttpApi;
 
 public class SeasonThreadParserTest
 {
@@ -84,6 +86,20 @@ public class SeasonThreadParserTest
 	public void testParseTheMentalistS01() throws IOException
 	{
 		parse("thread-thementalist_s01.html");
+	}
+
+	@Test
+	public void testGetAndParsePsychS08() throws IOException
+	{
+		parse(36734);
+	}
+
+	private void parse(int threadId) throws IOException
+	{
+		SubCentralApi api = new SubCentralHttpApi();
+		api.login("NegroManus", "xxx", true);
+		SeasonThreadContent data = parser.getAndParse(threadId, api);
+		printSeasonThreadContent(data);
 	}
 
 	private void parse(String resourceFilename) throws IOException
