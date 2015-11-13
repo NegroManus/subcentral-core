@@ -31,6 +31,31 @@ public class SubCentralBoardDbApi
 		}
 	}
 
+	public Post getPost(int postId) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT subject, message FROM wbb1_1_post WHERE postID=?"))
+		{
+			stmt.setInt(1, postId);
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				if (rs.next())
+				{
+					Post post = new Post();
+					post.topic = rs.getString(1);
+					Reader msgReader = rs.getCharacterStream(2);
+					post.message = StringUtil.readerToString(msgReader);
+					return post;
+				}
+			}
+			catch (IOException e)
+			{
+				throw new SQLException(e);
+			}
+			return null;
+		}
+	}
+
 	public Post getFirstPost(int threadId) throws SQLException
 	{
 		checkConnected();

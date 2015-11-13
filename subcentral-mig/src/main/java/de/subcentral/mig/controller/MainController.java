@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -14,13 +18,14 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class MainController extends AbstractController
@@ -36,6 +41,8 @@ public class MainController extends AbstractController
 	private final Stage		primaryStage;
 	// Content
 	@FXML
+	private Label			pageTitleLbl;
+	@FXML
 	private BorderPane		rootPane;
 	@FXML
 	private AnchorPane		pageRootPane;
@@ -48,6 +55,7 @@ public class MainController extends AbstractController
 	private Button			cancelBtn;
 
 	// Controller
+	private ExecutorService	commonExecutor;
 
 	public MainController(Stage primaryStage)
 	{
@@ -59,21 +67,29 @@ public class MainController extends AbstractController
 		return primaryStage;
 	}
 
+	public ExecutorService getCommonExecutor()
+	{
+		return commonExecutor;
+	}
+
 	@Override
 	public void initialize() throws Exception
 	{
 		initPages();
 		initLowerButtonBar();
+		initCommonExecutor();
 
 		currentPage.set(0);
 	}
 
 	private void initPages()
 	{
-		Page loadSettingsPage = new Page(() -> new SettingsController(MainController.this, config), "SettingsPage.fxml");
-		Page configureMigrationPage = new Page(() -> new ConfigureController(MainController.this, config), "ConfigurePage.fxml");
-		pages.add(loadSettingsPage);
-		pages.add(configureMigrationPage);
+		Page settingsPage = new Page(() -> new SettingsPageController(MainController.this, config), "SettingsPage.fxml");
+		Page configurePage = new Page(() -> new ConfigurePageController(MainController.this, config), "ConfigurePage.fxml");
+		Page migrationPage = new Page(() -> new MigrationPageController(MainController.this, config), "MigrationPage.fxml");
+		pages.add(settingsPage);
+		pages.add(configurePage);
+		pages.add(migrationPage);
 
 		currentPage.addListener(new ChangeListener<Number>()
 		{
@@ -90,7 +106,7 @@ public class MainController extends AbstractController
 					try
 					{
 						FxUtil.loadFromFxml(newPage.fxmlFilename, newPage.loadController());
-						Node contentPane = newPage.controller.getRootPane();
+						Pane contentPane = newPage.controller.getRootPane();
 						AnchorPane.setTopAnchor(contentPane, 0.0d);
 						AnchorPane.setRightAnchor(contentPane, 0.0d);
 						AnchorPane.setBottomAnchor(contentPane, 0.0d);
@@ -101,6 +117,9 @@ public class MainController extends AbstractController
 						throw new RuntimeException("Error while loading controller", e);
 					}
 				}
+
+				// Set page title
+				pageTitleLbl.setText("Step " + (newIndex + 1) + "/" + pages.size() + ": " + newPage.controller.getTitle());
 
 				// Set visibilities & bind enablement
 				backBtn.setVisible(newIndex > 0);
@@ -130,6 +149,11 @@ public class MainController extends AbstractController
 		nextBtn.managedProperty().bind(nextBtn.visibleProperty());
 
 		cancelBtn.setOnAction((ActionEvent evt) -> cancel());
+	}
+
+	private void initCommonExecutor()
+	{
+		commonExecutor = Executors.newSingleThreadExecutor(new NamedThreadFactory("Worker"));
 	}
 
 	public void back()
@@ -169,7 +193,18 @@ public class MainController extends AbstractController
 	@Override
 	public void shutdown() throws Exception
 	{
-
+		for (Page page : pages)
+		{
+			if (page.controller != null)
+			{
+				page.controller.shutdown();
+			}
+		}
+		if (commonExecutor != null)
+		{
+			commonExecutor.shutdownNow();
+			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
+		}
 	}
 
 	private static final class Page

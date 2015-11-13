@@ -15,7 +15,7 @@ public class MigrationConfig
 	private Path					parsingSettingsFile;
 	private PropertiesConfiguration	environmentSettings;
 	private XMLConfiguration		parsingSettings;
-	private ImmutableList<Series>	selectedSeries;
+	private ImmutableList<Series>	selectedSeries	= ImmutableList.of();
 
 	public Path getEnvironmentSettingsFile()
 	{

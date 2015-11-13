@@ -4,25 +4,27 @@ import java.nio.file.Path;
 
 import de.subcentral.fx.FxUtil;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.Property;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-public class SettingsController extends AbstractPageController
+public class SettingsPageController extends AbstractPageController
 {
 	// Model
 	private final TextFormatter<Path>	envSettingsFileTextFormatter		= new TextFormatter<>(FxUtil.PATH_STRING_CONVERTER);
 	private final TextFormatter<Path>	parsingSettingsFileTextFormatter	= new TextFormatter<>(FxUtil.PATH_STRING_CONVERTER);
-	private BooleanBinding				nextButtonEnabledBinding;
+	private BooleanBinding				nextButtonDisableBinding;
 
 	// View
 	@FXML
-	private GridPane					rootPane;
+	private AnchorPane					rootPane;
+	@FXML
+	private GridPane					contentPane;
 	@FXML
 	private TextField					envSettingsFileTxtFld;
 	@FXML
@@ -32,7 +34,7 @@ public class SettingsController extends AbstractPageController
 	@FXML
 	private Button						chooseParsingSettingsFileBtn;
 
-	public SettingsController(MainController mainController, MigrationConfig config)
+	public SettingsPageController(MainController mainController, MigrationConfig config)
 	{
 		super(mainController, config);
 	}
@@ -48,7 +50,7 @@ public class SettingsController extends AbstractPageController
 		ExtensionFilter xmlExtFilter = new ExtensionFilter("XML file", "*.xml");
 		FxUtil.setChooseFileAction(chooseParsingSettingsFileBtn, parsingSettingsFileTextFormatter, mainController.getPrimaryStage(), "Choose parsing settings file", xmlExtFilter);
 
-		nextButtonEnabledBinding = new BooleanBinding()
+		nextButtonDisableBinding = new BooleanBinding()
 		{
 			{
 				super.bind(envSettingsFileTextFormatter.valueProperty(), parsingSettingsFileTextFormatter.valueProperty());
@@ -60,6 +62,24 @@ public class SettingsController extends AbstractPageController
 				return envSettingsFileTextFormatter.getValue() == null || parsingSettingsFileTextFormatter.getValue() == null;
 			}
 		};
+	}
+
+	@Override
+	public String getTitle()
+	{
+		return "Load settings";
+	}
+
+	@Override
+	public Pane getRootPane()
+	{
+		return rootPane;
+	}
+
+	@Override
+	public Pane getContentPane()
+	{
+		return contentPane;
 	}
 
 	@Override
@@ -77,25 +97,9 @@ public class SettingsController extends AbstractPageController
 	}
 
 	@Override
-	public Node getRootPane()
-	{
-		return rootPane;
-	}
-
-	public Property<Path> environmentSettingsFileProperty()
-	{
-		return envSettingsFileTextFormatter.valueProperty();
-	}
-
-	public Property<Path> parsingSettingsFileProperty()
-	{
-		return parsingSettingsFileTextFormatter.valueProperty();
-	}
-
-	@Override
 	public BooleanBinding nextButtonDisableBinding()
 	{
-		return nextButtonEnabledBinding;
+		return nextButtonDisableBinding;
 	}
 
 	@Override
