@@ -1,0 +1,28 @@
+<migration>
+	<parsing>
+		<series>
+			<!-- <series pattern=<string:regex> name=<string;required> thetvdbId=<int> /> -->
+			<series pattern="(?i)From\w+Dusk\w+Till\w+Dawn\w+The\w+Series" name="From Dusk Till Dawn" />
+			<series name="Psych" thetvdbId="79335" />
+		</series>
+		
+		<subtitles>
+			<defaultConfidences contribution="100" contributionType="3" contributor="3" word="-1" />
+			<contributions>
+				<!-- <contribution pattern=<string:regex> contributionTypeGroup=<int> contributorGroup=<int> /> -->
+				<contribution pattern="thx\s+to\s+(.*?)\s+for\s+([\w-]+)" contributionTypeGroup="2" contributorGroup="1" />
+			</contributions>
+			<contributionTypes>
+				<!-- <contributionType pattern=<string:regex> type=<string:contributionType> /> -->
+				<contributionType pattern="\b(VO bearbeitet von|VO von|VO by|VO|Transcript|Transkript|Subs|VO-Überarbeitung)\b" type="TRANSCRIPT" />
+			</contributionTypes>
+			<contributors>
+				<!-- <contributor pattern=<string:regex> name=<string;required> scUserId=<int> type=<SUBBER;default|GROUP> confidence=<int> /> -->
+				<!-- Groups (Sources) -->
+				<contributor pattern="(?i)(http://)?(www\.)?\s*sous-titres\.eu" name="u-sub.net" type="GROUP" confidence="100" />
+				
+				<contributor pattern="(?&lt;!\w)\QArzt\E(?!\w)" name="Sloth" scUserId="35534" confidence="0" />
+			</contributors>
+		</subtitles>
+	</parsing>
+</migration>

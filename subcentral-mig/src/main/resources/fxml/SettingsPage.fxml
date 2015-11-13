@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="rootPane" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <Label text="Environment settings (.properties):" />
+      <HBox GridPane.columnIndex="1">
+         <children>
+            <TextField fx:id="envSettingsFileTxtFld" HBox.hgrow="SOMETIMES" />
+            <Button fx:id="chooseEnvSettingsFileBtn" mnemonicParsing="false" text="Choose" />
+         </children>
+      </HBox>
+      <Label text="Parsing settings (.xml):" GridPane.rowIndex="1" />
+      <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <TextField fx:id="parsingSettingsFileTxtFld" HBox.hgrow="SOMETIMES" />
+            <Button fx:id="chooseParsingSettingsFileBtn" mnemonicParsing="false" text="Choose" />
+         </children>
+      </HBox>
+   </children>
+</GridPane>

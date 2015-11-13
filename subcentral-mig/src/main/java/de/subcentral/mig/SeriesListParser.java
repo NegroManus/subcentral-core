@@ -28,6 +28,8 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.mig.controller.Migration;
+import de.subcentral.support.subcentralde.SubCentralHttpApi;
 
 public class SeriesListParser
 {
@@ -39,11 +41,18 @@ public class SeriesListParser
 
 	public SeriesListContent getAndParse() throws IOException
 	{
-		return parse(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
+		return parseThread(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
 	}
 
-	public SeriesListContent parse(Document doc) throws IOException
+	public SeriesListContent parseThread(Document thread)
 	{
+		return parsePost(thread.outerHtml());
+	}
+
+	public SeriesListContent parsePost(String postContent)
+	{
+		Document doc = Jsoup.parse(postContent, SubCentralHttpApi.getHost().toExternalForm());
+
 		final Pattern boardIdPattern = Pattern.compile("boardID=(\\d+)");
 		final Pattern threadIdPattern = Pattern.compile("threadID=(\\d+)");
 		final Pattern yearsPattern = Pattern.compile("(\\d+)(?:-)?(\\d+)?");

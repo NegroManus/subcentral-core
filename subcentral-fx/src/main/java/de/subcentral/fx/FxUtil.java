@@ -36,6 +36,7 @@ import de.subcentral.fx.UserPattern.Mode;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.Property;
@@ -670,6 +671,18 @@ public class FxUtil
 		};
 	}
 
+	public static BooleanBinding constantBooleanBinding(final boolean value)
+	{
+		return new BooleanBinding()
+		{
+			@Override
+			protected boolean computeValue()
+			{
+				return value;
+			}
+		};
+	}
+
 	public static StringBinding constantStringBinding(final String value)
 	{
 		return new StringBinding()
@@ -730,6 +743,11 @@ public class FxUtil
 			return null;
 		}
 		return ImageIO.read(Resources.getResource("img/" + img));
+	}
+
+	public static <T> T loadFromFxml(String fxmlFilename, Object controller) throws IOException
+	{
+		return loadFromFxml(fxmlFilename, null, null, controller);
 	}
 
 	/**

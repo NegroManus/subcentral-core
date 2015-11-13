@@ -31,6 +31,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.mig.controller.Migration;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;

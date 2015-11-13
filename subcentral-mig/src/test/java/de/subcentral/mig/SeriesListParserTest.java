@@ -15,7 +15,7 @@ public class SeriesListParserTest
 	public void testParseSeriesList() throws IOException
 	{
 		Document seriesListDoc = MigTestUtil.parseDoc(getClass(), "serienliste.html");
-		SeriesListContent cnt = parser.parse(seriesListDoc);
+		SeriesListContent cnt = parser.parseThread(seriesListDoc);
 		System.out.println("Num of series: " + cnt.getSeries().size());
 		System.out.println("Num of seasons: " + cnt.getSeasons().size());
 		System.out.println("Num of networks: " + cnt.getNetworks().size());

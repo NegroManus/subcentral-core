@@ -1,4 +1,4 @@
-package de.subcentral.mig;
+package de.subcentral.mig.controller;
 
 import java.util.Locale;
 

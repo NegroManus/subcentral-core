@@ -3,31 +3,29 @@ package de.subcentral.mig;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.subcentral.core.util.StringUtil;
 
-public class SubCentralDbApi
+public class SubCentralBoardDbApi
 {
-	private static final Logger	log	= LogManager.getLogger(SubCentralDbApi.class);
+	private Connection connection;
 
-	private Connection			conn;
-
-	public void connect(String url, String username, String password) throws SQLException
+	public Connection getConnection()
 	{
-		conn = DriverManager.getConnection(url, username, password);
-		log.debug("Connected to {} as {}", url, username);
+		return connection;
+	}
+
+	public void setConnection(Connection connection)
+	{
+		this.connection = connection;
 	}
 
 	private void checkConnected()
 	{
-		if (conn == null)
+		if (connection == null)
 		{
 			throw new IllegalStateException("Not connected");
 		}
@@ -36,7 +34,7 @@ public class SubCentralDbApi
 	public Post getFirstPost(int threadId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = conn.prepareStatement("SELECT t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID"))
 		{
 			stmt.setInt(1, threadId);
 			try (ResultSet rs = stmt.executeQuery())
@@ -61,7 +59,7 @@ public class SubCentralDbApi
 	public Attachment getAttachment(int attachmentId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = conn.prepareStatement("SELECT attachmentName, attachmentSize FROM wcf1_attachment WHERE attachmentID=?"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT attachmentName, attachmentSize FROM wcf1_attachment WHERE attachmentID=?"))
 		{
 			stmt.setInt(1, attachmentId);
 			try (ResultSet rs = stmt.executeQuery())
@@ -77,15 +75,6 @@ public class SubCentralDbApi
 			}
 		}
 		return null;
-	}
-
-	public void disconnect() throws SQLException
-	{
-		if (conn != null)
-		{
-			conn.close();
-			log.debug("Disconnected");
-		}
 	}
 
 	public static class Post
