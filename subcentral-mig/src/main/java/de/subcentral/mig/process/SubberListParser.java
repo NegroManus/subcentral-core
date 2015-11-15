@@ -1,4 +1,4 @@
-package de.subcentral.mig;
+package de.subcentral.mig.process;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,7 +16,7 @@ import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.mig.SubberListParser.SubberListContent;
+import de.subcentral.mig.process.SubberListParser.SubberListContent;
 import javafx.concurrent.Task;
 
 public class SubberListParser extends Task<SubberListContent>

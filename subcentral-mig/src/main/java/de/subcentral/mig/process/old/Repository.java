@@ -1,4 +1,4 @@
-package de.subcentral.mig;
+package de.subcentral.mig.process.old;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +16,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingUtil;
+import de.subcentral.mig.process.Subber;
 
 public class Repository
 {

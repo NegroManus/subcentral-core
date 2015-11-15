@@ -15,7 +15,6 @@
         <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
             <RowConstraints vgrow="SOMETIMES" />
           <RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES" />
@@ -27,7 +26,7 @@
                   <Insets top="10.0" />
                </GridPane.margin>
             </RadioButton>
-            <GridPane fx:id="selectiveMigrationGridPane" hgap="3.0" vgap="3.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <GridPane fx:id="selectiveMigrationGridPane" hgap="3.0" vgap="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
               </columnConstraints>
@@ -38,11 +37,13 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
               </rowConstraints>
                <children>
-                  <CheckBox fx:id="migrateSubsCheckBox" mnemonicParsing="false" text="Migrate subtitles" GridPane.rowIndex="3" />
-                  <CheckBox fx:id="migrateSubbersCheckBox" mnemonicParsing="false" text="Migrate subbers" GridPane.rowIndex="2" />
+                  <CheckBox fx:id="migrateSubtitlesCheckBox" mnemonicParsing="false" text="Migrate subtitles" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin></CheckBox>
                   <HBox spacing="5.0" GridPane.columnSpan="2147483647">
                      <GridPane.margin>
-                        <Insets left="25.0" />
+                        <Insets />
                      </GridPane.margin>
                      <children>
                         <Label fx:id="seriesListTitleLbl" maxHeight="1.7976931348623157E308" text="Selected 0 / 0 series" />
@@ -52,12 +53,11 @@
                   </HBox>
                   <ListView fx:id="seriesListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                      <GridPane.margin>
-                        <Insets left="25.0" />
+                        <Insets />
                      </GridPane.margin>
                   </ListView>
                </children>
             </GridPane>
-            <CheckBox fx:id="migrateMediaCheckBox" mnemonicParsing="false" text="Migrate series, seasons, episodes" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </children>

@@ -1,4 +1,4 @@
-package de.subcentral.mig;
+package de.subcentral.mig.process.old;
 
 import java.io.IOException;
 import java.net.URL;

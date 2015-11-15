@@ -1,4 +1,4 @@
-package de.subcentral.mig.controller;
+package de.subcentral.mig;
 
 import java.nio.file.Path;
 
@@ -8,14 +8,21 @@ import org.apache.commons.configuration2.XMLConfiguration;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
 
 public class MigrationConfig
 {
+	// Settings config
 	private Path					environmentSettingsFile;
 	private Path					parsingSettingsFile;
 	private PropertiesConfiguration	environmentSettings;
 	private XMLConfiguration		parsingSettings;
+	// Configure migration config
+	private boolean					completeMigration;
 	private ImmutableList<Series>	selectedSeries	= ImmutableList.of();
+	private boolean					migrateSubtitles;
+	// First migration result
+	private SeriesListContent		seriesListContent;
 
 	public Path getEnvironmentSettingsFile()
 	{
@@ -57,6 +64,16 @@ public class MigrationConfig
 		this.parsingSettings = parsingSettings;
 	}
 
+	public boolean isCompleteMigration()
+	{
+		return completeMigration;
+	}
+
+	public void setCompleteMigration(boolean completeMigration)
+	{
+		this.completeMigration = completeMigration;
+	}
+
 	public ImmutableList<Series> getSelectedSeries()
 	{
 		return selectedSeries;
@@ -65,5 +82,25 @@ public class MigrationConfig
 	public void setSelectedSeries(ImmutableList<Series> selectedSeries)
 	{
 		this.selectedSeries = selectedSeries;
+	}
+
+	public boolean getMigrateSubtitles()
+	{
+		return migrateSubtitles;
+	}
+
+	public void setMigrateSubtitles(boolean migrateSubtitles)
+	{
+		this.migrateSubtitles = migrateSubtitles;
+	}
+
+	public SeriesListContent getSeriesListContent()
+	{
+		return seriesListContent;
+	}
+
+	public void setSeriesListContent(SeriesListContent seriesListContent)
+	{
+		this.seriesListContent = seriesListContent;
 	}
 }

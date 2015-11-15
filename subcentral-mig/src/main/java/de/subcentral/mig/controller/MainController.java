@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.mig.MigrationConfig;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -72,6 +73,11 @@ public class MainController extends AbstractController
 		return commonExecutor;
 	}
 
+	public MigrationConfig getConfig()
+	{
+		return config;
+	}
+
 	@Override
 	public void initialize() throws Exception
 	{
@@ -84,9 +90,9 @@ public class MainController extends AbstractController
 
 	private void initPages()
 	{
-		Page settingsPage = new Page(() -> new SettingsPageController(MainController.this, config), "SettingsPage.fxml");
-		Page configurePage = new Page(() -> new ConfigurePageController(MainController.this, config), "ConfigurePage.fxml");
-		Page migrationPage = new Page(() -> new MigrationPageController(MainController.this, config), "MigrationPage.fxml");
+		Page settingsPage = new Page(() -> new SettingsPageController(MainController.this), "SettingsPage.fxml");
+		Page configurePage = new Page(() -> new ConfigurePageController(MainController.this), "ConfigurePage.fxml");
+		Page migrationPage = new Page(() -> new MigrationPageController(MainController.this), "MigrationPage.fxml");
 		pages.add(settingsPage);
 		pages.add(configurePage);
 		pages.add(migrationPage);
@@ -141,11 +147,11 @@ public class MainController extends AbstractController
 
 	private void initLowerButtonBar()
 	{
-		backBtn.setOnAction((ActionEvent evt) -> back());
+		backBtn.setOnAction((ActionEvent evt) -> pageBack());
 		// In order to remove it from the layout when invisible:
 		backBtn.managedProperty().bind(backBtn.visibleProperty());
 
-		nextBtn.setOnAction((ActionEvent evt) -> next());
+		nextBtn.setOnAction((ActionEvent evt) -> pageNext());
 		nextBtn.managedProperty().bind(nextBtn.visibleProperty());
 
 		cancelBtn.setOnAction((ActionEvent evt) -> cancel());
@@ -156,7 +162,7 @@ public class MainController extends AbstractController
 		commonExecutor = Executors.newSingleThreadExecutor(new NamedThreadFactory("Worker"));
 	}
 
-	public void back()
+	public void pageBack()
 	{
 		int index = currentPage.get();
 		if (index > 0)
@@ -165,7 +171,7 @@ public class MainController extends AbstractController
 		}
 	}
 
-	public void next()
+	public void pageNext()
 	{
 		int index = currentPage.get();
 		if (index < pages.size() - 1)

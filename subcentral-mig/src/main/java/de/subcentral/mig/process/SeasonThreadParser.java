@@ -1,4 +1,4 @@
-package de.subcentral.mig;
+package de.subcentral.mig.process;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
-import de.subcentral.mig.controller.Migration;
+import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
@@ -783,7 +783,7 @@ public class SeasonThreadParser
 			SubtitleFile subAdj = new SubtitleFile();
 			subAdj.setSingleSubtitle(sub);
 			subAdj.setSingleMatchingRelease(rls);
-			subAdj.getAttributes().put(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID, attachmentId);
+			subAdj.getAttributes().put(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID, attachmentId);
 
 			MarkedValue<SubtitleFile> markedSubAdj = new MarkedValue<>(subAdj, marker);
 			subAdjs.add(markedSubAdj);
@@ -911,7 +911,7 @@ public class SeasonThreadParser
 				String label = attachmentAnchor.text();
 				SubtitleFile subAdj = new SubtitleFile();
 				subAdj.setSingleMatchingRelease(new Release(label));
-				subAdj.getAttributes().put(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID, attachmentId);
+				subAdj.getAttributes().put(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID, attachmentId);
 				data.subtitles.add(subAdj);
 			}
 		}
@@ -993,7 +993,7 @@ public class SeasonThreadParser
 		while (subAdjIter.hasNext())
 		{
 			SubtitleFile subAdj = subAdjIter.next();
-			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_ADJUSTMENT_ATTR_ATTACHMENT_ID);
+			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
 			SubtitleFile storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
 			if (storedSubAdj != null)
 			{

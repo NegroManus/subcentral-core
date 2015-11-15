@@ -8,7 +8,8 @@ import org.junit.Test;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
-import de.subcentral.mig.SeasonThreadParser.SeasonThreadContent;
+import de.subcentral.mig.process.SeasonThreadParser;
+import de.subcentral.mig.process.SeasonThreadParser.SeasonThreadContent;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
 

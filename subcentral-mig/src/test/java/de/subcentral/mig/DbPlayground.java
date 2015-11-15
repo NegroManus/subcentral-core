@@ -1,21 +1,19 @@
 package de.subcentral.mig;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.junit.Test;
+
+import de.subcentral.mig.process.SubCentralBoardDbApi;
 
 public class DbPlayground
 {
-	private final String	url			= "jdbc:mysql://localhost:3306/sc_wbb316_dev";
-	private final String	user		= "sc1_dev";
-	private final String	password	= "xxx";
-
 	@Test
-	public void getConnection() throws SQLException
+	public void getConnection() throws SQLException, ConfigurationException
 	{
-		try (Connection conn = DriverManager.getConnection(url, user, password))
+		try (Connection conn = MigTestUtil.connect())
 		{
 			SubCentralBoardDbApi api = new SubCentralBoardDbApi();
 

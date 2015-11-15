@@ -34,9 +34,9 @@ public class SettingsPageController extends AbstractPageController
 	@FXML
 	private Button						chooseParsingSettingsFileBtn;
 
-	public SettingsPageController(MainController mainController, MigrationConfig config)
+	public SettingsPageController(MainController mainController)
 	{
-		super(mainController, config);
+		super(mainController);
 	}
 
 	@Override

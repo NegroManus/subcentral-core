@@ -1,36 +1,15 @@
-package de.subcentral.mig;
+package de.subcentral.mig.process;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import de.subcentral.core.util.StringUtil;
 
-public class SubCentralBoardDbApi
+public class SubCentralBoardDbApi extends SubCentralDbApi
 {
-	private Connection connection;
-
-	public Connection getConnection()
-	{
-		return connection;
-	}
-
-	public void setConnection(Connection connection)
-	{
-		this.connection = connection;
-	}
-
-	private void checkConnected()
-	{
-		if (connection == null)
-		{
-			throw new IllegalStateException("Not connected");
-		}
-	}
-
 	public Post getPost(int postId) throws SQLException
 	{
 		checkConnected();

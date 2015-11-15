@@ -1,12 +1,12 @@
-2015-11-13 23:47:04,094 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Initializing SubCentral Migration Tool 0.1 (2015-11-13 00:00) ...
-2015-11-13 23:47:04,096 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Operating system: Windows 10 10.0 amd64
-2015-11-13 23:47:04,096 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java version: 1.8.0_65
-2015-11-13 23:47:04,096 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java runtime: Java(TM) SE Runtime Environment 1.8.0_65-b17
-2015-11-13 23:47:04,096 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java VM: Java HotSpot(TM) 64-Bit Server VM (mixed mode) - Vendor: Oracle Corporation, Version: 25.65-b01
-2015-11-13 23:47:04,096 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java home: C:\Program Files\Java\jdk1.8.0_65\jre
-2015-11-13 23:47:04,096 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - User dir: E:\Java\git\subcentral-core\subcentral-mig
-2015-11-13 23:47:04,098 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Initialized SubCentral Migration Tool 0.1 (2015-11-13 00:00) in 3 ms
-2015-11-13 23:47:04,107 DEBUG [JavaFX Application Thread] d.s.m.MigrationApp - Starting SubCentral Migration Tool 0.1 (2015-11-13 00:00) ...
-2015-11-13 23:47:04,495 INFO  [JavaFX Application Thread] d.s.m.MigrationApp - Started SubCentral Migration Tool 0.1 (2015-11-13 00:00) in 387 ms
-2015-11-13 23:49:28,416 DEBUG [JavaFX Application Thread] d.s.m.MigrationApp - Stopping SubCentral Migration Tool 0.1 (2015-11-13 00:00) ...
-2015-11-13 23:49:28,416 INFO  [JavaFX Application Thread] d.s.m.MigrationApp - Stopped SubCentral Migration Tool 0.1 (2015-11-13 00:00) in 0 ms
+2015-11-15 15:41:10,475 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Initializing SubCentral Migration Tool 0.1 (2015-11-13 00:00) ...
+2015-11-15 15:41:10,477 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Operating system: Windows 10 10.0 amd64
+2015-11-15 15:41:10,478 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java version: 1.8.0_65
+2015-11-15 15:41:10,478 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java runtime: Java(TM) SE Runtime Environment 1.8.0_65-b17
+2015-11-15 15:41:10,478 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java VM: Java HotSpot(TM) 64-Bit Server VM (mixed mode) - Vendor: Oracle Corporation, Version: 25.65-b01
+2015-11-15 15:41:10,478 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Java home: C:\Program Files\Java\jdk1.8.0_65\jre
+2015-11-15 15:41:10,478 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - User dir: E:\Java\git\subcentral-core\subcentral-mig
+2015-11-15 15:41:10,479 INFO  [JavaFX-Launcher] d.s.m.MigrationApp - Initialized SubCentral Migration Tool 0.1 (2015-11-13 00:00) in 3 ms
+2015-11-15 15:41:10,490 DEBUG [JavaFX Application Thread] d.s.m.MigrationApp - Starting SubCentral Migration Tool 0.1 (2015-11-13 00:00) ...
+2015-11-15 15:41:10,858 INFO  [JavaFX Application Thread] d.s.m.MigrationApp - Started SubCentral Migration Tool 0.1 (2015-11-13 00:00) in 367 ms
+2015-11-15 15:42:04,481 DEBUG [JavaFX Application Thread] d.s.m.MigrationApp - Stopping SubCentral Migration Tool 0.1 (2015-11-13 00:00) ...
+2015-11-15 15:42:04,482 INFO  [JavaFX Application Thread] d.s.m.MigrationApp - Stopped SubCentral Migration Tool 0.1 (2015-11-13 00:00) in 0 ms

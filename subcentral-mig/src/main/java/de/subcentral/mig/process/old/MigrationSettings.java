@@ -1,4 +1,4 @@
-package de.subcentral.mig;
+package de.subcentral.mig.process.old;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ import de.subcentral.core.correction.TypeCorrectionService;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.fx.UserPattern;
+import de.subcentral.mig.process.Subber;
+import de.subcentral.mig.process.SubtitleGroup;
 import de.subcentral.support.thetvdbcom.TheTvDbCom;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;

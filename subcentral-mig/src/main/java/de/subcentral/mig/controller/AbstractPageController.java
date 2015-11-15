@@ -1,6 +1,10 @@
 package de.subcentral.mig.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.subcentral.fx.FxUtil;
+import de.subcentral.mig.MigrationConfig;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -19,13 +23,15 @@ import javafx.scene.text.FontWeight;
 
 public abstract class AbstractPageController extends AbstractController
 {
+	private static final Logger	log	= LogManager.getLogger(AbstractPageController.class);
+
 	protected MainController	mainController;
 	protected MigrationConfig	config;
 
-	public AbstractPageController(MainController mainController, MigrationConfig config)
+	public AbstractPageController(MainController mainController)
 	{
 		this.mainController = mainController;
-		this.config = config;
+		this.config = this.mainController.getConfig();
 	}
 
 	public MainController getMainController()
@@ -83,17 +89,19 @@ public abstract class AbstractPageController extends AbstractController
 				case FAILED:
 				{
 					Throwable e = task.getException();
-					e.printStackTrace();
-					Alert alert = FxUtil.createExceptionAlert("Task failed", e.toString(), e);
+					String msg = "Task \"" + task.getTitle() + "\" failed";
+					log.error(msg, e);
+					Alert alert = FxUtil.createExceptionAlert(msg, msg + ": " + e.toString(), e);
 					alert.show();
-					getRootPane().getChildren().setAll(getContentPane());
+					getRootPane().getChildren().clear();
+					mainController.pageBack();
 					break;
 				}
 				case CANCELLED:
 				{
-					Alert alert = new Alert(AlertType.INFORMATION, "Task was cancelled");
+					Alert alert = new Alert(AlertType.INFORMATION, "Task " + task.getTitle() + " was cancelled");
 					alert.show();
-					getRootPane().getChildren().setAll(getContentPane());
+					getRootPane().getChildren().clear();
 					break;
 				}
 				default:

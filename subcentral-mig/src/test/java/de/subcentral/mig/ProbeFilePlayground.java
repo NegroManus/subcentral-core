@@ -21,6 +21,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
+import de.subcentral.mig.process.old.SubFile;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;

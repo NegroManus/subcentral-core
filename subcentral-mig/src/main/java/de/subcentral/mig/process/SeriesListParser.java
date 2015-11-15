@@ -1,4 +1,4 @@
-package de.subcentral.mig;
+package de.subcentral.mig.process;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,20 +24,16 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.mig.controller.Migration;
+import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
 
 public class SeriesListParser
 {
-	private static final Logger	log					= LogManager.getLogger(SeriesListParser.class);
-	private static final String	URL					= "http://subcentral.de/index.php?page=Thread&postID=29261#post29261";
-
-	public static final String	ATTRIBUTE_BOARD_ID	= "SUBCENTRAL_BOARD_ID";
-	public static final String	ATTRIBUTE_THREAD_ID	= "SUBCENTRAL_THREAD_ID";
+	private static final Logger	log	= LogManager.getLogger(SeriesListParser.class);
+	private static final String	URL	= "http://subcentral.de/index.php?page=Thread&postID=29261#post29261";
 
 	public SeriesListContent getAndParse() throws IOException
 	{
@@ -92,13 +88,13 @@ public class SeriesListParser
 				Matcher boardIdMatcher = boardIdPattern.matcher(boardUrl);
 				if (boardIdMatcher.find())
 				{
-					series.getAttributes().put(ATTRIBUTE_BOARD_ID, Integer.parseInt(boardIdMatcher.group(1)));
+					series.getAttributes().put(Migration.SERIES_ATTR_BOARD_ID, Integer.parseInt(boardIdMatcher.group(1)));
 				}
 				else
 				{
 					log.warn("Couldn't find a board ID for series {}. Content of series cell: {}", series.getName(), seriesCell);
 				}
-				series.getImages().put(Media.MEDIA_IMAGE_TYPE_LOGO, seriesCell.getElementsByTag("img").attr("src"));
+				series.getImages().put(Migration.IMG_TYPE_SERIES_LOGO, seriesCell.getElementsByTag("img").attr("src"));
 
 				/**
 				 * Years:<br/>
@@ -179,7 +175,7 @@ public class SeriesListParser
 						Matcher threadIdMatcher = threadIdPattern.matcher(threadUrl);
 						if (threadIdMatcher.find())
 						{
-							season.getAttributes().put(ATTRIBUTE_THREAD_ID, Integer.parseInt(threadIdMatcher.group(1)));
+							season.getAttributes().put(Migration.SEASON_ATTR_THREAD_ID, Integer.parseInt(threadIdMatcher.group(1)));
 						}
 						else
 						{

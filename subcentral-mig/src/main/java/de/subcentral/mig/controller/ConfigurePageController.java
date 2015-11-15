@@ -4,7 +4,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.List;
 
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -14,18 +13,16 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.mig.SeriesListParser;
-import de.subcentral.mig.SeriesListParser.SeriesListContent;
-import de.subcentral.mig.SubCentralBoardDbApi;
-import de.subcentral.mig.SubCentralBoardDbApi.Post;
+import de.subcentral.mig.process.SeriesListParser;
+import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
+import de.subcentral.mig.process.SubCentralBoardDbApi;
+import de.subcentral.mig.process.SubCentralBoardDbApi.Post;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -55,21 +52,17 @@ public class ConfigurePageController extends AbstractPageController
 	@FXML
 	private GridPane			selectiveMigrationGridPane;
 	@FXML
-	private CheckBox			migrateMediaCheckBox;
-	@FXML
 	private TextField			seriesSearchTxtFld;
 	@FXML
 	private Label				seriesListTitleLbl;
 	@FXML
 	private ListView<Series>	seriesListView;
 	@FXML
-	private CheckBox			migrateSubbersCheckBox;
-	@FXML
-	private CheckBox			migrateSubsCheckBox;
+	private CheckBox			migrateSubtitlesCheckBox;
 
-	public ConfigurePageController(MainController mainController, MigrationConfig config)
+	public ConfigurePageController(MainController mainController)
 	{
-		super(mainController, config);
+		super(mainController);
 	}
 
 	@Override
@@ -79,9 +72,6 @@ public class ConfigurePageController extends AbstractPageController
 		selectiveMigrationRadioBtn.setSelected(true);
 
 		selectiveMigrationGridPane.disableProperty().bind(selectiveMigrationRadioBtn.selectedProperty().not());
-
-		BooleanBinding migrateMediaNotSelected = migrateMediaCheckBox.selectedProperty().not();
-		seriesListView.disableProperty().bind(migrateMediaNotSelected);
 
 		seriesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		seriesListView.setCellFactory((ListView<Series> param) ->
@@ -104,7 +94,6 @@ public class ConfigurePageController extends AbstractPageController
 			};
 		});
 
-		seriesListTitleLbl.disableProperty().bind(migrateMediaNotSelected);
 		seriesListTitleLbl.textProperty().bind(new StringBinding()
 		{
 			{
@@ -138,11 +127,7 @@ public class ConfigurePageController extends AbstractPageController
 		nextButtonDisableBinding = new BooleanBinding()
 		{
 			{
-				super.bind(migrationModeToggleGrp.selectedToggleProperty(),
-						migrateMediaCheckBox.selectedProperty(),
-						migrateSubbersCheckBox.selectedProperty(),
-						migrateSubsCheckBox.selectedProperty(),
-						seriesListView.getSelectionModel().getSelectedIndices());
+				super.bind(migrationModeToggleGrp.selectedToggleProperty(), migrateSubtitlesCheckBox.selectedProperty(), seriesListView.getSelectionModel().getSelectedIndices());
 			}
 
 			@Override
@@ -154,7 +139,7 @@ public class ConfigurePageController extends AbstractPageController
 				}
 				else if (migrationModeToggleGrp.getSelectedToggle() == selectiveMigrationRadioBtn)
 				{
-					return !((migrateMediaCheckBox.isSelected() && !seriesListView.getSelectionModel().isEmpty()) || migrateSubbersCheckBox.isSelected() || migrateSubsCheckBox.isSelected());
+					return seriesListView.getSelectionModel().isEmpty();
 				}
 				else
 				{
@@ -185,12 +170,10 @@ public class ConfigurePageController extends AbstractPageController
 	@Override
 	public void onEntering()
 	{
-		seriesListView.getItems().clear();
-
-		Task<List<Series>> task = new Task<List<Series>>()
+		Task<SeriesListContent> task = new Task<SeriesListContent>()
 		{
 			@Override
-			protected List<Series> call() throws Exception
+			protected SeriesListContent call() throws Exception
 			{
 				updateTitle("Populating view");
 				updateMessage("Reading settings ...");
@@ -220,16 +203,21 @@ public class ConfigurePageController extends AbstractPageController
 					SeriesListParser parser = new SeriesListParser();
 					SeriesListContent seriesListContent = parser.parsePost(seriesListPostContent);
 
-					return seriesListContent.getSeries();
+					return seriesListContent;
 				}
 			}
 		};
 
 		task.setOnSucceeded((WorkerStateEvent evt) ->
 		{
-			List<Series> foundSeries = task.getValue();
-			seriesListView.getItems().addAll(foundSeries);
-			// Select
+			SeriesListContent seriesListContent = task.getValue();
+			config.setSeriesListContent(seriesListContent);
+			seriesListView.getItems().addAll(seriesListContent.getSeries());
+			// Configure view according to config
+			if (config.isCompleteMigration())
+			{
+				migrationModeToggleGrp.selectToggle(completeMigrationRadioBtn);
+			}
 			if (!config.getSelectedSeries().isEmpty())
 			{
 				for (int i = 0; i < seriesListView.getItems().size(); i++)
@@ -241,14 +229,7 @@ public class ConfigurePageController extends AbstractPageController
 					}
 				}
 			}
-
-		});
-		task.setOnFailed((WorkerStateEvent evt) ->
-		{
-			Throwable e = task.getException();
-			e.printStackTrace();
-			Alert alert = FxUtil.createExceptionAlert("Exception", e.toString(), e);
-			alert.show();
+			migrateSubtitlesCheckBox.setSelected(config.getMigrateSubtitles());
 		});
 
 		executeBlockingTask(task);
@@ -257,7 +238,13 @@ public class ConfigurePageController extends AbstractPageController
 	@Override
 	public void onExiting()
 	{
+		// Store config
+		config.setCompleteMigration(migrationModeToggleGrp.getSelectedToggle() == completeMigrationRadioBtn);
 		config.setSelectedSeries(ImmutableList.copyOf(seriesListView.getSelectionModel().getSelectedItems()));
+		config.setMigrateSubtitles(migrateSubtitlesCheckBox.isSelected());
+
+		// Reset view
+		rootPane.getChildren().clear();
 	}
 
 	@Override
