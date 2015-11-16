@@ -1,0 +1,707 @@
+<!--
+Objekt : [Basis]SubCentral-HMTL-Vorlage
+Version : v1.6.2.10
+Autor : Meshi
+Datum : 14.06.2009
+-->
+
+<!-- Script- und Style-Modul -->
+<script language="JavaScript">
+//here you place the ids of every element you want.
+var ids=new Array('a1','a2','a3');
+var linkids=new Array('linka1','linka2','linka3');
+
+function switchid(id){
+hideallids();
+alllinksinactive();
+showdiv(id);
+showaktivelink(id);
+}
+
+function alllinksinactive(){
+//loop through the array and hide each element by id
+for (var sci=0;sci<linkids.length;sci++){
+ linkinactive(linkids[sci]);
+}
+}
+
+function linkinactive(linkid) {
+//safe function to hide an element with a specified id
+if (document.getElementById) { // DOM3 = IE5, NS6
+ document.getElementById(linkid).className = 'sclink';
+}
+else {
+ if (document.layers) { // Netscape 4
+  document.linkid.className = 'sclink';
+ }
+ else { // IE 4
+  document.all.linkid.className = 'sclink';
+ }
+}
+}
+
+function showaktivelink(id) {
+for (var sci=0;sci<ids.length;sci++){
+ if (ids[sci]==id){
+  document.getElementById(linkids[sci]).className = 'sclinkactive';
+ }
+}
+}
+
+function hideallids(){
+//loop through the array and hide each element by id
+for (var sci=0;sci<ids.length;sci++){
+ hidediv(ids[sci]);
+}
+}
+
+function hidediv(id) {
+//safe function to hide an element with a specified id
+if (document.getElementById) { // DOM3 = IE5, NS6
+ document.getElementById(id).style.display = 'none';
+}
+else {
+ if (document.layers) { // Netscape 4
+  document.id.display = 'none';
+ }
+ else { // IE 4
+  document.all.id.style.display = 'none';
+ }
+}
+}
+
+function showdiv(id) {
+//safe function to show an element with a specified id
+if (document.getElementById) { // DOM3 = IE5, NS6
+ document.getElementById(id).style.display = 'block';
+}
+else {
+ if (document.layers) { // Netscape 4
+  document.id.display = 'block';
+ }
+ else { // IE 4
+  document.all.id.style.display = 'block';
+ }
+}
+}
+</script> 
+<!-- /Script- und Style-Modul -->
+
+
+<style type="text/css">
+
+
+.baseSC table { color: #006400; background-color: #F0FFF0; border-color: #390; }
+.baseSC table th { background: #FF0 url(bilder/glanzkopf/glanzkopf_gruen.png) repeat-x 0 center; }
+.baseSC table tbody tr:hover { color: #111; background-color: #98FB98; }
+.baseSC table tbody tr:hover a { color: #222; }
+
+
+a.sclinkactive:link {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+a.sclinkactive:visited {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+a.sclinkactive:active {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+a.sclinkactive:focus {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+
+a.sclink:link {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+a.sclink:visited {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+a.sclink:active {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+a.sclink:focus {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+
+</style>
+
+<!-- Hier Java-Abfrage-Modul einfügen, nur notwendig für Bilder-Modul. [Optional] -->
+
+<div class="baseSC">
+<!-- Titel-Image-Modul -->
+<div class="tbild"><img src="http://www.subcentral.de/bilder/header_psych5.jpg" alt="Psych S05" /></div>
+<!-- /Titel-Image-Modul --> 
+</div>
+
+
+<div class="baseSC">
+<!-- Imformationsmodul -->
+<div class="ztext">
+ <!-- Inhalts-Modul -->
+ <div class="inhalt">
+  <p>» Shawn Spencer ist ein selbsternannter Detektiv. Von seinem Vater Henry, einem angesehenen Ex-Polizisten, wurde er trainiert, sich alle Dinge in seinem Umfeld genau einzuprägen, seien sie auch noch so klein oder unwichtig. Über seine Erziehung unzufrieden kehrte Shawn seinem Vater jedoch den Rücken. Nach einigen misslungenen Lebensabschnitten erkennt er seine Gabe, ungelöste Fälle der Polizei mithilfe seines fotografischen Gedächtnisses lösen zu können. Dabei gibt Shawn aber stets vor ein Hellseher zu sein. Nachdem er der Polizei in mehreren Fällen helfen konnte und diese ihn immer wieder als Unterstützung anfordert, gründet Shawn schließlich mit seinem besten Freund Burton Guster eine eigene Detektei, die er Psych nennt. «</p>
+ </div>
+ <!-- /Inhalts-Modul -->
+
+ <!-- Hier Bilderserie (Bilder-Modul) einfügen. [Optinal] -->
+
+ <!-- Externe-Links-Modul -->
+ <div class="websites">
+  <p>Offizielle Webseite: <a href="http://www.usanetwork.com/series/psych/" target ="_blank">usanetwork.com</a>
+  <br />
+  Weitere Informationen: <a href="http://de.wikipedia.org/wiki/Psych" target ="_blank">Wikipedia (de)</a> + <a href="http://en.wikipedia.org/wiki/Psych" target ="_blank">Wikipedia (en)</a>
+ </div>
+ <!-- /Externe-Links-Modul -->
+ 
+</div>
+<!-- /Imformationsmodul -->
+</div>
+
+
+<div class="baseSC">
+<!-- Ueberschriftsmodul für Subs und Sonstiges -->
+<h2>Deutsche und Englische Untertitel:</h2>
+<!-- /Ueberschriftsmodul -->
+
+[hide]
+
+<!-- Warnhinweis - Eigenständig -->
+<div class="baseSC">
+ <div class="txtb">
+  <!--<div class="hinweis"><strong>Hinweis:</strong>Text...</div>-->
+ </div>
+</div>
+
+<!-- Tabellen-Modul -->
+<table>
+
+ <!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+ <colgroup width="70%" />
+ <colgroup width="30%" />
+
+ <tbody>
+  <!-- Zeilen-Modul - Release -->
+  <tr>
+   <td class="aktiv"><a id="linka1" class="sclinkactive" href="javascript:switchid('a1');">[img]http://www.subcentral.de/creative/bilder/flags/de.png[/img] Untertitel HDTVRip *Klick*</a></td>
+   <td class="aktiv">[DE-Subs: 16]</td>
+  </tr>
+  <!-- /Zeilen-Modul - Release -->
+
+  <tr>
+   <td class="aktiv"><a id="linka2" class="sclink" href="javascript:switchid('a2');">[img]http://www.subcentral.de/creative/bilder/flags/de.png[/img] Untertitel 720p.HDTV & WEB-DL *Klick*</a></td>
+   <td class="aktiv">[DE-Subs: 16]</td>
+  </tr>
+
+  <tr>
+   <td class="aktiv"><a id="linka3" class="sclink" href="javascript:switchid('a3');">[img]http://www.subcentral.de/creative/bilder/flags/usa.png[/img] Untertitel HDTVRip & 720p.HDTV & WEB-DL *Klick*</a></td>
+   <td class="aktiv">[VO-Subs: 16]</td>
+  </tr>
+
+  <!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+ </tbody>
+</table>
+<!-- /Tabellen-Modul -->
+
+
+<div id="a1" style="display:block;">
+ <!-- Tabellen-Modul -->
+ <table>
+
+  <!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+  <colgroup width="35%" />
+  <colgroup width="20%" />
+  <colgroup width="25%" />
+  <colgroup width="20%" />
+
+  <!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+  <thead>
+   <tr>
+    <th>Episode</th>
+    <th><img src="creative/bilder/flags/de.png" /> HDTVRip</th>
+    <th>Übersetzung</th>
+    <th>Korrektur</th>
+   </tr>
+  </thead>
+  <!-- /Zeilen-Modul - Titel -->
+
+  <tbody>
+
+   <!-- Zeilen-Modul - Release -->
+   <tr class="aktiv">
+    <td class="release">E01 - "Romeo and Juliet and Juliet"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=60892&h=03d5c8fb37190f5226e995f47f32c01ee59f07b3']FQM[/url]</td>
+    <td>**butterfly**, NegroManus & raider</td>
+    <td>-</td>
+   </tr>
+   <!-- /Zeilen-Modul - Release -->
+
+   <tr class="aktiv">
+    <td class="release">E02 - "Feet, Don't Kill Me Now"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61645&h=50049a678f45392a7bdd0d84fdaca4d98b26a489']XII[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61615&h=a0ab591dec0750d745c9c7d9fef2ebfdd4a9b8b2']PROPER-FQM[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61646&h=db5615c34b8ee9da9eebcc0935b531b100af9392']POINTLESS.RP-FQM[/url]</td>
+    <td>**butterfly**<br>& NegroManus</td>
+    <td>-</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E03 - "Not Even Close... Encounters"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=62395&h=14422e62d1999f739c679e5d6653418e55f4709e']FQM[/url]</td>
+    <td>NegroManus</td>
+    <td>glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E04 - "Chivalry Is Not Dead... But Someone Is"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63531&h=370fb414e23a88e112d0f6517b5ea92f403e88ec']FQM[/url]</td>
+    <td>NegroManus & boardlady</td>
+    <td>glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E05 - "Shawn and Gus in Drag (Racing)"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64136&h=1b5d2810b131a65d43831954fc7618ecc5105879']XII[/url]</td>
+    <td>boardlady</td>
+    <td>NegroManus & glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E06 - "Viagra Falls"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64241&h=ac851ad2352e4b3f3eb04b6cacca88dd649be18b']FQM[/url]</td>
+    <td>NegroManus</td>
+    <td>glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E07 - "Ferry Tale"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65052&h=d5a5fa792664d2af6044c620c197da9969b51dad']FQM[/url]</td>
+    <td>Blueweek</td>
+    <td>NegroManus & glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E08 - "Shawn 2.0"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=67808&h=e24a10df6cdcb035e8ae00b4f985993a7c0518f6']FQM[/url]</td>
+    <td>NegroManus</td>
+    <td>glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E09 - "One, Maybe Two, Ways Out"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=70667&h=7ac90f2da311555d35b3e9e101b3269741d70d07']FQM[/url]</td>
+    <td>boardlady & glumpf</td>
+    <td>NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E10 - "Extradition II: The Actual Extradition Part"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=74027&h=c33e051838b75d2f489c78fcf6792a8f5ef20ce7']FQM[/url]</td>
+    <td>boardlady & NegroManus</td>
+    <td>glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E11 - "In Plain Fright"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=76877&h=e13c86896187959afa03de8340e2c559354bfc19']FQM[/url]</td>
+    <td>lorelei, boardlady & glumpf</td>
+    <td>glumpf & NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E12 - "Dual Spires"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77168&h=8805926596c14a67d7e28c32c0abc9e61da4d096']FQM[/url]</td>
+    <td>NegroManus & lorelei</td>
+    <td>glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E13 - "We'd Like to Thank the Academy"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=78963&h=d34ebc4422a95233ccf71639f8ee84fa94656fbe']P0W4[/url]</td>
+    <td>NegroManus</td>
+    <td>DaStriker2000</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E14 - "The Polarizing Express"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=81406&h=1b5cef0a80088a2172bed29e7561631d0b391ffa']FQM[/url]</td>
+    <td>NegroManus</td>
+    <td>glumpf</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E15 - "Dead Bear Walking"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=82485&h=242cbbea32720837b7e2df943a64ef325d9091a5']FQM[/url]</td>
+    <td>NegroManus & glumpf</td>
+    <td>-</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E16 - "Yin 3 in 2D"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=83639&h=f86fe1af217b17b8b5f1e077bd987d63b1b05a27']FEVER[/url]</td>
+    <td>NegroManus & glumpf</td>
+    <td>Vassago</td>
+   </tr>
+
+
+<tr bgcolor="#aaa" class="aktiv">
+<td colspan="4"></td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">[b]Komplette Staffel[/b]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=108606&h=78eee113b01b444c4674631bd679c848c277eca7']HDTVRip[/url]</td>
+<td colspan="2">[b]SubCentral.de[/b]</td>
+</tr>
+
+
+   <!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+  </tbody>
+ </table>
+ <!-- /Tabellen-Modul -->
+</div>
+
+
+<div id="a2" style="display:none;">
+ <!-- Tabellen-Modul -->
+ <table>
+
+  <!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+  <colgroup width="37%" />
+  <colgroup width="20%" />
+  <colgroup width="20%" />
+  <colgroup width="23%" />
+
+  <!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+  <thead>
+   <tr>
+    <th>Episode</th>
+    <th><img src="creative/bilder/flags/de.png" /> 720p.HDTV</th>
+    <th><img src="creative/bilder/flags/de.png" /> WEB-DL</th>
+    <th>Anpassung</th>
+   </tr>
+  </thead>
+  <!-- /Zeilen-Modul - Titel -->
+
+  <tbody>
+
+   <tr class="aktiv">
+    <td class="release">E01 - "Romeo and Juliet and Juliet"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=60893&h=c1f060937d0944d8c17281ab34232a9f0cfd1245']DIMENSION[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=60894&h=d6727a0216e8f8a717b00b5dac4facb1b70b49d1']WEB-DL[/url]</td>
+    <td>NegroManus</td>
+   </tr>
+   <!-- /Zeilen-Modul - Release -->
+
+   <tr class="aktiv">
+    <td class="release">E02 - "Feet, Don't Kill Me Now"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61616&h=f4f66f3ca5ff584102dd202c57acecfbe7603231']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61617&h=184956e90d59a38fd781e26630106a932b1d1331']WEB-DL[/url]</td>
+    <td>Trava | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E03 - "Not Even Close... Encounters"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=62396&h=bc59a81daec1c0a32a04ed62a95e5aa6955ed986']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=62398&h=05d2c5e403634b6ec6d3e362e24ddccafdde0bba']WEB-DL[/url]</td>
+    <td>NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E04 - "Chivalry Is Not Dead... But Someone Is"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63532&h=a19d0d8ee75c7d6c9f5a265adb2e06789272e1a3']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63533&h=2152f356556a6747dfe573f3fb630f3c82561f11']WEB-DL[/url]</td>
+    <td>- | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E05 - "Shawn and Gus in Drag (Racing)"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64134&h=b6917748c0d7a7dc6f4b57a98284a4dca71c3baa']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64135&h=b316c22f4273fa4a1c79cf6f5717c8115bf0f244']WEB-DL[/url]</td>
+    <td>- | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E06 - "Viagra Falls"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64242&h=2f5290024bd851973e01f4f765f7b88711bc0e3d']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64244&h=27ed629945df8aa2c66128b7ff7765a838e92a56']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E07 - "Ferry Tale"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65053&h=7f37adb94b82a6743bd4253c5f3395890e8d164b']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65054&h=e3b87d1b37d4b81c866c619ea4b313c237c0771d']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E08 - "Shawn 2.0"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=67866&h=0ecd35f9b16a51ea90d38e9c3a92c2429e0049fb']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=67807&h=134c899e8c93af007da974d54a2ed3cc8c512d27']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E09 - "One, Maybe Two, Ways Out"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=70749&h=554d51bbc79af2b8efea1f79f0d9a163c691db67']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=70668&h=eff89400ef92ced2467bc90f94a9d139cfefacaf']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E10 - "Extradition II: The Actual Extradition Part"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=74022&h=e5af25316f5b74657b3b4106462bef40cc81646f']ORENJI[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=74026&h=6ce9481e2d50d58a0f9ecfbf7e9258e38cba126e']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E11 - "In Plain Fright"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=76875&h=374a25c701e4e51883fc9c5c9d346e0c15c96d36']ORENJI[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=76824&h=6302d84dc86ed593ab4094dbfa5a6e87e81108d4']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E12 - "Dual Spires"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77192&h=1c07f27261ec7c06f011825659a48ad739de273f']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77317&h=3f77f1e6083c39548751ce5df6ca542d94e428eb']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E13 - "We'd Like to Thank the Academy"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=78964&h=06918c88a2dd4a0868594f79d9fdfb95de6d8a85']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=78965&h=d7d10b21779d5000af8f91671693e8a0a562c250']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E14 - "The Polarizing Express"</td>
+     <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=81407&h=e8fb5e49d31be5527a2b14703fdfc91377f9b842']PROPER-CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=81408&h=69334f531ab2bde199a3d22ca336822a3eccbf66']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E15 - "Dead Bear Walking"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=82547&h=170d58d9cda14eb59dcbc4704ed6ce27cc3bce5a']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=82548&h=832deb423ecfe60d0e110b49c990739cd4e48dff']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E16 - "Yin 3 in 2D"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=83666&h=5138e6b88784987b228c39b7a621e6d9c0d65d0a']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=83640&h=cb0f218baf38308c9c668e117f75ace50a67fe0c']WEB-DL[/url]</td>
+    <td>faindt | NegroManus</td>
+   </tr>
+
+
+<tr bgcolor="#aaa" class="aktiv">
+<td colspan="4"></td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">[b]Komplette Staffel[/b]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=108607&h=57b0c904b02ef1e4abe97c929c9ec938838ad9e8']720p.HDTV[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=108608&h=05f7ec6c7ab29e63747d5cfb078482bfa2df13a8']WEB-DL[/url]</td>
+<td>[b]SubCentral.de[/b]</td>
+</tr>
+
+
+   <!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+  </tbody>
+ </table>
+ <!-- /Tabellen-Modul -->
+</div>
+
+
+<div id="a3" style="display:none;">
+ <!-- /Tabellen-Modul -->
+ <table>
+
+  <!-- Tabellen-Modul kann gegen die Anderen ausgetauscht werden -->
+
+  <!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+  <colgroup width="39%" />
+  <colgroup width="14%" />
+  <colgroup width="17%" />
+  <colgroup width="14%" />
+  <colgroup width="16%" />
+
+  <!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+  <thead>
+   <tr>
+    <th>Episode</th>
+    <th><img src="creative/bilder/flags/usa.png" /> HDTVRip</th>
+    <th><img src="creative/bilder/flags/usa.png" /> 720p.HDTV</th>
+    <th><img src="creative/bilder/flags/usa.png" /> WEB-DL</th>
+    <th>Quelle</th>
+   </tr>
+  </thead>
+  <!-- /Zeilen-Modul - Titel -->
+
+  <tbody>
+
+   <!-- Zeilen-Modul - Release -->
+   <tr class="aktiv">
+    <td class="release">E01 - "Romeo and Juliet and Juliet"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=60436&h=546bb4bd96f9f37bd012d7c202275f155ffe5132']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=60439&h=8b3f6e5cc5e83bcac0b50e343073a429aa49e361']IMMERSE[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=60440&h=aab710ed0e2c3cd8dad47dfac651564af5f7fd47']DIMENSION[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=60441&h=0f3529b80e2a3ff5d0b0b8f98623db3a3b672fe7']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+   <!-- /Zeilen-Modul - Release -->
+
+   <tr class="aktiv">
+    <td class="release">E02 - "Feet, Don't Kill Me Now"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61429&h=4f222dd1645fc25db11916491fd99ee9b356d4b9']PR-FQM[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61430&h=135fddf67fae29a7e965c042689995636cf20585']RP-FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61431&h=135c8be82ac7c377195f9589e787c6327e46434a']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61432&h=281225695b6dd70fa4d442918c856aaa3d268cab']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E03 - "Not Even Close... Encounters"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61462&h=167c6cc9c87e429c425818ce48859a90ceb49afc']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61463&h=bc4bb41cb3ce2d43fed39689badd02ab279a1449']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=61464&h=768a625e2df3d67325ca8eefa40e7a091031352a']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E04 - "Chivalry Is Not Dead... But Someone Is"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=62528&h=d75674f6d449df3dd84ce3e667b34c24ee554d78']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=62529&h=84bf6c666d686d1375823de3cdb5e9e9ae336724']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=62530&h=fbd8bbc79ed19b1fd9d8661455c434b6923322e7']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E05 - "Shawn and Gus in Drag (Racing)"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63131&h=437ef9f3811a2cf4c2cc3eea00d0355c21aaa996']XII[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63132&h=028c9aa6f5458834085faefee51a71ae76b2442b']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63133&h=e71cb2156044698f82caf4835c43b3b225aef0f0']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E06 - "Viagra Falls"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63592&h=073f5150748682d84d142837cbfe1aef4927bce8']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63593&h=abd7bd30eae424958b3372bf6f9492be78b1528d']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63594&h=897b14fb04e1a2a9b3697ebbb19845996f31014b']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E07 - "Ferry Tale"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63720&h=78418738c074e4ee5359bd29e9722a996cec508e']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63721&h=cc976032bce30492725f7540bf68cbc01ee14d26']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63961&h=784466967e0ab26153572ae9c0c491a082fbd767']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E08 - "Shawn 2.0"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64309&h=2c4fe1a374a78eb700e5080c5aa91c5e75e62788']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64310&h=cb58eb6d60a6636e7ed149f22d568beee2a8658c']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=64311&h=2b6e2feba12f4164726a5bb865bdbec0291da691']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E09 - "One, Maybe Two, Ways Out"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65017&h=8a121e93784987c6ed0942ef51bdb6e3db585e4c']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65018&h=f671081b0fae617adedadeada9266cfea7b6927a']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65019&h=30532dc5934b4e41103825fac826787a2b374c80']WEB-DL[/url]</td>
+    <td>sous-titres.eu</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E10 - "Extradition II: The Actual Extradition Part"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=74021&h=228488a78d119d6142416283a30bd27767d7f01a']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=74024&h=55d238b0b664b49940b88f6dd7483b3893f9e452']ORENJI[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=74025&h=4d34b00cb6098b2c4cf6410d9b1bd66f098d92e0']WEB-DL[/url]</td>
+    <td>SubCentral</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E11 - "In Plain Fright"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=76822&h=1195d06e8c68d532ed5a748f899fe24c088f2563']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77588&h=c5e8a578c52510e804ff1a1da20d832f63a0820d']ORENJI[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=76823&h=ddbb63e57e7b906c8dfbc45ba3c3a4d991cd6fd4']WEB-DL[/url]</td>
+    <td>SubCentral</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E12 - "Dual Spires"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77172&h=4a7c5710a64e9fcd819cddeed4d056b496b8956e']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77190&h=8348a2e54f0fc63f3cf376c71fc6f069df381c7c']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77319&h=e19185a5d212d77daa45cb0fe5477dc90648bf06']WEB-DL[/url]</td>
+    <td>SubCentral</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E13 - "We'd Like to Thank the Academy"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77173&h=ba714fcde67ba5383ea36e302face2fcf216c804']P0W4[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77191&h=fb498773d00eb73dc1627bfd3df8142c1221b786']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=77312&h=580fa66d8ce826e172025bab4219d2f7b97a391c']WEB-DL[/url]</td>
+    <td>SubCentral</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E14 - "The Polarizing Express"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=78463&h=bb9fbd4feda8713e2c8d611cccc519194228b143']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=78464&h=73a0f5ef9c709c40ddcec5716b015762a336174b']PROPER-CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=78465&h=19ea16345305be99b8565dc72fc4b0a0b5da1719']WEB-DL[/url]</td>
+    <td>SubCentral</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E15 - "Dead Bear Walking"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=82486&h=f24e5c625e5a58a0ca22ce03d7a53af6ca612d28']FQM[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=82537&h=dab0408c2590977a7634376611aec081b02a852c']CTU[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=82576&h=281d07915558284d5e07f1a0ffdc3c7e64fb01e7']WEB-DL[/url]</td>
+    <td>SubCentral</td>
+   </tr>
+
+   <tr class="aktiv">
+    <td class="release">E16 - "Yin 3 in 2D"</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=83638&h=1e9fe9cc5c103b81c4bb61ffab633357186d8d0e']FEVER[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=83665&h=291734fe98bbc3af7fa1119e461166b6475dab50']IMMERSE[/url]</td>
+    <td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=83641&h=2a180a5356823bc32a7bdf42d7c98138f64c2f0a']WEB-DL[/url]</td>
+    <td>SubCentral</td>
+   </tr>
+
+
+<tr bgcolor="#aaa" class="aktiv">
+<td colspan="5"></td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">[b]Komplette Staffel[/b]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=108609&h=e2b376420e17d794365dacfaacc8f5a2f49a4891']HDTVRip[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=108610&h=06b2a15cc8e7282f4ffeabab4e134ccf0c39a89b']720p.HDTV[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=108611&h=75a566c042eb8ef5742fcb358b2d652fce0d4c52']WEB-DL[/url]</td>
+<td>[b]sous-tires.eu / SubCentral.de[/b]</td>
+</tr>
+
+
+   <!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+  </tbody>
+ </table>
+ <!-- /Tabellen-Modul -->
+</div>
+
+
+<!-- Die "..." durch die Beitrags-ID austauschen! -->
+<p>Fehlerhafte Verlinkung entdeckt, dann <a href="index.php?form=PostReport&postID=193780">melde</a> dich bei einem MOD oder SMOD.</p>
+<p>Übersetzungsfehler entdeckt, dann gib uns bitte <a href="index.php?page=Thread&threadID=18569">Bescheid</a>.</p>
+
+
+[/hide] 
+
+<p class="copyr">&copy; 2010/2011 Übersetzung: raider, **butterfly**, NegroManus, boardlady, Blueweek, glumpf, lorelei</p>
+<p class="copyr">&copy; 2010/2011 Korrektur: glumpf, NegroManus, DaStriker2000, Vassago</p> 
+<p class="copyr">&copy; 2010/2011 Anpassungen: NegroManus, Trava, faindt</p> 
+</div>
+
+
+<!-- Falls es notwendig ist, kann hier das Hinweis-Modul (Bedankomat) eingefuegt werden. [Optional] -->
+<div class="baseSC">
+<!-- Hinweis-Modul - Bedankomat usw. -->
+<div class="ztext">
+ <div class="bhinweis">
+  <p><strong>Bitte <a href="http://www.subcentral.de/index.php?page=Thread&threadID=2745" target="_blank">Bedankomat</a> verwenden!</strong></p>
+  <p>Einsilbige Danksagungen (Danke, Thx, usw.) sind nicht notwendig und werden verschoben.</p>
+ </div>
+</div>
+<!-- /Hinweis-Modul -->
+</div>
+
+<!-- Script-Einstellungs-Modul -->
+<!-- Hier einfügen, nur für Bilder-Modul [Optinal] -->
+<!-- Script-Einstellungs-Modul -->

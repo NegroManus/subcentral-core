@@ -4,11 +4,16 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.Migration;
@@ -21,6 +26,8 @@ import javafx.concurrent.Task;
 
 public class MigrationTask extends Task<Void>
 {
+	private static final Logger			log						= LogManager.getLogger(MigrationTask.class);
+
 	private final MigrationRepo			repo					= new MigrationRepo();
 	private final MigrationConfig		config;
 
@@ -74,7 +81,7 @@ public class MigrationTask extends Task<Void>
 		}
 		numSeriesToProcess = seriesToProcess.size();
 
-		int numSeasonsSuccessfulMigrated = seriesToProcess.stream().map(seriesMigrationTask).mapToInt((Boolean success) ->
+		int numSeasonsSuccessfulMigrated = seriesToProcess.stream().parallel().map(seriesMigrationTask).mapToInt((Boolean success) ->
 		{
 			seriesProcessed();
 			return Boolean.TRUE.equals(success) ? 1 : 0;
@@ -88,6 +95,7 @@ public class MigrationTask extends Task<Void>
 		{
 			try
 			{
+				checkInterrupted();
 				List<Season> seasonsDistinctByThreadId = distinctByThreadId(series.getSeasons());
 				List<ParsedSeason> parsedSeasons = seasonsDistinctByThreadId.stream().map(seasonThreadParserTask).collect(Collectors.toList());
 
@@ -100,6 +108,11 @@ public class MigrationTask extends Task<Void>
 					for (Season seasonFromSeasonThread : parsedSeason.seasonThreadContent.getSeasons())
 					{
 						System.out.println(seasonFromSeasonThread);
+						System.out.println("Episodes from season thread:");
+						for (Episode epi : seasonFromSeasonThread.getEpisodes())
+						{
+							System.out.println(epi);
+						}
 					}
 					System.out.println();
 				}
@@ -108,9 +121,13 @@ public class MigrationTask extends Task<Void>
 
 				return Boolean.TRUE;
 			}
+			catch (CancellationException e)
+			{
+				throw e;
+			}
 			catch (Throwable t)
 			{
-				t.printStackTrace();
+				log.warn("Exception while parsing series: " + series, t);
 				return Boolean.FALSE;
 			}
 		}
@@ -123,6 +140,7 @@ public class MigrationTask extends Task<Void>
 		{
 			try
 			{
+				checkInterrupted();
 				Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
 				if (seasonThreadId == null)
 				{
@@ -140,9 +158,13 @@ public class MigrationTask extends Task<Void>
 				SeasonThreadContent content = seasonThreadParser.parse(post.getTopic(), post.getMessage());
 				return new ParsedSeason(season, content);
 			}
+			catch (CancellationException e)
+			{
+				throw e;
+			}
 			catch (Throwable t)
 			{
-				t.printStackTrace();
+				log.warn("Exception while parsing season: " + season, t);
 				return null;
 			}
 		}
@@ -168,6 +190,14 @@ public class MigrationTask extends Task<Void>
 		}
 
 		return builder.build();
+	}
+
+	private static void checkInterrupted() throws CancellationException
+	{
+		if (Thread.interrupted())
+		{
+			throw new CancellationException("Thread " + Thread.currentThread() + " was interrupted");
+		}
 	}
 
 	private class ParsedSeason

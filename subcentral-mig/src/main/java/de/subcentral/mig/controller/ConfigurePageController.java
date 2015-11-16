@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.DataSources;
 
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.process.SeriesListParser;
@@ -186,16 +187,12 @@ public class ConfigurePageController extends AbstractPageController
 	@Override
 	public void onExiting()
 	{
-		// Cancel loadTask if still running
-		loadTask.cancel(true);
+		cancelLoadTask();
 
 		// Store config
 		config.setCompleteMigration(migrationModeToggleGrp.getSelectedToggle() == completeMigrationRadioBtn);
 		config.setSelectedSeries(ImmutableList.copyOf(seriesListView.getSelectionModel().getSelectedItems()));
 		config.setMigrateSubtitles(migrateSubtitlesCheckBox.isSelected());
-
-		// Reset view
-		rootPane.getChildren().clear();
 	}
 
 	@Override
@@ -207,8 +204,16 @@ public class ConfigurePageController extends AbstractPageController
 	@Override
 	public void shutdown() throws Exception
 	{
-		// TODO Auto-generated method stub
+		cancelLoadTask();
+	}
 
+	private void cancelLoadTask()
+	{
+		// Cancel loadTask if still running
+		if (loadTask != null)
+		{
+			loadTask.cancel(true);
+		}
 	}
 
 	private class LoadConfigurePageTask extends Task<Void>
@@ -259,6 +264,11 @@ public class ConfigurePageController extends AbstractPageController
 			String user = config.getEnvironmentSettings().getString("sc.db.user");
 			String password = config.getEnvironmentSettings().getString("sc.db.password");
 
+			if (config.getDataSource() != null)
+			{
+				DataSources.destroy(config.getDataSource());
+			}
+
 			ComboPooledDataSource cpds = new ComboPooledDataSource();
 			cpds.setDriverClass(driverClass); // loads the jdbc driver
 			cpds.setJdbcUrl(url);
@@ -296,6 +306,10 @@ public class ConfigurePageController extends AbstractPageController
 			if (config.isCompleteMigration())
 			{
 				migrationModeToggleGrp.selectToggle(completeMigrationRadioBtn);
+			}
+			else
+			{
+				migrationModeToggleGrp.selectToggle(selectiveMigrationRadioBtn);
 			}
 			if (!config.getSelectedSeries().isEmpty())
 			{
