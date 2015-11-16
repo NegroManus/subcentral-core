@@ -465,7 +465,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : queryResults.asMap().entrySet())
 		{
-			log.debug("Results of {}", entry.getKey().getSourceId());
+			log.debug("Results of {}", entry.getKey().getSiteId());
 			entry.getValue().stream().forEach((r) -> log.debug(r));
 		}
 		if (queryResults.isEmpty())

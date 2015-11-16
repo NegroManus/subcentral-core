@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import de.subcentral.core.util.StringUtil;
 
-public class SubCentralBoardDbApi extends SubCentralDbApi
+public class SubCentralBoard extends SubCentralDb
 {
 	public Post getPost(int postId) throws SQLException
 	{

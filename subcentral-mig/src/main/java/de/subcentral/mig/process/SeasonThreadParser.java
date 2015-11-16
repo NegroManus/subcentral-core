@@ -93,7 +93,9 @@ public class SeasonThreadParser
 		ImmutableMap.Builder<Pattern, ColumnType> map = ImmutableMap.builder();
 		map.put(Pattern.compile("Episode"), ColumnType.EPISODE);
 		map.put(Pattern.compile(".*?flags/de\\.png.*"), ColumnType.GERMAN_SUBS);
+		map.put(Pattern.compile("Deutsch"), ColumnType.GERMAN_SUBS);
 		map.put(Pattern.compile(".*?flags/(usa|uk|ca|aus)\\.png.*"), ColumnType.ENGLISH_SUBS);
+		map.put(Pattern.compile("Englisch"), ColumnType.ENGLISH_SUBS);
 		map.put(Pattern.compile("Übersetzung"), ColumnType.TRANSLATION);
 		map.put(Pattern.compile("Korrektur"), ColumnType.REVISION);
 		map.put(Pattern.compile("Timings"), ColumnType.TIMINGS);
@@ -132,7 +134,7 @@ public class SeasonThreadParser
 		Document content = Jsoup.parse(postContent, SubCentralHttpApi.getHost().toExternalForm());
 		parseSeasonHeader(data, content);
 		parseDescription(data, content);
-		parseSubtitleTable(data, content);
+		parseSubtitleTable(data, postTitle, content);
 
 		cleanupData(data);
 
@@ -262,7 +264,7 @@ public class SeasonThreadParser
 		}
 	}
 
-	private static void parseSubtitleTable(Data data, Document postContent)
+	private static void parseSubtitleTable(Data data, String postTitle, Document postContent)
 	{
 		Elements tables = postContent.getElementsByTag("table");
 		for (Element table : tables)
@@ -273,7 +275,7 @@ public class SeasonThreadParser
 			}
 			catch (Exception e)
 			{
-				log.warn("Exception while trying to parse subtitle table as standard table: {}. Parsing as non-standard table", e.toString());
+				log.warn("Exception while trying to parse subtitle table in post (title: " + postTitle + ") as standard table: {}. Parsing as non-standard table", e.toString());
 				parseNonStandardTable(data, table);
 			}
 		}
@@ -1022,7 +1024,7 @@ public class SeasonThreadParser
 				{
 					if (Migration.LANGUAGE_GERMAN.equals(sub.getLanguage()))
 					{
-						sub.setSource(SubCentralDe.SOURCE_ID);
+						sub.setSource(SubCentralDe.SITE_ID);
 					}
 				}
 				else
@@ -1038,7 +1040,7 @@ public class SeasonThreadParser
 
 	public static final class SeasonThreadContent
 	{
-		private final ImmutableList<Season>				seasons;
+		private final ImmutableList<Season>			seasons;
 		private final ImmutableList<SubtitleFile>	subtitleAdjustments;
 
 		public SeasonThreadContent(Iterable<Season> seasons, Iterable<SubtitleFile> subtitleAdjustments)

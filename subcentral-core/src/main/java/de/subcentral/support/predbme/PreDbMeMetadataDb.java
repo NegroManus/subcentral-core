@@ -54,9 +54,9 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 	private static final ZoneId	TIME_ZONE	= ZoneId.of("UTC");
 
 	@Override
-	public String getSourceId()
+	public String getSiteId()
 	{
-		return PreDbMe.SOURCE_ID;
+		return PreDbMe.SITE_ID;
 	}
 
 	@Override
@@ -314,7 +314,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		Release rls = new Release();
 
 		String id = rlsDiv.attr("id");
-		rls.getIds().put(PreDbMe.SOURCE_ID, id);
+		rls.getIds().put(PreDbMe.SITE_ID, id);
 
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -333,7 +333,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 			rls.setName(title);
 
 			detailsUrl = titleAnchor.absUrl("href");
-			rls.getIds().put(PreDbMe.SOURCE_ID, parseId(titleAnchor));
+			rls.getIds().put(PreDbMe.SITE_ID, parseId(titleAnchor));
 		}
 
 		/**

@@ -34,7 +34,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.util.TemporalComparator;
-import de.subcentral.support.StandardSources;
+import de.subcentral.support.StandardSites;
 
 public class TheTvDbComMetadataDb extends HttpMetadataDb
 {
@@ -77,9 +77,9 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	}
 
 	@Override
-	public String getSourceId()
+	public String getSiteId()
 	{
-		return TheTvDbCom.SOURCE_ID;
+		return TheTvDbCom.SITE_ID;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	@Override
 	public Set<String> getSupportedExternalSources()
 	{
-		return ImmutableSet.of(StandardSources.IMDB_COM, StandardSources.ZAP2IT_COM);
+		return ImmutableSet.of(StandardSites.IMDB_COM, StandardSites.ZAP2IT_COM);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -179,10 +179,10 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		switch (sourceId)
 		{
-			case StandardSources.IMDB_COM:
+			case StandardSites.IMDB_COM:
 				query.put("imdbid", id);
 				break;
-			case StandardSources.ZAP2IT_COM:
+			case StandardSites.ZAP2IT_COM:
 				query.put("zap2it", id);
 			default:
 				throw createUnsupportedExternalSource(sourceId);
@@ -292,7 +292,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		{
 			Series series = new Series();
 
-			addId(series, seriesElem, "seriesid", TheTvDbCom.SOURCE_ID);
+			addId(series, seriesElem, "seriesid", TheTvDbCom.SITE_ID);
 
 			series.setName(getTextFromChild(seriesElem, "seriesname"));
 
@@ -311,8 +311,8 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 			addNetwork(series, seriesElem, "network");
 
-			addId(series, seriesElem, "imdb_id", StandardSources.IMDB_COM);
-			addId(series, seriesElem, "zap2it_id", StandardSources.ZAP2IT_COM);
+			addId(series, seriesElem, "imdb_id", StandardSites.IMDB_COM);
+			addId(series, seriesElem, "zap2it_id", StandardSites.ZAP2IT_COM);
 
 			results.add(series);
 		}
@@ -387,7 +387,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 		Series series = new Series();
 
-		addId(series, seriesElem, "id", TheTvDbCom.SOURCE_ID);
+		addId(series, seriesElem, "id", TheTvDbCom.SITE_ID);
 
 		series.setContentRating(getTextFromChild(seriesElem, "contentrating"));
 
@@ -397,14 +397,14 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		List<String> genres = LIST_SPLITTER.splitToList(genresTxt);
 		series.setGenres(genres);
 
-		addId(series, seriesElem, "imdb_id", StandardSources.IMDB_COM);
-		addId(series, seriesElem, "zap2it_id", StandardSources.ZAP2IT_COM);
+		addId(series, seriesElem, "imdb_id", StandardSites.IMDB_COM);
+		addId(series, seriesElem, "zap2it_id", StandardSites.ZAP2IT_COM);
 
 		addNetwork(series, seriesElem, "network");
 
 		addDescription(series, seriesElem, "overview");
 
-		addRating(series, seriesElem, "rating", TheTvDbCom.SOURCE_ID);
+		addRating(series, seriesElem, "rating", TheTvDbCom.SITE_ID);
 
 		String runtimeTxt = getTextFromChild(seriesElem, "runtime");
 		int runtime = Integer.parseInt(runtimeTxt);
@@ -528,7 +528,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			{
 				Season possiblyNewSeason = series.newSeason(epi.getSeason().getNumber());
 				// Check whether this season is already stored, if yes, return it, if no return the new season
-				Season season = seasons.computeIfAbsent(epi.getSeason().getIds().get(TheTvDbCom.SOURCE_ID), (String key) -> possiblyNewSeason);
+				Season season = seasons.computeIfAbsent(epi.getSeason().getIds().get(TheTvDbCom.SITE_ID), (String key) -> possiblyNewSeason);
 				epi.setSeason(season);
 			}
 			// May add to special episode list
@@ -564,7 +564,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	private Episode parseBaseEpisodeRecord(Element epiElem)
 	{
 		Series series = new Series();
-		addId(series, epiElem, "seriesid", TheTvDbCom.SOURCE_ID);
+		addId(series, epiElem, "seriesid", TheTvDbCom.SITE_ID);
 
 		Episode epi = series.newEpisode();
 
@@ -593,23 +593,23 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		else
 		{
 			Season season = new Season(series, seasonNum);
-			addId(season, epiElem, "seasonid", TheTvDbCom.SOURCE_ID);
+			addId(season, epiElem, "seasonid", TheTvDbCom.SITE_ID);
 
 			epi.setSeason(season);
 			epi.setNumberInSeason(getIntegerFromChild(epiElem, "episodenumber"));
 		}
 		// add rest of the properties
-		addId(epi, epiElem, "id", TheTvDbCom.SOURCE_ID);
+		addId(epi, epiElem, "id", TheTvDbCom.SITE_ID);
 
 		epi.setTitle(getTextFromChild(epiElem, "episodename"));
 
 		addDateAsLocaleDate(epi, epiElem, "firstaired");
 
-		addId(epi, epiElem, "imdb_id", StandardSources.IMDB_COM);
+		addId(epi, epiElem, "imdb_id", StandardSites.IMDB_COM);
 
 		addDescription(epi, epiElem, "overview");
 
-		addRating(epi, epiElem, "rating", TheTvDbCom.SOURCE_ID);
+		addRating(epi, epiElem, "rating", TheTvDbCom.SITE_ID);
 
 		addImage(epi, epiElem, "filename", IMAGE_TYPE_EPISODE_IMAGE);
 

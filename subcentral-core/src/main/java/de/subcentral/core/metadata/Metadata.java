@@ -11,7 +11,7 @@ public interface Metadata extends Serializable
 	/**
 	 * 
 	 * @return the ids (source id -> id)
-	 * @see de.subcentral.support.StandardSources
+	 * @see de.subcentral.support.StandardSites
 	 */
 	public Map<String, String> getIds();
 

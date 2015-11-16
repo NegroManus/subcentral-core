@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import com.mchange.v2.c3p0.DataSources;
+
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.mig.MigrationConfig;
@@ -210,6 +212,10 @@ public class MainController extends AbstractController
 		{
 			commonExecutor.shutdownNow();
 			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
+		}
+		if (config.getDataSource() != null)
+		{
+			DataSources.destroy(config.getDataSource());
 		}
 	}
 

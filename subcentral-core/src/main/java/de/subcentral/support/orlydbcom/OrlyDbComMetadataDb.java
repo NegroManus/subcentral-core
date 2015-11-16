@@ -46,9 +46,9 @@ public class OrlyDbComMetadataDb extends HttpMetadataDb
 	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
 
 	@Override
-	public String getSourceId()
+	public String getSiteId()
 	{
-		return OrlyDbCom.SOURCE_ID;
+		return OrlyDbCom.SITE_ID;
 	}
 
 	@Override

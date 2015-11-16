@@ -12,13 +12,19 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralDe;
 
-public class SubCentralSubManDbApi extends SubCentralDbApi
+public class SubCentralSubMan extends SubCentralDb
 {
+	private static final Logger log = LogManager.getLogger(SubCentralSubMan.class);
+
 	public void clearData() throws SQLException
 	{
 		try (Statement stmt = connection.createStatement())
@@ -30,33 +36,59 @@ public class SubCentralSubManDbApi extends SubCentralDbApi
 
 	public void insertSeriesFromSeriesList(Series series) throws SQLException
 	{
-		if (series.getIds().containsKey(SubCentralDe.SOURCE_ID))
+		if (series.getIds().containsKey(SubCentralDe.SITE_ID))
 		{
 			// already inserted
 			return;
 		}
 
-		// May insert network
-		// TODO
-
-		// May insert genres
-		//
-		try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO sc1_series (name, boardID, type, start, end, logo) VALUES (?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS))
+		connection.setAutoCommit(false);
+		try
 		{
-			stmt.setString(1, series.getName());
-			setInteger(stmt, 2, series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID));
-			stmt.setString(3, Series.TYPE_SEASONED);
-			Date start = convertYearToDate(series.getDate());
-			stmt.setDate(4, start);
-			Date end = convertYearToDate(series.getFinaleDate());
-			stmt.setDate(5, end);
-			String logo = getFirstImage(series, Migration.IMG_TYPE_SERIES_LOGO);
-			stmt.setString(6, logo);
 
-			int affectedRows = stmt.executeUpdate();
-			checkUpdated(series, affectedRows);
-			int id = getGeneratedId(stmt);
-			series.getIds().put(SubCentralDe.SOURCE_ID, id + "");
+			// Get network Id
+			String networkId = null;
+			if (!series.getNetworks().isEmpty())
+			{
+				Network network = series.getNetworks().get(0);
+				networkId = network.getIds().get(SubCentralDe.SITE_ID);
+				if (networkId == null)
+				{
+
+				}
+			}
+
+			// May insert genres
+			//
+			try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO sc1_series (name, boardID, type, start, end, networkID, logo) VALUES (?, ?, ?, ?, ?, ?);",
+					Statement.RETURN_GENERATED_KEYS))
+			{
+				stmt.setString(1, series.getName());
+				setInteger(stmt, 2, series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID));
+				stmt.setString(3, Series.TYPE_SEASONED);
+				Date start = convertYearToDate(series.getDate());
+				stmt.setDate(4, start);
+				Date end = convertYearToDate(series.getFinaleDate());
+				stmt.setDate(5, end);
+				stmt.setString(6, networkId);
+				String logo = getFirstImage(series, Migration.IMG_TYPE_SERIES_LOGO);
+				stmt.setString(7, logo);
+
+				int affectedRows = stmt.executeUpdate();
+				checkUpdated(series, affectedRows);
+				int id = getGeneratedId(stmt);
+				series.getIds().put(SubCentralDe.SITE_ID, id + "");
+			}
+		}
+		catch (SQLException e)
+		{
+			log.error("Exception while inserting series. Rolling back ", e);
+			connection.rollback();
+			throw e;
+		}
+		finally
+		{
+			connection.setAutoCommit(true);
 		}
 	}
 

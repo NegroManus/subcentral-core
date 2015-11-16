@@ -31,7 +31,7 @@ public class TheTvDbComPlayground
 		results.stream().forEach((Object obj) -> System.out.println(obj));
 		System.out.println();
 
-		Series series = db.get(results.get(0).getIds().get(TheTvDbCom.SOURCE_ID), Series.class);
+		Series series = db.get(results.get(0).getIds().get(TheTvDbCom.SITE_ID), Series.class);
 		System.out.println("Series:");
 		System.out.println(series);
 		System.out.println();

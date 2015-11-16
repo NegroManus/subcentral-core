@@ -118,16 +118,16 @@ class ConfigurationHelper
 			boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
 			switch (domain)
 			{
-				case Addic7edCom.SOURCE_ID:
+				case Addic7edCom.SITE_ID:
 					services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
 					break;
-				case ItalianSubsNet.SOURCE_ID:
+				case ItalianSubsNet.SITE_ID:
 					services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
 					break;
 				case ReleaseScene.SOURCE_ID:
 					services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
 					break;
-				case SubCentralDe.SOURCE_ID:
+				case SubCentralDe.SITE_ID:
 					services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
 					break;
 				default:
@@ -187,13 +187,13 @@ class ConfigurationHelper
 			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
 			switch (name)
 			{
-				case PreDbMe.SOURCE_ID:
+				case PreDbMe.SITE_ID:
 					dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
 					break;
-				case XRelTo.SOURCE_ID:
+				case XRelTo.SITE_ID:
 					dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
 					break;
-				case OrlyDbCom.SOURCE_ID:
+				case OrlyDbCom.SITE_ID:
 					dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
 					break;
 				default:

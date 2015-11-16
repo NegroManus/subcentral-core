@@ -79,7 +79,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(this).add("sourceId", getSourceId()).add("displayName", getDisplayName()).toString();
+		return MoreObjects.toStringHelper(this).add("sourceId", getSiteId()).add("displayName", getDisplayName()).toString();
 	}
 
 	protected UnsupportedOperationException createUnsupportedRecordTypeException(Class<?> unsupportedType) throws UnsupportedOperationException

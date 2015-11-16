@@ -3,7 +3,7 @@ package de.subcentral.mig.process;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SubCentralDbApi
+public class SubCentralDb
 {
 	protected Connection connection;
 

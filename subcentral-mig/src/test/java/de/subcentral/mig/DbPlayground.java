@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.junit.Test;
 
-import de.subcentral.mig.process.SubCentralBoardDbApi;
+import de.subcentral.mig.process.SubCentralBoard;
 
 public class DbPlayground
 {
@@ -15,7 +15,7 @@ public class DbPlayground
 	{
 		try (Connection conn = MigTestUtil.connect())
 		{
-			SubCentralBoardDbApi api = new SubCentralBoardDbApi();
+			SubCentralBoard api = new SubCentralBoard();
 
 			// Post post = api.getFirstPost(36734);
 			// System.out.println(post.getTopic());

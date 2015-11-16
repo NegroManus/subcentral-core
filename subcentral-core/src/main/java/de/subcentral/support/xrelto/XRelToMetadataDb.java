@@ -49,9 +49,9 @@ public class XRelToMetadataDb extends HttpMetadataDb
 	private static final ZoneId TIME_ZONE = ZoneId.of("Europe/Berlin");
 
 	@Override
-	public String getSourceId()
+	public String getSiteId()
 	{
-		return XRelTo.SOURCE_ID;
+		return XRelTo.SITE_ID;
 	}
 
 	@Override

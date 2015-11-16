@@ -2,6 +2,8 @@ package de.subcentral.mig;
 
 import java.nio.file.Path;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
 
@@ -17,7 +19,11 @@ public class MigrationConfig
 	private Path					parsingSettingsFile;
 	private PropertiesConfiguration	environmentSettings;
 	private XMLConfiguration		parsingSettings;
-	// Configure migration config
+
+	// Configure config
+	// Datasource
+	private DataSource				dataSource;
+	// Config
 	private boolean					completeMigration;
 	private ImmutableList<Series>	selectedSeries	= ImmutableList.of();
 	private boolean					migrateSubtitles;
@@ -62,6 +68,16 @@ public class MigrationConfig
 	public void setParsingSettings(XMLConfiguration parsingSettings)
 	{
 		this.parsingSettings = parsingSettings;
+	}
+
+	public DataSource getDataSource()
+	{
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource)
+	{
+		this.dataSource = dataSource;
 	}
 
 	public boolean isCompleteMigration()

@@ -11,7 +11,6 @@ import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
@@ -99,8 +98,6 @@ public abstract class AbstractPageController extends AbstractController
 				}
 				case CANCELLED:
 				{
-					Alert alert = new Alert(AlertType.INFORMATION, "Task " + task.getTitle() + " was cancelled");
-					alert.show();
 					getRootPane().getChildren().clear();
 					break;
 				}

@@ -7,7 +7,7 @@ import java.util.Set;
 public interface MetadataDb
 {
 	// Metadata
-	public String getSourceId();
+	public String getSiteId();
 
 	public String getDisplayName();
 

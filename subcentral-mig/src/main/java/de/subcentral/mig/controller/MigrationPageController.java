@@ -71,6 +71,7 @@ public class MigrationPageController extends AbstractPageController
 			StringBuilder sb = new StringBuilder();
 			sb.append("Migrating ");
 			sb.append(config.getSelectedSeries().size());
+			sb.append(" series");
 			if (config.getMigrateSubtitles())
 			{
 				sb.append(" (including the subtitles)");

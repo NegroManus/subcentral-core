@@ -1,22 +1,35 @@
 package de.subcentral.mig.process;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
+import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
+import de.subcentral.mig.process.SeasonThreadParser.SeasonThreadContent;
+import de.subcentral.mig.process.SubCentralBoard.Post;
 import de.subcentral.mig.repo.MigrationRepo;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 public class MigrationTask extends Task<Void>
 {
-	private final MigrationRepo		repo	= new MigrationRepo();
-	private final MigrationConfig	config;
-	private Connection				conn;
+	private final MigrationRepo			repo					= new MigrationRepo();
+	private final MigrationConfig		config;
+
+	private long						numMigratedSeries;
+	private long						numSeriesToProcess;
+
+	private final MigrateSeriesTask		seriesMigrationTask		= new MigrateSeriesTask();
+	private final ParseSeasonThreadTask	seasonThreadParserTask	= new ParseSeasonThreadTask();
+	private final SeasonThreadParser	seasonThreadParser		= new SeasonThreadParser();
 
 	public MigrationTask(MigrationConfig config)
 	{
@@ -26,47 +39,146 @@ public class MigrationTask extends Task<Void>
 	@Override
 	protected Void call() throws Exception
 	{
-		connect();
-		try
-		{
-			migrateSeries();
-			return null;
-		}
-		finally
-		{
-			disconnect();
-		}
+		updateTitle("Migrating series");
+		migrateSeries();
+		return null;
 	}
 
-	private void connect() throws SQLException
+	private void seriesProcessed()
 	{
-		String url = config.getEnvironmentSettings().getString("sc.db.url");
-		String user = config.getEnvironmentSettings().getString("sc.db.user");
-		String password = config.getEnvironmentSettings().getString("sc.db.password");
-		conn = DriverManager.getConnection(url, user, password);
-	}
-
-	private void disconnect() throws SQLException
-	{
-		if (conn != null)
+		Platform.runLater(() ->
 		{
-			conn.close();
-			conn = null;
-		}
+			numMigratedSeries++;
+			if (numMigratedSeries < numSeriesToProcess)
+			{
+				updateMessage("Migrating series " + (numMigratedSeries + 1) + " / " + numSeriesToProcess);
+			}
+			else
+			{
+				updateMessage("Migration of series finished");
+			}
+			updateProgress(numMigratedSeries, numSeriesToProcess);
+		});
 	}
 
 	private void migrateSeries()
 	{
-		List<Series> seriesToMigrate;
+		List<Series> seriesToProcess;
 		if (config.isCompleteMigration())
 		{
-			seriesToMigrate = ImmutableList.copyOf(config.getSeriesListContent().getSeries());
+			seriesToProcess = ImmutableList.copyOf(config.getSeriesListContent().getSeries());
 		}
 		else
 		{
-			seriesToMigrate = ImmutableList.copyOf(config.getSelectedSeries());
+			seriesToProcess = ImmutableList.copyOf(config.getSelectedSeries());
 		}
+		numSeriesToProcess = seriesToProcess.size();
 
+		int numSeasonsSuccessfulMigrated = seriesToProcess.stream().map(seriesMigrationTask).mapToInt((Boolean success) ->
+		{
+			seriesProcessed();
+			return Boolean.TRUE.equals(success) ? 1 : 0;
+		}).sum();
 	}
 
+	private class MigrateSeriesTask implements Function<Series, Boolean>
+	{
+		@Override
+		public Boolean apply(Series series)
+		{
+			try
+			{
+				List<Season> seasonsDistinctByThreadId = distinctByThreadId(series.getSeasons());
+				List<ParsedSeason> parsedSeasons = seasonsDistinctByThreadId.stream().map(seasonThreadParserTask).collect(Collectors.toList());
+
+				System.out.println("Migrated series: " + series);
+				for (ParsedSeason parsedSeason : parsedSeasons)
+				{
+					System.out.println("Season from series list:");
+					System.out.println(parsedSeason.seasonFromSeriesList);
+					System.out.println("Seasons from season thread:");
+					for (Season seasonFromSeasonThread : parsedSeason.seasonThreadContent.getSeasons())
+					{
+						System.out.println(seasonFromSeasonThread);
+					}
+					System.out.println();
+				}
+				System.out.println();
+				System.out.println();
+
+				return Boolean.TRUE;
+			}
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+				return Boolean.FALSE;
+			}
+		}
+	}
+
+	private class ParseSeasonThreadTask implements Function<Season, ParsedSeason>
+	{
+		@Override
+		public ParsedSeason apply(Season season)
+		{
+			try
+			{
+				Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
+				if (seasonThreadId == null)
+				{
+					throw new IllegalArgumentException("No threadID given for season: " + season);
+				}
+
+				Post post;
+				try (Connection conn = config.getDataSource().getConnection())
+				{
+					SubCentralBoard scBoard = new SubCentralBoard();
+					scBoard.setConnection(conn);
+					post = scBoard.getFirstPost(seasonThreadId);
+				}
+
+				SeasonThreadContent content = seasonThreadParser.parse(post.getTopic(), post.getMessage());
+				return new ParsedSeason(season, content);
+			}
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+				return null;
+			}
+		}
+	}
+
+	private static Integer getThreadId(Season season)
+	{
+		return season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
+	}
+
+	private static List<Season> distinctByThreadId(Iterable<Season> seasons)
+	{
+		// Filter out seasons with same thread id
+		Map<Integer, Integer> threadIds = new HashMap<>();
+		ImmutableList.Builder<Season> builder = ImmutableList.builder();
+		for (Season season : seasons)
+		{
+			Integer threadId = getThreadId(season);
+			if (threadId == null || threadIds.putIfAbsent(threadId, threadId) == null)
+			{
+				builder.add(season);
+			}
+		}
+
+		return builder.build();
+	}
+
+	private class ParsedSeason
+	{
+		private final Season				seasonFromSeriesList;
+		private final SeasonThreadContent	seasonThreadContent;
+
+		public ParsedSeason(Season seasonFromSeriesList, SeasonThreadContent seasonThreadContent)
+		{
+			this.seasonFromSeriesList = seasonFromSeriesList;
+			this.seasonThreadContent = seasonThreadContent;
+		}
+	}
 }

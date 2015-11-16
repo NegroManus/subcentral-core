@@ -61,13 +61,13 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 			String example;
 			switch (param.getValue().getValue().getDomain())
 			{
-			case Addic7edCom.SOURCE_ID:
+			case Addic7edCom.SITE_ID:
 				example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
 				break;
-			case ItalianSubsNet.SOURCE_ID:
+			case ItalianSubsNet.SITE_ID:
 				example = "Parks.And.Recreation.s07e01.sub.itasa";
 				break;
-			case SubCentralDe.SOURCE_ID:
+			case SubCentralDe.SITE_ID:
 				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
 				break;
 			case ReleaseScene.SOURCE_ID:

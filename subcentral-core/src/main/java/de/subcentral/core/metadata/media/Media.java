@@ -49,7 +49,7 @@ public interface Media extends Metadata
 
 	// Property accessors
 	/**
-	 * Normally a media only has a {@link #getSourceId() name} which is in fact its title with some context. The title is only set if it differs from the name (like name: "The Office (UK)", title:
+	 * Normally a media only has a {@link #getSiteId() name} which is in fact its title with some context. The title is only set if it differs from the name (like name: "The Office (UK)", title:
 	 * "The Office").<br>
 	 * In case of numbered media, like an {@link Episode} or a Song, the title may be optional to identify the media.
 	 * 

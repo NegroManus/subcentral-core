@@ -1,27 +1,30 @@
 package de.subcentral.mig.controller;
 
+import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.process.SeriesListParser;
 import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
-import de.subcentral.mig.process.SubCentralBoardDbApi;
-import de.subcentral.mig.process.SubCentralBoardDbApi.Post;
+import de.subcentral.mig.process.SubCentralBoard;
+import de.subcentral.mig.process.SubCentralBoard.Post;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -37,28 +40,33 @@ import javafx.scene.layout.Pane;
 
 public class ConfigurePageController extends AbstractPageController
 {
-	private BooleanBinding		nextButtonDisableBinding;
+	// Model
+
+	private BooleanBinding			nextButtonDisableBinding;
 	// View
 	@FXML
-	private AnchorPane			rootPane;
+	private AnchorPane				rootPane;
 	@FXML
-	private GridPane			contentPane;
+	private GridPane				contentPane;
 
-	private final ToggleGroup	migrationModeToggleGrp	= new ToggleGroup();
+	private final ToggleGroup		migrationModeToggleGrp	= new ToggleGroup();
 	@FXML
-	private RadioButton			completeMigrationRadioBtn;
+	private RadioButton				completeMigrationRadioBtn;
 	@FXML
-	private RadioButton			selectiveMigrationRadioBtn;
+	private RadioButton				selectiveMigrationRadioBtn;
 	@FXML
-	private GridPane			selectiveMigrationGridPane;
+	private GridPane				selectiveMigrationGridPane;
 	@FXML
-	private TextField			seriesSearchTxtFld;
+	private TextField				seriesSearchTxtFld;
 	@FXML
-	private Label				seriesListTitleLbl;
+	private Label					seriesListTitleLbl;
 	@FXML
-	private ListView<Series>	seriesListView;
+	private ListView<Series>		seriesListView;
 	@FXML
-	private CheckBox			migrateSubtitlesCheckBox;
+	private CheckBox				migrateSubtitlesCheckBox;
+
+	// Control
+	private LoadConfigurePageTask	loadTask;
 
 	public ConfigurePageController(MainController mainController)
 	{
@@ -170,74 +178,17 @@ public class ConfigurePageController extends AbstractPageController
 	@Override
 	public void onEntering()
 	{
-		Task<SeriesListContent> task = new Task<SeriesListContent>()
-		{
-			@Override
-			protected SeriesListContent call() throws Exception
-			{
-				updateTitle("Populating view");
-				updateMessage("Reading settings ...");
+		loadTask = new LoadConfigurePageTask();
 
-				PropertiesConfiguration envSettings = new PropertiesConfiguration();
-				FileHandler envSettingsFileHandler = new FileHandler(envSettings);
-				envSettingsFileHandler.load(Files.newInputStream(config.getEnvironmentSettingsFile()), Charset.forName("UTF-8").name());
-				config.setEnvironmentSettings(envSettings);
-
-				XMLConfiguration parsingSettings = new XMLConfiguration();
-				FileHandler parsingSettingsFileHandler = new FileHandler(envSettings);
-				parsingSettingsFileHandler.load(Files.newInputStream(config.getParsingSettingsFile()), Charset.forName("UTF-8").name());
-				config.setParsingSettings(parsingSettings);
-
-				updateMessage("Retrieving series list ...");
-
-				String url = config.getEnvironmentSettings().getString("sc.db.url");
-				String user = config.getEnvironmentSettings().getString("sc.db.user");
-				String password = config.getEnvironmentSettings().getString("sc.db.password");
-				try (Connection conn = DriverManager.getConnection(url, user, password))
-				{
-					int seriesListPostId = config.getEnvironmentSettings().getInt("sc.serieslist.postid");
-					SubCentralBoardDbApi boardApi = new SubCentralBoardDbApi();
-					boardApi.setConnection(conn);
-					Post seriesListPost = boardApi.getPost(seriesListPostId);
-					String seriesListPostContent = seriesListPost.getMessage();
-					SeriesListParser parser = new SeriesListParser();
-					SeriesListContent seriesListContent = parser.parsePost(seriesListPostContent);
-
-					return seriesListContent;
-				}
-			}
-		};
-
-		task.setOnSucceeded((WorkerStateEvent evt) ->
-		{
-			SeriesListContent seriesListContent = task.getValue();
-			config.setSeriesListContent(seriesListContent);
-			seriesListView.getItems().addAll(seriesListContent.getSeries());
-			// Configure view according to config
-			if (config.isCompleteMigration())
-			{
-				migrationModeToggleGrp.selectToggle(completeMigrationRadioBtn);
-			}
-			if (!config.getSelectedSeries().isEmpty())
-			{
-				for (int i = 0; i < seriesListView.getItems().size(); i++)
-				{
-					Series series = seriesListView.getItems().get(i);
-					if (config.getSelectedSeries().contains(series))
-					{
-						seriesListView.getSelectionModel().select(i);
-					}
-				}
-			}
-			migrateSubtitlesCheckBox.setSelected(config.getMigrateSubtitles());
-		});
-
-		executeBlockingTask(task);
+		executeBlockingTask(loadTask);
 	}
 
 	@Override
 	public void onExiting()
 	{
+		// Cancel loadTask if still running
+		loadTask.cancel(true);
+
 		// Store config
 		config.setCompleteMigration(migrationModeToggleGrp.getSelectedToggle() == completeMigrationRadioBtn);
 		config.setSelectedSeries(ImmutableList.copyOf(seriesListView.getSelectionModel().getSelectedItems()));
@@ -260,4 +211,104 @@ public class ConfigurePageController extends AbstractPageController
 
 	}
 
+	private class LoadConfigurePageTask extends Task<Void>
+	{
+		@Override
+		protected Void call() throws Exception
+		{
+			updateTitle("Loading data for page \"" + ConfigurePageController.this.getTitle() + "\"");
+
+			updateMessage("Reading settings ...");
+			loadSettings();
+
+			updateMessage("Connecting to database ...");
+			createDateSource();
+
+			updateMessage("Retrieving series list ...");
+			loadSeriesListContent();
+
+			return null;
+		}
+
+		private void loadSettings() throws ConfigurationException, IOException
+		{
+			loadEnvironmentSettings();
+			loadParsingSettings();
+		}
+
+		private void loadEnvironmentSettings() throws ConfigurationException, IOException
+		{
+			PropertiesConfiguration settings = new PropertiesConfiguration();
+			FileHandler fileHandler = new FileHandler(settings);
+			fileHandler.load(Files.newInputStream(config.getEnvironmentSettingsFile()), Charset.forName("UTF-8").name());
+			config.setEnvironmentSettings(settings);
+		}
+
+		private void loadParsingSettings() throws ConfigurationException, IOException
+		{
+			XMLConfiguration settings = new XMLConfiguration();
+			FileHandler fileHandler = new FileHandler(settings);
+			fileHandler.load(Files.newInputStream(config.getParsingSettingsFile()), Charset.forName("UTF-8").name());
+			config.setParsingSettings(settings);
+		}
+
+		private void createDateSource() throws PropertyVetoException, SQLException
+		{
+			String driverClass = com.mysql.jdbc.Driver.class.getName();
+			String url = config.getEnvironmentSettings().getString("sc.db.url");
+			String user = config.getEnvironmentSettings().getString("sc.db.user");
+			String password = config.getEnvironmentSettings().getString("sc.db.password");
+
+			ComboPooledDataSource cpds = new ComboPooledDataSource();
+			cpds.setDriverClass(driverClass); // loads the jdbc driver
+			cpds.setJdbcUrl(url);
+			cpds.setUser(user);
+			cpds.setPassword(password);
+
+			config.setDataSource(cpds);
+		}
+
+		private void loadSeriesListContent() throws SQLException
+		{
+			int seriesListPostId = config.getEnvironmentSettings().getInt("sc.serieslist.postid");
+
+			Post seriesListPost;
+			try (Connection conn = config.getDataSource().getConnection())
+			{
+				SubCentralBoard boardApi = new SubCentralBoard();
+				boardApi.setConnection(conn);
+				seriesListPost = boardApi.getPost(seriesListPostId);
+			}
+			String seriesListPostContent = seriesListPost.getMessage();
+			SeriesListParser parser = new SeriesListParser();
+			SeriesListContent seriesListContent = parser.parsePost(seriesListPostContent);
+
+			config.setSeriesListContent(seriesListContent);
+		}
+
+		@Override
+		protected void succeeded()
+		{
+			SeriesListContent seriesListContent = config.getSeriesListContent();
+
+			seriesListView.getItems().setAll(seriesListContent.getSeries());
+			// Configure view according to config
+			if (config.isCompleteMigration())
+			{
+				migrationModeToggleGrp.selectToggle(completeMigrationRadioBtn);
+			}
+			if (!config.getSelectedSeries().isEmpty())
+			{
+				for (int i = 0; i < seriesListView.getItems().size(); i++)
+				{
+					Series series = seriesListView.getItems().get(i);
+					if (config.getSelectedSeries().contains(series))
+					{
+						seriesListView.getSelectionModel().select(i);
+					}
+				}
+			}
+			migrateSubtitlesCheckBox.setSelected(config.getMigrateSubtitles());
+		}
+	}
 }
