@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
 import de.subcentral.mig.process.SeasonThreadParser.SeasonThreadContent;
@@ -112,6 +113,11 @@ public class MigrationTask extends Task<Void>
 						for (Episode epi : seasonFromSeasonThread.getEpisodes())
 						{
 							System.out.println(epi);
+						}
+						System.out.println("Subtitles from season thread:");
+						for (SubtitleFile subFile : parsedSeason.seasonThreadContent.getSubtitleFiles())
+						{
+							System.out.println(subFile);
 						}
 					}
 					System.out.println();

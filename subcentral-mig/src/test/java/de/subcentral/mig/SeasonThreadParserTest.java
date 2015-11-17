@@ -47,7 +47,7 @@ public class SeasonThreadParserTest
 
 		System.out.println();
 		System.out.println("Subs:");
-		for (SubtitleFile subAdj : content.getSubtitleAdjustments())
+		for (SubtitleFile subAdj : content.getSubtitleFiles())
 		{
 			System.out.println(subAdj);
 		}

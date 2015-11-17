@@ -71,7 +71,7 @@ public class SubCentralSubMan extends SubCentralDb
 				Date end = convertYearToDate(series.getFinaleDate());
 				stmt.setDate(5, end);
 				stmt.setString(6, networkId);
-				String logo = getFirstImage(series, Migration.IMG_TYPE_SERIES_LOGO);
+				String logo = getFirstImage(series, Migration.SERIES_IMG_TYPE_LOGO);
 				stmt.setString(7, logo);
 
 				int affectedRows = stmt.executeUpdate();

@@ -143,15 +143,17 @@ public class SeasonThreadParser
 
 	public SeasonThreadContent parse(String postTitle, String postContent)
 	{
-		// Title
 		Data data = new Data();
-		parsePostTitle(data, postTitle);
+		data.postTitle = postTitle;
+		data.postContent = Jsoup.parse(postContent, SubCentralHttpApi.getHost().toExternalForm());
+
+		// Title
+		parsePostTitle(data);
 
 		// Content
-		Document content = Jsoup.parse(postContent, SubCentralHttpApi.getHost().toExternalForm());
-		parseSeasonHeader(data, content);
-		parseDescription(data, content);
-		parseSubtitleTable(data, postTitle, content);
+		parseSeasonHeader(data);
+		parseDescription(data);
+		parseSubtitleTable(data);
 
 		cleanupData(data);
 
@@ -172,9 +174,9 @@ public class SeasonThreadParser
 	 * </pre>
 	 * 
 	 */
-	private void parsePostTitle(Data data, String postTitle)
+	private void parsePostTitle(Data data)
 	{
-		Matcher titleMatcher = PATTERN_POST_TITLE_NUMBERED_SEASON.matcher(postTitle);
+		Matcher titleMatcher = PATTERN_POST_TITLE_NUMBERED_SEASON.matcher(data.postTitle);
 		if (titleMatcher.matches())
 		{
 			Series series = new Series(titleMatcher.group(1));
@@ -243,15 +245,15 @@ public class SeasonThreadParser
 	 * @param season
 	 * @param postContent
 	 */
-	private static void parseSeasonHeader(Data data, Document postContent)
+	private static void parseSeasonHeader(Data data)
 	{
-		Element headerImg = postContent.select("div.tbild > img").first();
+		Element headerImg = data.postContent.select("div.tbild > img").first();
 		if (headerImg != null)
 		{
 			String headerUrl = headerImg.absUrl("src");
 			for (Season season : data.seasons.keySet())
 			{
-				season.getImages().put(Migration.IMG_TYPE_SEASON_HEADER, headerUrl);
+				season.getImages().put(Migration.SEASON_IMG_TYPE_HEADER, headerUrl);
 			}
 		}
 	}
@@ -276,9 +278,9 @@ public class SeasonThreadParser
 	 * @param season
 	 * @param postContent
 	 */
-	private static void parseDescription(Data data, Document postContent)
+	private static void parseDescription(Data data)
 	{
-		Elements descriptionDivs = postContent.select("div.inhalt, div.websites");
+		Elements descriptionDivs = data.postContent.select("div.inhalt, div.websites");
 		StringJoiner joiner = new StringJoiner("\n");
 		for (Element div : descriptionDivs)
 		{
@@ -294,18 +296,22 @@ public class SeasonThreadParser
 		}
 	}
 
-	private static void parseSubtitleTable(Data data, String postTitle, Document postContent)
+	private static void parseSubtitleTable(Data data)
 	{
-		Elements tables = postContent.getElementsByTag("table");
+		Elements tables = data.postContent.getElementsByTag("table");
 		for (Element table : tables)
 		{
+			data.currentTableNum++;
 			try
 			{
 				parseStandardTable(data, table);
 			}
 			catch (Exception e)
 			{
-				log.warn("Exception while trying to parse subtitle table in post (title: " + postTitle + ") as standard table: {}. Parsing as non-standard table", e.toString());
+				log.warn("Exception while trying to parse subtitle table as standard table. Parsing as non-standard table (post title: \"{}\", table number: {}, exception: {})",
+						data.postTitle,
+						data.currentTableNum,
+						e.toString());
 				parseNonStandardTable(data, table);
 			}
 		}
@@ -349,7 +355,7 @@ public class SeasonThreadParser
 			rows.add(tdElems);
 		}
 
-		cleanupTable(rows, columns.length);
+		cleanupTable(data, rows, columns.length);
 
 		for (List<Element> tdElems : rows)
 		{
@@ -369,7 +375,7 @@ public class SeasonThreadParser
 		return ColumnType.UNKNOWN;
 	}
 
-	protected static void cleanupTable(List<List<Element>> rows, int numColumns)
+	private static void cleanupTable(Data data, List<List<Element>> rows, int numColumns)
 	{
 		// Stores for each columnIndex the current Element which should span several rows
 		Element[] rowSpanCells = new Element[numColumns];
@@ -380,6 +386,11 @@ public class SeasonThreadParser
 		while (rowIter.hasNext())
 		{
 			List<Element> row = rowIter.next();
+			if (row.isEmpty())
+			{
+				log.warn("Skipping empty row (post title: \"{}\", table number: {})", data.postTitle, data.currentTableNum);
+				continue;
+			}
 
 			// Cleanup rowspan
 			for (int i = 0; i < numColumns; i++)
@@ -435,11 +446,15 @@ public class SeasonThreadParser
 				colIndex++;
 			}
 
-			if (row.size() != numColumns)
+			if (row.size() < numColumns)
 			{
-				throw new IllegalArgumentException("Row does not have the correct number of columns (correct: " + numColumns + ", has: " + row.size() + "). row: " + row);
+				log.warn("Row does not have the expected number of columns (expected: {}, actual: {}; post title: \"{}\", table number: {}, columns: {})",
+						numColumns,
+						row.size(),
+						data.postTitle,
+						data.currentTableNum,
+						row);
 			}
-
 		}
 	}
 
@@ -775,10 +790,10 @@ public class SeasonThreadParser
 		switch (colType)
 		{
 			case GERMAN_SUBS:
-				language = Migration.LANGUAGE_GERMAN;
+				language = Migration.SUBTITLE_LANGUAGE_GERMAN;
 				break;
 			case ENGLISH_SUBS:
-				language = Migration.LANGUAGE_ENGLISH;
+				language = Migration.SUBTITLE_LANGUAGE_ENGLISH;
 				break;
 			default:
 				language = null;
@@ -1076,7 +1091,7 @@ public class SeasonThreadParser
 			{
 				if (sub.getSource() == null)
 				{
-					if (Migration.LANGUAGE_GERMAN.equals(sub.getLanguage()))
+					if (Migration.SUBTITLE_LANGUAGE_GERMAN.equals(sub.getLanguage()))
 					{
 						sub.setSource(SubCentralDe.SITE_ID);
 					}
@@ -1116,12 +1131,12 @@ public class SeasonThreadParser
 	public static final class SeasonThreadContent
 	{
 		private final ImmutableList<Season>			seasons;
-		private final ImmutableList<SubtitleFile>	subtitleAdjustments;
+		private final ImmutableList<SubtitleFile>	subtitleFiles;
 
 		public SeasonThreadContent(Iterable<Season> seasons, Iterable<SubtitleFile> subtitleAdjustments)
 		{
 			this.seasons = ImmutableList.copyOf(seasons);
-			this.subtitleAdjustments = ImmutableList.copyOf(subtitleAdjustments);
+			this.subtitleFiles = ImmutableList.copyOf(subtitleAdjustments);
 		}
 
 		public ImmutableList<Season> getSeasons()
@@ -1129,14 +1144,22 @@ public class SeasonThreadParser
 			return seasons;
 		}
 
-		public ImmutableList<SubtitleFile> getSubtitleAdjustments()
+		public ImmutableList<SubtitleFile> getSubtitleFiles()
 		{
-			return subtitleAdjustments;
+			return subtitleFiles;
 		}
 	}
 
 	private static final class Data
 	{
+		// input
+		private String								postTitle;
+		private Document							postContent;
+
+		// state
+		private int									currentTableNum;
+
+		// output
 		private Series								series		= new Series(Migration.UNKNOWN_SERIES);
 		private final SortedMap<Season, Season>		seasons		= new TreeMap<>();
 		private final SortedMap<Episode, Episode>	episodes	= new TreeMap<>();

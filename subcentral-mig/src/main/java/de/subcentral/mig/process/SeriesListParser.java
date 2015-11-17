@@ -94,7 +94,7 @@ public class SeriesListParser
 				{
 					log.warn("Couldn't find a board ID for series {}. Content of series cell: {}", series.getName(), seriesCell);
 				}
-				series.getImages().put(Migration.IMG_TYPE_SERIES_LOGO, seriesCell.getElementsByTag("img").attr("src"));
+				series.getImages().put(Migration.SERIES_IMG_TYPE_LOGO, seriesCell.getElementsByTag("img").attr("src"));
 
 				/**
 				 * Years:<br/>

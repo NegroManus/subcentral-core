@@ -5,6 +5,9 @@ import java.io.Reader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.util.StringUtil;
 
@@ -13,7 +16,7 @@ public class SubCentralBoard extends SubCentralDb
 	public Post getPost(int postId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT subject, message FROM wbb1_1_post WHERE postID=?"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT postID, subject, message FROM wbb1_1_post WHERE postID=?"))
 		{
 			stmt.setInt(1, postId);
 			try (ResultSet rs = stmt.executeQuery())
@@ -21,8 +24,9 @@ public class SubCentralBoard extends SubCentralDb
 				if (rs.next())
 				{
 					Post post = new Post();
-					post.topic = rs.getString(1);
-					Reader msgReader = rs.getCharacterStream(2);
+					post.id = rs.getInt(1);
+					post.topic = rs.getString(2);
+					Reader msgReader = rs.getCharacterStream(3);
 					post.message = StringUtil.readerToString(msgReader);
 					return post;
 				}
@@ -46,8 +50,9 @@ public class SubCentralBoard extends SubCentralDb
 				if (rs.next())
 				{
 					Post post = new Post();
-					post.topic = rs.getString(1);
-					Reader msgReader = rs.getCharacterStream(2);
+					post.id = rs.getInt(1);
+					post.topic = rs.getString(2);
+					Reader msgReader = rs.getCharacterStream(3);
 					post.message = StringUtil.readerToString(msgReader);
 					return post;
 				}
@@ -81,10 +86,76 @@ public class SubCentralBoard extends SubCentralDb
 		return null;
 	}
 
+	public List<Thread> getChildThreadsByPrefix(int boardId, String prefix) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=? AND prefix=?"))
+		{
+			stmt.setInt(1, boardId);
+			stmt.setString(2, prefix);
+			ImmutableList.Builder<Thread> list = ImmutableList.builder();
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				while (rs.next())
+				{
+					Thread thread = new Thread();
+					thread.id = rs.getInt(1);
+					thread.topic = rs.getString(2);
+					list.add(thread);
+				}
+			}
+			return list.build();
+		}
+	}
+
+	public static class Board
+	{
+		private int		id;
+		private String	title;
+		private String	description;
+
+		public int getId()
+		{
+			return id;
+		}
+
+		public String getTitle()
+		{
+			return title;
+		}
+
+		public String getDescription()
+		{
+			return description;
+		}
+	}
+
+	public static class Thread
+	{
+		private int		id;
+		private String	topic;
+
+		public int getId()
+		{
+			return id;
+		}
+
+		public String getTopic()
+		{
+			return topic;
+		}
+	}
+
 	public static class Post
 	{
+		private int		id;
 		private String	topic;
 		private String	message;
+
+		public int getId()
+		{
+			return id;
+		}
 
 		public String getTopic()
 		{
