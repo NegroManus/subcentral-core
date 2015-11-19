@@ -1,16 +1,29 @@
 package de.subcentral.mig;
 
+import java.beans.PropertyVetoException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.io.FileHandler;
 
 import com.google.common.collect.ImmutableList;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.DataSources;
 
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.mig.process.SeriesListParser;
 import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
+import de.subcentral.mig.process.SubCentralBoard;
+import de.subcentral.mig.process.SubCentralBoard.Post;
 
 public class MigrationConfig
 {
@@ -118,5 +131,66 @@ public class MigrationConfig
 	public void setSeriesListContent(SeriesListContent seriesListContent)
 	{
 		this.seriesListContent = seriesListContent;
+	}
+
+	public void loadSettings() throws ConfigurationException, IOException
+	{
+		loadEnvironmentSettings();
+		loadParsingSettings();
+	}
+
+	public void loadEnvironmentSettings() throws ConfigurationException, IOException
+	{
+		PropertiesConfiguration settings = new PropertiesConfiguration();
+		FileHandler fileHandler = new FileHandler(settings);
+		fileHandler.load(Files.newInputStream(environmentSettingsFile), Charset.forName("UTF-8").name());
+		setEnvironmentSettings(settings);
+	}
+
+	public void loadParsingSettings() throws ConfigurationException, IOException
+	{
+		XMLConfiguration settings = new XMLConfiguration();
+		FileHandler fileHandler = new FileHandler(settings);
+		fileHandler.load(Files.newInputStream(parsingSettingsFile), Charset.forName("UTF-8").name());
+		setParsingSettings(settings);
+	}
+
+	public void createDateSource() throws PropertyVetoException, SQLException
+	{
+		String driverClass = com.mysql.jdbc.Driver.class.getName();
+		String url = environmentSettings.getString("sc.db.url");
+		String user = environmentSettings.getString("sc.db.user");
+		String password = environmentSettings.getString("sc.db.password");
+
+		if (dataSource != null)
+		{
+			DataSources.destroy(dataSource);
+		}
+
+		ComboPooledDataSource cpds = new ComboPooledDataSource();
+		cpds.setDriverClass(driverClass); // loads the jdbc driver
+		cpds.setJdbcUrl(url);
+		cpds.setUser(user);
+		cpds.setPassword(password);
+
+		setDataSource(cpds);
+	}
+
+	public void loadSeriesListContent() throws SQLException
+	{
+		int seriesListPostId = environmentSettings.getInt("sc.serieslist.postid");
+
+		Post seriesListPost;
+		try (Connection conn = dataSource.getConnection())
+		{
+			SubCentralBoard boardApi = new SubCentralBoard();
+			boardApi.setConnection(conn);
+			seriesListPost = boardApi.getPost(seriesListPostId);
+		}
+		String seriesListPostContent = seriesListPost.getMessage();
+		SeriesListParser parser = new SeriesListParser();
+		SeriesListContent seriesListContent = parser.parsePost(seriesListPostContent);
+
+		setSeriesListContent(seriesListContent);
 	}
 }

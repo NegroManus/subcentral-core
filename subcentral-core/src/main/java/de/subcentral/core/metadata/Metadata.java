@@ -35,4 +35,20 @@ public interface Metadata extends Serializable
 	{
 		return (List<T>) getAttributes().get(key);
 	}
+
+	public default boolean addAttributeValue(String key, Object value)
+	{
+		return getAttributes().put(key, value);
+	}
+
+	public default boolean addAttributeValues(String key, Iterable<? extends Object> values)
+	{
+		return getAttributes().putAll(key, values);
+	}
+
+	@SuppressWarnings("unchecked")
+	public default <T> List<T> setAttributeValues(String key, Iterable<T> values)
+	{
+		return (List<T>) getAttributes().replaceValues(key, values);
+	}
 }
