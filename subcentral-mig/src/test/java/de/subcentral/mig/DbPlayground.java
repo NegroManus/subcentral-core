@@ -17,7 +17,7 @@ public class DbPlayground
 		{
 			SubCentralBoard api = new SubCentralBoard();
 
-			// Post post = api.getFirstPost(36734);
+			// WbbPost post = api.getFirstPost(36734);
 			// System.out.println(post.getTopic());
 			// System.out.println(post.getMessage());
 

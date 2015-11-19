@@ -33,7 +33,7 @@ import de.subcentral.support.subcentralde.SubCentralHttpApi;
 public class SeriesListParser
 {
 	private static final Logger	log	= LogManager.getLogger(SeriesListParser.class);
-	private static final String	URL	= "http://subcentral.de/index.php?page=Thread&postID=29261#post29261";
+	private static final String	URL	= "http://subcentral.de/index.php?page=WbbThread&postID=29261#post29261";
 
 	public SeriesListContent getAndParse() throws IOException
 	{
@@ -79,7 +79,7 @@ public class SeriesListParser
 				 * 
 				 * <pre>
 				 * <td class="vorschau">10 Things I Hate About You
-				 * <a href="index.php?page=Board&boardID=427" ><img src="bilder/sc_logo_10things.jpg" height="35" width="220" /></a></td>
+				 * <a href="index.php?page=WbbBoard&boardID=427" ><img src="bilder/sc_logo_10things.jpg" height="35" width="220" /></a></td>
 				 * </pre>
 				 */
 				Element seriesCell = iter.next();
@@ -124,7 +124,7 @@ public class SeriesListParser
 				 * Seasons:<br/>
 				 * 
 				 * <pre>
-				 * <td>(<a href="index.php?page=Thread&threadID=10476" >1</a>)</td>
+				 * <td>(<a href="index.php?page=WbbThread&threadID=10476" >1</a>)</td>
 				 * </pre>
 				 */
 				Element seasonsCell = iter.next();

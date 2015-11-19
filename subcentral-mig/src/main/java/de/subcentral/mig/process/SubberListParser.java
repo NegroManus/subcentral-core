@@ -22,7 +22,7 @@ import javafx.concurrent.Task;
 public class SubberListParser extends Task<SubberListContent>
 {
 	private static final Logger	log	= LogManager.getLogger(SubberListParser.class);
-	private static final String	URL	= "http://subcentral.de/index.php?page=Thread&postID=33900#post33900";
+	private static final String	URL	= "http://subcentral.de/index.php?page=WbbThread&postID=33900#post33900";
 
 	@Override
 	protected SubberListContent call() throws IOException

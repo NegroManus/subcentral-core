@@ -91,19 +91,19 @@ public class SeasonThreadParser
 
 	/**
 	 * <pre>
-	 * 		<a href="http://www.subcentral.de/index.php?page=Attachment&attachmentID=46749">POW4</a>
+	 * 		<a href="http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=46749">POW4</a>
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR			= Pattern.compile("<a.*?page=Attachment.*?attachmentID=(\\d+).*?>(.*?)</a>");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR			= Pattern.compile("<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>(.*?)</a>");
 	/**
 	 * <pre>
-	 * 	[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65018']IMMERSE[/url]
+	 * 	[url='http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=65018']IMMERSE[/url]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_ATTACHMENT_BBCODE			= Pattern.compile("\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
-	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED	= Pattern.compile("([*])?<a.*?page=Attachment.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
+	private static final Pattern					PATTERN_ATTACHMENT_BBCODE			= Pattern.compile("\\[url=.*?page=WcfAttachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED	= Pattern.compile("([*])?<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
 	private static final Pattern					PATTERN_ATTACHMENT_BBCODE_MARKED	= Pattern
-			.compile("([*])?\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\]([*])?(.*?)([*])?\\[/url\\]([*])?");
+			.compile("([*])?\\[url=.*?page=WcfAttachment.*?attachmentID=(\\d+).*?\\]([*])?(.*?)([*])?\\[/url\\]([*])?");
 
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
 	{
@@ -123,7 +123,7 @@ public class SeasonThreadParser
 
 	public SeasonThreadContent getAndParse(int threadId, SubCentralApi api) throws IOException
 	{
-		Document doc = api.getContent("index.php?page=Thread&threadID=" + threadId);
+		Document doc = api.getContent("index.php?page=WbbThread&threadID=" + threadId);
 		return parse(doc);
 	}
 
@@ -1058,7 +1058,7 @@ public class SeasonThreadParser
 		// a) If the SubtitleAdjustments are equal -> remove all but the first (happens due to colspan)
 		// b) If they have a different Subtitle (different Episode)
 		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
-		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
+		// Map<AttachmentID->first SubtitleAdjustment with that WcfAttachment-ID>
 		Map<Integer, SubtitleFile> mapAttachmentsToSubs = new HashMap<>();
 		ListIterator<SubtitleFile> subAdjIter = data.subtitles.listIterator();
 		while (subAdjIter.hasNext())

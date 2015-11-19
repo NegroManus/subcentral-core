@@ -13,20 +13,68 @@ import de.subcentral.core.util.StringUtil;
 
 public class SubCentralBoard extends SubCentralDb
 {
-	public Post getPost(int postId) throws SQLException
+	public WbbBoard getBoard(int boardId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT postID, subject, message FROM wbb1_1_post WHERE postID=?"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT title, description FROM wbb1_1_board WHERE boardID=?"))
+		{
+			stmt.setInt(1, boardId);
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				if (rs.next())
+				{
+					WbbBoard board = new WbbBoard();
+					board.id = boardId;
+					board.title = rs.getString(1);
+					Reader descriptionReader = rs.getCharacterStream(2);
+					board.description = StringUtil.readerToString(descriptionReader);
+					return board;
+				}
+			}
+			catch (IOException e)
+			{
+				throw new SQLException(e);
+			}
+			return null;
+		}
+	}
+
+	public WbbThread getThread(int threadId) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, topic, prefix FROM wbb1_1_thread WHERE threadID=?"))
+		{
+			stmt.setInt(1, threadId);
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				if (rs.next())
+				{
+					WbbThread thread = new WbbThread();
+					thread.id = threadId;
+					thread.boardId = rs.getInt(1);
+					thread.topic = rs.getString(2);
+					thread.prefix = rs.getString(3);
+					return thread;
+				}
+			}
+			return null;
+		}
+	}
+
+	public WbbPost getPost(int postId) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT subject, message FROM wbb1_1_post WHERE postID=?"))
 		{
 			stmt.setInt(1, postId);
 			try (ResultSet rs = stmt.executeQuery())
 			{
 				if (rs.next())
 				{
-					Post post = new Post();
-					post.id = rs.getInt(1);
-					post.topic = rs.getString(2);
-					Reader msgReader = rs.getCharacterStream(3);
+					WbbPost post = new WbbPost();
+					post.id = postId;
+					post.topic = rs.getString(1);
+					Reader msgReader = rs.getCharacterStream(2);
 					post.message = StringUtil.readerToString(msgReader);
 					return post;
 				}
@@ -39,7 +87,7 @@ public class SubCentralBoard extends SubCentralDb
 		}
 	}
 
-	public Post getFirstPost(int threadId) throws SQLException
+	public WbbPost getFirstPost(int threadId) throws SQLException
 	{
 		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID"))
@@ -49,7 +97,7 @@ public class SubCentralBoard extends SubCentralDb
 			{
 				if (rs.next())
 				{
-					Post post = new Post();
+					WbbPost post = new WbbPost();
 					post.id = rs.getInt(1);
 					post.topic = rs.getString(2);
 					Reader msgReader = rs.getCharacterStream(3);
@@ -65,7 +113,7 @@ public class SubCentralBoard extends SubCentralDb
 		}
 	}
 
-	public Attachment getAttachment(int attachmentId) throws SQLException
+	public WcfAttachment getAttachment(int attachmentId) throws SQLException
 	{
 		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT attachmentName, attachmentSize FROM wcf1_attachment WHERE attachmentID=?"))
@@ -75,7 +123,7 @@ public class SubCentralBoard extends SubCentralDb
 			{
 				if (rs.next())
 				{
-					Attachment attachment = new Attachment();
+					WcfAttachment attachment = new WcfAttachment();
 					attachment.id = attachmentId;
 					attachment.name = rs.getString(1);
 					attachment.size = rs.getInt(2);
@@ -86,21 +134,22 @@ public class SubCentralBoard extends SubCentralDb
 		return null;
 	}
 
-	public List<Thread> getChildThreadsByPrefix(int boardId, String prefix) throws SQLException
+	public List<WbbThread> getThreadsByPrefix(String prefix) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=? AND prefix=?"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, boardID, topic FROM wbb1_1_thread WHERE prefix=?"))
 		{
-			stmt.setInt(1, boardId);
-			stmt.setString(2, prefix);
-			ImmutableList.Builder<Thread> list = ImmutableList.builder();
+			stmt.setString(1, prefix);
+			ImmutableList.Builder<WbbThread> list = ImmutableList.builder();
 			try (ResultSet rs = stmt.executeQuery())
 			{
 				while (rs.next())
 				{
-					Thread thread = new Thread();
+					WbbThread thread = new WbbThread();
 					thread.id = rs.getInt(1);
-					thread.topic = rs.getString(2);
+					thread.boardId = rs.getInt(2);
+					thread.topic = rs.getString(3);
+					thread.prefix = prefix;
 					list.add(thread);
 				}
 			}
@@ -108,7 +157,7 @@ public class SubCentralBoard extends SubCentralDb
 		}
 	}
 
-	public static class Board
+	public static class WbbBoard
 	{
 		private int		id;
 		private String	title;
@@ -130,23 +179,35 @@ public class SubCentralBoard extends SubCentralDb
 		}
 	}
 
-	public static class Thread
+	public static class WbbThread
 	{
 		private int		id;
+		private int		boardId;
 		private String	topic;
+		private String	prefix;
 
 		public int getId()
 		{
 			return id;
 		}
 
+		public int getBoardId()
+		{
+			return boardId;
+		}
+
 		public String getTopic()
 		{
 			return topic;
 		}
+
+		public String getPrefix()
+		{
+			return prefix;
+		}
 	}
 
-	public static class Post
+	public static class WbbPost
 	{
 		private int		id;
 		private String	topic;
@@ -168,7 +229,7 @@ public class SubCentralBoard extends SubCentralDb
 		}
 	}
 
-	public static class Attachment
+	public static class WcfAttachment
 	{
 		private int		id;
 		private String	name;

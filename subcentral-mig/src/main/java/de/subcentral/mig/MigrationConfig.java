@@ -23,7 +23,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.process.SeriesListParser;
 import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
 import de.subcentral.mig.process.SubCentralBoard;
-import de.subcentral.mig.process.SubCentralBoard.Post;
+import de.subcentral.mig.process.SubCentralBoard.WbbPost;
 
 public class MigrationConfig
 {
@@ -180,7 +180,7 @@ public class MigrationConfig
 	{
 		int seriesListPostId = environmentSettings.getInt("sc.serieslist.postid");
 
-		Post seriesListPost;
+		WbbPost seriesListPost;
 		try (Connection conn = dataSource.getConnection())
 		{
 			SubCentralBoard boardApi = new SubCentralBoard();

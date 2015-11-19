@@ -20,7 +20,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
 import de.subcentral.mig.process.SeasonThreadParser.SeasonThreadContent;
-import de.subcentral.mig.process.SubCentralBoard.Post;
+import de.subcentral.mig.process.SubCentralBoard.WbbPost;
 import de.subcentral.mig.repo.MigrationRepo;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -153,7 +153,7 @@ public class MigrationTask extends Task<Void>
 					throw new IllegalArgumentException("No threadID given for season: " + season);
 				}
 
-				Post post;
+				WbbPost post;
 				try (Connection conn = config.getDataSource().getConnection())
 				{
 					SubCentralBoard scBoard = new SubCentralBoard();
@@ -202,7 +202,7 @@ public class MigrationTask extends Task<Void>
 	{
 		if (Thread.interrupted())
 		{
-			throw new CancellationException("Thread " + Thread.currentThread() + " was interrupted");
+			throw new CancellationException("WbbThread " + Thread.currentThread() + " was interrupted");
 		}
 	}
 

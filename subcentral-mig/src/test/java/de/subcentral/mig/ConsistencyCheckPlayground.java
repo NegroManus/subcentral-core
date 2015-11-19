@@ -6,19 +6,19 @@ import org.junit.Test;
 
 import com.google.common.io.Resources;
 
-import de.subcentral.mig.check.SanityChecker;
+import de.subcentral.mig.check.ConsistencyChecker;
 
-public class SanityCheckPlayground
+public class ConsistencyCheckPlayground
 {
 	@Test
 	public void testSanityCheck() throws Exception
 	{
 		MigrationConfig cfg = new MigrationConfig();
-		cfg.setEnvironmentSettingsFile(Paths.get(Resources.getResource(SanityCheckPlayground.class, "/de/subcentral/mig/migration-env-settings.properties").toURI()));
+		cfg.setEnvironmentSettingsFile(Paths.get(Resources.getResource(ConsistencyCheckPlayground.class, "/de/subcentral/mig/migration-env-settings.properties").toURI()));
 		cfg.loadEnvironmentSettings();
 		cfg.createDateSource();
 
-		SanityChecker checker = new SanityChecker(cfg);
+		ConsistencyChecker checker = new ConsistencyChecker(cfg);
 		checker.check();
 	}
 }
