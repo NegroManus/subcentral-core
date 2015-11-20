@@ -1,9 +1,9 @@
-package de.subcentral.mig.process;
+package de.subcentral.support.woltlab;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SubCentralDb
+public class AbstractDatabaseApi
 {
 	protected Connection connection;
 

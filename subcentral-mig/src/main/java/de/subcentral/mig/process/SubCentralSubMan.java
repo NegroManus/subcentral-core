@@ -20,8 +20,9 @@ import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralDe;
+import de.subcentral.support.woltlab.AbstractDatabaseApi;
 
-public class SubCentralSubMan extends SubCentralDb
+public class SubCentralSubMan extends AbstractDatabaseApi
 {
 	private static final Logger log = LogManager.getLogger(SubCentralSubMan.class);
 

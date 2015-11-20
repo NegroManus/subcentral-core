@@ -20,8 +20,9 @@ import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
 import de.subcentral.mig.process.SeasonThreadParser.SeasonThreadContent;
-import de.subcentral.mig.process.SubCentralBoard.WbbPost;
 import de.subcentral.mig.repo.MigrationRepo;
+import de.subcentral.support.woltlab.WoltlabBurningBoard;
+import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
@@ -156,7 +157,7 @@ public class MigrationTask extends Task<Void>
 				WbbPost post;
 				try (Connection conn = config.getDataSource().getConnection())
 				{
-					SubCentralBoard scBoard = new SubCentralBoard();
+					WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
 					scBoard.setConnection(conn);
 					post = scBoard.getFirstPost(seasonThreadId);
 				}

@@ -1,4 +1,4 @@
-package de.subcentral.mig.process;
+package de.subcentral.support.woltlab;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.util.StringUtil;
 
-public class SubCentralBoard extends SubCentralDb
+public class WoltlabBurningBoard extends AbstractDatabaseApi
 {
 	public WbbBoard getBoard(int boardId) throws SQLException
 	{
@@ -84,6 +84,29 @@ public class SubCentralBoard extends SubCentralDb
 				throw new SQLException(e);
 			}
 			return null;
+		}
+	}
+
+	public List<WbbThread> getThreadsByBoardId(int boardId) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic, prefix FROM wbb1_1_thread WHERE boardID=?"))
+		{
+			stmt.setInt(1, boardId);
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				ImmutableList.Builder<WbbThread> threadList = ImmutableList.builder();
+				while (rs.next())
+				{
+					WbbThread thread = new WbbThread();
+					thread.id = rs.getInt(1);
+					thread.boardId = boardId;
+					thread.topic = rs.getString(2);
+					thread.prefix = rs.getString(3);
+					threadList.add(thread);
+				}
+				return threadList.build();
+			}
 		}
 	}
 

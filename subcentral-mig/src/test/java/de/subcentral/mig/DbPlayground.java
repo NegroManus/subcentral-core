@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.junit.Test;
 
-import de.subcentral.mig.process.SubCentralBoard;
+import de.subcentral.support.woltlab.WoltlabBurningBoard;
 
 public class DbPlayground
 {
@@ -15,7 +15,7 @@ public class DbPlayground
 	{
 		try (Connection conn = MigTestUtil.connect())
 		{
-			SubCentralBoard api = new SubCentralBoard();
+			WoltlabBurningBoard api = new WoltlabBurningBoard();
 
 			// WbbPost post = api.getFirstPost(36734);
 			// System.out.println(post.getTopic());

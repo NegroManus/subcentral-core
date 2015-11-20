@@ -35,7 +35,6 @@ import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
-import de.subcentral.support.subcentralde.SubCentralHttpApi;
 
 public class SeasonThreadParser
 {
@@ -145,7 +144,7 @@ public class SeasonThreadParser
 	{
 		Data data = new Data();
 		data.postTitle = postTitle;
-		data.postContent = Jsoup.parse(postContent, SubCentralHttpApi.getHost().toExternalForm());
+		data.postContent = Jsoup.parse(postContent, Migration.SUBCENTRAL_HOST);
 
 		// Title
 		parsePostTitle(data);

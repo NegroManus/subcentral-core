@@ -22,8 +22,8 @@ import com.mchange.v2.c3p0.DataSources;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.process.SeriesListParser;
 import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
-import de.subcentral.mig.process.SubCentralBoard;
-import de.subcentral.mig.process.SubCentralBoard.WbbPost;
+import de.subcentral.support.woltlab.WoltlabBurningBoard;
+import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
 public class MigrationConfig
 {
@@ -183,7 +183,7 @@ public class MigrationConfig
 		WbbPost seriesListPost;
 		try (Connection conn = dataSource.getConnection())
 		{
-			SubCentralBoard boardApi = new SubCentralBoard();
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
 			boardApi.setConnection(conn);
 			seriesListPost = boardApi.getPost(seriesListPostId);
 		}
