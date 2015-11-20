@@ -41,30 +41,30 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	/**
 	 * An unsigned integer indicating the season number this episode comes after. This field is only available for special episodes. Can be null.
 	 */
-	public static final String	ATTRIBUTE_AIRSAFTER_SEASON		= "airsafter_season";
+	public static final String		ATTRIBUTE_AIRSAFTER_SEASON		= "airsafter_season";
 	/**
 	 * An unsigned integer indicating the episode number this special episode airs before. Must be used in conjunction with airsbefore_season, do not with airsafter_season. This field is only
 	 * available for special episodes. Can be null.
 	 */
-	public static final String	ATTRIBUTE_AIRSBEFORE_EPISODE	= "airsbefore_episode";
+	public static final String		ATTRIBUTE_AIRSBEFORE_EPISODE	= "airsbefore_episode";
 	/**
 	 * An unsigned integer indicating the season number this special episode airs before. Should be used in conjunction with airsbefore_episode for exact placement. This field is only available for
 	 * special episodes. Can be null.
 	 */
-	public static final String	ATTRIBUTE_AIRSBEFORE_SEASON		= "airsbefore_season";
+	public static final String		ATTRIBUTE_AIRSBEFORE_SEASON		= "airsbefore_season";
 
-	public static final String	IMAGE_TYPE_BANNER			= "banner";
-	public static final String	IMAGE_TYPE_FANART			= "fanart";
-	public static final String	IMAGE_TYPE_POSTER			= "poster";
-	public static final String	IMAGE_TYPE_EPISODE_IMAGE	= "episode_image";
+	public static final String		IMAGE_TYPE_BANNER				= "banner";
+	public static final String		IMAGE_TYPE_FANART				= "fanart";
+	public static final String		IMAGE_TYPE_POSTER				= "poster";
+	public static final String		IMAGE_TYPE_EPISODE_IMAGE		= "episode_image";
 
-	private static final Logger log = LogManager.getLogger(TheTvDbComMetadataDb.class);
+	private static final Logger		log								= LogManager.getLogger(TheTvDbComMetadataDb.class);
 
-	private static final String		API_SUB_PATH	= "/api/";
-	private static final String		IMG_SUB_PATH	= "/banners/";
-	private static final Splitter	LIST_SPLITTER	= Splitter.on('|').trimResults().omitEmptyStrings();
+	private static final String		API_SUB_PATH					= "/api/";
+	private static final String		IMG_SUB_PATH					= "/banners/";
+	private static final Splitter	LIST_SPLITTER					= Splitter.on('|').trimResults().omitEmptyStrings();
 
-	private String apiKey;
+	private String					apiKey;
 
 	public String getApiKey()
 	{
@@ -107,7 +107,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	}
 
 	@Override
-	public Set<String> getSupportedExternalSources()
+	public Set<String> getSupportedExternalSites()
 	{
 		return ImmutableSet.of(StandardSites.IMDB_COM, StandardSites.ZAP2IT_COM);
 	}
@@ -160,24 +160,24 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByExternalId(String sourceId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
+	public <T> List<T> searchByExternalId(String siteId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (recordType.isAssignableFrom(Series.class))
 		{
-			return (List<T>) searchSeriesByExternalId(sourceId, id);
+			return (List<T>) searchSeriesByExternalId(siteId, id);
 		}
 		throw createUnsupportedRecordTypeException(recordType);
 	}
 
-	public List<Series> searchSeriesByExternalId(String sourceId, String id) throws UnsupportedOperationException, IOException
+	public List<Series> searchSeriesByExternalId(String siteId, String id) throws UnsupportedOperationException, IOException
 	{
-		return searchSeriesByExternalId(sourceId, id, null);
+		return searchSeriesByExternalId(siteId, id, null);
 	}
 
-	public List<Series> searchSeriesByExternalId(String sourceId, String id, String language) throws UnsupportedOperationException, IOException
+	public List<Series> searchSeriesByExternalId(String siteId, String id, String language) throws UnsupportedOperationException, IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		switch (sourceId)
+		switch (siteId)
 		{
 			case StandardSites.IMDB_COM:
 				query.put("imdbid", id);
@@ -185,14 +185,14 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			case StandardSites.ZAP2IT_COM:
 				query.put("zap2it", id);
 			default:
-				throw createUnsupportedExternalSource(sourceId);
+				throw createUnsupportedExternalSiteException(siteId);
 		}
 		if (language != null)
 		{
 			query.put("language", language);
 		}
 		URL url = buildRelativeUrl(API_SUB_PATH + "GetSeriesByRemoteID.php", query.build());
-		log.debug("Searching for series ({} id={}) using url {}", sourceId, id, url);
+		log.debug("Searching for series ({} id={}) using url {}", siteId, id, url);
 		return parseSeriesSearchResults(getDocument(url));
 	}
 

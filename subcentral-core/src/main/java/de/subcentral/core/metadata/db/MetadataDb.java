@@ -18,7 +18,7 @@ public interface MetadataDb
 		return getRecordTypes();
 	}
 
-	public Set<String> getSupportedExternalSources();
+	public Set<String> getSupportedExternalSites();
 
 	// Status
 	public boolean isAvailable();
