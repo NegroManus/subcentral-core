@@ -10,10 +10,18 @@ import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,6 +33,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.mig.Migration;
+import de.subcentral.mig.MigrationApp;
 import de.subcentral.mig.MigrationConfig;
 import de.subcentral.mig.process.SeriesListParser;
 import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
@@ -36,11 +45,15 @@ import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbThread;
 
 public class ConsistencyChecker
 {
+	private static final Logger		log					= LogManager.getLogger(MigrationApp.class);
+
+	private static final Pattern	PATTERN_THREAD_ID	= Pattern.compile("threadID=(\\d+)");
+
 	private final MigrationConfig	config;
 	private final Path				logFile;
-	private boolean					firstWrite		= true;
-	private int						majorChapterNum	= 0;
-	private int						minorChapterNum	= 0;
+	private boolean					firstWrite			= true;
+	private int						majorChapterNum		= 0;
+	private int						minorChapterNum		= 0;
 
 	public ConsistencyChecker(MigrationConfig config) throws IOException
 	{
@@ -170,6 +183,7 @@ public class ConsistencyChecker
 		}
 		Elements options = quickJumpSelect.getElementsByTag("option");
 		List<Series> seriesList = new ArrayList<>(options.size() - 1);
+		Matcher threadIdMatcher = PATTERN_THREAD_ID.matcher("");
 		for (Element option : options)
 		{
 			String value = option.attr("value");
@@ -178,7 +192,16 @@ public class ConsistencyChecker
 				continue;
 			}
 			String seriesName = option.text();
-			Integer threadId = Integer.valueOf(value.substring(value.indexOf("threadID=") + 9, value.length()));
+			Integer threadId;
+			if (threadIdMatcher.reset(value).find())
+			{
+				threadId = Integer.valueOf(threadIdMatcher.group(1));
+			}
+			else
+			{
+				threadId = null;
+				log.warn("Subtitle repository QuickJump entry's link contains no threadID:" + option.outerHtml());
+			}
 			Series series = new Series(seriesName);
 			series.addAttributeValue(Migration.SERIES_ATTR_SUB_REPO_THREAD_ID, threadId);
 			seriesList.add(series);
@@ -294,11 +317,48 @@ public class ConsistencyChecker
 
 	private void checkSubRepoThreadsAgainstSubRepoQuickJump(List<WbbThread> subRepoThreads, List<Series> subRepoQuickJumpContent) throws IOException
 	{
-		List<String> entries = new ArrayList<>();
+		Map<Series, WbbThread> qjToThreadMap = new HashMap<>(subRepoQuickJumpContent.size());
+		List<Series> unmatchedQjEntries = new ArrayList<>();
+		List<WbbThread> unmatchedThreads = new ArrayList<>(subRepoThreads);
 
-		appendChapter("Subtitle repository threads <-> Subtitle repository QuickJump", "Threads that have no entry in QuickJump", entries);
-		entries.clear();
-		appendChapter("QuickJump entries that ", entries);
+		boolean matchingThreadFound;
+		for (Series series : subRepoQuickJumpContent)
+		{
+			Integer qjEntryThreadId = series.getAttributeValue(Migration.SERIES_ATTR_SUB_REPO_THREAD_ID);
+			matchingThreadFound = false;
+			if (qjEntryThreadId != null)
+			{
+				ListIterator<WbbThread> threadIter = unmatchedThreads.listIterator();
+				while (threadIter.hasNext())
+				{
+					WbbThread thread = threadIter.next();
+					if (qjEntryThreadId.intValue() == thread.getId())
+					{
+						matchingThreadFound = true;
+						qjToThreadMap.put(series, thread);
+						threadIter.remove();
+						break;
+					}
+				}
+			}
+			if (!matchingThreadFound)
+			{
+				unmatchedQjEntries.add(series);
+			}
+		}
+
+		List<String> unmatchedThreadsEntries = unmatchedThreads.stream().map((WbbThread t) -> formatThread(t)).collect(Collectors.toList());
+		appendChapter("Subtitle repository threads <-> Subtitle repository QuickJump", "Threads that have no entry in QuickJump", unmatchedThreadsEntries);
+
+		List<String> unmatchedQjEntriesEntries = unmatchedQjEntries.stream().map((Series s) -> formatSeries(s)).collect(Collectors.toList());
+		appendChapter("QuickJump entries that don't link to a repository thread", unmatchedQjEntriesEntries);
+
+		List<String> inconsistentTitles = qjToThreadMap.entrySet()
+				.stream()
+				.filter((Map.Entry<Series, WbbThread> entry) -> !entry.getKey().getName().equals(entry.getValue().getTopic()))
+				.map((Map.Entry<Series, WbbThread> entry) -> formatSeries(entry.getKey()) + " != " + formatThread(entry.getValue()))
+				.collect(Collectors.toList());
+		appendChapter("QuickJump entry != Thread topic", inconsistentTitles);
 	}
 
 	private void checkSeriesListSeasonsAgainstSubsThreads(SeriesListContent seriesListContent, List<WbbThread> subsThreads) throws IOException
@@ -362,8 +422,8 @@ public class ConsistencyChecker
 		if (majorChapter != null)
 		{
 			majorChapterNum++;
-			minorChapterNum = 0;
-			entries.add(0, majorChapterNum + "." + minorChapterNum + ": minorChapter");
+			minorChapterNum = 1;
+			entries.add(0, majorChapterNum + "." + minorChapterNum + ": " + minorChapter);
 			entries.add(0, majorChapterNum + ": " + majorChapter);
 			if (!firstWrite)
 			{
@@ -374,7 +434,7 @@ public class ConsistencyChecker
 		else
 		{
 			minorChapterNum++;
-			entries.add(0, majorChapterNum + "." + minorChapterNum + ": minorChapter");
+			entries.add(0, majorChapterNum + "." + minorChapterNum + ": " + minorChapter);
 			if (!firstWrite)
 			{
 				entries.add(0, "");
