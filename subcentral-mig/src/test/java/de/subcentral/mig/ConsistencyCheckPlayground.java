@@ -11,7 +11,7 @@ import de.subcentral.mig.check.ConsistencyChecker;
 public class ConsistencyCheckPlayground
 {
 	@Test
-	public void testSanityCheck() throws Exception
+	public void testConsistencyCheck() throws Exception
 	{
 		MigrationConfig cfg = new MigrationConfig();
 		cfg.setEnvironmentSettingsFile(Paths.get(Resources.getResource(ConsistencyCheckPlayground.class, "/de/subcentral/mig/migration-env-settings.properties").toURI()));
