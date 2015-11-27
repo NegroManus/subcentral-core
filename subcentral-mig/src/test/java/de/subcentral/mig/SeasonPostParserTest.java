@@ -13,7 +13,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.process.SeasonPostParser;
 import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
 
-public class SeasonThreadParserTest
+public class SeasonPostParserTest
 {
 	private SeasonPostParser parser = new SeasonPostParser();
 
@@ -23,9 +23,15 @@ public class SeasonThreadParserTest
 		parse("Psych - Staffel 5 - [DE-Subs: 16 | VO-Subs: 16] - [Komplett]", "post-psych_s05.html");
 	}
 
+	@Test
+	public void testParseAmericanHorrorStoryS01() throws IOException
+	{
+		parse("American Horror Story - Staffel 2: Asylum - [DE-Subs: 13 | VO-Subs: 13] - [Komplett]", "post-psych_s05.html");
+	}
+
 	private void parse(String postTitle, String postContentRresourceFilename) throws IOException
 	{
-		String content = Resources.toString(Resources.getResource(SeasonThreadParserTest.class, postContentRresourceFilename), StandardCharsets.UTF_8);
+		String content = Resources.toString(Resources.getResource(SeasonPostParserTest.class, postContentRresourceFilename), StandardCharsets.UTF_8);
 		SeasonPostContent data = parser.parse(postTitle, content);
 		printSeasonThreadContent(data);
 	}

@@ -500,7 +500,7 @@ public class ConsistencyChecker
 			// Compare seasons
 			if (!seriesListSeasons.equals(parsedPost.getSeasons()))
 			{
-				entries.add(joinSeasons(seriesListSeasons) + " != " + joinSeasons(parsedPost.getSeasons()) + " (postID=" + post.getId() + ", topic=\"" + post.getTopic() + "\")");
+				entries.add(joinSeasons(seriesListSeasons) + " != " + joinSeasons(parsedPost.getSeasons()) + " (post: " + formatPost(post) + ")");
 			}
 		}
 		appendChapter("Series list <-> season posts", "Seasons declared in SeriesList != Seasons declared in post topic", entries);
@@ -651,4 +651,8 @@ public class ConsistencyChecker
 		return "\"" + thread.getTopic() + "\" (threadID=" + thread.getId() + ")";
 	}
 
+	private static String formatPost(WbbPost post)
+	{
+		return "\"" + post.getTopic() + "\" (threadID=" + post.getId() + ")";
+	}
 }

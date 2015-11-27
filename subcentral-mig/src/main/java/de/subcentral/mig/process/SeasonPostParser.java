@@ -47,17 +47,18 @@ public class SeasonPostParser
 		UNKNOWN, EPISODE, GERMAN_SUBS, ENGLISH_SUBS, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
 	};
 
-	private static final Splitter					SPLITTER_DIVISON					= Splitter.on(CharMatcher.anyOf("|/")).trimResults();
-	private static final Splitter					SPLITTER_LIST						= Splitter.on(CharMatcher.anyOf(",&")).trimResults();
+	private static final Splitter					SPLITTER_DIVISON							= Splitter.on(CharMatcher.anyOf("|/")).trimResults();
+	private static final Splitter					SPLITTER_LIST								= Splitter.on(CharMatcher.anyOf(",&")).trimResults();
 
-	private static final Pattern					PATTERN_BBCODE						= Pattern.compile("\\[(\\w+).*?\\](.*?)\\[/\\1\\]");
+	private static final Pattern					PATTERN_BBCODE								= Pattern.compile("\\[(\\w+).*?\\](.*?)\\[/\\1\\]");
 
-	private static final Pattern					PATTERN_POST_TITLE_NUMBERED_SEASON	= Pattern.compile("(.*)\\s+-\\s*Staffel\\s+(\\d+)\\s*-\\s*.*");
-	private static final Pattern					PATTERN_POST_TITLE_MINI_SERIES		= Pattern.compile("(.*)\\s+-\\s*Miniserie\\s*-\\s*.*");
-	private static final Pattern					PATTERN_POST_TITLE_SPECIAL_SEASON	= Pattern.compile("(.*)\\s+-\\s*([\\w\\s]+)\\s*-\\s*.*");
-	private static final Pattern					PATTERN_POST_TITLE_MULTIPLE_SEASONS	= Pattern.compile("(.*)\\s+-\\s*Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s*-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_SEASON			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON	= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+):\\s+([^-]+)\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_MINI_SERIES				= Pattern.compile("(.*?)\\s+-\\s+Miniserie\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_SPECIAL_SEASON			= Pattern.compile("(.*?)\\s+-\\s+([^-]+)\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_MULTIPLE_SEASONS			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
 
-	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS				= createColumnTypePatternMap();
+	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS						= createColumnTypePatternMap();
 
 	/**
 	 * <ul>
@@ -65,7 +66,7 @@ public class SeasonPostParser
 	 * <li>E15-E16 - "Psych - The Musical"</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_MULTI				= Pattern.compile("(?:S(\\d+))?E(\\d+)-E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_MULTI						= Pattern.compile("(?:S(\\d+))?E(\\d+)-E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -73,14 +74,14 @@ public class SeasonPostParser
 	 * <li>S04E03 - The Power of the Daleks (Verschollen)</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_REGULAR				= Pattern.compile("(?:S(\\d+))?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_REGULAR						= Pattern.compile("(?:S(\\d+))?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
 	 * <li>Special - "Wicked is Coming"</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_SPECIAL				= Pattern.compile("Special\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_SPECIAL						= Pattern.compile("Special\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -88,22 +89,22 @@ public class SeasonPostParser
 	 * <li>E01:</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_ONLY_NUM			= Pattern.compile("(?:S(\\d+))?E(\\d+)");
+	private static final Pattern					PATTERN_EPISODE_ONLY_NUM					= Pattern.compile("(?:S(\\d+))?E(\\d+)");
 
 	/**
 	 * <pre>
 	 * 		<a href="http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=46749">POW4</a>
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR			= Pattern.compile("<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>(.*?)</a>");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR					= Pattern.compile("<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>(.*?)</a>");
 	/**
 	 * <pre>
 	 * 	[url='http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=65018']IMMERSE[/url]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_ATTACHMENT_BBCODE			= Pattern.compile("\\[url=.*?page=WcfAttachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
-	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED	= Pattern.compile("([*])?<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
-	private static final Pattern					PATTERN_ATTACHMENT_BBCODE_MARKED	= Pattern
+	private static final Pattern					PATTERN_ATTACHMENT_BBCODE					= Pattern.compile("\\[url=.*?page=WcfAttachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED			= Pattern.compile("([*])?<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
+	private static final Pattern					PATTERN_ATTACHMENT_BBCODE_MARKED			= Pattern
 			.compile("([*])?\\[url=.*?page=WcfAttachment.*?attachmentID=(\\d+).*?\\]([*])?(.*?)([*])?\\[/url\\]([*])?");
 
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
@@ -182,53 +183,70 @@ public class SeasonPostParser
 	 */
 	private void parsePostTitle(Data data)
 	{
-		Matcher titleMatcher = PATTERN_POST_TITLE_NUMBERED_SEASON.matcher(data.postTitle);
-		if (titleMatcher.matches())
+		Matcher topicMatcher = PATTERN_POST_TOPIC_NUMBERED_SEASON.matcher(data.postTitle);
+		if (topicMatcher.matches())
 		{
-			Series series = new Series(titleMatcher.group(1));
+			Series series = new Series(topicMatcher.group(1));
 			series.setType(Series.TYPE_SEASONED);
 			data.series = series;
 			Season season = series.newSeason();
-			Integer number = Integer.valueOf(titleMatcher.group(2));
+			Integer number = Integer.valueOf(topicMatcher.group(2));
 			season.setNumber(number);
 			data.seasons.put(season, season);
 			return;
 		}
 
-		titleMatcher.reset();
-		titleMatcher.usePattern(PATTERN_POST_TITLE_MINI_SERIES);
-		if (titleMatcher.matches())
+		topicMatcher.reset();
+		topicMatcher.usePattern(PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON);
+		if (topicMatcher.matches())
 		{
-			Series series = new Series(titleMatcher.group(1));
+			Series series = new Series(topicMatcher.group(1));
+			series.setType(Series.TYPE_SEASONED);
+			data.series = series;
+			Season season = series.newSeason();
+			Integer number = Integer.valueOf(topicMatcher.group(2));
+			String title = topicMatcher.group(3);
+			season.setNumber(number);
+			season.setTitle(title);
+			data.seasons.put(season, season);
+			return;
+		}
+
+		topicMatcher.reset();
+		topicMatcher.usePattern(PATTERN_POST_TOPIC_MINI_SERIES);
+		if (topicMatcher.matches())
+		{
+			Series series = new Series(topicMatcher.group(1));
 			series.setType(Series.TYPE_MINI_SERIES);
 			data.series = series;
 			Season season = series.newSeason(1);
 			data.seasons.put(season, season);
 			return;
 		}
-		titleMatcher.reset();
-		titleMatcher.usePattern(PATTERN_POST_TITLE_SPECIAL_SEASON);
-		if (titleMatcher.matches())
+
+		topicMatcher.reset();
+		topicMatcher.usePattern(PATTERN_POST_TOPIC_SPECIAL_SEASON);
+		if (topicMatcher.matches())
 		{
-			Series series = new Series(titleMatcher.group(1));
+			Series series = new Series(topicMatcher.group(1));
 			data.series = series;
 			Season season = series.newSeason();
-			String title = titleMatcher.group(2).trim();
+			String title = topicMatcher.group(2).trim();
 			season.setTitle(title);
 			season.setSpecial(true);
 			data.seasons.put(season, season);
 			return;
 		}
 
-		titleMatcher.reset();
-		titleMatcher.usePattern(PATTERN_POST_TITLE_MULTIPLE_SEASONS);
-		if (titleMatcher.matches())
+		topicMatcher.reset();
+		topicMatcher.usePattern(PATTERN_POST_TOPIC_MULTIPLE_SEASONS);
+		if (topicMatcher.matches())
 		{
-			Series series = new Series(titleMatcher.group(1));
+			Series series = new Series(topicMatcher.group(1));
 			series.setType(Series.TYPE_SEASONED);
 			data.series = series;
-			int firstSeasonNum = Integer.parseInt(titleMatcher.group(2));
-			int lastSeasonNum = Integer.parseInt(titleMatcher.group(3));
+			int firstSeasonNum = Integer.parseInt(topicMatcher.group(2));
+			int lastSeasonNum = Integer.parseInt(topicMatcher.group(3));
 			for (int i = firstSeasonNum; i <= lastSeasonNum; i++)
 			{
 				Season season = series.newSeason(i);
