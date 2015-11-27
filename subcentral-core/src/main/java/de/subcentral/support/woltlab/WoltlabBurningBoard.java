@@ -42,7 +42,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 	public WbbThread getThread(int threadId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, topic, prefix FROM wbb1_1_thread WHERE threadID=?"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, topic, prefix, firstPostID FROM wbb1_1_thread WHERE threadID=?"))
 		{
 			stmt.setInt(1, threadId);
 			try (ResultSet rs = stmt.executeQuery())
@@ -54,6 +54,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 					thread.boardId = rs.getInt(1);
 					thread.topic = rs.getString(2);
 					thread.prefix = rs.getString(3);
+					thread.firstPostId = rs.getInt(4);
 					return thread;
 				}
 			}
@@ -90,7 +91,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 	public List<WbbThread> getThreadsByBoardId(int boardId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic, prefix FROM wbb1_1_thread WHERE boardID=?"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=?"))
 		{
 			stmt.setInt(1, boardId);
 			try (ResultSet rs = stmt.executeQuery())
@@ -102,7 +103,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 					thread.id = rs.getInt(1);
 					thread.boardId = boardId;
 					thread.topic = rs.getString(2);
-					thread.prefix = rs.getString(3);
 					threadList.add(thread);
 				}
 				return threadList.build();
@@ -136,7 +136,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 	public List<WbbThread> getStickyThreads(int boardId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic, prefix, firstPostID FROM wbb1_1_thread WHERE isSticky=1 AND boardID=?"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE isSticky=1 AND boardID=?"))
 		{
 			stmt.setInt(1, boardId);
 			ImmutableList.Builder<WbbThread> list = ImmutableList.builder();
@@ -148,9 +148,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 					thread.id = rs.getInt(1);
 					thread.boardId = boardId;
 					thread.topic = rs.getString(2);
-					thread.prefix = rs.getString(3);
 					thread.sticky = true;
-					thread.firstPostId = rs.getInt(4);
 					list.add(thread);
 				}
 			}
