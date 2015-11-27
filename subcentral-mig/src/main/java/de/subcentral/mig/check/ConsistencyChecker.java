@@ -328,7 +328,7 @@ public class ConsistencyChecker
 
 	private WbbBoard getSubtitleRepositoryBoard() throws SQLException
 	{
-		int subRepoBoardId = config.getEnvironmentSettings().getInt("sc.subrepo.boardId");
+		int subRepoBoardId = config.getEnvironmentSettings().getInt("sc.subrepo.boardid");
 		try (Connection conn = config.getDataSource().getConnection())
 		{
 			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
