@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.StringJoiner;
 import java.util.TreeMap;
@@ -35,10 +36,11 @@ import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
+import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
-public class SeasonThreadParser
+public class SeasonPostParser
 {
-	private static final Logger log = LogManager.getLogger(SeasonThreadParser.class);
+	private static final Logger log = LogManager.getLogger(SeasonPostParser.class);
 
 	private static enum ColumnType
 	{
@@ -120,13 +122,13 @@ public class SeasonThreadParser
 		return map.build();
 	}
 
-	public SeasonThreadContent getAndParse(int threadId, SubCentralApi api) throws IOException
+	public SeasonPostContent getAndParse(int threadId, SubCentralApi api) throws IOException
 	{
 		Document doc = api.getContent("index.php?page=WbbThread&threadID=" + threadId);
 		return parse(doc);
 	}
 
-	public SeasonThreadContent parse(Document threadHtml)
+	public SeasonPostContent parse(Document threadHtml)
 	{
 		// Get title and content of first post
 		Element postTitleDiv = threadHtml.getElementsByClass("messageTitle").first();
@@ -140,7 +142,12 @@ public class SeasonThreadParser
 		return parse(postTitleDiv.text(), postTextDiv.html());
 	}
 
-	public SeasonThreadContent parse(String postTitle, String postContent)
+	public SeasonPostContent parse(WbbPost post)
+	{
+		return parse(post.getTopic(), post.getMessage());
+	}
+
+	public SeasonPostContent parse(String postTitle, String postContent)
 	{
 		Data data = new Data();
 		data.postTitle = postTitle;
@@ -156,7 +163,7 @@ public class SeasonThreadParser
 
 		cleanupData(data);
 
-		return new SeasonThreadContent(data.seasons.keySet(), data.subtitles);
+		return new SeasonPostContent(data.series, data.seasons.keySet(), data.subtitles);
 	}
 
 	/**
@@ -1127,15 +1134,22 @@ public class SeasonThreadParser
 		return bbCodesRemoved;
 	}
 
-	public static final class SeasonThreadContent
+	public static final class SeasonPostContent
 	{
+		private final Series						series;
 		private final ImmutableList<Season>			seasons;
 		private final ImmutableList<SubtitleFile>	subtitleFiles;
 
-		public SeasonThreadContent(Iterable<Season> seasons, Iterable<SubtitleFile> subtitleAdjustments)
+		public SeasonPostContent(Series series, Iterable<Season> seasons, Iterable<SubtitleFile> subtitleAdjustments)
 		{
+			this.series = Objects.requireNonNull(series, "series");
 			this.seasons = ImmutableList.copyOf(seasons);
 			this.subtitleFiles = ImmutableList.copyOf(subtitleAdjustments);
+		}
+
+		public Series getSeries()
+		{
+			return series;
 		}
 
 		public ImmutableList<Season> getSeasons()

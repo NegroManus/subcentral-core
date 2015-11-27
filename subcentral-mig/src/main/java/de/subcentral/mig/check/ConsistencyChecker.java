@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.StringJoiner;
+import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,13 +28,19 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.naming.SeasonNamer;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationApp;
 import de.subcentral.mig.MigrationConfig;
+import de.subcentral.mig.process.SeasonPostParser;
+import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
 import de.subcentral.mig.process.SeriesListParser;
 import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
@@ -75,21 +81,113 @@ public class ConsistencyChecker
 	{
 		// Read all necessary data
 		SeriesListContent seriesListContent = getSeriesListContent();
-		List<Series> quickJumpContent = getQuickJumpContent();
-		WbbBoard subRepoBoard = getSubtitleRepositoryBoard();
-		List<WbbThread> subRepoThreads = getSubtitleRepositoryThreads(subRepoBoard);
-		List<Series> subRepoQuickJumpContent = getSubtitleRepositoryQuickJumpContent(subRepoBoard);
-		List<WbbThread> subsThreads = getSubsThreads();
 
 		// Perform consistency checks
 		// Level: Series
-		checkSeriesListAgainstQuickJump(seriesListContent, quickJumpContent);
+		// Check series against Quickjump entries
+		{
+			List<Series> quickJumpContent = getQuickJumpContent();
+			checkSeriesListAgainstQuickJump(seriesListContent, quickJumpContent);
+		}
+
+		loadSeriesBoards(seriesListContent.getSeries());
 		checkSeriesListAgainstBoards(seriesListContent);
-		checkSeriesListAgainstSubRepoThreads(seriesListContent, subRepoThreads);
-		checkSubRepoThreadsAgainstSubRepoQuickJump(subRepoThreads, subRepoQuickJumpContent);
+
+		// Check subtitle repository
+		{
+			WbbBoard subRepoBoard = getSubtitleRepositoryBoard();
+			List<Series> subRepoQuickJumpContent = getSubtitleRepositoryQuickJumpContent(subRepoBoard);
+			List<WbbThread> subRepoThreads = getSubtitleRepositoryThreads(subRepoBoard);
+			checkSeriesListAgainstSubRepoThreads(seriesListContent, subRepoThreads);
+			checkSubRepoThreadsAgainstSubRepoQuickJump(subRepoThreads, subRepoQuickJumpContent);
+		}
 
 		// Level: Season
-		checkSeriesListSeasonsAgainstSubsThreads(seriesListContent, subsThreads);
+		loadSeasonThreads(seriesListContent.getSeasons());
+		loadSeasonPosts(seriesListContent.getSeasons());
+		// Check seasons against [Subs] threads
+		{
+			List<WbbThread> subsPrefixThreads = getSubsPrefixThreads();
+			checkSeriesListSeasonsAgainstSubsPrefixThreads(seriesListContent, subsPrefixThreads);
+		}
+		// Check seasons against sticky threads
+		checkSeriesListSeasonsAgainstStickyThreads(seriesListContent);
+		// Check series/seasons against post topics
+		checkSeriesListAgainstSeasonPostTopics(seriesListContent);
+	}
+
+	private void checkSeriesListSeasonsAgainstStickyThreads(SeriesListContent seriesListContent) throws SQLException, IOException
+	{
+		List<Season> seasonsNotSticky = new ArrayList<>();
+		List<WbbThread> threadsNotSeason = new ArrayList<>();
+		for (Series series : seriesListContent.getSeries())
+		{
+			int boardId = series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
+			List<WbbThread> stickyThreads = getStickyThreads(boardId);
+			ListMatchResult<Season, WbbThread> seasonsToStickyThreads = matchSeasonsAgainstThreads(seriesListContent.getSeasons(), stickyThreads);
+			seasonsNotSticky.addAll(seasonsToStickyThreads.onlyInFirstList);
+			threadsNotSeason.addAll(seasonsToStickyThreads.onlyInSecondList);
+		}
+
+		appendChapter("SeriesList seasons <-> Sticky threads", "Season threads that are not sticky", seasonsNotSticky.stream().map(ConsistencyChecker::formatSeason).collect(Collectors.toList()));
+		appendChapter("Sticky threads that are no season threads", threadsNotSeason.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
+	}
+
+	private void checkSeriesListAgainstSeasonPostTopics(SeriesListContent seriesListContent) throws IOException
+	{
+		List<String> entries = new ArrayList<>();
+
+		// Post -> Seasons
+		ListMultimap<WbbPost, Season> postsToSeasons = LinkedListMultimap.create();
+		for (Season season : seriesListContent.getSeasons())
+		{
+			WbbPost post = season.getAttributeValue(Migration.SEASON_ATTR_POST);
+			if (post != null)
+			{
+				postsToSeasons.put(post, season);
+			}
+		}
+		for (WbbPost post : postsToSeasons.keySet())
+		{
+			List<Season> seriesListSeasons = postsToSeasons.get(post);
+			// Parse season post
+			SeasonPostContent parsedPost = new SeasonPostParser().parse(post);
+			// Compare seasons
+			if (!seriesListSeasons.equals(parsedPost.getSeasons()))
+			{
+				entries.add(joinSeasons(seriesListSeasons) + " != " + joinSeasons(parsedPost.getSeasons()) + " (postID=" + post.getId() + ")");
+			}
+		}
+		appendChapter("Series list <-> season posts", "Seasons from series list != Seasons listed in post topic", entries);
+	}
+
+	private static String joinSeasons(Iterable<Season> seasons)
+	{
+		StringJoiner joiner = new StringJoiner(", ");
+		boolean first = true;
+		for (Season season : seasons)
+		{
+			if (first)
+			{
+				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season));
+				first = false;
+			}
+			else
+			{
+				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)));
+			}
+		}
+		return joiner.toString();
+	}
+
+	private List<WbbThread> getStickyThreads(int boardId) throws SQLException
+	{
+		try (Connection conn = config.getDataSource().getConnection())
+		{
+			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
+			scBoard.setConnection(conn);
+			return scBoard.getStickyThreads(boardId);
+		}
 	}
 
 	/*
@@ -106,6 +204,84 @@ public class ConsistencyChecker
 			WbbPost seriesListPost = scBoard.getPost(seriesListPostId);
 			seriesListContent = new SeriesListParser().parsePost(seriesListPost.getMessage());
 			return seriesListContent;
+		}
+	}
+
+	private void loadSeriesBoards(Iterable<Series> series) throws SQLException
+	{
+		for (Series srs : series)
+		{
+			Integer seriesBoardId = srs.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
+			if (seriesBoardId != null)
+			{
+				try (Connection conn = config.getDataSource().getConnection())
+				{
+					WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
+					boardApi.setConnection(conn);
+					WbbBoard board = boardApi.getBoard(seriesBoardId);
+					srs.addAttributeValue(Migration.SERIES_ATTR_BOARD, board);
+				}
+			}
+		}
+	}
+
+	private void loadSeasonThreads(Iterable<Season> seasons)
+	{
+		// Several seasons can point to the same thread (multi season thread)
+		// In that case, don't load the thread several time but assign the same WbbThread to all seasons
+		Map<Integer, WbbThread> threadCache = new HashMap<>();
+		for (Season season : seasons)
+		{
+			Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
+			if (seasonThreadId != null)
+			{
+				WbbThread thread = threadCache.computeIfAbsent(seasonThreadId, this::loadThread);
+				season.addAttributeValue(Migration.SEASON_ATTR_THREAD, thread);
+			}
+		}
+	}
+
+	private WbbThread loadThread(Integer threadId)
+	{
+		try (Connection conn = config.getDataSource().getConnection())
+		{
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
+			boardApi.setConnection(conn);
+			return boardApi.getThread(threadId);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void loadSeasonPosts(Iterable<Season> seasons) throws SQLException
+	{
+		// Several seasons can point to the same thread (multi season thread)
+		// In that case, don't load the post several time but assign the same WbbPost to all seasons
+		Map<Integer, WbbPost> postCache = new HashMap<>();
+		for (Season season : seasons)
+		{
+			WbbThread seasonThread = season.getAttributeValue(Migration.SEASON_ATTR_THREAD);
+			if (seasonThread != null)
+			{
+				WbbPost post = postCache.computeIfAbsent(seasonThread.getFirstPostId(), this::loadPost);
+				season.addAttributeValue(Migration.SEASON_ATTR_POST, post);
+			}
+		}
+	}
+
+	private WbbPost loadPost(int postId)
+	{
+		try (Connection conn = config.getDataSource().getConnection())
+		{
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
+			boardApi.setConnection(conn);
+			return boardApi.getPost(postId);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -219,7 +395,7 @@ public class ConsistencyChecker
 		}
 	}
 
-	private List<WbbThread> getSubsThreads() throws SQLException
+	private List<WbbThread> getSubsPrefixThreads() throws SQLException
 	{
 		try (Connection conn = config.getDataSource().getConnection())
 		{
@@ -259,16 +435,10 @@ public class ConsistencyChecker
 
 		for (Series series : seriesListContent.getSeries())
 		{
-			int seriesBoardId = series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
-			try (Connection conn = config.getDataSource().getConnection())
+			WbbBoard board = series.getAttributeValue(Migration.SERIES_ATTR_BOARD);
+			if (!series.getName().equals(board.getTitle()))
 			{
-				WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
-				boardApi.setConnection(conn);
-				WbbBoard board = boardApi.getBoard(seriesBoardId);
-				if (!series.getName().equals(board.getTitle()))
-				{
-					entries.add(formatSeries(series) + " != " + formatBoard(board));
-				}
+				entries.add(formatSeries(series) + " != " + formatBoard(board));
 			}
 		}
 		appendChapter("SeriesList <-> Boards", "Series name <-> Board title", entries);
@@ -276,134 +446,104 @@ public class ConsistencyChecker
 
 	private void checkSeriesListAgainstSubRepoThreads(SeriesListContent seriesListContent, List<WbbThread> subRepoThreads) throws IOException
 	{
-		List<String> entries = new ArrayList<>();
-		for (Series series : seriesListContent.getSeries())
-		{
-			boolean matchingSubRepoThreadFound = false;
-			for (WbbThread thread : subRepoThreads)
-			{
-				if (series.getName().equals(thread.getTopic()))
-				{
-					matchingSubRepoThreadFound = true;
-					break;
-				}
-			}
-			if (!matchingSubRepoThreadFound)
-			{
-				entries.add(formatSeries(series));
-			}
-		}
-		appendChapter("SeriesList <-> Subtitle repository threads", "Series only in SeriesList", entries);
+		ListMatchResult<Series, WbbThread> seriesListToSubRepoThreads = matchLists(seriesListContent.getSeries(),
+				subRepoThreads,
+				(Series series, WbbThread repoThread) -> series.getName().equals(repoThread.getTopic()));
 
-		entries.clear();
-		for (WbbThread thread : subRepoThreads)
-		{
-			boolean matchingSeriesFound = false;
-			for (Series series : seriesListContent.getSeries())
-			{
-				if (thread.getTopic().equals(series.getName()))
-				{
-					matchingSeriesFound = true;
-					break;
-				}
-			}
-			if (!matchingSeriesFound)
-			{
-				entries.add(formatThread(thread));
-			}
-		}
-		appendChapter("Series only in Subtitle repository", entries);
+		appendChapter("SeriesList <-> Subtitle repository threads",
+				"Series only in SeriesList",
+				seriesListToSubRepoThreads.onlyInFirstList.stream().map((ConsistencyChecker::formatSeries)).collect(Collectors.toList()));
+		appendChapter("Series only in Subtitle repository", seriesListToSubRepoThreads.onlyInSecondList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
 	}
 
 	private void checkSubRepoThreadsAgainstSubRepoQuickJump(List<WbbThread> subRepoThreads, List<Series> subRepoQuickJumpContent) throws IOException
 	{
-		Map<Series, WbbThread> qjToThreadMap = new HashMap<>(subRepoQuickJumpContent.size());
-		List<Series> unmatchedQjEntries = new ArrayList<>();
-		List<WbbThread> unmatchedThreads = new ArrayList<>(subRepoThreads);
-
-		boolean matchingThreadFound;
-		for (Series series : subRepoQuickJumpContent)
+		ListMatchResult<WbbThread, Series> threadToQjEntries = matchLists(subRepoThreads, subRepoQuickJumpContent, (WbbThread repoThread, Series qjEntry) ->
 		{
-			Integer qjEntryThreadId = series.getAttributeValue(Migration.SERIES_ATTR_SUB_REPO_THREAD_ID);
-			matchingThreadFound = false;
-			if (qjEntryThreadId != null)
-			{
-				ListIterator<WbbThread> threadIter = unmatchedThreads.listIterator();
-				while (threadIter.hasNext())
-				{
-					WbbThread thread = threadIter.next();
-					if (qjEntryThreadId.intValue() == thread.getId())
-					{
-						matchingThreadFound = true;
-						qjToThreadMap.put(series, thread);
-						threadIter.remove();
-						break;
-					}
-				}
-			}
-			if (!matchingThreadFound)
-			{
-				unmatchedQjEntries.add(series);
-			}
-		}
+			Integer qjEntryThreadId = qjEntry.getAttributeValue(Migration.SERIES_ATTR_SUB_REPO_THREAD_ID);
+			return qjEntryThreadId != null && qjEntryThreadId.intValue() == repoThread.getId();
+		});
 
-		List<String> unmatchedThreadsEntries = unmatchedThreads.stream().map((WbbThread t) -> formatThread(t)).collect(Collectors.toList());
+		List<String> unmatchedThreadsEntries = threadToQjEntries.onlyInFirstList.stream().map((WbbThread t) -> formatThread(t)).collect(Collectors.toList());
 		appendChapter("Subtitle repository threads <-> Subtitle repository QuickJump", "Threads that have no entry in QuickJump", unmatchedThreadsEntries);
 
-		List<String> unmatchedQjEntriesEntries = unmatchedQjEntries.stream().map((Series s) -> formatSeries(s)).collect(Collectors.toList());
+		List<String> unmatchedQjEntriesEntries = threadToQjEntries.onlyInSecondList.stream().map((Series s) -> formatSeries(s)).collect(Collectors.toList());
 		appendChapter("QuickJump entries that don't link to a repository thread", unmatchedQjEntriesEntries);
 
-		List<String> inconsistentTitles = qjToThreadMap.entrySet()
+		List<String> inconsistentTitles = threadToQjEntries.matchingElems.entrySet()
 				.stream()
-				.filter((Map.Entry<Series, WbbThread> entry) -> !entry.getKey().getName().equals(entry.getValue().getTopic()))
-				.map((Map.Entry<Series, WbbThread> entry) -> formatSeries(entry.getKey()) + " != " + formatThread(entry.getValue()))
+				.filter((Map.Entry<WbbThread, Series> entry) -> !entry.getKey().getTopic().equals(entry.getValue().getName()))
+				.map((Map.Entry<WbbThread, Series> entry) -> formatThread(entry.getKey()) + " != " + formatSeries(entry.getValue()))
 				.collect(Collectors.toList());
-		appendChapter("QuickJump entry != Thread topic", inconsistentTitles);
+		appendChapter("Thread topic != QuickJump entry", inconsistentTitles);
 	}
 
-	private void checkSeriesListSeasonsAgainstSubsThreads(SeriesListContent seriesListContent, List<WbbThread> subsThreads) throws IOException
+	private void checkSeriesListSeasonsAgainstSubsPrefixThreads(SeriesListContent seriesListContent, List<WbbThread> subsThreads) throws IOException
 	{
-		final Predicate<Season> containedInSubsThreads = (Season season) ->
+		ListMatchResult<Season, WbbThread> seasonsToSubsThreads = matchSeasonsAgainstThreads(seriesListContent.getSeasons(), subsThreads);
+
+		appendChapter("SeriesList <-> [Subs] Threads",
+				"Season threads without the [Subs] prefix",
+				seasonsToSubsThreads.onlyInFirstList.stream().map(ConsistencyChecker::formatSeason).collect(Collectors.toList()));
+
+		appendChapter("Threads with the [Subs] prefix that are not in in the SeriesList",
+				seasonsToSubsThreads.onlyInSecondList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
+	}
+
+	/*
+	 * Matching
+	 */
+	private static ListMatchResult<Season, WbbThread> matchSeasonsAgainstThreads(List<Season> seasons, List<WbbThread> threads)
+	{
+		return matchLists(seasons, threads, (Season season, WbbThread thread) ->
 		{
-			for (WbbThread thread : subsThreads)
+			Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
+			return seasonThreadId != null && seasonThreadId.intValue() == thread.getId();
+		});
+	}
+
+	private static <T, U> ListMatchResult<T, U> matchLists(List<T> firstList, List<U> secondList, BiPredicate<T, U> matcher)
+	{
+		Map<T, U> matchingElems = new HashMap<>();
+		List<T> onlyInFirstList = new ArrayList<>();
+		List<U> onlyInSecondList = new ArrayList<>(secondList);
+
+		boolean matchFound;
+		for (T firstElem : firstList)
+		{
+			matchFound = false;
+			ListIterator<U> secondIter = onlyInSecondList.listIterator();
+			while (secondIter.hasNext())
 			{
-				Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
-				if (seasonThreadId.intValue() == thread.getId())
+				U secondElem = secondIter.next();
+				if (matcher.test(firstElem, secondElem))
 				{
-					return false;
+					matchFound = true;
+					matchingElems.put(firstElem, secondElem);
+					secondIter.remove();
+					break;
 				}
 			}
-			return true;
-		};
-		final Predicate<WbbThread> containedInSeasons = (WbbThread thread) ->
-		{
-			for (Season season : seriesListContent.getSeasons())
+			if (!matchFound)
 			{
-				Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
-				if (seasonThreadId.intValue() == thread.getId())
-				{
-					return false;
-				}
+				onlyInFirstList.add(firstElem);
 			}
-			return true;
-		};
+		}
+		return new ListMatchResult<>(matchingElems, onlyInFirstList, onlyInSecondList);
+	}
 
-		final List<String> entries = new ArrayList<>();
-		final Consumer<Season> addSeasonEntries = (Season season) ->
+	private static class ListMatchResult<T, U>
+	{
+		private final Map<T, U>	matchingElems;
+		private final List<T>	onlyInFirstList;
+		private final List<U>	onlyInSecondList;
+
+		public ListMatchResult(Map<T, U> matchingElems, List<T> onlyInFirstList, List<U> onlyInSecondList)
 		{
-			entries.add(NamingDefaults.getDefaultSeasonNamer().name(season) + " (threadID=" + season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID) + ")");
-		};
-		final Consumer<WbbThread> addThreadEntries = (WbbThread thread) ->
-		{
-			entries.add(formatThread(thread));
-		};
-
-		seriesListContent.getSeasons().stream().filter(containedInSubsThreads).forEach(addSeasonEntries);
-		appendChapter("SeriesList <-> [Subs] Threads", "Season threads without the [Subs] prefix", entries);
-
-		entries.clear();
-		subsThreads.stream().filter(containedInSeasons).forEach(addThreadEntries);
-		appendChapter("Threads with the [Subs] prefix that are not in in the SeriesList", entries);
+			this.matchingElems = matchingElems;
+			this.onlyInFirstList = onlyInFirstList;
+			this.onlyInSecondList = onlyInSecondList;
+		}
 	}
 
 	/*
@@ -460,6 +600,11 @@ public class ConsistencyChecker
 	private static String formatSeries(Series series)
 	{
 		return series.getName();
+	}
+
+	private static String formatSeason(Season season)
+	{
+		return NamingDefaults.getDefaultSeasonNamer().name(season) + " (threadID=" + season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID) + ")";
 	}
 
 	private static String formatBoard(WbbBoard board)

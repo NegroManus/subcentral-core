@@ -19,7 +19,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
-import de.subcentral.mig.process.SeasonThreadParser.SeasonThreadContent;
+import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
 import de.subcentral.mig.repo.MigrationRepo;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
@@ -38,7 +38,7 @@ public class MigrationTask extends Task<Void>
 
 	private final MigrateSeriesTask		seriesMigrationTask		= new MigrateSeriesTask();
 	private final ParseSeasonThreadTask	seasonThreadParserTask	= new ParseSeasonThreadTask();
-	private final SeasonThreadParser	seasonThreadParser		= new SeasonThreadParser();
+	private final SeasonPostParser	seasonThreadParser		= new SeasonPostParser();
 
 	public MigrationTask(MigrationConfig config)
 	{
@@ -162,7 +162,7 @@ public class MigrationTask extends Task<Void>
 					post = scBoard.getFirstPost(seasonThreadId);
 				}
 
-				SeasonThreadContent content = seasonThreadParser.parse(post.getTopic(), post.getMessage());
+				SeasonPostContent content = seasonThreadParser.parse(post.getTopic(), post.getMessage());
 				return new ParsedSeason(season, content);
 			}
 			catch (CancellationException e)
@@ -210,9 +210,9 @@ public class MigrationTask extends Task<Void>
 	private class ParsedSeason
 	{
 		private final Season				seasonFromSeriesList;
-		private final SeasonThreadContent	seasonThreadContent;
+		private final SeasonPostContent	seasonThreadContent;
 
-		public ParsedSeason(Season seasonFromSeriesList, SeasonThreadContent seasonThreadContent)
+		public ParsedSeason(Season seasonFromSeriesList, SeasonPostContent seasonThreadContent)
 		{
 			this.seasonFromSeriesList = seasonFromSeriesList;
 			this.seasonThreadContent = seasonThreadContent;

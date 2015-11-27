@@ -10,12 +10,12 @@ import com.google.common.io.Resources;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
-import de.subcentral.mig.process.SeasonThreadParser;
-import de.subcentral.mig.process.SeasonThreadParser.SeasonThreadContent;
+import de.subcentral.mig.process.SeasonPostParser;
+import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
 
 public class SeasonThreadParserTest
 {
-	private SeasonThreadParser parser = new SeasonThreadParser();
+	private SeasonPostParser parser = new SeasonPostParser();
 
 	@Test
 	public void testParsePsychS05() throws IOException
@@ -26,11 +26,11 @@ public class SeasonThreadParserTest
 	private void parse(String postTitle, String postContentRresourceFilename) throws IOException
 	{
 		String content = Resources.toString(Resources.getResource(SeasonThreadParserTest.class, postContentRresourceFilename), StandardCharsets.UTF_8);
-		SeasonThreadContent data = parser.parse(postTitle, content);
+		SeasonPostContent data = parser.parse(postTitle, content);
 		printSeasonThreadContent(data);
 	}
 
-	private void printSeasonThreadContent(SeasonThreadContent content)
+	private void printSeasonThreadContent(SeasonPostContent content)
 	{
 		System.out.println();
 		System.out.println("Seasons:");

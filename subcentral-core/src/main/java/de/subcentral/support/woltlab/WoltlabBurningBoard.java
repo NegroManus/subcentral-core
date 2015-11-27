@@ -110,6 +110,54 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 		}
 	}
 
+	public List<WbbThread> getThreadsByPrefix(String prefix) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, boardID, topic FROM wbb1_1_thread WHERE prefix=?"))
+		{
+			stmt.setString(1, prefix);
+			ImmutableList.Builder<WbbThread> list = ImmutableList.builder();
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				while (rs.next())
+				{
+					WbbThread thread = new WbbThread();
+					thread.id = rs.getInt(1);
+					thread.boardId = rs.getInt(2);
+					thread.topic = rs.getString(3);
+					thread.prefix = prefix;
+					list.add(thread);
+				}
+			}
+			return list.build();
+		}
+	}
+
+	public List<WbbThread> getStickyThreads(int boardId) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic, prefix, firstPostID FROM wbb1_1_thread WHERE isSticky=1 AND boardID=?"))
+		{
+			stmt.setInt(1, boardId);
+			ImmutableList.Builder<WbbThread> list = ImmutableList.builder();
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				while (rs.next())
+				{
+					WbbThread thread = new WbbThread();
+					thread.id = rs.getInt(1);
+					thread.boardId = boardId;
+					thread.topic = rs.getString(2);
+					thread.prefix = rs.getString(3);
+					thread.sticky = true;
+					thread.firstPostId = rs.getInt(4);
+					list.add(thread);
+				}
+			}
+			return list.build();
+		}
+	}
+
 	public WbbPost getFirstPost(int threadId) throws SQLException
 	{
 		checkConnected();
@@ -157,29 +205,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 		return null;
 	}
 
-	public List<WbbThread> getThreadsByPrefix(String prefix) throws SQLException
-	{
-		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, boardID, topic FROM wbb1_1_thread WHERE prefix=?"))
-		{
-			stmt.setString(1, prefix);
-			ImmutableList.Builder<WbbThread> list = ImmutableList.builder();
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				while (rs.next())
-				{
-					WbbThread thread = new WbbThread();
-					thread.id = rs.getInt(1);
-					thread.boardId = rs.getInt(2);
-					thread.topic = rs.getString(3);
-					thread.prefix = prefix;
-					list.add(thread);
-				}
-			}
-			return list.build();
-		}
-	}
-
 	public static class WbbBoard
 	{
 		private int		id;
@@ -208,6 +233,8 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 		private int		boardId;
 		private String	topic;
 		private String	prefix;
+		private boolean	sticky;
+		private int		firstPostId;
 
 		public int getId()
 		{
@@ -227,6 +254,16 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 		public String getPrefix()
 		{
 			return prefix;
+		}
+
+		public boolean isSticky()
+		{
+			return sticky;
+		}
+
+		public int getFirstPostId()
+		{
+			return firstPostId;
 		}
 	}
 
