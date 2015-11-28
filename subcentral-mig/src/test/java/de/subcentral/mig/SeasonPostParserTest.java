@@ -29,6 +29,12 @@ public class SeasonPostParserTest
 		parse("American Horror Story - Staffel 2: Asylum - [DE-Subs: 13 | VO-Subs: 13] - [Komplett]", "post-psych_s05.html");
 	}
 
+	@Test
+	public void testParseTopic() throws IOException
+	{
+		parse("24: Redemption - [DE-Subs: 01 | VO-Subs: 01] - [Komplett]", "post-psych_s05.html");
+	}
+
 	private void parse(String postTitle, String postContentRresourceFilename) throws IOException
 	{
 		String content = Resources.toString(Resources.getResource(SeasonPostParserTest.class, postContentRresourceFilename), StandardCharsets.UTF_8);
@@ -39,6 +45,7 @@ public class SeasonPostParserTest
 	private void printSeasonThreadContent(SeasonPostContent content)
 	{
 		System.out.println();
+		System.out.println("Series: " + content.getSeries());
 		System.out.println("Seasons:");
 		for (Season season : content.getSeasons())
 		{

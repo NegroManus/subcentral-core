@@ -96,16 +96,16 @@ public class SeasonPostParser
 	 * 		<a href="http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=46749">POW4</a>
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR					= Pattern.compile("<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>(.*?)</a>");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR					= Pattern.compile("<a.*?page=Attachment.*?attachmentID=(\\d+).*?>(.*?)</a>");
 	/**
 	 * <pre>
 	 * 	[url='http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=65018']IMMERSE[/url]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_ATTACHMENT_BBCODE					= Pattern.compile("\\[url=.*?page=WcfAttachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
-	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED			= Pattern.compile("([*])?<a.*?page=WcfAttachment.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
+	private static final Pattern					PATTERN_ATTACHMENT_BBCODE					= Pattern.compile("\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED			= Pattern.compile("([*])?<a.*?page=Attachment.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
 	private static final Pattern					PATTERN_ATTACHMENT_BBCODE_MARKED			= Pattern
-			.compile("([*])?\\[url=.*?page=WcfAttachment.*?attachmentID=(\\d+).*?\\]([*])?(.*?)([*])?\\[/url\\]([*])?");
+			.compile("([*])?\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\]([*])?(.*?)([*])?\\[/url\\]([*])?");
 
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
 	{
@@ -148,14 +148,14 @@ public class SeasonPostParser
 		return parse(post.getTopic(), post.getMessage());
 	}
 
-	public SeasonPostContent parse(String postTitle, String postContent)
+	public SeasonPostContent parse(String postTopic, String postContent)
 	{
 		Data data = new Data();
-		data.postTitle = postTitle;
+		data.postTopic = postTopic;
 		data.postContent = Jsoup.parse(postContent, Migration.SUBCENTRAL_HOST);
 
 		// Title
-		parsePostTitle(data);
+		parsePostTopic(data);
 
 		// Content
 		parseSeasonHeader(data);
@@ -181,9 +181,9 @@ public class SeasonPostParser
 	 * </pre>
 	 * 
 	 */
-	private void parsePostTitle(Data data)
+	private void parsePostTopic(Data data)
 	{
-		Matcher topicMatcher = PATTERN_POST_TOPIC_NUMBERED_SEASON.matcher(data.postTitle);
+		Matcher topicMatcher = PATTERN_POST_TOPIC_NUMBERED_SEASON.matcher(data.postTopic);
 		if (topicMatcher.matches())
 		{
 			Series series = new Series(topicMatcher.group(1));
@@ -254,6 +254,8 @@ public class SeasonPostParser
 			}
 			return;
 		}
+
+		log.warn("Could not parse post topic \"" + data.postTopic + "\". No pattern matched");
 	}
 
 	/**
@@ -333,7 +335,7 @@ public class SeasonPostParser
 			catch (Exception e)
 			{
 				log.warn("Exception while trying to parse subtitle table as standard table. Parsing as non-standard table (post title: \"{}\", table number: {}, exception: {})",
-						data.postTitle,
+						data.postTopic,
 						data.currentTableNum,
 						e.toString());
 				parseNonStandardTable(data, table);
@@ -412,7 +414,7 @@ public class SeasonPostParser
 			List<Element> row = rowIter.next();
 			if (row.isEmpty())
 			{
-				log.warn("Skipping empty row (post title: \"{}\", table number: {})", data.postTitle, data.currentTableNum);
+				log.warn("Skipping empty row (post title: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
 				continue;
 			}
 
@@ -475,7 +477,7 @@ public class SeasonPostParser
 				log.warn("Row does not have the expected number of columns (expected: {}, actual: {}; post title: \"{}\", table number: {}, columns: {})",
 						numColumns,
 						row.size(),
-						data.postTitle,
+						data.postTopic,
 						data.currentTableNum,
 						row);
 			}
@@ -1184,7 +1186,7 @@ public class SeasonPostParser
 	private static final class Data
 	{
 		// input
-		private String								postTitle;
+		private String								postTopic;
 		private Document							postContent;
 
 		// state
