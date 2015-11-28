@@ -188,13 +188,21 @@ public class SeasonPostParser
 		return parse(post.getTopic(), post.getMessage());
 	}
 
+	public SeasonPostContent parseTopic(String postTopic)
+	{
+		Data data = new Data();
+		data.postTopic = postTopic;
+		parsePostTopic(data);
+		return new SeasonPostContent(data.series, data.seasons.keySet(), data.subtitles);
+	}
+
 	public SeasonPostContent parse(String postTopic, String postContent)
 	{
 		Data data = new Data();
 		data.postTopic = postTopic;
 		data.postContent = Jsoup.parse(postContent, Migration.SUBCENTRAL_HOST);
 
-		// Title
+		// Topic
 		parsePostTopic(data);
 
 		// Content
