@@ -262,20 +262,6 @@ public class SeasonPostParser
 		}
 
 		topicMatcher.reset();
-		topicMatcher.usePattern(PATTERN_POST_TOPIC_SPECIAL_SEASON);
-		if (topicMatcher.matches())
-		{
-			Series series = new Series(topicMatcher.group(1));
-			data.series = series;
-			Season season = series.newSeason();
-			String title = topicMatcher.group(2).trim();
-			season.setTitle(title);
-			season.setSpecial(true);
-			data.seasons.put(season, season);
-			return;
-		}
-
-		topicMatcher.reset();
 		topicMatcher.usePattern(PATTERN_POST_TOPIC_MULTIPLE_SEASONS);
 		if (topicMatcher.matches())
 		{
@@ -289,6 +275,20 @@ public class SeasonPostParser
 				Season season = series.newSeason(i);
 				data.seasons.put(season, season);
 			}
+			return;
+		}
+
+		topicMatcher.reset();
+		topicMatcher.usePattern(PATTERN_POST_TOPIC_SPECIAL_SEASON);
+		if (topicMatcher.matches())
+		{
+			Series series = new Series(topicMatcher.group(1));
+			data.series = series;
+			Season season = series.newSeason();
+			String title = topicMatcher.group(2).trim();
+			season.setTitle(title);
+			season.setSpecial(true);
+			data.seasons.put(season, season);
 			return;
 		}
 
