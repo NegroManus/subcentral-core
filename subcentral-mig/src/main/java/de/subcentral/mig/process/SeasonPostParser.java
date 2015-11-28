@@ -52,10 +52,50 @@ public class SeasonPostParser
 
 	private static final Pattern					PATTERN_BBCODE								= Pattern.compile("\\[(\\w+).*?\\](.*?)\\[/\\1\\]");
 
+	/**
+	 * Numbered season:
+	 * 
+	 * <pre>
+	 * Mr. Robot - Staffel 1 - [DE-Subs: 10 | VO-Subs: 10] - [Komplett] - [+ Deleted Scenes]
+	 * </pre>
+	 */
 	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_SEASON			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
+
+	/**
+	 * Numbered season with title:
+	 * 
+	 * <pre>
+	 * American Horror Story - Staffel 1: Horror House - [DE-Subs: 12 | VO-Subs: 12] - [Komplett]
+	 * </pre>
+	 */
 	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON	= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+):\\s+([^-]+)\\s+-\\s*.*");
+
+	/**
+	 * Miniseries:
+	 * 
+	 * <pre>
+	 * Band Of Brothers - Miniserie - [DE-Subs: 10 | VO-Subs: 10] - [Komplett]
+	 * </pre>
+	 */
 	private static final Pattern					PATTERN_POST_TOPIC_MINI_SERIES				= Pattern.compile("(.*?)\\s+-\\s+Miniserie\\s+-\\s*.*");
+
+	/**
+	 * Special season:
+	 * 
+	 * <pre>
+	 * Doctor Who - Klassische Folgen - [DE-Subs: 111 | VO-Subs: 160 | Aired: 160] - [+Specials]
+	 * Psych - Webisodes - [DE-Subs: 06 | VO-Subs: 06] - [Komplett]
+	 * </pre>
+	 */
 	private static final Pattern					PATTERN_POST_TOPIC_SPECIAL_SEASON			= Pattern.compile("(.*?)\\s+-\\s+([^-]+)\\s+-\\s*.*");
+
+	/**
+	 * Multiple seasons:
+	 * 
+	 * <pre>
+	 * Buffy the Vampire Slayer - Staffel 1 bis Staffel 7 - Komplett
+	 * </pre>
+	 */
 	private static final Pattern					PATTERN_POST_TOPIC_MULTIPLE_SEASONS			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
 
 	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS						= createColumnTypePatternMap();
@@ -93,13 +133,13 @@ public class SeasonPostParser
 
 	/**
 	 * <pre>
-	 * 		<a href="http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=46749">POW4</a>
+	 * 		<a href="http://www.subcentral.de/index.php?page=Attachment&attachmentID=46749">POW4</a>
 	 * </pre>
 	 */
 	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR					= Pattern.compile("<a.*?page=Attachment.*?attachmentID=(\\d+).*?>(.*?)</a>");
 	/**
 	 * <pre>
-	 * 	[url='http://www.subcentral.de/index.php?page=WcfAttachment&attachmentID=65018']IMMERSE[/url]
+	 * 	[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=65018']IMMERSE[/url]
 	 * </pre>
 	 */
 	private static final Pattern					PATTERN_ATTACHMENT_BBCODE					= Pattern.compile("\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
@@ -125,7 +165,7 @@ public class SeasonPostParser
 
 	public SeasonPostContent getAndParse(int threadId, SubCentralApi api) throws IOException
 	{
-		Document doc = api.getContent("index.php?page=WbbThread&threadID=" + threadId);
+		Document doc = api.getContent("index.php?page=Thread&threadID=" + threadId);
 		return parse(doc);
 	}
 
@@ -168,20 +208,9 @@ public class SeasonPostParser
 	}
 
 	/**
-	 * <pre>
-	 * Numbered:
-	 * Mr. Robot - Staffel 1 - [DE-Subs: 10 | VO-Subs: 10] - [Komplett] - [+ Deleted Scenes]
-	 * 
-	 * Special with title:
-	 * Doctor Who - Klassische Folgen - [DE-Subs: 111 | VO-Subs: 160 | Aired: 160] - [+Specials]
-	 * Psych - Webisodes - [DE-Subs: 06 | VO-Subs: 06] - [Komplett]
-	 * 
-	 * Multiple seasons in one thread:
-	 * Buffy the Vampire Slayer - Staffel 1 bis Staffel 7 - Komplett
-	 * </pre>
-	 * 
+	 * Trying to parse the post topic with the {@code PATTERN_POST_TOPIC*} patterns.
 	 */
-	private void parsePostTopic(Data data)
+	private static void parsePostTopic(Data data)
 	{
 		Matcher topicMatcher = PATTERN_POST_TOPIC_NUMBERED_SEASON.matcher(data.postTopic);
 		if (topicMatcher.matches())
@@ -1084,7 +1113,7 @@ public class SeasonPostParser
 		// a) If the SubtitleAdjustments are equal -> remove all but the first (happens due to colspan)
 		// b) If they have a different Subtitle (different Episode)
 		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
-		// Map<AttachmentID->first SubtitleAdjustment with that WcfAttachment-ID>
+		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
 		Map<Integer, SubtitleFile> mapAttachmentsToSubs = new HashMap<>();
 		ListIterator<SubtitleFile> subAdjIter = data.subtitles.listIterator();
 		while (subAdjIter.hasNext())
