@@ -664,6 +664,6 @@ public class ConsistencyChecker
 
 	private static String formatPost(WbbPost post)
 	{
-		return "\"" + post.getTopic() + "\" (threadID=" + post.getId() + ")";
+		return "\"" + post.getTopic() + "\" (postID=" + post.getId() + ")";
 	}
 }
