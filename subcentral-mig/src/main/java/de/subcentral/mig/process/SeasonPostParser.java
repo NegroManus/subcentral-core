@@ -80,6 +80,16 @@ public class SeasonPostParser
 	private static final Pattern					PATTERN_POST_TOPIC_MINI_SERIES				= Pattern.compile("(.*?)\\s+-\\s+Miniserie\\s+-\\s*.*");
 
 	/**
+	 * Multiple seasons:
+	 * 
+	 * <pre>
+	 * Buffy the Vampire Slayer - Staffel 1 bis Staffel 7 - Komplett
+	 * </pre>
+	 */
+	private static final Pattern					PATTERN_POST_TOPIC_MULTIPLE_SEASONS			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
+
+	// TODO allow "-" in the season title (-> match until the " - [" that signals the end of the title)
+	/**
 	 * Special season:
 	 * 
 	 * <pre>
@@ -88,15 +98,6 @@ public class SeasonPostParser
 	 * </pre>
 	 */
 	private static final Pattern					PATTERN_POST_TOPIC_SPECIAL_SEASON			= Pattern.compile("(.*?)\\s+-\\s+([^-]+)\\s+-\\s*.*");
-
-	/**
-	 * Multiple seasons:
-	 * 
-	 * <pre>
-	 * Buffy the Vampire Slayer - Staffel 1 bis Staffel 7 - Komplett
-	 * </pre>
-	 */
-	private static final Pattern					PATTERN_POST_TOPIC_MULTIPLE_SEASONS			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
 
 	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS						= createColumnTypePatternMap();
 
