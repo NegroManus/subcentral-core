@@ -153,7 +153,7 @@ public class SeasonPostParser
 		map.put(Pattern.compile("Episode"), ColumnType.EPISODE);
 		map.put(Pattern.compile(".*?flags/de\\.png.*"), ColumnType.GERMAN_SUBS);
 		map.put(Pattern.compile("Deutsch"), ColumnType.GERMAN_SUBS);
-		map.put(Pattern.compile(".*?flags/(usa|uk|ca|aus)\\.png.*"), ColumnType.ENGLISH_SUBS);
+		map.put(Pattern.compile(".*?flags/(usa|uk|ca|aus|nz)\\.png.*"), ColumnType.ENGLISH_SUBS);
 		map.put(Pattern.compile("(Englisch|VO)"), ColumnType.ENGLISH_SUBS);
 		map.put(Pattern.compile("Übersetzung"), ColumnType.TRANSLATION);
 		map.put(Pattern.compile("(Korrektur|Überarbeitung)"), ColumnType.REVISION);
@@ -382,25 +382,35 @@ public class SeasonPostParser
 
 	private static void parseStandardTable(Data data, Element table)
 	{
+		if (!table.getElementsByClass("sclink").isEmpty())
+		{
+			log.trace("Skipping link table (post topic: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
+			return;
+		}
+
 		// Determine ColumnTypes
 		Element thead = table.getElementsByTag("thead").first();
 		if (thead == null)
 		{
 			throw new IllegalArgumentException("No thead element found");
 		}
+
 		Elements thElems = thead.getElementsByTag("th");
 		if (thElems.isEmpty())
+
 		{
 			throw new IllegalArgumentException("No th elements found");
 		}
+
 		ColumnType[] columns = new ColumnType[thElems.size()];
 		for (int i = 0; i < thElems.size(); i++)
+
 		{
 			Element th = thElems.get(i);
 			ColumnType colType = determineColumnType(th.html());
 			if (ColumnType.UNKNOWN.equals(colType))
 			{
-				throw new IllegalArgumentException("Column type could not be determined: " + th);
+				throw new IllegalArgumentException("Column type could not be determined. Unknown column head: " + th.toString());
 			}
 			columns[i] = colType;
 		}
@@ -408,11 +418,14 @@ public class SeasonPostParser
 		// Get rows and cells
 		Element tbody = table.getElementsByTag("tbody").first();
 		if (tbody == null)
+
 		{
 			throw new IllegalArgumentException("No tbody element found");
 		}
+
 		List<List<Element>> rows = new ArrayList<>();
 		for (Element tr : tbody.getElementsByTag("tr"))
+
 		{
 			List<Element> tdElems = new ArrayList<>(tr.getElementsByTag("td"));
 			rows.add(tdElems);
@@ -451,7 +464,7 @@ public class SeasonPostParser
 			List<Element> row = rowIter.next();
 			if (row.isEmpty())
 			{
-				log.warn("Skipping empty row (post title: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
+				log.warn("Skipping empty row (post topic: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
 				continue;
 			}
 
@@ -511,7 +524,7 @@ public class SeasonPostParser
 
 			if (row.size() < numColumns)
 			{
-				log.warn("Row does not have the expected number of columns (expected: {}, actual: {}; post title: \"{}\", table number: {}, columns: {})",
+				log.warn("Row does not have the expected number of columns (expected: {}, actual: {}; post topic: \"{}\", table number: {}, columns: {})",
 						numColumns,
 						row.size(),
 						data.postTopic,
