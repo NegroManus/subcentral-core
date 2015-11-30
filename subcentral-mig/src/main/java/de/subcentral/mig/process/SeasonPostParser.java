@@ -192,7 +192,7 @@ public class SeasonPostParser
 	{
 		Data data = new Data();
 		data.postTopic = postTopic;
-		parsePostTopic(data);
+		parseTopic(data);
 		return new SeasonPostContent(data.series, data.seasons.keySet(), data.subtitles);
 	}
 
@@ -203,10 +203,10 @@ public class SeasonPostParser
 		data.postContent = Jsoup.parse(postContent, Migration.SUBCENTRAL_HOST);
 
 		// Topic
-		parsePostTopic(data);
+		parseTopic(data);
 
 		// Content
-		parseSeasonHeader(data);
+		parseSeasonHeaderImage(data);
 		parseDescription(data);
 		parseSubtitleTable(data);
 
@@ -218,7 +218,7 @@ public class SeasonPostParser
 	/**
 	 * Trying to parse the post topic with the {@code PATTERN_POST_TOPIC*} patterns.
 	 */
-	private static void parsePostTopic(Data data)
+	private static void parseTopic(Data data)
 	{
 		Matcher topicMatcher = PATTERN_POST_TOPIC_NUMBERED_SEASON.matcher(data.postTopic);
 		if (topicMatcher.matches())
@@ -308,7 +308,7 @@ public class SeasonPostParser
 	 * @param season
 	 * @param postContent
 	 */
-	private static void parseSeasonHeader(Data data)
+	private static void parseSeasonHeaderImage(Data data)
 	{
 		Element headerImg = data.postContent.select("div.tbild > img").first();
 		if (headerImg != null)
@@ -371,7 +371,7 @@ public class SeasonPostParser
 			}
 			catch (Exception e)
 			{
-				log.warn("Exception while trying to parse subtitle table as standard table. Parsing as non-standard table (post title: \"{}\", table number: {}, exception: {})",
+				log.warn("Failed to to parse subtitle table as standard table. Parsing as non-standard table (post title: \"{}\", table number: {}, exception: {})",
 						data.postTopic,
 						data.currentTableNum,
 						e.toString());
@@ -464,7 +464,7 @@ public class SeasonPostParser
 			List<Element> row = rowIter.next();
 			if (row.isEmpty())
 			{
-				log.warn("Skipping empty row (post topic: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
+				log.debug("Skipping empty row (post topic: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
 				continue;
 			}
 
