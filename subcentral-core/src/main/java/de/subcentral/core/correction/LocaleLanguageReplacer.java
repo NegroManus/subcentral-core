@@ -109,6 +109,10 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 	@Override
 	public String apply(String lang)
 	{
+		if (lang == null)
+		{
+			return null;
+		}
 		Locale oldLocale = parseLocale(lang);
 		if (oldLocale != null)
 		{
@@ -174,20 +178,20 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		// 2. print the language as specified
 		switch (outputLanguageFormat)
 		{
-		case NAME:
-			return locale.toString();
-		case LANGUAGE_TAG:
-			return locale.toLanguageTag();
-		case ISO2:
-			return locale.getLanguage();
-		case ISO3:
-			return locale.getISO3Language();
-		case DISPLAY_NAME:
-			return locale.getDisplayName(outputLanguage);
-		case DISPLAY_LANGUAGE:
-			return locale.getDisplayLanguage(outputLanguage);
-		default:
-			return locale.toString();
+			case NAME:
+				return locale.toString();
+			case LANGUAGE_TAG:
+				return locale.toLanguageTag();
+			case ISO2:
+				return locale.getLanguage();
+			case ISO3:
+				return locale.getISO3Language();
+			case DISPLAY_NAME:
+				return locale.getDisplayName(outputLanguage);
+			case DISPLAY_LANGUAGE:
+				return locale.getDisplayLanguage(outputLanguage);
+			default:
+				return locale.toString();
 		}
 	}
 

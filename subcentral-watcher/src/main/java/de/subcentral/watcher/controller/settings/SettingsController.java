@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -19,8 +18,10 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 
 import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.WatcherApp;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.settings.SettingsUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -47,8 +48,8 @@ public class SettingsController extends AbstractController
 {
 	private static final Logger					log										= LogManager.getLogger(SettingsController.class);
 
-	private static final String					CUSTOM_SETTINGS_FILE					= "watcher-settings.xml";
-	private static final String					DEFAULT_SETTINGS_FILE					= "watcher-settings-default.xml";
+	private static final String					CUSTOM_SETTINGS_FILENAME				= "watcher-settings.xml";
+	private static final String					DEFAULT_SETTINGS_FILENAME				= "watcher-settings-default.xml";
 
 	public static final String					WATCH_SECTION							= "watch";
 	public static final String					PARSING_SECTION							= "parsing";
@@ -406,25 +407,17 @@ public class SettingsController extends AbstractController
 
 	public void confirmSaveSettings()
 	{
-		try
-		{
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.initOwner(mainController.getPrimaryStage());
-			alert.setTitle("Save settings?");
-			alert.setHeaderText("Do you want to save the current settings?");
-			alert.setContentText("The current settings will be stored in the settings file.");
-			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.initOwner(mainController.getPrimaryStage());
+		alert.setTitle("Save settings?");
+		alert.setHeaderText("Do you want to save the current settings?");
+		alert.setContentText("The current settings will be stored in the settings file.");
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.YES)
-			{
-				saveSettings();
-			}
-		}
-		catch (Exception e1)
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			saveSettings();
 		}
 	}
 
@@ -466,13 +459,17 @@ public class SettingsController extends AbstractController
 		try
 		{
 			Path settingsFile = getCustomSettingsPath();
+
+			// May create parent dir
+			Files.createDirectories(settingsFile.getParent());
+
 			WatcherSettings.INSTANCE.save(settingsFile);
 			defaultSettingsLoaded.set(false);
 			customSettingsExist.set(true);
 		}
-		catch (ConfigurationException e)
+		catch (ConfigurationException | IOException e)
 		{
-			FxUtil.createExceptionAlert("Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILE, e).showAndWait();
+			FxUtil.createExceptionAlert("Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILENAME, e).showAndWait();
 		}
 	}
 
@@ -497,7 +494,7 @@ public class SettingsController extends AbstractController
 		}
 		else
 		{
-			log.debug("No custom settings found at {}. Will load default settings", CUSTOM_SETTINGS_FILE);
+			log.debug("No custom settings found at {}. Will load default settings", CUSTOM_SETTINGS_FILENAME);
 		}
 
 		// if did not hit "return;", load default settings
@@ -510,7 +507,7 @@ public class SettingsController extends AbstractController
 		{
 			// A resource has to be loaded via URL
 			// because building a Path for a JAR intern resource file results in a FileSystem exception.
-			WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILE));
+			WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILENAME));
 			defaultSettingsLoaded.set(true);
 		}
 		catch (Exception e)
@@ -535,7 +532,7 @@ public class SettingsController extends AbstractController
 			alert.initOwner(mainController.getPrimaryStage());
 			alert.setTitle("Save watcher settings?");
 			alert.setHeaderText("Do you want to save the watcher settings?");
-			alert.setContentText("You have unsaved changes in the settings. Do you want to save them?\n(" + CUSTOM_SETTINGS_FILE + ")");
+			alert.setContentText("You have unsaved changes in the settings. Do you want to save them?\n(" + getCustomSettingsPath() + ")");
 			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 			Optional<ButtonType> result = alert.showAndWait();
@@ -552,7 +549,10 @@ public class SettingsController extends AbstractController
 
 	private Path getCustomSettingsPath()
 	{
-		return Paths.get("watcher-settings.xml").toAbsolutePath();
+		Path localConfigDir = SettingsUtil.getLocalConfigDirectorySave();
+
+		Path watcherConfigDir = localConfigDir.resolve(WatcherApp.APP_NAME);
+		return watcherConfigDir.resolve(CUSTOM_SETTINGS_FILENAME).toAbsolutePath();
 	}
 
 	@Override

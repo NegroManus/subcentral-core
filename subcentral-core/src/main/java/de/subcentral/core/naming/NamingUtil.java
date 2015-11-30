@@ -89,7 +89,6 @@ public class NamingUtil
 	{
 		return (T obj) ->
 		{
-			System.out.println("RequiredNames=" + requiredNames);
 			U nestedObj = nestedObjRetriever.apply(obj);
 			Set<String> candidateNames = generateNames(nestedObj, ImmutableList.of(namingServices), parameterGenerator.apply(nestedObj));
 			// If requiredNames is empty, all names are accepted. Otherwise return true, if any of the candidate's names matches a required name

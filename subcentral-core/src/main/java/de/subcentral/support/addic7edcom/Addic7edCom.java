@@ -24,7 +24,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7edCom
 {
-	public static final String				SITE_ID		= "addic7ed.com";
+	public static final String				SITE_ID			= "addic7ed.com";
 
 	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(SITE_ID);
 
@@ -40,7 +40,7 @@ public class Addic7edCom
 		// String tagsPattern = "((HI|C|orig|updated)+)";
 		String langPttrn = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian\\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 		String langSubTagsSrcPttrn = langPttrn + "\\.(.+)\\.Addic7ed\\.com";
-		String rlsTagsPttrn = "WEB[.-]?(?:DL|Rip)";
+		String rlsTagsPttrn = "(?:WEB[.-]?(?:DL|Rip)|INTERNAL)";
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE, "Addic7ed.com");
 
 		// --------------
