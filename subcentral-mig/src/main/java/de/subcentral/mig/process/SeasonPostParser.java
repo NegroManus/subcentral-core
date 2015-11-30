@@ -59,7 +59,7 @@ public class SeasonPostParser
 	 * Mr. Robot - Staffel 1 - [DE-Subs: 10 | VO-Subs: 10] - [Komplett] - [+ Deleted Scenes]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_SEASON			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_SEASON			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+-\\s+\\[.*");
 
 	/**
 	 * Numbered season with title:
@@ -68,7 +68,7 @@ public class SeasonPostParser
 	 * American Horror Story - Staffel 1: Horror House - [DE-Subs: 12 | VO-Subs: 12] - [Komplett]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON	= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+):\\s+([^-]+)\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON	= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+):\\s+(.*)\\s+-\\s+\\[.*");
 
 	/**
 	 * Miniseries:
@@ -77,18 +77,17 @@ public class SeasonPostParser
 	 * Band Of Brothers - Miniserie - [DE-Subs: 10 | VO-Subs: 10] - [Komplett]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_POST_TOPIC_MINI_SERIES				= Pattern.compile("(.*?)\\s+-\\s+Miniserie\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_MINI_SERIES				= Pattern.compile("(.*?)\\s+-\\s+Miniserie\\s+-\\s+\\[.*");
 
 	/**
 	 * Multiple seasons:
 	 * 
 	 * <pre>
-	 * Buffy the Vampire Slayer - Staffel 1 bis Staffel 7 - Komplett
+	 * Buffy the Vampire Slayer - Staffel 1-7 - [Komplett]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_POST_TOPIC_MULTIPLE_SEASONS			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_MULTIPLE_SEASONS			= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)-(\\d+)\\s+-\\s+\\[.*");
 
-	// TODO allow "-" in the season title (-> match until the " - [" that signals the end of the title)
 	/**
 	 * Special season:
 	 * 
@@ -97,7 +96,7 @@ public class SeasonPostParser
 	 * Psych - Webisodes - [DE-Subs: 06 | VO-Subs: 06] - [Komplett]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_POST_TOPIC_SPECIAL_SEASON			= Pattern.compile("(.*?)\\s+-\\s+([^-]+)\\s+-\\s*.*");
+	private static final Pattern					PATTERN_POST_TOPIC_SPECIAL_SEASON			= Pattern.compile("(.*?)\\s+-\\s+(.*)\\s+-\\s+\\[.*");
 
 	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS						= createColumnTypePatternMap();
 
