@@ -394,7 +394,7 @@ public class SubtitleFile extends MetadataBase implements Work, Comparable<Subti
 
 	public boolean equalsByName(SubtitleFile other)
 	{
-		return other == null ? false : name == null ? false : name.equalsIgnoreCase(other.name);
+		return other == null ? false : name == null ? false : name.equals(other.name);
 	}
 
 	@Override

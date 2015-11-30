@@ -1,8 +1,8 @@
 package de.subcentral.core.metadata.media;
 
 import java.time.Year;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -75,7 +75,7 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 		}
 		if (obj instanceof Movie)
 		{
-			return StringUtils.equalsIgnoreCase(name, ((Movie) obj).name);
+			return Objects.equals(name, ((Movie) obj).name);
 		}
 		return false;
 	}
@@ -83,7 +83,7 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(19, 201).append(StringUtils.lowerCase(name)).toHashCode();
+		return new HashCodeBuilder(19, 201).append(name).toHashCode();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package de.subcentral.core.metadata.media;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -80,7 +81,7 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 		}
 		if (obj instanceof GenericMedia)
 		{
-			return StringUtils.equalsIgnoreCase(name, ((GenericMedia) obj).name);
+			return Objects.equals(name, ((GenericMedia) obj).name);
 		}
 		return false;
 	}
@@ -88,7 +89,7 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(17, 23).append(StringUtils.lowerCase(name)).toHashCode();
+		return new HashCodeBuilder(17, 23).append(name).toHashCode();
 	}
 
 	@Override

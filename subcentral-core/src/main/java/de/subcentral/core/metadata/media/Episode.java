@@ -2,11 +2,9 @@ package de.subcentral.core.metadata.media;
 
 import java.time.temporal.Temporal;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -341,7 +339,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 		{
 			Episode o = (Episode) obj;
 			return Objects.equals(series, o.series) && Objects.equals(season, o.season) && Objects.equals(numberInSeason, o.numberInSeason) && Objects.equals(numberInSeries, o.numberInSeries)
-					&& Objects.equals(date, o.date) && StringUtils.equalsIgnoreCase(title, o.title);
+					&& Objects.equals(date, o.date) && Objects.equals(title, o.title);
 		}
 		return false;
 	}
@@ -349,7 +347,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(7, 15).append(series).append(season).append(numberInSeason).append(numberInSeries).append(date).append(StringUtils.lowerCase(title, Locale.ENGLISH)).toHashCode();
+		return new HashCodeBuilder(7, 15).append(series).append(season).append(numberInSeason).append(numberInSeries).append(date).append(title).toHashCode();
 	}
 
 	@Override

@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -346,7 +345,7 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 		}
 		if (obj instanceof Series)
 		{
-			return StringUtils.equalsIgnoreCase(name, ((Series) obj).name);
+			return Objects.equals(name, ((Series) obj).name);
 		}
 		return false;
 	}
@@ -354,7 +353,7 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(3, 11).append(StringUtils.lowerCase(name, Locale.ENGLISH)).toHashCode();
+		return new HashCodeBuilder(3, 11).append(name).toHashCode();
 	}
 
 	@Override

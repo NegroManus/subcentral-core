@@ -453,7 +453,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 
 	public boolean equalsByName(Release other)
 	{
-		return other == null ? false : name == null ? false : name.equalsIgnoreCase(other.name);
+		return other == null ? false : (name == null ? false : name.equals(other.name));
 	}
 
 	/**

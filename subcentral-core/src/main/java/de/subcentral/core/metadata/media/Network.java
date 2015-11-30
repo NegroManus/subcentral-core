@@ -1,8 +1,7 @@
 package de.subcentral.core.metadata.media;
 
-import java.util.Locale;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -51,7 +50,7 @@ public class Network extends MetadataBase implements Comparable<Network>
 		}
 		if (obj instanceof Network)
 		{
-			return StringUtils.equalsIgnoreCase(name, ((Network) obj).name);
+			return Objects.equals(name, ((Network) obj).name);
 		}
 		return false;
 	}
@@ -59,7 +58,7 @@ public class Network extends MetadataBase implements Comparable<Network>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(73, 897).append(StringUtils.lowerCase(name, Locale.ENGLISH)).toHashCode();
+		return new HashCodeBuilder(73, 897).append(name).toHashCode();
 	}
 
 	@Override

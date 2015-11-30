@@ -4,11 +4,9 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -224,7 +222,7 @@ public class Season extends MediaBase implements Comparable<Season>
 		if (obj instanceof Season)
 		{
 			Season o = (Season) obj;
-			return Objects.equals(series, o.series) && Objects.equals(number, o.number) && StringUtils.equalsIgnoreCase(title, o.title);
+			return Objects.equals(series, o.series) && Objects.equals(number, o.number) && Objects.equals(title, o.title);
 		}
 		return false;
 	}
@@ -232,7 +230,7 @@ public class Season extends MediaBase implements Comparable<Season>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(5, 13).append(series).append(number).append(StringUtils.lowerCase(title, Locale.ENGLISH)).toHashCode();
+		return new HashCodeBuilder(5, 13).append(series).append(number).append(title).toHashCode();
 	}
 
 	@Override
