@@ -88,7 +88,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 		}
 	}
 
-	public List<WbbThread> getThreadsByBoardId(int boardId) throws SQLException
+	public List<WbbThread> getThreadsByBoard(int boardId) throws SQLException
 	{
 		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=?"))
@@ -159,7 +159,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 	public WbbPost getFirstPost(int threadId) throws SQLException
 	{
 		checkConnected();
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID"))
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT p.postID, t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID"))
 		{
 			stmt.setInt(1, threadId);
 			try (ResultSet rs = stmt.executeQuery())
@@ -171,6 +171,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 					post.topic = rs.getString(2);
 					Reader msgReader = rs.getCharacterStream(3);
 					post.message = StringUtil.readerToString(msgReader);
+					post.threadId = threadId;
 					return post;
 				}
 			}
@@ -201,6 +202,30 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 			}
 		}
 		return null;
+	}
+
+	public List<WcfAttachment> getAttachmentsByBoard(int boardId) throws SQLException
+	{
+		checkConnected();
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT a.attachmentID, a.attachmentName, a.attachmentSize" // line-break
+				+ " FROM ((wcf1_attachment a JOIN wbb1_1_post p) JOIN wbb1_1_thread t)"
+				+ " WHERE ((a.containerType = 'post') AND (a.containerID = p.postID) AND (p.threadID = t.threadID) AND (t.boardID = ?))"))
+		{
+			stmt.setInt(1, boardId);
+			ImmutableList.Builder<WcfAttachment> list = ImmutableList.builder();
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				while (rs.next())
+				{
+					WcfAttachment att = new WcfAttachment();
+					att.id = rs.getInt(1);
+					att.name = rs.getString(2);
+					att.size = rs.getInt(3);
+					list.add(att);
+				}
+			}
+			return list.build();
+		}
 	}
 
 	public static class WbbBoard
@@ -270,6 +295,7 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 		private int		id;
 		private String	topic;
 		private String	message;
+		private int		threadId;
 
 		public int getId()
 		{
@@ -284,6 +310,11 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 		public String getMessage()
 		{
 			return message;
+		}
+
+		public int getThreadId()
+		{
+			return threadId;
 		}
 	}
 

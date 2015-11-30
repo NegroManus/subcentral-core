@@ -1071,7 +1071,7 @@ public class SeasonPostParser
 					boolean foundSeason = false;
 					for (Season season : data.seasons.keySet())
 					{
-						if (season.getNumber().equals(epi.getSeason().getNumber()))
+						if (season.getNumber() != null && season.getNumber().equals(epi.getSeason().getNumber()))
 						{
 							season.addEpisode(epi);
 							foundSeason = true;

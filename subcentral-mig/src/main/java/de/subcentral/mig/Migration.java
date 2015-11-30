@@ -9,7 +9,6 @@ public class Migration
 	public static final Locale	LOCALE_GERMAN						= Locale.GERMAN;
 
 	public static final String	SEASON_ATTR_POST					= "post";
-	public static final String	SEASON_ATTR_THREAD					= "thread";
 	public static final String	SEASON_ATTR_THREAD_ID				= "threadId";
 	public static final String	SEASON_IMG_TYPE_HEADER				= "header";
 

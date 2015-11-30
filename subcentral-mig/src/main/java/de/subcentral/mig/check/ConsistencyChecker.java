@@ -37,7 +37,9 @@ import com.google.common.collect.Multimaps;
 
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.subtitle.SubtitleFile;
 import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SeasonNamer;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
@@ -50,6 +52,7 @@ import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbThread;
+import de.subcentral.support.woltlab.WoltlabBurningBoard.WcfAttachment;
 
 public class ConsistencyChecker
 {
@@ -107,18 +110,23 @@ public class ConsistencyChecker
 		}
 
 		// Level: Season
-		ListMultimap<WbbThread, Season> threadsToSeasons = readSeasonThreads(seriesListContent.getSeasons());
-		List<WbbThread> seasonThreads = ImmutableList.copyOf(threadsToSeasons.keySet());
-		ListMultimap<WbbPost, Season> postsToSeasons = readSeasonPosts(seriesListContent.getSeasons());
-		// Check seasons against [Subs] threads
 		{
-			List<WbbThread> subsPrefixThreads = readSubsPrefixThreads();
-			checkSeriesListAgainstSubsPrefixThreads(seasonThreads, subsPrefixThreads);
+			ListMultimap<WbbPost, Season> postsToSeasons = readSeasonPosts(seriesListContent.getSeasons());
+			List<WbbPost> seasonPosts = ImmutableList.copyOf(postsToSeasons.keySet());
+			// Check seasons against [Subs] threads
+			{
+				List<WbbThread> subsPrefixThreads = readSubsPrefixThreads();
+				checkSeriesListAgainstSubsPrefixThreads(seasonPosts, subsPrefixThreads);
+			}
+			// Check seasons against sticky threads
+			checkSeriesListAgainstStickyThreads(seriesListContent, seasonPosts);
+			{
+				List<WcfAttachment> subRepoAttachments = readSubRepoAttachments();
+				// Check series/seasons against post topics
+				// Check attachments of all season posts against attachments of subtitle repository
+				checkSeriesListAgainstSeasonPostsAgainstSubRepo(postsToSeasons, subRepoAttachments);
+			}
 		}
-		// Check seasons against sticky threads
-		checkSeriesListAgainstStickyThreads(seriesListContent, seasonThreads);
-		// Check series/seasons against post topics
-		checkSeriesListAgainstSeasonPosts(postsToSeasons);
 	}
 
 	/*
@@ -172,44 +180,6 @@ public class ConsistencyChecker
 		}
 	}
 
-	private ListMultimap<WbbThread, Season> readSeasonThreads(List<Season> seasons)
-	{
-		log.debug("Reading season threads");
-		// Several seasons can point to the same thread (multi season thread)
-		// In that case, don't load the thread several time but assign the same WbbThread to all seasons
-		Map<Integer, WbbThread> threadCache = new ConcurrentHashMap<>();
-		ListMultimap<WbbThread, Season> threadsToSeasons = Multimaps.synchronizedListMultimap(LinkedListMultimap.create());
-		seasons.parallelStream().forEach((Season season) ->
-		{
-			Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
-			if (seasonThreadId != null)
-			{
-				WbbThread thread = threadCache.computeIfAbsent(seasonThreadId, this::loadThread);
-				if (thread != null)
-				{
-					season.addAttributeValue(Migration.SEASON_ATTR_THREAD, thread);
-					threadsToSeasons.put(thread, season);
-				}
-			}
-		});
-		log.debug("Read {} season threads", threadCache.size());
-		return ImmutableListMultimap.copyOf(threadsToSeasons);
-	}
-
-	private WbbThread loadThread(Integer threadId)
-	{
-		try (Connection conn = config.getDataSource().getConnection())
-		{
-			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
-			boardApi.setConnection(conn);
-			return boardApi.getThread(threadId);
-		}
-		catch (SQLException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
 	private ListMultimap<WbbPost, Season> readSeasonPosts(List<Season> seasons) throws SQLException
 	{
 		log.debug("Reading season posts");
@@ -217,12 +187,13 @@ public class ConsistencyChecker
 		// In that case, don't load the post several time but assign the same WbbPost to all seasons
 		Map<Integer, WbbPost> postCache = new ConcurrentHashMap<>();
 		ListMultimap<WbbPost, Season> postsToSeasons = Multimaps.synchronizedListMultimap(LinkedListMultimap.create());
-		seasons.parallelStream().forEach((Season season) ->
+		// To increase performance, parallelStream() can be used. But then the post are not sorted
+		seasons.stream().forEach((Season season) ->
 		{
-			WbbThread seasonThread = season.getAttributeValue(Migration.SEASON_ATTR_THREAD);
-			if (seasonThread != null)
+			Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
+			if (seasonThreadId != null)
 			{
-				WbbPost post = postCache.computeIfAbsent(seasonThread.getFirstPostId(), this::loadPost);
+				WbbPost post = postCache.computeIfAbsent(seasonThreadId, this::loadFirstPost);
 				if (post != null)
 				{
 					season.addAttributeValue(Migration.SEASON_ATTR_POST, post);
@@ -234,13 +205,13 @@ public class ConsistencyChecker
 		return ImmutableListMultimap.copyOf(postsToSeasons);
 	}
 
-	private WbbPost loadPost(int postId)
+	private WbbPost loadFirstPost(Integer threadId)
 	{
 		try (Connection conn = config.getDataSource().getConnection())
 		{
 			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
 			boardApi.setConnection(conn);
-			return boardApi.getPost(postId);
+			return boardApi.getFirstPost(threadId);
 		}
 		catch (SQLException e)
 		{
@@ -362,7 +333,7 @@ public class ConsistencyChecker
 		{
 			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
 			boardApi.setConnection(conn);
-			List<WbbThread> threads = boardApi.getThreadsByBoardId(subRepoBoard.getId());
+			List<WbbThread> threads = boardApi.getThreadsByBoard(subRepoBoard.getId());
 			log.debug("Read {} subtitle repository threads", threads.size());
 			return threads;
 		}
@@ -395,6 +366,20 @@ public class ConsistencyChecker
 		catch (SQLException e)
 		{
 			throw new RuntimeException(e);
+		}
+	}
+
+	private List<WcfAttachment> readSubRepoAttachments() throws SQLException
+	{
+		log.trace("Reading subtitle repository attachments");
+		int subRepoBoardId = config.getEnvironmentSettings().getInt("sc.subrepo.boardid");
+		try (Connection conn = config.getDataSource().getConnection())
+		{
+			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
+			scBoard.setConnection(conn);
+			List<WcfAttachment> atts = scBoard.getAttachmentsByBoard(subRepoBoardId);
+			log.trace("Read {} sticky threads of subtitle repository (boardID={})", atts.size(), subRepoBoardId);
+			return atts;
 		}
 	}
 
@@ -471,19 +456,19 @@ public class ConsistencyChecker
 		appendChapter("Thread topic != QuickJump entry", inconsistentTitles);
 	}
 
-	private void checkSeriesListAgainstSubsPrefixThreads(List<WbbThread> seriesListSeasonThreads, List<WbbThread> subsThreads) throws IOException
+	private void checkSeriesListAgainstSubsPrefixThreads(List<WbbPost> seasonPosts, List<WbbThread> subsThreads) throws IOException
 	{
-		ListMatchResult<WbbThread, WbbThread> seasonThreadsToSubsThreads = matchThreads(seriesListSeasonThreads, subsThreads);
+		ListMatchResult<WbbPost, WbbThread> seasonPostsToSubsThreads = matchPostsToThreads(seasonPosts, subsThreads);
 
 		appendChapter("SeriesList <-> [Subs] Threads",
 				"Season threads without the [Subs] prefix",
-				seasonThreadsToSubsThreads.onlyInFirstList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
+				seasonPostsToSubsThreads.onlyInFirstList.stream().map(ConsistencyChecker::formatPostAsThread).collect(Collectors.toList()));
 
 		appendChapter("Threads with the [Subs] prefix that are not in in the SeriesList",
-				seasonThreadsToSubsThreads.onlyInSecondList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
+				seasonPostsToSubsThreads.onlyInSecondList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
 	}
 
-	private void checkSeriesListAgainstStickyThreads(SeriesListContent seriesListContent, List<WbbThread> seriesListSeasonThreads) throws SQLException, IOException
+	private void checkSeriesListAgainstStickyThreads(SeriesListContent seriesListContent, List<WbbPost> seriesListSeasonPosts) throws SQLException, IOException
 	{
 		// Read all sticky threads
 		List<WbbThread> allStickyThreads = seriesListContent.getSeries().parallelStream().map((Series series) ->
@@ -493,28 +478,63 @@ public class ConsistencyChecker
 			return boardStickyThreads;
 		}).flatMap((List<WbbThread> list) -> list.stream()).collect(Collectors.toList());
 
-		ListMatchResult<WbbThread, WbbThread> seasonsToStickyThreads = matchThreads(seriesListSeasonThreads, allStickyThreads);
+		ListMatchResult<WbbPost, WbbThread> seasonsToStickyThreads = matchPostsToThreads(seriesListSeasonPosts, allStickyThreads);
 		appendChapter("SeriesList seasons <-> Sticky threads",
 				"Season threads that are not sticky",
-				seasonsToStickyThreads.onlyInFirstList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
+				seasonsToStickyThreads.onlyInFirstList.stream().map(ConsistencyChecker::formatPostAsThread).collect(Collectors.toList()));
 		appendChapter("Sticky threads that are no season threads", seasonsToStickyThreads.onlyInSecondList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
 	}
 
-	private void checkSeriesListAgainstSeasonPosts(ListMultimap<WbbPost, Season> postsToSeasons) throws IOException
+	private void checkSeriesListAgainstSeasonPostsAgainstSubRepo(ListMultimap<WbbPost, Season> postsToSeasons, List<WcfAttachment> subRepoAttachments) throws IOException
 	{
-		List<String> entries = new ArrayList<>();
+		Map<Integer, WcfAttachment> attachments = subRepoAttachments.stream().collect(Collectors.toMap((WcfAttachment att) -> att.getId(), (WcfAttachment att) -> att));
+		List<String> topicEntries = new ArrayList<>();
+		List<String> subsNotInRepoEntries = new ArrayList<>();
 		for (WbbPost post : postsToSeasons.keySet())
 		{
 			List<Season> seriesListSeasons = postsToSeasons.get(post);
 			// Parse season post
-			SeasonPostContent parsedPost = new SeasonPostParser().parseTopic(post.getTopic());
+			SeasonPostContent parsedPost = new SeasonPostParser().parse(post);
 			// Compare seasons
 			if (!seriesListSeasons.equals(parsedPost.getSeasons()))
 			{
-				entries.add(joinSeasons(seriesListSeasons) + " != " + joinSeasons(parsedPost.getSeasons()) + " (post: " + formatPost(post) + ")");
+				topicEntries.add(joinSeasons(seriesListSeasons) + " != " + joinSeasons(parsedPost.getSeasons()) + " (post: " + formatPost(post) + ")");
+			}
+			// Compare attachments
+			List<SubtitleFile> subsNotInSubRepo = new ArrayList<>();
+			for (SubtitleFile subFile : parsedPost.getSubtitleFiles())
+			{
+				Integer attId = subFile.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
+				if (attachments.containsKey(attId))
+				{
+					// set to null to signal that a link to this attachment is contained in a season post
+					attachments.put(attId, null);
+				}
+				else
+				{
+					subsNotInSubRepo.add(subFile);
+				}
+			}
+			if (!subsNotInSubRepo.isEmpty())
+			{
+				subsNotInRepoEntries.add(formatPost(post));
+				for (SubtitleFile subFile : subsNotInSubRepo)
+				{
+					subsNotInRepoEntries.add("- " + formatSubtitleFile(subFile));
+				}
 			}
 		}
-		appendChapter("SeriesList <-> Season posts", "Seasons declared in SeriesList != Seasons declared in post topic", entries);
+		List<String> subsNotInSeasonPost = attachments.values()
+				.stream()
+				.filter((WcfAttachment att) -> att != null)
+				.map(ConsistencyChecker::formatAttachment)
+				.sorted(String.CASE_INSENSITIVE_ORDER)
+				.collect(Collectors.toList());
+
+		appendChapter("SeriesList <-> Season posts", "Seasons declared in SeriesList != Seasons declared in post topic", topicEntries);
+
+		appendChapter("Season posts <-> Subtitle repository", "Subtitles from season posts that are not attached in the subtitle repository", subsNotInRepoEntries);
+		appendChapter("Subtitles from subtitle repository that are not linked in any season post", subsNotInSeasonPost);
 	}
 
 	private static String joinSeasons(Iterable<Season> seasons)
@@ -539,11 +559,11 @@ public class ConsistencyChecker
 	/*
 	 * Matching
 	 */
-	private static ListMatchResult<WbbThread, WbbThread> matchThreads(List<WbbThread> firstThreadList, List<WbbThread> secondThreadList)
+	private static ListMatchResult<WbbPost, WbbThread> matchPostsToThreads(List<WbbPost> postList, List<WbbThread> threadList)
 	{
-		return matchLists(firstThreadList, secondThreadList, (WbbThread firstThread, WbbThread secondThread) ->
+		return matchLists(postList, threadList, (WbbPost post, WbbThread thread) ->
 		{
-			return firstThread.getId() == secondThread.getId();
+			return post.getThreadId() == thread.getId();
 		});
 	}
 
@@ -652,6 +672,13 @@ public class ConsistencyChecker
 		return NamingDefaults.getDefaultSeasonNamer().name(season) + " (threadID=" + season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID) + ")";
 	}
 
+	private static String formatSubtitleFile(SubtitleFile subFile)
+	{
+		return NamingDefaults.getDefaultNamingService().name(subFile.getSubtitles()) + " "
+				+ NamingDefaults.getDefaultNamingService().name(subFile.getMatchingReleases(), ImmutableMap.of(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE)) + " (attachmentID="
+				+ subFile.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID) + ")";
+	}
+
 	private static String formatBoard(WbbBoard board)
 	{
 		return "\"" + board.getTitle() + "\" (boardID=" + board.getId() + ")";
@@ -665,5 +692,15 @@ public class ConsistencyChecker
 	private static String formatPost(WbbPost post)
 	{
 		return "\"" + post.getTopic() + "\" (postID=" + post.getId() + ")";
+	}
+
+	private static String formatPostAsThread(WbbPost post)
+	{
+		return "\"" + post.getTopic() + "\" (threadId=" + post.getThreadId() + ")";
+	}
+
+	private static String formatAttachment(WcfAttachment attachment)
+	{
+		return "\"" + attachment.getName() + "\" (attachmentId=" + attachment.getId() + ")";
 	}
 }
