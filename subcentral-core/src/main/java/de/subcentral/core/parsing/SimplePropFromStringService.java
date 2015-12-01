@@ -30,20 +30,20 @@ import de.subcentral.core.util.TimeUtil;
 
 public class SimplePropFromStringService implements PropFromStringService
 {
-	private static final Logger log = LogManager.getLogger(SimplePropFromStringService.class);
+	private static final Logger								log									= LogManager.getLogger(SimplePropFromStringService.class);
 
-	public static final SimplePropFromStringService	DEFAULT						= new SimplePropFromStringService();
+	public static final SimplePropFromStringService			DEFAULT								= new SimplePropFromStringService();
 	/**
 	 * The default element splitter. Used for splitting a list property string into its elements. Splits the string into words of alpha-num chars. Is used by PropParsingService instances if no
 	 * specific item splitter is defined. Common to all instances to save memory.
 	 */
-	public static final Splitter					DEFAULT_ELEMENT_SPLITTER	= Splitter.on(CharMatcher.JAVA_LETTER_OR_DIGIT.negate()).omitEmptyStrings();
+	public static final Splitter							DEFAULT_ELEMENT_SPLITTER			= Splitter.on(CharMatcher.JAVA_LETTER_OR_DIGIT.negate()).omitEmptyStrings();
 
 	/**
 	 * The default map of fromString() functions. If a PropParsingService defines no specific fromString() function for a property or its type, the default map is searched. Common to all instances to
 	 * save memory.
 	 */
-	private static final Map<Class<?>, Function<String, ?>> DEFAULT_TYPE_FROM_STRING_FUNCTIONS = initDefaultTypeFromStringFunctions();
+	private static final Map<Class<?>, Function<String, ?>>	DEFAULT_TYPE_FROM_STRING_FUNCTIONS	= initDefaultTypeFromStringFunctions();
 
 	private static final Map<Class<?>, Function<String, ?>> initDefaultTypeFromStringFunctions()
 	{
@@ -61,8 +61,8 @@ public class SimplePropFromStringService implements PropFromStringService
 		typeFns.put(Long.class, Long::valueOf);
 		typeFns.put(Float.class, Float::valueOf);
 		typeFns.put(Double.class, Double::valueOf);
-		typeFns.put(BigInteger.class, s -> new BigInteger(s));
-		typeFns.put(BigDecimal.class, s -> new BigDecimal(s));
+		typeFns.put(BigInteger.class, BigInteger::new);
+		typeFns.put(BigDecimal.class, BigDecimal::new);
 		// Temporals
 		typeFns.put(Year.class, Year::parse);
 		typeFns.put(YearMonth.class, YearMonth::parse);
@@ -73,7 +73,7 @@ public class SimplePropFromStringService implements PropFromStringService
 		// Model specific types
 		typeFns.put(Tag.class, Tag::parse);
 		typeFns.put(Group.class, Group::parse);
-		typeFns.put(Nuke.class, s -> new Nuke(s));
+		typeFns.put(Nuke.class, Nuke::new);
 
 		return typeFns.build();
 	}

@@ -12,7 +12,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public abstract class AbstractMappingParser<T> implements Parser<T>
 {
 	protected List<MappingMatcher<SimplePropDescriptor>>	matchers				= new ArrayList<>();
-	protected SimplePropFromStringService					propFromStringService	= SimplePropFromStringService.DEFAULT;
+	protected PropFromStringService							propFromStringService	= SimplePropFromStringService.DEFAULT;
 
 	public List<MappingMatcher<SimplePropDescriptor>> getMatchers()
 	{
@@ -24,7 +24,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 		this.matchers = Objects.requireNonNull(matchers, "matchers");
 	}
 
-	public SimplePropFromStringService getPropFromStringService()
+	public PropFromStringService getPropFromStringService()
 	{
 		return propFromStringService;
 	}
