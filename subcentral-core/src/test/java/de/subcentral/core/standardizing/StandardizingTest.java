@@ -41,7 +41,7 @@ public class StandardizingTest
 	{
 		TypeCorrectionService service = new TypeCorrectionService("test");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		service.registerStandardizer(Episode.class, (e, changes) ->
+		service.registerCorrector(Episode.class, (e, changes) ->
 		{
 			if (!e.isSpecial())
 			{
@@ -50,7 +50,7 @@ public class StandardizingTest
 			}
 
 		});
-		service.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Psych"), "Psych (2001)", ImmutableList.of(), "Psych"));
+		service.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Psych"), "Psych (2001)", ImmutableList.of(), "Psych"));
 
 		Episode epi = Episode.createSeasonedEpisode("Psych", 2, 2);
 		Episode expectedEpi = Episode.createSeasonedEpisode("Psych (2001)", 2, 2);

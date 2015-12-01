@@ -207,9 +207,9 @@ public class ProcessingController extends AbstractController
 			}
 		}
 		// add subtitle language standardizer
-		service.registerStandardizer(Subtitle.class, settings.getSubtitleLanguageCorrectionSettings().getSubtitleLanguageStandardizer());
+		service.registerCorrector(Subtitle.class, settings.getSubtitleLanguageCorrectionSettings().getSubtitleLanguageStandardizer());
 		// add subtitle tags standardizer
-		service.registerStandardizer(SubtitleFile.class, SubtitleUtil::standardizeTags);
+		service.registerCorrector(SubtitleFile.class, SubtitleUtil::standardizeTags);
 		return service;
 	}
 
@@ -231,7 +231,7 @@ public class ProcessingController extends AbstractController
 
 	private static <T> void registerStandardizer(TypeCorrectionService service, CorrectionRuleSettingEntry<T, ?> entry)
 	{
-		service.registerStandardizer(entry.getBeanType(), entry.getValue());
+		service.registerCorrector(entry.getBeanType(), entry.getValue());
 	}
 
 	private static NamingService initNamingService()

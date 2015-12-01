@@ -148,8 +148,8 @@ public class SubCentralDe
 
 	public static void registerSubtitleLanguageStandardizers(TypeCorrectionService service)
 	{
-		service.registerStandardizer(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
-		service.registerStandardizer(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
+		service.registerCorrector(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
+		service.registerCorrector(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
 	}
 
 	private SubCentralDe()

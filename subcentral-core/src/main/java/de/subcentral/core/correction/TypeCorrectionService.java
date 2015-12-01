@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 public class TypeCorrectionService implements CorrectionService
 {
 	private final String												domain;
-	private final List<StandardizerEntry<?>>							standardizerEntries		= new CopyOnWriteArrayList<>();
+	private final List<CorrectorEntry<?>>								correctorEntries		= new CopyOnWriteArrayList<>();
 	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
 	public TypeCorrectionService(String domain)
@@ -36,23 +36,23 @@ public class TypeCorrectionService implements CorrectionService
 		return domain;
 	}
 
-	public List<StandardizerEntry<?>> getStandardizerEntries()
+	public List<CorrectorEntry<?>> getCorrectorEntries()
 	{
-		return standardizerEntries;
+		return correctorEntries;
 	}
 
-	public <T> void registerStandardizer(Class<T> beanType, Corrector<? super T> standardizer)
+	public <T> void registerCorrector(Class<T> beanType, Corrector<? super T> corrector)
 	{
-		standardizerEntries.add(new StandardizerEntry<T>(standardizer, beanType));
+		correctorEntries.add(new CorrectorEntry<T>(beanType, corrector));
 	}
 
-	public boolean unregisterStandardizer(Corrector<?> standardizer)
+	public boolean unregisterCorrector(Corrector<?> corrector)
 	{
-		for (StandardizerEntry<?> entry : standardizerEntries)
+		for (CorrectorEntry<?> entry : correctorEntries)
 		{
-			if (entry.standardizer.equals(standardizer))
+			if (entry.corrector.equals(corrector))
 			{
-				standardizerEntries.remove(entry);
+				correctorEntries.remove(entry);
 				return true;
 			}
 		}
@@ -72,31 +72,31 @@ public class TypeCorrectionService implements CorrectionService
 			return ImmutableList.of();
 		}
 		List<Correction> changes = new ArrayList<>();
-		// keep track which beans were already standardized
+		// keep track which beans were already corrected
 		// to not end in an infinite loop because two beans had a bidirectional relationship
-		IdentityHashMap<Object, Boolean> alreadyStdizedBeans = new IdentityHashMap<>();
+		IdentityHashMap<Object, Boolean> alreadyCorrectedBeans = new IdentityHashMap<>();
 
-		Queue<Object> beansToStandardize = new ArrayDeque<>();
-		beansToStandardize.add(bean);
-		Object beanToStandardize;
-		while ((beanToStandardize = beansToStandardize.poll()) != null)
+		Queue<Object> beansToCorrect = new ArrayDeque<>();
+		beansToCorrect.add(bean);
+		Object beanToCorrect;
+		while ((beanToCorrect = beansToCorrect.poll()) != null)
 		{
-			doStandardize(beanToStandardize, changes);
-			alreadyStdizedBeans.put(beanToStandardize, Boolean.TRUE);
-			addNestedBeans(beanToStandardize, beansToStandardize, alreadyStdizedBeans);
+			correctBean(beanToCorrect, changes);
+			alreadyCorrectedBeans.put(beanToCorrect, Boolean.TRUE);
+			addNestedBeans(beanToCorrect, beansToCorrect, alreadyCorrectedBeans);
 		}
 		return changes;
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> void doStandardize(T bean, List<Correction> changes)
+	private <T> void correctBean(T bean, List<Correction> corrections)
 	{
-		for (StandardizerEntry<?> entry : standardizerEntries)
+		for (CorrectorEntry<?> entry : correctorEntries)
 		{
 			if (entry.beanType.isAssignableFrom(bean.getClass()))
 			{
-				Corrector<? super T> standardizer = (Corrector<? super T>) entry.standardizer;
-				standardizer.correct(bean, changes);
+				Corrector<? super T> corrector = (Corrector<? super T>) entry.corrector;
+				corrector.correct(bean, corrections);
 			}
 		}
 	}
@@ -128,20 +128,15 @@ public class TypeCorrectionService implements CorrectionService
 		return MoreObjects.toStringHelper(TypeCorrectionService.class).add("domain", domain).toString();
 	}
 
-	public static final class StandardizerEntry<T>
+	public static final class CorrectorEntry<T>
 	{
-		private final Corrector<? super T>	standardizer;
-		private final Class<T>					beanType;
+		private final Class<T>				beanType;
+		private final Corrector<? super T>	corrector;
 
-		private StandardizerEntry(Corrector<? super T> standardizer, Class<T> beanType)
+		private CorrectorEntry(Class<T> beanType, Corrector<? super T> corrector)
 		{
-			this.standardizer = Objects.requireNonNull(standardizer, "standardizer");
 			this.beanType = Objects.requireNonNull(beanType, "beanType");
-		}
-
-		public Corrector<? super T> getStandardizer()
-		{
-			return standardizer;
+			this.corrector = Objects.requireNonNull(corrector, "corrector");
 		}
 
 		public Class<T> getBeanType()
@@ -149,10 +144,15 @@ public class TypeCorrectionService implements CorrectionService
 			return beanType;
 		}
 
+		public Corrector<? super T> getCorrector()
+		{
+			return corrector;
+		}
+
 		@Override
 		public String toString()
 		{
-			return MoreObjects.toStringHelper(StandardizerEntry.class).add("beanType", beanType).add("standardizer", standardizer).toString();
+			return MoreObjects.toStringHelper(CorrectorEntry.class).add("beanType", beanType).add("corrector", corrector).toString();
 		}
 	}
 }

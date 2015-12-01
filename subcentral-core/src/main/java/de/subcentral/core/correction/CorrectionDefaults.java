@@ -99,14 +99,14 @@ public class CorrectionDefaults
 
 	public static void registerAllDefaultCorrectors(TypeCorrectionService service)
 	{
-		service.registerStandardizer(SubtitleFile.class, SubtitleUtil::standardizeTags);
-		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("AAC2", "0"), Tag.list("AAC2.0"))));
-		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("DD5", "1"), Tag.list("DD5.1"))));
-		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "264"), Tag.list("H.264"))));
-		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "265"), Tag.list("H.265"))));
-		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H264"), Tag.list("H.264"))));
-		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H265"), Tag.list("H.265"))));
-		service.registerStandardizer(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("WEB", "DL"), Tag.list("WEB-DL"))));
+		service.registerCorrector(SubtitleFile.class, SubtitleUtil::standardizeTags);
+		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("AAC2", "0"), Tag.list("AAC2.0"))));
+		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("DD5", "1"), Tag.list("DD5.1"))));
+		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "264"), Tag.list("H.264"))));
+		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "265"), Tag.list("H.265"))));
+		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H264"), Tag.list("H.264"))));
+		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H265"), Tag.list("H.265"))));
+		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("WEB", "DL"), Tag.list("WEB-DL"))));
 	}
 
 	private CorrectionDefaults()

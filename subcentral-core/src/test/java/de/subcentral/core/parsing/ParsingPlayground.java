@@ -122,14 +122,14 @@ public class ParsingPlayground
 
 		final TypeCorrectionService parsedToInfoDbStdzService = new TypeCorrectionService("after parsing");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
-		parsedToInfoDbStdzService.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", ImmutableList.of(), "Scandal"));
-		parsedToInfoDbStdzService.registerStandardizer(Series.class,
+		parsedToInfoDbStdzService.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", ImmutableList.of(), "Scandal"));
+		parsedToInfoDbStdzService.registerCorrector(Series.class,
 				new SeriesNameCorrector(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE), "Last Man Standing (US)", ImmutableList.of(), "Last Man Standing"));
 		SubCentralDe.registerSubtitleLanguageStandardizers(parsedToInfoDbStdzService);
 
 		final TypeCorrectionService infoDbToCustomStdzService = new TypeCorrectionService("after infoDb");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
-		infoDbToCustomStdzService.registerStandardizer(Series.class, new SeriesNameCorrector(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", ImmutableList.of(), null));
+		infoDbToCustomStdzService.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", ImmutableList.of(), null));
 
 		TimeUtil.printDurationMillisDouble("Initialization", totalStart);
 

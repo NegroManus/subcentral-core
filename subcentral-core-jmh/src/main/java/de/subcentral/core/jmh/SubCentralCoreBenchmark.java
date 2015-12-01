@@ -101,7 +101,7 @@ public class SubCentralCoreBenchmark
 		TypeCorrectionService service = new TypeCorrectionService("testing");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		CorrectionDefaults.registerAllDefaultCorrectors(service);
-		service.registerStandardizer(Subtitle.class,
+		service.registerCorrector(Subtitle.class,
 				new LocaleSubtitleLanguageCorrector(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
 						LanguageFormat.NAME,
 						Locale.ENGLISH,

@@ -192,11 +192,11 @@ public class MigrationSettings
 		TypeCorrectionService service = new TypeCorrectionService("migration");
 		for (PatternStringReplacer seriesNameReplacer : loadPatternStringReplacers(cfg, "series.seriesNameReplacers.replacer"))
 		{
-			service.registerStandardizer(Series.class, new SeriesNameCorrector(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
+			service.registerCorrector(Series.class, new SeriesNameCorrector(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
 		}
 		for (PatternStringReplacer contributorNameReplacer : loadPatternStringReplacers(cfg, "subtitles.contributorNameReplacers.replacer"))
 		{
-			service.registerStandardizer(Subber.class, new ReflectiveCorrector<Subber, String>(Subber.class, "name", contributorNameReplacer));
+			service.registerCorrector(Subber.class, new ReflectiveCorrector<Subber, String>(Subber.class, "name", contributorNameReplacer));
 		}
 		return service;
 	}
