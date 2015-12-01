@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.correction.CorrectionDefaults;
-import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.TypeBasedCorrectionService;
 
 public class ReleasesTest
 {
@@ -17,7 +17,7 @@ public class ReleasesTest
 	{
 		Release rls = new Release();
 		rls.setTags(Tag.list("720p", "WEB", "DL", "DD5", "1", "x264"));
-		TypeCorrectionService service = new TypeCorrectionService("test");
+		TypeBasedCorrectionService service = new TypeBasedCorrectionService("test");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		CorrectionDefaults.registerAllDefaultCorrectors(service);
 		List<Correction> changes = service.correct(rls);

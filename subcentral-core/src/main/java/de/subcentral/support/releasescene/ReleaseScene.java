@@ -26,14 +26,14 @@ import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SimplePropFromStringService;
-import de.subcentral.core.parsing.TypeParsingService;
-import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
+import de.subcentral.core.parsing.TypeBasedParsingService;
+import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseScene
 {
 	public static final String				SOURCE_ID		= "release.scene";
-	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(SOURCE_ID);
+	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SOURCE_ID);
 
 	static
 	{

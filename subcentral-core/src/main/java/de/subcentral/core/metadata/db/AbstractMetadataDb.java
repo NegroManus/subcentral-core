@@ -14,6 +14,7 @@ import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.naming.ConditionalNamingService;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.naming.NamingException;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.naming.NoNamerRegisteredException;
@@ -49,13 +50,13 @@ public abstract class AbstractMetadataDb implements MetadataDb
 		return searchByObjectsName(queryObj, recordType);
 	}
 
-	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
+	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException, NamingException
 	{
 		List<T> results = new ArrayList<>();
 		Set<String> names = NamingUtil.generateNames(queryObj, namingServices, MediaUtil.generateNamingParametersForAllNames(queryObj));
 		if (names.isEmpty())
 		{
-			throw new IllegalArgumentException(new NoNamerRegisteredException(queryObj, "None of the NamingServices " + namingServices + " had an appropriate namer registered"));
+			throw new NoNamerRegisteredException(queryObj, "None of the NamingServices " + namingServices + " had an appropriate namer registered");
 		}
 		for (String name : names)
 		{

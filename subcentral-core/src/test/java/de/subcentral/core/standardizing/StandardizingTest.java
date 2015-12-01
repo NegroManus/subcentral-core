@@ -16,7 +16,7 @@ import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.correction.ReflectiveCorrector;
 import de.subcentral.core.correction.SeriesNameCorrector;
-import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -39,7 +39,7 @@ public class StandardizingTest
 	@Test
 	public void testCustomStandardizingService()
 	{
-		TypeCorrectionService service = new TypeCorrectionService("test");
+		TypeBasedCorrectionService service = new TypeBasedCorrectionService("test");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		service.registerCorrector(Episode.class, (e, changes) ->
 		{

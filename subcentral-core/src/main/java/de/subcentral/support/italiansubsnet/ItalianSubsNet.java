@@ -17,15 +17,15 @@ import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
-import de.subcentral.core.parsing.TypeParsingService;
-import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
+import de.subcentral.core.parsing.TypeBasedParsingService;
+import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ItalianSubsNet
 {
 	public static final String SITE_ID = "italiansubs.net";
 
-	private static final TypeParsingService PARSING_SERVICE = new TypeParsingService(SITE_ID);
+	private static final TypeBasedParsingService PARSING_SERVICE = new TypeBasedParsingService(SITE_ID);
 
 	static
 	{

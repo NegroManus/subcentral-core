@@ -19,13 +19,13 @@ import com.google.common.collect.ImmutableList;
  * @implSpec #thread-safe
  *
  */
-public class TypeCorrectionService implements CorrectionService
+public class TypeBasedCorrectionService implements CorrectionService
 {
 	private final String												domain;
 	private final List<CorrectorEntry<?>>								correctorEntries		= new CopyOnWriteArrayList<>();
 	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
-	public TypeCorrectionService(String domain)
+	public TypeBasedCorrectionService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 	}
@@ -125,7 +125,7 @@ public class TypeCorrectionService implements CorrectionService
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(TypeCorrectionService.class).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(TypeBasedCorrectionService.class).add("domain", domain).toString();
 	}
 
 	public static final class CorrectorEntry<T>

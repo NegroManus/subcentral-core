@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.correction.PatternStringReplacer;
 import de.subcentral.core.correction.PatternSubtitleLanguageCorrector;
-import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleFile;
@@ -21,8 +21,8 @@ import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
 import de.subcentral.core.parsing.SubtitleAdjustmentParser;
-import de.subcentral.core.parsing.TypeParsingService;
-import de.subcentral.core.parsing.TypeParsingService.ParserEntry;
+import de.subcentral.core.parsing.TypeBasedParsingService;
+import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.releasescene.ReleaseScene;
 
@@ -31,7 +31,7 @@ public class SubCentralDe
 	public static final String SITE_ID = "subcentral.de";
 
 	private static final Logger				log				= LogManager.getLogger(SubCentralDe.class.getName());
-	private static final TypeParsingService	PARSING_SERVICE	= new TypeParsingService(SITE_ID);
+	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE_ID);
 
 	static
 	{
@@ -146,7 +146,7 @@ public class SubCentralDe
 		return PARSING_SERVICE.getParserEntries();
 	}
 
-	public static void registerSubtitleLanguageStandardizers(TypeCorrectionService service)
+	public static void registerSubtitleLanguageStandardizers(TypeBasedCorrectionService service)
 	{
 		service.registerCorrector(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
 		service.registerCorrector(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));

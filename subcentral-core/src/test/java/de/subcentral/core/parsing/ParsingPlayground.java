@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.correction.SeriesNameCorrector;
-import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.CompatibilityService;
@@ -96,7 +96,7 @@ public class ParsingPlayground
 
 		final long totalStart = System.nanoTime();
 
-		final TypeParsingService ps = new TypeParsingService("default");
+		final TypeBasedParsingService ps = new TypeBasedParsingService("default");
 		// order is relevant. ReleaseScene matchers would also match SubCentralDe matchers
 		ps.getParserEntries().addAll(Addic7edCom.getParserEntries());
 		ps.getParserEntries().addAll(SubCentralDe.getParserEntries());
@@ -120,14 +120,14 @@ public class ParsingPlayground
 		packCfg.setCompressionMethod(CompressionMethod.BEST);
 		final WinRarPackager packager = WinRar.getInstance().getPackager();
 
-		final TypeCorrectionService parsedToInfoDbStdzService = new TypeCorrectionService("after parsing");
+		final TypeBasedCorrectionService parsedToInfoDbStdzService = new TypeBasedCorrectionService("after parsing");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(parsedToInfoDbStdzService);
 		parsedToInfoDbStdzService.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", ImmutableList.of(), "Scandal"));
 		parsedToInfoDbStdzService.registerCorrector(Series.class,
 				new SeriesNameCorrector(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE), "Last Man Standing (US)", ImmutableList.of(), "Last Man Standing"));
 		SubCentralDe.registerSubtitleLanguageStandardizers(parsedToInfoDbStdzService);
 
-		final TypeCorrectionService infoDbToCustomStdzService = new TypeCorrectionService("after infoDb");
+		final TypeBasedCorrectionService infoDbToCustomStdzService = new TypeBasedCorrectionService("after infoDb");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
 		infoDbToCustomStdzService.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", ImmutableList.of(), null));
 

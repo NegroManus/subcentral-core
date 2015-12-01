@@ -30,7 +30,7 @@ public class CorrectionDefaults
 	public static final Function<String, String>	ACCENT_REPLACER						= (String s) -> StringUtils.stripAccents(s);
 	public static final Function<String, String>	TO_LOWERCASE_REPLACER				= (String s) -> StringUtils.lowerCase(s);
 
-	private static final TypeCorrectionService DEFAULT_CORRECTION_SERVICE = new TypeCorrectionService("default");
+	private static final TypeBasedCorrectionService DEFAULT_CORRECTION_SERVICE = new TypeBasedCorrectionService("default");
 
 	static
 	{
@@ -88,7 +88,7 @@ public class CorrectionDefaults
 		return nestedBeans;
 	}
 
-	public static void registerAllDefaultNestedBeansRetrievers(TypeCorrectionService service)
+	public static void registerAllDefaultNestedBeansRetrievers(TypeBasedCorrectionService service)
 	{
 		service.registerNestedBeansRetriever(Episode.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Season.class, CorrectionDefaults::retrieveNestedBeans);
@@ -97,7 +97,7 @@ public class CorrectionDefaults
 		service.registerNestedBeansRetriever(SubtitleFile.class, CorrectionDefaults::retrieveNestedBeans);
 	}
 
-	public static void registerAllDefaultCorrectors(TypeCorrectionService service)
+	public static void registerAllDefaultCorrectors(TypeBasedCorrectionService service)
 	{
 		service.registerCorrector(SubtitleFile.class, SubtitleUtil::standardizeTags);
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("AAC2", "0"), Tag.list("AAC2.0"))));

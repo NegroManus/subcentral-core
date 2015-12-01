@@ -16,7 +16,7 @@ import com.google.common.base.MoreObjects;
  *
  * @deprecated Use {@link ConditionalNamingService} instead.
  */
-public class TypeNamingService implements NamingService, Serializable
+public class TypeBasedNamingService implements NamingService, Serializable
 {
 	private static final long serialVersionUID = 340111838457219906L;
 
@@ -24,7 +24,7 @@ public class TypeNamingService implements NamingService, Serializable
 	private final Map<Class<?>, Namer<?>>	namers				= new ConcurrentHashMap<>();
 	private final AtomicReference<String>	defaultSeparator	= new AtomicReference<>(" ");
 
-	public TypeNamingService(String domain)
+	public TypeBasedNamingService(String domain)
 	{
 		this.domain = Objects.requireNonNull(domain, "domain");
 	}
@@ -137,6 +137,6 @@ public class TypeNamingService implements NamingService, Serializable
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(TypeNamingService.class).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(TypeBasedNamingService.class).add("domain", domain).toString();
 	}
 }

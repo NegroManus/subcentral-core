@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.correction.CorrectionDefaults;
-import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
@@ -193,9 +193,9 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private static TypeCorrectionService createBeforeQueryingStandardizingService(ProcessingSettings settings)
+	private static TypeBasedCorrectionService createBeforeQueryingStandardizingService(ProcessingSettings settings)
 	{
-		TypeCorrectionService service = new TypeCorrectionService("premetadatadb");
+		TypeBasedCorrectionService service = new TypeBasedCorrectionService("premetadatadb");
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
@@ -213,9 +213,9 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private static TypeCorrectionService createAfterQueryingStandardizingService(ProcessingSettings settings)
+	private static TypeBasedCorrectionService createAfterQueryingStandardizingService(ProcessingSettings settings)
 	{
-		TypeCorrectionService service = new TypeCorrectionService("postmetadatadb");
+		TypeBasedCorrectionService service = new TypeBasedCorrectionService("postmetadatadb");
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
@@ -229,7 +229,7 @@ public class ProcessingController extends AbstractController
 		return service;
 	}
 
-	private static <T> void registerStandardizer(TypeCorrectionService service, CorrectionRuleSettingEntry<T, ?> entry)
+	private static <T> void registerStandardizer(TypeBasedCorrectionService service, CorrectionRuleSettingEntry<T, ?> entry)
 	{
 		service.registerCorrector(entry.getBeanType(), entry.getValue());
 	}

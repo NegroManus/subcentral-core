@@ -21,7 +21,7 @@ import de.subcentral.core.correction.PatternStringReplacer;
 import de.subcentral.core.correction.PatternStringReplacer.Mode;
 import de.subcentral.core.correction.ReflectiveCorrector;
 import de.subcentral.core.correction.SeriesNameCorrector;
-import de.subcentral.core.correction.TypeCorrectionService;
+import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.fx.UserPattern;
@@ -189,7 +189,7 @@ public class MigrationSettings
 
 	private static CorrectionService loadStandardizingService(XMLConfiguration cfg)
 	{
-		TypeCorrectionService service = new TypeCorrectionService("migration");
+		TypeBasedCorrectionService service = new TypeBasedCorrectionService("migration");
 		for (PatternStringReplacer seriesNameReplacer : loadPatternStringReplacers(cfg, "series.seriesNameReplacers.replacer"))
 		{
 			service.registerCorrector(Series.class, new SeriesNameCorrector(seriesNameReplacer.getPattern(), seriesNameReplacer.getReplacement()));
