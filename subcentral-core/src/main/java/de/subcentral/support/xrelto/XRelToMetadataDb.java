@@ -67,7 +67,7 @@ public class XRelToMetadataDb extends HttpMetadataDb
 	}
 
 	@Override
-	public Set<Class<?>> getRecordTypes()
+	public Set<Class<?>> getSupportedRecordTypes()
 	{
 		return ImmutableSet.of(Release.class);
 	}

@@ -103,7 +103,7 @@ public class ParsingUtil
 		ImmutableList.Builder<ParsingService> filteredServices = ImmutableList.builder();
 		for (ParsingService service : parsingServices)
 		{
-			if (!Collections.disjoint(service.getTargetTypes(), targetTypes))
+			if (!Collections.disjoint(service.getSupportedTargetTypes(), targetTypes))
 			{
 				filteredServices.add(service);
 			}

@@ -6,7 +6,7 @@ public interface ParsingService extends Parser<Object>
 {
 	public String getDomain();
 
-	public Set<Class<?>> getTargetTypes();
+	public Set<Class<?>> getSupportedTargetTypes();
 
 	public <T> T parse(String text, Class<T> targetType) throws ParsingException;
 

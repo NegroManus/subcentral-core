@@ -11,11 +11,11 @@ public interface MetadataDb
 
 	public String getDisplayName();
 
-	public Set<Class<?>> getRecordTypes();
+	public Set<Class<?>> getSupportedRecordTypes();
 
 	public default Set<Class<?>> getSearchableRecordTypes()
 	{
-		return getRecordTypes();
+		return getSupportedRecordTypes();
 	}
 
 	public Set<String> getSupportedExternalSites();
@@ -41,12 +41,12 @@ public interface MetadataDb
 	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException;
 
 	// Search by external id
-	public default List<Object> searchByExternalId(String externalSource, String id) throws UnsupportedOperationException, IOException
+	public default List<Object> searchByExternalId(String externalSiteId, String id) throws UnsupportedOperationException, IOException
 	{
-		return searchByExternalId(externalSource, id, Object.class);
+		return searchByExternalId(externalSiteId, id, Object.class);
 	}
 
-	public <T> List<T> searchByExternalId(String externalSource, String id, Class<T> recordType) throws UnsupportedOperationException, IOException;
+	public <T> List<T> searchByExternalId(String externalSiteId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException;
 
 	// Get record
 	public default Object get(String id) throws UnsupportedOperationException, IOException

@@ -95,7 +95,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	}
 
 	@Override
-	public Set<Class<?>> getRecordTypes()
+	public Set<Class<?>> getSupportedRecordTypes()
 	{
 		return ImmutableSet.of(Series.class, Episode.class);
 	}

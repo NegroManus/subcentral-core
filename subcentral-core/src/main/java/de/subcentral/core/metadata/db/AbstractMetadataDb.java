@@ -66,7 +66,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	}
 
 	@Override
-	public <T> List<T> searchByExternalId(String siteId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
+	public <T> List<T> searchByExternalId(String externalSiteId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -83,17 +83,17 @@ public abstract class AbstractMetadataDb implements MetadataDb
 		return MoreObjects.toStringHelper(this).add("siteId", getSiteId()).toString();
 	}
 
-	protected UnsupportedOperationException createUnsupportedRecordTypeException(Class<?> unsupportedType) throws UnsupportedOperationException
+	protected UnsupportedOperationException createUnsupportedRecordTypeException(Class<?> unsupportedType)
 	{
-		return new UnsupportedOperationException("The record type is not supported: " + unsupportedType + " (record types: " + getRecordTypes() + ")");
+		return new UnsupportedOperationException("The record type is not supported: " + unsupportedType + " (supported record types: " + getSupportedRecordTypes() + ")");
 	}
 
-	protected UnsupportedOperationException createRecordTypeNotSearchableException(Class<?> unsupportedType) throws UnsupportedOperationException
+	protected UnsupportedOperationException createRecordTypeNotSearchableException(Class<?> unsupportedType)
 	{
 		return new UnsupportedOperationException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
 	}
 
-	protected UnsupportedOperationException createUnsupportedExternalSiteException(String unsupportedExternalSite) throws UnsupportedOperationException
+	protected UnsupportedOperationException createUnsupportedExternalSiteException(String unsupportedExternalSite)
 	{
 		return new UnsupportedOperationException("The external site is not supported: " + unsupportedExternalSite + " (supported external sites: " + getSupportedExternalSites() + ")");
 	}
