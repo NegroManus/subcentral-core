@@ -397,14 +397,12 @@ public class SeasonPostParser
 
 		Elements thElems = thead.getElementsByTag("th");
 		if (thElems.isEmpty())
-
 		{
 			throw new IllegalArgumentException("No th elements found");
 		}
 
 		ColumnType[] columns = new ColumnType[thElems.size()];
 		for (int i = 0; i < thElems.size(); i++)
-
 		{
 			Element th = thElems.get(i);
 			ColumnType colType = determineColumnType(th.html());
@@ -418,14 +416,12 @@ public class SeasonPostParser
 		// Get rows and cells
 		Element tbody = table.getElementsByTag("tbody").first();
 		if (tbody == null)
-
 		{
 			throw new IllegalArgumentException("No tbody element found");
 		}
 
 		List<List<Element>> rows = new ArrayList<>();
 		for (Element tr : tbody.getElementsByTag("tr"))
-
 		{
 			List<Element> tdElems = new ArrayList<>(tr.getElementsByTag("td"));
 			rows.add(tdElems);
