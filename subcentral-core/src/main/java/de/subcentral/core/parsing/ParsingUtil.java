@@ -1,8 +1,6 @@
 package de.subcentral.core.parsing;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -19,43 +20,54 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ParsingUtil
 {
-	public static final <T> void reflectiveMapping(T entity, Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
+	private static final Logger log = LogManager.getLogger(ParsingUtil.class);
+
+	public static final <T> T reflectiveMapping(Class<T> targetType, Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
-		Objects.requireNonNull(entity, "entity");
-		for (Map.Entry<SimplePropDescriptor, String> p : props.entrySet())
+		Objects.requireNonNull(targetType, "targetType");
+		try
 		{
-			SimplePropDescriptor simplePropDescr = p.getKey();
-			if (entity.getClass().equals(simplePropDescr.getBeanClass()))
+			T bean = targetType.newInstance();
+			for (Map.Entry<SimplePropDescriptor, String> p : props.entrySet())
 			{
-				try
+				SimplePropDescriptor simplePropDescr = p.getKey();
+				if (targetType.equals(simplePropDescr.getBeanClass()))
 				{
-					PropertyDescriptor propDescr = simplePropDescr.toPropertyDescriptor();
-					TypeToken<?> type = TypeToken.of(propDescr.getReadMethod().getGenericParameterTypes()[0]);
-					if (Collection.class.isAssignableFrom(type.getRawType()))
+					try
 					{
-						ParameterizedType genericType = (ParameterizedType) type.getType();
-						Class<?> itemClass = ((Class<?>) genericType.getActualTypeArguments()[0]);
-						List<?> value = propFromStringService.parseList(p.getValue(), simplePropDescr, itemClass);
-						if (Set.class.isAssignableFrom(type.getRawType()))
+						PropertyDescriptor propDescr = simplePropDescr.toPropertyDescriptor();
+						TypeToken<?> type = TypeToken.of(propDescr.getReadMethod().getGenericParameterTypes()[0]);
+						if (Collection.class.isAssignableFrom(type.getRawType()))
 						{
-							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(entity, ImmutableSet.copyOf(value));
+							ParameterizedType genericType = (ParameterizedType) type.getType();
+							Class<?> itemClass = ((Class<?>) genericType.getActualTypeArguments()[0]);
+							List<?> value = propFromStringService.parseList(p.getValue(), simplePropDescr, itemClass);
+							if (Set.class.isAssignableFrom(type.getRawType()))
+							{
+								simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, ImmutableSet.copyOf(value));
+							}
+							else
+							{
+								simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, value);
+							}
 						}
 						else
 						{
-							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(entity, value);
+							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, propFromStringService.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
 						}
-					}
-					else
-					{
-						simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(entity, propFromStringService.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
-					}
 
-				}
-				catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ParsingException e)
-				{
-					e.printStackTrace();
+					}
+					catch (Exception e)
+					{
+						log.warn("Failed to map value " + p.getValue() + " to property " + p.getKey() + " of bean of type " + targetType, e);
+					}
 				}
 			}
+			return bean;
+		}
+		catch (Exception e)
+		{
+			throw new MappingException(props, targetType, e);
 		}
 	}
 

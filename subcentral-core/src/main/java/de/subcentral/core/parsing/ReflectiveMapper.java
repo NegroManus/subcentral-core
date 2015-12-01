@@ -17,15 +17,6 @@ public class ReflectiveMapper<T> implements Mapper<T>
 	@Override
 	public T map(Map<SimplePropDescriptor, String> props, PropFromStringService propParsingService)
 	{
-		try
-		{
-			T bean = beanType.newInstance();
-			ParsingUtil.reflectiveMapping(bean, props, propParsingService);
-			return bean;
-		}
-		catch (InstantiationException | IllegalAccessException e)
-		{
-			throw new MappingException(props, beanType, e);
-		}
+		return ParsingUtil.reflectiveMapping(beanType, props, propParsingService);
 	}
 }
