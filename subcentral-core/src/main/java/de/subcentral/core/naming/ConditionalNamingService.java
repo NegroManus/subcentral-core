@@ -150,6 +150,7 @@ public class ConditionalNamingService implements NamingService
 
 		public static <V> ConditionalNamingEntry<V> of(Predicate<Object> condition, Namer<V> namer)
 		{
+			Objects.requireNonNull(condition, "condition");
 			return new ConditionalNamingEntry<V>(condition, namer);
 		}
 
