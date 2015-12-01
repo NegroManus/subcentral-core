@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
-
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMappingParser<T> implements Parser<T>
@@ -37,10 +35,6 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 	@Override
 	public T parse(String text) throws ParsingException
 	{
-		if (StringUtils.isBlank(text))
-		{
-			return null;
-		}
 		try
 		{
 			for (MappingMatcher<SimplePropDescriptor> matcher : matchers)

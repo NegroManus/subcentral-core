@@ -7,8 +7,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
@@ -120,10 +118,6 @@ public class TypeBasedParsingService implements ParsingService
 	@Override
 	public Object parse(String text) throws ParsingException
 	{
-		if (StringUtils.isBlank(text))
-		{
-			return null;
-		}
 		for (ParserEntry<?> entry : parserEntries)
 		{
 			Object parsedObj = entry.parser.parse(text);
@@ -138,10 +132,6 @@ public class TypeBasedParsingService implements ParsingService
 	@Override
 	public <T> T parse(String text, Class<T> targetType) throws ParsingException
 	{
-		if (StringUtils.isBlank(text))
-		{
-			return null;
-		}
 		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
 		for (ParserEntry<?> entry : parserEntries)
 		{
@@ -163,10 +153,6 @@ public class TypeBasedParsingService implements ParsingService
 	@Override
 	public Object parse(String text, Set<Class<?>> targetTypes) throws ParsingException
 	{
-		if (StringUtils.isBlank(text))
-		{
-			return null;
-		}
 		if (targetTypes.isEmpty())
 		{
 			return parse(text);

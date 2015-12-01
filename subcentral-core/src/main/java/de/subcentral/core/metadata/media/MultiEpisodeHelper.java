@@ -37,7 +37,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 	 */
 	public static boolean isMultiEpisode(Object obj)
 	{
-		if (obj != null && obj instanceof Iterable)
+		if (obj instanceof Iterable)
 		{
 			int size = 0;
 			for (Object o : (Iterable<?>) obj)
@@ -56,7 +56,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 
 	public static MultiEpisodeHelper of(Object episodes) throws IllegalArgumentException
 	{
-		if (episodes != null && episodes instanceof Iterable)
+		if (episodes instanceof Iterable)
 		{
 			List<Episode> epis = null;
 			for (Object o : (Iterable<?>) episodes)

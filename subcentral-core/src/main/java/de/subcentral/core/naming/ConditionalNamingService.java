@@ -49,10 +49,6 @@ public class ConditionalNamingService implements NamingService
 	@SuppressWarnings("unchecked")
 	public <V> ConditionalNamingEntry<V> getEntryFor(Namer<V> namer)
 	{
-		if (namer == null)
-		{
-			return null;
-		}
 		for (ConditionalNamingEntry<?> e : entries)
 		{
 			if (e.getNamer().equals(namer))
@@ -65,10 +61,6 @@ public class ConditionalNamingService implements NamingService
 
 	public ConditionalNamingEntry<?> getEntryFor(Predicate<Object> condition)
 	{
-		if (condition == null)
-		{
-			return null;
-		}
 		for (ConditionalNamingEntry<?> e : entries)
 		{
 			if (e.getCondition().equals(condition))
@@ -110,10 +102,6 @@ public class ConditionalNamingService implements NamingService
 	@Override
 	public String name(Object candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
 	{
-		if (candidate == null)
-		{
-			return "";
-		}
 		return doName(candidate, parameters);
 	}
 

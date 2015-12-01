@@ -6,8 +6,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
@@ -16,7 +14,7 @@ public class MappingMatcher<K>
 	/**
 	 * This separator is used to separate multiple values for the same key. These values are concatenated, using this separator.
 	 */
-	public static final String VALUES_WITH_SAME_KEY_SEPARATOR = " ";
+	public static final String				VALUES_WITH_SAME_KEY_SEPARATOR	= " ";
 
 	private final Pattern					pattern;
 	private final ImmutableMap<Integer, K>	groups;
@@ -68,7 +66,7 @@ public class MappingMatcher<K>
 	 */
 	public Map<K, String> match(String text) throws IndexOutOfBoundsException
 	{
-		if (StringUtils.isBlank(text))
+		if (text == null)
 		{
 			return ImmutableMap.of();
 		}
@@ -81,13 +79,12 @@ public class MappingMatcher<K>
 			{
 				K groupKey = entry.getValue();
 				String groupValue = m.group(entry.getKey());
-				// concat the values if multiple groups have the same key
-				String storedValue = mappedGroups.get(groupKey);
-				if (storedValue != null)
+				// groupVal can be null for optional groups
+				if (groupValue != null)
 				{
-					groupValue = storedValue + (groupValue != null ? VALUES_WITH_SAME_KEY_SEPARATOR + groupValue : "");
+					// concat the values if multiple groups have the same key
+					mappedGroups.merge(groupKey, groupValue, (String oldVal, String newVal) -> oldVal + VALUES_WITH_SAME_KEY_SEPARATOR + newVal);
 				}
-				mappedGroups.put(groupKey, groupValue);
 			}
 			return mappedGroups;
 		}

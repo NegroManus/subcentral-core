@@ -83,7 +83,7 @@ public class SubCentralCoreBenchmark
 	private static final SubtitleFile					SUB_ADJ						= SubtitleFile
 			.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
 
-	private static final TypeBasedCorrectionService			STANDARDIZING_SERVICE		= buildService();
+	private static final TypeBasedCorrectionService		STANDARDIZING_SERVICE		= buildService();
 	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
@@ -119,37 +119,37 @@ public class SubCentralCoreBenchmark
 		STANDARDIZING_SERVICE.correct(SUB_ADJ);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testNaming()
 	{
 		NAMING_SERVICE.name(SUB_ADJ);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleFile.class, PARSING_SERVICES);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleFile.class, PARSING_SERVICES_REVERSED);
