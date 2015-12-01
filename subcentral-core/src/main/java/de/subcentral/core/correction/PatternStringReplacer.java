@@ -55,19 +55,19 @@ public class PatternStringReplacer implements UnaryOperator<String>
 		}
 		switch (mode)
 		{
-		case REPLACE_ALL:
-			return pattern.matcher(s).replaceAll(replacement);
-		case REPLACE_COMPLETE:
-			Matcher m = pattern.matcher(s);
-			if (m.matches())
-			{
-				StringBuffer sb = new StringBuffer();
-				m.appendReplacement(sb, replacement);
-				return sb.toString();
-			}
-			return s;
-		default:
-			throw new AssertionError();
+			case REPLACE_ALL:
+				return pattern.matcher(s).replaceAll(replacement);
+			case REPLACE_COMPLETE:
+				Matcher m = pattern.matcher(s);
+				if (m.matches())
+				{
+					StringBuffer sb = new StringBuffer();
+					m.appendReplacement(sb, replacement);
+					return sb.toString();
+				}
+				return s;
+			default:
+				throw new AssertionError();
 		}
 	}
 
