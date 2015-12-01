@@ -78,23 +78,22 @@ import de.subcentral.support.subcentralde.SubCentralDe;
  * </pre>
  *
  */
-public class MyBenchmark
+public class SubCentralCoreBenchmark
 {
-	private static final SubtitleFile SUB_ADJ = SubtitleFile.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"),
-			"English",
-			"SubCentral");
+	private static final SubtitleFile					SUB_ADJ						= SubtitleFile
+			.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
 
 	private static final TypeCorrectionService			STANDARDIZING_SERVICE		= buildService();
 	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
-			SubCentralDe.getParsingService(),
-			ItalianSubsNet.getParsingService(),
-			ReleaseScene.getParsingService());
+																							SubCentralDe.getParsingService(),
+																							ItalianSubsNet.getParsingService(),
+																							ReleaseScene.getParsingService());
 	private static final ImmutableList<ParsingService>	PARSING_SERVICES_REVERSED	= ImmutableList.of(ReleaseScene.getParsingService(),
-			ItalianSubsNet.getParsingService(),
-			SubCentralDe.getParsingService(),
-			ADDIC7ED_PARSING_SERVICE);
+																							ItalianSubsNet.getParsingService(),
+																							SubCentralDe.getParsingService(),
+																							ADDIC7ED_PARSING_SERVICE);
 	private static final URL							SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
 	private static TypeCorrectionService buildService()
@@ -120,7 +119,7 @@ public class MyBenchmark
 		STANDARDIZING_SERVICE.correct(SUB_ADJ);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testNaming()
 	{
 		NAMING_SERVICE.name(SUB_ADJ);
@@ -156,7 +155,7 @@ public class MyBenchmark
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleFile.class, PARSING_SERVICES_REVERSED);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
 	{
 		SubtitleContent data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
@@ -189,7 +188,7 @@ public class MyBenchmark
 	 */
 	public static void main(String[] args) throws RunnerException
 	{
-		Options opt = new OptionsBuilder().include(MyBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
+		Options opt = new OptionsBuilder().include(SubCentralCoreBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
 
 		new Runner(opt).run();
 	}
