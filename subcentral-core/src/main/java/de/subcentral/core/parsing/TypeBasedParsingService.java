@@ -132,7 +132,7 @@ public class TypeBasedParsingService implements ParsingService
 	@Override
 	public <T> T parse(String text, Class<T> targetType) throws ParsingException
 	{
-		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use " + getClass().getName() + ".parse(String).");
+		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use #parse(String).");
 		for (ParserEntry<?> entry : parserEntries)
 		{
 			if (targetType.isAssignableFrom(entry.targetType))
