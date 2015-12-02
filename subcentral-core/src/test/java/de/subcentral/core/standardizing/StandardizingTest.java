@@ -15,8 +15,8 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.correction.CorrectionService;
-import de.subcentral.core.correction.CorrectionUtil;
 import de.subcentral.core.correction.Corrector;
+import de.subcentral.core.correction.ReflectiveCorrector;
 import de.subcentral.core.correction.SeriesNameCorrector;
 import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Episode;
@@ -67,7 +67,7 @@ public class StandardizingTest
 	@Test
 	public void testReflectiveStandardizing() throws IntrospectionException
 	{
-		Corrector<Series> stdzer = CorrectionUtil.newReflectiveCorrector(Series.PROP_NAME, (String name) -> StringUtils.upperCase(name));
+		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.PROP_NAME, (String name) -> StringUtils.upperCase(name));
 
 		Series series = new Series("Psych");
 		Series expectedSeries = new Series("PSYCH");
@@ -82,7 +82,7 @@ public class StandardizingTest
 	@Test(expected = IntrospectionException.class)
 	public void testReflectiveStandardizingFail() throws IntrospectionException
 	{
-		Corrector<Series> stdzer = CorrectionUtil.newReflectiveCorrector(Series.class, "notExistingProp", (String s) -> s);
+		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.class, "notExistingProp", (String s) -> s);
 		List<Correction> changes = new ArrayList<>();
 		stdzer.correct(new Series("Psych"), changes);
 	}
