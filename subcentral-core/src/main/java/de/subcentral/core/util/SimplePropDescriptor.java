@@ -18,10 +18,10 @@ import de.subcentral.core.Settings;
  */
 public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, Serializable
 {
-	private static final long serialVersionUID = 8306594862187006921L;
+	private static final long	serialVersionUID	= 8306594862187006921L;
 
-	private final Class<?>	beanClass;
-	private final String	propName;
+	private final Class<?>		beanClass;
+	private final String		propName;
 
 	public SimplePropDescriptor(Class<?> beanClass, String propName)
 	{

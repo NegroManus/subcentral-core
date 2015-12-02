@@ -17,12 +17,12 @@ import de.subcentral.core.util.IOUtil.ProcessResult;
 
 public class WindowsWinRar extends WinRar
 {
-	private static final Logger log = LogManager.getLogger(WindowsWinRar.class.getName());
+	private static final Logger	log						= LogManager.getLogger(WindowsWinRar.class.getName());
 
 	/**
 	 * The console program RAR.exe can only pack RAR archives, but it does not open a GUI. WinRAR.exe can pack ZIP archives, but it opens a GUI - so do not use that.
 	 */
-	private static final Path RAR_EXECUTABLE_FILENAME = Paths.get("Rar.exe");
+	private static final Path	RAR_EXECUTABLE_FILENAME	= Paths.get("Rar.exe");
 
 	@Override
 	public Path getRarExecutableFilename()

@@ -12,9 +12,9 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class WinRar
 {
-	private static final Logger log = LogManager.getLogger(WinRar.class.getName());
+	private static final Logger	log			= LogManager.getLogger(WinRar.class.getName());
 
-	private static final WinRar instance = initInstance();
+	private static final WinRar	instance	= initInstance();
 
 	private static WinRar initInstance()
 	{

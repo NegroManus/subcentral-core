@@ -28,19 +28,19 @@ import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
 {
-	public static final String DEFAULT_DOMAIN = "default";
+	public static final String						DEFAULT_DOMAIN						= "default";
 
 	private static final Function<String, String>	RELEASE_NAME_FORMATTER				= initReleaseNameFormatter();
 	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER				= initReleaseMediaFormatter();
 	private static final Function<String, String>	SUBTITLE_ADJUSTMENT_NAME_FORMATTER	= initSubtitleAdjustmentNameFormatter();
 	private static final Function<String, String>	NORMALIZING_FORMATTER				= initNormalizingFormatter();
 
-	private static final SimplePropToStringService PROP_TO_STRING_SERVICE = new SimplePropToStringService();
+	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE				= new SimplePropToStringService();
 
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
-	private static final ConditionalNamingService	NAMING_SERVICE				= new ConditionalNamingService(DEFAULT_DOMAIN);
-	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(NAMING_SERVICE);
+	private static final ConditionalNamingService	NAMING_SERVICE						= new ConditionalNamingService(DEFAULT_DOMAIN);
+	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE			= createNormalizingNamingService(NAMING_SERVICE);
 	private static MovieNamer						MOVIE_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
@@ -49,7 +49,7 @@ public class NamingDefaults
 	private static MultiEpisodeNamer				RANGE_ONLY_MULTI_EPISODE_NAMER;
 	private static ReleaseNamer						RELEASE_NAMER;
 	private static SubtitleNamer					SUBTITLE_NAMER;
-	private static SubtitleFileNamer			SUBTITLE_ADJUSTMENT_NAMER;
+	private static SubtitleFileNamer				SUBTITLE_ADJUSTMENT_NAMER;
 
 	static
 	{

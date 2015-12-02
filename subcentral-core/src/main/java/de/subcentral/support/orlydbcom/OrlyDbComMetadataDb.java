@@ -33,17 +33,17 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class OrlyDbComMetadataDb extends HttpMetadataDb
 {
-	private static final Logger log = LogManager.getLogger(OrlyDbComMetadataDb.class);
+	private static final Logger				log					= LogManager.getLogger(OrlyDbComMetadataDb.class);
 
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
 	 */
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	/**
 	 * The release dates are in UTC.
 	 */
-	private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
+	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
 
 	@Override
 	public String getSiteId()

@@ -162,17 +162,14 @@ public class IOUtil
 	{
 		if (filename == null)
 		{
-			return new String[]
-			{ "", "" };
+			return new String[] { "", "" };
 		}
 		int indexOfLastDot = filename.lastIndexOf('.');
 		if (indexOfLastDot == -1)
 		{
-			return new String[]
-			{ filename, "" };
+			return new String[] { filename, "" };
 		}
-		return new String[]
-		{ filename.substring(0, indexOfLastDot), filename.substring(indexOfLastDot, filename.length()) };
+		return new String[] { filename.substring(0, indexOfLastDot), filename.substring(indexOfLastDot, filename.length()) };
 	}
 
 	public static boolean isCompletelyWritten(Path file)

@@ -6,7 +6,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MappingException extends RuntimeException
 {
-	private static final long serialVersionUID = -7524198648124655458L;
+	private static final long						serialVersionUID	= -7524198648124655458L;
 
 	private final Map<SimplePropDescriptor, String>	props;
 	private final Class<?>							targetClass;

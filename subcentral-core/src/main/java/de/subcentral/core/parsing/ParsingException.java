@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class ParsingException extends RuntimeException
 {
-	private static final long serialVersionUID = -1790109092415797792L;
+	private static final long	serialVersionUID	= -1790109092415797792L;
 
 	private final String		text;
 	private final Set<Class<?>>	targetTypes;

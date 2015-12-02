@@ -18,7 +18,7 @@ import com.google.common.base.MoreObjects;
  */
 public class TypeBasedNamingService implements NamingService, Serializable
 {
-	private static final long serialVersionUID = 340111838457219906L;
+	private static final long				serialVersionUID	= 340111838457219906L;
 
 	private final String					domain;
 	private final Map<Class<?>, Namer<?>>	namers				= new ConcurrentHashMap<>();

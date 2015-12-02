@@ -36,17 +36,17 @@ import de.subcentral.core.util.ByteUtil;
  */
 public class XRelToMetadataDb extends HttpMetadataDb
 {
-	private static final Logger log = LogManager.getLogger(XRelToMetadataDb.class);
+	private static final Logger				log					= LogManager.getLogger(XRelToMetadataDb.class);
 
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
 	 */
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm 'Uhr'", Locale.GERMANY);
+	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("dd.MM.yy HH:mm 'Uhr'", Locale.GERMANY);
 
 	/**
 	 * The server time zone is Europe/Berlin.
 	 */
-	private static final ZoneId TIME_ZONE = ZoneId.of("Europe/Berlin");
+	private static final ZoneId				TIME_ZONE			= ZoneId.of("Europe/Berlin");
 
 	@Override
 	public String getSiteId()

@@ -12,9 +12,9 @@ import com.google.common.collect.ImmutableList;
 
 public class UnixWinRar extends WinRar
 {
-	private static final Logger log = LogManager.getLogger(UnixWinRar.class.getName());
+	private static final Logger	log						= LogManager.getLogger(UnixWinRar.class.getName());
 
-	private static final Path RAR_EXECUTABLE_FILENAME = Paths.get("rar");
+	private static final Path	RAR_EXECUTABLE_FILENAME	= Paths.get("rar");
 
 	@Override
 	public Path getRarExecutableFilename()

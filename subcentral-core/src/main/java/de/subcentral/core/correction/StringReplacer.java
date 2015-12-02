@@ -17,7 +17,7 @@ public class StringReplacer implements UnaryOperator<String>
 	private final String	searchString;
 	private final String	replacement;
 
-	private final Mode mode;
+	private final Mode		mode;
 
 	public StringReplacer(String searchString, String replacement)
 	{
@@ -51,16 +51,16 @@ public class StringReplacer implements UnaryOperator<String>
 	{
 		switch (mode)
 		{
-		case ALL_OCCURENCES:
-			return StringUtils.replace(text, searchString, replacement);
-		case COMPLETE:
-			if (Objects.equals(text, searchString))
-			{
-				return replacement;
-			}
-			return text;
-		default:
-			throw new AssertionError();
+			case ALL_OCCURENCES:
+				return StringUtils.replace(text, searchString, replacement);
+			case COMPLETE:
+				if (Objects.equals(text, searchString))
+				{
+					return replacement;
+				}
+				return text;
+			default:
+				throw new AssertionError();
 		}
 	}
 

@@ -53,34 +53,34 @@ public class WinRarPackResult
 	{
 		switch (exitCode)
 		{
-		case EXIT_CODE_SUCCESSFUL:
-			return "Successful operation.";
-		case EXIT_CODE_WARNING:
-			return "Warning. Non fatal error(s) occurred.";
-		case EXIT_CODE_FATAL_ERROR:
-			return "A fatal error occurred.";
-		case EXIT_CODE_CRC_ERROR:
-			return "Invalid checksum. Data is damaged.";
-		case EXIT_CODE_ARCHIVE_LOCKED:
-			return "Attempt to modify an archive locked by 'k' command.";
-		case EXIT_CODE_WRITE_ERROR:
-			return "Write error.";
-		case EXIT_CODE_OPEN_ERROR:
-			return "File open error.";
-		case EXIT_CODE_WRONG_OPTION:
-			return "Wrong command line option.";
-		case EXIT_CODE_OUT_OF_MEMORY:
-			return "Not enough memory.";
-		case EXIT_CODE_CREATE_ERROR:
-			return "File create error.";
-		case EXIT_CODE_NO_FILES_MATCHING_MASK_AND_OPTIONS:
-			return "No files matching the specified mask and options were found.";
-		case EXIT_CODE_WRONG_PASSWORD:
-			return "Wrong password.";
-		case EXIT_CODE_USER_BREAK:
-			return "User break.";
-		default:
-			return "";
+			case EXIT_CODE_SUCCESSFUL:
+				return "Successful operation.";
+			case EXIT_CODE_WARNING:
+				return "Warning. Non fatal error(s) occurred.";
+			case EXIT_CODE_FATAL_ERROR:
+				return "A fatal error occurred.";
+			case EXIT_CODE_CRC_ERROR:
+				return "Invalid checksum. Data is damaged.";
+			case EXIT_CODE_ARCHIVE_LOCKED:
+				return "Attempt to modify an archive locked by 'k' command.";
+			case EXIT_CODE_WRITE_ERROR:
+				return "Write error.";
+			case EXIT_CODE_OPEN_ERROR:
+				return "File open error.";
+			case EXIT_CODE_WRONG_OPTION:
+				return "Wrong command line option.";
+			case EXIT_CODE_OUT_OF_MEMORY:
+				return "Not enough memory.";
+			case EXIT_CODE_CREATE_ERROR:
+				return "File create error.";
+			case EXIT_CODE_NO_FILES_MATCHING_MASK_AND_OPTIONS:
+				return "No files matching the specified mask and options were found.";
+			case EXIT_CODE_WRONG_PASSWORD:
+				return "Wrong password.";
+			case EXIT_CODE_USER_BREAK:
+				return "User break.";
+			default:
+				return "";
 		}
 	}
 

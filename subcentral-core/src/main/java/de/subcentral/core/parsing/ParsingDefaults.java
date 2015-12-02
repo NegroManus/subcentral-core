@@ -23,14 +23,14 @@ public class ParsingDefaults
 	 * <li>country code (or null)</li>
 	 * </ol>
 	 */
-	public static final String PATTERN_MEDIA_NAME = "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
+	public static final String						PATTERN_MEDIA_NAME					= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
 	private static final EpisodeMapper				EPISODE_MAPPER						= new EpisodeMapper();
 	private static final Mapper<List<Episode>>		SINGLETON_LIST_EPISODE_MAPPER		= createSingletonListMapper(EPISODE_MAPPER);
 	private static final MultiEpisodeMapper			MULTI_EPISODE_MAPPER				= new MultiEpisodeMapper(EPISODE_MAPPER);
 	private static final MovieMapper				MOVIE_MAPPER						= new MovieMapper();
 	private static final Mapper<List<Movie>>		SINGLETON_LIST_MOVIE_MAPPER			= createSingletonListMapper(MOVIE_MAPPER);
-	private static final GenericMediaMapper			GENERIC_MEDIA_MAPPER					= new GenericMediaMapper();
+	private static final GenericMediaMapper			GENERIC_MEDIA_MAPPER				= new GenericMediaMapper();
 	private static final Mapper<List<GenericMedia>>	SINGLETON_LIST_GENERIC_MEDIA_MAPPER	= createSingletonListMapper(GENERIC_MEDIA_MAPPER);
 	private static final ReleaseMapper				RELEASE_MAPPER						= new ReleaseMapper();
 	private static final SubtitleMapper				SUBTITLE_MAPPER						= new SubtitleMapper();

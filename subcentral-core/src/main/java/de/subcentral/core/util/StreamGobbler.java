@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 public class StreamGobbler implements Runnable
 {
-	private static final Logger log = LogManager.getLogger(StreamGobbler.class);
+	private static final Logger	log	= LogManager.getLogger(StreamGobbler.class);
 
 	private final InputStream	input;
 	private final OutputStream	output;

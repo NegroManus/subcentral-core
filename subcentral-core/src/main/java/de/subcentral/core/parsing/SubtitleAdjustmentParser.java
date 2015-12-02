@@ -21,7 +21,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleFile
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
 	private final Mapper<Release>							releaseMapper				= ParsingDefaults.getDefaultReleaseMapper();
 	private final Mapper<Subtitle>							subtitleMapper				= ParsingDefaults.getDefaultSubtitleMapper();
-	private final Mapper<SubtitleFile>				subtitleAdjustmentMapper	= ParsingDefaults.getDefaultSubtitleAdjustmentMapper();
+	private final Mapper<SubtitleFile>						subtitleAdjustmentMapper	= ParsingDefaults.getDefaultSubtitleAdjustmentMapper();
 
 	public SubtitleAdjustmentParser(Mapper<? extends List<? extends Media>> mediaMapper)
 	{

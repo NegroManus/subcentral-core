@@ -25,10 +25,10 @@ import de.subcentral.support.winrar.WinRarPackResult.Flag;
 
 public abstract class WinRarPackager
 {
-	private static final Logger log = LogManager.getLogger(WinRarPackager.class.getName());
+	private static final Logger	log	= LogManager.getLogger(WinRarPackager.class.getName());
 
-	protected final WinRar	winRar;
-	protected final Path	rarExecutable;
+	protected final WinRar		winRar;
+	protected final Path		rarExecutable;
 
 	WinRarPackager(WinRar winRar, Path rarExecutable)
 	{
@@ -144,14 +144,14 @@ public abstract class WinRarPackager
 			{
 				switch (cfg.getTargetOverwriteMode())
 				{
-				case UPDATE:
-					flags.add(Flag.TARGET_UPDATED);
-					break;
-				case REPLACE:
-					flags.add(Flag.TARGET_REPLACED);
-					break;
-				default:
-					break;
+					case UPDATE:
+						flags.add(Flag.TARGET_UPDATED);
+						break;
+					case REPLACE:
+						flags.add(Flag.TARGET_REPLACED);
+						break;
+					default:
+						break;
 				}
 			}
 			// if DeletionMode.DELETE || DeletionMode.RECYCLE and it really was deleted
@@ -190,42 +190,42 @@ public abstract class WinRarPackager
 		args.add("-y"); // -Y - assume Yes on all queries
 		switch (cfg.getTargetOverwriteMode())
 		{
-		case SKIP:
-			// "-o- Skip existing files."
-			args.add("-o-");
-			break;
-		case UPDATE:
-			// "-o+ Overwrite all
-			// (default for updating archived files);"
-			args.add("-o+");
-			break;
-		case REPLACE:
-			// do not set the overwrite mode as it does not matter because the target file is deleted anyway
-			// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig) if it existed
-			break;
+			case SKIP:
+				// "-o- Skip existing files."
+				args.add("-o-");
+				break;
+			case UPDATE:
+				// "-o+ Overwrite all
+				// (default for updating archived files);"
+				args.add("-o+");
+				break;
+			case REPLACE:
+				// do not set the overwrite mode as it does not matter because the target file is deleted anyway
+				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig) if it existed
+				break;
 		}
 		switch (cfg.getSourceDeletionMode())
 		{
-		case KEEP:
-			// don't add a delete switch
-			break;
-		case RECYCLE:
-			if (isRecyclingSupported())
-			{
-				log.warn("Configuration value sourceDelectionMode={} is ignored. This option is not available on this operating system. Files are kept.", DeletionMode.RECYCLE);
-			}
-			else
-			{
-				// "-dr Delete files to Recycle Bin
-				// Delete files after archiving and place them to Recycle Bin.
-				// Available in Windows version only."
-				args.add("-dr");
-			}
-			break;
-		case DELETE:
-			// -DF - delete files after archiving
-			args.add("-df");
-			break;
+			case KEEP:
+				// don't add a delete switch
+				break;
+			case RECYCLE:
+				if (isRecyclingSupported())
+				{
+					log.warn("Configuration value sourceDelectionMode={} is ignored. This option is not available on this operating system. Files are kept.", DeletionMode.RECYCLE);
+				}
+				else
+				{
+					// "-dr Delete files to Recycle Bin
+					// Delete files after archiving and place them to Recycle Bin.
+					// Available in Windows version only."
+					args.add("-dr");
+				}
+				break;
+			case DELETE:
+				// -DF - delete files after archiving
+				args.add("-df");
+				break;
 		}
 
 		// target package

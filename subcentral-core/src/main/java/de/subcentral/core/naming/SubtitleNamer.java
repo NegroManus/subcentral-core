@@ -10,15 +10,15 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	/**
 	 * The name of the parameter "includeGroup" of type {@link Boolean}. If set to {@code true}, the group is included in the name. The default value is {@code true}.
 	 */
-	public static final String PARAM_INCLUDE_GROUP = SubtitleNamer.class.getName() + ".includeGroup";
+	public static final String	PARAM_INCLUDE_GROUP		= SubtitleNamer.class.getName() + ".includeGroup";
 
 	/**
 	 * The name of the parameter "includeSource" of type {@link Boolean}. If set to {@code true} and {@link #PARAM_INCLUDE_GROUP} is false or there is no group, the source is included in the name. The
 	 * default value is {@code false}.
 	 */
-	public static final String PARAM_INCLUDE_SOURCE = SubtitleNamer.class.getName() + ".includeSource";
+	public static final String	PARAM_INCLUDE_SOURCE	= SubtitleNamer.class.getName() + ".includeSource";
 
-	private final NamingService mediaNamingService;
+	private final NamingService	mediaNamingService;
 
 	public SubtitleNamer(PropSequenceNameBuilder.Config config, NamingService mediaNamingService)
 	{

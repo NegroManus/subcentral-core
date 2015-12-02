@@ -32,7 +32,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseScene
 {
-	public static final String				SOURCE_ID		= "release.scene";
+	public static final String						SOURCE_ID		= "release.scene";
 	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SOURCE_ID);
 
 	static

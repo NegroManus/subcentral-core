@@ -57,20 +57,20 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 		String[] epiNums = extractEpiNums(numString);
 		switch (epiNums.length)
 		{
-		case 0:
-			return ImmutableList.of();
-		case 1:
-			return ImmutableList.of(episodeMapper.map(props, propFromStringService));
-		default:
-			List<Episode> episodes = new ArrayList<>(epiNums.length);
-			for (String epiNum : epiNums)
-			{
-				Map<SimplePropDescriptor, String> propsForEpi = new HashMap<>(props);
-				// overwrite episode num
-				propsForEpi.put(epiNumProp, epiNum);
-				episodes.add(episodeMapper.map(propsForEpi, propFromStringService));
-			}
-			return episodes;
+			case 0:
+				return ImmutableList.of();
+			case 1:
+				return ImmutableList.of(episodeMapper.map(props, propFromStringService));
+			default:
+				List<Episode> episodes = new ArrayList<>(epiNums.length);
+				for (String epiNum : epiNums)
+				{
+					Map<SimplePropDescriptor, String> propsForEpi = new HashMap<>(props);
+					// overwrite episode num
+					propsForEpi.put(epiNumProp, epiNum);
+					episodes.add(episodeMapper.map(propsForEpi, propFromStringService));
+				}
+				return episodes;
 		}
 	}
 
@@ -95,8 +95,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 	{
 		if (StringUtils.isBlank(numString))
 		{
-			return new String[]
-			{ numString };
+			return new String[] { numString };
 		}
 		Matcher matcher = RANGE_PATTERN.matcher(numString);
 		if (matcher.find())
@@ -129,8 +128,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 			}
 			return nums;
 		}
-		return new String[]
-		{ numString };
+		return new String[] { numString };
 	}
 
 }

@@ -220,8 +220,6 @@ public class SubRip implements SubtitleFileFormat
 		millis -= TimeUnit.MINUTES.toMillis(minutes);
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 		millis -= TimeUnit.SECONDS.toMillis(seconds);
-		return new long[]
-		{ hours, minutes, seconds, millis };
+		return new long[] { hours, minutes, seconds, millis };
 	}
-
 }

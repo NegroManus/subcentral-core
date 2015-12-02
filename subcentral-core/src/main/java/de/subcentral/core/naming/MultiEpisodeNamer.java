@@ -11,13 +11,13 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? extends Episode>>
 {
-	public static final String					PROP_NAME_EPISODES	= "episodes";
-	public static final SimplePropDescriptor	PROP_EPISODES		= new SimplePropDescriptor(MultiEpisodeHelper.class, PROP_NAME_EPISODES);
+	public static final String					PROP_NAME_EPISODES			= "episodes";
+	public static final SimplePropDescriptor	PROP_EPISODES				= new SimplePropDescriptor(MultiEpisodeHelper.class, PROP_NAME_EPISODES);
 
-	public static final String	SEPARATION_TYPE_ADDITION	= "addition";
-	public static final String	SEPARATION_TYPE_RANGE		= "range";
+	public static final String					SEPARATION_TYPE_ADDITION	= "addition";
+	public static final String					SEPARATION_TYPE_RANGE		= "range";
 
-	private final EpisodeNamer episodeNamer;
+	private final EpisodeNamer					episodeNamer;
 
 	public MultiEpisodeNamer(PropSequenceNameBuilder.Config config)
 	{
@@ -122,28 +122,28 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		SimplePropDescriptor prop = numberInSeries ? Episode.PROP_NUMBER_IN_SERIES : Episode.PROP_NUMBER_IN_SEASON;
 		switch (range.size())
 		{
-		case 0:
-			break;
-		case 1:
-			if (!omitFirstNumber)
-			{
-				builder.append(prop, range.get(0), SEPARATION_TYPE_ADDITION);
-			}
-			break;
-		case 2:
-			if (!omitFirstNumber)
-			{
-				builder.append(prop, range.get(0), SEPARATION_TYPE_ADDITION);
-			}
-			builder.append(prop, range.get(1), SEPARATION_TYPE_ADDITION);
-			break;
-		default:
-			if (!omitFirstNumber)
-			{
-				builder.append(prop, range.get(0), SEPARATION_TYPE_ADDITION);
-			}
-			builder.append(prop, range.get(range.size() - 1), SEPARATION_TYPE_RANGE);
-			break;
+			case 0:
+				break;
+			case 1:
+				if (!omitFirstNumber)
+				{
+					builder.append(prop, range.get(0), SEPARATION_TYPE_ADDITION);
+				}
+				break;
+			case 2:
+				if (!omitFirstNumber)
+				{
+					builder.append(prop, range.get(0), SEPARATION_TYPE_ADDITION);
+				}
+				builder.append(prop, range.get(1), SEPARATION_TYPE_ADDITION);
+				break;
+			default:
+				if (!omitFirstNumber)
+				{
+					builder.append(prop, range.get(0), SEPARATION_TYPE_ADDITION);
+				}
+				builder.append(prop, range.get(range.size() - 1), SEPARATION_TYPE_RANGE);
+				break;
 		}
 	}
 }

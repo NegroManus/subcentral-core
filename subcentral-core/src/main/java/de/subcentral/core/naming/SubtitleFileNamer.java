@@ -13,25 +13,25 @@ public class SubtitleFileNamer extends AbstractPropertySequenceNamer<SubtitleFil
 	 * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link SubtitleFile#getName() subtitle adjustment's name} is not {@code null}, that name is
 	 * returned, otherwise the computed name is returned. The default value is {@code false}.
 	 */
-	public static final String PARAM_PREFER_NAME = SubtitleFileNamer.class.getName() + ".preferName";
+	public static final String		PARAM_PREFER_NAME		= SubtitleFileNamer.class.getName() + ".preferName";
 
 	/**
 	 * The name of the parameter "release" of type {@link Release}. The specified release is used for naming the subtitle adjustment. The default value is the return value of
 	 * {@link SubtitleFile#getFirstMatchingRelease()}.
 	 */
-	public static final String PARAM_RELEASE = SubtitleFileNamer.class.getName() + ".release";
+	public static final String		PARAM_RELEASE			= SubtitleFileNamer.class.getName() + ".release";
 
 	/**
 	 * Shortcut to {@link SubtitleNamer#PARAM_INCLUDE_GROUP}.
 	 */
-	public static final String PARAM_INCLUDE_GROUP = SubtitleNamer.PARAM_INCLUDE_GROUP;
+	public static final String		PARAM_INCLUDE_GROUP		= SubtitleNamer.PARAM_INCLUDE_GROUP;
 
 	/**
 	 * Shortcut to {@link SubtitleNamer#PARAM_INCLUDE_SOURCE}.
 	 */
-	public static final String PARAM_INCLUDE_SOURCE = SubtitleNamer.PARAM_INCLUDE_SOURCE;
+	public static final String		PARAM_INCLUDE_SOURCE	= SubtitleNamer.PARAM_INCLUDE_SOURCE;
 
-	private final Namer<Release> releaseNamer;
+	private final Namer<Release>	releaseNamer;
 
 	public SubtitleFileNamer(PropSequenceNameBuilder.Config config, Namer<Release> releaseNamer)
 	{
