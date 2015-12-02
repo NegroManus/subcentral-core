@@ -312,7 +312,7 @@ class ConfigurationHelper
 			else if (genericEntry instanceof ReleaseTagsCorrectionRuleSettingEntry)
 			{
 				ReleaseTagsCorrectionRuleSettingEntry entry = (ReleaseTagsCorrectionRuleSettingEntry) genericEntry;
-				TagsReplacer replacer = entry.getValue().getReplacer();
+				TagsReplacer replacer = (TagsReplacer) entry.getValue().getReplacer();
 
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.listToString(replacer.getSearchTags()));
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replacement]", Tag.listToString(replacer.getReplacement()));

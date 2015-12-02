@@ -1,18 +1,14 @@
 package de.subcentral.core.correction;
 
+import java.util.function.Function;
+
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class LocaleSubtitleLanguageCorrector extends SinglePropertyCorrector<Subtitle, String>
+public class SubtitleLanguageCorrector extends SinglePropertyCorrector<Subtitle, String>
 {
-	public LocaleSubtitleLanguageCorrector(LocaleLanguageReplacer replacer)
+	public SubtitleLanguageCorrector(Function<String, String> replacer)
 	{
 		super(replacer);
-	}
-
-	@Override
-	public Class<Subtitle> getBeanType()
-	{
-		return Subtitle.class;
 	}
 
 	@Override

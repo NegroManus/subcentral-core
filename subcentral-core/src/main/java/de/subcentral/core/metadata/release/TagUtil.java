@@ -94,13 +94,37 @@ public class TagUtil
 	{
 		switch (queryMode)
 		{
-		case CONTAIN:
-			switch (replaceMode)
-			{
-			case COMPLETE_LIST:
+			case CONTAIN:
+				switch (replaceMode)
+				{
+					case COMPLETE_LIST:
+						if (ignoreOrder)
+						{
+							if (tags.containsAll(queryTags))
+							{
+								tags.clear();
+								tags.addAll(replacement);
+								return true;
+							}
+						}
+						else
+						{
+							if (TagUtil.containsSequence(tags, queryTags))
+							{
+								tags.clear();
+								tags.addAll(replacement);
+								return true;
+							}
+						}
+						break;
+					case MATCHED_SEQUENCE:
+						return replaceSequences(tags, queryTags, replacement, ignoreOrder, false);
+				}
+				break;
+			case EQUAL:
 				if (ignoreOrder)
 				{
-					if (tags.containsAll(queryTags))
+					if (equalsIgnoreOrder(tags, queryTags))
 					{
 						tags.clear();
 						tags.addAll(replacement);
@@ -109,37 +133,13 @@ public class TagUtil
 				}
 				else
 				{
-					if (TagUtil.containsSequence(tags, queryTags))
+					if (tags.equals(queryTags))
 					{
 						tags.clear();
 						tags.addAll(replacement);
 						return true;
 					}
 				}
-				break;
-			case MATCHED_SEQUENCE:
-				return replaceSequences(tags, queryTags, replacement, ignoreOrder, false);
-			}
-			break;
-		case EQUAL:
-			if (ignoreOrder)
-			{
-				if (equalsIgnoreOrder(tags, queryTags))
-				{
-					tags.clear();
-					tags.addAll(replacement);
-					return true;
-				}
-			}
-			else
-			{
-				if (tags.equals(queryTags))
-				{
-					tags.clear();
-					tags.addAll(replacement);
-					return true;
-				}
-			}
 		}
 		return false;
 	}
@@ -180,17 +180,6 @@ public class TagUtil
 			}
 		}
 		return false;
-	}
-
-	public static void main(String[] args)
-	{
-		List<Tag> tags = Tag.list("720p", "WEB", "DL", "H", "264", "DD5", "1", "WEB", "DL", "Xx264");
-
-		replaceSequences(tags, Tag.list("H", "264"), Tag.list("H.264"), false, false);
-		replaceSequences(tags, Tag.list("DL", "WEB"), Tag.list("WEB-DL"), true, false);
-		replaceSequences(tags, Tag.list("DD5", "1"), Tag.list("DD5.1"), false, false);
-		replaceSequences(tags, Tag.list("xx264"), Tag.list("X264"), false, false);
-		System.out.println(tags);
 	}
 
 	private TagUtil()

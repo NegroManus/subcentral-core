@@ -1,5 +1,6 @@
 package de.subcentral.mig.process.old;
 
+import java.beans.IntrospectionException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +45,8 @@ import javafx.collections.FXCollections;
  */
 public class MigrationSettings
 {
-	public static final MigrationSettings	INSTANCE	= new MigrationSettings();
-	private static final Logger				log			= LogManager.getLogger(MigrationSettings.class);
+	public static final MigrationSettings				INSTANCE					= new MigrationSettings();
+	private static final Logger							log							= LogManager.getLogger(MigrationSettings.class);
 
 	private final ListProperty<Series>					series						= new SimpleListProperty<>(this, "series", FXCollections.observableArrayList());
 	private final ListProperty<ContributionPattern>		contributionPatterns		= new SimpleListProperty<>(this, "contributionPatterns", FXCollections.observableArrayList());
@@ -149,20 +150,20 @@ public class MigrationSettings
 			String type = patternCfg.getString("[@type]", "SUBBER");
 			switch (type)
 			{
-			case "SUBBER":
-				Subber subber = new Subber();
-				subber.setName(name);
-				int scUserId = patternCfg.getInt("[@scUserId]", 0);
-				subber.setId(scUserId);
-				contributor = subber;
-				break;
-			case "GROUP":
-				SubtitleGroup group = new SubtitleGroup();
-				group.setName(name);
-				contributor = group;
-				break;
-			default:
-				throw new ConfigurationException("Illegal type: " + type);
+				case "SUBBER":
+					Subber subber = new Subber();
+					subber.setName(name);
+					int scUserId = patternCfg.getInt("[@scUserId]", 0);
+					subber.setId(scUserId);
+					contributor = subber;
+					break;
+				case "GROUP":
+					SubtitleGroup group = new SubtitleGroup();
+					group.setName(name);
+					contributor = group;
+					break;
+				default:
+					throw new ConfigurationException("Illegal type: " + type);
 
 			}
 
@@ -196,7 +197,15 @@ public class MigrationSettings
 		}
 		for (PatternStringReplacer contributorNameReplacer : loadPatternStringReplacers(cfg, "subtitles.contributorNameReplacers.replacer"))
 		{
-			service.registerCorrector(Subber.class, new ReflectiveCorrector<Subber, String>(Subber.class, "name", contributorNameReplacer));
+			try
+			{
+				service.registerCorrector(Subber.class, new ReflectiveCorrector<>(Subber.class, "name", contributorNameReplacer));
+			}
+			catch (IntrospectionException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return service;
 	}

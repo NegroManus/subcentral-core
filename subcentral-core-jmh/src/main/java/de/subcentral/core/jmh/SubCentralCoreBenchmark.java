@@ -52,7 +52,7 @@ import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.correction.LocaleLanguageReplacer;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
-import de.subcentral.core.correction.LocaleSubtitleLanguageCorrector;
+import de.subcentral.core.correction.SubtitleLanguageCorrector;
 import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleContent;
@@ -102,7 +102,7 @@ public class SubCentralCoreBenchmark
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		CorrectionDefaults.registerAllDefaultCorrectors(service);
 		service.registerCorrector(Subtitle.class,
-				new LocaleSubtitleLanguageCorrector(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
+				new SubtitleLanguageCorrector(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
 						LanguageFormat.NAME,
 						Locale.ENGLISH,
 						ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
@@ -111,10 +111,10 @@ public class SubCentralCoreBenchmark
 		return service;
 	}
 
-	// @Benchmark
+	@Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
-	public void testStandardizing()
+	public void testCorrect()
 	{
 		STANDARDIZING_SERVICE.correct(SUB_ADJ);
 	}
@@ -125,31 +125,31 @@ public class SubCentralCoreBenchmark
 		NAMING_SERVICE.name(SUB_ADJ);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleFile.class, PARSING_SERVICES);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
 		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleFile.class, PARSING_SERVICES_REVERSED);

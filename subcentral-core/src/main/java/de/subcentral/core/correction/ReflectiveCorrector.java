@@ -3,70 +3,74 @@ package de.subcentral.core.correction;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class ReflectiveCorrector<T, P> implements Corrector<T>
+import com.google.common.base.MoreObjects;
+
+import de.subcentral.core.util.SimplePropDescriptor;
+
+public class ReflectiveCorrector<T, P> extends SinglePropertyCorrector<T, P>
 {
-	private final Class<T>			beanType;
-	private final String			propertyName;
-	private final Function<P, P>	replacer;
+	private final PropertyDescriptor propertyDescriptor;
 
-	public ReflectiveCorrector(Class<T> beanType, String propertyName, Function<P, P> replacer)
+	public ReflectiveCorrector(SimplePropDescriptor simplePropDescriptor, Function<P, P> replacer) throws IntrospectionException
 	{
-		this.beanType = Objects.requireNonNull(beanType, "beanType");
-		this.propertyName = Objects.requireNonNull(propertyName, "propertyName");
-		this.replacer = Objects.requireNonNull(replacer, "replacer");
+		this(simplePropDescriptor.toPropertyDescriptor(), replacer);
 	}
 
-	public Class<T> getBeanType()
+	public ReflectiveCorrector(Class<T> beanType, String propertyName, Function<P, P> replacer) throws IntrospectionException
 	{
-		return beanType;
+		this(new PropertyDescriptor(propertyName, beanType), replacer);
 	}
 
-	public String getPropertyName()
+	public ReflectiveCorrector(PropertyDescriptor propertyDescriptor, Function<P, P> replacer)
 	{
-		return propertyName;
+		super(replacer);
+		this.propertyDescriptor = Objects.requireNonNull(propertyDescriptor, "propertyDescriptor");
 	}
 
-	public Function<?, ?> getReplacer()
+	public PropertyDescriptor getPropertyDescriptor()
 	{
-		return replacer;
+		return propertyDescriptor;
 	}
 
 	@Override
-	public void correct(T bean, List<Correction> corrections) throws IllegalArgumentException
+	public String getPropertyName()
 	{
-		if (bean == null)
-		{
-			return;
-		}
-		Correction change = standardizeProperty(bean, propertyName, replacer);
-		if (change != null)
-		{
-			corrections.add(change);
-		}
+		return propertyDescriptor.getName();
 	}
 
 	@SuppressWarnings("unchecked")
-	private Correction standardizeProperty(Object bean, String propName, Function<P, P> operator) throws IllegalArgumentException
+	@Override
+	protected P getValue(T bean)
 	{
 		try
 		{
-			PropertyDescriptor propDescr = new PropertyDescriptor(propName, bean.getClass());
-			P oldVal = (P) propDescr.getReadMethod().invoke(bean);
-			P newVal = operator.apply(oldVal);
-			if (Objects.equals(oldVal, newVal))
-			{
-				return null;
-			}
-			propDescr.getWriteMethod().invoke(bean, newVal);
-			return new Correction(bean, propName, oldVal, newVal);
+			return (P) propertyDescriptor.getReadMethod().invoke(bean);
 		}
-		catch (IntrospectionException | IllegalAccessException | InvocationTargetException | RuntimeException e)
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
 		{
-			throw new IllegalArgumentException("Exception while standardizing property " + bean.getClass().getName() + "." + propName + " of bean " + bean + " with operator " + operator, e);
+			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	protected void setValue(T bean, P value)
+	{
+		try
+		{
+			propertyDescriptor.getWriteMethod().invoke(bean, value);
+		}
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this.getClass()).add("propertyDescriptor", propertyDescriptor).add("replacer", replacer).toString();
 	}
 }

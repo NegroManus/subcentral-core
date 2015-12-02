@@ -38,7 +38,7 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 
 	private static String formatRule(ReleaseTagsCorrector corrector)
 	{
-		TagsReplacer replacer = corrector.getReplacer();
+		TagsReplacer replacer = (TagsReplacer) corrector.getReplacer();
 		StringBuilder sb = new StringBuilder();
 		sb.append("If tags ");
 		switch (replacer.getSearchMode())

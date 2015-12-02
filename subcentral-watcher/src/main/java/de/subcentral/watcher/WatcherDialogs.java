@@ -554,7 +554,7 @@ public class WatcherDialogs
 			}
 			else
 			{
-				TagsReplacer replacer = bean.getValue().getReplacer();
+				TagsReplacer replacer = (TagsReplacer) bean.getValue().getReplacer();
 				switch (replacer.getSearchMode())
 				{
 					case CONTAIN:

@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.correction.PatternStringReplacer;
-import de.subcentral.core.correction.PatternSubtitleLanguageCorrector;
+import de.subcentral.core.correction.SubtitleLanguageCorrector;
 import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -28,9 +28,9 @@ import de.subcentral.support.releasescene.ReleaseScene;
 
 public class SubCentralDe
 {
-	public static final String SITE_ID = "subcentral.de";
+	public static final String						SITE_ID			= "subcentral.de";
 
-	private static final Logger				log				= LogManager.getLogger(SubCentralDe.class.getName());
+	private static final Logger						log				= LogManager.getLogger(SubCentralDe.class.getName());
 	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE_ID);
 
 	static
@@ -148,8 +148,8 @@ public class SubCentralDe
 
 	public static void registerSubtitleLanguageStandardizers(TypeBasedCorrectionService service)
 	{
-		service.registerCorrector(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
-		service.registerCorrector(Subtitle.class, new PatternSubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
+		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
+		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
 	}
 
 	private SubCentralDe()
