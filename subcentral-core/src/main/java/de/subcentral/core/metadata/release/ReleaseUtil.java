@@ -43,11 +43,6 @@ public class ReleaseUtil
 
 	public static List<Release> distinctByName(Collection<Release> releases)
 	{
-		if (releases.isEmpty())
-		{
-			return ImmutableList.of();
-		}
-
 		List<Release> reducedList = new ArrayList<>();
 		for (Release rls : releases)
 		{
