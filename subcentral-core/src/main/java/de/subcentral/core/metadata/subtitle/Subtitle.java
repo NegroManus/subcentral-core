@@ -27,6 +27,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 {
+	private static final long					serialVersionUID				= -7018711191807995379L;
+
 	public static final SimplePropDescriptor	PROP_MEDIA						= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA);
 	public static final SimplePropDescriptor	PROP_LANGUAGE					= new SimplePropDescriptor(Subtitle.class, PropNames.LANGUAGE);
 	public static final SimplePropDescriptor	PROP_GROUP						= new SimplePropDescriptor(Subtitle.class, PropNames.GROUP);
