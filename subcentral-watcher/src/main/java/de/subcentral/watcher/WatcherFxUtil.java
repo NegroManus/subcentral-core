@@ -198,7 +198,7 @@ public class WatcherFxUtil
 	public static Label createGuessedLabel(StandardRelease stdRls, Function<Release, String> releaseNamer)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("Guessed");
+		sb.append("Guessed release");
 		if (stdRls != null)
 		{
 			sb.append(" (using standard release: ");
