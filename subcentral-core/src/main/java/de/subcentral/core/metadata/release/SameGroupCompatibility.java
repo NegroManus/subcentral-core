@@ -11,7 +11,7 @@ public class SameGroupCompatibility implements Compatibility
 	@Override
 	public Set<Release> findCompatibles(Release rls, Collection<Release> existingRlss)
 	{
-		if (rls == null || rls.getGroup() == null || existingRlss.isEmpty())
+		if (rls == null || rls.getGroup() == null)
 		{
 			return ImmutableSet.of();
 		}

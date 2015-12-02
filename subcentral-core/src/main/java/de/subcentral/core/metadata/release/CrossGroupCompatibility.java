@@ -46,10 +46,6 @@ public class CrossGroupCompatibility implements Compatibility
 	@Override
 	public Set<Release> findCompatibles(Release rls, Collection<Release> existingRlss)
 	{
-		if (rls == null)
-		{
-			return ImmutableSet.of();
-		}
 		MatchDirection md = matchSourceRelease(rls);
 		if (MatchDirection.NONE == md)
 		{
@@ -65,11 +61,15 @@ public class CrossGroupCompatibility implements Compatibility
 				compatibles.add(existingRls);
 			}
 		}
-		return ImmutableSet.copyOf(compatibles);
+		return compatibles;
 	}
 
 	private MatchDirection matchSourceRelease(Release rls)
 	{
+		if (rls == null)
+		{
+			return MatchDirection.NONE;
+		}
 		if (sourceGroup.equals(rls.getGroup()))
 		{
 			return MatchDirection.FORWARD;
@@ -83,18 +83,14 @@ public class CrossGroupCompatibility implements Compatibility
 
 	private boolean matchesCompatibleRelease(Release compatibleRls, MatchDirection matchDirection)
 	{
-		if (compatibleRls == null)
-		{
-			return false;
-		}
 		switch (matchDirection)
 		{
-		case FORWARD:
-			return compatibleGroup.equals(compatibleRls.getGroup());
-		case BACKWARD:
-			return sourceGroup.equals(compatibleRls.getGroup());
-		default:
-			return false;
+			case FORWARD:
+				return compatibleGroup.equals(compatibleRls.getGroup());
+			case BACKWARD:
+				return sourceGroup.equals(compatibleRls.getGroup());
+			default:
+				return false;
 		}
 	}
 
