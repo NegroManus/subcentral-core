@@ -485,7 +485,7 @@ public class SettingsController extends AbstractController
 			}
 			catch (Exception e)
 			{
-				log.error("Failed to load custom settings from " + settingsFile + ". Will load default settings", e);
+				log.error("Failed to load custom settings from " + settingsFile + ". Default settings will be used", e);
 				FxUtil.createExceptionAlert("Failed to load custom settings",
 						"Failed to load custom settings from " + settingsFile
 								+ ". Default settings will be used.\nIf you would like to try and fix the custom settings, close the application without saving the settings, fix the custom settings and try again.",
@@ -494,7 +494,7 @@ public class SettingsController extends AbstractController
 		}
 		else
 		{
-			log.debug("No custom settings found at {}. Will load default settings", CUSTOM_SETTINGS_FILENAME);
+			log.debug("No custom settings found at {}. Default settings will be used", settingsFile);
 		}
 
 		// if did not hit "return;", load default settings
