@@ -71,7 +71,7 @@ public class TypeBasedCorrectionService implements CorrectionService
 		{
 			return ImmutableList.of();
 		}
-		List<Correction> changes = new ArrayList<>();
+		List<Correction> corrections = new ArrayList<>();
 		// keep track which beans were already corrected
 		// to not end in an infinite loop because two beans had a bidirectional relationship
 		IdentityHashMap<Object, Boolean> alreadyCorrectedBeans = new IdentityHashMap<>();
@@ -81,11 +81,11 @@ public class TypeBasedCorrectionService implements CorrectionService
 		Object beanToCorrect;
 		while ((beanToCorrect = beansToCorrect.poll()) != null)
 		{
-			correctBean(beanToCorrect, changes);
+			correctBean(beanToCorrect, corrections);
 			alreadyCorrectedBeans.put(beanToCorrect, Boolean.TRUE);
 			addNestedBeans(beanToCorrect, beansToCorrect, alreadyCorrectedBeans);
 		}
-		return changes;
+		return corrections;
 	}
 
 	@SuppressWarnings("unchecked")
