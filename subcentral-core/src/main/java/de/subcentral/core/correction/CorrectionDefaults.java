@@ -13,7 +13,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 
 public class CorrectionDefaults
@@ -80,7 +80,7 @@ public class CorrectionDefaults
 		return ImmutableList.of();
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(SubtitleFile subAdj)
+	public static List<? extends Object> retrieveNestedBeans(SubtitleRelease subAdj)
 	{
 		List<Object> nestedBeans = new ArrayList<>(subAdj.getSubtitles().size() + subAdj.getMatchingReleases().size());
 		nestedBeans.addAll(subAdj.getSubtitles());
@@ -94,12 +94,12 @@ public class CorrectionDefaults
 		service.registerNestedBeansRetriever(Season.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Release.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Subtitle.class, CorrectionDefaults::retrieveNestedBeans);
-		service.registerNestedBeansRetriever(SubtitleFile.class, CorrectionDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(SubtitleRelease.class, CorrectionDefaults::retrieveNestedBeans);
 	}
 
 	public static void registerAllDefaultCorrectors(TypeBasedCorrectionService service)
 	{
-		service.registerCorrector(SubtitleFile.class, SubtitleUtil::standardizeTags);
+		service.registerCorrector(SubtitleRelease.class, SubtitleUtil::standardizeTags);
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("AAC2", "0"), Tag.list("AAC2.0"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("DD5", "1"), Tag.list("DD5.1"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "264"), Tag.list("H.264"))));

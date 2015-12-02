@@ -33,7 +33,7 @@ import de.subcentral.core.file.subtitle.SubtitleFileFormat;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
@@ -189,13 +189,13 @@ public class MigrationService
 				HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
 				long hashAsLong = hash.asLong();
 				String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
-				SubtitleFile subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleFile.class, subParsingServices);
+				SubtitleRelease subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleRelease.class, subParsingServices);
 				if (subAdj == null)
 				{
 					Release rls = ParsingUtil.parse(filenameWithoutExt, Release.class, rlsParsingServices);
 					if (rls != null)
 					{
-						subAdj = SubtitleFile.create(rls, null, null);
+						subAdj = SubtitleRelease.create(rls, null, null);
 					}
 				}
 
@@ -218,7 +218,7 @@ public class MigrationService
 			SubtitleFileFormat format = SubRip.INSTANCE;
 
 			SubtitleContent data = format.read(bytes, Charset.forName(match.getName()));
-			log.debug("Parsed content of {} with charset {} and format {} to SubtitleFile ({} items)", file, match.getName(), format.getName(), data.getItems().size());
+			log.debug("Parsed content of {} with charset {} and format {} to SubtitleRelease ({} items)", file, match.getName(), format.getName(), data.getItems().size());
 			sub.updateWithData(data);
 
 			List<Contribution> contributions = contributionParser.parse(data);

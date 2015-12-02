@@ -11,7 +11,7 @@ import com.google.common.io.Resources;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.mig.process.SeasonPostParser;
 import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
 
@@ -64,7 +64,7 @@ public class SeasonPostParserTest
 
 		System.out.println();
 		System.out.println("Subs:");
-		for (SubtitleFile subAdj : content.getSubtitleFiles())
+		for (SubtitleRelease subAdj : content.getSubtitleFiles())
 		{
 			System.out.println(subAdj);
 		}

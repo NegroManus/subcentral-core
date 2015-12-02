@@ -16,17 +16,17 @@ import javafx.collections.SetChangeListener;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.naming.NamingService;
 
-public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleFile>
+public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleRelease>
 {
 	private final SetProperty<ObservableRelease>	matchingReleases;
 	private final StringProperty					language;
 	private final Property<Group>					group;
 	private final StringProperty					source;
 
-	public ObservableSubtitle(SubtitleFile bean, NamingService namingService)
+	public ObservableSubtitle(SubtitleRelease bean, NamingService namingService)
 	{
 		super(bean, namingService);
 

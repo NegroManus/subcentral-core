@@ -13,7 +13,7 @@ import de.subcentral.core.correction.SubtitleLanguageCorrector;
 import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.parsing.Mapper;
 import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.MappingMatcherExtension;
@@ -35,15 +35,15 @@ public class SubCentralDe
 
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(SubtitleFile.class, initParsers());
+		PARSING_SERVICE.registerAllParsers(SubtitleRelease.class, initParsers());
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<Parser<SubtitleFile>> initParsers()
+	private static List<Parser<SubtitleRelease>> initParsers()
 	{
 		List<MappingMatcherExtension> scExtensions = initExtensions();
 
-		ImmutableList.Builder<Parser<SubtitleFile>> parsers = ImmutableList.builder();
+		ImmutableList.Builder<Parser<SubtitleRelease>> parsers = ImmutableList.builder();
 
 		for (ParserEntry<?> sceneParserEntry : ReleaseScene.getParsersEntries())
 		{
@@ -96,31 +96,31 @@ public class SubCentralDe
 		// Revision, Language, (Group)?
 		MappingMatcherExtension ext01 = new MappingMatcherExtension();
 		ext01.setPatternPrefix("(");
-		ext01.setPrefixProps(ImmutableList.of(SubtitleFile.PROP_NAME));
+		ext01.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
 		ext01.setPatternSuffix(")" + versionGrp + langGrp + "(?:" + groupGrp + ")?");
-		ext01.setSuffixProps(ImmutableList.of(SubtitleFile.PROP_VERSION, Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP));
+		ext01.setSuffixProps(ImmutableList.of(SubtitleRelease.PROP_VERSION, Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP));
 		extensions.add(ext01);
 
 		// Language, Revision, (Group)?
 		MappingMatcherExtension ext02 = new MappingMatcherExtension();
 		ext02.setPatternPrefix("(");
-		ext02.setPrefixProps(ImmutableList.of(SubtitleFile.PROP_NAME));
+		ext02.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
 		ext02.setPatternSuffix(")" + langGrp + versionGrp + "(?:" + groupGrp + ")?");
-		ext02.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, SubtitleFile.PROP_VERSION, Subtitle.PROP_GROUP));
+		ext02.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, SubtitleRelease.PROP_VERSION, Subtitle.PROP_GROUP));
 		extensions.add(ext02);
 
 		// Language, Group, (Revision)?
 		MappingMatcherExtension ext03 = new MappingMatcherExtension();
 		ext03.setPatternPrefix("(");
-		ext03.setPrefixProps(ImmutableList.of(SubtitleFile.PROP_NAME));
+		ext03.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
 		ext03.setPatternSuffix(")" + langGrp + groupGrp + "(?:" + versionGrp + ")?");
-		ext03.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, SubtitleFile.PROP_VERSION));
+		ext03.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, SubtitleRelease.PROP_VERSION));
 		extensions.add(ext03);
 
 		// Language, (Group)?
 		MappingMatcherExtension ext04 = new MappingMatcherExtension();
 		ext04.setPatternPrefix("(");
-		ext04.setPrefixProps(ImmutableList.of(SubtitleFile.PROP_NAME));
+		ext04.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
 		ext04.setPatternSuffix(")" + langGrp + "(?:" + groupGrp + ")?");
 		ext04.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP));
 		extensions.add(ext04);
@@ -128,9 +128,9 @@ public class SubCentralDe
 		// Revision
 		MappingMatcherExtension ext05 = new MappingMatcherExtension();
 		ext05.setPatternPrefix("(");
-		ext05.setPrefixProps(ImmutableList.of(SubtitleFile.PROP_NAME));
+		ext05.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
 		ext05.setPatternSuffix(")" + versionGrp);
-		ext05.setSuffixProps(ImmutableList.of(SubtitleFile.PROP_VERSION));
+		ext05.setSuffixProps(ImmutableList.of(SubtitleRelease.PROP_VERSION));
 		extensions.add(ext05);
 
 		return extensions.build();

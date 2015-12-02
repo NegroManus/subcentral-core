@@ -13,7 +13,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.AbstractController;
@@ -89,7 +89,7 @@ public class DetailsController extends AbstractController
 		// contentPane.setGridLinesVisible(true);
 
 		// Parsed object
-		SubtitleFile subAdj = task.getParsedObject();
+		SubtitleRelease subAdj = task.getParsedObject();
 
 		contentPane.add(createHeadline("Parsed object", SettingsController.PARSING_SECTION), 0, rowCounter++);
 

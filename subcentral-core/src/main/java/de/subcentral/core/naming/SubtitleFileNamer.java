@@ -5,19 +5,19 @@ import java.util.Objects;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 
-public class SubtitleFileNamer extends AbstractPropertySequenceNamer<SubtitleFile>
+public class SubtitleFileNamer extends AbstractPropertySequenceNamer<SubtitleRelease>
 {
 	/**
-	 * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link SubtitleFile#getName() subtitle adjustment's name} is not {@code null}, that name is
+	 * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link SubtitleRelease#getName() subtitle adjustment's name} is not {@code null}, that name is
 	 * returned, otherwise the computed name is returned. The default value is {@code false}.
 	 */
 	public static final String		PARAM_PREFER_NAME		= SubtitleFileNamer.class.getName() + ".preferName";
 
 	/**
 	 * The name of the parameter "release" of type {@link Release}. The specified release is used for naming the subtitle adjustment. The default value is the return value of
-	 * {@link SubtitleFile#getFirstMatchingRelease()}.
+	 * {@link SubtitleRelease#getFirstMatchingRelease()}.
 	 */
 	public static final String		PARAM_RELEASE			= SubtitleFileNamer.class.getName() + ".release";
 
@@ -45,27 +45,27 @@ public class SubtitleFileNamer extends AbstractPropertySequenceNamer<SubtitleFil
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, SubtitleFile adj, Map<String, Object> params)
+	public void buildName(PropSequenceNameBuilder b, SubtitleRelease adj, Map<String, Object> params)
 	{
 		// read useName parameter
 		boolean preferName = NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
 		if (preferName && adj.getName() != null)
 		{
-			b.append(SubtitleFile.PROP_NAME, adj.getName());
+			b.append(SubtitleRelease.PROP_NAME, adj.getName());
 			return;
 		}
 
 		// read other naming parameters
 		Release rls = NamingUtil.readParameter(params, PARAM_RELEASE, Release.class, adj.getFirstMatchingRelease());
-		b.appendIfNotBlank(SubtitleFile.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
+		b.appendIfNotBlank(SubtitleRelease.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 
 		Subtitle sub = adj.getFirstSubtitle();
 		if (sub != null)
 		{
 			b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());
 		}
-		b.appendAll(SubtitleFile.PROP_TAGS, adj.getTags());
-		b.appendIfNotNull(SubtitleFile.PROP_VERSION, adj.getVersion());
+		b.appendAll(SubtitleRelease.PROP_TAGS, adj.getTags());
+		b.appendIfNotNull(SubtitleRelease.PROP_VERSION, adj.getVersion());
 		if (sub != null)
 		{
 			// read includeGroup parameter

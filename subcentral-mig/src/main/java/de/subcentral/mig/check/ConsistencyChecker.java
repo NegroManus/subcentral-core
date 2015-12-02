@@ -37,7 +37,7 @@ import com.google.common.collect.Multimaps;
 
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.ReleaseNamer;
 import de.subcentral.core.naming.SeasonNamer;
@@ -501,8 +501,8 @@ public class ConsistencyChecker
 				topicEntries.add(joinSeasons(seriesListSeasons) + " != " + joinSeasons(parsedPost.getSeasons()) + " (post: " + formatPost(post) + ")");
 			}
 			// Compare attachments
-			List<SubtitleFile> subsNotInSubRepo = new ArrayList<>();
-			for (SubtitleFile subFile : parsedPost.getSubtitleFiles())
+			List<SubtitleRelease> subsNotInSubRepo = new ArrayList<>();
+			for (SubtitleRelease subFile : parsedPost.getSubtitleFiles())
 			{
 				Integer attId = subFile.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
 				if (attachments.containsKey(attId))
@@ -518,7 +518,7 @@ public class ConsistencyChecker
 			if (!subsNotInSubRepo.isEmpty())
 			{
 				subsNotInRepoEntries.add(formatPost(post));
-				for (SubtitleFile subFile : subsNotInSubRepo)
+				for (SubtitleRelease subFile : subsNotInSubRepo)
 				{
 					subsNotInRepoEntries.add("- " + formatSubtitleFile(subFile));
 				}
@@ -672,7 +672,7 @@ public class ConsistencyChecker
 		return NamingDefaults.getDefaultSeasonNamer().name(season) + " (threadID=" + season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID) + ")";
 	}
 
-	private static String formatSubtitleFile(SubtitleFile subFile)
+	private static String formatSubtitleFile(SubtitleRelease subFile)
 	{
 		return NamingDefaults.getDefaultNamingService().name(subFile.getSubtitles()) + " "
 				+ NamingDefaults.getDefaultNamingService().name(subFile.getMatchingReleases(), ImmutableMap.of(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE)) + " (attachmentID="

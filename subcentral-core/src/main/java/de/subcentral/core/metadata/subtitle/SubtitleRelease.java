@@ -27,22 +27,22 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleFile extends MetadataBase implements Work, Comparable<SubtitleFile>
+public class SubtitleRelease extends MetadataBase implements Work, Comparable<SubtitleRelease>
 {
 	private static final long					serialVersionUID		= 3266903304683246434L;
 
-	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(SubtitleFile.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_SUBTITLES			= new SimplePropDescriptor(SubtitleFile.class, PropNames.SUBTITLES);
-	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(SubtitleFile.class, PropNames.TAGS);
-	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES	= new SimplePropDescriptor(SubtitleFile.class, PropNames.MATCHING_RELEASES);
-	public static final SimplePropDescriptor	PROP_VERSION			= new SimplePropDescriptor(SubtitleFile.class, PropNames.VERSION);
-	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(SubtitleFile.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_SIZE				= new SimplePropDescriptor(SubtitleFile.class, PropNames.SIZE);
-	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(SubtitleFile.class, PropNames.NFO);
-	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(SubtitleFile.class, PropNames.NFO_LINK);
-	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(SubtitleFile.class, PropNames.CONTRIBUTIONS);
-	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(SubtitleFile.class, PropNames.IDS);
-	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(SubtitleFile.class, PropNames.ATTRIBUTES);
+	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.NAME);
+	public static final SimplePropDescriptor	PROP_SUBTITLES			= new SimplePropDescriptor(SubtitleRelease.class, PropNames.SUBTITLES);
+	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.TAGS);
+	public static final SimplePropDescriptor	PROP_MATCHING_RELEASES	= new SimplePropDescriptor(SubtitleRelease.class, PropNames.MATCHING_RELEASES);
+	public static final SimplePropDescriptor	PROP_VERSION			= new SimplePropDescriptor(SubtitleRelease.class, PropNames.VERSION);
+	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.DATE);
+	public static final SimplePropDescriptor	PROP_SIZE				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.SIZE);
+	public static final SimplePropDescriptor	PROP_NFO				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.NFO);
+	public static final SimplePropDescriptor	PROP_NFO_LINK			= new SimplePropDescriptor(SubtitleRelease.class, PropNames.NFO_LINK);
+	public static final SimplePropDescriptor	PROP_CONTRIBUTIONS		= new SimplePropDescriptor(SubtitleRelease.class, PropNames.CONTRIBUTIONS);
+	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.IDS);
+	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(SubtitleRelease.class, PropNames.ATTRIBUTES);
 
 	public static final Tag						HEARING_IMPAIRED_TAG	= new Tag("HI", "Hearing Impaired");
 
@@ -81,9 +81,9 @@ public class SubtitleFile extends MetadataBase implements Work, Comparable<Subti
 	 */
 	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
-	public static SubtitleFile create(Release matchingRelease, String language, String group)
+	public static SubtitleRelease create(Release matchingRelease, String language, String group)
 	{
-		SubtitleFile subAdjustment = new SubtitleFile();
+		SubtitleRelease subAdjustment = new SubtitleRelease();
 		Group grp = null;
 		if (group != null)
 		{
@@ -120,42 +120,42 @@ public class SubtitleFile extends MetadataBase implements Work, Comparable<Subti
 	// In 99% of the cases, there is only one adjustment contribution
 	private final List<Contribution>	contributions		= new ArrayList<>(1);
 
-	public SubtitleFile()
+	public SubtitleRelease()
 	{
 
 	}
 
-	public SubtitleFile(Subtitle subtitle, Release matchingRelease)
+	public SubtitleRelease(Subtitle subtitle, Release matchingRelease)
 	{
 		this(null, subtitle, matchingRelease);
 	}
 
-	public SubtitleFile(String name, Subtitle subtitle, Release matchingRelease)
+	public SubtitleRelease(String name, Subtitle subtitle, Release matchingRelease)
 	{
 		this.name = name;
 		this.subtitles.add(subtitle);
 		this.matchingReleases.add(matchingRelease);
 	}
 
-	public SubtitleFile(Subtitle subtitle, Collection<Release> matchingReleases)
+	public SubtitleRelease(Subtitle subtitle, Collection<Release> matchingReleases)
 	{
 		this(null, subtitle, matchingReleases);
 	}
 
-	public SubtitleFile(String name, Subtitle subtitle, Collection<Release> matchingReleases)
+	public SubtitleRelease(String name, Subtitle subtitle, Collection<Release> matchingReleases)
 	{
 		this.name = name;
 		this.subtitles.add(subtitle);
 		this.matchingReleases.addAll(matchingReleases);
 	}
 
-	public SubtitleFile(List<Subtitle> subtitles, Release matchingRelease)
+	public SubtitleRelease(List<Subtitle> subtitles, Release matchingRelease)
 	{
 		this.subtitles.addAll(subtitles);
 		this.matchingReleases.add(matchingRelease);
 	}
 
-	public SubtitleFile(List<Subtitle> subtitles, Collection<Release> matchingReleases)
+	public SubtitleRelease(List<Subtitle> subtitles, Collection<Release> matchingReleases)
 	{
 		this.subtitles.addAll(subtitles);
 		this.matchingReleases.addAll(matchingReleases);
@@ -384,15 +384,15 @@ public class SubtitleFile extends MetadataBase implements Work, Comparable<Subti
 		{
 			return true;
 		}
-		if (obj instanceof SubtitleFile)
+		if (obj instanceof SubtitleRelease)
 		{
-			SubtitleFile o = (SubtitleFile) obj;
+			SubtitleRelease o = (SubtitleRelease) obj;
 			return subtitles.equals(o.subtitles) && tags.equals(o.tags) && matchingReleases.equals(o.matchingReleases) && Objects.equals(version, o.version);
 		}
 		return false;
 	}
 
-	public boolean equalsByName(SubtitleFile other)
+	public boolean equalsByName(SubtitleRelease other)
 	{
 		return other == null ? false : name == null ? false : name.equals(other.name);
 	}
@@ -404,7 +404,7 @@ public class SubtitleFile extends MetadataBase implements Work, Comparable<Subti
 	}
 
 	@Override
-	public int compareTo(SubtitleFile o)
+	public int compareTo(SubtitleRelease o)
 	{
 		// nulls first
 		if (o == null)
@@ -422,7 +422,7 @@ public class SubtitleFile extends MetadataBase implements Work, Comparable<Subti
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(SubtitleFile.class)
+		return MoreObjects.toStringHelper(SubtitleRelease.class)
 				.omitNullValues()
 				.add("name", name)
 				.add("subtitles", BeanUtil.nullIfEmpty(subtitles))

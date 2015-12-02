@@ -3,18 +3,18 @@ package de.subcentral.core.parsing;
 import java.util.Map;
 
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleFile>
+public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleRelease>
 {
 	@Override
-	public SubtitleFile doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
+	public SubtitleRelease doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
 	{
-		SubtitleFile subAdj = new SubtitleFile();
-		subAdj.setName(props.get(SubtitleFile.PROP_NAME));
-		subAdj.getTags().addAll(propFromStringService.parseList(props, SubtitleFile.PROP_TAGS, Tag.class));
-		subAdj.setVersion(props.get(SubtitleFile.PROP_VERSION));
+		SubtitleRelease subAdj = new SubtitleRelease();
+		subAdj.setName(props.get(SubtitleRelease.PROP_NAME));
+		subAdj.getTags().addAll(propFromStringService.parseList(props, SubtitleRelease.PROP_TAGS, Tag.class));
+		subAdj.setVersion(props.get(SubtitleRelease.PROP_VERSION));
 		return subAdj;
 	}
 }

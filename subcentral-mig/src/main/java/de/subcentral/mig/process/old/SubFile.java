@@ -12,15 +12,15 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 
 public class SubFile implements Comparable<SubFile>
 {
-	private final SubtitleFile	subtitleMetadata;
+	private final SubtitleRelease	subtitleMetadata;
 	private SubtitleContent				subtitleData;
 	private final Set<Path>				files	= new HashSet<>(4);
 
-	public SubFile(SubtitleFile subtitleMetadata, Path file)
+	public SubFile(SubtitleRelease subtitleMetadata, Path file)
 	{
 		this.subtitleMetadata = subtitleMetadata;
 		files.add(file);
@@ -30,7 +30,7 @@ public class SubFile implements Comparable<SubFile>
 	{
 		for (Contribution c : contributions)
 		{
-			if (SubtitleFile.CONTRIBUTION_TYPE_ADJUSTMENT.equals(c.getType()))
+			if (SubtitleRelease.CONTRIBUTION_TYPE_ADJUSTMENT.equals(c.getType()))
 			{
 				subtitleMetadata.getContributions().add(c);
 			}
@@ -52,7 +52,7 @@ public class SubFile implements Comparable<SubFile>
 		return this;
 	}
 
-	public SubtitleFile getSubtitleMetadata()
+	public SubtitleRelease getSubtitleMetadata()
 	{
 		return subtitleMetadata;
 	}

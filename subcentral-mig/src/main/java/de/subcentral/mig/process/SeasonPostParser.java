@@ -32,7 +32,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
@@ -535,7 +535,7 @@ public class SeasonPostParser
 		List<Episode> parsedEpis = new ArrayList<>();
 		// Each top-level list represents a column,
 		// each 2nd-level list represents the subtitles in that column
-		List<List<MarkedValue<SubtitleFile>>> parsedSubs = new ArrayList<>();
+		List<List<MarkedValue<SubtitleRelease>>> parsedSubs = new ArrayList<>();
 		// Each top-level list represents a column,
 		// each 2nd-level list represents a division within that column (the divisions are divided by "|")
 		// each 3rd-level list represents the contributions inside a division
@@ -589,7 +589,7 @@ public class SeasonPostParser
 
 		// Add contributions to subtitles
 		int numSubColumns = parsedSubs.size();
-		int numSubs = parsedSubs.stream().mapToInt((List<MarkedValue<SubtitleFile>> subsPerColumn) -> subsPerColumn.size()).sum();
+		int numSubs = parsedSubs.stream().mapToInt((List<MarkedValue<SubtitleRelease>> subsPerColumn) -> subsPerColumn.size()).sum();
 		// For each contribution column
 		for (List<List<Contribution>> columnContributions : parsedContributions)
 		{
@@ -600,9 +600,9 @@ public class SeasonPostParser
 			// [LOL][DIM] <-> [SubberA, SubberB]
 			if (numContributionDivisions == 1)
 			{
-				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleFile> subAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
 					{
 						addContributions(subAdj.value, columnContributions.get(0));
 					}
@@ -615,9 +615,9 @@ public class SeasonPostParser
 			{
 				for (int i = 0; i < numSubColumns; i++)
 				{
-					List<MarkedValue<SubtitleFile>> columnSubs = parsedSubs.get(i);
+					List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
 					List<Contribution> divisionContributions = columnContributions.get(i);
-					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						addContributions(markedSubAdj.value, divisionContributions);
 					}
@@ -630,9 +630,9 @@ public class SeasonPostParser
 			else if (numSubs == columnContributions.size())
 			{
 				int index = 0;
-				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						List<Contribution> divisionContributions = columnContributions.get(index);
 						addContributions(markedSubAdj.value, divisionContributions);
@@ -649,10 +649,10 @@ public class SeasonPostParser
 				int diff = numSubColumns - numContributionDivisions;
 				for (int i = 0; i < numSubColumns; i++)
 				{
-					List<MarkedValue<SubtitleFile>> columnSubs = parsedSubs.get(i);
+					List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
 					int contributionDivisionIndex = Math.max(0, i - diff);
 					List<Contribution> divisionContributions = columnContributions.get(contributionDivisionIndex);
-					for (MarkedValue<SubtitleFile> subAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
 					{
 						addContributions(subAdj.value, divisionContributions);
 					}
@@ -661,9 +661,9 @@ public class SeasonPostParser
 			// Else: Add every contribution to every sub
 			else
 			{
-				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						for (List<Contribution> divisionContributions : columnContributions)
 						{
@@ -691,9 +691,9 @@ public class SeasonPostParser
 						throw new IllegalArgumentException("Multiple sources marked with marker " + source.marker + ": " + storedSource + ", " + source);
 					}
 				}
-				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleFile> subAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
 					{
 						addSource(subAdj.value, mapMarkerToSource.get(subAdj.marker));
 					}
@@ -702,9 +702,9 @@ public class SeasonPostParser
 			// If only one source, add it to all the subtitles
 			else if (parsedSources.size() == 1)
 			{
-				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						addSource(markedSubAdj.value, parsedSources.get(0).value);
 					}
@@ -717,9 +717,9 @@ public class SeasonPostParser
 			{
 				for (int i = 0; i < numSubColumns; i++)
 				{
-					List<MarkedValue<SubtitleFile>> columnSubs = parsedSubs.get(i);
+					List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
 					MarkedValue<String> markedSource = parsedSources.get(i);
-					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						addSource(markedSubAdj.value, markedSource.value);
 					}
@@ -731,9 +731,9 @@ public class SeasonPostParser
 			else if (numSubs == parsedSources.size())
 			{
 				int index = 0;
-				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						MarkedValue<String> markedSource = parsedSources.get(index);
 						addSource(markedSubAdj.value, markedSource.value);
@@ -751,9 +751,9 @@ public class SeasonPostParser
 				}
 				String combinedSource = combinedSourceJoiner.toString();
 
-				for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
-					for (MarkedValue<SubtitleFile> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						addSource(markedSubAdj.value, combinedSource);
 					}
@@ -762,9 +762,9 @@ public class SeasonPostParser
 		}
 
 		// Add subtitles
-		for (List<MarkedValue<SubtitleFile>> columnSubs : parsedSubs)
+		for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 		{
-			for (MarkedValue<SubtitleFile> subAdj : columnSubs)
+			for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
 			{
 				Episode firstEpi = parsedEpis.get(0);
 				subAdj.value.getFirstSubtitle().setMedia(firstEpi);
@@ -776,7 +776,7 @@ public class SeasonPostParser
 				{
 					for (int i = 1; i < parsedEpis.size(); i++)
 					{
-						SubtitleFile copy = SerializationUtils.clone(subAdj.value);
+						SubtitleRelease copy = SerializationUtils.clone(subAdj.value);
 						Episode epi = parsedEpis.get(i);
 						copy.getFirstSubtitle().setMedia(epi);
 						data.subtitles.add(copy);
@@ -856,7 +856,7 @@ public class SeasonPostParser
 		return;
 	}
 
-	private static void parseSubtitlesCell(List<List<MarkedValue<SubtitleFile>>> subs, Element td, ColumnType colType)
+	private static void parseSubtitlesCell(List<List<MarkedValue<SubtitleRelease>>> subs, Element td, ColumnType colType)
 	{
 		String language;
 		switch (colType)
@@ -872,7 +872,7 @@ public class SeasonPostParser
 		}
 
 		String cellContent = td.html();
-		List<MarkedValue<SubtitleFile>> subAdjs = new ArrayList<>();
+		List<MarkedValue<SubtitleRelease>> subAdjs = new ArrayList<>();
 
 		Matcher subLinkMatcher = PATTERN_ATTACHMENT_ANCHOR_MARKED.matcher(cellContent);
 		while (subLinkMatcher.find())
@@ -896,7 +896,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void handleMarkedSubtitleLinkMatch(Matcher matcher, String language, List<MarkedValue<SubtitleFile>> subFiles)
+	private static void handleMarkedSubtitleLinkMatch(Matcher matcher, String language, List<MarkedValue<SubtitleRelease>> subFiles)
 	{
 		String marker;
 		if (matcher.group(1) != null)
@@ -927,12 +927,12 @@ public class SeasonPostParser
 
 		Release rls = new Release(label);
 
-		SubtitleFile subAdj = new SubtitleFile();
+		SubtitleRelease subAdj = new SubtitleRelease();
 		subAdj.setSingleSubtitle(sub);
 		subAdj.setSingleMatchingRelease(rls);
 		subAdj.getAttributes().put(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID, attachmentId);
 
-		MarkedValue<SubtitleFile> markedSubAdj = new MarkedValue<>(subAdj, marker);
+		MarkedValue<SubtitleRelease> markedSubAdj = new MarkedValue<>(subAdj, marker);
 		subFiles.add(markedSubAdj);
 	}
 
@@ -960,7 +960,7 @@ public class SeasonPostParser
 				contributionType = Subtitle.CONTRIBUTION_TYPE_TIMINGS;
 				break;
 			case ADJUSTMENT:
-				contributionType = SubtitleFile.CONTRIBUTION_TYPE_ADJUSTMENT;
+				contributionType = SubtitleRelease.CONTRIBUTION_TYPE_ADJUSTMENT;
 				break;
 			default:
 				contributionType = null;
@@ -1012,12 +1012,12 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void addSource(SubtitleFile subAdj, String source)
+	private static void addSource(SubtitleRelease subAdj, String source)
 	{
 		subAdj.getFirstSubtitle().setSource(source);
 	}
 
-	private static void addContributions(SubtitleFile subAdj, List<Contribution> contributions)
+	private static void addContributions(SubtitleRelease subAdj, List<Contribution> contributions)
 	{
 		for (Contribution c : contributions)
 		{
@@ -1054,7 +1054,7 @@ public class SeasonPostParser
 	{
 		Integer attachmentId = Integer.valueOf(subLinkMatcher.group(1));
 		String label = removeHtmlTagsAndBBCodes(subLinkMatcher.group(2));
-		SubtitleFile subAdj = new SubtitleFile();
+		SubtitleRelease subAdj = new SubtitleRelease();
 		subAdj.setSingleMatchingRelease(new Release(label));
 		subAdj.getAttributes().put(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID, attachmentId);
 		data.subtitles.add(subAdj);
@@ -1112,7 +1112,7 @@ public class SeasonPostParser
 		// link the Subtitle of the first SubtitleAdjustment of those matching SubtitleAdjustments to all the other SubtitleAdjustments, too
 		// Because only for the first SubtitleAdjustment the Subtitle's contributions are specified. Not for all other SubtitleAdjustments
 		Map<Subtitle, Subtitle> distinctSubs = new HashMap<>();
-		for (SubtitleFile subAdj : data.subtitles)
+		for (SubtitleRelease subAdj : data.subtitles)
 		{
 			Subtitle sub = subAdj.getFirstSubtitle();
 			// sub can be null if parsed from non-standard-table
@@ -1131,13 +1131,13 @@ public class SeasonPostParser
 		// b) If they have a different Subtitle (different Episode)
 		// -> then add all other Subtitles to the first and remove all but the first (happens due to rowspan)
 		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
-		Map<Integer, SubtitleFile> mapAttachmentsToSubs = new HashMap<>();
-		ListIterator<SubtitleFile> subAdjIter = data.subtitles.listIterator();
+		Map<Integer, SubtitleRelease> mapAttachmentsToSubs = new HashMap<>();
+		ListIterator<SubtitleRelease> subAdjIter = data.subtitles.listIterator();
 		while (subAdjIter.hasNext())
 		{
-			SubtitleFile subAdj = subAdjIter.next();
+			SubtitleRelease subAdj = subAdjIter.next();
 			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
-			SubtitleFile storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
+			SubtitleRelease storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
 			if (storedSubAdj != null)
 			{
 				// a) Equal -> remove duplicate
@@ -1157,7 +1157,7 @@ public class SeasonPostParser
 		// Cleanup sub.source
 		// 1) lower-case all sources
 		// Add source=SubCentral.de to all german subs without a source
-		for (SubtitleFile subAdj : data.subtitles)
+		for (SubtitleRelease subAdj : data.subtitles)
 		{
 			for (Subtitle sub : subAdj.getSubtitles())
 			{
@@ -1204,13 +1204,13 @@ public class SeasonPostParser
 	{
 		private final Series						series;
 		private final ImmutableList<Season>			seasons;
-		private final ImmutableList<SubtitleFile>	subtitleFiles;
+		private final ImmutableList<SubtitleRelease>	subtitleReleases;
 
-		public SeasonPostContent(Series series, Iterable<Season> seasons, Iterable<SubtitleFile> subtitleAdjustments)
+		public SeasonPostContent(Series series, Iterable<Season> seasons, Iterable<SubtitleRelease> subtitleAdjustments)
 		{
 			this.series = Objects.requireNonNull(series, "series");
 			this.seasons = ImmutableList.copyOf(seasons);
-			this.subtitleFiles = ImmutableList.copyOf(subtitleAdjustments);
+			this.subtitleReleases = ImmutableList.copyOf(subtitleAdjustments);
 		}
 
 		public Series getSeries()
@@ -1223,9 +1223,9 @@ public class SeasonPostParser
 			return seasons;
 		}
 
-		public ImmutableList<SubtitleFile> getSubtitleFiles()
+		public ImmutableList<SubtitleRelease> getSubtitleFiles()
 		{
-			return subtitleFiles;
+			return subtitleReleases;
 		}
 	}
 
@@ -1242,7 +1242,7 @@ public class SeasonPostParser
 		private Series								series		= new Series(Migration.UNKNOWN_SERIES);
 		private final SortedMap<Season, Season>		seasons		= new TreeMap<>();
 		private final SortedMap<Episode, Episode>	episodes	= new TreeMap<>();
-		private final List<SubtitleFile>			subtitles	= new ArrayList<>();
+		private final List<SubtitleRelease>			subtitles	= new ArrayList<>();
 	}
 
 	/**

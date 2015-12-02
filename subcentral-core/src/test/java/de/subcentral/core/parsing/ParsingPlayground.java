@@ -37,7 +37,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleFile;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingUtil;
@@ -165,9 +165,9 @@ public class ParsingPlayground
 						parsedChanges.forEach(c -> System.out.println("Changed: " + c));
 						TimeUtil.printDurationMillisDouble("Standardizing parsed", start);
 
-						if (parsed instanceof SubtitleFile)
+						if (parsed instanceof SubtitleRelease)
 						{
-							SubtitleFile subAdj = (SubtitleFile) parsed;
+							SubtitleRelease subAdj = (SubtitleRelease) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							System.out.println("Querying release info db ...");
 							start = System.nanoTime();
@@ -219,7 +219,7 @@ public class ParsingPlayground
 							convertedSub.setLanguage(subAdj.getFirstSubtitle().getLanguage());
 							convertedSub.setGroup(subAdj.getFirstSubtitle().getGroup());
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
-							SubtitleFile convertedAdj = new SubtitleFile(convertedSub, allMatchingRlss);
+							SubtitleRelease convertedAdj = new SubtitleRelease(convertedSub, allMatchingRlss);
 							convertedAdj.setHearingImpaired(subAdj.isHearingImpaired());
 							TimeUtil.printDurationMillisDouble("Converting releases", start);
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
