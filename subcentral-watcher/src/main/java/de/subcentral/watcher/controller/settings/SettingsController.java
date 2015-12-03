@@ -511,7 +511,7 @@ public class SettingsController extends AbstractController
 				log.error("Failed to load custom settings from " + settingsFile + ". Default settings will be used", e);
 				FxUtil.createExceptionAlert("Failed to load custom settings",
 						"Failed to load custom settings from " + settingsFile
-								+ ". Default settings will be used.\nIf you would like to try and fix the custom settings, close the application without saving the settings, fix the custom settings and try again.",
+								+ ". Default settings will be used.\nIf you would like to try to fix the custom settings, close the application without saving the settings, edit the settings file and try again.",
 						e).showAndWait();
 			}
 		}
