@@ -824,18 +824,23 @@ public class ProcessingController extends AbstractController
 	public void clearProcessingTreeTable()
 	{
 		cancelAllTasks();
-		processingTreeTable.getRoot().getChildren().clear();
-		processingTreeTable.setRoot(new TreeItem<>());
-		processingTreeTable.getSelectionModel().clearSelection();
-		// try
-		// {
-		// mainController.reloadProcessingPane();
-		// }
-		// catch (IOException e)
-		// {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+
+		// TODO Workaround to fix the memory leak:
+		// processingTreeTable.getRoot().getChildren().clear() clears the children
+		// but some skin class instances keep references to the deleted cells and they are never gc'd.
+		// So we need to dump the whole TreeTableView and reload it
+
+		// processingTreeTable.getRoot().getChildren().clear();
+		// processingTreeTable.setRoot(new TreeItem<>());
+		// processingTreeTable.getSelectionModel().clearSelection();
+		try
+		{
+			mainController.reloadProcessingPane();
+		}
+		catch (IOException e)
+		{
+			FxUtil.createExceptionAlert("Failed to reload processing pane", "Exception while reloading processing pane", e).show();
+		}
 	}
 
 	public void cancelAllTasks()
