@@ -6,6 +6,7 @@
 			<dir>${sys:user.home}/Downloads</dir>
 		</directories>
 		<initialScan>true</initialScan>
+		<rejectAlreadyProcessedFiles>true</rejectAlreadyProcessedFiles>
 	</watch>
 
 	<parsing>

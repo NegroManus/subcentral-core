@@ -30,17 +30,19 @@ import javafx.collections.ObservableList;
 
 public class WatcherSettings extends ObservableObject
 {
-	public static final WatcherSettings	INSTANCE	= new WatcherSettings();
-	private static final Logger			log			= LogManager.getLogger(WatcherSettings.class);
+	public static final WatcherSettings	INSTANCE						= new WatcherSettings();
+	private static final Logger			log								= LogManager.getLogger(WatcherSettings.class);
 
 	/**
 	 * Whether the settings changed since initial load
 	 */
-	private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
+	private BooleanProperty				changed							= new SimpleBooleanProperty(this, "changed", false);
 
 	// Watch
 	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories", FXCollections.observableArrayList());
 	private final BooleanProperty		initialScan						= new SimpleBooleanProperty(this, "initialScan");
+	private final BooleanProperty		rejectAlreadyProcessedFiles		= new SimpleBooleanProperty(this, "rejectAlreadyProcessedFiles");
+
 	// Processing
 	private final ProcessingSettings	processingSettings				= new ProcessingSettings();
 	// UI
@@ -52,7 +54,14 @@ public class WatcherSettings extends ObservableObject
 
 	private WatcherSettings()
 	{
-		super.bind(watchDirectories, initialScan, processingSettings, warningsEnabled, guessingWarningEnabled, releaseMetaTaggedWarningEnabled, releaseNukedWarningEnabled);
+		super.bind(watchDirectories,
+				initialScan,
+				rejectAlreadyProcessedFiles,
+				processingSettings,
+				warningsEnabled,
+				guessingWarningEnabled,
+				releaseMetaTaggedWarningEnabled,
+				releaseNukedWarningEnabled);
 
 		addListener((Observable o) -> changed.set(true));
 	}
@@ -102,6 +111,7 @@ public class WatcherSettings extends ObservableObject
 		// Watch
 		updateWatchDirs(cfg);
 		updateInitialScan(cfg);
+		updateRejectAlreadyProcessedFiles(cfg);
 
 		// Processing
 		processingSettings.load(cfg);
@@ -132,6 +142,11 @@ public class WatcherSettings extends ObservableObject
 	private void updateInitialScan(XMLConfiguration cfg)
 	{
 		setInitialScan(cfg.getBoolean("watch.initialScan", false));
+	}
+
+	private void updateRejectAlreadyProcessedFiles(XMLConfiguration cfg)
+	{
+		setRejectAlreadyProcessedFiles(cfg.getBoolean("rejectAlreadyProcessedFiles", true));
 	}
 
 	private void updateWarnings(XMLConfiguration cfg)
@@ -172,6 +187,7 @@ public class WatcherSettings extends ObservableObject
 			ConfigurationHelper.addPath(cfg, "watch.directories.dir", path);
 		}
 		cfg.addProperty("watch.initialScan", isInitialScan());
+		cfg.addProperty("watch.denyAlreadyProcessedFiles", isRejectAlreadyProcessedFiles());
 
 		// Processing
 		processingSettings.save(cfg);
@@ -225,6 +241,21 @@ public class WatcherSettings extends ObservableObject
 	public final void setInitialScan(final boolean initialScan)
 	{
 		this.initialScanProperty().set(initialScan);
+	}
+
+	public final BooleanProperty rejectAlreadyProcessedFilesProperty()
+	{
+		return this.rejectAlreadyProcessedFiles;
+	}
+
+	public final boolean isRejectAlreadyProcessedFiles()
+	{
+		return this.rejectAlreadyProcessedFiles.get();
+	}
+
+	public final void setRejectAlreadyProcessedFiles(final boolean rejectAlreadyProcessedFiles)
+	{
+		this.rejectAlreadyProcessedFiles.set(rejectAlreadyProcessedFiles);
 	}
 
 	public ProcessingSettings getProcessingSettings()
@@ -303,5 +334,4 @@ public class WatcherSettings extends ObservableObject
 			return transformer;
 		}
 	}
-
 }

@@ -411,7 +411,7 @@ public class SettingsController extends AbstractController
 		alert.initOwner(mainController.getPrimaryStage());
 		alert.setTitle("Save settings?");
 		alert.setHeaderText("Do you want to save the current settings?");
-		alert.setContentText("The current settings will be stored in the settings file.");
+		alert.setContentText("The current settings will be stored at " + getCustomSettingsPath() + ".");
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 		Optional<ButtonType> result = alert.showAndWait();
@@ -421,13 +421,36 @@ public class SettingsController extends AbstractController
 		}
 	}
 
+	private void confirmSaveUnsavedSettings() throws ConfigurationException
+	{
+		if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
+		{
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.initOwner(mainController.getPrimaryStage());
+			alert.setTitle("Save settings?");
+			alert.setHeaderText("Do you want to save the current settings?");
+			alert.setContentText("You have unsaved changes in the settings. Do you want to save them at " + getCustomSettingsPath() + "?");
+			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.YES)
+			{
+				saveSettings();
+			}
+			else
+			{
+				log.debug("User chose not to save changed settings");
+			}
+		}
+	}
+
 	public void confirmRestoreLastSavedSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.initOwner(mainController.getPrimaryStage());
 		alert.setTitle("Restore last saved settings?");
 		alert.setHeaderText("Do you want restore the last saved settings?");
-		alert.setContentText("The current settings will be replaced with the content of the settings file.");
+		alert.setContentText("The current settings will be replaced with the content of " + getCustomSettingsPath() + ".");
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 		Optional<ButtonType> result = alert.showAndWait();
@@ -441,10 +464,10 @@ public class SettingsController extends AbstractController
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.initOwner(mainController.getPrimaryStage());
-		alert.setTitle("Restore defaults?");
+		alert.setTitle("Restore default settings?");
 		alert.setHeaderText("Do you want to restore the default settings?");
 		alert.setContentText(
-				"The current settings will be replaced with the default settings.\nBut nothing will be saved until you choose to do so. You can always return to the last saved settings.");
+				"The current settings will be replaced with the default settings.\nBut nothing will be saved to file until you choose to do so. You can always return to the last saved settings.");
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 		Optional<ButtonType> result = alert.showAndWait();
@@ -522,29 +545,6 @@ public class SettingsController extends AbstractController
 		WatcherSettings.INSTANCE.load(file);
 		defaultSettingsLoaded.set(false);
 		customSettingsExist.set(true);
-	}
-
-	private void confirmSaveUnsavedSettings() throws ConfigurationException
-	{
-		if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
-		{
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.initOwner(mainController.getPrimaryStage());
-			alert.setTitle("Save watcher settings?");
-			alert.setHeaderText("Do you want to save the watcher settings?");
-			alert.setContentText("You have unsaved changes in the settings. Do you want to save them?\n(" + getCustomSettingsPath() + ")");
-			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.YES)
-			{
-				saveSettings();
-			}
-			else
-			{
-				log.debug("User chose not to save changed settings");
-			}
-		}
 	}
 
 	private Path getCustomSettingsPath()

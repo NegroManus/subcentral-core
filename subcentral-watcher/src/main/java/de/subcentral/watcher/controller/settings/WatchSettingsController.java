@@ -27,6 +27,8 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	private Button			removeWatchDirectoryButton;
 	@FXML
 	private CheckBox		initialScanCheckBox;
+	@FXML
+	private CheckBox		rejectAlreadyProcessedFilesCheckBox;
 
 	public WatchSettingsController(SettingsController settingsController)
 	{
@@ -55,6 +57,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 		FxUtil.setStandardMouseAndKeyboardSupportForEditable(watchDirectoriesListView, removeWatchDirectoryButton);
 
 		initialScanCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.initialScanProperty());
+		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.rejectAlreadyProcessedFilesProperty());
 	}
 
 	public void addWatchDirectory()

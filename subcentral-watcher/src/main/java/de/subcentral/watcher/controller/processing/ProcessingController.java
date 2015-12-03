@@ -477,8 +477,7 @@ public class ProcessingController extends AbstractController
 			{
 				return new Observable[] {};
 			}
-			return new Observable[]
-			{ task.stateProperty() };
+			return new Observable[] { task.stateProperty() };
 		});
 
 		final BooleanBinding noFinishedTaskSelectedBinding = new BooleanBinding()
@@ -642,9 +641,8 @@ public class ProcessingController extends AbstractController
 				return;
 			}
 
-			if (alreadyInProcess(file))
+			if (!rejectAlreadyProcessedFiles(file))
 			{
-				log.info("Rejected {} because that file is already in processing", file);
 				return;
 			}
 
@@ -703,20 +701,26 @@ public class ProcessingController extends AbstractController
 		return true;
 	}
 
-	/**
-	 * @return <code>true</code> if file is already queued for or in process. <code>false</code> otherwise
-	 */
-	private boolean alreadyInProcess(Path file)
+	private boolean rejectAlreadyProcessedFiles(Path file)
 	{
 		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
 		{
 			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
-			if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING) && task.getSourceFile().equals(file))
+			if (task.getSourceFile().equals(file))
 			{
-				return true;
+				if (WatcherSettings.INSTANCE.isRejectAlreadyProcessedFiles())
+				{
+					log.info("Rejected {} because that file is already in the processing list and 'rejectAlreadyProcessedFiles' is enabled", file);
+					return false;
+				}
+				if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING))
+				{
+					log.info("Rejected {} because that file is already currently processed", file);
+					return false;
+				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	public void showDetails(ProcessingTask task)

@@ -53,6 +53,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
@@ -101,6 +102,7 @@ public class WatcherDialogs
 
 			dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
 			dialog.getDialogPane().setContent(rootPane);
+			dialog.getDialogPane().setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
 			Platform.runLater(() -> getDefaultFocusNode().requestFocus());
 		}
@@ -114,8 +116,7 @@ public class WatcherDialogs
 
 		protected ButtonType[] getButtonTypes()
 		{
-			return new ButtonType[]
-			{ ButtonType.APPLY, ButtonType.CANCEL };
+			return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
 		}
 
 		protected abstract Node getDefaultFocusNode();
