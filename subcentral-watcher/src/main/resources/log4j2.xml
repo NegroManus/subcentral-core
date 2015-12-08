@@ -4,7 +4,7 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%t] %logger{1.} - %msg%n" />
 		</Console>
-		<File name="File" fileName="watcher.log" append="false">
+		<File name="File" fileName="${sys:watcher.logdir}/watcher.log" append="false">
 			<PatternLayout pattern="%date %-5level [%t] %logger{1.} - %msg%n" />
 		</File>
 	</Appenders>

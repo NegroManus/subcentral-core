@@ -21,7 +21,6 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherApp;
 import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
-import de.subcentral.watcher.settings.SettingsUtil;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -554,10 +553,8 @@ public class SettingsController extends AbstractController
 
 	private Path getCustomSettingsPath()
 	{
-		Path localConfigDir = SettingsUtil.getLocalConfigDirectorySave();
-
-		Path watcherConfigDir = localConfigDir.resolve(WatcherApp.APP_NAME);
-		return watcherConfigDir.resolve(CUSTOM_SETTINGS_FILENAME).toAbsolutePath();
+		Path localConfigDir = WatcherApp.getLocalConfigDirectory();
+		return localConfigDir.resolve(CUSTOM_SETTINGS_FILENAME).toAbsolutePath();
 	}
 
 	@Override

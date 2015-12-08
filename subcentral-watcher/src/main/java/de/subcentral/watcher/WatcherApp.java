@@ -1,12 +1,14 @@
 package de.subcentral.watcher;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.subcentral.core.util.LocalConfig;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
@@ -19,12 +21,12 @@ public class WatcherApp extends Application
 {
 	public static final String	APP_NAME			= "Watcher";
 	public static final String	APP_VERSION			= "2.0";
-	public static final String	APP_VERSION_DATE	= "2015-12-08 18:00";
+	public static final String	APP_VERSION_DATE	= "2015-12-08 19:00";
 	public static final String	APP_INFO			= APP_NAME + " " + APP_VERSION + " (" + APP_VERSION_DATE + ")";
 
 	public static final String	SYS_PROP_LOGDIR		= "watcher.logdir";
 
-	private static final Logger	log					= LogManager.getLogger(WatcherApp.class);
+	private static Logger		log;
 
 	// View
 	private Stage				primaryStage;
@@ -93,13 +95,22 @@ public class WatcherApp extends Application
 		mainController.shutdown();
 
 		log.info("Stopped {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
+	}
 
-		// Platform.exit();
+	public static Path getLocalConfigDirectory()
+	{
+		return LocalConfig.getLocalConfigDirectorySave().resolve(APP_NAME);
 	}
 
 	public static void main(String[] args)
 	{
-		System.setProperty("javafx.embed.singleThread", "true");
+		// Set logDir system property if not already set
+		String logDir = System.getProperty(SYS_PROP_LOGDIR);
+		if (logDir == null)
+		{
+			System.setProperty(SYS_PROP_LOGDIR, getLocalConfigDirectory().toString());
+		}
+		log = LogManager.getLogger(WatcherApp.class);
 
 		// Ensure awt toolkit is initialized
 		java.awt.Toolkit.getDefaultToolkit();
