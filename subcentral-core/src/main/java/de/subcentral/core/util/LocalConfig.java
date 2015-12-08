@@ -23,8 +23,8 @@ public class LocalConfig
 		catch (NoSuchFileException | UnsupportedOperationException e)
 		{
 			localConfigDir = Paths.get(SystemUtils.USER_DIR);
-			System.err.println("Could not find local configuration directory. Using user's current working directory to save settings: " + localConfigDir + ". Exception was:");
-			e.printStackTrace();
+			System.out.println("Could not find local configuration directory. Using user's current working directory to save settings: " + localConfigDir + ". Exception was:");
+			e.printStackTrace(System.out);
 		}
 		return localConfigDir;
 	}
