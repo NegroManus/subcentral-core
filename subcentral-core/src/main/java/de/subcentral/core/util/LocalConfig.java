@@ -5,6 +5,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 /**
@@ -52,18 +53,18 @@ public class LocalConfig
 
 	public static String getWindowsAppData()
 	{
-		String appDataDir = System.getenv("AppData");
-		if (appDataDir == null || appDataDir.trim().length() == 0)
+		String appData = System.getenv("AppData");
+		if (StringUtils.isEmpty(appData))
 		{
 			throw new UnsupportedOperationException("System environment variable 'AppData' is not set");
 		}
-		return appDataDir;
+		return appData;
 	}
 
 	public static String getUnixConfigHome()
 	{
 		String configHome = System.getenv("XDG_CONFIG_HOME");
-		if (configHome == null || configHome.trim().length() == 0)
+		if (StringUtils.isEmpty(configHome))
 		{
 			configHome = System.getenv("HOME") + SystemUtils.FILE_SEPARATOR + ".config";
 		}
