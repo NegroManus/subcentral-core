@@ -52,7 +52,12 @@ public class LocalConfig
 
 	public static String getWindowsAppData()
 	{
-		return System.getenv("AppData");
+		String appDataDir = System.getenv("AppData");
+		if (appDataDir == null || appDataDir.trim().length() == 0)
+		{
+			throw new UnsupportedOperationException("System environment variable 'AppData' is not set");
+		}
+		return appDataDir;
 	}
 
 	public static String getUnixConfigHome()
