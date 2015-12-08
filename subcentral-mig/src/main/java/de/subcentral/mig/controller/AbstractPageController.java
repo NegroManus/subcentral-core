@@ -90,7 +90,7 @@ public abstract class AbstractPageController extends AbstractController
 					Throwable e = task.getException();
 					String msg = "Task \"" + task.getTitle() + "\" failed";
 					log.error(msg, e);
-					Alert alert = FxUtil.createExceptionAlert(msg, msg + ": " + e.toString(), e);
+					Alert alert = FxUtil.createExceptionAlert(mainController.getPrimaryStage(), msg, msg + ": " + e.toString(), e);
 					alert.show();
 					getRootPane().getChildren().clear();
 					mainController.pageBack();

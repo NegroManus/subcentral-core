@@ -408,6 +408,7 @@ public class SettingsController extends AbstractController
 	public void confirmSaveSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		FxUtil.fixAlertHeight(alert);
 		alert.initOwner(mainController.getPrimaryStage());
 		alert.setTitle("Save settings?");
 		alert.setHeaderText("Do you want to save the current settings?");
@@ -426,6 +427,7 @@ public class SettingsController extends AbstractController
 		if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
+			FxUtil.fixAlertHeight(alert);
 			alert.initOwner(mainController.getPrimaryStage());
 			alert.setTitle("Save settings?");
 			alert.setHeaderText("Do you want to save the current settings?");
@@ -447,6 +449,7 @@ public class SettingsController extends AbstractController
 	public void confirmRestoreLastSavedSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		FxUtil.fixAlertHeight(alert);
 		alert.initOwner(mainController.getPrimaryStage());
 		alert.setTitle("Restore last saved settings?");
 		alert.setHeaderText("Do you want restore the last saved settings?");
@@ -463,6 +466,7 @@ public class SettingsController extends AbstractController
 	public void confirmRestoreDefaultSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		FxUtil.fixAlertHeight(alert);
 		alert.initOwner(mainController.getPrimaryStage());
 		alert.setTitle("Restore default settings?");
 		alert.setHeaderText("Do you want to restore the default settings?");
@@ -492,7 +496,7 @@ public class SettingsController extends AbstractController
 		}
 		catch (ConfigurationException | IOException e)
 		{
-			FxUtil.createExceptionAlert("Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILENAME, e).showAndWait();
+			FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILENAME, e).showAndWait();
 		}
 	}
 
@@ -509,7 +513,8 @@ public class SettingsController extends AbstractController
 			catch (Exception e)
 			{
 				log.error("Failed to load custom settings from " + settingsFile + ". Default settings will be used", e);
-				FxUtil.createExceptionAlert("Failed to load custom settings",
+				FxUtil.createExceptionAlert(mainController.getPrimaryStage(),
+						"Failed to load custom settings",
 						"Failed to load custom settings from " + settingsFile
 								+ ". Default settings will be used.\nIf you would like to try to fix the custom settings, close the application without saving the settings, edit the settings file and try again.",
 						e).showAndWait();

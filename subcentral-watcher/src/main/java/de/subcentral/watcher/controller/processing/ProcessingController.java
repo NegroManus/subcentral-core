@@ -839,7 +839,7 @@ public class ProcessingController extends AbstractController
 		}
 		catch (IOException e)
 		{
-			FxUtil.createExceptionAlert("Failed to reload processing pane", "Exception while reloading processing pane", e).show();
+			FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Failed to reload processing pane", "Exception while reloading processing pane", e).show();
 		}
 	}
 

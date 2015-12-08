@@ -75,11 +75,13 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.StringConverter;
 
 public class FxUtil
@@ -242,7 +244,7 @@ public class FxUtil
 			Throwable exc = evt.getSource().getException();
 
 			log.error(msg, exc);
-			Alert alert = createExceptionAlert(msg, msg, exc);
+			Alert alert = createExceptionAlert(null, msg, msg, exc);
 			alert.show();
 		};
 	}
@@ -584,9 +586,11 @@ public class FxUtil
 		moveDownBtn.setDisable(selectedIndex >= items.size() - 1 || selectedIndex < 0);
 	}
 
-	public static Alert createExceptionAlert(String title, String headerText, Throwable exception)
+	public static Alert createExceptionAlert(Window owner, String title, String headerText, Throwable exception)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
+		fixAlertHeight(alert);
+		alert.initOwner(owner);
 		alert.setTitle(title);
 		alert.setHeaderText(headerText);
 		alert.setContentText(exception.toString());
@@ -1108,6 +1112,17 @@ public class FxUtil
 			}
 		});
 		return obsv;
+	}
+
+	/**
+	 * Workaround for http://stackoverflow.com/questions/28937392/javafx-alerts-and-their-size;
+	 * 
+	 * @param alert
+	 *            the alert
+	 */
+	public static void fixAlertHeight(Alert alert)
+	{
+		alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
 	}
 
 	private FxUtil()

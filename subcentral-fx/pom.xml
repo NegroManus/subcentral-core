@@ -4,7 +4,7 @@
 	<groupId>de.subcentral</groupId>
 	<artifactId>subcentral-fx</artifactId>
 	<version>1.0</version>
-	<name>SubCentral JavaFX Libary</name>
+	<name>SubCentral JavaFX Library</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

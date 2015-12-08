@@ -32,19 +32,19 @@ import javafx.scene.layout.HBox;
 public class WatchController extends AbstractController
 {
 	// Controlling properties
-	private final MainController mainController;
+	private final MainController	mainController;
 
 	// View
 	@FXML
-	private Button	startWatchButton;
+	private Button					startWatchButton;
 	@FXML
-	private Button	stopWatchButton;
+	private Button					stopWatchButton;
 	@FXML
-	private Label	watchStatusLabel;
+	private Label					watchStatusLabel;
 	@FXML
-	private HBox	watchDirectoriesHBox;
+	private HBox					watchDirectoriesHBox;
 
-	private final ImageView watchImg = new ImageView(FxUtil.loadImg("iris_16.png"));
+	private final ImageView			watchImg	= new ImageView(FxUtil.loadImg("iris_16.png"));
 
 	private DirectoryWatchService	watchService;
 	private ExecutorService			watchServiceExecutor;
@@ -100,20 +100,20 @@ public class WatchController extends AbstractController
 			{
 				switch (watchService.getState())
 				{
-				case READY:
-					// fall through
-				case SCHEDULED:
-					// fall through
-				case CANCELLED:
-					// fall through
-				case SUCCEEDED:
-					return "Watch stopped";
-				case RUNNING:
-					return "Watching";
-				case FAILED:
-					return "Watch failed";
-				default:
-					return "";
+					case READY:
+						// fall through
+					case SCHEDULED:
+						// fall through
+					case CANCELLED:
+						// fall through
+					case SUCCEEDED:
+						return "Watch stopped";
+					case RUNNING:
+						return "Watching";
+					case FAILED:
+						return "Watch failed";
+					default:
+						return "";
 				}
 			}
 		});
@@ -139,7 +139,7 @@ public class WatchController extends AbstractController
 			{
 				dirsString.add(dir.toString());
 			}
-			Alert alert = FxUtil.createExceptionAlert("Watch failed", "Failed to watch " + dirsString + ".", ex);
+			Alert alert = FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Watch failed", "Failed to watch " + dirsString + ".", ex);
 			alert.show();
 		});
 	}
