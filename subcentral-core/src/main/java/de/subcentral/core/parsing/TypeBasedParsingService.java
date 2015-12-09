@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -34,7 +33,7 @@ public class TypeBasedParsingService implements ParsingService
 	@Override
 	public Set<Class<?>> getSupportedTargetTypes()
 	{
-		return parserEntries.stream().map((entry) -> entry.targetType).collect(Collectors.toSet());
+		return parserEntries.stream().map(ParserEntry::getTargetType).collect(Collectors.toSet());
 	}
 
 	public List<ParserEntry<?>> getParserEntries()
@@ -42,60 +41,25 @@ public class TypeBasedParsingService implements ParsingService
 		return parserEntries;
 	}
 
-	public ImmutableList<Parser<?>> getParsers()
+	public List<Parser<?>> getParsers()
 	{
-		ImmutableList.Builder<Parser<?>> parsers = ImmutableList.builder();
-		for (ParserEntry<?> entry : parserEntries)
-		{
-			parsers.add(entry.parser);
-		}
-		return parsers.build();
+		return parserEntries.stream().map(ParserEntry::getParser).collect(Collectors.toList());
 	}
 
-	public <T> ImmutableList<Parser<? extends T>> getParsersForType(Class<T> targetType)
-	{
-		Objects.requireNonNull(targetType, "targetType");
-		ImmutableList.Builder<Parser<? extends T>> parsers = ImmutableList.builder();
-		for (ParserEntry<?> entry : parserEntries)
-		{
-			if (targetType.isAssignableFrom(entry.targetType))
-			{
-				// safe cast because targetType is superClass of parser's target type
-				@SuppressWarnings("unchecked")
-				Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
-				parsers.add(parser);
-			}
-		}
-		return parsers.build();
-	}
-
-	public <T> void registerAllParsers(Class<T> targetType, Iterable<Parser<T>> parsers)
-	{
-		for (Parser<T> p : parsers)
-		{
-			registerParser(targetType, p);
-		}
-	}
-
-	public boolean unregisterAllParsers(Iterable<Parser<?>> parsers)
-	{
-		boolean changed = false;
-		for (Parser<?> p : parsers)
-		{
-			if (unregisterParser(p))
-			{
-				changed = true;
-			}
-		}
-		return changed;
-	}
-
-	public <T> void registerParser(Class<T> targetType, Parser<T> parser)
+	public <T> void register(Class<T> targetType, Parser<T> parser)
 	{
 		parserEntries.add(new ParserEntry<T>(parser, targetType));
 	}
 
-	public boolean unregisterParser(Parser<?> parser)
+	public <T> void registerAll(Class<T> targetType, Iterable<Parser<T>> parsers)
+	{
+		for (Parser<T> p : parsers)
+		{
+			register(targetType, p);
+		}
+	}
+
+	public boolean unregister(Parser<?> parser)
 	{
 		Iterator<ParserEntry<?>> iter = parserEntries.iterator();
 		while (iter.hasNext())
@@ -110,7 +74,20 @@ public class TypeBasedParsingService implements ParsingService
 		return false;
 	}
 
-	public void unregisterAllParsers()
+	public boolean unregisterAll(Iterable<Parser<?>> parsers)
+	{
+		boolean changed = false;
+		for (Parser<?> p : parsers)
+		{
+			if (unregister(p))
+			{
+				changed = true;
+			}
+		}
+		return changed;
+	}
+
+	public void unregisterAll()
 	{
 		parserEntries.clear();
 	}
@@ -137,7 +114,7 @@ public class TypeBasedParsingService implements ParsingService
 		{
 			if (targetType.isAssignableFrom(entry.targetType))
 			{
-				// save cast because targetClass is superClass of parsers type
+				// save cast because targetType is super type of parser's type
 				@SuppressWarnings("unchecked")
 				Parser<? extends T> parser = (Parser<? extends T>) entry.parser;
 				T parsedObj = parser.parse(text);

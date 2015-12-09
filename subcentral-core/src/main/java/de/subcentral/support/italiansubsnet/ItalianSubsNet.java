@@ -29,7 +29,7 @@ public class ItalianSubsNet
 
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(SubtitleRelease.class, initParsers());
+		PARSING_SERVICE.registerAll(SubtitleRelease.class, initParsers());
 	}
 
 	private static List<Parser<SubtitleRelease>> initParsers()

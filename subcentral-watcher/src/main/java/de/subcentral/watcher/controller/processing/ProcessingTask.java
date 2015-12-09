@@ -46,7 +46,6 @@ import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRarPackConfig;
@@ -88,14 +87,14 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	private ProcessingConfig				config;
 	// Important objects for processing and details
 	private final TreeItem<ProcessingItem>	taskTreeItem;
-	private SubtitleRelease				parsedObject;
+	private SubtitleRelease					parsedObject;
 	private List<Correction>				parsingCorrections			= ImmutableList.of();
 	private List<Release>					foundReleases				= ImmutableList.of();
 	private List<Release>					mediaFilteredFoundReleases	= ImmutableList.of();
 	private List<Release>					matchingReleases			= ImmutableList.of();
 	private Map<Release, StandardRelease>	guessedReleases				= ImmutableMap.of();
 	private Map<Release, CompatibilityInfo>	compatibleReleases			= ImmutableMap.of();
-	private SubtitleRelease				resultObject;
+	private SubtitleRelease					resultObject;
 	private ListProperty<ProcessingResult>	results						= new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
 
 	// package private
@@ -335,11 +334,11 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	private SubtitleRelease parse(Path file)
 	{
 		updateMessage("Parsing filename");
-		List<ParsingService> parsingServices = config.getFilenameParsingServices();
+		ParsingService parsingService = config.getFilenameParsingService();
 
 		String filenameWithoutExt = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[0];
-		log.trace("Trying to parse {} with {} to ", filenameWithoutExt, parsingServices, SubtitleRelease.class.getSimpleName());
-		SubtitleRelease parsed = ParsingUtil.parse(filenameWithoutExt, SubtitleRelease.class, parsingServices);
+		log.trace("Trying to parse {} with {} to ", filenameWithoutExt, parsingService, SubtitleRelease.class.getSimpleName());
+		SubtitleRelease parsed = parsingService.parse(filenameWithoutExt, SubtitleRelease.class);
 		log.debug("Parsed {} to {}", file, parsed);
 		if (parsed == null)
 		{
@@ -592,7 +591,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				// can be corrected by standardizers
 				// TODO: sadly all the extra information about series and
 				// episodes (episode title) is overwritten if true
-				boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingServices(), true);
+				boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingService(), true);
 				if (!successful)
 				{
 					log.warn("Could not enrich " + r + " because no parser could parse the release name");

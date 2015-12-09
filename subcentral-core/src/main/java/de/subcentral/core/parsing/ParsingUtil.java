@@ -71,45 +71,6 @@ public class ParsingUtil
 		}
 	}
 
-	public static Object parse(String text, Iterable<ParsingService> parsingServices) throws ParsingException
-	{
-		for (ParsingService ps : parsingServices)
-		{
-			Object parsedObj = ps.parse(text);
-			if (parsedObj != null)
-			{
-				return parsedObj;
-			}
-		}
-		return null;
-	}
-
-	public static <T> T parse(String text, Class<T> targetType, Iterable<ParsingService> parsingServices) throws ParsingException
-	{
-		for (ParsingService ps : parsingServices)
-		{
-			T parsedObj = ps.parse(text, targetType);
-			if (parsedObj != null)
-			{
-				return parsedObj;
-			}
-		}
-		return null;
-	}
-
-	public static Object parse(String text, Set<Class<?>> targetTypes, Iterable<ParsingService> parsingServices) throws ParsingException
-	{
-		for (ParsingService ps : parsingServices)
-		{
-			Object parsedObj = ps.parse(text, targetTypes);
-			if (parsedObj != null)
-			{
-				return parsedObj;
-			}
-		}
-		return null;
-	}
-
 	public static List<ParsingService> filterByTargetTypes(Iterable<ParsingService> parsingServices, Set<Class<?>> targetTypes)
 	{
 		ImmutableList.Builder<ParsingService> filteredServices = ImmutableList.builder();

@@ -37,7 +37,7 @@ public class ReleaseScene
 
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(Release.class, initParsers());
+		PARSING_SERVICE.registerAll(Release.class, initParsers());
 	}
 
 	private static List<Parser<Release>> initParsers()

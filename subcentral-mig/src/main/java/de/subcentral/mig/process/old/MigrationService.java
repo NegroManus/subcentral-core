@@ -20,7 +20,6 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Resources;
@@ -34,8 +33,8 @@ import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.parsing.MultiParsingService;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.releasescene.ReleaseScene;
@@ -47,12 +46,12 @@ import de.subcentral.support.winrar.WinRarPackager;
 
 public class MigrationService
 {
-	private static final Logger log = LogManager.getLogger(MigrationService.class);
+	private static final Logger			log					= LogManager.getLogger(MigrationService.class);
 
 	private final WinRarPackager		winrar				= WinRar.getInstance().getPackager();
 	private final SubCentralApi			scApi				= new SubCentralHttpApi();
-	private final List<ParsingService>	subParsingServices	= ImmutableList.of(SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
-	private final List<ParsingService>	rlsParsingServices	= ImmutableList.of(ReleaseScene.getParsingService());
+	private final ParsingService		subParsingService	= new MultiParsingService("sub", SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
+	private final ParsingService		rlsParsingService	= ReleaseScene.getParsingService();
 	private final ContributionParser	contributionParser;
 
 	/**
@@ -100,7 +99,7 @@ public class MigrationService
 
 	public List<SubFile> parseSubtitles(Path dir) throws IOException
 	{
-		return parseAll(dir, subParsingServices, rlsParsingServices, contributionParser);
+		return parseAll(dir, subParsingService, rlsParsingService, contributionParser);
 	}
 
 	/*
@@ -179,7 +178,7 @@ public class MigrationService
 		return false;
 	}
 
-	private static List<SubFile> parseAll(Path dir, List<ParsingService> subParsingServices, List<ParsingService> rlsParsingServices, ContributionParser contributionParser) throws IOException
+	private static List<SubFile> parseAll(Path dir, ParsingService subParsingService, ParsingService rlsParsingService, ContributionParser contributionParser) throws IOException
 	{
 		Map<Long, SubFile> checkSums = new HashMap<>();
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir))
@@ -189,10 +188,10 @@ public class MigrationService
 				HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
 				long hashAsLong = hash.asLong();
 				String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
-				SubtitleRelease subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleRelease.class, subParsingServices);
+				SubtitleRelease subAdj = subParsingService.parse(filenameWithoutExt, SubtitleRelease.class);
 				if (subAdj == null)
 				{
-					Release rls = ParsingUtil.parse(filenameWithoutExt, Release.class, rlsParsingServices);
+					Release rls = rlsParsingService.parse(filenameWithoutExt, Release.class);
 					if (rls != null)
 					{
 						subAdj = SubtitleRelease.create(rls, null, null);

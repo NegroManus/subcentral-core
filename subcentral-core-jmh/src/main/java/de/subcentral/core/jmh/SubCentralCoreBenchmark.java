@@ -49,6 +49,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
 import de.subcentral.core.correction.CorrectionDefaults;
+import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.correction.LocaleLanguageReplacer;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
@@ -62,8 +63,8 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.parsing.MultiParsingService;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.releasescene.ReleaseScene;
@@ -80,21 +81,23 @@ import de.subcentral.support.subcentralde.SubCentralDe;
  */
 public class SubCentralCoreBenchmark
 {
-	private static final SubtitleRelease					SUB_ADJ						= SubtitleRelease
+	private static final SubtitleRelease	SUB_ADJ						= SubtitleRelease
 			.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
 
-	private static final TypeBasedCorrectionService		STANDARDIZING_SERVICE		= buildService();
-	private static final NamingService					NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
-	private static final ParsingService					ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
-	private static final ImmutableList<ParsingService>	PARSING_SERVICES			= ImmutableList.of(ADDIC7ED_PARSING_SERVICE,
-																							SubCentralDe.getParsingService(),
-																							ItalianSubsNet.getParsingService(),
-																							ReleaseScene.getParsingService());
-	private static final ImmutableList<ParsingService>	PARSING_SERVICES_REVERSED	= ImmutableList.of(ReleaseScene.getParsingService(),
-																							ItalianSubsNet.getParsingService(),
-																							SubCentralDe.getParsingService(),
-																							ADDIC7ED_PARSING_SERVICE);
-	private static final URL							SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
+	private static final CorrectionService	STANDARDIZING_SERVICE		= buildService();
+	private static final NamingService		NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
+	private static final ParsingService		ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
+	private static final ParsingService		PARSING_SERVICE_BEST_CASE	= new MultiParsingService("bestcase",
+																				ADDIC7ED_PARSING_SERVICE,
+																				SubCentralDe.getParsingService(),
+																				ItalianSubsNet.getParsingService(),
+																				ReleaseScene.getParsingService());
+	private static final ParsingService		PARSING_SERVICE_WORST_CASE	= new MultiParsingService("worstcase",
+																				ReleaseScene.getParsingService(),
+																				ItalianSubsNet.getParsingService(),
+																				SubCentralDe.getParsingService(),
+																				ADDIC7ED_PARSING_SERVICE);
+	private static final URL				SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
 	private static TypeBasedCorrectionService buildService()
 	{
@@ -134,25 +137,25 @@ public class SubCentralCoreBenchmark
 	// @Benchmark
 	public void testParsingBestCase()
 	{
-		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES);
+		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
 	// @Benchmark
 	public void testParsingWorstCase()
 	{
-		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", PARSING_SERVICES_REVERSED);
+		PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
 	// @Benchmark
 	public void testParsingSubAdjBestCase()
 	{
-		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class, PARSING_SERVICES);
+		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
 	}
 
 	// @Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
-		ParsingUtil.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class, PARSING_SERVICES_REVERSED);
+		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
 	}
 
 	// @Benchmark

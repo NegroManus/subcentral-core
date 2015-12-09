@@ -7,19 +7,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeoutException;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.parsing.MultiParsingService;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ParsingUtil;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.mig.process.old.SubFile;
 import de.subcentral.support.addic7edcom.Addic7edCom;
@@ -30,8 +28,9 @@ import de.subcentral.support.winrar.WinRarPackager;
 
 public class ProbeFilePlayground
 {
-	private static final WinRarPackager			WINRAR					= WinRar.getInstance().getPackager();
-	private static final List<ParsingService>	SUB_PARSING_SERVICES	= ImmutableList.of(SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
+	private static final WinRarPackager	WINRAR				= WinRar.getInstance().getPackager();
+
+	private static final ParsingService	SUB_PARSING_SERVICE	= new MultiParsingService("sub", SubCentralDe.getParsingService(), Addic7edCom.getParsingService());
 
 	public static void main(String[] args) throws IOException, InterruptedException, TimeoutException
 	{
@@ -130,7 +129,7 @@ public class ProbeFilePlayground
 				HashCode hash = com.google.common.io.Files.hash(file.toFile(), Hashing.md5());
 				long hashAsLong = hash.asLong();
 				String filenameWithoutExt = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
-				SubtitleRelease subAdj = ParsingUtil.parse(filenameWithoutExt, SubtitleRelease.class, SUB_PARSING_SERVICES);
+				SubtitleRelease subAdj = SUB_PARSING_SERVICE.parse(filenameWithoutExt, SubtitleRelease.class);
 				if (subAdj == null)
 				{
 					Release rls = ReleaseScene.getParsingService().parse(filenameWithoutExt, Release.class);

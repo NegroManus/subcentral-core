@@ -21,12 +21,12 @@ class ProcessingConfig
 {
 	// parsing
 	private Pattern							filenamePattern;
-	private ImmutableList<ParsingService>	filenameParsingServices;
+	private ParsingService					filenameParsingService;
 	// release
 	private ImmutableList<Tag>				releaseMetaTags;
 	// release - dbs
 	private ImmutableList<MetadataDb>		releaseDbs;
-	private ImmutableList<ParsingService>	releaseParsingServices;
+	private ParsingService					releaseParsingService;
 	// release - guessing
 	private boolean							guessingEnabled;
 	private ImmutableList<StandardRelease>	standardReleases;
@@ -63,14 +63,14 @@ class ProcessingConfig
 		this.filenamePattern = filenamePattern;
 	}
 
-	ImmutableList<ParsingService> getFilenameParsingServices()
+	ParsingService getFilenameParsingService()
 	{
-		return filenameParsingServices;
+		return filenameParsingService;
 	}
 
-	void setFilenameParsingServices(ImmutableList<ParsingService> filenameParsingServices)
+	void setFilenameParsingService(ParsingService filenameParsingService)
 	{
-		this.filenameParsingServices = filenameParsingServices;
+		this.filenameParsingService = filenameParsingService;
 	}
 
 	ImmutableList<MetadataDb> getReleaseDbs()
@@ -83,14 +83,14 @@ class ProcessingConfig
 		this.releaseDbs = releaseDbs;
 	}
 
-	ImmutableList<ParsingService> getReleaseParsingServices()
+	ParsingService getReleaseParsingService()
 	{
-		return releaseParsingServices;
+		return releaseParsingService;
 	}
 
-	void setReleaseParsingServices(ImmutableList<ParsingService> releaseParsingServices)
+	void setReleaseParsingService(ParsingService releaseParsingService)
 	{
-		this.releaseParsingServices = releaseParsingServices;
+		this.releaseParsingService = releaseParsingService;
 	}
 
 	boolean isGuessingEnabled()
@@ -239,10 +239,10 @@ class ProcessingConfig
 		return MoreObjects.toStringHelper(ProcessingConfig.class)
 				.omitNullValues()
 				.add("filenamePattern", filenamePattern)
-				.add("filenameParsingServices", filenameParsingServices)
+				.add("filenameParsingService", filenameParsingService)
 				.add("releaseMetaTags", releaseMetaTags)
 				.add("releaseDbs", releaseDbs)
-				.add("releaseParsingServices", releaseParsingServices)
+				.add("releaseParsingService", releaseParsingService)
 				.add("guessingEnabled", guessingEnabled)
 				.add("standardReleases", standardReleases)
 				.add("compatibilityEnabled", compatibilityEnabled)

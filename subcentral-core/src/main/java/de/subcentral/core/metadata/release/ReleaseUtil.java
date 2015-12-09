@@ -11,11 +11,8 @@ import java.util.function.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ImmutableList;
-
 import de.subcentral.core.parsing.ParsingException;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ParsingUtil;
 
 public class ReleaseUtil
 {
@@ -80,26 +77,21 @@ public class ReleaseUtil
 		};
 	}
 
-	public static void enrichByParsingName(Release rls, ParsingService parsingService, boolean overwrite)
-	{
-		enrichByParsingName(rls, ImmutableList.of(parsingService), overwrite);
-	}
-
 	/**
 	 * 
 	 * @param rls
-	 * @param parsingServices
+	 * @param parsingService
 	 * @param overwrite
 	 * @return {@code true} if parsing was successful, {@code false} otherwise
 	 * @throws ParsingException
 	 */
-	public static boolean enrichByParsingName(Release rls, Iterable<ParsingService> parsingServices, boolean overwrite) throws ParsingException
+	public static boolean enrichByParsingName(Release rls, ParsingService parsingService, boolean overwrite) throws ParsingException
 	{
 		if (rls == null)
 		{
 			return false;
 		}
-		Release parsedRls = ParsingUtil.parse(rls.getName(), Release.class, parsingServices);
+		Release parsedRls = parsingService.parse(rls.getName(), Release.class);
 		if (parsedRls == null)
 		{
 			log.warn("Failed to enrich release because its name could not be parsed: " + rls);

@@ -35,7 +35,7 @@ public class SubCentralDe
 
 	static
 	{
-		PARSING_SERVICE.registerAllParsers(SubtitleRelease.class, initParsers());
+		PARSING_SERVICE.registerAll(SubtitleRelease.class, initParsers());
 	}
 
 	@SuppressWarnings("unchecked")
