@@ -26,9 +26,9 @@ public class SeasonPostParserTest
 	}
 
 	@Test
-	public void testParseAmericanHorrorStoryS01() throws IOException
+	public void testParseCsiMiamiS07() throws IOException
 	{
-		parse("American Horror Story - Staffel 2: Asylum - [DE-Subs: 13 | VO-Subs: 13] - [Komplett]", "post-psych_s05.html");
+		parse("CSI: Miami - Staffel 7 - [DE-Subs: 25 | VO-Subs: 25] - [Komplett]", "post-csimiami_s07.html");
 	}
 
 	@Test
