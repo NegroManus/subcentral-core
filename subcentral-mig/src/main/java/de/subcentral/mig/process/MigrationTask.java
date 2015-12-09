@@ -38,7 +38,7 @@ public class MigrationTask extends Task<Void>
 
 	private final MigrateSeriesTask		seriesMigrationTask		= new MigrateSeriesTask();
 	private final ParseSeasonThreadTask	seasonThreadParserTask	= new ParseSeasonThreadTask();
-	private final SeasonPostParser	seasonThreadParser		= new SeasonPostParser();
+	private final SeasonPostParser		seasonThreadParser		= new SeasonPostParser();
 
 	public MigrationTask(MigrationConfig config)
 	{
@@ -207,9 +207,9 @@ public class MigrationTask extends Task<Void>
 		}
 	}
 
-	private class ParsedSeason
+	private static class ParsedSeason
 	{
-		private final Season				seasonFromSeriesList;
+		private final Season			seasonFromSeriesList;
 		private final SeasonPostContent	seasonThreadContent;
 
 		public ParsedSeason(Season seasonFromSeriesList, SeasonPostContent seasonThreadContent)

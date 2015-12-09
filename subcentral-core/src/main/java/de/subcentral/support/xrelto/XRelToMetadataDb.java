@@ -278,10 +278,7 @@ public class XRelToMetadataDb extends HttpMetadataDb
 		}
 
 		Media media = createMedia(category, mediaSection, mediaTitle, seasonNumber, episodeNumber);
-		if (media != null)
-		{
-			rls.setSingleMedia(media);
-		}
+		rls.setSingleMedia(media);
 
 		Element titleIdSpan = titleDiv.select("span[id^=_title]").first();
 		// If the title is too long, it is truncated and the full title is in tile attribute.

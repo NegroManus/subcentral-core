@@ -1,10 +1,9 @@
 package de.subcentral.core.metadata.release;
 
+import java.io.Serializable;
 import java.time.temporal.Temporal;
-import java.util.Locale;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
@@ -14,12 +13,14 @@ import de.subcentral.core.BeanUtil;
 import de.subcentral.core.Settings;
 import de.subcentral.core.util.TemporalComparator;
 
-public abstract class AbstractNuke implements Comparable<AbstractNuke>
+public abstract class NukeBase implements Comparable<NukeBase>, Serializable
 {
-	private final String	reason;
-	private final Temporal	date;
+	private static final long	serialVersionUID	= 1349086787037911245L;
 
-	public AbstractNuke(String reason, Temporal date) throws IllegalArgumentException
+	private final String		reason;
+	private final Temporal		date;
+
+	public NukeBase(String reason, Temporal date) throws IllegalArgumentException
 	{
 		this.reason = reason;
 		this.date = BeanUtil.validateTemporalClass(date);
@@ -44,8 +45,8 @@ public abstract class AbstractNuke implements Comparable<AbstractNuke>
 		}
 		if (obj != null && getClass() == obj.getClass())
 		{
-			AbstractNuke o = (AbstractNuke) obj;
-			return StringUtils.equalsIgnoreCase(reason, o.reason) && Objects.equals(date, o.date);
+			NukeBase o = (NukeBase) obj;
+			return Objects.equals(reason, o.reason) && Objects.equals(date, o.date);
 		}
 		return false;
 	}
@@ -53,7 +54,7 @@ public abstract class AbstractNuke implements Comparable<AbstractNuke>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(9, 71).append(StringUtils.lowerCase(reason, Locale.ENGLISH)).append(date).toHashCode();
+		return new HashCodeBuilder(9, 71).append(getClass()).append(reason).append(date).toHashCode();
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public abstract class AbstractNuke implements Comparable<AbstractNuke>
 	}
 
 	@Override
-	public int compareTo(AbstractNuke o)
+	public int compareTo(NukeBase o)
 	{
 		// nulls first
 		if (o == null)

@@ -1,5 +1,6 @@
 package de.subcentral.core.metadata.release;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,8 +12,10 @@ import de.subcentral.core.Settings;
  * 
  * @implSpec #immutable #thread-safe
  */
-public class Group implements Comparable<Group>
+public class Group implements Comparable<Group>, Serializable
 {
+	private static final long serialVersionUID = -8704261988899599068L;
+
 	public static Group parse(String group)
 	{
 		try

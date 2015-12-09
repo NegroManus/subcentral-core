@@ -2,6 +2,8 @@ package de.subcentral.watcher.settings;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -41,6 +43,27 @@ public class NamingParameter implements Comparable<NamingParameter>
 	public BooleanProperty valueProperty()
 	{
 		return value;
+	}
+
+	// Object methods
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof NamingParameter)
+		{
+			return Objects.equals(key.get(), ((NamingParameter) obj).key.get());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(19, 611).append(key.get()).toHashCode();
 	}
 
 	@Override

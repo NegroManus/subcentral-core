@@ -1,6 +1,5 @@
 package de.subcentral.core.naming;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -16,10 +15,8 @@ import com.google.common.base.MoreObjects;
  *
  * @deprecated Use {@link ConditionalNamingService} instead.
  */
-public class TypeBasedNamingService implements NamingService, Serializable
+public class TypeBasedNamingService implements NamingService
 {
-	private static final long				serialVersionUID	= 340111838457219906L;
-
 	private final String					domain;
 	private final Map<Class<?>, Namer<?>>	namers				= new ConcurrentHashMap<>();
 	private final AtomicReference<String>	defaultSeparator	= new AtomicReference<>(" ");

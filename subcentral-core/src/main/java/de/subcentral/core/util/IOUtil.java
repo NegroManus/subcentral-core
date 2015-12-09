@@ -279,9 +279,6 @@ public class IOUtil
 				Path filePath = Paths.get(ze.getName());
 				Path filename = filePath.getFileName();
 				Path extractedFile = targetDir.resolve(flat ? filename : filePath);
-				System.out.println("File path: " + filePath);
-				System.out.println("File name: " + filename);
-				System.out.println("file unzip : " + extractedFile);
 
 				if (ze.isDirectory())
 				{
@@ -317,7 +314,7 @@ public class IOUtil
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				log.warn("Exception while closing ZipInputStream", e);
 			}
 		}
 	}

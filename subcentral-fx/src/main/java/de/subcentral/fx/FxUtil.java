@@ -106,7 +106,7 @@ public class FxUtil
 				{
 					return "";
 				}
-				return s.toString();
+				return s;
 			}
 
 			@Override
@@ -114,7 +114,7 @@ public class FxUtil
 			{
 				if (StringUtils.isBlank(s))
 				{
-					throw new IllegalArgumentException();
+					throw new IllegalArgumentException("String is blank");
 				}
 				return s;
 			}

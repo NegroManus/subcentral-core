@@ -1,5 +1,6 @@
 package de.subcentral.core.metadata.release;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -18,8 +19,10 @@ import de.subcentral.core.Settings;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.StringUtil;
 
-public class Tag implements Comparable<Tag>
+public class Tag implements Comparable<Tag>, Serializable
 {
+	private static final long						serialVersionUID	= -6045437773807621255L;
+
 	public static final Comparator<Iterable<Tag>>	TAGS_COMPARATOR		= IterableComparator.create();
 
 	/**

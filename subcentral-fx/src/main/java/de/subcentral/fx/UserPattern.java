@@ -48,14 +48,14 @@ public class UserPattern implements Comparable<UserPattern>
 	{
 		switch (mode)
 		{
-		case LITERAL:
-			return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
-		case SIMPLE:
-			return parseSimplePattern(pattern);
-		case REGEX:
-			return Pattern.compile(pattern);
-		default:
-			throw new IllegalStateException();
+			case LITERAL:
+				return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
+			case SIMPLE:
+				return parseSimplePattern(pattern);
+			case REGEX:
+				return Pattern.compile(pattern);
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
@@ -122,7 +122,7 @@ public class UserPattern implements Comparable<UserPattern>
 		{
 			return 1;
 		}
-		return pattern.toString().compareToIgnoreCase(o.pattern.toString());
+		return pattern.compareToIgnoreCase(o.pattern);
 	}
 
 	@Override

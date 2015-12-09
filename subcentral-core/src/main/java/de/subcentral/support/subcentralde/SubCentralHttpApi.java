@@ -95,36 +95,37 @@ public class SubCentralHttpApi implements SubCentralApi
 			throw new IllegalStateException("Login failed. Server did not return response code 200: " + conn.getHeaderField(null));
 		}
 		InputStream is = conn.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String line;
-		boolean success = false;
-		/**
-		 * <pre>
-		 * <div class="success">
-		<p>Sie wurden erfolgreich angemeldet.</p>
-		<p><a href="index.php?s=fbc3ebe533737773a6a95a0f016bbf488fad601c">Falls die automatische Weiterleitung nicht funktioniert, klicken Sie bitte hier!</a></p>
-		</div>
-		 * </pre>
-		 */
-		Matcher successMatcher = Pattern.compile("<div class=\"success\">").matcher("");
-		Matcher errorMatcher = Pattern.compile("<p class=\"error\">(.*?)</p>").matcher("");
-
-		while ((line = reader.readLine()) != null)
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is)))
 		{
-			if (successMatcher.reset(line).find())
+			boolean success = false;
+			/**
+			 * <pre>
+			 * <div class="success">
+			<p>Sie wurden erfolgreich angemeldet.</p>
+			<p><a href="index.php?s=fbc3ebe533737773a6a95a0f016bbf488fad601c">Falls die automatische Weiterleitung nicht funktioniert, klicken Sie bitte hier!</a></p>
+			</div>
+			 * </pre>
+			 */
+			Matcher successMatcher = Pattern.compile("<div class=\"success\">").matcher("");
+			Matcher errorMatcher = Pattern.compile("<p class=\"error\">(.*?)</p>").matcher("");
+			String line;
+			while ((line = reader.readLine()) != null)
 			{
-				success = true;
-				break;
+				if (successMatcher.reset(line).find())
+				{
+					success = true;
+					break;
 
+				}
+				else if (errorMatcher.reset(line).find())
+				{
+					throw new IllegalArgumentException("Login failed: " + errorMatcher.group(1));
+				}
 			}
-			else if (errorMatcher.reset(line).find())
+			if (success == false)
 			{
-				throw new IllegalArgumentException("Login failed: " + errorMatcher.group(1));
+				throw new IllegalArgumentException("Login failed. No success message");
 			}
-		}
-		if (success == false)
-		{
-			throw new IllegalArgumentException("Login failed. No success message");
 		}
 
 		List<String> cookieList = new ArrayList<>(4);

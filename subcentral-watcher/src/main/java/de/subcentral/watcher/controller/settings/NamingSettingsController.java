@@ -137,7 +137,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		}
 	}
 
-	private class NamingParamBinding
+	private static class NamingParamBinding
 	{
 		private final ObservableList<NamingParam>	list;
 		private final MapProperty<String, Object>	map;
