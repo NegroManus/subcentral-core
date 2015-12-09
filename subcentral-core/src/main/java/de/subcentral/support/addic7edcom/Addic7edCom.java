@@ -40,7 +40,7 @@ public class Addic7edCom
 		// String tagsPattern = "((HI|C|orig|updated)+)";
 		String langPttrn = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian\\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 		String langSubTagsSrcPttrn = langPttrn + "\\.(.+)\\.Addic7ed\\.com";
-		String rlsTagsPttrn = "(?:WEB[.-]?(?:DL|Rip)|INTERNAL)";
+		String rlsTagsPttrn = "(?:(?:DVD|WEB)[.-]?(?:DL|Rip)|INTERNAL)";
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE, "Addic7ed.com");
 
 		// --------------
@@ -90,33 +90,10 @@ public class Addic7edCom
 		grps101.put(10, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<>(p101, grps101.build(), predefEpisodeMatches);
 
-		// Expecting no dots in the episode title, then a dot, then "WEB-DL|Rip" or a group
+		// Episode title ends with a dot, then known release tags or a group
 		// Examples:
-		// "Psych - 07x02 - Juliet Takes a Luvvah.EVOLVE.English.C.orig.Addic7ed.com"
-		Pattern p102 = Pattern.compile(srSsnEpiNumsPttrn + "([^\\.]+?)\\.(?:(" + rlsTagsPttrn + ")|(\\w+))\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
-		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps102 = ImmutableMap.builder();
-		grps102.put(0, SubtitleRelease.PROP_NAME);
-		grps102.put(1, Series.PROP_NAME);
-		grps102.put(2, Series.PROP_TITLE);
-		grps102.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps102.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
-		grps102.put(5, Season.PROP_NUMBER);
-		grps102.put(6, Episode.PROP_NUMBER_IN_SEASON);
-		grps102.put(7, Episode.PROP_TITLE);
-		grps102.put(8, Release.PROP_TAGS); // WEB-DL
-		grps102.put(9, Release.PROP_GROUP);
-		grps102.put(10, Subtitle.PROP_LANGUAGE);
-		grps102.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<>(p102, grps102.build(), predefEpisodeMatches);
-
-		// Expecting no dots in the episode title, then a dot, then release tags, then a non-wordchar delimiter, then "WEB-DL|Rip" or a group.
-		// Examples:
-		// "10 Things I Hate About You - 01x01 - Pilot.720p.HDTV.x264-DIMENSION.English.HI.Addic7ed.com"
-		// "Switched At Birth - 03x04 - It Hurts to Wait With Love If Love Is Somewhere Else.HDTV.x264-EXCELLENCE.Dutch.orig.Addic7ed.com"
-		// "Vikings - 01x08 - Sacrifice.x264.2HD.English.C.orig.Addic7ed.com"
-		// "Out There (2013) - 01x09 - Viking Days.480p.WEB-DL.x264-mSD.English.C.orig.Addic7ed.com"
-		// "Psych - 01x01 - Pilot.DVDRip TOPAZ.French.orig.Addic7ed.com"
-		Pattern p103 = Pattern.compile(srSsnEpiNumsPttrn + "([^\\.]+?)\\.([\\w+\\.-]+?)\\W(?:(" + rlsTagsPttrn + ")|(\\w+))\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
+		// "CSI_ Cyber - 02x05 - hack E.R..DIMENSION.English.C.orig.Addic7ed.com"
+		Pattern p103 = Pattern.compile(srSsnEpiNumsPttrn + "(.+?\\.)\\.(?:(" + rlsTagsPttrn + ")|(\\w+))\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps103 = ImmutableMap.builder();
 		grps103.put(0, SubtitleRelease.PROP_NAME);
 		grps103.put(1, Series.PROP_NAME);
@@ -127,10 +104,9 @@ public class Addic7edCom
 		grps103.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps103.put(7, Episode.PROP_TITLE);
 		grps103.put(8, Release.PROP_TAGS);
-		grps103.put(9, Release.PROP_TAGS);
-		grps103.put(10, Release.PROP_GROUP);
-		grps103.put(11, Subtitle.PROP_LANGUAGE);
-		grps103.put(12, SubtitleRelease.PROP_TAGS);
+		grps103.put(9, Release.PROP_GROUP);
+		grps103.put(10, Subtitle.PROP_LANGUAGE);
+		grps103.put(11, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
 
 		// Episode title may contain dots, then a dot, then
@@ -158,7 +134,6 @@ public class Addic7edCom
 		grps104.put(11, Release.PROP_GROUP);
 		grps104.put(12, Subtitle.PROP_LANGUAGE);
 		grps104.put(13, SubtitleRelease.PROP_TAGS);
-
 		MappingMatcher<SimplePropDescriptor> matcher104 = new MappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
 
 		// Episode title may contain dots, then a dot, then "WEB-DL|Rip" or a group
@@ -227,7 +202,6 @@ public class Addic7edCom
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
 		episodeMatchers.add(matcher100);
 		episodeMatchers.add(matcher101);
-		episodeMatchers.add(matcher102);
 		episodeMatchers.add(matcher103);
 		episodeMatchers.add(matcher104);
 		episodeMatchers.add(matcher105);
@@ -248,21 +222,32 @@ public class Addic7edCom
 		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefEpisodeMatchesBuilder.build();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
-		Pattern p201 = Pattern.compile("((.*?) \\((\\d{4})\\))\\.([\\w-]+)\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
+		Pattern p201 = Pattern.compile("(.*?)\\s+\\((\\d{4})\\)\\.(" + rlsTagsPttrn + ")\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
 		grps201.put(0, SubtitleRelease.PROP_NAME);
 		grps201.put(1, Movie.PROP_NAME);
-		grps201.put(2, Movie.PROP_TITLE);
-		grps201.put(3, Movie.PROP_DATE);
-		grps201.put(4, Release.PROP_TAGS);
-		grps201.put(5, Subtitle.PROP_LANGUAGE);
-		grps201.put(6, SubtitleRelease.PROP_TAGS);
+		grps201.put(2, Movie.PROP_DATE);
+		grps201.put(3, Release.PROP_TAGS);
+		grps201.put(4, Subtitle.PROP_LANGUAGE);
+		grps201.put(5, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), predefMovieMatches);
+
+		// "The Man Behind the Throne (2013).CBFM.English.C.orig.Addic7ed.com"
+		Pattern p202 = Pattern.compile("(.*?)\\s+\\((\\d{4})\\)\\.(\\w+)\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps202 = ImmutableMap.builder();
+		grps202.put(0, SubtitleRelease.PROP_NAME);
+		grps202.put(1, Movie.PROP_NAME);
+		grps202.put(2, Movie.PROP_DATE);
+		grps202.put(3, Release.PROP_GROUP);
+		grps202.put(4, Subtitle.PROP_LANGUAGE);
+		grps202.put(5, SubtitleRelease.PROP_TAGS);
+		MappingMatcher<SimplePropDescriptor> matcher202 = new MappingMatcher<>(p202, grps202.build(), predefMovieMatches);
 
 		// --------------
 		// add all movie matchers
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
 		movieMatchers.add(matcher201);
+		movieMatchers.add(matcher202);
 
 		movieSubParser.setMatchers(movieMatchers.build());
 
@@ -282,10 +267,5 @@ public class Addic7edCom
 	private Addic7edCom()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
-
-	public static void main(String[] args)
-	{
-		Addic7edCom.getParsingService();
 	}
 }

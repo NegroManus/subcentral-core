@@ -30,12 +30,14 @@ public class CorrectionDefaults
 	public static final Function<String, String>	ACCENT_REPLACER						= (String s) -> StringUtils.stripAccents(s);
 	public static final Function<String, String>	TO_LOWERCASE_REPLACER				= (String s) -> StringUtils.lowerCase(s);
 
-	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE			= new TypeBasedCorrectionService("default");
+	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE			= initDefaultCorrectionService();
 
-	static
+	private static TypeBasedCorrectionService initDefaultCorrectionService()
 	{
-		registerAllDefaultNestedBeansRetrievers(DEFAULT_CORRECTION_SERVICE);
-		registerAllDefaultCorrectors(DEFAULT_CORRECTION_SERVICE);
+		TypeBasedCorrectionService service = new TypeBasedCorrectionService("default");
+		registerAllDefaultNestedBeansRetrievers(service);
+		registerAllDefaultCorrectors(service);
+		return service;
 	}
 
 	public static CorrectionService getDefaultCorrectionService()
@@ -106,7 +108,6 @@ public class CorrectionDefaults
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "265"), Tag.list("H.265"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H264"), Tag.list("H.264"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H265"), Tag.list("H.265"))));
-		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("WEB", "DL"), Tag.list("WEB-DL"))));
 	}
 
 	private CorrectionDefaults()

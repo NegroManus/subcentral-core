@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -18,13 +19,6 @@ import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 
 public class Addic7edParsingTest
 {
-	// name = "Robot Chicken - 07x07 - Snarfer Image.x264-KILLERS.English.C.orig.Addic7ed.com";
-	// name = "24 - 09x05 - Day 9_ 3_00 PM-4_00 PM.LOL.English.C.orig.Addic7ed.com";
-	// name = "The Listener - 05x01 - The Wrong Man.KILLERS.English.C.orig.Addic7ed.com";
-	//
-	// name = "Winter's Tale (2014).DVD-Rip.Bulgarian.orig.Addic7ed.com";
-	// name = "the house of magic (2014).bdrip.Portuguese.orig.Addic7ed.com";
-	// name = "Revenge of the Bridesmaids (2010).Dvd-rip.Serbian (Latin).orig.Addic7ed.com";
 	@Test
 	public void testEpisode01()
 	{
@@ -349,7 +343,42 @@ public class Addic7edParsingTest
 	public void testEpisode22()
 	{
 		String name = "CSI_ Cyber - 02x05 - hack E.R..DIMENSION.English.C.orig.Addic7ed.com";
-		// TODO
+		Episode epi = Episode.createSeasonedEpisode("CSI_ Cyber", 2, 5, "hack E.R.");
+		Release rls = Release.create(epi, "DIMENSION");
+		Subtitle sub = new Subtitle(epi, "English");
+		sub.setSource("Addic7ed.com");
+		SubtitleRelease adj = new SubtitleRelease(name, sub, rls);
+		adj.setTags(Tag.list("C", "orig"));
+
+		compare("testEpisode22", adj, name);
+	}
+
+	@Test
+	public void testMovie01()
+	{
+		String name = "The Man Behind the Throne (2013).CBFM.English.C.orig.Addic7ed.com";
+		Movie mov = new Movie("The Man Behind the Throne", Year.of(2013));
+		Release rls = Release.create(mov, "CBFM");
+		Subtitle sub = new Subtitle(mov, "English");
+		sub.setSource("Addic7ed.com");
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls);
+		subRls.setTags(Tag.list("C", "orig"));
+
+		compare("testMovie01", subRls, name);
+	}
+
+	@Test
+	public void testMovie02()
+	{
+		String name = "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com";
+		Movie mov = new Movie("Winter's Tale", Year.of(2014));
+		Release rls = Release.create(mov, null, "DVD-Rip");
+		Subtitle sub = new Subtitle(mov, "English");
+		sub.setSource("Addic7ed.com");
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls);
+		subRls.setTags(Tag.list("orig"));
+
+		compare("testMovie02", subRls, name);
 	}
 
 	private static final void compare(String testMethodName, SubtitleRelease expected, String nameToParse)

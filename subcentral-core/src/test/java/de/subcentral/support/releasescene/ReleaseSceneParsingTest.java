@@ -50,7 +50,7 @@ public class ReleaseSceneParsingTest
 	{
 		String name = "Salem.S02E04.Book.of.Shadows.1080p.WEB-DL.DD5.1.H264-ABH";
 		Episode epi = Episode.createSeasonedEpisode("Salem", 2, 4, "Book.of.Shadows");
-		Release rls = Release.create(epi, "ABH", "1080p", "WEB", "DL", "DD5", "1", "H264");
+		Release rls = Release.create(epi, "ABH", "1080p", "WEB-DL", "DD5", "1", "H264");
 		testParsingResult(name, rls);
 	}
 
