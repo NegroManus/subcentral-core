@@ -40,6 +40,9 @@ public class NamingDefaults
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
 	private static final ConditionalNamingService	NAMING_SERVICE									= new ConditionalNamingService(DEFAULT_DOMAIN);
+	private static final DelegatingNamingService	RELEASE_MEDIA_NAMING_SERVICE					= new DelegatingNamingService(DEFAULT_DOMAIN + "_release_media",
+																											NAMING_SERVICE,
+																											RELEASE_MEDIA_FORMATTER);
 	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE						= createNormalizingNamingService(NAMING_SERVICE);
 	private static final ConditionalNamingService	MULTI_EPISODE_RANGE_NAMING_SERVICE				= new ConditionalNamingService("multiepisode_range");;
 	private static final DelegatingNamingService	MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(MULTI_EPISODE_RANGE_NAMING_SERVICE);
@@ -68,8 +71,6 @@ public class NamingDefaults
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
-		// Release
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Release.PROP_MEDIA, RELEASE_MEDIA_FORMATTER);
 		// Subtitle
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(SubtitleRelease.PROP_VERSION, (String rev) -> "V" + rev);
 
@@ -111,7 +112,7 @@ public class NamingDefaults
 		MOVIE_NAMER = new MovieNamer(config);
 
 		// ReleaseNamer
-		RELEASE_NAMER = new ReleaseNamer(configWithRlsNameFormatter, NAMING_SERVICE);
+		RELEASE_NAMER = new ReleaseNamer(configWithRlsNameFormatter, RELEASE_MEDIA_NAMING_SERVICE);
 
 		// SubtitleNamer
 		SUBTITLE_NAMER = new SubtitleNamer(config, NAMING_SERVICE);
@@ -158,6 +159,11 @@ public class NamingDefaults
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_BLANK_REPLACER).andThen(CorrectionDefaults.TO_LOWERCASE_REPLACER);
 	}
 
+	public static Function<String, String> getDefaultNormalizingFormatter()
+	{
+		return NORMALIZING_FORMATTER;
+	}
+
 	public static Function<String, String> getDefaultReleaseNameFormatter()
 	{
 		return RELEASE_NAME_FORMATTER;
@@ -173,24 +179,19 @@ public class NamingDefaults
 		return SUBTITLE_ADJUSTMENT_NAME_FORMATTER;
 	}
 
-	public static Function<String, String> getDefaultNormalizingFormatter()
-	{
-		return NORMALIZING_FORMATTER;
-	}
-
 	public static PropToStringService getDefaultPropToStringService()
 	{
 		return PROP_TO_STRING_SERVICE;
 	}
 
-	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)
-	{
-		return new DelegatingNamingService(namingService.getDomain() + "_normalizing", namingService, NORMALIZING_FORMATTER);
-	}
-
 	public static NamingService getDefaultNamingService()
 	{
 		return NAMING_SERVICE;
+	}
+
+	public static DelegatingNamingService getDefaultReleaseMediaNamingService()
+	{
+		return RELEASE_MEDIA_NAMING_SERVICE;
 	}
 
 	public static ConditionalNamingService getMultiEpisodeRangeNamingService()
@@ -251,6 +252,11 @@ public class NamingDefaults
 	public static Namer<SubtitleRelease> getDefaultSubtitleAdjustmentNamer()
 	{
 		return SUBTITLE_ADJUSTMENT_NAMER;
+	}
+
+	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)
+	{
+		return new DelegatingNamingService(namingService.getDomain() + "_normalizing", namingService, NORMALIZING_FORMATTER);
 	}
 
 	private NamingDefaults()
