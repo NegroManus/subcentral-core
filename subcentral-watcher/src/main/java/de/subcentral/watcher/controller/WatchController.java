@@ -176,7 +176,7 @@ public class WatchController extends AbstractController
 	{
 		watchServiceExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-WatchService"));
 
-		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFiles);
+		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFilesFromWatchDir);
 		watchService.setExecutor(watchServiceExecutor);
 		WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.watchDirectoriesProperty());
 		watchService.setInitialScan(WatcherSettings.INSTANCE.isInitialScan());

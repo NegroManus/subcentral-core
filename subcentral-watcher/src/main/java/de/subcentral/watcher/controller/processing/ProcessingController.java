@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -455,7 +457,7 @@ public class ProcessingController extends AbstractController
 			boolean success = false;
 			if (db.hasFiles())
 			{
-				handleFiles(db.getFiles());
+				handleDroppedFiles(db.getFiles());
 				success = true;
 			}
 			/*
@@ -610,53 +612,31 @@ public class ProcessingController extends AbstractController
 	}
 
 	// Controlling methods
-	public void handleFiles(Path watchDir, Collection<Path> files)
+	public void handleFilesFromWatchDir(Path watchDir, Collection<Path> files)
 	{
-		log.debug("Handling {} file(s) in {}", files.size(), watchDir);
-		for (Path file : files)
-		{
-			handleFile(watchDir.resolve(file));
-		}
+		log.debug("Handling {} file(s) from watch directory {}", files.size(), watchDir);
+		handleFiles(files.stream().map((Path relativeFile) -> watchDir.resolve(relativeFile)));
 	}
 
-	public void handleFiles(Collection<File> files)
+	public void handleDroppedFiles(Collection<File> files)
 	{
-		log.debug("Handling {} file(s)", files.size());
-		for (File file : files)
-		{
-			handleFile(file.toPath());
-		}
+		log.debug("Handling {} file(s) from Drag-And-Drop", files.size());
+		handleFiles(files.stream().map((File file) -> file.toPath()));
 	}
 
-	private void handleFile(Path file)
+	private void handleFiles(Stream<Path> files)
 	{
-		if (!filterByFileAttributes(file))
-		{
-			return;
-		}
+		// Filtering based on file attributes is done in the thread which ever called this method (IO can take some time)
+		final List<Path> filteredWithFileAttributes = files.filter(ProcessingController::filterByFileAttributes).collect(Collectors.toList());
 
+		// Filtering based on the current settings has to be done in the JavaFX Application Thread
 		Platform.runLater(() ->
 		{
-			if (!filterByName(file))
-			{
-				return;
-			}
-
-			if (!filterOutAlreadyProcessedFiles(file))
-			{
-				return;
-			}
-
-			TreeItem<ProcessingItem> taskItem = new TreeItem<>();
-			ProcessingTask newTask = new ProcessingTask(file, this, taskItem);
-			taskItem.setValue(newTask);
-			processingTreeTable.getRoot().getChildren().add(taskItem);
-
-			getProcessingExecutor().submit(newTask);
+			filteredWithFileAttributes.stream().filter(this::filterByName).filter(this::filterOutAlreadyProcessedFiles).forEach(this::submitNewTask);
 		});
 	}
 
-	private boolean filterByFileAttributes(Path file)
+	private static boolean filterByFileAttributes(Path file)
 	{
 		try
 		{
@@ -679,7 +659,7 @@ public class ProcessingController extends AbstractController
 		}
 		catch (IOException e)
 		{
-			log.debug("Rejecting " + file + " because its attributes could not be read", e);
+			log.debug("Rejecting " + file + " because its attributes could not be read: {}", e.toString());
 			return false;
 		}
 
@@ -700,6 +680,16 @@ public class ProcessingController extends AbstractController
 			return false;
 		}
 		return true;
+	}
+
+	private void submitNewTask(Path file)
+	{
+		TreeItem<ProcessingItem> taskItem = new TreeItem<>();
+		ProcessingTask newTask = new ProcessingTask(file, this, taskItem);
+		taskItem.setValue(newTask);
+		processingTreeTable.getRoot().getChildren().add(taskItem);
+
+		getProcessingExecutor().submit(newTask);
 	}
 
 	private boolean filterOutAlreadyProcessedFiles(Path file)
