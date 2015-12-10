@@ -178,6 +178,7 @@ public class XRelToMetadataDb extends HttpMetadataDb
 		 */
 		Element categoryDiv = rlsDiv.select("div.release_cat").first();
 		String category = categoryDiv.text();
+		rls.setCategory(category);
 
 		/**
 		 * date
