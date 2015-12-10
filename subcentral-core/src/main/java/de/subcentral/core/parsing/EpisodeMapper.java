@@ -12,8 +12,18 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class EpisodeMapper extends AbstractMapper<Episode>
 {
+	public EpisodeMapper()
+	{
+
+	}
+
+	public EpisodeMapper(PropFromStringService propFromStringService)
+	{
+		super(propFromStringService);
+	}
+
 	@Override
-	public Episode doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
+	public Episode doMap(Map<SimplePropDescriptor, String> props)
 	{
 		Series series = new Series();
 		series.setType(propFromStringService.parse(props, Series.PROP_TYPE, String.class));
@@ -41,5 +51,11 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 		}
 
 		return epi;
+	}
+
+	@Override
+	protected Class<?> getTargetType()
+	{
+		return Episode.class;
 	}
 }

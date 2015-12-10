@@ -66,8 +66,6 @@ public class SubCentralDe
 				continue;
 			}
 
-			SubtitleAdjustmentParser parser = new SubtitleAdjustmentParser(mediaMapper);
-
 			// Building the matchers for SubCentral:
 			// The scene matchers will be the source for the SubCentral matchers
 			// because all SubCentral names consist of the scene name of the release followed by SubCentral tags.
@@ -78,7 +76,7 @@ public class SubCentralDe
 				scMatchers.addAll(extension.extend(sceneMatchers));
 			}
 
-			parser.setMatchers(scMatchers.build());
+			SubtitleAdjustmentParser parser = new SubtitleAdjustmentParser(scMatchers.build(), mediaMapper);
 			parsers.add(parser);
 		}
 

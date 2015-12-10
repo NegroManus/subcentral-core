@@ -19,13 +19,26 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleRelease>
 {
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
-	private final Mapper<Release>							releaseMapper				= ParsingDefaults.getDefaultReleaseMapper();
-	private final Mapper<Subtitle>							subtitleMapper				= ParsingDefaults.getDefaultSubtitleMapper();
-	private final Mapper<SubtitleRelease>						subtitleAdjustmentMapper	= ParsingDefaults.getDefaultSubtitleAdjustmentMapper();
+	private final Mapper<Release>							releaseMapper;
+	private final Mapper<Subtitle>							subtitleMapper;
+	private final Mapper<SubtitleRelease>					subtitleAdjustmentMapper;
 
-	public SubtitleAdjustmentParser(Mapper<? extends List<? extends Media>> mediaMapper)
+	public SubtitleAdjustmentParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper)
 	{
+		this(matchers, mediaMapper, ParsingDefaults.getDefaultReleaseMapper(), ParsingDefaults.getDefaultSubtitleMapper(), ParsingDefaults.getDefaultSubtitleAdjustmentMapper());
+	}
+
+	public SubtitleAdjustmentParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers,
+			Mapper<? extends List<? extends Media>> mediaMapper,
+			Mapper<Release> releaseMapper,
+			Mapper<Subtitle> subtitleMapper,
+			Mapper<SubtitleRelease> subtitleAdjustmentMapper)
+	{
+		super(matchers);
 		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
+		this.releaseMapper = Objects.requireNonNull(releaseMapper, "releaseMapper");
+		this.subtitleMapper = Objects.requireNonNull(subtitleMapper, "subtitleMapper");
+		this.subtitleAdjustmentMapper = Objects.requireNonNull(subtitleAdjustmentMapper, "subtitleAdjustmentMapper");
 	}
 
 	public Mapper<? extends List<? extends Media>> getMediaMapper()
@@ -52,7 +65,7 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleRele
 	public SubtitleRelease map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends Media> media = mediaMapper.map(props, propFromStringService);
+		List<? extends Media> media = mediaMapper.map(props);
 
 		// Release
 		Set<Release> matchingRlss = parseMatchingReleases(props, media);
@@ -61,13 +74,13 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleRele
 		List<Subtitle> subs = new ArrayList<>(media.size());
 		for (Media m : media)
 		{
-			Subtitle sub = subtitleMapper.map(props, propFromStringService);
+			Subtitle sub = subtitleMapper.map(props);
 			sub.setMedia(m);
 			subs.add(sub);
 		}
 
 		// SubtitleAdjustment
-		SubtitleRelease subAdj = subtitleAdjustmentMapper.map(props, propFromStringService);
+		SubtitleRelease subAdj = subtitleAdjustmentMapper.map(props);
 		subAdj.getSubtitles().addAll(subs);
 		subAdj.getMatchingReleases().addAll(matchingRlss);
 		return subAdj;
@@ -89,16 +102,16 @@ public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleRele
 					Map<SimplePropDescriptor, String> propsForRls = new HashMap<>(props);
 					// overwrite the group value with the current group
 					propsForRls.put(Release.PROP_GROUP, group);
-					Release rlsForGroup = releaseMapper.map(propsForRls, propFromStringService);
-					rlsForGroup.getMedia().addAll(media);
+					Release rlsForGroup = releaseMapper.map(propsForRls);
+					rlsForGroup.setMedia(media);
 					matchingReleases.add(rlsForGroup);
 				}
 				return matchingReleases;
 			}
 		}
 
-		Release singleRelease = releaseMapper.map(props, propFromStringService);
-		singleRelease.getMedia().addAll(media);
+		Release singleRelease = releaseMapper.map(props);
+		singleRelease.setMedia(media);
 
 		matchingReleases = new HashSet<>(1);
 		matchingReleases.add(singleRelease);

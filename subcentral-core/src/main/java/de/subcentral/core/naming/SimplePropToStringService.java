@@ -37,14 +37,14 @@ public class SimplePropToStringService implements PropToStringService
 	@SuppressWarnings("unchecked")
 	private <T> String doConversion(SimplePropDescriptor propDescriptor, T propValue) throws ClassCastException
 	{
+		if (propValue == null)
+		{
+			return "";
+		}
 		Function<?, String> toStringFn = propToStringFns.get(propDescriptor);
 		if (toStringFn != null)
 		{
 			return ((Function<T, String>) toStringFn).apply(propValue);
-		}
-		if (propValue == null)
-		{
-			return "";
 		}
 		toStringFn = typeToStringFns.get(propValue.getClass());
 		if (toStringFn != null)

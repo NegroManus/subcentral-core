@@ -20,7 +20,10 @@ import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.parsing.EpisodeMapper;
 import de.subcentral.core.parsing.MappingMatcher;
+import de.subcentral.core.parsing.MovieMapper;
+import de.subcentral.core.parsing.MultiEpisodeMapper;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
@@ -50,9 +53,9 @@ public class ReleaseScene
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());
 
-		// SINGLE EPISODES
-		ReleaseParser epiRlsParser = new ReleaseParser(ParsingDefaults.getDefaultSingletonListEpisodeMapper());
+		EpisodeMapper epiMapper = new EpisodeMapper(pps);
 
+		// SINGLE EPISODES
 		// Series.Name.S00E00.Some.Tags-Group
 		Pattern p101 = Pattern.compile("(.*?)\\.S(\\d{2})E(\\d{2})\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps101 = ImmutableMap.builder();
@@ -148,12 +151,10 @@ public class ReleaseScene
 		epiRlsMatchers.add(matcher202);
 		epiRlsMatchers.add(matcher301);
 		epiRlsMatchers.add(matcher302);
-		epiRlsParser.setMatchers(epiRlsMatchers.build());
-		epiRlsParser.setPropFromStringService(pps);
+
+		ReleaseParser epiRlsParser = new ReleaseParser(epiRlsMatchers.build(), ParsingDefaults.createSingletonListMapper(epiMapper));
 
 		// MULTI-EPISODES
-		ReleaseParser multiEpiRlsParser = new ReleaseParser(ParsingDefaults.getDefaultMultiEpisodeMapper());
-
 		// Multi-episode (seasoned, range)
 		Pattern p401 = Pattern.compile("(.*?)\\.S(\\d{2})(E\\d{2}-E\\d{2})\\.(.*?)\\.(" + firstTagPattern + "\\..*)-(\\w+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps401 = ImmutableMap.builder();
@@ -203,12 +204,10 @@ public class ReleaseScene
 		multiEpiRlsMatchers.add(matcher402);
 		multiEpiRlsMatchers.add(matcher451);
 		multiEpiRlsMatchers.add(matcher452);
-		multiEpiRlsParser.setMatchers(multiEpiRlsMatchers.build());
-		multiEpiRlsParser.setPropFromStringService(pps);
+
+		ReleaseParser multiEpiRlsParser = new ReleaseParser(multiEpiRlsMatchers.build(), new MultiEpisodeMapper(epiMapper));
 
 		// MOVIE
-		ReleaseParser movieRlsParser = new ReleaseParser(ParsingDefaults.getDefaultSingletonListMovieMapper());
-
 		// Movie.Name.FirstTag.2015.Other.Tags-Group
 		// Movie.Name.FirstTag.OtherTags.2015.Other.Tags-Group
 		Pattern p601 = Pattern.compile("(.*?)\\.(" + firstTagPattern + ".*?)\\.(\\d{4})\\.(.*?)-(\\w+)", Pattern.CASE_INSENSITIVE);
@@ -244,8 +243,8 @@ public class ReleaseScene
 		movieRlsMatchers.add(matcher601);
 		movieRlsMatchers.add(matcher602);
 		movieRlsMatchers.add(matcher603);
-		movieRlsParser.setMatchers(movieRlsMatchers.build());
-		movieRlsParser.setPropFromStringService(pps);
+
+		ReleaseParser movieRlsParser = new ReleaseParser(movieRlsMatchers.build(), ParsingDefaults.createSingletonListMapper(new MovieMapper(pps)));
 
 		return ImmutableList.of(epiRlsParser, multiEpiRlsParser, movieRlsParser);
 	}

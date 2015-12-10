@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +31,6 @@ public class SimplePropFromStringService implements PropFromStringService
 {
 	private static final Logger								log									= LogManager.getLogger(SimplePropFromStringService.class);
 
-	public static final SimplePropFromStringService			DEFAULT								= new SimplePropFromStringService();
 	/**
 	 * The default element splitter. Used for splitting a list property string into its elements. Splits the string into words of alpha-num and '-' chars. Is used by PropParsingService instances if no
 	 * specific item splitter is defined. Common to all instances to save memory.
@@ -136,9 +134,9 @@ public class SimplePropFromStringService implements PropFromStringService
 	@Override
 	public <P> List<P> parseList(String propListString, SimplePropDescriptor propDescriptor, Class<P> elementClass) throws ParsingException
 	{
-		if (StringUtils.isBlank(propListString))
+		if (propListString == null)
 		{
-			return ImmutableList.of();
+			return null;
 		}
 		Splitter splitter = propElementSplitters.getOrDefault(propDescriptor, elementSplitter);
 		if (splitter == null)
@@ -168,7 +166,7 @@ public class SimplePropFromStringService implements PropFromStringService
 
 	public <P> P parse(String propString, SimplePropDescriptor propDescriptor, Class<P> propClass) throws ParsingException
 	{
-		if (StringUtils.isBlank(propString))
+		if (propString == null)
 		{
 			return null;
 		}

@@ -46,12 +46,12 @@ public class MappingMatcher<K>
 	 * 
 	 * @return
 	 */
-	public ImmutableMap<Integer, K> getGroups()
+	public Map<Integer, K> getGroups()
 	{
 		return groups;
 	}
 
-	public ImmutableMap<K, String> getPredefinedMatches()
+	public Map<K, String> getPredefinedMatches()
 	{
 		return predefinedMatches;
 	}

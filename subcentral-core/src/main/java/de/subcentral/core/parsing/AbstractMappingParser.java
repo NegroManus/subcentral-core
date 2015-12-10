@@ -1,35 +1,24 @@
 package de.subcentral.core.parsing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMappingParser<T> implements Parser<T>
 {
-	protected List<MappingMatcher<SimplePropDescriptor>>	matchers				= new ArrayList<>();
-	protected PropFromStringService							propFromStringService	= SimplePropFromStringService.DEFAULT;
+	protected final List<MappingMatcher<SimplePropDescriptor>> matchers;
+
+	public AbstractMappingParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers)
+	{
+		this.matchers = ImmutableList.copyOf(matchers);
+	}
 
 	public List<MappingMatcher<SimplePropDescriptor>> getMatchers()
 	{
 		return matchers;
-	}
-
-	public void setMatchers(List<MappingMatcher<SimplePropDescriptor>> matchers)
-	{
-		this.matchers = Objects.requireNonNull(matchers, "matchers");
-	}
-
-	public PropFromStringService getPropFromStringService()
-	{
-		return propFromStringService;
-	}
-
-	public void setPropFromStringService(SimplePropFromStringService propFromStringService)
-	{
-		this.propFromStringService = Objects.requireNonNull(propFromStringService, "propFromStringService");
 	}
 
 	@Override

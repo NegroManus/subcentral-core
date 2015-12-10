@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
+public class MultiEpisodeMapper implements Mapper<List<Episode>>
 {
 	private final Mapper<Episode> episodeMapper;
 
@@ -32,22 +32,29 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 	}
 
 	@Override
-	protected List<Episode> doMap(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
+	public List<Episode> map(Map<SimplePropDescriptor, String> props)
 	{
-		List<Episode> media = parseMultiEpisode(props, propFromStringService, Episode.PROP_NUMBER_IN_SERIES);
-		if (!media.isEmpty())
+		try
 		{
-			return media;
+			List<Episode> media = parseMultiEpisode(props, Episode.PROP_NUMBER_IN_SERIES);
+			if (!media.isEmpty())
+			{
+				return media;
+			}
+			media = parseMultiEpisode(props, Episode.PROP_NUMBER_IN_SEASON);
+			if (!media.isEmpty())
+			{
+				return media;
+			}
+			return ImmutableList.of();
 		}
-		media = parseMultiEpisode(props, propFromStringService, Episode.PROP_NUMBER_IN_SEASON);
-		if (!media.isEmpty())
+		catch (RuntimeException e)
 		{
-			return media;
+			throw new MappingException(props, null, "Exception while mapping to a multi episode", e);
 		}
-		return ImmutableList.of();
 	}
 
-	private List<Episode> parseMultiEpisode(Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService, SimplePropDescriptor epiNumProp)
+	private List<Episode> parseMultiEpisode(Map<SimplePropDescriptor, String> props, SimplePropDescriptor epiNumProp)
 	{
 		String numString = props.get(epiNumProp);
 		if (StringUtils.isBlank(numString))
@@ -60,7 +67,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 			case 0:
 				return ImmutableList.of();
 			case 1:
-				return ImmutableList.of(episodeMapper.map(props, propFromStringService));
+				return ImmutableList.of(episodeMapper.map(props));
 			default:
 				List<Episode> episodes = new ArrayList<>(epiNums.length);
 				for (String epiNum : epiNums)
@@ -68,7 +75,7 @@ public class MultiEpisodeMapper extends AbstractMapper<List<Episode>>
 					Map<SimplePropDescriptor, String> propsForEpi = new HashMap<>(props);
 					// overwrite episode num
 					propsForEpi.put(epiNumProp, epiNum);
-					episodes.add(episodeMapper.map(propsForEpi, propFromStringService));
+					episodes.add(episodeMapper.map(propsForEpi));
 				}
 				return episodes;
 		}

@@ -41,7 +41,6 @@ public class ItalianSubsNet
 
 		// --------------
 		// Episode Parsers
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// Examples:
 		// Psych.s08e04.sub.itasa
@@ -71,11 +70,11 @@ public class ItalianSubsNet
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
 		episodeMatchers.add(matcher101);
 		episodeMatchers.add(matcher102);
-		episodeSubParser.setMatchers(episodeMatchers.build());
+
+		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// --------------
 		// Multi-Episode Parsers
-		SubtitleAdjustmentParser multiEpisodeSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultMultiEpisodeMapper());
 
 		// Examples:
 		// Psych.s07e15-16.sub.itasa
@@ -104,7 +103,8 @@ public class ItalianSubsNet
 
 		multiEpisodeMatchers.add(matcher201);
 		multiEpisodeMatchers.add(matcher202);
-		multiEpisodeSubParser.setMatchers(multiEpisodeMatchers.build());
+
+		SubtitleAdjustmentParser multiEpisodeSubParser = new SubtitleAdjustmentParser(multiEpisodeMatchers.build(), ParsingDefaults.getDefaultMultiEpisodeMapper());
 
 		return ImmutableList.of(episodeSubParser, multiEpisodeSubParser);
 	}

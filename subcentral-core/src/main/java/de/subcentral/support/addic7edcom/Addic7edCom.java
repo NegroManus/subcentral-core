@@ -41,13 +41,12 @@ public class Addic7edCom
 		String langPttrn = "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian\\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 		String langSubTagsSrcPttrn = langPttrn + "\\.(.+)\\.Addic7ed\\.com";
 		String rlsTagsPttrn = "(?:(?:DVD|WEB)[.-]?(?:DL|Rip)|INTERNAL)";
+
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = ImmutableMap.of(Subtitle.PROP_SOURCE, "Addic7ed.com");
 
 		// --------------
 		// Episode Parser
 		// Predefined matches for episodes
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListEpisodeMapper());
-
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefEpisodeMatchesBuilder = ImmutableMap.builder();
 		predefEpisodeMatchesBuilder.putAll(commonPredefMatches);
 		predefEpisodeMatchesBuilder.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
@@ -207,7 +206,7 @@ public class Addic7edCom
 		episodeMatchers.add(matcher105);
 		episodeMatchers.add(matcher106);
 		episodeMatchers.add(matcher107);
-		episodeSubParser.setMatchers(episodeMatchers.build());
+		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// FOR TESTING
 		// matcher104.match("Hannibal - 03x10 - ...And the Woman Clothed in Sun.WEB-DL.English.HI.C.orig.Addic7ed.com").forEach((k, v) ->
@@ -215,8 +214,6 @@ public class Addic7edCom
 
 		// --------------
 		// Movie Parser
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(ParsingDefaults.getDefaultSingletonListMovieMapper());
-
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);
 		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefEpisodeMatchesBuilder.build();
@@ -249,7 +246,7 @@ public class Addic7edCom
 		movieMatchers.add(matcher201);
 		movieMatchers.add(matcher202);
 
-		movieSubParser.setMatchers(movieMatchers.build());
+		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(movieMatchers.build(), ParsingDefaults.getDefaultSingletonListMovieMapper());
 
 		return ImmutableList.of(episodeSubParser, movieSubParser);
 	}

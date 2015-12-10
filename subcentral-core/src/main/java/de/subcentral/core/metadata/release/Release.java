@@ -193,7 +193,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 		return media;
 	}
 
-	public void setMedia(List<Media> media)
+	public void setMedia(Collection<? extends Media> media)
 	{
 		this.media.clear();
 		this.media.addAll(media);

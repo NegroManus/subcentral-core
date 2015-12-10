@@ -1,15 +1,17 @@
 package de.subcentral.core.parsing;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.GenericMedia;
+import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ParsingDefaults
 {
@@ -23,22 +25,24 @@ public class ParsingDefaults
 	 * <li>country code (or null)</li>
 	 * </ol>
 	 */
-	public static final String						PATTERN_MEDIA_NAME					= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
+	public static final String							PATTERN_MEDIA_NAME					= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
-	private static final EpisodeMapper				EPISODE_MAPPER						= new EpisodeMapper();
-	private static final Mapper<List<Episode>>		SINGLETON_LIST_EPISODE_MAPPER		= createSingletonListMapper(EPISODE_MAPPER);
-	private static final MultiEpisodeMapper			MULTI_EPISODE_MAPPER				= new MultiEpisodeMapper(EPISODE_MAPPER);
-	private static final MovieMapper				MOVIE_MAPPER						= new MovieMapper();
-	private static final Mapper<List<Movie>>		SINGLETON_LIST_MOVIE_MAPPER			= createSingletonListMapper(MOVIE_MAPPER);
-	private static final GenericMediaMapper			GENERIC_MEDIA_MAPPER				= new GenericMediaMapper();
-	private static final Mapper<List<GenericMedia>>	SINGLETON_LIST_GENERIC_MEDIA_MAPPER	= createSingletonListMapper(GENERIC_MEDIA_MAPPER);
-	private static final ReleaseMapper				RELEASE_MAPPER						= new ReleaseMapper();
-	private static final SubtitleMapper				SUBTITLE_MAPPER						= new SubtitleMapper();
-	private static final SubtitleAdjustmentMapper	SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleAdjustmentMapper();
+	private static final SimplePropFromStringService	PROP_FROM_STRING_SERVICE			= new SimplePropFromStringService();
 
-	private static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
+	private static final EpisodeMapper					EPISODE_MAPPER						= new EpisodeMapper();
+	private static final Mapper<List<Episode>>			SINGLETON_LIST_EPISODE_MAPPER		= createSingletonListMapper(EPISODE_MAPPER);
+	private static final MultiEpisodeMapper				MULTI_EPISODE_MAPPER				= new MultiEpisodeMapper(EPISODE_MAPPER);
+	private static final MovieMapper					MOVIE_MAPPER						= new MovieMapper();
+	private static final Mapper<List<Movie>>			SINGLETON_LIST_MOVIE_MAPPER			= createSingletonListMapper(MOVIE_MAPPER);
+	private static final GenericMediaMapper				GENERIC_MEDIA_MAPPER				= new GenericMediaMapper();
+	private static final Mapper<List<GenericMedia>>		SINGLETON_LIST_GENERIC_MEDIA_MAPPER	= createSingletonListMapper(GENERIC_MEDIA_MAPPER);
+	private static final ReleaseMapper					RELEASE_MAPPER						= new ReleaseMapper();
+	private static final SubtitleMapper					SUBTITLE_MAPPER						= new SubtitleMapper();
+	private static final SubtitleAdjustmentMapper		SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleAdjustmentMapper();
+
+	public static SimplePropFromStringService getDefaultPropFromStringService()
 	{
-		return (props, pps) -> ImmutableList.of(elementMapper.map(props, pps));
+		return PROP_FROM_STRING_SERVICE;
 	}
 
 	public static Mapper<Episode> getDefaultEpisodeMapper()
@@ -89,6 +93,11 @@ public class ParsingDefaults
 	public static final Mapper<SubtitleRelease> getDefaultSubtitleAdjustmentMapper()
 	{
 		return SUBTITLE_ADJUSTMENT_MAPPER;
+	}
+
+	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
+	{
+		return (Map<SimplePropDescriptor, String> props) -> ImmutableList.of(elementMapper.map(props));
 	}
 
 	private ParsingDefaults()

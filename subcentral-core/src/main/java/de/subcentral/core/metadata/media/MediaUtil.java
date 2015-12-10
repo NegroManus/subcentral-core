@@ -84,7 +84,7 @@ public class MediaUtil
 				NamedMedia namedMedia = (NamedMedia) obj;
 				if (namedMedia.getName() != null)
 				{
-					return generateNamingParametersForMediaNames(((NamedMedia) obj).getAllNames());
+					return generateNamingParametersForMediaNames(namedMedia.getAllNames());
 				}
 			}
 		}

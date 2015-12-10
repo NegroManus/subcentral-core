@@ -11,11 +11,18 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class ReleaseParser extends AbstractMappingParser<Release>
 {
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
-	private final Mapper<Release>							releaseMapper	= ParsingDefaults.getDefaultReleaseMapper();
+	private final Mapper<Release>							releaseMapper;
 
-	public ReleaseParser(Mapper<? extends List<? extends Media>> mediaMapper)
+	public ReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper)
 	{
+		this(matchers, mediaMapper, ParsingDefaults.getDefaultReleaseMapper());
+	}
+
+	public ReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper, Mapper<Release> releaseMapper)
+	{
+		super(matchers);
 		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
+		this.releaseMapper = Objects.requireNonNull(releaseMapper, "releaseMapper");
 	}
 
 	public Mapper<? extends List<? extends Media>> getMediaMapper()
@@ -32,11 +39,11 @@ public class ReleaseParser extends AbstractMappingParser<Release>
 	protected Release map(Map<SimplePropDescriptor, String> props)
 	{
 		// Media
-		List<? extends Media> media = mediaMapper.map(props, propFromStringService);
+		List<? extends Media> media = mediaMapper.map(props);
 
 		// Release
-		Release rls = releaseMapper.map(props, propFromStringService);
-		rls.getMedia().addAll(media);
+		Release rls = releaseMapper.map(props);
+		rls.setMedia(media);
 		return rls;
 	}
 }
