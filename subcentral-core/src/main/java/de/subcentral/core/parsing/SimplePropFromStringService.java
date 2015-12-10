@@ -136,7 +136,7 @@ public class SimplePropFromStringService implements PropFromStringService
 	{
 		if (propListString == null)
 		{
-			return null;
+			return ImmutableList.of();
 		}
 		Splitter splitter = propElementSplitters.getOrDefault(propDescriptor, elementSplitter);
 		if (splitter == null)
