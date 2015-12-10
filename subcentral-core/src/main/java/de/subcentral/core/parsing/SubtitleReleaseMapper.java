@@ -6,14 +6,14 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleAdjustmentMapper extends AbstractMapper<SubtitleRelease>
+public class SubtitleReleaseMapper extends AbstractMapper<SubtitleRelease>
 {
-	public SubtitleAdjustmentMapper()
+	public SubtitleReleaseMapper()
 	{
 
 	}
 
-	public SubtitleAdjustmentMapper(PropFromStringService propFromStringService)
+	public SubtitleReleaseMapper(PropFromStringService propFromStringService)
 	{
 		super(propFromStringService);
 	}

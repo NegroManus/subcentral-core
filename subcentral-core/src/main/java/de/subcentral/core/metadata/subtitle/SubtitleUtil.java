@@ -16,7 +16,7 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.SubtitleFileNamer;
+import de.subcentral.core.naming.SubtitleReleaseNamer;
 
 public class SubtitleUtil
 {
@@ -29,7 +29,7 @@ public class SubtitleUtil
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
 		for (Release rls : subAdj.getMatchingReleases())
 		{
-			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleFileNamer.PARAM_RELEASE, rls)));
+			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleReleaseNamer.PARAM_RELEASE, rls)));
 		}
 		return names.build();
 	}

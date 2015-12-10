@@ -20,7 +20,7 @@ import de.subcentral.core.parsing.MappingMatcherExtension;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingService;
 import de.subcentral.core.parsing.ReleaseParser;
-import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.parsing.SubtitleReleaseParser;
 import de.subcentral.core.parsing.TypeBasedParsingService;
 import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -76,7 +76,7 @@ public class SubCentralDe
 				scMatchers.addAll(extension.extend(sceneMatchers));
 			}
 
-			SubtitleAdjustmentParser parser = new SubtitleAdjustmentParser(scMatchers.build(), mediaMapper);
+			SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatchers.build(), mediaMapper);
 			parsers.add(parser);
 		}
 

@@ -16,7 +16,7 @@ import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.parsing.SubtitleReleaseParser;
 import de.subcentral.core.parsing.TypeBasedParsingService;
 import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -71,7 +71,7 @@ public class ItalianSubsNet
 		episodeMatchers.add(matcher101);
 		episodeMatchers.add(matcher102);
 
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
+		SubtitleReleaseParser episodeSubParser = new SubtitleReleaseParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// --------------
 		// Multi-Episode Parsers
@@ -104,7 +104,7 @@ public class ItalianSubsNet
 		multiEpisodeMatchers.add(matcher201);
 		multiEpisodeMatchers.add(matcher202);
 
-		SubtitleAdjustmentParser multiEpisodeSubParser = new SubtitleAdjustmentParser(multiEpisodeMatchers.build(), ParsingDefaults.getDefaultMultiEpisodeMapper());
+		SubtitleReleaseParser multiEpisodeSubParser = new SubtitleReleaseParser(multiEpisodeMatchers.build(), ParsingDefaults.getDefaultMultiEpisodeMapper());
 
 		return ImmutableList.of(episodeSubParser, multiEpisodeSubParser);
 	}

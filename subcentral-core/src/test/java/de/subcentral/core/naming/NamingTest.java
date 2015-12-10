@@ -67,7 +67,7 @@ public class NamingTest
 
 		Release mediaRel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		SubtitleRelease rel = SubtitleRelease.create(mediaRel, "de", "SubCentral");
-		String name = NamingDefaults.getDefaultSubtitleAdjustmentNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
+		String name = NamingDefaults.getDefaultSubtitleReleaseNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
 		Assert.assertEquals(MOVIE_SUB_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));

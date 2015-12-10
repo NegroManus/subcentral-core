@@ -32,7 +32,7 @@ public class NamingDefaults
 
 	private static final Function<String, String>	RELEASE_NAME_FORMATTER							= initReleaseNameFormatter();
 	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER							= initReleaseMediaFormatter();
-	private static final Function<String, String>	SUBTITLE_ADJUSTMENT_NAME_FORMATTER				= initSubtitleAdjustmentNameFormatter();
+	private static final Function<String, String>	SUBTITLE_RELEASE_NAME_FORMATTER					= initSubtitleReleaseNameFormatter();
 	private static final Function<String, String>	NORMALIZING_FORMATTER							= initNormalizingFormatter();
 
 	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE							= new SimplePropToStringService();
@@ -54,7 +54,7 @@ public class NamingDefaults
 	private static MultiEpisodeNamer				MULTI_EPISODE_RANGE_NAMER;
 	private static ReleaseNamer						RELEASE_NAMER;
 	private static SubtitleNamer					SUBTITLE_NAMER;
-	private static SubtitleFileNamer				SUBTITLE_ADJUSTMENT_NAMER;
+	private static SubtitleReleaseNamer				SUBTITLE_RELEASE_NAMER;
 
 	static
 	{
@@ -82,16 +82,16 @@ public class NamingDefaults
 		sepsBuilder.add(Separation.before(Subtitle.PROP_GROUP, "-"));
 		ImmutableSet<Separation> separations = sepsBuilder.build();
 
-		ImmutableSet.Builder<Separation> rangeOnlyMultiEpisodeSepsBuilder = ImmutableSet.builder();
-		rangeOnlyMultiEpisodeSepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
-		rangeOnlyMultiEpisodeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, "-"));
-		rangeOnlyMultiEpisodeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-"));
-		ImmutableSet<Separation> rangeOnlyMultiEpisodeSeparations = rangeOnlyMultiEpisodeSepsBuilder.build();
+		ImmutableSet.Builder<Separation> multiEpisodeRangeSepsBuilder = ImmutableSet.builder();
+		multiEpisodeRangeSepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
+		multiEpisodeRangeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_ADDITION, "-"));
+		multiEpisodeRangeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-"));
+		ImmutableSet<Separation> multiEpisodeRangeSeparations = multiEpisodeRangeSepsBuilder.build();
 
 		Config config = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, null);
 		Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, RELEASE_NAME_FORMATTER);
-		Config configWithSubAdjNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, SUBTITLE_ADJUSTMENT_NAME_FORMATTER);
-		Config configForRangeOnlyMultiEpisodeNamer = new Config(PROP_TO_STRING_SERVICE, rangeOnlyMultiEpisodeSeparations, Separation.DEFAULT_SEPARATOR, null);
+		Config configWithSubRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, SUBTITLE_RELEASE_NAME_FORMATTER);
+		Config configForMultiEpisodeRangeNamer = new Config(PROP_TO_STRING_SERVICE, multiEpisodeRangeSeparations, Separation.DEFAULT_SEPARATOR, null);
 
 		// SeriesNamer
 		SERIES_NAMER = new SeriesNamer(config);
@@ -106,7 +106,7 @@ public class NamingDefaults
 		MULTI_EPISODE_NAMER = new MultiEpisodeNamer(config, EPISODE_NAMER);
 
 		// MutliEpisodeNamer with only range separations "-"
-		MULTI_EPISODE_RANGE_NAMER = new MultiEpisodeNamer(configForRangeOnlyMultiEpisodeNamer, EPISODE_NAMER);
+		MULTI_EPISODE_RANGE_NAMER = new MultiEpisodeNamer(configForMultiEpisodeRangeNamer, EPISODE_NAMER);
 
 		// MovieNamer
 		MOVIE_NAMER = new MovieNamer(config);
@@ -118,13 +118,13 @@ public class NamingDefaults
 		SUBTITLE_NAMER = new SubtitleNamer(config, NAMING_SERVICE);
 
 		// SubtitleReleaseNamer
-		SUBTITLE_ADJUSTMENT_NAMER = new SubtitleFileNamer(configWithSubAdjNameFormatter, RELEASE_NAMER);
+		SUBTITLE_RELEASE_NAMER = new SubtitleReleaseNamer(configWithSubRlsNameFormatter, RELEASE_NAMER);
 
 		// Add namers to the NamingService (ordered by number of times used)
 		List<ConditionalNamingEntry<?>> namers = new ArrayList<>(8);
 		namers.add(ConditionalNamingEntry.of(Episode.class, EPISODE_NAMER));
 		namers.add(ConditionalNamingEntry.of(Release.class, RELEASE_NAMER));
-		namers.add(ConditionalNamingEntry.of(SubtitleRelease.class, SUBTITLE_ADJUSTMENT_NAMER));
+		namers.add(ConditionalNamingEntry.of(SubtitleRelease.class, SUBTITLE_RELEASE_NAMER));
 		namers.add(ConditionalNamingEntry.of(Series.class, SERIES_NAMER));
 		namers.add(ConditionalNamingEntry.of(Season.class, SEASON_NAMER));
 		namers.add(ConditionalNamingEntry.of(Movie.class, MOVIE_NAMER));
@@ -149,7 +149,7 @@ public class NamingDefaults
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_REPLACER).andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
-	private static Function<String, String> initSubtitleAdjustmentNameFormatter()
+	private static Function<String, String> initSubtitleReleaseNameFormatter()
 	{
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER).andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
@@ -174,9 +174,9 @@ public class NamingDefaults
 		return RELEASE_MEDIA_FORMATTER;
 	}
 
-	public static Function<String, String> getDefaultSubtitleAdjustmentNameFormatter()
+	public static Function<String, String> getDefaultSubtitleReleaseNameFormatter()
 	{
-		return SUBTITLE_ADJUSTMENT_NAME_FORMATTER;
+		return SUBTITLE_RELEASE_NAME_FORMATTER;
 	}
 
 	public static PropToStringService getDefaultPropToStringService()
@@ -249,9 +249,9 @@ public class NamingDefaults
 		return SUBTITLE_NAMER;
 	}
 
-	public static Namer<SubtitleRelease> getDefaultSubtitleAdjustmentNamer()
+	public static Namer<SubtitleRelease> getDefaultSubtitleReleaseNamer()
 	{
-		return SUBTITLE_ADJUSTMENT_NAMER;
+		return SUBTITLE_RELEASE_NAMER;
 	}
 
 	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)

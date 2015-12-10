@@ -17,7 +17,7 @@ import de.subcentral.core.parsing.MappingMatcher;
 import de.subcentral.core.parsing.Parser;
 import de.subcentral.core.parsing.ParsingDefaults;
 import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.SubtitleAdjustmentParser;
+import de.subcentral.core.parsing.SubtitleReleaseParser;
 import de.subcentral.core.parsing.TypeBasedParsingService;
 import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -206,7 +206,7 @@ public class Addic7edCom
 		episodeMatchers.add(matcher105);
 		episodeMatchers.add(matcher106);
 		episodeMatchers.add(matcher107);
-		SubtitleAdjustmentParser episodeSubParser = new SubtitleAdjustmentParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
+		SubtitleReleaseParser episodeSubParser = new SubtitleReleaseParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// FOR TESTING
 		// matcher104.match("Hannibal - 03x10 - ...And the Woman Clothed in Sun.WEB-DL.English.HI.C.orig.Addic7ed.com").forEach((k, v) ->
@@ -246,7 +246,7 @@ public class Addic7edCom
 		movieMatchers.add(matcher201);
 		movieMatchers.add(matcher202);
 
-		SubtitleAdjustmentParser movieSubParser = new SubtitleAdjustmentParser(movieMatchers.build(), ParsingDefaults.getDefaultSingletonListMovieMapper());
+		SubtitleReleaseParser movieSubParser = new SubtitleReleaseParser(movieMatchers.build(), ParsingDefaults.getDefaultSingletonListMovieMapper());
 
 		return ImmutableList.of(episodeSubParser, movieSubParser);
 	}

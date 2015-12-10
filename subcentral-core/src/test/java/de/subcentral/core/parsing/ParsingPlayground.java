@@ -42,7 +42,7 @@ import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.naming.NamingUtil;
 import de.subcentral.core.naming.ReleaseNamer;
-import de.subcentral.core.naming.SubtitleFileNamer;
+import de.subcentral.core.naming.SubtitleReleaseNamer;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -225,7 +225,7 @@ public class ParsingPlayground
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
 							{
 								start = System.nanoTime();
-								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleFileNamer.PARAM_RELEASE, matchingRls, ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE));
+								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleReleaseNamer.PARAM_RELEASE, matchingRls, ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE));
 								TimeUtil.printDurationMillisDouble("Naming", start);
 								System.out.println("New name:");
 								System.out.println(newName);

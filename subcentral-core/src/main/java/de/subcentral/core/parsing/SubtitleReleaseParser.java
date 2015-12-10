@@ -16,19 +16,19 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SubtitleAdjustmentParser extends AbstractMappingParser<SubtitleRelease>
+public class SubtitleReleaseParser extends AbstractMappingParser<SubtitleRelease>
 {
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
 	private final Mapper<Release>							releaseMapper;
 	private final Mapper<Subtitle>							subtitleMapper;
 	private final Mapper<SubtitleRelease>					subtitleAdjustmentMapper;
 
-	public SubtitleAdjustmentParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper)
+	public SubtitleReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper)
 	{
 		this(matchers, mediaMapper, ParsingDefaults.getDefaultReleaseMapper(), ParsingDefaults.getDefaultSubtitleMapper(), ParsingDefaults.getDefaultSubtitleAdjustmentMapper());
 	}
 
-	public SubtitleAdjustmentParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers,
+	public SubtitleReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers,
 			Mapper<? extends List<? extends Media>> mediaMapper,
 			Mapper<Release> releaseMapper,
 			Mapper<Subtitle> subtitleMapper,

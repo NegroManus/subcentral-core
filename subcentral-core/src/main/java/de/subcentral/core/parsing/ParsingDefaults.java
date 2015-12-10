@@ -38,7 +38,7 @@ public class ParsingDefaults
 	private static final Mapper<List<GenericMedia>>		SINGLETON_LIST_GENERIC_MEDIA_MAPPER	= createSingletonListMapper(GENERIC_MEDIA_MAPPER);
 	private static final ReleaseMapper					RELEASE_MAPPER						= new ReleaseMapper();
 	private static final SubtitleMapper					SUBTITLE_MAPPER						= new SubtitleMapper();
-	private static final SubtitleAdjustmentMapper		SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleAdjustmentMapper();
+	private static final SubtitleReleaseMapper		SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleReleaseMapper();
 
 	public static SimplePropFromStringService getDefaultPropFromStringService()
 	{
