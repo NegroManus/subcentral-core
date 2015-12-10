@@ -105,10 +105,10 @@ public class PropSequenceNameBuilder
 
 	public static final class Config
 	{
-		private PropToStringService			propToStringService;
-		private Set<Separation>				separations;
-		private String						defaultSeparator;
-		private Function<String, String>	finalFormatter;
+		private final PropToStringService		propToStringService;
+		private final Set<Separation>			separations;
+		private final String					defaultSeparator;
+		private final Function<String, String>	finalFormatter;
 
 		public Config(Config config)
 		{
@@ -137,9 +137,9 @@ public class PropSequenceNameBuilder
 
 		public Config(PropToStringService propToStringService, Set<Separation> separations, String defaultSeparator, Function<String, String> finalFormatter)
 		{
-			setPropToStringService(propToStringService);
-			setSeparations(separations);
-			setDefaultSeparator(defaultSeparator);
+			this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
+			this.separations = ImmutableSet.copyOf(separations); // includes null check
+			this.defaultSeparator = defaultSeparator;
 			this.finalFormatter = finalFormatter;
 		}
 
@@ -148,20 +148,9 @@ public class PropSequenceNameBuilder
 			return propToStringService;
 		}
 
-		public void setPropToStringService(PropToStringService propToStringService)
-		{
-			Objects.requireNonNull(propToStringService, "propToStringService");
-			this.propToStringService = propToStringService;
-		}
-
 		public Set<Separation> getSeparations()
 		{
 			return separations;
-		}
-
-		public void setSeparations(Set<Separation> separations)
-		{
-			this.separations = ImmutableSet.copyOf(separations);
 		}
 
 		public String getDefaultSeparator()
@@ -169,19 +158,9 @@ public class PropSequenceNameBuilder
 			return defaultSeparator;
 		}
 
-		public void setDefaultSeparator(String defaultSeparator)
-		{
-			this.defaultSeparator = defaultSeparator != null ? defaultSeparator : Separation.DEFAULT_SEPARATOR;
-		}
-
 		public Function<String, String> getFinalFormatter()
 		{
 			return finalFormatter;
-		}
-
-		public void setFinalFormatter(Function<String, String> finalFormatter)
-		{
-			this.finalFormatter = finalFormatter;
 		}
 	}
 }
