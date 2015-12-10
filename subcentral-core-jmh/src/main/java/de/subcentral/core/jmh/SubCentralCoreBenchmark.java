@@ -122,7 +122,7 @@ public class SubCentralCoreBenchmark
 		STANDARDIZING_SERVICE.correct(SUB_ADJ);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testNaming()
 	{
 		NAMING_SERVICE.name(SUB_ADJ);
@@ -146,7 +146,7 @@ public class SubCentralCoreBenchmark
 		PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
@@ -182,6 +182,12 @@ public class SubCentralCoreBenchmark
 	 * 
 	 * Benchmark                           Mode  Cnt    Score    Error  Units
 	 * MyBenchmark.testParsingSubRipFile  thrpt   50  474,739 ± 18,451  ops/s
+	 * 
+	 * Laptop:
+	 * Benchmark                                           Mode  Cnt       Score       Error  Units
+	 * SubCentralCoreBenchmark.testCorrect                thrpt   50  367747,940 ± 13874,582  ops/s
+	 * SubCentralCoreBenchmark.testNaming                 thrpt   50   71241,992 ±  2984,905  ops/s
+	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase  thrpt   50   64483,547 ±  1839,661  ops/s
 	 * </pre>
 	 * 
 	 * 
