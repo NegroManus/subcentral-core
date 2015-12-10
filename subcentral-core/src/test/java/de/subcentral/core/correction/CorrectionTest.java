@@ -1,4 +1,4 @@
-package de.subcentral.core.standardizing;
+package de.subcentral.core.correction;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,24 +12,17 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.correction.Correction;
-import de.subcentral.core.correction.CorrectionDefaults;
-import de.subcentral.core.correction.CorrectionService;
-import de.subcentral.core.correction.Corrector;
-import de.subcentral.core.correction.ReflectiveCorrector;
-import de.subcentral.core.correction.SeriesNameCorrector;
-import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 
-public class StandardizingTest
+public class CorrectionTest
 {
-	@Test
-	public void testDefaultStandardizingService()
-	{
-		CorrectionService service = CorrectionDefaults.getDefaultCorrectionService();
+	private CorrectionService service = CorrectionDefaults.getDefaultCorrectionService();
 
+	@Test
+	public void testDefaultCorrect01()
+	{
 		Release rls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H", "264", "DD5", "1");
 		Release expectedRls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H.264", "DD5.1");
 
@@ -39,7 +32,18 @@ public class StandardizingTest
 	}
 
 	@Test
-	public void testCustomStandardizingService()
+	public void testDefaultCorrect02()
+	{
+		Release rls = Release.create("CtrlHD", "720p", "WEB-DL", "H", "264", "DD5", "1");
+		Release expectedRls = Release.create("CtrlHD", "720p", "WEB-DL", "H.264", "DD5.1");
+
+		List<Correction> changes = service.correct(rls);
+		changes.forEach(c -> System.out.println(c));
+		assertEquals(expectedRls, rls);
+	}
+
+	@Test
+	public void testCustomCorrect()
 	{
 		TypeBasedCorrectionService service = new TypeBasedCorrectionService("test");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
@@ -65,7 +69,7 @@ public class StandardizingTest
 	}
 
 	@Test
-	public void testReflectiveStandardizing() throws IntrospectionException
+	public void testCorrectReflectiveSuccess() throws IntrospectionException
 	{
 		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.PROP_NAME, (String name) -> StringUtils.upperCase(name));
 
@@ -80,7 +84,7 @@ public class StandardizingTest
 	}
 
 	@Test(expected = IntrospectionException.class)
-	public void testReflectiveStandardizingFail() throws IntrospectionException
+	public void testCorrectReflectiveFail() throws IntrospectionException
 	{
 		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.class, "notExistingProp", (String s) -> s);
 		List<Correction> changes = new ArrayList<>();

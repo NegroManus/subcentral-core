@@ -73,6 +73,7 @@ public class MappingMatcher<K>
 		Matcher m = pattern.matcher(text);
 		if (m.matches())
 		{
+			System.out.println(pattern);
 			Map<K, String> mappedGroups = new HashMap<>(groups.size() + predefinedMatches.size());
 			mappedGroups.putAll(predefinedMatches);
 			for (Map.Entry<Integer, K> entry : groups.entrySet())

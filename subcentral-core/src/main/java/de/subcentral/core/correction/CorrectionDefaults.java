@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
+import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -30,17 +31,33 @@ public class CorrectionDefaults
 	public static final Function<String, String>	ACCENT_REPLACER						= (String s) -> StringUtils.stripAccents(s);
 	public static final Function<String, String>	TO_LOWERCASE_REPLACER				= (String s) -> StringUtils.lowerCase(s);
 
-	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE			= new TypeBasedCorrectionService("default");
+	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE			= initDefaultCorrectionService();
 
-	static
+	private static TypeBasedCorrectionService initDefaultCorrectionService()
 	{
-		registerAllDefaultNestedBeansRetrievers(DEFAULT_CORRECTION_SERVICE);
-		registerAllDefaultCorrectors(DEFAULT_CORRECTION_SERVICE);
+		TypeBasedCorrectionService service = new TypeBasedCorrectionService("default");
+		registerAllDefaultNestedBeansRetrievers(service);
+		registerAllDefaultCorrectors(service);
+		return service;
 	}
 
 	public static CorrectionService getDefaultCorrectionService()
 	{
 		return DEFAULT_CORRECTION_SERVICE;
+	}
+
+	public static List<? extends Object> retrieveNestedBeans(Series series)
+	{
+		return series.getNetworks();
+	}
+
+	public static List<? extends Object> retrieveNestedBeans(Season season)
+	{
+		if (season.getSeries() != null)
+		{
+			return ImmutableList.of(season.getSeries());
+		}
+		return ImmutableList.of();
 	}
 
 	public static List<? extends Object> retrieveNestedBeans(Episode epi)
@@ -55,15 +72,6 @@ public class CorrectionDefaults
 			nestedBeans.add(epi.getSeason());
 		}
 		return nestedBeans;
-	}
-
-	public static List<? extends Object> retrieveNestedBeans(Season season)
-	{
-		if (season.getSeries() != null)
-		{
-			return ImmutableList.of(season.getSeries());
-		}
-		return ImmutableList.of();
 	}
 
 	public static List<? extends Object> retrieveNestedBeans(Release rls)
@@ -90,8 +98,9 @@ public class CorrectionDefaults
 
 	public static void registerAllDefaultNestedBeansRetrievers(TypeBasedCorrectionService service)
 	{
-		service.registerNestedBeansRetriever(Episode.class, CorrectionDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Series.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Season.class, CorrectionDefaults::retrieveNestedBeans);
+		service.registerNestedBeansRetriever(Episode.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Release.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(Subtitle.class, CorrectionDefaults::retrieveNestedBeans);
 		service.registerNestedBeansRetriever(SubtitleRelease.class, CorrectionDefaults::retrieveNestedBeans);
@@ -106,7 +115,6 @@ public class CorrectionDefaults
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "265"), Tag.list("H.265"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H264"), Tag.list("H.264"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H265"), Tag.list("H.265"))));
-		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("WEB", "DL"), Tag.list("WEB-DL"))));
 	}
 
 	private CorrectionDefaults()

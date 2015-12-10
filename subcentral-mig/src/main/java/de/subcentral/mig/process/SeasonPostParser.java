@@ -398,7 +398,7 @@ public class SeasonPostParser
 		Elements thElems = thead.getElementsByTag("th");
 		if (thElems.isEmpty())
 		{
-			throw new IllegalArgumentException("No th elements found");
+			throw new IllegalArgumentException("No th elements found inside the thead element");
 		}
 
 		ColumnType[] columns = new ColumnType[thElems.size()];
@@ -425,6 +425,10 @@ public class SeasonPostParser
 		{
 			List<Element> tdElems = new ArrayList<>(tr.getElementsByTag("td"));
 			rows.add(tdElems);
+		}
+		if (rows.isEmpty())
+		{
+			throw new IllegalArgumentException("No tr elements found inside the tbody element");
 		}
 
 		cleanupTable(data, rows, columns.length);
@@ -1202,8 +1206,8 @@ public class SeasonPostParser
 
 	public static final class SeasonPostContent
 	{
-		private final Series						series;
-		private final ImmutableList<Season>			seasons;
+		private final Series							series;
+		private final ImmutableList<Season>				seasons;
 		private final ImmutableList<SubtitleRelease>	subtitleReleases;
 
 		public SeasonPostContent(Series series, Iterable<Season> seasons, Iterable<SubtitleRelease> subtitleAdjustments)
