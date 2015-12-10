@@ -146,7 +146,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	public List<Series> searchSeries(String name) throws IOException
 	{
-		return searchSeries(name, "en");
+		return searchSeries(name, null);
 	}
 
 	public List<Series> searchSeries(String name, String language) throws IOException
@@ -188,6 +188,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 				break;
 			case StandardSites.ZAP2IT_COM:
 				query.put("zap2it", id);
+				break;
 			default:
 				throw newUnsupportedExternalSiteException(siteId);
 		}
