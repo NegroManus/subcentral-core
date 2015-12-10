@@ -28,25 +28,27 @@ import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
 {
-	public static final String						DEFAULT_DOMAIN						= "default";
+	public static final String						DEFAULT_DOMAIN									= "default";
 
-	private static final Function<String, String>	RELEASE_NAME_FORMATTER				= initReleaseNameFormatter();
-	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER				= initReleaseMediaFormatter();
-	private static final Function<String, String>	SUBTITLE_ADJUSTMENT_NAME_FORMATTER	= initSubtitleAdjustmentNameFormatter();
-	private static final Function<String, String>	NORMALIZING_FORMATTER				= initNormalizingFormatter();
+	private static final Function<String, String>	RELEASE_NAME_FORMATTER							= initReleaseNameFormatter();
+	private static final Function<String, String>	RELEASE_MEDIA_FORMATTER							= initReleaseMediaFormatter();
+	private static final Function<String, String>	SUBTITLE_ADJUSTMENT_NAME_FORMATTER				= initSubtitleAdjustmentNameFormatter();
+	private static final Function<String, String>	NORMALIZING_FORMATTER							= initNormalizingFormatter();
 
-	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE				= new SimplePropToStringService();
+	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE							= new SimplePropToStringService();
 
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
-	private static final ConditionalNamingService	NAMING_SERVICE						= new ConditionalNamingService(DEFAULT_DOMAIN);
-	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE			= createNormalizingNamingService(NAMING_SERVICE);
+	private static final ConditionalNamingService	NAMING_SERVICE									= new ConditionalNamingService(DEFAULT_DOMAIN);
+	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE						= createNormalizingNamingService(NAMING_SERVICE);
+	private static final ConditionalNamingService	MULTI_EPISODE_RANGE_NAMING_SERVICE				= new ConditionalNamingService("multiepisode_range");;
+	private static final DelegatingNamingService	MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(MULTI_EPISODE_RANGE_NAMING_SERVICE);
 	private static MovieNamer						MOVIE_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
 	private static EpisodeNamer						EPISODE_NAMER;
 	private static MultiEpisodeNamer				MULTI_EPISODE_NAMER;
-	private static MultiEpisodeNamer				RANGE_ONLY_MULTI_EPISODE_NAMER;
+	private static MultiEpisodeNamer				MULTI_EPISODE_RANGE_NAMER;
 	private static ReleaseNamer						RELEASE_NAMER;
 	private static SubtitleNamer					SUBTITLE_NAMER;
 	private static SubtitleFileNamer				SUBTITLE_ADJUSTMENT_NAMER;
@@ -103,7 +105,7 @@ public class NamingDefaults
 		MULTI_EPISODE_NAMER = new MultiEpisodeNamer(config, EPISODE_NAMER);
 
 		// MutliEpisodeNamer with only range separations "-"
-		RANGE_ONLY_MULTI_EPISODE_NAMER = new MultiEpisodeNamer(configForRangeOnlyMultiEpisodeNamer, EPISODE_NAMER);
+		MULTI_EPISODE_RANGE_NAMER = new MultiEpisodeNamer(configForRangeOnlyMultiEpisodeNamer, EPISODE_NAMER);
 
 		// MovieNamer
 		MOVIE_NAMER = new MovieNamer(config);
@@ -128,6 +130,10 @@ public class NamingDefaults
 		namers.add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
 		namers.add(ConditionalNamingEntry.of(Subtitle.class, SUBTITLE_NAMER));
 		NAMING_SERVICE.getConditionalNamingEntries().addAll(namers);
+
+		// Add a special NamingService which formats the episode numbers different than the default NamingService
+		// for ex. S09E23-E24 instead of S09E23E24
+		MULTI_EPISODE_RANGE_NAMING_SERVICE.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_RANGE_NAMER));
 	}
 
 	private static Function<String, String> initReleaseNameFormatter()
@@ -179,7 +185,7 @@ public class NamingDefaults
 
 	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)
 	{
-		return new DelegatingNamingService(namingService.getDomain() + ".normalizing", namingService, NORMALIZING_FORMATTER);
+		return new DelegatingNamingService(namingService.getDomain() + "_normalizing", namingService, NORMALIZING_FORMATTER);
 	}
 
 	public static NamingService getDefaultNamingService()
@@ -187,9 +193,19 @@ public class NamingDefaults
 		return NAMING_SERVICE;
 	}
 
+	public static ConditionalNamingService getMultiEpisodeRangeNamingService()
+	{
+		return MULTI_EPISODE_RANGE_NAMING_SERVICE;
+	}
+
 	public static DelegatingNamingService getDefaultNormalizingNamingService()
 	{
 		return NORMALIZING_NAMING_SERVICE;
+	}
+
+	public static DelegatingNamingService getMultiEpisodeRangeNormalizingNamingService()
+	{
+		return MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE;
 	}
 
 	public static Namer<Movie> getDefaultMovieNamer()
@@ -217,9 +233,9 @@ public class NamingDefaults
 		return MULTI_EPISODE_NAMER;
 	}
 
-	public static Namer<List<? extends Episode>> getRangeOnlyMultiEpisodeNamer()
+	public static Namer<List<? extends Episode>> getMultiEpisodeRangeNamer()
 	{
-		return RANGE_ONLY_MULTI_EPISODE_NAMER;
+		return MULTI_EPISODE_RANGE_NAMER;
 	}
 
 	public static Namer<Release> getDefaultReleaseNamer()

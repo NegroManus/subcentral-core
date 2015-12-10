@@ -79,7 +79,7 @@ public class OrlyDbComMetadataDb extends HttpMetadataDb
 			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
-		throw createRecordTypeNotSearchableException(recordType);
+		throw newRecordTypeNotSearchableException(recordType);
 	}
 
 	/**

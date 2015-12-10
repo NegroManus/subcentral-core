@@ -1,18 +1,17 @@
 package de.subcentral.core.metadata.db;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.media.MediaUtil;
-import de.subcentral.core.metadata.media.MultiEpisodeHelper;
-import de.subcentral.core.naming.ConditionalNamingService;
-import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.NamingDefaults;
 import de.subcentral.core.naming.NamingException;
 import de.subcentral.core.naming.NamingService;
@@ -21,20 +20,15 @@ import de.subcentral.core.naming.NoNamerRegisteredException;
 
 public abstract class AbstractMetadataDb implements MetadataDb
 {
-	private final List<NamingService> namingServices = initNamingServices();
+	private static final Logger			log				= LogManager.getLogger(AbstractMetadataDb.class);
+
+	private final List<NamingService>	namingServices	= initNamingServices();
 
 	protected List<NamingService> initNamingServices()
 	{
 		ImmutableList.Builder<NamingService> services = ImmutableList.builder();
 		services.add(NamingDefaults.getDefaultNormalizingNamingService());
-
-		// Add a special NamingService which formats the episode numbers different than the default NamingService
-		// for ex. S09E23-E24 instead of S09E23E24
-		ConditionalNamingService alternateNamingService = new ConditionalNamingService("multiepisode_range_only");
-		alternateNamingService.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, NamingDefaults.getRangeOnlyMultiEpisodeNamer()));
-		NamingService normalizingAlternateNs = NamingDefaults.createNormalizingNamingService(alternateNamingService);
-		services.add(normalizingAlternateNs);
-
+		services.add(NamingDefaults.getMultiEpisodeRangeNormalizingNamingService());
 		return services.build();
 	}
 
@@ -52,17 +46,22 @@ public abstract class AbstractMetadataDb implements MetadataDb
 
 	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException, NamingException
 	{
-		List<T> results = new ArrayList<>();
+		if (queryObj == null)
+		{
+			return ImmutableList.of();
+		}
+		ImmutableList.Builder<T> results = ImmutableList.builder();
 		Set<String> names = NamingUtil.generateNames(queryObj, namingServices, MediaUtil.generateNamingParametersForAllNames(queryObj));
 		if (names.isEmpty())
 		{
 			throw new NoNamerRegisteredException(queryObj, "None of the NamingServices " + namingServices + " had an appropriate namer registered");
 		}
+		log.debug("Searching for records of type {} with generated names {} for query object {} of type {}", recordType.getName(), names, queryObj, queryObj.getClass().getName());
 		for (String name : names)
 		{
 			results.addAll(search(name, recordType));
 		}
-		return ImmutableList.copyOf(results);
+		return results.build();
 	}
 
 	@Override
@@ -83,17 +82,17 @@ public abstract class AbstractMetadataDb implements MetadataDb
 		return MoreObjects.toStringHelper(this).add("siteId", getSiteId()).toString();
 	}
 
-	protected UnsupportedOperationException createUnsupportedRecordTypeException(Class<?> unsupportedType)
+	protected UnsupportedOperationException newUnsupportedRecordTypeException(Class<?> unsupportedType)
 	{
 		return new UnsupportedOperationException("The record type is not supported: " + unsupportedType + " (supported record types: " + getSupportedRecordTypes() + ")");
 	}
 
-	protected UnsupportedOperationException createRecordTypeNotSearchableException(Class<?> unsupportedType)
+	protected UnsupportedOperationException newRecordTypeNotSearchableException(Class<?> unsupportedType)
 	{
 		return new UnsupportedOperationException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
 	}
 
-	protected UnsupportedOperationException createUnsupportedExternalSiteException(String unsupportedExternalSite)
+	protected UnsupportedOperationException newUnsupportedExternalSiteException(String unsupportedExternalSite)
 	{
 		return new UnsupportedOperationException("The external site is not supported: " + unsupportedExternalSite + " (supported external sites: " + getSupportedExternalSites() + ")");
 	}

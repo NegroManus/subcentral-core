@@ -120,7 +120,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		{
 			return (List<T>) searchSeries(query);
 		}
-		throw createRecordTypeNotSearchableException(recordType);
+		throw newRecordTypeNotSearchableException(recordType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -137,10 +137,11 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 					return (List<T>) searchSeries(series.getName());
 				}
 			}
-		}
 
-		// Otherwise use the default implementation
-		return super.searchByObject(queryObj, recordType);
+			// Otherwise use the default implementation
+			return super.searchByObject(queryObj, recordType);
+		}
+		throw newRecordTypeNotSearchableException(recordType);
 	}
 
 	public List<Series> searchSeries(String name) throws IOException
@@ -152,7 +153,10 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		query.put("seriesname", formatSeriesNameQueryValue(name));
-		query.put("language", (language != null ? language : "all"));
+		if (language != null)
+		{
+			query.put("language", language);
+		}
 		URL url = buildRelativeUrl(API_SUB_PATH + "GetSeries.php", query.build());
 		log.debug("Searching for series (name={}) using url {}", name, url);
 		return parseSeriesSearchResults(getDocument(url));
@@ -166,7 +170,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		{
 			return (List<T>) searchSeriesByExternalId(siteId, id);
 		}
-		throw createUnsupportedRecordTypeException(recordType);
+		throw newUnsupportedRecordTypeException(recordType);
 	}
 
 	public List<Series> searchSeriesByExternalId(String siteId, String id) throws UnsupportedOperationException, IOException
@@ -185,7 +189,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			case StandardSites.ZAP2IT_COM:
 				query.put("zap2it", id);
 			default:
-				throw createUnsupportedExternalSiteException(siteId);
+				throw newUnsupportedExternalSiteException(siteId);
 		}
 		if (language != null)
 		{
@@ -208,7 +212,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		{
 			return (T) getEpisode(Integer.parseInt(id), null);
 		}
-		throw createUnsupportedRecordTypeException(recordType);
+		throw newUnsupportedRecordTypeException(recordType);
 	}
 
 	public Series getSeries(int id, boolean full, String language) throws IOException

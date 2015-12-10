@@ -711,7 +711,7 @@ public class ProcessingController extends AbstractController
 			{
 				if (WatcherSettings.INSTANCE.isRejectAlreadyProcessedFiles())
 				{
-					log.info("Rejected {} because that file is already in the processing list and 'rejectAlreadyProcessedFiles' is enabled", file);
+					log.info("Rejected {} because that file is already present in the processing list and 'rejectAlreadyProcessedFiles' is enabled", file);
 					return false;
 				}
 				if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING))
