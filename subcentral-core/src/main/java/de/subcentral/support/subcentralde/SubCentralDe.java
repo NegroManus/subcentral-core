@@ -144,7 +144,7 @@ public class SubCentralDe
 		return PARSING_SERVICE.getParserEntries();
 	}
 
-	public static void registerSubtitleLanguageStandardizers(TypeBasedCorrectionService service)
+	public static void registerSubtitleLanguageCorrectors(TypeBasedCorrectionService service)
 	{
 		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
 		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));

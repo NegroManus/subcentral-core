@@ -47,12 +47,12 @@ public class CorrectionTest
 	{
 		TypeBasedCorrectionService service = new TypeBasedCorrectionService("test");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		service.registerCorrector(Episode.class, (e, changes) ->
+		service.registerCorrector(Episode.class, (e, corrections) ->
 		{
 			if (!e.isSpecial())
 			{
 				e.setSpecial(true);
-				changes.add(new Correction(e, Episode.PROP_SPECIAL.getPropName(), false, true));
+				corrections.add(new Correction(e, Episode.PROP_SPECIAL.getPropName(), false, true));
 			}
 
 		});

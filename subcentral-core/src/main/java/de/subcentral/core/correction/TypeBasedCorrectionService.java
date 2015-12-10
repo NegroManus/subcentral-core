@@ -2,17 +2,20 @@ package de.subcentral.core.correction;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * 
@@ -22,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 public class TypeBasedCorrectionService implements CorrectionService
 {
 	private final String												domain;
-	private final List<CorrectorEntry<?>>								correctorEntries		= new CopyOnWriteArrayList<>();
+	private final ListMultimap<Class<?>, Corrector<?>>					correctors				= Multimaps.synchronizedListMultimap(LinkedListMultimap.create());
 	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
 	public TypeBasedCorrectionService(String domain)
@@ -36,27 +39,19 @@ public class TypeBasedCorrectionService implements CorrectionService
 		return domain;
 	}
 
-	public List<CorrectorEntry<?>> getCorrectorEntries()
+	public ListMultimap<Class<?>, Corrector<?>> getCorrectors()
 	{
-		return correctorEntries;
+		return Multimaps.unmodifiableListMultimap(correctors);
+	}
+
+	public Map<Class<?>, Function<?, List<? extends Object>>> getNestedBeansRetrievers()
+	{
+		return Collections.unmodifiableMap(nestedBeansRetrievers);
 	}
 
 	public <T> void registerCorrector(Class<T> beanType, Corrector<? super T> corrector)
 	{
-		correctorEntries.add(new CorrectorEntry<T>(beanType, corrector));
-	}
-
-	public boolean unregisterCorrector(Corrector<?> corrector)
-	{
-		for (CorrectorEntry<?> entry : correctorEntries)
-		{
-			if (entry.corrector.equals(corrector))
-			{
-				correctorEntries.remove(entry);
-				return true;
-			}
-		}
-		return false;
+		correctors.put(beanType, corrector);
 	}
 
 	public <T> void registerNestedBeansRetriever(Class<T> beanType, Function<? super T, List<?>> retriever)
@@ -91,13 +86,10 @@ public class TypeBasedCorrectionService implements CorrectionService
 	@SuppressWarnings("unchecked")
 	private <T> void correctBean(T bean, List<Correction> corrections)
 	{
-		for (CorrectorEntry<?> entry : correctorEntries)
+		for (Corrector<?> c : correctors.get(bean.getClass()))
 		{
-			if (entry.beanType.isAssignableFrom(bean.getClass()))
-			{
-				Corrector<? super T> corrector = (Corrector<? super T>) entry.corrector;
-				corrector.correct(bean, corrections);
-			}
+			Corrector<? super T> corrector = (Corrector<? super T>) c;
+			corrector.correct(bean, corrections);
 		}
 	}
 
@@ -126,33 +118,5 @@ public class TypeBasedCorrectionService implements CorrectionService
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(TypeBasedCorrectionService.class).add("domain", domain).toString();
-	}
-
-	public static final class CorrectorEntry<T>
-	{
-		private final Class<T>				beanType;
-		private final Corrector<? super T>	corrector;
-
-		private CorrectorEntry(Class<T> beanType, Corrector<? super T> corrector)
-		{
-			this.beanType = Objects.requireNonNull(beanType, "beanType");
-			this.corrector = Objects.requireNonNull(corrector, "corrector");
-		}
-
-		public Class<T> getBeanType()
-		{
-			return beanType;
-		}
-
-		public Corrector<? super T> getCorrector()
-		{
-			return corrector;
-		}
-
-		@Override
-		public String toString()
-		{
-			return MoreObjects.toStringHelper(CorrectorEntry.class).add("beanType", beanType).add("corrector", corrector).toString();
-		}
 	}
 }

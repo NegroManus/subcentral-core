@@ -125,7 +125,7 @@ public class ParsingPlayground
 		parsedToInfoDbStdzService.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Scandal", Pattern.CASE_INSENSITIVE), "Scandal (US)", ImmutableList.of(), "Scandal"));
 		parsedToInfoDbStdzService.registerCorrector(Series.class,
 				new SeriesNameCorrector(Pattern.compile("Last Man Standing", Pattern.CASE_INSENSITIVE), "Last Man Standing (US)", ImmutableList.of(), "Last Man Standing"));
-		SubCentralDe.registerSubtitleLanguageStandardizers(parsedToInfoDbStdzService);
+		SubCentralDe.registerSubtitleLanguageCorrectors(parsedToInfoDbStdzService);
 
 		final TypeBasedCorrectionService infoDbToCustomStdzService = new TypeBasedCorrectionService("after infoDb");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);

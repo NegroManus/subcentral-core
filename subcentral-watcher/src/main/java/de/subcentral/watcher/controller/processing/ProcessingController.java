@@ -204,7 +204,7 @@ public class ProcessingController extends AbstractController
 		{
 			if (entry.isBeforeQuerying())
 			{
-				registerStandardizer(service, entry);
+				registerCorrector(service, entry);
 			}
 		}
 		// add subtitle language standardizer
@@ -224,13 +224,13 @@ public class ProcessingController extends AbstractController
 		{
 			if (entry.isAfterQuerying())
 			{
-				registerStandardizer(service, entry);
+				registerCorrector(service, entry);
 			}
 		}
 		return service;
 	}
 
-	private static <T> void registerStandardizer(TypeBasedCorrectionService service, CorrectionRuleSettingEntry<T, ?> entry)
+	private static <T> void registerCorrector(TypeBasedCorrectionService service, CorrectionRuleSettingEntry<T, ?> entry)
 	{
 		service.registerCorrector(entry.getBeanType(), entry.getValue());
 	}
