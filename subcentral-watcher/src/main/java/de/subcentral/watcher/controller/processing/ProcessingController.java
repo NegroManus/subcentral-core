@@ -642,7 +642,7 @@ public class ProcessingController extends AbstractController
 				return;
 			}
 
-			if (!rejectAlreadyProcessedFiles(file))
+			if (!filterOutAlreadyProcessedFiles(file))
 			{
 				return;
 			}
@@ -663,23 +663,23 @@ public class ProcessingController extends AbstractController
 			BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
 			if (!attrs.isRegularFile())
 			{
-				log.debug("Filtered out {} because it is no regular file", file);
+				log.debug("Rejecting {} because it is no regular file", file);
 				return false;
 			}
 			if (attrs.size() == 0)
 			{
-				log.debug("Filtered out {} because it is empty", file);
+				log.debug("Rejecting {} because it is empty", file);
 				return false;
 			}
 			if (IOUtil.isLocked(file))
 			{
-				log.debug("Filtered out {} because it is currently locked", file);
+				log.debug("Rejecting {} because it is currently locked", file);
 				return false;
 			}
 		}
 		catch (IOException e)
 		{
-			log.debug("Filtered out " + file + " because its attributes could not be read", e);
+			log.debug("Rejecting " + file + " because its attributes could not be read", e);
 			return false;
 		}
 
@@ -691,18 +691,18 @@ public class ProcessingController extends AbstractController
 		Pattern pattern = UserPattern.parseSimplePatterns(WatcherSettings.INSTANCE.getProcessingSettings().getFilenamePatterns());
 		if (pattern == null)
 		{
-			log.debug("Filtered out {} because no pattern is specified", file);
+			log.debug("Rejecting {} because no pattern is specified", file);
 			return false;
 		}
 		if (!pattern.matcher(file.getFileName().toString()).matches())
 		{
-			log.debug("Filtered out {} because its name does not match the required pattern {}", file, pattern);
+			log.debug("Rejecting {} because its name does not match the required pattern {}", file, pattern);
 			return false;
 		}
 		return true;
 	}
 
-	private boolean rejectAlreadyProcessedFiles(Path file)
+	private boolean filterOutAlreadyProcessedFiles(Path file)
 	{
 		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
 		{
@@ -711,12 +711,12 @@ public class ProcessingController extends AbstractController
 			{
 				if (WatcherSettings.INSTANCE.isRejectAlreadyProcessedFiles())
 				{
-					log.info("Rejected {} because that file is already present in the processing list and 'rejectAlreadyProcessedFiles' is enabled", file);
+					log.info("Rejecting {} because that file is already present in the processing list and 'rejectAlreadyProcessedFiles' is enabled", file);
 					return false;
 				}
 				if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING))
 				{
-					log.info("Rejected {} because that file is already currently processed", file);
+					log.info("Rejecting {} because that file is already currently processed", file);
 					return false;
 				}
 			}
