@@ -1,5 +1,6 @@
 package de.subcentral.core.correction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.subcentral.core.metadata.release.Release;
@@ -28,5 +29,11 @@ public class ReleaseTagsCorrector extends SinglePropertyCorrector<Release, List<
 	protected void setValue(Release bean, List<Tag> value)
 	{
 		bean.setTags(value);
+	}
+
+	@Override
+	protected List<Tag> cloneValue(List<Tag> value)
+	{
+		return new ArrayList<>(value);
 	}
 }

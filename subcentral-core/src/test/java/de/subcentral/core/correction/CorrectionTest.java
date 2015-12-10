@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +72,7 @@ public class CorrectionTest
 	@Test
 	public void testCorrectReflectiveSuccess() throws IntrospectionException
 	{
-		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.PROP_NAME, (String name) -> StringUtils.upperCase(name));
+		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.PROP_NAME, (String name) -> StringUtils.upperCase(name), Function.identity());
 
 		Series series = new Series("Psych");
 		Series expectedSeries = new Series("PSYCH");
@@ -86,7 +87,7 @@ public class CorrectionTest
 	@Test(expected = IntrospectionException.class)
 	public void testCorrectReflectiveFail() throws IntrospectionException
 	{
-		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.class, "notExistingProp", (String s) -> s);
+		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.class, "notExistingProp", (String s) -> s, Function.identity());
 		List<Correction> changes = new ArrayList<>();
 		stdzer.correct(new Series("Psych"), changes);
 	}

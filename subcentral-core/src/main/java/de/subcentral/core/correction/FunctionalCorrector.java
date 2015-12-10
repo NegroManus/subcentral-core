@@ -11,13 +11,15 @@ public final class FunctionalCorrector<T, P> extends SinglePropertyCorrector<T, 
 	private final String			propertyName;
 	private final Function<T, P>	getter;
 	private final BiConsumer<T, P>	setter;
+	private final Function<P, P>	cloner;
 
-	public FunctionalCorrector(String propertyName, Function<T, P> getter, BiConsumer<T, P> setter, Function<P, P> replacer)
+	public FunctionalCorrector(String propertyName, Function<T, P> getter, BiConsumer<T, P> setter, Function<P, P> replacer, Function<P, P> cloner)
 	{
 		super(replacer);
 		this.propertyName = Objects.requireNonNull(propertyName, "propertyName");
 		this.getter = Objects.requireNonNull(getter, "getter");
 		this.setter = Objects.requireNonNull(setter, "setter");
+		this.cloner = Objects.requireNonNull(cloner, "cloner");
 	}
 
 	@Override
@@ -36,6 +38,12 @@ public final class FunctionalCorrector<T, P> extends SinglePropertyCorrector<T, 
 	protected void setValue(T bean, P value)
 	{
 		setter.accept(bean, value);
+	}
+
+	@Override
+	protected P cloneValue(P value)
+	{
+		return cloner.apply(value);
 	}
 
 	@Override

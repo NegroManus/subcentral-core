@@ -33,12 +33,17 @@ public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
 	@Override
 	public void correct(T bean, List<Correction> changes)
 	{
-		P oldValue = getValue(bean);
-		P newValue = replacer.apply(oldValue);
+		P oldValue = cloneValue(getValue(bean));
+		P newValue = replacer.apply(cloneValue(oldValue));
 		if (!Objects.equals(oldValue, newValue))
 		{
-			changes.add(new Correction(bean, getPropertyName(), oldValue, newValue));
+			changes.add(new Correction(bean, getPropertyName(), oldValue, cloneValue(newValue)));
 			setValue(bean, newValue);
 		}
+	}
+
+	protected P cloneValue(P value)
+	{
+		return value;
 	}
 }

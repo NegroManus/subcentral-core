@@ -1,6 +1,5 @@
 package de.subcentral.core.correction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
@@ -63,9 +62,8 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 	@Override
 	public List<Tag> apply(List<Tag> tags)
 	{
-		List<Tag> copy = new ArrayList<>(tags);
-		TagUtil.replace(copy, searchTags, replacement, searchMode, replaceMode, ignoreOrder);
-		return copy;
+		TagUtil.replace(tags, searchTags, replacement, searchMode, replaceMode, ignoreOrder);
+		return tags;
 	}
 
 	@Override

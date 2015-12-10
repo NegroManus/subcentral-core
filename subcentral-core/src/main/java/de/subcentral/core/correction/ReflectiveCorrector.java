@@ -12,27 +12,34 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReflectiveCorrector<T, P> extends SinglePropertyCorrector<T, P>
 {
-	private final PropertyDescriptor propertyDescriptor;
+	private final PropertyDescriptor	propertyDescriptor;
+	private final Function<P, P>		cloner;
 
-	public ReflectiveCorrector(SimplePropDescriptor simplePropDescriptor, Function<P, P> replacer) throws IntrospectionException
+	public ReflectiveCorrector(SimplePropDescriptor simplePropDescriptor, Function<P, P> replacer, Function<P, P> cloner) throws IntrospectionException
 	{
-		this(simplePropDescriptor.toPropertyDescriptor(), replacer);
+		this(simplePropDescriptor.toPropertyDescriptor(), replacer, cloner);
 	}
 
-	public ReflectiveCorrector(Class<T> beanType, String propertyName, Function<P, P> replacer) throws IntrospectionException
+	public ReflectiveCorrector(Class<T> beanType, String propertyName, Function<P, P> replacer, Function<P, P> cloner) throws IntrospectionException
 	{
-		this(new PropertyDescriptor(propertyName, beanType), replacer);
+		this(new PropertyDescriptor(propertyName, beanType), replacer, cloner);
 	}
 
-	public ReflectiveCorrector(PropertyDescriptor propertyDescriptor, Function<P, P> replacer)
+	public ReflectiveCorrector(PropertyDescriptor propertyDescriptor, Function<P, P> replacer, Function<P, P> cloner)
 	{
 		super(replacer);
 		this.propertyDescriptor = Objects.requireNonNull(propertyDescriptor, "propertyDescriptor");
+		this.cloner = Objects.requireNonNull(cloner, "cloner");
 	}
 
 	public PropertyDescriptor getPropertyDescriptor()
 	{
 		return propertyDescriptor;
+	}
+
+	public Function<P, P> getCloner()
+	{
+		return cloner;
 	}
 
 	@Override
@@ -66,6 +73,12 @@ public class ReflectiveCorrector<T, P> extends SinglePropertyCorrector<T, P>
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	protected P cloneValue(P value)
+	{
+		return cloner.apply(value);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -199,7 +200,7 @@ public class MigrationSettings
 		{
 			try
 			{
-				service.registerCorrector(Subber.class, new ReflectiveCorrector<>(Subber.class, "name", contributorNameReplacer));
+				service.registerCorrector(Subber.class, new ReflectiveCorrector<>(Subber.class, "name", contributorNameReplacer, Function.identity()));
 			}
 			catch (IntrospectionException e)
 			{
