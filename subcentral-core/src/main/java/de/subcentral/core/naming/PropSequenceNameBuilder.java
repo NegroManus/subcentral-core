@@ -97,40 +97,40 @@ public class PropSequenceNameBuilder
 	public static final class Config
 	{
 		private final PropToStringService		propToStringService;
-		private final Set<Separation>			separations;
 		private final String					defaultSeparator;
+		private final Set<Separation>			separations;
 		private final Function<String, String>	finalFormatter;
 
 		public Config(Config config)
 		{
-			this(config.propToStringService, config.separations, config.defaultSeparator, config.finalFormatter);
+			this(config.propToStringService, config.defaultSeparator, config.separations, config.finalFormatter);
 		}
 
 		public Config()
 		{
-			this(NamingDefaults.getDefaultPropToStringService(), ImmutableSet.of(), null, null);
+			this(NamingDefaults.getDefaultPropToStringService(), null, ImmutableSet.of(), null);
 		}
 
 		public Config(PropToStringService propToStringService)
 		{
-			this(propToStringService, ImmutableSet.of(), null, null);
+			this(propToStringService, null, ImmutableSet.of(), null);
 		}
 
-		public Config(PropToStringService propToStringService, Set<Separation> separations)
+		public Config(PropToStringService propToStringService, String defaultSeparator)
 		{
-			this(propToStringService, separations, null, null);
+			this(propToStringService, null, ImmutableSet.of(), null);
 		}
 
-		public Config(PropToStringService propToStringService, Set<Separation> separations, String defaultSeparator)
+		public Config(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations)
 		{
-			this(propToStringService, separations, defaultSeparator, null);
+			this(propToStringService, defaultSeparator, separations, null);
 		}
 
-		public Config(PropToStringService propToStringService, Set<Separation> separations, String defaultSeparator, Function<String, String> finalFormatter)
+		public Config(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations, Function<String, String> finalFormatter)
 		{
 			this.propToStringService = Objects.requireNonNull(propToStringService, "propToStringService");
-			this.separations = ImmutableSet.copyOf(separations); // includes null check
 			this.defaultSeparator = defaultSeparator;
+			this.separations = ImmutableSet.copyOf(separations); // includes null check
 			this.finalFormatter = finalFormatter;
 		}
 
@@ -139,14 +139,14 @@ public class PropSequenceNameBuilder
 			return propToStringService;
 		}
 
-		public Set<Separation> getSeparations()
-		{
-			return separations;
-		}
-
 		public String getDefaultSeparator()
 		{
 			return defaultSeparator;
+		}
+
+		public Set<Separation> getSeparations()
+		{
+			return separations;
 		}
 
 		public Function<String, String> getFinalFormatter()

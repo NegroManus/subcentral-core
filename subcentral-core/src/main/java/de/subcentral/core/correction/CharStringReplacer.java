@@ -8,8 +8,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.util.StringUtil;
-
 /**
  * @implSpec #immutable #thread-safe
  */
@@ -73,41 +71,43 @@ public class CharStringReplacer implements UnaryOperator<String>
 		{
 			return null;
 		}
-		char[] src = s.toCharArray();
-		StringBuilder dest = new StringBuilder(src.length);
-		for (char c : src)
+
+		StringBuilder dest = new StringBuilder(s);
+		for (int i = 0; i < dest.length(); i++)
 		{
-			if (c == defaultReplacement)
+			char c = dest.charAt(i);
+			if (c == defaultReplacement && (i == 0 || dest.charAt(i - 1) == defaultReplacement || i == dest.length() - 1))
 			{
-				appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
+				dest.deleteCharAt(i);
 			}
 			else if (ArrayUtils.contains(allowedChars, c))
 			{
-				dest.append(c);
+				// keep the char
 			}
-			else if (!ArrayUtils.contains(charsToDelete, c))
+			else if (ArrayUtils.contains(charsToDelete, c))
+			{
+				dest.deleteCharAt(i);
+			}
+			else
 			{
 				Character replacingChar = replacements.get(c);
 				if (replacingChar != null)
 				{
-					dest.append(replacingChar.charValue());
+					dest.setCharAt(i, replacingChar);
 				}
 				else
 				{
-					appendIfNeitherEmptyNorEndsWith(dest, defaultReplacement);
+					if (i == 0 || dest.charAt(i - 1) == defaultReplacement || i == dest.length() - 1)
+					{
+						dest.deleteCharAt(i);
+					}
+					else
+					{
+						dest.setCharAt(i, defaultReplacement);
+					}
 				}
 			}
 		}
-		// strip replacement at the end
-		StringUtil.stripEnd(dest, defaultReplacement);
 		return dest.toString();
-	}
-
-	private static final void appendIfNeitherEmptyNorEndsWith(StringBuilder sb, char s)
-	{
-		if (sb.length() > 0)
-		{
-			StringUtil.appendIfNotEndsWith(sb, s);
-		}
 	}
 }

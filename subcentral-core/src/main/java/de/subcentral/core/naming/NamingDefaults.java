@@ -91,10 +91,10 @@ public class NamingDefaults
 		multiEpisodeRangeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-"));
 		ImmutableSet<Separation> multiEpisodeRangeSeparations = multiEpisodeRangeSepsBuilder.build();
 
-		Config config = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, null);
-		Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, RELEASE_NAME_FORMATTER);
-		Config configWithSubRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, separations, Separation.DEFAULT_SEPARATOR, SUBTITLE_RELEASE_NAME_FORMATTER);
-		Config configForMultiEpisodeRangeNamer = new Config(PROP_TO_STRING_SERVICE, multiEpisodeRangeSeparations, Separation.DEFAULT_SEPARATOR, null);
+		Config config = new Config(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, separations, null);
+		Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, ".", separations, RELEASE_NAME_FORMATTER);
+		Config configWithSubRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, ".", separations, SUBTITLE_RELEASE_NAME_FORMATTER);
+		Config configForMultiEpisodeRangeNamer = new Config(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, multiEpisodeRangeSeparations, null);
 
 		// SeriesNamer
 		SERIES_NAMER = new SeriesNamer(config);

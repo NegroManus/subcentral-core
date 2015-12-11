@@ -68,7 +68,7 @@ public class NamingPlayground
 		subAdj.setTags(Tag.list("orig", "C"));
 		subAdj.setSingleMatchingRelease(rel);
 
-		System.out.println(NamingDefaults.getDefaultNamingService().name(epis));
+		System.out.println(NamingDefaults.getDefaultNamingService().name(rel));
 		// long overallStart = System.nanoTime();
 		// for (int i = 0; i < 1000; i++)
 		// {
