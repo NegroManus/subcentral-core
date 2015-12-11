@@ -189,7 +189,7 @@ public class SubCentralCoreBenchmark
 	 * Laptop:
 	 * Benchmark                                           Mode  Cnt       Score       Error  Units
 	 * SubCentralCoreBenchmark.testCorrect                thrpt   50  570.000
-	 * SubCentralCoreBenchmark.testNaming                 thrpt   50   77-80k
+	 * SubCentralCoreBenchmark.testNaming  				  thrpt   50  75225,548 ± 2985,000  ops/s
 	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase  thrpt   50   80k
 	 * </pre>
 	 * 

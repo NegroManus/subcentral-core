@@ -36,7 +36,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, List<? extends Episode> episodes, Map<String, Object> parameters) throws NamingException
+	protected void appendName(PropSequenceNameBuilder b, List<? extends Episode> episodes, Map<String, Object> params) throws NamingException
 	{
 		if (episodes.isEmpty())
 		{
@@ -44,7 +44,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		}
 		MultiEpisodeHelper me = new MultiEpisodeHelper(episodes);
 		Episode firstEpi = me.get(0);
-		episodeNamer.buildName(b, firstEpi, parameters);
+		episodeNamer.appendName(b, firstEpi, params);
 
 		if (me.getCommonSeries() != null)
 		{
@@ -67,7 +67,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 					for (int i = 1; i < me.size(); i++)
 					{
 						Episode epi = me.get(i);
-						episodeNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE, EpisodeNamer.PARAM_INCLUDE_SEASON, Boolean.FALSE));
+						episodeNamer.appendOwnName(b, epi, params);
 					}
 				}
 			}
@@ -91,7 +91,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 					for (int i = 1; i < me.size(); i++)
 					{
 						Episode epi = me.get(i);
-						episodeNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE));
+						episodeNamer.appendOwnName(b, epi, params);
 					}
 				}
 			}
@@ -101,7 +101,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 				for (int i = 1; i < me.size(); i++)
 				{
 					Episode epi = me.get(i);
-					episodeNamer.buildName(b, epi, ImmutableMap.of(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE));
+					episodeNamer.appendOwnName(b, epi, params);
 				}
 			}
 		}

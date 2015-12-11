@@ -37,7 +37,7 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Season season, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Season season, Map<String, Object> params)
 	{
 		// read naming parameters
 		boolean includeSeries = NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
@@ -45,13 +45,13 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 		// add series
 		if (includeSeries && season.getSeries() != null)
 		{
-			seriesNamer.buildName(b, season.getSeries(), params);
+			seriesNamer.appendName(b, season.getSeries(), params);
 		}
 
-		buildOwnName(b, season, params);
+		appendOwnName(b, season, params);
 	}
 
-	protected void buildOwnName(PropSequenceNameBuilder b, Season season, Map<String, Object> params)
+	protected void appendOwnName(PropSequenceNameBuilder b, Season season, Map<String, Object> params)
 	{
 		// add season
 		if (season.isNumbered())

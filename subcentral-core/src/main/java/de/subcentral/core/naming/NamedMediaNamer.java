@@ -16,7 +16,7 @@ public class NamedMediaNamer extends AbstractNamedMediaNamer<NamedMedia>
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, NamedMedia media, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, NamedMedia media, Map<String, Object> params)
 	{
 		String name = NamingUtil.readParameter(params, PARAM_NAME, String.class, media.getName());
 		b.appendIfNotNull(Movie.PROP_NAME, name);

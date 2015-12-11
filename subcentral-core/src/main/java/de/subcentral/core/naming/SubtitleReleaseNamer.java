@@ -45,11 +45,10 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, SubtitleRelease subRls, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, SubtitleRelease subRls, Map<String, Object> params)
 	{
 		// read useName parameter
-		boolean preferName = NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
-		if (preferName && subRls.getName() != null)
+		if (subRls.getName() != null && NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE))
 		{
 			b.append(SubtitleRelease.PROP_NAME, subRls.getName());
 			return;
@@ -69,8 +68,7 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 		if (sub != null)
 		{
 			// read includeGroup parameter
-			boolean includeGroup = NamingUtil.readParameter(params, PARAM_INCLUDE_GROUP, Boolean.class, Boolean.TRUE);
-			if (includeGroup && sub.getGroup() != null)
+			if (sub.getGroup() != null && NamingUtil.readParameter(params, PARAM_INCLUDE_GROUP, Boolean.class, Boolean.TRUE))
 			{
 				b.append(Subtitle.PROP_GROUP, sub.getGroup());
 			}

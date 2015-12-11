@@ -19,7 +19,7 @@ public class MovieNamer extends AbstractNamedMediaNamer<Movie>
 	public static final String PARAM_INCLUDE_YEAR = MovieNamer.class.getName() + "includeYear";
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Movie mov, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Movie mov, Map<String, Object> params)
 	{
 		boolean includeYear = NamingUtil.readParameter(params, PARAM_INCLUDE_YEAR, Boolean.class, Boolean.FALSE);
 		if (includeYear)

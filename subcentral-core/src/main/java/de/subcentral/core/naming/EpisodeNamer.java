@@ -50,26 +50,31 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
 	{
 		// add series
-		boolean includeSeries = NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
-		if (includeSeries && epi.getSeries() != null)
+		if (epi.getSeries() != null && NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE))
 		{
-			seriesNamer.buildName(b, epi.getSeries(), params);
+			seriesNamer.appendName(b, epi.getSeries(), params);
 		}
 
+		// add season
+		if (epi.isPartOfSeason() && NamingUtil.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE))
+		{
+			// season namer must not include series as it was already used
+			// so just use buildOwnName
+			seasonNamer.appendOwnName(b, epi.getSeason(), params);
+		}
+
+		appendOwnName(b, epi, params);
+	}
+
+	protected void appendOwnName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
+	{
 		boolean sufficientlyNamed = false;
 		// add season
 		if (epi.isPartOfSeason())
 		{
-			boolean includeSeason = NamingUtil.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE);
-			if (includeSeason)
-			{
-				// season namer must not include series as it was already used
-				// so just use buildOwnName
-				seasonNamer.buildOwnName(b, epi.getSeason(), params);
-			}
 			if (epi.isNumberedInSeason())
 			{
 				b.append(Episode.PROP_NUMBER_IN_SEASON, epi.getNumberInSeason());
@@ -89,8 +94,7 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		}
 
 		// may add episode title
-		boolean alwaysIncludeTitle = NamingUtil.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE);
-		if (epi.isTitled() && (!sufficientlyNamed || alwaysIncludeTitle))
+		if (epi.isTitled() && (!sufficientlyNamed || NamingUtil.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE)))
 		{
 			b.append(Episode.PROP_TITLE, epi.getTitle());
 		}

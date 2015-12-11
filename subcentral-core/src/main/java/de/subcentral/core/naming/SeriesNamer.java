@@ -12,7 +12,7 @@ public class SeriesNamer extends AbstractNamedMediaNamer<Series>
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Series series, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Series series, Map<String, Object> params)
 	{
 		String name = NamingUtil.readParameter(params, PARAM_NAME, String.class, series.getName());
 		b.appendIfNotNull(Series.PROP_NAME, name);

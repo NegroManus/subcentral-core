@@ -32,7 +32,7 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Subtitle sub, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Subtitle sub, Map<String, Object> params)
 	{
 		// media
 		b.appendIfNotEmpty(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));

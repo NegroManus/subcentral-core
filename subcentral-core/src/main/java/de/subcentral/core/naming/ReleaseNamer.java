@@ -27,16 +27,15 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, Release rls, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Release rls, Map<String, Object> params)
 	{
 		// read naming parameters
-		boolean preferName = NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
-		if (preferName && rls.getName() != null)
+		if (rls.getName() != null && NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE))
 		{
 			b.append(Release.PROP_NAME, rls.getName());
 			return;
 		}
-		b.appendString(Release.PROP_MEDIA, mediaNamingService.name(rls.getMedia(), params));
+		b.appendIfNotEmpty(Release.PROP_MEDIA, mediaNamingService.name(rls.getMedia(), params));
 		b.appendAll(Release.PROP_TAGS, rls.getTags());
 		b.appendIfNotNull(Release.PROP_GROUP, rls.getGroup());
 	}
