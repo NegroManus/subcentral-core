@@ -147,7 +147,7 @@ public class NamingDefaults
 	private static Function<String, String> initReleaseNameFormatter()
 	{
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER)
-				.andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER)
+				.andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER)
 				.andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
@@ -158,7 +158,7 @@ public class NamingDefaults
 
 	private static Function<String, String> initSubtitleReleaseNameFormatter()
 	{
-		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER).andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER).andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
 	}
 
 	private static Function<String, String> initNormalizingFormatter()

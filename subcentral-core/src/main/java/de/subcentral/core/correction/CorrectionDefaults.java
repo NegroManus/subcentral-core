@@ -25,7 +25,7 @@ public class CorrectionDefaults
 	 * Use this for media naming. <br/>
 	 * hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible also release names like "Katy.Perry-The.Prismatic.World.Tour" are common
 	 */
-	public static final Function<String, String>	ALNUM_DOT_HYPEN_UNDERSCORE_REPLACER	= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_", "'´`", '.');
+	public static final Function<String, String>	ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER	= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_", "'´`", '.');
 	public static final Function<String, String>	DOT_HYPHEN_DOT_REPLACER				= new StringReplacer(".-", "-").andThen(new StringReplacer("-.", "-"));
 	public static final Function<String, String>	AND_REPLACER						= new StringReplacer("&", "and");
 	public static final Function<String, String>	ACCENT_REPLACER						= (String s) -> StringUtils.stripAccents(s);
