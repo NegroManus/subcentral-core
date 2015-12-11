@@ -15,10 +15,10 @@ import de.subcentral.core.util.StringUtil;
  */
 public class CharStringReplacer implements UnaryOperator<String>
 {
-	private final char[]								allowedChars;
-	private final char[]								charsToDelete;
-	private final char									defaultReplacement;
-	private final ImmutableMap<Character, Character>	replacements;
+	private final char[]					allowedChars;
+	private final char[]					charsToDelete;
+	private final char						defaultReplacement;
+	private final Map<Character, Character>	replacements;
 
 	public CharStringReplacer(String allowedChars, String charsToDelete, char defaultReplacement)
 	{
@@ -61,7 +61,7 @@ public class CharStringReplacer implements UnaryOperator<String>
 		return defaultReplacement;
 	}
 
-	public ImmutableMap<Character, Character> getReplacements()
+	public Map<Character, Character> getReplacements()
 	{
 		return replacements;
 	}

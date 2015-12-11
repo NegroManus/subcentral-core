@@ -1,5 +1,6 @@
 package de.subcentral.core.correction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
@@ -62,8 +63,71 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 	@Override
 	public List<Tag> apply(List<Tag> tags)
 	{
-		TagUtil.replace(tags, searchTags, replacement, searchMode, replaceMode, ignoreOrder);
+		switch (searchMode)
+		{
+			case CONTAIN:
+				switch (replaceMode)
+				{
+					case COMPLETE_LIST:
+						if (ignoreOrder)
+						{
+							if (tags.containsAll(searchTags))
+							{
+								return replacement;
+							}
+						}
+						else
+						{
+							if (TagUtil.containsSequence(tags, searchTags))
+							{
+								return replacement;
+							}
+						}
+						break;
+					case MATCHED_SEQUENCE:
+						return replaceSequences(tags);
+				}
+				break;
+			case EQUAL:
+				if (ignoreOrder)
+				{
+					if (TagUtil.equalsIgnoreOrder(tags, searchTags))
+					{
+						return replacement;
+					}
+				}
+				else
+				{
+					if (tags.equals(searchTags))
+					{
+						return replacement;
+					}
+				}
+		}
 		return tags;
+	}
+
+	public List<Tag> replaceSequences(List<Tag> tags)
+	{
+		List<Tag> result = tags;
+		for (int i = 0; i < result.size() && i + searchTags.size() <= result.size(); i++)
+		{
+			List<Tag> sublist = result.subList(i, i + searchTags.size());
+			if (ignoreOrder ? TagUtil.equalsIgnoreOrder(sublist, searchTags) : sublist.equals(searchTags))
+			{
+				if (result == tags)
+				{
+					result = new ArrayList<>(tags);
+					result.subList(i, i + searchTags.size()).clear();
+				}
+				else
+				{
+					sublist.clear();
+				}
+				result.addAll(i, replacement);
+			}
+		}
+		return result;
 	}
 
 	@Override

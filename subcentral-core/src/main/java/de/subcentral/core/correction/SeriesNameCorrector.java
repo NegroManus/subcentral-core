@@ -1,5 +1,6 @@
 package de.subcentral.core.correction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -14,10 +15,10 @@ import de.subcentral.core.metadata.media.Series;
  */
 public class SeriesNameCorrector implements Corrector<Series>
 {
-	private final Pattern				namePattern;
-	private final String				nameReplacement;
-	private final ImmutableList<String>	aliasNamesReplacement;
-	private final String				titleReplacement;
+	private final Pattern		namePattern;
+	private final String		nameReplacement;
+	private final List<String>	aliasNamesReplacement;
+	private final String		titleReplacement;
 
 	public SeriesNameCorrector(Pattern namePattern, String nameReplacement)
 	{
@@ -47,7 +48,7 @@ public class SeriesNameCorrector implements Corrector<Series>
 		return nameReplacement;
 	}
 
-	public ImmutableList<String> getAliasNamesReplacement()
+	public List<String> getAliasNamesReplacement()
 	{
 		return aliasNamesReplacement;
 	}
@@ -64,25 +65,23 @@ public class SeriesNameCorrector implements Corrector<Series>
 		{
 			return;
 		}
-		String oldName = series.getName();
-		if (namePattern.matcher(oldName).matches())
+		if (namePattern.matcher(series.getName()).matches())
 		{
-			if (!oldName.equals(nameReplacement))
+			if (!series.getName().equals(nameReplacement))
 			{
+				String oldName = series.getName();
 				series.setName(nameReplacement);
 				corrections.add(new Correction(series, Series.PROP_NAME.getPropName(), oldName, nameReplacement));
 			}
-
-			ImmutableList<String> oldAliasNames = ImmutableList.copyOf(series.getAliasNames());
-			if (!oldAliasNames.equals(aliasNamesReplacement))
+			if (!series.getAliasNames().equals(aliasNamesReplacement))
 			{
+				List<String> oldAliasNames = new ArrayList<>(series.getAliasNames());
 				series.setAliasNames(aliasNamesReplacement);
 				corrections.add(new Correction(series, Series.PROP_ALIAS_NAMES.getPropName(), oldAliasNames, aliasNamesReplacement));
 			}
-
-			String oldTitle = series.getTitle();
-			if (!Objects.equals(oldTitle, titleReplacement))
+			if (!Objects.equals(series.getTitle(), titleReplacement))
 			{
+				String oldTitle = series.getTitle();
 				series.setTitle(titleReplacement);
 				corrections.add(new Correction(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement));
 			}
@@ -92,6 +91,11 @@ public class SeriesNameCorrector implements Corrector<Series>
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(SeriesNameCorrector.class).add("namePattern", namePattern).add("nameReplacement", nameReplacement).add("titleReplacement", titleReplacement).toString();
+		return MoreObjects.toStringHelper(SeriesNameCorrector.class)
+				.add("namePattern", namePattern)
+				.add("nameReplacement", nameReplacement)
+				.add("aliasNamesReplacement", aliasNamesReplacement)
+				.add("titleReplacement", titleReplacement)
+				.toString();
 	}
 }

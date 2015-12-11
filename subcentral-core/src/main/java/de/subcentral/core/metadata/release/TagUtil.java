@@ -109,7 +109,7 @@ public class TagUtil
 						}
 						else
 						{
-							if (TagUtil.containsSequence(tags, queryTags))
+							if (containsSequence(tags, queryTags))
 							{
 								tags.clear();
 								tags.addAll(replacement);

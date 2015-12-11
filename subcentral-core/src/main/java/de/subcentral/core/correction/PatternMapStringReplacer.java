@@ -18,7 +18,7 @@ public class PatternMapStringReplacer implements UnaryOperator<String>
 		this.replacements = ImmutableMap.copyOf(replacements); // null check included
 	}
 
-	public ImmutableMap<Pattern, String> getReplacements()
+	public Map<Pattern, String> getReplacements()
 	{
 		return replacements;
 	}

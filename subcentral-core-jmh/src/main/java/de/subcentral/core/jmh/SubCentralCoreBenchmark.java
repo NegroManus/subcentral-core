@@ -53,11 +53,13 @@ import de.subcentral.core.correction.CorrectionService;
 import de.subcentral.core.correction.LocaleLanguageReplacer;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
+import de.subcentral.core.correction.SeriesNameCorrector;
 import de.subcentral.core.correction.SubtitleLanguageCorrector;
 import de.subcentral.core.correction.TypeBasedCorrectionService;
 import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
@@ -82,9 +84,9 @@ import de.subcentral.support.subcentralde.SubCentralDe;
 public class SubCentralCoreBenchmark
 {
 	private static final SubtitleRelease	SUB_ADJ						= SubtitleRelease
-			.create(Release.create(Episode.createSeasonedEpisode("Psych", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
+			.create(Release.create(Episode.createSeasonedEpisode("Psych (2001)", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
 
-	private static final CorrectionService	STANDARDIZING_SERVICE		= buildService();
+	private static final CorrectionService	CORRECTION_SERVICE			= buildCorrectionService();
 	private static final NamingService		NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService		ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ParsingService		PARSING_SERVICE_BEST_CASE	= new MultiParsingService("bestcase",
@@ -99,7 +101,7 @@ public class SubCentralCoreBenchmark
 																				ADDIC7ED_PARSING_SERVICE);
 	private static final URL				SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
-	private static TypeBasedCorrectionService buildService()
+	private static TypeBasedCorrectionService buildCorrectionService()
 	{
 		TypeBasedCorrectionService service = new TypeBasedCorrectionService("testing");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
@@ -111,6 +113,7 @@ public class SubCentralCoreBenchmark
 						ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
 								new LanguagePattern(Pattern.compile("VF", Pattern.CASE_INSENSITIVE), Locale.FRENCH)),
 						ImmutableMap.of(Locale.ENGLISH, "VO"))));
+		service.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Psych\\s+\\(2001\\)"), "Psych"));
 		return service;
 	}
 
@@ -119,7 +122,7 @@ public class SubCentralCoreBenchmark
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testCorrect()
 	{
-		STANDARDIZING_SERVICE.correct(SUB_ADJ);
+		CORRECTION_SERVICE.correct(SUB_ADJ);
 	}
 
 	@Benchmark
