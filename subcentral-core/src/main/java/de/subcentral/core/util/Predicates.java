@@ -11,7 +11,7 @@ public class Predicates
 		return (Object o) -> type.isInstance(o);
 	}
 
-	public static Predicate<Object> sameType(Class<?> type)
+	public static Predicate<Object> typeEquals(Class<?> type)
 	{
 		Objects.requireNonNull(type, "type");
 		return (Object o) -> o != null && type.equals(o.getClass());
