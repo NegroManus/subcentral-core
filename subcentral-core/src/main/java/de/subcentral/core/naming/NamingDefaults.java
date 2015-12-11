@@ -17,6 +17,7 @@ import de.subcentral.core.correction.CorrectionDefaults;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
+import de.subcentral.core.metadata.media.NamedMedia;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
@@ -24,6 +25,7 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.naming.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.naming.PropSequenceNameBuilder.Config;
+import de.subcentral.core.util.Predicates;
 import de.subcentral.core.util.Separation;
 
 public class NamingDefaults
@@ -52,6 +54,7 @@ public class NamingDefaults
 	private static EpisodeNamer						EPISODE_NAMER;
 	private static MultiEpisodeNamer				MULTI_EPISODE_NAMER;
 	private static MultiEpisodeNamer				MULTI_EPISODE_RANGE_NAMER;
+	private static NamedMediaNamer					NAMED_MEDIA_NAMER;
 	private static ReleaseNamer						RELEASE_NAMER;
 	private static SubtitleNamer					SUBTITLE_NAMER;
 	private static SubtitleReleaseNamer				SUBTITLE_RELEASE_NAMER;
@@ -111,6 +114,9 @@ public class NamingDefaults
 		// MovieNamer
 		MOVIE_NAMER = new MovieNamer(config);
 
+		// NamedMediaNamer
+		NAMED_MEDIA_NAMER = new NamedMediaNamer(config);
+
 		// ReleaseNamer
 		RELEASE_NAMER = new ReleaseNamer(configWithRlsNameFormatter, RELEASE_MEDIA_NAMING_SERVICE);
 
@@ -121,15 +127,16 @@ public class NamingDefaults
 		SUBTITLE_RELEASE_NAMER = new SubtitleReleaseNamer(configWithSubRlsNameFormatter, RELEASE_NAMER);
 
 		// Add namers to the NamingService (ordered by number of times used)
-		List<ConditionalNamingEntry<?>> namers = new ArrayList<>(8);
-		namers.add(ConditionalNamingEntry.of(Episode.class, EPISODE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Release.class, RELEASE_NAMER));
-		namers.add(ConditionalNamingEntry.of(SubtitleRelease.class, SUBTITLE_RELEASE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Series.class, SERIES_NAMER));
-		namers.add(ConditionalNamingEntry.of(Season.class, SEASON_NAMER));
-		namers.add(ConditionalNamingEntry.of(Movie.class, MOVIE_NAMER));
+		List<ConditionalNamingEntry<?>> namers = new ArrayList<>(9);
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Episode.class), EPISODE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Release.class), RELEASE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(SubtitleRelease.class), SUBTITLE_RELEASE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Series.class), SERIES_NAMER));
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Season.class), SEASON_NAMER));
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Movie.class), MOVIE_NAMER));
 		namers.add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Subtitle.class, SUBTITLE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Subtitle.class), SUBTITLE_NAMER));
+		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(NamedMedia.class), NAMED_MEDIA_NAMER));
 		NAMING_SERVICE.getConditionalNamingEntries().addAll(namers);
 
 		// Add a special NamingService which formats the episode numbers different than the default NamingService

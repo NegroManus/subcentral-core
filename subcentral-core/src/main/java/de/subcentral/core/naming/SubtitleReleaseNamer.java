@@ -45,27 +45,27 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	}
 
 	@Override
-	public void buildName(PropSequenceNameBuilder b, SubtitleRelease adj, Map<String, Object> params)
+	public void buildName(PropSequenceNameBuilder b, SubtitleRelease subRls, Map<String, Object> params)
 	{
 		// read useName parameter
 		boolean preferName = NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE);
-		if (preferName && adj.getName() != null)
+		if (preferName && subRls.getName() != null)
 		{
-			b.append(SubtitleRelease.PROP_NAME, adj.getName());
+			b.append(SubtitleRelease.PROP_NAME, subRls.getName());
 			return;
 		}
 
 		// read other naming parameters
-		Release rls = NamingUtil.readParameter(params, PARAM_RELEASE, Release.class, adj.getFirstMatchingRelease());
-		b.appendIfNotBlank(SubtitleRelease.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
+		Release rls = NamingUtil.readParameter(params, PARAM_RELEASE, Release.class, subRls.getFirstMatchingRelease());
+		b.appendIfNotEmpty(SubtitleRelease.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 
-		Subtitle sub = adj.getFirstSubtitle();
+		Subtitle sub = subRls.getFirstSubtitle();
 		if (sub != null)
 		{
 			b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());
 		}
-		b.appendAll(SubtitleRelease.PROP_TAGS, adj.getTags());
-		b.appendIfNotNull(SubtitleRelease.PROP_VERSION, adj.getVersion());
+		b.appendAll(SubtitleRelease.PROP_TAGS, subRls.getTags());
+		b.appendIfNotNull(SubtitleRelease.PROP_VERSION, subRls.getVersion());
 		if (sub != null)
 		{
 			// read includeGroup parameter

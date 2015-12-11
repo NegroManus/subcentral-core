@@ -35,7 +35,7 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	public void buildName(PropSequenceNameBuilder b, Subtitle sub, Map<String, Object> params)
 	{
 		// media
-		b.appendIfNotBlank(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));
+		b.appendIfNotEmpty(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));
 
 		// language
 		b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());

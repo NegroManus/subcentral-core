@@ -41,9 +41,9 @@ public class PropSequenceNameBuilder
 		return appendIf(propDescriptor, propValue, propValue != null);
 	}
 
-	public PropSequenceNameBuilder appendIfNotBlank(SimplePropDescriptor propDescriptor, CharSequence propValue)
+	public PropSequenceNameBuilder appendIfNotEmpty(SimplePropDescriptor propDescriptor, CharSequence propValue)
 	{
-		return appendIf(propDescriptor, propValue, !StringUtils.isBlank(propValue));
+		return appendIf(propDescriptor, propValue, StringUtils.isNotEmpty(propValue));
 	}
 
 	public PropSequenceNameBuilder appendIf(SimplePropDescriptor propDescriptor, Object propValue, boolean condition)
@@ -53,15 +53,6 @@ public class PropSequenceNameBuilder
 			return append(propDescriptor, propValue, null);
 		}
 		return this;
-	}
-
-	public PropSequenceNameBuilder appendIfElse(SimplePropDescriptor propDescriptor, Object ifValue, Object elseValue, boolean condition)
-	{
-		if (condition)
-		{
-			return append(propDescriptor, ifValue, null);
-		}
-		return append(propDescriptor, elseValue, null);
 	}
 
 	public PropSequenceNameBuilder append(SimplePropDescriptor propDescriptor, Object propValue)
