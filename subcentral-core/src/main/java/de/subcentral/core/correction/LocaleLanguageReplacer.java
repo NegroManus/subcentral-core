@@ -237,8 +237,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 			}
 			if (obj instanceof LanguagePattern)
 			{
-				LanguagePattern o = (LanguagePattern) obj;
-				return pattern.equals(o.pattern);
+				return pattern.equals(((LanguagePattern) obj).pattern);
 			}
 			return false;
 		}
