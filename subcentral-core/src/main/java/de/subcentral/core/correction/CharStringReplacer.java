@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -81,11 +79,11 @@ public class CharStringReplacer implements UnaryOperator<String>
 			{
 				dest.deleteCharAt(i);
 			}
-			else if (ArrayUtils.contains(allowedChars, c))
+			else if (contains(allowedChars, c))
 			{
 				// keep the char
 			}
-			else if (ArrayUtils.contains(charsToDelete, c))
+			else if (contains(charsToDelete, c))
 			{
 				dest.deleteCharAt(i);
 			}
@@ -110,5 +108,17 @@ public class CharStringReplacer implements UnaryOperator<String>
 			}
 		}
 		return dest.toString();
+	}
+
+	private static boolean contains(char[] array, char charToFind)
+	{
+		for (char c : array)
+		{
+			if (c == charToFind)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
