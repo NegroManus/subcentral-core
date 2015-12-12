@@ -153,14 +153,12 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 					return locale;
 				}
 			}
-			if (locale.getCountry().isEmpty() && locale.getScript().isEmpty() && locale.getVariant().isEmpty())
+			// ISO3
+			// no need to check for language / display language because if it would match.
+			// Because in that case toString() / getDisplayName() would have matched, too (if country, script, variant are empty)
+			if (locale.getCountry().isEmpty() && locale.getScript().isEmpty() && locale.getVariant().isEmpty() && locale.getISO3Language().equalsIgnoreCase(lang))
 			{
-				// no need to check for language / display language because if it would match.
-				// Because in that case toString() / getDisplayName() would have matched, too (if country, script, variant are empty)
-				if (locale.getISO3Language().equalsIgnoreCase(lang))
-				{
-					return locale;
-				}
+				return locale;
 			}
 		}
 		return null;
