@@ -16,7 +16,10 @@ import de.subcentral.core.util.IOUtil;
 
 public class SubRip implements SubtitleFileFormat
 {
-	public static final SubRip INSTANCE = new SubRip();
+	public static final SubRip		INSTANCE		= new SubRip();
+
+	private static final Pattern	PATTERN_NUM		= Pattern.compile("\\s*\\d+\\s*");
+	private static final Pattern	PATTERN_TIMINGS	= Pattern.compile("\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*-->\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*");
 
 	private SubRip()
 	{
@@ -54,8 +57,8 @@ public class SubRip implements SubtitleFileFormat
 			 * - Hey, good morning.
 			 * </pre>
 			 */
-			final Matcher numMatcher = Pattern.compile("\\s*\\d+\\s*").matcher("");
-			final Matcher timingsMatcher = Pattern.compile("\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*-->\\s*(\\d+):(\\d+):(\\d+),(\\d+)\\s*").matcher("");
+			Matcher numMatcher = PATTERN_NUM.matcher("");
+			Matcher timingsMatcher = PATTERN_TIMINGS.matcher("");
 			String lastNumLine = null;
 			long start = -1L;
 			long end = -1L;
