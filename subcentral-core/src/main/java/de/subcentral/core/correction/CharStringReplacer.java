@@ -72,7 +72,8 @@ public class CharStringReplacer implements UnaryOperator<String>
 			return null;
 		}
 
-		StringBuilder dest = new StringBuilder(s);
+		StringBuilder dest = new StringBuilder(s.length());
+		dest.append(s);
 		for (int i = 0; i < dest.length(); i++)
 		{
 			char c = dest.charAt(i);
