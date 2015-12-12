@@ -50,13 +50,13 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 	};
 
 	// Parsing
-	private final ImmutableList<Locale>				parsingLanguages;
+	private final List<Locale>			parsingLanguages;
 	// Formatting
-	private final LanguageFormat					outputLanguageFormat;
-	private final Locale							outputLanguage;
+	private final LanguageFormat		outputLanguageFormat;
+	private final Locale				outputLanguage;
 	// Custom parsing/formatting
-	private final ImmutableList<LanguagePattern>	customLanguagePatterns;
-	private final ImmutableMap<Locale, String>		customLanguageTextMappings;
+	private final List<LanguagePattern>	customLanguagePatterns;
+	private final Map<Locale, String>	customLanguageTextMappings;
 
 	public LocaleLanguageReplacer()
 	{
@@ -81,7 +81,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		this.customLanguageTextMappings = ImmutableMap.copyOf(customLanguageTextMappings);
 	}
 
-	public ImmutableList<Locale> getParsingLanguages()
+	public List<Locale> getParsingLanguages()
 	{
 		return parsingLanguages;
 	}
@@ -96,12 +96,12 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		return outputLanguage;
 	}
 
-	public ImmutableList<LanguagePattern> getCustomLanguagePatterns()
+	public List<LanguagePattern> getCustomLanguagePatterns()
 	{
 		return customLanguagePatterns;
 	}
 
-	public ImmutableMap<Locale, String> getCustomLanguageTextMappings()
+	public Map<Locale, String> getCustomLanguageTextMappings()
 	{
 		return customLanguageTextMappings;
 	}
