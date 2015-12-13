@@ -2,6 +2,7 @@ package de.subcentral.watcher.controller.processing;
 
 import java.awt.TrayIcon.MessageType;
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -26,7 +27,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
-import com.sun.nio.file.ExtendedCopyOption;
 
 import de.subcentral.core.correction.Correction;
 import de.subcentral.core.metadata.db.MetadataDb;
@@ -659,7 +659,18 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			Path targetFile = targetDir.resolve(result.getName() + fileExtension);
 
 			checkCancelled();
-			Path newFile = Files.copy(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING, ExtendedCopyOption.INTERRUPTIBLE);
+			CopyOption[] copyOptions;
+			try
+			{
+				copyOptions = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE };
+			}
+			catch (Throwable t)
+			{
+				log.warn("com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE could not be used", t);
+				copyOptions = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING };
+			}
+
+			Path newFile = Files.copy(srcFile, targetFile, copyOptions);
 
 			result.addFile(newFile);
 			log.debug("Copied {} to {}", srcFile, targetFile);

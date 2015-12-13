@@ -143,7 +143,7 @@ public class DetailsController extends AbstractController
 		}
 		else
 		{
-			contentPane.add(new Label("Could not parse the filename"), 0, rowCounter++, GridPane.REMAINING, 1);
+			contentPane.add(new Label("Could not parse the filename: No pattern matched"), 0, rowCounter++, GridPane.REMAINING, 1);
 		}
 
 		// Add to root pane

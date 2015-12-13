@@ -112,9 +112,6 @@ public class WatcherApp extends Application
 		}
 		log = LogManager.getLogger(WatcherApp.class);
 
-		// Ensure awt toolkit is initialized
-		java.awt.Toolkit.getDefaultToolkit();
-
 		launch(args);
 	}
 }
