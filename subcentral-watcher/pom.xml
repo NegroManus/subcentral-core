@@ -73,9 +73,9 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
-						<manifestEntries>
-							<Main-Class>de.subcentral.watcher.WatcherApp</Main-Class>
-						</manifestEntries>
+  						<manifest>
+              				<mainClass>de.subcentral.watcher.WatcherApp</mainClass>
+           				</manifest>
 					</archive>
 				</configuration>
 				<executions>
@@ -87,16 +87,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<excludes>
-						<!-- <exclude>**/logback.xml</exclude> -->
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
