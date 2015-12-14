@@ -78,6 +78,7 @@ public class CharStringReplacer implements UnaryOperator<String>
 			if (c == defaultReplacement && (i == 0 || dest.charAt(i - 1) == defaultReplacement || i == dest.length() - 1))
 			{
 				dest.deleteCharAt(i);
+				i--;
 			}
 			else if (contains(allowedChars, c))
 			{
@@ -86,6 +87,7 @@ public class CharStringReplacer implements UnaryOperator<String>
 			else if (contains(charsToDelete, c))
 			{
 				dest.deleteCharAt(i);
+				i--;
 			}
 			else
 			{
@@ -99,6 +101,7 @@ public class CharStringReplacer implements UnaryOperator<String>
 					if (i == 0 || dest.charAt(i - 1) == defaultReplacement || i == dest.length() - 1)
 					{
 						dest.deleteCharAt(i);
+						i--;
 					}
 					else
 					{

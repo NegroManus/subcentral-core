@@ -1,10 +1,11 @@
 package de.subcentral.core.naming;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -31,7 +32,7 @@ public class NamingTest
 		movie.setDate(Year.of(2001));
 		String name = NamingDefaults.getDefaultMovieNamer().name(movie);
 		System.out.println(name);
-		Assert.assertEquals(MOVIE_NAME, name);
+		assertEquals(MOVIE_NAME, name);
 	}
 
 	@Test
@@ -42,8 +43,17 @@ public class NamingTest
 		Release rel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		String name = NamingDefaults.getDefaultReleaseNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
-		Assert.assertEquals(MOVIE_REL_NAME, name);
-		Assert.assertEquals(MOVIE_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+		assertEquals(MOVIE_REL_NAME, name);
+		assertEquals(MOVIE_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+	}
+
+	@Test
+	public void testWeirdReleaseNaming()
+	{
+		Release rls = Release.create(Episode.createMiniSeriesEpisode("''Don't you die!", 1), "LOL&DIM", "..Tags..And.More.Tags-.");
+		String name = NamingDefaults.getDefaultReleaseNamer().name(rls);
+		System.out.println(name);
+		assertEquals("Dont.you.die.E01.Tags.And.More.Tags-LOLandDIM", name);
 	}
 
 	@Test
@@ -55,8 +65,8 @@ public class NamingTest
 		sub.setLanguage("de");
 		String name = NamingDefaults.getDefaultSubtitleNamer().name(sub);
 		System.out.println(name);
-		Assert.assertEquals(MOVIE_SUB_NAME, name);
-		Assert.assertEquals(MOVIE_SUB_NAME, NamingDefaults.getDefaultNamingService().name(sub));
+		assertEquals(MOVIE_SUB_NAME, name);
+		assertEquals(MOVIE_SUB_NAME, NamingDefaults.getDefaultNamingService().name(sub));
 	}
 
 	@Test
@@ -69,8 +79,8 @@ public class NamingTest
 		SubtitleRelease rel = SubtitleRelease.create(mediaRel, "de", "SubCentral");
 		String name = NamingDefaults.getDefaultSubtitleReleaseNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
-		Assert.assertEquals(MOVIE_SUB_REL_NAME, name);
-		Assert.assertEquals(MOVIE_SUB_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+		assertEquals(MOVIE_SUB_REL_NAME, name);
+		assertEquals(MOVIE_SUB_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
 	}
 
 	/**
@@ -231,7 +241,7 @@ public class NamingTest
 		}
 		for (int i = 0; i < expectedNames.size(); i++)
 		{
-			Assert.assertEquals(expectedNames.get(i), names.get(i));
+			assertEquals(expectedNames.get(i), names.get(i));
 		}
 	}
 
@@ -288,7 +298,7 @@ public class NamingTest
 		}
 		for (int i = 0; i < expectedNames.size(); i++)
 		{
-			Assert.assertEquals(expectedNames.get(i), names.get(i));
+			assertEquals(expectedNames.get(i), names.get(i));
 		}
 	}
 }

@@ -3,6 +3,7 @@ package de.subcentral.core.correction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,19 +20,20 @@ import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 
 public class CorrectionDefaults
 {
-	public static final Function<String, String>	ALNUM_BLANK_REPLACER				= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ", "'´`", ' ');
-	public static final Function<String, String>	ALNUM_DOT_HYPEN_REPLACER			= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-", "'´`", '.');
+	public static final Function<String, String>	ALNUM_BLANK_REPLACER					= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ", "'´`", ' ');
+	public static final Function<String, String>	ALNUM_DOT_HYPEN_REPLACER				= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-", "'´`", '.');
 	/**
 	 * Use this for media naming. <br/>
 	 * hyphen "-" has to be allowed, so that media names like "How.I.Met.Your.Mother.S09E01-E24" are possible also release names like "Katy.Perry-The.Prismatic.World.Tour" are common
 	 */
 	public static final Function<String, String>	ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER	= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_", "'´`", '.');
-	public static final Function<String, String>	DOT_HYPHEN_DOT_REPLACER				= new StringReplacer(".-", "-").andThen(new StringReplacer("-.", "-"));
-	public static final Function<String, String>	AND_REPLACER						= new StringReplacer("&", "and");
-	public static final Function<String, String>	ACCENT_REPLACER						= (String s) -> StringUtils.stripAccents(s);
-	public static final Function<String, String>	TO_LOWERCASE_REPLACER				= (String s) -> StringUtils.lowerCase(s);
+	public static final Function<String, String>	HYPHEN_CLEANER							= new StringReplacer(".-", "-").andThen(new StringReplacer("-.", "-"))
+																									.andThen(new PatternStringReplacer(Pattern.compile("-+"), "-"));
+	public static final Function<String, String>	AND_REPLACER							= new StringReplacer("&", "and");
+	public static final Function<String, String>	ACCENT_REPLACER							= StringUtils::stripAccents;
+	public static final Function<String, String>	TO_LOWERCASE_REPLACER					= StringUtils::lowerCase;
 
-	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE			= initDefaultCorrectionService();
+	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE				= initDefaultCorrectionService();
 
 	private static TypeBasedCorrectionService initDefaultCorrectionService()
 	{

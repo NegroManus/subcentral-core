@@ -146,19 +146,17 @@ public class NamingDefaults
 
 	private static Function<String, String> initReleaseNameFormatter()
 	{
-		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER)
-				.andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER)
-				.andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER).andThen(CorrectionDefaults.HYPHEN_CLEANER);
 	}
 
 	private static Function<String, String> initReleaseMediaFormatter()
 	{
-		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_REPLACER).andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_REPLACER).andThen(CorrectionDefaults.HYPHEN_CLEANER);
 	}
 
 	private static Function<String, String> initSubtitleReleaseNameFormatter()
 	{
-		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER).andThen(CorrectionDefaults.DOT_HYPHEN_DOT_REPLACER);
+		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER).andThen(CorrectionDefaults.HYPHEN_CLEANER);
 	}
 
 	private static Function<String, String> initNormalizingFormatter()
