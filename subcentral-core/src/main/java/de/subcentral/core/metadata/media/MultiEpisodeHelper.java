@@ -68,11 +68,16 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 						epis = new ArrayList<>(2);
 					}
 					epis.add((Episode) o);
-					continue;
 				}
-				return null;
+				else
+				{
+					return null;
+				}
 			}
-			return new MultiEpisodeHelper(epis);
+			if (epis != null)
+			{
+				return new MultiEpisodeHelper(epis);
+			}
 		}
 		return null;
 	}
