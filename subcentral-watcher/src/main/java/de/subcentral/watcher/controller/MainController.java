@@ -157,6 +157,7 @@ public class MainController extends Controller
 					PopupMenu popup = new PopupMenu();
 
 					MenuItem appItem = new MenuItem("Watcher");
+					appItem.addActionListener((ActionEvent e) -> Platform.runLater(() -> primaryStage.toFront()));
 					appItem.setFont(java.awt.Font.decode(null).deriveFont(java.awt.Font.BOLD));
 
 					systemTrayShowHideMenuItem = new MenuItem("Hide");
