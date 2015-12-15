@@ -155,15 +155,15 @@ public class WatcherSettings extends ObservableObject
 
 	private void updateWarnings(XMLConfiguration cfg)
 	{
-		setWarningsEnabled(cfg.getBoolean("ui.warnings[@enabled]"));
-		setGuessingWarningEnabled(cfg.getBoolean("ui.warnings.guessingWarning[@enabled]"));
-		setReleaseMetaTaggedWarningEnabled(cfg.getBoolean("ui.warnings.releaseMetaTaggedWarning[@enabled]"));
-		setReleaseNukedWarningEnabled(cfg.getBoolean("ui.warnings.releaseNukedWarning[@enabled]"));
+		setWarningsEnabled(cfg.getBoolean("ui.warnings[@enabled]", true));
+		setGuessingWarningEnabled(cfg.getBoolean("ui.warnings.guessingWarning[@enabled]", true));
+		setReleaseMetaTaggedWarningEnabled(cfg.getBoolean("ui.warnings.releaseMetaTaggedWarning[@enabled]", true));
+		setReleaseNukedWarningEnabled(cfg.getBoolean("ui.warnings.releaseNukedWarning[@enabled]", true));
 	}
 
 	private void updateSystemTray(XMLConfiguration cfg)
 	{
-		setSystemTrayEnabled(cfg.getBoolean("ui.systemTray[@enabled]"));
+		setSystemTrayEnabled(cfg.getBoolean("ui.systemTray[@enabled]", true));
 	}
 
 	// Write methods
