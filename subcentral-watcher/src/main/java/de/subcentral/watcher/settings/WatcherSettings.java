@@ -145,7 +145,7 @@ public class WatcherSettings extends ObservableObject
 
 	private void updateInitialScan(XMLConfiguration cfg)
 	{
-		setInitialScan(cfg.getBoolean("watch.initialScan", false));
+		setInitialScan(cfg.getBoolean("watch.initialScan", true));
 	}
 
 	private void updateRejectAlreadyProcessedFiles(XMLConfiguration cfg)
