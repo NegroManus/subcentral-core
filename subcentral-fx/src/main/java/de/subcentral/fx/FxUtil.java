@@ -787,7 +787,7 @@ public class FxUtil
 	public static <T> T loadFromFxml(String fxmlFilename, String resourceBaseName, Locale locale, Object controller) throws IOException
 	{
 		long start = System.nanoTime();
-		log.debug("Loading {} with view {} ...", controller.getClass().getSimpleName(), fxmlFilename);
+		log.debug("Loading {} with view {}", controller.getClass().getSimpleName(), fxmlFilename);
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(FxUtil.class.getClassLoader().getResource("fxml/" + fxmlFilename));
 		loader.setResources(resourceBaseName == null ? null : ResourceBundle.getBundle("i18n/" + resourceBaseName, locale));
