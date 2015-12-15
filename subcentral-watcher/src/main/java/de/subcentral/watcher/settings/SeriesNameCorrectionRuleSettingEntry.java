@@ -52,7 +52,7 @@ public class SeriesNameCorrectionRuleSettingEntry extends CorrectionRuleSettingE
 	private static String formatRule(SeriesNameCorrector corrector, UserPattern nameUserPattern)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("\"");
+		sb.append('"');
 		sb.append(nameUserPattern.getPattern());
 		sb.append("\" (");
 		sb.append(nameUserPattern.getMode().name().charAt(0));

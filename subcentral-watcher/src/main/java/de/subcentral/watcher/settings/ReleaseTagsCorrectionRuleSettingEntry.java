@@ -1,10 +1,9 @@
 package de.subcentral.watcher.settings;
 
-import com.google.common.base.Joiner;
-
 import de.subcentral.core.correction.ReleaseTagsCorrector;
 import de.subcentral.core.correction.TagsReplacer;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxUtil;
 import javafx.beans.binding.StringBinding;
 
@@ -51,7 +50,7 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 				break;
 		}
 		sb.append('[');
-		Joiner.on(", ").appendTo(sb, replacer.getSearchTags());
+		StringUtil.COMMA_JOINER.appendTo(sb, replacer.getSearchTags());
 		sb.append(']');
 		if (replacer.getIgnoreOrder())
 		{
@@ -68,7 +67,7 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 				break;
 		}
 		sb.append('[');
-		Joiner.on(", ").appendTo(sb, replacer.getReplacement());
+		StringUtil.COMMA_JOINER.appendTo(sb, replacer.getReplacement());
 		sb.append(']');
 		return sb.toString();
 	}
