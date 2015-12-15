@@ -36,10 +36,10 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 public class FileTransformationSettingsController extends AbstractSettingsSectionController
 {
-	private static final Logger log = LogManager.getLogger(FileTransformationSettingsController.class);
+	private static final Logger		log				= LogManager.getLogger(FileTransformationSettingsController.class);
 
 	// Model
-	private Path locatedRarExe = null;
+	private Path					locatedRarExe	= null;
 
 	// View
 	@FXML
@@ -81,7 +81,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 

@@ -33,11 +33,11 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	private TableColumn<CompatibilitySettingEntry, String>	crossGroupCompatibilitiesCompatibilityColumn;
 
 	@FXML
-	private Button	addCrossGroupCompatibility;
+	private Button											addCrossGroupCompatibility;
 	@FXML
-	private Button	editCrossGroupCompatibility;
+	private Button											editCrossGroupCompatibility;
 	@FXML
-	private Button	removeCrossGroupCompatibility;
+	private Button											removeCrossGroupCompatibility;
 
 	public ReleaseCompatibilitySettingsController(SettingsController settingsController)
 	{
@@ -51,7 +51,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 

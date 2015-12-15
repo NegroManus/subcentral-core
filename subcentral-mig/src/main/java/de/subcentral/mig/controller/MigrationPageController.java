@@ -35,7 +35,7 @@ public class MigrationPageController extends AbstractPageController
 	}
 
 	@Override
-	public void initialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		// TODO Auto-generated method stub
 

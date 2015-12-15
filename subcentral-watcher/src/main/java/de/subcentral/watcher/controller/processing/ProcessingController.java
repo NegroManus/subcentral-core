@@ -36,10 +36,10 @@ import de.subcentral.core.naming.NamingService;
 import de.subcentral.core.parsing.MultiParsingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
+import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.WatcherFxUtil;
-import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibleInfo;
 import de.subcentral.watcher.controller.processing.ProcessingResult.GuessedInfo;
@@ -81,7 +81,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class ProcessingController extends AbstractController
+public class ProcessingController extends Controller
 {
 	private static final Logger										log							= LogManager.getLogger(ProcessingController.class);
 
@@ -248,7 +248,7 @@ public class ProcessingController extends AbstractController
 	}
 
 	@Override
-	public void doInitialize()
+	protected void initialize()
 	{
 		initProcessingTreeTable();
 		initLowerButtonBar();

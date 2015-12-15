@@ -42,7 +42,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		watchDirectoriesListView.setItems(WatcherSettings.INSTANCE.watchDirectoriesProperty());
 

@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import com.mchange.v2.c3p0.DataSources;
 
 import de.subcentral.core.util.NamedThreadFactory;
+import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.mig.MigrationConfig;
 import javafx.application.Platform;
@@ -31,7 +32,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class MainController extends AbstractController
+public class MainController extends Controller
 {
 	// Model
 	private MigrationConfig	config		= new MigrationConfig();
@@ -81,7 +82,7 @@ public class MainController extends AbstractController
 	}
 
 	@Override
-	public void initialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		initPages();
 		initLowerButtonBar();

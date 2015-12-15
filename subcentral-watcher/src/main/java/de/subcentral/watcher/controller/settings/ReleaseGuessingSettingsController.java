@@ -36,11 +36,11 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 	private TableColumn<StandardRelease, String>	standardReleasesScopeColumn;
 
 	@FXML
-	private Button	addStandardReleaseButton;
+	private Button									addStandardReleaseButton;
 	@FXML
-	private Button	editStandardReleaseButton;
+	private Button									editStandardReleaseButton;
 	@FXML
-	private Button	removeStandardReleaseButton;
+	private Button									removeStandardReleaseButton;
 
 	public ReleaseGuessingSettingsController(SettingsController settingsController)
 	{
@@ -54,7 +54,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
@@ -76,14 +76,14 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 			String value;
 			switch (param.getValue().getScope())
 			{
-			case IF_GUESSING:
-				value = "If guessing";
-				break;
-			case ALWAYS:
-				value = "Always";
-				break;
-			default:
-				value = param.getValue().getScope().name();
+				case IF_GUESSING:
+					value = "If guessing";
+					break;
+				case ALWAYS:
+					value = "Always";
+					break;
+				default:
+					value = param.getValue().getScope().name();
 			}
 			return FxUtil.constantBinding(value);
 		});

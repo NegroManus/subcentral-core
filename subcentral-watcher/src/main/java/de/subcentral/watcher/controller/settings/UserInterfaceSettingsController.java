@@ -18,6 +18,8 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 	private CheckBox	metaTaggedReleaseWarningEnabledCheckBox;
 	@FXML
 	private CheckBox	nukedReleaseWarningEnabledCheckBox;
+	@FXML
+	private CheckBox	systemTrayEnabledCheckBox;
 
 	public UserInterfaceSettingsController(SettingsController settingsController)
 	{
@@ -31,7 +33,7 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		WatcherSettings settings = WatcherSettings.INSTANCE;
 
@@ -44,5 +46,7 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 		guessingWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
 		metaTaggedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
 		nukedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
+
+		systemTrayEnabledCheckBox.selectedProperty().bindBidirectional(settings.systemTrayEnabledProperty());
 	}
 }

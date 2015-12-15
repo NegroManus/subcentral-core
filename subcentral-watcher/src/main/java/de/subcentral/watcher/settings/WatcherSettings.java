@@ -51,6 +51,8 @@ public class WatcherSettings extends ObservableObject
 	private final BooleanProperty		guessingWarningEnabled			= new SimpleBooleanProperty(this, "guessingWarningEnabled");
 	private final BooleanProperty		releaseMetaTaggedWarningEnabled	= new SimpleBooleanProperty(this, "releaseMetaTaggedWarningEnabled");
 	private final BooleanProperty		releaseNukedWarningEnabled		= new SimpleBooleanProperty(this, "releaseNukedWarningEnabled");
+	// UI - System Tray
+	private final BooleanProperty		systemTrayEnabled				= new SimpleBooleanProperty(this, "systemTrayEnabled");
 
 	private WatcherSettings()
 	{
@@ -61,7 +63,8 @@ public class WatcherSettings extends ObservableObject
 				warningsEnabled,
 				guessingWarningEnabled,
 				releaseMetaTaggedWarningEnabled,
-				releaseNukedWarningEnabled);
+				releaseNukedWarningEnabled,
+				systemTrayEnabled);
 
 		addListener((Observable o) -> changed.set(true));
 	}
@@ -119,6 +122,7 @@ public class WatcherSettings extends ObservableObject
 		// UI
 		// UI - Warnings
 		updateWarnings(cfg);
+		updateSystemTray(cfg);
 	}
 
 	private void updateWatchDirs(XMLConfiguration cfg)
@@ -155,6 +159,11 @@ public class WatcherSettings extends ObservableObject
 		setGuessingWarningEnabled(cfg.getBoolean("ui.warnings.guessingWarning[@enabled]"));
 		setReleaseMetaTaggedWarningEnabled(cfg.getBoolean("ui.warnings.releaseMetaTaggedWarning[@enabled]"));
 		setReleaseNukedWarningEnabled(cfg.getBoolean("ui.warnings.releaseNukedWarning[@enabled]"));
+	}
+
+	private void updateSystemTray(XMLConfiguration cfg)
+	{
+		setSystemTrayEnabled(cfg.getBoolean("ui.systemTray[@enabled]"));
 	}
 
 	// Write methods
@@ -198,6 +207,8 @@ public class WatcherSettings extends ObservableObject
 		cfg.addProperty("ui.warnings.guessingWarning[@enabled]", isGuessingWarningEnabled());
 		cfg.addProperty("ui.warnings.releaseMetaTaggedWarning[@enabled]", isReleaseMetaTaggedWarningEnabled());
 		cfg.addProperty("ui.warnings.releaseNukedWarning[@enabled]", isReleaseNukedWarningEnabled());
+		// UI- System Tray
+		cfg.addProperty("ui.systemTray[@enabled]", isSystemTrayEnabled());
 
 		return cfg;
 	}
@@ -321,6 +332,21 @@ public class WatcherSettings extends ObservableObject
 	public final void setReleaseNukedWarningEnabled(final boolean releaseNukedWarningEnabled)
 	{
 		this.releaseNukedWarningEnabledProperty().set(releaseNukedWarningEnabled);
+	}
+
+	public final BooleanProperty systemTrayEnabledProperty()
+	{
+		return this.systemTrayEnabled;
+	}
+
+	public final boolean isSystemTrayEnabled()
+	{
+		return this.systemTrayEnabledProperty().get();
+	}
+
+	public final void setSystemTrayEnabled(final boolean systemTrayEnabled)
+	{
+		this.systemTrayEnabledProperty().set(systemTrayEnabled);
 	}
 
 	private static class IndentingXMLConfiguration extends XMLConfiguration

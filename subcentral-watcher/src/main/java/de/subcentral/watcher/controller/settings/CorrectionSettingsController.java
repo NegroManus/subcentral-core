@@ -55,7 +55,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		// Standardizers
 		standardizersTableView.setItems(WatcherSettings.INSTANCE.getProcessingSettings().correctionRulesProperty());

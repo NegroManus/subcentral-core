@@ -3,6 +3,13 @@ package de.subcentral.watcher.controller;
 import java.io.IOException;
 import java.util.Objects;
 
+import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Nuke;
+import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.fx.Controller;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubCentralFxUtil;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,17 +25,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
-import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.Nuke;
-import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.SubCentralFxUtil;
 
-public class ReleaseViewController extends AbstractController
+public class ReleaseViewController extends Controller
 {
 	// Model
-	private final ObservableRelease release;
+	private final ObservableRelease			release;
 
 	// View
 	@FXML
@@ -51,7 +52,7 @@ public class ReleaseViewController extends AbstractController
 	private VBox							mediaRootPane;
 
 	// Controller features
-	private StringBinding title;
+	private StringBinding					title;
 
 	public ReleaseViewController()
 	{
@@ -74,7 +75,7 @@ public class ReleaseViewController extends AbstractController
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		initTitleBinding();
 

@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import de.subcentral.fx.Controller;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherFxUtil;
@@ -29,7 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-public class WatchController extends AbstractController
+public class WatchController extends Controller
 {
 	// Controlling properties
 	private final MainController	mainController;
@@ -60,7 +61,7 @@ public class WatchController extends AbstractController
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		initWatchService();
 

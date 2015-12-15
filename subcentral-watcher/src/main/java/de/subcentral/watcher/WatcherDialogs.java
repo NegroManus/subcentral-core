@@ -22,10 +22,10 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.metadata.release.TagUtil.SearchMode;
+import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.settings.LanguageTextMapping;
 import de.subcentral.watcher.settings.LanguageUserPattern;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
@@ -61,7 +61,7 @@ public class WatcherDialogs
 {
 	private static final Logger log = LogManager.getLogger(WatcherDialogs.class);
 
-	static abstract class AbstractBeanEditController<T> extends AbstractController
+	static abstract class AbstractBeanEditController<T> extends Controller
 	{
 		// Model
 		protected final T			bean;
@@ -83,7 +83,7 @@ public class WatcherDialogs
 		}
 
 		@Override
-		protected final void doInitialize()
+		public final void initialize()
 		{
 			initDialog();
 			initComponents();

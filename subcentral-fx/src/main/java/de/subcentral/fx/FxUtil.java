@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.io.Resources;
 
 import de.subcentral.core.util.ExceptionUtil;
+import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.UserPattern.Mode;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -737,7 +738,17 @@ public class FxUtil
 		{
 			return null;
 		}
-		return new Image("img/" + img);
+		String url = "img/" + img;
+		try
+		{
+			return new Image(url);
+		}
+		catch (IllegalArgumentException e)
+		{
+			log.warn("Could not load img from url " + url);
+			return null;
+		}
+
 	}
 
 	public static java.awt.Image loadAwtImg(String img) throws IOException
@@ -746,7 +757,16 @@ public class FxUtil
 		{
 			return null;
 		}
-		return ImageIO.read(Resources.getResource("img/" + img));
+		String url = "img/" + img;
+		try
+		{
+			return ImageIO.read(Resources.getResource("img/" + img));
+		}
+		catch (IllegalArgumentException | IOException e)
+		{
+			log.warn("Could not load img from url " + url);
+			return null;
+		}
 	}
 
 	public static <T> T loadFromFxml(String fxmlFilename, Object controller) throws IOException
@@ -766,11 +786,15 @@ public class FxUtil
 	 */
 	public static <T> T loadFromFxml(String fxmlFilename, String resourceBaseName, Locale locale, Object controller) throws IOException
 	{
+		long start = System.nanoTime();
+		log.debug("Loading {} with view {} ...", controller.getClass().getSimpleName(), fxmlFilename);
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(FxUtil.class.getClassLoader().getResource("fxml/" + fxmlFilename));
 		loader.setResources(resourceBaseName == null ? null : ResourceBundle.getBundle("i18n/" + resourceBaseName, locale));
 		loader.setController(controller);
-		return loader.load();
+		T view = loader.load();
+		log.debug("Loaded {} in {} ms", controller.getClass().getSimpleName(), TimeUtil.durationMillis(start));
+		return view;
 	}
 
 	public static <E, F> void handleDistinctAdd(ListView<E> list, Optional<F> addDialogResult, Function<F, E> converter)

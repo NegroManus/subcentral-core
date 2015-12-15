@@ -89,7 +89,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		final LocaleLanguageReplacerSettings settings = WatcherSettings.INSTANCE.getProcessingSettings().getSubtitleLanguageCorrectionSettings();
 
@@ -204,20 +204,20 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 				}
 				switch (outputLangFormatChoiceBox.getValue())
 				{
-				case NAME:
-					// fall through
-				case LANGUAGE_TAG:
-					// fall through
-				case ISO2:
-					// fall through
-				case ISO3:
-					return true;
-				case DISPLAY_NAME:
-					// fall through
-				case DISPLAY_LANGUAGE:
-					return false;
-				default:
-					return true;
+					case NAME:
+						// fall through
+					case LANGUAGE_TAG:
+						// fall through
+					case ISO2:
+						// fall through
+					case ISO3:
+						return true;
+					case DISPLAY_NAME:
+						// fall through
+					case DISPLAY_LANGUAGE:
+						return false;
+					default:
+						return true;
 				}
 			}
 		});

@@ -2,39 +2,40 @@ package de.subcentral.watcher.controller;
 
 import java.util.Objects;
 
+import de.subcentral.core.metadata.media.Series;
+import de.subcentral.fx.Controller;
 import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.util.converter.IntegerStringConverter;
-import de.subcentral.core.metadata.media.Series;
 
-public class EpisodeViewController extends AbstractController
+public class EpisodeViewController extends Controller
 {
 	// Model
-	private final ObservableEpisode episode;
+	private final ObservableEpisode	episode;
 
 	// View
 	@FXML
-	private TextField			seriesNameTextField;
+	private TextField				seriesNameTextField;
 	@FXML
-	private ComboBox<String>	seriesTypeComboBox;
+	private ComboBox<String>		seriesTypeComboBox;
 	@FXML
-	private TextField			seasonNumberTextField;
+	private TextField				seasonNumberTextField;
 	@FXML
-	private TextField			seasonTitleTextField;
+	private TextField				seasonTitleTextField;
 	@FXML
-	private TextField			numberInSeasonTextField;
+	private TextField				numberInSeasonTextField;
 	@FXML
-	private TextField			titleTextField;
+	private TextField				titleTextField;
 	@FXML
-	private TextField			numberInSeriesTextField;
+	private TextField				numberInSeriesTextField;
 	@FXML
-	private DatePicker			datePicker;
+	private DatePicker				datePicker;
 
 	// Controller features
-	private StringBinding title;
+	private StringBinding			title;
 
 	public EpisodeViewController(ObservableEpisode episode)
 	{
@@ -52,7 +53,7 @@ public class EpisodeViewController extends AbstractController
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		initTitleBinding();
 

@@ -15,8 +15,8 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.StringUtil;
+import de.subcentral.fx.Controller;
 import de.subcentral.watcher.WatcherFxUtil;
-import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -34,7 +34,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class DetailsController extends AbstractController
+public class DetailsController extends Controller
 {
 	// Model
 	private final ProcessingTask		task;
@@ -59,7 +59,7 @@ public class DetailsController extends AbstractController
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		initHeader();
 

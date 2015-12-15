@@ -26,7 +26,7 @@ public class ReleaseSettingsController extends AbstractSettingsSectionController
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 

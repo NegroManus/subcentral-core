@@ -1,9 +1,9 @@
 package de.subcentral.watcher.controller.settings;
 
+import de.subcentral.fx.Controller;
 import javafx.scene.Node;
-import de.subcentral.watcher.controller.AbstractController;
 
-public abstract class AbstractSettingsSectionController extends AbstractController
+public abstract class AbstractSettingsSectionController extends Controller
 {
 	protected final SettingsController settingsController;
 

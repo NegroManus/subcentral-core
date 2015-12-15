@@ -18,6 +18,8 @@
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
 		<Label text="Warnings" underline="true">
@@ -35,7 +37,7 @@
       <CheckBox fx:id="warningsEnabledCheckBox" mnemonicParsing="false" text="Enable warnings" GridPane.rowIndex="1" />
       <HBox spacing="5.0" GridPane.rowIndex="2">
          <GridPane.margin>
-            <Insets left="10.0" />
+            <Insets left="25.0" />
          </GridPane.margin>
          <children>
             <CheckBox fx:id="guessingWarningEnabledCheckBox" mnemonicParsing="false" text="Warn when guessing" />
@@ -48,7 +50,7 @@
       </HBox>
       <HBox spacing="5.0" GridPane.rowIndex="3">
          <GridPane.margin>
-            <Insets left="10.0" />
+            <Insets left="25.0" />
          </GridPane.margin>
          <children>
             <CheckBox fx:id="metaTaggedReleaseWarningEnabledCheckBox" mnemonicParsing="false" text="Warn when a release contains meta tags" />
@@ -61,7 +63,7 @@
       </HBox>
       <HBox spacing="5.0" GridPane.rowIndex="4">
          <GridPane.margin>
-            <Insets left="10.0" />
+            <Insets left="25.0" />
          </GridPane.margin>
          <children>
             <CheckBox fx:id="nukedReleaseWarningEnabledCheckBox" mnemonicParsing="false" text="Warn when a release is nuked" />
@@ -72,6 +74,22 @@
             </ImageView>
          </children>
       </HBox>
+      <Label text="System tray" underline="true" GridPane.rowIndex="5">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <GridPane.margin>
+            <Insets top="10.0" />
+         </GridPane.margin>
+         <graphic>
+            <ImageView pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/notification_16.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Label>
+      <CheckBox fx:id="systemTrayEnabledCheckBox" mnemonicParsing="false" text="Use system tray (change will only take effect after application restart)" GridPane.rowIndex="6" />
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

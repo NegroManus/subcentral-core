@@ -17,9 +17,9 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 
+import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherApp;
-import de.subcentral.watcher.controller.AbstractController;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
@@ -43,7 +43,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
-public class SettingsController extends AbstractController
+public class SettingsController extends Controller
 {
 	private static final Logger					log										= LogManager.getLogger(SettingsController.class);
 
@@ -172,7 +172,7 @@ public class SettingsController extends AbstractController
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		loadSettings();
 		initSettingsTree();
@@ -495,7 +495,7 @@ public class SettingsController extends AbstractController
 		}
 		catch (ConfigurationException | IOException e)
 		{
-			FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILENAME, e).showAndWait();
+			FxUtil.createExceptionAlert(null, "Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILENAME, e).showAndWait();
 		}
 	}
 
@@ -512,7 +512,7 @@ public class SettingsController extends AbstractController
 			catch (Exception e)
 			{
 				log.error("Failed to load custom settings from " + settingsFile + ". Default settings will be used", e);
-				FxUtil.createExceptionAlert(mainController.getPrimaryStage(),
+				FxUtil.createExceptionAlert(null,
 						"Failed to load custom settings",
 						"Failed to load custom settings from " + settingsFile
 								+ ". Default settings will be used.\nIf you would like to try to fix the custom settings, close the application without saving the settings, edit the settings file and try again.",
@@ -540,6 +540,7 @@ public class SettingsController extends AbstractController
 		catch (Exception e)
 		{
 			log.error("Exception while loading default settings", e);
+			FxUtil.createExceptionAlert(null, "Failed to load default settings", "Failed to load default settings from resource " + DEFAULT_SETTINGS_FILENAME, e).showAndWait();
 		}
 	}
 

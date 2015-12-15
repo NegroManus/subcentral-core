@@ -33,7 +33,7 @@ import javafx.util.Callback;
 
 public class ReleaseDbsSettingsController extends AbstractSettingsSectionController
 {
-	private static final Logger log = LogManager.getLogger(ReleaseDbsSettingsController.class);
+	private static final Logger																log	= LogManager.getLogger(ReleaseDbsSettingsController.class);
 
 	@FXML
 	private GridPane																		rootPane;
@@ -64,7 +64,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	}
 
 	@Override
-	protected void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
 
@@ -140,23 +140,23 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 						{
 							switch (item)
 							{
-							case UNKNOWN:
-								setGraphic(null);
-								break;
-							case CHECKING:
-								ProgressIndicator progressIndicator = new ProgressIndicator();
-								progressIndicator.setPrefWidth(16d);
-								progressIndicator.setPrefHeight(16d);
-								setGraphic(progressIndicator);
-								break;
-							case AVAILABLE:
-								setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
-								break;
-							case NOT_AVAILABLE:
-								setGraphic(new ImageView(FxUtil.loadImg("cross_16.png")));
-								break;
-							default:
-								setGraphic(null);
+								case UNKNOWN:
+									setGraphic(null);
+									break;
+								case CHECKING:
+									ProgressIndicator progressIndicator = new ProgressIndicator();
+									progressIndicator.setPrefWidth(16d);
+									progressIndicator.setPrefHeight(16d);
+									setGraphic(progressIndicator);
+									break;
+								case AVAILABLE:
+									setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
+									break;
+								case NOT_AVAILABLE:
+									setGraphic(new ImageView(FxUtil.loadImg("cancel_16.png")));
+									break;
+								default:
+									setGraphic(null);
 							}
 						}
 					}

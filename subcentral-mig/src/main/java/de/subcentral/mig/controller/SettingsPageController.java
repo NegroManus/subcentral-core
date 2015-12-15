@@ -40,7 +40,7 @@ public class SettingsPageController extends AbstractPageController
 	}
 
 	@Override
-	public void initialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		envSettingsFileTxtFld.setTextFormatter(envSettingsFileTextFormatter);
 		ExtensionFilter propertiesExtFilter = new ExtensionFilter("Properties file", "*.properties");

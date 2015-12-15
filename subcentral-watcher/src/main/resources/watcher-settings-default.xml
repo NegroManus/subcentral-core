@@ -154,6 +154,7 @@
 			<releaseMetaTaggedWarning enabled="true" />
 			<releaseNukedWarning enabled="true" />
 		</warnings>
+		<systemTray enabled="true" />
 	</ui>
 
 </watcherConfig>

@@ -8,6 +8,7 @@ import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -23,10 +24,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.NamedThreadFactory;
+import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
+import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
@@ -35,7 +38,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class MainController extends AbstractController
+public class MainController extends Controller
 {
 	private static final Logger		log						= LogManager.getLogger(MainController.class);
 
@@ -72,7 +75,7 @@ public class MainController extends AbstractController
 	}
 
 	@Override
-	public void doInitialize() throws Exception
+	protected void initialize() throws Exception
 	{
 		initCommonExecutor();
 		initCloseHandling();
@@ -82,7 +85,7 @@ public class MainController extends AbstractController
 		initProcessingController();
 		initWatchController();
 
-		initSystemTrayIcon();
+		initSystemTray();
 	}
 
 	private void initCommonExecutor()
@@ -129,56 +132,63 @@ public class MainController extends AbstractController
 		rootPane.setTop(watchPane);
 	}
 
-	private void initSystemTrayIcon()
+	private void initSystemTray()
 	{
-		SwingUtilities.invokeLater(() ->
+		if (WatcherSettings.INSTANCE.isSystemTrayEnabled())
 		{
-			// Check the SystemTray is supported
-			if (!SystemTray.isSupported())
+			SwingUtilities.invokeLater(() ->
 			{
-				log.warn("System tray is not supported");
-				return;
-			}
-			try
-			{
-				systemTray = SystemTray.getSystemTray();
-				ActionListener showHideListener = (ActionEvent e) -> Platform.runLater(this::toggleShowHide);
+				// Check the SystemTray is supported
+				if (!SystemTray.isSupported())
+				{
+					log.warn("System tray is not supported");
+					return;
+				}
+				try
+				{
+					systemTray = SystemTray.getSystemTray();
+					ActionListener showHideListener = (ActionEvent e) -> Platform.runLater(this::toggleShowHide);
 
-				java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
-				systemTrayIcon = new TrayIcon(trayImg);
-				// Show/Hide on double-click
-				systemTrayIcon.addActionListener(showHideListener);
+					java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
+					systemTrayIcon = new TrayIcon(trayImg);
+					// Show/Hide on double-click
+					systemTrayIcon.addActionListener(showHideListener);
 
-				PopupMenu popup = new PopupMenu();
+					PopupMenu popup = new PopupMenu();
 
-				MenuItem appItem = new MenuItem("Watcher");
-				appItem.setFont(java.awt.Font.decode(null).deriveFont(java.awt.Font.BOLD));
+					MenuItem appItem = new MenuItem("Watcher");
+					appItem.setFont(java.awt.Font.decode(null).deriveFont(java.awt.Font.BOLD));
 
-				systemTrayShowHideMenuItem = new MenuItem("Hide");
-				systemTrayShowHideMenuItem.addActionListener(showHideListener);
+					systemTrayShowHideMenuItem = new MenuItem("Hide");
+					systemTrayShowHideMenuItem.addActionListener(showHideListener);
 
-				MenuItem exitItem = new MenuItem("Exit");
-				exitItem.addActionListener((ActionEvent e) -> Platform.runLater(this::exit));
+					MenuItem exitItem = new MenuItem("Exit");
+					exitItem.addActionListener((ActionEvent e) -> Platform.runLater(this::exit));
 
-				// Add components to pop-up menu
-				popup.add(appItem);
-				popup.addSeparator();
-				popup.add(systemTrayShowHideMenuItem);
-				popup.addSeparator();
-				popup.add(exitItem);
+					// Add components to pop-up menu
+					popup.add(appItem);
+					popup.addSeparator();
+					popup.add(systemTrayShowHideMenuItem);
+					popup.addSeparator();
+					popup.add(exitItem);
 
-				systemTrayIcon.setPopupMenu(popup);
+					systemTrayIcon.setPopupMenu(popup);
 
-				systemTray.add(systemTrayIcon);
-			}
-			catch (Exception e)
-			{
-				log.warn("System tray icon could not be added", e);
+					systemTray.add(systemTrayIcon);
+				}
+				catch (Exception e)
+				{
+					log.warn("System tray icon could not be added", e);
 
-				// Clean up just in case. So that no uninitialized SystemTrayIcon is displayed
-				removeSystemTrayIcon();
-			}
-		});
+					// Clean up just in case. So that no uninitialized SystemTrayIcon is displayed
+					removeSystemTrayIcon();
+				}
+			});
+		}
+		else
+		{
+			log.debug("Not adding system tray icon because setting systemTrayEnabled is false");
+		}
 	}
 
 	// Public API
@@ -303,20 +313,31 @@ public class MainController extends AbstractController
 			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
 		}
 
-		SwingUtilities.invokeAndWait(this::removeSystemTrayIcon);
+		removeSystemTrayIcon();
 	}
 
 	/**
 	 * Removes the TrayIcon. Must be done on application shutdown because the SystemTrayIcon causes the AWT Event Dispatch Thread to keep running.
-	 * <p>
-	 * <b>HAS to be invoked in AWT Event Dispatch Thread.</b>
-	 * </p>
 	 */
 	private void removeSystemTrayIcon()
 	{
 		if (systemTray != null)
 		{
-			systemTray.remove(systemTrayIcon);
+			if (SwingUtilities.isEventDispatchThread())
+			{
+				systemTray.remove(systemTrayIcon);
+			}
+			else
+			{
+				try
+				{
+					SwingUtilities.invokeAndWait(() -> systemTray.remove(systemTrayIcon));
+				}
+				catch (InvocationTargetException | InterruptedException e)
+				{
+					log.warn("Exception while removing the system tray icon from the system tray", e);
+				}
+			}
 		}
 	}
 }

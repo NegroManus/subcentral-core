@@ -3,6 +3,7 @@ package de.subcentral.mig.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.mig.MigrationConfig;
 import javafx.beans.binding.BooleanBinding;
@@ -20,7 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public abstract class AbstractPageController extends AbstractController
+public abstract class AbstractPageController extends Controller
 {
 	private static final Logger	log	= LogManager.getLogger(AbstractPageController.class);
 
