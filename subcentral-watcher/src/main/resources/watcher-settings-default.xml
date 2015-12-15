@@ -13,8 +13,7 @@
 		<filenamePatterns>*.srt</filenamePatterns>
 		<parsingServices>
 			<parsingService enabled="true">addic7ed.com</parsingService>
-			<parsingService enabled="false">italiansubs.net
-			</parsingService>
+			<parsingService enabled="false">italiansubs.net</parsingService>
 			<parsingService enabled="false">subcentral.de</parsingService>
 		</parsingServices>
 	</parsing>
