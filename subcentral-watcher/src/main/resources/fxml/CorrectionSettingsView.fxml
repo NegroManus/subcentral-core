@@ -31,24 +31,24 @@
 			</graphic>
 		</Label>
 		<Label text="Add rules to correct the parsed data before querying the databases and to correct the query results after querying the databases." wrapText="true" GridPane.rowIndex="1" />
-		<TableView fx:id="standardizersTableView" editable="true" minHeight="100.0" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2">
+		<TableView fx:id="correctorsTableView" editable="true" minHeight="100.0" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2">
 			<columns>
-				<TableColumn fx:id="standardizersTypeColumn" editable="false" prefWidth="80.0" text="Rule type" />
-				<TableColumn fx:id="standardizersRuleColumn" editable="false" prefWidth="330.0" text="Rule" />
-				<TableColumn fx:id="standardizersBeforeQueryingColumn" prefWidth="80.0" text="Before querying" />
-				<TableColumn fx:id="standardizersAfterQueryingColumn" prefWidth="80.0" text="After querying" />
+				<TableColumn fx:id="correctorsTypeColumn" editable="false" prefWidth="80.0" text="Rule type" />
+				<TableColumn fx:id="correctorsRuleColumn" editable="false" prefWidth="330.0" text="Rule" />
+				<TableColumn fx:id="correctorsBeforeQueryingColumn" prefWidth="80.0" text="Before querying" />
+				<TableColumn fx:id="correctorsAfterQueryingColumn" prefWidth="80.0" text="After querying" />
 			</columns>
 		</TableView>
 		<HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" GridPane.rowIndex="3">
 			<children>
 				<HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" HBox.hgrow="SOMETIMES">
 					<children>
-						<ChoiceBox fx:id="standardizerTypeChoiceBox" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="100.0" prefWidth="150.0" />
-						<Button fx:id="addStandardizerButton" mnemonicParsing="false" text="Add" />
+						<ChoiceBox fx:id="correctorTypeChoiceBox" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="100.0" prefWidth="150.0" />
+						<Button fx:id="addCorrectorButton" mnemonicParsing="false" text="Add" />
 					</children>
 				</HBox>
-				<Button fx:id="editStandardizerButton" mnemonicParsing="false" text="Edit" />
-				<Button fx:id="removeStandardizerButton" mnemonicParsing="false" text="Remove" />
+				<Button fx:id="editCorrectorButton" mnemonicParsing="false" text="Edit" />
+				<Button fx:id="removeCorrectorButton" mnemonicParsing="false" text="Remove" />
 			</children>
 		</HBox>
 	</children>

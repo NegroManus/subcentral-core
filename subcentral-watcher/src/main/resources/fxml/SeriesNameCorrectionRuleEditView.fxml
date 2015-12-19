@@ -27,7 +27,7 @@
 		<VBox maxHeight="-Infinity" maxWidth="-Infinity" spacing="3.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
 			<children>
 				<RadioButton fx:id="literalRadioBtn" mnemonicParsing="false" text="the literal string" />
-				<RadioButton fx:id="simplePatternRadioBtn" mnemonicParsing="false" text="the pattern (* = any string)" />
+				<RadioButton fx:id="simplePatternRadioBtn" mnemonicParsing="false" text="the wildcard pattern (* = any string)" />
 				<RadioButton fx:id="regexRadioBtn" mnemonicParsing="false" text="the regular expression" />
 			</children>
 			<GridPane.margin>

@@ -25,23 +25,23 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	@FXML
 	private GridPane														rootPane;
 	@FXML
-	private TableView<CorrectionRuleSettingEntry<?, ?>>						standardizersTableView;
+	private TableView<CorrectionRuleSettingEntry<?, ?>>						correctorsTableView;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, String>			standardizersTypeColumn;
+	private TableColumn<CorrectionRuleSettingEntry<?, ?>, String>			correctorsTypeColumn;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, String>			standardizersRuleColumn;
+	private TableColumn<CorrectionRuleSettingEntry<?, ?>, String>			correctorsRuleColumn;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, Boolean>			standardizersBeforeQueryingColumn;
+	private TableColumn<CorrectionRuleSettingEntry<?, ?>, Boolean>			correctorsBeforeQueryingColumn;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, Boolean>			standardizersAfterQueryingColumn;
+	private TableColumn<CorrectionRuleSettingEntry<?, ?>, Boolean>			correctorsAfterQueryingColumn;
 	@FXML
-	private ChoiceBox<Class<? extends CorrectionRuleSettingEntry<?, ?>>>	standardizerTypeChoiceBox;
+	private ChoiceBox<Class<? extends CorrectionRuleSettingEntry<?, ?>>>	correctorTypeChoiceBox;
 	@FXML
-	private Button															addStandardizerButton;
+	private Button															addCorrectorButton;
 	@FXML
-	private Button															editStandardizerButton;
+	private Button															editCorrectorButton;
 	@FXML
-	private Button															removeStandardizerButton;
+	private Button															removeCorrectorButton;
 
 	public CorrectionSettingsController(SettingsController settingsController)
 	{
@@ -57,22 +57,22 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	@Override
 	protected void initialize() throws Exception
 	{
-		// Standardizers
-		standardizersTableView.setItems(WatcherSettings.INSTANCE.getProcessingSettings().correctionRulesProperty());
+		// Correctors
+		correctorsTableView.setItems(WatcherSettings.INSTANCE.getProcessingSettings().correctionRulesProperty());
 
-		standardizersTypeColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
+		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
 
-		standardizersRuleColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleBinding());
+		correctorsRuleColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleBinding());
 
-		standardizersBeforeQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(standardizersBeforeQueryingColumn));
-		standardizersBeforeQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, Boolean> param) -> param.getValue().beforeQueryingProperty());
+		correctorsBeforeQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(correctorsBeforeQueryingColumn));
+		correctorsBeforeQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, Boolean> param) -> param.getValue().beforeQueryingProperty());
 
-		standardizersAfterQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(standardizersAfterQueryingColumn));
-		standardizersAfterQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, Boolean> param) -> param.getValue().afterQueryingProperty());
+		correctorsAfterQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(correctorsAfterQueryingColumn));
+		correctorsAfterQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, Boolean> param) -> param.getValue().afterQueryingProperty());
 
-		standardizerTypeChoiceBox.getItems().add(SeriesNameCorrectionRuleSettingEntry.class);
-		standardizerTypeChoiceBox.getItems().add(ReleaseTagsCorrectionRuleSettingEntry.class);
-		standardizerTypeChoiceBox.setConverter(new StringConverter<Class<? extends CorrectionRuleSettingEntry<?, ?>>>()
+		correctorTypeChoiceBox.getItems().add(SeriesNameCorrectionRuleSettingEntry.class);
+		correctorTypeChoiceBox.getItems().add(ReleaseTagsCorrectionRuleSettingEntry.class);
+		correctorTypeChoiceBox.setConverter(new StringConverter<Class<? extends CorrectionRuleSettingEntry<?, ?>>>()
 		{
 			@Override
 			public String toString(Class<? extends CorrectionRuleSettingEntry<?, ?>> type)
@@ -99,18 +99,18 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 				throw new UnsupportedOperationException();
 			}
 		});
-		standardizerTypeChoiceBox.getSelectionModel().selectFirst();
+		correctorTypeChoiceBox.getSelectionModel().selectFirst();
 
-		addStandardizerButton.disableProperty().bind(standardizerTypeChoiceBox.getSelectionModel().selectedItemProperty().isNull());
-		addStandardizerButton.setOnAction((ActionEvent event) ->
+		addCorrectorButton.disableProperty().bind(correctorTypeChoiceBox.getSelectionModel().selectedItemProperty().isNull());
+		addCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			Class<? extends CorrectionRuleSettingEntry<?, ?>> selectedStandardizerType = standardizerTypeChoiceBox.getSelectionModel().getSelectedItem();
+			Class<? extends CorrectionRuleSettingEntry<?, ?>> selectedCorrectorType = correctorTypeChoiceBox.getSelectionModel().getSelectedItem();
 			Optional<? extends CorrectionRuleSettingEntry<?, ?>> result;
-			if (SeriesNameCorrectionRuleSettingEntry.class == selectedStandardizerType)
+			if (SeriesNameCorrectionRuleSettingEntry.class == selectedCorrectorType)
 			{
 				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
 			}
-			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedStandardizerType)
+			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedCorrectorType)
 			{
 				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
 			}
@@ -118,35 +118,35 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			{
 				result = Optional.empty();
 			}
-			FxUtil.handleDistinctAdd(standardizersTableView, result);
+			FxUtil.handleDistinctAdd(correctorsTableView, result);
 		});
 
-		final BooleanBinding noSelection = standardizersTableView.getSelectionModel().selectedItemProperty().isNull();
+		final BooleanBinding noSelection = correctorsTableView.getSelectionModel().selectedItemProperty().isNull();
 
-		editStandardizerButton.disableProperty().bind(noSelection);
-		editStandardizerButton.setOnAction((ActionEvent event) ->
+		editCorrectorButton.disableProperty().bind(noSelection);
+		editCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			CorrectionRuleSettingEntry<?, ?> selectedStandardizer = standardizersTableView.getSelectionModel().getSelectedItem();
+			CorrectionRuleSettingEntry<?, ?> selectedCorrector = correctorsTableView.getSelectionModel().getSelectedItem();
 			Optional<? extends CorrectionRuleSettingEntry<?, ?>> result;
-			if (SeriesNameCorrectionRuleSettingEntry.class == selectedStandardizer.getClass())
+			if (SeriesNameCorrectionRuleSettingEntry.class == selectedCorrector.getClass())
 			{
-				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectionRuleSettingEntry) selectedStandardizer, settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectionRuleSettingEntry) selectedCorrector, settingsController.getMainController().getPrimaryStage());
 			}
-			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedStandardizer.getClass())
+			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedCorrector.getClass())
 			{
-				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectionRuleSettingEntry) selectedStandardizer, settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectionRuleSettingEntry) selectedCorrector, settingsController.getMainController().getPrimaryStage());
 			}
 			else
 			{
 				result = Optional.empty();
 			}
-			FxUtil.handleDistinctEdit(standardizersTableView, result);
+			FxUtil.handleDistinctEdit(correctorsTableView, result);
 		});
 
-		removeStandardizerButton.disableProperty().bind(noSelection);
-		removeStandardizerButton.setOnAction((ActionEvent event) ->
+		removeCorrectorButton.disableProperty().bind(noSelection);
+		removeCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			FxUtil.handleConfirmedDelete(standardizersTableView, "standardizing rule", new StringConverter<CorrectionRuleSettingEntry<?, ?>>()
+			FxUtil.handleConfirmedDelete(correctorsTableView, "correction rule", new StringConverter<CorrectionRuleSettingEntry<?, ?>>()
 			{
 				@Override
 				public String toString(CorrectionRuleSettingEntry<?, ?> entry)
@@ -169,6 +169,6 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			});
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupport(standardizersTableView, editStandardizerButton, removeStandardizerButton);
+		FxUtil.setStandardMouseAndKeyboardSupport(correctorsTableView, editCorrectorButton, removeCorrectorButton);
 	}
 }
