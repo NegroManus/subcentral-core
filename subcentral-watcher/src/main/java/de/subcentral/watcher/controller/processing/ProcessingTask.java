@@ -435,6 +435,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 					addReleaseToResult(rls, methodInfo);
 				}
 
+				log.debug("Searching for compatible releases among the found releases");
 				addCompatibleReleases(matchingReleases, mediaFilteredFoundReleases);
 			}
 		}
@@ -491,14 +492,20 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				addReleaseToResult(entry.getKey(), methodInfo);
 			}
 
-			List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
-			for (StandardRelease stdRls : stdRlss)
+			log.debug("Searching for compatible releases among the listed releases");
+			boolean foundCompatibleListedReleases = addCompatibleReleases(guessedReleases.keySet(), mediaFilteredFoundReleases);
+			if (!foundCompatibleListedReleases)
 			{
-				Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
-				TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
-				stdRlssWithMediaAndMetaTags.add(rls);
+				log.debug("No compatible releases found among the listed releases. Searching for compatible releases among the standard releases");
+				List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
+				for (StandardRelease stdRls : stdRlss)
+				{
+					Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
+					TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
+					stdRlssWithMediaAndMetaTags.add(rls);
+				}
+				addCompatibleReleases(guessedReleases.keySet(), stdRlssWithMediaAndMetaTags);
 			}
-			addCompatibleReleases(guessedReleases.keySet(), stdRlssWithMediaAndMetaTags);
 		}
 		else
 		{
@@ -506,7 +513,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		}
 	}
 
-	private void addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> foundReleases) throws Exception
+	private boolean addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> foundReleases) throws Exception
 	{
 		if (config.isCompatibilityEnabled())
 		{
@@ -518,6 +525,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			if (compatibleReleases.isEmpty())
 			{
 				log.debug("No compatible releases found");
+				return false;
 			}
 			else
 			{
@@ -530,11 +538,13 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 					CompatibleInfo methodInfo = new CompatibleInfo(entry.getValue());
 					addReleaseToResult(entry.getKey(), methodInfo);
 				}
+				return true;
 			}
 		}
 		else
 		{
 			log.debug("Search for compatible releases disabled");
+			return false;
 		}
 	}
 
