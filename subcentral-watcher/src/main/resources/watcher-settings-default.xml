@@ -43,6 +43,7 @@
 					<standardRelease tags="720p, WEB-DL, DD5.1, H.264" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="2HD" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="2HD" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, XviD" group="AFG" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="ASAP" scope="IF_GUESSING" />
 					<standardRelease tags="1080p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
