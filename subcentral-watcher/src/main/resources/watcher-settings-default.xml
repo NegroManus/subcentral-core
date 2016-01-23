@@ -35,7 +35,7 @@
 			<databases>
 				<db enabled="true">predb.me</db>
 				<db enabled="true">xrel.to</db>
-				<db enabled="true">orlydb.com</db>
+				<db enabled="false">orlydb.com</db>
 			</databases>
 			<guessing enabled="true">
 				<standardReleases>
