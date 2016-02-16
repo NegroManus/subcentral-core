@@ -38,7 +38,6 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
-import de.subcentral.core.metadata.release.Unnuke;
 import de.subcentral.core.util.ByteUtil;
 
 /**
@@ -506,7 +505,6 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 					{
 						Elements nukeLis = nukeListOl.getElementsByTag("li");
 						List<Nuke> nukes = new ArrayList<>(nukeLis.size());
-						List<Unnuke> unnukes = new ArrayList<>(nukeLis.size());
 						for (Element nukeLi : nukeLis)
 						{
 							String nukeReason = null;
@@ -535,7 +533,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 							}
 							else if (unnukeReason != null)
 							{
-								unnukes.add(new Unnuke(unnukeReason, nukeDate));
+								nukes.add(new Nuke(unnukeReason, nukeDate, true));
 							}
 							else
 							{
@@ -543,7 +541,6 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 							}
 						}
 						rls.setNukes(nukes);
-						rls.setUnnukes(unnukes);
 					}
 				}
 				else if ("Title".equals(key))

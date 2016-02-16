@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +13,8 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
@@ -22,7 +25,6 @@ import de.subcentral.core.metadata.release.SameGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
-import de.subcentral.core.metadata.release.Unnuke;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
@@ -32,6 +34,7 @@ import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -113,33 +116,47 @@ public class WatcherFxUtil
 		}
 	}
 
-	public static Label createNukedLabel(Release rls)
+	public static List<Node> createNukedLabels(Release rls)
 	{
 		if (rls.isNuked())
 		{
-			ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
-			Label nukedLbl = new Label("", nukedImg);
-			StringJoiner joiner = new StringJoiner(", ", "Nuke reason: ", "");
+			boolean nuked = false;
+			boolean unnuked = false;
+			StringJoiner nukeToolTipJoiner = new StringJoiner(", ", "Nuked: ", "");
+			StringJoiner unnukeTooltipJoiner = new StringJoiner(", ", "Unnuked: ", "");
 			for (Nuke nuke : rls.getNukes())
 			{
-				joiner.add(nuke.getReason());
+				if (nuke.isUnnuke())
+				{
+					unnuked = true;
+					unnukeTooltipJoiner.add(nuke.getReason());
+				}
+				else
+				{
+					nuked = true;
+					nukeToolTipJoiner.add(nuke.getReason());
+				}
 			}
-			nukedLbl.setTooltip(new Tooltip(joiner.toString()));
-			return nukedLbl;
-		}
-		if (rls.isUnnuked())
-		{
-			ImageView unnukedImg = new ImageView(FxUtil.loadImg("unnuked_16.png"));
-			Label unnukedLbl = new Label("", unnukedImg);
-			StringJoiner joiner = new StringJoiner(", ", "Unnuke reason: ", "");
-			for (Unnuke unnuke : rls.getUnnukes())
+			Label nukedLbl = null;
+			Label unnukedLbl = null;
+			List<Node> nodes = new ArrayList<>(2);
+			if (nuked)
 			{
-				joiner.add(unnuke.getReason());
+				ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
+				nukedLbl = new Label("", nukedImg);
+				nukedLbl.setTooltip(new Tooltip(nukeToolTipJoiner.toString()));
+				nodes.add(nukedLbl);
 			}
-			unnukedLbl.setTooltip(new Tooltip(joiner.toString()));
-			return unnukedLbl;
+			if (unnuked)
+			{
+				ImageView unnukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
+				unnukedLbl = new Label("", unnukedImg);
+				unnukedLbl.setTooltip(new Tooltip(unnukeTooltipJoiner.toString()));
+				nodes.add(unnukedLbl);
+			}
+			return nodes;
 		}
-		return null;
+		return ImmutableList.of();
 	}
 
 	public static Label createMetaTaggedLabel(Release rls, List<Tag> metaTags)

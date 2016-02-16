@@ -298,11 +298,7 @@ public class DetailsController extends Controller
 		hbox.getChildren().add(new Label(task.generateDisplayName(rls)));
 
 		// nuke
-		Label nukedLbl = WatcherFxUtil.createNukedLabel(rls);
-		if (nukedLbl != null)
-		{
-			hbox.getChildren().add(nukedLbl);
-		}
+		hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(rls));
 
 		// meta tags
 		Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(rls, task.getConfig().getReleaseMetaTags());

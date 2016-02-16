@@ -67,7 +67,6 @@ public class Release extends MetadataBase implements Comparable<Release>
 	private long								size					= 0L;
 	private int									fileCount				= 0;
 	private final List<Nuke>					nukes					= new ArrayList<>(0);
-	private final List<Unnuke>					unnukes					= new ArrayList<>(0);
 	private String								nfo;
 	private String								nfoLink;
 	private final List<String>					furtherInfoLinks		= new ArrayList<>(4);
@@ -325,22 +324,6 @@ public class Release extends MetadataBase implements Comparable<Release>
 	}
 
 	/**
-	 * The unukes. If a Release was wrongfully nuked, it gets unnuked.
-	 * 
-	 * @return the unnukes
-	 */
-	public List<Unnuke> getUnnukes()
-	{
-		return unnukes;
-	}
-
-	public void setUnnukes(Collection<Unnuke> unnukes)
-	{
-		this.unnukes.clear();
-		this.unnukes.addAll(unnukes);
-	}
-
-	/**
 	 * The release information (content of the NFO file).
 	 * 
 	 * @return the NFO
@@ -417,19 +400,14 @@ public class Release extends MetadataBase implements Comparable<Release>
 		nukes.add(new Nuke(nukeReason, date));
 	}
 
-	public boolean isUnnuked()
-	{
-		return !unnukes.isEmpty();
-	}
-
 	public void unnuke(String unnukeReason)
 	{
-		unnukes.add(new Unnuke(unnukeReason));
+		nukes.add(new Nuke(unnukeReason, true));
 	}
 
 	public void unnuke(String unnukeReason, Temporal date)
 	{
-		unnukes.add(new Unnuke(unnukeReason, date));
+		nukes.add(new Nuke(unnukeReason, date, true));
 	}
 
 	// Object methods
@@ -508,7 +486,6 @@ public class Release extends MetadataBase implements Comparable<Release>
 				.add("size", BeanUtil.nullIfZero(size))
 				.add("fileCount", BeanUtil.nullIfZero(fileCount))
 				.add("nukes", BeanUtil.nullIfEmpty(nukes))
-				.add("unnukes", BeanUtil.nullIfEmpty(unnukes))
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
 				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfoLinks))

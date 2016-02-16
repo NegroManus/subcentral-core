@@ -358,11 +358,7 @@ public class ProcessingController extends Controller
 							}
 
 							// nuke
-							Label nukedLbl = WatcherFxUtil.createNukedLabel(resultInfo.getProcessingResult().getRelease());
-							if (nukedLbl != null)
-							{
-								hbox.getChildren().add(nukedLbl);
-							}
+							hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(resultInfo.getProcessingResult().getRelease()));
 
 							// meta tags
 							Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(resultInfo.getProcessingResult().getRelease(),
@@ -392,9 +388,7 @@ public class ProcessingController extends Controller
 						hbox.getChildren().add(database);
 					}
 				}
-
 			};
-
 		});
 
 		initProcessingTreeTableDnD();
