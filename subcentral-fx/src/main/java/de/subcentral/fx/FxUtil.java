@@ -29,8 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.io.Resources;
-
 import de.subcentral.core.util.ExceptionUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.UserPattern.Mode;
@@ -760,7 +758,7 @@ public class FxUtil
 		String url = "img/" + img;
 		try
 		{
-			return ImageIO.read(Resources.getResource("img/" + img));
+			return ImageIO.read(FxUtil.class.getClassLoader().getResource(url));
 		}
 		catch (IllegalArgumentException | IOException e)
 		{
@@ -835,7 +833,7 @@ public class FxUtil
 			{
 				// if newItem not already exists
 				newItemIndex = selectionModel.getSelectedIndex() + 1;
-				items.add(selectionModel.getSelectedIndex() + 1, newItem);
+				items.add(newItemIndex, newItem);
 			}
 			else
 			{
