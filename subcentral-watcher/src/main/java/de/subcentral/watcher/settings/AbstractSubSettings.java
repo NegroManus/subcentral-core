@@ -6,6 +6,7 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.ObservableObject;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 /**
@@ -24,7 +25,7 @@ abstract class AbstractSubSettings extends ObservableObject
 
 	public abstract String getKey();
 
-	public BooleanProperty changedProperty()
+	public ReadOnlyBooleanProperty changedProperty()
 	{
 		return changed;
 	}

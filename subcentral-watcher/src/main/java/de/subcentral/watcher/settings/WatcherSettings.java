@@ -23,6 +23,7 @@ import de.subcentral.fx.ObservableObject;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -180,7 +181,7 @@ public class WatcherSettings extends ObservableObject
 
 		XMLConfiguration cfg = saveToCfg();
 		ConfigurationHelper.save(cfg, file);
-		FxUtil.runAndWait(() -> changed.set(false));
+		changed.set(false);
 
 		log.info("Saved settings to {}", file.toAbsolutePath());
 	}
@@ -214,7 +215,7 @@ public class WatcherSettings extends ObservableObject
 	}
 
 	// Getter and Setter
-	public BooleanProperty changedProperty()
+	public ReadOnlyBooleanProperty changedProperty()
 	{
 		return changed;
 	}
