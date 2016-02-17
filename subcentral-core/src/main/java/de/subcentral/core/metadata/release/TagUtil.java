@@ -174,7 +174,7 @@ public class TagUtil
 		for (int i = 0; i < tags.size() && i + tagSequenceToFind.size() <= tags.size(); i++)
 		{
 			List<Tag> sublist = tags.subList(i, i + tagSequenceToFind.size());
-			if (equalsIgnoreOrder(sublist, tagSequenceToFind))
+			if (sublist.equals(tagSequenceToFind))
 			{
 				return true;
 			}

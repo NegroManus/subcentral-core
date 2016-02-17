@@ -69,7 +69,7 @@ public class SubtitleUtil
 				subAdj.setVersion(newRev);
 				if (!Objects.equals(oldRev, newRev))
 				{
-					changes.add(new Correction(subAdj, SubtitleRelease.PROP_VERSION.getPropName(), oldRev, newRev));
+					changes.add(new Correction(subAdj, SubtitleRelease.PROP_VERSION.getPropName(), oldRev, newRev, null));
 				}
 				iter.remove();
 				tagsChanged = true;
@@ -77,7 +77,7 @@ public class SubtitleUtil
 		}
 		if (tagsChanged)
 		{
-			changes.add(new Correction(subAdj, SubtitleRelease.PROP_TAGS.getPropName(), oldTags, subAdj.getTags()));
+			changes.add(new Correction(subAdj, SubtitleRelease.PROP_TAGS.getPropName(), oldTags, subAdj.getTags(), null));
 		}
 	}
 

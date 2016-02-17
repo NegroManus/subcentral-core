@@ -71,19 +71,19 @@ public class SeriesNameCorrector implements Corrector<Series>
 			{
 				String oldName = series.getName();
 				series.setName(nameReplacement);
-				corrections.add(new Correction(series, Series.PROP_NAME.getPropName(), oldName, nameReplacement));
+				corrections.add(new Correction(series, Series.PROP_NAME.getPropName(), oldName, nameReplacement, this));
 			}
 			if (!series.getAliasNames().equals(aliasNamesReplacement))
 			{
 				List<String> oldAliasNames = new ArrayList<>(series.getAliasNames());
 				series.setAliasNames(aliasNamesReplacement);
-				corrections.add(new Correction(series, Series.PROP_ALIAS_NAMES.getPropName(), oldAliasNames, aliasNamesReplacement));
+				corrections.add(new Correction(series, Series.PROP_ALIAS_NAMES.getPropName(), oldAliasNames, aliasNamesReplacement, this));
 			}
 			if (!Objects.equals(series.getTitle(), titleReplacement))
 			{
 				String oldTitle = series.getTitle();
 				series.setTitle(titleReplacement);
-				corrections.add(new Correction(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement));
+				corrections.add(new Correction(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement, this));
 			}
 		}
 	}

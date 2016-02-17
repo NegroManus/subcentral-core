@@ -53,7 +53,7 @@ public class CorrectionTest
 			if (!e.isSpecial())
 			{
 				e.setSpecial(true);
-				corrections.add(new Correction(e, Episode.PROP_SPECIAL.getPropName(), false, true));
+				corrections.add(new Correction(e, Episode.PROP_SPECIAL.getPropName(), false, true, null));
 			}
 
 		});

@@ -9,4 +9,4 @@ org\openjdk\jmh\infra\generated\Blackhole_jmhType_B3.class
 de\subcentral\core\jmh\generated\SubCentralCoreBenchmark_jmhType_B3.class
 META-INF\BenchmarkList
 META-INF\CompilerHints
-de\subcentral\core\jmh\generated\SubCentralCoreBenchmark_testParsingSubRipFile_jmhTest.class
+de\subcentral\core\jmh\generated\SubCentralCoreBenchmark_testCorrect_jmhTest.class
