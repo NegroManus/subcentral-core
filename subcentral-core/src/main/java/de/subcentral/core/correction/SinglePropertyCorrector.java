@@ -31,10 +31,10 @@ public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
 		P newValue = replacer.apply(oldValue);
 		if (!Objects.equals(oldValue, newValue))
 		{
-			P oldValClone = cloneValue(oldValue);
-			P newValClone = cloneValue(newValue);
+			P oldValueClone = cloneValue(oldValue);
+			P newValueClone = cloneValue(newValue);
 			setValue(bean, newValue);
-			changes.add(new Correction(bean, getPropertyName(), oldValClone, newValClone, this));
+			changes.add(new Correction(bean, getPropertyName(), oldValueClone, newValueClone, this));
 		}
 	}
 
