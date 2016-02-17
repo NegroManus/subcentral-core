@@ -250,7 +250,7 @@ public class FxUtil
 		};
 	}
 
-	public static void checkJavaFxApplicationThread() throws IllegalStateException
+	public static void requireJavaFxApplicationThread() throws IllegalStateException
 	{
 		if (!Platform.isFxApplicationThread())
 		{

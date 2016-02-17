@@ -77,7 +77,7 @@ public class WatcherSettings extends ObservableObject
 	 */
 	public void load(URL file) throws ConfigurationException
 	{
-		FxUtil.checkJavaFxApplicationThread();
+		FxUtil.requireJavaFxApplicationThread();
 
 		XMLConfiguration cfg = ConfigurationHelper.load(file);
 		loadFromCfg(cfg);
@@ -94,7 +94,7 @@ public class WatcherSettings extends ObservableObject
 	 */
 	public void load(Path file) throws ConfigurationException
 	{
-		FxUtil.checkJavaFxApplicationThread();
+		FxUtil.requireJavaFxApplicationThread();
 
 		XMLConfiguration cfg = ConfigurationHelper.load(file);
 		loadFromCfg(cfg);
@@ -176,7 +176,7 @@ public class WatcherSettings extends ObservableObject
 	 */
 	public void save(Path file) throws ConfigurationException
 	{
-		FxUtil.checkJavaFxApplicationThread();
+		FxUtil.requireJavaFxApplicationThread();
 
 		XMLConfiguration cfg = saveToCfg();
 		ConfigurationHelper.save(cfg, file);
