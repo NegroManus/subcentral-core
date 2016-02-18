@@ -19,6 +19,7 @@ import de.subcentral.fx.Controller;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -27,10 +28,12 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -45,9 +48,9 @@ public class DetailsController extends Controller
 	@FXML
 	private Accordion					sectionsAccordion;
 	@FXML
-	private ScrollPane					parsingResultsRootPane;
+	private ScrollPane					parsingDetailsRootPane;
 	@FXML
-	private ScrollPane					releaseResultsRootPane;
+	private ScrollPane					releaseDetailsRootPane;
 
 	// Control
 	private final ProcessingController	processingController;
@@ -62,25 +65,27 @@ public class DetailsController extends Controller
 	protected void initialize() throws Exception
 	{
 		initHeader();
+		initParsingDetailsSection();
+		initReleaseDetailsSection();
 
 		// Expand release details
 		sectionsAccordion.setExpandedPane(sectionsAccordion.getPanes().get(1));
-		initParsingResultsSection();
-		initReleaseResultsSection();
 	}
 
 	private void initHeader()
 	{
 		sourceFileLabel.setText(task.getSourceFile().getFileName().toString());
+		sourceFileLabel.setTooltip(new Tooltip(task.getSourceFile().toString()));
 	}
 
-	private void initParsingResultsSection()
+	private void initParsingDetailsSection()
 	{
 		int rowCounter = 0;
 
 		GridPane contentPane = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setHgrow(Priority.NEVER);
+		column1.setHalignment(HPos.RIGHT);
 		ColumnConstraints column2 = new ColumnConstraints();
 		column2.setHgrow(Priority.SOMETIMES);
 		contentPane.getColumnConstraints().addAll(column1, column2);
@@ -91,27 +96,28 @@ public class DetailsController extends Controller
 		// Parsed object
 		SubtitleRelease subAdj = task.getParsedObject();
 
-		contentPane.add(createHeadline("Parsed object", SettingsController.PARSING_SECTION), 0, rowCounter++);
+		contentPane.add(createHeadline("Parsed subtitle", SettingsController.PARSING_SECTION), 0, rowCounter++);
 
 		if (subAdj != null)
 		{
-			contentPane.add(new Label(task.generateDisplayName(subAdj)), 0, rowCounter++, GridPane.REMAINING, 1);
-
 			Subtitle sub = subAdj.getFirstSubtitle();
 			Release rls = subAdj.getFirstMatchingRelease();
-			contentPane.add(new Label("Media:"), 0, rowCounter);
+
+			contentPane.add(createKeyLabel("Computed name:"), 0, rowCounter);
+			contentPane.add(new Label(task.generateDisplayName(subAdj)), 1, rowCounter++, GridPane.REMAINING, 1);
+			contentPane.add(createKeyLabel("Media:"), 0, rowCounter);
 			contentPane.add(new Label(task.generateDisplayName(rls.getMedia())), 1, rowCounter++);
-			contentPane.add(new Label("Release tags:"), 0, rowCounter);
+			contentPane.add(createKeyLabel("Release tags:"), 0, rowCounter);
 			contentPane.add(new Label(Tag.listToString(rls.getTags())), 1, rowCounter++);
-			contentPane.add(new Label("Release group:"), 0, rowCounter);
+			contentPane.add(createKeyLabel("Release group:"), 0, rowCounter);
 			contentPane.add(new Label(rls.getGroup() != null ? rls.getGroup().toString() : ""), 1, rowCounter++);
-			contentPane.add(new Label("Subtitle language:"), 0, rowCounter);
+			contentPane.add(createKeyLabel("Subtitle language:"), 0, rowCounter);
 			contentPane.add(new Label(sub.getLanguage() != null ? sub.getLanguage() : ""), 1, rowCounter++);
-			contentPane.add(new Label("Subtitle tags:"), 0, rowCounter);
+			contentPane.add(createKeyLabel("Subtitle tags:"), 0, rowCounter);
 			contentPane.add(new Label(Tag.listToString(subAdj.getTags())), 1, rowCounter++);
-			contentPane.add(new Label("Subtitle source:"), 0, rowCounter);
+			contentPane.add(createKeyLabel("Subtitle source:"), 0, rowCounter);
 			contentPane.add(new Label(sub.getSource() != null ? sub.getSource() : ""), 1, rowCounter++);
-			contentPane.add(new Label("Subtitle group:"), 0, rowCounter);
+			contentPane.add(createKeyLabel("Subtitle group:"), 0, rowCounter);
 			contentPane.add(new Label(sub.getGroup() != null ? sub.getGroup().toString() : ""), 1, rowCounter++);
 
 			contentPane.add(createSeparator(true), 0, rowCounter++, GridPane.REMAINING, 1);
@@ -131,7 +137,7 @@ public class DetailsController extends Controller
 					sb.append(' ');
 					sb.append(c.getPropertyName());
 					sb.append(": ");
-					contentPane.add(new Label(sb.toString()), 0, rowCounter, 1, 1);
+					contentPane.add(createKeyLabel(sb.toString()), 0, rowCounter, 1, 1);
 
 					sb = new StringBuilder();
 					sb.append(c.getOldValue());
@@ -147,10 +153,17 @@ public class DetailsController extends Controller
 		}
 
 		// Add to root pane
-		parsingResultsRootPane.setContent(contentPane);
+		parsingDetailsRootPane.setContent(contentPane);
 	}
 
-	private void initReleaseResultsSection()
+	private static Label createKeyLabel(String key)
+	{
+		Label lbl = new Label(key);
+		lbl.setTextFill(Color.GRAY);
+		return lbl;
+	}
+
+	private void initReleaseDetailsSection()
 	{
 		if (task.getParsedObject() == null)
 		{
@@ -253,7 +266,7 @@ public class DetailsController extends Controller
 			}
 		}
 
-		releaseResultsRootPane.setContent(contentPane);
+		releaseDetailsRootPane.setContent(contentPane);
 	}
 
 	private Separator createSeparator(boolean topMargin)

@@ -64,6 +64,7 @@ public class NamingDefaults
 		// Configure namers
 
 		// PropToStringService
+		// Type to string
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("uuuu", Locale.US).format(y));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(YearMonth.class, (YearMonth y) -> DateTimeFormatter.ofPattern("uuuu.MM", Locale.US).format(y));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDate.class, (LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));

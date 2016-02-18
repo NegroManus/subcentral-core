@@ -33,6 +33,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.NamingService;
+import de.subcentral.core.name.PropToStringService;
 import de.subcentral.core.parse.MultiParsingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
@@ -92,6 +93,7 @@ public class ProcessingController extends Controller
 	private final Binding<ProcessingConfig>							processingConfig			= initProcessingCfgBinding();
 	private final NamingService										namingService				= initNamingService();
 	private final NamingService										namingServiceForFiltering	= initNamingServiceForFiltering();
+	private final PropToStringService								propToStringService			= initPropToStringService();
 
 	private ExecutorService											processingExecutor;
 
@@ -245,6 +247,11 @@ public class ProcessingController extends Controller
 	private static NamingService initNamingServiceForFiltering()
 	{
 		return NamingDefaults.getDefaultNormalizingNamingService();
+	}
+
+	private static PropToStringService initPropToStringService()
+	{
+		return NamingDefaults.getDefaultPropToStringService();
 	}
 
 	@Override
@@ -589,6 +596,11 @@ public class ProcessingController extends Controller
 	public NamingService getNamingServicesForFiltering()
 	{
 		return namingServiceForFiltering;
+	}
+
+	public PropToStringService getPropToStringService()
+	{
+		return propToStringService;
 	}
 
 	public TreeTableView<ProcessingItem> getProcessingTreeTable()

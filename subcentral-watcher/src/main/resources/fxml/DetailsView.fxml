@@ -19,7 +19,7 @@
         </rowConstraints>
          <children>
             <Label fx:id="sourceFileLabel" text="-" GridPane.rowIndex="1" />
-            <Label text="Source file" underline="true">
+            <Label text="Processed file" underline="true">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -28,9 +28,9 @@
       </GridPane>
       <Accordion fx:id="sectionsAccordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" VBox.vgrow="SOMETIMES">
         <panes>
-          <TitledPane animated="false" text="Parsing results">
+          <TitledPane animated="false" text="Filename parsing">
                <content>
-                  <ScrollPane fx:id="parsingResultsRootPane" fitToWidth="true">
+                  <ScrollPane fx:id="parsingDetailsRootPane" fitToWidth="true">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
@@ -48,9 +48,9 @@
                      </content></ScrollPane>
                </content>
           </TitledPane>
-          <TitledPane animated="false" text="Release results">
+          <TitledPane animated="false" text="Release matching">
                <content>
-                  <ScrollPane fx:id="releaseResultsRootPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                  <ScrollPane fx:id="releaseDetailsRootPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding></ScrollPane>

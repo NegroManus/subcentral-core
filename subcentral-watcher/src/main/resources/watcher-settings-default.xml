@@ -75,9 +75,9 @@
 	<correction>
 		<rules>
 			<seriesNameCorrectionRule namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
-			<seriesNameCorrectionRule namePattern="Childrens Hospital" namePatternMode="LITERAL" nameReplacement="Children's Hospital" beforeQuerying="true" afterQuerying="true">
+			<seriesNameCorrectionRule namePattern="Childrens Hospital" namePatternMode="LITERAL" nameReplacement="Childrens Hospital" beforeQuerying="true" afterQuerying="true">
                 <aliasNames>
-                    <aliasName>Children's Hospital (US)</aliasName>
+                    <aliasName>Childrens Hospital (US)</aliasName>
                 </aliasNames>
             </seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Doctor Who" namePatternMode="LITERAL" nameReplacement="Doctor Who (2005)" beforeQuerying="true" afterQuerying="false" />
@@ -87,7 +87,7 @@
 				</aliasNames>
 			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Last Man Standing" namePatternMode="LITERAL" nameReplacement="Last Man Standing (US)" beforeQuerying="true" afterQuerying="false" />
-						<seriesNameCorrectionRule namePattern="Nashville" namePatternMode="SIMPLE" nameReplacement="Nashville (2012)" beforeQuerying="true" afterQuerying="false">
+			<seriesNameCorrectionRule namePattern="Nashville" namePatternMode="LITERAL" nameReplacement="Nashville (2012)" beforeQuerying="true" afterQuerying="false">
 				<aliasNames>
 					<aliasName>Nashville</aliasName>
 				</aliasNames>

@@ -41,15 +41,25 @@ public class SimplePropToStringService implements PropToStringService
 		{
 			return "";
 		}
+		// Search for function registered for property
 		Function<?, String> toStringFn = propToStringFns.get(propDescriptor);
 		if (toStringFn != null)
 		{
 			return ((Function<T, String>) toStringFn).apply(propValue);
 		}
+		// Search for function registered for type
 		toStringFn = typeToStringFns.get(propValue.getClass());
 		if (toStringFn != null)
 		{
 			return ((Function<T, String>) toStringFn).apply(propValue);
+		}
+		// Search for function registered for super type
+		for (Map.Entry<Class<?>, Function<?, String>> entry : typeToStringFns.entrySet())
+		{
+			if (entry.getKey().isAssignableFrom(propValue.getClass()))
+			{
+				return ((Function<T, String>) entry.getValue()).apply(propValue);
+			}
 		}
 		return propValue.toString();
 	}
