@@ -6,7 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.name.NamingDefaults;
 
 public class EpisodeKey
 {

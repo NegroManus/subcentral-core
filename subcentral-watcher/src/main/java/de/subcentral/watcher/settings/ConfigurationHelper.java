@@ -20,9 +20,9 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
-import de.subcentral.core.correction.ReleaseTagsCorrector;
-import de.subcentral.core.correction.SeriesNameCorrector;
-import de.subcentral.core.correction.TagsReplacer;
+import de.subcentral.core.correct.ReleaseTagsCorrector;
+import de.subcentral.core.correct.SeriesNameCorrector;
+import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;

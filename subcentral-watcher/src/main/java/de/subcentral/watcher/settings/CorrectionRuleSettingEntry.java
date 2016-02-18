@@ -2,7 +2,7 @@ package de.subcentral.watcher.settings;
 
 import java.util.Objects;
 
-import de.subcentral.core.correction.Corrector;
+import de.subcentral.core.correct.Corrector;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

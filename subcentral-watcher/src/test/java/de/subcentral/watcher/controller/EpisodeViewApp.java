@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import de.subcentral.core.metadata.media.Episode;
-import de.subcentral.core.naming.EpisodeNamer;
+import de.subcentral.core.name.EpisodeNamer;
 import de.subcentral.fx.FxUtil;
 
 public class EpisodeViewApp extends Application

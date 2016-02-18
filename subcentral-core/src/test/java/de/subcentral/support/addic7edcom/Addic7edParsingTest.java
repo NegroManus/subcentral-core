@@ -8,8 +8,8 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.correction.Correction;
-import de.subcentral.core.correction.CorrectionDefaults;
+import de.subcentral.core.correct.Correction;
+import de.subcentral.core.correct.CorrectionDefaults;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.release.Release;

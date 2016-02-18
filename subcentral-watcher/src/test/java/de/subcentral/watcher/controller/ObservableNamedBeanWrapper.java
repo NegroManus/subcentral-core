@@ -5,7 +5,7 @@ import java.util.Objects;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
-import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.name.NamingService;
 import de.subcentral.core.util.TimeUtil;
 
 public class ObservableNamedBeanWrapper<T> extends ObservableBeanWrapper<T>

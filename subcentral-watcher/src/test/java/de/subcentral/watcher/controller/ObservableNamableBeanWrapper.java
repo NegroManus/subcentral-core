@@ -5,7 +5,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.name.NamingService;
 import de.subcentral.core.util.TimeUtil;
 
 public class ObservableNamableBeanWrapper<T> extends ObservableNamedBeanWrapper<T>

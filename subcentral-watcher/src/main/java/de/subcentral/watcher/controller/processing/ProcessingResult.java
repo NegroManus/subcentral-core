@@ -11,9 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
+import de.subcentral.core.name.SubtitleReleaseNamer;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.naming.SubtitleReleaseNamer;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ListProperty;

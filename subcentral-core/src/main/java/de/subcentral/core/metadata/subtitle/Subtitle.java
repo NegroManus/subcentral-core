@@ -22,7 +22,7 @@ import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.naming.NamingUtil;
+import de.subcentral.core.name.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>

@@ -1,6 +1,6 @@
 package de.subcentral.watcher.settings;
 
-import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parse.ParsingService;
 
 public class ParsingServiceSettingEntry extends AbstractDeactivatableSettingEntry<ParsingService>
 {

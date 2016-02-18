@@ -20,8 +20,8 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.correction.Correction;
-import de.subcentral.core.correction.CorrectionService;
+import de.subcentral.core.correct.Correction;
+import de.subcentral.core.correct.CorrectionService;
 import de.subcentral.core.file.subtitle.Item;
 import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;

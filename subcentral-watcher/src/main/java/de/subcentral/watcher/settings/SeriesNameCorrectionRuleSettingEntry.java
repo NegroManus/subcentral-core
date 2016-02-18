@@ -2,7 +2,7 @@ package de.subcentral.watcher.settings;
 
 import java.util.List;
 
-import de.subcentral.core.correction.SeriesNameCorrector;
+import de.subcentral.core.correct.SeriesNameCorrector;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxUtil;

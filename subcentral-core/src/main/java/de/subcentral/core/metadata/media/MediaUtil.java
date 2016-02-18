@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.naming.AbstractNamedMediaNamer;
+import de.subcentral.core.name.AbstractNamedMediaNamer;
 
 public class MediaUtil
 {

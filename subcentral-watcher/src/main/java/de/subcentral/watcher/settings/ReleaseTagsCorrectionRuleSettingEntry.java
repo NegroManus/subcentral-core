@@ -1,7 +1,7 @@
 package de.subcentral.watcher.settings;
 
-import de.subcentral.core.correction.ReleaseTagsCorrector;
-import de.subcentral.core.correction.TagsReplacer;
+import de.subcentral.core.correct.ReleaseTagsCorrector;
+import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxUtil;

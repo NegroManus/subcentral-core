@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.subcentral.core.naming.EpisodeNamer;
-import de.subcentral.core.naming.ReleaseNamer;
-import de.subcentral.core.naming.SubtitleNamer;
+import de.subcentral.core.name.EpisodeNamer;
+import de.subcentral.core.name.ReleaseNamer;
+import de.subcentral.core.name.SubtitleNamer;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.property.BooleanProperty;

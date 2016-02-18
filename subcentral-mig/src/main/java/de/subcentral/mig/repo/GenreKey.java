@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.metadata.media.Network;
-import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.name.NamingDefaults;
 
 public class GenreKey
 {

@@ -11,12 +11,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.correction.Correction;
+import de.subcentral.core.correct.Correction;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.SubtitleReleaseNamer;
+import de.subcentral.core.name.NamingService;
+import de.subcentral.core.name.SubtitleReleaseNamer;
 
 public class SubtitleUtil
 {

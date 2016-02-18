@@ -12,13 +12,13 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.parsing.MappingMatcher;
-import de.subcentral.core.parsing.Parser;
-import de.subcentral.core.parsing.ParsingDefaults;
-import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.SubtitleReleaseParser;
-import de.subcentral.core.parsing.TypeBasedParsingService;
-import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
+import de.subcentral.core.parse.MappingMatcher;
+import de.subcentral.core.parse.Parser;
+import de.subcentral.core.parse.ParsingDefaults;
+import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.parse.SubtitleReleaseParser;
+import de.subcentral.core.parse.TypeBasedParsingService;
+import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ItalianSubsNet

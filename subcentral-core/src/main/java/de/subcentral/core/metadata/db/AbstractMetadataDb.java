@@ -12,11 +12,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.media.MediaUtil;
-import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.core.naming.NamingException;
-import de.subcentral.core.naming.NamingService;
-import de.subcentral.core.naming.NamingUtil;
-import de.subcentral.core.naming.NoNamerRegisteredException;
+import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.name.NamingException;
+import de.subcentral.core.name.NamingService;
+import de.subcentral.core.name.NamingUtil;
+import de.subcentral.core.name.NoNamerRegisteredException;
 
 public abstract class AbstractMetadataDb implements MetadataDb
 {

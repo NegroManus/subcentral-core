@@ -10,10 +10,10 @@ import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
-import de.subcentral.core.correction.LocaleLanguageReplacer;
-import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
-import de.subcentral.core.correction.LocaleLanguageReplacer.LanguagePattern;
-import de.subcentral.core.correction.SubtitleLanguageCorrector;
+import de.subcentral.core.correct.LocaleLanguageReplacer;
+import de.subcentral.core.correct.SubtitleLanguageCorrector;
+import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import javafx.beans.binding.Binding;
@@ -163,7 +163,7 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		return this.outputLanguageFormatProperty().getValue();
 	}
 
-	public final void setOutputLanguageFormat(final de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat outputLanguageFormat)
+	public final void setOutputLanguageFormat(final de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat outputLanguageFormat)
 	{
 		this.outputLanguageFormatProperty().setValue(outputLanguageFormat);
 	}

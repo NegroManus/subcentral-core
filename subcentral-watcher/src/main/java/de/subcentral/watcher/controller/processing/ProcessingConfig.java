@@ -7,12 +7,12 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.correction.CorrectionService;
+import de.subcentral.core.correct.CorrectionService;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parse.ParsingService;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 

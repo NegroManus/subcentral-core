@@ -2,11 +2,11 @@ package de.subcentral.fx;
 
 import java.util.List;
 
-import de.subcentral.core.correction.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;

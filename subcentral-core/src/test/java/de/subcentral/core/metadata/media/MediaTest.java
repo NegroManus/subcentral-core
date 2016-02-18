@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.subcentral.core.Settings;
-import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.util.TimeUtil;
 
 public class MediaTest

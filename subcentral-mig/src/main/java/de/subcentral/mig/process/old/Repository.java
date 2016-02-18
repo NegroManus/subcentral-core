@@ -8,14 +8,14 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.correction.Correction;
+import de.subcentral.core.correct.Correction;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.core.naming.NamingUtil;
+import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.name.NamingUtil;
 import de.subcentral.mig.process.Subber;
 
 public class Repository

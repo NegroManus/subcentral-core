@@ -20,17 +20,17 @@ import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.parsing.EpisodeMapper;
-import de.subcentral.core.parsing.MappingMatcher;
-import de.subcentral.core.parsing.MovieMapper;
-import de.subcentral.core.parsing.MultiEpisodeMapper;
-import de.subcentral.core.parsing.Parser;
-import de.subcentral.core.parsing.ParsingDefaults;
-import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ReleaseParser;
-import de.subcentral.core.parsing.SimplePropFromStringService;
-import de.subcentral.core.parsing.TypeBasedParsingService;
-import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
+import de.subcentral.core.parse.EpisodeMapper;
+import de.subcentral.core.parse.MappingMatcher;
+import de.subcentral.core.parse.MovieMapper;
+import de.subcentral.core.parse.MultiEpisodeMapper;
+import de.subcentral.core.parse.Parser;
+import de.subcentral.core.parse.ParsingDefaults;
+import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.parse.ReleaseParser;
+import de.subcentral.core.parse.SimplePropFromStringService;
+import de.subcentral.core.parse.TypeBasedParsingService;
+import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseScene

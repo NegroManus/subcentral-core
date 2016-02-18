@@ -10,9 +10,9 @@ import javafx.beans.property.SimpleStringProperty;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.naming.EpisodeNamer;
-import de.subcentral.core.naming.NamingDefaults;
-import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.name.EpisodeNamer;
+import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.name.NamingService;
 import de.subcentral.core.util.TimeUtil;
 
 public class ObservableEpisode extends ObservableNamedBeanWrapper<Episode>

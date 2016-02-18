@@ -17,7 +17,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.naming.NamingUtil;
+import de.subcentral.core.name.NamingUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**

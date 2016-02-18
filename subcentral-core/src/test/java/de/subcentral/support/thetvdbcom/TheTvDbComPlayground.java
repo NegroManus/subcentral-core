@@ -8,8 +8,8 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.naming.EpisodeNamer;
-import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.name.EpisodeNamer;
+import de.subcentral.core.name.NamingDefaults;
 
 public class TheTvDbComPlayground
 {

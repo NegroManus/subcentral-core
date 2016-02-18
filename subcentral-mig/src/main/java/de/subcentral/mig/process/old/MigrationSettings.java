@@ -18,12 +18,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.correction.CorrectionService;
-import de.subcentral.core.correction.PatternStringReplacer;
-import de.subcentral.core.correction.PatternStringReplacer.Mode;
-import de.subcentral.core.correction.ReflectiveCorrector;
-import de.subcentral.core.correction.SeriesNameCorrector;
-import de.subcentral.core.correction.TypeBasedCorrectionService;
+import de.subcentral.core.correct.CorrectionService;
+import de.subcentral.core.correct.PatternStringReplacer;
+import de.subcentral.core.correct.ReflectiveCorrector;
+import de.subcentral.core.correct.SeriesNameCorrector;
+import de.subcentral.core.correct.TypeBasedCorrectionService;
+import de.subcentral.core.correct.PatternStringReplacer.Mode;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.fx.UserPattern;

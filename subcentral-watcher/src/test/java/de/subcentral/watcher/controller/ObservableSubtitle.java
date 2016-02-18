@@ -17,7 +17,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.naming.NamingService;
+import de.subcentral.core.name.NamingService;
 
 public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleRelease>
 {

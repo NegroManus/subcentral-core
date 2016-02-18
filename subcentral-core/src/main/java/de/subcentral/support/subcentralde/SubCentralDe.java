@@ -8,21 +8,21 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.correction.PatternStringReplacer;
-import de.subcentral.core.correction.SubtitleLanguageCorrector;
-import de.subcentral.core.correction.TypeBasedCorrectionService;
+import de.subcentral.core.correct.PatternStringReplacer;
+import de.subcentral.core.correct.SubtitleLanguageCorrector;
+import de.subcentral.core.correct.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.parsing.Mapper;
-import de.subcentral.core.parsing.MappingMatcher;
-import de.subcentral.core.parsing.MappingMatcherExtension;
-import de.subcentral.core.parsing.Parser;
-import de.subcentral.core.parsing.ParsingService;
-import de.subcentral.core.parsing.ReleaseParser;
-import de.subcentral.core.parsing.SubtitleReleaseParser;
-import de.subcentral.core.parsing.TypeBasedParsingService;
-import de.subcentral.core.parsing.TypeBasedParsingService.ParserEntry;
+import de.subcentral.core.parse.Mapper;
+import de.subcentral.core.parse.MappingMatcher;
+import de.subcentral.core.parse.MappingMatcherExtension;
+import de.subcentral.core.parse.Parser;
+import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.parse.ReleaseParser;
+import de.subcentral.core.parse.SubtitleReleaseParser;
+import de.subcentral.core.parse.TypeBasedParsingService;
+import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.releasescene.ReleaseScene;
 

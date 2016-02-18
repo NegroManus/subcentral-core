@@ -16,8 +16,8 @@ import com.google.common.hash.Hashing;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.parsing.MultiParsingService;
-import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parse.MultiParsingService;
+import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.mig.process.old.SubFile;
 import de.subcentral.support.addic7edcom.Addic7edCom;

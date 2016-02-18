@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.correction.ReleaseTagsCorrector;
-import de.subcentral.core.correction.TagsReplacer;
+import de.subcentral.core.correct.ReleaseTagsCorrector;
+import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;

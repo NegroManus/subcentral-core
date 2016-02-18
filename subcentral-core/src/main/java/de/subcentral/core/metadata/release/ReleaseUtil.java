@@ -11,8 +11,8 @@ import java.util.function.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.parsing.ParsingException;
-import de.subcentral.core.parsing.ParsingService;
+import de.subcentral.core.parse.ParsingException;
+import de.subcentral.core.parse.ParsingService;
 
 public class ReleaseUtil
 {

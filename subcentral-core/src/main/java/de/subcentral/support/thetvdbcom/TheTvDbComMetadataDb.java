@@ -32,7 +32,7 @@ import de.subcentral.core.metadata.media.MediaBase;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.core.naming.NamingDefaults;
+import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.util.TemporalComparator;
 import de.subcentral.support.StandardSites;
 
