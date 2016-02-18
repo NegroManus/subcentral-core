@@ -1,6 +1,5 @@
 package de.subcentral.core.correction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -75,7 +74,7 @@ public class SeriesNameCorrector implements Corrector<Series>
 			}
 			if (!series.getAliasNames().equals(aliasNamesReplacement))
 			{
-				List<String> oldAliasNames = new ArrayList<>(series.getAliasNames());
+				List<String> oldAliasNames = ImmutableList.copyOf(series.getAliasNames());
 				series.setAliasNames(aliasNamesReplacement);
 				corrections.add(new Correction(series, Series.PROP_ALIAS_NAMES.getPropName(), oldAliasNames, aliasNamesReplacement, this));
 			}

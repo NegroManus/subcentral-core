@@ -1,7 +1,8 @@
 package de.subcentral.core.correction;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
@@ -34,6 +35,6 @@ public class ReleaseTagsCorrector extends SinglePropertyCorrector<Release, List<
 	@Override
 	protected List<Tag> cloneValue(List<Tag> value)
 	{
-		return new ArrayList<>(value);
+		return ImmutableList.copyOf(value);
 	}
 }
