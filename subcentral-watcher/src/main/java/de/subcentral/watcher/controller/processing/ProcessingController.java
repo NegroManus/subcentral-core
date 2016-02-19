@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -288,11 +289,14 @@ public class ProcessingController extends Controller
 						StringJoiner joiner = new StringJoiner(", ");
 						for (Path file : item)
 						{
-							joiner.add(IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1]);
+							String ext = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1];
+							ext = StringUtils.stripStart(ext, ".");
+							joiner.add(ext);
 						}
-						setText(joiner.toString().replace(".", "").toUpperCase());
+						setText(joiner.toString().toUpperCase());
 					}
 				};
+
 			};
 		});
 
