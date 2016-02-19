@@ -218,9 +218,8 @@ public class WatcherFxUtil
 		sb.append("Guessed release");
 		if (stdRls != null)
 		{
-			sb.append(" (using standard release: ");
+			sb.append(" using standard release: ");
 			sb.append(releaseNamer.apply(stdRls.getRelease()));
-			sb.append(')');
 		}
 		ImageView guessedImg = new ImageView(FxUtil.loadImg("idea_16.png"));
 		Label guessedLbl = new Label("", guessedImg);
