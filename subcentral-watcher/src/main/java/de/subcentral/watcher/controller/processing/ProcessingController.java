@@ -296,7 +296,6 @@ public class ProcessingController extends Controller
 						setText(joiner.toString().toUpperCase());
 					}
 				};
-
 			};
 		});
 
