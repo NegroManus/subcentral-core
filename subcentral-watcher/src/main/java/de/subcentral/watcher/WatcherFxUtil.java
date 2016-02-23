@@ -93,6 +93,13 @@ public class WatcherFxUtil
 		return beanClass.getSimpleName();
 	}
 
+	public static Label createMatchLabel(Release rls)
+	{
+		Label lbl = new Label("", new ImageView(FxUtil.loadImg("checked_16.png")));
+		lbl.setTooltip(new Tooltip("Matching release"));
+		return lbl;
+	}
+
 	public static Hyperlink createFurtherInfoHyperlink(Release rls, ExecutorService executorService)
 	{
 		if (rls.getFurtherInfoLinks().isEmpty())
@@ -187,21 +194,30 @@ public class WatcherFxUtil
 		return link;
 	}
 
-	public static Label createCompatibilityLabel(CompatibilityInfo info, Function<Release, String> releaseNamer)
+	public static Label createCompatibilityLabel(CompatibilityInfo info, Function<Release, String> releaseNamer, boolean withText)
 	{
-		StringBuilder txt = new StringBuilder();
-		Compatibility c = info.getCompatibility();
-		if (c instanceof SameGroupCompatibility)
+		String text;
+		if (withText)
 		{
-			txt.append("Same group");
+			StringBuilder sb = new StringBuilder();
+			Compatibility c = info.getCompatibility();
+			if (c instanceof SameGroupCompatibility)
+			{
+				sb.append("Same group");
+			}
+			else if (c instanceof CrossGroupCompatibility)
+			{
+				sb.append(((CrossGroupCompatibility) c).toShortString());
+			}
+			text = sb.toString();
 		}
-		else if (c instanceof CrossGroupCompatibility)
+		else
 		{
-			txt.append(((CrossGroupCompatibility) c).toShortString());
+			text = "";
 		}
 
 		ImageView compImg = new ImageView(FxUtil.loadImg("couple_16.png"));
-		Label compLbl = new Label(txt.toString(), compImg);
+		Label compLbl = new Label(text, compImg);
 
 		StringBuilder tooltip = new StringBuilder();
 		tooltip.append("Compatible to ");

@@ -1,16 +1,15 @@
 package de.subcentral.watcher.controller.processing;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import de.subcentral.core.correct.Correction;
-import de.subcentral.core.metadata.media.Media;
-import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
@@ -33,6 +32,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -80,80 +80,166 @@ public class DetailsController extends Controller
 
 	private void initParsingDetailsSection()
 	{
-		int rowCounter = 0;
+		VBox vbox = createVBox();
 
-		GridPane contentPane = new GridPane();
+		// Parsed object
+		SubtitleRelease subAdj = task.getParsedObject();
+
+		vbox.getChildren().add(createHeadline("Parsed subtitle", SettingsController.PARSING_SECTION));
+
+		if (subAdj != null)
+		{
+			Node parsedSubNode = createParsedSubtitleNode(subAdj, task::generateDisplayName);
+			vbox.getChildren().add(parsedSubNode);
+
+			// Corrections
+			vbox.getChildren().add(createSeparator(true));
+			vbox.getChildren().add(createHeadline("Corrections", SettingsController.CORRECTION_SECTION));
+			if (task.getParsingCorrections().isEmpty())
+			{
+				vbox.getChildren().add(new Label("No corrections"));
+			}
+			else
+			{
+				Node correctionsNode = createCorrectionsNode(task.getParsingCorrections());
+				vbox.getChildren().add(correctionsNode);
+			}
+		}
+		else
+		{
+			vbox.getChildren().add(new Label("Could not parse the filename: No pattern matched"));
+		}
+
+		// Add to root pane
+		parsingDetailsRootPane.setContent(vbox);
+	}
+
+	private static VBox createVBox()
+	{
+		VBox vbox = new VBox();
+		vbox.setSpacing(3d);
+		return vbox;
+	}
+
+	private static Node createParsedSubtitleNode(SubtitleRelease subRls, Function<Object, String> printer)
+	{
+		Subtitle sub = subRls.getFirstSubtitle();
+		Release rls = subRls.getFirstMatchingRelease();
+
+		String[] keys = { "Computed name:", "Media:", "Release tags:", "Release group:", "Subtitle language:", "Subtitle tags:", "Subtitle source:", "Subtitle group:" };
+		String[] values = {
+				printer.apply(subRls),
+				printer.apply(rls.getMedia()),
+				Tag.listToString(rls.getTags()),
+				rls.getGroup() != null ? rls.getGroup().toString() : "",
+				sub.getLanguage() != null ? sub.getLanguage() : "",
+				Tag.listToString(subRls.getTags()),
+				sub.getSource() != null ? sub.getSource() : "",
+				sub.getGroup() != null ? sub.getGroup().toString() : "" };
+		GridPane pane = createKeyValueGridPane(keys, values);
+		return pane;
+	}
+
+	private static Node createCorrectionsNode(List<Correction> corrections)
+	{
+		String[] keys = new String[corrections.size()];
+		String[] values = new String[corrections.size()];
+
+		for (int i = 0; i < corrections.size(); i++)
+		{
+			Correction c = corrections.get(i);
+
+			StringBuilder key = new StringBuilder();
+			key.append(WatcherFxUtil.beanTypeToString(c.getBean().getClass()));
+			key.append(' ');
+			key.append(c.getPropertyName());
+			key.append(": ");
+			keys[i] = key.toString();
+
+			StringBuilder val = new StringBuilder();
+			val.append(c.getOldValue());
+			val.append(" -> ");
+			val.append(c.getNewValue());
+			values[i] = val.toString();
+		}
+
+		GridPane pane = createKeyValueGridPane(keys, values);
+		return pane;
+	}
+
+	private static Node createMatchCriteriaNode(Release rls, Set<String> mediaNames)
+	{
+		int rows = 2 + mediaNames.size();
+		String[] keys = new String[rows];
+		String[] values = new String[rows];
+		int index = 0;
+
+		Iterator<String> namesIter = mediaNames.iterator();
+		keys[index] = "Media:";
+		values[index] = namesIter.hasNext() ? namesIter.next() : "";
+		index++;
+		while (namesIter.hasNext())
+		{
+			keys[index] = "";
+			values[index] = namesIter.next();
+			index++;
+		}
+
+		keys[index] = "Release tags:";
+		values[index] = Tag.listToString(rls.getTags());
+
+		index++;
+		keys[index] = "Release group:";
+		values[index] = rls.getGroup() != null ? rls.getGroup().toString() : "";
+
+		return createKeyValueGridPane(keys, values);
+	}
+
+	private static GridPane createKeyValueGridPane(String[] keys, String[] values)
+	{
+		GridPane gridPane = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setHgrow(Priority.NEVER);
 		column1.setHalignment(HPos.RIGHT);
 		ColumnConstraints column2 = new ColumnConstraints();
 		column2.setHgrow(Priority.SOMETIMES);
-		contentPane.getColumnConstraints().addAll(column1, column2);
-		contentPane.setVgap(3d);
-		contentPane.setHgap(3d);
-		// contentPane.setGridLinesVisible(true);
+		gridPane.getColumnConstraints().addAll(column1, column2);
+		gridPane.setVgap(3d);
+		gridPane.setHgap(3d);
 
-		// Parsed object
-		SubtitleRelease subAdj = task.getParsedObject();
-
-		contentPane.add(createHeadline("Parsed subtitle", SettingsController.PARSING_SECTION), 0, rowCounter++);
-
-		if (subAdj != null)
+		int rowIndex = 0;
+		for (int i = 0; i < keys.length; i++)
 		{
-			Subtitle sub = subAdj.getFirstSubtitle();
-			Release rls = subAdj.getFirstMatchingRelease();
-
-			contentPane.add(createKeyLabel("Computed name:"), 0, rowCounter);
-			contentPane.add(new Label(task.generateDisplayName(subAdj)), 1, rowCounter++, GridPane.REMAINING, 1);
-			contentPane.add(createKeyLabel("Media:"), 0, rowCounter);
-			contentPane.add(new Label(task.generateDisplayName(rls.getMedia())), 1, rowCounter++);
-			contentPane.add(createKeyLabel("Release tags:"), 0, rowCounter);
-			contentPane.add(new Label(Tag.listToString(rls.getTags())), 1, rowCounter++);
-			contentPane.add(createKeyLabel("Release group:"), 0, rowCounter);
-			contentPane.add(new Label(rls.getGroup() != null ? rls.getGroup().toString() : ""), 1, rowCounter++);
-			contentPane.add(createKeyLabel("Subtitle language:"), 0, rowCounter);
-			contentPane.add(new Label(sub.getLanguage() != null ? sub.getLanguage() : ""), 1, rowCounter++);
-			contentPane.add(createKeyLabel("Subtitle tags:"), 0, rowCounter);
-			contentPane.add(new Label(Tag.listToString(subAdj.getTags())), 1, rowCounter++);
-			contentPane.add(createKeyLabel("Subtitle source:"), 0, rowCounter);
-			contentPane.add(new Label(sub.getSource() != null ? sub.getSource() : ""), 1, rowCounter++);
-			contentPane.add(createKeyLabel("Subtitle group:"), 0, rowCounter);
-			contentPane.add(new Label(sub.getGroup() != null ? sub.getGroup().toString() : ""), 1, rowCounter++);
-
-			contentPane.add(createSeparator(true), 0, rowCounter++, GridPane.REMAINING, 1);
-
-			// Corrections
-			contentPane.add(createHeadline("Corrections", SettingsController.CORRECTION_SECTION), 0, rowCounter++, GridPane.REMAINING, 1);
-			if (task.getParsingCorrections().isEmpty())
-			{
-				contentPane.add(new Label("No corrections"), 0, rowCounter++, GridPane.REMAINING, 1);
-			}
-			else
-			{
-				for (Correction c : task.getParsingCorrections())
-				{
-					StringBuilder sb = new StringBuilder();
-					sb.append(WatcherFxUtil.beanTypeToString(c.getBean().getClass()));
-					sb.append(' ');
-					sb.append(c.getPropertyName());
-					sb.append(": ");
-					contentPane.add(createKeyLabel(sb.toString()), 0, rowCounter, 1, 1);
-
-					sb = new StringBuilder();
-					sb.append(c.getOldValue());
-					sb.append(" -> ");
-					sb.append(c.getNewValue());
-					contentPane.add(new Label(sb.toString()), 1, rowCounter++, GridPane.REMAINING, 1);
-				}
-			}
-		}
-		else
-		{
-			contentPane.add(new Label("Could not parse the filename: No pattern matched"), 0, rowCounter++, GridPane.REMAINING, 1);
+			addKeyValueRow(gridPane, rowIndex++, keys[i], values[i]);
 		}
 
-		// Add to root pane
-		parsingDetailsRootPane.setContent(contentPane);
+		return gridPane;
+	}
+
+	private GridPane createReleaseListGridPane(Release[] releases, ProcessingResultInfo[] infos)
+	{
+		GridPane gridPane = new GridPane();
+		ColumnConstraints column1 = new ColumnConstraints();
+		column1.setHgrow(Priority.NEVER);
+		ColumnConstraints column2 = new ColumnConstraints();
+		column2.setHgrow(Priority.SOMETIMES);
+		gridPane.getColumnConstraints().addAll(column1, column2);
+		gridPane.setVgap(3d);
+		gridPane.setHgap(3d);
+
+		int rowIndex = 0;
+		for (int i = 0; i < releases.length; i++)
+		{
+			addReleaseRow(gridPane, rowIndex++, releases[i], infos[i]);
+		}
+
+		return gridPane;
+	}
+
+	private static void addKeyValueRow(GridPane gridPane, int rowIndex, String key, String value)
+	{
+		gridPane.add(createKeyLabel(key), 0, rowIndex);
+		gridPane.add(new Label(value), 1, rowIndex);
 	}
 
 	private static Label createKeyLabel(String key)
@@ -170,103 +256,76 @@ public class DetailsController extends Controller
 			return;
 		}
 
-		int rowCounter = 0;
+		VBox vbox = createVBox();
 
-		GridPane contentPane = new GridPane();
-		ColumnConstraints column1 = new ColumnConstraints();
-		column1.setHgrow(Priority.NEVER);
-		ColumnConstraints column2 = new ColumnConstraints();
-		column2.setHgrow(Priority.SOMETIMES);
-		contentPane.getColumnConstraints().addAll(column1, column2);
-		contentPane.setVgap(3d);
-		contentPane.setHgap(3d);
-		// contentPane.setGridLinesVisible(true);
+		List<ProcessingResult> results = new ArrayList<>(task.getResults());
 
-		// Release DBs
-		contentPane.add(createHeadline("Listed releases", SettingsController.RELEASE_DBS_SECTION), 0, rowCounter++, GridPane.REMAINING, 1);
+		// Listed releases
+		vbox.getChildren().add(createHeadline("Listed releases", SettingsController.RELEASE_DBS_SECTION));
 
 		Release queryRls = task.getParsedObject().getFirstMatchingRelease();
-		List<Media> queryMedia = queryRls.getMedia();
-		Set<String> mediaNames = task.generateFilteringDisplayNames(queryMedia);
+		Set<String> mediaNames = task.generateFilteringDisplayNames(queryRls.getMedia());
 
-		// Found releases
-		contentPane.add(new Label(
-				task.getFoundReleases().size() + " release(s) were found for " + StringUtil.COMMA_JOINER.join(mediaNames.stream().map((String name) -> StringUtil.quoteString(name)).iterator())),
-				0,
-				rowCounter++,
-				GridPane.REMAINING,
-				1);
-		for (Release rls : task.getFoundReleases())
+		vbox.getChildren().add(new Label(
+				task.getListedReleases().size() + " release(s) were found for " + StringUtil.COMMA_JOINER.join(mediaNames.stream().map((String name) -> StringUtil.quoteString(name)).iterator())));
+		if (!task.getListedReleases().isEmpty())
 		{
-			contentPane.add(createReleaseHBox(rls), 0, rowCounter++, GridPane.REMAINING, 1);
+			vbox.getChildren().add(createSeparator(false));
+			vbox.getChildren().add(new Label("Match criteria:"));
+			vbox.getChildren().add(createMatchCriteriaNode(queryRls, mediaNames));
+
+			vbox.getChildren().add(createSeparator(false));
+
+			int rows = task.getListedReleases().size();
+			Release[] releases = new Release[rows];
+			ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
+			for (int i = 0; i < rows; i++)
+			{
+				Release rls = task.getListedReleases().get(i);
+				ProcessingResultInfo info = null;
+				ListIterator<ProcessingResult> iter = results.listIterator();
+				while (iter.hasNext())
+				{
+					ProcessingResult r = iter.next();
+					if (rls.equals(r.getRelease()))
+					{
+						info = (ProcessingResultInfo) r.getInfo();
+						iter.remove();
+						break;
+					}
+				}
+				releases[i] = rls;
+				infos[i] = info;
+			}
+			vbox.getChildren().add(createReleaseListGridPane(releases, infos));
 		}
 
-		if (!task.getFoundReleases().isEmpty())
-		{
-			// Matching releases
-			contentPane.add(createSeparator(true), 0, rowCounter++, GridPane.REMAINING, 1);
-			contentPane.add(createHeadline("Matching releases", null), 0, rowCounter++, GridPane.REMAINING, 1);
-
-			Iterator<String> namesIter = mediaNames.iterator();
-
-			contentPane.add(new Label("Filter criteria"), 0, rowCounter++, GridPane.REMAINING, 1);
-			contentPane.add(new Label("- Media:"), 0, rowCounter);
-			contentPane.add(new Label((namesIter.hasNext() ? namesIter.next() : "")), 1, rowCounter++);
-			while (namesIter.hasNext())
-			{
-				contentPane.add(new Label(""), 0, rowCounter);
-				contentPane.add(new Label(namesIter.next()), 1, rowCounter++);
-			}
-			contentPane.add(new Label("- Release tags:"), 0, rowCounter);
-			contentPane.add(new Label(Tag.listToString(queryRls.getTags())), 1, rowCounter++);
-			contentPane.add(new Label("- Release group:"), 0, rowCounter);
-			contentPane.add(new Label(queryRls.getGroup() != null ? queryRls.getGroup().toString() : ""), 1, rowCounter++);
-
-			contentPane.add(createSeparator(false), 0, rowCounter++, GridPane.REMAINING, 1);
-
-			contentPane.add(new Label(task.getMatchingReleases().size() + " release(s) match the filter"), 0, rowCounter++, GridPane.REMAINING, 1);
-			for (Release rls : task.getMatchingReleases())
-			{
-				contentPane.add(createReleaseHBox(rls), 0, rowCounter++, GridPane.REMAINING, 1);
-			}
-		}
-		if (task.getMatchingReleases().isEmpty())
+		if (!results.isEmpty())
 		{
 			// Guessed releases
-			contentPane.add(createSeparator(true), 0, rowCounter++, GridPane.REMAINING, 1);
-			contentPane.add(createHeadline("Guessed releases", SettingsController.RELEASE_GUESSING_SECTION), 0, rowCounter++, GridPane.REMAINING, 1);
+			vbox.getChildren().add(createSeparator(true));
+			vbox.getChildren().add(createHeadline("Guessed releases", SettingsController.RELEASE_GUESSING_SECTION));
 			if (!task.getConfig().isGuessingEnabled())
 			{
-				contentPane.add(new Label("Guessing disabled"), 0, rowCounter++, GridPane.REMAINING, 1);
+				vbox.getChildren().add(new Label("Guessing disabled"));
 			}
 			else
 			{
-				for (Map.Entry<Release, StandardRelease> entry : task.getGuessedReleases().entrySet())
+				int rows = results.size();
+				Release[] releases = new Release[rows];
+				ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
+				for (int i = 0; i < rows; i++)
 				{
-					HBox releaseHBox = createReleaseHBox(entry.getKey());
-					Label guessedLbl = WatcherFxUtil.createGuessedLabel(entry.getValue(), (Release rls) -> task.generateDisplayName(rls));
-					releaseHBox.getChildren().add(guessedLbl);
-					contentPane.add(releaseHBox, 0, rowCounter++, GridPane.REMAINING, 1);
+					ProcessingResult result = results.get(i);
+					releases[i] = result.getRelease();
+					infos[i] = (ProcessingResultInfo) result.getInfo();
 				}
+				vbox.getChildren().add(createReleaseListGridPane(releases, infos));
 			}
 		}
 
-		if (!(task.getMatchingReleases().isEmpty() && task.getGuessedReleases().isEmpty()))
-		{
-			// Compatible releases
-			contentPane.add(createSeparator(true), 0, rowCounter++, GridPane.REMAINING, 1);
-			contentPane.add(createHeadline("Compatible releases", SettingsController.RELEASE_COMPATIBILITY_SECTION), 0, rowCounter++, GridPane.REMAINING, 1);
-			contentPane.add(new Label(task.getCompatibleReleases().size() + " release(s) are compatible"), 0, rowCounter++, GridPane.REMAINING, 1);
-			for (Map.Entry<Release, CompatibilityInfo> c : task.getCompatibleReleases().entrySet())
-			{
-				HBox releaseHBox = createReleaseHBox(c.getKey());
-				Label compLbl = WatcherFxUtil.createCompatibilityLabel(c.getValue(), (Release rls) -> task.generateDisplayName(rls));
-				releaseHBox.getChildren().add(compLbl);
-				contentPane.add(releaseHBox, 0, rowCounter++, GridPane.REMAINING, 1);
-			}
-		}
+		releaseDetailsRootPane.setContent(vbox);
 
-		releaseDetailsRootPane.setContent(contentPane);
 	}
 
 	private Separator createSeparator(boolean topMargin)
@@ -274,7 +333,7 @@ public class DetailsController extends Controller
 		Separator sep = new Separator();
 		if (topMargin)
 		{
-			GridPane.setMargin(sep, new Insets(15d, 0d, 0d, 0d));
+			VBox.setMargin(sep, new Insets(15d, 0d, 0d, 0d));
 		}
 		return sep;
 	}
@@ -296,30 +355,61 @@ public class DetailsController extends Controller
 		return hbox;
 	}
 
-	private HBox createReleaseHBox(Release rls)
+	private void addReleaseRow(GridPane gridPane, int rowIndex, Release rls, ProcessingResultInfo info)
 	{
-		HBox hbox = new HBox();
-		hbox.setSpacing(10d);
-		hbox.setAlignment(Pos.CENTER_LEFT);
+		// Result type
+		Node resultTypeLabel;
+		if (info != null)
+		{
+			switch (info.getResultType())
+			{
+				case LISTED:
+					resultTypeLabel = WatcherFxUtil.createMatchLabel(rls);
+					break;
+				case LISTED_COMPATIBLE:
+					// fall through
+				case GUESSED_COMPATIBLE:
+					resultTypeLabel = WatcherFxUtil.createCompatibilityLabel(info.getCompatibilityInfo(), (Release r) -> task.generateDisplayName(r), false);
+					break;
+				case GUESSED:
+					resultTypeLabel = WatcherFxUtil.createGuessedLabel(info.getStandardRelease(), (Release r) -> task.generateDisplayName(r));
+					break;
+				default:
+					resultTypeLabel = new Label("");
+			}
+		}
+		else
+		{
+			resultTypeLabel = new Label("");
+		}
+		gridPane.add(resultTypeLabel, 0, rowIndex);
 
+		// Name & Info
+		HBox rlsHbox = new HBox();
+		rlsHbox.setSpacing(5d);
+		rlsHbox.setAlignment(Pos.CENTER_LEFT);
+
+		// Name
+		rlsHbox.getChildren().add(new Label(task.generateDisplayName(rls)));
+
+		// Info
 		Hyperlink furtherInfoLink = WatcherFxUtil.createFurtherInfoHyperlink(rls, processingController.getMainController().getCommonExecutor());
 		if (furtherInfoLink != null)
 		{
-			hbox.getChildren().add(furtherInfoLink);
+			rlsHbox.getChildren().add(furtherInfoLink);
 		}
 
-		hbox.getChildren().add(new Label(task.generateDisplayName(rls)));
-
 		// nuke
-		hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(rls));
+		rlsHbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(rls));
 
 		// meta tags
 		Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(rls, task.getConfig().getReleaseMetaTags());
 		if (metaTagsLbl != null)
 		{
-			hbox.getChildren().add(metaTagsLbl);
+			rlsHbox.getChildren().add(metaTagsLbl);
 		}
-		return hbox;
+
+		gridPane.add(rlsHbox, 1, rowIndex);
 	}
 
 	public ProcessingTask getTask()

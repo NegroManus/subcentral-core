@@ -2,31 +2,60 @@ package de.subcentral.watcher.controller.processing;
 
 import java.util.Objects;
 
-import de.subcentral.watcher.controller.processing.ProcessingResult.ReleaseOriginInfo;
+import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
+import de.subcentral.core.metadata.release.StandardRelease;
 
 public class ProcessingResultInfo implements ProcessingInfo
 {
-	private final ProcessingResult	processingResult;
-	private final ReleaseOriginInfo	originInfo;
-
-	private ProcessingResultInfo(ProcessingResult processingResult, ReleaseOriginInfo originInfo)
+	public static enum ResultType
 	{
-		this.processingResult = Objects.requireNonNull(processingResult, "processingResult");
-		this.originInfo = Objects.requireNonNull(originInfo, "originInfo");
+		LISTED, LISTED_COMPATIBLE, GUESSED, GUESSED_COMPATIBLE
 	}
 
-	public ProcessingResult getProcessingResult()
+	private final ResultType		resultType;
+	private final StandardRelease	standardRelease;
+	private final CompatibilityInfo	compatibilityInfo;
+
+	private ProcessingResultInfo(ResultType resultType, StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
 	{
-		return processingResult;
+		this.resultType = Objects.requireNonNull(resultType, "resultType");
+		this.standardRelease = standardRelease;
+		this.compatibilityInfo = compatibilityInfo;
+
 	}
 
-	public ReleaseOriginInfo getOriginInfo()
+	public ResultType getResultType()
 	{
-		return originInfo;
+		return resultType;
 	}
 
-	public static ProcessingResultInfo of(ProcessingResult processingResult, ReleaseOriginInfo methodInfo)
+	public StandardRelease getStandardRelease()
 	{
-		return new ProcessingResultInfo(processingResult, methodInfo);
+		return standardRelease;
+	}
+
+	public CompatibilityInfo getCompatibilityInfo()
+	{
+		return compatibilityInfo;
+	}
+
+	public static ProcessingResultInfo listed()
+	{
+		return new ProcessingResultInfo(ResultType.LISTED, null, null);
+	}
+
+	public static ProcessingResultInfo listedCompatible(CompatibilityInfo compatibilityInfo)
+	{
+		return new ProcessingResultInfo(ResultType.LISTED_COMPATIBLE, null, compatibilityInfo);
+	}
+
+	public static ProcessingResultInfo guessed(StandardRelease standardRelease)
+	{
+		return new ProcessingResultInfo(ResultType.GUESSED, standardRelease, null);
+	}
+
+	public static ProcessingResultInfo guessedCompatible(StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
+	{
+		return new ProcessingResultInfo(ResultType.GUESSED, standardRelease, compatibilityInfo);
 	}
 }

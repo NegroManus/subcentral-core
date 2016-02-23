@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.correct.Correction;
@@ -54,10 +53,6 @@ import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
-import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibleInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.DatabaseInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.GuessedInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.ReleaseOriginInfo;
 import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
@@ -70,32 +65,29 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.TreeItem;
 
 public class ProcessingTask extends Task<Void> implements ProcessingItem
 {
-	private static final Logger				log							= LogManager.getLogger(ProcessingTask.class);
+	private static final Logger				log					= LogManager.getLogger(ProcessingTask.class);
 
 	private final ProcessingController		controller;
 
 	// for ProcessingItem implementation
 	private final ListProperty<Path>		files;
-	private final Property<ProcessingInfo>	info						= new SimpleObjectProperty<>(this, "info");
+	private final Property<ProcessingInfo>	info				= new SimpleObjectProperty<>(this, "info");
 
 	// Config: is loaded on start of the task
 	private ProcessingConfig				config;
 	// Important objects for processing and details
 	private final TreeItem<ProcessingItem>	taskTreeItem;
 	private SubtitleRelease					parsedObject;
-	private List<Correction>				parsingCorrections			= ImmutableList.of();
-	private List<Release>					foundReleases				= ImmutableList.of();
-	private List<Release>					mediaFilteredFoundReleases	= ImmutableList.of();
-	private List<Release>					matchingReleases			= ImmutableList.of();
-	private Map<Release, StandardRelease>	guessedReleases				= ImmutableMap.of();
-	private Map<Release, CompatibilityInfo>	compatibleReleases			= ImmutableMap.of();
+	private List<Correction>				parsingCorrections	= ImmutableList.of();
+	private List<Release>					listedReleases		= ImmutableList.of();
 	private SubtitleRelease					resultObject;
-	private ListProperty<ProcessingResult>	results						= new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
+	private ListProperty<ProcessingResult>	results				= new SimpleListProperty<>(this, "results", FXCollections.observableArrayList());
 
 	// package private
 	ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
@@ -172,34 +164,19 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		return parsingCorrections;
 	}
 
-	public List<Release> getFoundReleases()
+	public List<Release> getListedReleases()
 	{
-		return foundReleases;
-	}
-
-	public List<Release> getMediaFilteredFoundReleases()
-	{
-		return mediaFilteredFoundReleases;
-	}
-
-	public List<Release> getMatchingReleases()
-	{
-		return matchingReleases;
-	}
-
-	public Map<Release, StandardRelease> getGuessedReleases()
-	{
-		return guessedReleases;
-	}
-
-	public Map<Release, CompatibilityInfo> getCompatibleReleases()
-	{
-		return compatibleReleases;
+		return listedReleases;
 	}
 
 	public SubtitleRelease getResultObject()
 	{
 		return resultObject;
+	}
+
+	public ObservableList<ProcessingResult> getResults()
+	{
+		return results.get();
 	}
 
 	public ReadOnlyListProperty<ProcessingResult> resultsProperty()
@@ -396,23 +373,23 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		if (existingRlss.isEmpty())
 		{
 			log.info("No releases found in databases and no standard releases with Scope=ALWAYS");
-			guess();
+			guess(ImmutableList.of());
 		}
 		else
 		{
 			// Distinct, enrich, standardize
-			foundReleases = processReleases(existingRlss);
+			listedReleases = processReleases(existingRlss);
 
 			// Filter by Media
 			Function<Release, List<Media>> nestedObjRetriever = (Release rls) -> rls.getMedia();
 			Function<List<Media>, List<Map<String, Object>>> parameterGenerator = (List<Media> m) -> MediaUtil.generateNamingParametersForAllNames(m);
-			mediaFilteredFoundReleases = foundReleases.stream()
+			List<Release> mediaFilteredFoundReleases = listedReleases.stream()
 					.filter(NamingUtil.filterByNestedName(srcRls, nestedObjRetriever, controller.getNamingServicesForFiltering(), parameterGenerator))
 					.collect(Collectors.toList());
 
 			// Filter by Release Tags and Group (matching releases)
 			log.debug("Filtering found releases with media={}, tags={}, group={}", srcRls.getMedia(), srcRls.getTags(), srcRls.getGroup());
-			matchingReleases = mediaFilteredFoundReleases.stream()
+			List<Release> matchingReleases = mediaFilteredFoundReleases.stream()
 					.filter(ReleaseUtil.filterByTags(srcRls.getTags()))
 					.filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 					.collect(Collectors.toList());
@@ -421,7 +398,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			if (matchingReleases.isEmpty())
 			{
 				log.info("No matching releases found");
-				guess();
+				guess(mediaFilteredFoundReleases);
 			}
 			else
 			{
@@ -431,8 +408,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				// Add matching releases
 				for (Release rls : matchingReleases)
 				{
-					DatabaseInfo methodInfo = new DatabaseInfo();
-					addReleaseToResult(rls, methodInfo);
+					addReleaseToResult(rls, ProcessingResultInfo.listed());
 				}
 
 				log.debug("Searching for compatible releases among the found releases");
@@ -447,7 +423,15 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		if (config.getReleaseDbs().isEmpty())
 		{
 			log.info("No release databases configured");
-			return ImmutableListMultimap.of();
+			ImmutableListMultimap.Builder<MetadataDb, Release> builder = ImmutableListMultimap.builder();
+			// FOR DEBUGGING without available db, activate the following lines
+			// for (StandardRelease stdRls : config.getStandardReleases())
+			// {
+			// Release r = new Release(rls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
+			// builder.put(new XRelToMetadataDb(), r);
+			// }
+			// /FOR DEBUGGING
+			return builder.build();
 		}
 
 		StringJoiner rlsDbs = new StringJoiner(", ");
@@ -475,7 +459,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		return queryResults;
 	}
 
-	private void guess() throws Exception
+	private void guess(List<Release> mediaFilteredFoundReleases) throws Exception
 	{
 		Release srcRls = parsedObject.getFirstMatchingRelease();
 		if (config.isGuessingEnabled())
@@ -484,12 +468,11 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
 
 			List<StandardRelease> stdRlss = config.getStandardReleases();
-			guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, config.getStandardReleases(), config.getReleaseMetaTags());
+			Map<Release, StandardRelease> guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, stdRlss, config.getReleaseMetaTags());
 			logReleases(Level.DEBUG, "Guessed releases:", guessedReleases.keySet());
 			for (Map.Entry<Release, StandardRelease> entry : guessedReleases.entrySet())
 			{
-				GuessedInfo methodInfo = new GuessedInfo(entry.getValue());
-				addReleaseToResult(entry.getKey(), methodInfo);
+				addReleaseToResult(entry.getKey(), ProcessingResultInfo.guessed(entry.getValue()));
 			}
 
 			log.debug("Searching for compatible releases among the listed releases");
@@ -520,7 +503,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			log.debug("Search for compatible releases enabled");
 			// Find compatibles
 			CompatibilityService compatibilityService = config.getCompatibilityService();
-			compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
+			Map<Release, CompatibilityInfo> compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
 
 			if (compatibleReleases.isEmpty())
 			{
@@ -535,8 +518,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				// Add compatible releases
 				for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
 				{
-					CompatibleInfo methodInfo = new CompatibleInfo(entry.getValue());
-					addReleaseToResult(entry.getKey(), methodInfo);
+					addReleaseToResult(entry.getKey(), ProcessingResultInfo.listedCompatible(entry.getValue()));
 				}
 				return true;
 			}
@@ -548,7 +530,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		}
 	}
 
-	private void addReleaseToResult(Release rls, ReleaseOriginInfo methodInfo) throws Exception
+	private void addReleaseToResult(Release rls, ProcessingResultInfo info) throws Exception
 	{
 		List<Correction> corrections = config.getAfterQueryingCorrectionService().correct(rls);
 		corrections.forEach(c -> log.debug("After querying correction: {}", c));
@@ -565,7 +547,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		}
 
 		resultObject.getMatchingReleases().add(rls);
-		ProcessingResult result = addResult(rls, methodInfo);
+		ProcessingResult result = addResult(rls, info);
 		updateMessage("Creating files");
 		result.updateStatus("Creating files");
 
@@ -634,12 +616,12 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		}
 	}
 
-	private ProcessingResult addResult(Release rls, ReleaseOriginInfo methodInfo)
+	private ProcessingResult addResult(Release rls, ProcessingResultInfo info)
 	{
 		ProcessingResult result = new ProcessingResult(this, rls);
 		Platform.runLater(() ->
 		{
-			result.updateInfo(ProcessingResultInfo.of(result, methodInfo));
+			result.updateInfo(info);
 			results.add(result);
 			taskTreeItem.getChildren().add(new TreeItem<ProcessingItem>(result));
 			taskTreeItem.setExpanded(true);

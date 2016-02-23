@@ -10,9 +10,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.name.SubtitleReleaseNamer;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -137,68 +135,6 @@ public class ProcessingResult implements ProcessingItem
 		{
 			log.debug("Deleting {}", file);
 			Files.deleteIfExists(file);
-		}
-	}
-
-	// inner classes
-	public static interface ReleaseOriginInfo
-	{
-		public static enum Origin
-		{
-			DATABASE, GUESSED, COMPATIBLE
-		}
-
-		public Origin getOrigin();
-	}
-
-	public static class DatabaseInfo implements ReleaseOriginInfo
-	{
-		@Override
-		public Origin getOrigin()
-		{
-			return Origin.DATABASE;
-		}
-	}
-
-	public static class GuessedInfo implements ReleaseOriginInfo
-	{
-		private final StandardRelease standardRelease;
-
-		GuessedInfo(StandardRelease standardRelease)
-		{
-			this.standardRelease = standardRelease;
-		}
-
-		@Override
-		public Origin getOrigin()
-		{
-			return Origin.GUESSED;
-		}
-
-		public StandardRelease getStandardRelease()
-		{
-			return standardRelease;
-		}
-	}
-
-	public static class CompatibleInfo implements ReleaseOriginInfo
-	{
-		private final CompatibilityInfo compatibilityInfo;
-
-		CompatibleInfo(CompatibilityInfo compatibilityInfo)
-		{
-			this.compatibilityInfo = compatibilityInfo;
-		}
-
-		@Override
-		public Origin getOrigin()
-		{
-			return Origin.COMPATIBLE;
-		}
-
-		public CompatibilityInfo getCompatibilityInfo()
-		{
-			return compatibilityInfo;
 		}
 	}
 }

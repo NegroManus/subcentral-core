@@ -100,6 +100,11 @@
 				</aliasNames>
 			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Scream Queens" namePatternMode="LITERAL" nameReplacement="Scream Queens (2015)" beforeQuerying="true" afterQuerying="false" />
+			<seriesNameCorrectionRule namePattern="The Magicians (2016)" namePatternMode="LITERAL" nameReplacement="The Magicians (US)" beforeQuerying="true" afterQuerying="false">
+				<aliasNames>
+					<aliasName>The Magicians</aliasName>
+				</aliasNames>
+			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="You're the Worst (2014)" namePatternMode="LITERAL" nameReplacement="You're the Worst" beforeQuerying="true" afterQuerying="false" />
 
 			<releaseTagsCorrectionRule searchTags="AAC2, 0" replacement="AAC2.0" searchMode="CONTAIN" replaceMode="MATCHED_SEQUENCE" ignoreOrder="false" beforeQuerying="true" afterQuerying="true" />

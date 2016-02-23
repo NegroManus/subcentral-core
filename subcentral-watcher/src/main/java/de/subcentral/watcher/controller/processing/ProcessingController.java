@@ -43,8 +43,6 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.MainController;
-import de.subcentral.watcher.controller.processing.ProcessingResult.CompatibleInfo;
-import de.subcentral.watcher.controller.processing.ProcessingResult.GuessedInfo;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;
 import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.ProcessingSettings;
@@ -309,7 +307,6 @@ public class ProcessingController extends Controller
 		{
 			return new TreeTableCell<ProcessingItem, ProcessingInfo>()
 			{
-
 				@Override
 				protected void updateItem(ProcessingInfo item, boolean empty)
 				{
@@ -322,6 +319,15 @@ public class ProcessingController extends Controller
 					}
 					else
 					{
+						TreeItem<ProcessingItem> treeItem = getTreeTableRow().getTreeItem();
+						if (treeItem == null)
+						{
+							setText("");
+							setGraphic(null);
+							return;
+						}
+						ProcessingResult result = (ProcessingResult) treeItem.getValue();
+
 						if (item instanceof ProcessingTaskInfo)
 						{
 							ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
@@ -336,43 +342,38 @@ public class ProcessingController extends Controller
 							hbox.setAlignment(Pos.CENTER_LEFT);
 
 							// origin info
-							switch (resultInfo.getOriginInfo().getOrigin())
+							switch (resultInfo.getResultType())
 							{
-								case DATABASE:
+								case LISTED:
 								{
-									addDatabaseHyperlink(resultInfo, hbox);
+									addDatabaseHyperlink(result, hbox);
 									break;
 								}
 								case GUESSED:
 								{
-									GuessedInfo gi = (GuessedInfo) resultInfo.getOriginInfo();
-									Label guessedLbl = WatcherFxUtil.createGuessedLabel(gi.getStandardRelease(), (Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
+									Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
 									hbox.getChildren().add(guessedLbl);
 									break;
 								}
-								case COMPATIBLE:
+								case LISTED_COMPATIBLE:
 								{
 									// compatible releases may be listed in a database as well
-									addDatabaseHyperlink(resultInfo, hbox);
+									addDatabaseHyperlink(result, hbox);
 
-									CompatibleInfo ci = (CompatibleInfo) resultInfo.getOriginInfo();
-
-									Label compLbl = WatcherFxUtil.createCompatibilityLabel(ci.getCompatibilityInfo(),
-											(Release rls) -> resultInfo.getProcessingResult().getTask().generateDisplayName(rls));
+									Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
 									hbox.getChildren().add(compLbl);
 									break;
 								}
 								default:
-									log.warn("Unknown method info type: " + resultInfo.getOriginInfo());
+									log.warn("Unknown result type: " + resultInfo.getResultType());
 									break;
 							}
 
 							// nuke
-							hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(resultInfo.getProcessingResult().getRelease()));
+							hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(result.getRelease()));
 
 							// meta tags
-							Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(resultInfo.getProcessingResult().getRelease(),
-									resultInfo.getProcessingResult().getTask().getConfig().getReleaseMetaTags());
+							Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
 							if (metaTagsLbl != null)
 							{
 								hbox.getChildren().add(metaTagsLbl);
@@ -389,10 +390,9 @@ public class ProcessingController extends Controller
 					}
 				}
 
-				private void addDatabaseHyperlink(ProcessingResultInfo resultInfo, HBox hbox)
+				private void addDatabaseHyperlink(ProcessingResult result, HBox hbox)
 				{
-					Hyperlink database = WatcherFxUtil.createFurtherInfoHyperlink(resultInfo.getProcessingResult().getRelease(),
-							resultInfo.getProcessingResult().getTask().getController().getMainController().getCommonExecutor());
+					Hyperlink database = WatcherFxUtil.createFurtherInfoHyperlink(result.getRelease(), result.getTask().getController().getMainController().getCommonExecutor());
 					if (database != null)
 					{
 						hbox.getChildren().add(database);
