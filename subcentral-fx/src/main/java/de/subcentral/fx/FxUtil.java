@@ -36,6 +36,7 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.ListBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.Property;
@@ -692,6 +693,18 @@ public class FxUtil
 		{
 			@Override
 			protected String computeValue()
+			{
+				return value;
+			}
+		};
+	}
+
+	public static <E> ListBinding<E> constantListBinding(final ObservableList<E> value)
+	{
+		return new ListBinding<E>()
+		{
+			@Override
+			protected ObservableList<E> computeValue()
 			{
 				return value;
 			}
