@@ -44,6 +44,9 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(SubtitleRelease.class, PropNames.ATTRIBUTES);
 
+	/**
+	 * The hearing impaired tag (HI). It marks a sub to contain transcription for the hearing impaired. Also known as "closed captioning (CC)".
+	 */
 	public static final Tag						HEARING_IMPAIRED_TAG	= new Tag("HI", "Hearing Impaired");
 
 	public static enum ForeignParts
@@ -328,15 +331,21 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 	}
 
 	/**
-	 * Whether the subtitle contains transcription for the hearing impaired. Also known as "closed captioning (CC)". The default value is {@code false}.
+	 * Whether the subtitle's tags contain the {@link #HEARING_IMPAIRED_TAG hearing impaired tag}.
 	 * 
-	 * @return whether or not hearing impaired
+	 * @return true if the tags contain the HI tag, false otherwise
 	 */
 	public boolean isHearingImpaired()
 	{
 		return tags.contains(HEARING_IMPAIRED_TAG);
 	}
 
+	/**
+	 * Adds the {@link #HEARING_IMPAIRED_TAG hearing impaired tag} at the end of the list if {@code hearingImpaired} is {@code true} and removes the tag if it is {@code false}.
+	 * 
+	 * @param hearingImpaired
+	 *            whether to add or remove the hearing impaired tag from the tags
+	 */
 	public void setHearingImpaired(boolean hearingImpaired)
 	{
 		if (hearingImpaired)

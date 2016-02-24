@@ -334,6 +334,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		// Created result object
 		SubtitleRelease convertedSubAdj = new SubtitleRelease();
 		convertedSubAdj.setHearingImpaired(parsedObject.isHearingImpaired());
+		// tags are not copied
 		for (Subtitle srcSub : parsedObject.getSubtitles())
 		{
 			Subtitle convertedSub = new Subtitle();
