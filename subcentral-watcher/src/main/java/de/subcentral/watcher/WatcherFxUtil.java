@@ -243,6 +243,14 @@ public class WatcherFxUtil
 		return guessedLbl;
 	}
 
+	public static Label createManualLabel()
+	{
+		ImageView errorImg = new ImageView(FxUtil.loadImg("hand_select_16.png"));
+		Label excLbl = new Label("", errorImg);
+		excLbl.setTooltip(new Tooltip("Added manually"));
+		return excLbl;
+	}
+
 	public static Label createExceptionLabel(Throwable exception)
 	{
 		ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));

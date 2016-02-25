@@ -539,7 +539,8 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		}
 	}
 
-	private void addReleaseToResult(Release rls, ProcessingResultInfo info) throws Exception
+	// protected: also callable from DetailsController
+	protected void addReleaseToResult(Release rls, ProcessingResultInfo info) throws Exception
 	{
 		List<Correction> corrections = config.getAfterQueryingCorrectionService().correct(rls);
 		corrections.forEach(c -> log.debug("After querying correction: {}", c));

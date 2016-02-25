@@ -9,7 +9,7 @@ public class ProcessingResultInfo implements ProcessingInfo
 {
 	public static enum ResultType
 	{
-		LISTED, LISTED_COMPATIBLE, GUESSED, GUESSED_COMPATIBLE
+		LISTED, LISTED_COMPATIBLE, LISTED_MANUAL, GUESSED, GUESSED_COMPATIBLE
 	}
 
 	private final ResultType		resultType;
@@ -46,6 +46,11 @@ public class ProcessingResultInfo implements ProcessingInfo
 	public static ProcessingResultInfo listedCompatible(CompatibilityInfo compatibilityInfo)
 	{
 		return new ProcessingResultInfo(ResultType.LISTED_COMPATIBLE, null, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
+	}
+
+	public static ProcessingResultInfo listedManual()
+	{
+		return new ProcessingResultInfo(ResultType.LISTED_MANUAL, null, null);
 	}
 
 	public static ProcessingResultInfo guessed(StandardRelease standardRelease)

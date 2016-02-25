@@ -15,8 +15,11 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.Controller;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -28,6 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -64,32 +68,32 @@ public class DetailsController extends Controller
 	@Override
 	protected void initialize() throws Exception
 	{
-		initHeader();
-		initParsingDetailsSection();
-		initReleaseDetailsSection();
+		updateHeader();
+		updateParsingDetailsSection();
+		updateReleaseDetailsSection();
 
 		// Expand release details
 		sectionsAccordion.setExpandedPane(sectionsAccordion.getPanes().get(1));
 	}
 
-	private void initHeader()
+	private void updateHeader()
 	{
 		sourceFileLabel.setText(task.getSourceFile().getFileName().toString());
 		sourceFileLabel.setTooltip(new Tooltip(task.getSourceFile().toString()));
 	}
 
-	private void initParsingDetailsSection()
+	private void updateParsingDetailsSection()
 	{
 		VBox vbox = createVBox();
 
 		// Parsed object
-		SubtitleRelease subAdj = task.getParsedObject();
+		SubtitleRelease parsedObj = task.getParsedObject();
 
 		vbox.getChildren().add(createHeadline("Parsed subtitle", SettingsController.PARSING_SECTION));
 
-		if (subAdj != null)
+		if (parsedObj != null)
 		{
-			Node parsedSubNode = createParsedSubtitleNode(subAdj, task::generateDisplayName);
+			Node parsedSubNode = createParsedSubtitleNode(parsedObj, task::generateDisplayName);
 			vbox.getChildren().add(parsedSubNode);
 
 			// Corrections
@@ -107,11 +111,91 @@ public class DetailsController extends Controller
 		}
 		else
 		{
-			vbox.getChildren().add(new Label("Could not parse the filename: No pattern matched"));
+			vbox.getChildren().add(new Label("Filename could not be parsed"));
 		}
 
 		// Add to root pane
 		parsingDetailsRootPane.setContent(vbox);
+	}
+
+	private void updateReleaseDetailsSection()
+	{
+		if (task.getParsedObject() != null)
+		{
+			VBox vbox = createVBox();
+
+			List<ProcessingResult> results = new ArrayList<>(task.getResults());
+
+			// Listed releases
+			vbox.getChildren().add(createHeadline("Listed releases", SettingsController.RELEASE_DBS_SECTION));
+
+			Release queryRls = task.getParsedObject().getFirstMatchingRelease();
+			Set<String> mediaNames = task.generateFilteringDisplayNames(queryRls.getMedia());
+
+			vbox.getChildren().add(new Label(
+					task.getListedReleases().size() + " release(s) were found for " + StringUtil.COMMA_JOINER.join(mediaNames.stream().map((String name) -> StringUtil.quoteString(name)).iterator())));
+			if (!task.getListedReleases().isEmpty())
+			{
+				vbox.getChildren().add(createSeparator(false));
+				vbox.getChildren().add(new Label("Match criteria:"));
+				vbox.getChildren().add(createMatchCriteriaNode(queryRls, mediaNames));
+
+				vbox.getChildren().add(createSeparator(false));
+
+				int rows = task.getListedReleases().size();
+				Release[] releases = new Release[rows];
+				ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
+				for (int i = 0; i < rows; i++)
+				{
+					Release rls = task.getListedReleases().get(i);
+					ProcessingResultInfo info = null;
+					ListIterator<ProcessingResult> iter = results.listIterator();
+					while (iter.hasNext())
+					{
+						ProcessingResult r = iter.next();
+						if (rls.equals(r.getRelease()))
+						{
+							info = (ProcessingResultInfo) r.getInfo();
+							iter.remove();
+							break;
+						}
+					}
+					releases[i] = rls;
+					infos[i] = info;
+				}
+				vbox.getChildren().add(createReleaseListGridPane(releases, infos));
+			}
+
+			if (!results.isEmpty())
+			{
+				// Guessed releases
+				vbox.getChildren().add(createSeparator(true));
+				vbox.getChildren().add(createHeadline("Guessed releases", SettingsController.RELEASE_GUESSING_SECTION));
+				if (!task.getConfig().isGuessingEnabled())
+				{
+					vbox.getChildren().add(new Label("Guessing disabled"));
+				}
+				else
+				{
+					int rows = results.size();
+					Release[] releases = new Release[rows];
+					ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
+					for (int i = 0; i < rows; i++)
+					{
+						ProcessingResult result = results.get(i);
+						releases[i] = result.getRelease();
+						infos[i] = (ProcessingResultInfo) result.getInfo();
+					}
+					vbox.getChildren().add(createReleaseListGridPane(releases, infos));
+				}
+			}
+
+			releaseDetailsRootPane.setContent(vbox);
+		}
+		else
+		{
+			parsingDetailsRootPane.setContent(new Label("Filename could not be parsed"));
+		}
 	}
 
 	private static VBox createVBox()
@@ -221,6 +305,8 @@ public class DetailsController extends Controller
 		GridPane gridPane = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setHgrow(Priority.NEVER);
+		column1.setHalignment(HPos.CENTER);
+		column1.setPrefWidth(30d);
 		ColumnConstraints column2 = new ColumnConstraints();
 		column2.setHgrow(Priority.SOMETIMES);
 		gridPane.getColumnConstraints().addAll(column1, column2);
@@ -247,85 +333,6 @@ public class DetailsController extends Controller
 		Label lbl = new Label(key);
 		lbl.setTextFill(Color.GRAY);
 		return lbl;
-	}
-
-	private void initReleaseDetailsSection()
-	{
-		if (task.getParsedObject() == null)
-		{
-			return;
-		}
-
-		VBox vbox = createVBox();
-
-		List<ProcessingResult> results = new ArrayList<>(task.getResults());
-
-		// Listed releases
-		vbox.getChildren().add(createHeadline("Listed releases", SettingsController.RELEASE_DBS_SECTION));
-
-		Release queryRls = task.getParsedObject().getFirstMatchingRelease();
-		Set<String> mediaNames = task.generateFilteringDisplayNames(queryRls.getMedia());
-
-		vbox.getChildren().add(new Label(
-				task.getListedReleases().size() + " release(s) were found for " + StringUtil.COMMA_JOINER.join(mediaNames.stream().map((String name) -> StringUtil.quoteString(name)).iterator())));
-		if (!task.getListedReleases().isEmpty())
-		{
-			vbox.getChildren().add(createSeparator(false));
-			vbox.getChildren().add(new Label("Match criteria:"));
-			vbox.getChildren().add(createMatchCriteriaNode(queryRls, mediaNames));
-
-			vbox.getChildren().add(createSeparator(false));
-
-			int rows = task.getListedReleases().size();
-			Release[] releases = new Release[rows];
-			ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
-			for (int i = 0; i < rows; i++)
-			{
-				Release rls = task.getListedReleases().get(i);
-				ProcessingResultInfo info = null;
-				ListIterator<ProcessingResult> iter = results.listIterator();
-				while (iter.hasNext())
-				{
-					ProcessingResult r = iter.next();
-					if (rls.equals(r.getRelease()))
-					{
-						info = (ProcessingResultInfo) r.getInfo();
-						iter.remove();
-						break;
-					}
-				}
-				releases[i] = rls;
-				infos[i] = info;
-			}
-			vbox.getChildren().add(createReleaseListGridPane(releases, infos));
-		}
-
-		if (!results.isEmpty())
-		{
-			// Guessed releases
-			vbox.getChildren().add(createSeparator(true));
-			vbox.getChildren().add(createHeadline("Guessed releases", SettingsController.RELEASE_GUESSING_SECTION));
-			if (!task.getConfig().isGuessingEnabled())
-			{
-				vbox.getChildren().add(new Label("Guessing disabled"));
-			}
-			else
-			{
-				int rows = results.size();
-				Release[] releases = new Release[rows];
-				ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
-				for (int i = 0; i < rows; i++)
-				{
-					ProcessingResult result = results.get(i);
-					releases[i] = result.getRelease();
-					infos[i] = (ProcessingResultInfo) result.getInfo();
-				}
-				vbox.getChildren().add(createReleaseListGridPane(releases, infos));
-			}
-		}
-
-		releaseDetailsRootPane.setContent(vbox);
-
 	}
 
 	private Separator createSeparator(boolean topMargin)
@@ -358,31 +365,34 @@ public class DetailsController extends Controller
 	private void addReleaseRow(GridPane gridPane, int rowIndex, Release rls, ProcessingResultInfo info)
 	{
 		// Result type
-		Node resultTypeLabel;
+		Node resultTypeNode;
 		if (info != null)
 		{
 			switch (info.getResultType())
 			{
 				case LISTED:
-					resultTypeLabel = WatcherFxUtil.createMatchLabel(rls);
+					resultTypeNode = WatcherFxUtil.createMatchLabel(rls);
+					break;
+				case LISTED_MANUAL:
+					resultTypeNode = WatcherFxUtil.createManualLabel();
 					break;
 				case LISTED_COMPATIBLE:
 					// fall through
 				case GUESSED_COMPATIBLE:
-					resultTypeLabel = WatcherFxUtil.createCompatibilityLabel(info.getCompatibilityInfo(), (Release r) -> task.generateDisplayName(r), false);
+					resultTypeNode = WatcherFxUtil.createCompatibilityLabel(info.getCompatibilityInfo(), (Release r) -> task.generateDisplayName(r), false);
 					break;
 				case GUESSED:
-					resultTypeLabel = WatcherFxUtil.createGuessedLabel(info.getStandardRelease(), (Release r) -> task.generateDisplayName(r));
+					resultTypeNode = WatcherFxUtil.createGuessedLabel(info.getStandardRelease(), (Release r) -> task.generateDisplayName(r));
 					break;
 				default:
-					resultTypeLabel = new Label("");
+					resultTypeNode = new Label(info.getResultType().toString());
 			}
 		}
 		else
 		{
-			resultTypeLabel = new Label("");
+			resultTypeNode = createAddListedManuallyLink(rls);
 		}
-		gridPane.add(resultTypeLabel, 0, rowIndex);
+		gridPane.add(resultTypeNode, 0, rowIndex);
 
 		// Name & Info
 		HBox rlsHbox = new HBox();
@@ -412,14 +422,41 @@ public class DetailsController extends Controller
 		gridPane.add(rlsHbox, 1, rowIndex);
 	}
 
-	public ProcessingTask getTask()
+	private Node createAddListedManuallyLink(Release release)
 	{
-		return task;
-	}
+		Hyperlink btn = new Hyperlink("", new ImageView(FxUtil.loadImg("add_16.png")));
+		btn.setUnderline(false);
+		btn.setOpacity(0.5d);
+		btn.setTooltip(new Tooltip("Add this release to the matching releases"));
+		btn.setOnAction((ActionEvent evt) ->
+		{
+			btn.setDisable(true);
+			btn.setText("\u2026");
+			btn.setGraphic(null);
+			Task<Void> addReleaseTask = new Task<Void>()
+			{
+				@Override
+				protected Void call() throws Exception
+				{
+					// Thread.sleep(2000L);
+					task.addReleaseToResult(release, ProcessingResultInfo.listedManual());
+					return null;
+				}
 
-	public ProcessingController getProcessingController()
-	{
-		return processingController;
-	}
+				@Override
+				protected void succeeded()
+				{
+					updateReleaseDetailsSection();
+				}
 
+				@Override
+				protected void failed()
+				{
+					btn.setDisable(false);
+				}
+			};
+			processingController.getMainController().getCommonExecutor().submit(addReleaseTask);
+		});
+		return btn;
+	}
 }

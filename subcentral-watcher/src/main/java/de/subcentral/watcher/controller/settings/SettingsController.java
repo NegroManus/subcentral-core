@@ -342,7 +342,7 @@ public class SettingsController extends Controller
 		AnchorPane.setRightAnchor(loadingPane, 0.0d);
 		AnchorPane.setBottomAnchor(loadingPane, 0.0d);
 		AnchorPane.setLeftAnchor(loadingPane, 0.0d);
-		ProgressIndicator loadingIndicator = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);
+		ProgressIndicator loadingIndicator = new ProgressIndicator();
 		loadingIndicator.setMaxHeight(50d);
 		loadingIndicator.setMaxWidth(50d);
 		// "Loading ..."

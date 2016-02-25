@@ -358,28 +358,26 @@ public class ProcessingController extends Controller
 								addDatabaseHyperlink(result, hbox);
 								break;
 							}
-							case GUESSED:
-							{
-								Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
-								hbox.getChildren().add(guessedLbl);
-								break;
-							}
 							case LISTED_COMPATIBLE:
 							{
 								// compatible releases may be listed in a database as well
 								addDatabaseHyperlink(result, hbox);
-
-								Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
-								hbox.getChildren().add(compLbl);
+								addCompatibilityLabel(result, resultInfo, hbox);
+								break;
+							}
+							case LISTED_MANUAL:
+								Label manualLbl = WatcherFxUtil.createManualLabel();
+								hbox.getChildren().add(manualLbl);
+								break;
+							case GUESSED:
+							{
+								addGuessedLabel(result, resultInfo, hbox);
 								break;
 							}
 							case GUESSED_COMPATIBLE:
 							{
-								Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
-								hbox.getChildren().add(guessedLbl);
-
-								Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
-								hbox.getChildren().add(compLbl);
+								addGuessedLabel(result, resultInfo, hbox);
+								addCompatibilityLabel(result, resultInfo, hbox);
 								break;
 							}
 							default:
@@ -414,6 +412,18 @@ public class ProcessingController extends Controller
 					{
 						hbox.getChildren().add(database);
 					}
+				}
+
+				private void addCompatibilityLabel(ProcessingResult result, ProcessingResultInfo resultInfo, HBox hbox)
+				{
+					Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
+					hbox.getChildren().add(compLbl);
+				}
+
+				private void addGuessedLabel(ProcessingResult result, ProcessingResultInfo resultInfo, HBox hbox)
+				{
+					Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
+					hbox.getChildren().add(guessedLbl);
 				}
 
 				private String flagToString(ProcessingTaskInfo.Flag flag)
