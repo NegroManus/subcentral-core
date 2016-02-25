@@ -123,6 +123,12 @@ public class ProcessingResult implements ProcessingItem
 		return info;
 	}
 
+	@Override
+	public ProcessingResultInfo getInfo()
+	{
+		return (ProcessingResultInfo) info.getValue();
+	}
+
 	void updateInfo(final ProcessingResultInfo info)
 	{
 		Platform.runLater(() -> ProcessingResult.this.info.setValue(info));

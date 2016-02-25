@@ -47,6 +47,7 @@ import de.subcentral.core.parse.ParsingException;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
@@ -149,6 +150,12 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		return info;
 	}
 
+	@Override
+	public ProcessingTaskInfo getInfo()
+	{
+		return (ProcessingTaskInfo) info.getValue();
+	}
+
 	private void updateInfo(final ProcessingTaskInfo info)
 	{
 		Platform.runLater(() -> ProcessingTask.this.info.setValue(info));
@@ -194,11 +201,24 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		return NamingUtil.generateNames(obj, ImmutableList.of(controller.getNamingService()), MediaUtil.generateNamingParametersForAllNames(obj));
 	}
 
-	public void deleteSourceFile() throws IOException
+	public void deleteSourceFile()
 	{
-		checkCancelled();
-		log.info("Deleting source file {}", getSourceFile());
-		Files.deleteIfExists(getSourceFile());
+		if (config.isDeleteSource())
+		{
+			try
+			{
+				updateMessage("Deleting source file");
+				checkCancelled();
+				log.info("Deleting source file {}", getSourceFile());
+				Files.deleteIfExists(getSourceFile());
+				updateInfo(ProcessingTaskInfo.withAdditonalFlags(getInfo(), ProcessingTaskInfo.Flag.DELETED_SOURCE_FILE));
+			}
+			catch (IOException e)
+			{
+				log.warn("Could not delete source file " + getSourceFile(), e);
+				// updateInfo(ProcessingTaskInfo.of("Failed to delete source file: " + e));
+			}
+		}
 	}
 
 	public void deleteResultFiles() throws IOException
@@ -235,19 +255,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				processParsed();
 
 				// May clean up
-				if (config.isDeleteSource())
-				{
-					try
-					{
-						updateMessage("Deleting source file");
-						deleteSourceFile();
-						updateInfo(ProcessingTaskInfo.of("Origin file deleted"));
-					}
-					catch (IOException e)
-					{
-						log.warn("Could not delete source file", e);
-					}
-				}
+				deleteSourceFile();
 			}
 			return null;
 		}
@@ -279,7 +287,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	{
 		updateProgress(1d, 1d);
 		updateMessage("Failed");
-		updateInfo(ProcessingTaskInfo.of(getException().toString()));
+		updateInfo(ProcessingTaskInfo.failed(getException()));
 		log.error("Processing of file failed: " + getSourceFile(), getException());
 	}
 
@@ -549,10 +557,8 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		resultObject.getMatchingReleases().add(rls);
 		ProcessingResult result = addResult(rls, info);
-		updateMessage("Creating files");
-		result.updateStatus("Creating files");
 
-		createFiles(result);
+		createResultFiles(result);
 
 	}
 
@@ -620,7 +626,8 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	private ProcessingResult addResult(Release rls, ProcessingResultInfo info)
 	{
 		ProcessingResult result = new ProcessingResult(this, rls);
-		Platform.runLater(() ->
+		// Wait that the tree item was added to make sure later updateInfo() calls happen after it
+		FxUtil.runAndWait(() ->
 		{
 			result.updateInfo(info);
 			results.add(result);
@@ -630,8 +637,11 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		return result;
 	}
 
-	private void createFiles(ProcessingResult result) throws Exception
+	private void createResultFiles(ProcessingResult result) throws Exception
 	{
+		updateMessage("Creating files");
+		result.updateStatus("Creating files");
+
 		try
 		{
 			Path srcFile = getSourceFile();
@@ -662,75 +672,12 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				log.warn("com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE could not be used", t);
 				copyOptions = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING };
 			}
-
 			Path newFile = Files.copy(srcFile, targetFile, copyOptions);
 
 			result.addFile(newFile);
 			log.debug("Copied {} to {}", srcFile, targetFile);
 
-			if (config.isPackingEnabled())
-			{
-				Exception packingException = null;
-				try
-				{
-					final Path newRar = newFile.resolveSibling(result.getName() + ".rar");
-					WinRarLocateStrategy locateStrategy = config.getWinRarLocateStrategy();
-					WinRarPackager packager;
-					switch (locateStrategy)
-					{
-						case SPECIFY:
-							packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
-							break;
-						case AUTO_LOCATE:
-							// fall through
-						default:
-							packager = controller.getMainController().getWinRar().getPackager();
-					}
-					WinRarPackConfig cfg = new WinRarPackConfig();
-					cfg.setCompressionMethod(CompressionMethod.BEST);
-					cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
-					cfg.setTimeout(10, TimeUnit.MINUTES);
-					cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
-
-					checkCancelled();
-					WinRarPackResult packResult = packager.pack(newFile, newRar, cfg);
-
-					if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
-					{
-						result.removeFile(newFile);
-					}
-					if (packResult.failed())
-					{
-						packingException = packResult.getException();
-					}
-					else
-					{
-						log.debug("Packed {} to {} {}", newFile, newRar, packResult);
-						result.addFile(newRar);
-						result.updateStatus("Done");
-					}
-				}
-				catch (Exception e)
-				{
-					packingException = e;
-				}
-				if (packingException != null)
-				{
-					if (isCancelled())
-					{
-						log.debug("Cancelled while packing. Exception: {}", packingException.toString());
-						result.updateStatus("Cancelled");
-						throw packingException;
-					}
-					else
-					{
-						log.error("Packing failed", packingException);
-						result.updateStatus("Packing failed");
-						updateInfo(ProcessingTaskInfo.of(packingException.toString()));
-					}
-				}
-			}
-			else
+			if (pack(result, newFile))
 			{
 				result.updateStatus("Done");
 			}
@@ -739,22 +686,85 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		{
 			if (isCancelled())
 			{
-				log.debug("Cancelled while transforming files. Exception: {}", e.toString());
+				log.debug("Cancelled while creating file for {}. Exception: {}", result, e.toString());
 				result.updateStatus("Cancelled");
 				throw e;
 			}
 			else
 			{
-				log.error("File transformation failed for " + result, e);
-				result.updateStatus("File transformation failed");
-				updateInfo(ProcessingTaskInfo.of(e.toString()));
+				log.error("File creation failed for " + result, e);
+				result.updateStatus("File creation failed");
 			}
 		}
 		finally
 		{
 			result.updateProgress(1d);
 		}
+	}
 
+	private boolean pack(ProcessingResult result, Path file) throws Exception
+	{
+		if (config.isPackingEnabled())
+		{
+			try
+			{
+				final Path newRar = file.resolveSibling(result.getName() + ".rar");
+				WinRarLocateStrategy locateStrategy = config.getWinRarLocateStrategy();
+				WinRarPackager packager;
+				switch (locateStrategy)
+				{
+					case SPECIFY:
+						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+						break;
+					case AUTO_LOCATE:
+						// fall through
+					default:
+						packager = controller.getMainController().getWinRar().getPackager();
+				}
+				WinRarPackConfig cfg = new WinRarPackConfig();
+				cfg.setCompressionMethod(CompressionMethod.BEST);
+				cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
+				cfg.setTimeout(10, TimeUnit.MINUTES);
+				cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
+
+				checkCancelled();
+				WinRarPackResult packResult = packager.pack(file, newRar, cfg);
+
+				if (packResult.getFlags().contains(Flag.SOURCE_DELETED))
+				{
+					result.removeFile(file);
+				}
+				if (packResult.failed())
+				{
+					throw packResult.getException();
+				}
+				else
+				{
+					log.debug("Packed {} to {} {}", file, newRar, packResult);
+					result.addFile(newRar);
+					return true;
+				}
+			}
+			catch (Exception e)
+			{
+				if (isCancelled())
+				{
+					log.debug("Cancelled while packing file {}. Exception: {}", file, e.toString());
+					result.updateStatus("Cancelled");
+					throw e;
+				}
+				else
+				{
+					log.error("Packing failed for {}", file, e);
+					result.updateStatus("Packing failed");
+					return false;
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	private void displaySystemTrayNotification(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)

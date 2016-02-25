@@ -21,7 +21,6 @@ public class ProcessingResultInfo implements ProcessingInfo
 		this.resultType = Objects.requireNonNull(resultType, "resultType");
 		this.standardRelease = standardRelease;
 		this.compatibilityInfo = compatibilityInfo;
-
 	}
 
 	public ResultType getResultType()
@@ -46,7 +45,7 @@ public class ProcessingResultInfo implements ProcessingInfo
 
 	public static ProcessingResultInfo listedCompatible(CompatibilityInfo compatibilityInfo)
 	{
-		return new ProcessingResultInfo(ResultType.LISTED_COMPATIBLE, null, compatibilityInfo);
+		return new ProcessingResultInfo(ResultType.LISTED_COMPATIBLE, null, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
 	}
 
 	public static ProcessingResultInfo guessed(StandardRelease standardRelease)
@@ -56,6 +55,6 @@ public class ProcessingResultInfo implements ProcessingInfo
 
 	public static ProcessingResultInfo guessedCompatible(StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
 	{
-		return new ProcessingResultInfo(ResultType.GUESSED, standardRelease, compatibilityInfo);
+		return new ProcessingResultInfo(ResultType.GUESSED, standardRelease, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
 	}
 }

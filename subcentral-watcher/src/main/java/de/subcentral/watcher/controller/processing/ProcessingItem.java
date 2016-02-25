@@ -9,7 +9,7 @@ import javafx.beans.property.ReadOnlyStringProperty;
 
 public interface ProcessingItem
 {
-			ReadOnlyStringProperty nameProperty();
+	ReadOnlyStringProperty nameProperty();
 
 	default String getName()
 	{

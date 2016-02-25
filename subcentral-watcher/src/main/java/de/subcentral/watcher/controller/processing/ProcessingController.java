@@ -307,6 +307,7 @@ public class ProcessingController extends Controller
 		{
 			return new TreeTableCell<ProcessingItem, ProcessingInfo>()
 			{
+
 				@Override
 				protected void updateItem(ProcessingInfo item, boolean empty)
 				{
@@ -316,77 +317,93 @@ public class ProcessingController extends Controller
 					{
 						setText("");
 						setGraphic(null);
+						return;
 					}
-					else
+
+					TreeItem<ProcessingItem> treeItem = getTreeTableRow().getTreeItem();
+					if (treeItem == null)
 					{
-						TreeItem<ProcessingItem> treeItem = getTreeTableRow().getTreeItem();
-						if (treeItem == null)
+						setText("");
+						setGraphic(null);
+						return;
+					}
+
+					if (item instanceof ProcessingTaskInfo)
+					{
+						ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
+						if (taskInfo.failed())
 						{
-							setText("");
-							setGraphic(null);
-							return;
-						}
-						ProcessingResult result = (ProcessingResult) treeItem.getValue();
-
-						if (item instanceof ProcessingTaskInfo)
-						{
-							ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
-							setText(taskInfo.getInfo());
-							setGraphic(null);
-						}
-						else if (item instanceof ProcessingResultInfo)
-						{
-							ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
-							HBox hbox = new HBox();
-							hbox.setSpacing(5d);
-							hbox.setAlignment(Pos.CENTER_LEFT);
-
-							// origin info
-							switch (resultInfo.getResultType())
-							{
-								case LISTED:
-								{
-									addDatabaseHyperlink(result, hbox);
-									break;
-								}
-								case GUESSED:
-								{
-									Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
-									hbox.getChildren().add(guessedLbl);
-									break;
-								}
-								case LISTED_COMPATIBLE:
-								{
-									// compatible releases may be listed in a database as well
-									addDatabaseHyperlink(result, hbox);
-
-									Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
-									hbox.getChildren().add(compLbl);
-									break;
-								}
-								default:
-									log.warn("Unknown result type: " + resultInfo.getResultType());
-									break;
-							}
-
-							// nuke
-							hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(result.getRelease()));
-
-							// meta tags
-							Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
-							if (metaTagsLbl != null)
-							{
-								hbox.getChildren().add(metaTagsLbl);
-							}
-
-							setText("");
-							setGraphic(hbox);
+							setText(taskInfo.getException().toString());
 						}
 						else
 						{
-							setText("");
-							setGraphic(null);
+							setText(taskInfo.getFlags().stream().map(this::flagToString).collect(Collectors.joining()));
 						}
+						setGraphic(null);
+					}
+					else if (item instanceof ProcessingResultInfo)
+					{
+						ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
+						ProcessingResult result = (ProcessingResult) treeItem.getValue();
+
+						HBox hbox = new HBox();
+						hbox.setSpacing(5d);
+						hbox.setAlignment(Pos.CENTER_LEFT);
+
+						// origin info
+						switch (resultInfo.getResultType())
+						{
+							case LISTED:
+							{
+								addDatabaseHyperlink(result, hbox);
+								break;
+							}
+							case GUESSED:
+							{
+								Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
+								hbox.getChildren().add(guessedLbl);
+								break;
+							}
+							case LISTED_COMPATIBLE:
+							{
+								// compatible releases may be listed in a database as well
+								addDatabaseHyperlink(result, hbox);
+
+								Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
+								hbox.getChildren().add(compLbl);
+								break;
+							}
+							case GUESSED_COMPATIBLE:
+							{
+								Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
+								hbox.getChildren().add(guessedLbl);
+
+								Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
+								hbox.getChildren().add(compLbl);
+								break;
+							}
+							default:
+								log.warn("Unknown result type: " + resultInfo.getResultType());
+								break;
+						}
+
+						// nuke
+						hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(result.getRelease()));
+
+						// meta tags
+						Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
+						if (metaTagsLbl != null)
+						{
+							hbox.getChildren().add(metaTagsLbl);
+						}
+
+						setText("");
+						setGraphic(hbox);
+					}
+					else
+					{
+						setText("");
+						setGraphic(null);
 					}
 				}
 
@@ -398,6 +415,18 @@ public class ProcessingController extends Controller
 						hbox.getChildren().add(database);
 					}
 				}
+
+				private String flagToString(ProcessingTaskInfo.Flag flag)
+				{
+					switch (flag)
+					{
+						case DELETED_SOURCE_FILE:
+							return "Deleted source file";
+						default:
+							return flag.toString();
+					}
+				}
+
 			};
 		});
 

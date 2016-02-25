@@ -243,6 +243,13 @@ public class WatcherFxUtil
 		return guessedLbl;
 	}
 
+	public static Label createExceptionLabel(Throwable exception)
+	{
+		ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
+		Label excLbl = new Label(exception.toString(), errorImg);
+		return excLbl;
+	}
+
 	private WatcherFxUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
