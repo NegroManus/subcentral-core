@@ -694,6 +694,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			else
 			{
 				log.error("File creation failed for " + result, e);
+				result.updateException(e);
 				result.updateStatus("File creation failed");
 			}
 		}
@@ -757,6 +758,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				else
 				{
 					log.error("Packing failed for {}", file, e);
+					result.updateException(e);
 					result.updateStatus("Packing failed");
 					return false;
 				}

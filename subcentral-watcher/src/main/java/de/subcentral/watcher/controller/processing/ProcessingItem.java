@@ -38,4 +38,11 @@ public interface ProcessingItem
 	{
 		return infoProperty().getValue();
 	}
+
+	ReadOnlyProperty<Throwable> exceptionProperty();
+
+	default Throwable getException()
+	{
+		return exceptionProperty().getValue();
+	}
 }

@@ -65,11 +65,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.ProgressBarTreeTableCell;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -298,6 +300,71 @@ public class ProcessingController extends Controller
 		});
 
 		statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().statusProperty());
+		statusColumn.setCellFactory((TreeTableColumn<ProcessingItem, String> param) ->
+		{
+			return new TreeTableCell<ProcessingItem, String>()
+			{
+				@Override
+				protected void updateItem(String item, boolean empty)
+				{
+					super.updateItem(item, empty);
+
+					if (empty || item == null)
+					{
+						setText("");
+						setGraphic(null);
+						return;
+					}
+
+					setText(item);
+
+					TreeItem<ProcessingItem> treeItem = getTreeTableRow().getTreeItem();
+					if (treeItem == null)
+					{
+						setText("");
+						setGraphic(null);
+						return;
+					}
+
+					if (treeItem.getValue() instanceof ProcessingTask)
+					{
+						ProcessingTask task = (ProcessingTask) treeItem.getValue();
+						Label statusLbl = null;
+						switch (task.getState())
+						{
+							case CANCELLED:
+								ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
+								statusLbl = new Label("", cancelImg);
+								break;
+							case FAILED:
+								ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
+								statusLbl = new Label("", errorImg);
+								statusLbl.setTooltip(new Tooltip(task.getException().toString()));
+								break;
+							default:
+								break;
+						}
+						setGraphic(statusLbl);
+					}
+					else if (treeItem.getValue() instanceof ProcessingResult)
+					{
+						ProcessingResult result = (ProcessingResult) treeItem.getValue();
+
+						if (result.getException() != null)
+						{
+							ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
+							Label statusLbl = new Label("", errorImg);
+							statusLbl.setTooltip(new Tooltip(result.getException().toString()));
+							setGraphic(statusLbl);
+						}
+					}
+					else
+					{
+						setGraphic(null);
+					}
+				};
+			};
+		});
 
 		progressColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, Double> features) -> features.getValue().getValue().progressProperty().asObject());
 		progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
@@ -307,7 +374,6 @@ public class ProcessingController extends Controller
 		{
 			return new TreeTableCell<ProcessingItem, ProcessingInfo>()
 			{
-
 				@Override
 				protected void updateItem(ProcessingInfo item, boolean empty)
 				{

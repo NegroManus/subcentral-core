@@ -37,6 +37,7 @@ public class ProcessingResult implements ProcessingItem
 	private final StringProperty			status		= new SimpleStringProperty(this, "status");
 	private final DoubleProperty			progress	= new SimpleDoubleProperty(this, "progress");
 	private final Property<ProcessingInfo>	info		= new SimpleObjectProperty<>(this, "info");
+	private final Property<Throwable>		exception	= new SimpleObjectProperty<>(this, "exception");
 
 	/**
 	 * package protected
@@ -132,6 +133,17 @@ public class ProcessingResult implements ProcessingItem
 	void updateInfo(final ProcessingResultInfo info)
 	{
 		Platform.runLater(() -> ProcessingResult.this.info.setValue(info));
+	}
+
+	@Override
+	public ReadOnlyProperty<Throwable> exceptionProperty()
+	{
+		return exception;
+	}
+
+	void updateException(final Throwable exception)
+	{
+		Platform.runLater(() -> ProcessingResult.this.exception.setValue(exception));
 	}
 
 	public void deleteFiles() throws IOException
