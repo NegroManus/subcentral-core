@@ -625,17 +625,8 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			Path targetFile = targetDir.resolve(result.getName() + fileExtension);
 
 			checkCancelled();
-			CopyOption[] copyOptions;
-			try
-			{
-				copyOptions = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE };
-			}
-			catch (Throwable t)
-			{
-				log.warn("com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE could not be used", t);
-				copyOptions = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING };
-			}
-			Path newFile = Files.copy(srcFile, targetFile, copyOptions);
+
+			Path newFile = Files.copy(srcFile, targetFile, createCopyOptions());
 
 			result.addFile(newFile);
 			log.debug("Copied {} to {}", srcFile, targetFile);
@@ -797,6 +788,20 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		if (isCancelled())
 		{
 			throw new CancellationException();
+		}
+	}
+
+	@SuppressWarnings("restriction")
+	private static CopyOption[] createCopyOptions()
+	{
+		try
+		{
+			return new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE };
+		}
+		catch (Throwable t)
+		{
+			log.warn("CopyOption com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE could not be used. Copying won't be interruptible", t);
+			return new CopyOption[] { StandardCopyOption.REPLACE_EXISTING };
 		}
 	}
 }
