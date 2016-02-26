@@ -107,7 +107,7 @@ public class ProcessingController extends Controller
 	@FXML
 	private TreeTableColumn<ProcessingItem, ObservableList<Path>>	filesColumn;
 	@FXML
-	private TreeTableColumn<ProcessingItem, String>					statusColumn;
+	private TreeTableColumn<ProcessingItem, WorkerStatus>		statusColumn;
 	@FXML
 	private TreeTableColumn<ProcessingItem, Double>					progressColumn;
 	@FXML
@@ -299,13 +299,13 @@ public class ProcessingController extends Controller
 			};
 		});
 
-		statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().statusProperty());
-		statusColumn.setCellFactory((TreeTableColumn<ProcessingItem, String> param) ->
+		statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, WorkerStatus> features) -> features.getValue().getValue().statusBinding());
+		statusColumn.setCellFactory((TreeTableColumn<ProcessingItem, WorkerStatus> param) ->
 		{
-			return new TreeTableCell<ProcessingItem, String>()
+			return new TreeTableCell<ProcessingItem, WorkerStatus>()
 			{
 				@Override
-				protected void updateItem(String item, boolean empty)
+				protected void updateItem(WorkerStatus item, boolean empty)
 				{
 					super.updateItem(item, empty);
 
@@ -316,52 +316,24 @@ public class ProcessingController extends Controller
 						return;
 					}
 
-					setText(item);
+					setText(item.getMessage());
 
-					TreeItem<ProcessingItem> treeItem = getTreeTableRow().getTreeItem();
-					if (treeItem == null)
+					Label graphic = null;
+					switch (item.getState())
 					{
-						setText("");
-						setGraphic(null);
-						return;
-					}
-
-					if (treeItem.getValue() instanceof ProcessingTask)
-					{
-						ProcessingTask task = (ProcessingTask) treeItem.getValue();
-						Label statusLbl = null;
-						switch (task.getState())
-						{
-							case CANCELLED:
-								ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
-								statusLbl = new Label("", cancelImg);
-								break;
-							case FAILED:
-								ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
-								statusLbl = new Label("", errorImg);
-								statusLbl.setTooltip(new Tooltip(task.getException().toString()));
-								break;
-							default:
-								break;
-						}
-						setGraphic(statusLbl);
-					}
-					else if (treeItem.getValue() instanceof ProcessingResult)
-					{
-						ProcessingResult result = (ProcessingResult) treeItem.getValue();
-
-						if (result.getException() != null)
-						{
+						case CANCELLED:
+							ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
+							graphic = new Label("", cancelImg);
+							break;
+						case FAILED:
 							ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
-							Label statusLbl = new Label("", errorImg);
-							statusLbl.setTooltip(new Tooltip(result.getException().toString()));
-							setGraphic(statusLbl);
-						}
+							graphic = new Label("", errorImg);
+							graphic.setTooltip(new Tooltip(item.getException().toString()));
+							break;
+						default:
+							break;
 					}
-					else
-					{
-						setGraphic(null);
-					}
+					setGraphic(graphic);
 				};
 			};
 		});
@@ -385,32 +357,16 @@ public class ProcessingController extends Controller
 						setGraphic(null);
 						return;
 					}
-
-					TreeItem<ProcessingItem> treeItem = getTreeTableRow().getTreeItem();
-					if (treeItem == null)
-					{
-						setText("");
-						setGraphic(null);
-						return;
-					}
-
 					if (item instanceof ProcessingTaskInfo)
 					{
 						ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
-						if (taskInfo.failed())
-						{
-							setText(taskInfo.getException().toString());
-						}
-						else
-						{
-							setText(taskInfo.getFlags().stream().map(this::flagToString).collect(Collectors.joining()));
-						}
+						setText(taskInfo.getFlags().stream().map(this::flagToString).collect(Collectors.joining(", ")));
 						setGraphic(null);
 					}
 					else if (item instanceof ProcessingResultInfo)
 					{
 						ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
-						ProcessingResult result = (ProcessingResult) treeItem.getValue();
+						ProcessingResult result = resultInfo.getResult();
 
 						HBox hbox = new HBox();
 						hbox.setSpacing(5d);

@@ -47,7 +47,6 @@ import de.subcentral.core.parse.ParsingException;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.fx.FxUtil;
 import de.subcentral.support.winrar.WinRarPackConfig;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
@@ -57,6 +56,7 @@ import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
+import javafx.beans.binding.Binding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
@@ -79,6 +79,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	// for ProcessingItem implementation
 	private final ListProperty<Path>		files;
 	private final Property<ProcessingInfo>	info				= new SimpleObjectProperty<>(this, "info");
+	private final WorkerStatus				status				= new WorkerStatus(stateProperty(), messageProperty(), exceptionProperty());
 
 	// Config: is loaded on start of the task
 	private ProcessingConfig				config;
@@ -139,12 +140,6 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	}
 
 	@Override
-	public ReadOnlyStringProperty statusProperty()
-	{
-		return messageProperty();
-	}
-
-	@Override
 	public ReadOnlyProperty<ProcessingInfo> infoProperty()
 	{
 		return info;
@@ -159,6 +154,12 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	private void updateInfo(final ProcessingTaskInfo info)
 	{
 		Platform.runLater(() -> ProcessingTask.this.info.setValue(info));
+	}
+
+	@Override
+	public Binding<WorkerStatus> statusBinding()
+	{
+		return status;
 	}
 
 	public SubtitleRelease getParsedObject()
@@ -189,45 +190,6 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	public ReadOnlyListProperty<ProcessingResult> resultsProperty()
 	{
 		return results;
-	}
-
-	public String generateDisplayName(Object obj)
-	{
-		return controller.getNamingService().name(obj, config.getNamingParameters());
-	}
-
-	public Set<String> generateFilteringDisplayNames(Object obj)
-	{
-		return NamingUtil.generateNames(obj, ImmutableList.of(controller.getNamingService()), MediaUtil.generateNamingParametersForAllNames(obj));
-	}
-
-	public void deleteSourceFile()
-	{
-		if (config.isDeleteSource())
-		{
-			try
-			{
-				updateMessage("Deleting source file");
-				checkCancelled();
-				log.info("Deleting source file {}", getSourceFile());
-				Files.deleteIfExists(getSourceFile());
-				updateInfo(ProcessingTaskInfo.withAdditonalFlags(getInfo(), ProcessingTaskInfo.Flag.DELETED_SOURCE_FILE));
-			}
-			catch (IOException e)
-			{
-				log.warn("Could not delete source file " + getSourceFile(), e);
-				// updateInfo(ProcessingTaskInfo.of("Failed to delete source file: " + e));
-			}
-		}
-	}
-
-	public void deleteResultFiles() throws IOException
-	{
-		log.debug("Deleting result files of {}", this);
-		for (ProcessingResult result : results)
-		{
-			result.deleteFiles();
-		}
 	}
 
 	@Override
@@ -269,6 +231,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			// So we set the message again just in case.
 			if (isCancelled())
 			{
+				updateProgress(1d, 1d);
 				updateMessage("Cancelled");
 			}
 		}
@@ -287,7 +250,6 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	{
 		updateProgress(1d, 1d);
 		updateMessage("Failed");
-		updateInfo(ProcessingTaskInfo.failed(getException()));
 		log.error("Processing of file failed: " + getSourceFile(), getException());
 	}
 
@@ -626,11 +588,9 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 	private ProcessingResult addResult(Release rls, ProcessingResultInfo info)
 	{
-		ProcessingResult result = new ProcessingResult(this, rls);
-		// Wait that the tree item was added to make sure later updateInfo() calls happen after it
-		FxUtil.runAndWait(() ->
+		ProcessingResult result = new ProcessingResult(this, rls, info);
+		Platform.runLater(() ->
 		{
-			result.updateInfo(info);
 			results.add(result);
 			taskTreeItem.getChildren().add(new TreeItem<ProcessingItem>(result));
 			taskTreeItem.setExpanded(true);
@@ -640,8 +600,10 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 	private void createResultFiles(ProcessingResult result) throws Exception
 	{
+		result.updateState(State.SCHEDULED);
 		updateMessage("Creating files");
-		result.updateStatus("Creating files");
+		result.updateMessage("Creating files");
+		result.updateState(State.RUNNING);
 
 		try
 		{
@@ -680,7 +642,8 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 			if (pack(result, newFile))
 			{
-				result.updateStatus("Done");
+				result.updateMessage("Done");
+				result.updateState(State.SUCCEEDED);
 			}
 		}
 		catch (Exception e)
@@ -688,14 +651,17 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			if (isCancelled())
 			{
 				log.debug("Cancelled while creating file for {}. Exception: {}", result, e.toString());
-				result.updateStatus("Cancelled");
+				result.updateException(e);
+				result.updateMessage("Cancelled");
+				result.updateState(State.CANCELLED);
 				throw e;
 			}
 			else
 			{
 				log.error("File creation failed for " + result, e);
 				result.updateException(e);
-				result.updateStatus("File creation failed");
+				result.updateMessage("File creation failed");
+				result.updateState(State.FAILED);
 			}
 		}
 		finally
@@ -752,14 +718,17 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				if (isCancelled())
 				{
 					log.debug("Cancelled while packing file {}. Exception: {}", file, e.toString());
-					result.updateStatus("Cancelled");
+					result.updateException(e);
+					result.updateMessage("Cancelled");
+					result.updateState(State.CANCELLED);
 					throw e;
 				}
 				else
 				{
 					log.error("Packing failed for {}", file, e);
 					result.updateException(e);
-					result.updateStatus("Packing failed");
+					result.updateMessage("Packing failed");
+					result.updateState(State.FAILED);
 					return false;
 				}
 			}
@@ -767,6 +736,45 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		else
 		{
 			return false;
+		}
+	}
+
+	public String generateDisplayName(Object obj)
+	{
+		return controller.getNamingService().name(obj, config.getNamingParameters());
+	}
+
+	public Set<String> generateFilteringDisplayNames(Object obj)
+	{
+		return NamingUtil.generateNames(obj, ImmutableList.of(controller.getNamingService()), MediaUtil.generateNamingParametersForAllNames(obj));
+	}
+
+	public void deleteSourceFile()
+	{
+		if (config.isDeleteSource())
+		{
+			try
+			{
+				updateMessage("Deleting source file");
+				checkCancelled();
+				log.info("Deleting source file {}", getSourceFile());
+				Files.deleteIfExists(getSourceFile());
+				updateInfo(ProcessingTaskInfo.withAdditonalFlags(getInfo(), ProcessingTaskInfo.Flag.DELETED_SOURCE_FILE));
+			}
+			catch (IOException e)
+			{
+				log.warn("Could not delete source file " + getSourceFile(), e);
+				// updateInfo(ProcessingTaskInfo.of("Failed to delete source file: " + e));
+			}
+		}
+	}
+
+	public void deleteResultFiles() throws IOException
+	{
+		log.debug("Deleting result files of {}", this);
+		for (ProcessingResult result : results)
+		{
+			result.deleteFiles();
 		}
 	}
 

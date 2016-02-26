@@ -12,6 +12,7 @@ public class ProcessingResultInfo implements ProcessingInfo
 		LISTED, LISTED_COMPATIBLE, LISTED_MANUAL, GUESSED, GUESSED_COMPATIBLE
 	}
 
+	private ProcessingResult		result;
 	private final ResultType		resultType;
 	private final StandardRelease	standardRelease;
 	private final CompatibilityInfo	compatibilityInfo;
@@ -21,6 +22,17 @@ public class ProcessingResultInfo implements ProcessingInfo
 		this.resultType = Objects.requireNonNull(resultType, "resultType");
 		this.standardRelease = standardRelease;
 		this.compatibilityInfo = compatibilityInfo;
+	}
+
+	// package private
+	void setResult(ProcessingResult result)
+	{
+		this.result = result;
+	}
+
+	public ProcessingResult getResult()
+	{
+		return result;
 	}
 
 	public ResultType getResultType()

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.name.SubtitleReleaseNamer;
 import javafx.application.Platform;
+import javafx.beans.binding.Binding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
@@ -25,6 +26,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Worker;
 
 public class ProcessingResult implements ProcessingItem
 {
@@ -34,18 +36,22 @@ public class ProcessingResult implements ProcessingItem
 	private final Release					release;
 	private final StringProperty			name;
 	private final ListProperty<Path>		files		= new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
-	private final StringProperty			status		= new SimpleStringProperty(this, "status");
+	private final Property<Worker.State>	state		= new SimpleObjectProperty<>(this, "state", Worker.State.READY);
+	private final StringProperty			message		= new SimpleStringProperty(this, "message");
 	private final DoubleProperty			progress	= new SimpleDoubleProperty(this, "progress");
 	private final Property<ProcessingInfo>	info		= new SimpleObjectProperty<>(this, "info");
 	private final Property<Throwable>		exception	= new SimpleObjectProperty<>(this, "exception");
+	private final WorkerStatus			status		= new WorkerStatus(stateProperty(), messageProperty(), exceptionProperty());
 
 	/**
 	 * package protected
 	 */
-	ProcessingResult(ProcessingTask task, Release release)
+	ProcessingResult(ProcessingTask task, Release release, ProcessingResultInfo info)
 	{
 		this.task = Objects.requireNonNull(task, "task");
 		this.release = Objects.requireNonNull(release, "release");
+		info.setResult(this);
+		this.info.setValue(info);
 
 		this.name = new SimpleStringProperty(this, "name", generateName(release));
 	}
@@ -97,14 +103,25 @@ public class ProcessingResult implements ProcessingItem
 	}
 
 	@Override
-	public ReadOnlyStringProperty statusProperty()
+	public ReadOnlyProperty<Worker.State> stateProperty()
 	{
-		return status;
+		return state;
 	}
 
-	void updateStatus(final String status)
+	void updateState(final Worker.State state)
 	{
-		Platform.runLater(() -> ProcessingResult.this.status.set(status));
+		Platform.runLater(() -> ProcessingResult.this.state.setValue(state));
+	}
+
+	@Override
+	public ReadOnlyStringProperty messageProperty()
+	{
+		return message;
+	}
+
+	void updateMessage(final String message)
+	{
+		Platform.runLater(() -> ProcessingResult.this.message.set(message));
 	}
 
 	@Override
@@ -130,11 +147,6 @@ public class ProcessingResult implements ProcessingItem
 		return (ProcessingResultInfo) info.getValue();
 	}
 
-	void updateInfo(final ProcessingResultInfo info)
-	{
-		Platform.runLater(() -> ProcessingResult.this.info.setValue(info));
-	}
-
 	@Override
 	public ReadOnlyProperty<Throwable> exceptionProperty()
 	{
@@ -144,6 +156,12 @@ public class ProcessingResult implements ProcessingItem
 	void updateException(final Throwable exception)
 	{
 		Platform.runLater(() -> ProcessingResult.this.exception.setValue(exception));
+	}
+
+	@Override
+	public Binding<WorkerStatus> statusBinding()
+	{
+		return status;
 	}
 
 	public void deleteFiles() throws IOException

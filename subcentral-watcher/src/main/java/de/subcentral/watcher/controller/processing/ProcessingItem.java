@@ -2,10 +2,12 @@ package de.subcentral.watcher.controller.processing;
 
 import java.nio.file.Path;
 
+import javafx.beans.binding.Binding;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.concurrent.Worker;
 
 public interface ProcessingItem
 {
@@ -18,11 +20,18 @@ public interface ProcessingItem
 
 	ListProperty<Path> getFiles();
 
-	ReadOnlyStringProperty statusProperty();
+	ReadOnlyProperty<Worker.State> stateProperty();
 
-	default String getStatus()
+	default Worker.State getState()
 	{
-		return statusProperty().get();
+		return stateProperty().getValue();
+	}
+
+	ReadOnlyStringProperty messageProperty();
+
+	default String getMessage()
+	{
+		return messageProperty().get();
 	}
 
 	ReadOnlyDoubleProperty progressProperty();
@@ -44,5 +53,12 @@ public interface ProcessingItem
 	default Throwable getException()
 	{
 		return exceptionProperty().getValue();
+	}
+
+	Binding<WorkerStatus> statusBinding();
+
+	default WorkerStatus getStatus()
+	{
+		return statusBinding().getValue();
 	}
 }

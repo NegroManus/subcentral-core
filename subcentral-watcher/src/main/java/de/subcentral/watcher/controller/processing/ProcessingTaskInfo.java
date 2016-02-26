@@ -14,13 +14,11 @@ public class ProcessingTaskInfo implements ProcessingInfo
 		DELETED_SOURCE_FILE
 	};
 
-	private final Set<Flag>	flags;
-	private final Throwable	exception;
+	private final Set<Flag> flags;
 
-	private ProcessingTaskInfo(Set<Flag> flags, Throwable exception)
+	private ProcessingTaskInfo(Set<Flag> flags)
 	{
 		this.flags = Objects.requireNonNull(flags, "flags");
-		this.exception = exception;
 	}
 
 	public Set<Flag> getFlags()
@@ -28,33 +26,18 @@ public class ProcessingTaskInfo implements ProcessingInfo
 		return flags;
 	}
 
-	public Throwable getException()
-	{
-		return exception;
-	}
-
-	public boolean failed()
-	{
-		return exception != null;
-	}
-
 	public static ProcessingTaskInfo withAdditonalFlags(ProcessingTaskInfo currentInfo, Flag... additionalFlags)
 	{
 		List<Flag> list = Arrays.asList(additionalFlags);
 		if (currentInfo == null)
 		{
-			return new ProcessingTaskInfo(EnumSet.copyOf(list), null);
+			return new ProcessingTaskInfo(EnumSet.copyOf(list));
 		}
 		else
 		{
 			Set<Flag> flags = new HashSet<>(currentInfo.getFlags());
 			flags.addAll(list);
-			return new ProcessingTaskInfo(EnumSet.copyOf(flags), null);
+			return new ProcessingTaskInfo(EnumSet.copyOf(flags));
 		}
-	}
-
-	public static ProcessingTaskInfo failed(Throwable exception)
-	{
-		return new ProcessingTaskInfo(EnumSet.noneOf(Flag.class), exception);
 	}
 }
