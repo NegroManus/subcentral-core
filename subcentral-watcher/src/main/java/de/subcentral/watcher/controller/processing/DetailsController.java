@@ -289,7 +289,7 @@ public class DetailsController extends Controller
 		column2.setHgrow(Priority.SOMETIMES);
 		gridPane.getColumnConstraints().addAll(column1, column2);
 		gridPane.setVgap(3d);
-		gridPane.setHgap(3d);
+		gridPane.setHgap(6d);
 
 		int rowIndex = 0;
 		for (int i = 0; i < keys.length; i++)
