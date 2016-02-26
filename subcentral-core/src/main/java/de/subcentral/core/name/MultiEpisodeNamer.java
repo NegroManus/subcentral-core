@@ -112,7 +112,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 			{
 				Episode epi = me.get(i);
 				String epiName = episodeNamer.name(epi, ImmutableMap.of());
-				b.appendString(PROP_EPISODES, epiName);
+				b.appendRaw(PROP_EPISODES, epiName);
 			}
 		}
 	}

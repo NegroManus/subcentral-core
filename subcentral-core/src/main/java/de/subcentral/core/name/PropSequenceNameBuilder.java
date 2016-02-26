@@ -4,8 +4,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.util.Separation;
@@ -41,11 +39,6 @@ public class PropSequenceNameBuilder
 		return appendIf(propDescriptor, propValue, propValue != null);
 	}
 
-	public PropSequenceNameBuilder appendIfNotEmpty(SimplePropDescriptor propDescriptor, CharSequence propValue)
-	{
-		return appendIf(propDescriptor, propValue, StringUtils.isNotEmpty(propValue));
-	}
-
 	public PropSequenceNameBuilder appendIf(SimplePropDescriptor propDescriptor, Object propValue, boolean condition)
 	{
 		if (condition)
@@ -62,23 +55,23 @@ public class PropSequenceNameBuilder
 
 	public PropSequenceNameBuilder append(SimplePropDescriptor propDescriptor, Object propValue, String separationType)
 	{
-		return appendString(propDescriptor, config.propToStringService.convert(propDescriptor, propValue), separationType);
+		return appendRaw(propDescriptor, config.propToStringService.convert(propDescriptor, propValue), separationType);
 	}
 
-	public PropSequenceNameBuilder appendString(SimplePropDescriptor propDescr, String propValue)
+	public PropSequenceNameBuilder appendRaw(SimplePropDescriptor propDescr, CharSequence propValueString)
 	{
-		return appendString(propDescr, propValue, null);
+		return appendRaw(propDescr, propValueString, null);
 	}
 
-	public PropSequenceNameBuilder appendString(SimplePropDescriptor propDescr, String propValue, String separationType)
+	public PropSequenceNameBuilder appendRaw(SimplePropDescriptor propDescr, CharSequence propValueString, String separationType)
 	{
-		if (propValue != null && !propValue.isEmpty())
+		if (propValueString != null && propValueString.length() > 0)
 		{
 			if (lastProp != null)
 			{
 				sb.append(Separation.getSeparatorBetween(lastProp, propDescr, separationType, config.separations, config.defaultSeparator));
 			}
-			sb.append(propValue);
+			sb.append(propValueString);
 			lastProp = propDescr;
 		}
 		return this;

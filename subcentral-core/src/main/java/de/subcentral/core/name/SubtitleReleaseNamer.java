@@ -56,7 +56,7 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 
 		// read other naming parameters
 		Release rls = NamingUtil.readParameter(params, PARAM_RELEASE, Release.class, subRls.getFirstMatchingRelease());
-		b.appendIfNotEmpty(SubtitleRelease.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
+		b.appendRaw(SubtitleRelease.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
 
 		Subtitle sub = subRls.getFirstSubtitle();
 		if (sub != null)
