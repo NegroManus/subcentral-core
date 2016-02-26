@@ -116,7 +116,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		Locale oldLocale = parseLocale(lang);
 		if (oldLocale != null)
 		{
-			return localeToString(oldLocale);
+			return formatLocale(oldLocale);
 		}
 		return lang;
 	}
@@ -154,7 +154,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 				}
 			}
 			// ISO3
-			// no need to check for language / display language because if it would match.
+			// No need to check for language / display language if it would match.
 			// Because in that case toString() / getDisplayName() would have matched, too (if country, script, variant are empty)
 			if (locale.getCountry().isEmpty() && locale.getScript().isEmpty() && locale.getVariant().isEmpty() && locale.getISO3Language().equalsIgnoreCase(lang))
 			{
@@ -164,7 +164,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String>
 		return null;
 	}
 
-	private String localeToString(Locale locale)
+	private String formatLocale(Locale locale)
 	{
 		// 1. try the custom locale strings
 		String customLocaleString = customLanguageTextMappings.get(locale);
