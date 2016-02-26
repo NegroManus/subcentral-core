@@ -1,6 +1,7 @@
 package de.subcentral.support.italiansubsnet;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
@@ -36,7 +37,7 @@ public class ItalianSubsNet
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
 		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, SITE_ID);
-		commonPredefMatchesBuilder.put(Subtitle.PROP_LANGUAGE, "italian");
+		commonPredefMatchesBuilder.put(Subtitle.PROP_LANGUAGE, Locale.ITALIAN.toString());
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = commonPredefMatchesBuilder.build();
 
 		// --------------

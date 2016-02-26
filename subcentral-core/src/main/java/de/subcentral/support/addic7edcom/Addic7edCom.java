@@ -216,7 +216,7 @@ public class Addic7edCom
 		// Movie Parser
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMovieMatchesBuilder = ImmutableMap.builder();
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);
-		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefEpisodeMatchesBuilder.build();
+		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefMovieMatchesBuilder.build();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
 		Pattern p201 = Pattern.compile("(.*?)\\s+\\((\\d{4})\\)\\.(" + rlsTagsPttrn + ")\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
