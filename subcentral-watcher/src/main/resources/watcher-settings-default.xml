@@ -51,6 +51,7 @@
 					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="DON" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, XviD" group="FUM" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV x264" group="IMMERSE" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="LOL" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
