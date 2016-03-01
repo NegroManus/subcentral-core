@@ -70,10 +70,10 @@ public class MappingMatcherExtension
 		this.predefinedMatches = predefinedMatches;
 	}
 
-	public List<MappingMatcher<SimplePropDescriptor>> extend(List<MappingMatcher<SimplePropDescriptor>> origMatchers)
+	public List<SimpleMappingMatcher<SimplePropDescriptor>> extend(List<SimpleMappingMatcher<SimplePropDescriptor>> origMatchers)
 	{
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> extendedMatchers = ImmutableList.builder();
-		for (MappingMatcher<SimplePropDescriptor> origMatcher : origMatchers)
+		ImmutableList.Builder<SimpleMappingMatcher<SimplePropDescriptor>> extendedMatchers = ImmutableList.builder();
+		for (SimpleMappingMatcher<SimplePropDescriptor> origMatcher : origMatchers)
 		{
 			// build the extended pattern
 			Pattern extendedPattern = Pattern.compile(patternPrefix + origMatcher.getPattern() + patternSuffix, origMatcher.getPattern().flags());
@@ -102,7 +102,7 @@ public class MappingMatcherExtension
 			extendedPredefMatches.putAll(origMatcher.getPredefinedMatches());
 			extendedPredefMatches.putAll(predefinedMatches);
 
-			MappingMatcher<SimplePropDescriptor> matcher = new MappingMatcher<SimplePropDescriptor>(extendedPattern, extendedGrps.build(), extendedPredefMatches);
+			SimpleMappingMatcher<SimplePropDescriptor> matcher = new SimpleMappingMatcher<SimplePropDescriptor>(extendedPattern, extendedGrps.build(), extendedPredefMatches);
 			extendedMatchers.add(matcher);
 		}
 		return extendedMatchers.build();

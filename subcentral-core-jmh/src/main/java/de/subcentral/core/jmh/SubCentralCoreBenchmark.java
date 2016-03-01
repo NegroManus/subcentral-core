@@ -51,11 +51,11 @@ import com.google.common.io.Resources;
 import de.subcentral.core.correct.CorrectionDefaults;
 import de.subcentral.core.correct.CorrectionService;
 import de.subcentral.core.correct.LocaleLanguageReplacer;
+import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.correct.SeriesNameCorrector;
 import de.subcentral.core.correct.SubtitleLanguageCorrector;
 import de.subcentral.core.correct.TypeBasedCorrectionService;
-import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
-import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.file.subtitle.SubRip;
 import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.media.Episode;
@@ -117,7 +117,7 @@ public class SubCentralCoreBenchmark
 		return service;
 	}
 
-	@Benchmark
+	// @Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testCorrect()
@@ -131,31 +131,31 @@ public class SubCentralCoreBenchmark
 		NAMING_SERVICE.name(SUB_ADJ);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingBestCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingWorstCase()
 	{
 		PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);

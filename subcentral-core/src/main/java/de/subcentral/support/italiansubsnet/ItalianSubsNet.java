@@ -17,6 +17,7 @@ import de.subcentral.core.parse.MappingMatcher;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.parse.SimpleMappingMatcher;
 import de.subcentral.core.parse.SubtitleReleaseParser;
 import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
@@ -51,7 +52,7 @@ public class ItalianSubsNet
 		grps101.put(1, Series.PROP_NAME);
 		grps101.put(2, Season.PROP_NUMBER);
 		grps101.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<>(p101, grps101.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher101 = new SimpleMappingMatcher<>(p101, grps101.build(), commonPredefMatches);
 
 		// Examples:
 		// Psych.s08e03.P.sub.itasa
@@ -65,7 +66,7 @@ public class ItalianSubsNet
 		grps102.put(2, Season.PROP_NUMBER);
 		grps102.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		grps102.put(4, Release.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher102 = new MappingMatcher<>(p102, grps102.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher102 = new SimpleMappingMatcher<>(p102, grps102.build(), commonPredefMatches);
 
 		// Matchers
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
@@ -85,7 +86,7 @@ public class ItalianSubsNet
 		grps201.put(1, Series.PROP_NAME);
 		grps201.put(2, Season.PROP_NUMBER);
 		grps201.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher201 = new SimpleMappingMatcher<>(p201, grps201.build(), commonPredefMatches);
 
 		// Examples:
 		// Psych.s07e15-16.720p.sub.itasa
@@ -97,7 +98,7 @@ public class ItalianSubsNet
 		grps202.put(2, Season.PROP_NUMBER);
 		grps202.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		grps202.put(4, Release.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher202 = new MappingMatcher<>(p202, grps202.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher202 = new SimpleMappingMatcher<>(p202, grps202.build(), commonPredefMatches);
 
 		// Matchers
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpisodeMatchers = ImmutableList.builder();

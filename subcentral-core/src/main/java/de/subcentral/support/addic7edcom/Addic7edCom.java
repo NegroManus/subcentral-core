@@ -17,6 +17,7 @@ import de.subcentral.core.parse.MappingMatcher;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.parse.SimpleMappingMatcher;
 import de.subcentral.core.parse.SubtitleReleaseParser;
 import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
@@ -69,7 +70,7 @@ public class Addic7edCom
 		grps100.put(9, Release.PROP_GROUP);
 		grps100.put(10, Subtitle.PROP_LANGUAGE);
 		grps100.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher100 = new MappingMatcher<>(p100, grps100.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher100 = new SimpleMappingMatcher<>(p100, grps100.build(), predefEpisodeMatches);
 
 		// WEB-DL|Rip but then no "-" after that (which would indicate a group)
 		// Examples:
@@ -87,7 +88,7 @@ public class Addic7edCom
 		grps101.put(8, Release.PROP_TAGS);
 		grps101.put(9, Subtitle.PROP_LANGUAGE);
 		grps101.put(10, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher101 = new MappingMatcher<>(p101, grps101.build(), predefEpisodeMatches);
+		SimpleMappingMatcher<SimplePropDescriptor> matcher101 = new SimpleMappingMatcher<>(p101, grps101.build(), predefEpisodeMatches);
 
 		// Episode title ends with a dot, then known release tags or a group
 		// Examples:
@@ -106,7 +107,7 @@ public class Addic7edCom
 		grps103.put(9, Release.PROP_GROUP);
 		grps103.put(10, Subtitle.PROP_LANGUAGE);
 		grps103.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher103 = new MappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher103 = new SimpleMappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
 
 		// Episode title may contain dots, then a dot, then
 		// a) either "WEB-DL" or
@@ -133,7 +134,7 @@ public class Addic7edCom
 		grps104.put(11, Release.PROP_GROUP);
 		grps104.put(12, Subtitle.PROP_LANGUAGE);
 		grps104.put(13, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher104 = new MappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher104 = new SimpleMappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
 
 		// Episode title may contain dots, then a dot, then "WEB-DL|Rip" or a group
 		// Examples:
@@ -155,7 +156,7 @@ public class Addic7edCom
 		grps105.put(9, Release.PROP_GROUP);
 		grps105.put(10, Subtitle.PROP_LANGUAGE);
 		grps105.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher105 = new MappingMatcher<>(p105, grps105.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher105 = new SimpleMappingMatcher<>(p105, grps105.build(), predefEpisodeMatches);
 
 		// Multiple release groups (and hence matching releases) separated by comma
 		// Examples
@@ -173,7 +174,7 @@ public class Addic7edCom
 		grps106.put(8, Release.PROP_GROUP);
 		grps106.put(9, Subtitle.PROP_LANGUAGE);
 		grps106.put(10, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher106 = new MappingMatcher<>(p106, grps106.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher106 = new SimpleMappingMatcher<>(p106, grps106.build(), predefEpisodeMatches);
 
 		// Release group, then tags in parenthesis
 		// Death in Paradise - 04x04 - Series 4, Episode 4.FoV (HDTV + 720p).English.C.orig.Addic7ed.com
@@ -192,7 +193,7 @@ public class Addic7edCom
 		grps107.put(9, Release.PROP_TAGS);
 		grps107.put(10, Subtitle.PROP_LANGUAGE);
 		grps107.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher107 = new MappingMatcher<>(p107, grps107.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher107 = new SimpleMappingMatcher<>(p107, grps107.build(), predefEpisodeMatches);
 
 		// TODO: Actually "(HDTV + 720p)" are 2 releases "HDTV" and "720p.HDTV". Two releases should be matched.
 		// But thats not possible with current matching algorithm. It has to be possible to numerate the objects if multiple
@@ -227,7 +228,7 @@ public class Addic7edCom
 		grps201.put(3, Release.PROP_TAGS);
 		grps201.put(4, Subtitle.PROP_LANGUAGE);
 		grps201.put(5, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher201 = new MappingMatcher<>(p201, grps201.build(), predefMovieMatches);
+		SimpleMappingMatcher<SimplePropDescriptor> matcher201 = new SimpleMappingMatcher<>(p201, grps201.build(), predefMovieMatches);
 
 		// "The Man Behind the Throne (2013).CBFM.English.C.orig.Addic7ed.com"
 		Pattern p202 = Pattern.compile("(.*?)\\s+\\((\\d{4})\\)\\.(\\w+)\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
@@ -238,7 +239,7 @@ public class Addic7edCom
 		grps202.put(3, Release.PROP_GROUP);
 		grps202.put(4, Subtitle.PROP_LANGUAGE);
 		grps202.put(5, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher202 = new MappingMatcher<>(p202, grps202.build(), predefMovieMatches);
+		SimpleMappingMatcher<SimplePropDescriptor> matcher202 = new SimpleMappingMatcher<>(p202, grps202.build(), predefMovieMatches);
 
 		// --------------
 		// add all movie matchers

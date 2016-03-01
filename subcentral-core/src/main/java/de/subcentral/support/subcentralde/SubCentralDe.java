@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.correct.PatternStringReplacer;
 import de.subcentral.core.correct.SubtitleLanguageCorrector;
@@ -14,9 +15,12 @@ import de.subcentral.core.correct.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.parse.DelegatingMappingMatcher;
+import de.subcentral.core.parse.DelegatingMappingMatcher.GroupEntry;
+import de.subcentral.core.parse.DelegatingMappingMatcher.KeyEntry;
+import de.subcentral.core.parse.DelegatingMappingMatcher.MatcherEntry;
 import de.subcentral.core.parse.Mapper;
 import de.subcentral.core.parse.MappingMatcher;
-import de.subcentral.core.parse.MappingMatcherExtension;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.parse.ReleaseParser;
@@ -41,8 +45,6 @@ public class SubCentralDe
 	@SuppressWarnings("unchecked")
 	private static List<Parser<SubtitleRelease>> initParsers()
 	{
-		List<MappingMatcherExtension> scExtensions = initExtensions();
-
 		ImmutableList.Builder<Parser<SubtitleRelease>> parsers = ImmutableList.builder();
 
 		for (ParserEntry<?> sceneParserEntry : ReleaseScene.getParsersEntries())
@@ -70,68 +72,79 @@ public class SubCentralDe
 			// The scene matchers will be the source for the SubCentral matchers
 			// because all SubCentral names consist of the scene name of the release followed by SubCentral tags.
 			List<MappingMatcher<SimplePropDescriptor>> sceneMatchers = sceneRlsParser.getMatchers();
-			ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> scMatchers = ImmutableList.builder();
-			for (MappingMatcherExtension extension : scExtensions)
-			{
-				scMatchers.addAll(extension.extend(sceneMatchers));
-			}
+			List<MappingMatcher<SimplePropDescriptor>> scMatchers = buildMatchers(sceneMatchers);
 
-			SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatchers.build(), mediaMapper);
+			SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatchers, mediaMapper);
 			parsers.add(parser);
 		}
 
 		return parsers.build();
 	}
 
-	private static List<MappingMatcherExtension> initExtensions()
+	private static List<MappingMatcher<SimplePropDescriptor>> buildMatchers(List<MappingMatcher<SimplePropDescriptor>> sceneMatchers)
 	{
-		String langGrp = "\\W(de|ger|german|deutsch|VO|en|eng|english)";
-		String groupGrp = "\\W([\\w&_]+)";
-		String versionGrp = "\\W(V\\d)";
+		String release = "(.*)";
+		String lang = "\\W(de|ger|german|deutsch|VO|en|eng|english)";
+		String group = "\\W([\\w&_]+)";
+		String groupOpt = "(?:" + group + ")?";
+		String version = "\\W(V\\d)";
+		String versionOpt = "(?:" + version + ")?";
 
-		ImmutableList.Builder<MappingMatcherExtension> extensions = ImmutableList.builder();
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
 
-		// Revision, Language, (Group)?
-		MappingMatcherExtension ext01 = new MappingMatcherExtension();
-		ext01.setPatternPrefix("(");
-		ext01.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
-		ext01.setPatternSuffix(")" + versionGrp + langGrp + "(?:" + groupGrp + ")?");
-		ext01.setSuffixProps(ImmutableList.of(SubtitleRelease.PROP_VERSION, Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP));
-		extensions.add(ext01);
+		// Version, Language, (Group)?
+		Pattern p101 = Pattern.compile(release + version + lang + groupOpt, Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g101 = ImmutableMap.builder();
+		g101.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
+		g101.put(1, new MatcherEntry<>(sceneMatchers));
+		g101.put(2, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
+		g101.put(3, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
+		g101.put(4, new KeyEntry<>(Subtitle.PROP_GROUP));
+		MappingMatcher<SimplePropDescriptor> m101 = new DelegatingMappingMatcher<>(p101, g101.build());
+		matchers.add(m101);
 
-		// Language, Revision, (Group)?
-		MappingMatcherExtension ext02 = new MappingMatcherExtension();
-		ext02.setPatternPrefix("(");
-		ext02.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
-		ext02.setPatternSuffix(")" + langGrp + versionGrp + "(?:" + groupGrp + ")?");
-		ext02.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, SubtitleRelease.PROP_VERSION, Subtitle.PROP_GROUP));
-		extensions.add(ext02);
+		// Language, Version, (Group)?
+		Pattern p102 = Pattern.compile(release + lang + version + groupOpt, Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g102 = ImmutableMap.builder();
+		g102.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
+		g102.put(1, new MatcherEntry<>(sceneMatchers));
+		g102.put(2, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
+		g102.put(3, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
+		g102.put(4, new KeyEntry<>(Subtitle.PROP_GROUP));
+		MappingMatcher<SimplePropDescriptor> m2 = new DelegatingMappingMatcher<>(p102, g102.build());
+		matchers.add(m2);
 
-		// Language, Group, (Revision)?
-		MappingMatcherExtension ext03 = new MappingMatcherExtension();
-		ext03.setPatternPrefix("(");
-		ext03.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
-		ext03.setPatternSuffix(")" + langGrp + groupGrp + "(?:" + versionGrp + ")?");
-		ext03.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP, SubtitleRelease.PROP_VERSION));
-		extensions.add(ext03);
+		// Language, Group, (Version)?
+		Pattern p103 = Pattern.compile(release + lang + group + versionOpt, Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g103 = ImmutableMap.builder();
+		g103.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
+		g103.put(1, new MatcherEntry<>(sceneMatchers));
+		g103.put(2, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
+		g103.put(3, new KeyEntry<>(Subtitle.PROP_GROUP));
+		g103.put(4, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
+		MappingMatcher<SimplePropDescriptor> m103 = new DelegatingMappingMatcher<>(p103, g103.build());
+		matchers.add(m103);
 
 		// Language, (Group)?
-		MappingMatcherExtension ext04 = new MappingMatcherExtension();
-		ext04.setPatternPrefix("(");
-		ext04.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
-		ext04.setPatternSuffix(")" + langGrp + "(?:" + groupGrp + ")?");
-		ext04.setSuffixProps(ImmutableList.of(Subtitle.PROP_LANGUAGE, Subtitle.PROP_GROUP));
-		extensions.add(ext04);
+		Pattern p104 = Pattern.compile(release + lang + groupOpt, Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g104 = ImmutableMap.builder();
+		g104.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
+		g104.put(1, new MatcherEntry<>(sceneMatchers));
+		g104.put(2, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
+		g104.put(3, new KeyEntry<>(Subtitle.PROP_GROUP));
+		MappingMatcher<SimplePropDescriptor> m104 = new DelegatingMappingMatcher<>(p104, g104.build());
+		matchers.add(m104);
 
-		// Revision
-		MappingMatcherExtension ext05 = new MappingMatcherExtension();
-		ext05.setPatternPrefix("(");
-		ext05.setPrefixProps(ImmutableList.of(SubtitleRelease.PROP_NAME));
-		ext05.setPatternSuffix(")" + versionGrp);
-		ext05.setSuffixProps(ImmutableList.of(SubtitleRelease.PROP_VERSION));
-		extensions.add(ext05);
+		// Version
+		Pattern p105 = Pattern.compile(release + version, Pattern.CASE_INSENSITIVE);
+		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g105 = ImmutableMap.builder();
+		g105.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
+		g105.put(1, new MatcherEntry<>(sceneMatchers));
+		g105.put(2, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
+		MappingMatcher<SimplePropDescriptor> m105 = new DelegatingMappingMatcher<>(p105, g105.build());
+		matchers.add(m105);
 
-		return extensions.build();
+		return matchers.build();
 	}
 
 	public static ParsingService getParsingService()
