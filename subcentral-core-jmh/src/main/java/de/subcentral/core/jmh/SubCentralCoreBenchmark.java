@@ -83,21 +83,22 @@ import de.subcentral.support.subcentralde.SubCentralDe;
  */
 public class SubCentralCoreBenchmark
 {
-	private static final SubtitleRelease	SUB_ADJ						= SubtitleRelease
+	private static final SubtitleRelease	SUB_RLS						= SubtitleRelease
 			.create(Release.create(Episode.createSeasonedEpisode("Psych (2001)", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
 
 	private static final CorrectionService	CORRECTION_SERVICE			= buildCorrectionService();
 	private static final NamingService		NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
 	private static final ParsingService		ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
+	private static final ParsingService		SUBCENTRAL_PARSING_SERVICE	= SubCentralDe.getParsingService();
 	private static final ParsingService		PARSING_SERVICE_BEST_CASE	= new MultiParsingService("bestcase",
 																				ADDIC7ED_PARSING_SERVICE,
-																				SubCentralDe.getParsingService(),
+																				SUBCENTRAL_PARSING_SERVICE,
 																				ItalianSubsNet.getParsingService(),
 																				ReleaseScene.getParsingService());
 	private static final ParsingService		PARSING_SERVICE_WORST_CASE	= new MultiParsingService("worstcase",
 																				ReleaseScene.getParsingService(),
 																				ItalianSubsNet.getParsingService(),
-																				SubCentralDe.getParsingService(),
+																				SUBCENTRAL_PARSING_SERVICE,
 																				ADDIC7ED_PARSING_SERVICE);
 	private static final URL				SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
@@ -122,19 +123,25 @@ public class SubCentralCoreBenchmark
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testCorrect()
 	{
-		CORRECTION_SERVICE.correct(SUB_ADJ);
+		CORRECTION_SERVICE.correct(SUB_RLS);
 	}
 
 	// @Benchmark
 	public void testNaming()
 	{
-		NAMING_SERVICE.name(SUB_ADJ);
+		NAMING_SERVICE.name(SUB_RLS);
 	}
 
 	@Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
+	}
+
+	@Benchmark
+	public void testParsingSubCentral()
+	{
+		SUBCENTRAL_PARSING_SERVICE.parse("Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI.de-SubCentral");
 	}
 
 	@Benchmark
@@ -189,14 +196,7 @@ public class SubCentralCoreBenchmark
 	 * Benchmark                                           Mode  Cnt       Score       Error  Units
 	 * SubCentralCoreBenchmark.testCorrect                thrpt   50  570.000
 	 * SubCentralCoreBenchmark.testNaming  				  thrpt   50  75225,548 ± 2985,000  ops/s
-	
-	With delegating
-	Benchmark                                            Mode  Cnt      Score      Error  Units
-	SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50  70722,205 ± 2627,015  ops/s
-	SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  73702,125 ± 1483,796  ops/s
-	SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  69380,662 ± 2798,472  ops/s
-	SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  73084,608 ± 1474,697  ops/s
-	SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50  10639,915 ±  211,554  ops/s
+	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase  thrpt   50   80k
 	 * </pre>
 	 * 
 	 * 
