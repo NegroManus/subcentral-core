@@ -189,7 +189,14 @@ public class SubCentralCoreBenchmark
 	 * Benchmark                                           Mode  Cnt       Score       Error  Units
 	 * SubCentralCoreBenchmark.testCorrect                thrpt   50  570.000
 	 * SubCentralCoreBenchmark.testNaming  				  thrpt   50  75225,548 ± 2985,000  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase  thrpt   50   80k
+	
+	With delegating
+	Benchmark                                            Mode  Cnt      Score      Error  Units
+	SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50  70722,205 ± 2627,015  ops/s
+	SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  73702,125 ± 1483,796  ops/s
+	SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  69380,662 ± 2798,472  ops/s
+	SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  73084,608 ± 1474,697  ops/s
+	SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50  10639,915 ±  211,554  ops/s
 	 * </pre>
 	 * 
 	 * 
