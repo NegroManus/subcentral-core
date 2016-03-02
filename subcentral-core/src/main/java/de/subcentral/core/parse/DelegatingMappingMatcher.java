@@ -90,13 +90,21 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 		return MoreObjects.toStringHelper(this).add("pattern", pattern).add("groups", groups).add("predefinedMatches", predefinedMatches).toString();
 	}
 
-	public static interface GroupEntry<K>
+	public static abstract class GroupEntry<K>
 	{
-		public boolean isKeyEntry();
+		public static <K> KeyEntry<K> ofKey(K key)
+		{
+			return new KeyEntry<>(key);
+		}
 
-		public void mergeGroupValue(Map<K, String> mappedGroups, String value);
+		public static <K> MatcherEntry<K> ofMatcher(MappingMatcher<K> matcher)
+		{
+			return new MatcherEntry<>(matcher);
+		}
 
-		public static <K> void mergeStringValues(Map<K, String> map, K key, String value)
+		protected abstract void mergeGroupValue(Map<K, String> mappedGroups, String value);
+
+		protected static <K> void mergeStringValues(Map<K, String> map, K key, String value)
 		{
 			// concat the values if multiple values have the same key
 			map.merge(key,
@@ -108,13 +116,8 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 		}
 	}
 
-	public static class KeyEntry<K> implements GroupEntry<K>
+	public static class KeyEntry<K> extends GroupEntry<K>
 	{
-		public static <K> KeyEntry<K> of(K key)
-		{
-			return new KeyEntry<>(key);
-		}
-
 		private final K key;
 
 		private KeyEntry(K key)
@@ -128,25 +131,14 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 		}
 
 		@Override
-		public boolean isKeyEntry()
-		{
-			return true;
-		}
-
-		@Override
 		public void mergeGroupValue(Map<K, String> mappedGroups, String value)
 		{
 			GroupEntry.mergeStringValues(mappedGroups, key, value);
 		}
 	}
 
-	public static class MatcherEntry<K> implements GroupEntry<K>
+	public static class MatcherEntry<K> extends GroupEntry<K>
 	{
-		public static <K> MatcherEntry<K> of(MappingMatcher<K> matcher)
-		{
-			return new MatcherEntry<>(matcher);
-		}
-
 		private final MappingMatcher<K> matcher;
 
 		public MatcherEntry(MappingMatcher<K> matcher)
@@ -157,12 +149,6 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 		public MappingMatcher<K> getMatcher()
 		{
 			return matcher;
-		}
-
-		@Override
-		public boolean isKeyEntry()
-		{
-			return false;
 		}
 
 		@Override

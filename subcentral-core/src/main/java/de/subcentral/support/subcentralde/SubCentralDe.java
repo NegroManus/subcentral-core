@@ -91,56 +91,61 @@ public class SubCentralDe
 		String versionOpt = "(?:" + version + ")?";
 
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
+		KeyEntry<SimplePropDescriptor> subRlsNameEntry = GroupEntry.ofKey(SubtitleRelease.PROP_NAME);
+		KeyEntry<SimplePropDescriptor> subRlsVersionEntry = GroupEntry.ofKey(SubtitleRelease.PROP_VERSION);
+		KeyEntry<SimplePropDescriptor> subLangEntry = GroupEntry.ofKey(Subtitle.PROP_LANGUAGE);
+		KeyEntry<SimplePropDescriptor> subGroupEntry = GroupEntry.ofKey(Subtitle.PROP_GROUP);
+		MatcherEntry<SimplePropDescriptor> sceneMatcherEntry = GroupEntry.ofMatcher(sceneMatcher);
 
 		// Version, Language, (Group)?
 		Pattern p101 = Pattern.compile(release + version + lang + groupOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g101 = ImmutableMap.builder();
-		g101.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
-		g101.put(1, MatcherEntry.of(sceneMatcher));
-		g101.put(2, KeyEntry.of(SubtitleRelease.PROP_VERSION));
-		g101.put(3, KeyEntry.of(Subtitle.PROP_LANGUAGE));
-		g101.put(4, KeyEntry.of(Subtitle.PROP_GROUP));
+		g101.put(0, subRlsNameEntry);
+		g101.put(1, sceneMatcherEntry);
+		g101.put(2, subRlsVersionEntry);
+		g101.put(3, subLangEntry);
+		g101.put(4, subGroupEntry);
 		MappingMatcher<SimplePropDescriptor> m101 = new DelegatingMappingMatcher<>(p101, g101.build());
 		matchers.add(m101);
 
 		// Language, Version, (Group)?
 		Pattern p102 = Pattern.compile(release + lang + version + groupOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g102 = ImmutableMap.builder();
-		g102.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
-		g102.put(1, MatcherEntry.of(sceneMatcher));
-		g102.put(2, KeyEntry.of(Subtitle.PROP_LANGUAGE));
-		g102.put(3, KeyEntry.of(SubtitleRelease.PROP_VERSION));
-		g102.put(4, KeyEntry.of(Subtitle.PROP_GROUP));
+		g102.put(0, subRlsNameEntry);
+		g102.put(1, sceneMatcherEntry);
+		g102.put(2, subLangEntry);
+		g102.put(3, subRlsVersionEntry);
+		g102.put(4, subGroupEntry);
 		MappingMatcher<SimplePropDescriptor> m2 = new DelegatingMappingMatcher<>(p102, g102.build());
 		matchers.add(m2);
 
 		// Language, Group, (Version)?
 		Pattern p103 = Pattern.compile(release + lang + group + versionOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g103 = ImmutableMap.builder();
-		g103.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
-		g103.put(1, MatcherEntry.of(sceneMatcher));
-		g103.put(2, KeyEntry.of(Subtitle.PROP_LANGUAGE));
-		g103.put(3, KeyEntry.of(Subtitle.PROP_GROUP));
-		g103.put(4, KeyEntry.of(SubtitleRelease.PROP_VERSION));
+		g103.put(0, subRlsNameEntry);
+		g103.put(1, sceneMatcherEntry);
+		g103.put(2, subLangEntry);
+		g103.put(3, subGroupEntry);
+		g103.put(4, subRlsVersionEntry);
 		MappingMatcher<SimplePropDescriptor> m103 = new DelegatingMappingMatcher<>(p103, g103.build());
 		matchers.add(m103);
 
 		// Language, (Group)?
 		Pattern p104 = Pattern.compile(release + lang + groupOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g104 = ImmutableMap.builder();
-		g104.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
-		g104.put(1, MatcherEntry.of(sceneMatcher));
-		g104.put(2, KeyEntry.of(Subtitle.PROP_LANGUAGE));
-		g104.put(3, KeyEntry.of(Subtitle.PROP_GROUP));
+		g104.put(0, subRlsNameEntry);
+		g104.put(1, sceneMatcherEntry);
+		g104.put(2, subLangEntry);
+		g104.put(3, subGroupEntry);
 		MappingMatcher<SimplePropDescriptor> m104 = new DelegatingMappingMatcher<>(p104, g104.build());
 		matchers.add(m104);
 
 		// Version
 		Pattern p105 = Pattern.compile(release + version, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g105 = ImmutableMap.builder();
-		g105.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
-		g105.put(1, MatcherEntry.of(sceneMatcher));
-		g105.put(2, KeyEntry.of(SubtitleRelease.PROP_VERSION));
+		g105.put(0, subRlsNameEntry);
+		g105.put(1, sceneMatcherEntry);
+		g105.put(2, subRlsVersionEntry);
 		MappingMatcher<SimplePropDescriptor> m105 = new DelegatingMappingMatcher<>(p105, g105.build());
 		matchers.add(m105);
 

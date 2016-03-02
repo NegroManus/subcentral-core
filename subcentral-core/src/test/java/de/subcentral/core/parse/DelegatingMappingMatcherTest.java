@@ -8,8 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.subcentral.core.parse.DelegatingMappingMatcher.GroupEntry;
-import de.subcentral.core.parse.DelegatingMappingMatcher.KeyEntry;
-import de.subcentral.core.parse.DelegatingMappingMatcher.MatcherEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class DelegatingMappingMatcherTest
@@ -41,9 +39,9 @@ public class DelegatingMappingMatcherTest
 		MappingMatcher<SimplePropDescriptor> middleMatcher2 = new SimpleMappingMatcher<>(Pattern.compile("(\\w)\\.(\\w)"), middleGroups);
 
 		Map<Integer, GroupEntry<SimplePropDescriptor>> groups = new HashMap<>();
-		groups.put(1, KeyEntry.of(startProp));
-		groups.put(2, MatcherEntry.of(new MultiMappingMatcher<>(middleMatcher1, middleMatcher2)));
-		groups.put(3, KeyEntry.of(endProp));
+		groups.put(1, GroupEntry.ofKey(startProp));
+		groups.put(2, GroupEntry.ofMatcher(new MultiMappingMatcher<>(middleMatcher1, middleMatcher2)));
+		groups.put(3, GroupEntry.ofKey(endProp));
 		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(Pattern.compile("(\\w+)-(.*)-(\\w+)"), groups);
 
 		// Execution
