@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class WatcherApp extends Application
 {
 	public static final String	APP_NAME			= "Watcher";
-	public static final String	APP_VERSION			= "2.1";
+	public static final String	APP_VERSION			= "2.1-SNAPSHOT";
 	public static final String	APP_VERSION_DATE	= "2016-03-01 23:00";
 	public static final String	APP_INFO			= APP_NAME + " " + APP_VERSION + " (" + APP_VERSION_DATE + ")";
 
@@ -41,10 +41,10 @@ public class WatcherApp extends Application
 		log.info("Initializing {} ...", APP_INFO);
 		long start = System.nanoTime();
 
-		log.info("Operating system: {} {} {}", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
-		log.info("Java version: {}", SystemUtils.JAVA_VERSION);
-		log.info("Java runtime: {} {}", SystemUtils.JAVA_RUNTIME_NAME, SystemUtils.JAVA_RUNTIME_VERSION);
-		log.info("Java VM: {} ({}) - Vendor: {}, Version: {}", SystemUtils.JAVA_VM_NAME, SystemUtils.JAVA_VM_INFO, SystemUtils.JAVA_VM_VENDOR, SystemUtils.JAVA_VM_VERSION);
+		log.info("Operating system: {} (version: {}, arch: {})", SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH);
+		log.info("Java version: {} (vendor: {})", SystemUtils.JAVA_VERSION, SystemUtils.JAVA_VENDOR);
+		log.info("Java runtime: {} (version: {})", SystemUtils.JAVA_RUNTIME_NAME, SystemUtils.JAVA_RUNTIME_VERSION);
+		log.info("Java VM: {} {} (vendor: {}, version: {})", SystemUtils.JAVA_VM_NAME, SystemUtils.JAVA_VM_INFO, SystemUtils.JAVA_VM_VENDOR, SystemUtils.JAVA_VM_VERSION);
 		log.info("Java home: {}", SystemUtils.JAVA_HOME);
 		log.info("User dir: {}", SystemUtils.USER_DIR);
 
