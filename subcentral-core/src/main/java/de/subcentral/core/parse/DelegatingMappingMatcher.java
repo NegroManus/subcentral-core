@@ -87,6 +87,12 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 
 	public static abstract class GroupEntry<K>
 	{
+		// Private constructor so that there can be no sub classes outside the DelegatingMappingMatcher class
+		private GroupEntry()
+		{
+
+		}
+
 		public static <K> KeyEntry<K> ofKey(K key)
 		{
 			return new KeyEntry<>(key);
