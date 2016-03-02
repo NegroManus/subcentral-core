@@ -12,11 +12,6 @@ import com.google.common.collect.ImmutableMap;
 
 public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 {
-	/**
-	 * This separator is used to separate multiple values for the same key. These values are concatenated, using this separator.
-	 */
-	public static final String					VALUES_WITH_SAME_KEY_SEPARATOR	= " ";
-
 	private final Pattern						pattern;
 	private final Map<Integer, GroupEntry<K>>	groups;
 	private final Map<K, String>				predefinedMatches;
@@ -109,8 +104,8 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 			// concat the values if multiple values have the same key
 			map.merge(key,
 					value,
-					(String oldVal, String newVal) -> new StringBuilder(oldVal.length() + VALUES_WITH_SAME_KEY_SEPARATOR.length() + newVal.length()).append(oldVal)
-							.append(VALUES_WITH_SAME_KEY_SEPARATOR)
+					(String oldVal, String newVal) -> new StringBuilder(oldVal.length() + PatternMappingMatcher.VALUES_WITH_SAME_KEY_SEPARATOR.length() + newVal.length()).append(oldVal)
+							.append(PatternMappingMatcher.VALUES_WITH_SAME_KEY_SEPARATOR)
 							.append(newVal)
 							.toString());
 		}
