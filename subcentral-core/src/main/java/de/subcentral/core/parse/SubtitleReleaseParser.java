@@ -23,18 +23,18 @@ public class SubtitleReleaseParser extends AbstractMappingParser<SubtitleRelease
 	private final Mapper<Subtitle>							subtitleMapper;
 	private final Mapper<SubtitleRelease>					subtitleAdjustmentMapper;
 
-	public SubtitleReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper)
+	public SubtitleReleaseParser(MappingMatcher<SimplePropDescriptor> matcher, Mapper<? extends List<? extends Media>> mediaMapper)
 	{
-		this(matchers, mediaMapper, ParsingDefaults.getDefaultReleaseMapper(), ParsingDefaults.getDefaultSubtitleMapper(), ParsingDefaults.getDefaultSubtitleAdjustmentMapper());
+		this(matcher, mediaMapper, ParsingDefaults.getDefaultReleaseMapper(), ParsingDefaults.getDefaultSubtitleMapper(), ParsingDefaults.getDefaultSubtitleAdjustmentMapper());
 	}
 
-	public SubtitleReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers,
+	public SubtitleReleaseParser(MappingMatcher<SimplePropDescriptor> matcher,
 			Mapper<? extends List<? extends Media>> mediaMapper,
 			Mapper<Release> releaseMapper,
 			Mapper<Subtitle> subtitleMapper,
 			Mapper<SubtitleRelease> subtitleAdjustmentMapper)
 	{
-		super(matchers);
+		super(matcher);
 		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
 		this.releaseMapper = Objects.requireNonNull(releaseMapper, "releaseMapper");
 		this.subtitleMapper = Objects.requireNonNull(subtitleMapper, "subtitleMapper");

@@ -1,45 +1,33 @@
 package de.subcentral.core.parse;
 
-import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableList;
+import java.util.Objects;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public abstract class AbstractMappingParser<T> implements Parser<T>
 {
-	protected final List<MappingMatcher<SimplePropDescriptor>> matchers;
+	protected final MappingMatcher<SimplePropDescriptor> matcher;
 
-	public AbstractMappingParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers)
+	public AbstractMappingParser(MappingMatcher<SimplePropDescriptor> matcher)
 	{
-		this.matchers = ImmutableList.copyOf(matchers);
+		this.matcher = Objects.requireNonNull(matcher, "matcher");
 	}
 
-	public List<MappingMatcher<SimplePropDescriptor>> getMatchers()
+	public MappingMatcher<SimplePropDescriptor> getMatcher()
 	{
-		return matchers;
+		return matcher;
 	}
 
 	@Override
 	public T parse(String text) throws ParsingException
 	{
-		try
+		Map<SimplePropDescriptor, String> matchResult = matcher.match(text);
+		if (matchResult.isEmpty())
 		{
-			for (MappingMatcher<SimplePropDescriptor> matcher : matchers)
-			{
-				Map<SimplePropDescriptor, String> matchResult = matcher.match(text);
-				if (!matchResult.isEmpty())
-				{
-					return map(matchResult);
-				}
-			}
+			return null;
 		}
-		catch (RuntimeException e)
-		{
-			throw new ParsingException(text, "Exception while parsing", e);
-		}
-		return null;
+		return map(matchResult);
 	}
 
 	protected abstract T map(Map<SimplePropDescriptor, String> props);

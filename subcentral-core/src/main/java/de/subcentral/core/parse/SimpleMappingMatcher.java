@@ -14,11 +14,11 @@ public class SimpleMappingMatcher<K> implements MappingMatcher<K>
 	/**
 	 * This separator is used to separate multiple values for the same key. These values are concatenated, using this separator.
 	 */
-	public static final String				VALUES_WITH_SAME_KEY_SEPARATOR	= " ";
+	public static final String		VALUES_WITH_SAME_KEY_SEPARATOR	= " ";
 
-	private final Pattern					pattern;
-	private final ImmutableMap<Integer, K>	groups;
-	private final ImmutableMap<K, String>	predefinedMatches;
+	private final Pattern			pattern;
+	private final Map<Integer, K>	groups;
+	private final Map<K, String>	predefinedMatches;
 
 	public SimpleMappingMatcher(Pattern pattern, Map<Integer, K> groups)
 	{
@@ -56,6 +56,10 @@ public class SimpleMappingMatcher<K> implements MappingMatcher<K>
 		return predefinedMatches;
 	}
 
+	/**
+	 * @throws IndexOutOfBoundsException
+	 *             if there is no capturing group in the {@link #getPattern() pattern} associated with an index specified in {@link #getGroups()}.
+	 */
 	@Override
 	public Map<K, String> match(String text) throws IndexOutOfBoundsException
 	{

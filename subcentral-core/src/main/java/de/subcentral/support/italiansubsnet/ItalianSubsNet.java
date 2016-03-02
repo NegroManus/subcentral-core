@@ -14,6 +14,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.parse.MappingMatcher;
+import de.subcentral.core.parse.MultiMappingMatcher;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
@@ -44,6 +45,9 @@ public class ItalianSubsNet
 		// --------------
 		// Episode Parsers
 
+		// Matchers
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
+
 		// Examples:
 		// Psych.s08e04.sub.itasa
 		Pattern p101 = Pattern.compile("(.*)\\.s(\\d{2})e(\\d{2})\\.sub\\.itasa", Pattern.CASE_INSENSITIVE);
@@ -53,6 +57,7 @@ public class ItalianSubsNet
 		grps101.put(2, Season.PROP_NUMBER);
 		grps101.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		MappingMatcher<SimplePropDescriptor> matcher101 = new SimpleMappingMatcher<>(p101, grps101.build(), commonPredefMatches);
+		episodeMatchers.add(matcher101);
 
 		// Examples:
 		// Psych.s08e03.P.sub.itasa
@@ -67,16 +72,15 @@ public class ItalianSubsNet
 		grps102.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		grps102.put(4, Release.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher102 = new SimpleMappingMatcher<>(p102, grps102.build(), commonPredefMatches);
-
-		// Matchers
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
-		episodeMatchers.add(matcher101);
 		episodeMatchers.add(matcher102);
 
-		SubtitleReleaseParser episodeSubParser = new SubtitleReleaseParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
+		SubtitleReleaseParser episodeSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(episodeMatchers.build()), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// --------------
 		// Multi-Episode Parsers
+
+		// Matchers
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpisodeMatchers = ImmutableList.builder();
 
 		// Examples:
 		// Psych.s07e15-16.sub.itasa
@@ -87,6 +91,7 @@ public class ItalianSubsNet
 		grps201.put(2, Season.PROP_NUMBER);
 		grps201.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		MappingMatcher<SimplePropDescriptor> matcher201 = new SimpleMappingMatcher<>(p201, grps201.build(), commonPredefMatches);
+		multiEpisodeMatchers.add(matcher201);
 
 		// Examples:
 		// Psych.s07e15-16.720p.sub.itasa
@@ -99,14 +104,9 @@ public class ItalianSubsNet
 		grps202.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		grps202.put(4, Release.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher202 = new SimpleMappingMatcher<>(p202, grps202.build(), commonPredefMatches);
-
-		// Matchers
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> multiEpisodeMatchers = ImmutableList.builder();
-
-		multiEpisodeMatchers.add(matcher201);
 		multiEpisodeMatchers.add(matcher202);
 
-		SubtitleReleaseParser multiEpisodeSubParser = new SubtitleReleaseParser(multiEpisodeMatchers.build(), ParsingDefaults.getDefaultMultiEpisodeMapper());
+		SubtitleReleaseParser multiEpisodeSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(multiEpisodeMatchers.build()), ParsingDefaults.getDefaultMultiEpisodeMapper());
 
 		return ImmutableList.of(episodeSubParser, multiEpisodeSubParser);
 	}

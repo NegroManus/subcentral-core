@@ -7,8 +7,6 @@ import java.util.regex.Pattern;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import de.subcentral.core.parse.DelegatingMappingMatcher.GroupEntry;
 import de.subcentral.core.parse.DelegatingMappingMatcher.KeyEntry;
 import de.subcentral.core.parse.DelegatingMappingMatcher.MatcherEntry;
@@ -43,9 +41,9 @@ public class DelegatingMappingMatcherTest
 		MappingMatcher<SimplePropDescriptor> middleMatcher2 = new SimpleMappingMatcher<>(Pattern.compile("(\\w)\\.(\\w)"), middleGroups);
 
 		Map<Integer, GroupEntry<SimplePropDescriptor>> groups = new HashMap<>();
-		groups.put(1, new KeyEntry<>(startProp));
-		groups.put(2, new MatcherEntry<>(ImmutableList.of(middleMatcher1, middleMatcher2)));
-		groups.put(3, new KeyEntry<>(endProp));
+		groups.put(1, KeyEntry.of(startProp));
+		groups.put(2, MatcherEntry.of(new MultiMappingMatcher<>(middleMatcher1, middleMatcher2)));
+		groups.put(3, KeyEntry.of(endProp));
 		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(Pattern.compile("(\\w+)-(.*)-(\\w+)"), groups);
 
 		// Execution

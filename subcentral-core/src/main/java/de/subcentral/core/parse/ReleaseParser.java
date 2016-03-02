@@ -13,14 +13,14 @@ public class ReleaseParser extends AbstractMappingParser<Release>
 	private final Mapper<? extends List<? extends Media>>	mediaMapper;
 	private final Mapper<Release>							releaseMapper;
 
-	public ReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper)
+	public ReleaseParser(MappingMatcher<SimplePropDescriptor> matcher, Mapper<? extends List<? extends Media>> mediaMapper)
 	{
-		this(matchers, mediaMapper, ParsingDefaults.getDefaultReleaseMapper());
+		this(matcher, mediaMapper, ParsingDefaults.getDefaultReleaseMapper());
 	}
 
-	public ReleaseParser(Iterable<MappingMatcher<SimplePropDescriptor>> matchers, Mapper<? extends List<? extends Media>> mediaMapper, Mapper<Release> releaseMapper)
+	public ReleaseParser(MappingMatcher<SimplePropDescriptor> matcher, Mapper<? extends List<? extends Media>> mediaMapper, Mapper<Release> releaseMapper)
 	{
-		super(matchers);
+		super(matcher);
 		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
 		this.releaseMapper = Objects.requireNonNull(releaseMapper, "releaseMapper");
 	}

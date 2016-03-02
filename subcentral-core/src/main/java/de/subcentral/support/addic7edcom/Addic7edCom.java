@@ -14,6 +14,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.parse.MappingMatcher;
+import de.subcentral.core.parse.MultiMappingMatcher;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
@@ -53,6 +54,9 @@ public class Addic7edCom
 		predefEpisodeMatchesBuilder.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
 		ImmutableMap<SimplePropDescriptor, String> predefEpisodeMatches = predefEpisodeMatchesBuilder.build();
 
+		// Matchers
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
+
 		// (WEB-DL|Rip), then a non-word-char, then only one "tag" -> the group in most of the cases
 		// Examples:
 		// From Dusk Till Dawn_ The Series - 01x01 - Pilot.Webrip.2HD.English.C.orig.Addic7ed.com
@@ -71,6 +75,7 @@ public class Addic7edCom
 		grps100.put(10, Subtitle.PROP_LANGUAGE);
 		grps100.put(11, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher100 = new SimpleMappingMatcher<>(p100, grps100.build(), predefEpisodeMatches);
+		episodeMatchers.add(matcher100);
 
 		// WEB-DL|Rip but then no "-" after that (which would indicate a group)
 		// Examples:
@@ -89,6 +94,7 @@ public class Addic7edCom
 		grps101.put(9, Subtitle.PROP_LANGUAGE);
 		grps101.put(10, SubtitleRelease.PROP_TAGS);
 		SimpleMappingMatcher<SimplePropDescriptor> matcher101 = new SimpleMappingMatcher<>(p101, grps101.build(), predefEpisodeMatches);
+		episodeMatchers.add(matcher101);
 
 		// Episode title ends with a dot, then known release tags or a group
 		// Examples:
@@ -108,6 +114,7 @@ public class Addic7edCom
 		grps103.put(10, Subtitle.PROP_LANGUAGE);
 		grps103.put(11, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher103 = new SimpleMappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
+		episodeMatchers.add(matcher103);
 
 		// Episode title may contain dots, then a dot, then
 		// a) either "WEB-DL" or
@@ -135,6 +142,7 @@ public class Addic7edCom
 		grps104.put(12, Subtitle.PROP_LANGUAGE);
 		grps104.put(13, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher104 = new SimpleMappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
+		episodeMatchers.add(matcher104);
 
 		// Episode title may contain dots, then a dot, then "WEB-DL|Rip" or a group
 		// Examples:
@@ -157,6 +165,7 @@ public class Addic7edCom
 		grps105.put(10, Subtitle.PROP_LANGUAGE);
 		grps105.put(11, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher105 = new SimpleMappingMatcher<>(p105, grps105.build(), predefEpisodeMatches);
+		episodeMatchers.add(matcher105);
 
 		// Multiple release groups (and hence matching releases) separated by comma
 		// Examples
@@ -175,6 +184,7 @@ public class Addic7edCom
 		grps106.put(9, Subtitle.PROP_LANGUAGE);
 		grps106.put(10, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher106 = new SimpleMappingMatcher<>(p106, grps106.build(), predefEpisodeMatches);
+		episodeMatchers.add(matcher106);
 
 		// Release group, then tags in parenthesis
 		// Death in Paradise - 04x04 - Series 4, Episode 4.FoV (HDTV + 720p).English.C.orig.Addic7ed.com
@@ -194,20 +204,12 @@ public class Addic7edCom
 		grps107.put(10, Subtitle.PROP_LANGUAGE);
 		grps107.put(11, SubtitleRelease.PROP_TAGS);
 		MappingMatcher<SimplePropDescriptor> matcher107 = new SimpleMappingMatcher<>(p107, grps107.build(), predefEpisodeMatches);
+		episodeMatchers.add(matcher107);
 
 		// TODO: Actually "(HDTV + 720p)" are 2 releases "HDTV" and "720p.HDTV". Two releases should be matched.
 		// But thats not possible with current matching algorithm. It has to be possible to numerate the objects if multiple
 
-		// Matchers
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> episodeMatchers = ImmutableList.builder();
-		episodeMatchers.add(matcher100);
-		episodeMatchers.add(matcher101);
-		episodeMatchers.add(matcher103);
-		episodeMatchers.add(matcher104);
-		episodeMatchers.add(matcher105);
-		episodeMatchers.add(matcher106);
-		episodeMatchers.add(matcher107);
-		SubtitleReleaseParser episodeSubParser = new SubtitleReleaseParser(episodeMatchers.build(), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
+		SubtitleReleaseParser episodeSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(episodeMatchers.build()), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 
 		// FOR TESTING
 		// matcher104.match("Hannibal - 03x10 - ...And the Woman Clothed in Sun.WEB-DL.English.HI.C.orig.Addic7ed.com").forEach((k, v) ->
@@ -219,6 +221,8 @@ public class Addic7edCom
 		predefMovieMatchesBuilder.putAll(commonPredefMatches);
 		ImmutableMap<SimplePropDescriptor, String> predefMovieMatches = predefMovieMatchesBuilder.build();
 
+		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
+
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
 		Pattern p201 = Pattern.compile("(.*?)\\s+\\((\\d{4})\\)\\.(" + rlsTagsPttrn + ")\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps201 = ImmutableMap.builder();
@@ -229,6 +233,7 @@ public class Addic7edCom
 		grps201.put(4, Subtitle.PROP_LANGUAGE);
 		grps201.put(5, SubtitleRelease.PROP_TAGS);
 		SimpleMappingMatcher<SimplePropDescriptor> matcher201 = new SimpleMappingMatcher<>(p201, grps201.build(), predefMovieMatches);
+		movieMatchers.add(matcher201);
 
 		// "The Man Behind the Throne (2013).CBFM.English.C.orig.Addic7ed.com"
 		Pattern p202 = Pattern.compile("(.*?)\\s+\\((\\d{4})\\)\\.(\\w+)\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
@@ -240,14 +245,9 @@ public class Addic7edCom
 		grps202.put(4, Subtitle.PROP_LANGUAGE);
 		grps202.put(5, SubtitleRelease.PROP_TAGS);
 		SimpleMappingMatcher<SimplePropDescriptor> matcher202 = new SimpleMappingMatcher<>(p202, grps202.build(), predefMovieMatches);
-
-		// --------------
-		// add all movie matchers
-		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> movieMatchers = ImmutableList.builder();
-		movieMatchers.add(matcher201);
 		movieMatchers.add(matcher202);
 
-		SubtitleReleaseParser movieSubParser = new SubtitleReleaseParser(movieMatchers.build(), ParsingDefaults.getDefaultSingletonListMovieMapper());
+		SubtitleReleaseParser movieSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(movieMatchers.build()), ParsingDefaults.getDefaultSingletonListMovieMapper());
 
 		return ImmutableList.of(episodeSubParser, movieSubParser);
 	}

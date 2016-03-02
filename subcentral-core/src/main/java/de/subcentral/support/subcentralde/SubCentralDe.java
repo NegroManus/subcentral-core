@@ -21,6 +21,7 @@ import de.subcentral.core.parse.DelegatingMappingMatcher.KeyEntry;
 import de.subcentral.core.parse.DelegatingMappingMatcher.MatcherEntry;
 import de.subcentral.core.parse.Mapper;
 import de.subcentral.core.parse.MappingMatcher;
+import de.subcentral.core.parse.MultiMappingMatcher;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.parse.ReleaseParser;
@@ -71,17 +72,16 @@ public class SubCentralDe
 			// Building the matchers for SubCentral:
 			// The scene matchers will be the source for the SubCentral matchers
 			// because all SubCentral names consist of the scene name of the release followed by SubCentral tags.
-			List<MappingMatcher<SimplePropDescriptor>> sceneMatchers = sceneRlsParser.getMatchers();
-			List<MappingMatcher<SimplePropDescriptor>> scMatchers = buildMatchers(sceneMatchers);
+			MappingMatcher<SimplePropDescriptor> scMatcher = buildMatcherBasedOnSceneMatcher(sceneRlsParser.getMatcher());
 
-			SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatchers, mediaMapper);
+			SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatcher, mediaMapper);
 			parsers.add(parser);
 		}
 
 		return parsers.build();
 	}
 
-	private static List<MappingMatcher<SimplePropDescriptor>> buildMatchers(List<MappingMatcher<SimplePropDescriptor>> sceneMatchers)
+	private static MappingMatcher<SimplePropDescriptor> buildMatcherBasedOnSceneMatcher(MappingMatcher<SimplePropDescriptor> sceneMatcher)
 	{
 		String release = "(.*)";
 		String lang = "\\W(de|ger|german|deutsch|VO|en|eng|english)";
@@ -95,56 +95,56 @@ public class SubCentralDe
 		// Version, Language, (Group)?
 		Pattern p101 = Pattern.compile(release + version + lang + groupOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g101 = ImmutableMap.builder();
-		g101.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
-		g101.put(1, new MatcherEntry<>(sceneMatchers));
-		g101.put(2, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
-		g101.put(3, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
-		g101.put(4, new KeyEntry<>(Subtitle.PROP_GROUP));
+		g101.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
+		g101.put(1, MatcherEntry.of(sceneMatcher));
+		g101.put(2, KeyEntry.of(SubtitleRelease.PROP_VERSION));
+		g101.put(3, KeyEntry.of(Subtitle.PROP_LANGUAGE));
+		g101.put(4, KeyEntry.of(Subtitle.PROP_GROUP));
 		MappingMatcher<SimplePropDescriptor> m101 = new DelegatingMappingMatcher<>(p101, g101.build());
 		matchers.add(m101);
 
 		// Language, Version, (Group)?
 		Pattern p102 = Pattern.compile(release + lang + version + groupOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g102 = ImmutableMap.builder();
-		g102.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
-		g102.put(1, new MatcherEntry<>(sceneMatchers));
-		g102.put(2, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
-		g102.put(3, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
-		g102.put(4, new KeyEntry<>(Subtitle.PROP_GROUP));
+		g102.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
+		g102.put(1, MatcherEntry.of(sceneMatcher));
+		g102.put(2, KeyEntry.of(Subtitle.PROP_LANGUAGE));
+		g102.put(3, KeyEntry.of(SubtitleRelease.PROP_VERSION));
+		g102.put(4, KeyEntry.of(Subtitle.PROP_GROUP));
 		MappingMatcher<SimplePropDescriptor> m2 = new DelegatingMappingMatcher<>(p102, g102.build());
 		matchers.add(m2);
 
 		// Language, Group, (Version)?
 		Pattern p103 = Pattern.compile(release + lang + group + versionOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g103 = ImmutableMap.builder();
-		g103.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
-		g103.put(1, new MatcherEntry<>(sceneMatchers));
-		g103.put(2, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
-		g103.put(3, new KeyEntry<>(Subtitle.PROP_GROUP));
-		g103.put(4, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
+		g103.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
+		g103.put(1, MatcherEntry.of(sceneMatcher));
+		g103.put(2, KeyEntry.of(Subtitle.PROP_LANGUAGE));
+		g103.put(3, KeyEntry.of(Subtitle.PROP_GROUP));
+		g103.put(4, KeyEntry.of(SubtitleRelease.PROP_VERSION));
 		MappingMatcher<SimplePropDescriptor> m103 = new DelegatingMappingMatcher<>(p103, g103.build());
 		matchers.add(m103);
 
 		// Language, (Group)?
 		Pattern p104 = Pattern.compile(release + lang + groupOpt, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g104 = ImmutableMap.builder();
-		g104.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
-		g104.put(1, new MatcherEntry<>(sceneMatchers));
-		g104.put(2, new KeyEntry<>(Subtitle.PROP_LANGUAGE));
-		g104.put(3, new KeyEntry<>(Subtitle.PROP_GROUP));
+		g104.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
+		g104.put(1, MatcherEntry.of(sceneMatcher));
+		g104.put(2, KeyEntry.of(Subtitle.PROP_LANGUAGE));
+		g104.put(3, KeyEntry.of(Subtitle.PROP_GROUP));
 		MappingMatcher<SimplePropDescriptor> m104 = new DelegatingMappingMatcher<>(p104, g104.build());
 		matchers.add(m104);
 
 		// Version
 		Pattern p105 = Pattern.compile(release + version, Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> g105 = ImmutableMap.builder();
-		g105.put(0, new KeyEntry<>(SubtitleRelease.PROP_NAME));
-		g105.put(1, new MatcherEntry<>(sceneMatchers));
-		g105.put(2, new KeyEntry<>(SubtitleRelease.PROP_VERSION));
+		g105.put(0, KeyEntry.of(SubtitleRelease.PROP_NAME));
+		g105.put(1, MatcherEntry.of(sceneMatcher));
+		g105.put(2, KeyEntry.of(SubtitleRelease.PROP_VERSION));
 		MappingMatcher<SimplePropDescriptor> m105 = new DelegatingMappingMatcher<>(p105, g105.build());
 		matchers.add(m105);
 
-		return matchers.build();
+		return new MultiMappingMatcher<>(matchers.build());
 	}
 
 	public static ParsingService getParsingService()

@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
@@ -16,11 +15,11 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 	/**
 	 * This separator is used to separate multiple values for the same key. These values are concatenated, using this separator.
 	 */
-	public static final String							VALUES_WITH_SAME_KEY_SEPARATOR	= " ";
+	public static final String					VALUES_WITH_SAME_KEY_SEPARATOR	= " ";
 
-	private final Pattern								pattern;
-	private final ImmutableMap<Integer, GroupEntry<K>>	groups;
-	private final ImmutableMap<K, String>				predefinedMatches;
+	private final Pattern						pattern;
+	private final Map<Integer, GroupEntry<K>>	groups;
+	private final Map<K, String>				predefinedMatches;
 
 	public DelegatingMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups)
 	{
@@ -111,9 +110,14 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 
 	public static class KeyEntry<K> implements GroupEntry<K>
 	{
+		public static <K> KeyEntry<K> of(K key)
+		{
+			return new KeyEntry<>(key);
+		}
+
 		private final K key;
 
-		public KeyEntry(K key)
+		private KeyEntry(K key)
 		{
 			this.key = Objects.requireNonNull(key, "key");
 		}
@@ -138,16 +142,21 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 
 	public static class MatcherEntry<K> implements GroupEntry<K>
 	{
-		private final ImmutableList<MappingMatcher<K>> matchers;
-
-		public MatcherEntry(Iterable<MappingMatcher<K>> matchers)
+		public static <K> MatcherEntry<K> of(MappingMatcher<K> matcher)
 		{
-			this.matchers = ImmutableList.copyOf(matchers); // includes null check
+			return new MatcherEntry<>(matcher);
 		}
 
-		public ImmutableList<MappingMatcher<K>> getMatchers()
+		private final MappingMatcher<K> matcher;
+
+		public MatcherEntry(MappingMatcher<K> matcher)
 		{
-			return matchers;
+			this.matcher = Objects.requireNonNull(matcher, "matcher");
+		}
+
+		public MappingMatcher<K> getMatcher()
+		{
+			return matcher;
 		}
 
 		@Override
@@ -159,17 +168,10 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 		@Override
 		public void mergeGroupValue(Map<K, String> mappedGroups, String value)
 		{
-			for (MappingMatcher<K> matcher : matchers)
+			Map<K, String> result = matcher.match(value);
+			for (Map.Entry<K, String> entry : result.entrySet())
 			{
-				Map<K, String> result = matcher.match(value);
-				if (!result.isEmpty())
-				{
-					for (Map.Entry<K, String> entry : result.entrySet())
-					{
-						GroupEntry.mergeStringValues(mappedGroups, entry.getKey(), entry.getValue());
-					}
-					return;
-				}
+				GroupEntry.mergeStringValues(mappedGroups, entry.getKey(), entry.getValue());
 			}
 		}
 	}
