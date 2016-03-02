@@ -18,7 +18,7 @@ import de.subcentral.core.parse.MultiMappingMatcher;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
-import de.subcentral.core.parse.SimpleMappingMatcher;
+import de.subcentral.core.parse.PatternMappingMatcher;
 import de.subcentral.core.parse.SubtitleReleaseParser;
 import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
@@ -56,7 +56,7 @@ public class ItalianSubsNet
 		grps101.put(1, Series.PROP_NAME);
 		grps101.put(2, Season.PROP_NUMBER);
 		grps101.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		MappingMatcher<SimplePropDescriptor> matcher101 = new SimpleMappingMatcher<>(p101, grps101.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher101 = new PatternMappingMatcher<>(p101, grps101.build(), commonPredefMatches);
 		episodeMatchers.add(matcher101);
 
 		// Examples:
@@ -71,7 +71,7 @@ public class ItalianSubsNet
 		grps102.put(2, Season.PROP_NUMBER);
 		grps102.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		grps102.put(4, Release.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher102 = new SimpleMappingMatcher<>(p102, grps102.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher102 = new PatternMappingMatcher<>(p102, grps102.build(), commonPredefMatches);
 		episodeMatchers.add(matcher102);
 
 		SubtitleReleaseParser episodeSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(episodeMatchers.build()), ParsingDefaults.getDefaultSingletonListEpisodeMapper());
@@ -90,7 +90,7 @@ public class ItalianSubsNet
 		grps201.put(1, Series.PROP_NAME);
 		grps201.put(2, Season.PROP_NUMBER);
 		grps201.put(3, Episode.PROP_NUMBER_IN_SEASON);
-		MappingMatcher<SimplePropDescriptor> matcher201 = new SimpleMappingMatcher<>(p201, grps201.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher201 = new PatternMappingMatcher<>(p201, grps201.build(), commonPredefMatches);
 		multiEpisodeMatchers.add(matcher201);
 
 		// Examples:
@@ -103,7 +103,7 @@ public class ItalianSubsNet
 		grps202.put(2, Season.PROP_NUMBER);
 		grps202.put(3, Episode.PROP_NUMBER_IN_SEASON);
 		grps202.put(4, Release.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher202 = new SimpleMappingMatcher<>(p202, grps202.build(), commonPredefMatches);
+		MappingMatcher<SimplePropDescriptor> matcher202 = new PatternMappingMatcher<>(p202, grps202.build(), commonPredefMatches);
 		multiEpisodeMatchers.add(matcher202);
 
 		SubtitleReleaseParser multiEpisodeSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(multiEpisodeMatchers.build()), ParsingDefaults.getDefaultMultiEpisodeMapper());

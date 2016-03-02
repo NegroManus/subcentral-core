@@ -35,8 +35,8 @@ public class DelegatingMappingMatcherTest
 		Map<Integer, SimplePropDescriptor> middleGroups = new HashMap<>();
 		middleGroups.put(1, middle1Prop);
 		middleGroups.put(2, middle2Prop);
-		MappingMatcher<SimplePropDescriptor> middleMatcher1 = new SimpleMappingMatcher<>(Pattern.compile("(\\w):(\\w)"), middleGroups);
-		MappingMatcher<SimplePropDescriptor> middleMatcher2 = new SimpleMappingMatcher<>(Pattern.compile("(\\w)\\.(\\w)"), middleGroups);
+		MappingMatcher<SimplePropDescriptor> middleMatcher1 = new PatternMappingMatcher<>(Pattern.compile("(\\w):(\\w)"), middleGroups);
+		MappingMatcher<SimplePropDescriptor> middleMatcher2 = new PatternMappingMatcher<>(Pattern.compile("(\\w)\\.(\\w)"), middleGroups);
 
 		Map<Integer, GroupEntry<SimplePropDescriptor>> groups = new HashMap<>();
 		groups.put(1, GroupEntry.ofKey(startProp));

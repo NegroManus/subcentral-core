@@ -18,7 +18,7 @@ import de.subcentral.core.parse.MultiMappingMatcher;
 import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
-import de.subcentral.core.parse.SimpleMappingMatcher;
+import de.subcentral.core.parse.PatternMappingMatcher;
 import de.subcentral.core.parse.SubtitleReleaseParser;
 import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
@@ -74,7 +74,7 @@ public class Addic7edCom
 		grps100.put(9, Release.PROP_GROUP);
 		grps100.put(10, Subtitle.PROP_LANGUAGE);
 		grps100.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher100 = new SimpleMappingMatcher<>(p100, grps100.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher100 = new PatternMappingMatcher<>(p100, grps100.build(), predefEpisodeMatches);
 		episodeMatchers.add(matcher100);
 
 		// WEB-DL|Rip but then no "-" after that (which would indicate a group)
@@ -93,7 +93,7 @@ public class Addic7edCom
 		grps101.put(8, Release.PROP_TAGS);
 		grps101.put(9, Subtitle.PROP_LANGUAGE);
 		grps101.put(10, SubtitleRelease.PROP_TAGS);
-		SimpleMappingMatcher<SimplePropDescriptor> matcher101 = new SimpleMappingMatcher<>(p101, grps101.build(), predefEpisodeMatches);
+		PatternMappingMatcher<SimplePropDescriptor> matcher101 = new PatternMappingMatcher<>(p101, grps101.build(), predefEpisodeMatches);
 		episodeMatchers.add(matcher101);
 
 		// Episode title ends with a dot, then known release tags or a group
@@ -113,7 +113,7 @@ public class Addic7edCom
 		grps103.put(9, Release.PROP_GROUP);
 		grps103.put(10, Subtitle.PROP_LANGUAGE);
 		grps103.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher103 = new SimpleMappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher103 = new PatternMappingMatcher<>(p103, grps103.build(), predefEpisodeMatches);
 		episodeMatchers.add(matcher103);
 
 		// Episode title may contain dots, then a dot, then
@@ -141,7 +141,7 @@ public class Addic7edCom
 		grps104.put(11, Release.PROP_GROUP);
 		grps104.put(12, Subtitle.PROP_LANGUAGE);
 		grps104.put(13, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher104 = new SimpleMappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher104 = new PatternMappingMatcher<>(p104, grps104.build(), predefEpisodeMatches);
 		episodeMatchers.add(matcher104);
 
 		// Episode title may contain dots, then a dot, then "WEB-DL|Rip" or a group
@@ -164,7 +164,7 @@ public class Addic7edCom
 		grps105.put(9, Release.PROP_GROUP);
 		grps105.put(10, Subtitle.PROP_LANGUAGE);
 		grps105.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher105 = new SimpleMappingMatcher<>(p105, grps105.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher105 = new PatternMappingMatcher<>(p105, grps105.build(), predefEpisodeMatches);
 		episodeMatchers.add(matcher105);
 
 		// Multiple release groups (and hence matching releases) separated by comma
@@ -183,7 +183,7 @@ public class Addic7edCom
 		grps106.put(8, Release.PROP_GROUP);
 		grps106.put(9, Subtitle.PROP_LANGUAGE);
 		grps106.put(10, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher106 = new SimpleMappingMatcher<>(p106, grps106.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher106 = new PatternMappingMatcher<>(p106, grps106.build(), predefEpisodeMatches);
 		episodeMatchers.add(matcher106);
 
 		// Release group, then tags in parenthesis
@@ -203,7 +203,7 @@ public class Addic7edCom
 		grps107.put(9, Release.PROP_TAGS);
 		grps107.put(10, Subtitle.PROP_LANGUAGE);
 		grps107.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher107 = new SimpleMappingMatcher<>(p107, grps107.build(), predefEpisodeMatches);
+		MappingMatcher<SimplePropDescriptor> matcher107 = new PatternMappingMatcher<>(p107, grps107.build(), predefEpisodeMatches);
 		episodeMatchers.add(matcher107);
 
 		// TODO: Actually "(HDTV + 720p)" are 2 releases "HDTV" and "720p.HDTV". Two releases should be matched.
@@ -232,7 +232,7 @@ public class Addic7edCom
 		grps201.put(3, Release.PROP_TAGS);
 		grps201.put(4, Subtitle.PROP_LANGUAGE);
 		grps201.put(5, SubtitleRelease.PROP_TAGS);
-		SimpleMappingMatcher<SimplePropDescriptor> matcher201 = new SimpleMappingMatcher<>(p201, grps201.build(), predefMovieMatches);
+		PatternMappingMatcher<SimplePropDescriptor> matcher201 = new PatternMappingMatcher<>(p201, grps201.build(), predefMovieMatches);
 		movieMatchers.add(matcher201);
 
 		// "The Man Behind the Throne (2013).CBFM.English.C.orig.Addic7ed.com"
@@ -244,7 +244,7 @@ public class Addic7edCom
 		grps202.put(3, Release.PROP_GROUP);
 		grps202.put(4, Subtitle.PROP_LANGUAGE);
 		grps202.put(5, SubtitleRelease.PROP_TAGS);
-		SimpleMappingMatcher<SimplePropDescriptor> matcher202 = new SimpleMappingMatcher<>(p202, grps202.build(), predefMovieMatches);
+		PatternMappingMatcher<SimplePropDescriptor> matcher202 = new PatternMappingMatcher<>(p202, grps202.build(), predefMovieMatches);
 		movieMatchers.add(matcher202);
 
 		SubtitleReleaseParser movieSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(movieMatchers.build()), ParsingDefaults.getDefaultSingletonListMovieMapper());

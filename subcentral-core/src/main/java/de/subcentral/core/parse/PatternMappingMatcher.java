@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
-public class SimpleMappingMatcher<K> implements MappingMatcher<K>
+public class PatternMappingMatcher<K> implements MappingMatcher<K>
 {
 	/**
 	 * This separator is used to separate multiple values for the same key. These values are concatenated, using this separator.
@@ -20,12 +20,12 @@ public class SimpleMappingMatcher<K> implements MappingMatcher<K>
 	private final Map<Integer, K>	groups;
 	private final Map<K, String>	predefinedMatches;
 
-	public SimpleMappingMatcher(Pattern pattern, Map<Integer, K> groups)
+	public PatternMappingMatcher(Pattern pattern, Map<Integer, K> groups)
 	{
 		this(pattern, groups, ImmutableMap.of());
 	}
 
-	public SimpleMappingMatcher(Pattern pattern, Map<Integer, K> groups, Map<K, String> predefinedMatches)
+	public PatternMappingMatcher(Pattern pattern, Map<Integer, K> groups, Map<K, String> predefinedMatches)
 	{
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.groups = ImmutableMap.copyOf(groups); // includes null checks
