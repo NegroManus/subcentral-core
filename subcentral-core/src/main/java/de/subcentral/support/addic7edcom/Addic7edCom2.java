@@ -67,22 +67,15 @@ public class Addic7edCom2
 		// (WEB-DL|Rip), then a non-word-char, then only one "tag" -> the group in most of the cases
 		// Examples:
 		// From Dusk Till Dawn_ The Series - 01x01 - Pilot.Webrip.2HD.English.C.orig.Addic7ed.com
-		Pattern p100 = Pattern.compile(srSsnEpiNumsPttrn + "(.+?)\\.(" + rlsTagsPttrn + ")\\W([\\w]+)\\." + langSubTagsSrcPttrn, Pattern.CASE_INSENSITIVE);
+		Pattern p100 = Pattern.compile("(.+?)\\.(" + rlsTagsPttrn + ")\\W([\\w]+)", Pattern.CASE_INSENSITIVE);
 		ImmutableMap.Builder<Integer, SimplePropDescriptor> grps100 = ImmutableMap.builder();
-		grps100.put(0, SubtitleRelease.PROP_NAME);
-		grps100.put(1, Series.PROP_NAME);
-		grps100.put(2, Series.PROP_TITLE);
-		grps100.put(3, Series.PROP_DATE); // e.g. "2004"
-		grps100.put(4, Series.PROP_COUNTRIES); // e.g. "UK"
-		grps100.put(5, Season.PROP_NUMBER);
-		grps100.put(6, Episode.PROP_NUMBER_IN_SEASON);
 		grps100.put(7, Episode.PROP_TITLE);
 		grps100.put(8, Release.PROP_TAGS);
 		grps100.put(9, Release.PROP_GROUP);
 		grps100.put(10, Subtitle.PROP_LANGUAGE);
 		grps100.put(11, SubtitleRelease.PROP_TAGS);
-		MappingMatcher<SimplePropDescriptor> matcher100 = new PatternMappingMatcher<>(p100, grps100.build(), predefEpisodeMatches);
-		episodeMatchers.add(matcher100);
+		MappingMatcher<SimplePropDescriptor> matcher100 = new PatternMappingMatcher<>(p100, grps100.build());
+		matchers.add(matcher100);
 
 		return new MultiMappingMatcher<>(matchers.build());
 	}
