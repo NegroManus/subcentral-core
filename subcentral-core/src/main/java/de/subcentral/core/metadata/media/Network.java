@@ -22,7 +22,7 @@ public class Network extends MetadataBase implements Comparable<Network>
 
 	public Network()
 	{
-
+		// default constructor
 	}
 
 	public Network(String name)

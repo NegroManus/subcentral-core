@@ -73,6 +73,7 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 
 	public Series()
 	{
+		// default constructor
 	}
 
 	public Series(String name)
@@ -201,6 +202,7 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	}
 
 	// Convenience
+	@Override
 	public String getPrimaryOriginalLanguage()
 	{
 		return languages.isEmpty() ? null : languages.get(0);

@@ -46,7 +46,7 @@ public class Season extends MediaBase implements Comparable<Season>
 
 	public Season()
 	{
-
+		// default constructor
 	}
 
 	public Season(Series series)

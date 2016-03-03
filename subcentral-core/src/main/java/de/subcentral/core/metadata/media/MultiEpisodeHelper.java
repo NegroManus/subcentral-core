@@ -117,7 +117,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		}
 		List<List<Integer>> ranges = new ArrayList<>(1);
 		Integer previous = nums.get(0);
-		Integer current = null;
+		Integer current;
 		List<Integer> range = new ArrayList<>();
 		range.add(previous);
 		for (int i = 1; i < nums.size(); i++)

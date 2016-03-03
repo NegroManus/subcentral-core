@@ -12,6 +12,11 @@ import de.subcentral.core.name.AbstractNamedMediaNamer;
 
 public class MediaUtil
 {
+	private MediaUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static boolean isMediaIterable(Object obj)
 	{
 		if (obj instanceof Iterable)
@@ -77,15 +82,12 @@ public class MediaUtil
 	public static List<Map<String, Object>> generateNamingParametersForAllNames(Object obj)
 	{
 		Media singleMedia = toSingletonMedia(obj);
-		if (singleMedia != null)
+		if (singleMedia != null && obj instanceof NamedMedia)
 		{
-			if (obj instanceof NamedMedia)
+			NamedMedia namedMedia = (NamedMedia) obj;
+			if (namedMedia.getName() != null)
 			{
-				NamedMedia namedMedia = (NamedMedia) obj;
-				if (namedMedia.getName() != null)
-				{
-					return generateNamingParametersForMediaNames(namedMedia.getAllNames());
-				}
+				return generateNamingParametersForMediaNames(namedMedia.getAllNames());
 			}
 		}
 		MultiEpisodeHelper meHelper = MultiEpisodeHelper.of(obj);
@@ -106,10 +108,5 @@ public class MediaUtil
 			params.add(ImmutableMap.of(AbstractNamedMediaNamer.PARAM_NAME, name));
 		}
 		return params.build();
-	}
-
-	private MediaUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

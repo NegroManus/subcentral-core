@@ -111,7 +111,7 @@ public class PropSequenceNameBuilder
 
 		public Config(PropToStringService propToStringService, String defaultSeparator)
 		{
-			this(propToStringService, null, ImmutableSet.of(), null);
+			this(propToStringService, defaultSeparator, ImmutableSet.of(), null);
 		}
 
 		public Config(PropToStringService propToStringService, String defaultSeparator, Set<Separation> separations)

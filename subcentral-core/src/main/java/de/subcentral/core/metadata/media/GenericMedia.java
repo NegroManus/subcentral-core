@@ -41,7 +41,7 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 
 	public GenericMedia()
 	{
-
+		// default constructor
 	}
 
 	public GenericMedia(String name)

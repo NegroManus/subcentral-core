@@ -24,7 +24,7 @@ public class Contribution implements Serializable, Comparable<Contribution>
 
 	public Contribution()
 	{
-
+		// default constructor
 	}
 
 	public Contribution(Contributor contributor, String type)
@@ -131,6 +131,12 @@ public class Contribution implements Serializable, Comparable<Contribution>
 		return progress;
 	}
 
+	/**
+	 * 
+	 * @param progress
+	 * @throws IllegalArgumentException
+	 *             if progress is smaller than 0 or greater than 1
+	 */
 	public void setProgress(float progress) throws IllegalArgumentException
 	{
 		if (progress < 0.0f || progress > 1.0f)

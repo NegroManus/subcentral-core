@@ -14,6 +14,11 @@ public class ContributionUtil
 {
 	public static final float PROGRESS_NOT_MEASURABLE = Float.NaN;
 
+	private ContributionUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static ListMultimap<String, Contribution> groupByType(Collection<Contribution> contributions)
 	{
 		if (contributions.isEmpty())
@@ -85,10 +90,5 @@ public class ContributionUtil
 			progresses.put(entry.getKey(), calcProgress(entry.getValue()));
 		}
 		return progresses.build();
-	}
-
-	private ContributionUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

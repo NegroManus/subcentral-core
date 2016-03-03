@@ -39,7 +39,7 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 
 	public Movie()
 	{
-
+		// default constructor
 	}
 
 	public Movie(String name)

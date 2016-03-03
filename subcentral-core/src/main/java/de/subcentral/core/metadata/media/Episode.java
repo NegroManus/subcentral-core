@@ -44,116 +44,16 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Episode.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Episode.class, PropNames.ATTRIBUTES);
 
-	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
-	{
-		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
-	}
-
-	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber, String episodeTitle)
-	{
-		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
-	}
-
-	public static Episode createSeasonedEpisode(String seriesName, String seasonTitle, Integer episodeNumber, String episodeTitle)
-	{
-		return createSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
-	}
-
-	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber)
-	{
-		return createSeasonedEpisode(seriesName, seriesTitle, seasonNumber, null, episodeNumber, null);
-	}
-
-	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber, String episodeTitle)
-	{
-		return createSeasonedEpisode(seriesName, seriesTitle, seasonNumber, null, episodeNumber, episodeTitle);
-	}
-
-	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, Integer episodeNumber, String episodeTitle)
-	{
-		if (seriesName == null)
-		{
-			throw new IllegalArgumentException("Series' name must be set");
-		}
-		Series series = new Series();
-		series.setType(Series.TYPE_SEASONED);
-		series.setName(seriesName);
-		series.setTitle(seriesTitle);
-		Episode epi = new Episode(series);
-		if (seasonNumber != null || seasonTitle != null)
-		{
-			Season season = new Season(series);
-			season.setNumber(seasonNumber);
-			season.setTitle(seasonTitle);
-			epi.setSeason(season);
-		}
-		epi.setNumberInSeason(episodeNumber);
-		epi.setTitle(episodeTitle);
-		return epi;
-	}
-
-	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber)
-	{
-		return createMiniSeriesEpisode(seriesName, null, episodeNumber, null);
-	}
-
-	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber, String episodeTitle)
-	{
-		return createMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
-	}
-
-	public static Episode createMiniSeriesEpisode(String seriesName, String seriesTitle, Integer episodeNumber, String episodeTitle)
-	{
-		if (seriesName == null)
-		{
-			throw new IllegalArgumentException("Series' name must be set");
-		}
-		Series series = new Series();
-		series.setType(Series.TYPE_MINI_SERIES);
-		series.setName(seriesName);
-		series.setTitle(seriesTitle);
-		Episode epi = new Episode(series);
-		epi.setNumberInSeries(episodeNumber);
-		epi.setTitle(episodeTitle);
-		return epi;
-	}
-
-	public static Episode createDatedEpisode(String seriesName, Temporal date)
-	{
-		return createDatedEpisode(seriesName, null, date, null);
-	}
-
-	public static Episode createDatedEpisode(String seriesName, Temporal date, String episodeTitle)
-	{
-		return createDatedEpisode(seriesName, null, date, episodeTitle);
-	}
-
-	public static Episode createDatedEpisode(String seriesName, String seriesTitle, Temporal date, String episodeTitle)
-	{
-		if (seriesName == null)
-		{
-			throw new IllegalArgumentException("Series' name must be set");
-		}
-		Series series = new Series();
-		series.setType(Series.TYPE_DATED);
-		series.setName(seriesName);
-		series.setTitle(seriesTitle);
-		Episode epi = new Episode(series);
-		epi.setDate(date);
-		epi.setTitle(episodeTitle);
-		return epi;
-	}
-
-	private Series	series;
-	private Season	season;
-	private Integer	numberInSeries;
-	private Integer	numberInSeason;
-	private boolean	special;
-	private int		runningTime;
+	private Series								series;
+	private Season								season;
+	private Integer								numberInSeries;
+	private Integer								numberInSeason;
+	private boolean								special;
+	private int									runningTime;
 
 	public Episode()
 	{
-
+		// default constructor
 	}
 
 	public Episode(Series series)
@@ -402,5 +302,96 @@ public class Episode extends MediaBase implements Comparable<Episode>
 			throw new IllegalArgumentException("The given season is not part of this episode's series: " + season + " is not part of " + series);
 		}
 		return season;
+	}
+
+	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
+	{
+		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
+	}
+
+	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber, String episodeTitle)
+	{
+		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
+	}
+
+	public static Episode createSeasonedEpisode(String seriesName, String seasonTitle, Integer episodeNumber, String episodeTitle)
+	{
+		return createSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
+	}
+
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber)
+	{
+		return createSeasonedEpisode(seriesName, seriesTitle, seasonNumber, null, episodeNumber, null);
+	}
+
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber, String episodeTitle)
+	{
+		return createSeasonedEpisode(seriesName, seriesTitle, seasonNumber, null, episodeNumber, episodeTitle);
+	}
+
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, Integer episodeNumber, String episodeTitle)
+	{
+		Objects.requireNonNull(seriesName, "seriesName");
+		Series series = new Series();
+		series.setType(Series.TYPE_SEASONED);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = new Episode(series);
+		if (seasonNumber != null || seasonTitle != null)
+		{
+			Season season = new Season(series);
+			season.setNumber(seasonNumber);
+			season.setTitle(seasonTitle);
+			epi.setSeason(season);
+		}
+		epi.setNumberInSeason(episodeNumber);
+		epi.setTitle(episodeTitle);
+		return epi;
+	}
+
+	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber)
+	{
+		return createMiniSeriesEpisode(seriesName, null, episodeNumber, null);
+	}
+
+	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber, String episodeTitle)
+	{
+		return createMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
+	}
+
+	public static Episode createMiniSeriesEpisode(String seriesName, String seriesTitle, Integer episodeNumber, String episodeTitle)
+	{
+		Objects.requireNonNull(seriesName, "seriesName");
+		Series series = new Series();
+		series.setType(Series.TYPE_MINI_SERIES);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = new Episode(series);
+		epi.setNumberInSeries(episodeNumber);
+		epi.setTitle(episodeTitle);
+		return epi;
+	}
+
+	public static Episode createDatedEpisode(String seriesName, Temporal date)
+	{
+		return createDatedEpisode(seriesName, null, date, null);
+	}
+
+	public static Episode createDatedEpisode(String seriesName, Temporal date, String episodeTitle)
+	{
+		return createDatedEpisode(seriesName, null, date, episodeTitle);
+	}
+
+	public static Episode createDatedEpisode(String seriesName, String seriesTitle, Temporal date, String episodeTitle)
+	{
+		Objects.requireNonNull(seriesName, "seriesName");
+		Series series = new Series();
+		series.setType(Series.TYPE_DATED);
+		series.setName(seriesName);
+		series.setTitle(seriesTitle);
+		Episode epi = new Episode(series);
+		epi.setDate(date);
+		epi.setTitle(episodeTitle);
+		return epi;
 	}
 }

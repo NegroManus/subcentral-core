@@ -12,6 +12,11 @@ import com.google.common.collect.ImmutableList;
 
 public class SeriesUtil
 {
+	private SeriesUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	// Seasons and Episode
 	public List<Episode> filterEpisodesBySeason(List<Episode> episodes, Season season)
 	{
@@ -72,10 +77,5 @@ public class SeriesUtil
 	public static Temporal getDateOfLastEpisode(List<Episode> episodes)
 	{
 		return episodes.isEmpty() ? null : episodes.get(episodes.size() - 1).getDate();
-	}
-
-	private SeriesUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }
