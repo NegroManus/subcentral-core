@@ -17,16 +17,16 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 
 	}
 
-	public EpisodeMapper(PropFromStringService propFromStringService)
+	public EpisodeMapper(ParsePropService parsePropService)
 	{
-		super(propFromStringService);
+		super(parsePropService);
 	}
 
 	@Override
 	public Episode doMap(Map<SimplePropDescriptor, String> props)
 	{
 		Series series = new Series();
-		series.setType(propFromStringService.parse(props, Series.PROP_TYPE, String.class));
+		series.setType(parsePropService.parse(props, Series.PROP_TYPE, String.class));
 		String name = props.get(Series.PROP_NAME);
 		String title = props.get(Series.PROP_TITLE);
 		series.setName(name);
@@ -34,19 +34,19 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 		{
 			series.setTitle(title);
 		}
-		series.setDate(propFromStringService.parse(props, Series.PROP_DATE, Temporal.class));
-		series.setCountries(propFromStringService.parseList(props, Series.PROP_COUNTRIES, String.class));
+		series.setDate(parsePropService.parse(props, Series.PROP_DATE, Temporal.class));
+		series.setCountries(parsePropService.parseList(props, Series.PROP_COUNTRIES, String.class));
 
 		Episode epi = new Episode(series);
-		epi.setNumberInSeries(propFromStringService.parse(props, Episode.PROP_NUMBER_IN_SERIES, Integer.class));
-		epi.setNumberInSeason(propFromStringService.parse(props, Episode.PROP_NUMBER_IN_SEASON, Integer.class));
+		epi.setNumberInSeries(parsePropService.parse(props, Episode.PROP_NUMBER_IN_SERIES, Integer.class));
+		epi.setNumberInSeason(parsePropService.parse(props, Episode.PROP_NUMBER_IN_SEASON, Integer.class));
 		epi.setTitle(props.get(Episode.PROP_TITLE));
-		epi.setDate(propFromStringService.parse(props, Episode.PROP_DATE, LocalDate.class));
+		epi.setDate(parsePropService.parse(props, Episode.PROP_DATE, LocalDate.class));
 
 		if (props.containsKey(Season.PROP_NUMBER))
 		{
 			Season season = new Season(series);
-			season.setNumber(propFromStringService.parse(props, Season.PROP_NUMBER, Integer.class));
+			season.setNumber(parsePropService.parse(props, Season.PROP_NUMBER, Integer.class));
 			epi.setSeason(season);
 		}
 

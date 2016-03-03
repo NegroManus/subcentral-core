@@ -14,9 +14,9 @@ public class ReleaseMapper extends AbstractMapper<Release>
 
 	}
 
-	public ReleaseMapper(PropFromStringService propFromStringService)
+	public ReleaseMapper(ParsePropService parsePropService)
 	{
-		super(propFromStringService);
+		super(parsePropService);
 	}
 
 	@Override
@@ -24,8 +24,8 @@ public class ReleaseMapper extends AbstractMapper<Release>
 	{
 		Release rls = new Release();
 		rls.setName(props.get(Release.PROP_NAME));
-		rls.setGroup(propFromStringService.parse(props, Release.PROP_GROUP, Group.class));
-		rls.getTags().addAll(propFromStringService.parseList(props, Release.PROP_TAGS, Tag.class));
+		rls.setGroup(parsePropService.parse(props, Release.PROP_GROUP, Group.class));
+		rls.getTags().addAll(parsePropService.parseList(props, Release.PROP_TAGS, Tag.class));
 		return rls;
 	}
 

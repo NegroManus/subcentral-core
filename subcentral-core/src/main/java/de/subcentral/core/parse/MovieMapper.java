@@ -13,9 +13,9 @@ public class MovieMapper extends AbstractMapper<Movie>
 
 	}
 
-	public MovieMapper(PropFromStringService propFromStringService)
+	public MovieMapper(ParsePropService parsePropService)
 	{
-		super(propFromStringService);
+		super(parsePropService);
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class MovieMapper extends AbstractMapper<Movie>
 		Movie mov = new Movie();
 		mov.setName(props.get(Movie.PROP_NAME));
 		mov.setTitle(props.get(Movie.PROP_TITLE));
-		mov.setDate(propFromStringService.parse(props, Movie.PROP_DATE, Temporal.class));
+		mov.setDate(parsePropService.parse(props, Movie.PROP_DATE, Temporal.class));
 		return mov;
 	}
 

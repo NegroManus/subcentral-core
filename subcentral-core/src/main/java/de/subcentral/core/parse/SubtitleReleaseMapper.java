@@ -13,9 +13,9 @@ public class SubtitleReleaseMapper extends AbstractMapper<SubtitleRelease>
 
 	}
 
-	public SubtitleReleaseMapper(PropFromStringService propFromStringService)
+	public SubtitleReleaseMapper(ParsePropService parsePropService)
 	{
-		super(propFromStringService);
+		super(parsePropService);
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class SubtitleReleaseMapper extends AbstractMapper<SubtitleRelease>
 	{
 		SubtitleRelease subAdj = new SubtitleRelease();
 		subAdj.setName(props.get(SubtitleRelease.PROP_NAME));
-		subAdj.getTags().addAll(propFromStringService.parseList(props, SubtitleRelease.PROP_TAGS, Tag.class));
+		subAdj.getTags().addAll(parsePropService.parseList(props, SubtitleRelease.PROP_TAGS, Tag.class));
 		subAdj.setVersion(props.get(SubtitleRelease.PROP_VERSION));
 		return subAdj;
 	}

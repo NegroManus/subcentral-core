@@ -22,7 +22,7 @@ public class ParsingUtil
 {
 	private static final Logger log = LogManager.getLogger(ParsingUtil.class);
 
-	public static final <T> T reflectiveMapping(Class<T> targetType, Map<SimplePropDescriptor, String> props, PropFromStringService propFromStringService)
+	public static final <T> T reflectiveMapping(Class<T> targetType, Map<SimplePropDescriptor, String> props, ParsePropService parsePropService)
 	{
 		Objects.requireNonNull(targetType, "targetType");
 		try
@@ -41,7 +41,7 @@ public class ParsingUtil
 						{
 							ParameterizedType genericType = (ParameterizedType) type.getType();
 							Class<?> itemClass = ((Class<?>) genericType.getActualTypeArguments()[0]);
-							List<?> value = propFromStringService.parseList(p.getValue(), simplePropDescr, itemClass);
+							List<?> value = parsePropService.parseList(p.getValue(), simplePropDescr, itemClass);
 							if (Set.class.isAssignableFrom(type.getRawType()))
 							{
 								simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, ImmutableSet.copyOf(value));
@@ -53,7 +53,7 @@ public class ParsingUtil
 						}
 						else
 						{
-							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, propFromStringService.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
+							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, parsePropService.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
 						}
 
 					}

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public interface PropFromStringService
+public interface ParsePropService
 {
 	public default <P> P parse(Map<SimplePropDescriptor, String> info, SimplePropDescriptor propDescriptor, Class<P> propClass) throws ParsingException
 	{

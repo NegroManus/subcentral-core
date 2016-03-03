@@ -13,9 +13,9 @@ public class SubtitleMapper extends AbstractMapper<Subtitle>
 
 	}
 
-	public SubtitleMapper(PropFromStringService propFromStringService)
+	public SubtitleMapper(ParsePropService parsePropService)
 	{
-		super(propFromStringService);
+		super(parsePropService);
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class SubtitleMapper extends AbstractMapper<Subtitle>
 	{
 		Subtitle sub = new Subtitle();
 		sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));
-		sub.setGroup(propFromStringService.parse(props, Subtitle.PROP_GROUP, Group.class));
+		sub.setGroup(parsePropService.parse(props, Subtitle.PROP_GROUP, Group.class));
 		sub.setSource(props.get(Subtitle.PROP_SOURCE));
 		return sub;
 	}

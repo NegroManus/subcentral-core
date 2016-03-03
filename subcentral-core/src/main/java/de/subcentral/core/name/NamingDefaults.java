@@ -37,7 +37,7 @@ public class NamingDefaults
 	private static final Function<String, String>	SUBTITLE_RELEASE_NAME_FORMATTER					= initSubtitleReleaseNameFormatter();
 	private static final Function<String, String>	NORMALIZING_FORMATTER							= initNormalizingFormatter();
 
-	private static final SimplePropToStringService	PROP_TO_STRING_SERVICE							= new SimplePropToStringService();
+	private static final SimplePrintPropService	PROP_TO_STRING_SERVICE							= new SimplePrintPropService();
 
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
@@ -63,7 +63,7 @@ public class NamingDefaults
 	{
 		// Configure namers
 
-		// PropToStringService
+		// PrintPropService
 		// Type to string
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("uuuu", Locale.US).format(y));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(YearMonth.class, (YearMonth y) -> DateTimeFormatter.ofPattern("uuuu.MM", Locale.US).format(y));
@@ -185,7 +185,7 @@ public class NamingDefaults
 		return SUBTITLE_RELEASE_NAME_FORMATTER;
 	}
 
-	public static PropToStringService getDefaultPropToStringService()
+	public static PrintPropService getDefaultPropToStringService()
 	{
 		return PROP_TO_STRING_SERVICE;
 	}

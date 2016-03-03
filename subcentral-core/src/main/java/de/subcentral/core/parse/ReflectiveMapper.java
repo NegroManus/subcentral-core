@@ -14,16 +14,16 @@ public class ReflectiveMapper<T> extends AbstractMapper<T>
 		this(beanType, ParsingDefaults.getDefaultPropFromStringService());
 	}
 
-	public ReflectiveMapper(Class<T> beanType, PropFromStringService propFromStringService)
+	public ReflectiveMapper(Class<T> beanType, ParsePropService parsePropService)
 	{
-		super(propFromStringService);
+		super(parsePropService);
 		this.beanType = Objects.requireNonNull(beanType, "beanType");
 	}
 
 	@Override
 	public T doMap(Map<SimplePropDescriptor, String> props)
 	{
-		return ParsingUtil.reflectiveMapping(beanType, props, propFromStringService);
+		return ParsingUtil.reflectiveMapping(beanType, props, parsePropService);
 	}
 
 	@Override

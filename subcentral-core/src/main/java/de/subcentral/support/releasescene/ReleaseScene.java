@@ -30,7 +30,7 @@ import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.parse.ReleaseParser;
 import de.subcentral.core.parse.PatternMappingMatcher;
-import de.subcentral.core.parse.SimplePropFromStringService;
+import de.subcentral.core.parse.SimpleParsePropStringService;
 import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -50,7 +50,7 @@ public class ReleaseScene
 		String knownTagPattern = buildKnownTagPattern();
 		String firstTagPattern = buildFirstTagPattern(knownTagPattern);
 
-		SimplePropFromStringService pps = new SimplePropFromStringService();
+		SimpleParsePropStringService pps = new SimpleParsePropStringService();
 		ImmutableMap.Builder<SimplePropDescriptor, Function<String, ?>> propFromStringFns = ImmutableMap.builder();
 		propFromStringFns.put(Episode.PROP_DATE, s -> LocalDate.parse(s, DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US)));
 		pps.setPropFromStringFunctions(propFromStringFns.build());

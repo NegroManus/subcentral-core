@@ -27,9 +27,9 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TimeUtil;
 
-public class SimplePropFromStringService implements PropFromStringService
+public class SimpleParsePropStringService implements ParsePropService
 {
-	private static final Logger								log									= LogManager.getLogger(SimplePropFromStringService.class);
+	private static final Logger								log									= LogManager.getLogger(SimpleParsePropStringService.class);
 
 	/**
 	 * The default element splitter. Used for splitting a list property string into its elements. Splits the string into words of alpha-num and '-' chars. Is used by PropParsingService instances if no
@@ -81,7 +81,7 @@ public class SimplePropFromStringService implements PropFromStringService
 	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions	= new HashMap<>(0);
 	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions	= new HashMap<>(0);
 
-	public SimplePropFromStringService()
+	public SimpleParsePropStringService()
 	{
 
 	}
@@ -164,6 +164,7 @@ public class SimplePropFromStringService implements PropFromStringService
 		return builder.build();
 	}
 
+	@Override
 	public <P> P parse(String propString, SimplePropDescriptor propDescriptor, Class<P> propClass) throws ParsingException
 	{
 		if (propString == null)

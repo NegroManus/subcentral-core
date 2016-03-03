@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class SimplePropToStringService implements PropToStringService
+public class SimplePrintPropService implements PrintPropService
 {
 	private final Map<Class<?>, Function<?, String>>				typeToStringFns	= new HashMap<>();
 	private final Map<SimplePropDescriptor, Function<?, String>>	propToStringFns	= new HashMap<>();
@@ -22,11 +22,11 @@ public class SimplePropToStringService implements PropToStringService
 	}
 
 	@Override
-	public String convert(SimplePropDescriptor propDescriptor, Object propValue)
+	public String print(SimplePropDescriptor propDescriptor, Object propValue)
 	{
 		try
 		{
-			return doConversion(propDescriptor, propValue);
+			return doPrint(propDescriptor, propValue);
 		}
 		catch (RuntimeException e)
 		{
@@ -35,7 +35,7 @@ public class SimplePropToStringService implements PropToStringService
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> String doConversion(SimplePropDescriptor propDescriptor, T propValue) throws ClassCastException
+	private <T> String doPrint(SimplePropDescriptor propDescriptor, T propValue) throws ClassCastException
 	{
 		if (propValue == null)
 		{

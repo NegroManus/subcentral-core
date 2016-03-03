@@ -27,7 +27,7 @@ public class ParsingDefaults
 	 */
 	public static final String							PATTERN_MEDIA_NAME					= "((.*?)(?:\\s+\\((?:(\\d{4})|(\\p{Upper}{2}))\\))?)";
 
-	private static final SimplePropFromStringService	PROP_FROM_STRING_SERVICE			= new SimplePropFromStringService();
+	private static final SimpleParsePropStringService	PROP_FROM_STRING_SERVICE			= new SimpleParsePropStringService();
 
 	private static final EpisodeMapper					EPISODE_MAPPER						= new EpisodeMapper();
 	private static final Mapper<List<Episode>>			SINGLETON_LIST_EPISODE_MAPPER		= createSingletonListMapper(EPISODE_MAPPER);
@@ -40,7 +40,7 @@ public class ParsingDefaults
 	private static final SubtitleMapper					SUBTITLE_MAPPER						= new SubtitleMapper();
 	private static final SubtitleReleaseMapper		SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleReleaseMapper();
 
-	public static SimplePropFromStringService getDefaultPropFromStringService()
+	public static SimpleParsePropStringService getDefaultPropFromStringService()
 	{
 		return PROP_FROM_STRING_SERVICE;
 	}
