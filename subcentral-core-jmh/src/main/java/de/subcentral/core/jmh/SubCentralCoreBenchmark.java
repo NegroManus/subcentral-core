@@ -194,7 +194,7 @@ public class SubCentralCoreBenchmark
 	 * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50    5167,747 ±   25,768  ops/s
 	 * 
 	 * post staged parsing:
-	 * 
+	 * 2016-03-03
 	 * Benchmark                                            Mode  Cnt       Score      Error  Units
 	 * SubCentralCoreBenchmark.testCorrect                 thrpt   50  773152,490 ± 7952,730  ops/s
 	 * SubCentralCoreBenchmark.testNaming                  thrpt   50   91232,717 ± 1923,164  ops/s
