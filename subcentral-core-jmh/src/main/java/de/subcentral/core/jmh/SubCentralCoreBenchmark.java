@@ -118,7 +118,7 @@ public class SubCentralCoreBenchmark
 		return service;
 	}
 
-	// @Benchmark
+	@Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
 	public void testCorrect()
@@ -126,49 +126,49 @@ public class SubCentralCoreBenchmark
 		CORRECTION_SERVICE.correct(SUB_RLS);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testNaming()
 	{
 		NAMING_SERVICE.name(SUB_RLS);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubCentral()
 	{
 		SUBCENTRAL_PARSING_SERVICE.parse("Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI.de-SubCentral");
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingBestCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingWorstCase()
 	{
 		PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void testParsingSubAdjWorstCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
 	{
 		SubtitleContent data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
@@ -181,7 +181,7 @@ public class SubCentralCoreBenchmark
 	 * Current results:
 	 * 
 	 * <pre>
-	 * PC:
+	 * PC pre staged parsing:
 	 * Benchmark                                            Mode  Cnt       Score      Error  Units
 	 * SubCentralCoreBenchmark.testCorrect                 thrpt   50  738975,442 ± 7549,334  ops/s
 	 * SubCentralCoreBenchmark.testNaming                  thrpt   50  109221,338 ±  850,699  ops/s
@@ -189,9 +189,22 @@ public class SubCentralCoreBenchmark
 	 * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  101606,717 ±  410,947  ops/s
 	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  101273,923 ±  361,929  ops/s
 	 * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  101443,277 ±  592,526  ops/s
+	 * SubCentralCoreBenchmark.testParsingSubCentral       n/a
 	 * SubCentralCoreBenchmark.testParsingSubRipFile       thrpt   50     813,695 ±    1,770  ops/s
 	 * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50    5167,747 ±   25,768  ops/s
 	 * 
+	 * post staged parsing:
+	 * 
+	 * Benchmark                                            Mode  Cnt       Score      Error  Units
+	 * SubCentralCoreBenchmark.testCorrect                 thrpt   50  773152,490 ± 7952,730  ops/s
+	 * SubCentralCoreBenchmark.testNaming                  thrpt   50   91232,717 ± 1923,164  ops/s
+	 * SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50  143362,037 ± 1614,703  ops/s
+	 * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  142242,328 ± 2011,900  ops/s
+	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  134674,239 ± 5283,817  ops/s
+	 * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  143176,704 ± 1365,734  ops/s
+	 * SubCentralCoreBenchmark.testParsingSubCentral       thrpt   50  138436,330 ±  836,144  ops/s
+	 * SubCentralCoreBenchmark.testParsingSubRipFile  	   thrpt   50     810,357 ±    6,985  ops/s
+	 * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50   13854,392 ±  151,023  ops/s
 	 * Laptop:
 	 * Benchmark                                           Mode  Cnt       Score       Error  Units
 	 * SubCentralCoreBenchmark.testCorrect                thrpt   50  570.000
