@@ -79,7 +79,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 */
 	public static final String					PRODUCTION_TYPE_MACHINE			= "MACHINE";
 
-	public static enum TranslationType
+	public enum TranslationType
 	{
 		/**
 		 * It is unknown whether the subtitle is an original revision or a translation.

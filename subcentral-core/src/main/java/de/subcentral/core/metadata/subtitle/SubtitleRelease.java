@@ -50,7 +50,7 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 	 */
 	public static final Tag						HEARING_IMPAIRED_TAG	= new Tag("HI", "Hearing Impaired");
 
-	public static enum ForeignParts
+	public enum ForeignParts
 	{
 		/**
 		 * No foreign parts in the media item. Therefore none can be included or excluded. Foreign parts are irrelevant.
@@ -78,55 +78,32 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 	/**
 	 * Adjustment of the timings so the subtitle fits on a specific video.
 	 */
-	public static final String	CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
+	public static final String			CONTRIBUTION_TYPE_ADJUSTMENT	= "ADJUSTMENT";
 
 	/**
 	 * Textual customization of a subtitle (for example adding/removal of Hearing Impaired parts, foreign language parts, ...).
 	 */
-	public static final String	CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
-
-	public static SubtitleRelease create(Release matchingRelease, String language, String group)
-	{
-		SubtitleRelease subAdjustment = new SubtitleRelease();
-		Group grp = null;
-		if (group != null)
-		{
-			grp = new Group(group);
-		}
-		for (Media media : matchingRelease.getMedia())
-		{
-			Subtitle sub = new Subtitle();
-			sub.setMedia(media);
-			sub.setLanguage(language);
-			if (grp != null)
-			{
-				sub.setGroup(grp);
-			}
-			subAdjustment.getSubtitles().add(sub);
-		}
-		subAdjustment.getMatchingReleases().add(matchingRelease);
-		return subAdjustment;
-	}
+	public static final String			CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
 	private String						name;
 	// In 99% of the cases, there is only one subtitle, at most 2
-	private final List<Subtitle>		subtitles			= new ArrayList<>(1);
+	private final List<Subtitle>		subtitles						= new ArrayList<>(1);
 	// Normally there are 0 extra tags
-	private final List<Tag>				tags				= new ArrayList<>(0);
+	private final List<Tag>				tags							= new ArrayList<>(0);
 	// Most adjustments are compatible to 1 or 2 releases
 	// HashMap / HashSet initial capacities should be a power of 2
-	private final Set<Release>			matchingReleases	= new HashSet<>(2);
+	private final Set<Release>			matchingReleases				= new HashSet<>(2);
 	private String						version;
 	private Temporal					date;
-	private long						size				= 0L;
+	private long						size							= 0L;
 	private String						nfo;
 	private String						nfoLink;
 	// In 99% of the cases, there is only one adjustment contribution
-	private final List<Contribution>	contributions		= new ArrayList<>(1);
+	private final List<Contribution>	contributions					= new ArrayList<>(1);
 
 	public SubtitleRelease()
 	{
-
+		// default constructor
 	}
 
 	public SubtitleRelease(Subtitle subtitle, Release matchingRelease)
@@ -163,6 +140,25 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 	{
 		this.subtitles.addAll(subtitles);
 		this.matchingReleases.addAll(matchingReleases);
+	}
+
+	public static SubtitleRelease create(Release matchingRelease, String language, String group)
+	{
+		SubtitleRelease subAdjustment = new SubtitleRelease();
+		Group grp = Group.from(group);
+		for (Media media : matchingRelease.getMedia())
+		{
+			Subtitle sub = new Subtitle();
+			sub.setMedia(media);
+			sub.setLanguage(language);
+			if (grp != null)
+			{
+				sub.setGroup(grp);
+			}
+			subAdjustment.getSubtitles().add(sub);
+		}
+		subAdjustment.getMatchingReleases().add(matchingRelease);
+		return subAdjustment;
 	}
 
 	public String getName()

@@ -20,6 +20,11 @@ import de.subcentral.core.name.SubtitleReleaseNamer;
 
 public class SubtitleUtil
 {
+	private SubtitleUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static Set<String> buildNamesForMatchingReleases(SubtitleRelease subAdj, NamingService namingService)
 	{
 		if (subAdj == null || subAdj.getMatchingReleases().isEmpty())
@@ -80,10 +85,4 @@ public class SubtitleUtil
 			changes.add(new Correction(subAdj, SubtitleRelease.PROP_TAGS.getPropName(), oldTags, subAdj.getTags(), null));
 		}
 	}
-
-	private SubtitleUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
-
 }
