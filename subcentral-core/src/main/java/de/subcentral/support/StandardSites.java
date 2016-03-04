@@ -22,4 +22,9 @@ public class StandardSites
 	public static final String	TV4USER_DE		= "tv4user.de";
 	public static final String	XREL_TO			= XRelTo.SITE_ID;
 	public static final String	ZAP2IT_COM		= "zap2it.com";
+
+	private StandardSites()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
 }
