@@ -28,8 +28,12 @@ public class ValidationUtil
 
 	public static Temporal validateTemporalClass(Temporal date) throws IllegalArgumentException
 	{
-		if (date == null || ZonedDateTime.class.equals(date.getClass()) || LocalDateTime.class.equals(date.getClass()) || LocalDate.class.equals(date.getClass())
-				|| YearMonth.class.equals(date.getClass()) || Year.class.equals(date.getClass()))
+		if (date == null)
+		{
+			return null;
+		}
+		Class<? extends Temporal> clazz = date.getClass();
+		if (ZonedDateTime.class == clazz || LocalDateTime.class == clazz || LocalDate.class == clazz || YearMonth.class == clazz || Year.class == clazz)
 		{
 			return date;
 		}
