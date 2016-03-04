@@ -12,8 +12,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -129,7 +127,6 @@ public class MultiEpisodeHelper
 		return me;
 	}
 
-	// to have getter and setter for the property "episodes"
 	public List<Episode> getEpisodes()
 	{
 		return episodes;
@@ -160,11 +157,7 @@ public class MultiEpisodeHelper
 
 	public Set<Season> getSeasons()
 	{
-		if (episodes.isEmpty())
-		{
-			return ImmutableSet.of();
-		}
-		Set<Season> seasons = new HashSet<>(2);
+		Set<Season> seasons = new HashSet<>(1);
 		for (Episode epi : episodes)
 		{
 			Season season = epi.getSeason();
@@ -231,10 +224,6 @@ public class MultiEpisodeHelper
 
 	public List<Integer> getNumbersInSeries()
 	{
-		if (episodes.isEmpty())
-		{
-			return ImmutableList.of();
-		}
 		List<Integer> nums = new ArrayList<>(episodes.size());
 		for (Episode epi : episodes)
 		{
@@ -249,10 +238,6 @@ public class MultiEpisodeHelper
 
 	public List<Integer> getNumbersInSeason()
 	{
-		if (episodes.isEmpty())
-		{
-			return ImmutableList.of();
-		}
 		List<Integer> nums = new ArrayList<>(episodes.size());
 		for (Episode epi : episodes)
 		{
@@ -267,10 +252,6 @@ public class MultiEpisodeHelper
 
 	public List<String> getTitles()
 	{
-		if (episodes.isEmpty())
-		{
-			return ImmutableList.of();
-		}
 		List<String> titles = new ArrayList<>(episodes.size());
 		for (Episode epi : episodes)
 		{
@@ -285,10 +266,6 @@ public class MultiEpisodeHelper
 
 	public ListMultimap<Series, Episode> orderedBySeries()
 	{
-		if (episodes.isEmpty())
-		{
-			return ImmutableListMultimap.of();
-		}
 		ArrayListMultimap<Series, Episode> multimap = ArrayListMultimap.create();
 		for (Episode epi : episodes)
 		{
@@ -299,10 +276,6 @@ public class MultiEpisodeHelper
 
 	public ListMultimap<Season, Episode> orderedBySeason()
 	{
-		if (episodes.isEmpty())
-		{
-			return ImmutableListMultimap.of();
-		}
 		ArrayListMultimap<Season, Episode> multimap = ArrayListMultimap.create();
 		for (Episode epi : episodes)
 		{
