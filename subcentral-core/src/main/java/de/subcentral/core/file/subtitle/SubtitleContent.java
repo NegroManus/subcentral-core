@@ -9,16 +9,16 @@ import com.google.common.base.MoreObjects;
 
 public class SubtitleContent
 {
-	private List<Item> items = new ArrayList<>();
+	private final List<Item> items;
 
 	public SubtitleContent()
 	{
-		// default constructor
+		items = new ArrayList<>();
 	}
 
 	public SubtitleContent(Collection<? extends Item> items)
 	{
-		this.items.addAll(items);
+		this.items = new ArrayList<>(items);
 	}
 
 	public List<Item> getItems()
