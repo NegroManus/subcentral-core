@@ -28,6 +28,26 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 {
 	private static final long serialVersionUID = 870081295286403057L;
 
+	public MultiEpisodeHelper()
+	{
+		this(2);
+	}
+
+	public MultiEpisodeHelper(int initialCapacity)
+	{
+		super(initialCapacity);
+	}
+
+	public MultiEpisodeHelper(Collection<? extends Episode> c)
+	{
+		super(c);
+	}
+
+	public MultiEpisodeHelper(Episode... episodes)
+	{
+		super(Arrays.asList(episodes));
+	}
+
 	/**
 	 * Determines whether the object to test is a multi-episode. Returns true if {@code obj} is an {@link Iterable} of more than one {@link Episode}. Otherwise returns false.
 	 * 
@@ -137,26 +157,6 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		}
 		ranges.add(range);
 		return ranges;
-	}
-
-	public MultiEpisodeHelper()
-	{
-		this(2);
-	}
-
-	public MultiEpisodeHelper(int initialCapacity)
-	{
-		super(initialCapacity);
-	}
-
-	public MultiEpisodeHelper(Collection<? extends Episode> c)
-	{
-		super(c);
-	}
-
-	public MultiEpisodeHelper(Episode... episodes)
-	{
-		super(Arrays.asList(episodes));
 	}
 
 	// to have getter and setter for the property "episodes"

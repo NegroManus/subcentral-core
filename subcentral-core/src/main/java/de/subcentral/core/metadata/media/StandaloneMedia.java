@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * For any media type that has no own class, like a movie, or if the media type could not be determined.
- *
+ * For any media type stands alone, like a movie.
  */
 public abstract class StandaloneMedia extends NamedMediaBase
 {
