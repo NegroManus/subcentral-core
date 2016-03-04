@@ -58,7 +58,7 @@ public class UnixWinRar extends WinRar
 		// for example: PATH=/opt/bin:/usr/bin
 		String pathValue = System.getenv("PATH");
 		log.debug("Trying to locate RAR executable in PATH environment  variable: {}", pathValue);
-		return returnFirstValidRarExecutable(Pattern.compile(":").splitAsStream(pathValue).map((String path) -> Paths.get(path))::iterator);
+		return returnFirstValidRarExecutable(Pattern.compile(":").splitAsStream(pathValue).map(Paths::get)::iterator);
 	}
 
 	private static class UnixWinRarPackager extends WinRarPackager

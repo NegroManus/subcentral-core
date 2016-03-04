@@ -12,6 +12,7 @@ public interface SubCentralApi
 	/**
 	 * @deprecated Currently not working (gets 404 because Cookies userID and password (hash) are missing)
 	 */
+	@Deprecated
 	public void logout() throws IOException;
 
 	public Document getContent(String url) throws IOException;

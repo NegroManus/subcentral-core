@@ -35,6 +35,11 @@ public class ItalianSubsNet
 		PARSING_SERVICE.registerAll(SubtitleRelease.class, initParsers());
 	}
 
+	private ItalianSubsNet()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	private static List<Parser<SubtitleRelease>> initParsers()
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
@@ -119,10 +124,5 @@ public class ItalianSubsNet
 	public static List<ParserEntry<?>> getParserEntries()
 	{
 		return PARSING_SERVICE.getParserEntries();
-	}
-
-	private ItalianSubsNet()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

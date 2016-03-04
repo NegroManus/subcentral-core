@@ -6,7 +6,7 @@ import com.google.common.base.MoreObjects;
 
 public class WinRarPackConfig extends WinRarCommandConfig
 {
-	public static enum CompressionMethod
+	public enum CompressionMethod
 	{
 		/**
 		 * Do not compress file when adding to archive.
@@ -87,7 +87,7 @@ public class WinRarPackConfig extends WinRarCommandConfig
 		}
 	}
 
-	public static enum DeletionMode
+	public enum DeletionMode
 	{
 		/**
 		 * Keep files.
@@ -106,7 +106,7 @@ public class WinRarPackConfig extends WinRarCommandConfig
 		DELETE;
 	}
 
-	public static enum OverwriteMode
+	public enum OverwriteMode
 	{
 		/**
 		 * Do not add already existing files to the archive.

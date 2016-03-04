@@ -96,7 +96,7 @@ public class NamingUtil
 			catch (NoNamerRegisteredException e)
 			{
 				// ignore
-				log.debug("NamingService " + ns + " could not name object " + obj, e);
+				log.trace("NamingService " + ns + " could not name object " + obj, e);
 			}
 		}
 		return names;

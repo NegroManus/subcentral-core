@@ -58,7 +58,7 @@ public abstract class WinRarPackager
 		}
 		catch (IOException | InterruptedException | TimeoutException e)
 		{
-			e.printStackTrace();
+			log.trace("Validation of archive " + archive + " failed", e);
 			return false;
 		}
 	}
@@ -203,6 +203,8 @@ public abstract class WinRarPackager
 				// do not set the overwrite mode as it does not matter because the target file is deleted anyway
 				// in de.subcentral.support.winrar.WinRarPackager.pack(Path, Path, WinRarPackConfig) if it existed
 				break;
+			default:
+				throw new AssertionError();
 		}
 		switch (cfg.getSourceDeletionMode())
 		{
@@ -212,20 +214,22 @@ public abstract class WinRarPackager
 			case RECYCLE:
 				if (isRecyclingSupported())
 				{
-					log.warn("Configuration value sourceDelectionMode={} is ignored. This option is not available on this operating system. Files are kept.", DeletionMode.RECYCLE);
-				}
-				else
-				{
 					// "-dr Delete files to Recycle Bin
 					// Delete files after archiving and place them to Recycle Bin.
 					// Available in Windows version only."
 					args.add("-dr");
+				}
+				else
+				{
+					log.warn("Configuration value sourceDelectionMode={} is ignored. This option is not available on this operating system. Files are kept.", DeletionMode.RECYCLE);
 				}
 				break;
 			case DELETE:
 				// -DF - delete files after archiving
 				args.add("-df");
 				break;
+			default:
+				throw new AssertionError();
 		}
 
 		// target package

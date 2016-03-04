@@ -644,10 +644,9 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			{
 				// add it after the last episode of the season
 				ListIterator<Episode> iter = episodes.listIterator(episodes.size());
-				Episode currentEpi = null;
 				while (iter.hasPrevious())
 				{
-					currentEpi = iter.previous();
+					Episode currentEpi = iter.previous();
 					// if current epi is part the season to add after, add it after that episode
 					if (currentEpi.isPartOfSeason() && special.airsAfterSeason.equals(currentEpi.getSeason().getNumber()))
 					{
@@ -665,10 +664,9 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			{
 				// add it right before the first episode of the next season
 				ListIterator<Episode> iter = episodes.listIterator();
-				Episode currentEpi = null;
 				while (iter.hasNext())
 				{
-					currentEpi = iter.next();
+					Episode currentEpi = iter.next();
 					// if current epi is part of the next season, add it before current episode
 					if (currentEpi.isPartOfSeason() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()))
 					{
@@ -685,10 +683,9 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			{
 				// add it before the season
 				ListIterator<Episode> iter = episodes.listIterator(episodes.size());
-				Episode currentEpi = null;
 				while (iter.hasPrevious())
 				{
-					currentEpi = iter.previous();
+					Episode currentEpi = iter.previous();
 					// if previous episode was the denoted episode by "airsBefore_season" and "airsBefore_episode"
 					// Note: all regular episodes have a season number and a episode number
 					if (!currentEpi.isSpecial() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()) && special.airsBeforeEpisode.equals(currentEpi.getNumberInSeason()))
@@ -707,10 +704,9 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 				if (special.episode.isDated())
 				{
 					ListIterator<Episode> iter = episodes.listIterator();
-					Episode currentEpi = null;
 					while (iter.hasNext())
 					{
-						currentEpi = iter.next();
+						Episode currentEpi = iter.next();
 						// if special is before
 						if (currentEpi.isDated() && TemporalComparator.INSTANCE.compare(special.episode.getDate(), currentEpi.getDate()) < 0)
 						{
@@ -787,7 +783,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	private static void addDescription(MediaBase media, Element parentElem, String tag)
 	{
-		media.setDescription(getTextFromChild(parentElem, "overview"));
+		media.setDescription(getTextFromChild(parentElem, tag));
 	}
 
 	private static void addNetwork(Series series, Element parentElem, String tag)

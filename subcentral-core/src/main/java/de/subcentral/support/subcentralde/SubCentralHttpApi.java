@@ -152,7 +152,6 @@ public class SubCentralHttpApi implements SubCentralApi
 	 * @see de.subcentral.support.subcentralde.SubCentralApi#logout()
 	 */
 	@Override
-	@Deprecated
 	public void logout() throws IOException
 	{
 		// TODO

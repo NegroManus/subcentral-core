@@ -43,6 +43,11 @@ public class SubCentralDe
 		PARSING_SERVICE.registerAll(SubtitleRelease.class, initParsers());
 	}
 
+	private SubCentralDe()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	@SuppressWarnings("unchecked")
 	private static List<Parser<SubtitleRelease>> initParsers()
 	{
@@ -51,31 +56,33 @@ public class SubCentralDe
 		for (ParserEntry<?> sceneParserEntry : ReleaseScene.getParsersEntries())
 		{
 			Parser<?> sceneParser = sceneParserEntry.getParser();
-			if (!(sceneParser instanceof ReleaseParser))
+			if (sceneParser instanceof ReleaseParser)
+			{
+				ReleaseParser sceneRlsParser = (ReleaseParser) sceneParser;
+
+				Mapper<List<Media>> mediaMapper;
+				try
+				{
+					mediaMapper = (Mapper<List<Media>>) sceneRlsParser.getMediaMapper();
+				}
+				catch (ClassCastException e)
+				{
+					log.warn("Parser will be ignored because its media mapper does not map to List<Media>: {}", sceneRlsParser.getMediaMapper());
+					continue;
+				}
+
+				// Building the matchers for SubCentral:
+				// The scene matchers will be the source for the SubCentral matchers
+				// because all SubCentral names consist of the scene name of the release followed by SubCentral tags.
+				MappingMatcher<SimplePropDescriptor> scMatcher = buildMatcherBasedOnSceneMatcher(sceneRlsParser.getMatcher());
+
+				SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatcher, mediaMapper);
+				parsers.add(parser);
+			}
+			else
 			{
 				log.warn("Parser will be ignored because it is not an instance of ReleaseParser: {}", sceneParser);
-				continue;
 			}
-			ReleaseParser sceneRlsParser = (ReleaseParser) sceneParser;
-
-			Mapper<List<Media>> mediaMapper;
-			try
-			{
-				mediaMapper = (Mapper<List<Media>>) sceneRlsParser.getMediaMapper();
-			}
-			catch (ClassCastException e)
-			{
-				log.warn("Parser will be ignored because its media mapper does not map to List<Media>: {}", sceneRlsParser.getMediaMapper());
-				continue;
-			}
-
-			// Building the matchers for SubCentral:
-			// The scene matchers will be the source for the SubCentral matchers
-			// because all SubCentral names consist of the scene name of the release followed by SubCentral tags.
-			MappingMatcher<SimplePropDescriptor> scMatcher = buildMatcherBasedOnSceneMatcher(sceneRlsParser.getMatcher());
-
-			SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatcher, mediaMapper);
-			parsers.add(parser);
 		}
 
 		return parsers.build();
@@ -166,10 +173,5 @@ public class SubCentralDe
 	{
 		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
 		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
-	}
-
-	private SubCentralDe()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }
