@@ -15,7 +15,6 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.name.NamingDefaults;
 
 public class NamingPlayground
 {
@@ -46,9 +45,9 @@ public class NamingPlayground
 		movie.setDate(Year.of(2002));
 
 		MultiEpisodeHelper epis = new MultiEpisodeHelper();
-		epis.add(Episode.createMiniSeriesEpisode("Psych", 1));
-		epis.add(Episode.createMiniSeriesEpisode("Psych", 3));
-		epis.add(Episode.createMiniSeriesEpisode("Psych", 3));
+		epis.getEpisodes().add(Episode.createMiniSeriesEpisode("Psych", 1));
+		epis.getEpisodes().add(Episode.createMiniSeriesEpisode("Psych", 3));
+		epis.getEpisodes().add(Episode.createMiniSeriesEpisode("Psych", 3));
 
 		// Media release
 		Release rel = new Release();

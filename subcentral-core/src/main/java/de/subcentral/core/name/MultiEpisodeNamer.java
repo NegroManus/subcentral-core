@@ -43,7 +43,8 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 			return;
 		}
 		MultiEpisodeHelper me = new MultiEpisodeHelper(episodes);
-		Episode firstEpi = me.get(0);
+		List<Episode> epis = me.getEpisodes();
+		Episode firstEpi = epis.get(0);
 		episodeNamer.appendName(b, firstEpi, params);
 
 		if (me.getCommonSeries() != null)
@@ -64,9 +65,9 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 				}
 				else
 				{
-					for (int i = 1; i < me.size(); i++)
+					for (int i = 1; i < epis.size(); i++)
 					{
-						Episode epi = me.get(i);
+						Episode epi = epis.get(i);
 						episodeNamer.appendOwnName(b, epi, params);
 					}
 				}
@@ -88,9 +89,9 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 				}
 				else
 				{
-					for (int i = 1; i < me.size(); i++)
+					for (int i = 1; i < epis.size(); i++)
 					{
-						Episode epi = me.get(i);
+						Episode epi = epis.get(i);
 						episodeNamer.appendOwnName(b, epi, params);
 					}
 				}
@@ -98,9 +99,9 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 			else
 			{
 				// different seasons
-				for (int i = 1; i < me.size(); i++)
+				for (int i = 1; i < epis.size(); i++)
 				{
-					Episode epi = me.get(i);
+					Episode epi = epis.get(i);
 					episodeNamer.appendOwnName(b, epi, params);
 				}
 			}
@@ -108,9 +109,9 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		else
 		{
 			// no common series
-			for (int i = 1; i < me.size(); i++)
+			for (int i = 1; i < epis.size(); i++)
 			{
-				Episode epi = me.get(i);
+				Episode epi = epis.get(i);
 				String epiName = episodeNamer.name(epi, ImmutableMap.of());
 				b.appendRaw(PROP_EPISODES, epiName);
 			}

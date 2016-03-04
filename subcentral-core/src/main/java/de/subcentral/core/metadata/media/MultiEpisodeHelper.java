@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
@@ -24,9 +27,9 @@ import com.google.common.collect.ListMultimap;
  * </p>
  *
  */
-public class MultiEpisodeHelper extends ArrayList<Episode>
+public class MultiEpisodeHelper
 {
-	private static final long serialVersionUID = 870081295286403057L;
+	private final List<Episode> episodes;
 
 	public MultiEpisodeHelper()
 	{
@@ -35,17 +38,17 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 
 	public MultiEpisodeHelper(int initialCapacity)
 	{
-		super(initialCapacity);
+		this.episodes = new ArrayList<>(initialCapacity);
 	}
 
 	public MultiEpisodeHelper(Collection<? extends Episode> c)
 	{
-		super(c);
+		this.episodes = new ArrayList<>(c);
 	}
 
 	public MultiEpisodeHelper(Episode... episodes)
 	{
-		super(Arrays.asList(episodes));
+		this.episodes = new ArrayList<>(Arrays.asList(episodes));
 	}
 
 	/**
@@ -78,26 +81,23 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 	{
 		if (episodes instanceof Iterable)
 		{
-			List<Episode> epis = null;
+			MultiEpisodeHelper me = null;
 			for (Object o : (Iterable<?>) episodes)
 			{
 				if (o instanceof Episode)
 				{
-					if (epis == null)
+					if (me == null)
 					{
-						epis = new ArrayList<>(2);
+						me = new MultiEpisodeHelper(2);
 					}
-					epis.add((Episode) o);
+					me.episodes.add((Episode) o);
 				}
 				else
 				{
 					return null;
 				}
 			}
-			if (epis != null)
-			{
-				return new MultiEpisodeHelper(epis);
-			}
+			return me;
 		}
 		return null;
 	}
@@ -119,7 +119,7 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		{
 			if (e instanceof Episode)
 			{
-				me.add((Episode) e);
+				me.episodes.add((Episode) e);
 			}
 			else
 			{
@@ -127,6 +127,214 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 			}
 		}
 		return me;
+	}
+
+	// to have getter and setter for the property "episodes"
+	public List<Episode> getEpisodes()
+	{
+		return episodes;
+	}
+
+	public void setEpisodes(List<Episode> episodes)
+	{
+		this.episodes.clear();
+		this.episodes.addAll(episodes);
+	}
+
+	public Series getCommonSeries()
+	{
+		if (episodes.isEmpty())
+		{
+			return null;
+		}
+		Series series = episodes.get(0).getSeries();
+		for (int i = 1; i < episodes.size(); i++)
+		{
+			if (!series.equals(episodes.get(i).getSeries()))
+			{
+				return null;
+			}
+		}
+		return series;
+	}
+
+	public Set<Season> getSeasons()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableSet.of();
+		}
+		Set<Season> seasons = new HashSet<>(2);
+		for (Episode epi : episodes)
+		{
+			Season season = epi.getSeason();
+			if (season != null)
+			{
+				seasons.add(season);
+			}
+		}
+		return seasons;
+	}
+
+	public Season getCommonSeason()
+	{
+		if (episodes.isEmpty())
+		{
+			return null;
+		}
+		Season season = episodes.get(0).getSeason();
+		if (season == null)
+		{
+			return null;
+		}
+		for (int i = 1; i < episodes.size(); i++)
+		{
+			if (!season.equals(episodes.get(i).getSeason()))
+			{
+				return null;
+			}
+		}
+		return season;
+	}
+
+	public boolean allNumberedInSeries()
+	{
+		if (episodes.isEmpty())
+		{
+			return false;
+		}
+		for (Episode epi : episodes)
+		{
+			if (!epi.isNumberedInSeries())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean allNumberedInSeason()
+	{
+		if (episodes.isEmpty())
+		{
+			return false;
+		}
+		for (Episode epi : episodes)
+		{
+			if (!epi.isNumberedInSeason())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public List<Integer> getNumbersInSeries()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		List<Integer> nums = new ArrayList<>(episodes.size());
+		for (Episode epi : episodes)
+		{
+			Integer numInSeries = epi.getNumberInSeries();
+			if (numInSeries != null)
+			{
+				nums.add(numInSeries);
+			}
+		}
+		return nums;
+	}
+
+	public List<Integer> getNumbersInSeason()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		List<Integer> nums = new ArrayList<>(episodes.size());
+		for (Episode epi : episodes)
+		{
+			Integer numInSeason = epi.getNumberInSeason();
+			if (numInSeason != null)
+			{
+				nums.add(numInSeason);
+			}
+		}
+		return nums;
+	}
+
+	public List<String> getTitles()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableList.of();
+		}
+		List<String> titles = new ArrayList<>(episodes.size());
+		for (Episode epi : episodes)
+		{
+			String title = epi.getTitle();
+			if (title != null)
+			{
+				titles.add(title);
+			}
+		}
+		return titles;
+	}
+
+	public ListMultimap<Series, Episode> orderedBySeries()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableListMultimap.of();
+		}
+		ArrayListMultimap<Series, Episode> multimap = ArrayListMultimap.create();
+		for (Episode epi : episodes)
+		{
+			multimap.put(epi.getSeries(), epi);
+		}
+		return multimap;
+	}
+
+	public ListMultimap<Season, Episode> orderedBySeason()
+	{
+		if (episodes.isEmpty())
+		{
+			return ImmutableListMultimap.of();
+		}
+		ArrayListMultimap<Season, Episode> multimap = ArrayListMultimap.create();
+		for (Episode epi : episodes)
+		{
+			multimap.put(epi.getSeason(), epi);
+		}
+		return multimap;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof MultiEpisodeHelper)
+		{
+			return episodes.equals(((MultiEpisodeHelper) obj).episodes);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(11, 3).append(episodes).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(MultiEpisodeHelper.class).add("episodes", episodes).toString();
 	}
 
 	public static List<List<Integer>> splitIntoConsecutiveRanges(List<Integer> nums)
@@ -157,193 +365,5 @@ public class MultiEpisodeHelper extends ArrayList<Episode>
 		}
 		ranges.add(range);
 		return ranges;
-	}
-
-	// to have getter and setter for the property "episodes"
-	public List<Episode> getEpisodes()
-	{
-		return this;
-	}
-
-	public void setEpisodes(List<Episode> episodes)
-	{
-		clear();
-		addAll(episodes);
-	}
-
-	public Series getCommonSeries()
-	{
-		if (isEmpty())
-		{
-			return null;
-		}
-		Series series = get(0).getSeries();
-		for (int i = 1; i < size(); i++)
-		{
-			if (!series.equals(get(i).getSeries()))
-			{
-				return null;
-			}
-		}
-		return series;
-	}
-
-	public Set<Season> getSeasons()
-	{
-		if (isEmpty())
-		{
-			return ImmutableSet.of();
-		}
-		Set<Season> seasons = new HashSet<>(2);
-		for (Episode epi : this)
-		{
-			Season season = epi.getSeason();
-			if (season != null)
-			{
-				seasons.add(season);
-			}
-		}
-		return seasons;
-	}
-
-	public Season getCommonSeason()
-	{
-		if (isEmpty())
-		{
-			return null;
-		}
-		Season season = get(0).getSeason();
-		if (season == null)
-		{
-			return null;
-		}
-		for (int i = 1; i < size(); i++)
-		{
-			if (!season.equals(get(i).getSeason()))
-			{
-				return null;
-			}
-		}
-		return season;
-	}
-
-	public boolean allNumberedInSeries()
-	{
-		if (isEmpty())
-		{
-			return false;
-		}
-		for (Episode epi : this)
-		{
-			if (!epi.isNumberedInSeries())
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean allNumberedInSeason()
-	{
-		if (isEmpty())
-		{
-			return false;
-		}
-		for (Episode epi : this)
-		{
-			if (!epi.isNumberedInSeason())
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public List<Integer> getNumbersInSeries()
-	{
-		if (isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		List<Integer> nums = new ArrayList<>(size());
-		for (Episode epi : this)
-		{
-			Integer numInSeries = epi.getNumberInSeries();
-			if (numInSeries != null)
-			{
-				nums.add(numInSeries);
-			}
-		}
-		return nums;
-	}
-
-	public List<Integer> getNumbersInSeason()
-	{
-		if (isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		List<Integer> nums = new ArrayList<>(size());
-		for (Episode epi : this)
-		{
-			Integer numInSeason = epi.getNumberInSeason();
-			if (numInSeason != null)
-			{
-				nums.add(numInSeason);
-			}
-		}
-		return nums;
-	}
-
-	public List<String> getTitles()
-	{
-		if (isEmpty())
-		{
-			return ImmutableList.of();
-		}
-		List<String> titles = new ArrayList<>(size());
-		for (Episode epi : this)
-		{
-			String title = epi.getTitle();
-			if (title != null)
-			{
-				titles.add(title);
-			}
-		}
-		return titles;
-	}
-
-	public ListMultimap<Series, Episode> orderedBySeries()
-	{
-		if (isEmpty())
-		{
-			return ImmutableListMultimap.of();
-		}
-		ArrayListMultimap<Series, Episode> multimap = ArrayListMultimap.create();
-		for (Episode epi : this)
-		{
-			multimap.put(epi.getSeries(), epi);
-		}
-		return multimap;
-	}
-
-	public ListMultimap<Season, Episode> orderedBySeason()
-	{
-		if (isEmpty())
-		{
-			return ImmutableListMultimap.of();
-		}
-		ArrayListMultimap<Season, Episode> multimap = ArrayListMultimap.create();
-		for (Episode epi : this)
-		{
-			multimap.put(epi.getSeason(), epi);
-		}
-		return multimap;
-	}
-
-	@Override
-	public String toString()
-	{
-		return "MultiEpisode" + super.toString();
 	}
 }
