@@ -44,5 +44,4 @@ public class DelegatingNamingService implements NamingService
 	{
 		return finalFormatter.apply(delegate.name(candidate, parameters));
 	}
-
 }

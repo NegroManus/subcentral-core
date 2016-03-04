@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -20,28 +23,15 @@ import de.subcentral.core.util.IterableComparator;
 
 public class NamingUtil
 {
+	private static final Logger						log										= LogManager.getLogger(NamingUtil.class);
+
 	public static final Comparator<Media>			DEFAULT_MEDIA_NAME_COMPARATOR			= new MediaNameComparator(NamingDefaults.getDefaultNamingService());
 	public static final Comparator<Iterable<Media>>	DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR	= IterableComparator.create(DEFAULT_MEDIA_NAME_COMPARATOR);
 	private static final Map<String, Object>		DEFAULT_MEDIA_NAME_PARAMS				= ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
 
-	public static final class MediaNameComparator implements Comparator<Media>, Serializable
+	private NamingUtil()
 	{
-		// Comparators should be Serializable
-		private static final long	serialVersionUID	= -3197188465533525469L;
-
-		private final NamingService	namingService;
-
-		public MediaNameComparator(NamingService namingService)
-		{
-			this.namingService = Objects.requireNonNull(namingService, "namingService");
-		}
-
-		@Override
-		public int compare(Media o1, Media o2)
-		{
-			// nulls first as naming of null results in an empty string "" and an empty string always comes first
-			return Settings.STRING_ORDERING.compare(namingService.name(o1, DEFAULT_MEDIA_NAME_PARAMS), namingService.name(o2, DEFAULT_MEDIA_NAME_PARAMS));
-		}
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
 	public static final <T> T readParameter(Map<String, Object> parameters, String key, Class<T> valueClass, T defaultValue)
@@ -60,17 +50,7 @@ public class NamingUtil
 		return (T obj) ->
 		{
 			String nameOfCandidate = namingService.name(obj, parameters);
-			boolean accepted = requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
-			if (accepted)
-			{
-				System.out.println("accepted " + nameOfCandidate);
-			}
-			else
-			{
-				System.out.println("denied " + nameOfCandidate);
-			}
-
-			return accepted;
+			return requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
 		};
 	}
 
@@ -92,8 +72,7 @@ public class NamingUtil
 			U nestedObj = nestedObjRetriever.apply(obj);
 			Set<String> candidateNames = generateNames(nestedObj, ImmutableList.of(namingServices), parameterGenerator.apply(nestedObj));
 			// If requiredNames is empty, all names are accepted. Otherwise return true, if any of the candidate's names matches a required name
-			boolean accepted = requiredNames.isEmpty() ? true : !Collections.disjoint(requiredNames, candidateNames);
-			return accepted;
+			return requiredNames.isEmpty() ? true : !Collections.disjoint(requiredNames, candidateNames);
 		};
 	}
 
@@ -117,6 +96,7 @@ public class NamingUtil
 			catch (NoNamerRegisteredException e)
 			{
 				// ignore
+				log.debug("NamingService " + ns + " could not name object " + obj, e);
 			}
 		}
 		return names;
@@ -127,8 +107,23 @@ public class NamingUtil
 		return (T obj) -> ImmutableList.of(ImmutableMap.of());
 	}
 
-	private NamingUtil()
+	public static final class MediaNameComparator implements Comparator<Media>, Serializable
 	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+		// Comparators should be Serializable
+		private static final long	serialVersionUID	= -3197188465533525469L;
+
+		private final NamingService	namingService;
+
+		public MediaNameComparator(NamingService namingService)
+		{
+			this.namingService = Objects.requireNonNull(namingService, "namingService");
+		}
+
+		@Override
+		public int compare(Media o1, Media o2)
+		{
+			// nulls first as naming of null results in an empty string "" and an empty string always comes first
+			return Settings.STRING_ORDERING.compare(namingService.name(o1, DEFAULT_MEDIA_NAME_PARAMS), namingService.name(o2, DEFAULT_MEDIA_NAME_PARAMS));
+		}
 	}
 }

@@ -6,17 +6,17 @@ import de.subcentral.core.metadata.media.Movie;
 
 public class MovieNamer extends AbstractNamedMediaNamer<Movie>
 {
-	public MovieNamer(PropSequenceNameBuilder.Config config)
-	{
-		super(config);
-	}
-
 	/**
 	 * The name of the parameter "includeYear" of type {@link Boolean}. If set to {@code true}, the {@link Movie#getYear() movie's year} is included in the name, otherwise it is excluded. The default
 	 * value is {@code false}.<br/>
 	 * If no explicit name is set via the {@link AbstractNamedMediaNamer#PARAM_NAME name parameter} the movie's title is used rather than the name (because the name can already include the year).
 	 */
 	public static final String PARAM_INCLUDE_YEAR = MovieNamer.class.getName() + "includeYear";
+
+	public MovieNamer(PropSequenceNameBuilder.Config config)
+	{
+		super(config);
+	}
 
 	@Override
 	protected void appendName(PropSequenceNameBuilder b, Movie mov, Map<String, Object> params)

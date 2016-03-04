@@ -130,16 +130,16 @@ public class ConditionalNamingService implements NamingService
 		private final Predicate<Object>	condition;
 		private final Namer<U>			namer;
 
-		public static <V> ConditionalNamingEntry<V> of(Predicate<Object> condition, Namer<V> namer)
-		{
-			Objects.requireNonNull(condition, "condition");
-			return new ConditionalNamingEntry<V>(condition, namer);
-		}
-
 		private ConditionalNamingEntry(Predicate<Object> condition, Namer<U> namer)
 		{
 			this.condition = Objects.requireNonNull(condition, "condition");
 			this.namer = Objects.requireNonNull(namer, "namer");
+		}
+
+		public static <V> ConditionalNamingEntry<V> of(Predicate<Object> condition, Namer<V> namer)
+		{
+			Objects.requireNonNull(condition, "condition");
+			return new ConditionalNamingEntry<>(condition, namer);
 		}
 
 		public Predicate<Object> getCondition()

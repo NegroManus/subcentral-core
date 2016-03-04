@@ -15,6 +15,7 @@ import com.google.common.base.MoreObjects;
  *
  * @deprecated Use {@link ConditionalNamingService} instead.
  */
+@Deprecated
 public class TypeBasedNamingService implements NamingService
 {
 	private final String					domain;

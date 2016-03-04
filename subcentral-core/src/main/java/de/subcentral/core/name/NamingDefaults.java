@@ -37,14 +37,14 @@ public class NamingDefaults
 	private static final Function<String, String>	SUBTITLE_RELEASE_NAME_FORMATTER					= initSubtitleReleaseNameFormatter();
 	private static final Function<String, String>	NORMALIZING_FORMATTER							= initNormalizingFormatter();
 
-	private static final SimplePrintPropService	PROP_TO_STRING_SERVICE							= new SimplePrintPropService();
+	private static final SimplePrintPropService		PROP_TO_STRING_SERVICE							= new SimplePrintPropService();
 
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
 	private static final ConditionalNamingService	NAMING_SERVICE									= new ConditionalNamingService(DEFAULT_DOMAIN);
 	private static final DelegatingNamingService	RELEASE_MEDIA_NAMING_SERVICE					= new DelegatingNamingService(DEFAULT_DOMAIN + "_release_media",
-																											NAMING_SERVICE,
-																											RELEASE_MEDIA_FORMATTER);
+			NAMING_SERVICE,
+			RELEASE_MEDIA_FORMATTER);
 	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE						= createNormalizingNamingService(NAMING_SERVICE);
 	private static final ConditionalNamingService	MULTI_EPISODE_RANGE_NAMING_SERVICE				= new ConditionalNamingService("multiepisode_range");;
 	private static final DelegatingNamingService	MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(MULTI_EPISODE_RANGE_NAMING_SERVICE);
@@ -143,6 +143,11 @@ public class NamingDefaults
 		// Add a special NamingService which formats the episode numbers different than the default NamingService
 		// for ex. S09E23-E24 instead of S09E23E24
 		MULTI_EPISODE_RANGE_NAMING_SERVICE.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_RANGE_NAMER));
+	}
+
+	private NamingDefaults()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
 	private static Function<String, String> initReleaseNameFormatter()
@@ -263,10 +268,5 @@ public class NamingDefaults
 	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)
 	{
 		return new DelegatingNamingService(namingService.getDomain() + "_normalizing", namingService, NORMALIZING_FORMATTER);
-	}
-
-	private NamingDefaults()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }
