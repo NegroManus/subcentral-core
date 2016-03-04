@@ -33,7 +33,7 @@ public class Nuke implements Comparable<Nuke>, Serializable
 
 	public Nuke(String reason, boolean unnuke)
 	{
-		this(reason, null, false);
+		this(reason, null, unnuke);
 	}
 
 	public Nuke(String reason, Temporal date, boolean unnuke) throws IllegalArgumentException

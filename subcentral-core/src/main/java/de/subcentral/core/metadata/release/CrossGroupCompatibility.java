@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class CrossGroupCompatibility implements Compatibility
 {
-	private static enum MatchDirection
+	private enum MatchDirection
 	{
 		NONE, FORWARD, BACKWARD;
 	}

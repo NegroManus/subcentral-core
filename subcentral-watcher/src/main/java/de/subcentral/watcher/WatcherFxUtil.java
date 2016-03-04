@@ -171,7 +171,7 @@ public class WatcherFxUtil
 		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), metaTags);
 		if (!containedMetaTags.isEmpty())
 		{
-			String metaTagsTxt = Tag.listToString(containedMetaTags);
+			String metaTagsTxt = Tag.formatList(containedMetaTags);
 			ImageView tagImg = new ImageView(FxUtil.loadImg("tag_16.png"));
 			Label metaTagsLbl = new Label(metaTagsTxt, tagImg);
 			metaTagsLbl.setTooltip(new Tooltip("Tagged with meta tags: " + metaTagsTxt));

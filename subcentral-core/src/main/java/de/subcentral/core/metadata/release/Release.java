@@ -54,7 +54,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Release.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Release.class, PropNames.ATTRIBUTES);
 
-	public static final Comparator<Release>		NAME_COMPARATOR			= (Release r1, Release r2) -> (r1 == null ? (r2 == null ? 0 : 1) : r1.compareToByName(r2));
+	public static final Comparator<Release>		NAME_COMPARATOR			= (Release r1, Release r2) -> r1 == null ? (r2 == null ? 0 : -1) : r1.compareToByName(r2);
 
 	private String								name;
 	// In 99% of the cases, there is only one Media per Release
@@ -72,39 +72,9 @@ public class Release extends MetadataBase implements Comparable<Release>
 	private String								nfoLink;
 	private final List<String>					furtherInfoLinks		= new ArrayList<>(4);
 
-	public static Release create(String group, String... tags)
-	{
-		return create(null, null, group, tags);
-	}
-
-	public static Release create(Media media, String group, String... tags)
-	{
-		return create(null, media, group, tags);
-	}
-
-	public static Release create(String name, Media media, String group, String... tags)
-	{
-		Release rls = new Release();
-		rls.name = name;
-		if (media != null)
-		{
-			rls.media.add(media);
-		}
-		if (group != null)
-		{
-			rls.group = new Group(group);
-		}
-		if (tags.length > 0)
-		{
-			// use addAll and do not add separately so that the list is trimmed to the right size
-			rls.tags.addAll(Tag.list(tags));
-		}
-		return rls;
-	}
-
 	public Release()
 	{
-
+		// default constructor
 	}
 
 	public Release(String name)
@@ -156,13 +126,43 @@ public class Release extends MetadataBase implements Comparable<Release>
 		this.tags.addAll(rls.tags);
 		this.group = rls.group;
 		this.languages.addAll(rls.languages);
-		this.date = rls.date;
 		this.category = rls.category;
+		this.date = rls.date;
 		this.size = rls.size;
 		this.fileCount = rls.fileCount;
 		this.nukes.addAll(rls.nukes);
 		this.nfo = rls.nfo;
 		this.nfoLink = rls.nfoLink;
+	}
+
+	public static Release create(String group, String... tags)
+	{
+		return create(null, null, group, tags);
+	}
+
+	public static Release create(Media media, String group, String... tags)
+	{
+		return create(null, media, group, tags);
+	}
+
+	public static Release create(String name, Media media, String group, String... tags)
+	{
+		Release rls = new Release();
+		rls.name = name;
+		if (media != null)
+		{
+			rls.media.add(media);
+		}
+		if (group != null)
+		{
+			rls.group = new Group(group);
+		}
+		if (tags.length > 0)
+		{
+			// use addAll and do not add separately so that the list is trimmed to the right size
+			rls.tags.addAll(Tag.list(tags));
+		}
+		return rls;
 	}
 
 	/**

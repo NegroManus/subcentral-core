@@ -514,7 +514,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 		if (!containedMetaTags.isEmpty())
 		{
-			String caption = "Release is meta-tagged: " + Tag.listToString(containedMetaTags);
+			String caption = "Release is meta-tagged: " + Tag.formatList(containedMetaTags);
 			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
 		}
 

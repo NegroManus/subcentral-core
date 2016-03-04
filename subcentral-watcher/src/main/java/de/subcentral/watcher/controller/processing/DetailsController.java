@@ -214,10 +214,10 @@ public class DetailsController extends Controller
 		String[] values = {
 				printer.apply(subRls),
 				printer.apply(rls.getMedia()),
-				Tag.listToString(rls.getTags()),
+				Tag.formatList(rls.getTags()),
 				rls.getGroup() != null ? rls.getGroup().toString() : "",
 				sub.getLanguage() != null ? sub.getLanguage() : "",
-				Tag.listToString(subRls.getTags()),
+				Tag.formatList(subRls.getTags()),
 				sub.getSource() != null ? sub.getSource() : "",
 				sub.getGroup() != null ? sub.getGroup().toString() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
@@ -270,7 +270,7 @@ public class DetailsController extends Controller
 		}
 
 		keys[index] = "Release tags:";
-		values[index] = Tag.listToString(rls.getTags());
+		values[index] = Tag.formatList(rls.getTags());
 
 		index++;
 		keys[index] = "Release group:";

@@ -69,8 +69,8 @@ public class SimpleParsePropStringService implements ParsePropService
 		typeFns.put(ZonedDateTime.class, ZonedDateTime::parse);
 		typeFns.put(Temporal.class, TimeUtil::parseTemporal);
 		// Model specific types
-		typeFns.put(Tag.class, Tag::parse);
-		typeFns.put(Group.class, Group::parse);
+		typeFns.put(Tag.class, Tag::new);
+		typeFns.put(Group.class, Group::new);
 		typeFns.put(Nuke.class, Nuke::new);
 
 		return typeFns.build();

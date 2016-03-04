@@ -222,7 +222,7 @@ class ConfigurationHelper
 		for (HierarchicalConfiguration<ImmutableNode> rlsCfg : rlsCfgs)
 		{
 			List<Tag> tags = Tag.parseList(rlsCfg.getString("[@tags]"));
-			Group group = Group.parse(rlsCfg.getString("[@group]"));
+			Group group = Group.from(rlsCfg.getString("[@group]"));
 			Scope scope = Scope.valueOf(rlsCfg.getString("[@scope]"));
 			rlss.add(new StandardRelease(tags, group, scope));
 		}
@@ -237,7 +237,7 @@ class ConfigurationHelper
 		for (HierarchicalConfiguration<ImmutableNode> rlsCfg : rlsCfgs)
 		{
 			List<Tag> tags = Tag.parseList(rlsCfg.getString("[@tags]"));
-			Group group = Group.parse(rlsCfg.getString("[@group]"));
+			Group group = Group.from(rlsCfg.getString("[@group]"));
 			rlss.add(new Release(tags, group));
 		}
 		rlss.trimToSize();
@@ -252,8 +252,8 @@ class ConfigurationHelper
 		for (HierarchicalConfiguration<ImmutableNode> groupsCompCfg : groupsCompCfgs)
 		{
 			boolean enabled = groupsCompCfg.getBoolean("[@enabled]");
-			Group sourceGroup = Group.parse(groupsCompCfg.getString("[@sourceGroup]"));
-			Group compatibleGroup = Group.parse(groupsCompCfg.getString("[@compatibleGroup]"));
+			Group sourceGroup = Group.from(groupsCompCfg.getString("[@sourceGroup]"));
+			Group compatibleGroup = Group.from(groupsCompCfg.getString("[@compatibleGroup]"));
 			boolean symmetric = groupsCompCfg.getBoolean("[@symmetric]", false);
 			compatibilities.add(new CompatibilitySettingEntry(new CrossGroupCompatibility(sourceGroup, compatibleGroup, symmetric), enabled));
 		}
@@ -314,8 +314,8 @@ class ConfigurationHelper
 				ReleaseTagsCorrectionRuleSettingEntry entry = (ReleaseTagsCorrectionRuleSettingEntry) genericEntry;
 				TagsReplacer replacer = (TagsReplacer) entry.getValue().getReplacer();
 
-				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.listToString(replacer.getSearchTags()));
-				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replacement]", Tag.listToString(replacer.getReplacement()));
+				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.formatList(replacer.getSearchTags()));
+				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replacement]", Tag.formatList(replacer.getReplacement()));
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchMode]", replacer.getSearchMode());
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replaceMode]", replacer.getReplaceMode());
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@ignoreOrder]", replacer.getIgnoreOrder());

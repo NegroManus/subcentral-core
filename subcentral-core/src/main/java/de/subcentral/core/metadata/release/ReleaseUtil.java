@@ -18,6 +18,11 @@ public class ReleaseUtil
 {
 	private static final Logger log = LogManager.getLogger(ReleaseUtil.class);
 
+	private ReleaseUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static void addAllDistinctByName(Collection<Release> distinctReleases, Iterable<Release> releasesToAdd)
 	{
 		for (Release newRls : releasesToAdd)
@@ -61,20 +66,17 @@ public class ReleaseUtil
 
 	public static Predicate<Release> filterByTags(List<Tag> containedTags)
 	{
-		return (rls) -> rls.getTags().containsAll(containedTags);
+		return rls -> rls.getTags().containsAll(containedTags);
 	}
 
 	public static Predicate<Release> filterByTags(List<Tag> containedTags, Collection<Tag> metaTagsToIgnore)
 	{
-		return (rls) -> TagUtil.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore);
+		return rls -> TagUtil.containsAllIgnoreMetaTags(rls.getTags(), containedTags, metaTagsToIgnore);
 	}
 
 	public static Predicate<Release> filterByGroup(Group group, boolean requireSameGroup)
 	{
-		return (rls) ->
-		{
-			return group == null ? (rls.getGroup() == null || !requireSameGroup) : group.equals(rls.getGroup());
-		};
+		return rls -> group == null ? (rls.getGroup() == null || !requireSameGroup) : group.equals(rls.getGroup());
 	}
 
 	/**
@@ -132,10 +134,5 @@ public class ReleaseUtil
 			return Collections.singletonMap(partialRls, null);
 		}
 		return guessedRlss;
-	}
-
-	private ReleaseUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

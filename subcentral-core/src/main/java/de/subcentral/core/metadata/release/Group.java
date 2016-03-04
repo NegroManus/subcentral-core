@@ -14,9 +14,16 @@ import de.subcentral.core.ValidationUtil;
  */
 public class Group implements Comparable<Group>, Serializable
 {
-	private static final long serialVersionUID = -8704261988899599068L;
+	private static final long	serialVersionUID	= -8704261988899599068L;
 
-	public static Group parse(String group)
+	private final String		name;
+
+	public Group(String name) throws IllegalArgumentException
+	{
+		this.name = ValidationUtil.requireNotBlankAndStrip(name, "name cannot be blank");
+	}
+
+	public static Group from(String group)
 	{
 		try
 		{
@@ -28,16 +35,9 @@ public class Group implements Comparable<Group>, Serializable
 		}
 	}
 
-	public static String toSafeString(Group group)
+	public static String toStringNullSafe(Group group)
 	{
-		return group == null ? "" : group.getName();
-	}
-
-	private final String name;
-
-	public Group(String name) throws IllegalArgumentException
-	{
-		this.name = ValidationUtil.requireNotBlankAndStrip(name, "name cannot be blank");
+		return group == null ? "" : group.toString();
 	}
 
 	public String getName()

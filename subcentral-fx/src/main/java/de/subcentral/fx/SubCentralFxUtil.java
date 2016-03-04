@@ -36,7 +36,7 @@ public class SubCentralFxUtil
 			@Override
 			public String toString(List<Tag> tags)
 			{
-				return Tag.listToString(tags);
+				return Tag.formatList(tags);
 			}
 
 			@Override
@@ -54,7 +54,7 @@ public class SubCentralFxUtil
 			@Override
 			public String toString(ObservableList<Tag> tags)
 			{
-				return Tag.listToString(tags);
+				return Tag.formatList(tags);
 			}
 
 			@Override
@@ -72,13 +72,13 @@ public class SubCentralFxUtil
 			@Override
 			public String toString(Group group)
 			{
-				return Group.toSafeString(group);
+				return Group.toStringNullSafe(group);
 			}
 
 			@Override
 			public Group fromString(String group)
 			{
-				return Group.parse(group);
+				return Group.from(group);
 			}
 		};
 	}

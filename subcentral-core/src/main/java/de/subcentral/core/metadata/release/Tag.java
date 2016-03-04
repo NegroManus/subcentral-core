@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Joiner;
@@ -45,68 +44,21 @@ public class Tag implements Comparable<Tag>, Serializable
 	 */
 	public static final String						CATEGORY_META		= "META";
 
-	public static List<Tag> list(Collection<String> tags)
+	private final String							name;
+	private final String							longName;
+
+	public Tag(String name)
 	{
-		if (tags.isEmpty())
-		{
-			return new ArrayList<>(0);
-		}
-		List<Tag> tagList = new ArrayList<>(tags.size());
-		for (String s : tags)
-		{
-			tagList.add(new Tag(s));
-		}
-		return tagList;
+		this(name, null);
 	}
 
-	public static List<Tag> list(String... tags)
+	public Tag(String name, String longName) throws IllegalArgumentException
 	{
-		if (tags.length == 0)
-		{
-			return new ArrayList<>(0);
-		}
-		List<Tag> tagList = new ArrayList<>(tags.length);
-		for (String s : tags)
-		{
-			tagList.add(new Tag(s));
-		}
-		return tagList;
+		this.name = ValidationUtil.requireNotBlankAndStrip(name, "name cannot be blank");
+		this.longName = longName;
 	}
 
-	public static ImmutableList<Tag> immutableList(String... tags)
-	{
-		if (tags.length == 0)
-		{
-			return ImmutableList.of();
-		}
-		ImmutableList.Builder<Tag> tagList = ImmutableList.builder();
-		for (String s : tags)
-		{
-			tagList.add(new Tag(s));
-		}
-		return tagList.build();
-	}
-
-	public static ImmutableList<Tag> immutableCopy(List<Tag> tags)
-	{
-		return ImmutableList.copyOf(tags);
-	}
-
-	public static List<Tag> parseList(String tagList)
-	{
-		return parseList(tagList, StringUtil.COMMA_SPLITTER);
-	}
-
-	public static List<Tag> parseList(String tagList, Splitter splitter)
-	{
-		if (StringUtils.isBlank(tagList))
-		{
-			return ImmutableList.of();
-		}
-		return list(splitter.splitToList(tagList));
-	}
-
-	public static Tag parse(String tag)
+	public static Tag from(String tag)
 	{
 		try
 		{
@@ -118,28 +70,59 @@ public class Tag implements Comparable<Tag>, Serializable
 		}
 	}
 
-	public static String listToString(List<Tag> tags)
+	public static String toStringNullSafe(Tag tag)
 	{
-		return listToString(tags, StringUtil.COMMA_JOINER);
+		return tag == null ? "" : tag.toString();
 	}
 
-	public static String listToString(List<Tag> tags, Joiner joiner)
+	public static List<Tag> list(Collection<String> tags)
+	{
+		List<Tag> tagList = new ArrayList<>(tags.size());
+		for (String s : tags)
+		{
+			tagList.add(new Tag(s));
+		}
+		return tagList;
+	}
+
+	public static List<Tag> list(String... tags)
+	{
+		List<Tag> tagList = new ArrayList<>(tags.length);
+		for (String s : tags)
+		{
+			tagList.add(new Tag(s));
+		}
+		return tagList;
+	}
+
+	public static ImmutableList<Tag> immutableList(String... tags)
+	{
+		ImmutableList.Builder<Tag> tagList = ImmutableList.builder();
+		for (String tag : tags)
+		{
+			tagList.add(new Tag(tag));
+		}
+		return tagList.build();
+	}
+
+	public static List<Tag> parseList(String tagList)
+	{
+		return parseList(tagList, StringUtil.COMMA_SPLITTER);
+	}
+
+	public static List<Tag> parseList(String tagList, Splitter splitter)
+	{
+		return list(splitter.splitToList(tagList));
+	}
+
+	public static String formatList(List<Tag> tags)
+	{
+		return formatList(tags, StringUtil.COMMA_JOINER);
+	}
+
+	public static String formatList(List<Tag> tags, Joiner joiner)
 	{
 		return joiner.join(tags);
-	}
-
-	private final String	name;
-	private final String	longName;
-
-	public Tag(String name)
-	{
-		this(name, null);
-	}
-
-	public Tag(String name, String longName) throws IllegalArgumentException
-	{
-		this.name = ValidationUtil.requireNotBlankAndStrip(name, "name cannot be blank");
-		this.longName = longName;
 	}
 
 	public String getName()
