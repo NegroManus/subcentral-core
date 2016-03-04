@@ -1,6 +1,7 @@
 package de.subcentral.core.file.subtitle;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.base.Joiner;
@@ -10,12 +11,22 @@ public class SubtitleContent
 {
 	private List<Item> items = new ArrayList<>();
 
+	public SubtitleContent()
+	{
+		// default constructor
+	}
+
+	public SubtitleContent(Collection<? extends Item> items)
+	{
+		this.items.addAll(items);
+	}
+
 	public List<Item> getItems()
 	{
 		return items;
 	}
 
-	public void setItems(List<Item> items)
+	public void setItems(Collection<? extends Item> items)
 	{
 		this.items.clear();
 		this.items.addAll(items);

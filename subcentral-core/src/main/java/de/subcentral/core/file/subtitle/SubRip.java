@@ -124,9 +124,7 @@ public class SubRip implements SubtitleFileFormat
 				}
 			}
 
-			SubtitleContent sub = new SubtitleContent();
-			sub.setItems(items);
-			return sub;
+			return new SubtitleContent(items);
 		}
 		finally
 		{
@@ -186,22 +184,11 @@ public class SubRip implements SubtitleFileFormat
 			for (int i = 0; i < sub.getItems().size(); i++)
 			{
 				Item item = sub.getItems().get(i);
-				writer.write(Integer.toString(i + 1));
+				writer.write(formatNumber(i + 1));
 				writer.newLine();
-				Object[] args = new Object[8];
-				int argsIndex = 0;
-				for (long arg : splitIntoHoursMinsSecsMillis(item.getStart()))
-				{
-					args[argsIndex++] = arg;
-				}
-				for (long arg : splitIntoHoursMinsSecsMillis(item.getEnd()))
-				{
-					args[argsIndex++] = arg;
-				}
-				writer.write(String.format("%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d", args));
+				writer.write(formatStartEnd(item.getStart(), item.getEnd()));
 				writer.newLine();
-				String text = item.getText().replace("\n", SystemUtils.LINE_SEPARATOR);
-				writer.write(text);
+				writer.write(formatText(item.getText()));
 				if (i < sub.getItems().size() - 1)
 				{
 					writer.newLine();
@@ -215,14 +202,40 @@ public class SubRip implements SubtitleFileFormat
 		}
 	}
 
+	private static String formatNumber(int number)
+	{
+		return Integer.toString(number);
+	}
+
+	private static String formatStartEnd(long start, long end)
+	{
+		Object[] args = new Object[8];
+		int argsIndex = 0;
+		for (long arg : splitIntoHoursMinsSecsMillis(start))
+		{
+			args[argsIndex++] = arg;
+		}
+		for (long arg : splitIntoHoursMinsSecsMillis(end))
+		{
+			args[argsIndex++] = arg;
+		}
+		return String.format("%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d", args);
+	}
+
+	private static String formatText(String text)
+	{
+		return text.replace("\n", SystemUtils.LINE_SEPARATOR);
+	}
+
 	private static long[] splitIntoHoursMinsSecsMillis(long millis)
 	{
-		long hours = TimeUnit.MILLISECONDS.toHours(millis);
-		millis -= TimeUnit.HOURS.toMillis(hours);
-		long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-		millis -= TimeUnit.MINUTES.toMillis(minutes);
-		long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-		millis -= TimeUnit.SECONDS.toMillis(seconds);
-		return new long[] { hours, minutes, seconds, millis };
+		long ms = millis;
+		long hours = TimeUnit.MILLISECONDS.toHours(ms);
+		ms -= TimeUnit.HOURS.toMillis(hours);
+		long minutes = TimeUnit.MILLISECONDS.toMinutes(ms);
+		ms -= TimeUnit.MINUTES.toMillis(minutes);
+		long seconds = TimeUnit.MILLISECONDS.toSeconds(ms);
+		ms -= TimeUnit.SECONDS.toMillis(seconds);
+		return new long[] { hours, minutes, seconds, ms };
 	}
 }
