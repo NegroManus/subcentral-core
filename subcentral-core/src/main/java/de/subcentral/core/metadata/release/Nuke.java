@@ -9,8 +9,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.Settings;
+import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.util.TemporalComparator;
 
 public class Nuke implements Comparable<Nuke>, Serializable
@@ -39,7 +39,7 @@ public class Nuke implements Comparable<Nuke>, Serializable
 	public Nuke(String reason, Temporal date, boolean unnuke) throws IllegalArgumentException
 	{
 		this.reason = reason;
-		this.date = BeanUtil.validateTemporalClass(date);
+		this.date = ValidationUtil.validateTemporalClass(date);
 		this.unnuke = unnuke;
 	}
 

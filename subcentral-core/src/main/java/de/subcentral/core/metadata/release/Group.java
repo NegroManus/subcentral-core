@@ -5,8 +5,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.Settings;
+import de.subcentral.core.ValidationUtil;
 
 /**
  * 
@@ -37,7 +37,7 @@ public class Group implements Comparable<Group>, Serializable
 
 	public Group(String name) throws IllegalArgumentException
 	{
-		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
+		this.name = ValidationUtil.requireNotBlankAndStrip(name, "name cannot be blank");
 	}
 
 	public String getName()

@@ -14,8 +14,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.Settings;
+import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.StringUtil;
 
@@ -138,7 +138,7 @@ public class Tag implements Comparable<Tag>, Serializable
 
 	public Tag(String name, String longName) throws IllegalArgumentException
 	{
-		this.name = BeanUtil.requireNotBlankAndTrimWhitespace(name, "name cannot be blank");
+		this.name = ValidationUtil.requireNotBlankAndStrip(name, "name cannot be blank");
 		this.longName = longName;
 	}
 

@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
+import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Season extends MediaBase implements Comparable<Season>
@@ -115,7 +116,7 @@ public class Season extends MediaBase implements Comparable<Season>
 
 	public void setFinaleDate(Temporal finaleDate)
 	{
-		BeanUtil.validateTemporalClass(finaleDate);
+		ValidationUtil.validateTemporalClass(finaleDate);
 		this.finaleDate = finaleDate;
 	}
 

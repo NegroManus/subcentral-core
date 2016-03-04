@@ -1,6 +1,6 @@
 package de.subcentral.core;
 
-public interface PropNames
+public class PropNames
 {
 	public static final String	ALIAS_NAMES				= "aliasNames";
 	public static final String	ATTRIBUTES				= "attributes";
@@ -50,4 +50,9 @@ public interface PropNames
 	public static final String	TYPE					= "type";
 	public static final String	UNNUKES					= "unnukes";
 	public static final String	VERSION					= "version";
+
+	private PropNames()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
 }

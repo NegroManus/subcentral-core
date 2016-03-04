@@ -15,6 +15,7 @@ import com.google.common.base.MoreObjects;
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
+import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Series extends NamedMediaBase implements Comparable<Series>
@@ -130,7 +131,7 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 
 	public void setFinaleDate(Temporal finaleDate)
 	{
-		this.finaleDate = BeanUtil.validateTemporalClass(finaleDate);
+		this.finaleDate = ValidationUtil.validateTemporalClass(finaleDate);
 	}
 
 	@Override

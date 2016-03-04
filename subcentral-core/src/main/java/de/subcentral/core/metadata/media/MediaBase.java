@@ -10,7 +10,7 @@ import java.util.Map;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.BeanUtil;
+import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.metadata.MetadataBase;
 
 public abstract class MediaBase extends MetadataBase implements Media
@@ -44,7 +44,7 @@ public abstract class MediaBase extends MetadataBase implements Media
 
 	public void setDate(Temporal date) throws IllegalArgumentException
 	{
-		this.date = BeanUtil.validateTemporalClass(date);
+		this.date = ValidationUtil.validateTemporalClass(date);
 	}
 
 	@Override
