@@ -102,7 +102,7 @@ public class MappingMatcherExtension
 			extendedPredefMatches.putAll(origMatcher.getPredefinedMatches());
 			extendedPredefMatches.putAll(predefinedMatches);
 
-			PatternMappingMatcher<SimplePropDescriptor> matcher = new PatternMappingMatcher<SimplePropDescriptor>(extendedPattern, extendedGrps.build(), extendedPredefMatches);
+			PatternMappingMatcher<SimplePropDescriptor> matcher = new PatternMappingMatcher<>(extendedPattern, extendedGrps.build(), extendedPredefMatches);
 			extendedMatchers.add(matcher);
 		}
 		return extendedMatchers.build();

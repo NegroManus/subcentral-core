@@ -11,7 +11,7 @@ public class ReleaseMapper extends AbstractMapper<Release>
 {
 	public ReleaseMapper()
 	{
-
+		// default constructor
 	}
 
 	public ReleaseMapper(ParsePropService parsePropService)

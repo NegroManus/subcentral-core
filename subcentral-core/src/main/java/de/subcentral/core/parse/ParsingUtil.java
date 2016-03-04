@@ -22,6 +22,11 @@ public class ParsingUtil
 {
 	private static final Logger log = LogManager.getLogger(ParsingUtil.class);
 
+	private ParsingUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static final <T> T reflectiveMapping(Class<T> targetType, Map<SimplePropDescriptor, String> props, ParsePropService parsePropService)
 	{
 		Objects.requireNonNull(targetType, "targetType");
@@ -40,7 +45,7 @@ public class ParsingUtil
 						if (Collection.class.isAssignableFrom(type.getRawType()))
 						{
 							ParameterizedType genericType = (ParameterizedType) type.getType();
-							Class<?> itemClass = ((Class<?>) genericType.getActualTypeArguments()[0]);
+							Class<?> itemClass = (Class<?>) genericType.getActualTypeArguments()[0];
 							List<?> value = parsePropService.parseList(p.getValue(), simplePropDescr, itemClass);
 							if (Set.class.isAssignableFrom(type.getRawType()))
 							{
@@ -82,10 +87,5 @@ public class ParsingUtil
 			}
 		}
 		return filteredServices.build();
-	}
-
-	private ParsingUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

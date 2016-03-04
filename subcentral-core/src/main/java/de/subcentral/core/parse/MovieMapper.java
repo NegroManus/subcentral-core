@@ -10,7 +10,7 @@ public class MovieMapper extends AbstractMapper<Movie>
 {
 	public MovieMapper()
 	{
-
+		// default constructor
 	}
 
 	public MovieMapper(ParsePropService parsePropService)

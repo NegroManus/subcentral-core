@@ -19,7 +19,18 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MultiEpisodeMapper implements Mapper<List<Episode>>
 {
-	private final Mapper<Episode> episodeMapper;
+	/**
+	 * Matches "E01-E02", "E01-02", "01-02", ... (two number blocks, separated by a hyphen).
+	 */
+	private static final Pattern	RANGE_PATTERN		= Pattern.compile("(\\d{1,2})-\\D*(\\d{1,2})");
+	/**
+	 * Matches "E01E02", "E01+E02", "E01+02", "E01E02E03", "E01+E02+E03", "E01+02+03" ... (several number blocks, separated by non digit chars).
+	 * 
+	 * "(?:X) 	X, as a non-capturing group"
+	 */
+	private static final Pattern	ADDITION_PATTERN	= Pattern.compile("(\\d{1,2})((?:\\D+\\d{1,2})+)");
+
+	private final Mapper<Episode>	episodeMapper;
 
 	public MultiEpisodeMapper(Mapper<Episode> episodeMapper)
 	{
@@ -80,17 +91,6 @@ public class MultiEpisodeMapper implements Mapper<List<Episode>>
 				return episodes;
 		}
 	}
-
-	/**
-	 * Matches "E01-E02", "E01-02", "01-02", ... (two number blocks, separated by a hyphen).
-	 */
-	private static final Pattern	RANGE_PATTERN		= Pattern.compile("(\\d{1,2})-\\D*(\\d{1,2})", Pattern.CASE_INSENSITIVE);
-	/**
-	 * Matches "E01E02", "E01+E02", "E01+02", "E01E02E03", "E01+E02+E03", "E01+02+03" ... (several number blocks, separated by non digit chars).
-	 * 
-	 * "(?:X) 	X, as a non-capturing group"
-	 */
-	private static final Pattern	ADDITION_PATTERN	= Pattern.compile("(\\d{1,2})((?:\\D+\\d{1,2})+)", Pattern.CASE_INSENSITIVE);
 
 	public static boolean containsMultiEpisode(Map<SimplePropDescriptor, String> props)
 	{

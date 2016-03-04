@@ -14,7 +14,7 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 {
 	public EpisodeMapper()
 	{
-
+		// default constructor
 	}
 
 	public EpisodeMapper(ParsePropService parsePropService)

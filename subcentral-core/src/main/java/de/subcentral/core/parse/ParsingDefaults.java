@@ -38,7 +38,12 @@ public class ParsingDefaults
 	private static final Mapper<List<GenericMedia>>		SINGLETON_LIST_GENERIC_MEDIA_MAPPER	= createSingletonListMapper(GENERIC_MEDIA_MAPPER);
 	private static final ReleaseMapper					RELEASE_MAPPER						= new ReleaseMapper();
 	private static final SubtitleMapper					SUBTITLE_MAPPER						= new SubtitleMapper();
-	private static final SubtitleReleaseMapper		SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleReleaseMapper();
+	private static final SubtitleReleaseMapper			SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleReleaseMapper();
+
+	private ParsingDefaults()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
 
 	public static SimpleParsePropStringService getDefaultPropFromStringService()
 	{
@@ -98,10 +103,5 @@ public class ParsingDefaults
 	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
 	{
 		return (Map<SimplePropDescriptor, String> props) -> ImmutableList.of(elementMapper.map(props));
-	}
-
-	private ParsingDefaults()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

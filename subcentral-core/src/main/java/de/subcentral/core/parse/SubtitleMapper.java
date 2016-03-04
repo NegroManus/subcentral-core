@@ -10,7 +10,7 @@ public class SubtitleMapper extends AbstractMapper<Subtitle>
 {
 	public SubtitleMapper()
 	{
-
+		// default constructor
 	}
 
 	public SubtitleMapper(ParsePropService parsePropService)

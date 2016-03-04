@@ -85,7 +85,7 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 		return MoreObjects.toStringHelper(this).add("pattern", pattern).add("groups", groups).add("predefinedMatches", predefinedMatches).toString();
 	}
 
-	public static abstract class GroupEntry<K>
+	public abstract static class GroupEntry<K>
 	{
 		// Private constructor so that there can be no sub classes outside the DelegatingMappingMatcher class
 		private GroupEntry()

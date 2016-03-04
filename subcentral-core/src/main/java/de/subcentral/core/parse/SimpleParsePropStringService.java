@@ -43,6 +43,11 @@ public class SimpleParsePropStringService implements ParsePropService
 	 */
 	private static final Map<Class<?>, Function<String, ?>>	DEFAULT_TYPE_FROM_STRING_FUNCTIONS	= initDefaultTypeFromStringFunctions();
 
+	private Splitter										elementSplitter						= null;
+	private Map<SimplePropDescriptor, Splitter>				propElementSplitters				= new HashMap<>(0);
+	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions				= new HashMap<>(0);
+	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions				= new HashMap<>(0);
+
 	private static final Map<Class<?>, Function<String, ?>> initDefaultTypeFromStringFunctions()
 	{
 		ImmutableMap.Builder<Class<?>, Function<String, ?>> typeFns = ImmutableMap.builder();
@@ -74,16 +79,6 @@ public class SimpleParsePropStringService implements ParsePropService
 		typeFns.put(Nuke.class, Nuke::new);
 
 		return typeFns.build();
-	}
-
-	private Splitter										elementSplitter			= null;
-	private Map<SimplePropDescriptor, Splitter>				propElementSplitters	= new HashMap<>(0);
-	private Map<Class<?>, Function<String, ?>>				typeFromStringFunctions	= new HashMap<>(0);
-	private Map<SimplePropDescriptor, Function<String, ?>>	propFromStringFunctions	= new HashMap<>(0);
-
-	public SimpleParsePropStringService()
-	{
-
 	}
 
 	/**
