@@ -28,14 +28,19 @@ public class CorrectionDefaults
 	 */
 	public static final Function<String, String>	ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER	= new CharStringReplacer("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_", "'´`", '.');
 	public static final Function<String, String>	HYPHEN_CLEANER							= new StringReplacer(".-", "-").andThen(new StringReplacer("-.", "-"))
-																									.andThen(new PatternStringReplacer(Pattern.compile("-+"), "-"));
+			.andThen(new PatternStringReplacer(Pattern.compile("-+"), "-"));
 	public static final Function<String, String>	AND_REPLACER							= new StringReplacer("&", "and");
 	public static final Function<String, String>	ACCENT_REPLACER							= StringUtils::stripAccents;
 	public static final Function<String, String>	TO_LOWERCASE_REPLACER					= StringUtils::lowerCase;
 
-	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE				= initDefaultCorrectionService();
+	private static final TypeBasedCorrectionService	DEFAULT_CORRECTION_SERVICE				= createDefaultCorrectionService();
 
-	private static TypeBasedCorrectionService initDefaultCorrectionService()
+	private CorrectionDefaults()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
+	private static TypeBasedCorrectionService createDefaultCorrectionService()
 	{
 		TypeBasedCorrectionService service = new TypeBasedCorrectionService("default");
 		registerAllDefaultNestedBeansRetrievers(service);
@@ -117,10 +122,5 @@ public class CorrectionDefaults
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H", "265"), Tag.list("H.265"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H264"), Tag.list("H.264"))));
 		service.registerCorrector(Release.class, new ReleaseTagsCorrector(new TagsReplacer(Tag.list("H265"), Tag.list("H.265"))));
-	}
-
-	private CorrectionDefaults()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

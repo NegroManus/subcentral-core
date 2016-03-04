@@ -9,7 +9,7 @@ import com.google.common.base.MoreObjects;
 
 public class StringReplacer implements UnaryOperator<String>
 {
-	public static enum Mode
+	public enum Mode
 	{
 		ALL_OCCURENCES, COMPLETE
 	}

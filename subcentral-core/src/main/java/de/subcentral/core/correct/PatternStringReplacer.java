@@ -2,15 +2,13 @@ package de.subcentral.core.correct;
 
 import java.util.Objects;
 import java.util.function.UnaryOperator;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.MoreObjects;
 
 public class PatternStringReplacer implements UnaryOperator<String>
 {
-
-	public static enum Mode
+	public enum Mode
 	{
 		REPLACE_ALL, REPLACE_COMPLETE
 	}
@@ -26,7 +24,7 @@ public class PatternStringReplacer implements UnaryOperator<String>
 
 	public PatternStringReplacer(Pattern pattern, String replacement, Mode mode)
 	{
-		this.pattern = pattern;
+		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.replacement = replacement;
 		this.mode = Objects.requireNonNull(mode, "mode");
 	}
@@ -58,12 +56,9 @@ public class PatternStringReplacer implements UnaryOperator<String>
 			case REPLACE_ALL:
 				return pattern.matcher(s).replaceAll(replacement);
 			case REPLACE_COMPLETE:
-				Matcher m = pattern.matcher(s);
-				if (m.matches())
+				if (pattern.matcher(s).matches())
 				{
-					StringBuffer sb = new StringBuffer();
-					m.appendReplacement(sb, replacement);
-					return sb.toString();
+					return replacement;
 				}
 				return s;
 			default:

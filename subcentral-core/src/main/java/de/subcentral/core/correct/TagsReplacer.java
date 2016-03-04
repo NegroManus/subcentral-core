@@ -15,11 +15,11 @@ import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 
 public class TagsReplacer implements UnaryOperator<List<Tag>>
 {
-	private final ImmutableList<Tag>	searchTags;
-	private final ImmutableList<Tag>	replacement;
-	private final SearchMode			searchMode;
-	private final ReplaceMode			replaceMode;
-	private final boolean				ignoreOrder;
+	private final List<Tag>		searchTags;
+	private final List<Tag>		replacement;
+	private final SearchMode	searchMode;
+	private final ReplaceMode	replaceMode;
+	private final boolean		ignoreOrder;
 
 	public TagsReplacer(List<Tag> searchTags, List<Tag> replacement)
 	{
@@ -35,12 +35,12 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 		this.ignoreOrder = ignoreOrder;
 	}
 
-	public ImmutableList<Tag> getSearchTags()
+	public List<Tag> getSearchTags()
 	{
 		return searchTags;
 	}
 
-	public ImmutableList<Tag> getReplacement()
+	public List<Tag> getReplacement()
 	{
 		return replacement;
 	}
@@ -66,48 +66,66 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 		switch (searchMode)
 		{
 			case CONTAIN:
-				switch (replaceMode)
-				{
-					case COMPLETE_LIST:
-						if (ignoreOrder)
-						{
-							if (tags.containsAll(searchTags))
-							{
-								return replacement;
-							}
-						}
-						else
-						{
-							if (TagUtil.containsSequence(tags, searchTags))
-							{
-								return replacement;
-							}
-						}
-						break;
-					case MATCHED_SEQUENCE:
-						return replaceSequences(tags);
-				}
-				break;
+				return replaceContain(tags);
 			case EQUAL:
-				if (ignoreOrder)
-				{
-					if (TagUtil.equalsIgnoreOrder(tags, searchTags))
-					{
-						return replacement;
-					}
-				}
-				else
-				{
-					if (tags.equals(searchTags))
-					{
-						return replacement;
-					}
-				}
+				return replaceEqual(tags);
+			default:
+				throw new AssertionError();
+		}
+	}
+
+	private List<Tag> replaceContain(List<Tag> tags)
+	{
+		switch (replaceMode)
+		{
+			case COMPLETE_LIST:
+				return replaceContainComplete(tags);
+			case MATCHED_SEQUENCE:
+				return replaceContainSequences(tags);
+			default:
+				throw new AssertionError();
+		}
+	}
+
+	private List<Tag> replaceContainComplete(List<Tag> tags)
+	{
+		if (ignoreOrder)
+		{
+			if (tags.containsAll(searchTags))
+			{
+				return replacement;
+			}
+		}
+		else
+		{
+			if (TagUtil.containsSequence(tags, searchTags))
+			{
+				return replacement;
+			}
 		}
 		return tags;
 	}
 
-	public List<Tag> replaceSequences(List<Tag> tags)
+	private List<Tag> replaceEqual(List<Tag> tags)
+	{
+		if (ignoreOrder)
+		{
+			if (TagUtil.equalsIgnoreOrder(tags, searchTags))
+			{
+				return replacement;
+			}
+		}
+		else
+		{
+			if (tags.equals(searchTags))
+			{
+				return replacement;
+			}
+		}
+		return tags;
+	}
+
+	private List<Tag> replaceContainSequences(List<Tag> tags)
 	{
 		List<Tag> result = tags;
 		for (int i = 0; i < result.size() && i + searchTags.size() <= result.size(); i++)
