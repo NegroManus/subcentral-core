@@ -49,7 +49,7 @@ public class MultiInfoDbPlayground
 		System.out.println("Querying");
 		long start = System.nanoTime();
 		ListMultimap<MetadataDb, Release> results = MetadataDbUtil.searchInAll(dbs, query, Release.class, executor);
-		TimeUtil.printDurationMillisDouble("queryAll", start);
+		TimeUtil.logDurationMillisDouble("queryAll", start);
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : results.asMap().entrySet())
 		{
 			System.out.println("Results of " + entry.getKey().getSiteId());

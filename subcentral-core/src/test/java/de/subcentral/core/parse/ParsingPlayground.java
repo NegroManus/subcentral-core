@@ -132,7 +132,7 @@ public class ParsingPlayground
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(infoDbToCustomStdzService);
 		infoDbToCustomStdzService.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Good\\W+Wife", Pattern.CASE_INSENSITIVE), "The Good Wife", ImmutableList.of(), null));
 
-		TimeUtil.printDurationMillisDouble("Initialization", totalStart);
+		TimeUtil.logDurationMillisDouble("Initialization", totalStart);
 
 		log.debug(watchFolder);
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(watchFolder))
@@ -152,19 +152,19 @@ public class ParsingPlayground
 						System.out.println("Parsing ... ");
 						long start = System.nanoTime();
 						Object parsed = ps.parse(name);
-						TimeUtil.printDurationMillisDouble("Parsing", start);
+						TimeUtil.logDurationMillisDouble("Parsing", start);
 						System.out.println(parsed);
 
 						System.out.println("Naming ...");
 						start = System.nanoTime();
 						String nameOfParsed = ns.name(parsed);
-						TimeUtil.printDurationMillisDouble("Naming the parsed", start);
+						TimeUtil.logDurationMillisDouble("Naming the parsed", start);
 						System.out.println(nameOfParsed);
 
 						start = System.nanoTime();
 						List<Correction> parsedChanges = parsedToInfoDbStdzService.correct(parsed);
 						parsedChanges.forEach(c -> System.out.println("Changed: " + c));
-						TimeUtil.printDurationMillisDouble("Standardizing parsed", start);
+						TimeUtil.logDurationMillisDouble("Standardizing parsed", start);
 
 						if (parsed instanceof SubtitleRelease)
 						{
@@ -173,7 +173,7 @@ public class ParsingPlayground
 							System.out.println("Querying release info db ...");
 							start = System.nanoTime();
 							List<Release> releases = rlsInfoDb.searchByObject(subAdj.getFirstMatchingRelease().getMedia(), Release.class);
-							TimeUtil.printDurationMillisDouble("Querying release info db", start);
+							TimeUtil.logDurationMillisDouble("Querying release info db", start);
 							System.out.println("Found releases:");
 							releases.forEach(r -> System.out.println(r));
 
@@ -183,11 +183,11 @@ public class ParsingPlayground
 								List<Correction> rlsChanges = infoDbToCustomStdzService.correct(r);
 								rlsChanges.forEach(c -> System.out.println("Changed: " + c));
 							});
-							TimeUtil.printDurationMillisDouble("Standardizing info db results", start);
+							TimeUtil.logDurationMillisDouble("Standardizing info db results", start);
 
 							start = System.nanoTime();
 							releases.forEach(r -> ReleaseUtil.enrichByParsingName(r, ps, false));
-							TimeUtil.printDurationMillisDouble("Enriched by parsing", start);
+							TimeUtil.logDurationMillisDouble("Enriched by parsing", start);
 							releases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
@@ -197,7 +197,7 @@ public class ParsingPlayground
 									.filter(ReleaseUtil.filterByTags(subAdjRls.getTags(), ImmutableList.of()))
 									.filter(ReleaseUtil.filterByGroup(subAdjRls.getGroup(), false))
 									.collect(Collectors.toList());
-							TimeUtil.printDurationMillisDouble("Filtering found releases", start);
+							TimeUtil.logDurationMillisDouble("Filtering found releases", start);
 							filteredReleases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
@@ -207,7 +207,7 @@ public class ParsingPlayground
 								Map<Release, CompatibilityInfo> rlss = compService.findCompatibles(rls, releases);
 								compatibleRlss.putAll(rlss);
 							}
-							TimeUtil.printDurationMillisDouble("Build compatibilities", start);
+							TimeUtil.logDurationMillisDouble("Build compatibilities", start);
 							compatibleRlss.entrySet().forEach(e -> System.out.println(e));
 
 							Set<Release> allMatchingRlss = new HashSet<>();
@@ -222,12 +222,12 @@ public class ParsingPlayground
 							convertedSub.setSource(subAdj.getFirstSubtitle().getSource());
 							SubtitleRelease convertedAdj = new SubtitleRelease(convertedSub, allMatchingRlss);
 							convertedAdj.setHearingImpaired(subAdj.isHearingImpaired());
-							TimeUtil.printDurationMillisDouble("Converting releases", start);
+							TimeUtil.logDurationMillisDouble("Converting releases", start);
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
 							{
 								start = System.nanoTime();
 								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleReleaseNamer.PARAM_RELEASE, matchingRls, ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE));
-								TimeUtil.printDurationMillisDouble("Naming", start);
+								TimeUtil.logDurationMillisDouble("Naming", start);
 								System.out.println("New name:");
 								System.out.println(newName);
 
@@ -235,13 +235,13 @@ public class ParsingPlayground
 								start = System.nanoTime();
 								Path voDir = Files.createDirectories(path.resolveSibling("!VO"));
 								Path newPath = Files.copy(path, voDir.resolve(newName + ".srt"), StandardCopyOption.REPLACE_EXISTING);
-								TimeUtil.printDurationMillisDouble("Copying", start);
+								TimeUtil.logDurationMillisDouble("Copying", start);
 								System.out.println("Raring ...");
 								Path rarTarget = voDir.resolve(newName + ".rar");
 								System.out.println(rarTarget);
 								start = System.nanoTime();
 								System.out.println(packager.pack(newPath, rarTarget, packCfg));
-								TimeUtil.printDurationMillisDouble("Raring", start);
+								TimeUtil.logDurationMillisDouble("Raring", start);
 							}
 						}
 					}
@@ -250,7 +250,7 @@ public class ParsingPlayground
 						System.err.println("Exception while processing " + path);
 						e.printStackTrace();
 					}
-					TimeUtil.printDurationMillisDouble("Processing a file", startTotalFile);
+					TimeUtil.logDurationMillisDouble("Processing a file", startTotalFile);
 					System.out.println();
 					System.out.println();
 				}
@@ -260,6 +260,6 @@ public class ParsingPlayground
 		{
 			ex.printStackTrace();
 		}
-		TimeUtil.printDurationMillisDouble("total", totalStart);
+		TimeUtil.logDurationMillisDouble("total", totalStart);
 	}
 }

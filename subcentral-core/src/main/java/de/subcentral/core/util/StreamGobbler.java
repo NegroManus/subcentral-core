@@ -29,10 +29,8 @@ public class StreamGobbler implements Runnable
 			int bytesRead;
 			while ((bytesRead = input.read(buffer)) != -1)
 			{
-				// System.out.println(new String(buffer, StandardCharsets.ISO_8859_1));
 				output.write(buffer, 0, bytesRead);
 			}
-			// log.debug("Completely written input {} to output {}", input, output);
 		}
 		catch (IOException e)
 		{

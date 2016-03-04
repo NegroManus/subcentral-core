@@ -36,7 +36,7 @@ public class ObservableNamableBeanWrapper<T> extends ObservableNamedBeanWrapper<
 				{
 					nameValue = computedName.getValue();
 				}
-				TimeUtil.printDurationMillisDouble("NamableBean.name.computeValue(): " + nameValue, start);
+				TimeUtil.logDurationMillisDouble("NamableBean.name.computeValue(): " + nameValue, start);
 				return nameValue;
 			}
 		};

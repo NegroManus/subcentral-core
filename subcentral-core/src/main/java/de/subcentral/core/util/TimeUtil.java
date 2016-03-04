@@ -9,11 +9,21 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class TimeUtil
 {
-	public static void printDurationMillis(String operation, long startNanos)
+	private static final Logger log = LogManager.getLogger(TimeUtil.class);
+
+	private TimeUtil()
 	{
-		System.out.println("Duration of " + operation + ": " + durationMillis(startNanos) + " ms");
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
+	public static void logDurationMillis(String operation, long startNanos)
+	{
+		log.info("Duration of {}: {} ms", operation, durationMillis(startNanos));
 	}
 
 	public static long durationMillis(long startNanos)
@@ -26,9 +36,9 @@ public class TimeUtil
 		return (endNanos - startNanos) / 1_000_000L;
 	}
 
-	public static void printDurationMillisDouble(String operation, long startNanos)
+	public static void logDurationMillisDouble(String operation, long startNanos)
 	{
-		System.out.println("Duration of " + operation + ": " + durationMillisDouble(startNanos) + " ms");
+		log.info("Duration of {}: {} ms", operation, durationMillisDouble(startNanos));
 	}
 
 	public static double durationMillisDouble(long startNanos)
@@ -53,7 +63,7 @@ public class TimeUtil
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			log.trace("Exception while getting Year of temporal " + t, e);
 			return null;
 		}
 	}
@@ -100,15 +110,5 @@ public class TimeUtil
 		{
 			throw new DateTimeParseException("Text '" + s + "' could not be parsed to any temporal type", s, 0);
 		}
-	}
-
-	public static void main(String[] args)
-	{
-		System.out.println(durationMillisDouble(1_000_000, 2_000_000));
-	}
-
-	private TimeUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

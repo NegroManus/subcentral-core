@@ -7,12 +7,21 @@ import java.nio.file.Paths;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * <b>Important:</b> This class cannot use logging because it is used to determine the log directory. So logging can only work after this class is initialized.
  */
 public class LocalConfig
 {
+	private static final Logger log = LogManager.getLogger(LocalConfig.class);
+
+	private LocalConfig()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static Path getLocalConfigDirectorySave()
 	{
 		Path localConfigDir;
@@ -23,8 +32,7 @@ public class LocalConfig
 		catch (NoSuchFileException | UnsupportedOperationException e)
 		{
 			localConfigDir = Paths.get(SystemUtils.USER_DIR);
-			System.out.println("Could not find local configuration directory. Using user's current working directory to save settings: " + localConfigDir + ". Exception was:");
-			e.printStackTrace(System.out);
+			log.warn("Could not find local configuration directory. Using user's current working directory to save settings: " + localConfigDir, e);
 		}
 		return localConfigDir;
 	}
@@ -69,10 +77,5 @@ public class LocalConfig
 			configHome = System.getenv("HOME") + SystemUtils.FILE_SEPARATOR + ".config";
 		}
 		return configHome;
-	}
-
-	public LocalConfig()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

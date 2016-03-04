@@ -30,47 +30,9 @@ public class IOUtil
 {
 	private static final Logger log = LogManager.getLogger(IOUtil.class);
 
-	public static final class ProcessResult
+	private IOUtil()
 	{
-		private final int		exitValue;
-		private final String	stdOut;
-		private final String	stdErr;
-
-		private ProcessResult(int exitValue, String logMessage, String errorMessage)
-		{
-			this.exitValue = exitValue;
-			this.stdOut = logMessage;
-			this.stdErr = errorMessage;
-		}
-
-		public int getExitValue()
-		{
-			return exitValue;
-		}
-
-		/**
-		 * 
-		 * @return the standard output or <code>null</code> if none
-		 */
-		public String getStdOut()
-		{
-			return stdOut;
-		}
-
-		/**
-		 * 
-		 * @return the standard error output or <code>null</code> if none
-		 */
-		public String getStdErr()
-		{
-			return stdErr;
-		}
-
-		@Override
-		public String toString()
-		{
-			return MoreObjects.toStringHelper(ProcessResult.class).omitNullValues().add("exitValue", exitValue).add("stdOut", stdOut).add("stdErr", stdErr).toString();
-		}
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
 	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit) throws IOException, InterruptedException, TimeoutException
@@ -174,32 +136,15 @@ public class IOUtil
 
 	public static boolean isCompletelyWritten(Path file)
 	{
-		RandomAccessFile stream = null;
-		try
+		try (RandomAccessFile raf = new RandomAccessFile(file.toFile(), "rw"))
 		{
-			stream = new RandomAccessFile(file.toFile(), "rw");
 			return true;
 		}
 		catch (Exception e)
 		{
-			// ignore
-			// e.printStackTrace();
+			log.trace("File is not completely written yet", e);
+			return false;
 		}
-		finally
-		{
-			if (stream != null)
-			{
-				try
-				{
-					stream.close();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		return false;
 	}
 
 	public static boolean isLocked(Path file) throws IOException
@@ -210,7 +155,7 @@ public class IOUtil
 		}
 		catch (FileSystemException e)
 		{
-			// ignore the exception that the file is locked and return false
+			log.trace("File is locked", e);
 			return true;
 		}
 	}
@@ -254,7 +199,7 @@ public class IOUtil
 				break;
 			}
 
-			if (waited == false)
+			if (!waited)
 			{
 				waited = true;
 			}
@@ -333,16 +278,54 @@ public class IOUtil
 			return null;
 		}
 		// FEFF because this is the Unicode char represented by the UTF-8 byte order mark (EF BB BF).
-		final String UTF8_BOM = "\uFEFF";
-		if (s.startsWith(UTF8_BOM))
+		final String utf8BOM = "\uFEFF";
+		if (s.startsWith(utf8BOM))
 		{
-			s = s.substring(1);
+			return s.substring(1);
 		}
 		return s;
 	}
 
-	private IOUtil()
+	public static final class ProcessResult
 	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+		private final int		exitValue;
+		private final String	stdOut;
+		private final String	stdErr;
+
+		private ProcessResult(int exitValue, String logMessage, String errorMessage)
+		{
+			this.exitValue = exitValue;
+			this.stdOut = logMessage;
+			this.stdErr = errorMessage;
+		}
+
+		public int getExitValue()
+		{
+			return exitValue;
+		}
+
+		/**
+		 * 
+		 * @return the standard output or <code>null</code> if none
+		 */
+		public String getStdOut()
+		{
+			return stdOut;
+		}
+
+		/**
+		 * 
+		 * @return the standard error output or <code>null</code> if none
+		 */
+		public String getStdErr()
+		{
+			return stdErr;
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(ProcessResult.class).omitNullValues().add("exitValue", exitValue).add("stdOut", stdOut).add("stdErr", stdErr).toString();
+		}
 	}
 }

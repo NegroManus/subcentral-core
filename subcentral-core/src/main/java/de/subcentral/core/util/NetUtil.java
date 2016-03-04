@@ -21,6 +21,11 @@ public class NetUtil
 {
 	private static final Logger log = LogManager.getLogger(NetUtil.class);
 
+	private NetUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static String formatQueryString(Map<String, String> keyValuePairs)
 	{
 		StringBuilder query = new StringBuilder();
@@ -88,11 +93,11 @@ public class NetUtil
 	public static int pingHttp(String url, int timeout)
 	{
 		// Otherwise an exception may be thrown on invalid SSL certificates:
-		url = url.replaceFirst("^https", "http");
+		String httpUrl = url.replaceFirst("^https", "http");
 
 		try
 		{
-			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			HttpURLConnection connection = (HttpURLConnection) new URL(httpUrl).openConnection();
 			connection.setConnectTimeout(timeout);
 			connection.setReadTimeout(timeout);
 			connection.setRequestMethod("GET");
@@ -101,19 +106,19 @@ public class NetUtil
 			int responseTime = (int) TimeUtil.durationMillis(start);
 			if (200 <= responseCode && responseCode <= 399)
 			{
-				log.debug("Successfully pinged {} in {} ms. Response code was {}", url, responseTime, responseCode);
+				log.debug("Successfully pinged {} in {} ms. Response code was {}", httpUrl, responseTime, responseCode);
 				return responseTime;
 			}
 			else
 			{
-				log.debug("Unsuccessfully pinged {} in {} ms: Response code was: {}", url, responseTime, responseCode);
+				log.debug("Unsuccessfully pinged {} in {} ms: Response code was: {}", httpUrl, responseTime, responseCode);
 				return -responseCode;
 			}
 
 		}
 		catch (IOException e)
 		{
-			log.debug("Unsuccessfully pinged " + url, e);
+			log.debug("Unsuccessfully pinged " + httpUrl, e);
 			return -1;
 		}
 	}

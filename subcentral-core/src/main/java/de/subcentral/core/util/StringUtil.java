@@ -16,6 +16,11 @@ public class StringUtil
 
 	public static final Splitter	WHITESPACE_SPLITTER	= Splitter.on(CharMatcher.WHITESPACE);
 
+	private StringUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static boolean startsWith(StringBuilder sb, char c)
 	{
 		return sb.length() > 0 && sb.charAt(0) == c;
@@ -123,7 +128,7 @@ public class StringUtil
 	public static String readerToString(Reader reader) throws IOException
 	{
 		StringBuilder builder = new StringBuilder();
-		int charsRead = -1;
+		int charsRead;
 		char[] chars = new char[1024];
 		do
 		{
@@ -136,10 +141,5 @@ public class StringUtil
 		}
 		while (charsRead > 0);
 		return builder.toString();
-	}
-
-	private StringUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

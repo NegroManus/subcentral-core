@@ -7,6 +7,11 @@ public class ByteUtil
 {
 	private static final Pattern BYTE_PATTERN = Pattern.compile("(\\d+(\\.\\d*)?)\\s*(K|M|G|T|P|E|Z|Y)?(i)?B(ytes)?", Pattern.CASE_INSENSITIVE);
 
+	private ByteUtil()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static String bytesToString(long bytes, boolean si)
 	{
 		int unit = si ? 1000 : 1024;
@@ -75,10 +80,5 @@ public class ByteUtil
 			return (long) (amount * Math.pow(unit, exponent));
 		}
 		throw new NumberFormatException("Bytes cannot be parsed from String: " + s);
-	}
-
-	private ByteUtil()
-	{
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

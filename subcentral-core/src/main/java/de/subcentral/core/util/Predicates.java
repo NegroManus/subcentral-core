@@ -5,10 +5,15 @@ import java.util.function.Predicate;
 
 public class Predicates
 {
+	private Predicates()
+	{
+		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+	}
+
 	public static Predicate<Object> instanceOf(Class<?> type)
 	{
 		Objects.requireNonNull(type, "type");
-		return (Object o) -> type.isInstance(o);
+		return type::isInstance;
 	}
 
 	public static Predicate<Object> typeEquals(Class<?> type)
