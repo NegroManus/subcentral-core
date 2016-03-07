@@ -20,8 +20,8 @@ import javafx.stage.Stage;
 public class WatcherApp extends Application
 {
 	public static final String	APP_NAME			= "Watcher";
-	public static final String	APP_VERSION			= "2.1-SNAPSHOT";
-	public static final String	APP_VERSION_DATE	= "2016-03-01 23:00";
+	public static final String	APP_VERSION			= "2.1";
+	public static final String	APP_VERSION_DATE	= "2016-03-07";
 	public static final String	APP_INFO			= APP_NAME + " " + APP_VERSION + " (" + APP_VERSION_DATE + ")";
 
 	public static final String	SYS_PROP_LOGDIR		= "watcher.logdir";
