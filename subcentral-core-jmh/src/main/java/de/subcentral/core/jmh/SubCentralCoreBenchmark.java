@@ -91,15 +91,15 @@ public class SubCentralCoreBenchmark
 	private static final ParsingService		ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
 	private static final ParsingService		SUBCENTRAL_PARSING_SERVICE	= SubCentralDe.getParsingService();
 	private static final ParsingService		PARSING_SERVICE_BEST_CASE	= new MultiParsingService("bestcase",
-																				ADDIC7ED_PARSING_SERVICE,
-																				SUBCENTRAL_PARSING_SERVICE,
-																				ItalianSubsNet.getParsingService(),
-																				ReleaseScene.getParsingService());
+			ADDIC7ED_PARSING_SERVICE,
+			SUBCENTRAL_PARSING_SERVICE,
+			ItalianSubsNet.getParsingService(),
+			ReleaseScene.getParsingService());
 	private static final ParsingService		PARSING_SERVICE_WORST_CASE	= new MultiParsingService("worstcase",
-																				ReleaseScene.getParsingService(),
-																				ItalianSubsNet.getParsingService(),
-																				SUBCENTRAL_PARSING_SERVICE,
-																				ADDIC7ED_PARSING_SERVICE);
+			ReleaseScene.getParsingService(),
+			ItalianSubsNet.getParsingService(),
+			SUBCENTRAL_PARSING_SERVICE,
+			ADDIC7ED_PARSING_SERVICE);
 	private static final URL				SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
 	private static TypeBasedCorrectionService buildCorrectionService()
@@ -132,31 +132,31 @@ public class SubCentralCoreBenchmark
 		NAMING_SERVICE.name(SUB_RLS);
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingAddic7ed()
 	{
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubCentral()
 	{
 		SUBCENTRAL_PARSING_SERVICE.parse("Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI.de-SubCentral");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingBestCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingWorstCase()
 	{
 		PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
-	// @Benchmark
+	@Benchmark
 	public void testParsingSubAdjBestCase()
 	{
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
