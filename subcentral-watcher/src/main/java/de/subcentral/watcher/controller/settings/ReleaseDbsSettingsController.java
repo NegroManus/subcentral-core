@@ -93,10 +93,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 							{
 								HttpMetadataDb db = (HttpMetadataDb) item.getValue();
 
-								HBox hbox = new HBox();
-								hbox.setSpacing(5d);
-								hbox.setAlignment(Pos.CENTER_LEFT);
-
+								HBox hbox = FxUtil.createDefaultHBox();
 								Label name = new Label(db.getDisplayName());
 
 								URL host = db.getHostUrl();

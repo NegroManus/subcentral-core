@@ -23,7 +23,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Hyperlink;
@@ -347,9 +346,7 @@ public class DetailsController extends Controller
 
 	private Node createHeadline(String headline, String settingsSection)
 	{
-		HBox hbox = new HBox();
-		hbox.setSpacing(5d);
-		hbox.setAlignment(Pos.BOTTOM_LEFT);
+		HBox hbox = FxUtil.createDefaultHBox();
 		Label lbl = new Label(headline);
 		lbl.setUnderline(true);
 		lbl.setFont(Font.font(null, FontWeight.BOLD, -1d));
@@ -368,24 +365,19 @@ public class DetailsController extends Controller
 		Node resultTypeNode;
 		if (info != null)
 		{
-			switch (info.getResultType())
+			switch (info.getRelationType())
 			{
-				case LISTED:
-					resultTypeNode = WatcherFxUtil.createMatchLabel(rls);
+				case MATCH:
+					resultTypeNode = WatcherFxUtil.createMatchLabel();
 					break;
-				case LISTED_MANUAL:
-					resultTypeNode = WatcherFxUtil.createManualLabel();
-					break;
-				case LISTED_COMPATIBLE:
-					// fall through
-				case GUESSED_COMPATIBLE:
+				case COMPATIBLE:
 					resultTypeNode = WatcherFxUtil.createCompatibilityLabel(info.getCompatibilityInfo(), (Release r) -> task.generateDisplayName(r), false);
 					break;
-				case GUESSED:
-					resultTypeNode = WatcherFxUtil.createGuessedLabel(info.getStandardRelease(), (Release r) -> task.generateDisplayName(r));
+				case MANUAL:
+					resultTypeNode = WatcherFxUtil.createManualLabel();
 					break;
 				default:
-					resultTypeNode = new Label(info.getResultType().toString());
+					throw new AssertionError();
 			}
 		}
 		else
@@ -395,31 +387,21 @@ public class DetailsController extends Controller
 		gridPane.add(resultTypeNode, 0, rowIndex);
 
 		// Name & Info
-		HBox rlsHbox = new HBox();
-		rlsHbox.setSpacing(5d);
-		rlsHbox.setAlignment(Pos.CENTER_LEFT);
+		HBox hbox = FxUtil.createDefaultHBox();
 
 		// Name
-		rlsHbox.getChildren().add(new Label(task.generateDisplayName(rls)));
+		hbox.getChildren().add(new Label(task.generateDisplayName(rls)));
 
 		// Info
-		Hyperlink furtherInfoLink = WatcherFxUtil.createFurtherInfoHyperlink(rls, processingController.getMainController().getCommonExecutor());
-		if (furtherInfoLink != null)
-		{
-			rlsHbox.getChildren().add(furtherInfoLink);
-		}
+		WatcherFxUtil.addFurtherInfoHyperlink(hbox, rls, processingController.getMainController().getCommonExecutor());
 
 		// nuke
-		rlsHbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(rls));
+		hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(rls));
 
 		// meta tags
-		Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(rls, task.getConfig().getReleaseMetaTags());
-		if (metaTagsLbl != null)
-		{
-			rlsHbox.getChildren().add(metaTagsLbl);
-		}
+		WatcherFxUtil.addMetaTaggedLabel(hbox, rls, task.getConfig().getReleaseMetaTags());
 
-		gridPane.add(rlsHbox, 1, rowIndex);
+		gridPane.add(hbox, 1, rowIndex);
 	}
 
 	private Node createAddListedManuallyLink(Release release)

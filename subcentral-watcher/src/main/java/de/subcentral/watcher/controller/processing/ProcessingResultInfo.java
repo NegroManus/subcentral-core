@@ -7,19 +7,26 @@ import de.subcentral.core.metadata.release.StandardRelease;
 
 public class ProcessingResultInfo implements ProcessingInfo
 {
-	public static enum ResultType
+	public enum SourceType
 	{
-		LISTED, LISTED_COMPATIBLE, LISTED_MANUAL, GUESSED, GUESSED_COMPATIBLE
+		LISTED, GUESSED
+	}
+
+	public enum RelationType
+	{
+		MATCH, COMPATIBLE, MANUAL
 	}
 
 	private ProcessingResult		result;
-	private final ResultType		resultType;
+	private final SourceType		sourceType;
+	private final RelationType		relationType;
 	private final StandardRelease	standardRelease;
 	private final CompatibilityInfo	compatibilityInfo;
 
-	private ProcessingResultInfo(ResultType resultType, StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
+	private ProcessingResultInfo(SourceType sourceType, RelationType relationType, StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
 	{
-		this.resultType = Objects.requireNonNull(resultType, "resultType");
+		this.sourceType = Objects.requireNonNull(sourceType, "sourceType");
+		this.relationType = Objects.requireNonNull(relationType, "relationType");
 		this.standardRelease = standardRelease;
 		this.compatibilityInfo = compatibilityInfo;
 	}
@@ -35,9 +42,14 @@ public class ProcessingResultInfo implements ProcessingInfo
 		return result;
 	}
 
-	public ResultType getResultType()
+	public SourceType getSourceType()
 	{
-		return resultType;
+		return sourceType;
+	}
+
+	public RelationType getRelationType()
+	{
+		return relationType;
 	}
 
 	public StandardRelease getStandardRelease()
@@ -50,28 +62,28 @@ public class ProcessingResultInfo implements ProcessingInfo
 		return compatibilityInfo;
 	}
 
-	public static ProcessingResultInfo listed()
+	public static ProcessingResultInfo listedMatching()
 	{
-		return new ProcessingResultInfo(ResultType.LISTED, null, null);
+		return new ProcessingResultInfo(SourceType.LISTED, RelationType.MATCH, null, null);
 	}
 
 	public static ProcessingResultInfo listedCompatible(CompatibilityInfo compatibilityInfo)
 	{
-		return new ProcessingResultInfo(ResultType.LISTED_COMPATIBLE, null, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
+		return new ProcessingResultInfo(SourceType.LISTED, RelationType.COMPATIBLE, null, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
 	}
 
 	public static ProcessingResultInfo listedManual()
 	{
-		return new ProcessingResultInfo(ResultType.LISTED_MANUAL, null, null);
+		return new ProcessingResultInfo(SourceType.LISTED, RelationType.MANUAL, null, null);
 	}
 
-	public static ProcessingResultInfo guessed(StandardRelease standardRelease)
+	public static ProcessingResultInfo guessedMatching(StandardRelease standardRelease)
 	{
-		return new ProcessingResultInfo(ResultType.GUESSED, standardRelease, null);
+		return new ProcessingResultInfo(SourceType.GUESSED, RelationType.MATCH, standardRelease, null);
 	}
 
 	public static ProcessingResultInfo guessedCompatible(StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
 	{
-		return new ProcessingResultInfo(ResultType.GUESSED, standardRelease, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
+		return new ProcessingResultInfo(SourceType.GUESSED, RelationType.COMPATIBLE, standardRelease, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
 	}
 }

@@ -51,6 +51,7 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -74,6 +75,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
@@ -1158,6 +1160,14 @@ public class FxUtil
 	public static void fixAlertHeight(Alert alert)
 	{
 		alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
+	}
+
+	public static HBox createDefaultHBox()
+	{
+		HBox hbox = new HBox();
+		hbox.setSpacing(5d);
+		hbox.setAlignment(Pos.CENTER_LEFT);
+		return hbox;
 	}
 
 	private FxUtil()

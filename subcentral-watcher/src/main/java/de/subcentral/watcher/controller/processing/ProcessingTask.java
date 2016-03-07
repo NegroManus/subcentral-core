@@ -365,25 +365,28 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 					.filter(ReleaseUtil.filterByGroup(srcRls.getGroup(), false))
 					.collect(Collectors.toList());
 
+			List<ReleaseAndInfo> mediaFilteredFoundRlssWithInfo = toReleaseAndInfoList(mediaFilteredFoundReleases, (Release rls) -> new ReleaseAndInfo(rls, ProcessingResultInfo.listedMatching()));
 			// Guess
 			if (matchingReleases.isEmpty())
 			{
 				log.info("No matching releases found");
-				guess(mediaFilteredFoundReleases);
+				guess(mediaFilteredFoundRlssWithInfo);
 			}
 			else
 			{
 				log.debug("Matching releases:");
 				matchingReleases.forEach(r -> log.debug(r));
 
+				List<ReleaseAndInfo> matchingRlssWithInfo = toReleaseAndInfoList(matchingReleases, (Release rls) -> new ReleaseAndInfo(rls, ProcessingResultInfo.listedMatching()));
+
 				// Add matching releases
-				for (Release rls : matchingReleases)
+				for (ReleaseAndInfo ri : matchingRlssWithInfo)
 				{
-					addReleaseToResult(rls, ProcessingResultInfo.listed());
+					addReleaseToResult(ri);
 				}
 
-				log.debug("Searching for compatible releases among the found releases");
-				addCompatibleReleases(matchingReleases, mediaFilteredFoundReleases);
+				log.debug("Searching for compatible releases among the listed releases");
+				addCompatibleReleases(matchingRlssWithInfo, mediaFilteredFoundRlssWithInfo);
 			}
 		}
 		updateProgress(0.75d, 1d);
@@ -430,7 +433,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		return queryResults;
 	}
 
-	private void guess(List<Release> mediaFilteredFoundReleases) throws Exception
+	private void guess(List<ReleaseAndInfo> mediaFilteredFoundReleases) throws Exception
 	{
 		Release srcRls = parsedObject.getFirstMatchingRelease();
 		if (config.isGuessingEnabled())
@@ -441,24 +444,27 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			List<StandardRelease> stdRlss = config.getStandardReleases();
 			Map<Release, StandardRelease> guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, stdRlss, config.getReleaseMetaTags());
 			logReleases(Level.DEBUG, "Guessed releases:", guessedReleases.keySet());
-			for (Map.Entry<Release, StandardRelease> entry : guessedReleases.entrySet())
+
+			List<ReleaseAndInfo> guessedRlssWithInfos = toReleaseAndInfoList(guessedReleases.entrySet(),
+					(Map.Entry<Release, StandardRelease> entry) -> new ReleaseAndInfo(entry.getKey(), ProcessingResultInfo.guessedMatching(entry.getValue())));
+			for (ReleaseAndInfo entry : guessedRlssWithInfos)
 			{
-				addReleaseToResult(entry.getKey(), ProcessingResultInfo.guessed(entry.getValue()));
+				addReleaseToResult(entry);
 			}
 
 			log.debug("Searching for compatible releases among the listed releases");
-			boolean foundCompatibleListedReleases = addCompatibleReleases(guessedReleases.keySet(), mediaFilteredFoundReleases);
+			boolean foundCompatibleListedReleases = addCompatibleReleases(guessedRlssWithInfos, mediaFilteredFoundReleases);
 			if (!foundCompatibleListedReleases)
 			{
 				log.debug("No compatible releases found among the listed releases. Searching for compatible releases among the standard releases");
-				List<Release> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
+				List<ReleaseAndInfo> stdRlssWithMediaAndMetaTags = new ArrayList<>(stdRlss.size());
 				for (StandardRelease stdRls : stdRlss)
 				{
 					Release rls = new Release(srcRls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
 					TagUtil.transferMetaTags(srcRls.getTags(), rls.getTags(), config.getReleaseMetaTags());
-					stdRlssWithMediaAndMetaTags.add(rls);
+					stdRlssWithMediaAndMetaTags.add(new ReleaseAndInfo(rls, ProcessingResultInfo.guessedMatching(stdRls)));
 				}
-				addCompatibleReleases(guessedReleases.keySet(), stdRlssWithMediaAndMetaTags);
+				addCompatibleReleases(guessedRlssWithInfos, stdRlssWithMediaAndMetaTags);
 			}
 		}
 		else
@@ -467,14 +473,14 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		}
 	}
 
-	private boolean addCompatibleReleases(Collection<Release> matchingRlss, Collection<Release> foundReleases) throws Exception
+	private boolean addCompatibleReleases(Collection<ReleaseAndInfo> matchingRlss, Collection<ReleaseAndInfo> listedRlss) throws Exception
 	{
 		if (config.isCompatibilityEnabled())
 		{
 			log.debug("Search for compatible releases enabled");
 			// Find compatibles
 			CompatibilityService compatibilityService = config.getCompatibilityService();
-			Map<Release, CompatibilityInfo> compatibleReleases = compatibilityService.findCompatibles(matchingRlss, foundReleases);
+			Map<Release, CompatibilityInfo> compatibleReleases = compatibilityService.findCompatibles(toReleaseList(matchingRlss), toReleaseList(listedRlss));
 
 			if (compatibleReleases.isEmpty())
 			{
@@ -489,7 +495,30 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				// Add compatible releases
 				for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
 				{
-					addReleaseToResult(entry.getKey(), ProcessingResultInfo.listedCompatible(entry.getValue()));
+					ProcessingResultInfo info;
+
+					ProcessingResultInfo compatibleRlsResultInfo = null;
+					for (ReleaseAndInfo ri : listedRlss)
+					{
+						if (ri.release == entry.getKey())
+						{
+							compatibleRlsResultInfo = ri.info;
+							break;
+						}
+					}
+					switch (compatibleRlsResultInfo.getSourceType())
+					{
+						case LISTED:
+							info = ProcessingResultInfo.listedCompatible(entry.getValue());
+							break;
+						case GUESSED:
+							info = ProcessingResultInfo.guessedCompatible(compatibleRlsResultInfo.getStandardRelease(), entry.getValue());
+							break;
+						default:
+							throw new AssertionError();
+					}
+
+					addReleaseToResult(entry.getKey(), info);
 				}
 				return true;
 			}
@@ -502,6 +531,11 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	}
 
 	// protected: also callable from DetailsController
+	protected void addReleaseToResult(ReleaseAndInfo rlsAndInfo) throws Exception
+	{
+		addReleaseToResult(rlsAndInfo.release, rlsAndInfo.info);
+	}
+
 	protected void addReleaseToResult(Release rls, ProcessingResultInfo info) throws Exception
 	{
 		List<Correction> corrections = config.getAfterQueryingCorrectionService().correct(rls);
@@ -803,5 +837,27 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			log.warn("CopyOption com.sun.nio.file.ExtendedCopyOption.INTERRUPTIBLE could not be used. Copying won't be interruptible", t);
 			return new CopyOption[] { StandardCopyOption.REPLACE_EXISTING };
 		}
+	}
+
+	private static class ReleaseAndInfo
+	{
+		private final Release				release;
+		private final ProcessingResultInfo	info;
+
+		public ReleaseAndInfo(Release release, ProcessingResultInfo info)
+		{
+			this.release = release;
+			this.info = info;
+		}
+	}
+
+	private static List<Release> toReleaseList(Collection<ReleaseAndInfo> collection)
+	{
+		return collection.stream().map((ReleaseAndInfo ri) -> ri.release).collect(Collectors.toList());
+	}
+
+	private static <T> List<ReleaseAndInfo> toReleaseAndInfoList(Collection<T> collection, Function<T, ReleaseAndInfo> converter)
+	{
+		return collection.stream().map(converter::apply).collect(Collectors.toList());
 	}
 }

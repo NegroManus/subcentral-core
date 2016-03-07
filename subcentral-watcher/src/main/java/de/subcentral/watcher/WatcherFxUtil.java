@@ -39,6 +39,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 public class WatcherFxUtil
 {
@@ -93,7 +94,7 @@ public class WatcherFxUtil
 		return beanClass.getSimpleName();
 	}
 
-	public static Label createMatchLabel(Release rls)
+	public static Label createMatchLabel()
 	{
 		Label lbl = new Label("", new ImageView(FxUtil.loadImg("checked_16.png")));
 		lbl.setTooltip(new Tooltip("Matching release"));
@@ -120,6 +121,15 @@ public class WatcherFxUtil
 		{
 			log.error("Could not create further info hyperlink", e);
 			return null;
+		}
+	}
+
+	public static void addFurtherInfoHyperlink(Pane pane, Release rls, ExecutorService executorService)
+	{
+		Hyperlink link = createFurtherInfoHyperlink(rls, executorService);
+		if (link != null)
+		{
+			pane.getChildren().add(link);
 		}
 	}
 
@@ -178,6 +188,15 @@ public class WatcherFxUtil
 			return metaTagsLbl;
 		}
 		return null;
+	}
+
+	public static void addMetaTaggedLabel(Pane pane, Release rls, List<Tag> metaTags)
+	{
+		Label lbl = createMetaTaggedLabel(rls, metaTags);
+		if (lbl != null)
+		{
+			pane.getChildren().add(lbl);
+		}
 	}
 
 	public static Hyperlink createSettingsHyperlink(SettingsController settingsCtrl, String section, String text)

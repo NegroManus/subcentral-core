@@ -59,11 +59,9 @@ import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
@@ -94,7 +92,7 @@ public class ProcessingController extends Controller
 	private final Binding<ProcessingConfig>							processingConfig			= initProcessingCfgBinding();
 	private final NamingService										namingService				= initNamingService();
 	private final NamingService										namingServiceForFiltering	= initNamingServiceForFiltering();
-	private final PrintPropService								printPropService			= initPropToStringService();
+	private final PrintPropService									printPropService			= initPropToStringService();
 
 	private ExecutorService											processingExecutor;
 
@@ -107,7 +105,7 @@ public class ProcessingController extends Controller
 	@FXML
 	private TreeTableColumn<ProcessingItem, ObservableList<Path>>	filesColumn;
 	@FXML
-	private TreeTableColumn<ProcessingItem, WorkerStatus>		statusColumn;
+	private TreeTableColumn<ProcessingItem, WorkerStatus>			statusColumn;
 	@FXML
 	private TreeTableColumn<ProcessingItem, Double>					progressColumn;
 	@FXML
@@ -368,54 +366,38 @@ public class ProcessingController extends Controller
 						ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
 						ProcessingResult result = resultInfo.getResult();
 
-						HBox hbox = new HBox();
-						hbox.setSpacing(5d);
-						hbox.setAlignment(Pos.CENTER_LEFT);
-
-						// origin info
-						switch (resultInfo.getResultType())
+						HBox hbox = FxUtil.createDefaultHBox();
+						switch (resultInfo.getSourceType())
 						{
 							case LISTED:
-							{
-								addDatabaseHyperlink(result, hbox);
-								break;
-							}
-							case LISTED_COMPATIBLE:
-							{
-								// compatible releases may be listed in a database as well
-								addDatabaseHyperlink(result, hbox);
-								addCompatibilityLabel(result, resultInfo, hbox);
-								break;
-							}
-							case LISTED_MANUAL:
-								Label manualLbl = WatcherFxUtil.createManualLabel();
-								hbox.getChildren().add(manualLbl);
+								WatcherFxUtil.addFurtherInfoHyperlink(hbox, result.getRelease(), mainController.getCommonExecutor());
 								break;
 							case GUESSED:
-							{
-								addGuessedLabel(result, resultInfo, hbox);
+								hbox.getChildren().add(WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls)));
 								break;
-							}
-							case GUESSED_COMPATIBLE:
-							{
-								addGuessedLabel(result, resultInfo, hbox);
-								addCompatibilityLabel(result, resultInfo, hbox);
-								break;
-							}
 							default:
-								log.warn("Unknown result type: " + resultInfo.getResultType());
+								throw new AssertionError();
+						}
+						switch (resultInfo.getRelationType())
+						{
+							case MATCH:
+								// add nothing. MATCH is the standard type
 								break;
+							case COMPATIBLE:
+								hbox.getChildren().add(WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true));
+								break;
+							case MANUAL:
+								hbox.getChildren().add(WatcherFxUtil.createManualLabel());
+								break;
+							default:
+								throw new AssertionError();
 						}
 
 						// nuke
 						hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(result.getRelease()));
 
 						// meta tags
-						Label metaTagsLbl = WatcherFxUtil.createMetaTaggedLabel(result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
-						if (metaTagsLbl != null)
-						{
-							hbox.getChildren().add(metaTagsLbl);
-						}
+						WatcherFxUtil.addMetaTaggedLabel(hbox, result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
 
 						setText("");
 						setGraphic(hbox);
@@ -425,27 +407,6 @@ public class ProcessingController extends Controller
 						setText("");
 						setGraphic(null);
 					}
-				}
-
-				private void addDatabaseHyperlink(ProcessingResult result, HBox hbox)
-				{
-					Hyperlink database = WatcherFxUtil.createFurtherInfoHyperlink(result.getRelease(), result.getTask().getController().getMainController().getCommonExecutor());
-					if (database != null)
-					{
-						hbox.getChildren().add(database);
-					}
-				}
-
-				private void addCompatibilityLabel(ProcessingResult result, ProcessingResultInfo resultInfo, HBox hbox)
-				{
-					Label compLbl = WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true);
-					hbox.getChildren().add(compLbl);
-				}
-
-				private void addGuessedLabel(ProcessingResult result, ProcessingResultInfo resultInfo, HBox hbox)
-				{
-					Label guessedLbl = WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls));
-					hbox.getChildren().add(guessedLbl);
 				}
 
 				private String flagToString(ProcessingTaskInfo.Flag flag)
