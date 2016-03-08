@@ -93,7 +93,7 @@ public class SubCentralSubMan extends AbstractDatabaseApi
 		}
 	}
 
-	private void setInteger(PreparedStatement stmt, int index, Integer value) throws SQLException
+	private static void setInteger(PreparedStatement stmt, int index, Integer value) throws SQLException
 	{
 		if (value != null)
 		{
@@ -105,7 +105,7 @@ public class SubCentralSubMan extends AbstractDatabaseApi
 		}
 	}
 
-	private Date convertYearToDate(Temporal temporal)
+	private static Date convertYearToDate(Temporal temporal)
 	{
 		if (temporal == null)
 		{
@@ -115,7 +115,7 @@ public class SubCentralSubMan extends AbstractDatabaseApi
 		return new Date(year.atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
 	}
 
-	private String getFirstImage(Media media, String imageType)
+	private static String getFirstImage(Media media, String imageType)
 	{
 		List<String> imgs = media.getImages().get(imageType);
 		if (imgs.isEmpty())
@@ -125,7 +125,7 @@ public class SubCentralSubMan extends AbstractDatabaseApi
 		return imgs.get(0);
 	}
 
-	private int getGeneratedId(Statement stmt) throws SQLException
+	private static int getGeneratedId(Statement stmt) throws SQLException
 	{
 		try (ResultSet generatedKeys = stmt.getGeneratedKeys())
 		{

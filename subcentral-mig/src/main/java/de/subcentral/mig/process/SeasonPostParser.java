@@ -154,42 +154,42 @@ public class SeasonPostParser
 		return map.build();
 	}
 
-	public SeasonPostContent getAndParse(int threadId, SubCentralApi api) throws IOException
+	public SeasonPostData getAndParse(int threadId, SubCentralApi api) throws IOException
 	{
 		Document doc = api.getContent("index.php?page=Thread&threadID=" + threadId);
 		return parse(doc);
 	}
 
-	public SeasonPostContent parse(Document threadHtml)
+	public SeasonPostData parse(Document threadHtml)
 	{
-		// Get title and content of first post
-		Element postTitleDiv = threadHtml.getElementsByClass("messageTitle").first();
+		// Get topic and content of first post
+		Element postTopicDiv = threadHtml.getElementsByClass("messageTitle").first();
 		Element postContentDiv = threadHtml.getElementsByClass("messageBody").first();
-		if (postTitleDiv == null || postContentDiv == null)
+		if (postTopicDiv == null || postContentDiv == null)
 		{
 			throw new IllegalArgumentException("Invalid thread html: No post found");
 		}
 		Element postTextDiv = postContentDiv.child(0);
 
-		return parse(postTitleDiv.text(), postTextDiv.html());
+		return parse(postTopicDiv.text(), postTextDiv.html());
 	}
 
-	public SeasonPostContent parse(WbbPost post)
+	public SeasonPostData parse(WbbPost post)
 	{
 		return parse(post.getTopic(), post.getMessage());
 	}
 
-	public SeasonPostContent parseTopic(String postTopic)
+	public SeasonPostData parseTopic(String postTopic)
 	{
-		Data data = new Data();
+		WorkData data = new WorkData();
 		data.postTopic = postTopic;
 		parseTopic(data);
-		return new SeasonPostContent(data.series, data.seasons.keySet(), data.subtitles);
+		return new SeasonPostData(data.series, data.seasons.keySet(), data.subtitles);
 	}
 
-	public SeasonPostContent parse(String postTopic, String postContent)
+	public SeasonPostData parse(String postTopic, String postContent)
 	{
-		Data data = new Data();
+		WorkData data = new WorkData();
 		data.postTopic = postTopic;
 		data.postContent = Jsoup.parse(postContent, Migration.SUBCENTRAL_HOST);
 
@@ -203,13 +203,13 @@ public class SeasonPostParser
 
 		cleanupData(data);
 
-		return new SeasonPostContent(data.series, data.seasons.keySet(), data.subtitles);
+		return new SeasonPostData(data.series, data.seasons.keySet(), data.subtitles);
 	}
 
 	/**
 	 * Trying to parse the post topic with the {@code PATTERN_POST_TOPIC*} patterns.
 	 */
-	private static void parseTopic(Data data)
+	private static void parseTopic(WorkData data)
 	{
 		Matcher topicMatcher = PATTERN_POST_TOPIC_NUMBERED_SEASON.matcher(data.postTopic);
 		if (topicMatcher.matches())
@@ -287,7 +287,7 @@ public class SeasonPostParser
 	 * @param season
 	 * @param postContent
 	 */
-	private static void parseSeasonHeaderImage(Data data)
+	private static void parseSeasonHeaderImage(WorkData data)
 	{
 		Element headerImg = data.postContent.select("div.tbild > img").first();
 		if (headerImg != null)
@@ -320,7 +320,7 @@ public class SeasonPostParser
 	 * @param season
 	 * @param postContent
 	 */
-	private static void parseDescription(Data data)
+	private static void parseDescription(WorkData data)
 	{
 		Elements descriptionDivs = data.postContent.select("div.inhalt, div.websites");
 		StringJoiner joiner = new StringJoiner("\n");
@@ -338,7 +338,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseSubtitleTable(Data data)
+	private static void parseSubtitleTable(WorkData data)
 	{
 		Elements tables = data.postContent.getElementsByTag("table");
 		for (Element table : tables)
@@ -359,7 +359,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseStandardTable(Data data, Element table)
+	private static void parseStandardTable(WorkData data, Element table)
 	{
 		if (!table.getElementsByClass("sclink").isEmpty())
 		{
@@ -430,7 +430,7 @@ public class SeasonPostParser
 		return ColumnType.UNKNOWN;
 	}
 
-	private static void cleanupTable(Data data, List<List<Element>> rows, int numColumns)
+	private static void cleanupTable(WorkData data, List<List<Element>> rows, int numColumns)
 	{
 		// Stores for each columnIndex the current Element which should span several rows
 		Element[] rowSpanCells = new Element[numColumns];
@@ -513,7 +513,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseStandardTableRow(Data data, List<Element> tdElems, ColumnType[] columns)
+	private static void parseStandardTableRow(WorkData data, List<Element> tdElems, ColumnType[] columns)
 	{
 		List<Episode> parsedEpis = new ArrayList<>();
 		// Each top-level list represents a column,
@@ -769,7 +769,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseEpisodeCell(List<Episode> epis, Data data, Element td)
+	private static void parseEpisodeCell(List<Episode> epis, WorkData data, Element td)
 	{
 		String text = removeBBCodes(td.text());
 		Matcher epiMatcher = PATTERN_EPISODE_MULTI.matcher(text);
@@ -1016,7 +1016,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseNonStandardTable(Data data, Element table)
+	private static void parseNonStandardTable(WorkData data, Element table)
 	{
 		// Just add all attachment links as subtitles
 		String content = table.html();
@@ -1033,7 +1033,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void handleSubtitleLinkMatch(Matcher subLinkMatcher, Data data)
+	private static void handleSubtitleLinkMatch(Matcher subLinkMatcher, WorkData data)
 	{
 		Integer attachmentId = Integer.valueOf(subLinkMatcher.group(1));
 		String label = removeHtmlTagsAndBBCodes(subLinkMatcher.group(2));
@@ -1043,7 +1043,7 @@ public class SeasonPostParser
 		data.subtitles.add(subAdj);
 	}
 
-	private static void cleanupData(Data data)
+	private static void cleanupData(WorkData data)
 	{
 		// Add episodes to season
 		// For single-season threads
@@ -1183,13 +1183,13 @@ public class SeasonPostParser
 		return bbCodesRemoved;
 	}
 
-	public static final class SeasonPostContent
+	public static final class SeasonPostData
 	{
 		private final Series							series;
 		private final ImmutableList<Season>				seasons;
 		private final ImmutableList<SubtitleRelease>	subtitleReleases;
 
-		public SeasonPostContent(Series series, Iterable<Season> seasons, Iterable<SubtitleRelease> subtitleAdjustments)
+		public SeasonPostData(Series series, Iterable<Season> seasons, Iterable<SubtitleRelease> subtitleAdjustments)
 		{
 			this.series = Objects.requireNonNull(series, "series");
 			this.seasons = ImmutableList.copyOf(seasons);
@@ -1212,7 +1212,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static final class Data
+	private static class WorkData
 	{
 		// input
 		private String								postTopic;
@@ -1234,7 +1234,7 @@ public class SeasonPostParser
 	 * 
 	 * @param <T>
 	 */
-	private static final class MarkedValue<T>
+	private static class MarkedValue<T>
 	{
 		private final T			value;
 		private final String	marker;

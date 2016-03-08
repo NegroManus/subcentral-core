@@ -11,7 +11,7 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.mig.process.SeasonPostParser;
-import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
+import de.subcentral.mig.process.SeasonPostParser.SeasonPostData;
 
 public class SeasonPostParserTest
 {
@@ -33,18 +33,18 @@ public class SeasonPostParserTest
 	public void testParseTopic() throws IOException
 	{
 		String s = "'Til Death - Staffel 1-2 - [DE-Subs: 15 | VO-Subs: 15] - [Komplett]";
-		SeasonPostContent data = parser.parseTopic(s);
+		SeasonPostData data = parser.parseTopic(s);
 		printSeasonThreadContent(data);
 	}
 
 	private void parse(String postTitle, String postContentRresourceFilename) throws IOException
 	{
 		String content = Resources.toString(Resources.getResource(SeasonPostParserTest.class, postContentRresourceFilename), StandardCharsets.UTF_8);
-		SeasonPostContent data = parser.parse(postTitle, content);
+		SeasonPostData data = parser.parse(postTitle, content);
 		printSeasonThreadContent(data);
 	}
 
-	private void printSeasonThreadContent(SeasonPostContent content)
+	private void printSeasonThreadContent(SeasonPostData content)
 	{
 		System.out.println();
 		System.out.println("Series: " + content.getSeries());

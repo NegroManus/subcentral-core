@@ -45,9 +45,9 @@ import de.subcentral.core.name.SeasonNamer;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
 import de.subcentral.mig.process.SeasonPostParser;
-import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
+import de.subcentral.mig.process.SeasonPostParser.SeasonPostData;
 import de.subcentral.mig.process.SeriesListParser;
-import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
+import de.subcentral.mig.process.SeriesListParser.SeriesListData;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbBoard;
@@ -88,7 +88,7 @@ public class ConsistencyChecker
 	public void check() throws Exception
 	{
 		// Read all necessary data
-		SeriesListContent seriesListContent = readSeriesListContent();
+		SeriesListData seriesListContent = readSeriesListContent();
 
 		// Perform consistency checks
 		// Level: Series
@@ -133,11 +133,11 @@ public class ConsistencyChecker
 	/*
 	 * Read necessary data
 	 */
-	private SeriesListContent readSeriesListContent() throws SQLException
+	private SeriesListData readSeriesListContent() throws SQLException
 	{
 		log.debug("Reading SeriesList content");
 		int seriesListPostId = config.getEnvironmentSettings().getInt("sc.serieslist.postid");
-		SeriesListContent seriesListContent;
+		SeriesListData seriesListContent;
 		try (Connection conn = config.getDataSource().getConnection())
 		{
 			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
@@ -387,7 +387,7 @@ public class ConsistencyChecker
 	/*
 	 * Perform consistency checks
 	 */
-	private void checkSeriesListAgainstQuickJump(SeriesListContent seriesListContent, List<Series> quickJumpSeries) throws IOException
+	private void checkSeriesListAgainstQuickJump(SeriesListData seriesListContent, List<Series> quickJumpSeries) throws IOException
 	{
 		List<String> entries = new ArrayList<>();
 		List<Series> seriesOnlyInSeriesList = new ArrayList<>(seriesListContent.getSeries());
@@ -408,7 +408,7 @@ public class ConsistencyChecker
 		appendChapter("Series only in QuickJump", entries);
 	}
 
-	private void checkSeriesListAgainstBoards(SeriesListContent seriesListContent) throws IOException, SQLException
+	private void checkSeriesListAgainstBoards(SeriesListData seriesListContent) throws IOException, SQLException
 	{
 		List<String> entries = new ArrayList<>();
 
@@ -423,7 +423,7 @@ public class ConsistencyChecker
 		appendChapter("SeriesList <-> Boards", "Series name <-> Board title", entries);
 	}
 
-	private void checkSeriesListAgainstSubRepo(SeriesListContent seriesListContent, List<WbbThread> subRepoThreads) throws IOException
+	private void checkSeriesListAgainstSubRepo(SeriesListData seriesListContent, List<WbbThread> subRepoThreads) throws IOException
 	{
 		ListMatchResult<Series, WbbThread> seriesListToSubRepoThreads = matchLists(seriesListContent.getSeries(),
 				subRepoThreads,
@@ -469,7 +469,7 @@ public class ConsistencyChecker
 				seasonPostsToSubsThreads.onlyInSecondList.stream().map(ConsistencyChecker::formatThread).collect(Collectors.toList()));
 	}
 
-	private void checkSeriesListAgainstStickyThreads(SeriesListContent seriesListContent, List<WbbPost> seriesListSeasonPosts) throws SQLException, IOException
+	private void checkSeriesListAgainstStickyThreads(SeriesListData seriesListContent, List<WbbPost> seriesListSeasonPosts) throws SQLException, IOException
 	{
 		// Read all sticky threads
 		List<WbbThread> allStickyThreads = seriesListContent.getSeries().parallelStream().map((Series series) ->
@@ -495,8 +495,8 @@ public class ConsistencyChecker
 		{
 			List<Season> seriesListSeasons = postsToSeasons.get(post);
 			// Parse season post
-			SeasonPostContent parsedTopic = new SeasonPostParser().parseTopic(post.getTopic());
-			SeasonPostContent parsedPost = new SeasonPostParser().parse(post);
+			SeasonPostData parsedTopic = new SeasonPostParser().parseTopic(post.getTopic());
+			SeasonPostData parsedPost = new SeasonPostParser().parse(post);
 			// Compare seasons only of topic
 			if (!seriesListSeasons.equals(parsedTopic.getSeasons()))
 			{

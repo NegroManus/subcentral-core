@@ -1,7 +1,7 @@
 package de.subcentral.mig.process;
 
 import java.sql.Connection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -19,7 +19,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
-import de.subcentral.mig.process.SeasonPostParser.SeasonPostContent;
+import de.subcentral.mig.process.SeasonPostParser.SeasonPostData;
 import de.subcentral.mig.repo.MigrationRepo;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
@@ -162,7 +162,7 @@ public class MigrationTask extends Task<Void>
 					post = scBoard.getFirstPost(seasonThreadId);
 				}
 
-				SeasonPostContent content = seasonThreadParser.parse(post.getTopic(), post.getMessage());
+				SeasonPostData content = seasonThreadParser.parse(post.getTopic(), post.getMessage());
 				return new ParsedSeason(season, content);
 			}
 			catch (CancellationException e)
@@ -184,19 +184,16 @@ public class MigrationTask extends Task<Void>
 
 	private static List<Season> distinctByThreadId(Iterable<Season> seasons)
 	{
-		// Filter out seasons with same thread id
-		Map<Integer, Integer> threadIds = new HashMap<>();
-		ImmutableList.Builder<Season> builder = ImmutableList.builder();
+		Map<Integer, Season> distinctSeasons = new LinkedHashMap<>();
 		for (Season season : seasons)
 		{
 			Integer threadId = getThreadId(season);
-			if (threadId == null || threadIds.putIfAbsent(threadId, threadId) == null)
+			if (threadId != null)
 			{
-				builder.add(season);
+				distinctSeasons.putIfAbsent(threadId, season);
 			}
 		}
-
-		return builder.build();
+		return ImmutableList.copyOf(distinctSeasons.values());
 	}
 
 	private static void checkInterrupted() throws CancellationException
@@ -210,9 +207,9 @@ public class MigrationTask extends Task<Void>
 	private static class ParsedSeason
 	{
 		private final Season			seasonFromSeriesList;
-		private final SeasonPostContent	seasonThreadContent;
+		private final SeasonPostData	seasonThreadContent;
 
-		public ParsedSeason(Season seasonFromSeriesList, SeasonPostContent seasonThreadContent)
+		public ParsedSeason(Season seasonFromSeriesList, SeasonPostData seasonThreadContent)
 		{
 			this.seasonFromSeriesList = seasonFromSeriesList;
 			this.seasonThreadContent = seasonThreadContent;

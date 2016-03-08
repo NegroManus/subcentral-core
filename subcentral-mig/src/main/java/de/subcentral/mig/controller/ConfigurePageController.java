@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
+import de.subcentral.mig.process.SeriesListParser.SeriesListData;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
@@ -222,7 +222,7 @@ public class ConfigurePageController extends AbstractPageController
 		@Override
 		protected void succeeded()
 		{
-			SeriesListContent seriesListContent = config.getSeriesListContent();
+			SeriesListData seriesListContent = config.getSeriesListContent();
 
 			seriesListView.getItems().setAll(seriesListContent.getSeries());
 			// Configure view according to config

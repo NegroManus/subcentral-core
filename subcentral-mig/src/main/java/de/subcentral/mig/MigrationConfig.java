@@ -21,7 +21,7 @@ import com.mchange.v2.c3p0.DataSources;
 
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.process.SeriesListParser;
-import de.subcentral.mig.process.SeriesListParser.SeriesListContent;
+import de.subcentral.mig.process.SeriesListParser.SeriesListData;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
@@ -41,7 +41,7 @@ public class MigrationConfig
 	private ImmutableList<Series>	selectedSeries	= ImmutableList.of();
 	private boolean					migrateSubtitles;
 	// First migration result
-	private SeriesListContent		seriesListContent;
+	private SeriesListData		seriesListContent;
 
 	public Path getEnvironmentSettingsFile()
 	{
@@ -123,12 +123,12 @@ public class MigrationConfig
 		this.migrateSubtitles = migrateSubtitles;
 	}
 
-	public SeriesListContent getSeriesListContent()
+	public SeriesListData getSeriesListContent()
 	{
 		return seriesListContent;
 	}
 
-	public void setSeriesListContent(SeriesListContent seriesListContent)
+	public void setSeriesListContent(SeriesListData seriesListContent)
 	{
 		this.seriesListContent = seriesListContent;
 	}
@@ -189,7 +189,7 @@ public class MigrationConfig
 		}
 		String seriesListPostContent = seriesListPost.getMessage();
 		SeriesListParser parser = new SeriesListParser();
-		SeriesListContent seriesListContent = parser.parsePost(seriesListPostContent);
+		SeriesListData seriesListContent = parser.parsePost(seriesListPostContent);
 
 		setSeriesListContent(seriesListContent);
 	}

@@ -33,19 +33,20 @@ import de.subcentral.support.subcentralde.SubCentralHttpApi;
 public class SeriesListParser
 {
 	private static final Logger	log	= LogManager.getLogger(SeriesListParser.class);
+
 	private static final String	URL	= "http://subcentral.de/index.php?page=WbbThread&postID=29261#post29261";
 
-	public SeriesListContent getAndParse() throws IOException
+	public SeriesListData getAndParse() throws IOException
 	{
 		return parseThread(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
 	}
 
-	public SeriesListContent parseThread(Document thread)
+	public SeriesListData parseThread(Document thread)
 	{
 		return parsePost(thread.outerHtml());
 	}
 
-	public SeriesListContent parsePost(String postContent)
+	public SeriesListData parsePost(String postContent)
 	{
 		Document doc = Jsoup.parse(postContent, SubCentralHttpApi.getHost().toExternalForm());
 
@@ -221,16 +222,16 @@ public class SeriesListParser
 			}
 		}
 
-		return new SeriesListContent(seriesList, seasonList, networkList.keySet());
+		return new SeriesListData(seriesList, seasonList, networkList.keySet());
 	}
 
-	public static class SeriesListContent
+	public static class SeriesListData
 	{
 		private final ImmutableList<Series>		series;
 		private final ImmutableList<Season>		seasons;
 		private final ImmutableList<Network>	networks;
 
-		public SeriesListContent(Iterable<Series> series, Iterable<Season> seasons, Iterable<Network> networks)
+		public SeriesListData(Iterable<Series> series, Iterable<Season> seasons, Iterable<Network> networks)
 		{
 			this.series = ImmutableList.copyOf(series);
 			this.seasons = ImmutableList.copyOf(seasons);

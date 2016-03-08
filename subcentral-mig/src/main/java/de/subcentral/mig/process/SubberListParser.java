@@ -16,16 +16,16 @@ import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.mig.process.SubberListParser.SubberListContent;
+import de.subcentral.mig.process.SubberListParser.SubberListData;
 import javafx.concurrent.Task;
 
-public class SubberListParser extends Task<SubberListContent>
+public class SubberListParser extends Task<SubberListData>
 {
 	private static final Logger	log	= LogManager.getLogger(SubberListParser.class);
 	private static final String	URL	= "http://subcentral.de/index.php?page=WbbThread&postID=33900#post33900";
 
 	@Override
-	protected SubberListContent call() throws IOException
+	protected SubberListData call() throws IOException
 	{
 		Pattern userIdPattern = Pattern.compile("page=User&userID=(\\d+)");
 		Document doc = Jsoup.parse(new URL(URL), 5000);
@@ -55,14 +55,14 @@ public class SubberListParser extends Task<SubberListContent>
 			subberList.add(subber);
 		}
 
-		return new SubberListContent(subberList);
+		return new SubberListData(subberList);
 	}
 
-	public static class SubberListContent
+	public static class SubberListData
 	{
 		private final ImmutableList<Subber> subbers;
 
-		public SubberListContent(Iterable<Subber> subbers)
+		public SubberListData(Iterable<Subber> subbers)
 		{
 			this.subbers = ImmutableList.copyOf(subbers);
 		}
@@ -76,7 +76,7 @@ public class SubberListParser extends Task<SubberListContent>
 	public static void main(String[] args) throws Exception
 	{
 		SubberListParser task = new SubberListParser();
-		SubberListContent content = task.call();
+		SubberListData content = task.call();
 		for (Subber subber : content.getSubbers())
 		{
 			System.out.printf("<contributorPattern pattern=\"(?&lt;!\\w)%s(?!\\w)\" patternMode=\"REGEX\" type=\"SUBBER\" scUserId=\"%s\" />%n", Pattern.quote(subber.getName()), subber.getId());
