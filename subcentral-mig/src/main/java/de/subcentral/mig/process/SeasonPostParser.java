@@ -42,7 +42,7 @@ public class SeasonPostParser
 {
 	private static final Logger log = LogManager.getLogger(SeasonPostParser.class);
 
-	private static enum ColumnType
+	private enum ColumnType
 	{
 		UNKNOWN, EPISODE, GERMAN_SUBS, ENGLISH_SUBS, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
 	};
@@ -1050,7 +1050,7 @@ public class SeasonPostParser
 		if (data.seasons.size() == 1)
 		{
 			Season season = data.seasons.keySet().iterator().next();
-			data.episodes.keySet().stream().forEach((Episode epi) -> season.addEpisode(epi));
+			data.episodes.keySet().stream().forEach(season::addEpisode);
 		}
 		// For multi-season threads
 		else
