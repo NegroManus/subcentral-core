@@ -68,16 +68,7 @@ public class SeasonPostParser
 	 * American Horror Story - Staffel 1: Horror House - [DE-Subs: 12 | VO-Subs: 12] - [Komplett]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON	= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+):\\s+(.*)\\s+-\\s+\\[.*");
-
-	/**
-	 * Miniseries:
-	 * 
-	 * <pre>
-	 * Band Of Brothers - Miniserie - [DE-Subs: 10 | VO-Subs: 10] - [Komplett]
-	 * </pre>
-	 */
-	private static final Pattern					PATTERN_POST_TOPIC_MINI_SERIES				= Pattern.compile("(.*?)\\s+-\\s+Miniserie\\s+-\\s+\\[.*");
+	private static final Pattern					PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON	= Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+):\\s+(.*?)\\s+-\\s+\\[.*");
 
 	/**
 	 * Multiple seasons:
@@ -96,7 +87,7 @@ public class SeasonPostParser
 	 * Psych - Webisodes - [DE-Subs: 06 | VO-Subs: 06] - [Komplett]
 	 * </pre>
 	 */
-	private static final Pattern					PATTERN_POST_TOPIC_SPECIAL_SEASON			= Pattern.compile("(.*?)\\s+-\\s+(.*)\\s+-\\s+\\[.*");
+	private static final Pattern					PATTERN_POST_TOPIC_SPECIAL_SEASON			= Pattern.compile("(.*?)\\s+-\\s+(.*?)\\s+-\\s+\\[.*");
 
 	private static final Map<Pattern, ColumnType>	COLUMN_TYPE_PATTERNS						= createColumnTypePatternMap();
 
@@ -245,18 +236,6 @@ public class SeasonPostParser
 			String title = topicMatcher.group(3);
 			season.setNumber(number);
 			season.setTitle(title);
-			data.seasons.put(season, season);
-			return;
-		}
-
-		topicMatcher.reset();
-		topicMatcher.usePattern(PATTERN_POST_TOPIC_MINI_SERIES);
-		if (topicMatcher.matches())
-		{
-			Series series = new Series(topicMatcher.group(1));
-			series.setType(Series.TYPE_MINI_SERIES);
-			data.series = series;
-			Season season = series.newSeason(1);
 			data.seasons.put(season, season);
 			return;
 		}

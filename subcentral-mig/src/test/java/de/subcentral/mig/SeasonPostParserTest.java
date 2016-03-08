@@ -2,8 +2,6 @@ package de.subcentral.mig;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -34,9 +32,9 @@ public class SeasonPostParserTest
 	@Test
 	public void testParseTopic() throws IOException
 	{
-		String s = "Buffy the Vampire Slayer - Staffel 1 bis Staffel 7 - Komplett";
-		Matcher m = Pattern.compile("(.*?)\\s+-\\s+Staffel\\s+(\\d+)\\s+bis\\s+Staffel\\s+(\\d+)\\s+-\\s*.*").matcher(s);
-		System.out.println(m.find());
+		String s = "'Til Death - Staffel 1-2 - [DE-Subs: 15 | VO-Subs: 15] - [Komplett]";
+		SeasonPostContent data = parser.parseTopic(s);
+		printSeasonThreadContent(data);
 	}
 
 	private void parse(String postTitle, String postContentRresourceFilename) throws IOException
@@ -54,12 +52,12 @@ public class SeasonPostParserTest
 		for (Season season : content.getSeasons())
 		{
 			System.out.println(season);
-			System.out.println();
 			System.out.println("Episodes:");
 			for (Episode epi : season.getEpisodes())
 			{
 				System.out.println(epi);
 			}
+			System.out.println();
 		}
 
 		System.out.println();

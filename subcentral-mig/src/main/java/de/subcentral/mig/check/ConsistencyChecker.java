@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiPredicate;
@@ -494,9 +495,10 @@ public class ConsistencyChecker
 		{
 			List<Season> seriesListSeasons = postsToSeasons.get(post);
 			// Parse season post
+			SeasonPostContent parsedTopic = new SeasonPostParser().parseTopic(post.getTopic());
 			SeasonPostContent parsedPost = new SeasonPostParser().parse(post);
-			// Compare seasons
-			if (!seriesListSeasons.equals(parsedPost.getSeasons()))
+			// Compare seasons only of topic
+			if (!seriesListSeasons.equals(parsedTopic.getSeasons()))
 			{
 				topicEntries.add(joinSeasons(seriesListSeasons) + " != " + joinSeasons(parsedPost.getSeasons()) + " (post: " + formatPost(post) + ")");
 			}
@@ -526,7 +528,7 @@ public class ConsistencyChecker
 		}
 		List<String> subsNotInSeasonPost = attachments.values()
 				.stream()
-				.filter((WcfAttachment att) -> att != null)
+				.filter(Objects::nonNull)
 				.map(ConsistencyChecker::formatAttachment)
 				.sorted(String.CASE_INSENSITIVE_ORDER)
 				.collect(Collectors.toList());
@@ -535,25 +537,6 @@ public class ConsistencyChecker
 
 		appendChapter("Season posts <-> Subtitle repository", "Subtitles from season posts that are not attached in the subtitle repository", subsNotInRepoEntries);
 		appendChapter("Subtitles from subtitle repository that are not linked in any season post", subsNotInSeasonPost);
-	}
-
-	private static String joinSeasons(Iterable<Season> seasons)
-	{
-		StringJoiner joiner = new StringJoiner(", ");
-		boolean first = true;
-		for (Season season : seasons)
-		{
-			if (first)
-			{
-				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season));
-				first = false;
-			}
-			else
-			{
-				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)));
-			}
-		}
-		return joiner.toString();
 	}
 
 	/*
@@ -667,9 +650,23 @@ public class ConsistencyChecker
 		return series.getName();
 	}
 
-	private static String formatSeason(Season season)
+	private static String joinSeasons(Iterable<Season> seasons)
 	{
-		return NamingDefaults.getDefaultSeasonNamer().name(season) + " (threadID=" + season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID) + ")";
+		StringJoiner joiner = new StringJoiner(", ");
+		boolean first = true;
+		for (Season season : seasons)
+		{
+			if (first)
+			{
+				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+				first = false;
+			}
+			else
+			{
+				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE, SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)));
+			}
+		}
+		return joiner.toString();
 	}
 
 	private static String formatSubtitleFile(SubtitleRelease subFile)
