@@ -203,7 +203,7 @@ public class MigrationTask extends Task<Void>
 	{
 		if (Thread.interrupted())
 		{
-			throw new CancellationException("WbbThread " + Thread.currentThread() + " was interrupted");
+			throw new CancellationException("Thread " + Thread.currentThread() + " was interrupted");
 		}
 	}
 
