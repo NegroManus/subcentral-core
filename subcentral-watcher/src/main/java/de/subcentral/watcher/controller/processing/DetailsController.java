@@ -429,12 +429,14 @@ public class DetailsController extends Controller
 				protected void succeeded()
 				{
 					updateReleaseDetailsSection();
+					task.succeeded();
 				}
 
 				@Override
 				protected void failed()
 				{
 					btn.setDisable(false);
+					task.failed();
 				}
 			};
 			processingController.getMainController().getCommonExecutor().submit(addReleaseTask);
