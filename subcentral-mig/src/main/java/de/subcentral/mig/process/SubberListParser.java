@@ -29,7 +29,7 @@ public class SubberListParser extends Task<SubberListData>
 	{
 		Pattern userIdPattern = Pattern.compile("page=User&userID=(\\d+)");
 		Document doc = Jsoup.parse(new URL(URL), 5000);
-		SortedSet<Subber> subberList = new TreeSet<>();
+		SortedSet<ScContributor> subberList = new TreeSet<>();
 
 		/**
 		 * <td><a href="http://www.subcentral.de/index.php?page=User&userID=21359" title= "Benutzerprofil von &raquo; **butterfly**&laquo; aufrufen" >**butterfly**</a></td>
@@ -43,7 +43,7 @@ public class SubberListParser extends Task<SubberListData>
 				log.warn("Empty user name: {}", a);
 				continue;
 			}
-			Subber subber = new Subber();
+			ScContributor subber = new ScContributor(ScContributor.Type.SUBBER);
 			subber.setName(name);
 			int id = 0;
 			Matcher userIdMatcher = userIdPattern.matcher(a.attr("href"));
@@ -60,14 +60,14 @@ public class SubberListParser extends Task<SubberListData>
 
 	public static class SubberListData
 	{
-		private final ImmutableList<Subber> subbers;
+		private final ImmutableList<ScContributor> subbers;
 
-		public SubberListData(Iterable<Subber> subbers)
+		public SubberListData(Iterable<ScContributor> subbers)
 		{
 			this.subbers = ImmutableList.copyOf(subbers);
 		}
 
-		public ImmutableList<Subber> getSubbers()
+		public ImmutableList<ScContributor> getSubbers()
 		{
 			return subbers;
 		}
@@ -77,7 +77,7 @@ public class SubberListParser extends Task<SubberListData>
 	{
 		SubberListParser task = new SubberListParser();
 		SubberListData content = task.call();
-		for (Subber subber : content.getSubbers())
+		for (ScContributor subber : content.getSubbers())
 		{
 			System.out.printf("<contributorPattern pattern=\"(?&lt;!\\w)%s(?!\\w)\" patternMode=\"REGEX\" type=\"SUBBER\" scUserId=\"%s\" />%n", Pattern.quote(subber.getName()), subber.getId());
 		}

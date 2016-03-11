@@ -26,18 +26,17 @@ import de.subcentral.core.file.subtitle.Item;
 import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
-import de.subcentral.mig.process.AbstractContributor;
-import de.subcentral.mig.process.Subber;
+import de.subcentral.mig.process.ScContributor;
 
 public class ContributionParser
 {
-	private static final Logger log = LogManager.getLogger(ContributionParser.class);
+	private static final Logger						log							= LogManager.getLogger(ContributionParser.class);
 
 	private ImmutableList<ContributionPattern>		contributionPatterns		= ImmutableList.of();
 	private ImmutableList<ContributionTypePattern>	contributionTypePatterns	= ImmutableList.of();
 	private ImmutableList<ContributorPattern>		contributorPatterns			= ImmutableList.of();
 	private ImmutableList<Pattern>					irrelevantPatterns			= ImmutableList.of();
-	private CorrectionService					standardizingService		= null;
+	private CorrectionService						standardizingService		= null;
 
 	public ImmutableList<ContributionPattern> getContributionPatterns()
 	{
@@ -130,48 +129,48 @@ public class ContributionParser
 		{
 			switch (token.type)
 			{
-			case CONTRIBUTION:
-				addContribution(contributions, token.contributor, token.contributionType);
-				break;
-			case CONTRIBUTION_TYPE:
-				if (Token.Type.CONTRIBUTION_TYPE != typeOfLastToken)
-				{
-					// if last token wasn't a contribution type, assume that a new contribution list is started
-					currentContributionTypes.clear();
-				}
-				currentContributionTypes.add(token.contributionType);
-				break;
-			case CONTRIBUTOR:
-				if (currentContributionTypes.isEmpty())
-				{
-					addContribution(contributions, token.contributor, null);
-				}
-				else
-				{
-					// add contributions for this contributor (one per contributionType)
-					for (String contributionType : currentContributionTypes)
+				case CONTRIBUTION:
+					addContribution(contributions, token.contributor, token.contributionType);
+					break;
+				case CONTRIBUTION_TYPE:
+					if (Token.Type.CONTRIBUTION_TYPE != typeOfLastToken)
 					{
-						addContribution(contributions, token.contributor, contributionType);
+						// if last token wasn't a contribution type, assume that a new contribution list is started
+						currentContributionTypes.clear();
 					}
-				}
-				break;
-			case WORD:
-				if (currentContributionTypes.isEmpty())
-				{
-					// do not add unrecognized words if no contribution type specified
-					// addContribution(contributions, wordToContributor(normalizedText, token), null);
-				}
-				else
-				{
-					// add contributions for this contributor (one per contributionType)
-					for (String contributionType : currentContributionTypes)
+					currentContributionTypes.add(token.contributionType);
+					break;
+				case CONTRIBUTOR:
+					if (currentContributionTypes.isEmpty())
 					{
-						addContribution(contributions, wordToContributor(normalizedText, token), contributionType);
+						addContribution(contributions, token.contributor, null);
 					}
-				}
-				break;
-			default:
-				throw new AssertionError();
+					else
+					{
+						// add contributions for this contributor (one per contributionType)
+						for (String contributionType : currentContributionTypes)
+						{
+							addContribution(contributions, token.contributor, contributionType);
+						}
+					}
+					break;
+				case WORD:
+					if (currentContributionTypes.isEmpty())
+					{
+						// do not add unrecognized words if no contribution type specified
+						// addContribution(contributions, wordToContributor(normalizedText, token), null);
+					}
+					else
+					{
+						// add contributions for this contributor (one per contributionType)
+						for (String contributionType : currentContributionTypes)
+						{
+							addContribution(contributions, wordToContributor(normalizedText, token), contributionType);
+						}
+					}
+					break;
+				default:
+					throw new AssertionError();
 			}
 			typeOfLastToken = token.type;
 		}
@@ -179,7 +178,7 @@ public class ContributionParser
 
 	private Contributor wordToContributor(String text, Token wordToken)
 	{
-		Subber subber = new Subber();
+		ScContributor subber = new ScContributor(ScContributor.Type.SUBBER);
 		subber.setName(text.substring(wordToken.start, wordToken.end));
 		return subber;
 	}
@@ -216,16 +215,20 @@ public class ContributionParser
 			{
 				possibleCreditItem = true;
 
-				Subber subber = new Subber();
-				subber.setName(m.group(pattern.getContributorGroup()));
-				Contributor contributor = subber;
+				// try to parse the contributor name
+				String contributorName = m.group(pattern.getContributorGroup());
+				ScContributor contributor = null;
 				for (ContributorPattern contrPattern : contributorPatterns)
 				{
-					Matcher contrMatcher = contrPattern.getPattern().matcher(contributor.getName());
-					if (contrMatcher.matches())
+					contributor = contrPattern.match(contributorName);
+					if (contributor != null)
 					{
-						contributor = contrPattern.getContributor();
+						break;
 					}
+				}
+				if (contributor == null)
+				{
+					contributor = new ScContributor(ScContributor.Type.SUBBER, contributorName);
 				}
 
 				String contributionType = m.group(pattern.getContributionTypeGroup());
@@ -250,14 +253,8 @@ public class ContributionParser
 			while (m.find())
 			{
 				possibleCreditItem = true;
-				Contributor contributor = pattern.getContributor();
-				// set the name to the match result if no explicit name set
-				if (contributor.getName() == null)
-				{
-					String name = normalizedText.substring(m.start(), m.end());
-					((AbstractContributor) contributor).setName(name);
-				}
-				tokens.add(Token.forContributor(m.start(), m.end(), m.group(), pattern.getContributor(), pattern.getConfidence()));
+				Contributor contributor = pattern.contributorFromMatch(m);
+				tokens.add(Token.forContributor(m.start(), m.end(), m.group(), contributor, pattern.getConfidence()));
 				normalizedText = replaceTokenWithSpaces(normalizedText, m.start(), m.end());
 			}
 		}

@@ -134,9 +134,10 @@ public class SeasonPostParser
 	 * </pre>
 	 */
 	private static final Pattern					PATTERN_ATTACHMENT_BBCODE					= Pattern.compile("\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\](.*?)\\[/url\\]");
-	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED			= Pattern.compile("([*])?<a.*?page=Attachment.*?attachmentID=(\\d+).*?>([*])?(.*?)([*])?</a>([*])?");
+	private static final Pattern					PATTERN_ATTACHMENT_ANCHOR_MARKED			= Pattern
+			.compile("([*]+)?<a.*?page=Attachment.*?attachmentID=(\\d+).*?>([*]+)?(.*?)([*]+)?</a>([*]+)?");
 	private static final Pattern					PATTERN_ATTACHMENT_BBCODE_MARKED			= Pattern
-			.compile("([*])?\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\]([*])?(.*?)([*])?\\[/url\\]([*])?");
+			.compile("([*]+)?\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\]([*]+)?(.*?)([*]+)?\\[/url\\]([*]+)?");
 
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
 	{
@@ -152,6 +153,11 @@ public class SeasonPostParser
 		map.put(Pattern.compile("Anpassung"), ColumnType.ADJUSTMENT);
 		map.put(Pattern.compile("Quelle"), ColumnType.SOURCE);
 		return map.build();
+	}
+
+	public SeasonPostParser()
+	{
+
 	}
 
 	public SeasonPostData getAndParse(int threadId, SubCentralApi api) throws IOException
@@ -547,7 +553,7 @@ public class SeasonPostParser
 				case TIMINGS:
 					// fall through
 				case ADJUSTMENT:
-					parseContributionsCell(parsedContributions, td, colType);
+					parseContributorsCell(parsedContributions, td, colType);
 					break;
 				case SOURCE:
 					parseSourcesCell(parsedSources, td);
@@ -660,7 +666,7 @@ public class SeasonPostParser
 		// Add sources to subtitles
 		if (!parsedSources.isEmpty())
 		{
-			boolean someSourcesMarked = parsedSources.stream().mapToInt((MarkedValue<String> source) -> source.marker == null ? 0 : 1).sum() > 0;
+			boolean someSourcesMarked = parsedSources.stream().anyMatch((MarkedValue<String> v) -> v.marker != null);
 			// If any markers
 			if (someSourcesMarked)
 			{
@@ -881,27 +887,17 @@ public class SeasonPostParser
 
 	private static void handleMarkedSubtitleLinkMatch(Matcher matcher, String language, List<MarkedValue<SubtitleRelease>> subFiles)
 	{
-		String marker;
-		if (matcher.group(1) != null)
+		String marker = null;
+		// Test all possible marker groups: 1,3,5,6
+		for (int i : new int[] { 1, 3, 5, 6 })
 		{
-			marker = matcher.group(1);
+			if (matcher.start(i) != -1)
+			{
+				marker = matcher.group(i);
+				break;
+			}
 		}
-		else if (matcher.group(3) != null)
-		{
-			marker = matcher.group(3);
-		}
-		else if (matcher.group(5) != null)
-		{
-			marker = matcher.group(5);
-		}
-		else if (matcher.group(6) != null)
-		{
-			marker = matcher.group(6);
-		}
-		else
-		{
-			marker = null;
-		}
+
 		Integer attachmentId = Integer.valueOf(matcher.group(2));
 		String label = removeHtmlTagsAndBBCodes(matcher.group(4));
 
@@ -928,7 +924,7 @@ public class SeasonPostParser
 	 * Grollbringer | Negro & Sogge377
 	 * </pre>
 	 */
-	private static void parseContributionsCell(List<List<List<Contribution>>> contributions, Element td, ColumnType colType)
+	private static void parseContributorsCell(List<List<List<Contribution>>> contributions, Element td, ColumnType colType)
 	{
 		String contributionType;
 		switch (colType)
@@ -961,7 +957,7 @@ public class SeasonPostParser
 				List<Contribution> divContributions = new ArrayList<>();
 				for (String contributorName : SPLITTER_LIST.split(division))
 				{
-					Subber contributor = new Subber();
+					ScContributor contributor = new ScContributor(ScContributor.Type.SUBBER);
 					contributor.setName(contributorName);
 					divContributions.add(new Contribution(contributor, contributionType));
 				}

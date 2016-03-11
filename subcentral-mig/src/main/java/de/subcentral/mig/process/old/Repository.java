@@ -16,16 +16,16 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.NamingUtil;
-import de.subcentral.mig.process.Subber;
+import de.subcentral.mig.process.ScContributor;
 
 public class Repository
 {
-	private static final Logger log = LogManager.getLogger(Repository.class);
+	private static final Logger					log			= LogManager.getLogger(Repository.class);
 
 	private final SortedSet<Series>				series		= new TreeSet<>();
 	private final SortedSet<Season>				seasons		= new TreeSet<>();
 	private final SortedSet<Episode>			episodes	= new TreeSet<>();
-	private final SortedSet<Subber>				subbers		= new TreeSet<>();
+	private final SortedSet<ScContributor>		subbers		= new TreeSet<>();
 	private final SortedSet<Release>			releases	= new TreeSet<>();
 	private final SortedSet<SubtitleRelease>	subtitles	= new TreeSet<>();
 
@@ -44,7 +44,7 @@ public class Repository
 		return episodes;
 	}
 
-	public SortedSet<Subber> getSubbers()
+	public SortedSet<ScContributor> getSubbers()
 	{
 		return subbers;
 	}

@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 
 public class ConfidencePattern
 {
-	private final Pattern	pattern;
-	private final int		confidence;
+	protected final Pattern	pattern;
+	protected final int		confidence;
 
 	public ConfidencePattern(Pattern pattern, int confidence)
 	{

@@ -491,12 +491,13 @@ public class ConsistencyChecker
 		Map<Integer, WcfAttachment> attachments = subRepoAttachments.stream().collect(Collectors.toMap((WcfAttachment att) -> att.getId(), (WcfAttachment att) -> att));
 		List<String> topicEntries = new ArrayList<>();
 		List<String> subsNotInRepoEntries = new ArrayList<>();
+		SeasonPostParser seasonPostParser = new SeasonPostParser();
 		for (WbbPost post : postsToSeasons.keySet())
 		{
 			List<Season> seriesListSeasons = postsToSeasons.get(post);
 			// Parse season post
-			SeasonPostData parsedTopic = new SeasonPostParser().parseTopic(post.getTopic());
-			SeasonPostData parsedPost = new SeasonPostParser().parse(post);
+			SeasonPostData parsedTopic = seasonPostParser.parseTopic(post.getTopic());
+			SeasonPostData parsedPost = seasonPostParser.parse(post);
 			// Compare seasons only of topic
 			if (!seriesListSeasons.equals(parsedTopic.getSeasons()))
 			{

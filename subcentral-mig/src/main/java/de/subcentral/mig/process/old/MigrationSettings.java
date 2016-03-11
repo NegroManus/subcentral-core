@@ -20,15 +20,13 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.correct.CorrectionService;
 import de.subcentral.core.correct.PatternStringReplacer;
+import de.subcentral.core.correct.PatternStringReplacer.Mode;
 import de.subcentral.core.correct.ReflectiveCorrector;
 import de.subcentral.core.correct.SeriesNameCorrector;
 import de.subcentral.core.correct.TypeBasedCorrectionService;
-import de.subcentral.core.correct.PatternStringReplacer.Mode;
-import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.mig.process.Subber;
-import de.subcentral.mig.process.SubtitleGroup;
+import de.subcentral.mig.process.ScContributor;
 import de.subcentral.support.thetvdbcom.TheTvDbCom;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
@@ -146,29 +144,10 @@ public class MigrationSettings
 
 			int confidence = patternCfg.getInt("[@confidence]", 2);
 
-			Contributor contributor = null;
 			String name = patternCfg.getString("[@name]");
-			String type = patternCfg.getString("[@type]", "SUBBER");
-			switch (type)
-			{
-				case "SUBBER":
-					Subber subber = new Subber();
-					subber.setName(name);
-					int scUserId = patternCfg.getInt("[@scUserId]", 0);
-					subber.setId(scUserId);
-					contributor = subber;
-					break;
-				case "GROUP":
-					SubtitleGroup group = new SubtitleGroup();
-					group.setName(name);
-					contributor = group;
-					break;
-				default:
-					throw new ConfigurationException("Illegal type: " + type);
-
-			}
-
-			patterns.add(new ContributorPattern(userPattern.toPattern(), confidence, contributor));
+			ScContributor.Type type = ScContributor.Type.valueOf(patternCfg.getString("[@type]", ScContributor.Type.SUBBER.name()));
+			int id = patternCfg.getInt("[@scUserId]", 0);
+			patterns.add(new ContributorPattern(userPattern.toPattern(), confidence, type, name, id));
 		}
 		patterns.trimToSize();
 		return patterns;
@@ -200,7 +179,7 @@ public class MigrationSettings
 		{
 			try
 			{
-				service.registerCorrector(Subber.class, new ReflectiveCorrector<>(Subber.class, "name", contributorNameReplacer, Function.identity()));
+				service.registerCorrector(ScContributor.class, new ReflectiveCorrector<>(ScContributor.class, "name", contributorNameReplacer, Function.identity()));
 			}
 			catch (IntrospectionException e)
 			{
