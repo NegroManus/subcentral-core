@@ -34,6 +34,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.mig.Migration;
+import de.subcentral.mig.process.old.ContributorPattern;
 import de.subcentral.support.subcentralde.SubCentralApi;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
@@ -46,6 +47,9 @@ public class SeasonPostParser
 	{
 		UNKNOWN, EPISODE, GERMAN_SUBS, ENGLISH_SUBS, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
 	};
+
+	private static final String						NO_VALUE									= "-";
+	private static final char						MARKER_CHAR									= '*';
 
 	private static final Splitter					SPLITTER_DIVISON							= Splitter.on(CharMatcher.anyOf("|/")).trimResults();
 	private static final Splitter					SPLITTER_LIST								= Splitter.on(CharMatcher.anyOf(",&")).trimResults();
@@ -139,6 +143,18 @@ public class SeasonPostParser
 	private static final Pattern					PATTERN_ATTACHMENT_BBCODE_MARKED			= Pattern
 			.compile("([*]+)?\\[url=.*?page=Attachment.*?attachmentID=(\\d+).*?\\]([*]+)?(.*?)([*]+)?\\[/url\\]([*]+)?");
 
+	private final List<ContributorPattern>			contributorParsers;
+
+	public SeasonPostParser()
+	{
+		this(ImmutableList.of());
+	}
+
+	public SeasonPostParser(Iterable<ContributorPattern> contributorParsers)
+	{
+		this.contributorParsers = ImmutableList.copyOf(contributorParsers);
+	}
+
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
 	{
 		ImmutableMap.Builder<Pattern, ColumnType> map = ImmutableMap.builder();
@@ -155,9 +171,9 @@ public class SeasonPostParser
 		return map.build();
 	}
 
-	public SeasonPostParser()
+	public List<ContributorPattern> getContributorParsers()
 	{
-
+		return contributorParsers;
 	}
 
 	public SeasonPostData getAndParse(int threadId, SubCentralApi api) throws IOException
@@ -390,7 +406,7 @@ public class SeasonPostParser
 		for (int i = 0; i < thElems.size(); i++)
 		{
 			Element th = thElems.get(i);
-			ColumnType colType = determineColumnType(th.html());
+			ColumnType colType = parseColumnType(th.html());
 			if (ColumnType.UNKNOWN.equals(colType))
 			{
 				throw new IllegalArgumentException("Column type could not be determined. Unknown column head: " + th.toString());
@@ -424,7 +440,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static ColumnType determineColumnType(String columnTitle)
+	private static ColumnType parseColumnType(String columnTitle)
 	{
 		for (Map.Entry<Pattern, ColumnType> entries : COLUMN_TYPE_PATTERNS.entrySet())
 		{
@@ -926,29 +942,12 @@ public class SeasonPostParser
 	 */
 	private static void parseContributorsCell(List<List<List<Contribution>>> contributions, Element td, ColumnType colType)
 	{
-		String contributionType;
-		switch (colType)
-		{
-			case TRANSLATION:
-				contributionType = Subtitle.CONTRIBUTION_TYPE_TRANSLATION;
-				break;
-			case REVISION:
-				contributionType = Subtitle.CONTRIBUTION_TYPE_REVISION;
-				break;
-			case TIMINGS:
-				contributionType = Subtitle.CONTRIBUTION_TYPE_TIMINGS;
-				break;
-			case ADJUSTMENT:
-				contributionType = SubtitleRelease.CONTRIBUTION_TYPE_ADJUSTMENT;
-				break;
-			default:
-				contributionType = null;
-		}
+		String contributionType = contributionTypeFromColumnType(colType);
 		List<List<Contribution>> contributionsForColumn = new ArrayList<>();
-		String text = removeBBCodes(td.text());
+		String text = removeHtmlTagsAndBBCodes(td.text());
 		for (String division : SPLITTER_DIVISON.split(text))
 		{
-			if (division.isEmpty() || division.equals("-"))
+			if (division.isEmpty() || division.equals(NO_VALUE))
 			{
 				contributionsForColumn.add(ImmutableList.of());
 			}
@@ -967,28 +966,77 @@ public class SeasonPostParser
 		contributions.add(contributionsForColumn);
 	}
 
+	private static String contributionTypeFromColumnType(ColumnType colType)
+	{
+		switch (colType)
+		{
+			case TRANSLATION:
+				return Subtitle.CONTRIBUTION_TYPE_TRANSLATION;
+			case REVISION:
+				return Subtitle.CONTRIBUTION_TYPE_REVISION;
+			case TIMINGS:
+				return Subtitle.CONTRIBUTION_TYPE_TIMINGS;
+			case ADJUSTMENT:
+				return SubtitleRelease.CONTRIBUTION_TYPE_ADJUSTMENT;
+			default:
+				return null;
+		}
+	}
+
 	private static void parseSourcesCell(List<MarkedValue<String>> sources, Element td)
 	{
 		String text = removeBBCodes(td.text());
 		Iterable<String> divisions = SPLITTER_DIVISON.split(text);
 		for (String division : divisions)
 		{
-			String marker = null;
-			String source = division;
-			if (division.startsWith("*"))
-			{
-				int endOfMarker = division.lastIndexOf('*') + 1;
-				marker = division.substring(0, endOfMarker);
-				source = division.substring(endOfMarker);
-			}
-			else if (division.endsWith("*"))
-			{
-				int startOfMarker = division.indexOf('*');
-				marker = division.substring(startOfMarker);
-				source = division.substring(0, startOfMarker);
-			}
-			sources.add(new MarkedValue<String>(source, marker));
+			sources.add(parseMarkedValue(division));
 		}
+	}
+
+	private static MarkedValue<String> parseMarkedValue(String s)
+	{
+		StringBuilder marker = null;
+		// Get leading marker
+		for (int i = 0; i < s.length(); i++)
+		{
+			if (MARKER_CHAR != s.charAt(i))
+			{
+				break;
+			}
+			else
+			{
+				if (marker == null)
+				{
+					marker = new StringBuilder(2);
+				}
+				marker.append(MARKER_CHAR);
+			}
+		}
+		if (marker != null)
+		{
+			return new MarkedValue<String>(s.substring(marker.length()), marker.toString());
+		}
+		// Or if no leading marker get trailing marker
+		for (int i = s.length() - 1; i >= 0; i--)
+		{
+			if (MARKER_CHAR != s.charAt(i))
+			{
+				break;
+			}
+			else
+			{
+				if (marker == null)
+				{
+					marker = new StringBuilder(2);
+				}
+				marker.append(MARKER_CHAR);
+			}
+		}
+		if (marker != null)
+		{
+			return new MarkedValue<String>(s.substring(marker.length(), s.length()), marker.toString());
+		}
+		return new MarkedValue<String>(s, null);
 	}
 
 	private static void addSource(SubtitleRelease subAdj, String source)
@@ -1046,7 +1094,10 @@ public class SeasonPostParser
 		if (data.seasons.size() == 1)
 		{
 			Season season = data.seasons.keySet().iterator().next();
-			data.episodes.keySet().stream().forEach(season::addEpisode);
+			for (Episode epi : data.episodes.keySet())
+			{
+				season.addEpisode(epi);
+			}
 		}
 		// For multi-season threads
 		else
