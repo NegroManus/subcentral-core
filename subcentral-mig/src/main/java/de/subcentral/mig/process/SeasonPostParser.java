@@ -2,6 +2,7 @@ package de.subcentral.mig.process;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.StringJoiner;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +51,6 @@ public class SeasonPostParser
 	};
 
 	private static final String						NO_VALUE									= "-";
-	private static final char						MARKER_CHAR									= '*';
 
 	private static final Splitter					SPLITTER_DIVISON							= Splitter.on(CharMatcher.anyOf("|/")).trimResults();
 	private static final Splitter					SPLITTER_LIST								= Splitter.on(CharMatcher.anyOf(",&")).trimResults();
@@ -538,14 +539,14 @@ public class SeasonPostParser
 	private static void parseStandardTableRow(WorkData data, List<Element> tdElems, ColumnType[] columns)
 	{
 		List<Episode> parsedEpis = new ArrayList<>();
-		// Each top-level list represents a column,
-		// each 2nd-level list represents the subtitles in that column
+		// Each top-level list contains the columns,
+		// each 2nd-level list contains the subtitles within a column
 		List<List<MarkedValue<SubtitleRelease>>> parsedSubs = new ArrayList<>();
-		// Each top-level list represents a column,
-		// each 2nd-level list represents a division within that column (the divisions are divided by "|")
-		// each 3rd-level list represents the contributions inside a division
-		List<List<List<Contribution>>> parsedContributions = new ArrayList<>();
-		// Each top-level list represents a division
+		// Each top-level list contains the columns,
+		// each 2nd-level list contains the divisions within a column (the divisions are divided by "|"),
+		// each 3rd-level list contains the contributions within a division
+		List<List<List<MarkedValue<Contribution>>>> parsedContributions = new ArrayList<>();
+		// Each top-level list contains the divisions inside the source column
 		List<MarkedValue<String>> parsedSources = new ArrayList<>();
 
 		for (int i = 0; i < tdElems.size(); i++)
@@ -592,85 +593,89 @@ public class SeasonPostParser
 			}
 		}
 
-		// Add contributions to subtitles
+		List<MarkedValue<SubtitleRelease>> allSubs = collectAllSubtitles(parsedSubs);
 		int numSubColumns = parsedSubs.size();
-		int numSubs = parsedSubs.stream().mapToInt((List<MarkedValue<SubtitleRelease>> subsPerColumn) -> subsPerColumn.size()).sum();
-		// For each contribution column
-		for (List<List<Contribution>> columnContributions : parsedContributions)
+		int numSubs = allSubs.size();
+
+		// Add contributions to subtitles
+		List<MarkedValue<Contribution>> allContributions = collectAllContributions(parsedContributions);
+		// If any markers
+		if (MarkedValue.anyValueMarked(allContributions))
 		{
-			int numContributionDivisions = columnContributions.size();
-			// If number of contributionDivisions = 1
-			// -> map all contributions in that division to all subtitles
-			// [LOL][DIM] <-> [SubberA]
-			// [LOL][DIM] <-> [SubberA, SubberB]
-			if (numContributionDivisions == 1)
+			MarkedValue.mapMarkedValues(allSubs, allContributions, SeasonPostParser::addContribution);
+		}
+		else
+		{
+			// For each contribution column (each has a separate contribution type)
+			for (List<List<MarkedValue<Contribution>>> contributionsInColumn : parsedContributions)
 			{
-				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
+				int numContributionDivisions = contributionsInColumn.size();
+				// If number of contributionDivisions = 1
+				// -> map all contributions in that division to all subtitles
+				// [LOL][DIM] <-> [SubberA]
+				// [LOL][DIM] <-> [SubberA, SubberB]
+				if (numContributionDivisions == 1)
 				{
-					for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
+					for (List<MarkedValue<SubtitleRelease>> subsInColumn : parsedSubs)
 					{
-						addContributions(subAdj.value, columnContributions.get(0));
+						for (MarkedValue<SubtitleRelease> subAdj : subsInColumn)
+						{
+							addContributions(subAdj.value, contributionsInColumn.get(0));
+						}
 					}
 				}
-			}
-			// If number of subColumns == number of contributionDivisions
-			// -> map each contributionDivision to a sub in a column
-			// [LOL][DIM] <-> [SubberA | SubberB]
-			else if (numSubColumns == numContributionDivisions)
-			{
-				for (int i = 0; i < numSubColumns; i++)
+				// If number of subColumns == number of contributionDivisions
+				// -> map each contribution division to all subs in the corresponding subs column
+				// [LOL][DIM] <-> [SubberA | SubberB]
+				else if (numSubColumns == numContributionDivisions)
 				{
-					List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
-					List<Contribution> divisionContributions = columnContributions.get(i);
-					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
+					for (int i = 0; i < numSubColumns; i++)
 					{
-						addContributions(markedSubAdj.value, divisionContributions);
+						List<MarkedValue<SubtitleRelease>> subsInColumn = parsedSubs.get(i);
+						List<MarkedValue<Contribution>> contributionsInDivision = contributionsInColumn.get(i);
+						for (MarkedValue<SubtitleRelease> markedSub : subsInColumn)
+						{
+							addContributions(markedSub.value, contributionsInDivision);
+						}
 					}
 				}
-			}
-			// If number of subs == number of contributionDivisions
-			// -> map each contributionDivision to a sub
-			// [DIM | WEB-DL] <-> [SubberA | SubberB]
-			// [2HD] [PublicHD | DON] <-> [Grizzly | Eric | NegroManus]
-			else if (numSubs == columnContributions.size())
-			{
-				int index = 0;
-				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
+				// If number of subs == number of contribution divisions
+				// -> map each contribution division to a sub
+				// [DIM | WEB-DL] <-> [SubberA | SubberB]
+				// [2HD] [PublicHD | DON] <-> [Grizzly | Eric | NegroManus]
+				else if (numSubs == contributionsInColumn.size())
 				{
-					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
+					for (int i = 0; i < numSubs; i++)
 					{
-						List<Contribution> divisionContributions = columnContributions.get(index);
-						addContributions(markedSubAdj.value, divisionContributions);
-						index++;
+						MarkedValue<SubtitleRelease> markedSub = allSubs.get(i);
+						List<MarkedValue<Contribution>> contributionsInDivision = contributionsInColumn.get(i);
+						addContributions(markedSub.value, contributionsInDivision);
 					}
 				}
-			}
-			// If more subColumns than contributionDivisions
-			// -> Add the first contributionDivision to the subColumns from index 0 to n,
-			// where n is = numSubColumns - numContributionDivisions
-			// [720p][1080p][WEB-DL] <-> [SubberA | SubberB]
-			else if (numSubColumns > numContributionDivisions && numContributionDivisions > 1)
-			{
-				int diff = numSubColumns - numContributionDivisions;
-				for (int i = 0; i < numSubColumns; i++)
+				// If more subColumns than contributionDivisions
+				// -> Add the first contributionDivision to the subColumns from index 0 to n,
+				// where n is = numSubColumns - numContributionDivisions
+				// [720p][1080p][WEB-DL] <-> [SubberA | SubberB]
+				else if (numSubColumns > numContributionDivisions && numContributionDivisions > 1)
 				{
-					List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
-					int contributionDivisionIndex = Math.max(0, i - diff);
-					List<Contribution> divisionContributions = columnContributions.get(contributionDivisionIndex);
-					for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
+					int diff = numSubColumns - numContributionDivisions;
+					for (int i = 0; i < numSubColumns; i++)
 					{
-						addContributions(subAdj.value, divisionContributions);
+						List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
+						int contributionDivisionIndex = Math.max(0, i - diff);
+						List<MarkedValue<Contribution>> divisionContributions = contributionsInColumn.get(contributionDivisionIndex);
+						for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
+						{
+							addContributions(subAdj.value, divisionContributions);
+						}
 					}
 				}
-			}
-			// Else: Add every contribution to every sub
-			else
-			{
-				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
+				// Else: Add every contribution to every sub
+				else
 				{
-					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
+					for (MarkedValue<SubtitleRelease> markedSubAdj : allSubs)
 					{
-						for (List<Contribution> divisionContributions : columnContributions)
+						for (List<MarkedValue<Contribution>> divisionContributions : contributionsInColumn)
 						{
 							addContributions(markedSubAdj.value, divisionContributions);
 						}
@@ -682,27 +687,10 @@ public class SeasonPostParser
 		// Add sources to subtitles
 		if (!parsedSources.isEmpty())
 		{
-			boolean someSourcesMarked = parsedSources.stream().anyMatch((MarkedValue<String> v) -> v.marker != null);
 			// If any markers
-			if (someSourcesMarked)
+			if (MarkedValue.anyValueMarked(parsedSources))
 			{
-				// Map<Marker->List<Sources>)
-				Map<String, String> mapMarkerToSource = new HashMap<>(2);
-				for (MarkedValue<String> source : parsedSources)
-				{
-					String storedSource = mapMarkerToSource.put(source.marker, source.value);
-					if (storedSource != null)
-					{
-						throw new IllegalArgumentException("Multiple sources marked with marker " + source.marker + ": " + storedSource + ", " + source);
-					}
-				}
-				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
-				{
-					for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
-					{
-						addSource(subAdj.value, mapMarkerToSource.get(subAdj.marker));
-					}
-				}
+				MarkedValue.mapMarkedValues(allSubs, parsedSources, SeasonPostParser::addSource);
 			}
 			// If only one source, add it to all the subtitles
 			else if (parsedSources.size() == 1)
@@ -932,6 +920,12 @@ public class SeasonPostParser
 	}
 
 	/**
+	 * <ul>
+	 * <li>List 1: Columns</li>
+	 * <li>List 2: Divisions in a column, separated by "|"</li>
+	 * <li>List 3: List of contributors in a division</li>
+	 * </ul>
+	 * 
 	 * <pre>
 	 * - | Jesuxxx
 	 * </pre>
@@ -940,30 +934,32 @@ public class SeasonPostParser
 	 * Grollbringer | Negro & Sogge377
 	 * </pre>
 	 */
-	private static void parseContributorsCell(List<List<List<Contribution>>> contributions, Element td, ColumnType colType)
+	private static void parseContributorsCell(List<List<List<MarkedValue<Contribution>>>> contributions, Element td, ColumnType colType)
 	{
 		String contributionType = contributionTypeFromColumnType(colType);
-		List<List<Contribution>> contributionsForColumn = new ArrayList<>();
+		List<List<MarkedValue<Contribution>>> contributionsInColumn = new ArrayList<>();
 		String text = removeHtmlTagsAndBBCodes(td.text());
 		for (String division : SPLITTER_DIVISON.split(text))
 		{
 			if (division.isEmpty() || division.equals(NO_VALUE))
 			{
-				contributionsForColumn.add(ImmutableList.of());
+				contributionsInColumn.add(ImmutableList.of());
 			}
 			else
 			{
-				List<Contribution> divContributions = new ArrayList<>();
-				for (String contributorName : SPLITTER_LIST.split(division))
+				List<MarkedValue<Contribution>> contributionsInDiv = new ArrayList<>();
+				for (String contributorText : SPLITTER_LIST.split(division))
 				{
+					MarkedValue<String> markedContributor = MarkedValue.parse(contributorText);
 					ScContributor contributor = new ScContributor(ScContributor.Type.SUBBER);
-					contributor.setName(contributorName);
-					divContributions.add(new Contribution(contributor, contributionType));
+					contributor.setName(markedContributor.value);
+					Contribution contribution = new Contribution(contributor, contributionType);
+					contributionsInDiv.add(new MarkedValue<Contribution>(contribution, markedContributor.marker));
 				}
-				contributionsForColumn.add(divContributions);
+				contributionsInColumn.add(contributionsInDiv);
 			}
 		}
-		contributions.add(contributionsForColumn);
+		contributions.add(contributionsInColumn);
 	}
 
 	private static String contributionTypeFromColumnType(ColumnType colType)
@@ -989,54 +985,8 @@ public class SeasonPostParser
 		Iterable<String> divisions = SPLITTER_DIVISON.split(text);
 		for (String division : divisions)
 		{
-			sources.add(parseMarkedValue(division));
+			sources.add(MarkedValue.parse(division));
 		}
-	}
-
-	private static MarkedValue<String> parseMarkedValue(String s)
-	{
-		StringBuilder marker = null;
-		// Get leading marker
-		for (int i = 0; i < s.length(); i++)
-		{
-			if (MARKER_CHAR != s.charAt(i))
-			{
-				break;
-			}
-			else
-			{
-				if (marker == null)
-				{
-					marker = new StringBuilder(2);
-				}
-				marker.append(MARKER_CHAR);
-			}
-		}
-		if (marker != null)
-		{
-			return new MarkedValue<String>(s.substring(marker.length()), marker.toString());
-		}
-		// Or if no leading marker get trailing marker
-		for (int i = s.length() - 1; i >= 0; i--)
-		{
-			if (MARKER_CHAR != s.charAt(i))
-			{
-				break;
-			}
-			else
-			{
-				if (marker == null)
-				{
-					marker = new StringBuilder(2);
-				}
-				marker.append(MARKER_CHAR);
-			}
-		}
-		if (marker != null)
-		{
-			return new MarkedValue<String>(s.substring(marker.length(), s.length()), marker.toString());
-		}
-		return new MarkedValue<String>(s, null);
 	}
 
 	private static void addSource(SubtitleRelease subAdj, String source)
@@ -1044,20 +994,48 @@ public class SeasonPostParser
 		subAdj.getFirstSubtitle().setSource(source);
 	}
 
-	private static void addContributions(SubtitleRelease subAdj, List<Contribution> contributions)
+	private static void addContributions(SubtitleRelease subRls, List<MarkedValue<Contribution>> markedContributions)
 	{
-		for (Contribution c : contributions)
+		for (MarkedValue<Contribution> mv : markedContributions)
 		{
-			if (Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TIMINGS.equals(c.getType()) || Subtitle.CONTRIBUTION_TYPE_TRANSLATION.equals(c.getType())
-					|| Subtitle.CONTRIBUTION_TYPE_REVISION.equals(c.getType()))
+			addContribution(subRls, mv.value);
+		}
+	}
+
+	private static void addContribution(SubtitleRelease subRls, Contribution contribution)
+	{
+		if (Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT.equals(contribution.getType()) || Subtitle.CONTRIBUTION_TYPE_TIMINGS.equals(contribution.getType())
+				|| Subtitle.CONTRIBUTION_TYPE_TRANSLATION.equals(contribution.getType()) || Subtitle.CONTRIBUTION_TYPE_REVISION.equals(contribution.getType()))
+		{
+			subRls.getFirstSubtitle().getContributions().add(contribution);
+		}
+		else
+		{
+			subRls.getContributions().add(contribution);
+		}
+	}
+
+	private static List<MarkedValue<SubtitleRelease>> collectAllSubtitles(List<List<MarkedValue<SubtitleRelease>>> subs)
+	{
+		List<MarkedValue<SubtitleRelease>> allSubs = new ArrayList<>();
+		for (List<MarkedValue<SubtitleRelease>> subsInDivision : subs)
+		{
+			allSubs.addAll(subsInDivision);
+		}
+		return allSubs;
+	}
+
+	private static List<MarkedValue<Contribution>> collectAllContributions(List<List<List<MarkedValue<Contribution>>>> contributions)
+	{
+		List<MarkedValue<Contribution>> allContributions = new ArrayList<>();
+		for (List<List<MarkedValue<Contribution>>> contributionsInColumn : contributions)
+		{
+			for (List<MarkedValue<Contribution>> contributionsInDivision : contributionsInColumn)
 			{
-				subAdj.getFirstSubtitle().getContributions().add(c);
-			}
-			else
-			{
-				subAdj.getContributions().add(c);
+				allContributions.addAll(contributionsInDivision);
 			}
 		}
+		return allContributions;
 	}
 
 	private static void parseNonStandardTable(WorkData data, Element table)
@@ -1186,7 +1164,7 @@ public class SeasonPostParser
 
 		// Cleanup sub.source
 		// 1) lower-case all sources
-		// Add source=SubCentral.de to all german subs without a source
+		// 8) add source=SubCentral.de to all german subs without a source
 		for (SubtitleRelease subAdj : data.subtitles)
 		{
 			for (Subtitle sub : subAdj.getSubtitles())
@@ -1283,13 +1261,98 @@ public class SeasonPostParser
 	 */
 	private static class MarkedValue<T>
 	{
-		private final T			value;
-		private final String	marker;
+		private static final char	MARKER_CHAR	= '*';
+
+		private final T				value;
+		private final String		marker;
 
 		private MarkedValue(T value, String marker)
 		{
 			this.value = value;
 			this.marker = marker;
+		}
+
+		private boolean isMarked()
+		{
+			return marker != null;
+		}
+
+		private static MarkedValue<String> parse(String s)
+		{
+			StringBuilder marker = null;
+			// Get leading marker
+			for (int i = 0; i < s.length(); i++)
+			{
+				if (MARKER_CHAR != s.charAt(i))
+				{
+					break;
+				}
+				else
+				{
+					if (marker == null)
+					{
+						marker = new StringBuilder(2);
+					}
+					marker.append(MARKER_CHAR);
+				}
+			}
+			if (marker != null)
+			{
+				return new MarkedValue<String>(s.substring(marker.length()), marker.toString());
+			}
+			// if no leading marker, get trailing marker
+			for (int i = s.length() - 1; i >= 0; i--)
+			{
+				if (MARKER_CHAR != s.charAt(i))
+				{
+					break;
+				}
+				else
+				{
+					if (marker == null)
+					{
+						marker = new StringBuilder(2);
+					}
+					marker.append(MARKER_CHAR);
+				}
+			}
+			if (marker != null)
+			{
+				return new MarkedValue<String>(s.substring(marker.length(), s.length()), marker.toString());
+			}
+			return new MarkedValue<String>(s, null);
+		}
+
+		private static <U> boolean anyValueMarked(Collection<MarkedValue<U>> markedValues)
+		{
+			return markedValues.stream().anyMatch(MarkedValue::isMarked);
+		}
+
+		/**
+		 * 
+		 * @param referencingValues
+		 *            multiple referencing values can have the same marker if they all reference to the same target
+		 * @param referenceTargets
+		 *            each referenceTarget has to have an unique marker
+		 * @param combiner
+		 *            combines the referencing value with the reference target
+		 */
+		private static <U, V> void mapMarkedValues(Iterable<MarkedValue<U>> referencingValues, Iterable<MarkedValue<V>> referenceTargets, BiConsumer<U, V> combiner)
+		{
+			// Map<Marker->V>
+			Map<String, V> markerToRefTargetsMap = new HashMap<>(2);
+			for (MarkedValue<V> mv : referenceTargets)
+			{
+				V storedVal = markerToRefTargetsMap.put(mv.marker, mv.value);
+				if (storedVal != null)
+				{
+					throw new IllegalArgumentException("Multiple values marked with same marker " + mv.marker + ": " + storedVal + ", " + mv.value);
+				}
+			}
+			for (MarkedValue<U> mv : referencingValues)
+			{
+				combiner.accept(mv.value, markerToRefTargetsMap.get(mv.marker));
+			}
 		}
 	}
 }

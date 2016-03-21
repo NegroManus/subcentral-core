@@ -30,21 +30,27 @@ public class SeasonPostParserTest
 	}
 
 	@Test
+	public void testParseTheWalkingDeadS06() throws IOException
+	{
+		parse("The Walking Dead - Staffel 6 - [DE-Subs: 12 | VO-Subs: 14 | Aired: 14/16]", "post-thewalkingdead_s06.html");
+	}
+
+	@Test
 	public void testParseTopic() throws IOException
 	{
 		String s = "'Til Death - Staffel 1-2 - [DE-Subs: 15 | VO-Subs: 15] - [Komplett]";
 		SeasonPostData data = parser.parseTopic(s);
-		printSeasonThreadContent(data);
+		printSeasonPostData(data);
 	}
 
-	private void parse(String postTitle, String postContentRresourceFilename) throws IOException
+	private void parse(String postTitle, String postContentResourceFilename) throws IOException
 	{
-		String content = Resources.toString(Resources.getResource(SeasonPostParserTest.class, postContentRresourceFilename), StandardCharsets.UTF_8);
+		String content = Resources.toString(Resources.getResource(SeasonPostParserTest.class, postContentResourceFilename), StandardCharsets.UTF_8);
 		SeasonPostData data = parser.parse(postTitle, content);
-		printSeasonThreadContent(data);
+		printSeasonPostData(data);
 	}
 
-	private void printSeasonThreadContent(SeasonPostData content)
+	private void printSeasonPostData(SeasonPostData content)
 	{
 		System.out.println();
 		System.out.println("Series: " + content.getSeries());
@@ -67,5 +73,4 @@ public class SeasonPostParserTest
 			System.out.println(subAdj);
 		}
 	}
-
 }
