@@ -41,7 +41,7 @@ public class MigrationConfig
 	private ImmutableList<Series>	selectedSeries	= ImmutableList.of();
 	private boolean					migrateSubtitles;
 	// First migration result
-	private SeriesListData		seriesListContent;
+	private SeriesListData			seriesListContent;
 
 	public Path getEnvironmentSettingsFile()
 	{
@@ -157,15 +157,12 @@ public class MigrationConfig
 
 	public void createDateSource() throws PropertyVetoException, SQLException
 	{
+		closeDataSource();
+
 		String driverClass = com.mysql.jdbc.Driver.class.getName();
 		String url = environmentSettings.getString("sc.db.url");
 		String user = environmentSettings.getString("sc.db.user");
 		String password = environmentSettings.getString("sc.db.password");
-
-		if (dataSource != null)
-		{
-			DataSources.destroy(dataSource);
-		}
 
 		ComboPooledDataSource cpds = new ComboPooledDataSource();
 		cpds.setDriverClass(driverClass); // loads the jdbc driver
@@ -174,6 +171,14 @@ public class MigrationConfig
 		cpds.setPassword(password);
 
 		setDataSource(cpds);
+	}
+
+	public void closeDataSource() throws SQLException
+	{
+		if (dataSource != null)
+		{
+			DataSources.destroy(dataSource);
+		}
 	}
 
 	public void loadSeriesListContent() throws SQLException

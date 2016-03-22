@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.subcentral</groupId>
 	<artifactId>subcentral-mig</artifactId>
-	<version>0.1</version>
+	<version>1.0</version>
 	<name>SubCentral Migration Tool</name>
 
 	<properties>
