@@ -47,7 +47,7 @@ public class SeasonServlet extends HttpServlet
 	private static final long	serialVersionUID	= -3990408720731314570L;
 	private static final Logger	log					= LogManager.getLogger(SeasonServlet.class);
 
-	private static final String	ENV_SETTINGS_PATH	= "C:\\Users\\mhertram\\Documents\\Projekte\\SC\\Submanager\\mig\\migration-env-settings.properties";
+	private static final String	ENV_SETTINGS_PATH	= "E:\\Java\\SubCentral\\migration\\migration-env-settings.properties";
 
 	private MigrationConfig		config;
 
@@ -79,6 +79,7 @@ public class SeasonServlet extends HttpServlet
 		{
 			int seasonThreadId = Integer.parseInt(request.getParameter("threadId"));
 			SeasonPostData data = readSeasonPostData(seasonThreadId);
+			String contextPath = request.getContextPath();
 
 			PrintWriter writer = response.getWriter();
 			writer.println("<html>");
@@ -86,7 +87,7 @@ public class SeasonServlet extends HttpServlet
 			writer.println("<title>SubCentral Migration Preview</title>");
 			writer.println("</head>");
 			writer.println("<body>");
-			writer.println("<a href=\"/overview\">Zurück zur Übersicht</a>");
+			writer.println("<a href=\"" + contextPath + "/overview\">Zurück zur Übersicht</a>");
 
 			writer.println("<p>");
 			writer.println("<div><h2>Serie</h2>");
@@ -127,7 +128,9 @@ public class SeasonServlet extends HttpServlet
 									writer.print("</br> - " + subRls.getMatchingReleases().stream().map((Release r) -> r.getName()).collect(Collectors.joining(", ")));
 									writer.print(" ");
 									writer.print(printContributionsByType(subRls.getContributions()));
-									writer.println(" [" + subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID) + "]");
+									String attachmentId = Integer.toString((Integer) subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
+									String attachmentAnchor = "<a href=\"https://www.subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId + "\">" + attachmentId + "</a>";
+									writer.println(" [" + attachmentAnchor + "]");
 								}
 							}
 

@@ -1318,7 +1318,7 @@ public class SeasonPostParser
 			}
 			if (marker != null)
 			{
-				return new MarkedValue<String>(s.substring(marker.length(), s.length()), marker.toString());
+				return new MarkedValue<String>(s.substring(0, s.length() - marker.length()), marker.toString());
 			}
 			return new MarkedValue<String>(s, null);
 		}
