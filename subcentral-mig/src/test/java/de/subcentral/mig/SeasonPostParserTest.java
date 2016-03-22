@@ -5,11 +5,16 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
+import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.name.ReleaseNamer;
+import de.subcentral.core.name.SubtitleReleaseNamer;
 import de.subcentral.mig.process.SeasonPostParser;
 import de.subcentral.mig.process.SeasonPostParser.SeasonPostData;
 
@@ -36,6 +41,12 @@ public class SeasonPostParserTest
 	}
 
 	@Test
+	public void testParseOnceUponATimeS04() throws IOException
+	{
+		parse("Once Upon a Time - Staffel 4 - [DE-Subs: 23 | VO-Subs: 23] - [Komplett]", "post-onceuponatime_s04.html");
+	}
+
+	@Test
 	public void testParseTopic() throws IOException
 	{
 		String s = "'Til Death - Staffel 1-2 - [DE-Subs: 15 | VO-Subs: 15] - [Komplett]";
@@ -50,12 +61,12 @@ public class SeasonPostParserTest
 		printSeasonPostData(data);
 	}
 
-	private void printSeasonPostData(SeasonPostData content)
+	private void printSeasonPostData(SeasonPostData data)
 	{
 		System.out.println();
-		System.out.println("Series: " + content.getSeries());
+		System.out.println("Series: " + data.getSeries());
 		System.out.println("Seasons:");
-		for (Season season : content.getSeasons())
+		for (Season season : data.getSeasons())
 		{
 			System.out.println(season);
 			System.out.println("Episodes:");
@@ -68,9 +79,18 @@ public class SeasonPostParserTest
 
 		System.out.println();
 		System.out.println("Subs:");
-		for (SubtitleRelease subAdj : content.getSubtitleFiles())
+		for (SubtitleRelease subRls : data.getSubtitleFiles())
 		{
-			System.out.println(subAdj);
+			System.out.println(NamingDefaults.getDefaultSubtitleReleaseNamer().name(subRls,
+					ImmutableMap.of(ReleaseNamer.PARAM_PREFER_NAME, Boolean.FALSE, SubtitleReleaseNamer.PARAM_PREFER_NAME, Boolean.FALSE)));
+			for (Contribution c : subRls.getFirstSubtitle().getContributions())
+			{
+				System.out.println(c);
+			}
+			for (Contribution c : subRls.getContributions())
+			{
+				System.out.println(c);
+			}
 		}
 	}
 }

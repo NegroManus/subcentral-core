@@ -1,0 +1,1167 @@
+<!--
+Objekt  : [Basis]SubCentral-HMTL-Vorlage
+Version : v1.6.2.10
+Autor   : Meshi
+Datum   : 14.06.2009
+-->
+
+<!-- Script- und Style-Modul -->
+<script type="text/javascript" src="creative/js/jquery/jquery.pack.js"></script>
+<script type="text/javascript" src="creative/js/jquery/jquery.fancybox.js"></script> 
+<script type="text/javascript" src="creative/js/jquery/jquery.pngFix.js"></script>
+<script type="text/javascript">
+    var $jq = jQuery.noConflict(); 
+</script>
+<!-- /Script- und Style-Modul -->
+
+<!-- Script- und Style-Modul -->
+<script type="text/javascript">
+
+var ids=new Array('a1','a2','a3','a4','a5');
+
+function switchid(id){
+	for (var sci=0;sci<ids.length;sci++){
+		if (ids[sci]==id){
+			document.getElementById('link'+id).className = 'sclinkactive';
+			document.getElementById(id).style.display = 'block';
+		} else {
+			document.getElementById('link'+ids[sci]).className = 'sclink';
+			document.getElementById(ids[sci]).style.display = 'none';
+		}
+	}
+}
+
+</script>	
+<!-- /Script- und Style-Modul -->
+
+<!-- Hier Java-Abfrage-Modul einfügen, nur notwendig für Bilder-Modul. [Optional] -->
+
+<div class="baseSC">
+	<!-- Titel-Image-Modul -->
+	<div class="tbild"><img src="bilder/header_onceuponatime_s04.jpg" alt="Once Upon a Time Staffel 4" /></div>
+	<!-- /Titel-Image-Modul -->
+</div>
+
+<div class="baseSC">
+	<!-- Imformationsmodul -->
+	<div class="ztext">
+		<!-- Inhalts-Modul -->
+		<div class="inhalt">
+			<p>»Der Fluch ist gebrochen, die Magie ist zurückgekehrt und es ist nicht abzusehen, was – oder wer – dadurch entfesselt wird!<br>
+Die verbannten Märchenfiguren müssen sich ihren wiederkehrenden Erinnerungen stellen, um mit ihrem neuen Leben zurechtzukommen. Die Treue untereinander wird auf die Probe gestellt, neue Helden werden sich herauskristallisieren und rachsüchtige Bösewichte werden Chaos verursachen.<br>
+Inmitten der Kulisse des vorher noch unerforschten Landes und des neuen magischen Storybrooke sind Liebe und Aufopferung die Voraussetzung für den ultimativen Kampf zwischen Gut und Böse. «</p>
+		</div>
+		<!-- /Inhalts-Modul -->
+
+		<!-- Hier Bilderserie (Bilder-Modul) einfügen. [Optinal] -->
+
+		<!-- Externe-Links-Modul -->
+		<div class="websites">
+			<p>Offizielle Webseite: <a href="http://abc.go.com/shows/once-upon-a-time" target ="_blank" class="abc">ABC</a>
+			<br />
+			Weitere Informationen: <a href="http://de.wikipedia.org/wiki/Once_Upon_a_Time_%E2%80%93_Es_war_einmal_%E2%80%A6" target ="_blank" class="wiki">Wikipedia (de)</a> & <a href="http://en.wikipedia.org/wiki/Once_Upon_a_Time_%28TV_series%29" target ="_blank" class="wiki">Wikipedia (en)</a> & <a href="http://www.imdb.com/title/tt1843230/" target ="_blank" class="imdb">IMDb</a>
+		</div>
+		<!-- /Externe-Links-Modul -->
+
+	</div>
+	<!-- /Imformationsmodul -->
+</div>
+
+<div class="baseSC">
+	<!-- Ueberschriftsmodul für Subs und Sonstiges -->
+	<h2>Deutsche und Englische Untertitel:</h2>
+	<!-- /Ueberschriftsmodul -->
+	
+	[hide]
+	
+	<!-- Warnhinweis - Eigenständig -->
+	<div class="baseSC">
+		<div class="txtb">
+			<!--<div class="hinweis"><strong>Hinweis:</strong>Text...</div>-->
+		</div>
+	</div>
+
+<!-- Tabellen-Modul -->
+	<table>
+
+		<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+		<colgroup width="70%" />
+		<colgroup width="30%" />
+
+		<tbody>
+			<!-- Zeilen-Modul - Release -->
+			
+			<tr class="aktiv">
+    				<td><a id="linka1" class="sclinkactive" href="javascript:switchid('a1');">[img]http://www.subcentral.de/creative/bilder/flags/de.png[/img] Untertitel HDTVRip </a></td>
+				<td>[DE-Subs: 23]</td>
+			</tr>
+			
+			<tr class="aktiv">
+				<td><a id="linka2" class="sclink" href="javascript:switchid('a2');">[img]http://www.subcentral.de/creative/bilder/flags/de.png[/img] Untertitel 720p.HDTV & WEB-DL</a></td>
+				<td>[DE-Subs: 23]</td>
+			</tr>
+			
+			<tr class="aktiv">
+				<td><a id="linka3" class="sclink" href="javascript:switchid('a3');">[img]http://www.subcentral.de/creative/bilder/flags/de.png[/img] Untertitel DVDRip & BDRip</a></td>
+				<td>[DE-Subs: 23]</td>
+			</tr>
+			
+			<tr class="aktiv">
+				<td><a id="linka4" class="sclink" href="javascript:switchid('a4');">[img]http://www.subcentral.de/creative/bilder/flags/usa.png[/img] Untertitel HDTVRip & 720p.HDTV & WEB-DL</a></td>
+				<td>[VO-Subs: 23]</td>
+			</tr>
+			
+			<tr class="inaktiv">
+				<td><a id="linka5" class="sclink" href="javascript:switchid('a5');">[img]http://www.subcentral.de/creative/bilder/flags/usa.png[/img] Untertitel DVDRip & BDRip</a></td>
+				<td>[VO-Subs: 00]</td>
+			</tr>
+			<!-- /Zeilen-Modul - Release -->
+
+			<!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+		</tbody>
+	</table>
+	<!-- /Tabellen-Modul -->
+
+
+	<div id="a1" style="display:block;">
+		<!-- Tabellen-Modul -->
+		<table style>
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="40%" />
+			<colgroup width="18%" />
+			<colgroup width="24%" />
+			<colgroup width="18%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/de.png" /> HDTVRip</th>
+					<th>Übersetzung</th>
+					<th>Korrektur</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+				<tr class="aktiv">
+					<td class="release">E01 - "A Tale of Two Sisters"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=200483&h=f30627fe2c0be62ea587717a596b28c747d31c7b']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E02 - "White Out"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=201456&h=c2a7c19bca93861aedf79b7eb57ad2f51d0aa986']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E03 - "Rocky Road"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=202331&h=a50733ea753f50d3d180d67542be8c7c0ae51d4c']LOL[/url]</td>
+					<td>[size=8]Perian, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Elya[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E04 - "The Apprentice"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203120&h=45ad9db1468cdfc314bd995f1ddf9114523297d4']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E05 - "Breaking Glass"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=204407&h=90a027c1db04169d4092df17c59e0a3332458c9c']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E06 - "Family Business"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=204808&h=0a6790f8c3fb68be4086d8232d14d5044e3ac200']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E07 - "The Snow Queen"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205180&h=63b4b8da00e70477e0354031b6ccc69eb3888fff']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E08 - "Smash the Mirror (1)"</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=207090&h=9b8ba134a6645e13d397d56aab72c125003c6307']LOL[/url]</td>
+					<td rowspan="2">[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td rowspan="2">[size=8]Desperately Charmed[/size]</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E09 - "Smash the Mirror (2)"</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E10 - "Fall"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=208114&h=8f87285f3f0e60dee446f8502ce7d49466c08f0f']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E11 - "Shattered Sight"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=208794&h=dd93757ad348ff019e4495035f00a6f2a5dabec8']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E12 - "Heroes and Villains"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=209837&h=2e8bd727cffafe7126be89fc655891e89d9a7450']LOL[/url]</td>
+					<td>[size=8]Elya, TheFaceOfBoe & Fischchen[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E13 - "Darkness on the Edge of Town"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=217260&h=1e73e1472e3205266c9af6e457085c13d8aa71a6']LOL[/url]</td>
+					<td>[size=8]Elya, Fischchen & TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E14 - "Unforgiven"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=215854&h=1359938a5fea4291dcef53b5b77bc0edd60f7e8a']KILLERS[/url]</td>
+					<td>[size=8]Elya, Fischchen & TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E15 - "Enter the Dragon"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=215984&h=8c196e1db894c4376d93181e03a9fe917d72d5cc']LOL[/url]</td>
+					<td>[size=8]Elya, Fischchen & TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E16 - "Poor Unfortunate Soul"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=217197&h=f6600c572e31aec8579e1b55da97c89fefbfe0e3']2HD[/url]</td>
+					<td>[size=8]Elya, Fischchen & TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E17 - "Best Laid Plans"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=218249&h=9a8b989292eeb3d7ca15fe74cff6e2e2819fef21']LOL[/url]</td>
+					<td>[size=8]Hampton, Fischchen &  TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E18 - "Heart of Gold"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220035&h=8389fd2571608b53bf42273a9485d2fadb51c9dd']LOL[/url]</td>
+					<td>[size=8]Elya, Fischchen & TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E19 - "Sympathy for the De Vil"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=220242&h=e522ff5bbc7910eec87135ee29705155ffeec6ce']LOL[/url]</td>
+					<td>[size=8]Elya, Fischchen & TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E20 - "Lily"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220552&h=6f077cb97eb832e9e11b5f579ad57d949b5d4831']2HD[/url]</td>
+					<td>[size=8]Elya, Fischchen & sternchenLady[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E21 - "Mother"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=221386&h=aebad31534b4adf26d2a7db75a0960770d6fc0cf']2HD[/url]</td>
+					<td>[size=8]Elya, Fischchen & TheFaceOfBoe[/size]</td>
+					<td>[size=8]Desperately Charmed[/size]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E22 - "Operation Mongoose (1)"</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=222345&h=a266d1448425896c0738f52cc4e2c734ad0a6928']LOL[/url]</td>
+					<td rowspan="2">[size=8]Elya, Fischchen, Hampton & TheFaceOfBoe[/size]</td>
+					<td rowspan="2">[size=8]Desperately Charmed[/size]</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E23 - "Operation Mongoose (2)"</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+
+	<div id="a2" style="display:none;">
+		<!-- Tabellen-Modul -->
+		<table style>
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="38%" />
+			<colgroup width="20%" />
+			<colgroup width="18%" />
+			<colgroup width="24%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/de.png" /> 720p.HDTV</th>
+					<th><img src="creative/bilder/flags/de.png" /> WEB-DL</th>
+					<th>Anpassung</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+				<tr class="aktiv">
+					<td class="release">E01 - "A Tale of Two Sisters"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=200482&h=ce67e3d483d921e6d1776621803e7c4b1c1d2f27']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=201051&h=befff4350c15e64d7f351e8fce02046a27c8f0b8']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E02 - "White Out"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=201455&h=d8441e6f49ae40f17c2f66f97393a000634b604b']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=201519&h=ac1cae81703627b99bc1ee35798b46f13b741fea']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E03 - "Rocky Road"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=202332&h=36a1a7bcb7c18cefe1e1d8af400ae9c081240692']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=202362&h=9adaa768971619580c223ebe773a3954a8140397']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E04 - "The Apprentice"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=203119&h=4d1b6cd79a89aabd27d17b0f4d40e6fc10b03f13']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=203137&h=8d300210f2445e32a4871015c4181fce858e9875']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E05 - "Breaking Glass"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=204408&h=a8f0d1c68d53c9e49ca82bf79812a40d4036c51e']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=204423&h=ab230d114b23dde30257406d609583ca242613ab']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E06 - "Family Business"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=205890&h=f8e77cc9d05ddb18a880e38dbfbee70eda2bf5b1']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=204809&h=673d517fc1f780c6a1874721cdd199eb29a4775c']WEB-DL[/url]</td>
+					<td>MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E07 - "The Snow Queen"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205181&h=c8c1a14dc8eeeeacc49a797fc015905c8a601ff9']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=205247&h=ce43654a8ebb0ec3bd8de937a02065747c10d4cc']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E08 - "Smash the Mirror (1)"</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=207091&h=75eada20ef9a07f9fd11e49c19e4794670d53c23']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=207111&h=41f46dc80e9ae74759ac13d6aec35cc16e042aab']WEB-DL[/url]</td>
+					<td rowspan="2">- | MegaMax</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E09 - "Smash the Mirror (2)"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=207112&h=6c1c699bce1a81330d8e94f77fa7a0c5087acbd9']WEB-DL[/url]</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E10 - "Fall"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=208113&h=df54c85d900825aec906b41a4ab06a5a412bfcd6']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=208164&h=5ef40b5c08139f65154e31067bd10faaf079d98e']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E11 - "Shattered Sight"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=208795&h=11ffb9172bd905da0b18f684f2523470c6083365']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=208807&h=95111de91ad317c2986c14a4e009390b38fdddd6']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E12 - "Heroes and Villains"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=209838&h=1a54a9f9924b1b719a898087e35e9aee34e42f24']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=209914&h=a3b27a9bb67ff77c90f2eb311d7798fffa52767a']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E13 - "Darkness on the Edge of Town"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=217258&h=6630851c2e464d1c4fce2cc3b8ab424a442c0b7c']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=217259&h=f9bd0fda231a4c0144ff0d9e23ad83c4de2e4a5d']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E14 - "Unforgiven"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=215856&h=92426b93f7d0bb634055b914ad887d0791ef7bff']KILLERS[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=216000&h=056a0d686359db903b28db7e5433e8b135fac8c2']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E15 - "Enter the Dragon"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=215985&h=ff8d46eca8571d0f4c7ba17a86557d83f060b4e5']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=216001&h=c6270c17a39ffd155c181cfc07cc2b83f6c636bd']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E16 - "Poor Unfortunate Soul"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=217196&h=99665035afe26d3e3c67e1a2a9dadffccd4b2ab7']2HD[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=217211&h=9e613aba45fdf59ce8eb5537407c0f49b4a87992']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E17 - "Best Laid Plans"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=218250&h=5facedb6463b19761678fa0565808e629286b0a2']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=218302&h=4ce9650e208777916e194afabffe216eac731678']WEB-DL[/url]</td>
+					<td>Fischchen | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E18 - "Heart of Gold"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220036&h=16c7cbc1dac540b96413606465285d0a3968fa2b']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220139&h=f2032286e30777cfc1e8e815aa40872c893796eb']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E19 - "Sympathy for the De Vil"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220360&h=62056de6a92328573a36326a8b71968e0f3a52b7']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220302&h=f921c6fea3c693516d3bd102397da64cca675ca0']WEB-DL[/url]</td>
+					<td>Fischchen | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E20 - "Lily"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=220342&h=e7caadc528865b18a239a78b829d973eb69a57fd']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220495&h=d66e80c47f904da81eb3abdc2ca9dad0218f3bd9']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E21 - "Mother"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=221310&h=6d2c78d214aee0e5c2f70514f0c9d038cd238966']DIMENSION[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=221363&h=e5f017ebc9f3aa115bac6f47096147d19a71aca5']WEB-DL[/url]</td>
+					<td>- | MegaMax</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E22 - "Operation Mongoose (1)"</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=222266&h=b54316f334abd19b2c4a63ca5e2095039575865b']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=222269&h=fef0b49a4bed6d4d20f0b2211d7ce5b87993ecbb']WEB-DL[/url]</td>
+					<td rowspan="2">Grollbringer | MegaMax</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E23 - "Operation Mongoose (2)"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=222270&h=dc3f0fb00c9729d69894eeb6e0266d3c93a36020']WEB-DL[/url]</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+
+	<div id="a3" style="display:none;">
+		<!-- Tabellen-Modul -->
+		<table style>
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="38%" />
+			<colgroup width="20%" />
+			<colgroup width="20%" />
+			<colgroup width="22%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/de.png" /> DVDRip</th>
+					<th><img src="creative/bilder/flags/de.png" /> BDRip</th>
+					<th>Anpassung</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+			<tr class="aktiv">
+					<td class="release">E01 - "A Tale of Two Sisters"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227758&h=c9466355c68f979fcdbe7dc6c7a68a316c9b24bf']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E02 - "White Out"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227759&h=a6adb02a2440a06ab1e4c72f001d1585cb4e0d77']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E03 - "Rocky Road"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227760&h=2c549186526723b942e6c45558e2cc9654f3cefe']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E04 - "The Apprentice"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227761&h=a2ecd926d63adccd28cdd6a44a36ee37a3ee7483']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E05 - "Breaking Glass"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227762&h=bafd7631a0ebfec5b163e098294565fe648cfec6']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E06 - "Family Business"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227763&h=682d11cfbafed5ec5ad856eceb77fc0b1d8c8020']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E07 - "The Snow Queen"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227764&h=4a4d9ed36d835303bdf7a829fdfb3a7966e6c90b']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E08 - "Smash the Mirror (1)"</td>
+					<td rowspan="2">-</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227765&h=753642f6ff9acbb1b061e682e9abe6647dc927e7']REPACK-DEMAND[/url]</td>
+					<td rowspan="2">- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E09 - "Smash the Mirror (2)"</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E10 - "Fall"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227766&h=f31f253cb538379f3e74577fcecd5f5283cd20e2']REPACK-DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E11 - "Shattered Sight"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227767&h=2f8d8c871263f739cd29cd234064d9a9d573ae16']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E12 - "Heroes and Villains"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227768&h=27825a81ebe26d4ba5b17d35dbd33a30307f85dd']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E13 - "Darkness on the Edge of Town"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227927&h=e85594edbf84610023d0d2c43251591bb51d88dc']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E14 - "Unforgiven"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227928&h=ac7ed55124eef7049f44e066b939e4b5d5a74f1d']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E15 - "Enter the Dragon"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227929&h=0524866549a2bce0345193f47d14bb240ecd90cf']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E16 - "Poor Unfortunate Soul"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227930&h=c741dc0389f6b140e1bd5fbcf28d9cdf3ec94d05']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E17 - "Best Laid Plans"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227931&h=07a26f8e586b3c641ccb2c9111d984b66b34aa16']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E18 - "Heart of Gold"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227932&h=7658c78801d51db44804e675b6a526b142e76e1a']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E19 - "Sympathy for the De Vil"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227933&h=f7eac54955828311ccc0f2c5dcdb9b439c0a3bd0']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E20 - "Lily"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227934&h=e60f2e16988572ea1a425fd9a6de7b6b5d50aba6']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E21 - "Mother"</td>
+					<td>-</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227935&h=3041d56aab7c521ffa578cd19c8ce5cf4a9aff6f']DEMAND[/url]</td>
+					<td>- | Funbird</td>
+				</tr>
+
+                <tr class="aktiv">
+					<td class="release">E22 - "Operation Mongoose (1)"</td>
+					<td rowspan="2">-</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=227936&h=eea86e1d323c67395b5ad3614b777ee8200ba1a6']DEMAND[/url]</td>
+					<td rowspan="2">- | Funbird</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E23 - "Operation Mongoose (2)"</td>
+				</tr>
+
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+
+	<div id="a4" style="display:none;">
+		<!-- /Tabellen-Modul -->
+		<table style>
+
+			<!-- Tabellen-Modul kann gegen die Anderen ausgetauscht werden -->
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="36%" />
+			<colgroup width="16%" />
+			<colgroup width="18%" />
+			<colgroup width="14%" />
+			<colgroup width="16%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/usa.png" /> HDTVRip</th>
+					<th><img src="creative/bilder/flags/usa.png" /> 720p.HDTV</th>
+					<th><img src="creative/bilder/flags/usa.png" /> WEB-DL</th>
+					<th>Quelle</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+<tr class="aktiv">
+					<td class="release">E01 - "A Tale of Two Sisters"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=200077&h=d1691db170e341558998dc371cd41a0cd056a83c']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=200078&h=32fad45019dfcdab276fa3e21c2691d791cbd81a']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203804&h=bc04c0b73c8d031dccb291fc54b1f88d5b9fbbba']WEB-DL[/url]</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E02 - "White Out"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=200748&h=013c90a983c75b9feb1296f4992e96c1711a38ad']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=200749&h=4f6db0c2660bde9d94af762cbc753ce150daf2a3']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203805&h=e2dd6ce0370261bb297674520682cf28f26bb647']WEB-DL[/url]</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E03 - "Rocky Road"</td>
+					<td>[url='https://www.subcentral.de/index.php?page=Attachment&attachmentID=201415&h=b367acccb28a12086fb385e18eced02dfbee3ff5']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=2014-201516&h=4c9d34529c565102526b34d155452d8739dc33df']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203806&h=3fe61584c97fe7258b762c88d896c95e38ed60e2']WEB-DL[/url]</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E04 - "The Apprentice"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=202092&h=09b9a7dc3be391e8892ee37a0a45596b66a4ec22']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=202091&h=db635740067aef174c5707c8ff8847ae9121434a']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203807&h=8c582643f589ad0890acec9b8bf8737e0dd0659c']WEB-DL[/url]</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E05 - "Breaking Glass"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=202867&h=98a804e49a8dc55361824288d3a78abe1549cb46']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=202869&h=0f7429959a0005a544e06a0346bfc3b702f87d30']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203808&h=bf726571fdabb8b2522613d7905aa3ad46af2a8c']WEB-DL[/url]</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E06 - "Family Business"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203702&h=808785b446ec31a8c08fb43ea3671f67c73a8c53']LOL[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=203803&h=bbe24bdf38689b026d820b95d52c7b788d30c9b7']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205705&h=0fd453b88d0b0e62043475dd91630afe13dcf873']WEB-DL[/url]</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E07 - "The Snow Queen"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=204414&h=699ab570e331b094d1284047f36ee7c1aafe8563']LOL[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=204415&h=66553de79b1217be22df30927754665612dedcfc']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205709&h=9a092fdc0a0abc2f33c24d7448a77e6849d8b114']WEB-DL[/url]</td>
+					<td>YYeTs.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E08 - "Smash the Mirror (1)"</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205704&h=c01fd3c323b3de5ce2ab9b03203f9d535986f0d4']LOL[/url]</td>
+					<td rowspan="2">[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205703&h=b66b3601f25cf1db784fcd64b630dd4f0ce4c5c5']DIMENSION[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205707&h=21fcb0e95ca6eef9fa24049ee520d0e81f4ec291']WEB-DL[/url]</td>
+					<td rowspan="2">addic7ed.com</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E09 - "Smash the Mirror (2)"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=205708&h=9072466602871d017128f6498d20151fcca2f7af']WEB-DL[/url]</td>
+				</tr>
+				
+ 			    <tr class="aktiv">
+					<td class="release">E10 - "Fall"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=206678&h=b3b0be2a43d2c33d4018c4770bb57890273c14c8']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=206679&h=42ef68f470b985c5d2348da8b87825e31535e522']DIMENSION[/url]</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E11 - "Shattered Sight"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=207321&h=8ba26d5d179c7b32c6de5cbbfea605a050d71a48']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=207322&h=d2c4302105b027450b2b3251c680a657f463b77d']DIMENSION[/url]</td>
+					<td>-</td>
+ 					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E12 - "Heroes and Villains"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=207989&h=4a32fec4e4ab80873ae1485ea41273e2bab4d29e']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=207988&h=33766f640b063129e71e5b168d61ba1abccbcce5']DIMENSION[/url]</td>
+ 					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E13 - "Darkness on the Edge of Town"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=214763&h=a8276e29a5629a2e5eabb102cee83495e790f86a']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=214764&h=89b34cc1c2581d9f7c7b6b6205dabd1b450cd015']DIMENSION[/url]</td>
+					<td>-</td>
+					<td>SubHD.com</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E14 - "Unforgiven"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=215251&h=db0da26bde66ab85b75eaf64f6e860248fcf37ea']KILLERS[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=215250&h=fa39396b25edcce5238e44e63b39387ff4b79fb8']KILLERS[/url]</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E15 - "Enter the Dragon"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=215791&h=d8c71b4a3c172b3c07582ec5023f9726d568295c']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=215790&h=9d012e5b093c894f913745049bcf0c0b9452e04e']DIMENSION[/url]</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E16 - "Poor Unfortunate Soul"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=216327&h=51ff2d24911a9346e893f55a740dbbdb52151976']2HD[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=216326&h=20074994064eae95f99918bc55f5e919d4b221ab']2HD[/url]</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E17 - "Best Laid Plans"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=216942&h=25f25d854b467d35d98b80fefa7ff31ae2110623']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=216941&h=b97f859249844066d98f6de4db7f5f321f45ae7a']DIMENSION[/url]</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E18 - "Heart of Gold"</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=218038&h=0761a2401cbcffa7bd0889d08b214c9bc3dd5bc3']LOL[/url]</td>
+					<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=218037&h=edcb1a2b375a220d0b80ee94190f995fca4b22a6']DIMENSION[/url]</td>
+					<td>-</td>
+					<td>subhd.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E19 - "Sympathy for the De Vil"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=218656&h=814488fdb2674a33348b2c8331bd9d9a6a693337']LOL[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=219075&h=3c55a33673d565df1a41dd9ac6f75d4df0758e58']DIMENSION[/url]</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E20 - "Lily"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=219356&h=73dd56677237d03e488f718e28e7419ce3eeeb36']2HD[/url]</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=219357&h=93e0d8d6b2666f830cb383b3d06015a1bdf47ec1']DIMENSION[/url]</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E21 - "Mother"</td>
+					<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220043&h=7d993031e66c76a059defa74eb5e18400ca9261f']2HD[/url]</td>
+					<td>-</td>
+					<td>-</td>
+					<td>addic7ed.com</td>
+				</tr>
+
+				<tr class="aktiv">
+					<td class="release">E22 - "Operation Mongoose (1)"</td>
+					<td rowspan="2">[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220645&h=c72f024fef66edc2a692af8f8a71d158f72948df']LOL[/url]</td>
+					<td rowspan="2">[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=220712&h=7dd54be8725ae79d65c8654ad9dcf54085ebe2cc']DIMENSION[/url]</td>
+					<td>-</td>
+					<td rowspan="2">addic7ed.com</td>
+				</tr>
+				
+				<tr class="aktiv">
+					<td class="release">E23 - "Operation Mongoose (2)"</td>
+					<td>-</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+
+	<div id="a5" style="display:none;">
+		<!-- Tabellen-Modul -->
+		<table style>
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="38%" />
+			<colgroup width="20%" />
+			<colgroup width="20%" />
+			<colgroup width="22%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/usa.png" /> DVDRip</th>
+					<th><img src="creative/bilder/flags/usa.png" /> BDRip</th>
+					<th>Quelle</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+			<tr class="inaktiv">
+					<td class="release">E01 - "A Tale of Two Sisters"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E02 - "White Out"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E03 - "Rocky Road"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E04 - "The Apprentice"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E05 - "Breaking Glass"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E06 - "Family Business"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E07 - "The Snow Queen"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E08 - "Smash the Mirror (1)"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				
+				<tr class="inaktiv">
+					<td class="release">E09 - "Smash the Mirror (2)"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				
+				<tr class="inaktiv">
+					<td class="release">E10 - "Fall"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E11 - "Shattered Sight"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E12 - "Heroes and Villains"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E13 - "Darkness on the Edge of Town"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				
+				<tr class="inaktiv">
+					<td class="release">E14 - "Unforgiven"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E15 - "Enter the Dragon"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E16 - "Poor Unfortunate Soul"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E17 - "Best Laid Plans"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E18 - "Heart of Gold"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E19 - "Sympathy for the De Vil"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E20 - "Lily"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E21 - "Mother"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E22 - "Operation Mongoose (1)"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+				<tr class="inaktiv">
+					<td class="release">E23 - "Operation Mongoose (2)"</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+
+	<div class="baseSC">
+	<div class="txtb afgtxtb">
+		<div class="hinweis afghinweis"><strong>Hinweis:</strong><br>
+                 Auf sämtliche HDTV.XviD-Releases (wie z.B. AFG) sollte der 720p.HDTV.x264-Sub passen!
+        </div>
+	</div>
+<br>
+
+	<!-- Die "..." durch die Beitrags-ID austauschen! -->
+	<p>Fehlerhafte Verlinkung entdeckt, dann <a href="index.php?form=PostReport&postID=455137">melde</a> dich bei einem MOD oder SMOD.</p>
+
+	[/hide] 
+
+	<p class="copyr">&copy; 2014-2015 Übersetzung: [url='http://subcentral.de/index.php?page=User&userID=87995']Elya[/url], [url='http://www.subcentral.de/index.php?page=User&userID=44903']TheFaceOfBoe[/url], [url='http://www.subcentral.de/index.php?page=User&userID=43162']Fischchen[/url], Hampton</p> 
+	<p class="copyr">&copy; 2014-2015 Korrektur: [url='http://www.subcentral.de/index.php?page=User&userID=143199']Desperately Charmed[/url]</p> 
+	<p class="copyr">&copy; 2014-2015 Anpassung: [url='http://www.subcentral.de/index.php?page=User&userID=7508']MegaMax[/url], [url='http://www.subcentral.de/index.php?page=User&userID=43162']Fischchen[/url]</p>
+</div>
+
+<!-- Bilder-Modul -->
+<div class="baseSC">
+	<div class="ztext">
+		<div class="bilderserie">
+			<div class="trailer">
+				<a id="trailer1" href="#btrailer" title="Trailer zu Once Upon a Time S04">
+					<img alt="Once Upon a Time S04-Trailer" src="bilder/trailer_bild.jpg" />
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Bilder-Modul -->
+
+<!-- Versteckte Trailer-Boxes -->
+<link rel="stylesheet" href="creative/css/fancybox.css" type="text/css" media="screen">
+<div style="display:none" id="btrailer">
+<iframe width="640" height="360" src="//www.youtube.com/embed/-gVxrvlhDl0" frameborder="0" allowfullscreen></iframe>
+</div>
+<!-- /Versteckte Trailer-Boxes -->
+
+<!-- Bilder-Modul - Script-Einstelungen -->
+<script type="text/javascript">
+    $jq(document).ready(function() {
+        $jq(".bilderserie a").fancybox({ 'overlayShow': true });
+		$jq(".trailer a").fancybox({ 'frameWidth': 640, frameHeight: 360, 'zoomSpeedIn': 0, 'zoomSpeedOut': 0 });
+        /* weitere Einstellungen [Optional] */
+    }); 
+</script>
+<!-- /Bilder-Modul - Script-Einstelungen -->
+
+<!-- Falls es notwendig ist, kann hier das Hinweis-Modul (Bedankomat) eingefuegt werden. [Optional]  -->
+<div class="baseSC">
+	<!-- Hinweis-Modul - Bedankomat usw. -->
+	<div class="ztext">
+		<div class="bhinweis">
+			<p><strong>Bitte <a href="http://www.subcentral.de/index.php?page=Thread&threadID=2745" target="_blank">Bedankomat</a> verwenden!</strong></p>
+			<p>Einsilbige Bedankungen wie "Danke" oder "thx" werden in den [url='http://subcentral.de/index.php?page=Thread&threadID=1407']Danke-Thread[/url] verschoben.<br/>
+Über umfangreichere Danksagungen freut sich aber das ganze Team.</p>
+		</div>
+	</div>
+	<!-- /Hinweis-Modul -->
+</div>
+
+<style type="text/css">
+	
+
+.baseSC table {background-color: #054D63/* Hintergrundfarbe Tabelle */; border-color: #00223D/* Rahmenfarbe Tabelle */; border-width:2px /*Rahmenbreite Tabelle*/; } 
+.baseSC table .inaktiv { color: #2F778D/* Schriftfarbe inaktive Zeilen */; } 
+.baseSC table .aktiv { color: #fff/* Schriftfarbe aktive Zeilen */; } 
+.baseSC table th { background: #00223D/* Farbe Tabellenkopf */  url(../../../bilder/glanzkopf/glanzkopf_transparent2.png) repeat-x 0 center; color:#fff/* Schriftfarbe Tabellenkopf */;} 
+.baseSC table tbody tr:hover { color: #00223D/* Schriftfarbe Mouseover */; background-color: #92C5D3/* Hintergrundfarbe Mouseover */; } 
+
+.baseSC table tbody tr:hover a { color: #00223D/* Schriftfarbe Navigationstabelle Mouseover */ !important; } 
+.baseSC table tr a { color: #92C5D3/* Schriftfarbe Navigationstabelle */ !important; } 
+
+.baseSC .afghinweis {color: #8db7c5 /* Schriftfarbe AFG-BOX */; background-color: #00223D/* Hintergrundfarbe AFG-BOX */; border: 1px /* Rahmenbreite AFG-BOX */ solid #054D63/* Rahmenfarbe AFG-BOX*/; } 
+
+.baseSC .bilderserie a img, .baseSC .trailer a img { background: #054D63/* Rahmenfarbe der Trailerbox*/; border: 2px solid #00223D/* Farbe für den äußeren Rand */; } 
+.baseSC .bilderserie a:hover img, .baseSC .trailer a:hover img { background: #00223D/* Farbe für den Rahmen beim Mouseover */; border: 2px solid #054D63/* Farbe für den äußeren Rand beim  Mouseover*/;  } 
+
+	a.sclinkactive:link {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+	a.sclinkactive:visited {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+	a.sclinkactive:active {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+	a.sclinkactive:focus {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+
+	a.sclink:link {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+	a.sclink:visited {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+	a.sclink:active {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+	a.sclink:focus {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+        .threadStarterPost p.editNote{display:none;}
+
+</style>
+
+<!-- Script-Einstellungs-Modul -->
+<!-- Hier einfügen, nur für Bilder-Modul [Optinal] -->
+<!-- Script-Einstellungs-Modul -->

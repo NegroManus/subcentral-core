@@ -31,8 +31,7 @@ public class OverviewServlet extends HttpServlet
 	private static final long	serialVersionUID	= -468235743950296120L;
 	private static final Logger	log					= LogManager.getLogger(OverviewServlet.class);
 
-	private static final String	ENV_SETTINGS_PATH	= "C:\\Users\\mhertram\\Documents\\Projekte\\SC\\Submanager\\mig\\migration-env-settings.properties";
-
+	private static final String	ENV_SETTINGS_PATH	= "E:\\Java\\SubCentral\\migration\\migration-env-settings.properties";
 	private MigrationConfig		config;
 
 	@Override
