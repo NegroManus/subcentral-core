@@ -76,6 +76,11 @@ public class Site extends MetadataBase implements Comparable<Site>
 		this.link = link;
 	}
 
+	public String getDisplayNameOrName()
+	{
+		return displayName != null ? displayName : name;
+	}
+
 	// Object methods
 	@Override
 	public boolean equals(Object obj)

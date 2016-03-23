@@ -64,15 +64,15 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 			{
 				example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
 			}
-			if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
+			else if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
 			{
 				example = "Parks.And.Recreation.s07e01.sub.itasa";
 			}
-			if (SubCentralDe.getParsingService().getDomain().equals(domain))
+			else if (SubCentralDe.getParsingService().getDomain().equals(domain))
 			{
 				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
 			}
-			if (ReleaseScene.getParsingService().getDomain().equals(domain))
+			else if (ReleaseScene.getParsingService().getDomain().equals(domain))
 			{
 				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL";
 			}

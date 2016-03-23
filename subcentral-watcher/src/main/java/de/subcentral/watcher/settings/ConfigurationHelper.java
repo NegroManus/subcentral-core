@@ -120,21 +120,21 @@ class ConfigurationHelper
 			{
 				services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
 			}
-			if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
+			else if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
 			{
 				services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
 			}
-			if (ReleaseScene.getParsingService().getDomain().equals(domain))
+			else if (ReleaseScene.getParsingService().getDomain().equals(domain))
 			{
 				services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
 			}
-			if (SubCentralDe.getParsingService().getDomain().equals(domain))
+			else if (SubCentralDe.getParsingService().getDomain().equals(domain))
 			{
 				services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
 			}
 			else
 			{
-				throw new IllegalArgumentException("Unknown parsing service. domain=" + domain);
+				throw new IllegalArgumentException("Unknown parsing service domain: " + domain);
 			}
 		}
 		services.trimToSize();
@@ -192,11 +192,11 @@ class ConfigurationHelper
 			{
 				dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
 			}
-			if (XRelTo.SITE.getName().equals(name))
+			else if (XRelTo.SITE.getName().equals(name))
 			{
 				dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
 			}
-			if (OrlyDbCom.SITE.getName().equals(name))
+			else if (OrlyDbCom.SITE.getName().equals(name))
 			{
 				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
 			}

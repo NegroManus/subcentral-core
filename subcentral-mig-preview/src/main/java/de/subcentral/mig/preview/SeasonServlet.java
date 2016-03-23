@@ -191,7 +191,7 @@ public class SeasonServlet extends HttpServlet
 
 	private static String printSource(Site source)
 	{
-		return source != null ? source.getDisplayName() : "";
+		return source != null ? source.getDisplayNameOrName() : "";
 	}
 
 	private static String printReleases(Collection<Release> releases)
