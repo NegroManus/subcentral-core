@@ -101,9 +101,11 @@ public class SeasonPostParser
 	 * <ul>
 	 * <li>E23-E24 - "Alternate Cut"</li>
 	 * <li>E15-E16 - "Psych - The Musical"</li>
+	 * <li>E23+E24 - "And Martha Stewart Have A Ball (1) + (2)"</li>
+	 * <li>E23 + E24 - "And Martha Stewart Have A Ball (1) + (2)"</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_MULTI						= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)[-+]E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_MULTI						= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)\\s*[-+]\\s*E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
