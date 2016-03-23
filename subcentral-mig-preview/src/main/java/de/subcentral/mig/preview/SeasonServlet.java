@@ -80,6 +80,22 @@ public class SeasonServlet extends HttpServlet
 		{
 			int seasonThreadId = Integer.parseInt(request.getParameter("threadId"));
 			SeasonPostData data = readSeasonPostData(seasonThreadId);
+			// LinkedListMultimap maintains ordering for both keys and values
+			Multimap<Subtitle, SubtitleRelease> subs = LinkedListMultimap.create();
+			for (SubtitleRelease subRls : data.getSubtitleReleases())
+			{
+				if (subRls.getSubtitles().isEmpty())
+				{
+					subs.put(null, subRls);
+				}
+				else
+				{
+					for (Subtitle sub : subRls.getSubtitles())
+					{
+						subs.put(sub, subRls);
+					}
+				}
+			}
 			String contextPath = request.getContextPath();
 
 			PrintWriter writer = response.getWriter();
@@ -105,16 +121,6 @@ public class SeasonServlet extends HttpServlet
 			}
 			writer.println("</div>");
 
-			// LinkedListMultimap maintains ordering for both keys and values
-			Multimap<Subtitle, SubtitleRelease> subs = LinkedListMultimap.create();
-			for (SubtitleRelease subRls : data.getSubtitleReleases())
-			{
-				for (Subtitle sub : subRls.getSubtitles())
-				{
-					subs.put(sub, subRls);
-				}
-			}
-
 			writer.println("<div><h2>Staffeln</h2>");
 			if (data.getSeasons().isEmpty())
 			{
@@ -132,6 +138,9 @@ public class SeasonServlet extends HttpServlet
 					if (season.getEpisodes().isEmpty())
 					{
 						writer.println("Keine Episoden vorhanden");
+						writer.println("<div><h2>Untertitel</h2>");
+						printSubs(writer, subs, null);
+						writer.println("</div>");
 					}
 					else
 					{
@@ -142,30 +151,7 @@ public class SeasonServlet extends HttpServlet
 							writer.println(epi);
 							writer.println("</code>");
 							writer.println("<br/><br/>");
-
-							for (Map.Entry<Subtitle, Collection<SubtitleRelease>> entry : subs.asMap().entrySet())
-							{
-								Subtitle sub = entry.getKey();
-								if (epi.equals(sub.getMedia()))
-								{
-									writer.println(printSubtitle(sub));
-
-									writer.print("<ul>");
-									for (SubtitleRelease subRls : entry.getValue())
-									{
-										String attachmentId = Integer.toString((Integer) subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
-										writer.print("<li>");
-										writer.print("<a href=\"https://www.subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId + "\">");
-										writer.print(printReleases(subRls.getMatchingReleases()));
-										writer.print("</a>");
-										writer.print(" ");
-										writer.print(printContributionsByType(subRls.getContributions()));
-										writer.println("</li>");
-									}
-									writer.print("</ul>");
-									writer.println("<hr>");
-								}
-							}
+							printSubs(writer, subs, epi);
 						}
 					}
 					writer.println("</div>");
@@ -178,15 +164,48 @@ public class SeasonServlet extends HttpServlet
 			writer.println("</html>");
 			writer.flush();
 		}
-		catch (Exception e)
+		catch (
+
+		Exception e)
 		{
 			throw new ServletException(e);
 		}
 	}
 
+	private static void printSubs(PrintWriter writer, Multimap<Subtitle, SubtitleRelease> subs, Episode epi)
+	{
+		for (Map.Entry<Subtitle, Collection<SubtitleRelease>> entry : subs.asMap().entrySet())
+		{
+			Subtitle sub = entry.getKey();
+			if (epi == null || epi.equals(sub.getMedia()))
+			{
+				writer.println(printSubtitle(sub));
+
+				writer.println("<ul>");
+				for (SubtitleRelease subRls : entry.getValue())
+				{
+					String attachmentId = Integer.toString((Integer) subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
+					writer.print("<li>");
+					writer.print("<a href=\"https://www.subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId + "\">");
+					writer.print(printReleases(subRls.getMatchingReleases()));
+					writer.print("</a>");
+					writer.print(" ");
+					writer.print(printContributionsByType(subRls.getContributions()));
+					writer.println("</li>");
+				}
+				writer.println("</ul>");
+				writer.println("<hr>");
+			}
+		}
+	}
+
 	private static String printSubtitle(Subtitle sub)
 	{
-		return languageToHtml(sub.getLanguage()) + " " + printSource(sub.getSource()) + " " + printContributionsByType(sub.getContributions());
+		if (sub != null)
+		{
+			return languageToHtml(sub.getLanguage()) + " " + printSource(sub.getSource()) + " " + printContributionsByType(sub.getContributions());
+		}
+		return "";
 	}
 
 	private static String printSource(Site source)
@@ -201,15 +220,19 @@ public class SeasonServlet extends HttpServlet
 
 	private static String languageToHtml(String language)
 	{
-		switch (language)
+		if (language != null)
 		{
-			case Migration.SUBTITLE_LANGUAGE_GERMAN:
-				return "<img src=\"img/de.png\" alt=\"" + language + "\" title=\"" + language + "\" />";
-			case Migration.SUBTITLE_LANGUAGE_ENGLISH:
-				return "<img src=\"img/usa.png\" alt=\"" + language + "\" title=\"" + language + "\" />";
-			default:
-				return "[" + language + "]";
+			switch (language)
+			{
+				case Migration.SUBTITLE_LANGUAGE_GERMAN:
+					return "<img src=\"img/de.png\" alt=\"" + language + "\" title=\"" + language + "\" />";
+				case Migration.SUBTITLE_LANGUAGE_ENGLISH:
+					return "<img src=\"img/usa.png\" alt=\"" + language + "\" title=\"" + language + "\" />";
+				default:
+					return "[" + language + "]";
+			}
 		}
+		return "";
 	}
 
 	private static String printContributionsByType(Collection<Contribution> contributions)

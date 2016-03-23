@@ -130,6 +130,7 @@ public class SeasonPostParser
 
 	/**
 	 * <pre>
+	 * 		<a href="http://www.subcentral.de/index.php?page=Attachment&attachmentID=8776&h=b690960cfcb569ab0b06e35ae2c0c2c5d867ddd7" target="_blank">NoTV</a> 
 	 * 		<a href="http://www.subcentral.de/index.php?page=Attachment&attachmentID=46749">POW4</a>
 	 * </pre>
 	 */
@@ -1067,10 +1068,12 @@ public class SeasonPostParser
 	{
 		Integer attachmentId = Integer.valueOf(subLinkMatcher.group(1));
 		String label = removeHtmlTagsAndBBCodes(subLinkMatcher.group(2));
-		SubtitleRelease subAdj = new SubtitleRelease();
-		subAdj.setSingleMatchingRelease(new Release(label));
-		subAdj.getAttributes().put(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID, attachmentId);
-		data.subtitles.add(subAdj);
+
+		Release rls = new Release(label);
+		SubtitleRelease subRls = new SubtitleRelease();
+		subRls.getMatchingReleases().add(rls);
+		subRls.getAttributes().put(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID, attachmentId);
+		data.subtitles.add(subRls);
 	}
 
 	private static void cleanupData(WorkData data)
