@@ -127,6 +127,7 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 	 */
 	protected Connection setupConnection(URL url)
 	{
-		return Jsoup.connect(url.toExternalForm()).timeout(timeout);
+		String userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0";
+		return Jsoup.connect(url.toExternalForm()).timeout(timeout).userAgent(userAgent);
 	}
 }
