@@ -104,7 +104,7 @@ public class SeasonPostParser
 	 * <li>E23 + E24 - "And Martha Stewart Have A Ball (1) + (2)"</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_MULTI						= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)\\s*[-+]\\s*E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_MULTI						= Pattern.compile(".*?(?:S(\\d+)\\s*)?E(\\d+)\\s*[-+]\\s*E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -112,7 +112,7 @@ public class SeasonPostParser
 	 * <li>S04E03 - The Power of the Daleks (Verschollen)</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_REGULAR						= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_REGULAR						= Pattern.compile(".*?(?:S(\\d+)\\s*)?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -127,7 +127,7 @@ public class SeasonPostParser
 	 * <li>E01:</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_ONLY_NUM					= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)");
+	private static final Pattern					PATTERN_EPISODE_ONLY_NUM					= Pattern.compile(".*?(?:S(\\d+)\\s*)?E(\\d+)");
 
 	/**
 	 * <pre>
@@ -396,17 +396,10 @@ public class SeasonPostParser
 			return;
 		}
 
-		// Determine ColumnTypes
-		Element thead = table.getElementsByTag("thead").first();
-		if (thead == null)
-		{
-			throw new IllegalArgumentException("No thead element found");
-		}
-
-		Elements thElems = thead.getElementsByTag("th");
+		Elements thElems = table.getElementsByTag("th");
 		if (thElems.isEmpty())
 		{
-			throw new IllegalArgumentException("No th elements found inside the thead element");
+			throw new IllegalArgumentException("No th elements found");
 		}
 
 		ColumnType[] columns = new ColumnType[thElems.size()];
