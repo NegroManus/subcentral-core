@@ -47,7 +47,7 @@ public class SeasonPostParser
 
 	private enum ColumnType
 	{
-		UNKNOWN, EPISODE, GERMAN_SUBS, ENGLISH_SUBS, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
+		UNKNOWN, EPISODE, SUBS, SUBS_GERMAN, SUBS_ENGLISH, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
 	};
 
 	private static final String						NO_VALUE									= "-";
@@ -162,16 +162,18 @@ public class SeasonPostParser
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
 	{
 		ImmutableMap.Builder<Pattern, ColumnType> map = ImmutableMap.builder();
-		map.put(Pattern.compile("Episode(?:n)?"), ColumnType.EPISODE);
-		map.put(Pattern.compile(".*?flags/de\\.png.*"), ColumnType.GERMAN_SUBS);
-		map.put(Pattern.compile("Deutsch"), ColumnType.GERMAN_SUBS);
-		map.put(Pattern.compile(".*?flags/(usa|uk|ca|aus|nz)\\.png.*"), ColumnType.ENGLISH_SUBS);
-		map.put(Pattern.compile("(Englisch|VO)"), ColumnType.ENGLISH_SUBS);
-		map.put(Pattern.compile("Übersetzung"), ColumnType.TRANSLATION);
+		map.put(Pattern.compile("(Episode|Folge)(?:n)?"), ColumnType.EPISODE);
+		map.put(Pattern.compile(".*?flags/de\\.png.*"), ColumnType.SUBS_GERMAN);
+		map.put(Pattern.compile("Deutsch"), ColumnType.SUBS_GERMAN);
+		map.put(Pattern.compile(".*?flags/(usa|uk|ca|aus|nz)\\.png.*"), ColumnType.SUBS_ENGLISH);
+		map.put(Pattern.compile("(Englisch|VO)"), ColumnType.SUBS_ENGLISH);
+		map.put(Pattern.compile("(Übersetzung|Übersetzer)"), ColumnType.TRANSLATION);
 		map.put(Pattern.compile("(Korrektur|Überarbeitung)"), ColumnType.REVISION);
 		map.put(Pattern.compile("Timings"), ColumnType.TIMINGS);
 		map.put(Pattern.compile("Anpassung"), ColumnType.ADJUSTMENT);
 		map.put(Pattern.compile("Quelle"), ColumnType.SOURCE);
+		map.put(Pattern.compile(".*(HDTV|HDTVRip|720p|WEB-DL|DVD|DVDRip).*"), ColumnType.SUBS);
+		map.put(Pattern.compile(".*HDTV.*"), ColumnType.SUBS);
 		return map.build();
 	}
 
@@ -562,9 +564,11 @@ public class SeasonPostParser
 				case EPISODE:
 					parseEpisodeCell(parsedEpis, data, td);
 					break;
-				case GERMAN_SUBS:
+				case SUBS:
 					// fall through
-				case ENGLISH_SUBS:
+				case SUBS_GERMAN:
+					// fall through
+				case SUBS_ENGLISH:
 					parseSubtitlesCell(parsedSubs, td, colType);
 					break;
 				case TRANSLATION:
@@ -859,10 +863,10 @@ public class SeasonPostParser
 		String language;
 		switch (colType)
 		{
-			case GERMAN_SUBS:
+			case SUBS_GERMAN:
 				language = Migration.SUBTITLE_LANGUAGE_GERMAN;
 				break;
-			case ENGLISH_SUBS:
+			case SUBS_ENGLISH:
 				language = Migration.SUBTITLE_LANGUAGE_ENGLISH;
 				break;
 			default:

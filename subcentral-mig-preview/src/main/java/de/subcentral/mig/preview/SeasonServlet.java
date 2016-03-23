@@ -276,8 +276,13 @@ public class SeasonServlet extends HttpServlet
 	private String name(Object obj)
 	{
 		NamingService ns = NamingDefaults.getDefaultNamingService();
-		Map<String, Object> np = ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE, EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
-		return ns.name(obj, np);
+		ImmutableMap.Builder<String, Object> np = ImmutableMap.builder();
+		np.put(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE);
+		np.put(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
+		np.put(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE);
+		np.put(EpisodeNamer.PARAM_INCLUDE_SEASON, Boolean.FALSE);
+		np.put(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
+		return ns.name(obj, np.build());
 	}
 
 	private SeasonPostData readSeasonPostData(int seasonThreadId) throws SQLException
@@ -288,8 +293,6 @@ public class SeasonServlet extends HttpServlet
 			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
 			scBoard.setConnection(conn);
 			post = scBoard.getFirstPost(seasonThreadId);
-			System.out.println(post.getTopic());
-			System.out.println(post.getMessage());
 		}
 
 		return new SeasonPostParser().parse(post.getTopic(), post.getMessage());
