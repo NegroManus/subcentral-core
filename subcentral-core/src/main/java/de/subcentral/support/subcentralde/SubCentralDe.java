@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import de.subcentral.core.correct.PatternStringReplacer;
 import de.subcentral.core.correct.SubtitleLanguageCorrector;
 import de.subcentral.core.correct.TypeBasedCorrectionService;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
@@ -33,10 +34,10 @@ import de.subcentral.support.releasescene.ReleaseScene;
 
 public class SubCentralDe
 {
-	public static final String						SITE_ID			= "subcentral.de";
+	public static final Site						SITE			= new Site("subcentral.de", "SubCentral.de", "https://www.subcentral.de/");
 
 	private static final Logger						log				= LogManager.getLogger(SubCentralDe.class.getName());
-	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE_ID);
+	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE.getName());
 
 	static
 	{

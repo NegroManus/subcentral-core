@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.Contribution;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
@@ -102,7 +103,7 @@ public class SeasonPostParser
 	 * <li>E15-E16 - "Psych - The Musical"</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_MULTI						= Pattern.compile("(?:S(\\d+))?E(\\d+)-E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_MULTI						= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)[-+]E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -110,7 +111,7 @@ public class SeasonPostParser
 	 * <li>S04E03 - The Power of the Daleks (Verschollen)</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_REGULAR						= Pattern.compile("(?:S(\\d+))?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
+	private static final Pattern					PATTERN_EPISODE_REGULAR						= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)\\s*-\\s*(?:\\\")?(.*?)(?:\\\")?");
 
 	/**
 	 * <ul>
@@ -125,7 +126,7 @@ public class SeasonPostParser
 	 * <li>E01:</li>
 	 * <ul>
 	 */
-	private static final Pattern					PATTERN_EPISODE_ONLY_NUM					= Pattern.compile("(?:S(\\d+))?E(\\d+)");
+	private static final Pattern					PATTERN_EPISODE_ONLY_NUM					= Pattern.compile("(?:S(\\d+)\\s*)?E(\\d+)");
 
 	/**
 	 * <pre>
@@ -547,7 +548,7 @@ public class SeasonPostParser
 		// each 3rd-level list contains the contributions within a division
 		List<List<List<MarkedValue<Contribution>>>> parsedContributions = new ArrayList<>();
 		// Each top-level list contains the divisions inside the source column
-		List<MarkedValue<String>> parsedSources = new ArrayList<>();
+		List<MarkedValue<Site>> parsedSources = new ArrayList<>();
 
 		for (int i = 0; i < tdElems.size(); i++)
 		{
@@ -711,7 +712,7 @@ public class SeasonPostParser
 				for (int i = 0; i < numSubColumns; i++)
 				{
 					List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
-					MarkedValue<String> markedSource = parsedSources.get(i);
+					MarkedValue<Site> markedSource = parsedSources.get(i);
 					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
 						addSource(markedSubAdj.value, markedSource.value);
@@ -728,7 +729,7 @@ public class SeasonPostParser
 				{
 					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
 					{
-						MarkedValue<String> markedSource = parsedSources.get(index);
+						MarkedValue<Site> markedSource = parsedSources.get(index);
 						addSource(markedSubAdj.value, markedSource.value);
 						index++;
 					}
@@ -738,11 +739,12 @@ public class SeasonPostParser
 			else
 			{
 				StringJoiner combinedSourceJoiner = new StringJoiner(" & ");
-				for (MarkedValue<String> markedSource : parsedSources)
+				for (MarkedValue<Site> markedSource : parsedSources)
 				{
-					combinedSourceJoiner.add(markedSource.value);
+					combinedSourceJoiner.add(markedSource.value.getName());
 				}
-				String combinedSource = combinedSourceJoiner.toString();
+				String combinedSourceName = combinedSourceJoiner.toString();
+				Site combinedSource = new Site(combinedSourceName);
 
 				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
 				{
@@ -979,17 +981,23 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseSourcesCell(List<MarkedValue<String>> sources, Element td)
+	private static void parseSourcesCell(List<MarkedValue<Site>> sources, Element td)
 	{
 		String text = removeBBCodes(td.text());
 		Iterable<String> divisions = SPLITTER_DIVISON.split(text);
 		for (String division : divisions)
 		{
-			sources.add(MarkedValue.parse(division));
+			if (!division.isEmpty() && !NO_VALUE.equals(division))
+			{
+				MarkedValue<String> markedSourceName = MarkedValue.parse(division);
+				Site source = new Site(markedSourceName.value, markedSourceName.value);
+				MarkedValue<Site> markedSource = new MarkedValue<>(source, markedSourceName.marker);
+				sources.add(markedSource);
+			}
 		}
 	}
 
-	private static void addSource(SubtitleRelease subAdj, String source)
+	private static void addSource(SubtitleRelease subAdj, Site source)
 	{
 		subAdj.getFirstSubtitle().setSource(source);
 	}
@@ -1163,8 +1171,7 @@ public class SeasonPostParser
 		}
 
 		// Cleanup sub.source
-		// 1) lower-case all sources
-		// 8) add source=SubCentral.de to all german subs without a source
+		// add source=SubCentral.de to all german subs without a source
 		for (SubtitleRelease subAdj : data.subtitles)
 		{
 			for (Subtitle sub : subAdj.getSubtitles())
@@ -1173,17 +1180,13 @@ public class SeasonPostParser
 				{
 					if (Migration.SUBTITLE_LANGUAGE_GERMAN.equals(sub.getLanguage()))
 					{
-						sub.setSource(SubCentralDe.SITE_ID);
+						sub.setSource(SubCentralDe.SITE);
 					}
-				}
-				else
-				{
-					sub.setSource(sub.getSource().toLowerCase(Migration.LOCALE_GERMAN));
 				}
 			}
 		}
 
-		// Sort subtitleAdjustments
+		// Sort subtitle releases
 		data.subtitles.sort(null);
 	}
 
@@ -1231,7 +1234,7 @@ public class SeasonPostParser
 			return seasons;
 		}
 
-		public ImmutableList<SubtitleRelease> getSubtitleFiles()
+		public ImmutableList<SubtitleRelease> getSubtitleReleases()
 		{
 			return subtitleReleases;
 		}

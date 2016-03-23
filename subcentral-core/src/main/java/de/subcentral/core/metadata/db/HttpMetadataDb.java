@@ -24,7 +24,10 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 	protected int			timeout			= DEFAULT_TIMEOUT;
 
 	// Metadata
-	public abstract String getHost();
+	public String getHost()
+	{
+		return getSite().getLink();
+	}
 
 	public URL getHostUrl()
 	{

@@ -79,7 +79,7 @@ public class SeasonPostParserTest
 
 		System.out.println();
 		System.out.println("Subs:");
-		for (SubtitleRelease subRls : data.getSubtitleFiles())
+		for (SubtitleRelease subRls : data.getSubtitleReleases())
 		{
 			System.out.println(NamingDefaults.getDefaultSubtitleReleaseNamer().name(subRls,
 					ImmutableMap.of(ReleaseNamer.PARAM_PREFER_NAME, Boolean.FALSE, SubtitleReleaseNamer.PARAM_PREFER_NAME, Boolean.FALSE)));

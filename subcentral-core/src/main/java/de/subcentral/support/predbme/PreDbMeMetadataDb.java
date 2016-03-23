@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.GenericMedia;
@@ -53,21 +54,9 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 	private static final ZoneId	TIME_ZONE	= ZoneId.of("UTC");
 
 	@Override
-	public String getSiteId()
+	public Site getSite()
 	{
-		return PreDbMe.SITE_ID;
-	}
-
-	@Override
-	public String getDisplayName()
-	{
-		return "PreDB.me";
-	}
-
-	@Override
-	public String getHost()
-	{
-		return "http://www.predb.me/";
+		return PreDbMe.SITE;
 	}
 
 	@Override
@@ -313,7 +302,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		Release rls = new Release();
 
 		String id = rlsDiv.attr("id");
-		rls.getIds().put(PreDbMe.SITE_ID, id);
+		rls.getIds().put(PreDbMe.SITE, id);
 
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -332,7 +321,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 			rls.setName(title);
 
 			detailsUrl = titleAnchor.absUrl("href");
-			rls.getIds().put(PreDbMe.SITE_ID, parseId(titleAnchor));
+			rls.getIds().put(PreDbMe.SITE, parseId(titleAnchor));
 		}
 
 		/**

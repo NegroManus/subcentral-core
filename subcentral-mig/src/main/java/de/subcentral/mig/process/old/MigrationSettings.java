@@ -94,7 +94,7 @@ public class MigrationSettings
 			String name = seriesCfg.getString("[@name]");
 			String thetvdbId = seriesCfg.getString("[@thetvdbId]");
 			Series series = new Series(name);
-			series.getIds().put(TheTvDbCom.SITE_ID, thetvdbId);
+			series.getIds().put(TheTvDbCom.SITE, thetvdbId);
 			seriesList.add(series);
 		}
 		seriesList.trimToSize();

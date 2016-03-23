@@ -1,8 +1,10 @@
 package de.subcentral.support.orlydbcom;
 
+import de.subcentral.core.metadata.Site;
+
 public class OrlyDbCom
 {
-	public static final String SITE_ID = "orlydb.com";
+	public static final Site SITE = new Site("orlydb.com", "OrlyDB.com", "http://orlydb.com/");
 
 	private OrlyDbCom()
 	{

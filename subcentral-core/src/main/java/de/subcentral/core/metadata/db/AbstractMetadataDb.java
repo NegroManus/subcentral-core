@@ -11,6 +11,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.NamingException;
@@ -33,7 +34,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	}
 
 	@Override
-	public Set<String> getSupportedExternalSites()
+	public Set<Site> getSupportedExternalSites()
 	{
 		return ImmutableSet.of();
 	}
@@ -65,7 +66,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	}
 
 	@Override
-	public <T> List<T> searchByExternalId(String externalSiteId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
+	public <T> List<T> searchByExternalId(Site externalSite, String externalId, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -79,7 +80,7 @@ public abstract class AbstractMetadataDb implements MetadataDb
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(this).add("siteId", getSiteId()).toString();
+		return MoreObjects.toStringHelper(this).add("site", getSite()).toString();
 	}
 
 	protected UnsupportedOperationException newUnsupportedRecordTypeException(Class<?> unsupportedType)
@@ -92,9 +93,8 @@ public abstract class AbstractMetadataDb implements MetadataDb
 		return new UnsupportedOperationException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
 	}
 
-	protected UnsupportedOperationException newUnsupportedExternalSiteException(String unsupportedExternalSite)
+	protected UnsupportedOperationException newUnsupportedExternalSiteException(Site unsupportedExternalSite)
 	{
 		return new UnsupportedOperationException("The external site is not supported: " + unsupportedExternalSite + " (supported external sites: " + getSupportedExternalSites() + ")");
 	}
-
 }

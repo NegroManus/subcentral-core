@@ -14,12 +14,15 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.correct.CorrectionDefaults;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.metadata.media.NamedMedia;
+import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
@@ -70,6 +73,10 @@ public class NamingDefaults
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDate.class, (LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDateTime.class, (LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
 		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(ZonedDateTime.class, (ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
+
+		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Site.class, (Site s) -> s.getName());
+		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Network.class, (Network n) -> n.getName());
+		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Nuke.class, (Nuke n) -> n.getReason());
 
 		// Episode
 		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));

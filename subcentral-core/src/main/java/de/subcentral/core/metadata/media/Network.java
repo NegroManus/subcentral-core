@@ -18,6 +18,7 @@ public class Network extends MetadataBase implements Comparable<Network>
 
 	public static final SimplePropDescriptor	PROP_NAME			= new SimplePropDescriptor(Network.class, PropNames.NAME);
 	public static final SimplePropDescriptor	PROP_IDS			= new SimplePropDescriptor(Network.class, PropNames.IDS);
+
 	private String								name;
 
 	public Network()

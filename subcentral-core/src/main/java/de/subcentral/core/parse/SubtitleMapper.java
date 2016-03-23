@@ -2,6 +2,7 @@ package de.subcentral.core.parse;
 
 import java.util.Map;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -24,7 +25,7 @@ public class SubtitleMapper extends AbstractMapper<Subtitle>
 		Subtitle sub = new Subtitle();
 		sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));
 		sub.setGroup(parsePropService.parse(props, Subtitle.PROP_GROUP, Group.class));
-		sub.setSource(props.get(Subtitle.PROP_SOURCE));
+		sub.setSource(parsePropService.parse(props, Subtitle.PROP_SOURCE, Site.class));
 		return sub;
 	}
 

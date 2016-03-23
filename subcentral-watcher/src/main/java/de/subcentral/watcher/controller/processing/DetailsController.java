@@ -217,7 +217,7 @@ public class DetailsController extends Controller
 				rls.getGroup() != null ? rls.getGroup().toString() : "",
 				sub.getLanguage() != null ? sub.getLanguage() : "",
 				Tag.formatList(subRls.getTags()),
-				sub.getSource() != null ? sub.getSource() : "",
+				sub.getSource() != null ? sub.getSource().getName() : "",
 				sub.getGroup() != null ? sub.getGroup().toString() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
 		return pane;

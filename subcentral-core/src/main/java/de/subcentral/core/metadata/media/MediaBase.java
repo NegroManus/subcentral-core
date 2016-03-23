@@ -12,6 +12,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.metadata.MetadataBase;
+import de.subcentral.core.metadata.Site;
 
 public abstract class MediaBase extends MetadataBase implements Media
 {
@@ -20,7 +21,7 @@ public abstract class MediaBase extends MetadataBase implements Media
 	protected String								title;
 	protected Temporal								date;
 	protected String								description;
-	protected Map<String, Float>					ratings				= new HashMap<>(2);
+	protected Map<Site, Float>						ratings				= new HashMap<>(2);
 	protected String								contentRating;
 	protected final ListMultimap<String, String>	images				= LinkedListMultimap.create(0);
 	protected final List<String>					furtherInfoLinks	= new ArrayList<>(4);
@@ -59,12 +60,12 @@ public abstract class MediaBase extends MetadataBase implements Media
 	}
 
 	@Override
-	public Map<String, Float> getRatings()
+	public Map<Site, Float> getRatings()
 	{
 		return ratings;
 	}
 
-	public void setRatings(Map<String, Float> ratings)
+	public void setRatings(Map<Site, Float> ratings)
 	{
 		this.ratings.clear();
 		this.ratings.putAll(ratings);

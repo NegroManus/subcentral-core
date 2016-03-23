@@ -9,6 +9,7 @@ public class PropNames
 	public static final String	CONTRIBUTIONS			= "contributions";
 	public static final String	COUNTRIES				= "countries";
 	public static final String	DATE					= "date";
+	public static final String	DISPLAY_NAME			= "displayName";
 	public static final String	DESCRIPTION				= "description";
 	public static final String	EPISODES				= "episodes";
 	public static final String	FILE_COUNT				= "fileCount";
@@ -20,6 +21,7 @@ public class PropNames
 	public static final String	IMAGES					= "images";
 	public static final String	LANGUAGE				= "language";
 	public static final String	LANGUAGES				= "languages";
+	public static final String	LINK					= "link";
 	public static final String	MATCHING_RELEASES		= "matchingReleases";
 	public static final String	MEDIA					= "media";
 	public static final String	MEDIA_CONTENT_TYPE		= "mediaContentType";

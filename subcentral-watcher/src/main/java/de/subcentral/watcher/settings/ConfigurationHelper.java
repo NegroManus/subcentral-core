@@ -116,22 +116,25 @@ class ConfigurationHelper
 		{
 			String domain = parsingServiceCfg.getString("");
 			boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
-			switch (domain)
+			if (Addic7edCom.getParsingService().getDomain().equals(domain))
 			{
-				case Addic7edCom.SITE_ID:
-					services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
-					break;
-				case ItalianSubsNet.SITE_ID:
-					services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
-					break;
-				case ReleaseScene.SOURCE_ID:
-					services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
-					break;
-				case SubCentralDe.SITE_ID:
-					services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown parsing service. domain=" + domain);
+				services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
+			}
+			if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
+			{
+				services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
+			}
+			if (ReleaseScene.getParsingService().getDomain().equals(domain))
+			{
+				services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
+			}
+			if (SubCentralDe.getParsingService().getDomain().equals(domain))
+			{
+				services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
+			}
+			else
+			{
+				throw new IllegalArgumentException("Unknown parsing service. domain=" + domain);
 			}
 		}
 		services.trimToSize();
@@ -185,19 +188,21 @@ class ConfigurationHelper
 		{
 			String name = rlsDbCfg.getString("");
 			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
-			switch (name)
+			if (PreDbMe.SITE.getName().equals(name))
 			{
-				case PreDbMe.SITE_ID:
-					dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
-					break;
-				case XRelTo.SITE_ID:
-					dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
-					break;
-				case OrlyDbCom.SITE_ID:
-					dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown metadata database: " + name);
+				dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
+			}
+			if (XRelTo.SITE.getName().equals(name))
+			{
+				dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
+			}
+			if (OrlyDbCom.SITE.getName().equals(name))
+			{
+				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
+			}
+			else
+			{
+				throw new IllegalArgumentException("Unknown metadata database: " + name);
 			}
 		}
 		dbs.trimToSize();

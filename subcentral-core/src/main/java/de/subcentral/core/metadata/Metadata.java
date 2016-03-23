@@ -10,10 +10,10 @@ public interface Metadata extends Serializable
 {
 	/**
 	 * 
-	 * @return the ids (source id -> id)
+	 * @return the ids (site -> id)
 	 * @see de.subcentral.support.StandardSites
 	 */
-	public Map<String, String> getIds();
+	public Map<Site, String> getIds();
 
 	/**
 	 * Additional attributes that have no designated property can be stored in the ListMultimap of getAttributes().

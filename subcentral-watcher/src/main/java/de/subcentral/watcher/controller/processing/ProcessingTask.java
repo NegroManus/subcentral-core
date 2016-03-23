@@ -411,7 +411,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		StringJoiner rlsDbs = new StringJoiner(", ");
 		for (MetadataDb rlsDb : config.getReleaseDbs())
 		{
-			rlsDbs.add(rlsDb.getDisplayName());
+			rlsDbs.add(rlsDb.getSite().getDisplayName());
 		}
 
 		updateMessage("Querying " + rlsDbs.toString());
@@ -423,7 +423,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : queryResults.asMap().entrySet())
 		{
-			log.debug("Results of {}", entry.getKey().getSiteId());
+			log.debug("Results of {}", entry.getKey().getSite().getName());
 			entry.getValue().stream().forEach((r) -> log.debug(r));
 		}
 		if (queryResults.isEmpty())

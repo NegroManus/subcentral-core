@@ -25,7 +25,7 @@ public class SubCentralSubManDbApiTest
 			api.setConnection(conn);
 			api.insertSeriesFromSeriesList(series);
 
-			System.out.println(series.getIds().get(SubCentralDe.SITE_ID));
+			System.out.println(series.getIds().get(SubCentralDe.SITE));
 
 			api.clearData();
 		}

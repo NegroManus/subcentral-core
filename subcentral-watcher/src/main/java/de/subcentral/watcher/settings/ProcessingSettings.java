@@ -57,36 +57,31 @@ public class ProcessingSettings extends AbstractSubSettings
 	private final LocaleLanguageReplacerSettings					subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 
 	// Naming
-	private final MapProperty<String, Object> namingParameters = new SimpleMapProperty<>(this, "namingParameters");
+	private final MapProperty<String, Object>						namingParameters					= new SimpleMapProperty<>(this, "namingParameters");
 
 	// File Transformation
 	// File Transformation - General
-	private final Property<Path>					targetDir					= new SimpleObjectProperty<>(this, "targetDir");
-	private final BooleanProperty					deleteSource				= new SimpleBooleanProperty(this, "deleteSource");
+	private final Property<Path>									targetDir							= new SimpleObjectProperty<>(this, "targetDir");
+	private final BooleanProperty									deleteSource						= new SimpleBooleanProperty(this, "deleteSource");
 	// File Transformation - Packing
-	private final BooleanProperty					packingEnabled				= new SimpleBooleanProperty(this, "packingEnabled");
-	private final Property<Path>					rarExe						= new SimpleObjectProperty<>(this, "rarExe");
-	private final Property<WinRarLocateStrategy>	winRarLocateStrategy		= new SimpleObjectProperty<>(this, "winRarLocateStrategy", WinRarLocateStrategy.AUTO_LOCATE);
-	private final Property<DeletionMode>			packingSourceDeletionMode	= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
+	private final BooleanProperty									packingEnabled						= new SimpleBooleanProperty(this, "packingEnabled");
+	private final Property<Path>									rarExe								= new SimpleObjectProperty<>(this, "rarExe");
+	private final Property<WinRarLocateStrategy>					winRarLocateStrategy				= new SimpleObjectProperty<>(this, "winRarLocateStrategy", WinRarLocateStrategy.AUTO_LOCATE);
+	private final Property<DeletionMode>							packingSourceDeletionMode			= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
 
 	// package protected (should only be instantiated by WatcherSettings)
 	ProcessingSettings()
 	{
 		super.bind(filenamePatterns,
-				FxUtil.observeBeans(filenameParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[]
-		{ entry.enabledProperty() }),
-				FxUtil.observeBeans(releaseParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[]
-		{ entry.enabledProperty() }),
+				FxUtil.observeBeans(filenameParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
+				FxUtil.observeBeans(releaseParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
 				releaseMetaTags,
-				FxUtil.observeBeans(releaseDbs, (MetadataDbSettingEntry<Release> entry) -> new Observable[]
-		{ entry.enabledProperty() }),
+				FxUtil.observeBeans(releaseDbs, (MetadataDbSettingEntry<Release> entry) -> new Observable[] { entry.enabledProperty() }),
 				guessingEnabled,
 				standardReleases,
 				compatibilityEnabled,
-				FxUtil.observeBeans(compatibilities, (CompatibilitySettingEntry entry) -> new Observable[]
-		{ entry.enabledProperty() }),
-				FxUtil.observeBeans(correctionRules, (CorrectionRuleSettingEntry<?, ?> entry) -> new Observable[]
-		{ entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
+				FxUtil.observeBeans(compatibilities, (CompatibilitySettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
+				FxUtil.observeBeans(correctionRules, (CorrectionRuleSettingEntry<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
 				subtitleLanguageCorrectionSettings,
 				namingParameters,
 				targetDir,
@@ -513,7 +508,7 @@ public class ProcessingSettings extends AbstractSubSettings
 		for (int i = 0; i < releaseDbs.size(); i++)
 		{
 			MetadataDbSettingEntry<Release> db = releaseDbs.get(i);
-			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getValue().getSiteId());
+			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getValue().getSite().getName());
 			cfg.addProperty("metadata.release.databases.db(" + i + ")[@enabled]", db.isEnabled());
 		}
 

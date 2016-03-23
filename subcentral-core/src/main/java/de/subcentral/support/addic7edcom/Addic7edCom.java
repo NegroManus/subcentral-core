@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
@@ -28,7 +29,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7edCom
 {
-	public static final String						SITE_ID						= "addic7ed.com";
+	public static final Site						SITE						= new Site("addic7ed.com", "Addic7ed.com", "http://www.addic7ed.com/");
+
 	private static final TypeBasedParsingService	PARSING_SERVICE				= createParsingService();
 	private static final String						LANG_PATTERN				= "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian\\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 	private static final String						TAGS_PATTERN				= "(.+)";
@@ -42,7 +44,7 @@ public class Addic7edCom
 
 	private static TypeBasedParsingService createParsingService()
 	{
-		TypeBasedParsingService service = new TypeBasedParsingService(SITE_ID);
+		TypeBasedParsingService service = new TypeBasedParsingService(SITE.getName());
 		service.register(SubtitleRelease.class, createEpisodeSubtitleReleaseParser());
 		service.register(SubtitleRelease.class, createMovieSubtitleReleaseParser());
 		return service;
@@ -64,7 +66,7 @@ public class Addic7edCom
 		groups.put(8, GroupEntry.ofKey(Subtitle.PROP_LANGUAGE));
 		groups.put(9, GroupEntry.ofKey(SubtitleRelease.PROP_TAGS));
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMatches = ImmutableMap.builder();
-		predefMatches.put(Subtitle.PROP_SOURCE, SITE_ID);
+		predefMatches.put(Subtitle.PROP_SOURCE, SITE.getName());
 		predefMatches.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
 		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(pattern, groups.build(), predefMatches.build());
 
@@ -181,7 +183,7 @@ public class Addic7edCom
 		groups.put(4, GroupEntry.ofKey(Subtitle.PROP_LANGUAGE));
 		groups.put(5, GroupEntry.ofKey(SubtitleRelease.PROP_TAGS));
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMatches = ImmutableMap.builder();
-		predefMatches.put(Subtitle.PROP_SOURCE, SITE_ID);
+		predefMatches.put(Subtitle.PROP_SOURCE, SITE.getName());
 		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(pattern, groups.build(), predefMatches.build());
 
 		return new SubtitleReleaseParser(matcher, ParsingDefaults.getDefaultSingletonListMovieMapper());

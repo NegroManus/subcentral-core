@@ -505,7 +505,7 @@ public class ConsistencyChecker
 			}
 			// Compare attachments
 			List<SubtitleRelease> subsNotInSubRepo = new ArrayList<>();
-			for (SubtitleRelease subFile : parsedPost.getSubtitleFiles())
+			for (SubtitleRelease subFile : parsedPost.getSubtitleReleases())
 			{
 				Integer attId = subFile.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
 				if (attachments.containsKey(attId))

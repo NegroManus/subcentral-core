@@ -116,7 +116,7 @@ public class MigrationTask extends Task<Void>
 							System.out.println(epi);
 						}
 						System.out.println("Subtitles from season thread:");
-						for (SubtitleRelease subFile : parsedSeason.seasonThreadContent.getSubtitleFiles())
+						for (SubtitleRelease subFile : parsedSeason.seasonThreadContent.getSubtitleReleases())
 						{
 							System.out.println(subFile);
 						}

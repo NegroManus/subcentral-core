@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import de.subcentral.core.metadata.Site;
+
 public interface MetadataDb
 {
 	// Metadata
-	public String getSiteId();
-
-	public String getDisplayName();
+	public Site getSite();
 
 	public Set<Class<?>> getSupportedRecordTypes();
 
@@ -18,7 +18,7 @@ public interface MetadataDb
 		return getSupportedRecordTypes();
 	}
 
-	public Set<String> getSupportedExternalSites();
+	public Set<Site> getSupportedExternalSites();
 
 	// Status
 	public boolean isAvailable();
@@ -41,12 +41,12 @@ public interface MetadataDb
 	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException;
 
 	// Search by external id
-	public default List<Object> searchByExternalId(String externalSiteId, String id) throws UnsupportedOperationException, IOException
+	public default List<Object> searchByExternalId(Site externalSite, String externalId) throws UnsupportedOperationException, IOException
 	{
-		return searchByExternalId(externalSiteId, id, Object.class);
+		return searchByExternalId(externalSite, externalId, Object.class);
 	}
 
-	public <T> List<T> searchByExternalId(String externalSiteId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException;
+	public <T> List<T> searchByExternalId(Site externalSite, String externalId, Class<T> recordType) throws UnsupportedOperationException, IOException;
 
 	// Get record
 	public default Object get(String id) throws UnsupportedOperationException, IOException

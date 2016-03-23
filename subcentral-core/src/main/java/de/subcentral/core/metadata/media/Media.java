@@ -9,6 +9,7 @@ import java.util.Set;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.metadata.Metadata;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.util.TimeUtil;
 
 /**
@@ -114,7 +115,7 @@ public interface Media extends Metadata
 	 * 
 	 * @return the ratings
 	 */
-	public Map<String, Float> getRatings();
+	public Map<Site, Float> getRatings();
 
 	/**
 	 * See: http://en.wikipedia.org/wiki/Content_rating.

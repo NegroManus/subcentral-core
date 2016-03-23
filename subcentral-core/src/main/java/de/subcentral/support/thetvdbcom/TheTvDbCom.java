@@ -1,8 +1,10 @@
 package de.subcentral.support.thetvdbcom;
 
+import de.subcentral.core.metadata.Site;
+
 public class TheTvDbCom
 {
-	public static final String SITE_ID = "thetvdb.com";
+	public static final Site SITE = new Site("thetvdb.com", "TheTVDB.com", "http://thetvdb.com/");
 
 	private TheTvDbCom()
 	{

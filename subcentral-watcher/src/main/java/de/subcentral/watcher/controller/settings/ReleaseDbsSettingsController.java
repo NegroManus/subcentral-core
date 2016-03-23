@@ -94,7 +94,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 								HttpMetadataDb db = (HttpMetadataDb) item.getValue();
 
 								HBox hbox = FxUtil.createDefaultHBox();
-								Label name = new Label(db.getDisplayName());
+								Label name = new Label(db.getSite().getDisplayName());
 
 								URL host = db.getHostUrl();
 								Hyperlink link = FxUtil.createUrlHyperlink(host, settingsController.getMainController().getCommonExecutor());

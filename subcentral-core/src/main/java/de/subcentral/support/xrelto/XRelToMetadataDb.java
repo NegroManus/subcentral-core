@@ -22,6 +22,7 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.GenericMedia;
@@ -49,21 +50,9 @@ public class XRelToMetadataDb extends HttpMetadataDb
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("Europe/Berlin");
 
 	@Override
-	public String getSiteId()
+	public Site getSite()
 	{
-		return XRelTo.SITE_ID;
-	}
-
-	@Override
-	public String getDisplayName()
-	{
-		return "xREL.to";
-	}
-
-	@Override
-	public String getHost()
-	{
-		return "http://www.xrel.to/";
+		return XRelTo.SITE;
 	}
 
 	@Override

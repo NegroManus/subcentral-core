@@ -21,6 +21,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.metadata.Site;
+import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Tag;
@@ -77,6 +79,8 @@ public class SimpleParsePropStringService implements ParsePropService
 		typeFns.put(Tag.class, Tag::new);
 		typeFns.put(Group.class, Group::new);
 		typeFns.put(Nuke.class, Nuke::new);
+		typeFns.put(Network.class, Network::new);
+		typeFns.put(Site.class, Site::new);
 
 		return typeFns.build();
 	}

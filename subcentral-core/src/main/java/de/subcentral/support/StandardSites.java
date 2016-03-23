@@ -1,5 +1,6 @@
 package de.subcentral.support;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.orlydbcom.OrlyDbCom;
@@ -10,18 +11,18 @@ import de.subcentral.support.xrelto.XRelTo;
 
 public class StandardSites
 {
-	public static final String	ADDIC7ED_COM	= Addic7edCom.SITE_ID;
-	public static final String	IMDB_COM		= "imdb.com";
-	public static final String	ITALIANSUBS_NET	= ItalianSubsNet.SITE_ID;
-	public static final String	ORLYDB_COM		= OrlyDbCom.SITE_ID;
-	public static final String	PREDB_ME		= PreDbMe.SITE_ID;
-	public static final String	SUBCENTRAL_DE	= SubCentralDe.SITE_ID;
-	public static final String	SUBHD_COM		= "subhd.com";
-	public static final String	THETVDB_COM		= TheTvDbCom.SITE_ID;
-	public static final String	THEMOVIEDB_ORG	= "themoviedb.org";
-	public static final String	TV4USER_DE		= "tv4user.de";
-	public static final String	XREL_TO			= XRelTo.SITE_ID;
-	public static final String	ZAP2IT_COM		= "zap2it.com";
+	public static final Site	ADDIC7ED_COM	= Addic7edCom.SITE;
+	public static final Site	IMDB_COM		= new Site("imdb.com", "IMDb.com", "http://www.imdb.com/");
+	public static final Site	ITALIANSUBS_NET	= ItalianSubsNet.SITE;
+	public static final Site	ORLYDB_COM		= OrlyDbCom.SITE;
+	public static final Site	PREDB_ME		= PreDbMe.SITE;
+	public static final Site	SUBCENTRAL_DE	= SubCentralDe.SITE;
+	public static final Site	SUBHD_COM		= new Site("subhd.com", "SubHD.com", "http://subhd.com/");
+	public static final Site	THETVDB_COM		= TheTvDbCom.SITE;
+	public static final Site	THEMOVIEDB_ORG	= new Site("themoviedb.org", "themoviedb.org", "https://www.themoviedb.org/");
+	public static final Site	TV4USER_DE		= new Site("tv4user.de", "TV4User.de", "http://board.tv4user.de/");
+	public static final Site	XREL_TO			= XRelTo.SITE;
+	public static final Site	ZAP2IT_COM		= new Site("zap2it.com", "zap2it.com", "http://zap2it.com/");
 
 	private StandardSites()
 	{

@@ -3,6 +3,12 @@ package de.subcentral.watcher.controller;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.subcentral.core.metadata.Site;
+import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.name.NamingService;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SetProperty;
@@ -13,18 +19,13 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.subtitle.Subtitle;
-import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.name.NamingService;
 
 public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleRelease>
 {
 	private final SetProperty<ObservableRelease>	matchingReleases;
 	private final StringProperty					language;
 	private final Property<Group>					group;
-	private final StringProperty					source;
+	private final Property<Site>					source;
 
 	public ObservableSubtitle(SubtitleRelease bean, NamingService namingService)
 	{
@@ -70,7 +71,7 @@ public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleRel
 			}
 		});
 
-		source = new SimpleStringProperty(this, "source", firstSub.getSource());
+		source = new SimpleObjectProperty<Site>(this, "source", firstSub.getSource());
 		source.addListener((Observable o) ->
 		{
 			for (Subtitle sub : bean.getSubtitles())
@@ -138,19 +139,19 @@ public class ObservableSubtitle extends ObservableNamableBeanWrapper<SubtitleRel
 		this.groupProperty().setValue(group);
 	}
 
-	public final StringProperty sourceProperty()
+	public final Property<Site> sourceProperty()
 	{
 		return this.source;
 	}
 
-	public final java.lang.String getSource()
+	public final Site getSource()
 	{
-		return this.sourceProperty().get();
+		return this.sourceProperty().getValue();
 	}
 
-	public final void setSource(final java.lang.String source)
+	public final void setSource(final Site source)
 	{
-		this.sourceProperty().set(source);
+		this.sourceProperty().setValue(source);
 	}
 
 	public final Property<Group> groupProperty()

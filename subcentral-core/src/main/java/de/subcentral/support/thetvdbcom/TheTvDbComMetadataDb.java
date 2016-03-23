@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.Metadata;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
@@ -77,21 +78,9 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	}
 
 	@Override
-	public String getSiteId()
+	public Site getSite()
 	{
-		return TheTvDbCom.SITE_ID;
-	}
-
-	@Override
-	public String getDisplayName()
-	{
-		return "TheTVDB";
-	}
-
-	@Override
-	public String getHost()
-	{
-		return "http://thetvdb.com/";
+		return TheTvDbCom.SITE;
 	}
 
 	@Override
@@ -107,7 +96,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	}
 
 	@Override
-	public Set<String> getSupportedExternalSites()
+	public Set<Site> getSupportedExternalSites()
 	{
 		return ImmutableSet.of(StandardSites.IMDB_COM, StandardSites.ZAP2IT_COM);
 	}
@@ -164,41 +153,44 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByExternalId(String siteId, String id, Class<T> recordType) throws UnsupportedOperationException, IOException
+	public <T> List<T> searchByExternalId(Site externalSite, String externalId, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (recordType.isAssignableFrom(Series.class))
 		{
-			return (List<T>) searchSeriesByExternalId(siteId, id);
+			return (List<T>) searchSeriesByExternalId(externalSite, externalId);
 		}
 		throw newUnsupportedRecordTypeException(recordType);
 	}
 
-	public List<Series> searchSeriesByExternalId(String siteId, String id) throws UnsupportedOperationException, IOException
+	public List<Series> searchSeriesByExternalId(Site externalSite, String externalId) throws UnsupportedOperationException, IOException
 	{
-		return searchSeriesByExternalId(siteId, id, null);
+		return searchSeriesByExternalId(externalSite, externalId, null);
 	}
 
-	public List<Series> searchSeriesByExternalId(String siteId, String id, String language) throws UnsupportedOperationException, IOException
+	public List<Series> searchSeriesByExternalId(Site externalSite, String externalId, String language) throws UnsupportedOperationException, IOException
 	{
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		switch (siteId)
+		if (StandardSites.IMDB_COM.equals(externalSite))
 		{
-			case StandardSites.IMDB_COM:
-				query.put("imdbid", id);
-				break;
-			case StandardSites.ZAP2IT_COM:
-				query.put("zap2it", id);
-				break;
-			default:
-				throw newUnsupportedExternalSiteException(siteId);
+			query.put("imdbid", externalId);
+		}
+		else if (StandardSites.ZAP2IT_COM.equals(externalSite))
+		{
+			query.put("zap2it", externalId);
+		}
+		else
+		{
+			throw newUnsupportedExternalSiteException(externalSite);
 		}
 		if (language != null)
 		{
 			query.put("language", language);
 		}
 		URL url = buildRelativeUrl(API_SUB_PATH + "GetSeriesByRemoteID.php", query.build());
-		log.debug("Searching for series ({} id={}) using url {}", siteId, id, url);
-		return parseSeriesSearchResults(getDocument(url));
+		log.debug("Searching for series ({} id={}) using url {}", externalSite, externalId, url);
+		return
+
+		parseSeriesSearchResults(getDocument(url));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -297,7 +289,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		{
 			Series series = new Series();
 
-			addId(series, seriesElem, "seriesid", TheTvDbCom.SITE_ID);
+			addId(series, seriesElem, "seriesid", TheTvDbCom.SITE);
 
 			series.setName(getTextFromChild(seriesElem, "seriesname"));
 
@@ -392,7 +384,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 		Series series = new Series();
 
-		addId(series, seriesElem, "id", TheTvDbCom.SITE_ID);
+		addId(series, seriesElem, "id", TheTvDbCom.SITE);
 
 		series.setContentRating(getTextFromChild(seriesElem, "contentrating"));
 
@@ -409,7 +401,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 		addDescription(series, seriesElem, "overview");
 
-		addRating(series, seriesElem, "rating", TheTvDbCom.SITE_ID);
+		addRating(series, seriesElem, "rating", TheTvDbCom.SITE);
 
 		String runtimeTxt = getTextFromChild(seriesElem, "runtime");
 		int runtime = Integer.parseInt(runtimeTxt);
@@ -533,7 +525,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			{
 				Season possiblyNewSeason = series.newSeason(epi.getSeason().getNumber());
 				// Check whether this season is already stored, if yes, return it, if no return the new season
-				Season season = seasons.computeIfAbsent(epi.getSeason().getIds().get(TheTvDbCom.SITE_ID), (String key) -> possiblyNewSeason);
+				Season season = seasons.computeIfAbsent(epi.getSeason().getIds().get(TheTvDbCom.SITE), (String key) -> possiblyNewSeason);
 				epi.setSeason(season);
 			}
 			// May add to special episode list
@@ -569,7 +561,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	private Episode parseBaseEpisodeRecord(Element epiElem)
 	{
 		Series series = new Series();
-		addId(series, epiElem, "seriesid", TheTvDbCom.SITE_ID);
+		addId(series, epiElem, "seriesid", TheTvDbCom.SITE);
 
 		Episode epi = series.newEpisode();
 
@@ -598,13 +590,13 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		else
 		{
 			Season season = new Season(series, seasonNum);
-			addId(season, epiElem, "seasonid", TheTvDbCom.SITE_ID);
+			addId(season, epiElem, "seasonid", TheTvDbCom.SITE);
 
 			epi.setSeason(season);
 			epi.setNumberInSeason(getIntegerFromChild(epiElem, "episodenumber"));
 		}
 		// add rest of the properties
-		addId(epi, epiElem, "id", TheTvDbCom.SITE_ID);
+		addId(epi, epiElem, "id", TheTvDbCom.SITE);
 
 		epi.setTitle(getTextFromChild(epiElem, "episodename"));
 
@@ -614,7 +606,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 		addDescription(epi, epiElem, "overview");
 
-		addRating(epi, epiElem, "rating", TheTvDbCom.SITE_ID);
+		addRating(epi, epiElem, "rating", TheTvDbCom.SITE);
 
 		addImage(epi, epiElem, "filename", IMAGE_TYPE_EPISODE_IMAGE);
 
@@ -752,12 +744,12 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		return Integer.parseInt(txt);
 	}
 
-	private static void addId(Metadata metadata, Element parentElem, String tag, String sourceId)
+	private static void addId(Metadata metadata, Element parentElem, String tag, Site site)
 	{
 		String idTxt = getTextFromChild(parentElem, tag);
 		if (idTxt != null)
 		{
-			metadata.getIds().put(sourceId, idTxt);
+			metadata.getIds().put(site, idTxt);
 		}
 	}
 
@@ -796,13 +788,13 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		}
 	}
 
-	private static void addRating(Media media, Element parentElem, String tag, String sourceId)
+	private static void addRating(Media media, Element parentElem, String tag, Site site)
 	{
 		String ratingTxt = getTextFromChild(parentElem, tag);
 		if (ratingTxt != null)
 		{
 			float rating = Float.parseFloat(ratingTxt);
-			media.getRatings().put(sourceId, rating);
+			media.getRatings().put(site, rating);
 		}
 	}
 

@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -22,9 +20,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.ContributionUtil;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.release.Release;
@@ -47,7 +48,7 @@ public class SeasonServlet extends HttpServlet
 	private static final long	serialVersionUID	= -3990408720731314570L;
 	private static final Logger	log					= LogManager.getLogger(SeasonServlet.class);
 
-	private static final String	ENV_SETTINGS_PATH	= "E:\\Java\\SubCentral\\migration\\migration-env-settings.properties";
+	private static final String	ENV_SETTINGS_PATH	= "C:\\Users\\mhertram\\Documents\\Projekte\\SC\\Submanager\\mig\\migration-env-settings.properties";
 
 	private MigrationConfig		config;
 
@@ -91,55 +92,85 @@ public class SeasonServlet extends HttpServlet
 
 			writer.println("<p>");
 			writer.println("<div><h2>Serie</h2>");
-			writer.println("<h3>" + name(data.getSeries()) + "</h3>");
-			writer.println(data.getSeries());
+			if (data.getSeries() == null)
+			{
+				writer.println("Keine Serie vorhanden");
+			}
+			else
+			{
+				writer.println("<h3>" + name(data.getSeries()) + "</h3>");
+				writer.println("<code>");
+				writer.println(data.getSeries());
+				writer.println("</code>");
+			}
 			writer.println("</div>");
 
-			SortedSet<Subtitle> subs = new TreeSet<>();
-			for (SubtitleRelease subRls : data.getSubtitleFiles())
+			// LinkedListMultimap maintains ordering for both keys and values
+			Multimap<Subtitle, SubtitleRelease> subs = LinkedListMultimap.create();
+			for (SubtitleRelease subRls : data.getSubtitleReleases())
 			{
-				subs.addAll(subRls.getSubtitles());
+				for (Subtitle sub : subRls.getSubtitles())
+				{
+					subs.put(sub, subRls);
+				}
 			}
 
 			writer.println("<div><h2>Staffeln</h2>");
-			for (Season season : data.getSeasons())
+			if (data.getSeasons().isEmpty())
 			{
-				writer.println("<div><h3>" + name(season) + "</h3>");
-				writer.println(season);
-				writer.println("<div><h2>Episoden</h2>");
-				for (Episode epi : season.getEpisodes())
+				writer.println("Keine Staffeln vorhanden");
+			}
+			else
+			{
+				for (Season season : data.getSeasons())
 				{
-					writer.println("<h3>" + name(epi) + "</h3>");
-					writer.println(epi);
-					writer.println("<br/><br/>");
-
-					for (Subtitle sub : subs)
+					writer.println("<div><h3>" + name(season) + "</h3>");
+					writer.println("<code>");
+					writer.println(season);
+					writer.println("</code>");
+					writer.println("<div><h2>Episoden</h2>");
+					if (season.getEpisodes().isEmpty())
 					{
-						if (epi.equals(sub.getMedia()))
+						writer.println("Keine Episoden vorhanden");
+					}
+					else
+					{
+						for (Episode epi : season.getEpisodes())
 						{
-							writer.println(languageToHtml(sub.getLanguage()) + " " + sub.getSource());
-							writer.print(" ");
-							writer.print(printContributionsByType(sub.getContributions()));
+							writer.println("<h3>" + name(epi) + "</h3>");
+							writer.println("<code>");
+							writer.println(epi);
+							writer.println("</code>");
+							writer.println("<br/><br/>");
 
-							for (SubtitleRelease subRls : data.getSubtitleFiles())
+							for (Map.Entry<Subtitle, Collection<SubtitleRelease>> entry : subs.asMap().entrySet())
 							{
-								if (subRls.getSubtitles().contains(sub))
+								Subtitle sub = entry.getKey();
+								if (epi.equals(sub.getMedia()))
 								{
-									writer.print("</br> - " + subRls.getMatchingReleases().stream().map((Release r) -> r.getName()).collect(Collectors.joining(", ")));
-									writer.print(" ");
-									writer.print(printContributionsByType(subRls.getContributions()));
-									String attachmentId = Integer.toString((Integer) subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
-									String attachmentAnchor = "<a href=\"https://www.subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId + "\">" + attachmentId + "</a>";
-									writer.println(" [" + attachmentAnchor + "]");
+									writer.println(printSubtitle(sub));
+
+									writer.print("<ul>");
+									for (SubtitleRelease subRls : entry.getValue())
+									{
+										String attachmentId = Integer.toString((Integer) subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
+										writer.print("<li>");
+										writer.print("<a href=\"https://www.subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId + "\">");
+										writer.print(printReleases(subRls.getMatchingReleases()));
+										writer.print("</a>");
+										writer.print(" ");
+										writer.print(printContributionsByType(subRls.getContributions()));
+										writer.println("</li>");
+									}
+									writer.print("</ul>");
+									writer.println("<hr>");
 								}
 							}
-
-							writer.println("<hr>");
 						}
 					}
+					writer.println("</div>");
+					writer.println("</div>");
 				}
-				writer.println("</div>");
-				writer.println("</div>");
 			}
 			writer.println("</p>");
 
@@ -151,6 +182,21 @@ public class SeasonServlet extends HttpServlet
 		{
 			throw new ServletException(e);
 		}
+	}
+
+	private static String printSubtitle(Subtitle sub)
+	{
+		return languageToHtml(sub.getLanguage()) + " " + printSource(sub.getSource()) + " " + printContributionsByType(sub.getContributions());
+	}
+
+	private static String printSource(Site source)
+	{
+		return source != null ? source.getDisplayName() : "";
+	}
+
+	private static String printReleases(Collection<Release> releases)
+	{
+		return releases.stream().map(Release::getName).collect(Collectors.joining(", "));
 	}
 
 	private static String languageToHtml(String language)

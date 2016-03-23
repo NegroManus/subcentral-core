@@ -37,7 +37,7 @@ public class SubCentralSubMan extends AbstractDatabaseApi
 
 	public void insertSeriesFromSeriesList(Series series) throws SQLException
 	{
-		if (series.getIds().containsKey(SubCentralDe.SITE_ID))
+		if (series.getIds().containsKey(SubCentralDe.SITE))
 		{
 			// already inserted
 			return;
@@ -52,7 +52,7 @@ public class SubCentralSubMan extends AbstractDatabaseApi
 			if (!series.getNetworks().isEmpty())
 			{
 				Network network = series.getNetworks().get(0);
-				networkId = network.getIds().get(SubCentralDe.SITE_ID);
+				networkId = network.getIds().get(SubCentralDe.SITE);
 				if (networkId == null)
 				{
 
@@ -78,7 +78,7 @@ public class SubCentralSubMan extends AbstractDatabaseApi
 				int affectedRows = stmt.executeUpdate();
 				checkUpdated(series, affectedRows);
 				int id = getGeneratedId(stmt);
-				series.getIds().put(SubCentralDe.SITE_ID, id + "");
+				series.getIds().put(SubCentralDe.SITE, id + "");
 			}
 		}
 		catch (SQLException e)

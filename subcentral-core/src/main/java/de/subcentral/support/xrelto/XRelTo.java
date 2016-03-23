@@ -1,8 +1,10 @@
 package de.subcentral.support.xrelto;
 
+import de.subcentral.core.metadata.Site;
+
 public class XRelTo
 {
-	public static final String SITE_ID = "xrel.to";
+	public static final Site SITE = new Site("xrel.to", "XRel.to", "https://www.xrel.to/");
 
 	private XRelTo()
 	{

@@ -59,22 +59,26 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 		parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) ->
 		{
 			String example;
-			switch (param.getValue().getValue().getDomain())
+			String domain = param.getValue().getValue().getDomain();
+			if (Addic7edCom.getParsingService().getDomain().equals(domain))
 			{
-				case Addic7edCom.SITE_ID:
-					example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
-					break;
-				case ItalianSubsNet.SITE_ID:
-					example = "Parks.And.Recreation.s07e01.sub.itasa";
-					break;
-				case SubCentralDe.SITE_ID:
-					example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
-					break;
-				case ReleaseScene.SOURCE_ID:
-					example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL";
-					break;
-				default:
-					example = "";
+				example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
+			}
+			if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
+			{
+				example = "Parks.And.Recreation.s07e01.sub.itasa";
+			}
+			if (SubCentralDe.getParsingService().getDomain().equals(domain))
+			{
+				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
+			}
+			if (ReleaseScene.getParsingService().getDomain().equals(domain))
+			{
+				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL";
+			}
+			else
+			{
+				example = "";
 			}
 			return FxUtil.constantBinding(example);
 		});

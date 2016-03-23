@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
@@ -26,9 +27,9 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ItalianSubsNet
 {
-	public static final String						SITE_ID			= "italiansubs.net";
+	public static final Site						SITE			= new Site("italiansubs.net", "italiansubs.net", "http://www.italiansubs.net/");
 
-	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE_ID);
+	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE.getName());
 
 	static
 	{
@@ -43,7 +44,7 @@ public class ItalianSubsNet
 	private static List<Parser<SubtitleRelease>> initParsers()
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
-		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, SITE_ID);
+		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, SITE.getName());
 		commonPredefMatchesBuilder.put(Subtitle.PROP_LANGUAGE, Locale.ITALIAN.toString());
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = commonPredefMatchesBuilder.build();
 

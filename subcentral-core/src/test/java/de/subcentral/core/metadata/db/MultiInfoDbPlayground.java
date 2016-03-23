@@ -52,7 +52,7 @@ public class MultiInfoDbPlayground
 		TimeUtil.logDurationMillisDouble("queryAll", start);
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : results.asMap().entrySet())
 		{
-			System.out.println("Results of " + entry.getKey().getSiteId());
+			System.out.println("Results of " + entry.getKey().getSite());
 			entry.getValue().stream().forEach((r) -> System.out.println(r));
 			System.out.println();
 		}

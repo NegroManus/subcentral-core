@@ -10,16 +10,16 @@ public class MetadataBase implements Metadata
 {
 	private static final long						serialVersionUID	= -5801764606343001L;
 
-	protected final Map<String, String>				ids					= new HashMap<>(2);
+	protected final Map<Site, String>				ids					= new HashMap<>(2);
 	protected final ListMultimap<String, Object>	attributes			= LinkedListMultimap.create(0);
 
 	@Override
-	public Map<String, String> getIds()
+	public Map<Site, String> getIds()
 	{
 		return ids;
 	}
 
-	public void setIds(Map<String, String> ids)
+	public void setIds(Map<Site, String> ids)
 	{
 		this.ids.clear();
 		this.ids.putAll(ids);

@@ -22,6 +22,7 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.ByteUtil;
@@ -46,21 +47,9 @@ public class OrlyDbComMetadataDb extends HttpMetadataDb
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
 
 	@Override
-	public String getSiteId()
+	public Site getSite()
 	{
-		return OrlyDbCom.SITE_ID;
-	}
-
-	@Override
-	public String getDisplayName()
-	{
-		return "ORLYDB.com";
-	}
-
-	@Override
-	public String getHost()
-	{
-		return "http://www.orlydb.com/";
+		return OrlyDbCom.SITE;
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.Settings;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.MetadataBase;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
@@ -121,7 +122,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	private Media						media;
 	private String						language;
 	private Group						group;
-	private String						source;
+	private Site						source;
 	private String						state;
 	private String						productionType;
 	private Subtitle					basis;
@@ -153,7 +154,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 		this.group = group;
 	}
 
-	public Subtitle(Media media, String language, String source)
+	public Subtitle(Media media, String language, Site source)
 	{
 		this.media = media;
 		this.language = language;
@@ -211,12 +212,12 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the source (may be {@code null})
 	 */
-	public String getSource()
+	public Site getSource()
 	{
 		return source;
 	}
 
-	public void setSource(String source)
+	public void setSource(Site source)
 	{
 		this.source = source;
 	}
@@ -363,7 +364,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 		if (obj instanceof Subtitle)
 		{
 			Subtitle o = (Subtitle) obj;
-			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && Objects.equals(group, o.group) && StringUtils.equalsIgnoreCase(source, o.source);
+			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && Objects.equals(group, o.group) && Objects.equals(source, o.source);
 		}
 		return false;
 	}
@@ -371,7 +372,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(37, 99).append(media).append(StringUtils.lowerCase(language, Locale.ENGLISH)).append(group).append(StringUtils.lowerCase(source, Locale.ENGLISH)).toHashCode();
+		return new HashCodeBuilder(37, 99).append(media).append(StringUtils.lowerCase(language, Locale.ENGLISH)).append(group).append(source).toHashCode();
 	}
 
 	@Override
@@ -386,7 +387,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_NAME_COMPARATOR)
 				.compare(language, o.language, Settings.STRING_ORDERING)
 				.compare(group, o.group, Settings.createDefaultOrdering())
-				.compare(source, o.source, Settings.STRING_ORDERING)
+				.compare(source, o.source, Settings.createDefaultOrdering())
 				.result();
 	}
 
