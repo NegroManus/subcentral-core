@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.StringJoiner;
 import java.util.TreeMap;
@@ -163,7 +162,7 @@ public class SeasonPostParser
 	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
 	{
 		ImmutableMap.Builder<Pattern, ColumnType> map = ImmutableMap.builder();
-		map.put(Pattern.compile("Episode"), ColumnType.EPISODE);
+		map.put(Pattern.compile("Episode(?:n)?"), ColumnType.EPISODE);
 		map.put(Pattern.compile(".*?flags/de\\.png.*"), ColumnType.GERMAN_SUBS);
 		map.put(Pattern.compile("Deutsch"), ColumnType.GERMAN_SUBS);
 		map.put(Pattern.compile(".*?flags/(usa|uk|ca|aus|nz)\\.png.*"), ColumnType.ENGLISH_SUBS);
@@ -211,7 +210,8 @@ public class SeasonPostParser
 		WorkData data = new WorkData();
 		data.postTopic = postTopic;
 		parseTopic(data);
-		return new SeasonPostData(data.series, data.seasons.keySet(), data.subtitles);
+
+		return data.toSeasonPostData();
 	}
 
 	public SeasonPostData parse(String postTopic, String postContent)
@@ -230,7 +230,7 @@ public class SeasonPostParser
 
 		cleanupData(data);
 
-		return new SeasonPostData(data.series, data.seasons.keySet(), data.subtitles);
+		return data.toSeasonPostData();
 	}
 
 	/**
@@ -1087,7 +1087,7 @@ public class SeasonPostParser
 			Season season = data.seasons.keySet().iterator().next();
 			for (Episode epi : data.episodes.keySet())
 			{
-				season.addEpisode(epi);
+				epi.setSeason(season);
 			}
 		}
 		// For multi-season threads
@@ -1102,20 +1102,20 @@ public class SeasonPostParser
 					{
 						if (season.getNumber() != null && season.getNumber().equals(epi.getSeason().getNumber()))
 						{
-							season.addEpisode(epi);
+							epi.setSeason(season);
 							foundSeason = true;
 						}
 					}
 					if (!foundSeason)
 					{
 						Season newSeason = epi.getSeason();
-						newSeason.addEpisode(epi);
+						epi.setSeason(newSeason);
 						data.seasons.put(newSeason, newSeason);
 					}
 				}
 				else
 				{
-					Season newUnknownSeason = new Season(data.series, Migration.UNKNOWN_SEASON);
+					Season newUnknownSeason = new Season(data.series);
 					Season alreadyStoredSeason = data.seasons.putIfAbsent(newUnknownSeason, newUnknownSeason);
 					if (alreadyStoredSeason != null)
 					{
@@ -1218,14 +1218,16 @@ public class SeasonPostParser
 
 	public static final class SeasonPostData
 	{
-		private final Series							series;
-		private final ImmutableList<Season>				seasons;
-		private final ImmutableList<SubtitleRelease>	subtitleReleases;
+		private final Series				series;
+		private final List<Season>			seasons;
+		private final List<Episode>			episodes;
+		private final List<SubtitleRelease>	subtitleReleases;
 
-		public SeasonPostData(Series series, Iterable<Season> seasons, Iterable<SubtitleRelease> subtitleAdjustments)
+		public SeasonPostData(Series series, Iterable<Season> seasons, Iterable<Episode> episodes, Iterable<SubtitleRelease> subtitleAdjustments)
 		{
-			this.series = Objects.requireNonNull(series, "series");
+			this.series = series;
 			this.seasons = ImmutableList.copyOf(seasons);
+			this.episodes = ImmutableList.copyOf(episodes);
 			this.subtitleReleases = ImmutableList.copyOf(subtitleAdjustments);
 		}
 
@@ -1234,12 +1236,17 @@ public class SeasonPostParser
 			return series;
 		}
 
-		public ImmutableList<Season> getSeasons()
+		public List<Season> getSeasons()
 		{
 			return seasons;
 		}
 
-		public ImmutableList<SubtitleRelease> getSubtitleReleases()
+		public List<Episode> getEpisodes()
+		{
+			return episodes;
+		}
+
+		public List<SubtitleRelease> getSubtitleReleases()
 		{
 			return subtitleReleases;
 		}
@@ -1255,10 +1262,15 @@ public class SeasonPostParser
 		private int									currentTableNum;
 
 		// output
-		private Series								series		= new Series(Migration.UNKNOWN_SERIES);
+		private Series								series		= null;
 		private final SortedMap<Season, Season>		seasons		= new TreeMap<>();
 		private final SortedMap<Episode, Episode>	episodes	= new TreeMap<>();
 		private final List<SubtitleRelease>			subtitles	= new ArrayList<>();
+
+		private SeasonPostData toSeasonPostData()
+		{
+			return new SeasonPostData(series, seasons.keySet(), episodes.keySet(), subtitles);
+		}
 	}
 
 	/**

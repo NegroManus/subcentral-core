@@ -1,0 +1,709 @@
+<!--
+Objekt  : [Basis]SubCentral-HMTL-Vorlage
+Version : v1.6.2.10
+Autor   : Meshi
+Datum   : 14.06.2009
+-->
+
+<!-- Script- und Style-Modul -->
+<script language="JavaScript">
+//here you place the ids of every element you want.
+var ids=new Array('a1','a2','a3');
+var linkids=new Array('linka1','linka2','linka3');
+
+function switchid(id){
+	hideallids();
+	alllinksinactive();
+	showdiv(id);
+	showaktivelink(id);
+}
+
+function alllinksinactive(){
+	//loop through the array and hide each element by id
+	for (var sci=0;sci<linkids.length;sci++){
+		linkinactive(linkids[sci]);
+	}
+}
+
+function linkinactive(linkid) {
+	//safe function to hide an element with a specified id
+	if (document.getElementById) { // DOM3 = IE5, NS6
+		document.getElementById(linkid).className = 'sclink';
+	}
+	else {
+		if (document.layers) { // Netscape 4
+			document.linkid.className = 'sclink';
+		}
+		else { // IE 4
+			document.all.linkid.className = 'sclink';
+		}
+	}
+}
+
+function showaktivelink(id) {
+	for (var sci=0;sci<ids.length;sci++){
+		if (ids[sci]==id){
+			document.getElementById(linkids[sci]).className = 'sclinkactive';
+		}
+	}
+}
+
+function hideallids(){
+	//loop through the array and hide each element by id
+	for (var sci=0;sci<ids.length;sci++){
+		hidediv(ids[sci]);
+	}
+}
+
+function hidediv(id) {
+	//safe function to hide an element with a specified id
+	if (document.getElementById) { // DOM3 = IE5, NS6
+		document.getElementById(id).style.display = 'none';
+	}
+	else {
+		if (document.layers) { // Netscape 4
+			document.id.display = 'none';
+		}
+		else { // IE 4
+			document.all.id.style.display = 'none';
+		}
+	}
+}
+
+function showdiv(id) {
+	//safe function to show an element with a specified id
+	if (document.getElementById) { // DOM3 = IE5, NS6
+		document.getElementById(id).style.display = 'block';
+	}
+	else {
+		if (document.layers) { // Netscape 4
+			document.id.display = 'block';
+		}
+		else { // IE 4
+			document.all.id.style.display = 'block';
+		}
+	}
+}
+</script>	
+<!-- /Script- und Style-Modul -->
+
+<style type="text/css">
+	
+	
+
+<!-- v1.0.1 -->
+<style type="text/css">
+   
+   .baseSC table { color: #111; border-color: #333; }
+   .baseSC table .inaktiv { color: #CCC; }
+   .baseSC table th { background: #000 url(bilder/glanzkopf/glanzkopf_schwarz_grau.png) repeat-x 0 center; }
+   .baseSC table tbody tr:hover { color: #FFF; background-color: #696969; }
+   .baseSC table tbody tr:hover a { color: #FFF; }
+
+
+	.baseSC .bilderserie a img, .baseSC .trailer a img { background: #FFF5EE; border: 1px solid #8B0000; } 
+	.baseSC .bilderserie a:hover img, .baseSC .trailer a:hover img { background-color: #FF6347; } 
+
+
+
+	a.sclinkactive:link {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+	a.sclinkactive:visited {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+	a.sclinkactive:active {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+	a.sclinkactive:focus {color:#000000; text-decoration:none; font-weight: bold; font-size: 14px; }
+
+	a.sclink:link {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+	a.sclink:visited {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+	a.sclink:active {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+	a.sclink:focus {color:#999999; text-decoration:none; font-weight: bold; font-size: 10px; }
+	
+</style>
+
+
+
+
+<!-- Hier Java-Abfrage-Modul einfügen, nur notwendig für Bilder-Modul. [Optional] -->
+
+<div class="baseSC">
+	<!-- Titel-Image-Modul -->
+	<div class="tbild"><img src="bilder/header_forgotten.jpg" alt="The Forgotten" /></div>
+	<!-- /Titel-Image-Modul -->
+</div>
+
+<div class="baseSC">
+	<!-- Imformationsmodul -->
+	<div class="ztext">
+		<!-- Inhalts-Modul -->
+		<div class="inhalt">
+			<p>» In "The Forgotten" verschreibt sich eine Gruppe von Freunden - und teils auch Leidensgenossen, die selbst ein unaufgeklärtes schon lange Zeit quält -, Mordfälle aufzuklären, in denen die Opfer noch nicht identifiziert sind. Denn diese Verbrechen landen meist ganz unten in den Aktenstapeln bei der Polizei. «</p>
+		</div>
+		<!-- /Inhalts-Modul -->
+
+		<!-- Hier Bilderserie (Bilder-Modul) einfügen. [Optinal] -->
+
+		<!-- Externe-Links-Modul -->
+		<div class="websites">
+			Offizielle Webseite: <a href="http://abc.go.com/fallpreview/index?pn=theforgotten" target ="_blank">abc.go.com</a>
+                        <br>
+                       Weitere Informationen: <a href="http://en.wikipedia.org/wiki/The_Forgotten_(TV_series)" target="_blank'">Wikipedia (en)</a> und <a href="http://www.tv.com/show/77307/summary.html" target="_blank">TV.com</a></p>
+		</div>
+		<!-- /Externe-Links-Modul -->
+		
+	</div>
+	<!-- /Imformationsmodul -->
+</div>
+
+
+<div class="baseSC">
+	<!-- Ueberschriftsmodul für Subs und Sonstiges -->
+	<h2>Deutsche und Englische Untertitel:</h2>
+	<!-- /Ueberschriftsmodul -->
+	
+	[hide]
+
+	
+	<!-- Warnhinweis - Eigenständig -->
+	<div class="baseSC">
+		<div class="txtb">
+			<!--<div class="hinweis"><strong>Hinweis:</strong>Text...</div>-->
+		</div>
+	</div>
+
+	<!-- Tabellen-Modul -->
+	<table>
+
+		<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+		<colgroup width="75%" />
+		<colgroup width="25%" />
+
+		<tbody>
+			<!-- Zeilen-Modul - Release -->
+			<tr>
+				<td class="aktiv"><a id="linka1" class="sclinkactive" href="javascript:switchid('a1');">[img]http://www.subcentral.de/creative/bilder/flags/de.png[/img] Untertitel HDTVRip *Klick*</a></td>
+				<td class="aktiv">[DE-Subs: 17]</td>
+			</tr>
+
+			<!-- /Zeilen-Modul - Release -->
+			<tr>
+				<td class="aktiv"><a id="linka2" class="sclink" href="javascript:switchid('a2');">[img]http://www.subcentral.de/creative/bilder/flags/de.png[/img] Untertitel 720p.HDTV & DVDRip *Klick*</a></td>
+				<td class="aktiv">[DE-Subs: 16]</td>
+			</tr>
+
+			<!-- /Zeilen-Modul - Release -->
+			<tr>
+				<td class="aktiv"><a id="linka3" class="sclink" href="javascript:switchid('a3');">[img]http://www.subcentral.de/creative/bilder/flags/usa.png[/img] Untertitel HDTVRip & 720p.HDTV *Klick*</a></td>
+				<td class="aktiv">[VO-Subs: 17]</td>
+			</tr>
+
+			<!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+		</tbody>
+	</table>
+	<!-- /Tabellen-Modul -->
+
+
+	<div id="a1" style="display:block;">
+		<!-- Tabellen-Modul -->
+		<table>
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="30%" />
+			<colgroup width="20%" />
+			<colgroup width="25%" />
+			<colgroup width="25%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/de.png" /> HDTVRip</th>
+					<th>Übersetzung</th>
+					<th>Korrektur</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+
+				<!-- Zeilen-Modul - Release -->
+<tr class="aktiv">
+<td class="release">E01 - "Pilot"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53710&h=840ce5563ab0f34cc6c31f63851efccaf13f226e']2HD[/url]</td>
+<td>NegroManus</td>
+<td>-</td>
+</tr>
+			
+
+<tr class="aktiv">
+<td class="release">E02 - "Diamond Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59850&h=d79d3b45fa84fba3fae37b7eaac2201ae22a1a0e']2HD[/url]</td>
+<td>Serious.Ray</td>
+<td>Alan Shore, Fuzzy12, NegroManus, glumpf</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E03 - "Football John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53711&h=b66adf809731fe3cc2309f7850fbfdbbcd608242']2HD[/url]</td>
+<td>glumpf</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E04 - "Parachute Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=44146&h=e2f6f39b7cbe2e184a9d22dcc5b913ca3414447c']2HD[/url]</td>
+<td>NegroManus</td>
+<td>glumpf</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E05 - "River John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=46731&h=d52e7e0e755d907f773512b250eb56f40658de88']2HD[/url]</td>
+<td>NegroManus</td>
+<td>glumpf</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E06 - "Canine John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53725&h=cf9bbc8dc423297837384e2b0ce45123cc0243ee']FEVER[/url]</td>
+<td>glumpf</td>
+<td>NegroManus</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E07 - "Railroad Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=51498&h=dd8958122eacb6e9b4e385ec7b0aff480ceab76d']2HD[/url]</td>
+<td>NegroManus</td>
+<td>glumpf</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E08 - "Prisoner Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53197&h=5b9a7126c2cc0706574cc8a11d2894869f6d93ab']2HD[/url]</td>
+<td>glumpf</td>
+<td>NegroManus</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E09 - "Lucky John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57288&h=32c97b1a66072a4151d703ef8f9462354583b957']REPACK-2HD[/url]</td>
+<td>NegroManus</td>
+<td>glumpf</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E10 - "Double Doe"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58881&h=7d389ad2693b119cbdeead41282187efd559790d']2HD[/url]</td>
+<td>glumpf</td>
+<td>NegroManus</td>
+</tr>	
+
+<tr class="aktiv">
+<td class="release">E11 - "Patient John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=54880&h=e2c3f4e826d46347078de3b3ae67f612e08e19fb']2HD[/url]</td>
+<td>Chriss2222</td>
+<td>glumpf & Ruby Connor</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E12 - "My John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59856&h=f60d029cc41ee350024e2119d4f47fd071e4dfb8']2HD[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59857&h=56923fc0859a0691d195ddff2a09978aad2816c9']XII[/url]</td>
+<td>NegroManus</td>
+<td>glumpf</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E13 - "Mama Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63547&h=629c37ed80c74e2b82455b905570b899cd209bfd']P0W4[/url]| [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63548&h=d4d1287b93d51f31a8375aaea546618bfedd69f7']XII[/url]</td>
+<td>NegroManus</td>
+<td>glumpf</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E14 - "Train Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=73871&h=f08944337ada72fcb40ab4285abae071aa61b75c']XII[/url]</td>
+<td>glumpf</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E16 - "Designer Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87512&h=b90834617a724a6186686d9fda9ab1cb43a40728']2HD[/url]</td>
+<td>NegroManus</td>
+<td>glumpf</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E17 - "Living Doe"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87516&h=8d50e0443644d8236c8535a00cc3ff1bd672dfde']2HD[/url]</td>
+<td>glumpf</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E15 - "Donovan Doe"</td>
+<td>[url='http://subcentral.de/index.php?page=Attachment&attachmentID=216681&h=9154e770f00bf376a281d7e551f598ba439854c1']2HD[/url]</td>
+<td>Shay-Zee</td>
+<td>NegroManus</td>
+</tr>
+
+    <!-- Informationshinweis fuers Informationsmodul -->
+		  <tr>
+			<!-- 'colspan' definiert die Spaltenanzahl der Ausdehnung. Falls die 
+			     Tabelle mehr oder weniger hat, entsprechend abaendern! -->
+			<td class="hinweis" colspan="4"><strong>Hinweis:</strong> E15 ist das Staffelfinale und sollte zuletzt gesehen werden.</td>
+		  </tr>
+
+
+				<!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+	<div id="a2" style="display:none;">
+		<!-- /Tabellen-Modul -->
+		<table>
+
+			<!-- Tabellen-Modul kann gegen die Anderen ausgetauscht werden -->
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="30%" />
+			<colgroup width="20%" />
+			<colgroup width="25%" />
+			<colgroup width="25%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/de.png" /> 720p.HDTV</th>
+					<th><img src="creative/bilder/flags/de.png" /> DVDRip</th>
+					<th>Anpassung</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+
+				<!-- Zeilen-Modul - Release -->
+<tr class="aktiv">
+<td class="release">E01 - "Pilot"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53712&h=3aae5bbc79706962bfa4a0a95bf45b9554f1158f']CTU[/url]</td>
+<td>-</td>
+<td>Nachtfalke</td>
+</tr>
+			
+
+<tr class="aktiv">
+<td class="release">E02 - "Diamond Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59851&h=e29b1bb5b003f9198df13ed3a607632182a5a070']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E03 - "Football John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53713&h=a9d45a94cb7a0e8b9a6d8b78723afb6e6018e150']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E04 - "Parachute Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=44155&h=a2b3c34c9a4eea4541d636952ae1823cd29f9250']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E05 - "River John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=46747&h=3ddea6ded54b2e8a150b45005b68ea97f63dd653']x264[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=55001&h=028f3ac73b75da4417cec51568b71ca14ea257dc']PROPER-CTU[/url]</td>
+<td>-</td>
+<td>NegroManus | faindt</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E06 - "Canine John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53726&h=623835aba35f35407d7de6288af7aa961be6e6d4']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E07 - "Railroad Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=51700&h=f2534b61a1628f978f96a42f71b18ea2e90f063e']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E08 - "Prisoner Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53203&h=8b1d397efca06825b7849f0d95a3c6db976c09ff']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E09 - "Lucky John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57287&h=261bd0412082efb4eb03764a74a605afaa63aa39']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E10 - "Double Doe"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58882&h=6aa3423fb7657894f923a26f617d81d875f15b7e']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>	
+
+<tr class="aktiv">
+<td class="release">E11 - "Patient John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=54936&h=56a91de719d58235fc69bf75bc739243f97f8839']PROPER-CTU[/url]</td>
+<td>-</td>
+<td>faindt</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E12 - "My John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59852&h=ddd6a95a206ad0f68102c0727bb27459b141162c']DIMENSION[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E13 - "Mama Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63549&h=99d4a62a751065199dc60533a1f640b637631260']DIMENSION[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E14 - "Train Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=73902&h=c2e83a3ce2c0f39d2bb8f2cc87fed747f96d3cd4']DIMENSION[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E16 - "Designer Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87621&h=6b6bd7a3dd3e65c863f8257ccccab347a506c74c']ORENJI[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E17 - "Living Doe"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87624&h=0c383caff0ed81998946a641eb601a161799d8af']CTU[/url]</td>
+<td>-</td>
+<td>NegroManus</td>
+</tr>
+
+<tr class="inaktiv">
+<td class="release">E15 - "Donovan Doe"</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+
+    <!-- Informationshinweis fuers Informationsmodul -->
+		  <tr>
+			<!-- 'colspan' definiert die Spaltenanzahl der Ausdehnung. Falls die 
+			     Tabelle mehr oder weniger hat, entsprechend abaendern! -->
+			<td class="hinweis" colspan="4"><strong>Hinweis:</strong> E15 ist das Staffelfinale und sollte zuletzt gesehen werden.</td>
+		  </tr>
+
+
+				<!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+
+
+
+	<div id="a3" style="display:none;">
+		<!-- /Tabellen-Modul -->
+		<table>
+
+			<!-- Tabellen-Modul kann gegen die Anderen ausgetauscht werden -->
+
+			<!-- Spaltenbreite (und -gruppierung) - Nur einmal pro Tabellen-Modul -->
+			<colgroup width="30%" />
+			<colgroup width="20%" />
+			<colgroup width="25%" />
+			<colgroup width="25%" />
+
+			<!-- Zeilen-Modul - Titel - Nur einmal pro Tabellen-Modul -->
+			<thead>
+				<tr>
+					<th>Episode</th>
+					<th><img src="creative/bilder/flags/usa.png" /> HDTVRip</th>
+					<th><img src="creative/bilder/flags/usa.png" /> 720p.HDTV</th>
+					<th>Quelle</th>
+				</tr>
+			</thead>
+			<!-- /Zeilen-Modul - Titel -->
+
+			<tbody>
+
+				<!-- Zeilen-Modul - Release -->
+<tr class="aktiv">
+<td class="release">E01 - "Pilot"</td>
+<td><a href="http://www.subcentral.de/index.php?page=Attachment&attachmentID=57615&h=350c42e3103f107308b7429926a4c0264d29476d">2HD</a>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57617&h=588d15933e94e27acc138686c513a65eb1680aa7']CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+			
+
+<tr class="aktiv">
+<td class="release">E02 - "Diamond Jane"</td>
+<td><a href="http://www.subcentral.de/index.php?page=Attachment&attachmentID=57616&h=62117b31947aa38b72a101ed3c59bf5270d9d1ca">2HD</a>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57618&h=4e6ed92efe430b0b56d81fc323acdbb96ff8a3bd']CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E03 - "Football John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57724&h=1abad1aa52989fbcd7433f4adcfa98fc4235808c']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57725&h=6b3985c1a75a210f8359ec118f56f1911fc17da0']CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E04 - "Parachute Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57957&h=e22dc6124a20382d6ecdc321d9af3054ce9b62b7']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57956&h=cc336dc19628d7f8d6f6aa08dac0db334952f4d7']CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E05 - "River John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57979&h=f6ddf45a7967fa42f384a9b5030658be46dddd9b']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57980&h=bea6963f2d09e0530d2000e66296b44ef92ed7b6']X264[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57981&h=eb3d7933708527f35a44ff391832f5382d9e344f']PROPER-CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E06 - "Canine John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58377&h=8685f743b64921cc44ee4c16203728977e183212']FEVER[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58378&h=44f3dd3879e7659be4226826bfc0fd499d0f1b3a']CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E07 - "Railroad Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58625&h=8bc77b5b91a38bb3a70328c4252a603050673f54']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58626&h=e69cdb1be094c71c8fb09c328b220768836f80ca']CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E08 - "Prisoner Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53198&h=28765fab81d22e384f229c6bb29dd28db72bec06']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=53202&h=eee2503c2b73084db6ee23cb2538459d77f6f0a9']CTU[/url]</td>
+<td>SubCentral</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E09 - "Lucky John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57285&h=0e1ec6b854d0f8290d802adc6a4324f3a75497e5']REPACK-2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=57286&h=9e75f8af40e54e6a3d1a01d6edf85b451333e1a3']CTU[/url]</td>
+<td>SubCentral</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E10 - "Double Doe"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58844&h=34f2cec73c1da34b14cf074241987d076aab46d1']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=58845&h=6aaf725e9ca785a31005fb7f30a890d7eaa36879']CTU[/url]</td>
+<td>SubCentral</td>
+</tr>	
+
+<tr class="aktiv">
+<td class="release">E11 - "Patient John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59858&h=9892e683de04e0634f3e5a5e65d04688e30d6cd4']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59859&h=8ded620c4e52e7da3d72f71b265d88f30da0e684']PROPER-CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E12 - "My John"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59854&h=14d10c03db9d1c3044a9028a80bedf900690dd53']2HD[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59855&h=25bf3744f456b54a6fdf5c82c37b29f2018543af']XII[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=59853&h=ef3693572fcca2a78ec8f03f98ed691127dc9d94']DIMENSION[/url]</td>
+<td>SubCentral</td>
+</tr>
+				
+<tr class="aktiv">
+<td class="release">E13 - "Mama Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=73444&h=b25533fc8884507fe4539245513f96aed5685fd9']P0W4[/url] | [url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=73445&h=9557b197fe8be97aca2aa06d5fae8409c747c688']XII[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=73439&h=c382461e2f0f1d1d459f7b60b451cacf5eba546e']DIMENSION[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E14 - "Train Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=73446&h=8514b4e9c371b7e3c8537ad0a91cb7ebb50f72b4']XII[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=73440&h=8248a1d078a167b0b65610ef1a3874f4886d1591']DIMENSION[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E16 - "Designer Jane"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87511&h=5dfe41e30607f74a4dd75368385757c3fc3b1e17']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87622&h=6faa065180c0aa70872b1b59ab28591a572d148c']ORENJI[/url]</td>
+<td>SubCentral</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E17 - "Living Doe"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87517&h=edfedc88d0321b07b4ade39d40b5812cae65dd71']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=87623&h=97ce263c18ff95a421c99909c08a1df2131b9b91']CTU[/url]</td>
+<td>SubCentral</td>
+</tr>
+
+<tr class="aktiv">
+<td class="release">E15 - "Donovan Doe"</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63608&h=4fa412c12977270a673bf42e01cc36f5045b2c49']2HD[/url]</td>
+<td>[url='http://www.subcentral.de/index.php?page=Attachment&attachmentID=63613&h=382c8966d0fa28b612f4fc9475fae8722395c620']CTU[/url]</td>
+<td>sous-titres.eu</td>
+</tr>
+
+    <!-- Informationshinweis fuers Informationsmodul -->
+		  <tr>
+			<!-- 'colspan' definiert die Spaltenanzahl der Ausdehnung. Falls die 
+			     Tabelle mehr oder weniger hat, entsprechend abaendern! -->
+			<td class="hinweis" colspan="4"><strong>Hinweis:</strong> E15 ist das Staffelfinale und sollte zuletzt gesehen werden.</td>
+		  </tr>
+
+
+				<!-- [ Weitere Zeilen einfuegen (vor diesem Kommentar!)] -->
+			</tbody>
+		</table>
+		<!-- /Tabellen-Modul -->
+	</div>
+
+	<!-- Die "..." durch die Beitrags-ID austauschen! -->
+	<p>Fehlerhafte Verlinkung entdeckt, dann <a href="index.php?form=PostReport&postID=111804">melde</a> dich bei einem MOD oder SMOD.</p>
+
+	[/hide] 
+
+<p class="copyr">&copy; 2009-2015 - Übersetzung: NegroManus, Serious.Ray, Shay-Zee, glumpf, Chriss2222 </p>
+<p class="copyr">&copy; 2009-2015 - Korrektur: Alan Shore, NegroManus, glumpf, Ruby Connor, Fuzzy12</p>
+<p class="copyr">&copy; 2009-2015 - Anpassung: Nachtfalke, NegroManus, faindt</p>
+</div>
+
+
+<!-- Falls es notwendig ist, kann hier das Hinweis-Modul (Bedankomat) eingefuegt werden. [Optional]  -->
+<div class="baseSC">
+	<!-- Hinweis-Modul - Bedankomat usw. -->
+	<div class="ztext">
+		<div class="bhinweis">
+			<p><strong>Bitte <a href="http://www.subcentral.de/index.php?page=Thread&threadID=2745" target="_blank">Bedankomat</a> verwenden!</strong></p>
+			<p>Einsilbige Danksagungen (Danke, Thx, usw.) sind nicht notwendig und werden verschoben.</p>
+		</div>
+	</div>
+	<!-- /Hinweis-Modul -->
+</div>
+
+<!-- Script-Einstellungs-Modul -->
+<!-- Hier einfügen, nur für Bilder-Modul [Optinal] -->
+<!-- Script-Einstellungs-Modul -->

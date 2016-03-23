@@ -23,9 +23,5 @@ public class Migration
 
 	public static final String	SUBTITLE_FILE_ATTR_ATTACHMENT_ID	= "attachmentId";
 
-	public static final String	UNKNOWN_SERIES						= "UNKNOWN_SERIES";
-	public static final String	UNKNOWN_SEASON						= "UNKNOWN_SEASON";
-	public static final String	UNKNOWN_EPISODE						= "UNKNOWN_EPISODE";
-
 	public static final int		TIMEOUT_MILLIS						= 10_000;
 }

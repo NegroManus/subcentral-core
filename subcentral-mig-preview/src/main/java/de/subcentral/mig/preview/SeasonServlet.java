@@ -5,7 +5,9 @@ import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -78,8 +80,14 @@ public class SeasonServlet extends HttpServlet
 		// Actual logic goes here.
 		try
 		{
+			String contextPath = request.getContextPath();
+
 			int seasonThreadId = Integer.parseInt(request.getParameter("threadId"));
+
 			SeasonPostData data = readSeasonPostData(seasonThreadId);
+			// Keep a list of the subtitle releases that could not be matched with episodes
+			List<SubtitleRelease> unmatchedSubtitleReleases = new ArrayList<>(data.getSubtitleReleases());
+			// Group the subtitle releases by their subtitles
 			// LinkedListMultimap maintains ordering for both keys and values
 			Multimap<Subtitle, SubtitleRelease> subs = LinkedListMultimap.create();
 			for (SubtitleRelease subRls : data.getSubtitleReleases())
@@ -96,7 +104,6 @@ public class SeasonServlet extends HttpServlet
 					}
 				}
 			}
-			String contextPath = request.getContextPath();
 
 			PrintWriter writer = response.getWriter();
 			writer.println("<html>");
@@ -134,56 +141,67 @@ public class SeasonServlet extends HttpServlet
 					writer.println("<code>");
 					writer.println(season);
 					writer.println("</code>");
-					writer.println("<div><h2>Episoden</h2>");
-					if (season.getEpisodes().isEmpty())
-					{
-						writer.println("Keine Episoden vorhanden");
-						writer.println("<div><h2>Untertitel</h2>");
-						printSubs(writer, subs, null);
-						writer.println("</div>");
-					}
-					else
-					{
-						for (Episode epi : season.getEpisodes())
-						{
-							writer.println("<h3>" + name(epi) + "</h3>");
-							writer.println("<code>");
-							writer.println(epi);
-							writer.println("</code>");
-							writer.println("<br/><br/>");
-							printSubs(writer, subs, epi);
-						}
-					}
-					writer.println("</div>");
 					writer.println("</div>");
 				}
 			}
+
+			writer.println("<div><h2>Episoden</h2>");
+			if (data.getEpisodes().isEmpty())
+			{
+				writer.println("Keine Episoden vorhanden");
+			}
+			else
+			{
+				for (Episode epi : data.getEpisodes())
+				{
+					writer.println("<h3>" + name(epi) + "</h3>");
+					writer.println("<code>");
+					writer.println(epi);
+					writer.println("</code>");
+					writer.println("<br/><br/>");
+					printSubs(writer, subs, unmatchedSubtitleReleases, epi);
+				}
+			}
+			writer.println("</div>");
+
+			writer.println("<div><h2>Unzugeordnete Untertitel</h2>");
+			if (unmatchedSubtitleReleases.isEmpty())
+			{
+				writer.println("Keine unzugeordneten Untertitel vorhanden");
+			}
+			else
+			{
+				printSubs(writer, subs, unmatchedSubtitleReleases, null);
+			}
+			writer.println("</div>");
+
 			writer.println("</p>");
 
 			writer.println("</body>");
 			writer.println("</html>");
 			writer.flush();
 		}
-		catch (
-
-		Exception e)
+		catch (Exception e)
 		{
 			throw new ServletException(e);
 		}
 	}
 
-	private static void printSubs(PrintWriter writer, Multimap<Subtitle, SubtitleRelease> subs, Episode epi)
+	private static void printSubs(PrintWriter writer, Multimap<Subtitle, SubtitleRelease> subs, List<SubtitleRelease> unmatchedSubtitleReleases, Episode epi)
 	{
 		for (Map.Entry<Subtitle, Collection<SubtitleRelease>> entry : subs.asMap().entrySet())
 		{
 			Subtitle sub = entry.getKey();
-			if (epi == null || epi.equals(sub.getMedia()))
+			if (sub == null || epi == null || epi.equals(sub.getMedia()))
 			{
 				writer.println(printSubtitle(sub));
 
 				writer.println("<ul>");
 				for (SubtitleRelease subRls : entry.getValue())
 				{
+					// If the the subRls could be matched, remove it from the unmatched list
+					unmatchedSubtitleReleases.remove(subRls);
+
 					String attachmentId = Integer.toString((Integer) subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
 					writer.print("<li>");
 					writer.print("<a href=\"https://www.subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId + "\">");
@@ -270,6 +288,8 @@ public class SeasonServlet extends HttpServlet
 			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
 			scBoard.setConnection(conn);
 			post = scBoard.getFirstPost(seasonThreadId);
+			System.out.println(post.getTopic());
+			System.out.println(post.getMessage());
 		}
 
 		return new SeasonPostParser().parse(post.getTopic(), post.getMessage());
