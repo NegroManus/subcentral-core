@@ -3,8 +3,6 @@ package de.subcentral.mig.preview;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,11 +17,8 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.mig.Migration;
-import de.subcentral.mig.MigrationConfig;
-import de.subcentral.mig.parse.SeriesListParser;
 import de.subcentral.mig.parse.SeriesListParser.SeriesListData;
-import de.subcentral.support.woltlab.WoltlabBurningBoard;
-import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
+import de.subcentral.mig.process.MigrationAssistance;
 
 @WebServlet("/overview")
 public class OverviewServlet extends HttpServlet
@@ -31,8 +26,7 @@ public class OverviewServlet extends HttpServlet
 	private static final long	serialVersionUID	= -468235743950296120L;
 	private static final Logger	log					= LogManager.getLogger(OverviewServlet.class);
 
-	private static final String	ENV_SETTINGS_PATH	= "C:\\Users\\mhertram\\Documents\\Projekte\\SC\\Submanager\\mig\\migration-env-settings.properties";
-	private MigrationConfig		config;
+	private MigrationAssistance	assistance;
 
 	@Override
 	public void init() throws ServletException
@@ -40,10 +34,9 @@ public class OverviewServlet extends HttpServlet
 		try
 		{
 			// Do required initialization
-			config = new MigrationConfig();
-			config.setEnvironmentSettingsFile(Paths.get(ENV_SETTINGS_PATH));
-			config.loadEnvironmentSettings();
-			config.createDateSource();
+			assistance = new MigrationAssistance();
+			assistance.setEnvironmentSettingsFile(Paths.get(MigrationPreview.ENV_SETTINGS_PATH));
+			assistance.loadEnvironmentSettingsFromFile();
 		}
 		catch (Exception e)
 		{
@@ -60,7 +53,8 @@ public class OverviewServlet extends HttpServlet
 		// Actual logic goes here.
 		try
 		{
-			SeriesListData data = readSeriesListContent();
+			assistance.loadSeriesListData();
+			SeriesListData data = assistance.getSeriesListData();
 			PrintWriter writer = response.getWriter();
 
 			writer.println("<html>");
@@ -102,39 +96,9 @@ public class OverviewServlet extends HttpServlet
 		}
 	}
 
-	private SeriesListData readSeriesListContent() throws SQLException
-	{
-		log.debug("Reading SeriesList content");
-		int seriesListPostId = config.getEnvironmentSettings().getInt("sc.serieslist.postid");
-		SeriesListData seriesListContent;
-		try (Connection conn = config.getDataSource().getConnection())
-		{
-			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
-			scBoard.setConnection(conn);
-			WbbPost seriesListPost = scBoard.getPost(seriesListPostId);
-			seriesListContent = new SeriesListParser().parsePost(seriesListPost.getMessage());
-			log.debug("Read SeriesList content: {} series, {} seasons, {} networks",
-					seriesListContent.getSeries().size(),
-					seriesListContent.getSeasons().size(),
-					seriesListContent.getNetworks().size());
-			return seriesListContent;
-		}
-	}
-
 	@Override
 	public void destroy()
 	{
-		try
-		{
-			if (config != null)
-			{
-				config.closeDataSource();
-			}
-		}
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 	}
 }

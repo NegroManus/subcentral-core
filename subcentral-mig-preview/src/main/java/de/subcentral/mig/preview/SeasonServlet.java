@@ -3,7 +3,6 @@ package de.subcentral.mig.preview;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,11 +37,9 @@ import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.SeasonNamer;
 import de.subcentral.mig.Migration;
-import de.subcentral.mig.MigrationConfig;
-import de.subcentral.mig.parse.SeasonPostParser;
 import de.subcentral.mig.parse.SeasonPostParser.SeasonPostData;
-import de.subcentral.support.woltlab.WoltlabBurningBoard;
-import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
+import de.subcentral.mig.process.MigrationAssistance;
+import de.subcentral.mig.process.MigrationService;
 
 @WebServlet("/season")
 public class SeasonServlet extends HttpServlet
@@ -52,7 +49,7 @@ public class SeasonServlet extends HttpServlet
 
 	private static final String	ENV_SETTINGS_PATH	= "C:\\Users\\mhertram\\Documents\\Projekte\\SC\\Submanager\\mig\\migration-env-settings.properties";
 
-	private MigrationConfig		config;
+	private MigrationAssistance	assistance;
 
 	@Override
 	public void init() throws ServletException
@@ -60,10 +57,9 @@ public class SeasonServlet extends HttpServlet
 		try
 		{
 			// Do required initialization
-			config = new MigrationConfig();
-			config.setEnvironmentSettingsFile(Paths.get(ENV_SETTINGS_PATH));
-			config.loadEnvironmentSettings();
-			config.createDateSource();
+			assistance = new MigrationAssistance();
+			assistance.setEnvironmentSettingsFile(Paths.get(MigrationPreview.ENV_SETTINGS_PATH));
+			assistance.loadEnvironmentSettingsFromFile();
 		}
 		catch (Exception e)
 		{
@@ -287,31 +283,15 @@ public class SeasonServlet extends HttpServlet
 
 	private SeasonPostData readSeasonPostData(int seasonThreadId) throws SQLException
 	{
-		WbbPost post;
-		try (Connection conn = config.getDataSource().getConnection())
+		try (MigrationService service = new MigrationService(assistance.getSettings()))
 		{
-			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
-			scBoard.setConnection(conn);
-			post = scBoard.getFirstPost(seasonThreadId);
+			return service.readSeasonPost(seasonThreadId);
 		}
-
-		return new SeasonPostParser().parsePost(post.getTopic(), post.getMessage());
 	}
 
 	@Override
 	public void destroy()
 	{
-		try
-		{
-			if (config != null)
-			{
-				config.closeDataSource();
-			}
-		}
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 	}
 }

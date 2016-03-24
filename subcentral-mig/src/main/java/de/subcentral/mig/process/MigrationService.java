@@ -112,14 +112,14 @@ public class MigrationService implements AutoCloseable
 		}
 	}
 
-	public SeasonPostData readSeasonPost(int postId) throws SQLException
+	public SeasonPostData readSeasonPost(int seasonThreadId) throws SQLException
 	{
 		log.debug("Reading season post");
 		long start = System.currentTimeMillis();
 		try (Connection conn = sourceDataSource.getConnection())
 		{
 			WoltlabBurningBoard board = new WoltlabBurningBoard(conn);
-			WbbPost post = board.getPost(postId);
+			WbbPost post = board.getFirstPost(seasonThreadId);
 			SeasonPostParser parser = new SeasonPostParser();
 			SeasonPostData data = parser.parsePost(post);
 			long duration = System.currentTimeMillis() - start;
