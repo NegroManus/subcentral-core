@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.mig.parse.SeriesListParser.SeriesListData;
+import de.subcentral.mig.process.MigrationService;
 import de.subcentral.mig.settings.MigrationScopeSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
@@ -202,10 +204,10 @@ public class ScopePageController extends AbstractPageController
 		}
 	}
 
-	private class InitPageDataTask extends Task<Void>
+	private class InitPageDataTask extends Task<SeriesListData>
 	{
 		@Override
-		protected Void call() throws Exception
+		protected SeriesListData call() throws Exception
 		{
 			updateTitle("Initializing page \"" + ScopePageController.this.getTitle() + "\"");
 
@@ -213,15 +215,17 @@ public class ScopePageController extends AbstractPageController
 			assistance.loadSettingsFromFiles();
 
 			updateMessage("Retrieving series list ...");
-			assistance.loadSeriesListData();
-
-			return null;
+			try (MigrationService service = assistance.createMigrationService())
+			{
+				return service.readSeriesList();
+			}
 		}
 
 		@Override
 		protected void succeeded()
 		{
-			seriesListView.getItems().setAll(assistance.getSeriesListData().getSeries());
+			SeriesListData data = getValue();
+			seriesListView.getItems().setAll(data.getSeries());
 
 			// Configure view according to current values
 			MigrationScopeSettings scope = assistance.getSettings().getScopeSettings();

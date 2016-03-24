@@ -3,6 +3,7 @@ package de.subcentral.mig.preview;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +20,7 @@ import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.parse.SeriesListParser.SeriesListData;
 import de.subcentral.mig.process.MigrationAssistance;
+import de.subcentral.mig.process.MigrationService;
 
 @WebServlet("/overview")
 public class OverviewServlet extends HttpServlet
@@ -53,8 +55,7 @@ public class OverviewServlet extends HttpServlet
 		// Actual logic goes here.
 		try
 		{
-			assistance.loadSeriesListData();
-			SeriesListData data = assistance.getSeriesListData();
+			SeriesListData data = readSeriesListData();
 			PrintWriter writer = response.getWriter();
 
 			writer.println("<html>");
@@ -93,6 +94,14 @@ public class OverviewServlet extends HttpServlet
 		catch (Exception e)
 		{
 			throw new ServletException(e);
+		}
+	}
+
+	public SeriesListData readSeriesListData() throws SQLException
+	{
+		try (MigrationService service = assistance.createMigrationService())
+		{
+			return service.readSeriesList();
 		}
 	}
 

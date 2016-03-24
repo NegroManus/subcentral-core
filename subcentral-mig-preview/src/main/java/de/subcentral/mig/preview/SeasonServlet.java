@@ -283,7 +283,7 @@ public class SeasonServlet extends HttpServlet
 
 	private SeasonPostData readSeasonPostData(int seasonThreadId) throws SQLException
 	{
-		try (MigrationService service = new MigrationService(assistance.getSettings()))
+		try (MigrationService service = assistance.createMigrationService())
 		{
 			return service.readSeasonPost(seasonThreadId);
 		}

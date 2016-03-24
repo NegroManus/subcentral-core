@@ -2,11 +2,9 @@ package de.subcentral.mig.process;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
-import de.subcentral.mig.parse.SeriesListParser.SeriesListData;
 import de.subcentral.mig.settings.MigrationSettings;
 
 public class MigrationAssistance
@@ -14,7 +12,6 @@ public class MigrationAssistance
 	private final MigrationSettings	settings	= new MigrationSettings();
 	private Path					environmentSettingsFile;
 	private Path					parsingSettingsFile;
-	private SeriesListData			seriesListData;
 
 	public MigrationSettings getSettings()
 	{
@@ -41,16 +38,6 @@ public class MigrationAssistance
 		this.parsingSettingsFile = parsingSettingsFile;
 	}
 
-	public SeriesListData getSeriesListData()
-	{
-		return seriesListData;
-	}
-
-	public void setSeriesListData(SeriesListData seriesListData)
-	{
-		this.seriesListData = seriesListData;
-	}
-
 	// Convenience methods
 	public void loadSettingsFromFiles() throws IOException, ConfigurationException
 	{
@@ -68,11 +55,8 @@ public class MigrationAssistance
 		settings.getParsingSettings().load(parsingSettingsFile);
 	}
 
-	public void loadSeriesListData() throws SQLException
+	public MigrationService createMigrationService()
 	{
-		try (MigrationService service = new MigrationService(settings))
-		{
-			seriesListData = service.readSeriesList();
-		}
+		return new MigrationService(settings);
 	}
 }
