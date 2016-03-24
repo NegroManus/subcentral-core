@@ -7,7 +7,6 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.junit.Test;
 
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.mig.process.SubCentralSubMan;
 import de.subcentral.support.subcentralde.SubCentralDe;
 
 public class SubCentralSubManDbApiTest
@@ -21,8 +20,7 @@ public class SubCentralSubManDbApiTest
 
 		try (Connection conn = MigTestUtil.connect())
 		{
-			SubCentralSubMan api = new SubCentralSubMan();
-			api.setConnection(conn);
+			SubCentralSubMan api = new SubCentralSubMan(conn);
 			api.insertSeriesFromSeriesList(series);
 
 			System.out.println(series.getIds().get(SubCentralDe.SITE));

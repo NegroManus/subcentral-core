@@ -1,22 +1,22 @@
-package de.subcentral.mig.repo;
+package de.subcentral.mig.repo_old;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.name.NamingDefaults;
 
-public class SeriesKey
+public class NetworkKey
 {
 	private final String name;
 
-	public SeriesKey(Series series)
+	public NetworkKey(Network network)
 	{
-		this(series.getName());
+		this(network.getName());
 	}
 
-	public SeriesKey(String name)
+	public NetworkKey(String name)
 	{
 		this.name = NamingDefaults.getDefaultNormalizingFormatter().apply(name);
 	}
@@ -34,9 +34,9 @@ public class SeriesKey
 		{
 			return true;
 		}
-		if (obj instanceof SeriesKey)
+		if (obj instanceof NetworkKey)
 		{
-			return this.name.equals(((SeriesKey) obj).name);
+			return this.name.equals(((NetworkKey) obj).name);
 		}
 		return false;
 	}
@@ -50,6 +50,6 @@ public class SeriesKey
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(SeriesKey.class).add("name", name).toString();
+		return MoreObjects.toStringHelper(NetworkKey.class).add("name", name).toString();
 	}
 }

@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class MigrationApp extends Application
 {
 	public static final String	APP_NAME			= "SubCentral Migration Tool";
-	public static final String	APP_VERSION			= "0.1";
+	public static final String	APP_VERSION			= "1.0";
 	public static final String	APP_VERSION_DATE	= "2015-11-13 00:00";
 	public static final String	APP_INFO			= APP_NAME + " " + APP_VERSION + " (" + APP_VERSION_DATE + ")";
 

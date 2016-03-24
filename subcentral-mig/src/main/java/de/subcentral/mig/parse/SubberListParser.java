@@ -1,7 +1,8 @@
-package de.subcentral.mig.process;
+package de.subcentral.mig.parse;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -16,25 +17,44 @@ import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.mig.process.SubberListParser.SubberListData;
-import javafx.concurrent.Task;
+import de.subcentral.mig.Migration;
+import de.subcentral.mig.ScContributor;
+import de.subcentral.support.subcentralde.SubCentralDe;
+import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
-public class SubberListParser extends Task<SubberListData>
+public class SubberListParser
 {
 	private static final Logger	log	= LogManager.getLogger(SubberListParser.class);
-	private static final String	URL	= "http://subcentral.de/index.php?page=WbbThread&postID=33900#post33900";
+	private static final String	URL	= "http://subcentral.de/index.php?page=Thread&postID=33900";
 
-	@Override
-	protected SubberListData call() throws IOException
+	public SubberListData getAndParse() throws IOException
 	{
-		Pattern userIdPattern = Pattern.compile("page=User&userID=(\\d+)");
-		Document doc = Jsoup.parse(new URL(URL), 5000);
-		SortedSet<ScContributor> subberList = new TreeSet<>();
+		return parseThreadPage(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
+	}
+
+	public SubberListData parseThreadPage(Document thread)
+	{
+		return parsePost(thread.outerHtml());
+	}
+
+	public SubberListData parsePost(WbbPost post)
+	{
+		return parsePost(post.getMessage());
+	}
+
+	public SubberListData parsePost(String postMessage)
+	{
+		Document doc = Jsoup.parse(postMessage, SubCentralDe.SITE.getLink());
+
+		final Pattern userIdPattern = Pattern.compile("page=User&userID=(\\d+)");
+		final SortedSet<ScContributor> subberList = new TreeSet<>();
+
+		Element table = doc.getElementById("sptable");
 
 		/**
 		 * <td><a href="http://www.subcentral.de/index.php?page=User&userID=21359" title= "Benutzerprofil von &raquo; **butterfly**&laquo; aufrufen" >**butterfly**</a></td>
 		 */
-		Elements userAnchors = doc.select("a[href*=page=User&userID=]");
+		Elements userAnchors = table.select("a[href*=page=User&userID=]");
 		for (Element a : userAnchors)
 		{
 			String name = a.text().replace(" (PROBIE)", "");
@@ -60,26 +80,16 @@ public class SubberListParser extends Task<SubberListData>
 
 	public static class SubberListData
 	{
-		private final ImmutableList<ScContributor> subbers;
+		private final List<ScContributor> subbers;
 
 		public SubberListData(Iterable<ScContributor> subbers)
 		{
 			this.subbers = ImmutableList.copyOf(subbers);
 		}
 
-		public ImmutableList<ScContributor> getSubbers()
+		public List<ScContributor> getSubbers()
 		{
 			return subbers;
-		}
-	}
-
-	public static void main(String[] args) throws Exception
-	{
-		SubberListParser task = new SubberListParser();
-		SubberListData content = task.call();
-		for (ScContributor subber : content.getSubbers())
-		{
-			System.out.printf("<contributorPattern pattern=\"(?&lt;!\\w)%s(?!\\w)\" patternMode=\"REGEX\" type=\"SUBBER\" scUserId=\"%s\" />%n", Pattern.quote(subber.getName()), subber.getId());
 		}
 	}
 }

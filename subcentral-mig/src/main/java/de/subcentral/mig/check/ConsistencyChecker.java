@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -43,11 +42,11 @@ import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.ReleaseNamer;
 import de.subcentral.core.name.SeasonNamer;
 import de.subcentral.mig.Migration;
-import de.subcentral.mig.MigrationConfig;
-import de.subcentral.mig.process.SeasonPostParser;
-import de.subcentral.mig.process.SeasonPostParser.SeasonPostData;
-import de.subcentral.mig.process.SeriesListParser;
-import de.subcentral.mig.process.SeriesListParser.SeriesListData;
+import de.subcentral.mig.parse.SeasonPostParser;
+import de.subcentral.mig.parse.SeasonPostParser.SeasonPostData;
+import de.subcentral.mig.parse.SeriesListParser.SeriesListData;
+import de.subcentral.mig.process.MigrationService;
+import de.subcentral.mig.settings.MigrationSettings;
 import de.subcentral.support.subcentralde.SubCentralHttpApi;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbBoard;
@@ -61,13 +60,14 @@ public class ConsistencyChecker
 
 	private static final Pattern	PATTERN_THREAD_ID	= Pattern.compile("threadID=(\\d+)");
 
-	private final MigrationConfig	config;
+	private final MigrationSettings	config;
+	private MigrationService		service;
 	private final Path				logFile;
 	private boolean					firstWrite			= true;
 	private int						majorChapterNum		= 0;
 	private int						minorChapterNum		= 0;
 
-	public ConsistencyChecker(MigrationConfig config) throws IOException
+	public ConsistencyChecker(MigrationSettings config) throws IOException
 	{
 		this.config = config;
 		this.logFile = resolveLogFile();
@@ -75,7 +75,7 @@ public class ConsistencyChecker
 
 	private Path resolveLogFile() throws IOException
 	{
-		Path logDir = Paths.get(config.getEnvironmentSettings().getString("log.dir"));
+		Path logDir = config.getEnvironmentSettings().getLogDir();
 		if (Files.notExists(logDir))
 		{
 			throw new NoSuchFileException(logDir.toString());
@@ -87,45 +87,57 @@ public class ConsistencyChecker
 
 	public void check() throws Exception
 	{
-		// Read all necessary data
-		SeriesListData seriesListContent = readSeriesListContent();
-
-		// Perform consistency checks
-		// Level: Series
-		// Check series against Quickjump entries
+		try
 		{
-			List<Series> quickJumpContent = readQuickJumpContent();
-			checkSeriesListAgainstQuickJump(seriesListContent, quickJumpContent);
-		}
+			service = new MigrationService(config);
 
-		readSeriesBoards(seriesListContent.getSeries());
-		checkSeriesListAgainstBoards(seriesListContent);
+			// Read all necessary data
+			SeriesListData seriesListContent = service.readSeriesList();
 
-		// Check subtitle repository
-		{
-			WbbBoard subRepoBoard = readSubtitleRepositoryBoard();
-			List<Series> subRepoQuickJumpContent = readSubtitleRepositoryQuickJumpContent(subRepoBoard);
-			List<WbbThread> subRepoThreads = readSubtitleRepositoryThreads(subRepoBoard);
-			checkSeriesListAgainstSubRepo(seriesListContent, subRepoThreads);
-			checkSubRepoThreadsAgainstSubRepoQuickJump(subRepoThreads, subRepoQuickJumpContent);
-		}
-
-		// Level: Season
-		{
-			ListMultimap<WbbPost, Season> postsToSeasons = readSeasonPosts(seriesListContent.getSeasons());
-			List<WbbPost> seasonPosts = ImmutableList.copyOf(postsToSeasons.keySet());
-			// Check seasons against [Subs] threads
+			// Perform consistency checks
+			// Level: Series
+			// Check series against Quickjump entries
 			{
-				List<WbbThread> subsPrefixThreads = readSubsPrefixThreads();
-				checkSeriesListAgainstSubsPrefixThreads(seasonPosts, subsPrefixThreads);
+				List<Series> quickJumpContent = readQuickJumpContent();
+				checkSeriesListAgainstQuickJump(seriesListContent, quickJumpContent);
 			}
-			// Check seasons against sticky threads
-			checkSeriesListAgainstStickyThreads(seriesListContent, seasonPosts);
+
+			readSeriesBoards(seriesListContent.getSeries());
+			checkSeriesListAgainstBoards(seriesListContent);
+
+			// Check subtitle repository
 			{
-				List<WcfAttachment> subRepoAttachments = readSubRepoAttachments();
-				// Check series/seasons against post topics
-				// Check attachments of all season posts against attachments of subtitle repository
-				checkSeriesListAgainstSeasonPostsAgainstSubRepo(postsToSeasons, subRepoAttachments);
+				WbbBoard subRepoBoard = readSubtitleRepositoryBoard();
+				List<Series> subRepoQuickJumpContent = readSubtitleRepositoryQuickJumpContent(subRepoBoard);
+				List<WbbThread> subRepoThreads = readSubtitleRepositoryThreads(subRepoBoard);
+				checkSeriesListAgainstSubRepo(seriesListContent, subRepoThreads);
+				checkSubRepoThreadsAgainstSubRepoQuickJump(subRepoThreads, subRepoQuickJumpContent);
+			}
+
+			// Level: Season
+			{
+				ListMultimap<WbbPost, Season> postsToSeasons = readSeasonPosts(seriesListContent.getSeasons());
+				List<WbbPost> seasonPosts = ImmutableList.copyOf(postsToSeasons.keySet());
+				// Check seasons against [Subs] threads
+				{
+					List<WbbThread> subsPrefixThreads = readSubsPrefixThreads();
+					checkSeriesListAgainstSubsPrefixThreads(seasonPosts, subsPrefixThreads);
+				}
+				// Check seasons against sticky threads
+				checkSeriesListAgainstStickyThreads(seriesListContent, seasonPosts);
+				{
+					List<WcfAttachment> subRepoAttachments = readSubRepoAttachments();
+					// Check series/seasons against post topics
+					// Check attachments of all season posts against attachments of subtitle repository
+					checkSeriesListAgainstSeasonPostsAgainstSubRepo(postsToSeasons, subRepoAttachments);
+				}
+			}
+		}
+		finally
+		{
+			if (service != null)
+			{
+				service.close();
 			}
 		}
 	}
@@ -133,25 +145,6 @@ public class ConsistencyChecker
 	/*
 	 * Read necessary data
 	 */
-	private SeriesListData readSeriesListContent() throws SQLException
-	{
-		log.debug("Reading SeriesList content");
-		int seriesListPostId = config.getEnvironmentSettings().getInt("sc.serieslist.postid");
-		SeriesListData seriesListContent;
-		try (Connection conn = config.getDataSource().getConnection())
-		{
-			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
-			scBoard.setConnection(conn);
-			WbbPost seriesListPost = scBoard.getPost(seriesListPostId);
-			seriesListContent = new SeriesListParser().parsePost(seriesListPost.getMessage());
-			log.debug("Read SeriesList content: {} series, {} seasons, {} networks",
-					seriesListContent.getSeries().size(),
-					seriesListContent.getSeasons().size(),
-					seriesListContent.getNetworks().size());
-			return seriesListContent;
-		}
-	}
-
 	private void readSeriesBoards(List<Series> series) throws SQLException
 	{
 		log.debug("Reading series boards");
@@ -161,10 +154,9 @@ public class ConsistencyChecker
 
 	private void readSeriesBoard(Series series)
 	{
-		try (Connection conn = config.getDataSource().getConnection())
+		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
-			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
-			boardApi.setConnection(conn);
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard(conn);
 			Integer seriesBoardId = series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
 			if (seriesBoardId != null)
 			{
@@ -208,10 +200,9 @@ public class ConsistencyChecker
 
 	private WbbPost loadFirstPost(Integer threadId)
 	{
-		try (Connection conn = config.getDataSource().getConnection())
+		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
-			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
-			boardApi.setConnection(conn);
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard(conn);
 			return boardApi.getFirstPost(threadId);
 		}
 		catch (SQLException e)
@@ -266,11 +257,10 @@ public class ConsistencyChecker
 	private WbbBoard readSubtitleRepositoryBoard() throws SQLException
 	{
 		log.debug("Reading subtitle repository board");
-		int subRepoBoardId = config.getEnvironmentSettings().getInt("sc.subrepo.boardid");
-		try (Connection conn = config.getDataSource().getConnection())
+		int subRepoBoardId = config.getEnvironmentSettings().getSourceSubRepoBoardId();
+		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
-			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
-			boardApi.setConnection(conn);
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard(conn);
 			WbbBoard board = boardApi.getBoard(subRepoBoardId);
 			log.debug("Read subtitle repository board");
 			return board;
@@ -330,10 +320,9 @@ public class ConsistencyChecker
 	private List<WbbThread> readSubtitleRepositoryThreads(WbbBoard subRepoBoard) throws SQLException
 	{
 		log.debug("Reading subtitle repository threads");
-		try (Connection conn = config.getDataSource().getConnection())
+		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
-			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
-			boardApi.setConnection(conn);
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard(conn);
 			List<WbbThread> threads = boardApi.getThreadsByBoard(subRepoBoard.getId());
 			log.debug("Read {} subtitle repository threads", threads.size());
 			return threads;
@@ -343,10 +332,9 @@ public class ConsistencyChecker
 	private List<WbbThread> readSubsPrefixThreads() throws SQLException
 	{
 		log.debug("Reading [Subs] threads");
-		try (Connection conn = config.getDataSource().getConnection())
+		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
-			WoltlabBurningBoard boardApi = new WoltlabBurningBoard();
-			boardApi.setConnection(conn);
+			WoltlabBurningBoard boardApi = new WoltlabBurningBoard(conn);
 			List<WbbThread> threads = boardApi.getThreadsByPrefix("[Subs]");
 			log.debug("Read {} [Subs] threads", threads.size());
 			return threads;
@@ -356,10 +344,9 @@ public class ConsistencyChecker
 	private List<WbbThread> readStickyThreads(int boardId)
 	{
 		log.trace("Reading sticky threads of board {}", boardId);
-		try (Connection conn = config.getDataSource().getConnection())
+		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
-			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
-			scBoard.setConnection(conn);
+			WoltlabBurningBoard scBoard = new WoltlabBurningBoard(conn);
 			List<WbbThread> threads = scBoard.getStickyThreads(boardId);
 			log.trace("Read {} sticky threads of board {}", threads.size(), boardId);
 			return threads;
@@ -373,11 +360,10 @@ public class ConsistencyChecker
 	private List<WcfAttachment> readSubRepoAttachments() throws SQLException
 	{
 		log.trace("Reading subtitle repository attachments");
-		int subRepoBoardId = config.getEnvironmentSettings().getInt("sc.subrepo.boardid");
-		try (Connection conn = config.getDataSource().getConnection())
+		int subRepoBoardId = config.getEnvironmentSettings().getSourceSubRepoBoardId();
+		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
-			WoltlabBurningBoard scBoard = new WoltlabBurningBoard();
-			scBoard.setConnection(conn);
+			WoltlabBurningBoard scBoard = new WoltlabBurningBoard(conn);
 			List<WcfAttachment> atts = scBoard.getAttachmentsByBoard(subRepoBoardId);
 			log.trace("Read {} sticky threads of subtitle repository (boardID={})", atts.size(), subRepoBoardId);
 			return atts;
@@ -496,8 +482,8 @@ public class ConsistencyChecker
 		{
 			List<Season> seriesListSeasons = postsToSeasons.get(post);
 			// Parse season post
-			SeasonPostData parsedTopic = seasonPostParser.parseTopic(post.getTopic());
-			SeasonPostData parsedPost = seasonPostParser.parse(post);
+			SeasonPostData parsedTopic = seasonPostParser.parsePostTopic(post.getTopic());
+			SeasonPostData parsedPost = seasonPostParser.parsePost(post);
 			// Compare seasons only of topic
 			if (!seriesListSeasons.equals(parsedTopic.getSeasons()))
 			{

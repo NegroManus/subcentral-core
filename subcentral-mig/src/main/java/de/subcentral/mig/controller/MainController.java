@@ -9,12 +9,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import com.mchange.v2.c3p0.DataSources;
-
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.mig.MigrationConfig;
+import de.subcentral.mig.process.MigrationAssistance;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -35,31 +33,31 @@ import javafx.stage.Stage;
 public class MainController extends Controller
 {
 	// Model
-	private MigrationConfig	config		= new MigrationConfig();
+	private MigrationAssistance	assistance	= new MigrationAssistance();
 
 	// View-Model
-	private List<Page>		pages		= new ArrayList<>(3);
-	private IntegerProperty	currentPage	= new SimpleIntegerProperty(this, "currentPage", -1);
+	private List<Page>			pages		= new ArrayList<>(3);
+	private IntegerProperty		currentPage	= new SimpleIntegerProperty(this, "currentPage", -1);
 
 	// View
-	private final Stage		primaryStage;
+	private final Stage			primaryStage;
 	// Content
 	@FXML
-	private Label			pageTitleLbl;
+	private Label				pageTitleLbl;
 	@FXML
-	private BorderPane		rootPane;
+	private BorderPane			rootPane;
 	@FXML
-	private AnchorPane		pageRootPane;
+	private AnchorPane			pageRootPane;
 	// Lower button bar
 	@FXML
-	private Button			backBtn;
+	private Button				backBtn;
 	@FXML
-	private Button			nextBtn;
+	private Button				nextBtn;
 	@FXML
-	private Button			cancelBtn;
+	private Button				cancelBtn;
 
 	// Controller
-	private ExecutorService	commonExecutor;
+	private ExecutorService		commonExecutor;
 
 	public MainController(Stage primaryStage)
 	{
@@ -76,9 +74,9 @@ public class MainController extends Controller
 		return commonExecutor;
 	}
 
-	public MigrationConfig getConfig()
+	public MigrationAssistance getAssistance()
 	{
-		return config;
+		return assistance;
 	}
 
 	@Override
@@ -94,7 +92,7 @@ public class MainController extends Controller
 	private void initPages()
 	{
 		Page settingsPage = new Page(() -> new SettingsPageController(MainController.this), "SettingsPage.fxml");
-		Page configurePage = new Page(() -> new ConfigurePageController(MainController.this), "ConfigurePage.fxml");
+		Page configurePage = new Page(() -> new ScopePageController(MainController.this), "ConfigurePage.fxml");
 		Page migrationPage = new Page(() -> new MigrationPageController(MainController.this), "MigrationPage.fxml");
 		pages.add(settingsPage);
 		pages.add(configurePage);
@@ -139,9 +137,10 @@ public class MainController extends Controller
 				// Apply operations on page change
 				if (oldPage != null)
 				{
-					oldPage.controller.onExiting();
+					oldPage.controller.onExit();
 				}
-				newPage.controller.onEntering();
+				newPage.controller.onEnter();
+
 				// Set content
 				pageRootPane.getChildren().setAll(newPage.controller.getRootPane());
 			}
@@ -213,10 +212,6 @@ public class MainController extends Controller
 		{
 			commonExecutor.shutdownNow();
 			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
-		}
-		if (config.getDataSource() != null)
-		{
-			DataSources.destroy(config.getDataSource());
 		}
 	}
 

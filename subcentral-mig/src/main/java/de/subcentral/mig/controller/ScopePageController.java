@@ -1,11 +1,11 @@
 package de.subcentral.mig.controller;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableList;
-
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.mig.process.SeriesListParser.SeriesListData;
+import de.subcentral.mig.settings.MigrationScopeSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
@@ -23,37 +23,37 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
-public class ConfigurePageController extends AbstractPageController
+public class ScopePageController extends AbstractPageController
 {
 	// Model
 
-	private BooleanBinding			nextButtonDisableBinding;
+	private BooleanBinding		nextButtonDisableBinding;
 	// View
 	@FXML
-	private AnchorPane				rootPane;
+	private AnchorPane			rootPane;
 	@FXML
-	private GridPane				contentPane;
+	private GridPane			contentPane;
 
-	private final ToggleGroup		migrationModeToggleGrp	= new ToggleGroup();
+	private final ToggleGroup	migrationModeToggleGrp	= new ToggleGroup();
 	@FXML
-	private RadioButton				completeMigrationRadioBtn;
+	private RadioButton			completeMigrationRadioBtn;
 	@FXML
-	private RadioButton				selectiveMigrationRadioBtn;
+	private RadioButton			selectiveMigrationRadioBtn;
 	@FXML
-	private GridPane				selectiveMigrationGridPane;
+	private GridPane			selectiveMigrationGridPane;
 	@FXML
-	private TextField				seriesSearchTxtFld;
+	private TextField			seriesSearchTxtFld;
 	@FXML
-	private Label					seriesListTitleLbl;
+	private Label				seriesListTitleLbl;
 	@FXML
-	private ListView<Series>		seriesListView;
+	private ListView<Series>	seriesListView;
 	@FXML
-	private CheckBox				migrateSubtitlesCheckBox;
+	private CheckBox			migrateSubtitlesCheckBox;
 
 	// Control
-	private LoadConfigurePageTask	loadTask;
+	private InitPageDataTask	initPageDataTask;
 
-	public ConfigurePageController(MainController mainController)
+	public ScopePageController(MainController mainController)
 	{
 		super(mainController);
 	}
@@ -145,7 +145,7 @@ public class ConfigurePageController extends AbstractPageController
 	@Override
 	public String getTitle()
 	{
-		return "Configure migration";
+		return "Configure the scope";
 	}
 
 	@Override
@@ -161,22 +161,24 @@ public class ConfigurePageController extends AbstractPageController
 	}
 
 	@Override
-	public void onEntering()
+	public void onEnter()
 	{
-		loadTask = new LoadConfigurePageTask();
-
-		executeBlockingTask(loadTask);
+		initPageDataTask = new InitPageDataTask();
+		executeBlockingTask(initPageDataTask);
 	}
 
 	@Override
-	public void onExiting()
+	public void onExit()
 	{
-		cancelLoadTask();
+		cancelInit();
 
 		// Store config
-		config.setCompleteMigration(migrationModeToggleGrp.getSelectedToggle() == completeMigrationRadioBtn);
-		config.setSelectedSeries(ImmutableList.copyOf(seriesListView.getSelectionModel().getSelectedItems()));
-		config.setMigrateSubtitles(migrateSubtitlesCheckBox.isSelected());
+		boolean includeAllSeries = migrationModeToggleGrp.getSelectedToggle() == completeMigrationRadioBtn;
+		MigrationScopeSettings scope = assistance.getSettings().getScopeSettings();
+
+		scope.setIncludeAllSeries(includeAllSeries);
+		scope.setIncludedSeries(seriesListView.getSelectionModel().getSelectedItems());
+		scope.setIncludeSubtitles(migrateSubtitlesCheckBox.isSelected());
 	}
 
 	@Override
@@ -188,33 +190,30 @@ public class ConfigurePageController extends AbstractPageController
 	@Override
 	public void shutdown() throws Exception
 	{
-		cancelLoadTask();
+		cancelInit();
 	}
 
-	private void cancelLoadTask()
+	private void cancelInit()
 	{
-		// Cancel loadTask if still running
-		if (loadTask != null)
+		// Cancel initPageDataTask if still running
+		if (initPageDataTask != null)
 		{
-			loadTask.cancel(true);
+			initPageDataTask.cancel(true);
 		}
 	}
 
-	private class LoadConfigurePageTask extends Task<Void>
+	private class InitPageDataTask extends Task<Void>
 	{
 		@Override
 		protected Void call() throws Exception
 		{
-			updateTitle("Loading data for page \"" + ConfigurePageController.this.getTitle() + "\"");
+			updateTitle("Initializing page \"" + ScopePageController.this.getTitle() + "\"");
 
 			updateMessage("Reading settings ...");
-			config.loadSettings();
-
-			updateMessage("Connecting to database ...");
-			config.createDateSource();
+			assistance.loadSettingsFromFiles();
 
 			updateMessage("Retrieving series list ...");
-			config.loadSeriesListContent();
+			assistance.loadSeriesListData();
 
 			return null;
 		}
@@ -222,11 +221,11 @@ public class ConfigurePageController extends AbstractPageController
 		@Override
 		protected void succeeded()
 		{
-			SeriesListData seriesListContent = config.getSeriesListContent();
+			seriesListView.getItems().setAll(assistance.getSeriesListData().getSeries());
 
-			seriesListView.getItems().setAll(seriesListContent.getSeries());
-			// Configure view according to config
-			if (config.isCompleteMigration())
+			// Configure view according to current values
+			MigrationScopeSettings scope = assistance.getSettings().getScopeSettings();
+			if (scope.getIncludeAllSeries())
 			{
 				migrationModeToggleGrp.selectToggle(completeMigrationRadioBtn);
 			}
@@ -234,18 +233,19 @@ public class ConfigurePageController extends AbstractPageController
 			{
 				migrationModeToggleGrp.selectToggle(selectiveMigrationRadioBtn);
 			}
-			if (!config.getSelectedSeries().isEmpty())
+			List<Series> selectedSeries = scope.getIncludedSeries();
+			if (!selectedSeries.isEmpty())
 			{
 				for (int i = 0; i < seriesListView.getItems().size(); i++)
 				{
 					Series series = seriesListView.getItems().get(i);
-					if (config.getSelectedSeries().contains(series))
+					if (selectedSeries.contains(series))
 					{
 						seriesListView.getSelectionModel().select(i);
 					}
 				}
 			}
-			migrateSubtitlesCheckBox.setSelected(config.getMigrateSubtitles());
+			migrateSubtitlesCheckBox.setSelected(scope.getIncludeSubtitles());
 		}
 	}
 }

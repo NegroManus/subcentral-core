@@ -15,7 +15,7 @@ public class DbPlayground
 	{
 		try (Connection conn = MigTestUtil.connect())
 		{
-			WoltlabBurningBoard api = new WoltlabBurningBoard();
+			WoltlabBurningBoard api = new WoltlabBurningBoard(conn);
 
 			// WbbPost post = api.getFirstPost(36734);
 			// System.out.println(post.getTopic());

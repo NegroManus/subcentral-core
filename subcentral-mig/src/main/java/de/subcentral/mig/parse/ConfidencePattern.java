@@ -1,4 +1,4 @@
-package de.subcentral.mig.process.old;
+package de.subcentral.mig.parse;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

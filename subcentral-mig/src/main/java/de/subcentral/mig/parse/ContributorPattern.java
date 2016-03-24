@@ -1,10 +1,10 @@
-package de.subcentral.mig.process.old;
+package de.subcentral.mig.parse;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.subcentral.mig.process.ScContributor;
+import de.subcentral.mig.ScContributor;
 
 public class ContributorPattern extends ConfidencePattern
 {

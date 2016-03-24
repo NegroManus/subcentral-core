@@ -1,4 +1,4 @@
-package de.subcentral.mig.process;
+package de.subcentral.mig;
 
 import java.io.Serializable;
 import java.util.Objects;

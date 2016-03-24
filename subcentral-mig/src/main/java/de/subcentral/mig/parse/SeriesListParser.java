@@ -1,4 +1,4 @@
-package de.subcentral.mig.process;
+package de.subcentral.mig.parse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,27 +28,33 @@ import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.Migration;
-import de.subcentral.support.subcentralde.SubCentralHttpApi;
+import de.subcentral.support.subcentralde.SubCentralDe;
+import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
 public class SeriesListParser
 {
 	private static final Logger	log	= LogManager.getLogger(SeriesListParser.class);
 
-	private static final String	URL	= "http://subcentral.de/index.php?page=WbbThread&postID=29261#post29261";
+	private static final String	URL	= "http://subcentral.de/index.php?page=Thread&postID=29261";
 
 	public SeriesListData getAndParse() throws IOException
 	{
-		return parseThread(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
+		return parseThreadPage(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
 	}
 
-	public SeriesListData parseThread(Document thread)
+	public SeriesListData parseThreadPage(Document thread)
 	{
 		return parsePost(thread.outerHtml());
 	}
 
-	public SeriesListData parsePost(String postContent)
+	public SeriesListData parsePost(WbbPost post)
 	{
-		Document doc = Jsoup.parse(postContent, SubCentralHttpApi.getHost().toExternalForm());
+		return parsePost(post.getMessage());
+	}
+
+	public SeriesListData parsePost(String postMessage)
+	{
+		Document doc = Jsoup.parse(postMessage, SubCentralDe.SITE.getLink());
 
 		final Pattern boardIdPattern = Pattern.compile("boardID=(\\d+)");
 		final Pattern threadIdPattern = Pattern.compile("threadID=(\\d+)");
@@ -227,9 +233,9 @@ public class SeriesListParser
 
 	public static class SeriesListData
 	{
-		private final ImmutableList<Series>		series;
-		private final ImmutableList<Season>		seasons;
-		private final ImmutableList<Network>	networks;
+		private final List<Series>	series;
+		private final List<Season>	seasons;
+		private final List<Network>	networks;
 
 		public SeriesListData(Iterable<Series> series, Iterable<Season> seasons, Iterable<Network> networks)
 		{
@@ -238,17 +244,17 @@ public class SeriesListParser
 			this.networks = ImmutableList.copyOf(networks);
 		}
 
-		public ImmutableList<Series> getSeries()
+		public List<Series> getSeries()
 		{
 			return series;
 		}
 
-		public ImmutableList<Season> getSeasons()
+		public List<Season> getSeasons()
 		{
 			return seasons;
 		}
 
-		public ImmutableList<Network> getNetworks()
+		public List<Network> getNetworks()
 		{
 			return networks;
 		}

@@ -2,7 +2,7 @@
 	<parsing>
 		<series>
 			<!-- <series pattern=<string:regex> name=<string;required> thetvdbId=<int> /> -->
-			<series pattern="(?i)From\w+Dusk\w+Till\w+Dawn\w+The\w+Series" name="From Dusk Till Dawn" />
+			<series name="From Dusk Till Dawn" pattern="(?i)From\w+Dusk\w+Till\w+Dawn\w+The\w+Series" />
 			<series name="Psych" thetvdbId="79335" />
 		</series>
 		

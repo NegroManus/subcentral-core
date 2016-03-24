@@ -1,5 +1,6 @@
-package de.subcentral.mig.process;
+package de.subcentral.mig;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,13 +19,17 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Series;
-import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralDe;
-import de.subcentral.support.woltlab.AbstractDatabaseApi;
+import de.subcentral.support.woltlab.AbstractSqlApi;
 
-public class SubCentralSubMan extends AbstractDatabaseApi
+public class SubCentralSubMan extends AbstractSqlApi
 {
 	private static final Logger log = LogManager.getLogger(SubCentralSubMan.class);
+
+	public SubCentralSubMan(Connection connection)
+	{
+		super(connection);
+	}
 
 	public void clearData() throws SQLException
 	{

@@ -39,8 +39,8 @@ import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.SeasonNamer;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
-import de.subcentral.mig.process.SeasonPostParser;
-import de.subcentral.mig.process.SeasonPostParser.SeasonPostData;
+import de.subcentral.mig.parse.SeasonPostParser;
+import de.subcentral.mig.parse.SeasonPostParser.SeasonPostData;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
@@ -295,7 +295,7 @@ public class SeasonServlet extends HttpServlet
 			post = scBoard.getFirstPost(seasonThreadId);
 		}
 
-		return new SeasonPostParser().parse(post.getTopic(), post.getMessage());
+		return new SeasonPostParser().parsePost(post.getTopic(), post.getMessage());
 	}
 
 	@Override

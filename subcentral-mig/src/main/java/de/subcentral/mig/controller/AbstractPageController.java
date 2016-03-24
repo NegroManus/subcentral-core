@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.mig.MigrationConfig;
+import de.subcentral.mig.process.MigrationAssistance;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -23,15 +23,15 @@ import javafx.scene.text.FontWeight;
 
 public abstract class AbstractPageController extends Controller
 {
-	private static final Logger	log	= LogManager.getLogger(AbstractPageController.class);
+	private static final Logger		log	= LogManager.getLogger(AbstractPageController.class);
 
-	protected MainController	mainController;
-	protected MigrationConfig	config;
+	protected MainController		mainController;
+	protected MigrationAssistance	assistance;
 
 	public AbstractPageController(MainController mainController)
 	{
 		this.mainController = mainController;
-		this.config = this.mainController.getConfig();
+		this.assistance = this.mainController.getAssistance();
 	}
 
 	public MainController getMainController()
@@ -39,9 +39,9 @@ public abstract class AbstractPageController extends Controller
 		return mainController;
 	}
 
-	public MigrationConfig getConfig()
+	public MigrationAssistance getAssistance()
 	{
-		return config;
+		return assistance;
 	}
 
 	public abstract String getTitle();
@@ -50,9 +50,9 @@ public abstract class AbstractPageController extends Controller
 
 	public abstract Pane getContentPane();
 
-	public abstract void onEntering();
+	public abstract void onEnter();
 
-	public abstract void onExiting();
+	public abstract void onExit();
 
 	public abstract BooleanBinding nextButtonDisableBinding();
 

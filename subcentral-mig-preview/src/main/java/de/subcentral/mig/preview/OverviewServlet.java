@@ -20,8 +20,8 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.MigrationConfig;
-import de.subcentral.mig.process.SeriesListParser;
-import de.subcentral.mig.process.SeriesListParser.SeriesListData;
+import de.subcentral.mig.parse.SeriesListParser;
+import de.subcentral.mig.parse.SeriesListParser.SeriesListData;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 

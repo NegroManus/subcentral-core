@@ -1,8 +1,9 @@
 package de.subcentral.mig.controller;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.mig.process.MigrationTask;
+import de.subcentral.mig.settings.MigrationScopeSettings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -60,30 +61,31 @@ public class MigrationPageController extends AbstractPageController
 	}
 
 	@Override
-	public void onEntering()
+	public void onEnter()
 	{
-		if (config.isCompleteMigration())
+		MigrationScopeSettings scope = assistance.getSettings().getScopeSettings();
+		StringBuilder sb = new StringBuilder();
+		sb.append("Migrating ");
+		if (scope.getIncludeAllSeries())
 		{
-			configLbl.setText("Complete migration");
+			sb.append("all series");
 		}
 		else
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("Migrating ");
-			sb.append(config.getSelectedSeries().size());
+			sb.append(scope.getIncludedSeries().size());
 			sb.append(" series");
-			if (config.getMigrateSubtitles())
-			{
-				sb.append(" (including the subtitles)");
-			}
-			else
-			{
-				sb.append(" (excluding the subtitles)");
-			}
-			configLbl.setText(sb.toString());
 		}
+		if (scope.getIncludeSubtitles())
+		{
+			sb.append(" (including the subtitles)");
+		}
+		else
+		{
+			sb.append(" (excluding the subtitles)");
+		}
+		configLbl.setText(sb.toString());
 
-		task = new MigrationTask(config);
+		task = new MigrationTask();
 		taskTitleLbl.textProperty().unbind();
 		taskTitleLbl.textProperty().bind(task.titleProperty());
 		taskProgressBar.progressProperty().unbind();
@@ -95,7 +97,12 @@ public class MigrationPageController extends AbstractPageController
 	}
 
 	@Override
-	public void onExiting()
+	public void onExit()
+	{
+		cancelMigration();
+	}
+
+	private void cancelMigration()
 	{
 		if (task != null)
 		{
@@ -110,10 +117,20 @@ public class MigrationPageController extends AbstractPageController
 	}
 
 	@Override
-	public void shutdown() throws Exception
+	public void shutdown()
 	{
-		// TODO Auto-generated method stub
-
+		onExit();
 	}
 
+	private class MigrationTask extends Task<Void>
+	{
+		@Override
+		protected Void call() throws Exception
+		{
+			updateTitle("Migration");
+			updateMessage("Done");
+			updateProgress(1L, 1L);
+			return null;
+		}
+	}
 }

@@ -1,6 +1,7 @@
-package de.subcentral.mig.process;
+package de.subcentral.mig.parse;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,8 +37,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.mig.Migration;
-import de.subcentral.mig.process.old.ContributorPattern;
-import de.subcentral.support.subcentralde.SubCentralApi;
+import de.subcentral.mig.ScContributor;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
@@ -49,6 +49,8 @@ public class SeasonPostParser
 	{
 		UNKNOWN, EPISODE, SUBS, SUBS_GERMAN, SUBS_ENGLISH, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
 	};
+
+	private static final String						URL_TEMPLATE									= "http://subcentral.de/index.php?page=Thread&postID=%d";
 
 	private static final String						NO_VALUE									= "-";
 
@@ -182,13 +184,12 @@ public class SeasonPostParser
 		return contributorParsers;
 	}
 
-	public SeasonPostData getAndParse(int threadId, SubCentralApi api) throws IOException
+	public SeasonPostData getAndParse(int postId) throws IOException
 	{
-		Document doc = api.getContent("index.php?page=Thread&threadID=" + threadId);
-		return parse(doc);
+		return parseThreadPage(Jsoup.parse(new URL(String.format(URL_TEMPLATE, postId)), Migration.TIMEOUT_MILLIS));
 	}
 
-	public SeasonPostData parse(Document threadHtml)
+	public SeasonPostData parseThreadPage(Document threadHtml)
 	{
 		// Get topic and content of first post
 		Element postTopicDiv = threadHtml.getElementsByClass("messageTitle").first();
@@ -199,15 +200,15 @@ public class SeasonPostParser
 		}
 		Element postTextDiv = postContentDiv.child(0);
 
-		return parse(postTopicDiv.text(), postTextDiv.html());
+		return parsePost(postTopicDiv.text(), postTextDiv.html());
 	}
 
-	public SeasonPostData parse(WbbPost post)
+	public SeasonPostData parsePost(WbbPost post)
 	{
-		return parse(post.getTopic(), post.getMessage());
+		return parsePost(post.getTopic(), post.getMessage());
 	}
 
-	public SeasonPostData parseTopic(String postTopic)
+	public SeasonPostData parsePostTopic(String postTopic)
 	{
 		WorkData data = new WorkData();
 		data.postTopic = postTopic;
@@ -216,11 +217,11 @@ public class SeasonPostParser
 		return data.toSeasonPostData();
 	}
 
-	public SeasonPostData parse(String postTopic, String postContent)
+	public SeasonPostData parsePost(String postTopic, String postMessage)
 	{
 		WorkData data = new WorkData();
 		data.postTopic = postTopic;
-		data.postContent = Jsoup.parse(postContent, Migration.SUBCENTRAL_HOST);
+		data.postContent = Jsoup.parse(postMessage, SubCentralDe.SITE.getLink());
 
 		// Topic
 		parseTopic(data);

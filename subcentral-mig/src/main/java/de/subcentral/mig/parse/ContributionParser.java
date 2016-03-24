@@ -1,4 +1,4 @@
-package de.subcentral.mig.process.old;
+package de.subcentral.mig.parse;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import de.subcentral.core.file.subtitle.Item;
 import de.subcentral.core.file.subtitle.SubtitleContent;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
-import de.subcentral.mig.process.ScContributor;
+import de.subcentral.mig.ScContributor;
 
 public class ContributionParser
 {

@@ -2,6 +2,7 @@ package de.subcentral.support.woltlab;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,11 +12,15 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.util.StringUtil;
 
-public class WoltlabBurningBoard extends AbstractDatabaseApi
+public class WoltlabBurningBoard extends AbstractSqlApi
 {
+	public WoltlabBurningBoard(Connection connection)
+	{
+		super(connection);
+	}
+
 	public WbbBoard getBoard(int boardId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT title, description FROM wbb1_1_board WHERE boardID=?"))
 		{
 			stmt.setInt(1, boardId);
@@ -41,7 +46,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public WbbThread getThread(int threadId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, topic, prefix, firstPostID FROM wbb1_1_thread WHERE threadID=?"))
 		{
 			stmt.setInt(1, threadId);
@@ -64,7 +68,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public WbbPost getPost(int postId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT subject, message FROM wbb1_1_post WHERE postID=?"))
 		{
 			stmt.setInt(1, postId);
@@ -90,7 +93,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public List<WbbThread> getThreadsByBoard(int boardId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=?"))
 		{
 			stmt.setInt(1, boardId);
@@ -112,7 +114,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public List<WbbThread> getThreadsByPrefix(String prefix) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, boardID, topic FROM wbb1_1_thread WHERE prefix=?"))
 		{
 			stmt.setString(1, prefix);
@@ -135,7 +136,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public List<WbbThread> getStickyThreads(int boardId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE isSticky=1 AND boardID=?"))
 		{
 			stmt.setInt(1, boardId);
@@ -158,7 +158,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public WbbPost getFirstPost(int threadId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT p.postID, t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID"))
 		{
 			stmt.setInt(1, threadId);
@@ -185,7 +184,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public WcfAttachment getAttachment(int attachmentId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT attachmentName, attachmentSize FROM wcf1_attachment WHERE attachmentID=?"))
 		{
 			stmt.setInt(1, attachmentId);
@@ -206,7 +204,6 @@ public class WoltlabBurningBoard extends AbstractDatabaseApi
 
 	public List<WcfAttachment> getAttachmentsByBoard(int boardId) throws SQLException
 	{
-		checkConnected();
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT a.attachmentID, a.attachmentName, a.attachmentSize" // line-break
 				+ " FROM ((wcf1_attachment a JOIN wbb1_1_post p) JOIN wbb1_1_thread t)"
 				+ " WHERE ((a.containerType = 'post') AND (a.containerID = p.postID) AND (p.threadID = t.threadID) AND (t.boardID = ?))"))

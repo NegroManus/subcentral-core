@@ -2,27 +2,20 @@ package de.subcentral.support.woltlab;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 
-public class AbstractDatabaseApi
+public class AbstractSqlApi
 {
-	protected Connection connection;
+	protected final Connection connection;
+
+	protected AbstractSqlApi(Connection connection)
+	{
+		this.connection = Objects.requireNonNull(connection, "connection");
+	}
 
 	public Connection getConnection()
 	{
 		return connection;
-	}
-
-	public void setConnection(Connection connection)
-	{
-		this.connection = connection;
-	}
-
-	protected void checkConnected()
-	{
-		if (connection == null)
-		{
-			throw new IllegalStateException("Not connected");
-		}
 	}
 
 	protected void checkUpdated(Object updateObj, int affectedRows) throws SQLException

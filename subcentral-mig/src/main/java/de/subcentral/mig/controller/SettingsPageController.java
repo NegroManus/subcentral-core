@@ -83,17 +83,16 @@ public class SettingsPageController extends AbstractPageController
 	}
 
 	@Override
-	public void onEntering()
+	public void onEnter()
 	{
-		// TODO Auto-generated method stub
-
+		// nothing todo
 	}
 
 	@Override
-	public void onExiting()
+	public void onExit()
 	{
-		config.setEnvironmentSettingsFile(envSettingsFileTextFormatter.getValue());
-		config.setParsingSettingsFile(parsingSettingsFileTextFormatter.getValue());
+		assistance.setEnvironmentSettingsFile(envSettingsFileTextFormatter.getValue());
+		assistance.setParsingSettingsFile(parsingSettingsFileTextFormatter.getValue());
 	}
 
 	@Override
@@ -101,12 +100,4 @@ public class SettingsPageController extends AbstractPageController
 	{
 		return nextButtonDisableBinding;
 	}
-
-	@Override
-	public void shutdown() throws Exception
-	{
-		// TODO Auto-generated method stub
-
-	}
-
 }
