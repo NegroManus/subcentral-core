@@ -525,16 +525,16 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			{
 				Season possiblyNewSeason = series.newSeason(epi.getSeason().getNumber());
 				// Check whether this season is already stored, if yes, return it, if no return the new season
-				Season season = seasons.computeIfAbsent(epi.getSeason().getIds().get(TheTvDbCom.SITE), (String key) -> possiblyNewSeason);
+				Season season = seasons.computeIfAbsent(epi.getSeason().getId(TheTvDbCom.SITE), (String key) -> possiblyNewSeason);
 				epi.setSeason(season);
 			}
 			// May add to special episode list
 			if (epi.isSpecial())
 			{
 				SpecialEpisodeRecord specialEpi = new SpecialEpisodeRecord(epi,
-						epi.getAttributeValue(ATTRIBUTE_AIRSAFTER_SEASON),
-						epi.getAttributeValue(ATTRIBUTE_AIRSBEFORE_EPISODE),
-						epi.getAttributeValue(ATTRIBUTE_AIRSBEFORE_SEASON));
+						epi.getFirstAttributeValue(ATTRIBUTE_AIRSAFTER_SEASON),
+						epi.getFirstAttributeValue(ATTRIBUTE_AIRSBEFORE_EPISODE),
+						epi.getFirstAttributeValue(ATTRIBUTE_AIRSBEFORE_SEASON));
 				specials.add(specialEpi);
 			}
 			else
@@ -749,7 +749,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		String idTxt = getTextFromChild(parentElem, tag);
 		if (idTxt != null)
 		{
-			metadata.getIds().put(site, idTxt);
+			metadata.setId(site, idTxt);
 		}
 	}
 

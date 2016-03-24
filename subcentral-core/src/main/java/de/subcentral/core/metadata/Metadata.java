@@ -16,15 +16,25 @@ public interface Metadata extends Serializable
 	public Map<Site, String> getIds();
 
 	/**
-	 * Additional attributes that have no designated property can be stored in the ListMultimap of getAttributes().
+	 * Additional attributes, that have no designated property, can be stored in the ListMultimap of getAttributes().
 	 * 
-	 * @return the additional attributes of this media
+	 * @return the additional attributes of this metadata
 	 */
 	public ListMultimap<String, Object> getAttributes();
 
 	// Convenience
+	public default String getId(Site site)
+	{
+		return getIds().get(site);
+	}
+
+	public default String setId(Site site, String id)
+	{
+		return getIds().put(site, id);
+	}
+
 	@SuppressWarnings("unchecked")
-	public default <T> T getAttributeValue(String key) throws ClassCastException
+	public default <T> T getFirstAttributeValue(String key) throws ClassCastException
 	{
 		List<Object> values = getAttributes().get(key);
 		return values.isEmpty() ? null : (T) values.get(0);

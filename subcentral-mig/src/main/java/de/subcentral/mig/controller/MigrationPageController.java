@@ -3,7 +3,6 @@ package de.subcentral.mig.controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.mig.settings.MigrationScopeSettings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -85,7 +84,7 @@ public class MigrationPageController extends AbstractPageController
 		}
 		configLbl.setText(sb.toString());
 
-		task = new MigrationTask();
+		task = new MigrationTask(assistance.getSettings());
 		taskTitleLbl.textProperty().unbind();
 		taskTitleLbl.textProperty().bind(task.titleProperty());
 		taskProgressBar.progressProperty().unbind();
@@ -120,17 +119,5 @@ public class MigrationPageController extends AbstractPageController
 	public void shutdown()
 	{
 		onExit();
-	}
-
-	private class MigrationTask extends Task<Void>
-	{
-		@Override
-		protected Void call() throws Exception
-		{
-			updateTitle("Migration");
-			updateMessage("Done");
-			updateProgress(1L, 1L);
-			return null;
-		}
 	}
 }

@@ -157,7 +157,7 @@ public class ConsistencyChecker
 		try (Connection conn = service.getSourceDataSource().getConnection())
 		{
 			WoltlabBurningBoard boardApi = new WoltlabBurningBoard(conn);
-			Integer seriesBoardId = series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
+			Integer seriesBoardId = series.getFirstAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
 			if (seriesBoardId != null)
 			{
 				WbbBoard board = boardApi.getBoard(seriesBoardId);
@@ -183,7 +183,7 @@ public class ConsistencyChecker
 		// To increase performance, parallelStream() can be used. But then the post are not sorted
 		seasons.stream().forEach((Season season) ->
 		{
-			Integer seasonThreadId = season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
+			Integer seasonThreadId = season.getFirstAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
 			if (seasonThreadId != null)
 			{
 				WbbPost post = postCache.computeIfAbsent(seasonThreadId, this::loadFirstPost);
@@ -400,7 +400,7 @@ public class ConsistencyChecker
 
 		for (Series series : seriesListContent.getSeries())
 		{
-			WbbBoard board = series.getAttributeValue(Migration.SERIES_ATTR_BOARD);
+			WbbBoard board = series.getFirstAttributeValue(Migration.SERIES_ATTR_BOARD);
 			if (!series.getName().equals(board.getTitle()))
 			{
 				entries.add(formatSeries(series) + " != " + formatBoard(board));
@@ -425,7 +425,7 @@ public class ConsistencyChecker
 	{
 		ListMatchResult<WbbThread, Series> threadToQjEntries = matchLists(subRepoThreads, subRepoQuickJumpContent, (WbbThread repoThread, Series qjEntry) ->
 		{
-			Integer qjEntryThreadId = qjEntry.getAttributeValue(Migration.SERIES_ATTR_SUB_REPO_THREAD_ID);
+			Integer qjEntryThreadId = qjEntry.getFirstAttributeValue(Migration.SERIES_ATTR_SUB_REPO_THREAD_ID);
 			return qjEntryThreadId != null && qjEntryThreadId.intValue() == repoThread.getId();
 		});
 
@@ -460,7 +460,7 @@ public class ConsistencyChecker
 		// Read all sticky threads
 		List<WbbThread> allStickyThreads = seriesListContent.getSeries().parallelStream().map((Series series) ->
 		{
-			int boardId = series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
+			int boardId = series.getFirstAttributeValue(Migration.SERIES_ATTR_BOARD_ID);
 			List<WbbThread> boardStickyThreads = readStickyThreads(boardId);
 			return boardStickyThreads;
 		}).flatMap((List<WbbThread> list) -> list.stream()).collect(Collectors.toList());
@@ -493,7 +493,7 @@ public class ConsistencyChecker
 			List<SubtitleRelease> subsNotInSubRepo = new ArrayList<>();
 			for (SubtitleRelease subFile : parsedPost.getSubtitleReleases())
 			{
-				Integer attId = subFile.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
+				Integer attId = subFile.getFirstAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
 				if (attachments.containsKey(attId))
 				{
 					// set to null to signal that a link to this attachment is contained in a season post
@@ -660,7 +660,7 @@ public class ConsistencyChecker
 	{
 		return NamingDefaults.getDefaultNamingService().name(subFile.getSubtitles()) + " "
 				+ NamingDefaults.getDefaultNamingService().name(subFile.getMatchingReleases(), ImmutableMap.of(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE)) + " (attachmentID="
-				+ subFile.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID) + ")";
+				+ subFile.getFirstAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID) + ")";
 	}
 
 	private static String formatBoard(WbbBoard board)

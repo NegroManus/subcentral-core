@@ -1155,7 +1155,7 @@ public class SeasonPostParser
 		while (subAdjIter.hasNext())
 		{
 			SubtitleRelease subAdj = subAdjIter.next();
-			Integer attachmentId = subAdj.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
+			Integer attachmentId = subAdj.getFirstAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
 			SubtitleRelease storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
 			if (storedSubAdj != null)
 			{

@@ -198,7 +198,7 @@ public class SeasonServlet extends HttpServlet
 					// If the the subRls could be matched, remove it from the unmatched list
 					unmatchedSubtitleReleases.remove(subRls);
 
-					String attachmentId = Integer.toString((Integer) subRls.getAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
+					String attachmentId = Integer.toString((Integer) subRls.getFirstAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID));
 					writer.print("<li>");
 					writer.print("<a href=\"https://www.subcentral.de/index.php?page=Attachment&attachmentID=" + attachmentId + "\">");
 					writer.print(printReleases(subRls.getMatchingReleases()));

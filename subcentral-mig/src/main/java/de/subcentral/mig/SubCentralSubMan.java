@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.time.Year;
 import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.util.List;
 
@@ -42,22 +41,23 @@ public class SubCentralSubMan extends AbstractSqlApi
 
 	public void insertSeriesFromSeriesList(Series series) throws SQLException
 	{
-		if (series.getIds().containsKey(SubCentralDe.SITE))
+		String id = series.getId(SubCentralDe.SITE);
+		if (id != null)
 		{
-			// already inserted
+			log.debug("The series {} already has the id {}. It will not be inserted", series, id);
 			return;
 		}
 
-		connection.setAutoCommit(false);
 		try
 		{
+			connection.setAutoCommit(false);
 
 			// Get network Id
 			String networkId = null;
 			if (!series.getNetworks().isEmpty())
 			{
 				Network network = series.getNetworks().get(0);
-				networkId = network.getIds().get(SubCentralDe.SITE);
+				networkId = network.getId(SubCentralDe.SITE);
 				if (networkId == null)
 				{
 
@@ -70,7 +70,7 @@ public class SubCentralSubMan extends AbstractSqlApi
 					Statement.RETURN_GENERATED_KEYS))
 			{
 				stmt.setString(1, series.getName());
-				setInteger(stmt, 2, series.getAttributeValue(Migration.SERIES_ATTR_BOARD_ID));
+				setInteger(stmt, 2, series.getFirstAttributeValue(Migration.SERIES_ATTR_BOARD_ID));
 				stmt.setString(3, Series.TYPE_SEASONED);
 				Date start = convertYearToDate(series.getDate());
 				stmt.setDate(4, start);
@@ -82,8 +82,8 @@ public class SubCentralSubMan extends AbstractSqlApi
 
 				int affectedRows = stmt.executeUpdate();
 				checkUpdated(series, affectedRows);
-				int id = getGeneratedId(stmt);
-				series.getIds().put(SubCentralDe.SITE, id + "");
+				int generatedId = getGeneratedId(stmt);
+				series.setId(SubCentralDe.SITE, Integer.toString(generatedId));
 			}
 		}
 		catch (SQLException e)
@@ -116,7 +116,7 @@ public class SubCentralSubMan extends AbstractSqlApi
 		{
 			return null;
 		}
-		Year year = Year.of(temporal.get(ChronoField.YEAR));
+		Year year = Year.from(temporal);
 		return new Date(year.atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
 	}
 

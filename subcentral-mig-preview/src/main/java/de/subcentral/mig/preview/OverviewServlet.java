@@ -78,7 +78,7 @@ public class OverviewServlet extends HttpServlet
 				for (Season season : series.getSeasons())
 				{
 					writer.print("<option value=\"");
-					writer.print(Integer.toString(season.getAttributeValue(Migration.SEASON_ATTR_THREAD_ID)));
+					writer.print(Integer.toString(season.getFirstAttributeValue(Migration.SEASON_ATTR_THREAD_ID)));
 					writer.print("\">");
 					writer.print(NamingDefaults.getDefaultSeasonNamer().name(season));
 					writer.println("</option>");

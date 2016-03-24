@@ -302,7 +302,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		Release rls = new Release();
 
 		String id = rlsDiv.attr("id");
-		rls.getIds().put(PreDbMe.SITE, id);
+		rls.setId(PreDbMe.SITE, id);
 
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -321,7 +321,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 			rls.setName(title);
 
 			detailsUrl = titleAnchor.absUrl("href");
-			rls.getIds().put(PreDbMe.SITE, parseId(titleAnchor));
+			rls.setId(PreDbMe.SITE, parseId(titleAnchor));
 		}
 
 		/**
