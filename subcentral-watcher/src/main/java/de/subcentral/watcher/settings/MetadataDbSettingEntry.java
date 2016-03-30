@@ -2,9 +2,6 @@ package de.subcentral.watcher.settings;
 
 import java.util.concurrent.ExecutorService;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.subcentral.core.metadata.db.MetadataDb;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -33,9 +30,7 @@ public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry
 		}
 	}
 
-	private static final Logger				log				= LogManager.getLogger(MetadataDbSettingEntry.class);
-
-	private final Property<Availability>	availability	= new SimpleObjectProperty<>(this, "availability", Availability.UNKNOWN);
+	private final Property<Availability> availability = new SimpleObjectProperty<>(this, "availability", Availability.UNKNOWN);
 
 	public MetadataDbSettingEntry(MetadataDb database, boolean enabled)
 	{
