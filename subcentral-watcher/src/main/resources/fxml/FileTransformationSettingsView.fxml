@@ -42,7 +42,14 @@
                   <Insets left="5.0" />
                </HBox.margin></HBox>
             <Button fx:id="rememberRarLocationBtn" minWidth="-Infinity" mnemonicParsing="false" text="Remember" />
-				<Button fx:id="retryLocateRarBtn" minWidth="-Infinity" mnemonicParsing="false" text="Recheck" />
+				<Button fx:id="retryLocateRarBtn" minWidth="-Infinity" mnemonicParsing="false" text="Recheck">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/refresh_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
 			</children>
 		</HBox>
 		<HBox spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">

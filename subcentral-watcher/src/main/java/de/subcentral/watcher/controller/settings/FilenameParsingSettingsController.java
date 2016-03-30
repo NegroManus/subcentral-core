@@ -16,7 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
 
-public class ParsingSettingsController extends AbstractSettingsSectionController
+public class FilenameParsingSettingsController extends AbstractSettingsSectionController
 {
 	@FXML
 	private GridPane											rootPane;
@@ -31,7 +31,7 @@ public class ParsingSettingsController extends AbstractSettingsSectionController
 	@FXML
 	private TableColumn<ParsingServiceSettingEntry, String>		parsingServicesExampleColumn;
 
-	public ParsingSettingsController(SettingsController settingsController)
+	public FilenameParsingSettingsController(SettingsController settingsController)
 	{
 		super(settingsController);
 	}

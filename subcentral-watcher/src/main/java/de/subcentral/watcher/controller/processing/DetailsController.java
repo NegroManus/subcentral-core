@@ -88,7 +88,7 @@ public class DetailsController extends Controller
 		// Parsed object
 		SubtitleRelease parsedObj = task.getParsedObject();
 
-		vbox.getChildren().add(createHeadline("Parsed subtitle", SettingsController.PARSING_SECTION));
+		vbox.getChildren().add(createHeadline("Parsed subtitle", SettingsController.FILENAME_PARSING_SECTION));
 
 		if (parsedObj != null)
 		{

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -47,6 +48,13 @@
                         </GridPane>
                      </content></ScrollPane>
                </content>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/search_text_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
           </TitledPane>
           <TitledPane animated="false" text="Release matching">
                <content>
@@ -55,6 +63,13 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding></ScrollPane>
                </content>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/release_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
           </TitledPane>
         </panes>
       </Accordion>

@@ -153,7 +153,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 									setTooltip(new Tooltip("Available: Accessible and searchable"));
 									break;
 								case LIMITED:
-									setGraphic(new ImageView(FxUtil.loadImg("warn_16.png")));
+									setGraphic(new ImageView(FxUtil.loadImg("warning_16.png")));
 									setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
 									break;
 								case NOT_AVAILABLE:
@@ -173,11 +173,12 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
 
 		// if the items change update the availibilities (happens on load of settings)
+		// TODO: also on move up/move down but we can't distinguish that easily
 		releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());
 
 		FxUtil.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
 
-		// init
+		// initial update
 		updateAvailibities();
 	}
 

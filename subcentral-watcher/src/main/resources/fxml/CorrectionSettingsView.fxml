@@ -25,7 +25,7 @@
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../img/edit_16.png" />
+						<Image url="@../img/edit_text_16.png" />
 					</image>
 				</ImageView>
 			</graphic>
@@ -39,16 +39,37 @@
 				<TableColumn fx:id="correctorsAfterQueryingColumn" prefWidth="80.0" text="After querying" />
 			</columns>
 		</TableView>
-		<HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" GridPane.rowIndex="3">
+		<HBox alignment="BASELINE_LEFT" spacing="5.0" GridPane.rowIndex="3">
 			<children>
-				<HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" HBox.hgrow="SOMETIMES">
-					<children>
 						<ChoiceBox fx:id="correctorTypeChoiceBox" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="100.0" prefWidth="150.0" />
-						<Button fx:id="addCorrectorButton" mnemonicParsing="false" text="Add" />
-					</children>
-				</HBox>
-				<Button fx:id="editCorrectorButton" mnemonicParsing="false" text="Edit" />
-				<Button fx:id="removeCorrectorButton" mnemonicParsing="false" text="Remove" />
+						<Button fx:id="addCorrectorButton" mnemonicParsing="false" text="Add">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/add_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+				<Button fx:id="editCorrectorButton" mnemonicParsing="false" text="Edit">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/edit_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+				<Button fx:id="removeCorrectorButton" mnemonicParsing="false" text="Remove">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/remove_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
 			</children>
 		</HBox>
 	</children>

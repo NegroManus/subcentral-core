@@ -757,7 +757,7 @@ public class ProcessingController extends Controller
 			Stage owner = mainController.getPrimaryStage();
 			Stage stage = new Stage();
 			stage.initOwner(owner);
-			stage.getIcons().add(FxUtil.loadImg("file_search_16.png"));
+			stage.getIcons().add(FxUtil.loadImg("info_16.png"));
 			stage.setTitle("Processing details");
 			stage.setScene(scene);
 

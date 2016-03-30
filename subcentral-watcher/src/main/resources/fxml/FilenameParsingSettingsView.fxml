@@ -20,7 +20,6 @@
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
       <HBox spacing="5.0">
@@ -32,7 +31,7 @@
       			<graphic>
       				<ImageView pickOnBounds="true" preserveRatio="true">
       					<image>
-      						<Image url="@../img/file_search_16.png" />
+      						<Image url="@../img/search_text_16.png" />
       					</image>
       				</ImageView>
       			</graphic>
@@ -41,8 +40,7 @@
       </HBox>
 		<Label text="Subtitle filename patterns (separated by comma):" GridPane.rowIndex="1" />
 		<TextField fx:id="filenamePatternsTextField" promptText="comma-separated filename patterns" GridPane.rowIndex="2" />
-		<Label text="Parser:" GridPane.rowIndex="5" />
-		<TableView fx:id="parsingServicesTableView" editable="true" minHeight="100.0" prefHeight="150.0" GridPane.rowIndex="6">
+		<TableView fx:id="parsingServicesTableView" editable="true" minHeight="100.0" prefHeight="150.0" GridPane.rowIndex="5">
 			<columns>
 				<TableColumn fx:id="parsingServicesEnabledColumn" prefWidth="60.0" text="Enabled" />
 				<TableColumn fx:id="parsingServicesNameColumn" editable="false" minWidth="25.0" prefWidth="100.0" text="Name" />
@@ -50,14 +48,14 @@
 			</columns>
 		</TableView>
 		<Label text="(* = any string; leave empty to deny all)" GridPane.rowIndex="3" />
-		<Label text="Filename parsing" underline="true" GridPane.rowIndex="4">
+		<Label text="Filename parsers" underline="true" GridPane.rowIndex="4">
 			<font>
 				<Font name="System Bold" size="12.0" />
 			</font>
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../img/file_search_16.png" />
+						<Image url="@../img/search_text_16.png" />
 					</image>
 				</ImageView>
 			</graphic>

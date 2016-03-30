@@ -41,11 +41,32 @@
 		</TableView>
 		<VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
 			<children>
-				<Button fx:id="moveUpReleaseDbButton" mnemonicParsing="false" text="Move up" />
-				<Button fx:id="moveDownReleaseDbButton" mnemonicParsing="false" text="Move down" />
+				<Button fx:id="moveUpReleaseDbButton" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move up">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/up_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+				<Button fx:id="moveDownReleaseDbButton" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move down">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/down_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
 			</children>
 		</VBox>
-		<Button fx:id="recheckAvailabilitiesButton" mnemonicParsing="false" text="Recheck availabilities" GridPane.rowIndex="3" />
+		<Button fx:id="recheckAvailabilitiesButton" mnemonicParsing="false" text="Recheck availabilities" GridPane.rowIndex="3">
+         <graphic>
+            <ImageView pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/refresh_16.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

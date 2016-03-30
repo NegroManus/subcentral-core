@@ -15,7 +15,7 @@
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>
-								<Image url="@../img/text_16.png" />
+								<Image url="@../img/info_16.png" />
 							</image>
 						</ImageView>
 					</graphic>
@@ -33,7 +33,7 @@
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>
-								<Image url="@../img/reload_16.png" />
+								<Image url="@../img/redo_16.png" />
 							</image>
 						</ImageView>
 					</graphic>

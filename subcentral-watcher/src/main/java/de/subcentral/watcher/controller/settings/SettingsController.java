@@ -51,7 +51,7 @@ public class SettingsController extends Controller
 	private static final String					DEFAULT_SETTINGS_FILENAME				= "watcher-settings-default.xml";
 
 	public static final String					WATCH_SECTION							= "watch";
-	public static final String					PARSING_SECTION							= "parsing";
+	public static final String					FILENAME_PARSING_SECTION				= "filenameparsing";
 	public static final String					RELEASE_SECTION							= "release";
 	public static final String					RELEASE_DBS_SECTION						= "release.dbs";
 	public static final String					RELEASE_GUESSING_SECTION				= "release.guessing";
@@ -98,12 +98,12 @@ public class SettingsController extends Controller
 		watchSection.setFxml("WatchSettingsView.fxml");
 		ctrls.put(watchSection.getName(), watchSection);
 
-		SettingsSection parsingSection = new SettingsSection(PARSING_SECTION);
-		parsingSection.setLabel("Parsing");
-		parsingSection.setImage("file_search_16.png");
-		parsingSection.setControllerConstructor(() -> new ParsingSettingsController(this));
-		parsingSection.setFxml("ParsingSettingsView.fxml");
-		ctrls.put(parsingSection.getName(), parsingSection);
+		SettingsSection filenameParsingSection = new SettingsSection(FILENAME_PARSING_SECTION);
+		filenameParsingSection.setLabel("Filename parsing");
+		filenameParsingSection.setImage("search_text_16.png");
+		filenameParsingSection.setControllerConstructor(() -> new FilenameParsingSettingsController(this));
+		filenameParsingSection.setFxml("FilenameParsingSettingsView.fxml");
+		ctrls.put(filenameParsingSection.getName(), filenameParsingSection);
 
 		SettingsSection releaseSection = new SettingsSection(RELEASE_SECTION);
 		releaseSection.setLabel("Release");
@@ -135,7 +135,7 @@ public class SettingsController extends Controller
 
 		SettingsSection correctionSection = new SettingsSection(CORRECTION_SECTION);
 		correctionSection.setLabel("Correction");
-		correctionSection.setImage("edit_16.png");
+		correctionSection.setImage("edit_text_16.png");
 		correctionSection.setControllerConstructor(() -> new CorrectionSettingsController(this));
 		correctionSection.setFxml("CorrectionSettingsView.fxml");
 		ctrls.put(correctionSection.getName(), correctionSection);
@@ -208,7 +208,7 @@ public class SettingsController extends Controller
 
 		TreeItem<SettingsSection> watchTreeItem = new TreeItem<>(sections.get(WATCH_SECTION));
 
-		TreeItem<SettingsSection> parsingTreeItem = new TreeItem<>(sections.get(PARSING_SECTION));
+		TreeItem<SettingsSection> parsingTreeItem = new TreeItem<>(sections.get(FILENAME_PARSING_SECTION));
 
 		TreeItem<SettingsSection> releaseTreeItem = new TreeItem<>(sections.get(RELEASE_SECTION));
 		TreeItem<SettingsSection> releaseDatabasesTreeItem = new TreeItem<>(sections.get(RELEASE_DBS_SECTION));

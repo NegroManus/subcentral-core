@@ -365,7 +365,7 @@ public class WatcherDialogs
 		@Override
 		protected String getImagePath()
 		{
-			return "edit_16.png";
+			return "edit_text_16.png";
 		}
 
 		@Override
@@ -521,7 +521,7 @@ public class WatcherDialogs
 		@Override
 		protected String getImagePath()
 		{
-			return "edit_16.png";
+			return "edit_text_16.png";
 		}
 
 		@Override

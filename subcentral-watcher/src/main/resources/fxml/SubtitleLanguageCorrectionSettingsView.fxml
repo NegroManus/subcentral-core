@@ -40,18 +40,26 @@
 								<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 								<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 								<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-								<RowConstraints maxHeight="1.7976931348623157E308" minHeight="100.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 							</rowConstraints>
 							<children>
 								<Label text="Automatic parsing" underline="true" GridPane.columnSpan="2147483647" />
 								<Label text="Expect languages names to be written in one of these languages:" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
 								<TextField fx:id="parsingLangsTxtFld" editable="false" GridPane.rowIndex="2" />
-								<Button fx:id="editParsingLangsBtn" mnemonicParsing="false" text="Edit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+								<Button fx:id="editParsingLangsBtn" mnemonicParsing="false" text="Edit" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/edit_16.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
 								<Label text="Custom parsing" underline="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
                            <GridPane.margin>
                               <Insets top="10.0" />
                            </GridPane.margin></Label>
-								<TableView fx:id="textLangMappingsTableView" prefHeight="75.0" GridPane.rowIndex="4">
+								<TableView fx:id="textLangMappingsTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="150.0" GridPane.rowIndex="4">
 									<columns>
 										<TableColumn fx:id="textLangMappingsTextColumn" prefWidth="75.0" text="Text" />
 										<TableColumn fx:id="textLangMappingsLangColumn" prefWidth="75.0" text="Language" />
@@ -62,17 +70,56 @@
 								</TableView>
 								<VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
 									<children>
-										<Button fx:id="addTextLangMappingBtn" mnemonicParsing="false" text="Add" />
-										<Button fx:id="editTextLangMappingBtn" mnemonicParsing="false" text="Edit" />
-										<Button fx:id="removeTextLangMappingBtn" mnemonicParsing="false" text="Remove" />
-										<Button fx:id="moveUpTextLangMappingBtn" mnemonicParsing="false" text="Move up">
+										<Button fx:id="moveUpTextLangMappingBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move up">
 											<VBox.margin>
-												<Insets top="10.0" />
+												<Insets />
 											</VBox.margin>
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/up_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
 										</Button>
-										<Button fx:id="moveDownTextLangMappingBtn" mnemonicParsing="false" text="Move down" />
+										<Button fx:id="moveDownTextLangMappingBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move down">
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/down_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
 									</children>
 								</VBox>
+                        <HBox spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+                           <children>
+										<Button fx:id="addTextLangMappingBtn" mnemonicParsing="false" text="Add">
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/add_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+										<Button fx:id="editTextLangMappingBtn" mnemonicParsing="false" text="Edit">
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/edit_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+										<Button fx:id="removeTextLangMappingBtn" mnemonicParsing="false" text="Remove">
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/remove_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                           </children>
+                        </HBox>
 							</children>
 							<padding>
 								<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -86,7 +133,6 @@
 							<columnConstraints>
 								<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
 								<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="100.0" />
-								<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
 							</columnConstraints>
 							<children>
 								<Label text="Automatic formatting" underline="true" GridPane.columnSpan="2147483647" />
@@ -98,7 +144,7 @@
                            <GridPane.margin>
                               <Insets top="10.0" />
                            </GridPane.margin></Label>
-								<TableView fx:id="langTextMappingsTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+								<TableView fx:id="langTextMappingsTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="150.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
 									<columns>
 										<TableColumn fx:id="langTextMappingsLangColumn" prefWidth="75.0" text="Language" />
 										<TableColumn fx:id="langTextMappingsTextColumn" prefWidth="75.0" text="Text" />
@@ -107,13 +153,34 @@
 										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
 									</columnResizePolicy>
 								</TableView>
-								<VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
-									<children>
-										<Button fx:id="addLangTextMappingBtn" mnemonicParsing="false" text="Add" />
-										<Button fx:id="editLangTextMappingBtn" mnemonicParsing="false" text="Edit" />
-										<Button fx:id="removeLangTextMappingBtn" mnemonicParsing="false" text="Remove" />
-									</children>
-								</VBox>
+                        <HBox spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+                           <children>
+										<Button fx:id="addLangTextMappingBtn" mnemonicParsing="false" text="Add">
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/add_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+										<Button fx:id="editLangTextMappingBtn" mnemonicParsing="false" text="Edit">
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/edit_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+										<Button fx:id="removeLangTextMappingBtn" mnemonicParsing="false" text="Remove">
+                                 <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../img/remove_16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                           </children>
+                        </HBox>
 							</children>
 							<padding>
 								<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -123,7 +190,8 @@
 								<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
 								<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
 								<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-								<RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="200.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 							</rowConstraints>
 						</GridPane>
 					</content>
