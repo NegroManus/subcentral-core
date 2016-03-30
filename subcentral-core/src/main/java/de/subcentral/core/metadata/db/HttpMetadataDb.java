@@ -8,6 +8,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,12 +18,14 @@ import de.subcentral.core.util.NetUtil;
 
 public abstract class HttpMetadataDb extends AbstractMetadataDb
 {
+	private static final Logger	log				= LogManager.getLogger(HttpMetadataDb.class);
+
 	/**
 	 * Default timeout: 10 seconds.
 	 */
-	public static final int	DEFAULT_TIMEOUT	= 10_000;
+	public static final int		DEFAULT_TIMEOUT	= 10_000;
 
-	protected int			timeout			= DEFAULT_TIMEOUT;
+	protected int				timeout			= DEFAULT_TIMEOUT;
 
 	// Metadata
 	public String getHost()
@@ -52,11 +56,29 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 		this.timeout = timeout;
 	}
 
-	// Status
+	// State
 	@Override
-	public boolean isAvailable()
+	public State checkState()
 	{
-		return NetUtil.pingHttp(getHost(), timeout) >= 0;
+		try
+		{
+			search("test", getSupportedRecordTypes().iterator().next());
+			return State.AVAILABLE;
+		}
+		catch (UnsupportedOperationException | IOException e)
+		{
+			log.warn("Metadata database " + this + " failed to connect with test search url", e);
+		}
+		try
+		{
+			getDocument(getHostUrl());
+			return State.AVAILABLE_LIMITED;
+		}
+		catch (IOException e)
+		{
+			log.warn("Metadata database " + this + " failed to connect with host url", e);
+		}
+		return State.NOT_AVAILABLE;
 	}
 
 	// Utility methods for child classes

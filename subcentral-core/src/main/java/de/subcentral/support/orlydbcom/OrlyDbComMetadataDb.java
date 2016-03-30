@@ -64,11 +64,16 @@ public class OrlyDbComMetadataDb extends HttpMetadataDb
 	{
 		if (Release.class.equals(recordType))
 		{
-			URL url = buildRelativeUrl("q", query);
+			URL url = buildSearchUrl(query);
 			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
 		throw newRecordTypeNotSearchableException(recordType);
+	}
+
+	private URL buildSearchUrl(String query)
+	{
+		return buildRelativeUrl("q", query);
 	}
 
 	/**

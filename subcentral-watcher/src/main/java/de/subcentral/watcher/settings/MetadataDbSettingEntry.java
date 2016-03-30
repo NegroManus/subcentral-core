@@ -14,12 +14,28 @@ public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry
 {
 	public static enum Availability
 	{
-		UNKNOWN, CHECKING, AVAILABLE, NOT_AVAILABLE
+		UNKNOWN, CHECKING, AVAILABLE, LIMITED, NOT_AVAILABLE;
+
+		public static Availability of(MetadataDb.State state)
+		{
+			switch (state)
+			{
+				case AVAILABLE:
+					return Availability.AVAILABLE;
+				case AVAILABLE_LIMITED:
+					return Availability.LIMITED;
+				case NOT_AVAILABLE:
+					return Availability.NOT_AVAILABLE;
+				default:
+					return Availability.UNKNOWN;
+
+			}
+		}
 	}
 
-	private static final Logger log = LogManager.getLogger(MetadataDbSettingEntry.class);
+	private static final Logger				log				= LogManager.getLogger(MetadataDbSettingEntry.class);
 
-	private final Property<Availability> availability = new SimpleObjectProperty<>(this, "availability", Availability.UNKNOWN);
+	private final Property<Availability>	availability	= new SimpleObjectProperty<>(this, "availability", Availability.UNKNOWN);
 
 	public MetadataDbSettingEntry(MetadataDb database, boolean enabled)
 	{
@@ -44,9 +60,7 @@ public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry
 			@Override
 			protected Availability call() throws Exception
 			{
-				Availability availibity = value.isAvailable() ? Availability.AVAILABLE : Availability.NOT_AVAILABLE;
-				log.debug("Availibility for {}: {}", value, availibity);
-				return availibity;
+				return Availability.of(value.checkState());
 			}
 
 			@Override

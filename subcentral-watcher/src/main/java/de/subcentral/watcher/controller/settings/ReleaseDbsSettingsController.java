@@ -25,6 +25,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -139,6 +140,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 							{
 								case UNKNOWN:
 									setGraphic(null);
+									setTooltip(new Tooltip("Unknown"));
 									break;
 								case CHECKING:
 									ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -148,9 +150,15 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 									break;
 								case AVAILABLE:
 									setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
+									setTooltip(new Tooltip("Available: Accessible and searchable"));
+									break;
+								case LIMITED:
+									setGraphic(new ImageView(FxUtil.loadImg("warn_16.png")));
+									setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
 									break;
 								case NOT_AVAILABLE:
 									setGraphic(new ImageView(FxUtil.loadImg("cancel_16.png")));
+									setTooltip(new Tooltip("Not available: Not reachable"));
 									break;
 								default:
 									setGraphic(null);
