@@ -1,6 +1,8 @@
 package de.subcentral.watcher;
 
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -49,6 +51,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldListCell;
@@ -61,23 +64,19 @@ public class WatcherDialogs
 {
 	private static final Logger log = LogManager.getLogger(WatcherDialogs.class);
 
-	static abstract class AbstractBeanEditController<T> extends Controller
+	static abstract class AbstractDialogController<T> extends Controller
 	{
-		// Model
-		protected final T			bean;
-
 		// View
 		protected final Dialog<T>	dialog	= new Dialog<>();
 		@FXML
 		protected Node				rootPane;
 
-		private AbstractBeanEditController(T bean, Window owner)
+		private AbstractDialogController(Window owner)
 		{
-			this.bean = bean;
 			this.dialog.initOwner(owner);
 		}
 
-		private Dialog<T> getDialog()
+		protected Dialog<T> getDialog()
 		{
 			return dialog;
 		}
@@ -122,6 +121,18 @@ public class WatcherDialogs
 		protected abstract Node getDefaultFocusNode();
 
 		protected abstract void initComponents();
+	}
+
+	static abstract class AbstractBeanEditController<T> extends AbstractDialogController<T>
+	{
+		// Model
+		protected final T bean;
+
+		private AbstractBeanEditController(T bean, Window owner)
+		{
+			super(owner);
+			this.bean = bean;
+		}
 	}
 
 	private static class StandardReleaseEditController extends AbstractBeanEditController<StandardRelease>
@@ -921,6 +932,138 @@ public class WatcherDialogs
 				}
 				return null;
 			});
+		}
+	}
+
+	private static class ImportSettingEntriesController extends AbstractDialogController<ImportSettingsParameters>
+	{
+		@FXML
+		private RadioButton	fileRadioBtn;
+		@FXML
+		private TextField	fileTxtFld;
+		@FXML
+		private Button		chooseFileBtn;
+		@FXML
+		private RadioButton	urlRadioBtn;
+		@FXML
+		private TextField	urlTxtFld;
+		@FXML
+		private RadioButton	defaultSettingsRadioBtn;
+		@FXML
+		private CheckBox	addEntriesCheckBox;
+		@FXML
+		private CheckBox	replaceEntriesCheckBox;
+		@FXML
+		private CheckBox	removeEntriesCheckBox;
+
+		private ImportSettingEntriesController(Window window)
+		{
+			super(window);
+		}
+
+		@Override
+		protected String getTitle()
+		{
+			return "Import setting entries";
+		}
+
+		@Override
+		protected String getImagePath()
+		{
+			return "upload_16.png";
+		}
+
+		@Override
+		protected Node getDefaultFocusNode()
+		{
+			return fileTxtFld;
+		}
+
+		@Override
+		protected void initComponents()
+		{
+			// Init
+			ToggleGroup sourceTypeToggleGrp = new ToggleGroup();
+			sourceTypeToggleGrp.getToggles().addAll(fileRadioBtn, urlRadioBtn, defaultSettingsRadioBtn);
+
+			TextFormatter<Path> fileFormatter = FxUtil.bindTextFieldToPath(fileTxtFld);
+
+			// Set initial values
+
+			// Bindings
+
+			// Set ResultConverter
+			dialog.setResultConverter(dialogButton ->
+			{
+				if (dialogButton == ButtonType.APPLY)
+				{
+					return null;
+				}
+				return null;
+			});
+		}
+	}
+
+	public static class ImportSettingsParameters
+	{
+		public enum SourceType
+		{
+			FILE, URL, DEFAULT_SETTINGS
+		}
+
+		private final SourceType	sourceType;
+		private final Path			file;
+		private final URL			url;
+		private final boolean		addEntries;
+		private final boolean		replaceEntries;
+		private final boolean		removeEntries;
+
+		public ImportSettingsParameters(SourceType sourceType, Path file, URL url, boolean addEntries, boolean replaceEntries, boolean removeEntries)
+		{
+			this.sourceType = Objects.requireNonNull(sourceType, "sourceType");
+			if (SourceType.FILE == sourceType)
+			{
+				Objects.requireNonNull(file, "file");
+			}
+			this.file = file;
+			if (SourceType.URL == sourceType)
+			{
+				Objects.requireNonNull(url, "url");
+			}
+			this.url = url;
+			this.addEntries = addEntries;
+			this.replaceEntries = replaceEntries;
+			this.removeEntries = removeEntries;
+		}
+
+		public SourceType getSourceType()
+		{
+			return sourceType;
+		}
+
+		public Path getFile()
+		{
+			return file;
+		}
+
+		public URL getUrl()
+		{
+			return url;
+		}
+
+		public boolean isAddEntries()
+		{
+			return addEntries;
+		}
+
+		public boolean isReplaceEntries()
+		{
+			return replaceEntries;
+		}
+
+		public boolean isRemoveEntries()
+		{
+			return removeEntries;
 		}
 	}
 

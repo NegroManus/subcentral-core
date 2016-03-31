@@ -262,7 +262,14 @@ public class FxUtil
 		return Thread.currentThread().getName().equals("JavaFX-Launcher");
 	}
 
-	public static <T> TextFormatter<T> bindPropertyToTextField(TextField txtFld, Property<T> prop, StringConverter<T> converter)
+	public static <T> TextFormatter<T> bindToTextField(TextField txtFld, StringConverter<T> converter)
+	{
+		TextFormatter<T> formatter = new TextFormatter<T>(converter);
+		txtFld.setTextFormatter(formatter);
+		return formatter;
+	}
+
+	public static <T> TextFormatter<T> bindTextFieldToProperty(TextField txtFld, Property<T> prop, StringConverter<T> converter)
 	{
 		TextFormatter<T> formatter = new TextFormatter<T>(converter);
 		formatter.valueProperty().bindBidirectional(prop);
@@ -270,9 +277,14 @@ public class FxUtil
 		return formatter;
 	}
 
-	public static TextFormatter<Path> bindPathToTextField(TextField pathTxtFld, Property<Path> path)
+	public static TextFormatter<Path> bindTextFieldToPath(TextField pathTxtFld)
 	{
-		return bindPropertyToTextField(pathTxtFld, path, PATH_STRING_CONVERTER);
+		return bindToTextField(pathTxtFld, PATH_STRING_CONVERTER);
+	}
+
+	public static TextFormatter<Path> bindTextFieldToPath(TextField pathTxtFld, Property<Path> path)
+	{
+		return bindTextFieldToProperty(pathTxtFld, path, PATH_STRING_CONVERTER);
 	}
 
 	public static void setChooseDirectoryAction(Button chooseDirBtn, TextFormatter<Path> textFormatter, Stage stage, String title)
@@ -968,6 +980,11 @@ public class FxUtil
 		return null;
 	}
 
+	public static <E extends Enum<E>> ToggleEnumBinding<E> bindToggleGroupToEnumProp(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
+	{
+		return new ToggleEnumBinding<>(toggleGroup, enumProp, mapping);
+	}
+
 	public static class ToggleEnumBinding<E extends Enum<E>>
 	{
 		private final ToggleGroup				toggleGroup;
@@ -977,7 +994,7 @@ public class FxUtil
 		private final ChangeListener<E>			enumListener;
 		private boolean							updating;
 
-		public ToggleEnumBinding(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
+		private ToggleEnumBinding(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
 		{
 			this.toggleGroup = Objects.requireNonNull(toggleGroup, "toggleGroup");
 			this.enumProp = Objects.requireNonNull(enumProp, "enumProp");
