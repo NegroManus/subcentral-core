@@ -183,28 +183,7 @@ public class SettingsController extends Controller
 	{
 		final TreeItem<SettingsSection> root = new TreeItem<>();
 		sectionSelectionTreeView.setRoot(root);
-		sectionSelectionTreeView.setCellFactory((TreeView<SettingsSection> param) ->
-		{
-			return new TreeCell<SettingsSection>()
-			{
-				@Override
-				protected void updateItem(SettingsSection item, boolean empty)
-				{
-					super.updateItem(item, empty);
-
-					if (empty || item == null)
-					{
-						setText("");
-						setGraphic(null);
-					}
-					else
-					{
-						setText(item.getLabel());
-						setGraphic(item.getImage());
-					}
-				}
-			};
-		});
+		sectionSelectionTreeView.setCellFactory((TreeView<SettingsSection> param) -> new SettingsSectionTreeCell());
 
 		TreeItem<SettingsSection> watchTreeItem = new TreeItem<>(sections.get(WATCH_SECTION));
 
@@ -351,14 +330,14 @@ public class SettingsController extends Controller
 		return loadingPane;
 	}
 
-	private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final SettingsSection section)
+	private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final SettingsSection settingsSection)
 	{
 		return new Task<AbstractSettingsSectionController>()
 		{
 			@Override
 			protected AbstractSettingsSectionController call() throws Exception
 			{
-				return section.loadController();
+				return settingsSection.loadController();
 			}
 
 			@Override
@@ -370,14 +349,14 @@ public class SettingsController extends Controller
 			@Override
 			protected void failed()
 			{
-				log.error("Loading of settings section " + section + "failed", getException());
+				log.error("Loading of settings section " + settingsSection + "failed", getException());
 				sectionRootPane.getChildren().clear();
 			}
 
 			@Override
 			protected void cancelled()
 			{
-				log.warn("Loading of settings section " + section + " was cancelled", getException());
+				log.warn("Loading of settings section " + settingsSection + " was cancelled", getException());
 				sectionRootPane.getChildren().clear();
 			}
 		};
@@ -678,6 +657,26 @@ public class SettingsController extends Controller
 		public String toString()
 		{
 			return MoreObjects.toStringHelper(SettingsSection.class).add("name", name).toString();
+		}
+	}
+
+	private static class SettingsSectionTreeCell extends TreeCell<SettingsSection>
+	{
+		@Override
+		protected void updateItem(SettingsSection item, boolean empty)
+		{
+			super.updateItem(item, empty);
+
+			if (empty || item == null)
+			{
+				setText("");
+				setGraphic(null);
+			}
+			else
+			{
+				setText(item.getLabel());
+				setGraphic(item.getImage());
+			}
 		}
 	}
 }

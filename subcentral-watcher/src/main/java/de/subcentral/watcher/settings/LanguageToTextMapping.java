@@ -3,40 +3,19 @@ package de.subcentral.watcher.settings;
 import java.util.Locale;
 import java.util.Objects;
 
-import javafx.util.StringConverter;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.fx.FxUtil;
+import javafx.util.StringConverter;
 
-public final class LanguageTextMapping implements Comparable<LanguageTextMapping>
+public final class LanguageToTextMapping implements Comparable<LanguageToTextMapping>
 {
-	public static final StringConverter<LanguageTextMapping> STRING_CONVERTER = initStringConverter();
-
-	private static StringConverter<LanguageTextMapping> initStringConverter()
-	{
-		return new StringConverter<LanguageTextMapping>()
-		{
-			@Override
-			public String toString(LanguageTextMapping mapping)
-			{
-				return mapping.language.getDisplayName() + " -> " + mapping.text;
-			}
-
-			@Override
-			public LanguageTextMapping fromString(String string)
-			{
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
-
 	final Locale	language;
 	final String	text;
 
-	public LanguageTextMapping(Locale language, String text)
+	public LanguageToTextMapping(Locale language, String text)
 	{
 		this.language = Objects.requireNonNull(language, "language");
 		this.text = Objects.requireNonNull(text, "text");
@@ -59,9 +38,9 @@ public final class LanguageTextMapping implements Comparable<LanguageTextMapping
 		{
 			return true;
 		}
-		if (obj instanceof LanguageTextMapping)
+		if (obj instanceof LanguageToTextMapping)
 		{
-			LanguageTextMapping o = (LanguageTextMapping) obj;
+			LanguageToTextMapping o = (LanguageToTextMapping) obj;
 			return language.equals(o.language);
 		}
 		return false;
@@ -76,11 +55,11 @@ public final class LanguageTextMapping implements Comparable<LanguageTextMapping
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(LanguageTextMapping.class).omitNullValues().add("language", language).add("text", text).toString();
+		return MoreObjects.toStringHelper(LanguageToTextMapping.class).omitNullValues().add("language", language).add("text", text).toString();
 	}
 
 	@Override
-	public int compareTo(LanguageTextMapping o)
+	public int compareTo(LanguageToTextMapping o)
 	{
 		// nulls first
 		if (o == null)
@@ -88,5 +67,23 @@ public final class LanguageTextMapping implements Comparable<LanguageTextMapping
 			return 1;
 		}
 		return FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR.compare(this.language, o.language);
+	}
+
+	public static StringConverter<LanguageToTextMapping> createStringConverter()
+	{
+		return new StringConverter<LanguageToTextMapping>()
+		{
+			@Override
+			public String toString(LanguageToTextMapping mapping)
+			{
+				return mapping.language.getDisplayName() + " -> " + mapping.text;
+			}
+
+			@Override
+			public LanguageToTextMapping fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
 }

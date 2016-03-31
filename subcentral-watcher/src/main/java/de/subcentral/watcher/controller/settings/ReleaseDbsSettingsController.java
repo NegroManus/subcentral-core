@@ -1,12 +1,15 @@
 package de.subcentral.watcher.controller.settings;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.metadata.db.HttpMetadataDb;
+import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.MetadataDbSettingEntry;
@@ -30,7 +33,6 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.util.Callback;
 
 public class ReleaseDbsSettingsController extends AbstractSettingsSectionController
 {
@@ -64,6 +66,53 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		return rootPane;
 	}
 
+	private static class AvailableTableCell extends TableCell<MetadataDbSettingEntry<Release>, Availability>
+	{
+		{
+			// center the cell content
+			super.setAlignment(Pos.CENTER);
+		}
+
+		protected void updateItem(MetadataDbSettingEntry.Availability item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			if (empty || item == null)
+			{
+				setGraphic(null);
+			}
+			else
+			{
+				switch (item)
+				{
+					case UNKNOWN:
+						setGraphic(null);
+						setTooltip(new Tooltip("Unknown"));
+						break;
+					case CHECKING:
+						ProgressIndicator progressIndicator = new ProgressIndicator();
+						progressIndicator.setPrefWidth(16d);
+						progressIndicator.setPrefHeight(16d);
+						setGraphic(progressIndicator);
+						break;
+					case AVAILABLE:
+						setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
+						setTooltip(new Tooltip("Available: Accessible and searchable"));
+						break;
+					case LIMITED:
+						setGraphic(new ImageView(FxUtil.loadImg("warning_16.png")));
+						setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
+						break;
+					case NOT_AVAILABLE:
+						setGraphic(new ImageView(FxUtil.loadImg("cancel_16.png")));
+						setTooltip(new Tooltip("Not available: Not reachable"));
+						break;
+					default:
+						setGraphic(null);
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void initialize() throws Exception
 	{
@@ -71,104 +120,15 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 
 		releaseDbsTableView.setItems(settings.releaseDbsProperty());
 
-		releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 		releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().enabledProperty());
+		releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 
-		releaseDbsNameColumn.setCellFactory((TableColumn<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> arg0) ->
-		{
-			return new TableCell<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>>()
-			{
-				@Override
-				public void updateItem(MetadataDbSettingEntry<Release> item, boolean empty)
-				{
-					super.updateItem(item, empty);
-					if (empty || item == null)
-					{
-						setGraphic(null);
-					}
-					else
-					{
-						if (item.getValue() instanceof HttpMetadataDb)
-						{
-							try
-							{
-								HttpMetadataDb db = (HttpMetadataDb) item.getValue();
-
-								HBox hbox = FxUtil.createDefaultHBox();
-								Label name = new Label(db.getSite().getDisplayName());
-
-								URL host = db.getHostUrl();
-								Hyperlink link = FxUtil.createUrlHyperlink(host, settingsController.getMainController().getCommonExecutor());
-								link.setMaxHeight(Double.MAX_VALUE);
-
-								hbox.getChildren().addAll(name, link);
-								setGraphic(hbox);
-							}
-							catch (URISyntaxException e)
-							{
-								log.error("Could not create Hyperlink for release database " + item.getValue(), e);
-							}
-						}
-					}
-				}
-			};
-		});
 		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> param) -> FxUtil.constantBinding(param.getValue()));
+		releaseDbsNameColumn
+				.setCellFactory((TableColumn<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> param) -> new NameTableCell(settingsController.getMainController().getCommonExecutor()));
 
-		releaseDbsAvailableColumn.setCellFactory(new Callback<TableColumn<MetadataDbSettingEntry<Release>, Availability>, TableCell<MetadataDbSettingEntry<Release>, Availability>>()
-		{
-			@Override
-			public TableCell<MetadataDbSettingEntry<Release>, Availability> call(TableColumn<MetadataDbSettingEntry<Release>, Availability> param)
-			{
-				return new TableCell<MetadataDbSettingEntry<Release>, Availability>()
-				{
-					{
-						// center the cell content
-						super.setAlignment(Pos.CENTER);
-					}
-
-					protected void updateItem(MetadataDbSettingEntry.Availability item, boolean empty)
-					{
-						super.updateItem(item, empty);
-						if (empty || item == null)
-						{
-							setGraphic(null);
-						}
-						else
-						{
-							switch (item)
-							{
-								case UNKNOWN:
-									setGraphic(null);
-									setTooltip(new Tooltip("Unknown"));
-									break;
-								case CHECKING:
-									ProgressIndicator progressIndicator = new ProgressIndicator();
-									progressIndicator.setPrefWidth(16d);
-									progressIndicator.setPrefHeight(16d);
-									setGraphic(progressIndicator);
-									break;
-								case AVAILABLE:
-									setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
-									setTooltip(new Tooltip("Available: Accessible and searchable"));
-									break;
-								case LIMITED:
-									setGraphic(new ImageView(FxUtil.loadImg("warning_16.png")));
-									setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
-									break;
-								case NOT_AVAILABLE:
-									setGraphic(new ImageView(FxUtil.loadImg("cancel_16.png")));
-									setTooltip(new Tooltip("Not available: Not reachable"));
-									break;
-								default:
-									setGraphic(null);
-							}
-						}
-					}
-				};
-			}
-		});
 		releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Availability> param) -> param.getValue().availabilityProperty());
+		releaseDbsAvailableColumn.setCellFactory((TableColumn<MetadataDbSettingEntry<Release>, Availability> param) -> new AvailableTableCell());
 
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
 
@@ -189,4 +149,47 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 			releaseDb.updateAvailability(settingsController.getMainController().getCommonExecutor());
 		}
 	}
+
+	private static class NameTableCell extends TableCell<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>>
+	{
+		private final ExecutorService executor;
+
+		private NameTableCell(ExecutorService executor)
+		{
+			this.executor = Objects.requireNonNull(executor, "executor");
+		}
+
+		@Override
+		public void updateItem(MetadataDbSettingEntry<Release> item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			if (empty || item == null)
+			{
+				setGraphic(null);
+			}
+			else
+			{
+				MetadataDb db = item.getValue();
+
+				HBox hbox = FxUtil.createDefaultHBox();
+				Label name = new Label(db.getSite().getDisplayName());
+				hbox.getChildren().add(name);
+
+				try
+				{
+					URL host = new URL(db.getSite().getLink());
+					Hyperlink link = FxUtil.createUrlHyperlink(host, executor);
+					link.setMaxHeight(Double.MAX_VALUE);
+					hbox.getChildren().add(link);
+				}
+				catch (MalformedURLException | URISyntaxException e)
+				{
+					log.warn("Could not create Hyperlink for release database " + item.getValue(), e);
+				}
+
+				setGraphic(hbox);
+			}
+		}
+	}
+
 }

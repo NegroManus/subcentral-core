@@ -2,41 +2,20 @@ package de.subcentral.watcher.settings;
 
 import java.util.Locale;
 
-import javafx.util.StringConverter;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.fx.UserPattern;
+import javafx.util.StringConverter;
 
-public class LanguageUserPattern implements Comparable<LanguageUserPattern>
+public class PatternToLanguageMapping implements Comparable<PatternToLanguageMapping>
 {
-	public static final StringConverter<LanguageUserPattern> STRING_CONVERTER = initStringConverter();
-
-	private static StringConverter<LanguageUserPattern> initStringConverter()
-	{
-		return new StringConverter<LanguageUserPattern>()
-		{
-			@Override
-			public String toString(LanguageUserPattern pattern)
-			{
-				return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
-			}
-
-			@Override
-			public LanguageUserPattern fromString(String string)
-			{
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
-
 	private final UserPattern	pattern;
 	private final Locale		language;
 
-	public LanguageUserPattern(UserPattern pattern, Locale language)
+	public PatternToLanguageMapping(UserPattern pattern, Locale language)
 	{
 		this.pattern = pattern;
 		this.language = language;
@@ -64,9 +43,9 @@ public class LanguageUserPattern implements Comparable<LanguageUserPattern>
 		{
 			return true;
 		}
-		if (obj instanceof LanguageUserPattern)
+		if (obj instanceof PatternToLanguageMapping)
 		{
-			LanguageUserPattern o = (LanguageUserPattern) obj;
+			PatternToLanguageMapping o = (PatternToLanguageMapping) obj;
 			return pattern.equals(o.pattern);
 		}
 		return false;
@@ -79,7 +58,7 @@ public class LanguageUserPattern implements Comparable<LanguageUserPattern>
 	}
 
 	@Override
-	public int compareTo(LanguageUserPattern o)
+	public int compareTo(PatternToLanguageMapping o)
 	{
 		// nulls first
 		if (o == null)
@@ -92,6 +71,24 @@ public class LanguageUserPattern implements Comparable<LanguageUserPattern>
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(LanguageUserPattern.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
+		return MoreObjects.toStringHelper(PatternToLanguageMapping.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
+	}
+
+	public static StringConverter<PatternToLanguageMapping> createStringConverter()
+	{
+		return new StringConverter<PatternToLanguageMapping>()
+		{
+			@Override
+			public String toString(PatternToLanguageMapping pattern)
+			{
+				return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
+			}
+
+			@Override
+			public PatternToLanguageMapping fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
 }

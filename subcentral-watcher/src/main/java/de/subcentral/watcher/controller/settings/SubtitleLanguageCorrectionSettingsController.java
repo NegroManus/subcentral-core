@@ -9,9 +9,9 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.watcher.WatcherDialogs;
-import de.subcentral.watcher.settings.LanguageTextMapping;
-import de.subcentral.watcher.settings.LanguageUserPattern;
+import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.LocaleLanguageReplacerSettings;
+import de.subcentral.watcher.settings.PatternToLanguageMapping;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
@@ -33,49 +33,49 @@ import javafx.scene.layout.BorderPane;
 public class SubtitleLanguageCorrectionSettingsController extends AbstractSettingsSectionController
 {
 	@FXML
-	private BorderPane										rootPane;
+	private BorderPane											rootPane;
 	@FXML
-	private TextField										parsingLangsTxtFld;
+	private TextField											parsingLangsTxtFld;
 	@FXML
-	private Button											editParsingLangsBtn;
+	private Button												editParsingLangsBtn;
 	@FXML
-	private TableView<LanguageUserPattern>					textLangMappingsTableView;
+	private TableView<PatternToLanguageMapping>					textLangMappingsTableView;
 	@FXML
-	private TableColumn<LanguageUserPattern, UserPattern>	textLangMappingsTextColumn;
+	private TableColumn<PatternToLanguageMapping, UserPattern>	textLangMappingsTextColumn;
 	@FXML
-	private TableColumn<LanguageUserPattern, Locale>		textLangMappingsLangColumn;
+	private TableColumn<PatternToLanguageMapping, Locale>		textLangMappingsLangColumn;
 	@FXML
-	private Button											addTextLangMappingBtn;
+	private Button												addTextLangMappingBtn;
 	@FXML
-	private Button											editTextLangMappingBtn;
+	private Button												editTextLangMappingBtn;
 	@FXML
-	private Button											removeTextLangMappingBtn;
+	private Button												removeTextLangMappingBtn;
 	@FXML
-	private Button											moveUpTextLangMappingBtn;
+	private Button												moveUpTextLangMappingBtn;
 	@FXML
-	private Button											moveDownTextLangMappingBtn;
+	private Button												moveDownTextLangMappingBtn;
 	@FXML
-	private ChoiceBox<LanguageFormat>						outputLangFormatChoiceBox;
+	private ChoiceBox<LanguageFormat>							outputLangFormatChoiceBox;
 	@FXML
-	private ComboBox<Locale>								outputLangComboBox;
+	private ComboBox<Locale>									outputLangComboBox;
 	@FXML
-	private TableView<LanguageTextMapping>					langTextMappingsTableView;
+	private TableView<LanguageToTextMapping>					langTextMappingsTableView;
 	@FXML
-	private TableColumn<LanguageTextMapping, Locale>		langTextMappingsLangColumn;
+	private TableColumn<LanguageToTextMapping, Locale>			langTextMappingsLangColumn;
 	@FXML
-	private TableColumn<LanguageTextMapping, String>		langTextMappingsTextColumn;
+	private TableColumn<LanguageToTextMapping, String>			langTextMappingsTextColumn;
 	@FXML
-	private Button											addLangTextMappingBtn;
+	private Button												addLangTextMappingBtn;
 	@FXML
-	private Button											editLangTextMappingBtn;
+	private Button												editLangTextMappingBtn;
 	@FXML
-	private Button											removeLangTextMappingBtn;
+	private Button												removeLangTextMappingBtn;
 	@FXML
-	private TextField										testingInputTxtFld;
+	private TextField											testingInputTxtFld;
 	@FXML
-	private TextField										testingParsedLangTxtFld;
+	private TextField											testingParsedLangTxtFld;
 	@FXML
-	private TextField										testingOutputTxtFld;
+	private TextField											testingOutputTxtFld;
 
 	public SubtitleLanguageCorrectionSettingsController(SettingsController settingsController)
 	{
@@ -98,7 +98,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		parsingLangsTextFormatter.valueProperty().bindBidirectional(settings.parsingLanguagesProperty());
 		parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
-		editParsingLangsBtn.setOnAction((Actionevt) ->
+		editParsingLangsBtn.setOnAction((ActionEvent evt) ->
 		{
 			Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditView(parsingLangsTextFormatter.getValue(), settingsController.getMainController().getPrimaryStage());
 			if (result.isPresent())
@@ -108,57 +108,23 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		});
 
 		// TextLangMappings
-		textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, UserPattern> param) ->
+		textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<PatternToLanguageMapping, UserPattern> param) ->
 		{
 			return FxUtil.constantBinding(param.getValue().getPattern());
 		});
-		textLangMappingsTextColumn.setCellFactory((TableColumn<LanguageUserPattern, UserPattern> param) ->
-		{
-			return new TableCell<LanguageUserPattern, UserPattern>()
-			{
-				@Override
-				protected void updateItem(UserPattern pattern, boolean empty)
-				{
-					super.updateItem(pattern, empty);
-					if (empty || pattern == null)
-					{
-						setText(null);
-					}
-					else
-					{
-						setText(pattern.getPattern() + " (" + pattern.getMode() + ")");
-					}
-				}
-			};
-		});
-		textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageUserPattern, Locale> param) ->
+		textLangMappingsTextColumn.setCellFactory((TableColumn<PatternToLanguageMapping, UserPattern> param) -> new PatternToLanguageMappingPatternTableCell());
+
+		textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<PatternToLanguageMapping, Locale> param) ->
 		{
 			return FxUtil.constantBinding(param.getValue().getLanguage());
 		});
-		textLangMappingsLangColumn.setCellFactory((TableColumn<LanguageUserPattern, Locale> param) ->
-		{
-			return new TableCell<LanguageUserPattern, Locale>()
-			{
-				@Override
-				protected void updateItem(Locale lang, boolean empty)
-				{
-					super.updateItem(lang, empty);
-					if (empty || lang == null)
-					{
-						setText(null);
-					}
-					else
-					{
-						setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-					}
-				}
-			};
-		});
+		textLangMappingsLangColumn.setCellFactory((TableColumn<PatternToLanguageMapping, Locale> param) -> new PatternToLanguageMappingLanguageTableCell());
+
 		textLangMappingsTableView.setItems(settings.customLanguagePatternsProperty());
 
 		addTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditView(settingsController.getMainController().getPrimaryStage());
+			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(settingsController.getMainController().getPrimaryStage());
 			FxUtil.handleDistinctAdd(textLangMappingsTableView, result);
 		});
 
@@ -166,7 +132,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		editTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		editTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			Optional<LanguageUserPattern> result = WatcherDialogs.showTextLanguageMappingEditView(textLangMappingsTableView.getSelectionModel().getSelectedItem(),
+			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(textLangMappingsTableView.getSelectionModel().getSelectedItem(),
 					settingsController.getMainController().getPrimaryStage());
 			FxUtil.handleDistinctEdit(textLangMappingsTableView, result);
 		});
@@ -174,7 +140,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		removeTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		removeTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			FxUtil.handleConfirmedDelete(textLangMappingsTableView, "text to language mapping", LanguageUserPattern.STRING_CONVERTER);
+			FxUtil.handleConfirmedDelete(textLangMappingsTableView, "text to language mapping", PatternToLanguageMapping.createStringConverter());
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupport(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);
@@ -223,38 +189,22 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		});
 
 		// LangTextMappings
-		langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, Locale> param) ->
+		langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageToTextMapping, Locale> param) ->
 		{
 			return FxUtil.constantBinding(param.getValue().getLanguage());
 		});
-		langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageTextMapping, Locale> param) ->
+		langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageToTextMapping, Locale> param) -> new LanguageToTextMappingLanguageTableCell());
+
+		langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageToTextMapping, String> param) ->
 		{
-			return new TableCell<LanguageTextMapping, Locale>()
-			{
-				@Override
-				protected void updateItem(Locale lang, boolean empty)
-				{
-					super.updateItem(lang, empty);
-					if (empty || lang == null)
-					{
-						setText(null);
-					}
-					else
-					{
-						setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
-					}
-				}
-			};
+			return FxUtil.constantStringBinding(param.getValue().getText());
 		});
-		langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageTextMapping, String> param) ->
-		{
-			return FxUtil.constantBinding(param.getValue().getText());
-		});
+
 		langTextMappingsTableView.setItems(settings.customLanguageTextMappingsProperty());
 
 		addLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			Optional<LanguageTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(settingsController.getMainController().getPrimaryStage());
+			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(settingsController.getMainController().getPrimaryStage());
 			FxUtil.handleDistinctAdd(langTextMappingsTableView, result);
 			FXCollections.sort(langTextMappingsTableView.getItems());
 		});
@@ -263,7 +213,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		editLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
 		editLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			Optional<LanguageTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(langTextMappingsTableView.getSelectionModel().getSelectedItem(),
+			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(langTextMappingsTableView.getSelectionModel().getSelectedItem(),
 					settingsController.getMainController().getPrimaryStage());
 			FxUtil.handleDistinctEdit(langTextMappingsTableView, result);
 			FXCollections.sort(langTextMappingsTableView.getItems());
@@ -272,7 +222,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		removeLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
 		removeLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			FxUtil.handleConfirmedDelete(langTextMappingsTableView, "language to text mapping", LanguageTextMapping.STRING_CONVERTER);
+			FxUtil.handleConfirmedDelete(langTextMappingsTableView, "language to text mapping", LanguageToTextMapping.createStringConverter());
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupport(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);
@@ -290,5 +240,56 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 				return settings.subtitleLanguageStandardizerBinding().getValue().getReplacer().apply(testingInputTxtFld.getText());
 			}
 		});
+	}
+
+	private static class PatternToLanguageMappingPatternTableCell extends TableCell<PatternToLanguageMapping, UserPattern>
+	{
+		@Override
+		protected void updateItem(UserPattern pattern, boolean empty)
+		{
+			super.updateItem(pattern, empty);
+			if (empty || pattern == null)
+			{
+				setText(null);
+			}
+			else
+			{
+				setText(pattern.getPattern() + " (" + pattern.getMode() + ")");
+			}
+		}
+	}
+
+	private static class PatternToLanguageMappingLanguageTableCell extends TableCell<PatternToLanguageMapping, Locale>
+	{
+		@Override
+		protected void updateItem(Locale lang, boolean empty)
+		{
+			super.updateItem(lang, empty);
+			if (empty || lang == null)
+			{
+				setText(null);
+			}
+			else
+			{
+				setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
+			}
+		}
+	}
+
+	private static class LanguageToTextMappingLanguageTableCell extends TableCell<LanguageToTextMapping, Locale>
+	{
+		@Override
+		protected void updateItem(Locale lang, boolean empty)
+		{
+			super.updateItem(lang, empty);
+			if (empty || lang == null)
+			{
+				setText(null);
+			}
+			else
+			{
+				setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
+			}
+		}
 	}
 }

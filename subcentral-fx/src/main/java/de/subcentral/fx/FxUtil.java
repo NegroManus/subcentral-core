@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
@@ -980,9 +981,9 @@ public class FxUtil
 
 		public ToggleEnumBinding(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
 		{
-			this.toggleGroup = toggleGroup;
-			this.enumProp = enumProp;
-			this.mapping = mapping;
+			this.toggleGroup = Objects.requireNonNull(toggleGroup, "toggleGroup");
+			this.enumProp = Objects.requireNonNull(enumProp, "enumProp");
+			this.mapping = Objects.requireNonNull(mapping, "mapping");
 
 			// set initial value
 			selectToggle(this.enumProp.getValue());
@@ -1002,22 +1003,18 @@ public class FxUtil
 
 		private ChangeListener<Toggle> initToggleListener()
 		{
-			return new ChangeListener<Toggle>()
+			return (ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) ->
 			{
-				@Override
-				public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue)
+				if (!updating)
 				{
-					if (!updating)
+					try
 					{
-						try
-						{
-							updating = true;
-							enumProp.setValue(mapping.get(newValue));
-						}
-						finally
-						{
-							updating = false;
-						}
+						updating = true;
+						enumProp.setValue(mapping.get(newValue));
+					}
+					finally
+					{
+						updating = false;
 					}
 				}
 			};
@@ -1025,22 +1022,18 @@ public class FxUtil
 
 		private ChangeListener<E> initEnumListener()
 		{
-			return new ChangeListener<E>()
+			return (ObservableValue<? extends E> observable, E oldValue, E newValue) ->
 			{
-				@Override
-				public void changed(ObservableValue<? extends E> observable, E oldValue, E newValue)
+				if (!updating)
 				{
-					if (!updating)
+					try
 					{
-						try
-						{
-							updating = true;
-							selectToggle(newValue);
-						}
-						finally
-						{
-							updating = false;
-						}
+						updating = true;
+						selectToggle(newValue);
+					}
+					finally
+					{
+						updating = false;
 					}
 				}
 			};

@@ -269,159 +269,16 @@ public class ProcessingController extends Controller
 		nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, String> features) -> features.getValue().getValue().nameProperty());
 
 		filesColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ObservableList<Path>> features) -> features.getValue().getValue().getFiles());
-		filesColumn.setCellFactory((TreeTableColumn<ProcessingItem, ObservableList<Path>> param) ->
-		{
-			return new TreeTableCell<ProcessingItem, ObservableList<Path>>()
-			{
-				@Override
-				protected void updateItem(ObservableList<Path> item, boolean empty)
-				{
-					super.updateItem(item, empty);
-
-					if (empty || item == null)
-					{
-						setText("");
-					}
-					else
-					{
-						StringJoiner joiner = new StringJoiner(", ");
-						for (Path file : item)
-						{
-							String ext = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1];
-							ext = StringUtils.stripStart(ext, ".");
-							joiner.add(ext);
-						}
-						setText(joiner.toString().toUpperCase());
-					}
-				};
-			};
-		});
+		filesColumn.setCellFactory((TreeTableColumn<ProcessingItem, ObservableList<Path>> param) -> new FilesTreeTableCell());
 
 		statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, WorkerStatus> features) -> features.getValue().getValue().statusBinding());
-		statusColumn.setCellFactory((TreeTableColumn<ProcessingItem, WorkerStatus> param) ->
-		{
-			return new TreeTableCell<ProcessingItem, WorkerStatus>()
-			{
-				@Override
-				protected void updateItem(WorkerStatus item, boolean empty)
-				{
-					super.updateItem(item, empty);
-
-					if (empty || item == null)
-					{
-						setText("");
-						setGraphic(null);
-						return;
-					}
-
-					setText(item.getMessage());
-
-					Label graphic = null;
-					switch (item.getState())
-					{
-						case CANCELLED:
-							ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
-							graphic = new Label("", cancelImg);
-							break;
-						case FAILED:
-							ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
-							graphic = new Label("", errorImg);
-							graphic.setTooltip(new Tooltip(item.getException().toString()));
-							break;
-						default:
-							break;
-					}
-					setGraphic(graphic);
-				};
-			};
-		});
+		statusColumn.setCellFactory((TreeTableColumn<ProcessingItem, WorkerStatus> param) -> new StatusTreeTableCell());
 
 		progressColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, Double> features) -> features.getValue().getValue().progressProperty().asObject());
 		progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
 
 		infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ProcessingInfo> features) -> features.getValue().getValue().infoProperty());
-		infoColumn.setCellFactory((TreeTableColumn<ProcessingItem, ProcessingInfo> param) ->
-		{
-			return new TreeTableCell<ProcessingItem, ProcessingInfo>()
-			{
-				@Override
-				protected void updateItem(ProcessingInfo item, boolean empty)
-				{
-					super.updateItem(item, empty);
-
-					if (empty || item == null)
-					{
-						setText("");
-						setGraphic(null);
-						return;
-					}
-					if (item instanceof ProcessingTaskInfo)
-					{
-						ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
-						setText(taskInfo.getFlags().stream().map(this::flagToString).collect(Collectors.joining(", ")));
-						setGraphic(null);
-					}
-					else if (item instanceof ProcessingResultInfo)
-					{
-						ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
-						ProcessingResult result = resultInfo.getResult();
-
-						HBox hbox = FxUtil.createDefaultHBox();
-						switch (resultInfo.getSourceType())
-						{
-							case LISTED:
-								WatcherFxUtil.addFurtherInfoHyperlink(hbox, result.getRelease(), mainController.getCommonExecutor());
-								break;
-							case GUESSED:
-								hbox.getChildren().add(WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls)));
-								break;
-							default:
-								throw new AssertionError();
-						}
-						switch (resultInfo.getRelationType())
-						{
-							case MATCH:
-								// add nothing. MATCH is the standard type
-								break;
-							case COMPATIBLE:
-								hbox.getChildren().add(WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true));
-								break;
-							case MANUAL:
-								hbox.getChildren().add(WatcherFxUtil.createManualLabel());
-								break;
-							default:
-								throw new AssertionError();
-						}
-
-						// nuke
-						hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(result.getRelease()));
-
-						// meta tags
-						WatcherFxUtil.addMetaTaggedLabel(hbox, result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
-
-						setText("");
-						setGraphic(hbox);
-					}
-					else
-					{
-						setText("");
-						setGraphic(null);
-					}
-				}
-
-				private String flagToString(ProcessingTaskInfo.Flag flag)
-				{
-					switch (flag)
-					{
-						case DELETED_SOURCE_FILE:
-							return "Deleted source file";
-						default:
-							return flag.toString();
-					}
-				}
-
-			};
-		});
+		infoColumn.setCellFactory((TreeTableColumn<ProcessingItem, ProcessingInfo> param) -> new InfoTreeTableCell(mainController.getCommonExecutor()));
 
 		initProcessingTreeTableDnD();
 	}
@@ -929,4 +786,151 @@ public class ProcessingController extends Controller
 	{
 		return processingConfig;
 	}
+
+	private static class FilesTreeTableCell extends TreeTableCell<ProcessingItem, ObservableList<Path>>
+	{
+		@Override
+		protected void updateItem(ObservableList<Path> item, boolean empty)
+		{
+			super.updateItem(item, empty);
+
+			if (empty || item == null)
+			{
+				setText("");
+			}
+			else
+			{
+				StringJoiner joiner = new StringJoiner(", ");
+				for (Path file : item)
+				{
+					String ext = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1];
+					ext = StringUtils.stripStart(ext, ".");
+					joiner.add(ext);
+				}
+				setText(joiner.toString().toUpperCase());
+			}
+		};
+	}
+
+	private static class StatusTreeTableCell extends TreeTableCell<ProcessingItem, WorkerStatus>
+	{
+		@Override
+		protected void updateItem(WorkerStatus item, boolean empty)
+		{
+			super.updateItem(item, empty);
+
+			if (empty || item == null)
+			{
+				setText("");
+				setGraphic(null);
+				return;
+			}
+
+			setText(item.getMessage());
+
+			Label graphic = null;
+			switch (item.getState())
+			{
+				case CANCELLED:
+					ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
+					graphic = new Label("", cancelImg);
+					break;
+				case FAILED:
+					ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
+					graphic = new Label("", errorImg);
+					graphic.setTooltip(new Tooltip(item.getException().toString()));
+					break;
+				default:
+					break;
+			}
+			setGraphic(graphic);
+		};
+	};
+
+	private static class InfoTreeTableCell extends TreeTableCell<ProcessingItem, ProcessingInfo>
+	{
+		private final ExecutorService executor;
+
+		private InfoTreeTableCell(ExecutorService executor)
+		{
+			this.executor = Objects.requireNonNull(executor, "executor");
+		}
+
+		@Override
+		protected void updateItem(ProcessingInfo item, boolean empty)
+		{
+			super.updateItem(item, empty);
+
+			if (empty || item == null)
+			{
+				setText("");
+				setGraphic(null);
+				return;
+			}
+			if (item instanceof ProcessingTaskInfo)
+			{
+				ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
+				setText(taskInfo.getFlags().stream().map(this::flagToString).collect(Collectors.joining(", ")));
+				setGraphic(null);
+			}
+			else if (item instanceof ProcessingResultInfo)
+			{
+				ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
+				ProcessingResult result = resultInfo.getResult();
+
+				HBox hbox = FxUtil.createDefaultHBox();
+				switch (resultInfo.getSourceType())
+				{
+					case LISTED:
+						WatcherFxUtil.addFurtherInfoHyperlink(hbox, result.getRelease(), executor);
+						break;
+					case GUESSED:
+						hbox.getChildren().add(WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls)));
+						break;
+					default:
+						throw new AssertionError();
+				}
+				switch (resultInfo.getRelationType())
+				{
+					case MATCH:
+						// add nothing. MATCH is the standard type
+						break;
+					case COMPATIBLE:
+						hbox.getChildren().add(WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true));
+						break;
+					case MANUAL:
+						hbox.getChildren().add(WatcherFxUtil.createManualLabel());
+						break;
+					default:
+						throw new AssertionError();
+				}
+
+				// nuke
+				hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(result.getRelease()));
+
+				// meta tags
+				WatcherFxUtil.addMetaTaggedLabel(hbox, result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
+
+				setText("");
+				setGraphic(hbox);
+			}
+			else
+			{
+				setText("");
+				setGraphic(null);
+			}
+		}
+
+		private String flagToString(ProcessingTaskInfo.Flag flag)
+		{
+			switch (flag)
+			{
+				case DELETED_SOURCE_FILE:
+					return "Deleted source file";
+				default:
+					return flag.toString();
+			}
+		}
+	}
+
 }

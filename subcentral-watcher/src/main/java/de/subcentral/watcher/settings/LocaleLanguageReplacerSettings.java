@@ -30,8 +30,8 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 	private final ListProperty<Locale>				parsingLanguages			= new SimpleListProperty<>(this, "parsingLanguages", FXCollections.observableArrayList());
 	private final Property<LanguageFormat>			outputLanguageFormat		= new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.ISO2);
 	private final Property<Locale>					outputLanguage				= new SimpleObjectProperty<>(this, "outputLanguage", Locale.ENGLISH);
-	private final ListProperty<LanguageUserPattern>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.observableArrayList());
-	private final ListProperty<LanguageTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.observableArrayList());
+	private final ListProperty<PatternToLanguageMapping>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.observableArrayList());
+	private final ListProperty<LanguageToTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.observableArrayList());
 
 	private final Binding<SubtitleLanguageCorrector> subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
 
@@ -53,12 +53,12 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 			protected SubtitleLanguageCorrector computeValue()
 			{
 				List<LanguagePattern> langPatterns = new ArrayList<>(customLanguagePatterns.size());
-				for (LanguageUserPattern uiPattern : customLanguagePatterns)
+				for (PatternToLanguageMapping uiPattern : customLanguagePatterns)
 				{
 					langPatterns.add(uiPattern.toLanguagePattern());
 				}
 				Map<Locale, String> langTextMappings = new HashMap<>(customLanguageTextMappings.size());
-				for (LanguageTextMapping mapping : customLanguageTextMappings)
+				for (LanguageToTextMapping mapping : customLanguageTextMappings)
 				{
 					langTextMappings.put(mapping.getLanguage(), mapping.getText());
 				}
@@ -92,20 +92,20 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		setOutputLanguage(outputLang);
 
 		List<HierarchicalConfiguration<ImmutableNode>> patternsCfgs = cfg.configurationsAt(key + ".customLanguagePatterns.languagePattern");
-		List<LanguageUserPattern> patterns = new ArrayList<>(patternsCfgs.size());
+		List<PatternToLanguageMapping> patterns = new ArrayList<>(patternsCfgs.size());
 		for (HierarchicalConfiguration<ImmutableNode> patternsCfg : patternsCfgs)
 		{
 			UserPattern p = new UserPattern(patternsCfg.getString("[@pattern]"), Mode.valueOf(patternsCfg.getString("[@patternMode]")));
-			LanguageUserPattern langPattern = new LanguageUserPattern(p, Locale.forLanguageTag(patternsCfg.getString("[@languageTag]")));
+			PatternToLanguageMapping langPattern = new PatternToLanguageMapping(p, Locale.forLanguageTag(patternsCfg.getString("[@languageTag]")));
 			patterns.add(langPattern);
 		}
 		setCustomLanguagePatterns(FXCollections.observableList(patterns));
 
 		List<HierarchicalConfiguration<ImmutableNode>> namesCfgs = cfg.configurationsAt(key + ".customLanguageTextMappings.languageTextMapping");
-		List<LanguageTextMapping> langTextMappings = new ArrayList<>(namesCfgs.size());
+		List<LanguageToTextMapping> langTextMappings = new ArrayList<>(namesCfgs.size());
 		for (HierarchicalConfiguration<ImmutableNode> namesCfg : namesCfgs)
 		{
-			langTextMappings.add(new LanguageTextMapping(Locale.forLanguageTag(namesCfg.getString("[@languageTag]")), namesCfg.getString("[@text]")));
+			langTextMappings.add(new LanguageToTextMapping(Locale.forLanguageTag(namesCfg.getString("[@languageTag]")), namesCfg.getString("[@text]")));
 		}
 		setCustomLanguageTextMappings(FXCollections.observableList(langTextMappings));
 	}
@@ -125,14 +125,14 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		cfg.setProperty(key + ".ouputLanguage[@tag]", getOutputLanguage().toLanguageTag());
 		for (int i = 0; i < customLanguagePatterns.size(); i++)
 		{
-			LanguageUserPattern pattern = customLanguagePatterns.get(i);
+			PatternToLanguageMapping pattern = customLanguagePatterns.get(i);
 			cfg.addProperty(key + ".customLanguagePatterns.languagePattern(" + i + ")[@pattern]", pattern.getPattern().getPattern());
 			cfg.addProperty(key + ".customLanguagePatterns.languagePattern(" + i + ")[@patternMode]", pattern.getPattern().getMode());
 			cfg.addProperty(key + ".customLanguagePatterns.languagePattern(" + i + ")[@languageTag]", pattern.getLanguage().toLanguageTag());
 		}
 		for (int i = 0; i < customLanguageTextMappings.size(); i++)
 		{
-			LanguageTextMapping mapping = customLanguageTextMappings.get(i);
+			LanguageToTextMapping mapping = customLanguageTextMappings.get(i);
 			cfg.addProperty(key + ".customLanguageTextMappings.languageTextMapping(" + i + ")[@languageTag]", mapping.getLanguage().toLanguageTag());
 			cfg.addProperty(key + ".customLanguageTextMappings.languageTextMapping(" + i + ")[@text]", mapping.getText());
 		}
@@ -183,32 +183,32 @@ public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 		this.outputLanguageProperty().setValue(outputLanguage);
 	}
 
-	public final ListProperty<LanguageUserPattern> customLanguagePatternsProperty()
+	public final ListProperty<PatternToLanguageMapping> customLanguagePatternsProperty()
 	{
 		return this.customLanguagePatterns;
 	}
 
-	public final ObservableList<LanguageUserPattern> getCustomLanguagePatterns()
+	public final ObservableList<PatternToLanguageMapping> getCustomLanguagePatterns()
 	{
 		return this.customLanguagePatternsProperty().get();
 	}
 
-	public final void setCustomLanguagePatterns(final javafx.collections.ObservableList<LanguageUserPattern> customLanguagePatterns)
+	public final void setCustomLanguagePatterns(final javafx.collections.ObservableList<PatternToLanguageMapping> customLanguagePatterns)
 	{
 		this.customLanguagePatternsProperty().set(customLanguagePatterns);
 	}
 
-	public final ListProperty<LanguageTextMapping> customLanguageTextMappingsProperty()
+	public final ListProperty<LanguageToTextMapping> customLanguageTextMappingsProperty()
 	{
 		return this.customLanguageTextMappings;
 	}
 
-	public final ObservableList<de.subcentral.watcher.settings.LanguageTextMapping> getCustomLanguageTextMappings()
+	public final ObservableList<de.subcentral.watcher.settings.LanguageToTextMapping> getCustomLanguageTextMappings()
 	{
 		return this.customLanguageTextMappingsProperty().get();
 	}
 
-	public final void setCustomLanguageTextMappings(final ObservableList<de.subcentral.watcher.settings.LanguageTextMapping> customLanguageTextMappings)
+	public final void setCustomLanguageTextMappings(final ObservableList<de.subcentral.watcher.settings.LanguageToTextMapping> customLanguageTextMappings)
 	{
 		this.customLanguageTextMappingsProperty().set(customLanguageTextMappings);
 	}

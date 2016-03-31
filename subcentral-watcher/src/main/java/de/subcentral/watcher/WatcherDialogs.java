@@ -26,8 +26,8 @@ import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.watcher.settings.LanguageTextMapping;
-import de.subcentral.watcher.settings.LanguageUserPattern;
+import de.subcentral.watcher.settings.LanguageToTextMapping;
+import de.subcentral.watcher.settings.PatternToLanguageMapping;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
 import javafx.application.Platform;
@@ -754,7 +754,7 @@ public class WatcherDialogs
 		}
 	}
 
-	private static class TextLanguageMappingEditController extends AbstractBeanEditController<LanguageUserPattern>
+	private static class TextLanguageMappingEditController extends AbstractBeanEditController<PatternToLanguageMapping>
 	{
 		@FXML
 		private RadioButton			literalRadioBtn;
@@ -769,7 +769,7 @@ public class WatcherDialogs
 		@FXML
 		private ComboBox<Locale>	langComboBox;
 
-		private TextLanguageMappingEditController(LanguageUserPattern bean, Window window)
+		private TextLanguageMappingEditController(PatternToLanguageMapping bean, Window window)
 		{
 			super(bean, window);
 		}
@@ -850,21 +850,21 @@ public class WatcherDialogs
 			{
 				if (dialogButton == ButtonType.APPLY)
 				{
-					return new LanguageUserPattern(patternBinding.getValue(), langComboBox.getValue());
+					return new PatternToLanguageMapping(patternBinding.getValue(), langComboBox.getValue());
 				}
 				return null;
 			});
 		}
 	}
 
-	private static class LanguageTextMappingEditController extends AbstractBeanEditController<LanguageTextMapping>
+	private static class LanguageTextMappingEditController extends AbstractBeanEditController<LanguageToTextMapping>
 	{
 		@FXML
 		private ComboBox<Locale>	langComboBox;
 		@FXML
 		private TextField			textTxtFld;
 
-		private LanguageTextMappingEditController(LanguageTextMapping bean, Window window)
+		private LanguageTextMappingEditController(LanguageToTextMapping bean, Window window)
 		{
 			super(bean, window);
 		}
@@ -917,7 +917,7 @@ public class WatcherDialogs
 			{
 				if (dialogButton == ButtonType.APPLY)
 				{
-					return new LanguageTextMapping(langComboBox.getValue(), textTxtFld.getText());
+					return new LanguageToTextMapping(langComboBox.getValue(), textTxtFld.getText());
 				}
 				return null;
 			});
@@ -974,23 +974,23 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "LocaleListEditView.fxml");
 	}
 
-	public static Optional<LanguageUserPattern> showTextLanguageMappingEditView(Window window)
+	public static Optional<PatternToLanguageMapping> showTextLanguageMappingEditView(Window window)
 	{
 		return showTextLanguageMappingEditView(null, window);
 	}
 
-	public static Optional<LanguageUserPattern> showTextLanguageMappingEditView(LanguageUserPattern mapping, Window window)
+	public static Optional<PatternToLanguageMapping> showTextLanguageMappingEditView(PatternToLanguageMapping mapping, Window window)
 	{
 		TextLanguageMappingEditController ctrl = new TextLanguageMappingEditController(mapping, window);
 		return showEditViewAndWait(ctrl, "TextLanguageMappingEditView.fxml");
 	}
 
-	public static Optional<LanguageTextMapping> showLanguageTextMappingEditView(Window window)
+	public static Optional<LanguageToTextMapping> showLanguageTextMappingEditView(Window window)
 	{
 		return showLanguageTextMappingEditView(null, window);
 	}
 
-	public static Optional<LanguageTextMapping> showLanguageTextMappingEditView(LanguageTextMapping mapping, Window window)
+	public static Optional<LanguageToTextMapping> showLanguageTextMappingEditView(LanguageToTextMapping mapping, Window window)
 	{
 		LanguageTextMappingEditController ctrl = new LanguageTextMappingEditController(mapping, window);
 		return showEditViewAndWait(ctrl, "LanguageTextMappingEditView.fxml");

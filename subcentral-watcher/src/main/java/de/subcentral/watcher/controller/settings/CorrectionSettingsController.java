@@ -72,33 +72,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 
 		correctorTypeChoiceBox.getItems().add(SeriesNameCorrectionRuleSettingEntry.class);
 		correctorTypeChoiceBox.getItems().add(ReleaseTagsCorrectionRuleSettingEntry.class);
-		correctorTypeChoiceBox.setConverter(new StringConverter<Class<? extends CorrectionRuleSettingEntry<?, ?>>>()
-		{
-			@Override
-			public String toString(Class<? extends CorrectionRuleSettingEntry<?, ?>> type)
-			{
-				if (type == null)
-				{
-					return "";
-				}
-				else if (type == SeriesNameCorrectionRuleSettingEntry.class)
-				{
-					return SeriesNameCorrectionRuleSettingEntry.getRuleType();
-				}
-				else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
-				{
-					return ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
-				}
-				return type.getSimpleName();
-			}
-
-			@Override
-			public Class<? extends CorrectionRuleSettingEntry<?, ?>> fromString(String string)
-			{
-				// not needed
-				throw new UnsupportedOperationException();
-			}
-		});
+		correctorTypeChoiceBox.setConverter(new CorrectionRuleTypeStringConverter());
 		correctorTypeChoiceBox.getSelectionModel().selectFirst();
 
 		addCorrectorButton.disableProperty().bind(correctorTypeChoiceBox.getSelectionModel().selectedItemProperty().isNull());
@@ -146,29 +120,59 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		removeCorrectorButton.disableProperty().bind(noSelection);
 		removeCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			FxUtil.handleConfirmedDelete(correctorsTableView, "correction rule", new StringConverter<CorrectionRuleSettingEntry<?, ?>>()
-			{
-				@Override
-				public String toString(CorrectionRuleSettingEntry<?, ?> entry)
-				{
-					StringBuilder sb = new StringBuilder();
-					sb.append("Rule type: ");
-					sb.append(entry.ruleTypeBinding().get());
-					sb.append("\n");
-					sb.append("Rule: ");
-					sb.append(entry.ruleBinding().get());
-					return sb.toString();
-				}
-
-				@Override
-				public CorrectionRuleSettingEntry<?, ?> fromString(String string)
-				{
-					// not needed
-					throw new UnsupportedOperationException();
-				}
-			});
+			FxUtil.handleConfirmedDelete(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupport(correctorsTableView, editCorrectorButton, removeCorrectorButton);
+	}
+
+	private class CorrectionRuleTypeStringConverter extends StringConverter<Class<? extends CorrectionRuleSettingEntry<?, ?>>>
+	{
+		@Override
+		public String toString(Class<? extends CorrectionRuleSettingEntry<?, ?>> type)
+		{
+			if (type == null)
+			{
+				return "";
+			}
+			else if (type == SeriesNameCorrectionRuleSettingEntry.class)
+			{
+				return SeriesNameCorrectionRuleSettingEntry.getRuleType();
+			}
+			else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
+			{
+				return ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
+			}
+			return type.getSimpleName();
+		}
+
+		@Override
+		public Class<? extends CorrectionRuleSettingEntry<?, ?>> fromString(String string)
+		{
+			// not needed
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private class CorrectionRuleStringConverter extends StringConverter<CorrectionRuleSettingEntry<?, ?>>
+	{
+		@Override
+		public String toString(CorrectionRuleSettingEntry<?, ?> entry)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append("Rule type: ");
+			sb.append(entry.ruleTypeBinding().get());
+			sb.append("\n");
+			sb.append("Rule: ");
+			sb.append(entry.ruleBinding().get());
+			return sb.toString();
+		}
+
+		@Override
+		public CorrectionRuleSettingEntry<?, ?> fromString(String string)
+		{
+			// not needed
+			throw new UnsupportedOperationException();
+		}
 	}
 }
