@@ -27,6 +27,7 @@ import java.util.function.Predicate;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -115,11 +116,7 @@ public class FxUtil
 			@Override
 			public String fromString(String s)
 			{
-				if (StringUtils.isBlank(s))
-				{
-					throw new IllegalArgumentException("String is blank");
-				}
-				return s;
+				return Validate.notBlank(s);
 			}
 		};
 	}
@@ -844,20 +841,22 @@ public class FxUtil
 		if (addDialogResult.isPresent())
 		{
 			E newItem = addDialogResult.get();
-			int newItemIndex = items.indexOf(newItem);
-			if (newItemIndex == -1)
+			int existingItemIndex = items.indexOf(newItem);
+			if (existingItemIndex == -1)
 			{
 				// if newItem not already exists
-				newItemIndex = selectionModel.getSelectedIndex() + 1;
+				int newItemIndex = selectionModel.getSelectedIndex() + 1;
 				items.add(newItemIndex, newItem);
+				// select the newly added item
+				selectionModel.select(newItemIndex);
 			}
 			else
 			{
-				// if newItem already exists
-				items.set(newItemIndex, newItem);
+				// if newItem already exists, replace it
+				items.set(existingItemIndex, newItem);
+				// select the newly added item
+				selectionModel.select(existingItemIndex);
 			}
-			// select the newly added item
-			selectionModel.select(newItemIndex);
 		}
 	}
 
@@ -894,23 +893,22 @@ public class FxUtil
 		if (editDialogResult.isPresent())
 		{
 			E newItem = editDialogResult.get();
-			int newItemIndex = items.indexOf(newItem);
+			int existingItemIndex = items.indexOf(newItem);
 			int selectionIndex = selectionModel.getSelectedIndex();
-			// if the updated item is not equal to any existing item or equal to the item which was opened for edit
-			if (newItemIndex == -1 || newItemIndex == selectionIndex)
-			{
-				// replace
-				items.set(selectionIndex, newItem);
-			}
-			else
+			items.set(selectionIndex, newItem);
+			// if the updated item is equal to any existing item and is not equal to the item which was opened for edit
+			if (existingItemIndex != -1 && existingItemIndex != selectionIndex)
 			{
 				// if updatedItem already exists elsewhere
-				// then replace the selected item with the updatedItem ...
-				items.set(selectionIndex, newItem);
-				// ... and remove the "old" item
-				items.remove(newItemIndex);
-				selectionModel.select(newItem);
+				// remove the "old" item
+				items.remove(existingItemIndex);
+				if (existingItemIndex < selectionIndex)
+				{
+					selectionIndex--;
+				}
 			}
+			// select the edited item
+			selectionModel.select(selectionIndex);
 		}
 	}
 

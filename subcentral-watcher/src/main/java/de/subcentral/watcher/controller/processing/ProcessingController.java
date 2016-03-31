@@ -697,7 +697,8 @@ public class ProcessingController extends Controller
 		cancelSelectedTask();
 		TreeItem<ProcessingItem> selectedTreeItem = getSelectedProcessingTaskTreeItem(true);
 		processingTreeTable.getRoot().getChildren().remove(selectedTreeItem);
-		processingTreeTable.getSelectionModel().clearSelection();
+		// TODO Seems to be not needed anymore
+		// processingTreeTable.getSelectionModel().clearSelection();
 	}
 
 	public void clearProcessingTreeTable()
@@ -709,6 +710,7 @@ public class ProcessingController extends Controller
 		// but some skin class instances keep references to the deleted cells and they are never gc'd.
 		// So we need to dump the whole TreeTableView and reload it
 
+		// OLD SOLUTION:
 		// processingTreeTable.getRoot().getChildren().clear();
 		// processingTreeTable.setRoot(new TreeItem<>());
 		// processingTreeTable.getSelectionModel().clearSelection();
