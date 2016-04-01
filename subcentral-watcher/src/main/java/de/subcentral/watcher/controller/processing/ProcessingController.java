@@ -9,7 +9,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -502,8 +504,11 @@ public class ProcessingController extends Controller
 	// Controlling methods
 	public void handleFilesFromWatchDir(Path watchDir, Collection<Path> files)
 	{
+		// Because some IO operations generate several Watch events, we have to remove duplicate files
+		// We use TreeSet for sorting them by name
+		Set<Path> distinctFiles = new TreeSet<>(files);
 		log.debug("Handling {} file(s) from watch directory {}", files.size(), watchDir);
-		handleFiles(files.stream().map((Path relativeFile) -> watchDir.resolve(relativeFile)));
+		handleFiles(distinctFiles.stream().map((Path relativeFile) -> watchDir.resolve(relativeFile)));
 	}
 
 	public void handleDroppedFiles(Collection<File> files)
