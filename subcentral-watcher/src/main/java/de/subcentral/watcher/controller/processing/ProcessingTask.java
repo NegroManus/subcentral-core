@@ -95,9 +95,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	ProcessingTask(Path sourceFile, ProcessingController controller, TreeItem<ProcessingItem> taskTreeItem)
 	{
 		this.controller = Objects.requireNonNull(controller, "controller");
-
 		this.files = new SimpleListProperty<>(this, "files", FXCollections.singletonObservableList(sourceFile));
-
 		this.taskTreeItem = taskTreeItem;
 
 		updateTitle(sourceFile.getFileName().toString());

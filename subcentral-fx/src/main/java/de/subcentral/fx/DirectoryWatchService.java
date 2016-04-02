@@ -23,16 +23,16 @@ import java.util.function.BiConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ListMultimap;
+import com.google.common.collect.SetMultimap;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 public class DirectoryWatchService extends Service<Void>
 {
-	private static final Logger log = LogManager.getLogger(DirectoryWatchService.class);
+	private static final Logger							log			= LogManager.getLogger(DirectoryWatchService.class);
 
 	private final Map<Path, WatchEntry>					watchDirs	= new HashMap<>();
 	private final BiConsumer<Path, Collection<Path>>	watchEventConsumer;
@@ -163,7 +163,8 @@ public class DirectoryWatchService extends Service<Void>
 					// wait for key to be signaled
 					WatchKey currentKey = watchService.take();
 
-					ListMultimap<Path, Path> newFiles = ArrayListMultimap.create();
+					// Use SetMultimap to not add multiple entries for one file
+					SetMultimap<Path, Path> newFiles = HashMultimap.create();
 					for (WatchEvent<?> event : currentKey.pollEvents())
 					{
 						WatchEvent.Kind<?> kind = event.kind();

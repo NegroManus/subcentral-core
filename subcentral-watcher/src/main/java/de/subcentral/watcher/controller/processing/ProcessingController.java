@@ -9,9 +9,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.StringJoiner;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -358,7 +356,7 @@ public class ProcessingController extends Controller
 	{
 		final BooleanBinding noItemSelectedBinding = processingTreeTable.getSelectionModel().selectedItemProperty().isNull();
 
-		Observable stateOfSelectedItemObservable = FxUtil.observeBean(processingTreeTable.getSelectionModel().selectedItemProperty(), (TreeItem<ProcessingItem> treeItem) ->
+		final Observable stateOfSelectedItemObservable = FxUtil.observeBean(processingTreeTable.getSelectionModel().selectedItemProperty(), (TreeItem<ProcessingItem> treeItem) ->
 		{
 			ProcessingTask task = getProcessingTask(treeItem, true);
 			if (task == null)
@@ -406,14 +404,7 @@ public class ProcessingController extends Controller
 
 		// Only enabled if a ProcessingTask or ProcessingResult is selected which has finished
 		detailsBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
-		detailsBtn.setOnAction((ActionEvent evt) ->
-		{
-			ProcessingTask task = getSelectedProcessingTask(true);
-			if (task != null)
-			{
-				showDetails(task);
-			}
-		});
+		detailsBtn.setOnAction((ActionEvent evt) -> showDetails());
 
 		openDirectoryBtn.disableProperty().bind(new BooleanBinding()
 		{
@@ -428,42 +419,22 @@ public class ProcessingController extends Controller
 				return selectedItem == null || selectedItem.getValue().getFiles().isEmpty();
 			}
 		});
-		openDirectoryBtn.setOnAction((ActionEvent evt) ->
-		{
-			ProcessingItem item = getSelectedProcessingItem();
-			if (item != null)
-			{
-				openDirectory(item);
-			}
-		});
+		openDirectoryBtn.setOnAction((ActionEvent evt) -> openDirectory());
 
 		reprocessBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
-		reprocessBtn.setOnAction((ActionEvent evt) ->
-		{
-			ProcessingTask task = getSelectedProcessingTask(true);
-			if (task != null)
-			{
-				reprocess(task);
-			}
-		});
+		reprocessBtn.setOnAction((ActionEvent evt) -> reprocess());
 
 		cancelBtn.disableProperty().bind(noUnfinishedTaskSelectedBinding);
-		cancelBtn.setOnAction((ActionEvent evt) ->
-		{
-			cancelSelectedTask();
-		});
+		cancelBtn.setOnAction((ActionEvent evt) -> cancelTask());
 
 		removeBtn.disableProperty().bind(noItemSelectedBinding);
-		removeBtn.setOnAction((ActionEvent evt) ->
-		{
-			removeSelectedTask();
-		});
+		removeBtn.setOnAction((ActionEvent evt) -> removeTask());
 
 		BooleanBinding emptyProcessingTreeTable = Bindings.size(processingTreeTable.getRoot().getChildren()).isEqualTo(0);
 		cancelAllBtn.disableProperty().bind(emptyProcessingTreeTable);
-		cancelAllBtn.setOnAction(evt -> cancelAllTasks());
+		cancelAllBtn.setOnAction((ActionEvent evt) -> cancelAllTasks());
 		removeAllBtn.disableProperty().bind(emptyProcessingTreeTable);
-		removeAllBtn.setOnAction(evt -> clearProcessingTreeTable());
+		removeAllBtn.setOnAction((ActionEvent evt) -> removeAllTasks());
 	}
 
 	// getter
@@ -501,14 +472,17 @@ public class ProcessingController extends Controller
 		return processingExecutor;
 	}
 
+	// package private
+	Binding<ProcessingConfig> getProcessingConfig()
+	{
+		return processingConfig;
+	}
+
 	// Controlling methods
 	public void handleFilesFromWatchDir(Path watchDir, Collection<Path> files)
 	{
-		// Because some IO operations generate several Watch events, we have to remove duplicate files
-		// We use TreeSet for sorting them by name
-		Set<Path> distinctFiles = new TreeSet<>(files);
-		log.debug("Handling {} file(s) from watch directory {}", files.size(), watchDir);
-		handleFiles(distinctFiles.stream().map((Path relativeFile) -> watchDir.resolve(relativeFile)));
+		log.debug("Handling {} file(s) watch directory {}", files.size(), watchDir);
+		handleFiles(files.stream().map((Path relativeFile) -> watchDir.resolve(relativeFile)));
 	}
 
 	public void handleDroppedFiles(Collection<File> files)
@@ -525,7 +499,7 @@ public class ProcessingController extends Controller
 		// Filtering based on the current settings has to be done in the JavaFX Application Thread
 		Platform.runLater(() ->
 		{
-			filteredWithFileAttributes.stream().filter(this::filterByName).filter(this::filterOutAlreadyProcessedFiles).forEach(this::submitNewTask);
+			filteredWithFileAttributes.stream().filter(ProcessingController::filterByName).filter(this::filterOutAlreadyProcessedFiles).forEach(this::submitNewTask);
 		});
 	}
 
@@ -559,7 +533,7 @@ public class ProcessingController extends Controller
 		return true;
 	}
 
-	private boolean filterByName(Path file)
+	private static boolean filterByName(Path file)
 	{
 		Pattern pattern = UserPattern.parseSimplePatterns(WatcherSettings.INSTANCE.getProcessingSettings().getFilenamePatterns());
 		if (pattern == null)
@@ -575,24 +549,15 @@ public class ProcessingController extends Controller
 		return true;
 	}
 
-	private void submitNewTask(Path file)
-	{
-		TreeItem<ProcessingItem> taskItem = new TreeItem<>();
-		ProcessingTask newTask = new ProcessingTask(file, this, taskItem);
-		taskItem.setValue(newTask);
-		processingTreeTable.getRoot().getChildren().add(taskItem);
-
-		getProcessingExecutor().submit(newTask);
-	}
-
 	private boolean filterOutAlreadyProcessedFiles(Path file)
 	{
+		boolean rejectAlreadyProcessedFiles = WatcherSettings.INSTANCE.isRejectAlreadyProcessedFiles();
 		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
 		{
 			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
 			if (task.getSourceFile().equals(file))
 			{
-				if (WatcherSettings.INSTANCE.isRejectAlreadyProcessedFiles())
+				if (rejectAlreadyProcessedFiles)
 				{
 					log.info("Rejecting {} because that file is already present in the processing list and 'rejectAlreadyProcessedFiles' is enabled", file);
 					return false;
@@ -607,37 +572,30 @@ public class ProcessingController extends Controller
 		return true;
 	}
 
-	public void showDetails(ProcessingTask task)
+	private void submitNewTask(Path file)
 	{
-		try
-		{
-			DetailsController detailsCtrl = new DetailsController(this, task);
+		TreeItem<ProcessingItem> taskItem = new TreeItem<>();
+		ProcessingTask newTask = new ProcessingTask(file, this, taskItem);
+		taskItem.setValue(newTask);
+		processingTreeTable.getRoot().getChildren().add(taskItem);
 
-			Parent root = FxUtil.loadFromFxml("DetailsView.fxml", null, null, detailsCtrl);
-			Scene scene = new Scene(root);
-
-			Stage owner = mainController.getPrimaryStage();
-			Stage stage = new Stage();
-			stage.initOwner(owner);
-			stage.getIcons().add(FxUtil.loadImg("info_16.png"));
-			stage.setTitle("Processing details");
-			stage.setScene(scene);
-
-			stage.show();
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e);
-		}
+		getProcessingExecutor().submit(newTask);
 	}
 
-	public void openDirectory(ProcessingItem item)
+	// Getter for the tree items and tasks
+	public List<TreeItem<ProcessingItem>> getAllProcessingTaskTreeItems()
 	{
-		List<Path> files = item.getFiles();
-		if (!files.isEmpty())
-		{
-			FxUtil.browse(files.get(0).getParent().toUri().toString(), mainController.getCommonExecutor());
-		}
+		return processingTreeTable.getRoot().getChildren();
+	}
+
+	public List<ProcessingTask> getAllProcessingTasks()
+	{
+		return streamAllProcessingTasks().collect(Collectors.toList());
+	}
+
+	public Stream<ProcessingTask> streamAllProcessingTasks()
+	{
+		return getAllProcessingTaskTreeItems().stream().map((TreeItem<ProcessingItem> treeItem) -> (ProcessingTask) treeItem.getValue());
 	}
 
 	public TreeItem<ProcessingItem> getSelectedProcessingTreeItem()
@@ -647,18 +605,21 @@ public class ProcessingController extends Controller
 
 	public TreeItem<ProcessingItem> getSelectedProcessingTaskTreeItem(boolean allowIndirect)
 	{
-		TreeItem<ProcessingItem> treeItem = processingTreeTable.getSelectionModel().getSelectedItem();
-		if (treeItem == null)
+		return getProcessingTaskTreeItem(processingTreeTable.getSelectionModel().getSelectedItem(), allowIndirect);
+	}
+
+	private static TreeItem<ProcessingItem> getProcessingTaskTreeItem(TreeItem<ProcessingItem> treeItem, boolean allowIndirect)
+	{
+		if (treeItem != null)
 		{
-			return null;
-		}
-		if (treeItem.getValue() instanceof ProcessingTask)
-		{
-			return treeItem;
-		}
-		else if (allowIndirect && treeItem.getValue() instanceof ProcessingResult)
-		{
-			return treeItem.getParent();
+			if (treeItem.getValue() instanceof ProcessingTask)
+			{
+				return treeItem;
+			}
+			else if (allowIndirect && treeItem.getValue() instanceof ProcessingResult)
+			{
+				return treeItem.getParent();
+			}
 		}
 		return null;
 	}
@@ -676,37 +637,141 @@ public class ProcessingController extends Controller
 
 	private static ProcessingTask getProcessingTask(TreeItem<ProcessingItem> treeItem, boolean allowIndirect)
 	{
-		if (treeItem == null)
+		if (treeItem != null)
 		{
-			return null;
-		}
-		if (treeItem.getValue() instanceof ProcessingTask)
-		{
-			return (ProcessingTask) treeItem.getValue();
-		}
-		else if (allowIndirect && treeItem.getValue() instanceof ProcessingResult)
-		{
-			return ((ProcessingResult) treeItem.getValue()).getTask();
+			if (treeItem.getValue() instanceof ProcessingTask)
+			{
+				return (ProcessingTask) treeItem.getValue();
+			}
+			else if (allowIndirect && treeItem.getValue() instanceof ProcessingResult)
+			{
+				return ((ProcessingResult) treeItem.getValue()).getTask();
+			}
 		}
 		return null;
 	}
 
-	public void cancelSelectedTask()
+	// Action methods
+	public void showDetails()
 	{
 		ProcessingTask task = getSelectedProcessingTask(true);
-		task.cancel(true);
+		if (task != null)
+		{
+			try
+			{
+				DetailsController detailsCtrl = new DetailsController(this, task);
+
+				Parent root = FxUtil.loadFromFxml("DetailsView.fxml", null, null, detailsCtrl);
+				Scene scene = new Scene(root);
+
+				Stage owner = mainController.getPrimaryStage();
+				Stage stage = new Stage();
+				stage.initOwner(owner);
+				stage.getIcons().add(FxUtil.loadImg("info_16.png"));
+				stage.setTitle("Processing details");
+				stage.setScene(scene);
+
+				stage.show();
+			}
+			catch (IOException e)
+			{
+				log.error("Exception while opening details", e);
+				FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Exception occured", "Exception while opening details", e);
+			}
+		}
 	}
 
-	public void removeSelectedTask()
+	public void openDirectory()
 	{
-		cancelSelectedTask();
-		TreeItem<ProcessingItem> selectedTreeItem = getSelectedProcessingTaskTreeItem(true);
-		processingTreeTable.getRoot().getChildren().remove(selectedTreeItem);
-		// TODO Seems to be not needed anymore
-		// processingTreeTable.getSelectionModel().clearSelection();
+		ProcessingItem item = getSelectedProcessingItem();
+		if (item != null)
+		{
+			List<Path> files = item.getFiles();
+			if (!files.isEmpty())
+			{
+				FxUtil.browse(files.get(0).getParent().toUri().toString(), mainController.getCommonExecutor());
+			}
+		}
 	}
 
-	public void clearProcessingTreeTable()
+	public void reprocess()
+	{
+		TreeItem<ProcessingItem> taskTreeItem = getSelectedProcessingTaskTreeItem(true);
+		if (taskTreeItem != null)
+		{
+			ProcessingTask task = (ProcessingTask) taskTreeItem.getValue();
+			// Cancel the current task
+			task.cancel(true);
+			// Delete files on background thread and then create and execute new task
+			Task<Void> reprocessingTask = new Task<Void>()
+			{
+				@Override
+				protected Void call() throws IOException
+				{
+					task.deleteResultFiles();
+					return null;
+				}
+
+				@Override
+				protected void succeeded()
+				{
+					taskTreeItem.getChildren().clear();
+					ProcessingTask newTask = new ProcessingTask(task.getSourceFile(), ProcessingController.this, taskTreeItem);
+					taskTreeItem.setValue(newTask);
+
+					// TODO hack so that the new TreeItem value is observed for the state of its ProcessingT
+					// -> solution: use service (can be restarted)
+					processingTreeTable.getSelectionModel().clearSelection();
+					processingTreeTable.getSelectionModel().select(taskTreeItem);
+
+					getProcessingExecutor().execute(newTask);
+				}
+
+				@Override
+				protected void failed()
+				{
+					Throwable e = getException();
+					log.error("Exception while deleting result files", e);
+					FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Exception occured", "Exception while deleting result files", e);
+				}
+			};
+			getProcessingExecutor().execute(reprocessingTask);
+		}
+	}
+
+	public void cancelTask()
+	{
+		ProcessingTask task = getSelectedProcessingTask(true);
+		if (task != null)
+		{
+			task.cancel(true);
+		}
+	}
+
+	public void removeTask()
+	{
+		TreeItem<ProcessingItem> taskTreeItem = getSelectedProcessingTaskTreeItem(true);
+		if (taskTreeItem != null)
+		{
+			ProcessingTask task = (ProcessingTask) taskTreeItem.getValue();
+			// Cancel task
+			task.cancel(true);
+			// Remove tree item
+			processingTreeTable.getRoot().getChildren().remove(taskTreeItem);
+			// We have to clear the selection manually if no items left
+			if (processingTreeTable.getRoot().getChildren().isEmpty())
+			{
+				processingTreeTable.getSelectionModel().clearSelection();
+			}
+		}
+	}
+
+	public void cancelAllTasks()
+	{
+		streamAllProcessingTasks().forEach((ProcessingTask task) -> task.cancel());
+	}
+
+	public void removeAllTasks()
 	{
 		cancelAllTasks();
 
@@ -725,16 +790,8 @@ public class ProcessingController extends Controller
 		}
 		catch (IOException e)
 		{
-			FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Failed to reload processing pane", "Exception while reloading processing pane", e).show();
-		}
-	}
-
-	public void cancelAllTasks()
-	{
-		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
-		{
-			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
-			task.cancel(true);
+			log.error("Exception while reloading processing pane", e);
+			FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Exception occured", "Exception while reloading processing pane", e);
 		}
 	}
 
@@ -748,52 +805,7 @@ public class ProcessingController extends Controller
 		}
 	}
 
-	public void reprocess(ProcessingTask task)
-	{
-		// Cancel the current task
-		task.cancel(true);
-		TreeItem<ProcessingItem> treeItem = task.getTaskTreeItem();
-
-		// Delete files on background thread and then create and execute new task
-		Task<Void> reprocessingTask = new Task<Void>()
-		{
-			@Override
-			protected Void call() throws IOException
-			{
-				task.deleteResultFiles();
-				return null;
-			}
-
-			@Override
-			protected void succeeded()
-			{
-				treeItem.getChildren().clear();
-				ProcessingTask newTask = new ProcessingTask(task.getSourceFile(), ProcessingController.this, treeItem);
-				treeItem.setValue(newTask);
-
-				// TODO hack so that the new TreeItem value is observed for the state of its ProcessingT
-				// -> solution: use service (can be restarted)
-				processingTreeTable.getSelectionModel().clearSelection();
-				processingTreeTable.getSelectionModel().select(treeItem);
-
-				getProcessingExecutor().execute(newTask);
-			}
-
-			@Override
-			protected void failed()
-			{
-				log.error("Deletion of target files of task " + task + " failed", getException());
-			}
-		};
-		getProcessingExecutor().execute(reprocessingTask);
-	}
-
-	// package private
-	Binding<ProcessingConfig> getProcessingConfig()
-	{
-		return processingConfig;
-	}
-
+	// Private inner classes
 	private static class FilesTreeTableCell extends TreeTableCell<ProcessingItem, ObservableList<Path>>
 	{
 		@Override
@@ -804,18 +816,17 @@ public class ProcessingController extends Controller
 			if (empty || item == null)
 			{
 				setText("");
+				return;
 			}
-			else
+			StringJoiner joiner = new StringJoiner(", ");
+			for (Path file : item)
 			{
-				StringJoiner joiner = new StringJoiner(", ");
-				for (Path file : item)
-				{
-					String ext = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1];
-					ext = StringUtils.stripStart(ext, ".");
-					joiner.add(ext);
-				}
-				setText(joiner.toString().toUpperCase());
+				String ext = IOUtil.splitIntoFilenameAndExtension(file.getFileName().toString())[1];
+				ext = StringUtils.stripStart(ext, ".");
+				joiner.add(ext);
 			}
+			setText(joiner.toString().toUpperCase());
+
 		};
 	}
 
@@ -828,13 +839,10 @@ public class ProcessingController extends Controller
 
 			if (empty || item == null)
 			{
-				setText("");
 				setGraphic(null);
 				return;
 			}
-
 			setText(item.getMessage());
-
 			Label graphic = null;
 			switch (item.getState())
 			{
@@ -877,7 +885,7 @@ public class ProcessingController extends Controller
 			if (item instanceof ProcessingTaskInfo)
 			{
 				ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
-				setText(taskInfo.getFlags().stream().map(this::flagToString).collect(Collectors.joining(", ")));
+				setText(taskInfo.getFlags().stream().map(InfoTreeTableCell::flagToString).collect(Collectors.joining(", ")));
 				setGraphic(null);
 			}
 			else if (item instanceof ProcessingResultInfo)
@@ -928,7 +936,7 @@ public class ProcessingController extends Controller
 			}
 		}
 
-		private String flagToString(ProcessingTaskInfo.Flag flag)
+		private static String flagToString(ProcessingTaskInfo.Flag flag)
 		{
 			switch (flag)
 			{
@@ -939,5 +947,4 @@ public class ProcessingController extends Controller
 			}
 		}
 	}
-
 }
