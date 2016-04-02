@@ -849,11 +849,11 @@ public class ProcessingController extends Controller
 			{
 				case CANCELLED:
 					ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
-					graphic = new Label("", cancelImg);
+					graphic = new Label(null, cancelImg);
 					break;
 				case FAILED:
 					ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
-					graphic = new Label("", errorImg);
+					graphic = new Label(null, errorImg);
 					graphic.setTooltip(new Tooltip(item.getException().toString()));
 					break;
 				default:
