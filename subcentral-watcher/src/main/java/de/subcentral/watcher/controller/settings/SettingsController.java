@@ -35,6 +35,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -349,15 +350,16 @@ public class SettingsController extends Controller
 			@Override
 			protected void failed()
 			{
-				log.error("Loading of settings section " + settingsSection + "failed", getException());
-				sectionRootPane.getChildren().clear();
+				Throwable e = getException();
+				log.error("Loading of settings section " + settingsSection + " failed", e);
+				sectionRootPane.getChildren().setAll(new Label("Loading of settings section " + settingsSection + " failed: " + e));
 			}
 
 			@Override
 			protected void cancelled()
 			{
-				log.warn("Loading of settings section " + settingsSection + " was cancelled", getException());
-				sectionRootPane.getChildren().clear();
+				log.error("Loading of settings section " + settingsSection + " was cancelled");
+				sectionRootPane.getChildren().setAll(new Label("Loading of settings section " + settingsSection + " was cancelled"));
 			}
 		};
 	}

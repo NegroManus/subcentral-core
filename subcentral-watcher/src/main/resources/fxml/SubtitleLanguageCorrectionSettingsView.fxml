@@ -59,7 +59,7 @@
                            <GridPane.margin>
                               <Insets top="10.0" />
                            </GridPane.margin></Label>
-								<TableView fx:id="textLangMappingsTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="150.0" GridPane.rowIndex="4">
+								<TableView fx:id="textLangMappingsTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" GridPane.rowIndex="4">
 									<columns>
 										<TableColumn fx:id="textLangMappingsTextColumn" prefWidth="75.0" text="Text" />
 										<TableColumn fx:id="textLangMappingsLangColumn" prefWidth="75.0" text="Language" />

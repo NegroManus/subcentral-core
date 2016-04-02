@@ -7,7 +7,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="rootPane" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="rootPane" hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
 	</columnConstraints>
@@ -70,6 +70,16 @@
                      </image>
                   </ImageView>
                </graphic></Button>
+            <HBox HBox.hgrow="ALWAYS" />
+            <Button fx:id="importCorrectorsButton" mnemonicParsing="false" text="Import">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/upload_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
 			</children>
 		</HBox>
 	</children>

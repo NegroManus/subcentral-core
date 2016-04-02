@@ -3,6 +3,7 @@ package de.subcentral.watcher.controller.settings;
 import java.util.Optional;
 
 import de.subcentral.fx.FxUtil;
+import de.subcentral.watcher.ImportSettingEntriesController.ImportSettingEntriesParameters;
 import de.subcentral.watcher.WatcherDialogs;
 import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
@@ -42,6 +43,8 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	private Button															editCorrectorButton;
 	@FXML
 	private Button															removeCorrectorButton;
+	@FXML
+	private Button															importCorrectorsButton;
 
 	public CorrectionSettingsController(SettingsController settingsController)
 	{
@@ -121,6 +124,15 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		removeCorrectorButton.setOnAction((ActionEvent event) ->
 		{
 			FxUtil.handleConfirmedDelete(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
+		});
+
+		importCorrectorsButton.setOnAction((ActionEvent event) ->
+		{
+			Optional<ImportSettingEntriesParameters> result = WatcherDialogs.showImportSettingEntriesView(settingsController.getMainController().getPrimaryStage());
+			if (result != null)
+			{
+				System.out.println(result);
+			}
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupport(correctorsTableView, editCorrectorButton, removeCorrectorButton);

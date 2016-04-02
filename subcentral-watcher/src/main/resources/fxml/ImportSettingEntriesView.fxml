@@ -20,12 +20,12 @@
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-      <RadioButton fx:id="fileRadioBtn" mnemonicParsing="false" text="Import from file" />
-      <TextField fx:id="fileTxtFld" GridPane.columnIndex="1" />
-      <Button fx:id="chooseFileBtn" mnemonicParsing="false" text="Choose" GridPane.columnIndex="2" />
-      <RadioButton fx:id="urlRadioBtn" mnemonicParsing="false" text="Import from URL" GridPane.rowIndex="1" />
-      <TextField fx:id="urlTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <RadioButton fx:id="defaultSettingsRadioBtn" mnemonicParsing="false" text="Import from default settings" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+      <RadioButton fx:id="defaultSettingsRadioBtn" mnemonicParsing="false" text="Import from default settings" GridPane.columnSpan="2147483647" />
+      <RadioButton fx:id="fileRadioBtn" mnemonicParsing="false" text="Import from file" GridPane.rowIndex="1" />
+      <TextField fx:id="fileTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Button fx:id="chooseFileBtn" mnemonicParsing="false" text="Choose" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <RadioButton fx:id="urlRadioBtn" mnemonicParsing="false" text="Import from URL" GridPane.rowIndex="2" />
+      <TextField fx:id="urlTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <CheckBox fx:id="addEntriesCheckBox" mnemonicParsing="false" text="Add new entries" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets top="20.0" />

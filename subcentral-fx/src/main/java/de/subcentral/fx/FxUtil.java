@@ -3,6 +3,7 @@ package de.subcentral.fx;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -94,6 +95,7 @@ public class FxUtil
 
 	public static final StringConverter<String>					REJECT_BLANK_STRING_CONVERTER		= initRejectBlankStringConverter();
 	public static final StringConverter<Path>					PATH_STRING_CONVERTER				= initPathStringConverter();
+	public static final StringConverter<URL>					URL_STRING_CONVERTER				= initUrlStringConverter();
 	public static final StringConverter<Locale>					LOCALE_DISPLAY_NAME_CONVERTER		= initLocaleDisplayNameConverter();
 	public static final StringConverter<ObservableList<Locale>>	LOCALE_LIST_DISPLAY_NAME_CONVERTER	= initLocaleListDisplayNameConverter();
 	public static final Comparator<Locale>						LOCALE_DISPLAY_NAME_COMPARATOR		= initLocaleDisplayNameComparator();
@@ -143,6 +145,39 @@ public class FxUtil
 					return null;
 				}
 				return Paths.get(string);
+			}
+		};
+	}
+
+	private static StringConverter<URL> initUrlStringConverter()
+	{
+		return new StringConverter<URL>()
+		{
+			@Override
+			public String toString(URL url)
+			{
+				if (url == null)
+				{
+					return "";
+				}
+				return url.toString();
+			}
+
+			@Override
+			public URL fromString(String string)
+			{
+				if (StringUtils.isBlank(string))
+				{
+					return null;
+				}
+				try
+				{
+					return new URL(string);
+				}
+				catch (MalformedURLException e)
+				{
+					throw new IllegalArgumentException(e);
+				}
 			}
 		};
 	}
@@ -287,6 +322,11 @@ public class FxUtil
 		return bindTextFieldToProperty(pathTxtFld, path, PATH_STRING_CONVERTER);
 	}
 
+	public static TextFormatter<URL> bindTextFieldToUrl(TextField pathTxtFld)
+	{
+		return bindToTextField(pathTxtFld, URL_STRING_CONVERTER);
+	}
+
 	public static void setChooseDirectoryAction(Button chooseDirBtn, TextFormatter<Path> textFormatter, Stage stage, String title)
 	{
 		chooseDirBtn.setOnAction((ActionEvent event) ->
@@ -308,7 +348,7 @@ public class FxUtil
 		});
 	}
 
-	public static void setChooseFileAction(Button chooseFileBtn, TextFormatter<Path> textFormatter, Stage stage, String title, ExtensionFilter... extensionFilters)
+	public static void setChooseFileAction(Button chooseFileBtn, TextFormatter<Path> textFormatter, Window owner, String title, ExtensionFilter... extensionFilters)
 	{
 		chooseFileBtn.setOnAction((ActionEvent event) ->
 		{
@@ -329,7 +369,7 @@ public class FxUtil
 				fileChooser.setSelectedExtensionFilter(extensionFilters[0]);
 			}
 
-			File selectedFile = fileChooser.showOpenDialog(stage);
+			File selectedFile = fileChooser.showOpenDialog(owner);
 			if (selectedFile != null)
 			{
 				textFormatter.setValue(selectedFile.toPath());

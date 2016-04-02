@@ -11,12 +11,12 @@
 	<center>
 		<SplitPane dividerPositions="0.2" BorderPane.alignment="CENTER">
 			<items>
-				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+				<AnchorPane>
 					<children>
-						<TreeView fx:id="sectionSelectionTreeView" fixedCellSize="24.0" layoutX="-44.0" layoutY="263.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+						<TreeView fx:id="sectionSelectionTreeView" fixedCellSize="24.0" layoutX="-44.0" layoutY="263.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 					</children>
 				</AnchorPane>
-				<AnchorPane fx:id="sectionRootPane" minHeight="0.0" minWidth="0.0" prefHeight="550.0" prefWidth="500.0" />
+            <AnchorPane fx:id="sectionRootPane" prefHeight="200.0" prefWidth="200.0" />
 			</items>
 		</SplitPane>
 	</center>

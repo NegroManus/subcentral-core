@@ -1,0 +1,71 @@
+package de.subcentral.watcher;
+
+import de.subcentral.fx.Controller;
+import de.subcentral.fx.FxUtil;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
+import javafx.stage.Window;
+
+public abstract class AbstractDialogController<T> extends Controller
+{
+	// View
+	protected final Dialog<T>	dialog	= new Dialog<>();
+	@FXML
+	protected Node				rootPane;
+
+	public AbstractDialogController(Window owner)
+	{
+		this.dialog.initOwner(owner);
+	}
+
+	public Dialog<T> getDialog()
+	{
+		return dialog;
+	}
+
+	@Override
+	public final void initialize()
+	{
+		initDialog();
+		initComponents();
+	}
+
+	protected void initDialog()
+	{
+		String title = getTitle();
+		dialog.setTitle(title);
+		String imgPath = getImagePath();
+		if (imgPath != null)
+		{
+			dialog.setGraphic(new ImageView(FxUtil.loadImg(imgPath)));
+		}
+		dialog.setHeaderText(title);
+
+		dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
+		dialog.getDialogPane().setContent(rootPane);
+		dialog.getDialogPane().setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
+		Platform.runLater(() -> getDefaultFocusNode().requestFocus());
+	}
+
+	protected abstract String getTitle();
+
+	protected String getImagePath()
+	{
+		return null;
+	}
+
+	protected ButtonType[] getButtonTypes()
+	{
+		return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
+	}
+
+	protected abstract Node getDefaultFocusNode();
+
+	protected abstract void initComponents();
+}
