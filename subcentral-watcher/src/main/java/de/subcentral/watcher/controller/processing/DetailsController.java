@@ -210,14 +210,8 @@ public class DetailsController extends Controller
 		Release rls = subRls.getFirstMatchingRelease();
 
 		String[] keys = { "Computed name:", "Media:", "Release tags:", "Release group:", "Subtitle language:", "Subtitle tags:", "Subtitle source:", "Subtitle group:" };
-		String[] values = {
-				printer.apply(subRls),
-				printer.apply(rls.getMedia()),
-				Tag.formatList(rls.getTags()),
-				rls.getGroup() != null ? rls.getGroup().toString() : "",
-				sub.getLanguage() != null ? sub.getLanguage() : "",
-				Tag.formatList(subRls.getTags()),
-				sub.getSource() != null ? sub.getSource().getName() : "",
+		String[] values = { printer.apply(subRls), printer.apply(rls.getMedia()), Tag.formatList(rls.getTags()), rls.getGroup() != null ? rls.getGroup().toString() : "",
+				sub.getLanguage() != null ? sub.getLanguage() : "", Tag.formatList(subRls.getTags()), sub.getSource() != null ? sub.getSource().getName() : "",
 				sub.getGroup() != null ? sub.getGroup().toString() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
 		return pane;
@@ -377,7 +371,7 @@ public class DetailsController extends Controller
 					resultTypeNode = WatcherFxUtil.createManualLabel();
 					break;
 				default:
-					throw new AssertionError();
+					resultTypeNode = new Label(info.getRelationType().toString());
 			}
 		}
 		else

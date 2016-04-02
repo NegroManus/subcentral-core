@@ -97,7 +97,7 @@ public class ObservableRelease extends ObservableNamableBeanWrapper<Release>
 			}
 			else
 			{
-				throw new AssertionError("Unsupported media" + media);
+				throw new IllegalArgumentException("Unsupported media" + media);
 			}
 		}
 		return FXCollections.observableArrayList(mediaList);
