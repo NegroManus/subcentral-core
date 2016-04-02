@@ -48,6 +48,8 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 			case EQUAL:
 				sb.append("equal ");
 				break;
+			default:
+				sb.append(replacer.getSearchMode());
 		}
 		sb.append('[');
 		StringUtil.COMMA_JOINER.appendTo(sb, replacer.getSearchTags());
@@ -65,6 +67,8 @@ public class ReleaseTagsCorrectionRuleSettingEntry extends CorrectionRuleSetting
 			case COMPLETE_LIST:
 				sb.append("set the tags to ");
 				break;
+			default:
+				sb.append(replacer.getReplaceMode());
 		}
 		sb.append('[');
 		StringUtil.COMMA_JOINER.appendTo(sb, replacer.getReplacement());

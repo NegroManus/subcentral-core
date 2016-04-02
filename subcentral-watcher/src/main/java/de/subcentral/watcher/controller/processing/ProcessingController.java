@@ -63,7 +63,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
@@ -842,25 +841,26 @@ public class ProcessingController extends Controller
 			{
 				setText(null);
 				setGraphic(null);
+				setTooltip(null);
 				return;
 			}
-			Label graphic = null;
+			setText(item.getMessage());
 			switch (item.getState())
 			{
 				case CANCELLED:
 					ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
-					graphic = new Label(null, cancelImg);
+					setGraphic(cancelImg);
+					setTooltip(null);
 					break;
 				case FAILED:
 					ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
-					graphic = new Label(null, errorImg);
-					graphic.setTooltip(new Tooltip(item.getException().toString()));
+					setGraphic(errorImg);
+					setTooltip(new Tooltip(item.getException().toString()));
 					break;
 				default:
-					break;
+					setGraphic(null);
+					setTooltip(null);
 			}
-			setText(item.getMessage());
-			setGraphic(graphic);
 		};
 	};
 
@@ -905,7 +905,7 @@ public class ProcessingController extends Controller
 						hbox.getChildren().add(WatcherFxUtil.createGuessedLabel(resultInfo.getStandardRelease(), (Release rls) -> result.getTask().generateDisplayName(rls)));
 						break;
 					default:
-						throw new AssertionError();
+						break;
 				}
 				switch (resultInfo.getRelationType())
 				{
@@ -919,7 +919,7 @@ public class ProcessingController extends Controller
 						hbox.getChildren().add(WatcherFxUtil.createManualLabel());
 						break;
 					default:
-						throw new AssertionError();
+						break;
 				}
 
 				// nuke

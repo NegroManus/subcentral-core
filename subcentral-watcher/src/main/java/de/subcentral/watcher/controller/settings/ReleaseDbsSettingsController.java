@@ -79,36 +79,37 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 			if (empty || item == null)
 			{
 				setGraphic(null);
+				setTooltip(null);
+				return;
 			}
-			else
+			switch (item)
 			{
-				switch (item)
-				{
-					case UNKNOWN:
-						setGraphic(null);
-						setTooltip(new Tooltip("Unknown"));
-						break;
-					case CHECKING:
-						ProgressIndicator progressIndicator = new ProgressIndicator();
-						progressIndicator.setPrefWidth(16d);
-						progressIndicator.setPrefHeight(16d);
-						setGraphic(progressIndicator);
-						break;
-					case AVAILABLE:
-						setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
-						setTooltip(new Tooltip("Available: Accessible and searchable"));
-						break;
-					case LIMITED:
-						setGraphic(new ImageView(FxUtil.loadImg("warning_16.png")));
-						setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
-						break;
-					case NOT_AVAILABLE:
-						setGraphic(new ImageView(FxUtil.loadImg("cancel_16.png")));
-						setTooltip(new Tooltip("Not available: Not reachable"));
-						break;
-					default:
-						setGraphic(null);
-				}
+				case UNKNOWN:
+					setGraphic(null);
+					setTooltip(new Tooltip("Unknown"));
+					break;
+				case CHECKING:
+					ProgressIndicator progressIndicator = new ProgressIndicator();
+					progressIndicator.setPrefWidth(16d);
+					progressIndicator.setPrefHeight(16d);
+					setGraphic(progressIndicator);
+					setTooltip(null);
+					break;
+				case AVAILABLE:
+					setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
+					setTooltip(new Tooltip("Available: Accessible and searchable"));
+					break;
+				case LIMITED:
+					setGraphic(new ImageView(FxUtil.loadImg("warning_16.png")));
+					setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
+					break;
+				case NOT_AVAILABLE:
+					setGraphic(new ImageView(FxUtil.loadImg("cancel_16.png")));
+					setTooltip(new Tooltip("Not available: Not reachable"));
+					break;
+				default:
+					setGraphic(new Label(item.name()));
+					setTooltip(null);
 			}
 		}
 	}
@@ -174,7 +175,6 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 				HBox hbox = FxUtil.createDefaultHBox();
 				Label name = new Label(db.getSite().getDisplayName());
 				hbox.getChildren().add(name);
-
 				try
 				{
 					URL host = new URL(db.getSite().getLink());
@@ -186,7 +186,6 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 				{
 					log.warn("Could not create Hyperlink for release database " + item.getValue(), e);
 				}
-
 				setGraphic(hbox);
 			}
 		}
