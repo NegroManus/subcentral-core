@@ -9,6 +9,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -886,7 +887,7 @@ public class ProcessingController extends Controller
 			if (item instanceof ProcessingTaskInfo)
 			{
 				ProcessingTaskInfo taskInfo = (ProcessingTaskInfo) item;
-				setText(taskInfo.getFlags().stream().map(InfoTreeTableCell::flagToString).collect(Collectors.joining(", ")));
+				setText(flagsToString(taskInfo.getFlags()));
 				setGraphic(null);
 			}
 			else if (item instanceof ProcessingResultInfo)
@@ -935,6 +936,11 @@ public class ProcessingController extends Controller
 				setText(null);
 				setGraphic(null);
 			}
+		}
+
+		private static String flagsToString(Set<ProcessingTaskInfo.Flag> flags)
+		{
+			return flags.stream().map(InfoTreeTableCell::flagToString).collect(Collectors.joining(", "));
 		}
 
 		private static String flagToString(ProcessingTaskInfo.Flag flag)
