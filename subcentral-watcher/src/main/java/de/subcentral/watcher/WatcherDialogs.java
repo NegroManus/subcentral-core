@@ -429,7 +429,6 @@ public class WatcherDialogs
 			nameReplacementTxtFld.setText(initialNameReplacement);
 
 			// replacement names
-			// TextFieldListCell.forListView(FxUtil.REJECT_BLANK_STRING_CONVERTER)
 			aliasNamesReplacementListView.setCellFactory(TextFieldListCell.forListView(FxUtil.REJECT_BLANK_STRING_CONVERTER));
 			aliasNamesReplacementListView.setItems(aliasNamesReplacement);
 			addNameBtn.setOnAction((ActionEvent evt) ->

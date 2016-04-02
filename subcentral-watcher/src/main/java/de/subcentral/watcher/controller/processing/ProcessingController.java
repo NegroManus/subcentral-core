@@ -815,7 +815,7 @@ public class ProcessingController extends Controller
 
 			if (empty || item == null)
 			{
-				setText("");
+				setText(null);
 				return;
 			}
 			StringJoiner joiner = new StringJoiner(", ");
@@ -839,10 +839,10 @@ public class ProcessingController extends Controller
 
 			if (empty || item == null)
 			{
+				setText(null);
 				setGraphic(null);
 				return;
 			}
-			setText(item.getMessage());
 			Label graphic = null;
 			switch (item.getState())
 			{
@@ -858,6 +858,7 @@ public class ProcessingController extends Controller
 				default:
 					break;
 			}
+			setText(item.getMessage());
 			setGraphic(graphic);
 		};
 	};
@@ -878,7 +879,7 @@ public class ProcessingController extends Controller
 
 			if (empty || item == null)
 			{
-				setText("");
+				setText(null);
 				setGraphic(null);
 				return;
 			}
@@ -926,12 +927,12 @@ public class ProcessingController extends Controller
 				// meta tags
 				WatcherFxUtil.addMetaTaggedLabel(hbox, result.getRelease(), result.getTask().getConfig().getReleaseMetaTags());
 
-				setText("");
+				setText(null);
 				setGraphic(hbox);
 			}
 			else
 			{
-				setText("");
+				setText(null);
 				setGraphic(null);
 			}
 		}

@@ -669,7 +669,7 @@ public class SettingsController extends Controller
 
 			if (empty || item == null)
 			{
-				setText("");
+				setText(null);
 				setGraphic(null);
 			}
 			else
