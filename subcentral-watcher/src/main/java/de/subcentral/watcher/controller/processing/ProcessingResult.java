@@ -41,7 +41,7 @@ public class ProcessingResult implements ProcessingItem
 	private final DoubleProperty			progress	= new SimpleDoubleProperty(this, "progress");
 	private final Property<ProcessingInfo>	info		= new SimpleObjectProperty<>(this, "info");
 	private final Property<Throwable>		exception	= new SimpleObjectProperty<>(this, "exception");
-	private final WorkerStatus			status		= new WorkerStatus(stateProperty(), messageProperty(), exceptionProperty());
+	private final WorkerStatus				status		= new WorkerStatus(stateProperty(), messageProperty(), exceptionProperty());
 
 	/**
 	 * package protected
