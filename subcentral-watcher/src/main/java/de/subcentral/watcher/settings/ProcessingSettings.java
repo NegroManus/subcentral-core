@@ -12,6 +12,8 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.settings.AbstractSubSettings;
+import de.subcentral.settings.ConfigurationHelper;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;

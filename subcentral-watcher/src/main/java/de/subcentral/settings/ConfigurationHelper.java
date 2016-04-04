@@ -1,4 +1,4 @@
-package de.subcentral.watcher.settings;
+package de.subcentral.settings;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,14 +43,19 @@ import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.xrelto.XRelTo;
 import de.subcentral.support.xrelto.XRelToMetadataDb;
+import de.subcentral.watcher.settings.CompatibilitySettingEntry;
+import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.MetadataDbSettingEntry;
+import de.subcentral.watcher.settings.ParsingServiceSettingEntry;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
-// package private
-class ConfigurationHelper
+public class ConfigurationHelper
 {
-	static void save(XMLConfiguration cfg, Path file) throws ConfigurationException
+	public static void save(XMLConfiguration cfg, Path file) throws ConfigurationException
 	{
 		try
 		{
@@ -63,7 +68,7 @@ class ConfigurationHelper
 		}
 	}
 
-	static XMLConfiguration load(URL file) throws ConfigurationException
+	public static XMLConfiguration load(URL file) throws ConfigurationException
 	{
 		try
 		{
@@ -78,7 +83,7 @@ class ConfigurationHelper
 		}
 	}
 
-	static XMLConfiguration load(Path file) throws ConfigurationException
+	public static XMLConfiguration load(Path file) throws ConfigurationException
 	{
 		try
 		{
@@ -95,7 +100,7 @@ class ConfigurationHelper
 
 	// GETTER
 	// Static config getter
-	static Path getPath(Configuration cfg, String key)
+	public static Path getPath(Configuration cfg, String key)
 	{
 		String path = cfg.getString(key);
 		if (path.isEmpty())
@@ -108,7 +113,7 @@ class ConfigurationHelper
 		}
 	}
 
-	static ObservableList<ParsingServiceSettingEntry> getParsingServices(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<ParsingServiceSettingEntry> getParsingServices(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		ArrayList<ParsingServiceSettingEntry> services = new ArrayList<>(4);
 		List<HierarchicalConfiguration<ImmutableNode>> parsingServiceCfgs = cfg.configurationsAt(key + ".parsingService");
@@ -141,7 +146,7 @@ class ConfigurationHelper
 		return FXCollections.observableList(services);
 	}
 
-	static ObservableList<CorrectionRuleSettingEntry<?, ?>> getCorrectionRules(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<CorrectionRuleSettingEntry<?, ?>> getCorrectionRules(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		ArrayList<CorrectionRuleSettingEntry<?, ?>> stdzers = new ArrayList<>();
 		List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule");
@@ -180,7 +185,7 @@ class ConfigurationHelper
 		return FXCollections.observableList(stdzers);
 	}
 
-	static ObservableList<MetadataDbSettingEntry<Release>> getReleaseDbs(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<MetadataDbSettingEntry<Release>> getReleaseDbs(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		ArrayList<MetadataDbSettingEntry<Release>> dbs = new ArrayList<>(3);
 		List<HierarchicalConfiguration<ImmutableNode>> rlsDbCfgs = cfg.configurationsAt(key + ".db");
@@ -209,7 +214,7 @@ class ConfigurationHelper
 		return FXCollections.observableList(dbs);
 	}
 
-	static ObservableList<Tag> getTags(Configuration cfg, String key)
+	public static ObservableList<Tag> getTags(Configuration cfg, String key)
 	{
 		ArrayList<Tag> tags = new ArrayList<>();
 		for (String tagName : cfg.getList(String.class, key + ".tag"))
@@ -220,7 +225,7 @@ class ConfigurationHelper
 		return FXCollections.observableList(tags);
 	}
 
-	static ObservableList<StandardRelease> getStandardReleases(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<StandardRelease> getStandardReleases(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		ArrayList<StandardRelease> rlss = new ArrayList<>();
 		List<HierarchicalConfiguration<ImmutableNode>> rlsCfgs = cfg.configurationsAt(key + ".standardRelease");
@@ -235,7 +240,7 @@ class ConfigurationHelper
 		return FXCollections.observableList(rlss);
 	}
 
-	static ObservableList<Release> getReleases(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<Release> getReleases(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		ArrayList<Release> rlss = new ArrayList<>();
 		List<HierarchicalConfiguration<ImmutableNode>> rlsCfgs = cfg.configurationsAt(key + ".release");
@@ -249,7 +254,7 @@ class ConfigurationHelper
 		return FXCollections.observableList(rlss);
 	}
 
-	static ObservableList<CompatibilitySettingEntry> getCompatibilities(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<CompatibilitySettingEntry> getCompatibilities(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		Set<CompatibilitySettingEntry> compatibilities = new LinkedHashSet<>();
 		// read GroupsCompatibilities
@@ -265,7 +270,7 @@ class ConfigurationHelper
 		return FXCollections.observableArrayList(compatibilities);
 	}
 
-	static ObservableMap<String, Object> getNamingParameters(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableMap<String, Object> getNamingParameters(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
 		Map<String, Object> params = new LinkedHashMap<>(3);
 		// read actual values
@@ -280,7 +285,7 @@ class ConfigurationHelper
 	}
 
 	// SETTER
-	static void addParsingServices(XMLConfiguration cfg, String key, List<ParsingServiceSettingEntry> parsingServices)
+	public static void addParsingServices(XMLConfiguration cfg, String key, List<ParsingServiceSettingEntry> parsingServices)
 	{
 		for (int i = 0; i < parsingServices.size(); i++)
 		{
@@ -290,7 +295,7 @@ class ConfigurationHelper
 		}
 	}
 
-	static void addCorrectionRules(XMLConfiguration cfg, String key, List<CorrectionRuleSettingEntry<?, ?>> rules)
+	public static void addCorrectionRules(XMLConfiguration cfg, String key, List<CorrectionRuleSettingEntry<?, ?>> rules)
 	{
 		// one index for each element name
 		int seriesNameIndex = 0;
@@ -335,7 +340,7 @@ class ConfigurationHelper
 		}
 	}
 
-	static void addPath(Configuration cfg, String key, Path path)
+	public static void addPath(Configuration cfg, String key, Path path)
 	{
 		// WARNING: Need to use path.toString() because path implements iterable
 		// and results in an endless loop when Commons-Configuration tries to print it

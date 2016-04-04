@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.ObservableObject;
+import de.subcentral.settings.ConfigurationHelper;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;

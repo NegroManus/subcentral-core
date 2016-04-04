@@ -1,4 +1,4 @@
-package de.subcentral.watcher.settings;
+package de.subcentral.settings;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

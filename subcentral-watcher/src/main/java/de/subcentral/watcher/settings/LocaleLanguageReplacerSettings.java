@@ -11,11 +11,12 @@ import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 import de.subcentral.core.correct.LocaleLanguageReplacer;
-import de.subcentral.core.correct.SubtitleLanguageCorrector;
 import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
+import de.subcentral.core.correct.SubtitleLanguageCorrector;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
+import de.subcentral.settings.AbstractSubSettings;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ListProperty;
@@ -27,13 +28,13 @@ import javafx.collections.ObservableList;
 
 public class LocaleLanguageReplacerSettings extends AbstractSubSettings
 {
-	private final ListProperty<Locale>				parsingLanguages			= new SimpleListProperty<>(this, "parsingLanguages", FXCollections.observableArrayList());
-	private final Property<LanguageFormat>			outputLanguageFormat		= new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.ISO2);
-	private final Property<Locale>					outputLanguage				= new SimpleObjectProperty<>(this, "outputLanguage", Locale.ENGLISH);
-	private final ListProperty<PatternToLanguageMapping>	customLanguagePatterns		= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.observableArrayList());
-	private final ListProperty<LanguageToTextMapping>	customLanguageTextMappings	= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.observableArrayList());
+	private final ListProperty<Locale>						parsingLanguages					= new SimpleListProperty<>(this, "parsingLanguages", FXCollections.observableArrayList());
+	private final Property<LanguageFormat>					outputLanguageFormat				= new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.ISO2);
+	private final Property<Locale>							outputLanguage						= new SimpleObjectProperty<>(this, "outputLanguage", Locale.ENGLISH);
+	private final ListProperty<PatternToLanguageMapping>	customLanguagePatterns				= new SimpleListProperty<>(this, "customLanguagePatterns", FXCollections.observableArrayList());
+	private final ListProperty<LanguageToTextMapping>		customLanguageTextMappings			= new SimpleListProperty<>(this, "customLanguageTextMappings", FXCollections.observableArrayList());
 
-	private final Binding<SubtitleLanguageCorrector> subtitleLanguageStandardizerBinding = initSubtitleLanguageStandardizerBinding();
+	private final Binding<SubtitleLanguageCorrector>		subtitleLanguageStandardizerBinding	= initSubtitleLanguageStandardizerBinding();
 
 	// package protected (should only be instantiated by WatcherSettings)
 	LocaleLanguageReplacerSettings()

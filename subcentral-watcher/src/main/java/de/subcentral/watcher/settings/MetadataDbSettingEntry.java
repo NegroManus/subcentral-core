@@ -3,6 +3,7 @@ package de.subcentral.watcher.settings;
 import java.util.concurrent.ExecutorService;
 
 import de.subcentral.core.metadata.db.MetadataDb;
+import de.subcentral.settings.AbstractDeactivatableSettingEntry;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;

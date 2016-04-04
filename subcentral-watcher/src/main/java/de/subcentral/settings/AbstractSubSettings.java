@@ -1,4 +1,4 @@
-package de.subcentral.watcher.settings;
+package de.subcentral.settings;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 
@@ -9,16 +9,11 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-/**
- * 
- * package private
- *
- */
-abstract class AbstractSubSettings extends ObservableObject
+public abstract class AbstractSubSettings extends ObservableObject
 {
 	private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
-	AbstractSubSettings()
+	public AbstractSubSettings()
 	{
 		addListener((Observable o) -> changed.set(true));
 	}

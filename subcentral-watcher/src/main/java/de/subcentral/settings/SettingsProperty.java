@@ -1,16 +1,23 @@
-package de.subcentral.watcher.settings;
+package de.subcentral.settings;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyProperty;
 
-public interface SettingsProperty<T>
+public interface SettingsProperty<T, P extends Property<T>>
 {
-	public Property<T> getCurrent();
+	public P originalProperty();
 
-	public ReadOnlyProperty<T> getOriginal();
+	public T getOriginal();
+
+	public void setOriginal(T value);
+
+	public P currentProperty();
+
+	public T getCurrent();
+
+	public void setCurrent(T value);
 
 	public BooleanBinding changedBinding();
 

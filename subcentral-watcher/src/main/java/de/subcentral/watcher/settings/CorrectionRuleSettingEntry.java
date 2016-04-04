@@ -3,6 +3,7 @@ package de.subcentral.watcher.settings;
 import java.util.Objects;
 
 import de.subcentral.core.correct.Corrector;
+import de.subcentral.settings.AbstractSettingEntry;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
