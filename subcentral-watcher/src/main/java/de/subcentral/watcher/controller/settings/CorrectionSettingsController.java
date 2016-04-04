@@ -3,8 +3,8 @@ package de.subcentral.watcher.controller.settings;
 import java.util.Optional;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.ImportSettingEntriesController.ImportSettingEntriesParameters;
-import de.subcentral.watcher.WatcherDialogs;
+import de.subcentral.watcher.dialogs.WatcherDialogs;
+import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters;
 import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
 import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;

@@ -1,4 +1,4 @@
-package de.subcentral.watcher;
+package de.subcentral.watcher.dialogs;
 
 import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;

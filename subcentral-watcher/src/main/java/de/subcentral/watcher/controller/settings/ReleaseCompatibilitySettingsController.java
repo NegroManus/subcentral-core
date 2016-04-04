@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.WatcherDialogs;
+import de.subcentral.watcher.dialogs.WatcherDialogs;
 import de.subcentral.watcher.settings.CompatibilitySettingEntry;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;

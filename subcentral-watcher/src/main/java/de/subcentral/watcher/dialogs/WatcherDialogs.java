@@ -1,4 +1,4 @@
-package de.subcentral.watcher;
+package de.subcentral.watcher.dialogs;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.ImportSettingEntriesController.ImportSettingEntriesParameters;
+import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
