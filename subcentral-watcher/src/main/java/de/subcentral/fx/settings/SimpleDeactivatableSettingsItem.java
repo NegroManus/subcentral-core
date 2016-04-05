@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class SimpleDeactivatableSettingsItem<T> extends SimpleSettingsItem<T> implements DeactivatableSettingsItem<T>
+public class SimpleDeactivatableSettingsItem<T> extends SimpleSettingsItem<T> implements DeactivatableSettingsItem<T>
 {
 	protected final BooleanProperty enabled;
 
