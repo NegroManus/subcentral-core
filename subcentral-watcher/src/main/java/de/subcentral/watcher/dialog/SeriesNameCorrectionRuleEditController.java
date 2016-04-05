@@ -1,4 +1,4 @@
-package de.subcentral.watcher.dialogs;
+package de.subcentral.watcher.dialog;
 
 import org.apache.commons.lang3.StringUtils;
 

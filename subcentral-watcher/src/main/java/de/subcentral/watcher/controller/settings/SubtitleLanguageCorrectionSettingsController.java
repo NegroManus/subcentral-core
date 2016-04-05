@@ -8,7 +8,7 @@ import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.watcher.dialogs.WatcherDialogs;
+import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.LocaleLanguageReplacerSettings;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;

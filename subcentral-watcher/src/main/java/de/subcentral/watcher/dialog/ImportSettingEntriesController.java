@@ -1,4 +1,4 @@
-package de.subcentral.watcher.dialogs;
+package de.subcentral.watcher.dialog;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -6,8 +6,8 @@ import java.util.Objects;
 
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.dialog.DialogController;
-import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters;
-import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters.SourceType;
+import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters;
+import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters.SourceType;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.Node;

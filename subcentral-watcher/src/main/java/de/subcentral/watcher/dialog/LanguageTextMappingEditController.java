@@ -1,4 +1,4 @@
-package de.subcentral.watcher.dialogs;
+package de.subcentral.watcher.dialog;
 
 import java.util.Locale;
 

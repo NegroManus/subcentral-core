@@ -1,4 +1,4 @@
-package de.subcentral.watcher.dialogs;
+package de.subcentral.watcher.dialog;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,7 +12,7 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.dialog.DialogController;
-import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters;
+import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
