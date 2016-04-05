@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 public class SettingsUtil
 {
-	public static <V, T extends DeactivatableSettingEntry<V>> ImmutableList<V> getValuesOfEnabledSettingEntries(Iterable<T> entries)
+	public static <V, T extends DeactivatableSettingsItem<V>> ImmutableList<V> getValuesOfEnabledSettingEntries(Iterable<T> entries)
 	{
 		ImmutableList.Builder<V> enabledEntries = ImmutableList.builder();
 		for (T entry : entries)

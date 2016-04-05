@@ -10,7 +10,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ListSettingsProperty<T> extends AbstractSettingsProperty<ObservableList<T>, ListProperty<T>>
+public class ListSettingsProperty<T> extends SettingsPropertyBase<ObservableList<T>, ListProperty<T>>
 {
 	private final BiFunction<XMLConfiguration, String, ObservableList<T>>	loader;
 	private final TriConsumer<XMLConfiguration, String, ObservableList<T>>	saver;

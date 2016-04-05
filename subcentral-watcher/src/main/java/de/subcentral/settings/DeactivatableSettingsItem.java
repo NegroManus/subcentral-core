@@ -2,9 +2,9 @@ package de.subcentral.settings;
 
 import javafx.beans.property.BooleanProperty;
 
-public interface DeactivatableSettingEntry<T> extends SettingEntry<T>
+public interface DeactivatableSettingsItem<T> extends SettingsItem<T>
 {
-			BooleanProperty enabledProperty();
+	BooleanProperty enabledProperty();
 
 	boolean isEnabled();
 

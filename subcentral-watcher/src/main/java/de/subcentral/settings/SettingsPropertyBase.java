@@ -5,14 +5,14 @@ import java.util.Objects;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
 
-public abstract class AbstractSettingsProperty<T, P extends Property<T>> implements SettingsProperty<T, P>
+public abstract class SettingsPropertyBase<T, P extends Property<T>> implements SettingsProperty<T, P>
 {
 	protected P					original	= createProperty("original");
 	protected P					current		= createProperty("current");
 	protected BooleanBinding	changed		= createChangedBinding();
 	protected final String		key;
 
-	public AbstractSettingsProperty(String key)
+	public SettingsPropertyBase(String key)
 	{
 		this.key = Objects.requireNonNull(key, "key");
 	}

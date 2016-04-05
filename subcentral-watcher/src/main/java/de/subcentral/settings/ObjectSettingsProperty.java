@@ -8,7 +8,7 @@ import de.subcentral.core.util.TriConsumer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ObjectSettingsProperty<T> extends AbstractSettingsProperty<T, Property<T>>
+public class ObjectSettingsProperty<T> extends SettingsPropertyBase<T, Property<T>>
 {
 	private final T											defaultValue;
 	private final BiFunction<XMLConfiguration, String, T>	loader;

@@ -6,7 +6,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public class BooleanSettingsProperty extends AbstractSettingsProperty<Boolean, BooleanProperty>
+public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, BooleanProperty>
 {
 	private final boolean defaultValue;
 

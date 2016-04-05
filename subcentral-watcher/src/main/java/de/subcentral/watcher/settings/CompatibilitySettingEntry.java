@@ -3,9 +3,9 @@ package de.subcentral.watcher.settings;
 import javafx.util.StringConverter;
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
-import de.subcentral.settings.AbstractDeactivatableSettingEntry;
+import de.subcentral.settings.DeactivatableSettingsItemBase;
 
-public class CompatibilitySettingEntry extends AbstractDeactivatableSettingEntry<Compatibility>
+public class CompatibilitySettingEntry extends DeactivatableSettingsItemBase<Compatibility>
 {
 	public CompatibilitySettingEntry(Compatibility value, boolean enabled)
 	{

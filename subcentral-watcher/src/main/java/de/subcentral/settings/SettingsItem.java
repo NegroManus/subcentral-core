@@ -1,6 +1,6 @@
 package de.subcentral.settings;
 
-public interface SettingEntry<T>
+public interface SettingsItem<T>
 {
 	T getValue();
 }

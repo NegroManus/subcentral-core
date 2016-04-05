@@ -3,12 +3,12 @@ package de.subcentral.watcher.settings;
 import java.util.concurrent.ExecutorService;
 
 import de.subcentral.core.metadata.db.MetadataDb;
-import de.subcentral.settings.AbstractDeactivatableSettingEntry;
+import de.subcentral.settings.DeactivatableSettingsItemBase;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 
-public class MetadataDbSettingEntry<T> extends AbstractDeactivatableSettingEntry<MetadataDb>
+public class MetadataDbSettingEntry<T> extends DeactivatableSettingsItemBase<MetadataDb>
 {
 	public static enum Availability
 	{
