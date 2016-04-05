@@ -5,7 +5,7 @@ import java.util.Optional;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.dialogs.WatcherDialogs;
-import de.subcentral.watcher.settings.CompatibilitySettingEntry;
+import de.subcentral.watcher.settings.CompatibilitySettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
@@ -26,11 +26,11 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	@FXML
 	private CheckBox										compatibilityEnabledCheckBox;
 	@FXML
-	private TableView<CompatibilitySettingEntry>			crossGroupCompatibilitiesTableView;
+	private TableView<CompatibilitySettingsItem>			crossGroupCompatibilitiesTableView;
 	@FXML
-	private TableColumn<CompatibilitySettingEntry, Boolean>	crossGroupCompatibilitiesEnabledColumn;
+	private TableColumn<CompatibilitySettingsItem, Boolean>	crossGroupCompatibilitiesEnabledColumn;
 	@FXML
-	private TableColumn<CompatibilitySettingEntry, String>	crossGroupCompatibilitiesCompatibilityColumn;
+	private TableColumn<CompatibilitySettingsItem, String>	crossGroupCompatibilitiesCompatibilityColumn;
 
 	@FXML
 	private Button											addCrossGroupCompatibility;
@@ -60,8 +60,8 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		crossGroupCompatibilitiesTableView.setItems(settings.compatibilitiesProperty());
 
 		crossGroupCompatibilitiesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilitiesEnabledColumn));
-		crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingEntry, Boolean> param) -> param.getValue().enabledProperty());
-		crossGroupCompatibilitiesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingEntry, String> param) ->
+		crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingsItem, Boolean> param) -> param.getValue().enabledProperty());
+		crossGroupCompatibilitiesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingsItem, String> param) ->
 		{
 			return FxUtil.constantBinding(((CrossGroupCompatibility) param.getValue().getValue()).toShortString());
 		});
@@ -69,7 +69,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		addCrossGroupCompatibility.setOnAction((ActionEvent event) ->
 		{
 			Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView(settingsController.getMainController().getPrimaryStage());
-			FxUtil.handleDistinctAdd(crossGroupCompatibilitiesTableView, result, (CrossGroupCompatibility c) -> new CompatibilitySettingEntry(c, true));
+			FxUtil.handleDistinctAdd(crossGroupCompatibilitiesTableView, result, (CrossGroupCompatibility c) -> new CompatibilitySettingsItem(c, true));
 		});
 
 		BooleanBinding noSelection = crossGroupCompatibilitiesTableView.getSelectionModel().selectedItemProperty().isNull();
@@ -77,19 +77,19 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		editCrossGroupCompatibility.disableProperty().bind(noSelection);
 		editCrossGroupCompatibility.setOnAction((ActionEvent event) ->
 		{
-			CompatibilitySettingEntry selectedEntry = crossGroupCompatibilitiesTableView.getSelectionModel().getSelectedItem();
+			CompatibilitySettingsItem selectedEntry = crossGroupCompatibilitiesTableView.getSelectionModel().getSelectedItem();
 			if (selectedEntry.getValue() instanceof CrossGroupCompatibility)
 			{
 				Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView((CrossGroupCompatibility) selectedEntry.getValue(),
 						settingsController.getMainController().getPrimaryStage());
-				FxUtil.handleDistinctEdit(crossGroupCompatibilitiesTableView, result, (CrossGroupCompatibility c) -> new CompatibilitySettingEntry(c, selectedEntry.isEnabled()));
+				FxUtil.handleDistinctEdit(crossGroupCompatibilitiesTableView, result, (CrossGroupCompatibility c) -> new CompatibilitySettingsItem(c, selectedEntry.isEnabled()));
 			}
 		});
 
 		removeCrossGroupCompatibility.disableProperty().bind(noSelection);
 		removeCrossGroupCompatibility.setOnAction((ActionEvent event) ->
 		{
-			FxUtil.handleConfirmedDelete(crossGroupCompatibilitiesTableView, "cross-group compatibility", CompatibilitySettingEntry.STRING_CONVERTER);
+			FxUtil.handleConfirmedDelete(crossGroupCompatibilitiesTableView, "cross-group compatibility", CompatibilitySettingsItem.STRING_CONVERTER);
 		});
 
 		FxUtil.setStandardMouseAndKeyboardSupport(crossGroupCompatibilitiesTableView, editCrossGroupCompatibility, removeCrossGroupCompatibility);

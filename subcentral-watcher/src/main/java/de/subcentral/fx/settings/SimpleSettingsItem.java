@@ -1,14 +1,14 @@
-package de.subcentral.settings;
+package de.subcentral.fx.settings;
 
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class SettingsItemBase<T> implements SettingsItem<T>
+public class SimpleSettingsItem<T> implements SettingsItem<T>
 {
 	protected final T value;
 
-	public SettingsItemBase(T value)
+	public SimpleSettingsItem(T value)
 	{
 		this.value = Objects.requireNonNull(value, "value");
 	}
@@ -32,7 +32,7 @@ public class SettingsItemBase<T> implements SettingsItem<T>
 		}
 		if (getClass().equals(obj.getClass()))
 		{
-			SettingsItemBase<?> o = (SettingsItemBase<?>) obj;
+			SimpleSettingsItem<?> o = (SimpleSettingsItem<?>) obj;
 			return value.equals(o.value);
 		}
 		return false;

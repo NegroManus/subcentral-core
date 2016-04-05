@@ -12,8 +12,8 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.settings.SubSettingsBase;
-import de.subcentral.settings.ConfigurationHelper;
+import de.subcentral.fx.settings.ConfigurationHelper;
+import de.subcentral.fx.settings.SubSettings;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -29,7 +29,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ProcessingSettings extends SubSettingsBase
+public class ProcessingSettings extends SubSettings
 {
 	public static enum WinRarLocateStrategy
 	{
@@ -38,23 +38,23 @@ public class ProcessingSettings extends SubSettingsBase
 
 	// Parsing
 	private final StringProperty									filenamePatterns					= new SimpleStringProperty(this, "filenamePatterns");
-	private final ListProperty<ParsingServiceSettingEntry>			filenameParsingServices				= new SimpleListProperty<>(this,
+	private final ListProperty<ParsingServiceSettingsItem>			filenameParsingServices				= new SimpleListProperty<>(this,
 			"filenameParsingServices",
 			FXCollections.observableArrayList());
 	// Metadata
 	// Metadata - Release
-	private final ListProperty<ParsingServiceSettingEntry>			releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.observableArrayList());
+	private final ListProperty<ParsingServiceSettingsItem>			releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.observableArrayList());
 	private final ListProperty<Tag>									releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags", FXCollections.observableArrayList());
 	// Metadata - Release - Databases
-	private final ListProperty<MetadataDbSettingEntry<Release>>		releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.observableArrayList());
+	private final ListProperty<MetadataDbSettingsItem<Release>>		releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.observableArrayList());
 	// Metadata - Release - Guessing
 	private final BooleanProperty									guessingEnabled						= new SimpleBooleanProperty(this, "guessingEnabled");
 	private final ListProperty<StandardRelease>						standardReleases					= new SimpleListProperty<>(this, "standardReleases", FXCollections.observableArrayList());
 	// Metadata - Release - Compatibility
 	private final BooleanProperty									compatibilityEnabled				= new SimpleBooleanProperty(this, "compatibilityEnabled");
-	private final ListProperty<CompatibilitySettingEntry>			compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.observableArrayList());
+	private final ListProperty<CompatibilitySettingsItem>			compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.observableArrayList());
 	// Correction - Rules
-	private final ListProperty<CorrectionRuleSettingEntry<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
+	private final ListProperty<CorrectionRuleSettingsItem<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
 	// Correction - Subtitle language
 	private final LocaleLanguageReplacerSettings					subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 
@@ -75,15 +75,15 @@ public class ProcessingSettings extends SubSettingsBase
 	ProcessingSettings()
 	{
 		super.bind(filenamePatterns,
-				FxUtil.observeBeans(filenameParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
-				FxUtil.observeBeans(releaseParsingServices, (ParsingServiceSettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
+				FxUtil.observeBeans(filenameParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
+				FxUtil.observeBeans(releaseParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
 				releaseMetaTags,
-				FxUtil.observeBeans(releaseDbs, (MetadataDbSettingEntry<Release> entry) -> new Observable[] { entry.enabledProperty() }),
+				FxUtil.observeBeans(releaseDbs, (MetadataDbSettingsItem<Release> entry) -> new Observable[] { entry.enabledProperty() }),
 				guessingEnabled,
 				standardReleases,
 				compatibilityEnabled,
-				FxUtil.observeBeans(compatibilities, (CompatibilitySettingEntry entry) -> new Observable[] { entry.enabledProperty() }),
-				FxUtil.observeBeans(correctionRules, (CorrectionRuleSettingEntry<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
+				FxUtil.observeBeans(compatibilities, (CompatibilitySettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
+				FxUtil.observeBeans(correctionRules, (CorrectionRuleSettingsItem<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
 				subtitleLanguageCorrectionSettings,
 				namingParameters,
 				targetDir,
@@ -115,47 +115,47 @@ public class ProcessingSettings extends SubSettingsBase
 		this.filenamePatternsProperty().set(filenamePatterns);
 	}
 
-	public final ListProperty<ParsingServiceSettingEntry> filenameParsingServicesProperty()
+	public final ListProperty<ParsingServiceSettingsItem> filenameParsingServicesProperty()
 	{
 		return this.filenameParsingServices;
 	}
 
-	public final ObservableList<ParsingServiceSettingEntry> getFilenameParsingServices()
+	public final ObservableList<ParsingServiceSettingsItem> getFilenameParsingServices()
 	{
 		return this.filenameParsingServicesProperty().get();
 	}
 
-	public final void setFilenameParsingServices(final ObservableList<ParsingServiceSettingEntry> filenameParsingServices)
+	public final void setFilenameParsingServices(final ObservableList<ParsingServiceSettingsItem> filenameParsingServices)
 	{
 		this.filenameParsingServicesProperty().set(filenameParsingServices);
 	}
 
-	public final ListProperty<MetadataDbSettingEntry<Release>> releaseDbsProperty()
+	public final ListProperty<MetadataDbSettingsItem<Release>> releaseDbsProperty()
 	{
 		return this.releaseDbs;
 	}
 
-	public final ObservableList<MetadataDbSettingEntry<Release>> getReleaseDbs()
+	public final ObservableList<MetadataDbSettingsItem<Release>> getReleaseDbs()
 	{
 		return this.releaseDbsProperty().get();
 	}
 
-	public final void setReleaseDbs(final ObservableList<MetadataDbSettingEntry<Release>> releaseInfoDbs)
+	public final void setReleaseDbs(final ObservableList<MetadataDbSettingsItem<Release>> releaseInfoDbs)
 	{
 		this.releaseDbsProperty().set(releaseInfoDbs);
 	}
 
-	public final ListProperty<ParsingServiceSettingEntry> releaseParsingServicesProperty()
+	public final ListProperty<ParsingServiceSettingsItem> releaseParsingServicesProperty()
 	{
 		return this.releaseParsingServices;
 	}
 
-	public final ObservableList<ParsingServiceSettingEntry> getReleaseParsingServices()
+	public final ObservableList<ParsingServiceSettingsItem> getReleaseParsingServices()
 	{
 		return this.releaseParsingServicesProperty().get();
 	}
 
-	public final void setReleaseParsingServices(final ObservableList<ParsingServiceSettingEntry> releaseParsingServices)
+	public final void setReleaseParsingServices(final ObservableList<ParsingServiceSettingsItem> releaseParsingServices)
 	{
 		this.releaseParsingServicesProperty().set(releaseParsingServices);
 	}
@@ -220,32 +220,32 @@ public class ProcessingSettings extends SubSettingsBase
 		this.compatibilityEnabledProperty().set(compatibilityEnabled);
 	}
 
-	public final ListProperty<CompatibilitySettingEntry> compatibilitiesProperty()
+	public final ListProperty<CompatibilitySettingsItem> compatibilitiesProperty()
 	{
 		return this.compatibilities;
 	}
 
-	public final ObservableList<CompatibilitySettingEntry> getCompatibilities()
+	public final ObservableList<CompatibilitySettingsItem> getCompatibilities()
 	{
 		return this.compatibilitiesProperty().get();
 	}
 
-	public final void setCompatibilities(final ObservableList<CompatibilitySettingEntry> compatibilities)
+	public final void setCompatibilities(final ObservableList<CompatibilitySettingsItem> compatibilities)
 	{
 		this.compatibilitiesProperty().set(compatibilities);
 	}
 
-	public final ListProperty<CorrectionRuleSettingEntry<?, ?>> correctionRulesProperty()
+	public final ListProperty<CorrectionRuleSettingsItem<?, ?>> correctionRulesProperty()
 	{
 		return this.correctionRules;
 	}
 
-	public final ObservableList<CorrectionRuleSettingEntry<?, ?>> getCorrectionRules()
+	public final ObservableList<CorrectionRuleSettingsItem<?, ?>> getCorrectionRules()
 	{
 		return this.correctionRulesProperty().get();
 	}
 
-	public final void setCorrectionRules(final ObservableList<CorrectionRuleSettingEntry<?, ?>> standardizers)
+	public final void setCorrectionRules(final ObservableList<CorrectionRuleSettingsItem<?, ?>> standardizers)
 	{
 		this.correctionRulesProperty().set(standardizers);
 	}
@@ -509,7 +509,7 @@ public class ProcessingSettings extends SubSettingsBase
 		// Metadata - Release - Databases
 		for (int i = 0; i < releaseDbs.size(); i++)
 		{
-			MetadataDbSettingEntry<Release> db = releaseDbs.get(i);
+			MetadataDbSettingsItem<Release> db = releaseDbs.get(i);
 			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getValue().getSite().getName());
 			cfg.addProperty("metadata.release.databases.db(" + i + ")[@enabled]", db.isEnabled());
 		}
@@ -528,7 +528,7 @@ public class ProcessingSettings extends SubSettingsBase
 		cfg.addProperty("metadata.release.compatibility[@enabled]", isCompatibilityEnabled());
 		for (int i = 0; i < compatibilities.size(); i++)
 		{
-			CompatibilitySettingEntry entry = compatibilities.get(i);
+			CompatibilitySettingsItem entry = compatibilities.get(i);
 			Compatibility c = entry.getValue();
 			if (c instanceof CrossGroupCompatibility)
 			{

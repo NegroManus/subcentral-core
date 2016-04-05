@@ -1,4 +1,4 @@
-package de.subcentral.settings;
+package de.subcentral.fx.settings;
 
 import java.util.function.BiFunction;
 

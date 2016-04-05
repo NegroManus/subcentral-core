@@ -5,9 +5,9 @@ import java.util.Optional;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.dialogs.WatcherDialogs;
 import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters;
-import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.CorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingsItem;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -26,17 +26,17 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	@FXML
 	private GridPane														rootPane;
 	@FXML
-	private TableView<CorrectionRuleSettingEntry<?, ?>>						correctorsTableView;
+	private TableView<CorrectionRuleSettingsItem<?, ?>>						correctorsTableView;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, String>			correctorsTypeColumn;
+	private TableColumn<CorrectionRuleSettingsItem<?, ?>, String>			correctorsTypeColumn;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, String>			correctorsRuleColumn;
+	private TableColumn<CorrectionRuleSettingsItem<?, ?>, String>			correctorsRuleColumn;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, Boolean>			correctorsBeforeQueryingColumn;
+	private TableColumn<CorrectionRuleSettingsItem<?, ?>, Boolean>			correctorsBeforeQueryingColumn;
 	@FXML
-	private TableColumn<CorrectionRuleSettingEntry<?, ?>, Boolean>			correctorsAfterQueryingColumn;
+	private TableColumn<CorrectionRuleSettingsItem<?, ?>, Boolean>			correctorsAfterQueryingColumn;
 	@FXML
-	private ChoiceBox<Class<? extends CorrectionRuleSettingEntry<?, ?>>>	correctorTypeChoiceBox;
+	private ChoiceBox<Class<? extends CorrectionRuleSettingsItem<?, ?>>>	correctorTypeChoiceBox;
 	@FXML
 	private Button															addCorrectorButton;
 	@FXML
@@ -63,31 +63,31 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		// Correctors
 		correctorsTableView.setItems(WatcherSettings.INSTANCE.getProcessingSettings().correctionRulesProperty());
 
-		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
+		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingsItem<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
 
-		correctorsRuleColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, String> param) -> param.getValue().ruleBinding());
+		correctorsRuleColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingsItem<?, ?>, String> param) -> param.getValue().ruleBinding());
 
 		correctorsBeforeQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(correctorsBeforeQueryingColumn));
-		correctorsBeforeQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, Boolean> param) -> param.getValue().beforeQueryingProperty());
+		correctorsBeforeQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingsItem<?, ?>, Boolean> param) -> param.getValue().beforeQueryingProperty());
 
 		correctorsAfterQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(correctorsAfterQueryingColumn));
-		correctorsAfterQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingEntry<?, ?>, Boolean> param) -> param.getValue().afterQueryingProperty());
+		correctorsAfterQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectionRuleSettingsItem<?, ?>, Boolean> param) -> param.getValue().afterQueryingProperty());
 
-		correctorTypeChoiceBox.getItems().add(SeriesNameCorrectionRuleSettingEntry.class);
-		correctorTypeChoiceBox.getItems().add(ReleaseTagsCorrectionRuleSettingEntry.class);
+		correctorTypeChoiceBox.getItems().add(SeriesNameCorrectionRuleSettingsItem.class);
+		correctorTypeChoiceBox.getItems().add(ReleaseTagsCorrectionRuleSettingsItem.class);
 		correctorTypeChoiceBox.setConverter(new CorrectionRuleTypeStringConverter());
 		correctorTypeChoiceBox.getSelectionModel().selectFirst();
 
 		addCorrectorButton.disableProperty().bind(correctorTypeChoiceBox.getSelectionModel().selectedItemProperty().isNull());
 		addCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			Class<? extends CorrectionRuleSettingEntry<?, ?>> selectedCorrectorType = correctorTypeChoiceBox.getSelectionModel().getSelectedItem();
-			Optional<? extends CorrectionRuleSettingEntry<?, ?>> result;
-			if (SeriesNameCorrectionRuleSettingEntry.class == selectedCorrectorType)
+			Class<? extends CorrectionRuleSettingsItem<?, ?>> selectedCorrectorType = correctorTypeChoiceBox.getSelectionModel().getSelectedItem();
+			Optional<? extends CorrectionRuleSettingsItem<?, ?>> result;
+			if (SeriesNameCorrectionRuleSettingsItem.class == selectedCorrectorType)
 			{
 				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
 			}
-			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedCorrectorType)
+			else if (ReleaseTagsCorrectionRuleSettingsItem.class == selectedCorrectorType)
 			{
 				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
 			}
@@ -103,15 +103,15 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		editCorrectorButton.disableProperty().bind(noSelection);
 		editCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			CorrectionRuleSettingEntry<?, ?> selectedCorrector = correctorsTableView.getSelectionModel().getSelectedItem();
-			Optional<? extends CorrectionRuleSettingEntry<?, ?>> result;
-			if (SeriesNameCorrectionRuleSettingEntry.class == selectedCorrector.getClass())
+			CorrectionRuleSettingsItem<?, ?> selectedCorrector = correctorsTableView.getSelectionModel().getSelectedItem();
+			Optional<? extends CorrectionRuleSettingsItem<?, ?>> result;
+			if (SeriesNameCorrectionRuleSettingsItem.class == selectedCorrector.getClass())
 			{
-				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectionRuleSettingEntry) selectedCorrector, settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectionRuleSettingsItem) selectedCorrector, settingsController.getMainController().getPrimaryStage());
 			}
-			else if (ReleaseTagsCorrectionRuleSettingEntry.class == selectedCorrector.getClass())
+			else if (ReleaseTagsCorrectionRuleSettingsItem.class == selectedCorrector.getClass())
 			{
-				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectionRuleSettingEntry) selectedCorrector, settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectionRuleSettingsItem) selectedCorrector, settingsController.getMainController().getPrimaryStage());
 			}
 			else
 			{
@@ -138,38 +138,38 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		FxUtil.setStandardMouseAndKeyboardSupport(correctorsTableView, editCorrectorButton, removeCorrectorButton);
 	}
 
-	private class CorrectionRuleTypeStringConverter extends StringConverter<Class<? extends CorrectionRuleSettingEntry<?, ?>>>
+	private class CorrectionRuleTypeStringConverter extends StringConverter<Class<? extends CorrectionRuleSettingsItem<?, ?>>>
 	{
 		@Override
-		public String toString(Class<? extends CorrectionRuleSettingEntry<?, ?>> type)
+		public String toString(Class<? extends CorrectionRuleSettingsItem<?, ?>> type)
 		{
 			if (type == null)
 			{
 				return "";
 			}
-			else if (type == SeriesNameCorrectionRuleSettingEntry.class)
+			else if (type == SeriesNameCorrectionRuleSettingsItem.class)
 			{
-				return SeriesNameCorrectionRuleSettingEntry.getRuleType();
+				return SeriesNameCorrectionRuleSettingsItem.getRuleType();
 			}
-			else if (type == ReleaseTagsCorrectionRuleSettingEntry.class)
+			else if (type == ReleaseTagsCorrectionRuleSettingsItem.class)
 			{
-				return ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
+				return ReleaseTagsCorrectionRuleSettingsItem.getRuleType();
 			}
 			return type.getSimpleName();
 		}
 
 		@Override
-		public Class<? extends CorrectionRuleSettingEntry<?, ?>> fromString(String string)
+		public Class<? extends CorrectionRuleSettingsItem<?, ?>> fromString(String string)
 		{
 			// not needed
 			throw new UnsupportedOperationException();
 		}
 	}
 
-	private class CorrectionRuleStringConverter extends StringConverter<CorrectionRuleSettingEntry<?, ?>>
+	private class CorrectionRuleStringConverter extends StringConverter<CorrectionRuleSettingsItem<?, ?>>
 	{
 		@Override
-		public String toString(CorrectionRuleSettingEntry<?, ?> entry)
+		public String toString(CorrectionRuleSettingsItem<?, ?> entry)
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.append("Rule type: ");
@@ -181,7 +181,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		}
 
 		@Override
-		public CorrectionRuleSettingEntry<?, ?> fromString(String string)
+		public CorrectionRuleSettingsItem<?, ?> fromString(String string)
 		{
 			// not needed
 			throw new UnsupportedOperationException();

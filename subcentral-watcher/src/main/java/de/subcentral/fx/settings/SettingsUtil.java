@@ -1,4 +1,4 @@
-package de.subcentral.settings;
+package de.subcentral.fx.settings;
 
 import com.google.common.collect.ImmutableList;
 

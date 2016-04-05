@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.dialog.DialogController;
 import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters;
 import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters.SourceType;
 import javafx.beans.binding.BooleanBinding;
@@ -21,7 +22,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
-public class ImportSettingEntriesController extends AbstractDialogController<ImportSettingEntriesParameters>
+public class ImportSettingEntriesController extends DialogController<ImportSettingEntriesParameters>
 {
 	@FXML
 	private RadioButton	defaultSettingsRadioBtn;

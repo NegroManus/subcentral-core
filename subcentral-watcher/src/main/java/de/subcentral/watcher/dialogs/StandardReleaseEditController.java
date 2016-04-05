@@ -9,6 +9,7 @@ import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.fx.SubCentralFxUtil;
+import de.subcentral.fx.dialog.BeanEditController;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
 import javafx.fxml.FXML;
@@ -20,7 +21,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Window;
 
-public class StandardReleaseEditController extends AbstractBeanEditController<StandardRelease>
+public class StandardReleaseEditController extends BeanEditController<StandardRelease>
 {
 	// View
 	@FXML

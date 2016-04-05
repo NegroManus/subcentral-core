@@ -5,7 +5,7 @@ import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
-import de.subcentral.watcher.settings.ParsingServiceSettingEntry;
+import de.subcentral.watcher.settings.ParsingServiceSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.fxml.FXML;
@@ -23,13 +23,13 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 	@FXML
 	private TextField											filenamePatternsTextField;
 	@FXML
-	private TableView<ParsingServiceSettingEntry>				parsingServicesTableView;
+	private TableView<ParsingServiceSettingsItem>				parsingServicesTableView;
 	@FXML
-	private TableColumn<ParsingServiceSettingEntry, Boolean>	parsingServicesEnabledColumn;
+	private TableColumn<ParsingServiceSettingsItem, Boolean>	parsingServicesEnabledColumn;
 	@FXML
-	private TableColumn<ParsingServiceSettingEntry, String>		parsingServicesNameColumn;
+	private TableColumn<ParsingServiceSettingsItem, String>		parsingServicesNameColumn;
 	@FXML
-	private TableColumn<ParsingServiceSettingEntry, String>		parsingServicesExampleColumn;
+	private TableColumn<ParsingServiceSettingsItem, String>		parsingServicesExampleColumn;
 
 	public FilenameParsingSettingsController(SettingsController settingsController)
 	{
@@ -53,10 +53,10 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 		// Parsing services
 		parsingServicesTableView.setItems(settings.filenameParsingServicesProperty());
 		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
-		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, Boolean> param) -> param.getValue().enabledProperty());
-		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) -> FxUtil.constantBinding(param.getValue().getValue().getDomain()));
+		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
+		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxUtil.constantBinding(param.getValue().getValue().getDomain()));
 
-		parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingEntry, String> param) ->
+		parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) ->
 		{
 			String example;
 			String domain = param.getValue().getValue().getDomain();

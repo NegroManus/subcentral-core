@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
+import de.subcentral.fx.dialog.BeanEditController;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
@@ -19,7 +20,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
-public class TextLanguageMappingEditController extends AbstractBeanEditController<PatternToLanguageMapping>
+public class TextLanguageMappingEditController extends BeanEditController<PatternToLanguageMapping>
 {
 	@FXML
 	private RadioButton			literalRadioBtn;

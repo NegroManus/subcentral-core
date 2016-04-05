@@ -1,4 +1,4 @@
-package de.subcentral.settings;
+package de.subcentral.fx.settings;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 

@@ -3,6 +3,7 @@ package de.subcentral.watcher.dialogs;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.fx.SubCentralFxUtil;
+import de.subcentral.fx.dialog.BeanEditController;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
 import javafx.fxml.FXML;
@@ -12,7 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
-public class CrossGroupCompatibilityEditController extends AbstractBeanEditController<CrossGroupCompatibility>
+public class CrossGroupCompatibilityEditController extends BeanEditController<CrossGroupCompatibility>
 {
 	@FXML
 	private TextField	compatibleGroupTxtFld;

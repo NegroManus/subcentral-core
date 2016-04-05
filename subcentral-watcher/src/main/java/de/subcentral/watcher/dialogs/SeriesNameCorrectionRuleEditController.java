@@ -4,7 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
+import de.subcentral.fx.dialog.BeanEditController;
+import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingsItem;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
@@ -23,7 +24,7 @@ import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
-public class SeriesNameCorrectionRuleEditController extends AbstractBeanEditController<SeriesNameCorrectionRuleSettingEntry>
+public class SeriesNameCorrectionRuleEditController extends BeanEditController<SeriesNameCorrectionRuleSettingsItem>
 {
 	@FXML
 	private RadioButton			literalRadioBtn;
@@ -46,7 +47,7 @@ public class SeriesNameCorrectionRuleEditController extends AbstractBeanEditCont
 	@FXML
 	private Button				removeNameBtn;
 
-	public SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingEntry bean, Window window)
+	public SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingsItem bean, Window window)
 	{
 		super(bean, window);
 	}
@@ -56,11 +57,11 @@ public class SeriesNameCorrectionRuleEditController extends AbstractBeanEditCont
 	{
 		if (bean == null)
 		{
-			return "Add correction rule for: " + SeriesNameCorrectionRuleSettingEntry.getRuleType();
+			return "Add correction rule for: " + SeriesNameCorrectionRuleSettingsItem.getRuleType();
 		}
 		else
 		{
-			return "Edit correction rule for: " + SeriesNameCorrectionRuleSettingEntry.getRuleType();
+			return "Edit correction rule for: " + SeriesNameCorrectionRuleSettingsItem.getRuleType();
 		}
 	}
 
@@ -172,7 +173,7 @@ public class SeriesNameCorrectionRuleEditController extends AbstractBeanEditCont
 			{
 				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-				return new SeriesNameCorrectionRuleSettingEntry(namePatternBinding.getValue(),
+				return new SeriesNameCorrectionRuleSettingsItem(namePatternBinding.getValue(),
 						nameReplacementTxtFld.getText(),
 						aliasNamesReplacementListView.getItems(),
 						beforeQuerying,

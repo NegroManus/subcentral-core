@@ -11,7 +11,8 @@ import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.fx.SubCentralFxUtil;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
+import de.subcentral.fx.dialog.BeanEditController;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
 import javafx.beans.property.ListProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -23,7 +24,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Window;
 
-public class ReleaseTagsCorrectionRuleEditController extends AbstractBeanEditController<ReleaseTagsCorrectionRuleSettingEntry>
+public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<ReleaseTagsCorrectionRuleSettingsItem>
 {
 	@FXML
 	private RadioButton	containRadioBtn;
@@ -40,7 +41,7 @@ public class ReleaseTagsCorrectionRuleEditController extends AbstractBeanEditCon
 	@FXML
 	private TextField	replacementTxtFld;
 
-	public ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectionRuleSettingEntry bean, Window window)
+	public ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectionRuleSettingsItem bean, Window window)
 	{
 		super(bean, window);
 	}
@@ -50,11 +51,11 @@ public class ReleaseTagsCorrectionRuleEditController extends AbstractBeanEditCon
 	{
 		if (bean == null)
 		{
-			return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
+			return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingsItem.getRuleType();
 		}
 		else
 		{
-			return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingEntry.getRuleType();
+			return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingsItem.getRuleType();
 		}
 	}
 
@@ -170,7 +171,7 @@ public class ReleaseTagsCorrectionRuleEditController extends AbstractBeanEditCon
 				boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
 				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-				return new ReleaseTagsCorrectionRuleSettingEntry(new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
+				return new ReleaseTagsCorrectionRuleSettingsItem(new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
 						beforeQuerying,
 						afterQuerying);
 			}

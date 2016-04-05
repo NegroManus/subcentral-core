@@ -1,4 +1,4 @@
-package de.subcentral.settings;
+package de.subcentral.fx.settings;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,12 +43,12 @@ import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.xrelto.XRelTo;
 import de.subcentral.support.xrelto.XRelToMetadataDb;
-import de.subcentral.watcher.settings.CompatibilitySettingEntry;
-import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
-import de.subcentral.watcher.settings.MetadataDbSettingEntry;
-import de.subcentral.watcher.settings.ParsingServiceSettingEntry;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.CompatibilitySettingsItem;
+import de.subcentral.watcher.settings.CorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.MetadataDbSettingsItem;
+import de.subcentral.watcher.settings.ParsingServiceSettingsItem;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingsItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -113,9 +113,9 @@ public class ConfigurationHelper
 		}
 	}
 
-	public static ObservableList<ParsingServiceSettingEntry> getParsingServices(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<ParsingServiceSettingsItem> getParsingServices(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		ArrayList<ParsingServiceSettingEntry> services = new ArrayList<>(4);
+		ArrayList<ParsingServiceSettingsItem> services = new ArrayList<>(4);
 		List<HierarchicalConfiguration<ImmutableNode>> parsingServiceCfgs = cfg.configurationsAt(key + ".parsingService");
 		for (HierarchicalConfiguration<ImmutableNode> parsingServiceCfg : parsingServiceCfgs)
 		{
@@ -123,19 +123,19 @@ public class ConfigurationHelper
 			boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
 			if (Addic7edCom.getParsingService().getDomain().equals(domain))
 			{
-				services.add(new ParsingServiceSettingEntry(Addic7edCom.getParsingService(), enabled));
+				services.add(new ParsingServiceSettingsItem(Addic7edCom.getParsingService(), enabled));
 			}
 			else if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
 			{
-				services.add(new ParsingServiceSettingEntry(ItalianSubsNet.getParsingService(), enabled));
+				services.add(new ParsingServiceSettingsItem(ItalianSubsNet.getParsingService(), enabled));
 			}
 			else if (ReleaseScene.getParsingService().getDomain().equals(domain))
 			{
-				services.add(new ParsingServiceSettingEntry(ReleaseScene.getParsingService(), enabled));
+				services.add(new ParsingServiceSettingsItem(ReleaseScene.getParsingService(), enabled));
 			}
 			else if (SubCentralDe.getParsingService().getDomain().equals(domain))
 			{
-				services.add(new ParsingServiceSettingEntry(SubCentralDe.getParsingService(), enabled));
+				services.add(new ParsingServiceSettingsItem(SubCentralDe.getParsingService(), enabled));
 			}
 			else
 			{
@@ -146,9 +146,9 @@ public class ConfigurationHelper
 		return FXCollections.observableList(services);
 	}
 
-	public static ObservableList<CorrectionRuleSettingEntry<?, ?>> getCorrectionRules(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<CorrectionRuleSettingsItem<?, ?>> getCorrectionRules(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		ArrayList<CorrectionRuleSettingEntry<?, ?>> stdzers = new ArrayList<>();
+		ArrayList<CorrectionRuleSettingsItem<?, ?>> stdzers = new ArrayList<>();
 		List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule");
 		int seriesNameIndex = 0;
 		for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : seriesStdzerCfgs)
@@ -165,7 +165,7 @@ public class ConfigurationHelper
 			}
 			boolean enabledPreMetadataDb = stdzerCfg.getBoolean("[@beforeQuerying]");
 			boolean enabledPostMetadataDb = stdzerCfg.getBoolean("[@afterQuerying]");
-			stdzers.add(new SeriesNameCorrectionRuleSettingEntry(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
+			stdzers.add(new SeriesNameCorrectionRuleSettingsItem(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
 			seriesNameIndex++;
 		}
 		List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsCorrectionRule");
@@ -179,15 +179,15 @@ public class ConfigurationHelper
 			boolean beforeQuerying = stdzerCfg.getBoolean("[@beforeQuerying]");
 			boolean afterQuerying = stdzerCfg.getBoolean("[@afterQuerying]");
 			ReleaseTagsCorrector stdzer = new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
-			stdzers.add(new ReleaseTagsCorrectionRuleSettingEntry(stdzer, beforeQuerying, afterQuerying));
+			stdzers.add(new ReleaseTagsCorrectionRuleSettingsItem(stdzer, beforeQuerying, afterQuerying));
 		}
 		stdzers.trimToSize();
 		return FXCollections.observableList(stdzers);
 	}
 
-	public static ObservableList<MetadataDbSettingEntry<Release>> getReleaseDbs(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<MetadataDbSettingsItem<Release>> getReleaseDbs(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		ArrayList<MetadataDbSettingEntry<Release>> dbs = new ArrayList<>(3);
+		ArrayList<MetadataDbSettingsItem<Release>> dbs = new ArrayList<>(3);
 		List<HierarchicalConfiguration<ImmutableNode>> rlsDbCfgs = cfg.configurationsAt(key + ".db");
 		for (HierarchicalConfiguration<ImmutableNode> rlsDbCfg : rlsDbCfgs)
 		{
@@ -195,15 +195,15 @@ public class ConfigurationHelper
 			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
 			if (PreDbMe.SITE.getName().equals(name))
 			{
-				dbs.add(new MetadataDbSettingEntry<>(new PreDbMeMetadataDb(), enabled));
+				dbs.add(new MetadataDbSettingsItem<>(new PreDbMeMetadataDb(), enabled));
 			}
 			else if (XRelTo.SITE.getName().equals(name))
 			{
-				dbs.add(new MetadataDbSettingEntry<>(new XRelToMetadataDb(), enabled));
+				dbs.add(new MetadataDbSettingsItem<>(new XRelToMetadataDb(), enabled));
 			}
 			else if (OrlyDbCom.SITE.getName().equals(name))
 			{
-				dbs.add(new MetadataDbSettingEntry<>(new OrlyDbComMetadataDb(), enabled));
+				dbs.add(new MetadataDbSettingsItem<>(new OrlyDbComMetadataDb(), enabled));
 			}
 			else
 			{
@@ -254,9 +254,9 @@ public class ConfigurationHelper
 		return FXCollections.observableList(rlss);
 	}
 
-	public static ObservableList<CompatibilitySettingEntry> getCompatibilities(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<CompatibilitySettingsItem> getCompatibilities(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		Set<CompatibilitySettingEntry> compatibilities = new LinkedHashSet<>();
+		Set<CompatibilitySettingsItem> compatibilities = new LinkedHashSet<>();
 		// read GroupsCompatibilities
 		List<HierarchicalConfiguration<ImmutableNode>> groupsCompCfgs = cfg.configurationsAt(key + ".crossGroupCompatibility");
 		for (HierarchicalConfiguration<ImmutableNode> groupsCompCfg : groupsCompCfgs)
@@ -265,7 +265,7 @@ public class ConfigurationHelper
 			Group sourceGroup = Group.from(groupsCompCfg.getString("[@sourceGroup]"));
 			Group compatibleGroup = Group.from(groupsCompCfg.getString("[@compatibleGroup]"));
 			boolean symmetric = groupsCompCfg.getBoolean("[@symmetric]", false);
-			compatibilities.add(new CompatibilitySettingEntry(new CrossGroupCompatibility(sourceGroup, compatibleGroup, symmetric), enabled));
+			compatibilities.add(new CompatibilitySettingsItem(new CrossGroupCompatibility(sourceGroup, compatibleGroup, symmetric), enabled));
 		}
 		return FXCollections.observableArrayList(compatibilities);
 	}
@@ -285,26 +285,26 @@ public class ConfigurationHelper
 	}
 
 	// SETTER
-	public static void addParsingServices(XMLConfiguration cfg, String key, List<ParsingServiceSettingEntry> parsingServices)
+	public static void addParsingServices(XMLConfiguration cfg, String key, List<ParsingServiceSettingsItem> parsingServices)
 	{
 		for (int i = 0; i < parsingServices.size(); i++)
 		{
-			ParsingServiceSettingEntry ps = parsingServices.get(i);
+			ParsingServiceSettingsItem ps = parsingServices.get(i);
 			cfg.addProperty(key + ".parsingService(" + i + ")", ps.getValue().getDomain());
 			cfg.addProperty(key + ".parsingService(" + i + ")[@enabled]", ps.isEnabled());
 		}
 	}
 
-	public static void addCorrectionRules(XMLConfiguration cfg, String key, List<CorrectionRuleSettingEntry<?, ?>> rules)
+	public static void addCorrectionRules(XMLConfiguration cfg, String key, List<CorrectionRuleSettingsItem<?, ?>> rules)
 	{
 		// one index for each element name
 		int seriesNameIndex = 0;
 		int releaseTagsIndex = 0;
-		for (CorrectionRuleSettingEntry<?, ?> genericEntry : rules)
+		for (CorrectionRuleSettingsItem<?, ?> genericEntry : rules)
 		{
-			if (genericEntry instanceof SeriesNameCorrectionRuleSettingEntry)
+			if (genericEntry instanceof SeriesNameCorrectionRuleSettingsItem)
 			{
-				SeriesNameCorrectionRuleSettingEntry entry = (SeriesNameCorrectionRuleSettingEntry) genericEntry;
+				SeriesNameCorrectionRuleSettingsItem entry = (SeriesNameCorrectionRuleSettingsItem) genericEntry;
 				SeriesNameCorrector corrector = entry.getValue();
 				UserPattern namePattern = entry.getNameUserPattern();
 
@@ -319,9 +319,9 @@ public class ConfigurationHelper
 				}
 				seriesNameIndex++;
 			}
-			else if (genericEntry instanceof ReleaseTagsCorrectionRuleSettingEntry)
+			else if (genericEntry instanceof ReleaseTagsCorrectionRuleSettingsItem)
 			{
-				ReleaseTagsCorrectionRuleSettingEntry entry = (ReleaseTagsCorrectionRuleSettingEntry) genericEntry;
+				ReleaseTagsCorrectionRuleSettingsItem entry = (ReleaseTagsCorrectionRuleSettingsItem) genericEntry;
 				TagsReplacer replacer = (TagsReplacer) entry.getValue().getReplacer();
 
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.formatList(replacer.getSearchTags()));

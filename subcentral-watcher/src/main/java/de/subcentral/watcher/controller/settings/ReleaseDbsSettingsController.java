@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.settings.MetadataDbSettingEntry;
-import de.subcentral.watcher.settings.MetadataDbSettingEntry.Availability;
+import de.subcentral.watcher.settings.MetadataDbSettingsItem;
+import de.subcentral.watcher.settings.MetadataDbSettingsItem.Availability;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.Observable;
@@ -43,13 +43,13 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	@FXML
 	private Button																			recheckAvailabilitiesButton;
 	@FXML
-	private TableView<MetadataDbSettingEntry<Release>>										releaseDbsTableView;
+	private TableView<MetadataDbSettingsItem<Release>>										releaseDbsTableView;
 	@FXML
-	private TableColumn<MetadataDbSettingEntry<Release>, Boolean>							releaseDbsEnabledColumn;
+	private TableColumn<MetadataDbSettingsItem<Release>, Boolean>							releaseDbsEnabledColumn;
 	@FXML
-	private TableColumn<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>>	releaseDbsNameColumn;
+	private TableColumn<MetadataDbSettingsItem<Release>, MetadataDbSettingsItem<Release>>	releaseDbsNameColumn;
 	@FXML
-	private TableColumn<MetadataDbSettingEntry<Release>, Availability>						releaseDbsAvailableColumn;
+	private TableColumn<MetadataDbSettingsItem<Release>, Availability>						releaseDbsAvailableColumn;
 	@FXML
 	private Button																			moveUpReleaseDbButton;
 	@FXML
@@ -66,14 +66,14 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		return rootPane;
 	}
 
-	private static class AvailableTableCell extends TableCell<MetadataDbSettingEntry<Release>, Availability>
+	private static class AvailableTableCell extends TableCell<MetadataDbSettingsItem<Release>, Availability>
 	{
 		{
 			// center the cell content
 			super.setAlignment(Pos.CENTER);
 		}
 
-		protected void updateItem(MetadataDbSettingEntry.Availability item, boolean empty)
+		protected void updateItem(MetadataDbSettingsItem.Availability item, boolean empty)
 		{
 			super.updateItem(item, empty);
 			if (empty || item == null)
@@ -121,15 +121,15 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 
 		releaseDbsTableView.setItems(settings.releaseDbsProperty());
 
-		releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Boolean> param) -> param.getValue().enabledProperty());
+		releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem<Release>, Boolean> param) -> param.getValue().enabledProperty());
 		releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 
-		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> param) -> FxUtil.constantBinding(param.getValue()));
+		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem<Release>, MetadataDbSettingsItem<Release>> param) -> FxUtil.constantBinding(param.getValue()));
 		releaseDbsNameColumn
-				.setCellFactory((TableColumn<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>> param) -> new NameTableCell(settingsController.getMainController().getCommonExecutor()));
+				.setCellFactory((TableColumn<MetadataDbSettingsItem<Release>, MetadataDbSettingsItem<Release>> param) -> new NameTableCell(settingsController.getMainController().getCommonExecutor()));
 
-		releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingEntry<Release>, Availability> param) -> param.getValue().availabilityProperty());
-		releaseDbsAvailableColumn.setCellFactory((TableColumn<MetadataDbSettingEntry<Release>, Availability> param) -> new AvailableTableCell());
+		releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem<Release>, Availability> param) -> param.getValue().availabilityProperty());
+		releaseDbsAvailableColumn.setCellFactory((TableColumn<MetadataDbSettingsItem<Release>, Availability> param) -> new AvailableTableCell());
 
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
 
@@ -145,13 +145,13 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 
 	private void updateAvailibities()
 	{
-		for (MetadataDbSettingEntry<Release> releaseDb : releaseDbsTableView.getItems())
+		for (MetadataDbSettingsItem<Release> releaseDb : releaseDbsTableView.getItems())
 		{
 			releaseDb.updateAvailability(settingsController.getMainController().getCommonExecutor());
 		}
 	}
 
-	private static class NameTableCell extends TableCell<MetadataDbSettingEntry<Release>, MetadataDbSettingEntry<Release>>
+	private static class NameTableCell extends TableCell<MetadataDbSettingsItem<Release>, MetadataDbSettingsItem<Release>>
 	{
 		private final ExecutorService executor;
 
@@ -161,7 +161,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		}
 
 		@Override
-		public void updateItem(MetadataDbSettingEntry<Release> item, boolean empty)
+		public void updateItem(MetadataDbSettingsItem<Release> item, boolean empty)
 		{
 			super.updateItem(item, empty);
 			if (empty || item == null)

@@ -1,4 +1,4 @@
-package de.subcentral.watcher.dialogs;
+package de.subcentral.fx.dialog;
 
 import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
@@ -11,14 +11,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.stage.Window;
 
-public abstract class AbstractDialogController<T> extends Controller
+public abstract class DialogController<T> extends Controller
 {
 	// View
 	protected final Dialog<T>	dialog	= new Dialog<>();
 	@FXML
 	protected Node				rootPane;
 
-	public AbstractDialogController(Window owner)
+	public DialogController(Window owner)
 	{
 		this.dialog.initOwner(owner);
 	}

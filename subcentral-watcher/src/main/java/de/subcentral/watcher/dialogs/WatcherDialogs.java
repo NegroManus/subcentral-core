@@ -11,11 +11,12 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.dialog.DialogController;
 import de.subcentral.watcher.dialogs.ImportSettingEntriesController.ImportSettingEntriesParameters;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingEntry;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingsItem;
 import javafx.stage.Window;
 
 public class WatcherDialogs
@@ -44,23 +45,23 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "CrossGroupCompatibilityEditView.fxml");
 	}
 
-	public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView(Window window)
+	public static Optional<SeriesNameCorrectionRuleSettingsItem> showSeriesNameCorrectionRuleEditView(Window window)
 	{
 		return showSeriesNameCorrectionRuleEditView(null, window);
 	}
 
-	public static Optional<SeriesNameCorrectionRuleSettingEntry> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectionRuleSettingEntry entry, Window window)
+	public static Optional<SeriesNameCorrectionRuleSettingsItem> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectionRuleSettingsItem entry, Window window)
 	{
 		SeriesNameCorrectionRuleEditController ctrl = new SeriesNameCorrectionRuleEditController(entry, window);
 		return showEditViewAndWait(ctrl, "SeriesNameCorrectionRuleEditView.fxml");
 	}
 
-	public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView(Window window)
+	public static Optional<ReleaseTagsCorrectionRuleSettingsItem> showReleaseTagsCorrectionRuleEditView(Window window)
 	{
 		return showReleaseTagsCorrectionRuleEditView(null, window);
 	}
 
-	public static Optional<ReleaseTagsCorrectionRuleSettingEntry> showReleaseTagsCorrectionRuleEditView(ReleaseTagsCorrectionRuleSettingEntry entry, Window window)
+	public static Optional<ReleaseTagsCorrectionRuleSettingsItem> showReleaseTagsCorrectionRuleEditView(ReleaseTagsCorrectionRuleSettingsItem entry, Window window)
 	{
 		ReleaseTagsCorrectionRuleEditController ctrl = new ReleaseTagsCorrectionRuleEditController(entry, window);
 		return showEditViewAndWait(ctrl, "ReleaseTagsCorrectionRuleEditView.fxml");
@@ -100,7 +101,7 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "ImportSettingEntriesView.fxml");
 	}
 
-	private static <T> Optional<T> showEditViewAndWait(AbstractDialogController<T> ctrl, String fxmlFilename)
+	private static <T> Optional<T> showEditViewAndWait(DialogController<T> ctrl, String fxmlFilename)
 	{
 		try
 		{

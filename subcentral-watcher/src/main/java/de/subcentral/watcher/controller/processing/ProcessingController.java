@@ -42,11 +42,11 @@ import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
-import de.subcentral.settings.SettingsUtil;
+import de.subcentral.fx.settings.SettingsUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.MainController;
-import de.subcentral.watcher.settings.CompatibilitySettingEntry;
-import de.subcentral.watcher.settings.CorrectionRuleSettingEntry;
+import de.subcentral.watcher.settings.CompatibilitySettingsItem;
+import de.subcentral.watcher.settings.CorrectionRuleSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
@@ -187,7 +187,7 @@ public class ProcessingController extends Controller
 	{
 		CompatibilityService service = new CompatibilityService();
 		service.getCompatibilities().add(new SameGroupCompatibility());
-		for (CompatibilitySettingEntry entry : WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities())
+		for (CompatibilitySettingsItem entry : WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities())
 		{
 			if (entry.isEnabled())
 			{
@@ -203,7 +203,7 @@ public class ProcessingController extends Controller
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		for (CorrectionRuleSettingEntry<?, ?> entry : settings.getCorrectionRules())
+		for (CorrectionRuleSettingsItem<?, ?> entry : settings.getCorrectionRules())
 		{
 			if (entry.isBeforeQuerying())
 			{
@@ -223,7 +223,7 @@ public class ProcessingController extends Controller
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		for (CorrectionRuleSettingEntry<?, ?> entry : settings.getCorrectionRules())
+		for (CorrectionRuleSettingsItem<?, ?> entry : settings.getCorrectionRules())
 		{
 			if (entry.isAfterQuerying())
 			{
@@ -233,7 +233,7 @@ public class ProcessingController extends Controller
 		return service;
 	}
 
-	private static <T> void registerCorrector(TypeBasedCorrectionService service, CorrectionRuleSettingEntry<T, ?> entry)
+	private static <T> void registerCorrector(TypeBasedCorrectionService service, CorrectionRuleSettingsItem<T, ?> entry)
 	{
 		service.registerCorrector(entry.getBeanType(), entry.getValue());
 	}

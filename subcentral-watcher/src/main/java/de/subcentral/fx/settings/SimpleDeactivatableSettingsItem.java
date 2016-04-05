@@ -1,15 +1,15 @@
-package de.subcentral.settings;
+package de.subcentral.fx.settings;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class DeactivatableSettingsItemBase<T> extends SettingsItemBase<T> implements DeactivatableSettingsItem<T>
+public abstract class SimpleDeactivatableSettingsItem<T> extends SimpleSettingsItem<T> implements DeactivatableSettingsItem<T>
 {
 	protected final BooleanProperty enabled;
 
-	public DeactivatableSettingsItemBase(T value, boolean enabled)
+	public SimpleDeactivatableSettingsItem(T value, boolean enabled)
 	{
 		super(value);
 		this.enabled = new SimpleBooleanProperty(this, "enabled", enabled);
@@ -51,7 +51,7 @@ public abstract class DeactivatableSettingsItemBase<T> extends SettingsItemBase<
 		}
 		if (getClass().equals(obj.getClass()))
 		{
-			DeactivatableSettingsItemBase<?> o = (DeactivatableSettingsItemBase<?>) obj;
+			SimpleDeactivatableSettingsItem<?> o = (SimpleDeactivatableSettingsItem<?>) obj;
 			return value.equals(o.value) && isEnabled() == o.isEnabled();
 		}
 		return false;

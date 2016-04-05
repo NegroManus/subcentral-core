@@ -3,18 +3,18 @@ package de.subcentral.watcher.settings;
 import java.util.Objects;
 
 import de.subcentral.core.correct.Corrector;
-import de.subcentral.settings.SettingsItemBase;
+import de.subcentral.fx.settings.SimpleSettingsItem;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class CorrectionRuleSettingEntry<T, C extends Corrector<? super T>> extends SettingsItemBase<C>
+public abstract class CorrectionRuleSettingsItem<T, C extends Corrector<? super T>> extends SimpleSettingsItem<C>
 {
 	protected final Class<T>		beanType;
 	protected final BooleanProperty	beforeQuerying;
 	protected final BooleanProperty	afterQuerying;
 
-	public CorrectionRuleSettingEntry(Class<T> beanType, C corrector, boolean beforeQuerying, boolean afterQuerying)
+	public CorrectionRuleSettingsItem(Class<T> beanType, C corrector, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(corrector);
 		this.beanType = Objects.requireNonNull(beanType, "beanType");

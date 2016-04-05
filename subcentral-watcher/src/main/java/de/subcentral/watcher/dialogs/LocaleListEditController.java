@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.dialog.BeanEditController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,7 +18,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.stage.Window;
 
-public class LocaleListEditController extends AbstractBeanEditController<List<Locale>>
+public class LocaleListEditController extends BeanEditController<List<Locale>>
 {
 	@FXML
 	private ListView<Locale>	langsListView;

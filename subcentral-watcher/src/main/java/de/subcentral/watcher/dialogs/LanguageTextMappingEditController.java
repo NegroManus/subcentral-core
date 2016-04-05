@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.dialog.BeanEditController;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
@@ -14,7 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
-public class LanguageTextMappingEditController extends AbstractBeanEditController<LanguageToTextMapping>
+public class LanguageTextMappingEditController extends BeanEditController<LanguageToTextMapping>
 {
 	@FXML
 	private ComboBox<Locale>	langComboBox;
