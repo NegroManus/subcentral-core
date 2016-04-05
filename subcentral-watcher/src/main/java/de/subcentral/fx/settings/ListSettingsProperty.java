@@ -10,35 +10,16 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ListSettingsProperty<T> extends SettingsPropertyBase<ObservableList<T>, ListProperty<T>>
+public class ListSettingsProperty<E> extends ObjectSettingsPropertyBase<ObservableList<E>, ListProperty<E>>
 {
-	private final BiFunction<XMLConfiguration, String, ObservableList<T>>	loader;
-	private final TriConsumer<XMLConfiguration, String, ObservableList<T>>	saver;
-
-	public ListSettingsProperty(String key, BiFunction<XMLConfiguration, String, ObservableList<T>> loader, TriConsumer<XMLConfiguration, String, ObservableList<T>> saver)
+	public ListSettingsProperty(String key, BiFunction<XMLConfiguration, String, ObservableList<E>> loader, TriConsumer<XMLConfiguration, String, ObservableList<E>> saver)
 	{
-		super(key);
-		this.loader = loader;
-		this.saver = saver;
+		super(key, FXCollections.observableArrayList(), loader, saver);
 	}
 
 	@Override
-	protected ListProperty<T> createProperty(String name)
+	protected ListProperty<E> createProperty(Object bean, String name, ObservableList<E> initialValue)
 	{
-		return new SimpleListProperty<>(this, name, FXCollections.observableArrayList());
-	}
-
-	@Override
-	public void load(XMLConfiguration cfg)
-	{
-		ObservableList<T> val = loader.apply(cfg, key);
-		original.setAll(val);
-		current.setAll(val);
-	}
-
-	@Override
-	public void save(XMLConfiguration cfg)
-	{
-		saver.accept(cfg, key, current.getValue());
+		return new SimpleListProperty<>(bean, name, initialValue);
 	}
 }

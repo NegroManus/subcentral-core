@@ -8,42 +8,16 @@ import de.subcentral.core.util.TriConsumer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ObjectSettingsProperty<T> extends SettingsPropertyBase<T, Property<T>>
+public class ObjectSettingsProperty<T> extends ObjectSettingsPropertyBase<T, Property<T>>
 {
-	private final T											defaultValue;
-	private final BiFunction<XMLConfiguration, String, T>	loader;
-	private final TriConsumer<XMLConfiguration, String, T>	saver;
-
 	public ObjectSettingsProperty(String key, T defaultValue, BiFunction<XMLConfiguration, String, T> loader, TriConsumer<XMLConfiguration, String, T> saver)
 	{
-		super(key);
-		this.defaultValue = defaultValue;
-		this.loader = loader;
-		this.saver = saver;
+		super(key, defaultValue, loader, saver);
 	}
 
 	@Override
-	protected Property<T> createProperty(String name)
+	protected Property<T> createProperty(Object bean, String name, T initialValue)
 	{
-		return new SimpleObjectProperty<>(this, name, defaultValue);
-	}
-
-	@Override
-	public void load(XMLConfiguration cfg)
-	{
-		T val = loader.apply(cfg, key);
-		original.setValue(val);
-		current.setValue(val);
-	}
-
-	@Override
-	public void save(XMLConfiguration cfg)
-	{
-		saver.accept(cfg, key, current.getValue());
-	}
-
-	public T getDefaultValue()
-	{
-		return defaultValue;
+		return new SimpleObjectProperty<>(bean, name, initialValue);
 	}
 }

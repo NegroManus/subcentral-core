@@ -7,23 +7,31 @@ import javafx.beans.property.Property;
 
 public interface SettingsProperty<T, P extends Property<T>>
 {
-	public P originalProperty();
-
 	public T getOriginal();
-
-	public void setOriginal(T value);
 
 	public P currentProperty();
 
-	public T getCurrent();
+	public default T getCurrent()
+	{
+		return currentProperty().getValue();
+	}
 
-	public void setCurrent(T value);
+	public default void setCurrent(T value)
+	{
+		currentProperty().setValue(value);
+	}
 
 	public BooleanBinding changedBinding();
 
-	public boolean hasChanged();
+	public default boolean hasChanged()
+	{
+		return changedBinding().get();
+	}
 
-	public void reset();
+	public default void reset()
+	{
+		setCurrent(getOriginal());
+	}
 
 	public void load(XMLConfiguration cfg);
 
