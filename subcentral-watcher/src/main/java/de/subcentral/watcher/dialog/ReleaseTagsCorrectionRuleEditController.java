@@ -96,7 +96,7 @@ public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<
 		}
 		else
 		{
-			TagsReplacer replacer = (TagsReplacer) bean.getValue().getReplacer();
+			TagsReplacer replacer = (TagsReplacer) bean.getItem().getReplacer();
 			switch (replacer.getSearchMode())
 			{
 				case CONTAIN:

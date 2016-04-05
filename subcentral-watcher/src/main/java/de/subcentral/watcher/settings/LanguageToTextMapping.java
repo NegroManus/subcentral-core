@@ -1,6 +1,7 @@
 package de.subcentral.watcher.settings;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,7 +11,7 @@ import com.google.common.base.MoreObjects;
 import de.subcentral.fx.FxUtil;
 import javafx.util.StringConverter;
 
-public final class LanguageToTextMapping implements Comparable<LanguageToTextMapping>
+public final class LanguageToTextMapping implements Map.Entry<Locale, String>, Comparable<LanguageToTextMapping>
 {
 	final Locale	language;
 	final String	text;
@@ -31,6 +32,25 @@ public final class LanguageToTextMapping implements Comparable<LanguageToTextMap
 		return text;
 	}
 
+	// Map.Entry implementation
+	@Override
+	public Locale getKey()
+	{
+		return language;
+	}
+
+	@Override
+	public String getValue()
+	{
+		return text;
+	}
+
+	@Override
+	public String setValue(String value)
+	{
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -41,7 +61,7 @@ public final class LanguageToTextMapping implements Comparable<LanguageToTextMap
 		if (obj instanceof LanguageToTextMapping)
 		{
 			LanguageToTextMapping o = (LanguageToTextMapping) obj;
-			return language.equals(o.language);
+			return language.equals(o.language) && text.equals(o.text);
 		}
 		return false;
 	}
@@ -49,7 +69,7 @@ public final class LanguageToTextMapping implements Comparable<LanguageToTextMap
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(983, 133).append(language).toHashCode();
+		return new HashCodeBuilder(983, 133).append(language).append(text).toHashCode();
 	}
 
 	@Override

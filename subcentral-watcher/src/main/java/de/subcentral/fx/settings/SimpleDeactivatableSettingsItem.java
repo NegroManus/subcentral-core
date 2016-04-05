@@ -33,11 +33,6 @@ public class SimpleDeactivatableSettingsItem<T> extends SimpleSettingsItem<T> im
 		this.enabled.set(enabled);
 	}
 
-	public boolean valueEquals(Object obj)
-	{
-		return super.equals(obj);
-	}
-
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -52,7 +47,7 @@ public class SimpleDeactivatableSettingsItem<T> extends SimpleSettingsItem<T> im
 		if (getClass().equals(obj.getClass()))
 		{
 			SimpleDeactivatableSettingsItem<?> o = (SimpleDeactivatableSettingsItem<?>) obj;
-			return value.equals(o.value) && isEnabled() == o.isEnabled();
+			return item.equals(o.item) && isEnabled() == o.isEnabled();
 		}
 		return false;
 	}
@@ -60,6 +55,6 @@ public class SimpleDeactivatableSettingsItem<T> extends SimpleSettingsItem<T> im
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(71, 913).append(getClass()).append(value).append(isEnabled()).toHashCode();
+		return new HashCodeBuilder(71, 913).append(getClass()).append(item).append(isEnabled()).toHashCode();
 	}
 }

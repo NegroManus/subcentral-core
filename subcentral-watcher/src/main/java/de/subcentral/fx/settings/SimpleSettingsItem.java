@@ -6,17 +6,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class SimpleSettingsItem<T> implements SettingsItem<T>
 {
-	protected final T value;
+	protected final T item;
 
-	public SimpleSettingsItem(T value)
+	public SimpleSettingsItem(T item)
 	{
-		this.value = Objects.requireNonNull(value, "value");
+		this.item = Objects.requireNonNull(item, "item");
 	}
 
 	@Override
-	public T getValue()
+	public T getItem()
 	{
-		return value;
+		return item;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class SimpleSettingsItem<T> implements SettingsItem<T>
 		if (getClass().equals(obj.getClass()))
 		{
 			SimpleSettingsItem<?> o = (SimpleSettingsItem<?>) obj;
-			return value.equals(o.value);
+			return item.equals(o.item);
 		}
 		return false;
 	}
@@ -41,6 +41,6 @@ public class SimpleSettingsItem<T> implements SettingsItem<T>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(71, 913).append(getClass()).append(value).toHashCode();
+		return new HashCodeBuilder(71, 913).append(getClass()).append(item).toHashCode();
 	}
 }

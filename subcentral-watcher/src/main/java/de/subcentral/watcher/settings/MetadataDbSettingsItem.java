@@ -56,7 +56,7 @@ public class MetadataDbSettingsItem<T> extends SimpleDeactivatableSettingsItem<M
 			@Override
 			protected Availability call() throws Exception
 			{
-				return Availability.of(value.checkState());
+				return Availability.of(item.checkState());
 			}
 
 			@Override

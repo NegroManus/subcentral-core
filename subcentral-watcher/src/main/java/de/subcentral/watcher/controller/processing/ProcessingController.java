@@ -191,7 +191,7 @@ public class ProcessingController extends Controller
 		{
 			if (entry.isEnabled())
 			{
-				service.getCompatibilities().add(entry.getValue());
+				service.getCompatibilities().add(entry.getItem());
 			}
 		}
 		return service;
@@ -235,7 +235,7 @@ public class ProcessingController extends Controller
 
 	private static <T> void registerCorrector(TypeBasedCorrectionService service, CorrectionRuleSettingsItem<T, ?> entry)
 	{
-		service.registerCorrector(entry.getBeanType(), entry.getValue());
+		service.registerCorrector(entry.getBeanType(), entry.getItem());
 	}
 
 	private static NamingService initNamingService()
@@ -719,7 +719,7 @@ public class ProcessingController extends Controller
 					ProcessingTask newTask = new ProcessingTask(task.getSourceFile(), ProcessingController.this, taskTreeItem);
 					taskTreeItem.setValue(newTask);
 
-					// TODO hack so that the new TreeItem value is observed for the state of its ProcessingT
+					// TODO hack so that the new TreeItem item is observed for the state of its ProcessingT
 					// -> solution: use service (can be restarted)
 					processingTreeTable.getSelectionModel().clearSelection();
 					processingTreeTable.getSelectionModel().select(taskTreeItem);

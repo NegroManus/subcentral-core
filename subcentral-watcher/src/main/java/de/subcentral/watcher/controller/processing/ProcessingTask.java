@@ -100,7 +100,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		updateTitle(sourceFile.getFileName().toString());
 		updateMessage("In queue");
-		// progress initial value is -1 (intermediate) -> set it to zero
+		// progress initial item is -1 (intermediate) -> set it to zero
 		// reason: if many tasks are added the animation overhead can get quite big and it's very confusing to watch
 		updateProgress(0d, 1d);
 	}

@@ -1,6 +1,8 @@
 package de.subcentral.watcher.settings;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -10,15 +12,15 @@ import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.fx.UserPattern;
 import javafx.util.StringConverter;
 
-public class PatternToLanguageMapping implements Comparable<PatternToLanguageMapping>
+public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>, Comparable<PatternToLanguageMapping>
 {
 	private final UserPattern	pattern;
 	private final Locale		language;
 
 	public PatternToLanguageMapping(UserPattern pattern, Locale language)
 	{
-		this.pattern = pattern;
-		this.language = language;
+		this.pattern = Objects.requireNonNull(pattern, "pattern");
+		this.language = Objects.requireNonNull(language, "language");
 	}
 
 	public UserPattern getPattern()
@@ -36,6 +38,25 @@ public class PatternToLanguageMapping implements Comparable<PatternToLanguageMap
 		return new LanguagePattern(pattern.toPattern(), language);
 	}
 
+	// Map.Entry implementation
+	@Override
+	public UserPattern getKey()
+	{
+		return pattern;
+	}
+
+	@Override
+	public Locale getValue()
+	{
+		return language;
+	}
+
+	@Override
+	public Locale setValue(Locale value)
+	{
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -46,7 +67,7 @@ public class PatternToLanguageMapping implements Comparable<PatternToLanguageMap
 		if (obj instanceof PatternToLanguageMapping)
 		{
 			PatternToLanguageMapping o = (PatternToLanguageMapping) obj;
-			return pattern.equals(o.pattern);
+			return pattern.equals(o.pattern) && language.equals(language);
 		}
 		return false;
 	}
@@ -54,7 +75,7 @@ public class PatternToLanguageMapping implements Comparable<PatternToLanguageMap
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(73, 113).append(pattern).toHashCode();
+		return new HashCodeBuilder(73, 113).append(pattern).append(language).toHashCode();
 	}
 
 	@Override

@@ -54,12 +54,12 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 		parsingServicesTableView.setItems(settings.filenameParsingServicesProperty());
 		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxUtil.constantBinding(param.getValue().getValue().getDomain()));
+		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxUtil.constantBinding(param.getValue().getItem().getDomain()));
 
 		parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) ->
 		{
 			String example;
-			String domain = param.getValue().getValue().getDomain();
+			String domain = param.getValue().getItem().getDomain();
 			if (Addic7edCom.getParsingService().getDomain().equals(domain))
 			{
 				example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";

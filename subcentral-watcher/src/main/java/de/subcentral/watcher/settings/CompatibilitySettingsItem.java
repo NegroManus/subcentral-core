@@ -21,7 +21,7 @@ public class CompatibilitySettingsItem extends SimpleDeactivatableSettingsItem<C
 			@Override
 			public String toString(CompatibilitySettingsItem entry)
 			{
-				Compatibility c = entry.getValue();
+				Compatibility c = entry.getItem();
 				if (c instanceof CrossGroupCompatibility)
 				{
 					return ((CrossGroupCompatibility) c).toShortString();

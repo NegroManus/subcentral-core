@@ -170,7 +170,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 			}
 			else
 			{
-				MetadataDb db = item.getValue();
+				MetadataDb db = item.getItem();
 
 				HBox hbox = FxUtil.createDefaultHBox();
 				Label name = new Label(db.getSite().getDisplayName());
@@ -184,7 +184,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 				}
 				catch (MalformedURLException | URISyntaxException e)
 				{
-					log.warn("Could not create Hyperlink for release database " + item.getValue(), e);
+					log.warn("Could not create Hyperlink for release database " + item.getItem(), e);
 				}
 				setGraphic(hbox);
 			}

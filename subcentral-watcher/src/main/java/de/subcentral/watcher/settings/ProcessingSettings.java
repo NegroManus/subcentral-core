@@ -510,7 +510,7 @@ public class ProcessingSettings extends SubSettings
 		for (int i = 0; i < releaseDbs.size(); i++)
 		{
 			MetadataDbSettingsItem<Release> db = releaseDbs.get(i);
-			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getValue().getSite().getName());
+			cfg.addProperty("metadata.release.databases.db(" + i + ")", db.getItem().getSite().getName());
 			cfg.addProperty("metadata.release.databases.db(" + i + ")[@enabled]", db.isEnabled());
 		}
 
@@ -529,7 +529,7 @@ public class ProcessingSettings extends SubSettings
 		for (int i = 0; i < compatibilities.size(); i++)
 		{
 			CompatibilitySettingsItem entry = compatibilities.get(i);
-			Compatibility c = entry.getValue();
+			Compatibility c = entry.getItem();
 			if (c instanceof CrossGroupCompatibility)
 			{
 				CrossGroupCompatibility cgc = (CrossGroupCompatibility) c;
@@ -554,7 +554,7 @@ public class ProcessingSettings extends SubSettings
 		for (Map.Entry<String, Object> param : namingParameters.entrySet())
 		{
 			cfg.addProperty("naming.parameters.param(" + i + ")[@key]", param.getKey());
-			cfg.addProperty("naming.parameters.param(" + i + ")[@value]", param.getValue());
+			cfg.addProperty("naming.parameters.param(" + i + ")[@item]", param.getValue());
 			i++;
 		}
 

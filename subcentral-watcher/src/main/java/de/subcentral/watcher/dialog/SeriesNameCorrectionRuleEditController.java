@@ -112,8 +112,8 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 					initialPatternMode = literalRadioBtn;
 			}
 			initialNamePattern = bean.getNameUserPattern().getPattern();
-			initialNameReplacement = bean.getValue().getNameReplacement();
-			aliasNamesReplacement = FXCollections.observableArrayList(bean.getValue().getAliasNamesReplacement());
+			initialNameReplacement = bean.getItem().getNameReplacement();
+			aliasNamesReplacement = FXCollections.observableArrayList(bean.getItem().getAliasNamesReplacement());
 		}
 		patternModeToggleGrp.selectToggle(initialPatternMode);
 		namePatternTxtFld.setText(initialNamePattern);

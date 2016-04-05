@@ -72,7 +72,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		private NamingParam(String key, boolean value)
 		{
 			this.key = new ReadOnlyStringWrapper(this, "key", key);
-			this.value = new SimpleBooleanProperty(this, "value", value);
+			this.value = new SimpleBooleanProperty(this, "item", value);
 		}
 
 		public String getKey()
@@ -114,7 +114,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 			this.list = Objects.requireNonNull(list, "list");
 			this.map = Objects.requireNonNull(map, "map");
 
-			// set initial value
+			// set initial item
 			List<NamingParam> namingParams = new ArrayList<>();
 			for (Map.Entry<String, Object> entries : map.entrySet())
 			{

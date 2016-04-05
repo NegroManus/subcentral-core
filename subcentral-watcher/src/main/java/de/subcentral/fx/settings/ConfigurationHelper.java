@@ -290,7 +290,7 @@ public class ConfigurationHelper
 		for (int i = 0; i < parsingServices.size(); i++)
 		{
 			ParsingServiceSettingsItem ps = parsingServices.get(i);
-			cfg.addProperty(key + ".parsingService(" + i + ")", ps.getValue().getDomain());
+			cfg.addProperty(key + ".parsingService(" + i + ")", ps.getItem().getDomain());
 			cfg.addProperty(key + ".parsingService(" + i + ")[@enabled]", ps.isEnabled());
 		}
 	}
@@ -305,7 +305,7 @@ public class ConfigurationHelper
 			if (genericEntry instanceof SeriesNameCorrectionRuleSettingsItem)
 			{
 				SeriesNameCorrectionRuleSettingsItem entry = (SeriesNameCorrectionRuleSettingsItem) genericEntry;
-				SeriesNameCorrector corrector = entry.getValue();
+				SeriesNameCorrector corrector = entry.getItem();
 				UserPattern namePattern = entry.getNameUserPattern();
 
 				cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@namePattern]", namePattern.getPattern());
@@ -322,7 +322,7 @@ public class ConfigurationHelper
 			else if (genericEntry instanceof ReleaseTagsCorrectionRuleSettingsItem)
 			{
 				ReleaseTagsCorrectionRuleSettingsItem entry = (ReleaseTagsCorrectionRuleSettingsItem) genericEntry;
-				TagsReplacer replacer = (TagsReplacer) entry.getValue().getReplacer();
+				TagsReplacer replacer = (TagsReplacer) entry.getItem().getReplacer();
 
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.formatList(replacer.getSearchTags()));
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replacement]", Tag.formatList(replacer.getReplacement()));

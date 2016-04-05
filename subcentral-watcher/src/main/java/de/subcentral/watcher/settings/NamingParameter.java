@@ -17,7 +17,7 @@ public class NamingParameter implements Comparable<NamingParameter>
 	public NamingParameter(String key, boolean value)
 	{
 		this.key = new ReadOnlyStringWrapper(this, "key", Objects.requireNonNull(key, "key"));
-		this.value = new SimpleBooleanProperty(this, "value", value);
+		this.value = new SimpleBooleanProperty(this, "item", value);
 	}
 
 	public String getKey()

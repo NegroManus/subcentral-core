@@ -11,7 +11,7 @@ public class SettingsUtil
 		{
 			if (entry.isEnabled())
 			{
-				enabledEntries.add(entry.getValue());
+				enabledEntries.add(entry.getItem());
 			}
 		}
 		return enabledEntries.build();

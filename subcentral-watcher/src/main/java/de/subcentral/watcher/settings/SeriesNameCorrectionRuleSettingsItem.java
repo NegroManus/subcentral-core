@@ -18,7 +18,7 @@ public class SeriesNameCorrectionRuleSettingsItem extends CorrectionRuleSettings
 	public SeriesNameCorrectionRuleSettingsItem(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(Series.class, buildCorrector(nameUiPattern, nameReplacement, aliasNamesReplacement), beforeQuerying, afterQuerying);
-		rule = FxUtil.constantStringBinding(formatRule(value, nameUiPattern));
+		rule = FxUtil.constantStringBinding(formatRule(item, nameUiPattern));
 		this.nameUserPattern = nameUiPattern;
 	}
 
