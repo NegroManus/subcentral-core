@@ -18,10 +18,10 @@ public class ListSettingsProperty<E> extends ObjectSettingsPropertyBase<Observab
 
 	public ListSettingsProperty(String key, Function<E, Observable[]> propertiesExtractor, ConfigurationPropertyHandler<ObservableList<E>> handler)
 	{
-		super(key, FXCollections.observableArrayList(), beanObservableCreator(propertiesExtractor), handler);
+		super(key, FXCollections.observableArrayList(), propertyObservableCreator(propertiesExtractor), handler);
 	}
 
-	private static <E> Function<ListProperty<E>, Observable> beanObservableCreator(Function<E, Observable[]> propertiesExtractor)
+	private static <E> Function<ListProperty<E>, Observable> propertyObservableCreator(Function<E, Observable[]> propertiesExtractor)
 	{
 		return (ListProperty<E> p) -> propertiesExtractor == null ? p : FxUtil.observeBeanList(p, propertiesExtractor);
 	}
