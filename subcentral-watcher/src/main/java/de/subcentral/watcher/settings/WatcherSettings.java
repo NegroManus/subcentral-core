@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.ObservableHelper;
 import de.subcentral.fx.settings.ConfigurationHelper;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -69,6 +70,18 @@ public class WatcherSettings implements Observable
 				systemTrayEnabled);
 
 		observableHelper.addListener((Observable o) -> changed.set(true));
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener)
+	{
+		observableHelper.addListener(listener);
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener)
+	{
+		observableHelper.removeListener(listener);
 	}
 
 	/**
