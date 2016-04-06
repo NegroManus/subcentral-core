@@ -1,5 +1,7 @@
 package de.subcentral.fx.settings;
 
+import java.util.Objects;
+
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,26 +17,27 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	private final boolean			defaultValue;
 	private boolean					original;
 	private BooleanProperty			current;
-	private final BooleanBinding	changed;
+	private final BooleanBinding	changedBinding;
 
 	public BooleanSettingsProperty(String key, boolean defaultValue)
 	{
 		super(key);
 		this.defaultValue = defaultValue;
-		this.original = defaultValue;
-		this.current = new SimpleBooleanProperty(this, "current", defaultValue);
-		this.changed = new BooleanBinding()
+		original = defaultValue;
+		current = new SimpleBooleanProperty(this, "current", defaultValue);
+		changedBinding = (new BooleanBinding()
 		{
 			{
-				this.bind(current);
+				super.bind(current);
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
-				return original == current.get();
+				return Objects.equals(original, current.getValue());
 			}
-		};
+		});
+		changed.bind(changedBinding);
 	}
 
 	public boolean getDefaultValue()
@@ -75,12 +78,6 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	}
 
 	@Override
-	public BooleanBinding changedBinding()
-	{
-		return changed;
-	}
-
-	@Override
 	public void reset()
 	{
 		current.set(original);
@@ -101,11 +98,18 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 		}
 		original = val;
 		current.set(val);
+		// Invalidate because original has changed
+		// and setting of current may not have caused PropertyChangeEvent if old == new.
+		changedBinding.invalidate();
 	}
 
 	@Override
 	public void save(XMLConfiguration cfg)
 	{
-		cfg.setProperty(key, current);
+		boolean val = current.get();
+		cfg.setProperty(key, val);
+		original = val;
+		// invalidate because original has changed
+		changedBinding.invalidate();
 	}
 }

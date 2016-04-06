@@ -2,8 +2,8 @@ package de.subcentral.fx.settings;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 
 public interface SettingsProperty<T, P extends Property<T>>
 {
@@ -21,11 +21,11 @@ public interface SettingsProperty<T, P extends Property<T>>
 		currentProperty().setValue(value);
 	}
 
-	public BooleanBinding changedBinding();
+	public ReadOnlyBooleanProperty changedProperty();
 
 	public default boolean hasChanged()
 	{
-		return changedBinding().get();
+		return changedProperty().get();
 	}
 
 	public default void reset()
