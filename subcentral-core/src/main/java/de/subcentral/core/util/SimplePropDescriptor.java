@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 
 /**
  * Class for defining a bean / entity property. Unlike {@link PropertyDescriptor} no further checks are conducted. This class is simply a container for a Class value and a String value.
@@ -84,7 +84,7 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 		{
 			return -1;
 		}
-		return ComparisonChain.start().compare(beanClass.getName(), o.beanClass.getName(), Settings.STRING_ORDERING).compare(propName, o.propName, Settings.STRING_ORDERING).result();
+		return ComparisonChain.start().compare(beanClass.getName(), o.beanClass.getName(), Constants.STRING_ORDERING).compare(propName, o.propName, Constants.STRING_ORDERING).result();
 	}
 
 	@Override

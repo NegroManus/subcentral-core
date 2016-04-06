@@ -4,11 +4,11 @@ import java.util.Comparator;
 
 import com.google.common.collect.Ordering;
 
-public class Settings
+public class Constants
 {
 	public static final Ordering<String> STRING_ORDERING = createDefaultOrdering(String.CASE_INSENSITIVE_ORDER);
 
-	private Settings()
+	private Constants()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}

@@ -3,7 +3,7 @@ package de.subcentral.core.metadata.media;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.util.TimeUtil;
 
@@ -22,7 +22,7 @@ public class MediaTest
 			media.add(Episode.createSeasonedEpisode("How I Met Your Mother", 3, 1));
 
 			long start = System.nanoTime();
-			media.sort(Settings.createDefaultOrdering());
+			media.sort(Constants.createDefaultOrdering());
 			System.out.println(TimeUtil.durationMillisDouble(start, System.nanoTime()));
 
 			media.forEach(s -> System.out.println(NamingDefaults.getDefaultEpisodeNamer().name(s)));

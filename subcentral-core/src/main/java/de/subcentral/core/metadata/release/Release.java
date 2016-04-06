@@ -14,7 +14,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.media.Media;
@@ -458,7 +458,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 		return ComparisonChain.start()
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
-				.compare(group, o.group, Settings.createDefaultOrdering())
+				.compare(group, o.group, Constants.createDefaultOrdering())
 				.result();
 	}
 
@@ -469,7 +469,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 		{
 			return 1;
 		}
-		return ComparisonChain.start().compare(name, o.name, Settings.STRING_ORDERING).result();
+		return ComparisonChain.start().compare(name, o.name, Constants.STRING_ORDERING).result();
 	}
 
 	@Override

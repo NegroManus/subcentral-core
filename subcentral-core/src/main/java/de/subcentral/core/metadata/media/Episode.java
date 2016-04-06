@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.SeasonNamer;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -354,12 +354,12 @@ public class Episode extends MediaBase implements Comparable<Episode>
 		// for mini-series or dated series, season and numberInSeason will be null, so they don't affect the ordering
 		// but (b) will put the ones with a numberInSeries at the end -> that's not intended
 		return ComparisonChain.start()
-				.compare(series, o.series, Settings.createDefaultOrdering())
-				.compare(season, o.season, Settings.createDefaultOrdering())
-				.compare(numberInSeason, o.numberInSeason, Settings.createDefaultOrdering())
-				.compare(numberInSeries, o.numberInSeries, Settings.createDefaultOrdering())
+				.compare(series, o.series, Constants.createDefaultOrdering())
+				.compare(season, o.season, Constants.createDefaultOrdering())
+				.compare(numberInSeason, o.numberInSeason, Constants.createDefaultOrdering())
+				.compare(numberInSeries, o.numberInSeries, Constants.createDefaultOrdering())
 				.compare(date, o.date, TemporalComparator.INSTANCE)
-				.compare(title, o.title, Settings.STRING_ORDERING)
+				.compare(title, o.title, Constants.STRING_ORDERING)
 				.result();
 	}
 

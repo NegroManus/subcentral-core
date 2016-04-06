@@ -8,7 +8,7 @@ import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -70,7 +70,7 @@ public class Network extends MetadataBase implements Comparable<Network>
 		{
 			return 1;
 		}
-		return Settings.STRING_ORDERING.compare(name, o.name);
+		return Constants.STRING_ORDERING.compare(name, o.name);
 	}
 
 	@Override

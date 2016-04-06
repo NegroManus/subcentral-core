@@ -16,7 +16,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.Site;
@@ -385,9 +385,9 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_NAME_COMPARATOR)
-				.compare(language, o.language, Settings.STRING_ORDERING)
-				.compare(group, o.group, Settings.createDefaultOrdering())
-				.compare(source, o.source, Settings.createDefaultOrdering())
+				.compare(language, o.language, Constants.STRING_ORDERING)
+				.compare(group, o.group, Constants.createDefaultOrdering())
+				.compare(source, o.source, Constants.createDefaultOrdering())
 				.result();
 	}
 

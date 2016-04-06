@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
@@ -243,9 +243,9 @@ public class Season extends MediaBase implements Comparable<Season>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(series, o.series, Settings.createDefaultOrdering())
-				.compare(number, o.number, Settings.createDefaultOrdering())
-				.compare(title, o.title, Settings.STRING_ORDERING)
+				.compare(series, o.series, Constants.createDefaultOrdering())
+				.compare(number, o.number, Constants.createDefaultOrdering())
+				.compare(title, o.title, Constants.STRING_ORDERING)
 				.result();
 	}
 

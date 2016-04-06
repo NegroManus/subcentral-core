@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import de.subcentral.core.Settings;
+import de.subcentral.core.Constants;
 import de.subcentral.core.ValidationUtil;
 
 /**
@@ -79,6 +79,6 @@ public class Group implements Comparable<Group>, Serializable
 		{
 			return 1;
 		}
-		return Settings.STRING_ORDERING.compare(name, o.name);
+		return Constants.STRING_ORDERING.compare(name, o.name);
 	}
 }
