@@ -31,9 +31,15 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class WatcherSettings extends Settings
+public class WatcherSettings implements Observable
 {
 	private static final Logger			log								= LogManager.getLogger(WatcherSettings.class);
+
+	private final ObservableHelper		observableHelper;
+	/**
+	 * Whether the settings changed since initial load
+	 */
+	private final BooleanProperty		changed							= new SimpleBooleanProperty(this, "changed", false);
 
 	// Watch
 	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories", FXCollections.observableArrayList());
@@ -53,7 +59,7 @@ public class WatcherSettings extends Settings
 
 	public WatcherSettings()
 	{
-		super.
+		observableHelper = new ObservableHelper(watchDirectories,
 				initialScan,
 				rejectAlreadyProcessedFiles,
 				processingSettings,
@@ -64,6 +70,18 @@ public class WatcherSettings extends Settings
 				systemTrayEnabled);
 
 		observableHelper.addListener((Observable o) -> changed.set(true));
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener)
+	{
+		observableHelper.addListener(listener);
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener)
+	{
+		observableHelper.removeListener(listener);
 	}
 
 	/**
