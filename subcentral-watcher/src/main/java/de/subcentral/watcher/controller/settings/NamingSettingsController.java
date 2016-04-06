@@ -9,7 +9,6 @@ import de.subcentral.core.name.EpisodeNamer;
 import de.subcentral.core.name.ReleaseNamer;
 import de.subcentral.core.name.SubtitleNamer;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.MapProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -52,7 +51,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 	@Override
 	protected void initialize() throws Exception
 	{
-		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Naming parameters
 		// bind table items to settings

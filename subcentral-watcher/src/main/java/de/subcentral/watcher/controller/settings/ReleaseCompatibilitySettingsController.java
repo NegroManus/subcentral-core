@@ -7,7 +7,6 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.CompatibilitySettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -53,7 +52,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	@Override
 	protected void initialize() throws Exception
 	{
-		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.compatibilityEnabledProperty());
 

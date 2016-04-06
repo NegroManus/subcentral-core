@@ -29,7 +29,6 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
@@ -134,7 +133,7 @@ public class MainController extends Controller
 
 	private void initSystemTray()
 	{
-		if (WatcherSettings.INSTANCE.isSystemTrayEnabled())
+		if (SettingsController.SETTINGS.isSystemTrayEnabled())
 		{
 			SwingUtilities.invokeLater(() ->
 			{

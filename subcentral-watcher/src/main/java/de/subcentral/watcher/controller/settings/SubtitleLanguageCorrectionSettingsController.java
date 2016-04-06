@@ -12,7 +12,6 @@ import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.LocaleLanguageReplacerSettings;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
@@ -91,7 +90,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 	@Override
 	protected void initialize() throws Exception
 	{
-		final LocaleLanguageReplacerSettings settings = WatcherSettings.INSTANCE.getProcessingSettings().getSubtitleLanguageCorrectionSettings();
+		final LocaleLanguageReplacerSettings settings = SettingsController.SETTINGS.getProcessingSettings().getSubtitleLanguageCorrectionSettings();
 
 		// ParsingLangs
 		final TextFormatter<ObservableList<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FxUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER);

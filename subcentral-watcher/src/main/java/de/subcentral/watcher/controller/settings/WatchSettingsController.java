@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Path;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -44,7 +43,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	@Override
 	protected void initialize() throws Exception
 	{
-		watchDirectoriesListView.setItems(WatcherSettings.INSTANCE.watchDirectoriesProperty());
+		watchDirectoriesListView.setItems(SettingsController.SETTINGS.watchDirectoriesProperty());
 
 		addWatchDirectoryButton.setOnAction((ActionEvent event) -> addWatchDirectory());
 
@@ -56,8 +55,8 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 
 		FxUtil.setStandardMouseAndKeyboardSupportForEditable(watchDirectoriesListView, removeWatchDirectoryButton);
 
-		initialScanCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.initialScanProperty());
-		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(WatcherSettings.INSTANCE.rejectAlreadyProcessedFilesProperty());
+		initialScanCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.initialScanProperty());
+		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.rejectAlreadyProcessedFilesProperty());
 	}
 
 	public void addWatchDirectory()

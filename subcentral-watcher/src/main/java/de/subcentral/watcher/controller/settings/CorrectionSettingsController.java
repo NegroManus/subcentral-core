@@ -8,7 +8,6 @@ import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSetting
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
 import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -61,7 +60,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	protected void initialize() throws Exception
 	{
 		// Correctors
-		correctorsTableView.setItems(WatcherSettings.INSTANCE.getProcessingSettings().correctionRulesProperty());
+		correctorsTableView.setItems(SettingsController.SETTINGS.getProcessingSettings().correctionRulesProperty());
 
 		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
 

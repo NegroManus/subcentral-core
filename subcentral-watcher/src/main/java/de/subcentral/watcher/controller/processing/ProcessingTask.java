@@ -53,8 +53,8 @@ import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
+import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.beans.binding.Binding;
 import javafx.beans.property.BooleanProperty;
@@ -437,7 +437,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		if (config.isGuessingEnabled())
 		{
 			log.info("Guessing enabled");
-			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, WatcherSettings.INSTANCE.guessingWarningEnabledProperty());
+			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, SettingsController.SETTINGS.guessingWarningEnabledProperty());
 
 			List<StandardRelease> stdRlss = config.getStandardReleases();
 			Map<Release, StandardRelease> guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, stdRlss, config.getReleaseMetaTags());
@@ -541,13 +541,13 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		if (rls.isNuked())
 		{
-			displaySystemTrayNotification("Release is nuked", generateDisplayName(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseNukedWarningEnabledProperty());
+			displaySystemTrayNotification("Release is nuked", generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.releaseNukedWarningEnabledProperty());
 		}
 		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 		if (!containedMetaTags.isEmpty())
 		{
 			String caption = "Release is meta-tagged: " + Tag.formatList(containedMetaTags);
-			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, WatcherSettings.INSTANCE.releaseMetaTaggedWarningEnabledProperty());
+			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.releaseMetaTaggedWarningEnabledProperty());
 		}
 
 		resultObject.getMatchingReleases().add(rls);
@@ -807,7 +807,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		{
 			Platform.runLater(() ->
 			{
-				if (WatcherSettings.INSTANCE.isWarningsEnabled() && warningEnabledProperty.get())
+				if (SettingsController.SETTINGS.isWarningsEnabled() && warningEnabledProperty.get())
 				{
 					controller.getMainController().displaySystemTrayNotification(caption, text, messageType);
 				}

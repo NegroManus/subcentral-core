@@ -7,7 +7,6 @@ import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.watcher.settings.ParsingServiceSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -45,7 +44,7 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 	@Override
 	protected void initialize() throws Exception
 	{
-		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Filename patterns
 		filenamePatternsTextField.textProperty().bindBidirectional(settings.filenamePatternsProperty());

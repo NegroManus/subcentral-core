@@ -15,7 +15,6 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.settings.MetadataDbSettingsItem;
 import de.subcentral.watcher.settings.MetadataDbSettingsItem.Availability;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -117,7 +116,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	@Override
 	protected void initialize() throws Exception
 	{
-		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		releaseDbsTableView.setItems(settings.releaseDbsProperty());
 

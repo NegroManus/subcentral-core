@@ -30,7 +30,6 @@ import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -47,7 +46,7 @@ public class WatcherFxUtil
 
 	public static void bindWatchDirectories(final DirectoryWatchService service, final ObservableList<Path> directoryList) throws IOException
 	{
-		for (Path dir : WatcherSettings.INSTANCE.getWatchDirectories())
+		for (Path dir : SettingsController.SETTINGS.getWatchDirectories())
 		{
 			service.registerDirectory(dir, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
 		}

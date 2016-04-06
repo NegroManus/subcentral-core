@@ -13,7 +13,6 @@ import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -82,7 +81,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	@Override
 	protected void initialize() throws Exception
 	{
-		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		final TextFormatter<Path> targetDirFormatter = FxUtil.bindTextFieldToPath(targetDirTxtFld, settings.targetDirProperty());
 		FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory");

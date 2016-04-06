@@ -14,7 +14,6 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.controller.settings.WatchSettingsController;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
@@ -68,13 +67,13 @@ public class WatchController extends Controller
 		startWatchButton.disableProperty().bind(new BooleanBinding()
 		{
 			{
-				super.bind(watchService.runningProperty(), WatcherSettings.INSTANCE.watchDirectoriesProperty().emptyProperty());
+				super.bind(watchService.runningProperty(), SettingsController.SETTINGS.watchDirectoriesProperty().emptyProperty());
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
-				return watchService.isRunning() || WatcherSettings.INSTANCE.watchDirectoriesProperty().isEmpty();
+				return watchService.isRunning() || SettingsController.SETTINGS.watchDirectoriesProperty().isEmpty();
 			}
 		});
 		startWatchButton.setOnAction(evt ->
@@ -120,8 +119,8 @@ public class WatchController extends Controller
 		});
 
 		watchDirectoriesHBox.getChildren().add(watchImg);
-		updateWatchDirsHBox(WatcherSettings.INSTANCE.getWatchDirectories());
-		WatcherSettings.INSTANCE.watchDirectoriesProperty().addListener(new InvalidationListener()
+		updateWatchDirsHBox(SettingsController.SETTINGS.getWatchDirectories());
+		SettingsController.SETTINGS.watchDirectoriesProperty().addListener(new InvalidationListener()
 		{
 			@SuppressWarnings("unchecked")
 			@Override
@@ -179,9 +178,9 @@ public class WatchController extends Controller
 
 		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFilesFromWatchDir);
 		watchService.setExecutor(watchServiceExecutor);
-		WatcherFxUtil.bindWatchDirectories(watchService, WatcherSettings.INSTANCE.watchDirectoriesProperty());
-		watchService.setInitialScan(WatcherSettings.INSTANCE.isInitialScan());
-		WatcherSettings.INSTANCE.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> watchService.setInitialScan(newValue));
+		WatcherFxUtil.bindWatchDirectories(watchService, SettingsController.SETTINGS.watchDirectoriesProperty());
+		watchService.setInitialScan(SettingsController.SETTINGS.isInitialScan());
+		SettingsController.SETTINGS.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> watchService.setInitialScan(newValue));
 	}
 
 	@Override

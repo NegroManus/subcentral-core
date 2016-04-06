@@ -48,6 +48,8 @@ public class SettingsController extends Controller
 {
 	private static final Logger					log										= LogManager.getLogger(SettingsController.class);
 
+	public static final WatcherSettings			SETTINGS								= new WatcherSettings();
+
 	private static final String					CUSTOM_SETTINGS_FILENAME				= "watcher-settings.xml";
 	private static final String					DEFAULT_SETTINGS_FILENAME				= "watcher-settings-default.xml";
 
@@ -249,14 +251,14 @@ public class SettingsController extends Controller
 		saveBtn.disableProperty().bind(new BooleanBinding()
 		{
 			{
-				super.bind(WatcherSettings.INSTANCE.changedProperty(), customSettingsExist, defaultSettingsLoaded);
+				super.bind(SettingsController.SETTINGS.changedProperty(), customSettingsExist, defaultSettingsLoaded);
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
 				// disable if nothing has changed and there exist custom settings and the default settings were not loaded
-				return !WatcherSettings.INSTANCE.getChanged() && customSettingsExist.get() && !defaultSettingsLoaded.get();
+				return !SettingsController.SETTINGS.getChanged() && customSettingsExist.get() && !defaultSettingsLoaded.get();
 			}
 		});
 		saveBtn.setOnAction((ActionEvent e) -> confirmSaveSettings());
@@ -264,14 +266,14 @@ public class SettingsController extends Controller
 		restoreLastSavedBtn.disableProperty().bind(new BooleanBinding()
 		{
 			{
-				super.bind(WatcherSettings.INSTANCE.changedProperty(), customSettingsExist, defaultSettingsLoaded);
+				super.bind(SettingsController.SETTINGS.changedProperty(), customSettingsExist, defaultSettingsLoaded);
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
 				// disable if nothing has changed or no custom settings exist to restore
-				return !WatcherSettings.INSTANCE.getChanged() && !defaultSettingsLoaded.get() || !customSettingsExist.get();
+				return !SettingsController.SETTINGS.getChanged() && !defaultSettingsLoaded.get() || !customSettingsExist.get();
 			}
 		});
 		restoreLastSavedBtn.setOnAction((ActionEvent e) -> confirmRestoreLastSavedSettings());
@@ -279,14 +281,14 @@ public class SettingsController extends Controller
 		restoreDefaultsBtn.disableProperty().bind(new BooleanBinding()
 		{
 			{
-				super.bind(WatcherSettings.INSTANCE.changedProperty(), defaultSettingsLoaded);
+				super.bind(SettingsController.SETTINGS.changedProperty(), defaultSettingsLoaded);
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
 				// disable if nothing has changed and the default settings were not loaded
-				return !WatcherSettings.INSTANCE.getChanged() && defaultSettingsLoaded.get();
+				return !SettingsController.SETTINGS.getChanged() && defaultSettingsLoaded.get();
 			}
 		});
 		restoreDefaultsBtn.setOnAction((ActionEvent e) -> confirmRestoreDefaultSettings());
@@ -404,7 +406,7 @@ public class SettingsController extends Controller
 
 	private void confirmSaveUnsavedSettings() throws ConfigurationException
 	{
-		if (defaultSettingsLoaded.get() || WatcherSettings.INSTANCE.getChanged())
+		if (defaultSettingsLoaded.get() || SettingsController.SETTINGS.getChanged())
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			FxUtil.fixAlertHeight(alert);
@@ -470,7 +472,7 @@ public class SettingsController extends Controller
 			// May create parent dir
 			Files.createDirectories(settingsFile.getParent());
 
-			WatcherSettings.INSTANCE.save(settingsFile);
+			SettingsController.SETTINGS.save(settingsFile);
 			defaultSettingsLoaded.set(false);
 			customSettingsExist.set(true);
 		}
@@ -515,7 +517,7 @@ public class SettingsController extends Controller
 		{
 			// A resource has to be loaded via URL
 			// because building a Path for a JAR intern resource file results in a FileSystem exception.
-			WatcherSettings.INSTANCE.load(Resources.getResource(DEFAULT_SETTINGS_FILENAME));
+			SettingsController.SETTINGS.load(Resources.getResource(DEFAULT_SETTINGS_FILENAME));
 			defaultSettingsLoaded.set(true);
 		}
 		catch (Exception e)
@@ -528,7 +530,7 @@ public class SettingsController extends Controller
 	public void loadCustomSettings(Path file) throws ConfigurationException
 	{
 		log.debug("Loading custom settings from {}", file);
-		WatcherSettings.INSTANCE.load(file);
+		SettingsController.SETTINGS.load(file);
 		defaultSettingsLoaded.set(false);
 		customSettingsExist.set(true);
 	}

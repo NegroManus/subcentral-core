@@ -2,7 +2,6 @@ package de.subcentral.watcher.controller.settings;
 
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -28,7 +27,7 @@ public class ReleaseSettingsController extends AbstractSettingsSectionController
 	@Override
 	protected void initialize() throws Exception
 	{
-		final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Meta tags
 		SubCentralFxUtil.bindTagsToTextField(metaTagsTextField, settings.releaseMetaTagsProperty());

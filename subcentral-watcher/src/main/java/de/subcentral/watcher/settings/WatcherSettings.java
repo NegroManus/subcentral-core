@@ -32,7 +32,6 @@ import javafx.collections.ObservableList;
 
 public class WatcherSettings extends ObservableObject
 {
-	public static final WatcherSettings	INSTANCE						= new WatcherSettings();
 	private static final Logger			log								= LogManager.getLogger(WatcherSettings.class);
 
 	/**
@@ -56,7 +55,7 @@ public class WatcherSettings extends ObservableObject
 	// UI - System Tray
 	private final BooleanProperty		systemTrayEnabled				= new SimpleBooleanProperty(this, "systemTrayEnabled");
 
-	private WatcherSettings()
+	public WatcherSettings()
 	{
 		super.bind(watchDirectories,
 				initialScan,

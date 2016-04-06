@@ -45,10 +45,10 @@ import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.settings.SettingsUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.settings.CompatibilitySettingsItem;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
@@ -136,7 +136,7 @@ public class ProcessingController extends Controller
 		return new ObjectBinding<ProcessingConfig>()
 		{
 			{
-				super.bind(WatcherSettings.INSTANCE.getProcessingSettings());
+				super.bind(SettingsController.SETTINGS.getProcessingSettings());
 			}
 
 			@Override
@@ -151,7 +151,7 @@ public class ProcessingController extends Controller
 					// Application Thread)
 					long start = System.nanoTime();
 					log.debug("Rebuilding ProcessingConfig due to changes in the processing settings");
-					final ProcessingSettings settings = WatcherSettings.INSTANCE.getProcessingSettings();
+					final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 					cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns()));
 					cfg.setFilenameParsingService(new MultiParsingService("filename", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices())));
 					cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs()));
@@ -187,7 +187,7 @@ public class ProcessingController extends Controller
 	{
 		CompatibilityService service = new CompatibilityService();
 		service.getCompatibilities().add(new SameGroupCompatibility());
-		for (CompatibilitySettingsItem entry : WatcherSettings.INSTANCE.getProcessingSettings().getCompatibilities())
+		for (CompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCompatibilities())
 		{
 			if (entry.isEnabled())
 			{
@@ -535,7 +535,7 @@ public class ProcessingController extends Controller
 
 	private static boolean filterByName(Path file)
 	{
-		Pattern pattern = UserPattern.parseSimplePatterns(WatcherSettings.INSTANCE.getProcessingSettings().getFilenamePatterns());
+		Pattern pattern = UserPattern.parseSimplePatterns(SettingsController.SETTINGS.getProcessingSettings().getFilenamePatterns());
 		if (pattern == null)
 		{
 			log.debug("Rejecting {} because no pattern is specified", file);
@@ -551,7 +551,7 @@ public class ProcessingController extends Controller
 
 	private boolean filterOutAlreadyProcessedFiles(Path file)
 	{
-		boolean rejectAlreadyProcessedFiles = WatcherSettings.INSTANCE.isRejectAlreadyProcessedFiles();
+		boolean rejectAlreadyProcessedFiles = SettingsController.SETTINGS.isRejectAlreadyProcessedFiles();
 		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
 		{
 			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();

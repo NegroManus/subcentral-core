@@ -35,7 +35,7 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 	@Override
 	protected void initialize() throws Exception
 	{
-		WatcherSettings settings = WatcherSettings.INSTANCE;
+		WatcherSettings settings = SettingsController.SETTINGS;
 
 		warningsEnabledCheckBox.selectedProperty().bindBidirectional(settings.warningsEnabledProperty());
 		guessingWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.guessingWarningEnabledProperty());
