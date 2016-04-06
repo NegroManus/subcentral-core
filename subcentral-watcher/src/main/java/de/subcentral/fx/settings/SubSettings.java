@@ -3,20 +3,34 @@ package de.subcentral.fx.settings;
 import org.apache.commons.configuration2.XMLConfiguration;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.ObservableObject;
+import de.subcentral.fx.ObservableHelper;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class SubSettings extends ObservableObject
+public abstract class SubSettings implements Observable
 {
-	private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
+	protected ObservableHelper	observableHelper	= new ObservableHelper();
+	private BooleanProperty		changed				= new SimpleBooleanProperty(this, "changed", false);
 
 	public SubSettings()
 	{
-		addListener((Observable o) -> changed.set(true));
+		observableHelper.addListener((Observable o) -> changed.set(true));
 	}
+
+	@Override
+	public void addListener(InvalidationListener listener)
+	{
+		observableHelper.addListener(listener);
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener)
+	{
+		observableHelper.removeListener(listener);
+	};
 
 	public abstract String getKey();
 

@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.ObservableObject;
+import de.subcentral.fx.ObservableHelper;
 import de.subcentral.fx.settings.ConfigurationHelper;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -30,14 +30,15 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class WatcherSettings extends ObservableObject
+public class WatcherSettings implements Observable
 {
 	private static final Logger			log								= LogManager.getLogger(WatcherSettings.class);
 
+	private final ObservableHelper		observableHelper;
 	/**
 	 * Whether the settings changed since initial load
 	 */
-	private BooleanProperty				changed							= new SimpleBooleanProperty(this, "changed", false);
+	private final BooleanProperty		changed							= new SimpleBooleanProperty(this, "changed", false);
 
 	// Watch
 	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories", FXCollections.observableArrayList());
@@ -57,7 +58,7 @@ public class WatcherSettings extends ObservableObject
 
 	public WatcherSettings()
 	{
-		super.bind(watchDirectories,
+		observableHelper = new ObservableHelper(watchDirectories,
 				initialScan,
 				rejectAlreadyProcessedFiles,
 				processingSettings,
@@ -67,7 +68,7 @@ public class WatcherSettings extends ObservableObject
 				releaseNukedWarningEnabled,
 				systemTrayEnabled);
 
-		addListener((Observable o) -> changed.set(true));
+		observableHelper.addListener((Observable o) -> changed.set(true));
 	}
 
 	/**

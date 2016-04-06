@@ -1,6 +1,7 @@
 package de.subcentral.watcher.settings;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -37,61 +38,60 @@ public class ProcessingSettings extends SubSettings
 	}
 
 	// Parsing
-	private final StringProperty									filenamePatterns					= new SimpleStringProperty(this, "filenamePatterns");
-	private final ListProperty<ParsingServiceSettingsItem>			filenameParsingServices				= new SimpleListProperty<>(this,
-			"filenameParsingServices",
-			FXCollections.observableArrayList());
+	private final StringProperty								filenamePatterns					= new SimpleStringProperty(this, "filenamePatterns");
+	private final ListProperty<ParsingServiceSettingsItem>		filenameParsingServices				= new SimpleListProperty<>(this, "filenameParsingServices", FXCollections.observableArrayList());
 	// Metadata
 	// Metadata - Release
-	private final ListProperty<ParsingServiceSettingsItem>			releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.observableArrayList());
-	private final ListProperty<Tag>									releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags", FXCollections.observableArrayList());
+	private final ListProperty<ParsingServiceSettingsItem>		releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.observableArrayList());
+	private final ListProperty<Tag>								releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags", FXCollections.observableArrayList());
 	// Metadata - Release - Databases
-	private final ListProperty<MetadataDbSettingsItem<Release>>		releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.observableArrayList());
+	private final ListProperty<MetadataDbSettingsItem<Release>>	releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.observableArrayList());
 	// Metadata - Release - Guessing
-	private final BooleanProperty									guessingEnabled						= new SimpleBooleanProperty(this, "guessingEnabled");
-	private final ListProperty<StandardRelease>						standardReleases					= new SimpleListProperty<>(this, "standardReleases", FXCollections.observableArrayList());
+	private final BooleanProperty								guessingEnabled						= new SimpleBooleanProperty(this, "guessingEnabled");
+	private final ListProperty<StandardRelease>					standardReleases					= new SimpleListProperty<>(this, "standardReleases", FXCollections.observableArrayList());
 	// Metadata - Release - Compatibility
-	private final BooleanProperty									compatibilityEnabled				= new SimpleBooleanProperty(this, "compatibilityEnabled");
-	private final ListProperty<CompatibilitySettingsItem>			compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.observableArrayList());
+	private final BooleanProperty								compatibilityEnabled				= new SimpleBooleanProperty(this, "compatibilityEnabled");
+	private final ListProperty<CompatibilitySettingsItem>		compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.observableArrayList());
 	// Correction - Rules
-	private final ListProperty<CorrectorSettingsItem<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
+	private final ListProperty<CorrectorSettingsItem<?, ?>>		correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
 	// Correction - Subtitle language
-	private final LocaleLanguageReplacerSettings					subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
+	private final LocaleLanguageReplacerSettings				subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 
 	// Naming
-	private final MapProperty<String, Object>						namingParameters					= new SimpleMapProperty<>(this, "namingParameters");
+	private final MapProperty<String, Object>					namingParameters					= new SimpleMapProperty<>(this, "namingParameters");
 
 	// File Transformation
 	// File Transformation - General
-	private final Property<Path>									targetDir							= new SimpleObjectProperty<>(this, "targetDir");
-	private final BooleanProperty									deleteSource						= new SimpleBooleanProperty(this, "deleteSource");
+	private final Property<Path>								targetDir							= new SimpleObjectProperty<>(this, "targetDir");
+	private final BooleanProperty								deleteSource						= new SimpleBooleanProperty(this, "deleteSource");
 	// File Transformation - Packing
-	private final BooleanProperty									packingEnabled						= new SimpleBooleanProperty(this, "packingEnabled");
-	private final Property<Path>									rarExe								= new SimpleObjectProperty<>(this, "rarExe");
-	private final Property<WinRarLocateStrategy>					winRarLocateStrategy				= new SimpleObjectProperty<>(this, "winRarLocateStrategy", WinRarLocateStrategy.AUTO_LOCATE);
-	private final Property<DeletionMode>							packingSourceDeletionMode			= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
+	private final BooleanProperty								packingEnabled						= new SimpleBooleanProperty(this, "packingEnabled");
+	private final Property<Path>								rarExe								= new SimpleObjectProperty<>(this, "rarExe");
+	private final Property<WinRarLocateStrategy>				winRarLocateStrategy				= new SimpleObjectProperty<>(this, "winRarLocateStrategy", WinRarLocateStrategy.AUTO_LOCATE);
+	private final Property<DeletionMode>						packingSourceDeletionMode			= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
 
 	// package protected (should only be instantiated by WatcherSettings)
 	ProcessingSettings()
 	{
-		super.bind(filenamePatterns,
-				FxUtil.observeBeans(filenameParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
-				FxUtil.observeBeans(releaseParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
-				releaseMetaTags,
-				FxUtil.observeBeans(releaseDbs, (MetadataDbSettingsItem<Release> entry) -> new Observable[] { entry.enabledProperty() }),
-				guessingEnabled,
-				standardReleases,
-				compatibilityEnabled,
-				FxUtil.observeBeans(compatibilities, (CompatibilitySettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
-				FxUtil.observeBeans(correctionRules, (CorrectorSettingsItem<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
-				subtitleLanguageCorrectionSettings,
-				namingParameters,
-				targetDir,
-				deleteSource,
-				packingEnabled,
-				rarExe,
-				winRarLocateStrategy,
-				packingSourceDeletionMode);
+		observableHelper.getDependencies()
+				.addAll(Arrays.asList(filenamePatterns,
+						FxUtil.observeBeans(filenameParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
+						FxUtil.observeBeans(releaseParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
+						releaseMetaTags,
+						FxUtil.observeBeans(releaseDbs, (MetadataDbSettingsItem<Release> entry) -> new Observable[] { entry.enabledProperty() }),
+						guessingEnabled,
+						standardReleases,
+						compatibilityEnabled,
+						FxUtil.observeBeans(compatibilities, (CompatibilitySettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
+						FxUtil.observeBeans(correctionRules, (CorrectorSettingsItem<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
+						subtitleLanguageCorrectionSettings,
+						namingParameters,
+						targetDir,
+						deleteSource,
+						packingEnabled,
+						rarExe,
+						winRarLocateStrategy,
+						packingSourceDeletionMode));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package de.subcentral.watcher.settings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +40,7 @@ public class LocaleLanguageReplacerSettings extends SubSettings
 	// package protected (should only be instantiated by WatcherSettings)
 	LocaleLanguageReplacerSettings()
 	{
-		super.bind(parsingLanguages, outputLanguageFormat, outputLanguage, customLanguagePatterns, customLanguageTextMappings);
+		observableHelper.getDependencies().addAll(Arrays.asList(parsingLanguages, outputLanguageFormat, outputLanguage, customLanguagePatterns, customLanguageTextMappings));
 	}
 
 	private Binding<SubtitleLanguageCorrector> initSubtitleLanguageStandardizerBinding()

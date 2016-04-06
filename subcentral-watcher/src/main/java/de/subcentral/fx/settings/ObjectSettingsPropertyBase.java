@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.TriConsumer;
+import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
 
@@ -31,7 +32,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		changedBinding = (new BooleanBinding()
 		{
 			{
-				super.bind(current);
+				super.bind(getCurrentObservables());
 			}
 
 			@Override
@@ -46,6 +47,11 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	}
 
 	protected abstract P createProperty(Object bean, String name, T initialValue);
+
+	protected Observable[] getCurrentObservables()
+	{
+		return new Observable[] { current };
+	}
 
 	public T getDefaultValue()
 	{

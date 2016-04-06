@@ -1114,7 +1114,7 @@ public class FxUtil
 
 	public static <E> Observable observeBeans(ObservableList<E> beans, Function<E, Observable[]> propertiesExtractor)
 	{
-		ObservableObject obsv = new ObservableObject();
+		ObservableHelper obsv = new ObservableHelper();
 		// Observe the list itself
 		obsv.getDependencies().add(beans);
 		// Observe the properties of the current list content
@@ -1163,7 +1163,7 @@ public class FxUtil
 
 	public static <E> Observable observeBean(ReadOnlyProperty<E> bean, Function<E, Observable[]> propertiesExtractor)
 	{
-		ObservableObject obsv = new ObservableObject();
+		ObservableHelper obsv = new ObservableHelper();
 		// Observe the bean itself
 		obsv.getDependencies().add(bean);
 		// Observe the properties of the current bean
