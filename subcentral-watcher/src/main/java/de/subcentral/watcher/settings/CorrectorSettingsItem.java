@@ -8,13 +8,13 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class CorrectionRuleSettingsItem<T, C extends Corrector<? super T>> extends SimpleSettingsItem<C>
+public abstract class CorrectorSettingsItem<T, C extends Corrector<? super T>> extends SimpleSettingsItem<C>
 {
 	protected final Class<T>		beanType;
 	protected final BooleanProperty	beforeQuerying;
 	protected final BooleanProperty	afterQuerying;
 
-	public CorrectionRuleSettingsItem(Class<T> beanType, C corrector, boolean beforeQuerying, boolean afterQuerying)
+	public CorrectorSettingsItem(Class<T> beanType, C corrector, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(corrector);
 		this.beanType = Objects.requireNonNull(beanType, "beanType");

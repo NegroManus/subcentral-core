@@ -15,8 +15,8 @@ import de.subcentral.fx.dialog.DialogController;
 import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
+import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
 import javafx.stage.Window;
 
 public class WatcherDialogs
@@ -45,23 +45,23 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "CrossGroupCompatibilityEditView.fxml");
 	}
 
-	public static Optional<SeriesNameCorrectionRuleSettingsItem> showSeriesNameCorrectionRuleEditView(Window window)
+	public static Optional<SeriesNameCorrectorSettingsItem> showSeriesNameCorrectionRuleEditView(Window window)
 	{
 		return showSeriesNameCorrectionRuleEditView(null, window);
 	}
 
-	public static Optional<SeriesNameCorrectionRuleSettingsItem> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectionRuleSettingsItem entry, Window window)
+	public static Optional<SeriesNameCorrectorSettingsItem> showSeriesNameCorrectionRuleEditView(SeriesNameCorrectorSettingsItem entry, Window window)
 	{
 		SeriesNameCorrectionRuleEditController ctrl = new SeriesNameCorrectionRuleEditController(entry, window);
 		return showEditViewAndWait(ctrl, "SeriesNameCorrectionRuleEditView.fxml");
 	}
 
-	public static Optional<ReleaseTagsCorrectionRuleSettingsItem> showReleaseTagsCorrectionRuleEditView(Window window)
+	public static Optional<ReleaseTagsCorrectorSettingsItem> showReleaseTagsCorrectionRuleEditView(Window window)
 	{
 		return showReleaseTagsCorrectionRuleEditView(null, window);
 	}
 
-	public static Optional<ReleaseTagsCorrectionRuleSettingsItem> showReleaseTagsCorrectionRuleEditView(ReleaseTagsCorrectionRuleSettingsItem entry, Window window)
+	public static Optional<ReleaseTagsCorrectorSettingsItem> showReleaseTagsCorrectionRuleEditView(ReleaseTagsCorrectorSettingsItem entry, Window window)
 	{
 		ReleaseTagsCorrectionRuleEditController ctrl = new ReleaseTagsCorrectionRuleEditController(entry, window);
 		return showEditViewAndWait(ctrl, "ReleaseTagsCorrectionRuleEditView.fxml");

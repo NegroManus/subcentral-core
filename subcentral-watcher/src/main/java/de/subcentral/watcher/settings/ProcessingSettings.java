@@ -54,7 +54,7 @@ public class ProcessingSettings extends SubSettings
 	private final BooleanProperty									compatibilityEnabled				= new SimpleBooleanProperty(this, "compatibilityEnabled");
 	private final ListProperty<CompatibilitySettingsItem>			compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.observableArrayList());
 	// Correction - Rules
-	private final ListProperty<CorrectionRuleSettingsItem<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
+	private final ListProperty<CorrectorSettingsItem<?, ?>>	correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
 	// Correction - Subtitle language
 	private final LocaleLanguageReplacerSettings					subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 
@@ -83,7 +83,7 @@ public class ProcessingSettings extends SubSettings
 				standardReleases,
 				compatibilityEnabled,
 				FxUtil.observeBeans(compatibilities, (CompatibilitySettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
-				FxUtil.observeBeans(correctionRules, (CorrectionRuleSettingsItem<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
+				FxUtil.observeBeans(correctionRules, (CorrectorSettingsItem<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
 				subtitleLanguageCorrectionSettings,
 				namingParameters,
 				targetDir,
@@ -235,17 +235,17 @@ public class ProcessingSettings extends SubSettings
 		this.compatibilitiesProperty().set(compatibilities);
 	}
 
-	public final ListProperty<CorrectionRuleSettingsItem<?, ?>> correctionRulesProperty()
+	public final ListProperty<CorrectorSettingsItem<?, ?>> correctionRulesProperty()
 	{
 		return this.correctionRules;
 	}
 
-	public final ObservableList<CorrectionRuleSettingsItem<?, ?>> getCorrectionRules()
+	public final ObservableList<CorrectorSettingsItem<?, ?>> getCorrectionRules()
 	{
 		return this.correctionRulesProperty().get();
 	}
 
-	public final void setCorrectionRules(final ObservableList<CorrectionRuleSettingsItem<?, ?>> standardizers)
+	public final void setCorrectionRules(final ObservableList<CorrectorSettingsItem<?, ?>> standardizers)
 	{
 		this.correctionRulesProperty().set(standardizers);
 	}

@@ -7,12 +7,12 @@ import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxUtil;
 import javafx.beans.binding.StringBinding;
 
-public class ReleaseTagsCorrectionRuleSettingsItem extends CorrectionRuleSettingsItem<Release, ReleaseTagsCorrector>
+public class ReleaseTagsCorrectorSettingsItem extends CorrectorSettingsItem<Release, ReleaseTagsCorrector>
 {
 	private static final StringBinding	ruleType	= FxUtil.constantStringBinding("Release tags");
 	private final StringBinding			rule;
 
-	public ReleaseTagsCorrectionRuleSettingsItem(ReleaseTagsCorrector corrector, boolean beforeQuerying, boolean afterQuerying)
+	public ReleaseTagsCorrectorSettingsItem(ReleaseTagsCorrector corrector, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(Release.class, corrector, beforeQuerying, afterQuerying);
 		rule = FxUtil.constantStringBinding(formatRule(corrector));

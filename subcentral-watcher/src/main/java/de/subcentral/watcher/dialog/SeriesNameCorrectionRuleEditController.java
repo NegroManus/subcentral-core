@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.dialog.BeanEditController;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
@@ -24,7 +24,7 @@ import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
-public class SeriesNameCorrectionRuleEditController extends BeanEditController<SeriesNameCorrectionRuleSettingsItem>
+public class SeriesNameCorrectionRuleEditController extends BeanEditController<SeriesNameCorrectorSettingsItem>
 {
 	@FXML
 	private RadioButton			literalRadioBtn;
@@ -47,7 +47,7 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 	@FXML
 	private Button				removeNameBtn;
 
-	public SeriesNameCorrectionRuleEditController(SeriesNameCorrectionRuleSettingsItem bean, Window window)
+	public SeriesNameCorrectionRuleEditController(SeriesNameCorrectorSettingsItem bean, Window window)
 	{
 		super(bean, window);
 	}
@@ -57,11 +57,11 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 	{
 		if (bean == null)
 		{
-			return "Add correction rule for: " + SeriesNameCorrectionRuleSettingsItem.getRuleType();
+			return "Add correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
 		}
 		else
 		{
-			return "Edit correction rule for: " + SeriesNameCorrectionRuleSettingsItem.getRuleType();
+			return "Edit correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
 		}
 	}
 
@@ -173,7 +173,7 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 			{
 				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-				return new SeriesNameCorrectionRuleSettingsItem(namePatternBinding.getValue(),
+				return new SeriesNameCorrectorSettingsItem(namePatternBinding.getValue(),
 						nameReplacementTxtFld.getText(),
 						aliasNamesReplacementListView.getItems(),
 						beforeQuerying,

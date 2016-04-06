@@ -44,11 +44,11 @@ import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.xrelto.XRelTo;
 import de.subcentral.support.xrelto.XRelToMetadataDb;
 import de.subcentral.watcher.settings.CompatibilitySettingsItem;
-import de.subcentral.watcher.settings.CorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.MetadataDbSettingsItem;
 import de.subcentral.watcher.settings.ParsingServiceSettingsItem;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
-import de.subcentral.watcher.settings.SeriesNameCorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
+import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -146,9 +146,9 @@ public class ConfigurationHelper
 		return FXCollections.observableList(services);
 	}
 
-	public static ObservableList<CorrectionRuleSettingsItem<?, ?>> getCorrectionRules(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<CorrectorSettingsItem<?, ?>> getCorrectionRules(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		ArrayList<CorrectionRuleSettingsItem<?, ?>> stdzers = new ArrayList<>();
+		ArrayList<CorrectorSettingsItem<?, ?>> stdzers = new ArrayList<>();
 		List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule");
 		int seriesNameIndex = 0;
 		for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : seriesStdzerCfgs)
@@ -165,7 +165,7 @@ public class ConfigurationHelper
 			}
 			boolean enabledPreMetadataDb = stdzerCfg.getBoolean("[@beforeQuerying]");
 			boolean enabledPostMetadataDb = stdzerCfg.getBoolean("[@afterQuerying]");
-			stdzers.add(new SeriesNameCorrectionRuleSettingsItem(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
+			stdzers.add(new SeriesNameCorrectorSettingsItem(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
 			seriesNameIndex++;
 		}
 		List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsCorrectionRule");
@@ -179,7 +179,7 @@ public class ConfigurationHelper
 			boolean beforeQuerying = stdzerCfg.getBoolean("[@beforeQuerying]");
 			boolean afterQuerying = stdzerCfg.getBoolean("[@afterQuerying]");
 			ReleaseTagsCorrector stdzer = new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
-			stdzers.add(new ReleaseTagsCorrectionRuleSettingsItem(stdzer, beforeQuerying, afterQuerying));
+			stdzers.add(new ReleaseTagsCorrectorSettingsItem(stdzer, beforeQuerying, afterQuerying));
 		}
 		stdzers.trimToSize();
 		return FXCollections.observableList(stdzers);
@@ -295,16 +295,16 @@ public class ConfigurationHelper
 		}
 	}
 
-	public static void addCorrectionRules(XMLConfiguration cfg, String key, List<CorrectionRuleSettingsItem<?, ?>> rules)
+	public static void addCorrectionRules(XMLConfiguration cfg, String key, List<CorrectorSettingsItem<?, ?>> rules)
 	{
 		// one index for each element name
 		int seriesNameIndex = 0;
 		int releaseTagsIndex = 0;
-		for (CorrectionRuleSettingsItem<?, ?> genericEntry : rules)
+		for (CorrectorSettingsItem<?, ?> genericEntry : rules)
 		{
-			if (genericEntry instanceof SeriesNameCorrectionRuleSettingsItem)
+			if (genericEntry instanceof SeriesNameCorrectorSettingsItem)
 			{
-				SeriesNameCorrectionRuleSettingsItem entry = (SeriesNameCorrectionRuleSettingsItem) genericEntry;
+				SeriesNameCorrectorSettingsItem entry = (SeriesNameCorrectorSettingsItem) genericEntry;
 				SeriesNameCorrector corrector = entry.getItem();
 				UserPattern namePattern = entry.getNameUserPattern();
 
@@ -319,9 +319,9 @@ public class ConfigurationHelper
 				}
 				seriesNameIndex++;
 			}
-			else if (genericEntry instanceof ReleaseTagsCorrectionRuleSettingsItem)
+			else if (genericEntry instanceof ReleaseTagsCorrectorSettingsItem)
 			{
-				ReleaseTagsCorrectionRuleSettingsItem entry = (ReleaseTagsCorrectionRuleSettingsItem) genericEntry;
+				ReleaseTagsCorrectorSettingsItem entry = (ReleaseTagsCorrectorSettingsItem) genericEntry;
 				TagsReplacer replacer = (TagsReplacer) entry.getItem().getReplacer();
 
 				cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.formatList(replacer.getSearchTags()));

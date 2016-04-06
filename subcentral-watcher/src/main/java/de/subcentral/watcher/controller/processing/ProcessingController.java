@@ -46,7 +46,7 @@ import de.subcentral.fx.settings.SettingsUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.settings.CompatibilitySettingsItem;
-import de.subcentral.watcher.settings.CorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.application.Platform;
@@ -203,7 +203,7 @@ public class ProcessingController extends Controller
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		for (CorrectionRuleSettingsItem<?, ?> entry : settings.getCorrectionRules())
+		for (CorrectorSettingsItem<?, ?> entry : settings.getCorrectionRules())
 		{
 			if (entry.isBeforeQuerying())
 			{
@@ -223,7 +223,7 @@ public class ProcessingController extends Controller
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		for (CorrectionRuleSettingsItem<?, ?> entry : settings.getCorrectionRules())
+		for (CorrectorSettingsItem<?, ?> entry : settings.getCorrectionRules())
 		{
 			if (entry.isAfterQuerying())
 			{
@@ -233,7 +233,7 @@ public class ProcessingController extends Controller
 		return service;
 	}
 
-	private static <T> void registerCorrector(TypeBasedCorrectionService service, CorrectionRuleSettingsItem<T, ?> entry)
+	private static <T> void registerCorrector(TypeBasedCorrectionService service, CorrectorSettingsItem<T, ?> entry)
 	{
 		service.registerCorrector(entry.getBeanType(), entry.getItem());
 	}

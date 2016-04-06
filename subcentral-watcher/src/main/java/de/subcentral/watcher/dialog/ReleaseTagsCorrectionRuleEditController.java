@@ -12,7 +12,7 @@ import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.dialog.BeanEditController;
-import de.subcentral.watcher.settings.ReleaseTagsCorrectionRuleSettingsItem;
+import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
 import javafx.beans.property.ListProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -24,7 +24,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Window;
 
-public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<ReleaseTagsCorrectionRuleSettingsItem>
+public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<ReleaseTagsCorrectorSettingsItem>
 {
 	@FXML
 	private RadioButton	containRadioBtn;
@@ -41,7 +41,7 @@ public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<
 	@FXML
 	private TextField	replacementTxtFld;
 
-	public ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectionRuleSettingsItem bean, Window window)
+	public ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectorSettingsItem bean, Window window)
 	{
 		super(bean, window);
 	}
@@ -51,11 +51,11 @@ public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<
 	{
 		if (bean == null)
 		{
-			return "Add correction rule for: " + ReleaseTagsCorrectionRuleSettingsItem.getRuleType();
+			return "Add correction rule for: " + ReleaseTagsCorrectorSettingsItem.getRuleType();
 		}
 		else
 		{
-			return "Edit correction rule for: " + ReleaseTagsCorrectionRuleSettingsItem.getRuleType();
+			return "Edit correction rule for: " + ReleaseTagsCorrectorSettingsItem.getRuleType();
 		}
 	}
 
@@ -171,7 +171,7 @@ public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<
 				boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
 				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-				return new ReleaseTagsCorrectionRuleSettingsItem(new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
+				return new ReleaseTagsCorrectorSettingsItem(new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
 						beforeQuerying,
 						afterQuerying);
 			}

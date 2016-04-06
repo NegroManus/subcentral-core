@@ -9,13 +9,13 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import javafx.beans.binding.StringBinding;
 
-public class SeriesNameCorrectionRuleSettingsItem extends CorrectionRuleSettingsItem<Series, SeriesNameCorrector>
+public class SeriesNameCorrectorSettingsItem extends CorrectorSettingsItem<Series, SeriesNameCorrector>
 {
 	private static final StringBinding	ruleType	= FxUtil.constantStringBinding("Series name");
 	private final StringBinding			rule;
 	private final UserPattern			nameUserPattern;
 
-	public SeriesNameCorrectionRuleSettingsItem(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying)
+	public SeriesNameCorrectorSettingsItem(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(Series.class, buildCorrector(nameUiPattern, nameReplacement, aliasNamesReplacement), beforeQuerying, afterQuerying);
 		rule = FxUtil.constantStringBinding(formatRule(item, nameUiPattern));
