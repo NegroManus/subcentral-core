@@ -18,7 +18,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	private final T											defaultValue;
 	private T												original;
 	private final P											current;
-	private final BooleanBinding							changed;
+	private final BooleanBinding							changedBinding;
 	private final BiFunction<XMLConfiguration, String, T>	loader;
 	private final TriConsumer<XMLConfiguration, String, T>	saver;
 
@@ -26,9 +26,9 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	{
 		super(key);
 		this.defaultValue = defaultValue;
-		this.original = defaultValue;
-		this.current = createProperty(this, "current", defaultValue);
-		changed = new BooleanBinding()
+		original = defaultValue;
+		current = createProperty(this, "current", defaultValue);
+		changedBinding = (new BooleanBinding()
 		{
 			{
 				super.bind(current);
@@ -39,7 +39,8 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 			{
 				return Objects.equals(original, current.getValue());
 			}
-		};
+		});
+		changed.bind(changedBinding);
 		this.loader = Objects.requireNonNull(loader, "loader");
 		this.saver = Objects.requireNonNull(saver, "saver");
 	}
@@ -64,12 +65,6 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	}
 
 	@Override
-	public BooleanBinding changedBinding()
-	{
-		return changed;
-	}
-
-	@Override
 	public void load(XMLConfiguration cfg)
 	{
 		T val;
@@ -84,7 +79,9 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		}
 		original = val;
 		current.setValue(val);
-		// no need for explicit invalidation because setValue() will cause a PropertyChangeEvent
+		// Invalidate because original has changed
+		// and setting of current may not have caused PropertyChangeEvent if old == new.
+		changedBinding.invalidate();
 	}
 
 	@Override
@@ -94,6 +91,6 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		saver.accept(cfg, key, val);
 		original = val;
 		// invalidate because original has changed
-		changed.invalidate();
+		changedBinding.invalidate();
 	}
 }
