@@ -1,29 +1,27 @@
 package de.subcentral.fx.settings;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.util.TriConsumer;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
 
 public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> extends SettingsPropertyBase<T, P>
 {
-	private static final Logger								log	= LogManager.getLogger(ObjectSettingsPropertyBase.class);
+	private static final Logger						log	= LogManager.getLogger(ObjectSettingsPropertyBase.class);
 
-	private final T											defaultValue;
-	private T												original;
-	private final P											current;
-	private final BooleanBinding							changedBinding;
-	private final BiFunction<XMLConfiguration, String, T>	loader;
-	private final TriConsumer<XMLConfiguration, String, T>	saver;
+	private final T									defaultValue;
+	private T										original;
+	private final P									current;
+	private final BooleanBinding					changedBinding;
+	private final ConfigurationPropertyHandler<T>	handler;
 
-	public ObjectSettingsPropertyBase(String key, T defaultValue, BiFunction<XMLConfiguration, String, T> loader, TriConsumer<XMLConfiguration, String, T> saver)
+	public ObjectSettingsPropertyBase(String key, T defaultValue, Function<P, Observable> propertyObservableCreator, ConfigurationPropertyHandler<T> handler)
 	{
 		super(key);
 		this.defaultValue = defaultValue;
@@ -32,7 +30,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		changedBinding = (new BooleanBinding()
 		{
 			{
-				super.bind(getCurrentObservables());
+				super.bind(propertyObservableCreator.apply(current));
 			}
 
 			@Override
@@ -42,8 +40,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 			}
 		});
 		changed.bind(changedBinding);
-		this.loader = Objects.requireNonNull(loader, "loader");
-		this.saver = Objects.requireNonNull(saver, "saver");
+		this.handler = Objects.requireNonNull(handler, "handler");
 	}
 
 	protected abstract P createProperty(Object bean, String name, T initialValue);
@@ -76,7 +73,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		T val;
 		try
 		{
-			val = loader.apply(cfg, key);
+			val = handler.load(cfg, key, defaultValue);
 		}
 		catch (Exception e)
 		{
@@ -94,7 +91,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	public void save(XMLConfiguration cfg)
 	{
 		T val = current.getValue();
-		saver.accept(cfg, key, val);
+		handler.save(cfg, key, val);
 		original = val;
 		// invalidate because original has changed
 		changedBinding.invalidate();

@@ -1,18 +1,27 @@
 package de.subcentral.fx.settings;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import org.apache.commons.configuration2.XMLConfiguration;
-
-import de.subcentral.core.util.TriConsumer;
+import de.subcentral.fx.FxUtil;
+import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class ObjectSettingsProperty<T> extends ObjectSettingsPropertyBase<T, Property<T>>
 {
-	public ObjectSettingsProperty(String key, T defaultValue, BiFunction<XMLConfiguration, String, T> loader, TriConsumer<XMLConfiguration, String, T> saver)
+	public ObjectSettingsProperty(String key, T defaultValue, ConfigurationPropertyHandler<T> handler)
 	{
-		super(key, defaultValue, loader, saver);
+		this(key, defaultValue, null, handler);
+	}
+
+	public ObjectSettingsProperty(String key, T defaultValue, Function<T, Observable[]> propertiesExtractor, ConfigurationPropertyHandler<T> handler)
+	{
+		super(key, defaultValue, beanObservableCreator(propertiesExtractor), handler);
+	}
+
+	private static <T> Function<Property<T>, Observable> beanObservableCreator(Function<T, Observable[]> propertiesExtractor)
+	{
+		return (Property<T> p) -> propertiesExtractor == null ? p : FxUtil.observeBean(p, propertiesExtractor);
 	}
 
 	@Override

@@ -48,7 +48,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -1112,13 +1114,13 @@ public class FxUtil
 		}
 	}
 
-	public static <E> Observable observeBeans(ObservableList<E> beans, Function<E, Observable[]> propertiesExtractor)
+	public static <E> Observable observeBeanList(ObservableList<E> list, Function<E, Observable[]> propertiesExtractor)
 	{
 		ObservableHelper obsv = new ObservableHelper();
 		// Observe the list itself
-		obsv.getDependencies().add(beans);
+		obsv.getDependencies().add(list);
 		// Observe the properties of the current list content
-		for (E bean : beans)
+		for (E bean : list)
 		{
 			for (Observable o : propertiesExtractor.apply(bean))
 			{
@@ -1126,7 +1128,7 @@ public class FxUtil
 			}
 		}
 		// React on list changes
-		beans.addListener(new ListChangeListener<E>()
+		list.addListener(new ListChangeListener<E>()
 		{
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends E> c)
@@ -1161,7 +1163,45 @@ public class FxUtil
 		return obsv;
 	}
 
-	public static <E> Observable observeBean(ReadOnlyProperty<E> bean, Function<E, Observable[]> propertiesExtractor)
+	public static <K, V> Observable observeBeanMap(ObservableMap<K, V> map, Function<V, Observable[]> propertiesExtractor)
+	{
+		ObservableHelper obsv = new ObservableHelper();
+		// Observe the list itself
+		obsv.getDependencies().add(map);
+		// Observe the properties of the current list content
+		for (V value : map.values())
+		{
+			for (Observable o : propertiesExtractor.apply(value))
+			{
+				obsv.getDependencies().add(o);
+			}
+		}
+		// React on list changes
+		map.addListener(new MapChangeListener<K, V>()
+		{
+			@Override
+			public void onChanged(MapChangeListener.Change<? extends K, ? extends V> change)
+			{
+				if (change.wasRemoved())
+				{
+					for (Observable o : propertiesExtractor.apply(change.getValueRemoved()))
+					{
+						obsv.getDependencies().remove(o);
+					}
+				}
+				if (change.wasAdded())
+				{
+					for (Observable o : propertiesExtractor.apply(change.getValueAdded()))
+					{
+						obsv.getDependencies().add(o);
+					}
+				}
+			}
+		});
+		return obsv;
+	}
+
+	public static <T> Observable observeBean(ReadOnlyProperty<T> bean, Function<T, Observable[]> propertiesExtractor)
 	{
 		ObservableHelper obsv = new ObservableHelper();
 		// Observe the bean itself
@@ -1175,10 +1215,10 @@ public class FxUtil
 			}
 		}
 		// React on changes
-		bean.addListener(new ChangeListener<E>()
+		bean.addListener(new ChangeListener<T>()
 		{
 			@Override
-			public void changed(ObservableValue<? extends E> observable, E oldValue, E newValue)
+			public void changed(ObservableValue<? extends T> observable, T oldValue, T newValue)
 			{
 				if (oldValue != null)
 				{

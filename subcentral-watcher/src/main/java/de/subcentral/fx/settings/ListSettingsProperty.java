@@ -1,10 +1,9 @@
 package de.subcentral.fx.settings;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import org.apache.commons.configuration2.XMLConfiguration;
-
-import de.subcentral.core.util.TriConsumer;
+import de.subcentral.fx.FxUtil;
+import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -12,9 +11,19 @@ import javafx.collections.ObservableList;
 
 public class ListSettingsProperty<E> extends ObjectSettingsPropertyBase<ObservableList<E>, ListProperty<E>>
 {
-	public ListSettingsProperty(String key, BiFunction<XMLConfiguration, String, ObservableList<E>> loader, TriConsumer<XMLConfiguration, String, ObservableList<E>> saver)
+	public ListSettingsProperty(String key, ConfigurationPropertyHandler<ObservableList<E>> handler)
 	{
-		super(key, FXCollections.observableArrayList(), loader, saver);
+		this(key, null, handler);
+	}
+
+	public ListSettingsProperty(String key, Function<E, Observable[]> propertiesExtractor, ConfigurationPropertyHandler<ObservableList<E>> handler)
+	{
+		super(key, FXCollections.observableArrayList(), beanObservableCreator(propertiesExtractor), handler);
+	}
+
+	private static <E> Function<ListProperty<E>, Observable> beanObservableCreator(Function<E, Observable[]> propertiesExtractor)
+	{
+		return (ListProperty<E> p) -> propertiesExtractor == null ? p : FxUtil.observeBeanList(p, propertiesExtractor);
 	}
 
 	@Override
