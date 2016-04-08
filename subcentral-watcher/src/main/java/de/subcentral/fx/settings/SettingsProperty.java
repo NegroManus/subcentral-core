@@ -1,13 +1,11 @@
 package de.subcentral.fx.settings;
 
-import org.apache.commons.configuration2.XMLConfiguration;
-
-import javafx.beans.Observable;
 import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyBooleanProperty;
 
-public interface SettingsProperty<T, P extends Property<T>> extends Observable
+public interface SettingsProperty<T, P extends Property<T>> extends Settable
 {
+	public String getKey();
+
 	public T getOriginal();
 
 	public P currentProperty();
@@ -22,19 +20,9 @@ public interface SettingsProperty<T, P extends Property<T>> extends Observable
 		currentProperty().setValue(value);
 	}
 
-	public ReadOnlyBooleanProperty changedProperty();
-
-	public default boolean hasChanged()
-	{
-		return changedProperty().get();
-	}
-
+	@Override
 	public default void reset()
 	{
 		setCurrent(getOriginal());
 	}
-
-	public void load(XMLConfiguration cfg);
-
-	public void save(XMLConfiguration cfg);
 }

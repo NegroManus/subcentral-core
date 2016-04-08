@@ -3,7 +3,8 @@ package de.subcentral.fx.settings;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,7 +70,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	}
 
 	@Override
-	public void load(XMLConfiguration cfg)
+	public void load(ImmutableConfiguration cfg)
 	{
 		T val;
 		try
@@ -89,7 +90,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	}
 
 	@Override
-	public void save(XMLConfiguration cfg)
+	public void save(Configuration cfg)
 	{
 		T val = current.getValue();
 		handler.save(cfg, key, val);

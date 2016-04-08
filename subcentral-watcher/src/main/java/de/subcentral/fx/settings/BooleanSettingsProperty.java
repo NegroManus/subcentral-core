@@ -1,6 +1,7 @@
 package de.subcentral.fx.settings;
 
-import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,7 +84,7 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	}
 
 	@Override
-	public void load(XMLConfiguration cfg)
+	public void load(ImmutableConfiguration cfg)
 	{
 		boolean val;
 		try
@@ -103,7 +104,7 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	}
 
 	@Override
-	public void save(XMLConfiguration cfg)
+	public void save(Configuration cfg)
 	{
 		boolean val = current.get();
 		cfg.setProperty(key, val);

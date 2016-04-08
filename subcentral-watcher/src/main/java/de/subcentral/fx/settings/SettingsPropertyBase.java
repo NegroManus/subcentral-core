@@ -9,7 +9,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public abstract class SettingsPropertyBase<T, P extends Property<T>> implements SettingsProperty<T, P>
+public abstract class SettingsPropertyBase<T, P extends Property<T>> extends SettableBase implements SettingsProperty<T, P>
 {
 	protected final ObservableHelper	helper	= new ObservableHelper(this);
 	protected final BooleanProperty		changed	= new SimpleBooleanProperty(this, "changed");

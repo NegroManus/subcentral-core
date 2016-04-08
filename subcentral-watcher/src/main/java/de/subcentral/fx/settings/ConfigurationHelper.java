@@ -17,6 +17,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.io.FileBased;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
@@ -55,7 +56,7 @@ import javafx.collections.ObservableMap;
 
 public class ConfigurationHelper
 {
-	public static void save(XMLConfiguration cfg, Path file) throws ConfigurationException
+	public static void save(FileBased cfg, Path file) throws ConfigurationException
 	{
 		try
 		{
