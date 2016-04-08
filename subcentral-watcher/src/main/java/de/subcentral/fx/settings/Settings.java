@@ -15,7 +15,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public class Settings extends SettableBase implements Settable
+public abstract class Settings extends SettableBase implements Settable
 {
 	private List<Settable>			settables;
 	private final ObservableHelper	helper	= new ObservableHelper(this);
