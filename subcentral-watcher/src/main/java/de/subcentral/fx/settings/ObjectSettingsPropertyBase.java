@@ -21,16 +21,17 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	private final BooleanBinding					changedBinding;
 	private final ConfigurationPropertyHandler<T>	handler;
 
-	public ObjectSettingsPropertyBase(String key, T defaultValue, Function<P, Observable> propertyObservableCreator, ConfigurationPropertyHandler<T> handler)
+	public ObjectSettingsPropertyBase(String key, T defaultValue, Function<P, Observable> observablePropertyCreator, ConfigurationPropertyHandler<T> handler)
 	{
 		super(key);
 		this.defaultValue = defaultValue;
 		original = defaultValue;
 		current = createProperty(this, "current", defaultValue);
+		helper.getDependencies().add(observablePropertyCreator.apply(current));
 		changedBinding = (new BooleanBinding()
 		{
 			{
-				super.bind(propertyObservableCreator.apply(current));
+				super.bind(helper);
 			}
 
 			@Override

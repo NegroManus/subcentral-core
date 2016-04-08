@@ -16,10 +16,10 @@ public class ObjectSettingsProperty<T> extends ObjectSettingsPropertyBase<T, Pro
 
 	public ObjectSettingsProperty(String key, T defaultValue, Function<T, Observable[]> propertiesExtractor, ConfigurationPropertyHandler<T> handler)
 	{
-		super(key, defaultValue, propertyObservableCreator(propertiesExtractor), handler);
+		super(key, defaultValue, observablePropertyCreator(propertiesExtractor), handler);
 	}
 
-	private static <T> Function<Property<T>, Observable> propertyObservableCreator(Function<T, Observable[]> propertiesExtractor)
+	private static <T> Function<Property<T>, Observable> observablePropertyCreator(Function<T, Observable[]> propertiesExtractor)
 	{
 		return (Property<T> p) -> propertiesExtractor == null ? p : FxUtil.observeBean(p, propertiesExtractor);
 	}

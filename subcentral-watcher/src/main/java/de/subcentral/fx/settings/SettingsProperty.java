@@ -2,10 +2,11 @@ package de.subcentral.fx.settings;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 
+import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 
-public interface SettingsProperty<T, P extends Property<T>>
+public interface SettingsProperty<T, P extends Property<T>> extends Observable
 {
 	public T getOriginal();
 

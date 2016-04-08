@@ -1116,7 +1116,7 @@ public class FxUtil
 
 	public static <E> Observable observeBeanList(ObservableList<E> list, Function<E, Observable[]> propertiesExtractor)
 	{
-		ObservableHelper obsv = new ObservableHelper();
+		ObservableHelper obsv = new ObservableHelper(null);
 		// Observe the list itself
 		obsv.getDependencies().add(list);
 		// Observe the properties of the current list content
@@ -1165,7 +1165,7 @@ public class FxUtil
 
 	public static <K, V> Observable observeBeanMap(ObservableMap<K, V> map, Function<V, Observable[]> propertiesExtractor)
 	{
-		ObservableHelper obsv = new ObservableHelper();
+		ObservableHelper obsv = new ObservableHelper(null);
 		// Observe the list itself
 		obsv.getDependencies().add(map);
 		// Observe the properties of the current list content
@@ -1203,7 +1203,7 @@ public class FxUtil
 
 	public static <T> Observable observeBean(ReadOnlyProperty<T> bean, Function<T, Observable[]> propertiesExtractor)
 	{
-		ObservableHelper obsv = new ObservableHelper();
+		ObservableHelper obsv = new ObservableHelper(null);
 		// Observe the bean itself
 		obsv.getDependencies().add(bean);
 		// Observe the properties of the current bean

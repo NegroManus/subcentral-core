@@ -1,7 +1,5 @@
 package de.subcentral.fx.settings;
 
-import java.util.Objects;
-
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,16 +23,17 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 		this.defaultValue = defaultValue;
 		original = defaultValue;
 		current = new SimpleBooleanProperty(this, "current", defaultValue);
+		helper.getDependencies().add(current);
 		changedBinding = (new BooleanBinding()
 		{
 			{
-				super.bind(current);
+				super.bind(helper);
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
-				return Objects.equals(original, current.getValue());
+				return original == current.get();
 			}
 		});
 		changed.bind(changedBinding);

@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 public abstract class Settings implements Observable
 {
-	private final ObservableHelper	helper	= new ObservableHelper();
+	private final ObservableHelper	helper	= new ObservableHelper(this);
 	private final BooleanProperty	changed	= new SimpleBooleanProperty(this, "changed");
 
 	protected void bindChanged(SettingsProperty<?, ?>... properties)

@@ -15,24 +15,26 @@ import javafx.collections.SetChangeListener;
 
 public final class ObservableHelper implements Observable
 {
-	private final InvalidationListener			dependencyListener	= (Observable obsv) -> invalidate();
+	private final InvalidationListener			dependencyListener	= (Observable obsv) -> fireInvalidationEvent();
+	private final Observable					observable;
 	// VERY IMPORTANT to use a IdentityHashSet here
 	// because otherwise Observables like ListProperties cannot be identified if their content changed
 	private final ObservableSet<Observable>		dependencies		= FXCollections.observableSet(Sets.newIdentityHashSet());
 	private final List<InvalidationListener>	listeners			= new CopyOnWriteArrayList<>();
 
-	public ObservableHelper()
+	public ObservableHelper(Observable observable)
 	{
-		this(ImmutableList.of());
+		this(observable, ImmutableList.of());
 	}
 
-	public ObservableHelper(Observable... dependencies)
+	public ObservableHelper(Observable observable, Observable... dependencies)
 	{
-		this(ImmutableList.copyOf(dependencies));
+		this(observable, ImmutableList.copyOf(dependencies));
 	}
 
-	public ObservableHelper(Collection<? extends Observable> dependencies)
+	public ObservableHelper(Observable observable, Collection<? extends Observable> dependencies)
 	{
+		this.observable = observable != null ? observable : this;
 		this.dependencies.addListener((SetChangeListener.Change<? extends Observable> c) ->
 		{
 			if (c.wasAdded())
@@ -47,12 +49,9 @@ public final class ObservableHelper implements Observable
 		this.dependencies.addAll(dependencies);
 	}
 
-	protected void bind(Observable... properties)
+	public Observable getObservable()
 	{
-		for (Observable prop : properties)
-		{
-			dependencies.add(prop);
-		}
+		return observable;
 	}
 
 	public ObservableSet<Observable> getDependencies()
@@ -72,11 +71,11 @@ public final class ObservableHelper implements Observable
 		listeners.remove(listener);
 	}
 
-	public void invalidate()
+	private void fireInvalidationEvent()
 	{
 		for (InvalidationListener l : listeners)
 		{
-			l.invalidated(this);
+			l.invalidated(observable);
 		}
 	}
 }

@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 public abstract class SubSettings implements Observable
 {
-	protected ObservableHelper	observableHelper	= new ObservableHelper();
+	protected ObservableHelper	observableHelper	= new ObservableHelper(this);
 	private BooleanProperty		changed				= new SimpleBooleanProperty(this, "changed", false);
 
 	public SubSettings()
