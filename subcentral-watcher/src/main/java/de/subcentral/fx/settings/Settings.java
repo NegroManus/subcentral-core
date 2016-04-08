@@ -1,6 +1,9 @@
 package de.subcentral.fx.settings;
 
+import java.util.Arrays;
+
 import de.subcentral.fx.ObservableHelper;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -12,28 +15,21 @@ public abstract class Settings implements Observable
 	private final ObservableHelper	helper	= new ObservableHelper(this);
 	private final BooleanProperty	changed	= new SimpleBooleanProperty(this, "changed");
 
-	protected void bindChanged(SettingsProperty<?, ?>... properties)
+	protected void bind(SettingsProperty<?, ?>... properties)
 	{
-		Observable[] changedObservables = new Observable[properties.length];
-		ReadOnlyBooleanProperty[] changedProperties = new ReadOnlyBooleanProperty[properties.length];
-		for (int i = 0; i < properties.length; i++)
-		{
-			ReadOnlyBooleanProperty p = properties[i].changedProperty();
-			changedObservables[i] = p;
-			changedProperties[i] = p;
-		}
+		helper.getDependencies().addAll(Arrays.asList(properties));
 		changed.bind(new BooleanBinding()
 		{
 			{
-				super.bind(changedProperties);
+				super.bind(helper);
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
-				for (ReadOnlyBooleanProperty p : changedProperties)
+				for (SettingsProperty<?, ?> p : properties)
 				{
-					if (p.get())
+					if (p.hasChanged())
 					{
 						return true;
 					}
@@ -41,6 +37,18 @@ public abstract class Settings implements Observable
 				return false;
 			}
 		});
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener)
+	{
+		helper.removeListener(listener);
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener)
+	{
+		helper.addListener(listener);
 	}
 
 	public ReadOnlyBooleanProperty changedProperty()
