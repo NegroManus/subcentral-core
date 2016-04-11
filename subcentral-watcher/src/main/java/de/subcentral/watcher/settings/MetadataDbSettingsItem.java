@@ -8,7 +8,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 
-public class MetadataDbSettingsItem<T> extends SimpleDeactivatableSettingsItem<MetadataDb>
+public class MetadataDbSettingsItem extends SimpleDeactivatableSettingsItem<MetadataDb>
 {
 	public static enum Availability
 	{

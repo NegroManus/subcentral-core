@@ -17,7 +17,7 @@ import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
 import de.subcentral.core.correct.SubtitleLanguageCorrector;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
-import de.subcentral.fx.settings.SubSettings;
+import de.subcentral.fx.settings.Settings;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ListProperty;
@@ -27,7 +27,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class LocaleLanguageReplacerSettings extends SubSettings
+public class LocaleLanguageReplacerSettings extends Settings
 {
 	private final ListProperty<Locale>						parsingLanguages					= new SimpleListProperty<>(this, "parsingLanguages", FXCollections.observableArrayList());
 	private final Property<LanguageFormat>					outputLanguageFormat				= new SimpleObjectProperty<>(this, "outputLanguageFormat", LanguageFormat.ISO2);

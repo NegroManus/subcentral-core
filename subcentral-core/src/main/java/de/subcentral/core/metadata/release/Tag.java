@@ -58,11 +58,11 @@ public class Tag implements Comparable<Tag>, Serializable
 		this.longName = longName;
 	}
 
-	public static Tag from(String tag)
+	public static Tag from(String name)
 	{
 		try
 		{
-			return new Tag(tag);
+			return new Tag(name);
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -72,7 +72,7 @@ public class Tag implements Comparable<Tag>, Serializable
 
 	public static String toStringNullSafe(Tag tag)
 	{
-		return tag == null ? "" : tag.toString();
+		return tag != null ? tag.toString() : "";
 	}
 
 	public static List<Tag> list(Collection<String> tags)

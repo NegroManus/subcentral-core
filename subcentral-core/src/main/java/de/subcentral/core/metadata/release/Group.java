@@ -37,7 +37,7 @@ public class Group implements Comparable<Group>, Serializable
 
 	public static String toStringNullSafe(Group group)
 	{
-		return group == null ? "" : group.toString();
+		return group != null ? group.toString() : "";
 	}
 
 	public String getName()

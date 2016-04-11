@@ -1,6 +1,5 @@
 package de.subcentral.fx.settings;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.configuration2.Configuration;
@@ -23,13 +22,19 @@ public abstract class Settings extends SettableBase implements Settable
 
 	protected void initSettables(Settable... settables)
 	{
-		initSettables(Arrays.asList(settables));
+		this.settables = ImmutableList.copyOf(settables);
+		bindToSettables();
 	}
 
 	protected void initSettables(Iterable<? extends Settable> settables)
 	{
 		this.settables = ImmutableList.copyOf(settables);
-		helper.getDependencies().addAll(this.settables);
+		bindToSettables();
+	}
+
+	private void bindToSettables()
+	{
+		helper.getDependencies().addAll(settables);
 		changed.bind(new BooleanBinding()
 		{
 			{
@@ -39,7 +44,7 @@ public abstract class Settings extends SettableBase implements Settable
 			@Override
 			protected boolean computeValue()
 			{
-				for (Settable p : Settings.this.settables)
+				for (Settable p : settables)
 				{
 					if (p.changed())
 					{

@@ -22,13 +22,15 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	private final BooleanBinding					changedBinding;
 	private final ConfigurationPropertyHandler<T>	handler;
 
-	public ObjectSettingsPropertyBase(String key, T defaultValue, Function<P, Observable> observablePropertyCreator, ConfigurationPropertyHandler<T> handler)
+	protected ObjectSettingsPropertyBase(String key, ConfigurationPropertyHandler<T> handler, T defaultValue, Function<P, Observable> observablePropertyCreator)
 	{
 		super(key);
+		this.handler = Objects.requireNonNull(handler, "handler");
 		this.defaultValue = defaultValue;
 		original = defaultValue;
 		current = createProperty(this, "current", defaultValue);
-		helper.getDependencies().add(observablePropertyCreator.apply(current));
+		Observable currentObsv = observablePropertyCreator != null ? observablePropertyCreator.apply(current) : current;
+		helper.getDependencies().add(currentObsv);
 		changedBinding = (new BooleanBinding()
 		{
 			{
@@ -42,7 +44,6 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 			}
 		});
 		changed.bind(changedBinding);
-		this.handler = Objects.requireNonNull(handler, "handler");
 	}
 
 	protected abstract P createProperty(Object bean, String name, T initialValue);
@@ -75,7 +76,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		T val;
 		try
 		{
-			val = handler.load(cfg, key, defaultValue);
+			val = handler.get(cfg, key);
 		}
 		catch (Exception e)
 		{
@@ -93,7 +94,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	public void save(Configuration cfg)
 	{
 		T val = current.getValue();
-		handler.save(cfg, key, val);
+		handler.add(cfg, key, val);
 		original = val;
 		// invalidate because original has changed
 		changedBinding.invalidate();

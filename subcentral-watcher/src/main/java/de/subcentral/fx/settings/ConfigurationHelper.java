@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,13 +14,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileBased;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.correct.ReleaseTagsCorrector;
 import de.subcentral.core.correct.SeriesNameCorrector;
@@ -56,6 +63,8 @@ import javafx.collections.ObservableMap;
 
 public class ConfigurationHelper
 {
+	private static final Logger log = LogManager.getLogger(ConfigurationHelper.class);
+
 	public static void save(FileBased cfg, Path file) throws ConfigurationException
 	{
 		try
@@ -73,7 +82,7 @@ public class ConfigurationHelper
 	{
 		try
 		{
-			XMLConfiguration cfg = new XMLConfiguration();
+			XMLConfiguration cfg = new IndentingXMLConfiguration();
 			FileHandler cfgFileHandler = new FileHandler(cfg);
 			cfgFileHandler.load(file.openStream(), Charset.forName("UTF-8").name());
 			return cfg;
@@ -88,7 +97,7 @@ public class ConfigurationHelper
 	{
 		try
 		{
-			XMLConfiguration cfg = new XMLConfiguration();
+			XMLConfiguration cfg = new IndentingXMLConfiguration();
 			FileHandler cfgFileHandler = new FileHandler(cfg);
 			cfgFileHandler.load(Files.newInputStream(file), Charset.forName("UTF-8").name());
 			return cfg;
@@ -101,17 +110,44 @@ public class ConfigurationHelper
 
 	// GETTER
 	// Static config getter
-	public static Path getPath(Configuration cfg, String key)
+	public static Path getPath(ImmutableConfiguration cfg, String key)
 	{
-		String path = cfg.getString(key);
-		if (path.isEmpty())
+		String pathString = cfg.getString(key);
+		if (pathString.isEmpty())
 		{
 			return null;
 		}
-		else
+		return Paths.get(pathString);
+	}
+
+	public static void addPath(Configuration cfg, String key, Path path)
+	{
+		// WARNING: Need to use path.toString() because path implements iterable
+		// and results in an endless loop when Commons-Configuration tries to print it
+		cfg.addProperty(key, path == null ? "" : path.toString());
+	}
+
+	public static ObservableList<Path> getPathList(ImmutableConfiguration cfg, String key)
+	{
+		Set<Path> paths = new LinkedHashSet<>();
+		for (String pathString : cfg.getStringArray(key))
 		{
-			return Paths.get(path);
+			try
+			{
+				Path path = Paths.get(pathString);
+				paths.add(path);
+			}
+			catch (InvalidPathException e)
+			{
+				log.warn("Invalid path '" + pathString + "'. Ignoring it", e);
+			}
 		}
+		return FXCollections.observableArrayList(paths);
+	}
+
+	public static void setPathList(Configuration cfg, String key, Iterable<Path> paths)
+	{
+
 	}
 
 	public static ObservableList<ParsingServiceSettingsItem> getParsingServices(HierarchicalConfiguration<ImmutableNode> cfg, String key)
@@ -186,9 +222,9 @@ public class ConfigurationHelper
 		return FXCollections.observableList(stdzers);
 	}
 
-	public static ObservableList<MetadataDbSettingsItem<Release>> getReleaseDbs(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+	public static ObservableList<MetadataDbSettingsItem> getReleaseDbs(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 	{
-		ArrayList<MetadataDbSettingsItem<Release>> dbs = new ArrayList<>(3);
+		ArrayList<MetadataDbSettingsItem> dbs = new ArrayList<>(3);
 		List<HierarchicalConfiguration<ImmutableNode>> rlsDbCfgs = cfg.configurationsAt(key + ".db");
 		for (HierarchicalConfiguration<ImmutableNode> rlsDbCfg : rlsDbCfgs)
 		{
@@ -196,15 +232,15 @@ public class ConfigurationHelper
 			boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
 			if (PreDbMe.SITE.getName().equals(name))
 			{
-				dbs.add(new MetadataDbSettingsItem<>(new PreDbMeMetadataDb(), enabled));
+				dbs.add(new MetadataDbSettingsItem(new PreDbMeMetadataDb(), enabled));
 			}
 			else if (XRelTo.SITE.getName().equals(name))
 			{
-				dbs.add(new MetadataDbSettingsItem<>(new XRelToMetadataDb(), enabled));
+				dbs.add(new MetadataDbSettingsItem(new XRelToMetadataDb(), enabled));
 			}
 			else if (OrlyDbCom.SITE.getName().equals(name))
 			{
-				dbs.add(new MetadataDbSettingsItem<>(new OrlyDbComMetadataDb(), enabled));
+				dbs.add(new MetadataDbSettingsItem(new OrlyDbComMetadataDb(), enabled));
 			}
 			else
 			{
@@ -341,10 +377,15 @@ public class ConfigurationHelper
 		}
 	}
 
-	public static void addPath(Configuration cfg, String key, Path path)
+	private static class IndentingXMLConfiguration extends XMLConfiguration
 	{
-		// WARNING: Need to use path.toString() because path implements iterable
-		// and results in an endless loop when Commons-Configuration tries to print it
-		cfg.addProperty(key, path == null ? "" : path.toString());
+		@Override
+		protected Transformer createTransformer() throws ConfigurationException
+		{
+			Transformer transformer = super.createTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			return transformer;
+		}
 	}
 }

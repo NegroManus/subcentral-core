@@ -1,65 +1,33 @@
 package de.subcentral.watcher.settings;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
+import de.subcentral.fx.settings.BooleanSettingsProperty;
+import de.subcentral.fx.settings.ConfigurationPropertyHandlers;
+import de.subcentral.fx.settings.ListSettingsProperty;
+import de.subcentral.fx.settings.Settings;
 
-import org.apache.commons.configuration2.XMLConfiguration;
-import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.common.collect.ImmutableList;
-
-import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.ObservableHelper;
-import de.subcentral.fx.settings.ConfigurationHelper;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
-public class WatcherSettings implements Observable
+public class WatcherSettings extends Settings
 {
-	private static final Logger			log								= LogManager.getLogger(WatcherSettings.class);
-
-	private final ObservableHelper		observableHelper;
-	/**
-	 * Whether the settings changed since initial load
-	 */
-	private final BooleanProperty		changed							= new SimpleBooleanProperty(this, "changed", false);
-
 	// Watch
-	private final ListProperty<Path>	watchDirectories				= new SimpleListProperty<>(this, "watchDirectories", FXCollections.observableArrayList());
-	private final BooleanProperty		initialScan						= new SimpleBooleanProperty(this, "initialScan");
-	private final BooleanProperty		rejectAlreadyProcessedFiles		= new SimpleBooleanProperty(this, "rejectAlreadyProcessedFiles");
+	private final ListSettingsProperty<Path>	watchDirectories				= new ListSettingsProperty<>("watch.directories.dir", ConfigurationPropertyHandlers.PATH_LIST_HANDLER);
+	private final BooleanSettingsProperty		initialScan						= new BooleanSettingsProperty("watch.initialScan", true);
+	private final BooleanSettingsProperty		rejectAlreadyProcessedFiles		= new BooleanSettingsProperty("watch.rejectAlreadyProcessedFiles", true);
 
 	// Processing
-	private final ProcessingSettings	processingSettings				= new ProcessingSettings();
+	private final ProcessingSettings			processingSettings				= new ProcessingSettings();
 	// UI
 	// UI - Warnings
-	private final BooleanProperty		warningsEnabled					= new SimpleBooleanProperty(this, "warningsEnabled");
-	private final BooleanProperty		guessingWarningEnabled			= new SimpleBooleanProperty(this, "guessingWarningEnabled");
-	private final BooleanProperty		releaseMetaTaggedWarningEnabled	= new SimpleBooleanProperty(this, "releaseMetaTaggedWarningEnabled");
-	private final BooleanProperty		releaseNukedWarningEnabled		= new SimpleBooleanProperty(this, "releaseNukedWarningEnabled");
+	private final BooleanSettingsProperty		warningsEnabled					= new BooleanSettingsProperty("ui.warnings[@enabled]", true);
+	private final BooleanSettingsProperty		guessingWarningEnabled			= new BooleanSettingsProperty("ui.warnings.guessingWarning[@enabled]", true);
+	private final BooleanSettingsProperty		releaseMetaTaggedWarningEnabled	= new BooleanSettingsProperty("ui.warnings.releaseMetaTaggedWarning[@enabled]", true);
+	private final BooleanSettingsProperty		releaseNukedWarningEnabled		= new BooleanSettingsProperty("ui.warnings.releaseNukedWarning[@enabled]", true);
 	// UI - System Tray
-	private final BooleanProperty		systemTrayEnabled				= new SimpleBooleanProperty(this, "systemTrayEnabled");
+	private final BooleanSettingsProperty		systemTrayEnabled				= new BooleanSettingsProperty("ui.systemTray[@enabled]", true);
 
 	public WatcherSettings()
 	{
-		observableHelper = new ObservableHelper(watchDirectories,
+		initSettables(watchDirectories,
 				initialScan,
 				rejectAlreadyProcessedFiles,
 				processingSettings,
@@ -68,220 +36,21 @@ public class WatcherSettings implements Observable
 				releaseMetaTaggedWarningEnabled,
 				releaseNukedWarningEnabled,
 				systemTrayEnabled);
-
-		observableHelper.addListener((Observable o) -> changed.set(true));
 	}
 
-	@Override
-	public void addListener(InvalidationListener listener)
+	public ListSettingsProperty<Path> getWatchDirectories()
 	{
-		observableHelper.addListener(listener);
+		return watchDirectories;
 	}
 
-	@Override
-	public void removeListener(InvalidationListener listener)
+	public BooleanSettingsProperty getInitialScan()
 	{
-		observableHelper.removeListener(listener);
+		return initialScan;
 	}
 
-	/**
-	 * Must be called in the JavaFX Application thread.
-	 * 
-	 * @param file
-	 * @throws ConfigurationException
-	 */
-	public void load(URL file) throws ConfigurationException
+	public BooleanSettingsProperty getRejectAlreadyProcessedFiles()
 	{
-		FxUtil.requireJavaFxApplicationThread();
-
-		XMLConfiguration cfg = ConfigurationHelper.load(file);
-		loadFromCfg(cfg);
-		changed.set(false);
-
-		log.info("Loaded settings from {}", file);
-	}
-
-	/**
-	 * Must be called in the JavaFX Application thread.
-	 * 
-	 * @param file
-	 * @throws ConfigurationException
-	 */
-	public void load(Path file) throws ConfigurationException
-	{
-		FxUtil.requireJavaFxApplicationThread();
-
-		XMLConfiguration cfg = ConfigurationHelper.load(file);
-		loadFromCfg(cfg);
-		changed.set(false);
-
-		log.info("Loaded settings from {}", file);
-	}
-
-	/**
-	 * <b>HAS</b> to be called in the FX-Application-Thread.
-	 * 
-	 * @param cfg
-	 *            the cfg from which the settings should be loaded
-	 */
-	private void loadFromCfg(XMLConfiguration cfg)
-	{
-		// Watch
-		updateWatchDirs(cfg);
-		updateInitialScan(cfg);
-		updateRejectAlreadyProcessedFiles(cfg);
-
-		// Processing
-		processingSettings.load(cfg);
-
-		// UI
-		// UI - Warnings
-		updateWarnings(cfg);
-		updateSystemTray(cfg);
-	}
-
-	private void updateWatchDirs(XMLConfiguration cfg)
-	{
-		Set<Path> dirs = new LinkedHashSet<>();
-		for (String watchDirPath : cfg.getList(String.class, "watch.directories.dir", ImmutableList.of()))
-		{
-			try
-			{
-				Path watchDir = Paths.get(watchDirPath);
-				dirs.add(watchDir);
-			}
-			catch (InvalidPathException e)
-			{
-				log.warn("Invalid path for watch directory:" + watchDirPath + ". Ignoring the path", e);
-			}
-		}
-		setWatchDirectories(FXCollections.observableArrayList(dirs));
-	}
-
-	private void updateInitialScan(XMLConfiguration cfg)
-	{
-		setInitialScan(cfg.getBoolean("watch.initialScan", true));
-	}
-
-	private void updateRejectAlreadyProcessedFiles(XMLConfiguration cfg)
-	{
-		setRejectAlreadyProcessedFiles(cfg.getBoolean("rejectAlreadyProcessedFiles", true));
-	}
-
-	private void updateWarnings(XMLConfiguration cfg)
-	{
-		setWarningsEnabled(cfg.getBoolean("ui.warnings[@enabled]", true));
-		setGuessingWarningEnabled(cfg.getBoolean("ui.warnings.guessingWarning[@enabled]", true));
-		setReleaseMetaTaggedWarningEnabled(cfg.getBoolean("ui.warnings.releaseMetaTaggedWarning[@enabled]", true));
-		setReleaseNukedWarningEnabled(cfg.getBoolean("ui.warnings.releaseNukedWarning[@enabled]", true));
-	}
-
-	private void updateSystemTray(XMLConfiguration cfg)
-	{
-		setSystemTrayEnabled(cfg.getBoolean("ui.systemTray[@enabled]", true));
-	}
-
-	// Write methods
-	/**
-	 * Must be called in the JavaFX Application thread.
-	 * 
-	 * @param file
-	 * @throws ConfigurationException
-	 * @throws IOException
-	 */
-	public void save(Path file) throws ConfigurationException
-	{
-		FxUtil.requireJavaFxApplicationThread();
-
-		XMLConfiguration cfg = saveToCfg();
-		ConfigurationHelper.save(cfg, file);
-		changed.set(false);
-
-		log.info("Saved settings to {}", file.toAbsolutePath());
-	}
-
-	private XMLConfiguration saveToCfg()
-	{
-		XMLConfiguration cfg = new IndentingXMLConfiguration();
-		cfg.setRootElementName("watcherConfig");
-
-		// Watch
-		for (Path path : watchDirectories)
-		{
-			ConfigurationHelper.addPath(cfg, "watch.directories.dir", path);
-		}
-		cfg.addProperty("watch.initialScan", isInitialScan());
-		cfg.addProperty("watch.denyAlreadyProcessedFiles", isRejectAlreadyProcessedFiles());
-
-		// Processing
-		processingSettings.save(cfg);
-
-		// UI
-		// UI - Warnings
-		cfg.addProperty("ui.warnings[@enabled]", isWarningsEnabled());
-		cfg.addProperty("ui.warnings.guessingWarning[@enabled]", isGuessingWarningEnabled());
-		cfg.addProperty("ui.warnings.releaseMetaTaggedWarning[@enabled]", isReleaseMetaTaggedWarningEnabled());
-		cfg.addProperty("ui.warnings.releaseNukedWarning[@enabled]", isReleaseNukedWarningEnabled());
-		// UI- System Tray
-		cfg.addProperty("ui.systemTray[@enabled]", isSystemTrayEnabled());
-
-		return cfg;
-	}
-
-	// Getter and Setter
-	public ReadOnlyBooleanProperty changedProperty()
-	{
-		return changed;
-	}
-
-	public boolean getChanged()
-	{
-		return changed.get();
-	}
-
-	public final ListProperty<Path> watchDirectoriesProperty()
-	{
-		return this.watchDirectories;
-	}
-
-	public final ObservableList<Path> getWatchDirectories()
-	{
-		return this.watchDirectoriesProperty().get();
-	}
-
-	public final void setWatchDirectories(final ObservableList<Path> watchDirectories)
-	{
-		this.watchDirectoriesProperty().set(watchDirectories);
-	}
-
-	public final BooleanProperty initialScanProperty()
-	{
-		return this.initialScan;
-	}
-
-	public final boolean isInitialScan()
-	{
-		return this.initialScanProperty().get();
-	}
-
-	public final void setInitialScan(final boolean initialScan)
-	{
-		this.initialScanProperty().set(initialScan);
-	}
-
-	public final BooleanProperty rejectAlreadyProcessedFilesProperty()
-	{
-		return this.rejectAlreadyProcessedFiles;
-	}
-
-	public final boolean isRejectAlreadyProcessedFiles()
-	{
-		return this.rejectAlreadyProcessedFiles.get();
-	}
-
-	public final void setRejectAlreadyProcessedFiles(final boolean rejectAlreadyProcessedFiles)
-	{
-		this.rejectAlreadyProcessedFiles.set(rejectAlreadyProcessedFiles);
+		return rejectAlreadyProcessedFiles;
 	}
 
 	public ProcessingSettings getProcessingSettings()
@@ -289,90 +58,28 @@ public class WatcherSettings implements Observable
 		return processingSettings;
 	}
 
-	public final BooleanProperty warningsEnabledProperty()
+	public BooleanSettingsProperty getWarningsEnabled()
 	{
-		return this.warningsEnabled;
+		return warningsEnabled;
 	}
 
-	public final boolean isWarningsEnabled()
+	public BooleanSettingsProperty getGuessingWarningEnabled()
 	{
-		return this.warningsEnabledProperty().get();
+		return guessingWarningEnabled;
 	}
 
-	public final void setWarningsEnabled(final boolean warningsEnabled)
+	public BooleanSettingsProperty getReleaseMetaTaggedWarningEnabled()
 	{
-		this.warningsEnabledProperty().set(warningsEnabled);
+		return releaseMetaTaggedWarningEnabled;
 	}
 
-	public final BooleanProperty guessingWarningEnabledProperty()
+	public BooleanSettingsProperty getReleaseNukedWarningEnabled()
 	{
-		return this.guessingWarningEnabled;
+		return releaseNukedWarningEnabled;
 	}
 
-	public final boolean isGuessingWarningEnabled()
+	public BooleanSettingsProperty getSystemTrayEnabled()
 	{
-		return this.guessingWarningEnabledProperty().get();
-	}
-
-	public final void setGuessingWarningEnabled(final boolean guessingWarningEnabled)
-	{
-		this.guessingWarningEnabledProperty().set(guessingWarningEnabled);
-	}
-
-	public final BooleanProperty releaseMetaTaggedWarningEnabledProperty()
-	{
-		return this.releaseMetaTaggedWarningEnabled;
-	}
-
-	public final boolean isReleaseMetaTaggedWarningEnabled()
-	{
-		return this.releaseMetaTaggedWarningEnabledProperty().get();
-	}
-
-	public final void setReleaseMetaTaggedWarningEnabled(final boolean releaseMetaTaggedWarningEnabled)
-	{
-		this.releaseMetaTaggedWarningEnabledProperty().set(releaseMetaTaggedWarningEnabled);
-	}
-
-	public final BooleanProperty releaseNukedWarningEnabledProperty()
-	{
-		return this.releaseNukedWarningEnabled;
-	}
-
-	public final boolean isReleaseNukedWarningEnabled()
-	{
-		return this.releaseNukedWarningEnabledProperty().get();
-	}
-
-	public final void setReleaseNukedWarningEnabled(final boolean releaseNukedWarningEnabled)
-	{
-		this.releaseNukedWarningEnabledProperty().set(releaseNukedWarningEnabled);
-	}
-
-	public final BooleanProperty systemTrayEnabledProperty()
-	{
-		return this.systemTrayEnabled;
-	}
-
-	public final boolean isSystemTrayEnabled()
-	{
-		return this.systemTrayEnabledProperty().get();
-	}
-
-	public final void setSystemTrayEnabled(final boolean systemTrayEnabled)
-	{
-		this.systemTrayEnabledProperty().set(systemTrayEnabled);
-	}
-
-	private static class IndentingXMLConfiguration extends XMLConfiguration
-	{
-		@Override
-		protected Transformer createTransformer() throws ConfigurationException
-		{
-			Transformer transformer = super.createTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-			return transformer;
-		}
+		return systemTrayEnabled;
 	}
 }

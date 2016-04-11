@@ -19,30 +19,34 @@ import javafx.util.StringConverter;
 
 public class SubCentralFxUtil
 {
-	public static final String	DEFAULT_TAGS_PROMPT_TEXT	= "tags (separated by comma)";
-	public static final String	DEFAULT_GROUP_PROMPT_TEXT	= "group";
+	public static final String									DEFAULT_TAGS_PROMPT_TEXT			= "tags (separated by comma)";
+	public static final String									DEFAULT_GROUP_PROMPT_TEXT			= "group";
 
-	public static final StringConverter<List<Tag>>				TAGS_STRING_CONVERTER				= initTagsStringConverter();
+	public static final StringConverter<Tag>					TAG_STRING_CONVERTER				= initTagStringConverter();
 	public static final StringConverter<ObservableList<Tag>>	OBSERVABLE_TAGS_STRING_CONVERTER	= initObservableTagsStringConverter();
 	public static final StringConverter<Group>					GROUP_STRING_CONVERTER				= initGroupStringConverter();
 	public static final StringConverter<DeletionMode>			DELETION_MODE_STRING_CONVERTER		= initDeletionModeStringConverter();
 	public static final StringConverter<LanguageFormat>			LANGUAGE_FORMAT_STRING_CONVERTER	= initLanguageFormatStringConverter();
 	public static final StringConverter<StandardRelease>		STANDARD_RELEASE_STRING_CONVERTER	= initStandardReleaseStringConverter();
 
-	private static StringConverter<List<Tag>> initTagsStringConverter()
+	private static StringConverter<Tag> initTagStringConverter()
 	{
-		return new StringConverter<List<Tag>>()
+		return new StringConverter<Tag>()
 		{
 			@Override
-			public String toString(List<Tag> tags)
+			public String toString(Tag tag)
 			{
-				return Tag.formatList(tags);
+				if (tag != null)
+				{
+					return tag.getName();
+				}
+				return "";
 			}
 
 			@Override
-			public List<Tag> fromString(String tagList)
+			public Tag fromString(String s)
 			{
-				return Tag.parseList(tagList);
+				return Tag.from(s);
 			}
 		};
 	}
@@ -96,14 +100,14 @@ public class SubCentralFxUtil
 				}
 				switch (mode)
 				{
-				case KEEP:
-					return "Keep files";
-				case RECYCLE:
-					return "Move files to Recycle Bin (Windows-only)";
-				case DELETE:
-					return "Delete files";
-				default:
-					return mode.toString();
+					case KEEP:
+						return "Keep files";
+					case RECYCLE:
+						return "Move files to Recycle Bin (Windows-only)";
+					case DELETE:
+						return "Delete files";
+					default:
+						return mode.toString();
 				}
 			}
 
@@ -128,20 +132,20 @@ public class SubCentralFxUtil
 				}
 				switch (format)
 				{
-				case NAME:
-					return "Java language tag (includes country)";
-				case LANGUAGE_TAG:
-					return "IETF language tag (includes country)";
-				case ISO2:
-					return "2-letter language code (ISO 639-1)";
-				case ISO3:
-					return "3-letter language code (ISO 639-2/T)";
-				case DISPLAY_NAME:
-					return "Language name with country";
-				case DISPLAY_LANGUAGE:
-					return "Language name without country";
-				default:
-					return format.toString();
+					case NAME:
+						return "Java language tag (includes country)";
+					case LANGUAGE_TAG:
+						return "IETF language tag (includes country)";
+					case ISO2:
+						return "2-letter language code (ISO 639-1)";
+					case ISO3:
+						return "3-letter language code (ISO 639-2/T)";
+					case DISPLAY_NAME:
+						return "Language name with country";
+					case DISPLAY_LANGUAGE:
+						return "Language name without country";
+					default:
+						return format.toString();
 				}
 			}
 

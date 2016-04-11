@@ -5,7 +5,7 @@ import org.apache.commons.configuration2.ImmutableConfiguration;
 
 public interface ConfigurationPropertyHandler<T>
 {
-	public T load(ImmutableConfiguration cfg, String key, T defaultValue);
+	public T get(ImmutableConfiguration cfg, String key);
 
-	public void save(Configuration cfg, String key, T value);
+	public void add(Configuration cfg, String key, T value);
 }

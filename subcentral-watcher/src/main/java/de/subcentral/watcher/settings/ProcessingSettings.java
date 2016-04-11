@@ -1,363 +1,138 @@
 package de.subcentral.watcher.settings;
 
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.StringUtils;
 
+import de.subcentral.core.correct.ReleaseTagsCorrector;
+import de.subcentral.core.correct.SeriesNameCorrector;
+import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
+import de.subcentral.core.metadata.release.TagUtil.SearchMode;
+import de.subcentral.fx.UserPattern;
+import de.subcentral.fx.UserPattern.Mode;
+import de.subcentral.fx.settings.BooleanSettingsProperty;
 import de.subcentral.fx.settings.ConfigurationHelper;
-import de.subcentral.fx.settings.SubSettings;
+import de.subcentral.fx.settings.ConfigurationPropertyHandler;
+import de.subcentral.fx.settings.ConfigurationPropertyHandlers;
+import de.subcentral.fx.settings.ListSettingsProperty;
+import de.subcentral.fx.settings.MapSettingsProperty;
+import de.subcentral.fx.settings.ObjectSettingsProperty;
+import de.subcentral.fx.settings.Settings;
+import de.subcentral.fx.settings.StringSettingsProperty;
+import de.subcentral.support.addic7edcom.Addic7edCom;
+import de.subcentral.support.italiansubsnet.ItalianSubsNet;
+import de.subcentral.support.orlydbcom.OrlyDbCom;
+import de.subcentral.support.orlydbcom.OrlyDbComMetadataDb;
+import de.subcentral.support.predbme.PreDbMe;
+import de.subcentral.support.predbme.PreDbMeMetadataDb;
+import de.subcentral.support.releasescene.ReleaseScene;
+import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import de.subcentral.support.xrelto.XRelTo;
+import de.subcentral.support.xrelto.XRelToMetadataDb;
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleMapProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ProcessingSettings extends SubSettings
+public class ProcessingSettings extends Settings
 {
 	public static enum WinRarLocateStrategy
 	{
 		SPECIFY, AUTO_LOCATE;
 	}
 
+	private static final ParsingServiceSettingsItemListHandler					PARSING_SERVICES_HANDLER			= new ParsingServiceSettingsItemListHandler();
+	private static final Function<ParsingServiceSettingsItem, Observable[]>		PARSING_SERVICE_PROP_EXTRACTOR		= (ParsingServiceSettingsItem item) -> new Observable[] { item.enabledProperty() };
+	private static final MetadataDbSettingsItemListHandler						METADATA_DBS_HANDLER				= new MetadataDbSettingsItemListHandler();
+	private static final Function<MetadataDbSettingsItem, Observable[]>			METADATA_DB_PROP_EXTRACTOR			= (MetadataDbSettingsItem item) -> new Observable[] { item.enabledProperty() };
+	private static final Function<CompatibilitySettingsItem, Observable[]>		COMPABILITY_PROP_EXTRACTOR			= (CompatibilitySettingsItem item) -> new Observable[] { item.enabledProperty() };
+	private static final CorrectorSettingsItemListHandler						CORRECTOR_HANDLER					= new CorrectorSettingsItemListHandler();
+	private static final Function<CorrectorSettingsItem<?, ?>, Observable[]>	CORRECTOR_PROP_EXTRACTOR			= (
+			CorrectorSettingsItem<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() };
+
 	// Parsing
-	private final StringProperty								filenamePatterns					= new SimpleStringProperty(this, "filenamePatterns");
-	private final ListProperty<ParsingServiceSettingsItem>		filenameParsingServices				= new SimpleListProperty<>(this, "filenameParsingServices", FXCollections.observableArrayList());
+	private final StringSettingsProperty										filenamePatterns					= new StringSettingsProperty("parsing.filenamePatterns");
+	private final ListSettingsProperty<ParsingServiceSettingsItem>				filenameParsingServices				= new ListSettingsProperty<>("parsing.parsingServices",
+			PARSING_SERVICES_HANDLER,
+			PARSING_SERVICE_PROP_EXTRACTOR);
 	// Metadata
 	// Metadata - Release
-	private final ListProperty<ParsingServiceSettingsItem>		releaseParsingServices				= new SimpleListProperty<>(this, "releaseParsingServices", FXCollections.observableArrayList());
-	private final ListProperty<Tag>								releaseMetaTags						= new SimpleListProperty<>(this, "releaseMetaTags", FXCollections.observableArrayList());
+	private final ListSettingsProperty<ParsingServiceSettingsItem>				releaseParsingServices				= new ListSettingsProperty<>("metadata.release.parsingServices",
+			PARSING_SERVICES_HANDLER,
+			PARSING_SERVICE_PROP_EXTRACTOR);
+	private final ListSettingsProperty<Tag>										releaseMetaTags						= new ListSettingsProperty<>("metadata.release.metaTags",
+			ConfigurationPropertyHandlers.TAG_LIST_HANDLER);
 	// Metadata - Release - Databases
-	private final ListProperty<MetadataDbSettingsItem<Release>>	releaseDbs							= new SimpleListProperty<>(this, "releaseDbs", FXCollections.observableArrayList());
+	private final ListSettingsProperty<MetadataDbSettingsItem>					releaseDbs							= new ListSettingsProperty<>("metadata.release.databases",
+			METADATA_DBS_HANDLER,
+			METADATA_DB_PROP_EXTRACTOR);
 	// Metadata - Release - Guessing
-	private final BooleanProperty								guessingEnabled						= new SimpleBooleanProperty(this, "guessingEnabled");
-	private final ListProperty<StandardRelease>					standardReleases					= new SimpleListProperty<>(this, "standardReleases", FXCollections.observableArrayList());
+	private final BooleanSettingsProperty										guessingEnabled						= new BooleanSettingsProperty("metadata.release.guessing[@enabled]", true);
+	private final ListSettingsProperty<StandardRelease>							standardReleases					= new ListSettingsProperty<>("metadata.release.guessing.standardReleases",
+			ConfigurationPropertyHandlers.STANDARD_RELEASE_LIST_HANDLER);
 	// Metadata - Release - Compatibility
-	private final BooleanProperty								compatibilityEnabled				= new SimpleBooleanProperty(this, "compatibilityEnabled");
-	private final ListProperty<CompatibilitySettingsItem>		compatibilities						= new SimpleListProperty<>(this, "compatibilities", FXCollections.observableArrayList());
+	private final BooleanSettingsProperty										compatibilityEnabled				= new BooleanSettingsProperty("metadata.release.compatibility[@enabled]", true);
+	private final ListSettingsProperty<CompatibilitySettingsItem>				compatibilities						= new ListSettingsProperty<>("metadata.release.compatibility.compatibilities",
+			null);
 	// Correction - Rules
-	private final ListProperty<CorrectorSettingsItem<?, ?>>		correctionRules						= new SimpleListProperty<>(this, "correctionRules", FXCollections.observableArrayList());
+	private final ListSettingsProperty<CorrectorSettingsItem<?, ?>>				correctionRules						= new ListSettingsProperty<>("correction.rules", CORRECTOR_HANDLER);
 	// Correction - Subtitle language
-	private final LocaleLanguageReplacerSettings				subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
+	private final LocaleLanguageReplacerSettings								subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 
 	// Naming
-	private final MapProperty<String, Object>					namingParameters					= new SimpleMapProperty<>(this, "namingParameters");
+	private final MapSettingsProperty<String, Object>							namingParameters					= new MapSettingsProperty<>("naming.parameters", null);
 
 	// File Transformation
 	// File Transformation - General
-	private final Property<Path>								targetDir							= new SimpleObjectProperty<>(this, "targetDir");
-	private final BooleanProperty								deleteSource						= new SimpleBooleanProperty(this, "deleteSource");
+	private final ObjectSettingsProperty<Path>									targetDir							= new ObjectSettingsProperty<>("fileTransformation.targetDir",
+			ConfigurationPropertyHandlers.PATH_HANDLER);
+	private final BooleanSettingsProperty										deleteSource						= new BooleanSettingsProperty("fileTransformation.deleteSource", false);
 	// File Transformation - Packing
-	private final BooleanProperty								packingEnabled						= new SimpleBooleanProperty(this, "packingEnabled");
-	private final Property<Path>								rarExe								= new SimpleObjectProperty<>(this, "rarExe");
-	private final Property<WinRarLocateStrategy>				winRarLocateStrategy				= new SimpleObjectProperty<>(this, "winRarLocateStrategy", WinRarLocateStrategy.AUTO_LOCATE);
-	private final Property<DeletionMode>						packingSourceDeletionMode			= new SimpleObjectProperty<>(this, "packingSourceDeletionMode", DeletionMode.DELETE);
+	private final BooleanSettingsProperty										packingEnabled						= new BooleanSettingsProperty("fileTransformation.packing[@enabled]", true);
+	private final ObjectSettingsProperty<Path>									rarExe								= new ObjectSettingsProperty<>("fileTransformation.packing.winrar.rarExe",
+			ConfigurationPropertyHandlers.PATH_HANDLER);
+	private final ObjectSettingsProperty<WinRarLocateStrategy>					winRarLocateStrategy				= new ObjectSettingsProperty<>("fileTransformation.packing.winrar.locateStrategy",
+			null,
+			WinRarLocateStrategy.AUTO_LOCATE);
+	private final ObjectSettingsProperty<DeletionMode>							packingSourceDeletionMode			= new ObjectSettingsProperty<>("fileTransformation.packing.sourceDeletionMode",
+			null);
 
 	// package protected (should only be instantiated by WatcherSettings)
 	ProcessingSettings()
 	{
-		observableHelper.getDependencies()
-				.addAll(Arrays.asList(filenamePatterns,
-						FxUtil.observeBeanList(filenameParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
-						FxUtil.observeBeanList(releaseParsingServices, (ParsingServiceSettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
-						releaseMetaTags,
-						FxUtil.observeBeanList(releaseDbs, (MetadataDbSettingsItem<Release> entry) -> new Observable[] { entry.enabledProperty() }),
-						guessingEnabled,
-						standardReleases,
-						compatibilityEnabled,
-						FxUtil.observeBeanList(compatibilities, (CompatibilitySettingsItem entry) -> new Observable[] { entry.enabledProperty() }),
-						FxUtil.observeBeanList(correctionRules, (CorrectorSettingsItem<?, ?> entry) -> new Observable[] { entry.beforeQueryingProperty(), entry.afterQueryingProperty() }),
-						subtitleLanguageCorrectionSettings,
-						namingParameters,
-						targetDir,
-						deleteSource,
-						packingEnabled,
-						rarExe,
-						winRarLocateStrategy,
-						packingSourceDeletionMode));
-	}
-
-	@Override
-	public String getKey()
-	{
-		return "processing";
-	}
-
-	public final StringProperty filenamePatternsProperty()
-	{
-		return this.filenamePatterns;
-	}
-
-	public final String getFilenamePatterns()
-	{
-		return this.filenamePatternsProperty().get();
-	}
-
-	public final void setFilenamePatterns(final String filenamePatterns)
-	{
-		this.filenamePatternsProperty().set(filenamePatterns);
-	}
-
-	public final ListProperty<ParsingServiceSettingsItem> filenameParsingServicesProperty()
-	{
-		return this.filenameParsingServices;
-	}
-
-	public final ObservableList<ParsingServiceSettingsItem> getFilenameParsingServices()
-	{
-		return this.filenameParsingServicesProperty().get();
-	}
-
-	public final void setFilenameParsingServices(final ObservableList<ParsingServiceSettingsItem> filenameParsingServices)
-	{
-		this.filenameParsingServicesProperty().set(filenameParsingServices);
-	}
-
-	public final ListProperty<MetadataDbSettingsItem<Release>> releaseDbsProperty()
-	{
-		return this.releaseDbs;
-	}
-
-	public final ObservableList<MetadataDbSettingsItem<Release>> getReleaseDbs()
-	{
-		return this.releaseDbsProperty().get();
-	}
-
-	public final void setReleaseDbs(final ObservableList<MetadataDbSettingsItem<Release>> releaseInfoDbs)
-	{
-		this.releaseDbsProperty().set(releaseInfoDbs);
-	}
-
-	public final ListProperty<ParsingServiceSettingsItem> releaseParsingServicesProperty()
-	{
-		return this.releaseParsingServices;
-	}
-
-	public final ObservableList<ParsingServiceSettingsItem> getReleaseParsingServices()
-	{
-		return this.releaseParsingServicesProperty().get();
-	}
-
-	public final void setReleaseParsingServices(final ObservableList<ParsingServiceSettingsItem> releaseParsingServices)
-	{
-		this.releaseParsingServicesProperty().set(releaseParsingServices);
-	}
-
-	public final BooleanProperty guessingEnabledProperty()
-	{
-		return this.guessingEnabled;
-	}
-
-	public final boolean isGuessingEnabled()
-	{
-		return this.guessingEnabledProperty().get();
-	}
-
-	public final void setGuessingEnabled(final boolean guessingEnabled)
-	{
-		this.guessingEnabledProperty().set(guessingEnabled);
-	}
-
-	public final ListProperty<Tag> releaseMetaTagsProperty()
-	{
-		return this.releaseMetaTags;
-	}
-
-	public final ObservableList<Tag> getReleaseMetaTags()
-	{
-		return this.releaseMetaTagsProperty().get();
-	}
-
-	public final void setReleaseMetaTags(final ObservableList<Tag> releaseMetaTags)
-	{
-		this.releaseMetaTagsProperty().set(releaseMetaTags);
-	}
-
-	public final ListProperty<StandardRelease> standardReleasesProperty()
-	{
-		return this.standardReleases;
-	}
-
-	public final ObservableList<StandardRelease> getStandardReleases()
-	{
-		return this.standardReleasesProperty().get();
-	}
-
-	public final void setStandardReleases(final ObservableList<StandardRelease> standardReleases)
-	{
-		this.standardReleasesProperty().set(standardReleases);
-	}
-
-	public final BooleanProperty compatibilityEnabledProperty()
-	{
-		return this.compatibilityEnabled;
-	}
-
-	public final boolean isCompatibilityEnabled()
-	{
-		return this.compatibilityEnabledProperty().get();
-	}
-
-	public final void setCompatibilityEnabled(final boolean compatibilityEnabled)
-	{
-		this.compatibilityEnabledProperty().set(compatibilityEnabled);
-	}
-
-	public final ListProperty<CompatibilitySettingsItem> compatibilitiesProperty()
-	{
-		return this.compatibilities;
-	}
-
-	public final ObservableList<CompatibilitySettingsItem> getCompatibilities()
-	{
-		return this.compatibilitiesProperty().get();
-	}
-
-	public final void setCompatibilities(final ObservableList<CompatibilitySettingsItem> compatibilities)
-	{
-		this.compatibilitiesProperty().set(compatibilities);
-	}
-
-	public final ListProperty<CorrectorSettingsItem<?, ?>> correctionRulesProperty()
-	{
-		return this.correctionRules;
-	}
-
-	public final ObservableList<CorrectorSettingsItem<?, ?>> getCorrectionRules()
-	{
-		return this.correctionRulesProperty().get();
-	}
-
-	public final void setCorrectionRules(final ObservableList<CorrectorSettingsItem<?, ?>> standardizers)
-	{
-		this.correctionRulesProperty().set(standardizers);
-	}
-
-	public LocaleLanguageReplacerSettings getSubtitleLanguageCorrectionSettings()
-	{
-		return subtitleLanguageCorrectionSettings;
-	}
-
-	public final MapProperty<String, Object> namingParametersProperty()
-	{
-		return this.namingParameters;
-	}
-
-	public final javafx.collections.ObservableMap<String, Object> getNamingParameters()
-	{
-		return this.namingParametersProperty().get();
-	}
-
-	public final void setNamingParameters(final javafx.collections.ObservableMap<String, Object> namingParameters)
-	{
-		this.namingParametersProperty().set(namingParameters);
-	}
-
-	public final Property<Path> targetDirProperty()
-	{
-		return this.targetDir;
-	}
-
-	public final java.nio.file.Path getTargetDir()
-	{
-		return this.targetDirProperty().getValue();
-	}
-
-	public final void setTargetDir(final java.nio.file.Path targetDir)
-	{
-		this.targetDirProperty().setValue(targetDir);
-	}
-
-	public final BooleanProperty deleteSourceProperty()
-	{
-		return this.deleteSource;
-	}
-
-	public final boolean isDeleteSource()
-	{
-		return this.deleteSourceProperty().get();
-	}
-
-	public final void setDeleteSource(final boolean deleteSource)
-	{
-		this.deleteSourceProperty().set(deleteSource);
-	}
-
-	public final BooleanProperty packingEnabledProperty()
-	{
-		return this.packingEnabled;
-	}
-
-	public final boolean isPackingEnabled()
-	{
-		return this.packingEnabledProperty().get();
-	}
-
-	public final void setPackingEnabled(final boolean packingEnabled)
-	{
-		this.packingEnabledProperty().set(packingEnabled);
-	}
-
-	public final Property<Path> rarExeProperty()
-	{
-		return this.rarExe;
-	}
-
-	public final Path getRarExe()
-	{
-		return this.rarExe.getValue();
-	}
-
-	public final void setRarExe(final Path rarExe)
-	{
-		this.rarExe.setValue(rarExe);
-	}
-
-	public final Property<WinRarLocateStrategy> winRarLocateStrategyProperty()
-	{
-		return this.winRarLocateStrategy;
-	}
-
-	public final WinRarLocateStrategy getWinRarLocateStrategy()
-	{
-		return this.winRarLocateStrategyProperty().getValue();
-	}
-
-	public final void setWinRarLocateStrategy(final WinRarLocateStrategy winRarLocateStrategy)
-	{
-		this.winRarLocateStrategyProperty().setValue(winRarLocateStrategy);
-	}
-
-	public final Property<DeletionMode> packingSourceDeletionModeProperty()
-	{
-		return this.packingSourceDeletionMode;
-	}
-
-	public final de.subcentral.support.winrar.WinRarPackConfig.DeletionMode getPackingSourceDeletionMode()
-	{
-		return this.packingSourceDeletionModeProperty().getValue();
-	}
-
-	public final void setPackingSourceDeletionMode(final de.subcentral.support.winrar.WinRarPackConfig.DeletionMode packingSourceDeletionMode)
-	{
-		this.packingSourceDeletionModeProperty().setValue(packingSourceDeletionMode);
+		initSettables(filenamePatterns,
+				filenameParsingServices,
+				releaseParsingServices,
+				releaseMetaTags,
+				releaseDbs,
+				guessingEnabled,
+				standardReleases,
+				compatibilityEnabled,
+				compatibilities,
+				correctionRules,
+				subtitleLanguageCorrectionSettings,
+				namingParameters,
+				targetDir,
+				deleteSource,
+				packingEnabled,
+				rarExe,
+				winRarLocateStrategy,
+				packingSourceDeletionMode);
 	}
 
 	@Override
@@ -567,5 +342,216 @@ public class ProcessingSettings extends SubSettings
 		cfg.addProperty("fileTransformation.packing.sourceDeletionMode", getPackingSourceDeletionMode());
 		cfg.addProperty("fileTransformation.packing.winrar.locateStrategy", getWinRarLocateStrategy());
 		ConfigurationHelper.addPath(cfg, "fileTransformation.packing.winrar.rarExe", getRarExe());
+	}
+
+	private static class ParsingServiceSettingsItemListHandler implements ConfigurationPropertyHandler<ObservableList<ParsingServiceSettingsItem>>
+	{
+		@SuppressWarnings("unchecked")
+		@Override
+		public ObservableList<ParsingServiceSettingsItem> get(ImmutableConfiguration cfg, String key)
+		{
+			if (cfg instanceof HierarchicalConfiguration<?>)
+			{
+				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
+			}
+			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
+		}
+
+		private static ObservableList<ParsingServiceSettingsItem> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+		{
+			ArrayList<ParsingServiceSettingsItem> services = new ArrayList<>(4);
+			List<HierarchicalConfiguration<ImmutableNode>> parsingServiceCfgs = cfg.configurationsAt(key);
+			for (HierarchicalConfiguration<ImmutableNode> parsingServiceCfg : parsingServiceCfgs)
+			{
+				String domain = parsingServiceCfg.getString("");
+				boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
+				if (Addic7edCom.getParsingService().getDomain().equals(domain))
+				{
+					services.add(new ParsingServiceSettingsItem(Addic7edCom.getParsingService(), enabled));
+				}
+				else if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
+				{
+					services.add(new ParsingServiceSettingsItem(ItalianSubsNet.getParsingService(), enabled));
+				}
+				else if (ReleaseScene.getParsingService().getDomain().equals(domain))
+				{
+					services.add(new ParsingServiceSettingsItem(ReleaseScene.getParsingService(), enabled));
+				}
+				else if (SubCentralDe.getParsingService().getDomain().equals(domain))
+				{
+					services.add(new ParsingServiceSettingsItem(SubCentralDe.getParsingService(), enabled));
+				}
+				else
+				{
+					throw new IllegalArgumentException("Unknown parsing service domain: " + domain);
+				}
+			}
+			services.trimToSize();
+			return FXCollections.observableList(services);
+		}
+
+		@Override
+		public void add(Configuration cfg, String key, ObservableList<ParsingServiceSettingsItem> value)
+		{
+			for (int i = 0; i < value.size(); i++)
+			{
+				ParsingServiceSettingsItem ps = value.get(i);
+				cfg.addProperty(key + "(" + i + ")", ps.getItem().getDomain());
+				cfg.addProperty(key + "(" + i + ")[@enabled]", ps.isEnabled());
+			}
+		}
+	}
+
+	private static class MetadataDbSettingsItemListHandler implements ConfigurationPropertyHandler<ObservableList<MetadataDbSettingsItem>>
+	{
+		@SuppressWarnings("unchecked")
+		@Override
+		public ObservableList<MetadataDbSettingsItem> get(ImmutableConfiguration cfg, String key)
+		{
+			if (cfg instanceof HierarchicalConfiguration<?>)
+			{
+				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
+			}
+			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
+		}
+
+		private static ObservableList<MetadataDbSettingsItem> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+		{
+			ArrayList<MetadataDbSettingsItem> dbs = new ArrayList<>(3);
+			List<HierarchicalConfiguration<ImmutableNode>> rlsDbCfgs = cfg.configurationsAt(key);
+			for (HierarchicalConfiguration<ImmutableNode> rlsDbCfg : rlsDbCfgs)
+			{
+				String name = rlsDbCfg.getString("");
+				boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
+				if (PreDbMe.SITE.getName().equals(name))
+				{
+					dbs.add(new MetadataDbSettingsItem(new PreDbMeMetadataDb(), enabled));
+				}
+				else if (XRelTo.SITE.getName().equals(name))
+				{
+					dbs.add(new MetadataDbSettingsItem(new XRelToMetadataDb(), enabled));
+				}
+				else if (OrlyDbCom.SITE.getName().equals(name))
+				{
+					dbs.add(new MetadataDbSettingsItem(new OrlyDbComMetadataDb(), enabled));
+				}
+				else
+				{
+					throw new IllegalArgumentException("Unknown metadata database: " + name);
+				}
+			}
+			dbs.trimToSize();
+			return FXCollections.observableList(dbs);
+		}
+
+		@Override
+		public void add(Configuration cfg, String key, ObservableList<MetadataDbSettingsItem> value)
+		{
+			for (int i = 0; i < value.size(); i++)
+			{
+				MetadataDbSettingsItem db = value.get(i);
+				cfg.addProperty(key + "(" + i + ")", db.getItem().getSite().getName());
+				cfg.addProperty(key + "(" + i + ")[@enabled]", db.isEnabled());
+			}
+		}
+	}
+
+	private static class CorrectorSettingsItemListHandler implements ConfigurationPropertyHandler<ObservableList<CorrectorSettingsItem<?, ?>>>
+	{
+		@SuppressWarnings("unchecked")
+		@Override
+		public ObservableList<CorrectorSettingsItem<?, ?>> get(ImmutableConfiguration cfg, String key)
+		{
+			if (cfg instanceof HierarchicalConfiguration<?>)
+			{
+				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
+			}
+			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
+		}
+
+		private static ObservableList<CorrectorSettingsItem<?, ?>> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+		{
+			ArrayList<CorrectorSettingsItem<?, ?>> stdzers = new ArrayList<>();
+			List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule");
+			int seriesNameIndex = 0;
+			for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : seriesStdzerCfgs)
+			{
+				String namePatternStr = stdzerCfg.getString("[@namePattern]");
+				Mode namePatternMode = Mode.valueOf(stdzerCfg.getString("[@namePatternMode]"));
+				UserPattern nameUiPattern = new UserPattern(namePatternStr, namePatternMode);
+				String nameReplacement = stdzerCfg.getString("[@nameReplacement]");
+				List<HierarchicalConfiguration<ImmutableNode>> aliasNameCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasNames.aliasName");
+				List<String> aliasNameReplacements = new ArrayList<>(aliasNameCfgs.size());
+				for (HierarchicalConfiguration<ImmutableNode> aliasNameCfg : aliasNameCfgs)
+				{
+					aliasNameReplacements.add(aliasNameCfg.getString(""));
+				}
+				boolean enabledPreMetadataDb = stdzerCfg.getBoolean("[@beforeQuerying]");
+				boolean enabledPostMetadataDb = stdzerCfg.getBoolean("[@afterQuerying]");
+				stdzers.add(new SeriesNameCorrectorSettingsItem(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
+				seriesNameIndex++;
+			}
+			List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsCorrectionRule");
+			for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : rlsTagsStdzerCfgs)
+			{
+				List<Tag> queryTags = Tag.parseList(stdzerCfg.getString("[@searchTags]"));
+				List<Tag> replacement = Tag.parseList(stdzerCfg.getString("[@replacement]"));
+				SearchMode queryMode = SearchMode.valueOf(stdzerCfg.getString("[@searchMode]"));
+				ReplaceMode replaceMode = ReplaceMode.valueOf(stdzerCfg.getString("[@replaceMode]"));
+				boolean ignoreOrder = stdzerCfg.getBoolean("[@ignoreOrder]", false);
+				boolean beforeQuerying = stdzerCfg.getBoolean("[@beforeQuerying]");
+				boolean afterQuerying = stdzerCfg.getBoolean("[@afterQuerying]");
+				ReleaseTagsCorrector stdzer = new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
+				stdzers.add(new ReleaseTagsCorrectorSettingsItem(stdzer, beforeQuerying, afterQuerying));
+			}
+			stdzers.trimToSize();
+			return FXCollections.observableList(stdzers);
+		}
+
+		@Override
+		public void add(Configuration cfg, String key, ObservableList<CorrectorSettingsItem<?, ?>> list)
+		{
+			// one index for each element name
+			int seriesNameIndex = 0;
+			int releaseTagsIndex = 0;
+			for (CorrectorSettingsItem<?, ?> genericEntry : list)
+			{
+				if (genericEntry instanceof SeriesNameCorrectorSettingsItem)
+				{
+					SeriesNameCorrectorSettingsItem entry = (SeriesNameCorrectorSettingsItem) genericEntry;
+					SeriesNameCorrector corrector = entry.getItem();
+					UserPattern namePattern = entry.getNameUserPattern();
+
+					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@namePattern]", namePattern.getPattern());
+					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@namePatternMode]", namePattern.getMode());
+					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@nameReplacement]", corrector.getNameReplacement());
+					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());
+					cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ")[@afterQuerying]", entry.isAfterQuerying());
+					for (String aliasName : corrector.getAliasNamesReplacement())
+					{
+						cfg.addProperty(key + ".seriesNameCorrectionRule(" + seriesNameIndex + ").aliasNames.aliasName", aliasName);
+					}
+					seriesNameIndex++;
+				}
+				else if (genericEntry instanceof ReleaseTagsCorrectorSettingsItem)
+				{
+					ReleaseTagsCorrectorSettingsItem entry = (ReleaseTagsCorrectorSettingsItem) genericEntry;
+					TagsReplacer replacer = (TagsReplacer) entry.getItem().getReplacer();
+
+					cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchTags]", Tag.formatList(replacer.getSearchTags()));
+					cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replacement]", Tag.formatList(replacer.getReplacement()));
+					cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@searchMode]", replacer.getSearchMode());
+					cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@replaceMode]", replacer.getReplaceMode());
+					cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@ignoreOrder]", replacer.getIgnoreOrder());
+					cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@beforeQuerying]", entry.isBeforeQuerying());
+					cfg.addProperty(key + ".releaseTagsCorrectionRule(" + releaseTagsIndex + ")[@afterQuerying]", entry.isAfterQuerying());
+					releaseTagsIndex++;
+				}
+				else
+				{
+					throw new IllegalArgumentException("Unknown standardizer: " + genericEntry);
+				}
+			}
+		}
 	}
 }
