@@ -46,7 +46,7 @@ public class WatcherFxUtil
 
 	public static void bindWatchDirectories(final DirectoryWatchService service, final ObservableList<Path> directoryList) throws IOException
 	{
-		for (Path dir : SettingsController.SETTINGS.getWatchDirectories())
+		for (Path dir : directoryList)
 		{
 			service.registerDirectory(dir, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
 		}

@@ -54,9 +54,9 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	{
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
-		compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.compatibilityEnabledProperty());
+		compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.getCompatibilityEnabled().currentProperty());
 
-		crossGroupCompatibilitiesTableView.setItems(settings.compatibilitiesProperty());
+		crossGroupCompatibilitiesTableView.setItems(settings.getCompatibilities().currentProperty());
 
 		crossGroupCompatibilitiesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilitiesEnabledColumn));
 		crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CompatibilitySettingsItem, Boolean> param) -> param.getValue().enabledProperty());

@@ -6,7 +6,7 @@ public interface SettingsProperty<T, P extends Property<T>> extends Settable
 {
 	public String getKey();
 
-	public T getOriginal();
+	public T getLastSaved();
 
 	public P currentProperty();
 
@@ -23,6 +23,6 @@ public interface SettingsProperty<T, P extends Property<T>> extends Settable
 	@Override
 	public default void reset()
 	{
-		setCurrent(getOriginal());
+		setCurrent(getLastSaved());
 	}
 }

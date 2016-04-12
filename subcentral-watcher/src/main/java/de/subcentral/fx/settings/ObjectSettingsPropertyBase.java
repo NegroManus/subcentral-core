@@ -17,7 +17,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	private static final Logger						log	= LogManager.getLogger(ObjectSettingsPropertyBase.class);
 
 	private final T									defaultValue;
-	private T										original;
+	private T										lastSaved;
 	private final P									current;
 	private final BooleanBinding					changedBinding;
 	private final ConfigurationPropertyHandler<T>	handler;
@@ -27,7 +27,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		super(key);
 		this.handler = Objects.requireNonNull(handler, "handler");
 		this.defaultValue = defaultValue;
-		original = defaultValue;
+		lastSaved = defaultValue;
 		current = createProperty(this, "current", defaultValue);
 		Observable currentObsv = observablePropertyCreator != null ? observablePropertyCreator.apply(current) : current;
 		helper.getDependencies().add(currentObsv);
@@ -40,7 +40,7 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 			@Override
 			protected boolean computeValue()
 			{
-				return Objects.equals(original, current.getValue());
+				return !Objects.equals(lastSaved, current.getValue());
 			}
 		});
 		changed.bind(changedBinding);
@@ -59,9 +59,9 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	}
 
 	@Override
-	public T getOriginal()
+	public T getLastSaved()
 	{
-		return original;
+		return lastSaved;
 	}
 
 	@Override
@@ -83,9 +83,9 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 			log.error("Exception while loading value for settings property " + key + ". Using default value: " + defaultValue, e);
 			val = defaultValue;
 		}
-		original = val;
+		lastSaved = val;
 		current.setValue(val);
-		// Invalidate because original has changed
+		// Invalidate because lastSaved has changed
 		// and setting of current may not have caused PropertyChangeEvent if old == new.
 		changedBinding.invalidate();
 	}
@@ -95,8 +95,8 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	{
 		T val = current.getValue();
 		handler.add(cfg, key, val);
-		original = val;
-		// invalidate because original has changed
+		lastSaved = val;
+		// invalidate because lastSaved has changed
 		changedBinding.invalidate();
 	}
 }

@@ -94,7 +94,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 
 		// ParsingLangs
 		final TextFormatter<ObservableList<Locale>> parsingLangsTextFormatter = new TextFormatter<>(FxUtil.LOCALE_LIST_DISPLAY_NAME_CONVERTER);
-		parsingLangsTextFormatter.valueProperty().bindBidirectional(settings.parsingLanguagesProperty());
+		parsingLangsTextFormatter.valueProperty().bindBidirectional(settings.getParsingLanguages().currentProperty());
 		parsingLangsTxtFld.setTextFormatter(parsingLangsTextFormatter);
 
 		editParsingLangsBtn.setOnAction((ActionEvent evt) ->
@@ -119,7 +119,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		});
 		textLangMappingsLangColumn.setCellFactory((TableColumn<PatternToLanguageMapping, Locale> param) -> new PatternToLanguageMappingLanguageTableCell());
 
-		textLangMappingsTableView.setItems(settings.customLanguagePatternsProperty());
+		textLangMappingsTableView.setItems(settings.getCustomLanguagePatterns().currentProperty());
 
 		addTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
@@ -148,12 +148,12 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		// OutputLangFormat
 		outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
 		outputLangFormatChoiceBox.setConverter(SubCentralFxUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
-		outputLangFormatChoiceBox.valueProperty().bindBidirectional(settings.outputLanguageFormatProperty());
+		outputLangFormatChoiceBox.valueProperty().bindBidirectional(settings.getOutputLanguageFormat().currentProperty());
 
 		// OutputLang
 		outputLangComboBox.setItems(FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
 		outputLangComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-		outputLangComboBox.valueProperty().bindBidirectional(settings.outputLanguageProperty());
+		outputLangComboBox.valueProperty().bindBidirectional(settings.getOutputLanguage().currentProperty());
 		outputLangComboBox.disableProperty().bind(new BooleanBinding()
 		{
 			{
@@ -199,7 +199,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 			return FxUtil.constantStringBinding(param.getValue().getText());
 		});
 
-		langTextMappingsTableView.setItems(settings.customLanguageTextMappingsProperty());
+		langTextMappingsTableView.setItems(settings.getCustomLanguageTextMappings().currentProperty());
 
 		addLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{

@@ -54,7 +54,7 @@ import de.subcentral.support.winrar.WinRarPackResult;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.watcher.controller.settings.SettingsController;
-import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
+import de.subcentral.watcher.settings.ProcessingSettings.LocateStrategy;
 import javafx.application.Platform;
 import javafx.beans.binding.Binding;
 import javafx.beans.property.BooleanProperty;
@@ -437,7 +437,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		if (config.isGuessingEnabled())
 		{
 			log.info("Guessing enabled");
-			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, SettingsController.SETTINGS.guessingWarningEnabledProperty());
+			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, SettingsController.SETTINGS.getGuessingWarningEnabled().currentProperty());
 
 			List<StandardRelease> stdRlss = config.getStandardReleases();
 			Map<Release, StandardRelease> guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, stdRlss, config.getReleaseMetaTags());
@@ -541,13 +541,13 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		if (rls.isNuked())
 		{
-			displaySystemTrayNotification("Release is nuked", generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.releaseNukedWarningEnabledProperty());
+			displaySystemTrayNotification("Release is nuked", generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.getReleaseNukedWarningEnabled().currentProperty());
 		}
 		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 		if (!containedMetaTags.isEmpty())
 		{
 			String caption = "Release is meta-tagged: " + Tag.formatList(containedMetaTags);
-			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.releaseMetaTaggedWarningEnabledProperty());
+			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.getReleaseMetaTaggedWarningEnabled().currentProperty());
 		}
 
 		resultObject.getMatchingReleases().add(rls);
@@ -700,7 +700,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			try
 			{
 				final Path newRar = file.resolveSibling(result.getName() + ".rar");
-				WinRarLocateStrategy locateStrategy = config.getWinRarLocateStrategy();
+				LocateStrategy locateStrategy = config.getWinRarLocateStrategy();
 				WinRarPackager packager;
 				switch (locateStrategy)
 				{
@@ -807,7 +807,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		{
 			Platform.runLater(() ->
 			{
-				if (SettingsController.SETTINGS.isWarningsEnabled() && warningEnabledProperty.get())
+				if (SettingsController.SETTINGS.getWarningsEnabled().getCurrentBoolean() && warningEnabledProperty.get())
 				{
 					controller.getMainController().displaySystemTrayNotification(caption, text, messageType);
 				}

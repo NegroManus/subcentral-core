@@ -23,7 +23,7 @@ public class ListSettingsProperty<E> extends ObjectSettingsPropertyBase<Observab
 
 	private static <E> Function<ListProperty<E>, Observable> observablePropertyCreator(Function<E, Observable[]> propertiesExtractor)
 	{
-		return (ListProperty<E> p) -> propertiesExtractor != null ? FxUtil.observeBeanList(p, propertiesExtractor) : null;
+		return propertiesExtractor == null ? null : (ListProperty<E> p) -> FxUtil.observeBeanList(p, propertiesExtractor);
 	}
 
 	@Override

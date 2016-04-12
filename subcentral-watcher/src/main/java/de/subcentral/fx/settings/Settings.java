@@ -9,16 +9,35 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.fx.ObservableHelper;
 import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 public abstract class Settings extends SettableBase implements Settable
 {
 	private List<Settable>			settables;
 	private final ObservableHelper	helper	= new ObservableHelper(this);
 	private final BooleanProperty	changed	= new SimpleBooleanProperty(this, "changed");
+
+	{
+		addListener((Observable o) ->
+		{
+			System.out.println(this.getClass().getSimpleName() + " changed");
+		});
+		changed.addListener(new ChangeListener<Boolean>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+			{
+				System.out.println(observable + " changed: " + oldValue + " -> " + newValue);
+			}
+		});
+	}
 
 	protected void initSettables(Settable... settables)
 	{
@@ -64,13 +83,13 @@ public abstract class Settings extends SettableBase implements Settable
 	@Override
 	public void addListener(InvalidationListener listener)
 	{
-		helper.removeListener(listener);
+		helper.addListener(listener);
 	}
 
 	@Override
 	public void removeListener(InvalidationListener listener)
 	{
-		helper.addListener(listener);
+		helper.removeListener(listener);
 	}
 
 	@Override

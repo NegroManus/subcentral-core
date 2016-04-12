@@ -12,7 +12,7 @@ import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import de.subcentral.watcher.settings.ProcessingSettings.WinRarLocateStrategy;
+import de.subcentral.watcher.settings.ProcessingSettings.LocateStrategy;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -83,22 +83,22 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	{
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
-		final TextFormatter<Path> targetDirFormatter = FxUtil.bindTextFieldToPath(targetDirTxtFld, settings.targetDirProperty());
+		final TextFormatter<Path> targetDirFormatter = FxUtil.bindTextFieldToPath(targetDirTxtFld, settings.getTargetDir().currentProperty());
 		FxUtil.setChooseDirectoryAction(chooseTargetDirBtn, targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory");
 
-		deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.deleteSourceProperty());
+		deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.getDeleteSource().currentProperty());
 
-		packingEnabledCheckBox.selectedProperty().bindBidirectional(settings.packingEnabledProperty());
+		packingEnabledCheckBox.selectedProperty().bindBidirectional(settings.getPackingEnabled().currentProperty());
 
 		ToggleGroup winRarLocateStrategy = new ToggleGroup();
 		winRarLocateStrategy.getToggles().addAll(autoLocateRadioBtn, specifyRadioBtn);
 
 		// bind toggle button to settings
 		FxUtil.bindToggleGroupToEnumProp(winRarLocateStrategy,
-				settings.winRarLocateStrategyProperty(),
-				ImmutableMap.of(autoLocateRadioBtn, WinRarLocateStrategy.AUTO_LOCATE, specifyRadioBtn, WinRarLocateStrategy.SPECIFY));
+				settings.getWinRarLocateStrategy().currentProperty(),
+				ImmutableMap.of(autoLocateRadioBtn, LocateStrategy.AUTO_LOCATE, specifyRadioBtn, LocateStrategy.SPECIFY));
 
-		final TextFormatter<Path> specifiedRarFormatter = FxUtil.bindTextFieldToPath(specifiedRarTxtFld, settings.rarExeProperty());
+		final TextFormatter<Path> specifiedRarFormatter = FxUtil.bindTextFieldToPath(specifiedRarTxtFld, settings.getRarExe().currentProperty());
 
 		rememberRarLocationBtn.setDisable(true);
 		rememberRarLocationBtn.setOnAction((ActionEvent evt) ->
@@ -122,7 +122,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		FxUtil.setChooseFileAction(chooseRarExeBtn, specifiedRarFormatter, settingsController.getMainController().getPrimaryStage(), "Select rar executable", filters);
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
-		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.packingSourceDeletionModeProperty());
+		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.getPackingSourceDeletionMode().currentProperty());
 		packingSourceDeletionModeChoiceBox.setConverter(SubCentralFxUtil.DELETION_MODE_STRING_CONVERTER);
 
 		// init

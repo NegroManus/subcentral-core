@@ -47,10 +47,10 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Filename patterns
-		filenamePatternsTextField.textProperty().bindBidirectional(settings.filenamePatternsProperty());
+		filenamePatternsTextField.textProperty().bindBidirectional(settings.getFilenamePatterns().currentProperty());
 
 		// Parsing services
-		parsingServicesTableView.setItems(settings.filenameParsingServicesProperty());
+		parsingServicesTableView.setItems(settings.getFilenameParsingServices().currentProperty());
 		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
 		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxUtil.constantBinding(param.getValue().getItem().getDomain()));

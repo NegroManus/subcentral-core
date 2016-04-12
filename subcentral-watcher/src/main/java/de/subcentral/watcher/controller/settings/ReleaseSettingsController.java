@@ -30,7 +30,7 @@ public class ReleaseSettingsController extends AbstractSettingsSectionController
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Meta tags
-		SubCentralFxUtil.bindTagsToTextField(metaTagsTextField, settings.releaseMetaTagsProperty());
+		SubCentralFxUtil.bindTagsToTextField(metaTagsTextField, settings.getReleaseMetaTags().currentProperty());
 		metaTagsTextField.setPromptText(SubCentralFxUtil.DEFAULT_TAGS_PROMPT_TEXT);
 	}
 }

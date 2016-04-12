@@ -26,7 +26,7 @@ public class ObjectSettingsProperty<T> extends ObjectSettingsPropertyBase<T, Pro
 
 	private static <T> Function<Property<T>, Observable> observablePropertyCreator(Function<T, Observable[]> propertiesExtractor)
 	{
-		return (Property<T> p) -> propertiesExtractor != null ? FxUtil.observeBean(p, propertiesExtractor) : null;
+		return propertiesExtractor == null ? null : (Property<T> p) -> FxUtil.observeBean(p, propertiesExtractor);
 	}
 
 	@Override

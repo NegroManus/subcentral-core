@@ -3,8 +3,8 @@ package de.subcentral.watcher.controller.settings;
 import java.util.Optional;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters;
+import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
 import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
@@ -23,27 +23,27 @@ import javafx.util.StringConverter;
 public class CorrectionSettingsController extends AbstractSettingsSectionController
 {
 	@FXML
-	private GridPane														rootPane;
+	private GridPane												rootPane;
 	@FXML
-	private TableView<CorrectorSettingsItem<?, ?>>						correctorsTableView;
+	private TableView<CorrectorSettingsItem<?, ?>>					correctorsTableView;
 	@FXML
-	private TableColumn<CorrectorSettingsItem<?, ?>, String>			correctorsTypeColumn;
+	private TableColumn<CorrectorSettingsItem<?, ?>, String>		correctorsTypeColumn;
 	@FXML
-	private TableColumn<CorrectorSettingsItem<?, ?>, String>			correctorsRuleColumn;
+	private TableColumn<CorrectorSettingsItem<?, ?>, String>		correctorsRuleColumn;
 	@FXML
-	private TableColumn<CorrectorSettingsItem<?, ?>, Boolean>			correctorsBeforeQueryingColumn;
+	private TableColumn<CorrectorSettingsItem<?, ?>, Boolean>		correctorsBeforeQueryingColumn;
 	@FXML
-	private TableColumn<CorrectorSettingsItem<?, ?>, Boolean>			correctorsAfterQueryingColumn;
+	private TableColumn<CorrectorSettingsItem<?, ?>, Boolean>		correctorsAfterQueryingColumn;
 	@FXML
 	private ChoiceBox<Class<? extends CorrectorSettingsItem<?, ?>>>	correctorTypeChoiceBox;
 	@FXML
-	private Button															addCorrectorButton;
+	private Button													addCorrectorButton;
 	@FXML
-	private Button															editCorrectorButton;
+	private Button													editCorrectorButton;
 	@FXML
-	private Button															removeCorrectorButton;
+	private Button													removeCorrectorButton;
 	@FXML
-	private Button															importCorrectorsButton;
+	private Button													importCorrectorsButton;
 
 	public CorrectionSettingsController(SettingsController settingsController)
 	{
@@ -60,7 +60,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	protected void initialize() throws Exception
 	{
 		// Correctors
-		correctorsTableView.setItems(SettingsController.SETTINGS.getProcessingSettings().correctionRulesProperty());
+		correctorsTableView.setItems(SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().currentProperty());
 
 		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
 

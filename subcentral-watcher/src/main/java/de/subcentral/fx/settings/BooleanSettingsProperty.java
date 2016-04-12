@@ -14,7 +14,7 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	private static final Logger		log	= LogManager.getLogger(ObjectSettingsPropertyBase.class);
 
 	private final boolean			defaultValue;
-	private boolean					original;
+	private boolean					lastSaved;
 	private BooleanProperty			current;
 	private final BooleanBinding	changedBinding;
 
@@ -22,7 +22,7 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	{
 		super(key);
 		this.defaultValue = defaultValue;
-		original = defaultValue;
+		lastSaved = defaultValue;
 		current = new SimpleBooleanProperty(this, "current", defaultValue);
 		helper.getDependencies().add(current);
 		changedBinding = (new BooleanBinding()
@@ -34,7 +34,7 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 			@Override
 			protected boolean computeValue()
 			{
-				return original == current.get();
+				return lastSaved != current.get();
 			}
 		});
 		changed.bind(changedBinding);
@@ -46,19 +46,19 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	}
 
 	@Override
-	public Boolean getOriginal()
+	public Boolean getLastSaved()
 	{
-		return original;
+		return lastSaved;
 	}
 
-	public boolean getOriginalBoolean()
+	public boolean getLastSavedBoolean()
 	{
-		return original;
+		return lastSaved;
 	}
 
-	public void setOriginalBoolean(boolean value)
+	public void setLastSavedBoolean(boolean value)
 	{
-		original = value;
+		lastSaved = value;
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	@Override
 	public void reset()
 	{
-		current.set(original);
+		current.set(lastSaved);
 	}
 
 	@Override
@@ -96,9 +96,9 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 			log.error("Exception while loading value for boolean settings property " + key + ". Using default value: " + defaultValue, e);
 			val = defaultValue;
 		}
-		original = val;
+		lastSaved = val;
 		current.set(val);
-		// Invalidate because original has changed
+		// Invalidate because lastSaved has changed
 		// and setting of current may not have caused PropertyChangeEvent if old == new.
 		changedBinding.invalidate();
 	}
@@ -108,8 +108,8 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	{
 		boolean val = current.get();
 		cfg.setProperty(key, val);
-		original = val;
-		// invalidate because original has changed
+		lastSaved = val;
+		// invalidate because lastSaved has changed
 		changedBinding.invalidate();
 	}
 }

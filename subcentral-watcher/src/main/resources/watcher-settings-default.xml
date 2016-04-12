@@ -123,8 +123,8 @@
 				<language tag="en" />
 				<language tag="de" />
 			</parsingLanguages>
-			<ouputLanguageFormat>ISO2</ouputLanguageFormat>
-			<ouputLanguage tag="en" />
+			<outputLanguageFormat>ISO2</outputLanguageFormat>
+			<outputLanguage tag="en" />
 			<customLanguagePatterns>
 				<languagePattern pattern="VO" patternMode="LITERAL" languageTag="en" />
 				<languagePattern pattern="VF" patternMode="LITERAL" languageTag="fr" />

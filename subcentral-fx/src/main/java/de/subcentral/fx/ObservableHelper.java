@@ -37,11 +37,11 @@ public final class ObservableHelper implements Observable
 		this.observable = observable != null ? observable : this;
 		this.dependencies.addListener((SetChangeListener.Change<? extends Observable> c) ->
 		{
-			if (c.wasAdded())
+			if (c.wasAdded() && c.getElementAdded() != null)
 			{
 				c.getElementAdded().addListener(dependencyListener);
 			}
-			if (c.wasRemoved())
+			if (c.wasRemoved() && c.getElementRemoved() != null)
 			{
 				c.getElementRemoved().removeListener(dependencyListener);
 			}

@@ -11,7 +11,7 @@ public class MapSettingsProperty<K, V> extends ObjectSettingsPropertyBase<Observ
 {
 	public MapSettingsProperty(String key, ConfigurationPropertyHandler<ObservableMap<K, V>> handler)
 	{
-		super(key, handler, FXCollections.observableMap(new LinkedHashMap<>()), (MapProperty<K, V> p) -> null);
+		super(key, handler, FXCollections.observableMap(new LinkedHashMap<>()), null);
 	}
 
 	@Override

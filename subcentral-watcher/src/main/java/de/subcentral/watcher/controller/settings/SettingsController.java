@@ -258,7 +258,7 @@ public class SettingsController extends Controller
 			protected boolean computeValue()
 			{
 				// disable if nothing has changed and there exist custom settings and the default settings were not loaded
-				return !SettingsController.SETTINGS.getChanged() && customSettingsExist.get() && !defaultSettingsLoaded.get();
+				return !SettingsController.SETTINGS.changed() && customSettingsExist.get() && !defaultSettingsLoaded.get();
 			}
 		});
 		saveBtn.setOnAction((ActionEvent e) -> confirmSaveSettings());
@@ -273,7 +273,7 @@ public class SettingsController extends Controller
 			protected boolean computeValue()
 			{
 				// disable if nothing has changed or no custom settings exist to restore
-				return !SettingsController.SETTINGS.getChanged() && !defaultSettingsLoaded.get() || !customSettingsExist.get();
+				return !SettingsController.SETTINGS.changed() && !defaultSettingsLoaded.get() || !customSettingsExist.get();
 			}
 		});
 		restoreLastSavedBtn.setOnAction((ActionEvent e) -> confirmRestoreLastSavedSettings());
@@ -288,7 +288,7 @@ public class SettingsController extends Controller
 			protected boolean computeValue()
 			{
 				// disable if nothing has changed and the default settings were not loaded
-				return !SettingsController.SETTINGS.getChanged() && defaultSettingsLoaded.get();
+				return !SettingsController.SETTINGS.changed() && defaultSettingsLoaded.get();
 			}
 		});
 		restoreDefaultsBtn.setOnAction((ActionEvent e) -> confirmRestoreDefaultSettings());
@@ -406,7 +406,7 @@ public class SettingsController extends Controller
 
 	private void confirmSaveUnsavedSettings() throws ConfigurationException
 	{
-		if (defaultSettingsLoaded.get() || SettingsController.SETTINGS.getChanged())
+		if (defaultSettingsLoaded.get() || SettingsController.SETTINGS.changed())
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			FxUtil.fixAlertHeight(alert);

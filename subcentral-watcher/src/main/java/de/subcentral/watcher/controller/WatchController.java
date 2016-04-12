@@ -11,10 +11,10 @@ import java.util.concurrent.TimeUnit;
 import de.subcentral.fx.Controller;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.settings.ListSettingsProperty;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.controller.settings.WatchSettingsController;
-import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
@@ -67,13 +67,13 @@ public class WatchController extends Controller
 		startWatchButton.disableProperty().bind(new BooleanBinding()
 		{
 			{
-				super.bind(watchService.runningProperty(), SettingsController.SETTINGS.watchDirectoriesProperty().emptyProperty());
+				super.bind(watchService.runningProperty(), SettingsController.SETTINGS.getWatchDirectories());
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
-				return watchService.isRunning() || SettingsController.SETTINGS.watchDirectoriesProperty().isEmpty();
+				return watchService.isRunning() || SettingsController.SETTINGS.getWatchDirectories().getCurrent().isEmpty();
 			}
 		});
 		startWatchButton.setOnAction(evt ->
@@ -119,15 +119,12 @@ public class WatchController extends Controller
 		});
 
 		watchDirectoriesHBox.getChildren().add(watchImg);
-		updateWatchDirsHBox(SettingsController.SETTINGS.getWatchDirectories());
-		SettingsController.SETTINGS.watchDirectoriesProperty().addListener(new InvalidationListener()
+		updateWatchDirsHBox(SettingsController.SETTINGS.getWatchDirectories().getCurrent());
+		SettingsController.SETTINGS.getWatchDirectories().addListener((Observable o) ->
 		{
 			@SuppressWarnings("unchecked")
-			@Override
-			public void invalidated(Observable o)
-			{
-				updateWatchDirsHBox((List<Path>) o);
-			}
+			ListSettingsProperty<Path> prop = (ListSettingsProperty<Path>) o;
+			updateWatchDirsHBox(prop.getCurrent());
 		});
 
 		watchService.setOnFailed((WorkerStateEvent event) ->
@@ -178,9 +175,11 @@ public class WatchController extends Controller
 
 		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFilesFromWatchDir);
 		watchService.setExecutor(watchServiceExecutor);
-		WatcherFxUtil.bindWatchDirectories(watchService, SettingsController.SETTINGS.watchDirectoriesProperty());
-		watchService.setInitialScan(SettingsController.SETTINGS.isInitialScan());
-		SettingsController.SETTINGS.initialScanProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> watchService.setInitialScan(newValue));
+		WatcherFxUtil.bindWatchDirectories(watchService, SettingsController.SETTINGS.getWatchDirectories().currentProperty());
+		watchService.setInitialScan(SettingsController.SETTINGS.getInitialScan().getCurrentBoolean());
+		SettingsController.SETTINGS.getInitialScan()
+				.currentProperty()
+				.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> watchService.setInitialScan(newValue));
 	}
 
 	@Override
