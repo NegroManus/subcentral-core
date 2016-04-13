@@ -2,13 +2,18 @@ package de.subcentral.watcher.controller.settings;
 
 import java.util.Optional;
 
+import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+
 import de.subcentral.fx.FxUtil;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters;
+import de.subcentral.fx.settings.ConfigurationHelper;
+import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
 import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
 import javafx.beans.binding.BooleanBinding;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -127,10 +132,41 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 
 		importCorrectorsButton.setOnAction((ActionEvent event) ->
 		{
-			Optional<ImportSettingEntriesParameters> result = WatcherDialogs.showImportSettingEntriesView(settingsController.getMainController().getPrimaryStage());
-			if (result != null)
+			Optional<ImportSettingItemsParameters> result = WatcherDialogs.showImportSettingEntriesView(settingsController.getMainController().getPrimaryStage());
+			if (result.isPresent())
 			{
-				System.out.println(result);
+				ImportSettingItemsParameters params = result.get();
+				Task<XMLConfiguration> importCorrectorsTask = new Task<XMLConfiguration>()
+				{
+					@Override
+					protected XMLConfiguration call() throws ConfigurationException
+					{
+						XMLConfiguration cfg;
+						switch (params.getSourceType())
+						{
+							case DEFAULT_SETTINGS:
+								cfg = ConfigurationHelper.load(getSettingsController().getDefaultSettingsUrl());
+								break;
+							case FILE:
+								cfg = ConfigurationHelper.load(params.getFile());
+								break;
+							case URL:
+								cfg = ConfigurationHelper.load(params.getUrl());
+								break;
+							default:
+								throw new AssertionError();
+						}
+						return cfg;
+					}
+
+					@Override
+					protected void succeeded()
+					{
+						XMLConfiguration cfg = getValue();
+						SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().load(cfg);
+					}
+				};
+				getSettingsController().getMainController().getCommonExecutor().submit(importCorrectorsTask);
 			}
 		});
 

@@ -1,6 +1,7 @@
 package de.subcentral.watcher.controller.settings;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -517,7 +518,7 @@ public class SettingsController extends Controller
 		{
 			// A resource has to be loaded via URL
 			// because building a Path for a JAR intern resource file results in a FileSystem exception.
-			SettingsController.SETTINGS.load(Resources.getResource(DEFAULT_SETTINGS_FILENAME));
+			SettingsController.SETTINGS.load(getDefaultSettingsUrl());
 			defaultSettingsLoaded.set(true);
 		}
 		catch (Exception e)
@@ -535,7 +536,12 @@ public class SettingsController extends Controller
 		customSettingsExist.set(true);
 	}
 
-	private Path getCustomSettingsPath()
+	public URL getDefaultSettingsUrl()
+	{
+		return Resources.getResource(DEFAULT_SETTINGS_FILENAME);
+	}
+
+	public Path getCustomSettingsPath()
 	{
 		Path localConfigDir = WatcherApp.getLocalConfigDirectory();
 		return localConfigDir.resolve(CUSTOM_SETTINGS_FILENAME).toAbsolutePath();

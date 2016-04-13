@@ -6,8 +6,8 @@ import java.util.Objects;
 
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.dialog.DialogController;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters.SourceType;
+import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
+import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters.SourceType;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -22,7 +22,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
-public class ImportSettingEntriesController extends DialogController<ImportSettingEntriesParameters>
+public class ImportSettingEntriesController extends DialogController<ImportSettingItemsParameters>
 {
 	@FXML
 	private RadioButton	defaultSettingsRadioBtn;
@@ -38,11 +38,11 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 	private TextField	urlTxtFld;
 
 	@FXML
-	private CheckBox	addEntriesCheckBox;
+	private CheckBox	addItemsCheckBox;
 	@FXML
-	private CheckBox	replaceEntriesCheckBox;
+	private CheckBox	replaceItemsCheckBox;
 	@FXML
-	private CheckBox	removeEntriesCheckBox;
+	private CheckBox	removeItemsCheckBox;
 
 	public ImportSettingEntriesController(Window window)
 	{
@@ -75,7 +75,7 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 		sourceTypeToggleGrp.getToggles().addAll(defaultSettingsRadioBtn, fileRadioBtn, urlRadioBtn);
 		sourceTypeToggleGrp.selectToggle(defaultSettingsRadioBtn);
 
-		addEntriesCheckBox.setSelected(true);
+		addItemsCheckBox.setSelected(true);
 
 		// Bindings
 		TextFormatter<Path> fileFormatter = FxUtil.bindTextFieldToPath(fileTxtFld);
@@ -136,16 +136,16 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 				}
 				Path file = fileFormatter.getValue();
 				URL url = urlFormatter.getValue();
-				boolean addEntries = addEntriesCheckBox.isSelected();
-				boolean replaceEntries = replaceEntriesCheckBox.isSelected();
-				boolean removeEntries = removeEntriesCheckBox.isSelected();
-				return new ImportSettingEntriesParameters(sourceType, file, url, addEntries, replaceEntries, removeEntries);
+				boolean addEntries = addItemsCheckBox.isSelected();
+				boolean replaceEntries = replaceItemsCheckBox.isSelected();
+				boolean removeEntries = removeItemsCheckBox.isSelected();
+				return new ImportSettingItemsParameters(sourceType, file, url, addEntries, replaceEntries, removeEntries);
 			}
 			return null;
 		});
 	}
 
-	public static class ImportSettingEntriesParameters
+	public static class ImportSettingItemsParameters
 	{
 		public enum SourceType
 		{
@@ -155,11 +155,11 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 		private final SourceType	sourceType;
 		private final Path			file;
 		private final URL			url;
-		private final boolean		addEntries;
-		private final boolean		replaceEntries;
-		private final boolean		removeEntries;
+		private final boolean		addItems;
+		private final boolean		replaceItems;
+		private final boolean		removeItems;
 
-		public ImportSettingEntriesParameters(SourceType sourceType, Path file, URL url, boolean addEntries, boolean replaceEntries, boolean removeEntries)
+		public ImportSettingItemsParameters(SourceType sourceType, Path file, URL url, boolean addItems, boolean replaceItems, boolean removeItems)
 		{
 			this.sourceType = Objects.requireNonNull(sourceType, "sourceType");
 			if (SourceType.FILE == sourceType)
@@ -172,9 +172,9 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 				Objects.requireNonNull(url, "url");
 			}
 			this.url = url;
-			this.addEntries = addEntries;
-			this.replaceEntries = replaceEntries;
-			this.removeEntries = removeEntries;
+			this.addItems = addItems;
+			this.replaceItems = replaceItems;
+			this.removeItems = removeItems;
 		}
 
 		public SourceType getSourceType()
@@ -192,19 +192,19 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 			return url;
 		}
 
-		public boolean isAddEntries()
+		public boolean isAddItems()
 		{
-			return addEntries;
+			return addItems;
 		}
 
-		public boolean isReplaceEntries()
+		public boolean isReplaceItems()
 		{
-			return replaceEntries;
+			return replaceItems;
 		}
 
-		public boolean isRemoveEntries()
+		public boolean isRemoveItems()
 		{
-			return removeEntries;
+			return removeItems;
 		}
 	}
 }

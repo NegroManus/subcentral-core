@@ -12,7 +12,7 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.dialog.DialogController;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingEntriesParameters;
+import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
@@ -95,10 +95,10 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "LanguageTextMappingEditView.fxml");
 	}
 
-	public static Optional<ImportSettingEntriesParameters> showImportSettingEntriesView(Window window)
+	public static Optional<ImportSettingItemsParameters> showImportSettingEntriesView(Window window)
 	{
 		ImportSettingEntriesController ctrl = new ImportSettingEntriesController(window);
-		return showEditViewAndWait(ctrl, "ImportSettingEntriesView.fxml");
+		return showEditViewAndWait(ctrl, "ImportSettingItemsView.fxml");
 	}
 
 	private static <T> Optional<T> showEditViewAndWait(DialogController<T> ctrl, String fxmlFilename)
