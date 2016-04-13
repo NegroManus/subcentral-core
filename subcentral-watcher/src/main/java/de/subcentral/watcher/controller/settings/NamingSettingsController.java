@@ -55,7 +55,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 
 		// Naming parameters
 		// bind table items to settings
-		new NamingParamBinding(namingParamsTableView.getItems(), settings.getNamingParameters().currentProperty());
+		new NamingParamBinding(namingParamsTableView.getItems(), settings.getNamingParameters().property());
 
 		namingParamsKeyColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyProperty());
 		namingParamsKeyColumn.setCellFactory((TableColumn<NamingParam, String> column) -> new KeyTableCell());

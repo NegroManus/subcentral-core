@@ -437,7 +437,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		if (config.isGuessingEnabled())
 		{
 			log.info("Guessing enabled");
-			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, SettingsController.SETTINGS.getGuessingWarningEnabled().currentProperty());
+			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, SettingsController.SETTINGS.getGuessingWarningEnabled().property());
 
 			List<StandardRelease> stdRlss = config.getStandardReleases();
 			Map<Release, StandardRelease> guessedReleases = ReleaseUtil.guessMatchingReleases(srcRls, stdRlss, config.getReleaseMetaTags());
@@ -541,13 +541,13 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 		if (rls.isNuked())
 		{
-			displaySystemTrayNotification("Release is nuked", generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.getReleaseNukedWarningEnabled().currentProperty());
+			displaySystemTrayNotification("Release is nuked", generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.getReleaseNukedWarningEnabled().property());
 		}
 		List<Tag> containedMetaTags = TagUtil.getMetaTags(rls.getTags(), config.getReleaseMetaTags());
 		if (!containedMetaTags.isEmpty())
 		{
 			String caption = "Release is meta-tagged: " + Tag.formatList(containedMetaTags);
-			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.getReleaseMetaTaggedWarningEnabled().currentProperty());
+			displaySystemTrayNotification(caption, generateDisplayName(rls), MessageType.WARNING, SettingsController.SETTINGS.getReleaseMetaTaggedWarningEnabled().property());
 		}
 
 		resultObject.getMatchingReleases().add(rls);
@@ -807,7 +807,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		{
 			Platform.runLater(() ->
 			{
-				if (SettingsController.SETTINGS.getWarningsEnabled().getCurrentBoolean() && warningEnabledProperty.get())
+				if (SettingsController.SETTINGS.getWarningsEnabled().get() && warningEnabledProperty.get())
 				{
 					controller.getMainController().displaySystemTrayNotification(caption, text, messageType);
 				}

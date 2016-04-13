@@ -62,18 +62,18 @@ public class LocaleLanguageReplacerSettings extends Settings
 			@Override
 			protected SubtitleLanguageCorrector computeValue()
 			{
-				List<LanguagePattern> langPatterns = new ArrayList<>(customLanguagePatterns.getCurrent().size());
-				for (PatternToLanguageMapping uiPattern : customLanguagePatterns.getCurrent())
+				List<LanguagePattern> langPatterns = new ArrayList<>(customLanguagePatterns.getValue().size());
+				for (PatternToLanguageMapping uiPattern : customLanguagePatterns.getValue())
 				{
 					langPatterns.add(uiPattern.toLanguagePattern());
 				}
-				Map<Locale, String> langTextMappings = new HashMap<>(customLanguageTextMappings.getCurrent().size());
-				for (LanguageToTextMapping mapping : customLanguageTextMappings.getCurrent())
+				Map<Locale, String> langTextMappings = new HashMap<>(customLanguageTextMappings.getValue().size());
+				for (LanguageToTextMapping mapping : customLanguageTextMappings.getValue())
 				{
 					langTextMappings.put(mapping.getLanguage(), mapping.getText());
 				}
 				return new SubtitleLanguageCorrector(
-						new LocaleLanguageReplacer(parsingLanguages.getCurrent(), outputLanguageFormat.getCurrent(), outputLanguage.getCurrent(), langPatterns, langTextMappings));
+						new LocaleLanguageReplacer(parsingLanguages.getValue(), outputLanguageFormat.getValue(), outputLanguage.getValue(), langPatterns, langTextMappings));
 			}
 		};
 	}

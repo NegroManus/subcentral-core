@@ -133,7 +133,7 @@ public class MainController extends Controller
 
 	private void initSystemTray()
 	{
-		if (SettingsController.SETTINGS.getSystemTrayEnabled().getCurrentBoolean())
+		if (SettingsController.SETTINGS.getSystemTrayEnabled().get())
 		{
 			SwingUtilities.invokeLater(() ->
 			{

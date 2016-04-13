@@ -6,23 +6,9 @@ public interface SettingsProperty<T, P extends Property<T>> extends Settable
 {
 	public String getKey();
 
-	public T getLastSaved();
+	public P property();
 
-	public P currentProperty();
+	public T getValue();
 
-	public default T getCurrent()
-	{
-		return currentProperty().getValue();
-	}
-
-	public default void setCurrent(T value)
-	{
-		currentProperty().setValue(value);
-	}
-
-	@Override
-	public default void reset()
-	{
-		setCurrent(getLastSaved());
-	}
+	public void setValue(T value);
 }

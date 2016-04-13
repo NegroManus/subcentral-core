@@ -1,7 +1,6 @@
 package de.subcentral.fx.settings;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -101,9 +100,6 @@ public class ConfigurationHelper
 			XMLConfiguration cfg = new IndentingXMLConfiguration();
 			FileHandler cfgFileHandler = new FileHandler(cfg);
 			cfgFileHandler.load(Files.newInputStream(file), Charset.forName("UTF-8").name());
-			StringWriter s = new StringWriter();
-			cfg.write(s);
-			System.out.println(s);
 			return cfg;
 		}
 		catch (IOException e)

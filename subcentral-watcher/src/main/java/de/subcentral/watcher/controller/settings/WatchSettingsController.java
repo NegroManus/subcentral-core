@@ -43,7 +43,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	@Override
 	protected void initialize() throws Exception
 	{
-		watchDirectoriesListView.setItems(SettingsController.SETTINGS.getWatchDirectories().currentProperty());
+		watchDirectoriesListView.setItems(SettingsController.SETTINGS.getWatchDirectories().property());
 
 		addWatchDirectoryButton.setOnAction((ActionEvent event) -> addWatchDirectory());
 
@@ -55,8 +55,8 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 
 		FxUtil.setStandardMouseAndKeyboardSupportForEditable(watchDirectoriesListView, removeWatchDirectoryButton);
 
-		initialScanCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getInitialScan().currentProperty());
-		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getRejectAlreadyProcessedFiles().currentProperty());
+		initialScanCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getInitialScan().property());
+		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getRejectAlreadyProcessedFiles().property());
 	}
 
 	public void addWatchDirectory()

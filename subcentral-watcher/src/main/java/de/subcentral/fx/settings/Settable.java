@@ -15,12 +15,7 @@ public interface Settable extends Observable
 {
 	public ReadOnlyBooleanProperty changedProperty();
 
-	public default boolean changed()
-	{
-		return changedProperty().get();
-	}
-
-	public void reset();
+	public boolean changed();
 
 	public void load(ImmutableConfiguration cfg);
 

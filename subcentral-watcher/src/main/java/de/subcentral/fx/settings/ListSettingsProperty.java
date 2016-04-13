@@ -1,9 +1,5 @@
 package de.subcentral.fx.settings;
 
-import java.util.function.Function;
-
-import de.subcentral.fx.FxUtil;
-import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -13,22 +9,11 @@ public class ListSettingsProperty<E> extends ObjectSettingsPropertyBase<Observab
 {
 	public ListSettingsProperty(String key, ConfigurationPropertyHandler<ObservableList<E>> handler)
 	{
-		this(key, handler, null);
+		this(key, handler, FXCollections.observableArrayList());
 	}
 
-	public ListSettingsProperty(String key, ConfigurationPropertyHandler<ObservableList<E>> handler, Function<E, Observable[]> propertiesExtractor)
+	public ListSettingsProperty(String key, ConfigurationPropertyHandler<ObservableList<E>> handler, ObservableList<E> initialValue)
 	{
-		super(key, handler, FXCollections.observableArrayList(), observablePropertyCreator(propertiesExtractor));
-	}
-
-	private static <E> Function<ListProperty<E>, Observable> observablePropertyCreator(Function<E, Observable[]> propertiesExtractor)
-	{
-		return propertiesExtractor == null ? null : (ListProperty<E> p) -> FxUtil.observeBeanList(p, propertiesExtractor);
-	}
-
-	@Override
-	protected ListProperty<E> createProperty(Object bean, String name, ObservableList<E> initialValue)
-	{
-		return new SimpleListProperty<>(bean, name, initialValue);
+		super(key, (Object bean, String name) -> new SimpleListProperty<>(bean, name, initialValue), handler);
 	}
 }

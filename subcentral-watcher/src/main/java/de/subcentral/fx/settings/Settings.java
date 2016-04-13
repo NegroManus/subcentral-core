@@ -7,36 +7,23 @@ import org.apache.commons.configuration2.ImmutableConfiguration;
 
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.fx.ObservableHelper;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
-public abstract class Settings extends SettableBase implements Settable
+public class Settings extends SettableBase implements Settable
 {
-	private List<Settable>			settables;
-	private final ObservableHelper	helper	= new ObservableHelper(this);
-	private final BooleanProperty	changed	= new SimpleBooleanProperty(this, "changed");
+	private List<Settable> settables;
 
 	{
-		addListener((Observable o) ->
-		{
-			System.out.println(this.getClass().getSimpleName() + " changed");
-		});
-		changed.addListener(new ChangeListener<Boolean>()
-		{
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
-			{
-				System.out.println(observable + " changed: " + oldValue + " -> " + newValue);
-			}
-		});
+		// TODO just for debug, remove!
+		// helper.addListener((Observable o) ->
+		// {
+		// System.out.println(this.getClass().getSimpleName() + " invalidated");
+		// });
+		// changed.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+		// {
+		// System.out.println(this.getClass().getSimpleName() + " changed: " + oldValue + " -> " + newValue);
+		// });
 	}
 
 	protected void initSettables(Settable... settables)
@@ -54,18 +41,23 @@ public abstract class Settings extends SettableBase implements Settable
 	private void bindToSettables()
 	{
 		helper.getDependencies().addAll(settables);
+		ReadOnlyBooleanProperty[] changedProps = new ReadOnlyBooleanProperty[settables.size()];
+		for (int i = 0; i < changedProps.length; i++)
+		{
+			changedProps[i] = settables.get(i).changedProperty();
+		}
 		changed.bind(new BooleanBinding()
 		{
 			{
-				super.bind(helper);
+				super.bind(changedProps);
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
-				for (Settable p : settables)
+				for (Settable s : settables)
 				{
-					if (p.changed())
+					if (s.changed())
 					{
 						return true;
 					}
@@ -78,30 +70,6 @@ public abstract class Settings extends SettableBase implements Settable
 	public List<Settable> getSettables()
 	{
 		return settables;
-	}
-
-	@Override
-	public void addListener(InvalidationListener listener)
-	{
-		helper.addListener(listener);
-	}
-
-	@Override
-	public void removeListener(InvalidationListener listener)
-	{
-		helper.removeListener(listener);
-	}
-
-	@Override
-	public ReadOnlyBooleanProperty changedProperty()
-	{
-		return changed;
-	}
-
-	@Override
-	public boolean changed()
-	{
-		return changed.get();
 	}
 
 	@Override
@@ -119,15 +87,6 @@ public abstract class Settings extends SettableBase implements Settable
 		for (Settable s : settables)
 		{
 			s.save(cfg);
-		}
-	}
-
-	@Override
-	public void reset()
-	{
-		for (Settable s : settables)
-		{
-			s.reset();
 		}
 	}
 }

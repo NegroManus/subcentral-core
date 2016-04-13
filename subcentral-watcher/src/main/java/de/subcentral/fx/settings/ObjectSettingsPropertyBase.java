@@ -1,102 +1,44 @@
 package de.subcentral.fx.settings;
 
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javafx.beans.Observable;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
 
 public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> extends SettingsPropertyBase<T, P>
 {
 	private static final Logger						log	= LogManager.getLogger(ObjectSettingsPropertyBase.class);
-
-	private final T									defaultValue;
-	private T										lastSaved;
-	private final P									current;
-	private final BooleanBinding					changedBinding;
 	private final ConfigurationPropertyHandler<T>	handler;
 
-	protected ObjectSettingsPropertyBase(String key, ConfigurationPropertyHandler<T> handler, T defaultValue, Function<P, Observable> observablePropertyCreator)
+	protected ObjectSettingsPropertyBase(String key, BiFunction<Object, String, P> propertyCreator, ConfigurationPropertyHandler<T> handler)
 	{
-		super(key);
+		super(key, propertyCreator);
 		this.handler = Objects.requireNonNull(handler, "handler");
-		this.defaultValue = defaultValue;
-		lastSaved = defaultValue;
-		current = createProperty(this, "current", defaultValue);
-		Observable currentObsv = observablePropertyCreator != null ? observablePropertyCreator.apply(current) : current;
-		helper.getDependencies().add(currentObsv);
-		changedBinding = (new BooleanBinding()
-		{
-			{
-				super.bind(helper);
-			}
-
-			@Override
-			protected boolean computeValue()
-			{
-				return !Objects.equals(lastSaved, current.getValue());
-			}
-		});
-		changed.bind(changedBinding);
-	}
-
-	protected abstract P createProperty(Object bean, String name, T initialValue);
-
-	protected Observable[] getCurrentObservables()
-	{
-		return new Observable[] { current };
-	}
-
-	public T getDefaultValue()
-	{
-		return defaultValue;
-	}
-
-	@Override
-	public T getLastSaved()
-	{
-		return lastSaved;
-	}
-
-	@Override
-	public P currentProperty()
-	{
-		return current;
 	}
 
 	@Override
 	public void load(ImmutableConfiguration cfg)
 	{
-		T val;
 		try
 		{
-			val = handler.get(cfg, key);
+			property.setValue(handler.get(cfg, key));
+			changed.set(false);
 		}
 		catch (Exception e)
 		{
-			log.error("Exception while loading value for settings property " + key + ". Using default value: " + defaultValue, e);
-			val = defaultValue;
+			log.error("Exception while loading settings property [" + key + "] from configuration", e);
 		}
-		lastSaved = val;
-		current.setValue(val);
-		// Invalidate because lastSaved has changed
-		// and setting of current may not have caused PropertyChangeEvent if old == new.
-		changedBinding.invalidate();
 	}
 
 	@Override
 	public void save(Configuration cfg)
 	{
-		T val = current.getValue();
-		handler.add(cfg, key, val);
-		lastSaved = val;
-		// invalidate because lastSaved has changed
-		changedBinding.invalidate();
+		handler.add(cfg, key, property.getValue());
+		changed.set(false);
 	}
 }

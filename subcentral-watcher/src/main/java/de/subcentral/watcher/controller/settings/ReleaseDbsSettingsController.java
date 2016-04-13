@@ -69,7 +69,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	{
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
-		releaseDbsTableView.setItems(settings.getReleaseDbs().currentProperty());
+		releaseDbsTableView.setItems(settings.getReleaseDbs().property());
 
 		releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
 		releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));

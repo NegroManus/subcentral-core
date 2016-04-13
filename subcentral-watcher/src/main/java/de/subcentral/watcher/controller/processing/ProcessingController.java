@@ -152,24 +152,24 @@ public class ProcessingController extends Controller
 					long start = System.nanoTime();
 					log.debug("Rebuilding ProcessingConfig due to changes in the processing settings");
 					final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
-					cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns().getCurrent()));
-					cfg.setFilenameParsingService(new MultiParsingService("filename", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices().getCurrent())));
-					cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs().getCurrent()));
-					cfg.setReleaseParsingService(new MultiParsingService("release", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseParsingServices().getCurrent())));
-					cfg.setGuessingEnabled(settings.getGuessingEnabled().getCurrentBoolean());
-					cfg.setReleaseMetaTags(ImmutableList.copyOf(settings.getReleaseMetaTags().getCurrent()));
-					cfg.setStandardReleases(ImmutableList.copyOf(settings.getStandardReleases().getCurrent()));
-					cfg.setCompatibilityEnabled(settings.getCompatibilityEnabled().getCurrentBoolean());
+					cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns().getValue()));
+					cfg.setFilenameParsingService(new MultiParsingService("filename", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices().getValue())));
+					cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs().getValue()));
+					cfg.setReleaseParsingService(new MultiParsingService("release", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseParsingServices().getValue())));
+					cfg.setGuessingEnabled(settings.getGuessingEnabled().get());
+					cfg.setReleaseMetaTags(ImmutableList.copyOf(settings.getReleaseMetaTags().getValue()));
+					cfg.setStandardReleases(ImmutableList.copyOf(settings.getStandardReleases().getValue()));
+					cfg.setCompatibilityEnabled(settings.getCompatibilityEnabled().get());
 					cfg.setCompatibilityService(createCompatibilityService(settings));
 					cfg.setBeforeQueryingStandardizingService(createBeforeQueryingStandardizingService(settings));
 					cfg.setAfterQueryingStandardizingService(createAfterQueryingStandardizingService(settings));
-					cfg.setNamingParameters(ImmutableMap.copyOf(settings.getNamingParameters().getCurrent()));
-					cfg.setTargetDir(settings.getTargetDir().getCurrent());
-					cfg.setDeleteSource(settings.getDeleteSource().getCurrentBoolean());
-					cfg.setPackingEnabled(settings.getPackingEnabled().getCurrentBoolean());
-					cfg.setWinRarLocateStrategy(settings.getWinRarLocateStrategy().getCurrent());
-					cfg.setRarExe(settings.getRarExe().getCurrent());
-					cfg.setPackingSourceDeletionMode(settings.getPackingSourceDeletionMode().getCurrent());
+					cfg.setNamingParameters(ImmutableMap.copyOf(settings.getNamingParameters().getValue()));
+					cfg.setTargetDir(settings.getTargetDir().getValue());
+					cfg.setDeleteSource(settings.getDeleteSource().get());
+					cfg.setPackingEnabled(settings.getPackingEnabled().get());
+					cfg.setWinRarLocateStrategy(settings.getWinRarLocateStrategy().getValue());
+					cfg.setRarExe(settings.getRarExe().getValue());
+					cfg.setPackingSourceDeletionMode(settings.getPackingSourceDeletionMode().getValue());
 					log.debug("Rebuilt ProcessingConfig in {} ms", TimeUtil.durationMillis(start));
 				});
 				return cfg;
@@ -187,7 +187,7 @@ public class ProcessingController extends Controller
 	{
 		CompatibilityService service = new CompatibilityService();
 		service.getCompatibilities().add(new SameGroupCompatibility());
-		for (CompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCompatibilities().getCurrent())
+		for (CompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCompatibilities().getValue())
 		{
 			if (entry.isEnabled())
 			{
@@ -203,7 +203,7 @@ public class ProcessingController extends Controller
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		for (CorrectorSettingsItem<?, ?> entry : settings.getCorrectionRules().getCurrent())
+		for (CorrectorSettingsItem<?, ?> entry : settings.getCorrectionRules().getValue())
 		{
 			if (entry.isBeforeQuerying())
 			{
@@ -223,7 +223,7 @@ public class ProcessingController extends Controller
 		// Register default nested beans retrievers but not default
 		// standardizers
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		for (CorrectorSettingsItem<?, ?> entry : settings.getCorrectionRules().getCurrent())
+		for (CorrectorSettingsItem<?, ?> entry : settings.getCorrectionRules().getValue())
 		{
 			if (entry.isAfterQuerying())
 			{
@@ -535,7 +535,7 @@ public class ProcessingController extends Controller
 
 	private static boolean filterByName(Path file)
 	{
-		Pattern pattern = UserPattern.parseSimplePatterns(SettingsController.SETTINGS.getProcessingSettings().getFilenamePatterns().getCurrent());
+		Pattern pattern = UserPattern.parseSimplePatterns(SettingsController.SETTINGS.getProcessingSettings().getFilenamePatterns().getValue());
 		if (pattern == null)
 		{
 			log.debug("Rejecting {} because no pattern is specified", file);
@@ -551,7 +551,7 @@ public class ProcessingController extends Controller
 
 	private boolean filterOutAlreadyProcessedFiles(Path file)
 	{
-		boolean rejectAlreadyProcessedFiles = SettingsController.SETTINGS.getRejectAlreadyProcessedFiles().getCurrentBoolean();
+		boolean rejectAlreadyProcessedFiles = SettingsController.SETTINGS.getRejectAlreadyProcessedFiles().get();
 		for (TreeItem<ProcessingItem> sourceTreeItem : processingTreeTable.getRoot().getChildren())
 		{
 			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();

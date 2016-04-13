@@ -57,10 +57,10 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 	{
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
-		enableGuessingCheckBox.selectedProperty().bindBidirectional(settings.getGuessingEnabled().currentProperty());
+		enableGuessingCheckBox.selectedProperty().bindBidirectional(settings.getGuessingEnabled().property());
 
 		// Standard releases
-		standardReleasesTableView.setItems(settings.getStandardReleases().currentProperty());
+		standardReleasesTableView.setItems(settings.getStandardReleases().property());
 
 		standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
 		{

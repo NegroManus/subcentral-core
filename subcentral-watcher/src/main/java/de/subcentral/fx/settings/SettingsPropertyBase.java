@@ -1,50 +1,54 @@
 package de.subcentral.fx.settings;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 
-import de.subcentral.fx.ObservableHelper;
-import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
 public abstract class SettingsPropertyBase<T, P extends Property<T>> extends SettableBase implements SettingsProperty<T, P>
 {
-	protected final ObservableHelper	helper	= new ObservableHelper(this);
-	protected final BooleanProperty		changed	= new SimpleBooleanProperty(this, "changed");
-	protected final String				key;
+	protected final String	key;
+	protected final P		property;
 
-	public SettingsPropertyBase(String key)
+	protected SettingsPropertyBase(String key, BiFunction<Object, String, P> propertyCreator)
 	{
 		this.key = Objects.requireNonNull(key, "key");
-		addListener((Observable o) ->
-		{
-			System.out.println(key + " changed: " + getCurrent());
-		});
-	}
+		this.property = Objects.requireNonNull(propertyCreator, "propertyCreator").apply(this, "property");
+		this.helper.getDependencies().add(this.property);
+		this.helper.addListener((Observable o) -> changed.set(true));
 
-	@Override
-	public void addListener(InvalidationListener listener)
-	{
-		helper.addListener(listener);
-	}
-
-	@Override
-	public void removeListener(InvalidationListener listener)
-	{
-		helper.removeListener(listener);
-	}
-
-	@Override
-	public ReadOnlyBooleanProperty changedProperty()
-	{
-		return changed;
+		// TODO only for debug, remove!
+		// addListener((Observable o) ->
+		// {
+		// System.out.println(key + " invalidated: " + getValue());
+		// });
+		// changed.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+		// {
+		// System.out.println(key + " changed: " + oldValue + " -> " + newValue);
+		// });
 	}
 
 	public String getKey()
 	{
 		return key;
+	}
+
+	@Override
+	public P property()
+	{
+		return property;
+	}
+
+	@Override
+	public T getValue()
+	{
+		return property.getValue();
+	}
+
+	@Override
+	public void setValue(T value)
+	{
+		property.setValue(value);
 	}
 }

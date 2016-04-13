@@ -60,7 +60,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	protected void initialize() throws Exception
 	{
 		// Correctors
-		correctorsTableView.setItems(SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().currentProperty());
+		correctorsTableView.setItems(SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().property());
 
 		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
 

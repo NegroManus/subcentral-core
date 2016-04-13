@@ -37,16 +37,16 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 	{
 		WatcherSettings settings = SettingsController.SETTINGS;
 
-		warningsEnabledCheckBox.selectedProperty().bindBidirectional(settings.getWarningsEnabled().currentProperty());
-		guessingWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.getGuessingWarningEnabled().currentProperty());
-		metaTaggedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.getReleaseMetaTaggedWarningEnabled().currentProperty());
-		nukedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.getReleaseNukedWarningEnabled().currentProperty());
+		warningsEnabledCheckBox.selectedProperty().bindBidirectional(settings.getWarningsEnabled().property());
+		guessingWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.getGuessingWarningEnabled().property());
+		metaTaggedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.getReleaseMetaTaggedWarningEnabled().property());
+		nukedReleaseWarningEnabledCheckBox.selectedProperty().bindBidirectional(settings.getReleaseNukedWarningEnabled().property());
 
 		final BooleanBinding warningsDisabledBinding = warningsEnabledCheckBox.selectedProperty().not();
 		guessingWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
 		metaTaggedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
 		nukedReleaseWarningEnabledCheckBox.disableProperty().bind(warningsDisabledBinding);
 
-		systemTrayEnabledCheckBox.selectedProperty().bindBidirectional(settings.getSystemTrayEnabled().currentProperty());
+		systemTrayEnabledCheckBox.selectedProperty().bindBidirectional(settings.getSystemTrayEnabled().property());
 	}
 }

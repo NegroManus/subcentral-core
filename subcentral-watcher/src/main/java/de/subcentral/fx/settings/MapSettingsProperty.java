@@ -11,12 +11,11 @@ public class MapSettingsProperty<K, V> extends ObjectSettingsPropertyBase<Observ
 {
 	public MapSettingsProperty(String key, ConfigurationPropertyHandler<ObservableMap<K, V>> handler)
 	{
-		super(key, handler, FXCollections.observableMap(new LinkedHashMap<>()), null);
+		this(key, handler, FXCollections.observableMap(new LinkedHashMap<>()));
 	}
 
-	@Override
-	protected MapProperty<K, V> createProperty(Object bean, String name, ObservableMap<K, V> initialValue)
+	public MapSettingsProperty(String key, ConfigurationPropertyHandler<ObservableMap<K, V>> handler, ObservableMap<K, V> initialValue)
 	{
-		return new SimpleMapProperty<>(bean, name, initialValue);
+		super(key, (Object bean, String name) -> new SimpleMapProperty<K, V>(bean, name, initialValue), handler);
 	}
 }

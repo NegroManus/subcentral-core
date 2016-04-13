@@ -73,7 +73,7 @@ public class WatchController extends Controller
 			@Override
 			protected boolean computeValue()
 			{
-				return watchService.isRunning() || SettingsController.SETTINGS.getWatchDirectories().getCurrent().isEmpty();
+				return watchService.isRunning() || SettingsController.SETTINGS.getWatchDirectories().getValue().isEmpty();
 			}
 		});
 		startWatchButton.setOnAction(evt ->
@@ -119,12 +119,12 @@ public class WatchController extends Controller
 		});
 
 		watchDirectoriesHBox.getChildren().add(watchImg);
-		updateWatchDirsHBox(SettingsController.SETTINGS.getWatchDirectories().getCurrent());
+		updateWatchDirsHBox(SettingsController.SETTINGS.getWatchDirectories().getValue());
 		SettingsController.SETTINGS.getWatchDirectories().addListener((Observable o) ->
 		{
 			@SuppressWarnings("unchecked")
 			ListSettingsProperty<Path> prop = (ListSettingsProperty<Path>) o;
-			updateWatchDirsHBox(prop.getCurrent());
+			updateWatchDirsHBox(prop.getValue());
 		});
 
 		watchService.setOnFailed((WorkerStateEvent event) ->
@@ -175,10 +175,10 @@ public class WatchController extends Controller
 
 		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFilesFromWatchDir);
 		watchService.setExecutor(watchServiceExecutor);
-		WatcherFxUtil.bindWatchDirectories(watchService, SettingsController.SETTINGS.getWatchDirectories().currentProperty());
-		watchService.setInitialScan(SettingsController.SETTINGS.getInitialScan().getCurrentBoolean());
+		WatcherFxUtil.bindWatchDirectories(watchService, SettingsController.SETTINGS.getWatchDirectories().property());
+		watchService.setInitialScan(SettingsController.SETTINGS.getInitialScan().get());
 		SettingsController.SETTINGS.getInitialScan()
-				.currentProperty()
+				.property()
 				.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> watchService.setInitialScan(newValue));
 	}
 
