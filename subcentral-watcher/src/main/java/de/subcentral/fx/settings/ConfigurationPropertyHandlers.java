@@ -27,21 +27,21 @@ import javafx.util.StringConverter;
 
 public class ConfigurationPropertyHandlers
 {
-	public static ConfigurationPropertyHandler<String>							STRING_HANDLER					= new ConvertingHandler<>(FxUtil.IDENTITY_STRING_CONVERTER);
-	public static ConfigurationPropertyHandler<Path>							PATH_HANDLER					= new ConvertingHandler<>(FxUtil.PATH_STRING_CONVERTER);
-	public static ConfigurationPropertyHandler<ObservableList<Path>>			PATH_LIST_HANDLER				= new ConvertingListHandler<>(FxUtil.PATH_STRING_CONVERTER);
-	public static ConfigurationPropertyHandler<ObservableList<Tag>>				TAG_LIST_HANDLER				= new ConvertingListHandler<>(SubCentralFxUtil.TAG_STRING_CONVERTER);
-	public static ConfigurationPropertyHandler<ObservableList<StandardRelease>>	STANDARD_RELEASE_LIST_HANDLER	= new StandardReleaseListHandler();
-	public static ConfigurationPropertyHandler<Locale>							LOCALE_HANDLER					= new LocaleHandler();
-	public static ConfigurationPropertyHandler<ObservableList<Locale>>			LOCALE_LIST_HANDLER				= new LocaleListHandler();
-	public static ConfigurationPropertyHandler<LanguageFormat>					LANGUAGE_FORMAT_HANDLER			= new LanguageFormatHandler();
-	public static ConfigurationPropertyHandler<ObservableMap<String, Object>>	NAMING_PARAMETER_MAP_HANDLER	= new NamingParameterMapHandler();
+	public static final ConfigurationPropertyHandler<String>							STRING_HANDLER					= new StringConverterHandler<>(FxUtil.IDENTITY_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<Path>								PATH_HANDLER					= new StringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<ObservableList<Path>>				PATH_LIST_HANDLER				= new ListStringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<ObservableList<Tag>>				TAG_LIST_HANDLER				= new ListStringConverterHandler<>(SubCentralFxUtil.TAG_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<ObservableList<StandardRelease>>	STANDARD_RELEASE_LIST_HANDLER	= new StandardReleaseListHandler();
+	public static final ConfigurationPropertyHandler<Locale>							LOCALE_HANDLER					= new LocaleHandler();
+	public static final ConfigurationPropertyHandler<ObservableList<Locale>>			LOCALE_LIST_HANDLER				= new LocaleListHandler();
+	public static final ConfigurationPropertyHandler<LanguageFormat>					LANGUAGE_FORMAT_HANDLER			= new LanguageFormatHandler();
+	public static final ConfigurationPropertyHandler<ObservableMap<String, Object>>		NAMING_PARAMETER_MAP_HANDLER	= new NamingParameterMapHandler();
 
-	public static class ConvertingHandler<T> implements ConfigurationPropertyHandler<T>
+	public static class StringConverterHandler<T> implements ConfigurationPropertyHandler<T>
 	{
 		private final StringConverter<T> stringConverter;
 
-		public ConvertingHandler(StringConverter<T> stringConverter)
+		public StringConverterHandler(StringConverter<T> stringConverter)
 		{
 			this.stringConverter = Objects.requireNonNull(stringConverter, "stringConverter");
 		}
@@ -59,11 +59,11 @@ public class ConfigurationPropertyHandlers
 		}
 	}
 
-	public static class ConvertingListHandler<E> implements ConfigurationPropertyHandler<ObservableList<E>>
+	public static class ListStringConverterHandler<E> implements ConfigurationPropertyHandler<ObservableList<E>>
 	{
 		private final StringConverter<E> stringConverter;
 
-		public ConvertingListHandler(StringConverter<E> stringConverter)
+		public ListStringConverterHandler(StringConverter<E> stringConverter)
 		{
 			this.stringConverter = Objects.requireNonNull(stringConverter, "stringConverter");
 		}
