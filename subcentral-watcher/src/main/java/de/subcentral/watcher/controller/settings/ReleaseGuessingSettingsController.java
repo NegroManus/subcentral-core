@@ -5,7 +5,8 @@ import java.util.Optional;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxActions;
+import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.ProcessingSettings;
@@ -64,11 +65,11 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 
 		standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
 		{
-			return FxUtil.immutableObservableValue(Tag.formatList(param.getValue().getRelease().getTags()));
+			return FxBindings.immutableObservableValue(Tag.formatList(param.getValue().getRelease().getTags()));
 		});
 		standardReleasesGroupColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
 		{
-			return FxUtil.immutableObservableValue(Group.toStringNullSafe(param.getValue().getRelease().getGroup()));
+			return FxBindings.immutableObservableValue(Group.toStringNullSafe(param.getValue().getRelease().getGroup()));
 		});
 		standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
 		{
@@ -84,13 +85,13 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 				default:
 					value = param.getValue().getScope().name();
 			}
-			return FxUtil.immutableObservableValue(value);
+			return FxBindings.immutableObservableValue(value);
 		});
 
 		addStandardReleaseButton.setOnAction((ActionEvent event) ->
 		{
 			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseEditView(settingsController.getMainController().getPrimaryStage());
-			FxUtil.handleDistinctAdd(standardReleasesTableView, result);
+			FxActions.handleDistinctAdd(standardReleasesTableView, result);
 		});
 
 		final BooleanBinding noSelection = standardReleasesTableView.getSelectionModel().selectedItemProperty().isNull();
@@ -100,15 +101,15 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 		{
 			StandardRelease def = standardReleasesTableView.getSelectionModel().getSelectedItem();
 			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseEditView(def, settingsController.getMainController().getPrimaryStage());
-			FxUtil.handleDistinctEdit(standardReleasesTableView, result);
+			FxActions.handleDistinctEdit(standardReleasesTableView, result);
 		});
 
 		removeStandardReleaseButton.disableProperty().bind(noSelection);
 		removeStandardReleaseButton.setOnAction((ActionEvent event) ->
 		{
-			FxUtil.handleConfirmedDelete(standardReleasesTableView, "standard release", SubCentralFxUtil.STANDARD_RELEASE_STRING_CONVERTER);
+			FxActions.handleConfirmedDelete(standardReleasesTableView, "standard release", SubCentralFxUtil.STANDARD_RELEASE_STRING_CONVERTER);
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupport(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);
+		FxActions.setStandardMouseAndKeyboardSupport(standardReleasesTableView, editStandardReleaseButton, removeStandardReleaseButton);
 	}
 }

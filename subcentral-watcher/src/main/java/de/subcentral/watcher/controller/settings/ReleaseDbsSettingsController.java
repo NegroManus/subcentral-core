@@ -10,7 +10,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.db.MetadataDb;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxActions;
+import de.subcentral.fx.FxBindings;
+import de.subcentral.fx.FxControlBindings;
+import de.subcentral.fx.FxIO;
+import de.subcentral.fx.FxNodes;
 import de.subcentral.watcher.settings.MetadataDbSettingsItem;
 import de.subcentral.watcher.settings.MetadataDbSettingsItem.Availability;
 import de.subcentral.watcher.settings.ProcessingSettings;
@@ -74,7 +78,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		releaseDbsEnabledColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
 		releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 
-		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem, MetadataDbSettingsItem> param) -> FxUtil.immutableObservableValue(param.getValue()));
+		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem, MetadataDbSettingsItem> param) -> FxBindings.immutableObservableValue(param.getValue()));
 		releaseDbsNameColumn.setCellFactory((TableColumn<MetadataDbSettingsItem, MetadataDbSettingsItem> param) -> new NameTableCell(settingsController.getMainController().getCommonExecutor()));
 
 		releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem, Availability> param) -> param.getValue().availabilityProperty());
@@ -86,7 +90,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		// TODO: also on move up/move down but we can't distinguish that easily
 		releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());
 
-		FxUtil.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
+		FxActions.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
 
 		// initial update
 		updateAvailibities();
@@ -130,15 +134,15 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 					setTooltip(null);
 					break;
 				case AVAILABLE:
-					setGraphic(new ImageView(FxUtil.loadImg("checked_16.png")));
+					setGraphic(new ImageView(FxIO.loadImg("checked_16.png")));
 					setTooltip(new Tooltip("Available: Accessible and searchable"));
 					break;
 				case LIMITED:
-					setGraphic(new ImageView(FxUtil.loadImg("warning_16.png")));
+					setGraphic(new ImageView(FxIO.loadImg("warning_16.png")));
 					setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
 					break;
 				case NOT_AVAILABLE:
-					setGraphic(new ImageView(FxUtil.loadImg("cancel_16.png")));
+					setGraphic(new ImageView(FxIO.loadImg("cancel_16.png")));
 					setTooltip(new Tooltip("Not available: Not reachable"));
 					break;
 				default:
@@ -169,13 +173,13 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 			{
 				MetadataDb db = item.getItem();
 
-				HBox hbox = FxUtil.createDefaultHBox();
+				HBox hbox = FxNodes.createDefaultHBox();
 				Label name = new Label(db.getSite().getDisplayName());
 				hbox.getChildren().add(name);
 				try
 				{
 					URL host = new URL(db.getSite().getLink());
-					Hyperlink link = FxUtil.createUrlHyperlink(host, executor);
+					Hyperlink link = FxControlBindings.createUrlHyperlink(host, executor);
 					link.setMaxHeight(Double.MAX_VALUE);
 					hbox.getChildren().add(link);
 				}

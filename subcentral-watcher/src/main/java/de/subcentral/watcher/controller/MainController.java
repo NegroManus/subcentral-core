@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.Controller;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxIO;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
@@ -110,7 +110,7 @@ public class MainController extends Controller
 	private void initSettingsController() throws IOException
 	{
 		settingsController = new SettingsController(this);
-		BorderPane settingsPane = FxUtil.loadFromFxml("SettingsView.fxml", "SettingsView", Locale.ENGLISH, settingsController);
+		BorderPane settingsPane = FxIO.loadView("SettingsView.fxml", settingsController, "SettingsView", Locale.ENGLISH);
 		AnchorPane.setTopAnchor(settingsPane, 0.0d);
 		AnchorPane.setRightAnchor(settingsPane, 0.0d);
 		AnchorPane.setBottomAnchor(settingsPane, 0.0d);
@@ -127,7 +127,7 @@ public class MainController extends Controller
 	private void initWatchController() throws IOException
 	{
 		watchController = new WatchController(this);
-		HBox watchPane = FxUtil.loadFromFxml("WatchPane.fxml", null, Locale.ENGLISH, watchController);
+		HBox watchPane = FxIO.loadView("WatchPane.fxml", watchController);
 		rootPane.setTop(watchPane);
 	}
 
@@ -148,7 +148,7 @@ public class MainController extends Controller
 					systemTray = SystemTray.getSystemTray();
 					ActionListener showHideListener = (ActionEvent e) -> Platform.runLater(this::toggleShowHide);
 
-					java.awt.Image trayImg = FxUtil.loadAwtImg("watcher_16.png");
+					java.awt.Image trayImg = FxIO.loadAwtImg("watcher_16.png");
 					systemTrayIcon = new TrayIcon(trayImg);
 					// Show/Hide on double-click
 					systemTrayIcon.addActionListener(showHideListener);
@@ -267,7 +267,7 @@ public class MainController extends Controller
 	public void reloadProcessingPane() throws IOException
 	{
 		// log.debug("Reloading the processing pane");
-		BorderPane processingPane = FxUtil.loadFromFxml("ProcessingView.fxml", "ProcessingView", Locale.ENGLISH, processingController);
+		BorderPane processingPane = FxIO.loadView("ProcessingView.fxml", processingController, "ProcessingView", Locale.ENGLISH);
 		AnchorPane.setTopAnchor(processingPane, 0.0d);
 		AnchorPane.setRightAnchor(processingPane, 0.0d);
 		AnchorPane.setBottomAnchor(processingPane, 0.0d);

@@ -49,7 +49,7 @@ public abstract class SubSettings implements Observable
 
 	public final void load(XMLConfiguration cfg)
 	{
-		FxUtil.requireJavaFxApplicationThread();
+		FxUtil.requireFxApplicationThread();
 		doLoad(cfg);
 		changed.set(false);
 	}
@@ -58,7 +58,7 @@ public abstract class SubSettings implements Observable
 
 	public final void save(XMLConfiguration cfg)
 	{
-		FxUtil.requireJavaFxApplicationThread();
+		FxUtil.requireFxApplicationThread();
 		doSave(cfg);
 		changed.set(false);
 	}

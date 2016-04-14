@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.dialog.BeanEditController;
 import javafx.collections.FXCollections;
@@ -85,23 +86,23 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 		addableLangsComboBox.setItems(initAddableLangList());
 		addableLangsComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 
-		FxUtil.bindMoveButtonsForSingleSelection(langsListView, moveUpLangBtn, moveDownLangBtn);
+		FxActions.bindMoveButtonsForSingleSelection(langsListView, moveUpLangBtn, moveDownLangBtn);
 
 		// Bindings
 		addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
 		addLangBtn.setOnAction((ActionEvent) ->
 		{
 			// remove lang from addable langs
-			Locale langToAdd = FxUtil.handleDelete(addableLangsComboBox);
+			Locale langToAdd = FxActions.handleDelete(addableLangsComboBox);
 			// add lang to lang list
-			FxUtil.handleDistinctAdd(langsListView, Optional.of(langToAdd));
+			FxActions.handleDistinctAdd(langsListView, Optional.of(langToAdd));
 		});
 
 		removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
 		removeLangBtn.setOnAction((ActionEvent) ->
 		{
 			// remove lang from lang list
-			Locale removedLang = FxUtil.handleDelete(langsListView);
+			Locale removedLang = FxActions.handleDelete(langsListView);
 			// add lang to addable langs
 			addableLangsComboBox.getItems().add(removedLang);
 			// After adding a language to the addable language that list needs to be sorted again

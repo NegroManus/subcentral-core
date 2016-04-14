@@ -15,7 +15,8 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.Controller;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxIO;
+import de.subcentral.fx.FxNodes;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.concurrent.Task;
@@ -340,7 +341,7 @@ public class DetailsController extends Controller
 
 	private Node createHeadline(String headline, String settingsSection)
 	{
-		HBox hbox = FxUtil.createDefaultHBox();
+		HBox hbox = FxNodes.createDefaultHBox();
 		Label lbl = new Label(headline);
 		lbl.setUnderline(true);
 		lbl.setFont(Font.font(null, FontWeight.BOLD, -1d));
@@ -381,7 +382,7 @@ public class DetailsController extends Controller
 		gridPane.add(resultTypeNode, 0, rowIndex);
 
 		// Name & Info
-		HBox hbox = FxUtil.createDefaultHBox();
+		HBox hbox = FxNodes.createDefaultHBox();
 
 		// Name
 		hbox.getChildren().add(new Label(task.generateDisplayName(rls)));
@@ -400,7 +401,7 @@ public class DetailsController extends Controller
 
 	private Node createAddListedManuallyLink(Release release)
 	{
-		Hyperlink btn = new Hyperlink("", new ImageView(FxUtil.loadImg("add_16.png")));
+		Hyperlink btn = new Hyperlink("", new ImageView(FxIO.loadImg("add_16.png")));
 		btn.setUnderline(false);
 		btn.setOpacity(0.5d);
 		btn.setTooltip(new Tooltip("Add this release to the matching releases"));

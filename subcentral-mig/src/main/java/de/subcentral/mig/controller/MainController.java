@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.Controller;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxIO;
 import de.subcentral.mig.process.MigrationAssistance;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -112,7 +112,7 @@ public class MainController extends Controller
 				{
 					try
 					{
-						FxUtil.loadFromFxml(newPage.fxmlFilename, newPage.loadController());
+						FxIO.loadView(newPage.fxmlFilename, newPage.loadController());
 						Pane contentPane = newPage.controller.getRootPane();
 						AnchorPane.setTopAnchor(contentPane, 0.0d);
 						AnchorPane.setRightAnchor(contentPane, 0.0d);

@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import de.subcentral.fx.Controller;
 import de.subcentral.fx.DirectoryWatchService;
+import de.subcentral.fx.FxControlBindings;
+import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.settings.ListSettingsProperty;
 import de.subcentral.watcher.WatcherFxUtil;
@@ -44,7 +46,7 @@ public class WatchController extends Controller
 	@FXML
 	private HBox					watchDirectoriesHBox;
 
-	private final ImageView			watchImg	= new ImageView(FxUtil.loadImg("iris_16.png"));
+	private final ImageView			watchImg	= new ImageView(FxIO.loadImg("iris_16.png"));
 
 	private DirectoryWatchService	watchService;
 	private ExecutorService			watchServiceExecutor;
@@ -146,7 +148,7 @@ public class WatchController extends Controller
 		watchDirectoriesHBox.getChildren().retainAll(watchImg);
 		if (watchDirs.isEmpty())
 		{
-			ImageView img = new ImageView(FxUtil.loadImg("settings_16.png"));
+			ImageView img = new ImageView(FxIO.loadImg("settings_16.png"));
 			Hyperlink link = new Hyperlink("Add watch directory", img);
 			link.setVisited(true);
 			link.setOnAction((ActionEvent evt) ->
@@ -164,7 +166,7 @@ public class WatchController extends Controller
 		{
 			for (Path dir : watchDirs)
 			{
-				watchDirectoriesHBox.getChildren().add(FxUtil.createFileHyperlink(dir, mainController.getCommonExecutor()));
+				watchDirectoriesHBox.getChildren().add(FxControlBindings.createFileHyperlink(dir, mainController.getCommonExecutor()));
 			}
 		}
 	}

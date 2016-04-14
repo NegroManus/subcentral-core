@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxIO;
 import de.subcentral.fx.dialog.DialogController;
 import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
@@ -105,7 +105,7 @@ public class WatcherDialogs
 	{
 		try
 		{
-			FxUtil.loadFromFxml(fxmlFilename, null, null, ctrl);
+			FxIO.loadView(fxmlFilename, ctrl);
 		}
 		catch (IOException e)
 		{

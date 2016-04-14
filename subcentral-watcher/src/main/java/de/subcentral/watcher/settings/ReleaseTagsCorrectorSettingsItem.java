@@ -4,18 +4,18 @@ import de.subcentral.core.correct.ReleaseTagsCorrector;
 import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.StringUtil;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxBindings;
 import javafx.beans.value.ObservableValue;
 
 public class ReleaseTagsCorrectorSettingsItem extends CorrectorSettingsItem<Release, ReleaseTagsCorrector>
 {
-	private static final ObservableValue<String>	ruleType	= FxUtil.immutableObservableValue("Release tags");
+	private static final ObservableValue<String>	ruleType	= FxBindings.immutableObservableValue("Release tags");
 	private final ObservableValue<String>			rule;
 
 	public ReleaseTagsCorrectorSettingsItem(ReleaseTagsCorrector corrector, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(Release.class, corrector, beforeQuerying, afterQuerying);
-		rule = FxUtil.immutableObservableValue(formatRule(corrector));
+		rule = FxBindings.immutableObservableValue(formatRule(corrector));
 	}
 
 	@Override

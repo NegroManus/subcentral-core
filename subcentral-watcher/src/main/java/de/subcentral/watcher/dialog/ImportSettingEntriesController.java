@@ -4,7 +4,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxActions;
+import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.dialog.DialogController;
 import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters.SourceType;
@@ -78,10 +79,10 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 		addItemsCheckBox.setSelected(true);
 
 		// Bindings
-		TextFormatter<Path> fileFormatter = FxUtil.bindTextFieldToPath(fileTxtFld);
+		TextFormatter<Path> fileFormatter = FxControlBindings.bindTextFieldToPath(fileTxtFld);
 		ExtensionFilter xmlExtFilter = new ExtensionFilter("XML file", "*.xml");
-		FxUtil.setChooseFileAction(chooseFileBtn, fileFormatter, dialog.getDialogPane().getScene().getWindow(), "Choose settings file", xmlExtFilter);
-		TextFormatter<URL> urlFormatter = FxUtil.bindTextFieldToUrl(urlTxtFld);
+		chooseFileBtn.setOnAction(FxActions.chooseFile(fileFormatter, dialog.getDialogPane().getScene().getWindow(), "Choose settings file", xmlExtFilter));
+		TextFormatter<URL> urlFormatter = FxControlBindings.bindTextFieldToUrl(urlTxtFld);
 
 		// Bind apply button
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);

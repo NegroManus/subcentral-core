@@ -2,6 +2,8 @@ package de.subcentral.watcher.dialog;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.subcentral.fx.FxActions;
+import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.dialog.BeanEditController;
@@ -139,13 +141,13 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 		removeNameBtn.disableProperty().bind(noSelection);
 		removeNameBtn.setOnAction((ActionEvent evt) ->
 		{
-			FxUtil.handleDelete(aliasNamesReplacementListView);
+			FxActions.handleDelete(aliasNamesReplacementListView);
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupportForEditable(aliasNamesReplacementListView, removeNameBtn);
+		FxActions.setStandardMouseAndKeyboardSupportForEditable(aliasNamesReplacementListView, removeNameBtn);
 
 		// Bindings
-		Binding<UserPattern> namePatternBinding = FxUtil.createUiPatternTextFieldBinding(patternModeToggleGrp,
+		Binding<UserPattern> namePatternBinding = FxControlBindings.createUiPatternTextFieldBinding(patternModeToggleGrp,
 				literalRadioBtn,
 				simplePatternRadioBtn,
 				regexRadioBtn,

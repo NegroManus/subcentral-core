@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.LocalConfig;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxIO;
 import de.subcentral.watcher.controller.MainController;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -70,13 +70,13 @@ public class WatcherApp extends Application
 	private void initPrimaryStage()
 	{
 		primaryStage.setTitle(APP_INFO);
-		primaryStage.getIcons().addAll(FxUtil.loadImg("watcher_16.png"), FxUtil.loadImg("watcher_32.png"), FxUtil.loadImg("watcher_64.png"));
+		primaryStage.getIcons().addAll(FxIO.loadImg("watcher_16.png"), FxIO.loadImg("watcher_32.png"), FxIO.loadImg("watcher_64.png"));
 	}
 
 	private void initMainController() throws IOException
 	{
 		this.mainController = new MainController(primaryStage);
-		mainView = FxUtil.loadFromFxml("MainView.fxml", "MainView", Locale.ENGLISH, mainController);
+		mainView = FxIO.loadView("MainView.fxml", mainController, "MainView", Locale.ENGLISH);
 	}
 
 	private void initSceneAndShow()

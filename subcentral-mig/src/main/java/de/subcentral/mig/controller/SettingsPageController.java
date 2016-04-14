@@ -2,6 +2,7 @@ package de.subcentral.mig.controller;
 
 import java.nio.file.Path;
 
+import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxUtil;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
@@ -44,11 +45,11 @@ public class SettingsPageController extends AbstractPageController
 	{
 		envSettingsFileTxtFld.setTextFormatter(envSettingsFileTextFormatter);
 		ExtensionFilter propertiesExtFilter = new ExtensionFilter("Properties file", "*.properties");
-		FxUtil.setChooseFileAction(chooseEnvSettingsFileBtn, envSettingsFileTextFormatter, mainController.getPrimaryStage(), "Choose environment settings file", propertiesExtFilter);
+		chooseEnvSettingsFileBtn.setOnAction(FxActions.chooseFile(envSettingsFileTextFormatter, mainController.getPrimaryStage(), "Choose environment settings file", propertiesExtFilter));
 
 		parsingSettingsFileTxtFld.setTextFormatter(parsingSettingsFileTextFormatter);
 		ExtensionFilter xmlExtFilter = new ExtensionFilter("XML file", "*.xml");
-		FxUtil.setChooseFileAction(chooseParsingSettingsFileBtn, parsingSettingsFileTextFormatter, mainController.getPrimaryStage(), "Choose parsing settings file", xmlExtFilter);
+		chooseEnvSettingsFileBtn.setOnAction(FxActions.chooseFile(parsingSettingsFileTextFormatter, mainController.getPrimaryStage(), "Choose parsing settings file", xmlExtFilter));
 
 		nextButtonDisableBinding = new BooleanBinding()
 		{

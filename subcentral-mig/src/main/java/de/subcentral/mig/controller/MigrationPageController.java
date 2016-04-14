@@ -1,6 +1,6 @@
 package de.subcentral.mig.controller;
 
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxBindings;
 import de.subcentral.mig.settings.MigrationScopeSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
@@ -112,7 +112,7 @@ public class MigrationPageController extends AbstractPageController
 	@Override
 	public BooleanBinding nextButtonDisableBinding()
 	{
-		return FxUtil.immutableBooleanBinding(true);
+		return FxBindings.immutableBooleanBinding(true);
 	}
 
 	@Override

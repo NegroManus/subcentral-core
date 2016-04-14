@@ -40,6 +40,10 @@ import de.subcentral.core.parse.MultiParsingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.Controller;
+import de.subcentral.fx.FxActions;
+import de.subcentral.fx.FxBindings;
+import de.subcentral.fx.FxIO;
+import de.subcentral.fx.FxNodes;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.settings.SettingsUtil;
@@ -356,7 +360,7 @@ public class ProcessingController extends Controller
 	{
 		final BooleanBinding noItemSelectedBinding = processingTreeTable.getSelectionModel().selectedItemProperty().isNull();
 
-		final Observable stateOfSelectedItemObservable = FxUtil.observeBean(processingTreeTable.getSelectionModel().selectedItemProperty(), (TreeItem<ProcessingItem> treeItem) ->
+		final Observable stateOfSelectedItemObservable = FxBindings.observeBean(processingTreeTable.getSelectionModel().selectedItemProperty(), (TreeItem<ProcessingItem> treeItem) ->
 		{
 			ProcessingTask task = getProcessingTask(treeItem, true);
 			if (task == null)
@@ -661,13 +665,13 @@ public class ProcessingController extends Controller
 			{
 				DetailsController detailsCtrl = new DetailsController(this, task);
 
-				Parent root = FxUtil.loadFromFxml("DetailsView.fxml", null, null, detailsCtrl);
+				Parent root = FxIO.loadView("DetailsView.fxml", detailsCtrl);
 				Scene scene = new Scene(root);
 
 				Stage owner = mainController.getPrimaryStage();
 				Stage stage = new Stage();
 				stage.initOwner(owner);
-				stage.getIcons().add(FxUtil.loadImg("info_16.png"));
+				stage.getIcons().add(FxIO.loadImg("info_16.png"));
 				stage.setTitle("Processing details");
 				stage.setScene(scene);
 
@@ -689,7 +693,7 @@ public class ProcessingController extends Controller
 			List<Path> files = item.getFiles();
 			if (!files.isEmpty())
 			{
-				FxUtil.browse(files.get(0).getParent().toUri().toString(), mainController.getCommonExecutor());
+				FxActions.browse(files.get(0).getParent().toUri().toString(), mainController.getCommonExecutor()).handle(null);
 			}
 		}
 	}
@@ -848,12 +852,12 @@ public class ProcessingController extends Controller
 			switch (item.getState())
 			{
 				case CANCELLED:
-					ImageView cancelImg = new ImageView(FxUtil.loadImg("cancel_16.png"));
+					ImageView cancelImg = new ImageView(FxIO.loadImg("cancel_16.png"));
 					setGraphic(cancelImg);
 					setTooltip(null);
 					break;
 				case FAILED:
-					ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
+					ImageView errorImg = new ImageView(FxIO.loadImg("error_16.png"));
 					setGraphic(errorImg);
 					setTooltip(new Tooltip(item.getException().toString()));
 					break;
@@ -895,7 +899,7 @@ public class ProcessingController extends Controller
 				ProcessingResultInfo resultInfo = (ProcessingResultInfo) item;
 				ProcessingResult result = resultInfo.getResult();
 
-				HBox hbox = FxUtil.createDefaultHBox();
+				HBox hbox = FxNodes.createDefaultHBox();
 				switch (resultInfo.getSourceType())
 				{
 					case LISTED:

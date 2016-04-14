@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.Optional;
 
 import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
+import de.subcentral.fx.FxActions;
+import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
@@ -109,13 +111,13 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		// TextLangMappings
 		textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<PatternToLanguageMapping, UserPattern> param) ->
 		{
-			return FxUtil.immutableObservableValue(param.getValue().getPattern());
+			return FxBindings.immutableObservableValue(param.getValue().getPattern());
 		});
 		textLangMappingsTextColumn.setCellFactory((TableColumn<PatternToLanguageMapping, UserPattern> param) -> new PatternToLanguageMappingPatternTableCell());
 
 		textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<PatternToLanguageMapping, Locale> param) ->
 		{
-			return FxUtil.immutableObservableValue(param.getValue().getLanguage());
+			return FxBindings.immutableObservableValue(param.getValue().getLanguage());
 		});
 		textLangMappingsLangColumn.setCellFactory((TableColumn<PatternToLanguageMapping, Locale> param) -> new PatternToLanguageMappingLanguageTableCell());
 
@@ -124,7 +126,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		addTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
 			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(settingsController.getMainController().getPrimaryStage());
-			FxUtil.handleDistinctAdd(textLangMappingsTableView, result);
+			FxActions.handleDistinctAdd(textLangMappingsTableView, result);
 		});
 
 		final BooleanBinding noTextLangMappingSelection = textLangMappingsTableView.getSelectionModel().selectedItemProperty().isNull();
@@ -133,17 +135,17 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		{
 			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(textLangMappingsTableView.getSelectionModel().getSelectedItem(),
 					settingsController.getMainController().getPrimaryStage());
-			FxUtil.handleDistinctEdit(textLangMappingsTableView, result);
+			FxActions.handleDistinctEdit(textLangMappingsTableView, result);
 		});
 
 		removeTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		removeTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			FxUtil.handleConfirmedDelete(textLangMappingsTableView, "text to language mapping", PatternToLanguageMapping.createStringConverter());
+			FxActions.handleConfirmedDelete(textLangMappingsTableView, "text to language mapping", PatternToLanguageMapping.createStringConverter());
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupport(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);
-		FxUtil.bindMoveButtonsForSingleSelection(textLangMappingsTableView, moveUpTextLangMappingBtn, moveDownTextLangMappingBtn);
+		FxActions.setStandardMouseAndKeyboardSupport(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);
+		FxActions.bindMoveButtonsForSingleSelection(textLangMappingsTableView, moveUpTextLangMappingBtn, moveDownTextLangMappingBtn);
 
 		// OutputLangFormat
 		outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
@@ -190,13 +192,13 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		// LangTextMappings
 		langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageToTextMapping, Locale> param) ->
 		{
-			return FxUtil.immutableObservableValue(param.getValue().getLanguage());
+			return FxBindings.immutableObservableValue(param.getValue().getLanguage());
 		});
 		langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageToTextMapping, Locale> param) -> new LanguageToTextMappingLanguageTableCell());
 
 		langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageToTextMapping, String> param) ->
 		{
-			return FxUtil.immutableObservableValue(param.getValue().getText());
+			return FxBindings.immutableObservableValue(param.getValue().getText());
 		});
 
 		langTextMappingsTableView.setItems(settings.getCustomLanguageTextMappings().property());
@@ -204,7 +206,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		addLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
 			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(settingsController.getMainController().getPrimaryStage());
-			FxUtil.handleDistinctAdd(langTextMappingsTableView, result);
+			FxActions.handleDistinctAdd(langTextMappingsTableView, result);
 			FXCollections.sort(langTextMappingsTableView.getItems());
 		});
 
@@ -214,17 +216,17 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		{
 			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(langTextMappingsTableView.getSelectionModel().getSelectedItem(),
 					settingsController.getMainController().getPrimaryStage());
-			FxUtil.handleDistinctEdit(langTextMappingsTableView, result);
+			FxActions.handleDistinctEdit(langTextMappingsTableView, result);
 			FXCollections.sort(langTextMappingsTableView.getItems());
 		});
 
 		removeLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
 		removeLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			FxUtil.handleConfirmedDelete(langTextMappingsTableView, "language to text mapping", LanguageToTextMapping.createStringConverter());
+			FxActions.handleConfirmedDelete(langTextMappingsTableView, "language to text mapping", LanguageToTextMapping.createStringConverter());
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupport(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);
+		FxActions.setStandardMouseAndKeyboardSupport(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);
 
 		// Testing
 		testingOutputTxtFld.textProperty().bind(new StringBinding()

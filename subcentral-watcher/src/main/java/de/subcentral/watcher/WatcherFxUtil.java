@@ -27,7 +27,8 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.fx.DirectoryWatchService;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxActions;
+import de.subcentral.fx.FxIO;
 import de.subcentral.watcher.controller.MainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.collections.ListChangeListener;
@@ -95,7 +96,7 @@ public class WatcherFxUtil
 
 	public static Label createMatchLabel()
 	{
-		Label lbl = new Label("", new ImageView(FxUtil.loadImg("checked_16.png")));
+		Label lbl = new Label("", new ImageView(FxIO.loadImg("checked_16.png")));
 		lbl.setTooltip(new Tooltip("Matching release"));
 		return lbl;
 	}
@@ -109,11 +110,11 @@ public class WatcherFxUtil
 		try
 		{
 			String host = new URL(rls.getFurtherInfoLinks().get(0)).getHost().replace("www.", "");
-			ImageView dbImg = new ImageView(FxUtil.loadImg("database_16.png"));
+			ImageView dbImg = new ImageView(FxIO.loadImg("database_16.png"));
 			Hyperlink hl = new Hyperlink(host, dbImg);
 			hl.setTooltip(new Tooltip("Show further info"));
 			hl.setVisited(true);
-			hl.setOnAction((ActionEvent evt) -> FxUtil.browse(rls.getFurtherInfoLinks().get(0), executorService));
+			hl.setOnAction(FxActions.browse(rls.getFurtherInfoLinks().get(0), executorService));
 			return hl;
 		}
 		catch (MalformedURLException e)
@@ -158,14 +159,14 @@ public class WatcherFxUtil
 			List<Node> nodes = new ArrayList<>(2);
 			if (nuked)
 			{
-				ImageView nukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
+				ImageView nukedImg = new ImageView(FxIO.loadImg("nuked_16.png"));
 				nukedLbl = new Label("", nukedImg);
 				nukedLbl.setTooltip(new Tooltip(nukeToolTipJoiner.toString()));
 				nodes.add(nukedLbl);
 			}
 			if (unnuked)
 			{
-				ImageView unnukedImg = new ImageView(FxUtil.loadImg("nuked_16.png"));
+				ImageView unnukedImg = new ImageView(FxIO.loadImg("nuked_16.png"));
 				unnukedLbl = new Label("", unnukedImg);
 				unnukedLbl.setTooltip(new Tooltip(unnukeTooltipJoiner.toString()));
 				nodes.add(unnukedLbl);
@@ -181,7 +182,7 @@ public class WatcherFxUtil
 		if (!containedMetaTags.isEmpty())
 		{
 			String metaTagsTxt = Tag.formatList(containedMetaTags);
-			ImageView tagImg = new ImageView(FxUtil.loadImg("tag_16.png"));
+			ImageView tagImg = new ImageView(FxIO.loadImg("tag_16.png"));
 			Label metaTagsLbl = new Label(metaTagsTxt, tagImg);
 			metaTagsLbl.setTooltip(new Tooltip("Tagged with meta tags: " + metaTagsTxt));
 			return metaTagsLbl;
@@ -200,7 +201,7 @@ public class WatcherFxUtil
 
 	public static Hyperlink createSettingsHyperlink(SettingsController settingsCtrl, String section, String text)
 	{
-		ImageView img = new ImageView(FxUtil.loadImg("settings_16.png"));
+		ImageView img = new ImageView(FxIO.loadImg("settings_16.png"));
 		Hyperlink link = new Hyperlink(text, img);
 		link.setTooltip(new Tooltip("Show settings"));
 		link.setVisited(true);
@@ -234,7 +235,7 @@ public class WatcherFxUtil
 			text = "";
 		}
 
-		ImageView compImg = new ImageView(FxUtil.loadImg("couple_16.png"));
+		ImageView compImg = new ImageView(FxIO.loadImg("couple_16.png"));
 		Label compLbl = new Label(text, compImg);
 
 		StringBuilder tooltip = new StringBuilder();
@@ -255,7 +256,7 @@ public class WatcherFxUtil
 			sb.append(" using standard release: ");
 			sb.append(releaseNamer.apply(stdRls.getRelease()));
 		}
-		ImageView guessedImg = new ImageView(FxUtil.loadImg("idea_16.png"));
+		ImageView guessedImg = new ImageView(FxIO.loadImg("idea_16.png"));
 		Label guessedLbl = new Label("", guessedImg);
 		guessedLbl.setTooltip(new Tooltip(sb.toString()));
 		return guessedLbl;
@@ -263,7 +264,7 @@ public class WatcherFxUtil
 
 	public static Label createManualLabel()
 	{
-		ImageView errorImg = new ImageView(FxUtil.loadImg("hand_select_16.png"));
+		ImageView errorImg = new ImageView(FxIO.loadImg("hand_select_16.png"));
 		Label excLbl = new Label("", errorImg);
 		excLbl.setTooltip(new Tooltip("Added manually"));
 		return excLbl;
@@ -271,7 +272,7 @@ public class WatcherFxUtil
 
 	public static Label createExceptionLabel(Throwable exception)
 	{
-		ImageView errorImg = new ImageView(FxUtil.loadImg("error_16.png"));
+		ImageView errorImg = new ImageView(FxIO.loadImg("error_16.png"));
 		Label excLbl = new Label(exception.toString(), errorImg);
 		return excLbl;
 	}

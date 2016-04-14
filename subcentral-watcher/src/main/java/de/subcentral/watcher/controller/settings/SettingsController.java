@@ -19,6 +19,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 
 import de.subcentral.fx.Controller;
+import de.subcentral.fx.FxIO;
+import de.subcentral.fx.FxNodes;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.watcher.WatcherApp;
 import de.subcentral.watcher.controller.MainController;
@@ -383,7 +385,7 @@ public class SettingsController extends Controller
 		{
 			sectionSelectionTreeView.getSelectionModel().clearSelection();
 		}
-		TreeItem<SettingsSection> itemToSelect = FxUtil.findTreeItem(sectionSelectionTreeView.getRoot(),
+		TreeItem<SettingsSection> itemToSelect = FxNodes.findTreeItem(sectionSelectionTreeView.getRoot(),
 				(TreeItem<SettingsSection> item) -> item.getValue() != null ? section.equals(item.getValue().getName()) : false);
 		sectionSelectionTreeView.getSelectionModel().select(itemToSelect);
 	}
@@ -616,7 +618,7 @@ public class SettingsController extends Controller
 
 		private void loadController(String fxmlFilename, String resourceBaseName, AbstractSettingsSectionController ctrl) throws IOException
 		{
-			Node sectionNode = FxUtil.loadFromFxml(fxmlFilename, resourceBaseName, Locale.ENGLISH, ctrl);
+			Node sectionNode = FxIO.loadView(fxmlFilename, ctrl, resourceBaseName, Locale.ENGLISH);
 			AnchorPane.setTopAnchor(sectionNode, 0.0d);
 			AnchorPane.setRightAnchor(sectionNode, 0.0d);
 			AnchorPane.setBottomAnchor(sectionNode, 0.0d);
@@ -640,7 +642,7 @@ public class SettingsController extends Controller
 
 		public void setImage(String image)
 		{
-			this.image = new ImageView(FxUtil.loadImg(image));
+			this.image = new ImageView(FxIO.loadImg(image));
 		}
 
 		public String getFxml()

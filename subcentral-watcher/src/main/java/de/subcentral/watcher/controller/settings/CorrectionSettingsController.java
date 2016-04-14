@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxActions;
 import de.subcentral.fx.settings.ConfigurationHelper;
 import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.WatcherDialogs;
@@ -99,7 +99,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			{
 				result = Optional.empty();
 			}
-			FxUtil.handleDistinctAdd(correctorsTableView, result);
+			FxActions.handleDistinctAdd(correctorsTableView, result);
 		});
 
 		final BooleanBinding noSelection = correctorsTableView.getSelectionModel().selectedItemProperty().isNull();
@@ -121,13 +121,13 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			{
 				result = Optional.empty();
 			}
-			FxUtil.handleDistinctEdit(correctorsTableView, result);
+			FxActions.handleDistinctEdit(correctorsTableView, result);
 		});
 
 		removeCorrectorButton.disableProperty().bind(noSelection);
 		removeCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			FxUtil.handleConfirmedDelete(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
+			FxActions.handleConfirmedDelete(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
 		});
 
 		importCorrectorsButton.setOnAction((ActionEvent event) ->
@@ -170,7 +170,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			}
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupport(correctorsTableView, editCorrectorButton, removeCorrectorButton);
+		FxActions.setStandardMouseAndKeyboardSupport(correctorsTableView, editCorrectorButton, removeCorrectorButton);
 	}
 
 	private class CorrectionRuleTypeStringConverter extends StringConverter<Class<? extends CorrectorSettingsItem<?, ?>>>

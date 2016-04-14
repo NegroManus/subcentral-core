@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.dialog.BeanEditController;
@@ -95,7 +96,7 @@ public class TextLanguageMappingEditController extends BeanEditController<Patter
 		}
 
 		// Bindings
-		final Binding<UserPattern> patternBinding = FxUtil.createUiPatternTextFieldBinding(modeToggleGrp, literalRadioBtn, simplePatternRadioBtn, regexRadioBtn, textTxtFld, patternErrorTxt);
+		final Binding<UserPattern> patternBinding = FxControlBindings.createUiPatternTextFieldBinding(modeToggleGrp, literalRadioBtn, simplePatternRadioBtn, regexRadioBtn, textTxtFld, patternErrorTxt);
 
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
 		applyButton.disableProperty().bind(new BooleanBinding()

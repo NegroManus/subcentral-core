@@ -1,7 +1,7 @@
 package de.subcentral.fx.dialog;
 
 import de.subcentral.fx.Controller;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxIO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -42,7 +42,7 @@ public abstract class DialogController<T> extends Controller
 		String imgPath = getImagePath();
 		if (imgPath != null)
 		{
-			dialog.setGraphic(new ImageView(FxUtil.loadImg(imgPath)));
+			dialog.setGraphic(new ImageView(FxIO.loadImg(imgPath)));
 		}
 		dialog.setHeaderText(title);
 

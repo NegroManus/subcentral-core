@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxIO;
 import de.subcentral.mig.controller.MainController;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -70,7 +70,7 @@ public class MigrationApp extends Application
 	private void initMainController() throws IOException
 	{
 		this.mainController = new MainController(primaryStage);
-		mainView = FxUtil.loadFromFxml("MainView.fxml", mainController);
+		mainView = FxIO.loadView("MainView.fxml", mainController);
 	}
 
 	private void initSceneAndShow()

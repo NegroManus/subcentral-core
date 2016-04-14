@@ -5,20 +5,20 @@ import java.util.List;
 import de.subcentral.core.correct.SeriesNameCorrector;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.util.StringUtil;
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.UserPattern;
 import javafx.beans.value.ObservableValue;
 
 public class SeriesNameCorrectorSettingsItem extends CorrectorSettingsItem<Series, SeriesNameCorrector>
 {
-	private static final ObservableValue<String>	ruleType	= FxUtil.immutableObservableValue("Series name");
+	private static final ObservableValue<String>	ruleType	= FxBindings.immutableObservableValue("Series name");
 	private final ObservableValue<String>			rule;
 	private final UserPattern						nameUserPattern;
 
 	public SeriesNameCorrectorSettingsItem(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(Series.class, buildCorrector(nameUiPattern, nameReplacement, aliasNamesReplacement), beforeQuerying, afterQuerying);
-		rule = FxUtil.immutableObservableValue(formatRule(item, nameUiPattern));
+		rule = FxBindings.immutableObservableValue(formatRule(item, nameUiPattern));
 		this.nameUserPattern = nameUiPattern;
 	}
 

@@ -1,6 +1,6 @@
 package de.subcentral.watcher.controller.settings;
 
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxBindings;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.releasescene.ReleaseScene;
@@ -53,7 +53,7 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 		parsingServicesTableView.setItems(settings.getFilenameParsingServices().property());
 		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxUtil.immutableObservableValue(param.getValue().getItem().getDomain()));
+		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxBindings.immutableObservableValue(param.getValue().getItem().getDomain()));
 
 		parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) ->
 		{
@@ -79,7 +79,7 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 			{
 				example = "";
 			}
-			return FxUtil.immutableObservableValue(example);
+			return FxBindings.immutableObservableValue(example);
 		});
 	}
 }

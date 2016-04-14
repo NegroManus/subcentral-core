@@ -3,7 +3,7 @@ package de.subcentral.watcher.controller.settings;
 import java.io.File;
 import java.nio.file.Path;
 
-import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.FxActions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -53,7 +53,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 			watchDirectoriesListView.getItems().remove(watchDirectoriesListView.getSelectionModel().getSelectedIndex());
 		});
 
-		FxUtil.setStandardMouseAndKeyboardSupportForEditable(watchDirectoriesListView, removeWatchDirectoryButton);
+		FxActions.setStandardMouseAndKeyboardSupportForEditable(watchDirectoriesListView, removeWatchDirectoryButton);
 
 		initialScanCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getInitialScan().property());
 		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getRejectAlreadyProcessedFiles().property());
