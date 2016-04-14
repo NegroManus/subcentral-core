@@ -13,7 +13,7 @@
 	</properties>
 
 	<dependencies>
-		<!-- The mig functionality -->
+		<!-- SubCentral migrations -->
 		<dependency>
 			<groupId>de.subcentral</groupId>
 			<artifactId>subcentral-mig</artifactId>

@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.subcentral</groupId>
 	<artifactId>subcentral-watcher</artifactId>
@@ -12,23 +11,17 @@
 	</properties>
 
 	<dependencies>
-		<!-- The core subcentral functionality -->
+		<!-- SubCentral core -->
 		<dependency>
 			<groupId>de.subcentral</groupId>
 			<artifactId>subcentral-core</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<!-- SubCentral JavaFX utils -->
 		<dependency>
 			<groupId>de.subcentral</groupId>
 			<artifactId>subcentral-fx</artifactId>
 			<version>1.0</version>
-		</dependency>
-
-		<!-- For configuration -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-configuration2</artifactId>
-			<version>2.0</version>
 		</dependency>
 	</dependencies>
 
@@ -57,16 +50,15 @@
 				<version>2.6</version>
 				<configuration>
 					<!-- for manual assembly configuration -->
-					<!-- <descriptors> <descriptor>src/main/assembly/assembly.xml</descriptor> 
-						</descriptors> -->
+					<!-- <descriptors> <descriptor>src/main/assembly/assembly.xml</descriptor> </descriptors> -->
 					<!-- for predefined descriptor -->
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
-  						<manifest>
-              				<mainClass>de.subcentral.watcher.WatcherApp</mainClass>
-           				</manifest>
+						<manifest>
+							<mainClass>de.subcentral.watcher.WatcherApp</mainClass>
+						</manifest>
 					</archive>
 				</configuration>
 				<executions>
