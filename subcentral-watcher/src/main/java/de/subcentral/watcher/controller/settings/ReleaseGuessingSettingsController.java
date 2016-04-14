@@ -64,11 +64,11 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 
 		standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
 		{
-			return FxUtil.constantStringBinding(Tag.formatList(param.getValue().getRelease().getTags()));
+			return FxUtil.immutableObservableValue(Tag.formatList(param.getValue().getRelease().getTags()));
 		});
 		standardReleasesGroupColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
 		{
-			return FxUtil.constantStringBinding(Group.toStringNullSafe(param.getValue().getRelease().getGroup()));
+			return FxUtil.immutableObservableValue(Group.toStringNullSafe(param.getValue().getRelease().getGroup()));
 		});
 		standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
 		{
@@ -84,7 +84,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 				default:
 					value = param.getValue().getScope().name();
 			}
-			return FxUtil.constantStringBinding(value);
+			return FxUtil.immutableObservableValue(value);
 		});
 
 		addStandardReleaseButton.setOnAction((ActionEvent event) ->

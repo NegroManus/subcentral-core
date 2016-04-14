@@ -5,32 +5,32 @@ import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxUtil;
-import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ObservableValue;
 
 public class ReleaseTagsCorrectorSettingsItem extends CorrectorSettingsItem<Release, ReleaseTagsCorrector>
 {
-	private static final StringBinding	ruleType	= FxUtil.constantStringBinding("Release tags");
-	private final StringBinding			rule;
+	private static final ObservableValue<String>	ruleType	= FxUtil.immutableObservableValue("Release tags");
+	private final ObservableValue<String>			rule;
 
 	public ReleaseTagsCorrectorSettingsItem(ReleaseTagsCorrector corrector, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(Release.class, corrector, beforeQuerying, afterQuerying);
-		rule = FxUtil.constantStringBinding(formatRule(corrector));
+		rule = FxUtil.immutableObservableValue(formatRule(corrector));
 	}
 
 	@Override
-	public StringBinding ruleTypeBinding()
+	public ObservableValue<String> ruleType()
 	{
 		return ruleType;
 	}
 
 	public static String getRuleType()
 	{
-		return ruleType.get();
+		return ruleType.getValue();
 	}
 
 	@Override
-	public StringBinding ruleBinding()
+	public ObservableValue<String> rule()
 	{
 		return rule;
 	}

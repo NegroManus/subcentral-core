@@ -109,13 +109,13 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		// TextLangMappings
 		textLangMappingsTextColumn.setCellValueFactory((CellDataFeatures<PatternToLanguageMapping, UserPattern> param) ->
 		{
-			return FxUtil.constantBinding(param.getValue().getPattern());
+			return FxUtil.immutableObservableValue(param.getValue().getPattern());
 		});
 		textLangMappingsTextColumn.setCellFactory((TableColumn<PatternToLanguageMapping, UserPattern> param) -> new PatternToLanguageMappingPatternTableCell());
 
 		textLangMappingsLangColumn.setCellValueFactory((CellDataFeatures<PatternToLanguageMapping, Locale> param) ->
 		{
-			return FxUtil.constantBinding(param.getValue().getLanguage());
+			return FxUtil.immutableObservableValue(param.getValue().getLanguage());
 		});
 		textLangMappingsLangColumn.setCellFactory((TableColumn<PatternToLanguageMapping, Locale> param) -> new PatternToLanguageMappingLanguageTableCell());
 
@@ -190,13 +190,13 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		// LangTextMappings
 		langTextMappingsLangColumn.setCellValueFactory((CellDataFeatures<LanguageToTextMapping, Locale> param) ->
 		{
-			return FxUtil.constantBinding(param.getValue().getLanguage());
+			return FxUtil.immutableObservableValue(param.getValue().getLanguage());
 		});
 		langTextMappingsLangColumn.setCellFactory((TableColumn<LanguageToTextMapping, Locale> param) -> new LanguageToTextMappingLanguageTableCell());
 
 		langTextMappingsTextColumn.setCellValueFactory((CellDataFeatures<LanguageToTextMapping, String> param) ->
 		{
-			return FxUtil.constantStringBinding(param.getValue().getText());
+			return FxUtil.immutableObservableValue(param.getValue().getText());
 		});
 
 		langTextMappingsTableView.setItems(settings.getCustomLanguageTextMappings().property());

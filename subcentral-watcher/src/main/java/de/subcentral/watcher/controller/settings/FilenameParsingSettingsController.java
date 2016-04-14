@@ -53,7 +53,7 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 		parsingServicesTableView.setItems(settings.getFilenameParsingServices().property());
 		parsingServicesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsingServicesEnabledColumn));
 		parsingServicesEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxUtil.constantBinding(param.getValue().getItem().getDomain()));
+		parsingServicesNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxUtil.immutableObservableValue(param.getValue().getItem().getDomain()));
 
 		parsingServicesExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) ->
 		{
@@ -79,7 +79,7 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 			{
 				example = "";
 			}
-			return FxUtil.constantBinding(example);
+			return FxUtil.immutableObservableValue(example);
 		});
 	}
 }

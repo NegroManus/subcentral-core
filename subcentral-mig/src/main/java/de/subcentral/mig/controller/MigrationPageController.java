@@ -112,7 +112,7 @@ public class MigrationPageController extends AbstractPageController
 	@Override
 	public BooleanBinding nextButtonDisableBinding()
 	{
-		return FxUtil.constantBooleanBinding(true);
+		return FxUtil.immutableBooleanBinding(true);
 	}
 
 	@Override

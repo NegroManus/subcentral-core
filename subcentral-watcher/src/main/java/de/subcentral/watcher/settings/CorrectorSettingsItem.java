@@ -21,9 +21,9 @@ import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
 import de.subcentral.fx.settings.SimpleSettingsItem;
 import javafx.beans.Observable;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -48,9 +48,9 @@ public abstract class CorrectorSettingsItem<T, C extends Corrector<? super T>> e
 		return beanType;
 	}
 
-	public abstract StringBinding ruleTypeBinding();
+	public abstract ObservableValue<String> ruleType();
 
-	public abstract StringBinding ruleBinding();
+	public abstract ObservableValue<String> rule();
 
 	public final BooleanProperty beforeQueryingProperty()
 	{

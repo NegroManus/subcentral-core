@@ -67,9 +67,9 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		// Correctors
 		correctorsTableView.setItems(SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().property());
 
-		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleTypeBinding());
+		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleType());
 
-		correctorsRuleColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleBinding());
+		correctorsRuleColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().rule());
 
 		correctorsBeforeQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(correctorsBeforeQueryingColumn));
 		correctorsBeforeQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, Boolean> param) -> param.getValue().beforeQueryingProperty());
@@ -208,10 +208,10 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.append("Rule type: ");
-			sb.append(entry.ruleTypeBinding().get());
+			sb.append(entry.ruleType().getValue());
 			sb.append("\n");
 			sb.append("Rule: ");
-			sb.append(entry.ruleBinding().get());
+			sb.append(entry.rule().getValue());
 			return sb.toString();
 		}
 

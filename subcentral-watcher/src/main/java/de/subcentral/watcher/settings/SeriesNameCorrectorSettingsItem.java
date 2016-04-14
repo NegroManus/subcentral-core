@@ -7,34 +7,34 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
-import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ObservableValue;
 
 public class SeriesNameCorrectorSettingsItem extends CorrectorSettingsItem<Series, SeriesNameCorrector>
 {
-	private static final StringBinding	ruleType	= FxUtil.constantStringBinding("Series name");
-	private final StringBinding			rule;
-	private final UserPattern			nameUserPattern;
+	private static final ObservableValue<String>	ruleType	= FxUtil.immutableObservableValue("Series name");
+	private final ObservableValue<String>			rule;
+	private final UserPattern						nameUserPattern;
 
 	public SeriesNameCorrectorSettingsItem(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying)
 	{
 		super(Series.class, buildCorrector(nameUiPattern, nameReplacement, aliasNamesReplacement), beforeQuerying, afterQuerying);
-		rule = FxUtil.constantStringBinding(formatRule(item, nameUiPattern));
+		rule = FxUtil.immutableObservableValue(formatRule(item, nameUiPattern));
 		this.nameUserPattern = nameUiPattern;
 	}
 
 	@Override
-	public StringBinding ruleTypeBinding()
+	public ObservableValue<String> ruleType()
 	{
 		return ruleType;
 	}
 
 	public static String getRuleType()
 	{
-		return ruleType.get();
+		return ruleType.getValue();
 	}
 
 	@Override
-	public StringBinding ruleBinding()
+	public ObservableValue<String> rule()
 	{
 		return rule;
 	}

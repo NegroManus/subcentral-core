@@ -36,6 +36,7 @@ import de.subcentral.core.util.ExceptionUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.UserPattern.Mode;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.BooleanBinding;
@@ -748,7 +749,19 @@ public class FxUtil
 		};
 	}
 
-	public static BooleanBinding constantBooleanBinding(final boolean value)
+	public static <T> Binding<T> immutableBinding(final T value)
+	{
+		return new ObjectBinding<T>()
+		{
+			@Override
+			protected T computeValue()
+			{
+				return value;
+			}
+		};
+	}
+
+	public static BooleanBinding immutableBooleanBinding(final boolean value)
 	{
 		return new BooleanBinding()
 		{
@@ -760,7 +773,7 @@ public class FxUtil
 		};
 	}
 
-	public static StringBinding constantStringBinding(final String value)
+	public static StringBinding immutableStringBinding(final String value)
 	{
 		return new StringBinding()
 		{
@@ -772,7 +785,7 @@ public class FxUtil
 		};
 	}
 
-	public static <E> ListBinding<E> constantListBinding(final ObservableList<E> value)
+	public static <E> ListBinding<E> immutableListBinding(final ObservableList<E> value)
 	{
 		return new ListBinding<E>()
 		{
@@ -784,16 +797,9 @@ public class FxUtil
 		};
 	}
 
-	public static <T> Binding<T> constantBinding(final T value)
+	public static <T> ObservableValue<T> immutableObservableValue(T value)
 	{
-		return new ObjectBinding<T>()
-		{
-			@Override
-			protected T computeValue()
-			{
-				return value;
-			}
-		};
+		return new ImmutableObservableValue<>(value);
 	}
 
 	public static ObservableList<Locale> createListOfAvailableLocales(boolean includeEmptyLocale, boolean includeVariants, Comparator<Locale> initialSortOrder)
@@ -1275,6 +1281,46 @@ public class FxUtil
 		hbox.setSpacing(5d);
 		hbox.setAlignment(Pos.CENTER_LEFT);
 		return hbox;
+	}
+
+	private static class ImmutableObservableValue<T> implements ObservableValue<T>
+	{
+		private final T value;
+
+		private ImmutableObservableValue(T value)
+		{
+			this.value = value;
+		}
+
+		@Override
+		public void addListener(InvalidationListener listener)
+		{
+			// not needed because value never changes
+		}
+
+		@Override
+		public void removeListener(InvalidationListener listener)
+		{
+			// not needed because value never changes
+		}
+
+		@Override
+		public void addListener(ChangeListener<? super T> listener)
+		{
+			// not needed because value never changes
+		}
+
+		@Override
+		public void removeListener(ChangeListener<? super T> listener)
+		{
+			// not needed because value never changes
+		}
+
+		@Override
+		public T getValue()
+		{
+			return value;
+		}
 	}
 
 	private FxUtil()
