@@ -45,6 +45,7 @@ public abstract class DialogController<T> extends Controller
 			dialog.setGraphic(new ImageView(FxIO.loadImg(imgPath)));
 		}
 		dialog.setHeaderText(title);
+		dialog.setResizable(true);
 
 		dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
 		dialog.getDialogPane().setContent(rootPane);

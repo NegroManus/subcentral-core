@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
@@ -85,6 +87,28 @@ public class SeriesNameCorrector implements Corrector<Series>
 				corrections.add(new Correction(series, Series.PROP_TITLE.getPropName(), oldTitle, titleReplacement, this));
 			}
 		}
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof SeriesNameCorrector)
+		{
+			SeriesNameCorrector o = (SeriesNameCorrector) obj;
+			return namePattern.pattern().equals(o.namePattern.pattern()) && Objects.equals(nameReplacement, o.nameReplacement) && aliasNamesReplacement.equals(o.aliasNamesReplacement)
+					&& Objects.equals(titleReplacement, o.titleReplacement);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(97, 11).append(namePattern.pattern()).append(nameReplacement).append(aliasNamesReplacement).append(titleReplacement).toHashCode();
 	}
 
 	@Override

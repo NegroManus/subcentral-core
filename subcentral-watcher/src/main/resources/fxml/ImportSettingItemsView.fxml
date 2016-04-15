@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
@@ -20,18 +24,18 @@
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-      <RadioButton fx:id="defaultSettingsRadioBtn" mnemonicParsing="false" text="Import from default settings" GridPane.columnSpan="2147483647" />
+      <RadioButton fx:id="defaultSettingsRadioBtn" mnemonicParsing="false" text="Import from the default settings" GridPane.columnSpan="2147483647" />
       <RadioButton fx:id="fileRadioBtn" mnemonicParsing="false" text="Import from file" GridPane.rowIndex="1" />
       <TextField fx:id="fileTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Button fx:id="chooseFileBtn" mnemonicParsing="false" text="Choose" GridPane.columnIndex="2" GridPane.rowIndex="1" />
       <RadioButton fx:id="urlRadioBtn" mnemonicParsing="false" text="Import from URL" GridPane.rowIndex="2" />
-      <TextField fx:id="urlTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <CheckBox fx:id="addItemsCheckBox" mnemonicParsing="false" text="Add new entries" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+      <TextField fx:id="urlTxtFld" prefWidth="300.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+      <CheckBox fx:id="addItemsCheckBox" mnemonicParsing="false" text="Add new items" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets top="20.0" />
          </GridPane.margin>
       </CheckBox>
-      <CheckBox fx:id="replaceItemsCheckBox" mnemonicParsing="false" text="Replace existing entries" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-      <CheckBox fx:id="removeItemsCheckBox" mnemonicParsing="false" text="Remove entries that don't exist in the imported entries" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+      <CheckBox fx:id="replaceItemsCheckBox" mnemonicParsing="false" text="Replace existing items" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+      <CheckBox fx:id="removeItemsCheckBox" mnemonicParsing="false" text="Remove items that don't exist in the imported items" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
 	</children>
 </GridPane>

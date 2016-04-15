@@ -17,9 +17,24 @@ public interface Settable extends Observable
 
 	public boolean changed();
 
-	public void load(ImmutableConfiguration cfg);
+	public default void load(ImmutableConfiguration cfg)
+	{
+		load(cfg, true);
+	}
 
-	public void save(Configuration cfg);
+	public void load(ImmutableConfiguration cfg, boolean resetChanged);
+
+	public default void save(Configuration cfg)
+	{
+		save(cfg, true);
+	}
+
+	public void save(Configuration cfg, boolean resetChanged);
+
+	public default void load(URL file) throws ConfigurationException
+	{
+		load(file, true);
+	}
 
 	/**
 	 * Must be called in the JavaFX Application thread.
@@ -27,7 +42,12 @@ public interface Settable extends Observable
 	 * @param file
 	 * @throws ConfigurationException
 	 */
-	public void load(URL file) throws ConfigurationException;
+	public void load(URL file, boolean resetChanged) throws ConfigurationException;
+
+	public default void load(Path file) throws ConfigurationException
+	{
+		load(file, true);
+	}
 
 	/**
 	 * Must be called in the JavaFX Application thread.
@@ -35,7 +55,12 @@ public interface Settable extends Observable
 	 * @param file
 	 * @throws ConfigurationException
 	 */
-	public void load(Path file) throws ConfigurationException;
+	public void load(Path file, boolean resetChanged) throws ConfigurationException;
+
+	public default void save(Path file) throws ConfigurationException
+	{
+		save(file, true);
+	}
 
 	/**
 	 * Must be called in the JavaFX Application thread.
@@ -44,5 +69,5 @@ public interface Settable extends Observable
 	 * @throws ConfigurationException
 	 * @throws IOException
 	 */
-	public void save(Path file) throws ConfigurationException;
+	public void save(Path file, boolean resetChanged) throws ConfigurationException;
 }

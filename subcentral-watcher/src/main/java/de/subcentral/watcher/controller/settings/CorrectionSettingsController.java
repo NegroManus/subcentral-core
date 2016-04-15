@@ -1,5 +1,6 @@
 package de.subcentral.watcher.controller.settings;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -7,7 +8,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import de.subcentral.fx.FxActions;
 import de.subcentral.fx.settings.ConfigurationHelper;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
+import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
@@ -132,7 +133,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 
 		importCorrectorsButton.setOnAction((ActionEvent event) ->
 		{
-			Optional<ImportSettingItemsParameters> result = WatcherDialogs.showImportSettingEntriesView(settingsController.getMainController().getPrimaryStage());
+			Optional<ImportSettingItemsParameters> result = WatcherDialogs.showImportSettingItemsView(settingsController.getMainController().getPrimaryStage(), "Import correction rules");
 			if (result.isPresent())
 			{
 				ImportSettingItemsParameters params = result.get();
@@ -163,9 +164,10 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 					protected void succeeded()
 					{
 						XMLConfiguration cfg = getValue();
-						SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().load(cfg);
+						SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().update(cfg, params.isAddItems(), params.isReplaceItems(), params.isRemoveItems(), Objects::equals);
 					}
 				};
+				importCorrectorsTask.setOnFailed(FxActions.DEFAULT_TASK_FAILED_HANDLER);
 				getSettingsController().getMainController().getCommonExecutor().submit(importCorrectorsTask);
 			}
 		});

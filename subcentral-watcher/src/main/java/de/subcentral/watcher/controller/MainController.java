@@ -187,7 +187,7 @@ public class MainController extends Controller
 		}
 		else
 		{
-			log.debug("Not adding system tray icon because setting systemTrayEnabled is false");
+			log.debug("Not adding system tray icon because setting " + SettingsController.SETTINGS.getSystemTrayEnabled().getKey() + " is false");
 		}
 	}
 

@@ -73,20 +73,20 @@ public class Settings extends SettableBase implements Settable
 	}
 
 	@Override
-	public void load(ImmutableConfiguration cfg)
+	public void load(ImmutableConfiguration cfg, boolean resetChanged)
 	{
 		for (Settable s : settables)
 		{
-			s.load(cfg);
+			s.load(cfg, resetChanged);
 		}
 	}
 
 	@Override
-	public void save(Configuration cfg)
+	public void save(Configuration cfg, boolean resetChanged)
 	{
 		for (Settable s : settables)
 		{
-			s.save(cfg);
+			s.save(cfg, resetChanged);
 		}
 	}
 }

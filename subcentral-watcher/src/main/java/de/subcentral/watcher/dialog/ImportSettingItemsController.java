@@ -7,8 +7,8 @@ import java.util.Objects;
 import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.dialog.DialogController;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters.SourceType;
+import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters;
+import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters.SourceType;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -23,8 +23,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
-public class ImportSettingEntriesController extends DialogController<ImportSettingItemsParameters>
+public class ImportSettingItemsController extends DialogController<ImportSettingItemsParameters>
 {
+	private String		title;
 	@FXML
 	private RadioButton	defaultSettingsRadioBtn;
 	@FXML
@@ -45,15 +46,16 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 	@FXML
 	private CheckBox	removeItemsCheckBox;
 
-	public ImportSettingEntriesController(Window window)
+	public ImportSettingItemsController(Window window, String title)
 	{
 		super(window);
+		this.title = (title != null ? title : "Import settings items");
 	}
 
 	@Override
 	protected String getTitle()
 	{
-		return "Import setting entries";
+		return title;
 	}
 
 	@Override
@@ -89,26 +91,20 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 		applyButton.disableProperty().bind(new BooleanBinding()
 		{
 			{
-				super.bind(sourceTypeToggleGrp.selectedToggleProperty(), fileFormatter.valueProperty(), urlFormatter.valueProperty());
+				super.bind(sourceTypeToggleGrp.selectedToggleProperty(),
+						fileFormatter.valueProperty(),
+						urlFormatter.valueProperty(),
+						addItemsCheckBox.selectedProperty(),
+						replaceItemsCheckBox.selectedProperty(),
+						removeItemsCheckBox.selectedProperty());
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
 				Toggle sourceTypeToggle = sourceTypeToggleGrp.getSelectedToggle();
-				if (defaultSettingsRadioBtn == sourceTypeToggle)
-				{
-					return false;
-				}
-				if (fileRadioBtn == sourceTypeToggle)
-				{
-					return fileFormatter.getValue() == null;
-				}
-				if (urlRadioBtn == sourceTypeToggle)
-				{
-					return urlFormatter.getValue() == null;
-				}
-				return true;
+				return (fileRadioBtn == sourceTypeToggle && fileFormatter.getValue() == null || urlRadioBtn == sourceTypeToggle && urlFormatter.getValue() == null)
+						|| (!addItemsCheckBox.isSelected() && !replaceItemsCheckBox.isSelected() && !removeItemsCheckBox.isSelected());
 			}
 		});
 
@@ -119,11 +115,7 @@ public class ImportSettingEntriesController extends DialogController<ImportSetti
 			{
 				Toggle sourceTypeToggle = sourceTypeToggleGrp.getSelectedToggle();
 				SourceType sourceType;
-				if (defaultSettingsRadioBtn == sourceTypeToggle)
-				{
-					sourceType = SourceType.DEFAULT_SETTINGS;
-				}
-				else if (fileRadioBtn == sourceTypeToggle)
+				if (fileRadioBtn == sourceTypeToggle)
 				{
 					sourceType = SourceType.FILE;
 				}

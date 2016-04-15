@@ -42,24 +42,24 @@ public abstract class SettableBase implements Settable
 	}
 
 	@Override
-	public void load(URL file) throws ConfigurationException
+	public void load(URL file, boolean resetChanged) throws ConfigurationException
 	{
 		XMLConfiguration cfg = ConfigurationHelper.load(file);
-		load(cfg);
+		load(cfg, resetChanged);
 	}
 
 	@Override
-	public void load(Path file) throws ConfigurationException
+	public void load(Path file, boolean resetChanged) throws ConfigurationException
 	{
 		XMLConfiguration cfg = ConfigurationHelper.load(file);
-		load(cfg);
+		load(cfg, resetChanged);
 	}
 
 	@Override
-	public void save(Path file) throws ConfigurationException
+	public void save(Path file, boolean resetChanged) throws ConfigurationException
 	{
 		XMLConfiguration cfg = new XMLConfiguration();
-		save(cfg);
+		save(cfg, resetChanged);
 		ConfigurationHelper.save(cfg, file);
 	}
 }

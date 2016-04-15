@@ -12,7 +12,7 @@ import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.dialog.DialogController;
-import de.subcentral.watcher.dialog.ImportSettingEntriesController.ImportSettingItemsParameters;
+import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.PatternToLanguageMapping;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
@@ -95,9 +95,9 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "LanguageTextMappingEditView.fxml");
 	}
 
-	public static Optional<ImportSettingItemsParameters> showImportSettingEntriesView(Window window)
+	public static Optional<ImportSettingItemsParameters> showImportSettingItemsView(Window window, String title)
 	{
-		ImportSettingEntriesController ctrl = new ImportSettingEntriesController(window);
+		ImportSettingItemsController ctrl = new ImportSettingItemsController(window, title);
 		return showEditViewAndWait(ctrl, "ImportSettingItemsView.fxml");
 	}
 

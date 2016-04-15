@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import com.google.common.base.MoreObjects;
+
 public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
 {
 	protected final Function<P, P> replacer;
@@ -52,5 +56,36 @@ public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
 	protected P cloneValue(P value)
 	{
 		return value;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj == null)
+		{
+			return false;
+		}
+		if (getClass().equals(obj.getClass()))
+		{
+			SinglePropertyCorrector<?, ?> o = (SinglePropertyCorrector<?, ?>) obj;
+			return replacer.equals(o.replacer);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(977, 11).append(getClass()).append(replacer).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(getClass()).add("replacer", replacer).toString();
 	}
 }

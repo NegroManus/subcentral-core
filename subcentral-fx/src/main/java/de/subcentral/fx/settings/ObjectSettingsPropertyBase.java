@@ -22,12 +22,15 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 	}
 
 	@Override
-	public void load(ImmutableConfiguration cfg)
+	public void load(ImmutableConfiguration cfg, boolean resetChanged)
 	{
 		try
 		{
-			property.setValue(handler.get(cfg, key));
-			changed.set(false);
+			property.setValue(loadValue(cfg));
+			if (resetChanged)
+			{
+				changed.set(false);
+			}
 		}
 		catch (Exception e)
 		{
@@ -35,10 +38,23 @@ public abstract class ObjectSettingsPropertyBase<T, P extends Property<T>> exten
 		}
 	}
 
-	@Override
-	public void save(Configuration cfg)
+	public T loadValue(ImmutableConfiguration cfg)
 	{
-		handler.add(cfg, key, property.getValue());
-		changed.set(false);
+		return handler.get(cfg, key);
+	}
+
+	@Override
+	public void save(Configuration cfg, boolean resetChanged)
+	{
+		saveValue(cfg, property.getValue());
+		if (resetChanged)
+		{
+			changed.set(false);
+		}
+	}
+
+	public void saveValue(Configuration cfg, T value)
+	{
+		handler.add(cfg, key, value);
 	}
 }

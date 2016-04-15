@@ -28,12 +28,15 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	}
 
 	@Override
-	public void load(ImmutableConfiguration cfg)
+	public void load(ImmutableConfiguration cfg, boolean resetChanged)
 	{
 		try
 		{
 			property.set(cfg.getBoolean(key));
-			changed.set(false);
+			if (resetChanged)
+			{
+				changed.set(false);
+			}
 		}
 		catch (Exception e)
 		{
@@ -42,9 +45,12 @@ public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, Boole
 	}
 
 	@Override
-	public void save(Configuration cfg)
+	public void save(Configuration cfg, boolean resetChanged)
 	{
 		cfg.setProperty(key, property.get());
-		changed.set(false);
+		if (resetChanged)
+		{
+			changed.set(false);
+		}
 	}
 }
