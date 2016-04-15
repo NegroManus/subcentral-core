@@ -12,14 +12,33 @@
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
 	</columnConstraints>
 	<rowConstraints>
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label text="Meta tags" underline="true">
+      <Label text="Release">
+         <graphic>
+            <ImageView pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/release_32.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
+		<Label text="Meta tags" GridPane.rowIndex="2">
 			<font>
-				<Font name="System Bold" size="12.0" />
+				<Font name="System Bold" size="14.0" />
 			</font>
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
@@ -29,8 +48,8 @@
 				</ImageView>
 			</graphic>
 		</Label>
-		<Label text="Meta tags (ordered by appearance in release name):" GridPane.rowIndex="1" />
-		<TextField fx:id="metaTagsTextField" promptText="meta tags (separated by comma)" GridPane.rowIndex="2" />
+		<TextField fx:id="metaTagsTextField" promptText="meta tags (separated by comma)" GridPane.rowIndex="4" />
+      <Label disable="true" text="Separated by comma; ordered by appearance in release name." GridPane.rowIndex="3" />
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

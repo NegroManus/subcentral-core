@@ -13,24 +13,28 @@
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label text="Naming" underline="true">
+		<Label text="Naming">
 			<font>
-				<Font name="System Bold" size="12.0" />
+				<Font size="18.0" />
 			</font>
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../img/font_16.png" />
+						<Image url="@../img/font_32.png" />
 					</image>
 				</ImageView>
 			</graphic>
 		</Label>
-		<Label text="Naming parameters:" GridPane.rowIndex="1" />
-		<TableView fx:id="namingParamsTableView" editable="true" maxHeight="1.7976931348623157E308" GridPane.rowIndex="2">
+		<Label text="Naming parameters" GridPane.rowIndex="2">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+		<TableView fx:id="namingParamsTableView" editable="true" maxHeight="1.7976931348623157E308" GridPane.rowIndex="3">
 			<columns>
 				<TableColumn fx:id="namingParamsKeyColumn" editable="false" prefWidth="75.0" text="Parameter" />
 				<TableColumn fx:id="namingParamsValueColumn" prefWidth="75.0" text="Value" />
@@ -39,6 +43,11 @@
 				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
 			</columnResizePolicy>
 		</TableView>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

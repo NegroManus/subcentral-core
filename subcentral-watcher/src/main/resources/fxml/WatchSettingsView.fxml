@@ -13,6 +13,7 @@
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
@@ -20,23 +21,29 @@
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label text="Watch" underline="true" GridPane.columnSpan="2147483647">
-			<font>
-				<Font name="System Bold" size="12.0" />
-			</font>
+		<Label text="Watch" GridPane.columnSpan="2147483647">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../img/iris_16.png" />
+						<Image url="@../img/iris_32.png" />
 					</image>
 				</ImageView>
 			</graphic>
+         <font>
+            <Font size="18.0" />
+         </font>
 		</Label>
-		<Label text="Watch directories:" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-		<ListView fx:id="watchDirectoriesListView" maxHeight="-Infinity" prefHeight="100.0" GridPane.rowIndex="2" />
-		<CheckBox fx:id="initialScanCheckBox" mnemonicParsing="false" text="Process already existing files on watch start" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-      <CheckBox fx:id="rejectAlreadyProcessedFilesCheckBox" mnemonicParsing="false" text="Reject files that are already in the processing list" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
-      <HBox spacing="5.0" GridPane.rowIndex="3">
+		<Label text="Watch directories" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+		<ListView fx:id="watchDirectoriesListView" maxHeight="-Infinity" prefHeight="100.0" GridPane.rowIndex="3" />
+		<CheckBox fx:id="initialScanCheckBox" mnemonicParsing="false" text="Process already existing files on watch start" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets top="25.0" />
+         </GridPane.margin></CheckBox>
+      <CheckBox fx:id="rejectAlreadyProcessedFilesCheckBox" mnemonicParsing="false" text="Reject files that are already in the processing list" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
+      <HBox spacing="5.0" GridPane.rowIndex="4">
          <children>
 				<Button fx:id="addWatchDirectoryButton" mnemonicParsing="false" text="Add">
                <graphic>
@@ -56,9 +63,14 @@
                </graphic></Button>
          </children>
          <GridPane.margin>
-            <Insets bottom="20.0" />
+            <Insets />
          </GridPane.margin>
       </HBox>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

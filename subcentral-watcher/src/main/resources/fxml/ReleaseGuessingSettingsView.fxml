@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -14,46 +20,47 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="rootPane" hgap="5.0" prefWidth="400.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="rootPane" hgap="5.0" prefWidth="400.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label text="Release guessing" underline="true" GridPane.columnSpan="2147483647">
-			<font>
-				<Font name="System Bold" size="12.0" />
-			</font>
+		<Label text="Release guessing" GridPane.columnSpan="2147483647">
 			<graphic>
 				<ImageView pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../img/idea_16.png" />
+						<Image url="@../img/idea_32.png" />
 					</image>
 				</ImageView>
 			</graphic>
-		</Label>
-		<CheckBox fx:id="enableGuessingCheckBox" mnemonicParsing="false" text="Enable guessing" GridPane.rowIndex="1" />
-		<Label text="Standard releases" underline="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
          <font>
-            <Font name="System Bold" size="12.0" />
+            <Font size="18.0" />
+         </font>
+		</Label>
+		<CheckBox fx:id="enableGuessingCheckBox" mnemonicParsing="false" text="Enable release guessing" GridPane.rowIndex="2" />
+		<Label text="Standard releases" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+         <font>
+            <Font name="System Bold" />
          </font>
          <GridPane.margin>
-            <Insets top="10.0" />
+            <Insets top="25.0" />
          </GridPane.margin>
          <graphic>
             <ImageView pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/release_16.png" />
+                  <Image url="@../img/release_24.png" />
                </image>
             </ImageView>
          </graphic></Label>
-		<TableView fx:id="standardReleasesTableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+		<TableView fx:id="standardReleasesTableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
 			<columns>
 				<TableColumn fx:id="standardReleasesTagsColumn" editable="false" maxWidth="15000.0" prefWidth="75.0" text="Tags" />
 				<TableColumn fx:id="standardReleasesGroupColumn" editable="false" maxWidth="8000.0" prefWidth="75.0" text="Group" />
@@ -63,7 +70,7 @@
 				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
 			</columnResizePolicy>
 		</TableView>
-      <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
+      <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
          <children>
 				<Button fx:id="addStandardReleaseButton" mnemonicParsing="false" text="Add">
                <graphic>
@@ -92,6 +99,11 @@
             </Button>
          </children>
       </HBox>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

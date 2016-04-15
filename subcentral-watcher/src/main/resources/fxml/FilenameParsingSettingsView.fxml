@@ -12,7 +12,8 @@
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
 	</columnConstraints>
 	<rowConstraints>
-		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES" />
@@ -22,46 +23,40 @@
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-      <HBox spacing="5.0">
-         <children>
-      		<Label text="Filename patterns" underline="true">
-      			<font>
-      				<Font name="System Bold" size="12.0" />
-      			</font>
-      			<graphic>
-      				<ImageView pickOnBounds="true" preserveRatio="true">
-      					<image>
-      						<Image url="@../img/search_text_16.png" />
-      					</image>
-      				</ImageView>
-      			</graphic>
-      		</Label>
-         </children>
-      </HBox>
-		<Label text="Subtitle filename patterns (separated by comma):" GridPane.rowIndex="1" />
-		<TextField fx:id="filenamePatternsTextField" promptText="comma-separated filename patterns" GridPane.rowIndex="2" />
-		<TableView fx:id="parsingServicesTableView" editable="true" minHeight="100.0" prefHeight="150.0" GridPane.rowIndex="5">
+		<Label text="Filename parsing">
+			<font>
+				<Font size="18.0" />
+			</font>
+			<graphic>
+				<ImageView pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../img/search_text_32.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Label>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
+		<Label text="Subtitle filename patterns (separated by comma):" GridPane.rowIndex="2" />
+		<TextField fx:id="filenamePatternsTextField" promptText="comma-separated filename patterns" GridPane.rowIndex="3" />
+		<TableView fx:id="parsingServicesTableView" editable="true" minHeight="100.0" prefHeight="150.0" GridPane.rowIndex="6">
 			<columns>
 				<TableColumn fx:id="parsingServicesEnabledColumn" prefWidth="60.0" text="Enabled" />
 				<TableColumn fx:id="parsingServicesNameColumn" editable="false" minWidth="25.0" prefWidth="100.0" text="Name" />
 				<TableColumn fx:id="parsingServicesExampleColumn" editable="false" minWidth="25.0" prefWidth="400.0" text="Filename example" />
 			</columns>
 		</TableView>
-		<Label text="(* = any string; leave empty to deny all)" GridPane.rowIndex="3" />
-		<Label text="Filename parsers" underline="true" GridPane.rowIndex="4">
-			<font>
-				<Font name="System Bold" size="12.0" />
-			</font>
-			<graphic>
-				<ImageView pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="@../img/search_text_16.png" />
-					</image>
-				</ImageView>
-			</graphic>
+		<Label disable="true" text="* = any string; leave empty to deny all." GridPane.rowIndex="4" />
+		<Label text="Filename parsers" GridPane.rowIndex="5">
          <GridPane.margin>
-            <Insets top="10.0" />
+            <Insets top="25.0" />
          </GridPane.margin>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
 		</Label>
 	</children>
 	<padding>
