@@ -15,8 +15,8 @@
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
       <Label text="Release">
@@ -48,8 +48,8 @@
 				</ImageView>
 			</graphic>
 		</Label>
-		<TextField fx:id="metaTagsTextField" promptText="meta tags (separated by comma)" GridPane.rowIndex="4" />
-      <Label disable="true" text="Separated by comma; ordered by appearance in release name." GridPane.rowIndex="3" />
+		<TextField fx:id="metaTagsTextField" promptText="meta tags (separated by comma)" GridPane.rowIndex="3" />
+      <Label disable="true" text="Separated by comma. Ordered by appearance in release name." GridPane.rowIndex="4" />
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -29,7 +29,7 @@
 		<Label text="Target directory" GridPane.rowIndex="2" />
 		<TextField fx:id="targetDirTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 		<Button fx:id="chooseTargetDirBtn" minWidth="-Infinity" mnemonicParsing="false" text="Choose" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-		<Label disable="true" text="Absolute or relative to directory of source file; leave empty to use source directory." GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+		<Label disable="true" text="Absolute or relative to directory of source file. Leave empty to use source directory." GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
 		<Label text="Delete source files" GridPane.rowIndex="4" />
 		<CheckBox fx:id="deleteSourceCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
 		<Label text="Enable packing" GridPane.rowIndex="6" />

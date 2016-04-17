@@ -24,6 +24,23 @@
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
+      <Label layoutX="15.0" layoutY="50.0" text="User interface">
+         <graphic>
+            <ImageView pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/ui_32.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
 		<Label text="Warnings" GridPane.rowIndex="2">
 			<font>
 				<Font name="System Bold" />
@@ -91,24 +108,12 @@
             </ImageView>
          </graphic>
       </Label>
-      <CheckBox fx:id="systemTrayEnabledCheckBox" mnemonicParsing="false" text="Use system tray (change will only take effect after application restart)" GridPane.rowIndex="8" />
-      <Label layoutX="15.0" layoutY="50.0" text="User interface">
-         <graphic>
-            <ImageView pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../img/ui_32.png" />
-               </image>
-            </ImageView>
-         </graphic>
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Separator prefWidth="200.0" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets bottom="10.0" />
-         </GridPane.margin>
-      </Separator>
+      <HBox GridPane.rowIndex="8">
+         <children>
+            <CheckBox fx:id="systemTrayEnabledCheckBox" mnemonicParsing="false" text="Use system tray" />
+            <Label disable="true" text=" (change will only take effect after application restart)" />
+         </children>
+      </HBox>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

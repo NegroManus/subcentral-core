@@ -52,7 +52,7 @@
 				<TableColumn fx:id="parsingServicesExampleColumn" editable="false" minWidth="25.0" prefWidth="400.0" text="Filename example" />
 			</columns>
 		</TableView>
-		<Label disable="true" text="Separated by comma; * = any string; leave empty to deny all." GridPane.rowIndex="4" />
+		<Label disable="true" text="Separated by comma. * = any string. Leave empty to deny all." GridPane.rowIndex="4" />
 		<Label text="Filename parsers" GridPane.rowIndex="5">
          <GridPane.margin>
             <Insets top="25.0" />
