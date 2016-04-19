@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.Constants;
+import de.subcentral.core.util.ObjectUtil;
 
 public class Contribution implements Serializable, Comparable<Contribution>
 {
@@ -177,9 +177,9 @@ public class Contribution implements Serializable, Comparable<Contribution>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(contributor, o.contributor, Constants.createDefaultOrdering())
-				.compare(type, o.type, Constants.STRING_ORDERING)
-				.compare(description, o.description, Constants.STRING_ORDERING)
+				.compare(contributor, o.contributor, ObjectUtil.getDefaultOrdering())
+				.compare(type, o.type, ObjectUtil.getDefaultStringOrdering())
+				.compare(description, o.description, ObjectUtil.getDefaultStringOrdering())
 				.result();
 	}
 

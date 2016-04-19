@@ -12,14 +12,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
-import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.name.NamingUtil;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
+import de.subcentral.core.util.ValidationUtil;
 
 /**
  * A Release is a publication of one media (movie, TV episode, series, season, song, album, movie, game, software) or a set of media (multiple TV episodes). Every Release has a unique name so that it
@@ -458,7 +457,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 		return ComparisonChain.start()
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
-				.compare(group, o.group, Constants.createDefaultOrdering())
+				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
 				.result();
 	}
 
@@ -469,7 +468,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 		{
 			return 1;
 		}
-		return ComparisonChain.start().compare(name, o.name, Constants.STRING_ORDERING).result();
+		return ComparisonChain.start().compare(name, o.name, ObjectUtil.getDefaultStringOrdering()).result();
 	}
 
 	@Override
@@ -478,20 +477,20 @@ public class Release extends MetadataBase implements Comparable<Release>
 		return MoreObjects.toStringHelper(Release.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("media", BeanUtil.nullIfEmpty(media))
-				.add("tags", BeanUtil.nullIfEmpty(tags))
+				.add("media", ObjectUtil.nullIfEmpty(media))
+				.add("tags", ObjectUtil.nullIfEmpty(tags))
 				.add("group", group)
-				.add("languages", BeanUtil.nullIfEmpty(languages))
+				.add("languages", ObjectUtil.nullIfEmpty(languages))
 				.add("date", date)
 				.add("category", category)
-				.add("size", BeanUtil.nullIfZero(size))
-				.add("fileCount", BeanUtil.nullIfZero(fileCount))
-				.add("nukes", BeanUtil.nullIfEmpty(nukes))
+				.add("size", ObjectUtil.nullIfZero(size))
+				.add("fileCount", ObjectUtil.nullIfZero(fileCount))
+				.add("nukes", ObjectUtil.nullIfEmpty(nukes))
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
-				.add("furtherInfo", BeanUtil.nullIfEmpty(furtherInfoLinks))
-				.add("ids", BeanUtil.nullIfEmpty(ids))
-				.add("attributes", BeanUtil.nullIfEmpty(attributes))
+				.add("furtherInfo", ObjectUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }

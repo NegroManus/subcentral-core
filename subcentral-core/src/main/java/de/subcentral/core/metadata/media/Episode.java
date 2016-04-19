@@ -13,11 +13,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.SeasonNamer;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
 
@@ -354,12 +353,12 @@ public class Episode extends MediaBase implements Comparable<Episode>
 		// for mini-series or dated series, season and numberInSeason will be null, so they don't affect the ordering
 		// but (b) will put the ones with a numberInSeries at the end -> that's not intended
 		return ComparisonChain.start()
-				.compare(series, o.series, Constants.createDefaultOrdering())
-				.compare(season, o.season, Constants.createDefaultOrdering())
-				.compare(numberInSeason, o.numberInSeason, Constants.createDefaultOrdering())
-				.compare(numberInSeries, o.numberInSeries, Constants.createDefaultOrdering())
+				.compare(series, o.series, ObjectUtil.getDefaultOrdering())
+				.compare(season, o.season, ObjectUtil.getDefaultOrdering())
+				.compare(numberInSeason, o.numberInSeason, ObjectUtil.getDefaultOrdering())
+				.compare(numberInSeries, o.numberInSeries, ObjectUtil.getDefaultOrdering())
 				.compare(date, o.date, TemporalComparator.INSTANCE)
-				.compare(title, o.title, Constants.STRING_ORDERING)
+				.compare(title, o.title, ObjectUtil.getDefaultStringOrdering())
 				.result();
 	}
 
@@ -375,14 +374,14 @@ public class Episode extends MediaBase implements Comparable<Episode>
 				.add("title", title)
 				.add("date", date)
 				.add("special", special)
-				.add("runningTime", BeanUtil.nullIfZero(runningTime))
+				.add("runningTime", ObjectUtil.nullIfZero(runningTime))
 				.add("description", description)
-				.add("images", BeanUtil.nullIfEmpty(images))
+				.add("images", ObjectUtil.nullIfEmpty(images))
 				.add("contentRating", contentRating)
-				.add("ratings", BeanUtil.nullIfEmpty(ratings))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
-				.add("ids", BeanUtil.nullIfEmpty(ids))
-				.add("attributes", BeanUtil.nullIfEmpty(attributes))
+				.add("ratings", ObjectUtil.nullIfEmpty(ratings))
+				.add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 

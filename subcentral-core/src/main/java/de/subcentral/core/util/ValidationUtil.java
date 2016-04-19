@@ -1,4 +1,4 @@
-package de.subcentral.core;
+package de.subcentral.core.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -14,9 +14,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.Site;
@@ -24,6 +22,7 @@ import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.name.NamingUtil;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
@@ -385,9 +384,9 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_NAME_COMPARATOR)
-				.compare(language, o.language, Constants.STRING_ORDERING)
-				.compare(group, o.group, Constants.createDefaultOrdering())
-				.compare(source, o.source, Constants.createDefaultOrdering())
+				.compare(language, o.language, ObjectUtil.getDefaultStringOrdering())
+				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
+				.compare(source, o.source, ObjectUtil.getDefaultOrdering())
 				.result();
 	}
 
@@ -405,9 +404,9 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 				.add("basis", basis)
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
-				.add("contributions", BeanUtil.nullIfEmpty(contributions))
-				.add("ids", BeanUtil.nullIfEmpty(ids))
-				.add("attributes", BeanUtil.nullIfEmpty(attributes))
+				.add("contributions", ObjectUtil.nullIfEmpty(contributions))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }

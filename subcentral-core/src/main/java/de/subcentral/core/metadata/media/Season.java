@@ -14,11 +14,10 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
-import de.subcentral.core.ValidationUtil;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
+import de.subcentral.core.util.ValidationUtil;
 
 public class Season extends MediaBase implements Comparable<Season>
 {
@@ -243,9 +242,9 @@ public class Season extends MediaBase implements Comparable<Season>
 			return 1;
 		}
 		return ComparisonChain.start()
-				.compare(series, o.series, Constants.createDefaultOrdering())
-				.compare(number, o.number, Constants.createDefaultOrdering())
-				.compare(title, o.title, Constants.STRING_ORDERING)
+				.compare(series, o.series, ObjectUtil.getDefaultOrdering())
+				.compare(number, o.number, ObjectUtil.getDefaultOrdering())
+				.compare(title, o.title, ObjectUtil.getDefaultStringOrdering())
 				.result();
 	}
 
@@ -261,13 +260,13 @@ public class Season extends MediaBase implements Comparable<Season>
 				.add("date", date)
 				.add("finaleDate", finaleDate)
 				.add("description", description)
-				.add("ratings", BeanUtil.nullIfEmpty(ratings))
+				.add("ratings", ObjectUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
-				.add("images", BeanUtil.nullIfEmpty(images))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
-				.add("ids", BeanUtil.nullIfEmpty(ids))
-				.add("attributes", BeanUtil.nullIfEmpty(attributes))
-				.add("episodes.size()", BeanUtil.nullIfZero(episodes.size()))
+				.add("images", ObjectUtil.nullIfEmpty(images))
+				.add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
+				.add("episodes.size()", ObjectUtil.nullIfZero(episodes.size()))
 				.toString();
 	}
 }

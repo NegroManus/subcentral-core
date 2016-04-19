@@ -9,9 +9,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.Constants;
-import de.subcentral.core.ValidationUtil;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.TemporalComparator;
+import de.subcentral.core.util.ValidationUtil;
 
 public class Nuke implements Comparable<Nuke>, Serializable
 {
@@ -94,6 +94,6 @@ public class Nuke implements Comparable<Nuke>, Serializable
 			return 1;
 		}
 		// sort by date, then reason
-		return ComparisonChain.start().compare(date, o.date, TemporalComparator.INSTANCE).compare(reason, o.reason, Constants.STRING_ORDERING).compareFalseFirst(unnuke, o.unnuke).result();
+		return ComparisonChain.start().compare(date, o.date, TemporalComparator.INSTANCE).compare(reason, o.reason, ObjectUtil.getDefaultStringOrdering()).compareFalseFirst(unnuke, o.unnuke).result();
 	}
 }

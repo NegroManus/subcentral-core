@@ -7,9 +7,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 /**
@@ -94,7 +93,7 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 		{
 			return 1;
 		}
-		return Constants.STRING_ORDERING.compare(name, o.name);
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 
 	@Override
@@ -103,20 +102,20 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 		return MoreObjects.toStringHelper(Movie.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("aliasNames", BeanUtil.nullIfEmpty(aliasNames))
+				.add("aliasNames", ObjectUtil.nullIfEmpty(aliasNames))
 				.add("title", title)
 				.add("date", date)
-				.add("languages", BeanUtil.nullIfEmpty(languages))
-				.add("countries", BeanUtil.nullIfEmpty(countries))
-				.add("runningTime", BeanUtil.nullIfZero(runningTime))
-				.add("genres", BeanUtil.nullIfEmpty(genres))
+				.add("languages", ObjectUtil.nullIfEmpty(languages))
+				.add("countries", ObjectUtil.nullIfEmpty(countries))
+				.add("runningTime", ObjectUtil.nullIfZero(runningTime))
+				.add("genres", ObjectUtil.nullIfEmpty(genres))
 				.add("description", description)
-				.add("ratings", BeanUtil.nullIfEmpty(ratings))
+				.add("ratings", ObjectUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
-				.add("images", BeanUtil.nullIfEmpty(images))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
-				.add("ids", BeanUtil.nullIfEmpty(ids))
-				.add("attributes", BeanUtil.nullIfEmpty(attributes))
+				.add("images", ObjectUtil.nullIfEmpty(images))
+				.add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }

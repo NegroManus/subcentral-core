@@ -13,10 +13,10 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
-import de.subcentral.core.Constants;
-import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.util.IterableComparator;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.StringUtil;
+import de.subcentral.core.util.ValidationUtil;
 
 public class Tag implements Comparable<Tag>, Serializable
 {
@@ -169,6 +169,6 @@ public class Tag implements Comparable<Tag>, Serializable
 		{
 			return 1;
 		}
-		return Constants.STRING_ORDERING.compare(name, o.name);
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 }

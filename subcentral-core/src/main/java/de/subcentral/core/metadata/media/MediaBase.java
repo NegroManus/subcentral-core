@@ -10,9 +10,9 @@ import java.util.Map;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.metadata.Site;
+import de.subcentral.core.util.ValidationUtil;
 
 public abstract class MediaBase extends MetadataBase implements Media
 {

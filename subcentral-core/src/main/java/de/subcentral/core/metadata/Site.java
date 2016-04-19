@@ -6,9 +6,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Site extends MetadataBase implements Comparable<Site>
@@ -110,12 +109,12 @@ public class Site extends MetadataBase implements Comparable<Site>
 		{
 			return 1;
 		}
-		return Constants.STRING_ORDERING.compare(name, o.name);
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(Site.class).omitNullValues().add("name", name).add("displayName", displayName).add("link", link).add("ids", BeanUtil.nullIfEmpty(ids)).toString();
+		return MoreObjects.toStringHelper(Site.class).omitNullValues().add("name", name).add("displayName", displayName).add("link", link).add("ids", ObjectUtil.nullIfEmpty(ids)).toString();
 	}
 }

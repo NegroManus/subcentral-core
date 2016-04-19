@@ -12,11 +12,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
-import de.subcentral.core.ValidationUtil;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
+import de.subcentral.core.util.ValidationUtil;
 
 public class Series extends NamedMediaBase implements Comparable<Series>
 {
@@ -367,7 +366,7 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 		{
 			return 1;
 		}
-		return Constants.STRING_ORDERING.compare(name, o.name);
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 
 	@Override
@@ -376,25 +375,25 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 		return MoreObjects.toStringHelper(Series.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("aliasNames", BeanUtil.nullIfEmpty(aliasNames))
+				.add("aliasNames", ObjectUtil.nullIfEmpty(aliasNames))
 				.add("title", title)
 				.add("type", type)
 				.add("date", date)
 				.add("finaleDate", finaleDate)
-				.add("languages", BeanUtil.nullIfEmpty(languages))
-				.add("countries", BeanUtil.nullIfEmpty(countries))
-				.add("regularRunningTime", BeanUtil.nullIfZero(regularRunningTime))
-				.add("genres", BeanUtil.nullIfEmpty(genres))
-				.add("networks", BeanUtil.nullIfEmpty(networks))
+				.add("languages", ObjectUtil.nullIfEmpty(languages))
+				.add("countries", ObjectUtil.nullIfEmpty(countries))
+				.add("regularRunningTime", ObjectUtil.nullIfZero(regularRunningTime))
+				.add("genres", ObjectUtil.nullIfEmpty(genres))
+				.add("networks", ObjectUtil.nullIfEmpty(networks))
 				.add("description", description)
-				.add("ratings", BeanUtil.nullIfEmpty(ratings))
+				.add("ratings", ObjectUtil.nullIfEmpty(ratings))
 				.add("contentRating", contentRating)
-				.add("images", BeanUtil.nullIfEmpty(images))
-				.add("furtherInfoLinks", BeanUtil.nullIfEmpty(furtherInfoLinks))
-				.add("ids", BeanUtil.nullIfEmpty(ids))
-				.add("attributes", BeanUtil.nullIfEmpty(attributes))
-				.add("episodes.size()", BeanUtil.nullIfZero(episodes.size()))
-				.add("seasons.size()", BeanUtil.nullIfZero(seasons.size()))
+				.add("images", ObjectUtil.nullIfEmpty(images))
+				.add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
+				.add("episodes.size()", ObjectUtil.nullIfZero(episodes.size()))
+				.add("seasons.size()", ObjectUtil.nullIfZero(seasons.size()))
 				.toString();
 	}
 }

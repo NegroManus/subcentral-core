@@ -2,7 +2,7 @@ package de.subcentral.core.metadata;
 
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.Constants;
+import de.subcentral.core.util.ObjectUtil;
 
 public interface Contributor extends Comparable<Contributor>
 {
@@ -16,6 +16,6 @@ public interface Contributor extends Comparable<Contributor>
 		{
 			return 1;
 		}
-		return ComparisonChain.start().compare(getName(), o.getName(), Constants.STRING_ORDERING).result();
+		return ComparisonChain.start().compare(getName(), o.getName(), ObjectUtil.getDefaultStringOrdering()).result();
 	}
 }

@@ -13,10 +13,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-import de.subcentral.core.BeanUtil;
 import de.subcentral.core.PropNames;
-import de.subcentral.core.Constants;
-import de.subcentral.core.ValidationUtil;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.MetadataBase;
@@ -26,7 +23,9 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.IterableComparator;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
+import de.subcentral.core.util.ValidationUtil;
 
 public class SubtitleRelease extends MetadataBase implements Work, Comparable<SubtitleRelease>
 {
@@ -421,7 +420,7 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 				.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
-				.compare(version, version, Constants.STRING_ORDERING)
+				.compare(version, version, ObjectUtil.getDefaultStringOrdering())
 				.result();
 	}
 
@@ -431,17 +430,17 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 		return MoreObjects.toStringHelper(SubtitleRelease.class)
 				.omitNullValues()
 				.add("name", name)
-				.add("subtitles", BeanUtil.nullIfEmpty(subtitles))
-				.add("tags", BeanUtil.nullIfEmpty(tags))
-				.add("matchingReleases", BeanUtil.nullIfEmpty(matchingReleases))
+				.add("subtitles", ObjectUtil.nullIfEmpty(subtitles))
+				.add("tags", ObjectUtil.nullIfEmpty(tags))
+				.add("matchingReleases", ObjectUtil.nullIfEmpty(matchingReleases))
 				.add("version", version)
 				.add("date", date)
-				.add("size", BeanUtil.nullIfZero(size))
+				.add("size", ObjectUtil.nullIfZero(size))
 				.add("nfo", nfo)
 				.add("nfoLink", nfoLink)
-				.add("contributions", BeanUtil.nullIfEmpty(contributions))
-				.add("ids", BeanUtil.nullIfEmpty(ids))
-				.add("attributes", BeanUtil.nullIfEmpty(attributes))
+				.add("contributions", ObjectUtil.nullIfEmpty(contributions))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
 	}
 }

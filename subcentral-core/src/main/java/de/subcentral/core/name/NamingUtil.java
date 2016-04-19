@@ -17,9 +17,9 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.core.Constants;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.util.IterableComparator;
+import de.subcentral.core.util.ObjectUtil;
 
 public class NamingUtil
 {
@@ -123,7 +123,7 @@ public class NamingUtil
 		public int compare(Media o1, Media o2)
 		{
 			// nulls first as naming of null results in an empty string "" and an empty string always comes first
-			return Constants.STRING_ORDERING.compare(namingService.name(o1, DEFAULT_MEDIA_NAME_PARAMS), namingService.name(o2, DEFAULT_MEDIA_NAME_PARAMS));
+			return ObjectUtil.getDefaultStringOrdering().compare(namingService.name(o1, DEFAULT_MEDIA_NAME_PARAMS), namingService.name(o2, DEFAULT_MEDIA_NAME_PARAMS));
 		}
 	}
 }
