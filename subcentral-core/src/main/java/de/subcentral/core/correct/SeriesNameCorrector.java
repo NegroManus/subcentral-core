@@ -10,6 +10,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.util.ObjectUtil;
 
 /**
  * @implSpec #immutable #thread-safe
@@ -99,7 +100,7 @@ public class SeriesNameCorrector implements Corrector<Series>
 		if (obj instanceof SeriesNameCorrector)
 		{
 			SeriesNameCorrector o = (SeriesNameCorrector) obj;
-			return namePattern.pattern().equals(o.namePattern.pattern()) && Objects.equals(nameReplacement, o.nameReplacement) && aliasNamesReplacement.equals(o.aliasNamesReplacement)
+			return ObjectUtil.equalPatterns(namePattern, o.namePattern) && Objects.equals(nameReplacement, o.nameReplacement) && aliasNamesReplacement.equals(o.aliasNamesReplacement)
 					&& Objects.equals(titleReplacement, o.titleReplacement);
 		}
 		return false;
