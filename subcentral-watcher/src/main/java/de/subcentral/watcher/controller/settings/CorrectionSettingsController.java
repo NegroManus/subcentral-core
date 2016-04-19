@@ -128,7 +128,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		removeCorrectorButton.disableProperty().bind(noSelection);
 		removeCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			FxActions.handleConfirmedDelete(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
+			FxActions.handleConfirmedRemove(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
 		});
 
 		importCorrectorsButton.setOnAction((ActionEvent event) ->

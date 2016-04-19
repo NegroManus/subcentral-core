@@ -141,7 +141,7 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 		removeNameBtn.disableProperty().bind(noSelection);
 		removeNameBtn.setOnAction((ActionEvent evt) ->
 		{
-			FxActions.handleDelete(aliasNamesReplacementListView);
+			FxActions.handleRemove(aliasNamesReplacementListView);
 		});
 
 		FxActions.setStandardMouseAndKeyboardSupportForEditable(aliasNamesReplacementListView, removeNameBtn);

@@ -89,7 +89,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		removeCrossGroupCompatibility.disableProperty().bind(noSelection);
 		removeCrossGroupCompatibility.setOnAction((ActionEvent event) ->
 		{
-			FxActions.handleConfirmedDelete(crossGroupCompatibilitiesTableView, "cross-group compatibility", CompatibilitySettingsItem.STRING_CONVERTER);
+			FxActions.handleConfirmedRemove(crossGroupCompatibilitiesTableView, "cross-group compatibility", CompatibilitySettingsItem.STRING_CONVERTER);
 		});
 
 		FxActions.setStandardMouseAndKeyboardSupport(crossGroupCompatibilitiesTableView, editCrossGroupCompatibility, removeCrossGroupCompatibility);

@@ -154,23 +154,23 @@ public class FxActions
 		};
 	}
 
-	public static <E> E handleDelete(ObservableList<E> items, SelectionModel<E> selectionModel)
+	public static <E> E handleRemove(ObservableList<E> items, SelectionModel<E> selectionModel)
 	{
 		int selectedIndex = selectionModel.getSelectedIndex();
 		return items.remove(selectedIndex);
 	}
 
-	public static <E> E handleDelete(ListView<E> list)
+	public static <E> E handleRemove(ListView<E> list)
 	{
-		return handleDelete(list.getItems(), list.getSelectionModel());
+		return handleRemove(list.getItems(), list.getSelectionModel());
 	}
 
-	public static <E> E handleDelete(ComboBox<E> comboBox)
+	public static <E> E handleRemove(ComboBox<E> comboBox)
 	{
-		return handleDelete(comboBox.getItems(), comboBox.getSelectionModel());
+		return handleRemove(comboBox.getItems(), comboBox.getSelectionModel());
 	}
 
-	public static <E> E handleConfirmedDelete(ObservableList<E> items, SelectionModel<E> selectionModel, String elementType, StringConverter<E> elemToStringConverter)
+	public static <E> E handleConfirmedRemove(ObservableList<E> items, SelectionModel<E> selectionModel, String elementType, StringConverter<E> elemToStringConverter)
 	{
 		E selectedElem = selectionModel.getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -183,14 +183,14 @@ public class FxActions
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.YES)
 		{
-			return handleDelete(items, selectionModel);
+			return handleRemove(items, selectionModel);
 		}
 		return null;
 	}
 
-	public static <E> E handleConfirmedDelete(TableView<E> table, String elementType, StringConverter<E> elemToStringConverter)
+	public static <E> E handleConfirmedRemove(TableView<E> table, String elementType, StringConverter<E> elemToStringConverter)
 	{
-		return handleConfirmedDelete(table.getItems(), table.getSelectionModel(), elementType, elemToStringConverter);
+		return handleConfirmedRemove(table.getItems(), table.getSelectionModel(), elementType, elemToStringConverter);
 	}
 
 	public static <E, F> void handleDistinctAdd(ListView<E> list, Optional<F> addDialogResult, Function<F, E> converter)

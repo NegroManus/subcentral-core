@@ -93,7 +93,7 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 		addLangBtn.setOnAction((ActionEvent) ->
 		{
 			// remove lang from addable langs
-			Locale langToAdd = FxActions.handleDelete(addableLangsComboBox);
+			Locale langToAdd = FxActions.handleRemove(addableLangsComboBox);
 			// add lang to lang list
 			FxActions.handleDistinctAdd(langsListView, Optional.of(langToAdd));
 		});
@@ -102,7 +102,7 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 		removeLangBtn.setOnAction((ActionEvent) ->
 		{
 			// remove lang from lang list
-			Locale removedLang = FxActions.handleDelete(langsListView);
+			Locale removedLang = FxActions.handleRemove(langsListView);
 			// add lang to addable langs
 			addableLangsComboBox.getItems().add(removedLang);
 			// After adding a language to the addable language that list needs to be sorted again
