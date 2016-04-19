@@ -23,37 +23,43 @@ public class CollectionUtil
 		return new ArrayList<>(Arrays.asList(items));
 	}
 
-	public static <E> void updateList(List<E> origList, List<E> updateList)
+	public static <E> void updateList(List<E> origList, Collection<? extends E> updateList)
 	{
 		updateList(origList, updateList, true, true, true, Objects::equals);
 	}
 
-	public static <E> void updateList(List<E> origList, List<E> updateList, boolean add, boolean replace, boolean remove)
+	public static <E> void updateList(List<E> origList, Collection<? extends E> updateList, boolean add, boolean replace, boolean remove)
 	{
 		updateList(origList, updateList, add, replace, remove, Objects::equals);
 	}
 
-	public static <E> void updateList(List<E> origList, List<E> updateList, boolean add, boolean replace, boolean remove, BiPredicate<? super E, ? super E> comparer)
+	public static <E> void updateList(List<E> origList, Collection<? extends E> updateList, boolean add, boolean replace, boolean remove, BiPredicate<? super E, ? super E> comparer)
 	{
-		updateList(origList, updateList, add, replace, remove, comparer, (List<E> list, List<E> itemsToAdd) -> origList.addAll(itemsToAdd));
+		updateList(origList, updateList, add, replace, remove, comparer, (List<E> list, Collection<? extends E> itemsToAdd) -> origList.addAll(itemsToAdd));
 	}
 
-	public static <E extends Comparable<E>> void updateSortedList(List<E> origList, List<E> updateList)
+	public static <E extends Comparable<E>> void updateSortedList(List<E> origList, Collection<? extends E> updateList)
 	{
 		updateSortedList(origList, updateList, true, true, true, ObjectUtil.getDefaultOrdering());
 	}
 
-	public static <E extends Comparable<E>> void updateSortedList(List<E> origList, List<E> updateList, boolean add, boolean replace, boolean remove)
+	public static <E extends Comparable<E>> void updateSortedList(List<E> origList, Collection<? extends E> updateList, boolean add, boolean replace, boolean remove)
 	{
 		updateSortedList(origList, updateList, add, replace, remove, ObjectUtil.getDefaultOrdering());
 	}
 
-	public static <E> void updateSortedList(List<E> origList, List<E> updateList, boolean add, boolean replace, boolean remove, Comparator<? super E> comparator)
+	public static <E> void updateSortedList(List<E> origList, Collection<? extends E> updateList, boolean add, boolean replace, boolean remove, Comparator<? super E> comparator)
 	{
-		updateList(origList, updateList, add, replace, remove, (E e1, E e2) -> comparator.compare(e1, e2) == 0, (List<E> list, List<E> itemsToAdd) -> addToSortedList(list, itemsToAdd, comparator));
+		updateList(origList,
+				updateList,
+				add,
+				replace,
+				remove,
+				(E e1, E e2) -> comparator.compare(e1, e2) == 0,
+				(List<E> list, Collection<? extends E> itemsToAdd) -> addToSortedList(list, itemsToAdd, comparator));
 	}
 
-	private static <E> void addToSortedList(List<E> list, Collection<E> itemsToAdd, Comparator<? super E> comparator)
+	public static <E> void addToSortedList(List<E> list, Collection<? extends E> itemsToAdd, Comparator<? super E> comparator)
 	{
 		for (E item : itemsToAdd)
 		{
@@ -61,7 +67,7 @@ public class CollectionUtil
 		}
 	}
 
-	private static <E> void addToSortedList(List<E> list, E item, Comparator<? super E> comparator)
+	public static <E> void addToSortedList(List<E> list, E item, Comparator<? super E> comparator)
 	{
 		int addIndex = list.size();
 		for (int i = 0; i < list.size(); i++)
@@ -87,12 +93,12 @@ public class CollectionUtil
 	}
 
 	private static <E> void updateList(List<E> origList,
-			List<E> updateList,
+			Collection<? extends E> updateList,
 			boolean add,
 			boolean replace,
 			boolean remove,
 			BiPredicate<? super E, ? super E> comparer,
-			BiConsumer<List<E>, List<E>> adder)
+			BiConsumer<List<E>, Collection<? extends E>> adder)
 	{
 		List<E> itemsToRemove = null;
 		List<E> itemsToAdd = null;
