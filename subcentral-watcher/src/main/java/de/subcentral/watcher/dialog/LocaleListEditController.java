@@ -109,6 +109,8 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 			addableLangsComboBox.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 		});
 
+		FxActions.setStandardMouseAndKeyboardSupportForEditable(langsListView, addLangBtn, removeLangBtn);
+
 		// Set ResultConverter
 		dialog.setResultConverter(dialogButton ->
 		{

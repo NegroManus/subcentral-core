@@ -109,6 +109,10 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		editCorrectorButton.setOnAction((ActionEvent event) ->
 		{
 			CorrectorSettingsItem<?, ?> selectedCorrector = correctorsTableView.getSelectionModel().getSelectedItem();
+			if (selectedCorrector == null)
+			{
+				return;
+			}
 			Optional<? extends CorrectorSettingsItem<?, ?>> result;
 			if (SeriesNameCorrectorSettingsItem.class == selectedCorrector.getClass())
 			{
@@ -171,7 +175,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			}
 		});
 
-		FxActions.setStandardMouseAndKeyboardSupport(correctorsTableView, editCorrectorButton, removeCorrectorButton);
+		FxActions.setStandardMouseAndKeyboardSupport(correctorsTableView, addCorrectorButton, editCorrectorButton, removeCorrectorButton);
 	}
 
 	private class CorrectionRuleTypeStringConverter extends StringConverter<Class<? extends CorrectorSettingsItem<?, ?>>>

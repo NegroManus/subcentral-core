@@ -133,7 +133,12 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		editTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		editTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(textLangMappingsTableView.getSelectionModel().getSelectedItem(), getPrimaryStage());
+			PatternToLanguageMapping item = textLangMappingsTableView.getSelectionModel().getSelectedItem();
+			if (item == null)
+			{
+				return;
+			}
+			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(item, getPrimaryStage());
 			FxActions.handleDistinctEdit(textLangMappingsTableView, result);
 		});
 
@@ -143,7 +148,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 			FxActions.handleConfirmedRemove(textLangMappingsTableView, "text to language mapping", PatternToLanguageMapping.createStringConverter());
 		});
 
-		FxActions.setStandardMouseAndKeyboardSupport(textLangMappingsTableView, editTextLangMappingBtn, removeTextLangMappingBtn);
+		FxActions.setStandardMouseAndKeyboardSupport(textLangMappingsTableView, addTextLangMappingBtn, editTextLangMappingBtn, removeTextLangMappingBtn);
 		FxActions.bindMoveButtonsForSingleSelection(textLangMappingsTableView, moveUpTextLangMappingBtn, moveDownTextLangMappingBtn);
 
 		// OutputLangFormat
@@ -213,7 +218,12 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		editLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
 		editLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(langTextMappingsTableView.getSelectionModel().getSelectedItem(), getPrimaryStage());
+			LanguageToTextMapping item = langTextMappingsTableView.getSelectionModel().getSelectedItem();
+			if (item == null)
+			{
+				return;
+			}
+			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(item, getPrimaryStage());
 			FxActions.handleDistinctEdit(langTextMappingsTableView, result);
 			FXCollections.sort(langTextMappingsTableView.getItems());
 		});
@@ -224,7 +234,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 			FxActions.handleConfirmedRemove(langTextMappingsTableView, "language to text mapping", LanguageToTextMapping.createStringConverter());
 		});
 
-		FxActions.setStandardMouseAndKeyboardSupport(langTextMappingsTableView, editLangTextMappingBtn, removeLangTextMappingBtn);
+		FxActions.setStandardMouseAndKeyboardSupport(langTextMappingsTableView, addLangTextMappingBtn, editLangTextMappingBtn, removeLangTextMappingBtn);
 
 		// Testing
 		testingOutputTxtFld.textProperty().bind(new StringBinding()

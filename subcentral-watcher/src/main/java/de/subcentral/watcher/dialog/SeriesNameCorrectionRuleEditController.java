@@ -129,6 +129,7 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 		{
 			String newAliasName = StringUtils.isBlank(nameReplacementTxtFld.getText()) ? "alias name" : nameReplacementTxtFld.getText();
 			aliasNamesReplacement.add(newAliasName);
+			aliasNamesReplacementListView.getSelectionModel().selectLast();
 		});
 
 		final BooleanBinding noSelection = aliasNamesReplacementListView.getSelectionModel().selectedItemProperty().isNull();
@@ -144,7 +145,7 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 			FxActions.handleRemove(aliasNamesReplacementListView);
 		});
 
-		FxActions.setStandardMouseAndKeyboardSupportForEditable(aliasNamesReplacementListView, removeNameBtn);
+		FxActions.setStandardMouseAndKeyboardSupportForEditable(aliasNamesReplacementListView, addNameBtn, removeNameBtn);
 
 		// Bindings
 		Binding<UserPattern> namePatternBinding = FxControlBindings.createUiPatternTextFieldBinding(patternModeToggleGrp,
@@ -175,11 +176,7 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 			{
 				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-				return new SeriesNameCorrectorSettingsItem(namePatternBinding.getValue(),
-						nameReplacementTxtFld.getText(),
-						aliasNamesReplacementListView.getItems(),
-						beforeQuerying,
-						afterQuerying);
+				return new SeriesNameCorrectorSettingsItem(namePatternBinding.getValue(), nameReplacementTxtFld.getText(), aliasNamesReplacementListView.getItems(), beforeQuerying, afterQuerying);
 			}
 			return null;
 		});
