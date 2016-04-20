@@ -114,7 +114,7 @@ public class WatcherFxUtil
 			Hyperlink hl = new Hyperlink(host, dbImg);
 			hl.setTooltip(new Tooltip("Show further info"));
 			hl.setVisited(true);
-			hl.setOnAction(FxActions.browse(rls.getFurtherInfoLinks().get(0), executorService));
+			hl.setOnAction((ActionEvent evt) -> FxActions.browse(rls.getFurtherInfoLinks().get(0), executorService));
 			return hl;
 		}
 		catch (MalformedURLException e)

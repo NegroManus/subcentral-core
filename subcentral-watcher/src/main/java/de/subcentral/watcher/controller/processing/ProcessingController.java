@@ -693,7 +693,7 @@ public class ProcessingController extends Controller
 			List<Path> files = item.getFiles();
 			if (!files.isEmpty())
 			{
-				FxActions.browse(files.get(0).getParent().toUri().toString(), mainController.getCommonExecutor()).handle(null);
+				FxActions.browse(files.get(0).getParent().toUri().toString(), mainController.getCommonExecutor());
 			}
 		}
 	}

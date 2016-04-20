@@ -78,80 +78,71 @@ public class FxActions
 		};
 	}
 
-	public static EventHandler<ActionEvent> chooseDirectory(TextFormatter<Path> textFormatter, Stage stage, String title)
+	public static void chooseDirectory(TextFormatter<Path> textFormatter, Stage stage, String title)
 	{
-		return (ActionEvent evt) ->
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle(title);
+		Path currentValue = textFormatter.getValue();
+		if (currentValue != null && Files.isDirectory(currentValue, LinkOption.NOFOLLOW_LINKS))
 		{
-			DirectoryChooser dirChooser = new DirectoryChooser();
-			dirChooser.setTitle(title);
-			Path currentValue = textFormatter.getValue();
-			if (currentValue != null && Files.isDirectory(currentValue, LinkOption.NOFOLLOW_LINKS))
-			{
-				dirChooser.setInitialDirectory(currentValue.toFile());
-			}
-			File selectedDirectory = dirChooser.showDialog(stage);
-			if (selectedDirectory == null)
-			{
-				return;
-			}
-			Path newTargetDir = selectedDirectory.toPath();
-			textFormatter.setValue(newTargetDir);
-		};
+			dirChooser.setInitialDirectory(currentValue.toFile());
+		}
+		File selectedDirectory = dirChooser.showDialog(stage);
+		if (selectedDirectory == null)
+		{
+			return;
+		}
+		Path newTargetDir = selectedDirectory.toPath();
+		textFormatter.setValue(newTargetDir);
 	}
 
-	public static EventHandler<ActionEvent> chooseFile(TextFormatter<Path> textFormatter, Window owner, String title, ExtensionFilter... extensionFilters)
+	public static void chooseFile(TextFormatter<Path> textFormatter, Window owner, String title, ExtensionFilter... extensionFilters)
 	{
-		return (ActionEvent evt) ->
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle(title);
+		Path currentValue = textFormatter.getValue();
+		if (currentValue != null)
 		{
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle(title);
-			Path currentValue = textFormatter.getValue();
-			if (currentValue != null)
+			Path potentialParentDir = currentValue.getParent();
+			if (potentialParentDir != null && Files.isDirectory(potentialParentDir, LinkOption.NOFOLLOW_LINKS))
 			{
-				Path potentialParentDir = currentValue.getParent();
-				if (potentialParentDir != null && Files.isDirectory(potentialParentDir, LinkOption.NOFOLLOW_LINKS))
-				{
-					fileChooser.setInitialDirectory(potentialParentDir.toFile());
-				}
+				fileChooser.setInitialDirectory(potentialParentDir.toFile());
 			}
-			if (extensionFilters.length > 0)
-			{
-				fileChooser.getExtensionFilters().addAll(extensionFilters);
-				fileChooser.setSelectedExtensionFilter(extensionFilters[0]);
-			}
+		}
+		if (extensionFilters.length > 0)
+		{
+			fileChooser.getExtensionFilters().addAll(extensionFilters);
+			fileChooser.setSelectedExtensionFilter(extensionFilters[0]);
+		}
 
-			File selectedFile = fileChooser.showOpenDialog(owner);
-			if (selectedFile != null)
-			{
-				textFormatter.setValue(selectedFile.toPath());
-			}
-		};
+		File selectedFile = fileChooser.showOpenDialog(owner);
+		if (selectedFile != null)
+		{
+			textFormatter.setValue(selectedFile.toPath());
+		}
 	}
 
-	public static EventHandler<ActionEvent> browse(String uri, ExecutorService executor)
+	public static void browse(String uri, ExecutorService executor)
 	{
-		return browse(uri, executor, DEFAULT_TASK_FAILED_HANDLER);
+		browse(uri, executor, DEFAULT_TASK_FAILED_HANDLER);
 	}
 
-	public static EventHandler<ActionEvent> browse(String uri, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
+	public static void browse(String uri, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
 	{
-		return (ActionEvent evt) ->
+		Task<Void> browseTask = new Task<Void>()
 		{
-			Task<Void> browseTask = new Task<Void>()
+			@Override
+			protected Void call() throws IOException, URISyntaxException
 			{
-				@Override
-				protected Void call() throws IOException, URISyntaxException
-				{
-					updateTitle("Browse " + uri);
-					// log.debug("Before browsing");
-					java.awt.Desktop.getDesktop().browse(new URI(uri));
-					// log.debug("After browsing");
-					return null;
-				}
-			};
-			browseTask.setOnFailed(onFailedHandler);
-			executor.submit(browseTask);
+				updateTitle("Browse " + uri);
+				// log.debug("Before browsing");
+				java.awt.Desktop.getDesktop().browse(new URI(uri));
+				// log.debug("After browsing");
+				return null;
+			}
 		};
+		browseTask.setOnFailed(onFailedHandler);
+		executor.submit(browseTask);
 	}
 
 	public static <E> E handleRemove(ObservableList<E> items, SelectionModel<E> selectionModel)

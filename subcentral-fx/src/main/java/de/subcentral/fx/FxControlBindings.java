@@ -18,6 +18,7 @@ import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
@@ -79,7 +80,7 @@ public class FxControlBindings
 		link.setText(file.toString());
 		link.setTooltip(new Tooltip("Show " + file));
 		String uri = file.getParent().toUri().toString();
-		link.setOnAction(FxActions.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor, onFailedHandler));
 		return link;
 	}
 
@@ -95,7 +96,7 @@ public class FxControlBindings
 		link.setText(file.toString());
 		link.setTooltip(new Tooltip("Open " + file));
 		String uri = file.toUri().toString();
-		link.setOnAction(FxActions.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor, onFailedHandler));
 		return link;
 	}
 
@@ -111,7 +112,7 @@ public class FxControlBindings
 		link.setVisited(true);
 		link.setText(url.toString());
 		link.setTooltip(new Tooltip("Open " + url));
-		link.setOnAction(FxActions.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor, onFailedHandler));
 		return link;
 	}
 

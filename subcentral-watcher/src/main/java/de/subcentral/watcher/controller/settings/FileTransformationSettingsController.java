@@ -86,7 +86,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		final TextFormatter<Path> targetDirFormatter = FxControlBindings.bindTextFieldToPath(targetDirTxtFld, settings.getTargetDir().property());
-		chooseTargetDirBtn.setOnAction(FxActions.chooseDirectory(targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory"));
+		chooseTargetDirBtn.setOnAction((ActionEvent evt) -> FxActions.chooseDirectory(targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory"));
 
 		deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.getDeleteSource().property());
 
@@ -111,17 +111,8 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 
 		retryLocateRarBtn.setOnAction((ActionEvent evt) -> locateWinRar());
 
-		ExtensionFilter[] filters;
-		try
-		{
-			filters = new ExtensionFilter[] { new ExtensionFilter("RAR executable", settingsController.getMainController().getWinRar().getRarExecutableFilename().toString()) };
-		}
-		catch (UnsupportedOperationException e)
-		{
-			filters = new ExtensionFilter[] {};
-		}
-
-		chooseRarExeBtn.setOnAction(FxActions.chooseFile(specifiedRarFormatter, settingsController.getMainController().getPrimaryStage(), "Select rar executable", filters));
+		ExtensionFilter[] filters = getRarExtensionFilter();
+		chooseRarExeBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(specifiedRarFormatter, settingsController.getMainController().getPrimaryStage(), "Select rar executable", filters));
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
 		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.getPackingSourceDeletionMode().property());
@@ -129,6 +120,18 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 
 		// init
 		locateWinRar();
+	}
+
+	private ExtensionFilter[] getRarExtensionFilter()
+	{
+		try
+		{
+			return new ExtensionFilter[] { new ExtensionFilter("RAR executable", settingsController.getMainController().getWinRar().getRarExecutableFilename().toString()) };
+		}
+		catch (UnsupportedOperationException e)
+		{
+			return new ExtensionFilter[] {};
+		}
 	}
 
 	private void locateWinRar()

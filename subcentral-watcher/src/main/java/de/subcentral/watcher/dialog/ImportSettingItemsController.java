@@ -10,6 +10,7 @@ import de.subcentral.fx.dialog.DialogController;
 import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters.SourceType;
 import javafx.beans.binding.BooleanBinding;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -83,7 +84,7 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 		// Bindings
 		TextFormatter<Path> fileFormatter = FxControlBindings.bindTextFieldToPath(fileTxtFld);
 		ExtensionFilter xmlExtFilter = new ExtensionFilter("XML file", "*.xml");
-		chooseFileBtn.setOnAction(FxActions.chooseFile(fileFormatter, dialog.getDialogPane().getScene().getWindow(), "Choose settings file", xmlExtFilter));
+		chooseFileBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(fileFormatter, dialog.getDialogPane().getScene().getWindow(), "Choose settings file", xmlExtFilter));
 		TextFormatter<URL> urlFormatter = FxControlBindings.bindTextFieldToUrl(urlTxtFld);
 
 		// Bind apply button
