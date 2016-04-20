@@ -8,9 +8,10 @@ public abstract class ExecutingController extends Controller
 
 	public void execute(Task<?> task)
 	{
-		if (getExecutor() != null)
+		TaskExecutor executor = getExecutor();
+		if (executor != null)
 		{
-			getExecutor().execute(task);
+			executor.execute(task);
 		}
 		else
 		{
