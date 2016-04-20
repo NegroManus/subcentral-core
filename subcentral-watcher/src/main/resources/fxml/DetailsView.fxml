@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<VBox maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="700.0" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="700.0" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane hgap="5.0" vgap="5.0">
         <columnConstraints>
@@ -34,26 +34,14 @@
                </graphic></Label>
          </children>
       </GridPane>
-      <Accordion fx:id="sectionsAccordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" VBox.vgrow="SOMETIMES">
-        <panes>
-          <TitledPane animated="false" text="Filename parsing">
+      <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab text="Filename parsing">
                <content>
-                  <ScrollPane fx:id="parsingDetailsRootPane" fitToWidth="true">
+                  <ScrollPane fx:id="parsingDetailsRootPane" fitToHeight="true" fitToWidth="true">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <content>
-                        <GridPane>
-                          <columnConstraints>
-                            <ColumnConstraints />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                        </GridPane>
-                     </content></ScrollPane>
+                     </padding></ScrollPane>
                </content>
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
@@ -62,10 +50,10 @@
                      </image>
                   </ImageView>
                </graphic>
-          </TitledPane>
-          <TitledPane animated="false" text="Release matching">
+          </Tab>
+          <Tab text="Release matching">
                <content>
-                  <ScrollPane fx:id="releaseDetailsRootPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                  <ScrollPane fx:id="releaseDetailsRootPane" fitToHeight="true" fitToWidth="true">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding></ScrollPane>
@@ -77,9 +65,9 @@
                      </image>
                   </ImageView>
                </graphic>
-          </TitledPane>
-        </panes>
-      </Accordion>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

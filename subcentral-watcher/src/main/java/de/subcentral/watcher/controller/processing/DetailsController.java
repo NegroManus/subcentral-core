@@ -25,7 +25,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -50,8 +49,6 @@ public class DetailsController extends SubController<ProcessingController>
 	@FXML
 	private Label					sourceFileLabel;
 	@FXML
-	private Accordion				sectionsAccordion;
-	@FXML
 	private ScrollPane				parsingDetailsRootPane;
 	@FXML
 	private ScrollPane				releaseDetailsRootPane;
@@ -68,9 +65,6 @@ public class DetailsController extends SubController<ProcessingController>
 		updateHeader();
 		updateParsingDetailsSection();
 		updateReleaseDetailsSection();
-
-		// Expand release details
-		sectionsAccordion.setExpandedPane(sectionsAccordion.getPanes().get(1));
 	}
 
 	private void updateHeader()
@@ -208,14 +202,8 @@ public class DetailsController extends SubController<ProcessingController>
 		Release rls = subRls.getFirstMatchingRelease();
 
 		String[] keys = { "Computed name:", "Media:", "Release tags:", "Release group:", "Subtitle language:", "Subtitle tags:", "Subtitle source:", "Subtitle group:" };
-		String[] values = {
-				printer.apply(subRls),
-				printer.apply(rls.getMedia()),
-				Tag.formatList(rls.getTags()),
-				rls.getGroup() != null ? rls.getGroup().toString() : "",
-				sub.getLanguage() != null ? sub.getLanguage() : "",
-				Tag.formatList(subRls.getTags()),
-				sub.getSource() != null ? sub.getSource().getName() : "",
+		String[] values = { printer.apply(subRls), printer.apply(rls.getMedia()), Tag.formatList(rls.getTags()), rls.getGroup() != null ? rls.getGroup().toString() : "",
+				sub.getLanguage() != null ? sub.getLanguage() : "", Tag.formatList(subRls.getTags()), sub.getSource() != null ? sub.getSource().getName() : "",
 				sub.getGroup() != null ? sub.getGroup().toString() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
 		return pane;
