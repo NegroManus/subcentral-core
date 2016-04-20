@@ -86,7 +86,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		final TextFormatter<Path> targetDirFormatter = FxControlBindings.bindTextFieldToPath(targetDirTxtFld, settings.getTargetDir().property());
-		chooseTargetDirBtn.setOnAction((ActionEvent evt) -> FxActions.chooseDirectory(targetDirFormatter, settingsController.getMainController().getPrimaryStage(), "Choose target directory"));
+		chooseTargetDirBtn.setOnAction((ActionEvent evt) -> FxActions.chooseDirectory(targetDirFormatter, getPrimaryStage(), "Choose target directory"));
 
 		deleteSourceCheckBox.selectedProperty().bindBidirectional(settings.getDeleteSource().property());
 
@@ -112,7 +112,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		retryLocateRarBtn.setOnAction((ActionEvent evt) -> locateWinRar());
 
 		ExtensionFilter[] filters = getRarExtensionFilter();
-		chooseRarExeBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(specifiedRarFormatter, settingsController.getMainController().getPrimaryStage(), "Select rar executable", filters));
+		chooseRarExeBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(specifiedRarFormatter, getPrimaryStage(), "Select rar executable", filters));
 
 		packingSourceDeletionModeChoiceBox.setItems(FXCollections.observableArrayList(DeletionMode.values()));
 		packingSourceDeletionModeChoiceBox.valueProperty().bindBidirectional(settings.getPackingSourceDeletionMode().property());
@@ -126,7 +126,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	{
 		try
 		{
-			return new ExtensionFilter[] { new ExtensionFilter("RAR executable", settingsController.getMainController().getWinRar().getRarExecutableFilename().toString()) };
+			return new ExtensionFilter[] { new ExtensionFilter("RAR executable", parent.getParent().getWinRar().getRarExecutableFilename().toString()) };
 		}
 		catch (UnsupportedOperationException e)
 		{
@@ -142,6 +142,10 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		locateRarResultRootPane.getChildren().setAll(progressIndicator);
 		Task<Path> locateWinRarTask = new Task<Path>()
 		{
+			{
+				updateTitle("Locating Rar executable");
+			}
+
 			@Override
 			protected Path call() throws Exception
 			{
@@ -175,7 +179,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 				if (locatedRarExe != null)
 				{
 					ImageView img = new ImageView(FxIO.loadImg("checked_16.png"));
-					Hyperlink hl = FxControlBindings.createParentDirectoryHyperlink(locatedRarExe, settingsController.getMainController().getCommonExecutor());
+					Hyperlink hl = FxControlBindings.createParentDirectoryHyperlink(locatedRarExe, getExecutor());
 					hl.setMaxHeight(Double.MAX_VALUE);
 					locateRarResultRootPane.getChildren().setAll(img, hl);
 				}
@@ -191,6 +195,6 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 				rememberRarLocationBtn.setDisable(locatedRarExe == null);
 			}
 		};
-		settingsController.getMainController().getCommonExecutor().submit(locateWinRarTask);
+		execute(locateWinRarTask);
 	}
 }

@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
+import javafx.stage.Stage;
 
 public abstract class Controller
 {
@@ -12,6 +13,8 @@ public abstract class Controller
 	protected URL				location;
 	@FXML
 	protected ResourceBundle	resources;
+
+	public abstract Stage getPrimaryStage();
 
 	/**
 	 * Initializes the controller class. This method is automatically called after the fxml file has been loaded. Initialize the view components and connect them to the model here.

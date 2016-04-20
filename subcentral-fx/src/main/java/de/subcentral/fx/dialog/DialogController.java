@@ -9,6 +9,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public abstract class DialogController<T> extends Controller
@@ -26,6 +27,12 @@ public abstract class DialogController<T> extends Controller
 	public Dialog<T> getDialog()
 	{
 		return dialog;
+	}
+
+	@Override
+	public Stage getPrimaryStage()
+	{
+		return (Stage) dialog.getDialogPane().getScene().getWindow();
 	}
 
 	@Override

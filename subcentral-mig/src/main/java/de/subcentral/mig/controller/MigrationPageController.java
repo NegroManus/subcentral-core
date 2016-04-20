@@ -29,9 +29,9 @@ public class MigrationPageController extends AbstractPageController
 	@FXML
 	private Label			taskMessageLbl;
 
-	public MigrationPageController(MainController mainController)
+	public MigrationPageController(MigMainController migMainController)
 	{
-		super(mainController);
+		super(migMainController);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class MigrationPageController extends AbstractPageController
 		taskMessageLbl.textProperty().unbind();
 		taskMessageLbl.textProperty().bind(task.messageProperty());
 
-		mainController.getCommonExecutor().submit(task);
+		execute(task);
 	}
 
 	@Override

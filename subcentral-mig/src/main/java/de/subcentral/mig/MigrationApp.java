@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxIO;
-import de.subcentral.mig.controller.MainController;
+import de.subcentral.mig.controller.MigMainController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -28,7 +28,7 @@ public class MigrationApp extends Application
 	private BorderPane			mainView;
 
 	// Control
-	private MainController		mainController;
+	private MigMainController		migMainController;
 
 	@Override
 	public void init() throws Exception
@@ -69,8 +69,8 @@ public class MigrationApp extends Application
 
 	private void initMainController() throws IOException
 	{
-		this.mainController = new MainController(primaryStage);
-		mainView = FxIO.loadView("MainView.fxml", mainController);
+		this.migMainController = new MigMainController(primaryStage);
+		mainView = FxIO.loadView("MainView.fxml", migMainController);
 	}
 
 	private void initSceneAndShow()
@@ -86,7 +86,7 @@ public class MigrationApp extends Application
 		log.debug("Stopping {} ...", APP_INFO);
 		long start = System.nanoTime();
 
-		mainController.shutdown();
+		migMainController.shutdown();
 
 		log.info("Stopped {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
 

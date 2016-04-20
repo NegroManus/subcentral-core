@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import de.subcentral.core.util.LocalConfig;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxIO;
-import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.controller.WatcherMainController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -33,7 +33,7 @@ public class WatcherApp extends Application
 	private BorderPane			mainView;
 
 	// Control
-	private MainController		mainController;
+	private WatcherMainController		watcherMainController;
 
 	@Override
 	public void init() throws Exception
@@ -75,8 +75,8 @@ public class WatcherApp extends Application
 
 	private void initMainController() throws IOException
 	{
-		this.mainController = new MainController(primaryStage);
-		mainView = FxIO.loadView("MainView.fxml", mainController, "MainView", Locale.ENGLISH);
+		this.watcherMainController = new WatcherMainController(primaryStage);
+		mainView = FxIO.loadView("MainView.fxml", watcherMainController, "MainView", Locale.ENGLISH);
 	}
 
 	private void initSceneAndShow()
@@ -92,7 +92,7 @@ public class WatcherApp extends Application
 		log.debug("Stopping {} ...", APP_INFO);
 		long start = System.nanoTime();
 
-		mainController.shutdown();
+		watcherMainController.shutdown();
 
 		log.info("Stopped {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
 	}

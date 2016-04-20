@@ -101,7 +101,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 
 		editParsingLangsBtn.setOnAction((ActionEvent evt) ->
 		{
-			Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditView(parsingLangsTextFormatter.getValue(), settingsController.getMainController().getPrimaryStage());
+			Optional<List<Locale>> result = WatcherDialogs.showLocaleListEditView(parsingLangsTextFormatter.getValue(), getPrimaryStage());
 			if (result.isPresent())
 			{
 				parsingLangsTextFormatter.setValue(FXCollections.observableArrayList(result.get()));
@@ -125,7 +125,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 
 		addTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(settingsController.getMainController().getPrimaryStage());
+			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(getPrimaryStage());
 			FxActions.handleDistinctAdd(textLangMappingsTableView, result);
 		});
 
@@ -133,8 +133,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		editTextLangMappingBtn.disableProperty().bind(noTextLangMappingSelection);
 		editTextLangMappingBtn.setOnAction((ActionEvent evt) ->
 		{
-			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(textLangMappingsTableView.getSelectionModel().getSelectedItem(),
-					settingsController.getMainController().getPrimaryStage());
+			Optional<PatternToLanguageMapping> result = WatcherDialogs.showTextLanguageMappingEditView(textLangMappingsTableView.getSelectionModel().getSelectedItem(), getPrimaryStage());
 			FxActions.handleDistinctEdit(textLangMappingsTableView, result);
 		});
 
@@ -205,7 +204,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 
 		addLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(settingsController.getMainController().getPrimaryStage());
+			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(getPrimaryStage());
 			FxActions.handleDistinctAdd(langTextMappingsTableView, result);
 			FXCollections.sort(langTextMappingsTableView.getItems());
 		});
@@ -214,8 +213,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		editLangTextMappingBtn.disableProperty().bind(noLangTextMappingSelection);
 		editLangTextMappingBtn.setOnAction((ActionEvent) ->
 		{
-			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(langTextMappingsTableView.getSelectionModel().getSelectedItem(),
-					settingsController.getMainController().getPrimaryStage());
+			Optional<LanguageToTextMapping> result = WatcherDialogs.showLanguageTextMappingEditView(langTextMappingsTableView.getSelectionModel().getSelectedItem(), getPrimaryStage());
 			FxActions.handleDistinctEdit(langTextMappingsTableView, result);
 			FXCollections.sort(langTextMappingsTableView.getItems());
 		});

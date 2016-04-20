@@ -9,18 +9,13 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBase;
@@ -42,40 +37,9 @@ import javafx.util.StringConverter;
 
 public class FxActions
 {
-	private static final Logger							log							= LogManager.getLogger(FxActions.class);
-
-	public static final EventHandler<WorkerStateEvent>	DEFAULT_TASK_FAILED_HANDLER	= FxActions.initDefaultTaskFailedHandler();
-
 	private FxActions()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
-
-	private static EventHandler<WorkerStateEvent> initDefaultTaskFailedHandler()
-	{
-		return (WorkerStateEvent evt) ->
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("Execution of ");
-			if (!evt.getSource().getTitle().isEmpty())
-			{
-				sb.append(" the background task \"");
-				sb.append(evt.getSource().getTitle());
-				sb.append('"');
-			}
-			else
-			{
-				sb.append("a background task");
-			}
-			sb.append(" failed");
-			String msg = sb.toString();
-
-			Throwable exc = evt.getSource().getException();
-
-			log.error(msg, exc);
-			Alert alert = FxUtil.createExceptionAlert(null, msg, msg, exc);
-			alert.show();
-		};
 	}
 
 	public static void chooseDirectory(TextFormatter<Path> textFormatter, Stage stage, String title)
@@ -122,27 +86,24 @@ public class FxActions
 		}
 	}
 
-	public static void browse(String uri, ExecutorService executor)
-	{
-		browse(uri, executor, DEFAULT_TASK_FAILED_HANDLER);
-	}
-
-	public static void browse(String uri, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
+	public static void browse(String uri, Executor executor)
 	{
 		Task<Void> browseTask = new Task<Void>()
 		{
+			{
+				updateTitle("Browsing " + uri);
+			}
+
 			@Override
 			protected Void call() throws IOException, URISyntaxException
 			{
-				updateTitle("Browse " + uri);
 				// log.debug("Before browsing");
 				java.awt.Desktop.getDesktop().browse(new URI(uri));
 				// log.debug("After browsing");
 				return null;
 			}
 		};
-		browseTask.setOnFailed(onFailedHandler);
-		executor.submit(browseTask);
+		executor.execute(browseTask);
 	}
 
 	public static <E> E handleRemove(ObservableList<E> items, SelectionModel<E> selectionModel)

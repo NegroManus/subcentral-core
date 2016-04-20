@@ -3,8 +3,8 @@ package de.subcentral.mig.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubController;
 import de.subcentral.mig.process.MigrationAssistance;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ObservableValue;
@@ -21,22 +21,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public abstract class AbstractPageController extends Controller
+public abstract class AbstractPageController extends SubController<MigMainController>
 {
 	private static final Logger		log	= LogManager.getLogger(AbstractPageController.class);
 
-	protected MainController		mainController;
 	protected MigrationAssistance	assistance;
 
-	public AbstractPageController(MainController mainController)
+	public AbstractPageController(MigMainController migMainController)
 	{
-		this.mainController = mainController;
-		this.assistance = this.mainController.getAssistance();
-	}
-
-	public MainController getMainController()
-	{
-		return mainController;
+		super(migMainController);
+		this.assistance = parent.getAssistance();
 	}
 
 	public MigrationAssistance getAssistance()
@@ -91,10 +85,10 @@ public abstract class AbstractPageController extends Controller
 					Throwable e = task.getException();
 					String msg = "Task \"" + task.getTitle() + "\" failed";
 					log.error(msg, e);
-					Alert alert = FxUtil.createExceptionAlert(mainController.getPrimaryStage(), msg, msg + ": " + e.toString(), e);
+					Alert alert = FxUtil.createExceptionAlert(getPrimaryStage(), msg, msg + ": " + e.toString(), e);
 					alert.show();
 					getRootPane().getChildren().clear();
-					mainController.pageBack();
+					parent.pageBack();
 					break;
 				}
 				case CANCELLED:
@@ -106,6 +100,6 @@ public abstract class AbstractPageController extends Controller
 					break;
 			}
 		});
-		mainController.getCommonExecutor().submit(task);
+		execute(task);
 	}
 }

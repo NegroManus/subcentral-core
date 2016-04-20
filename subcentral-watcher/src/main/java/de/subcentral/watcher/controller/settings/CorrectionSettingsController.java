@@ -90,11 +90,11 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			Optional<? extends CorrectorSettingsItem<?, ?>> result;
 			if (SeriesNameCorrectorSettingsItem.class == selectedCorrectorType)
 			{
-				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView(getPrimaryStage());
 			}
 			else if (ReleaseTagsCorrectorSettingsItem.class == selectedCorrectorType)
 			{
-				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(getPrimaryStage());
 			}
 			else
 			{
@@ -112,11 +112,11 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			Optional<? extends CorrectorSettingsItem<?, ?>> result;
 			if (SeriesNameCorrectorSettingsItem.class == selectedCorrector.getClass())
 			{
-				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectorSettingsItem) selectedCorrector, settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectorSettingsItem) selectedCorrector, getPrimaryStage());
 			}
 			else if (ReleaseTagsCorrectorSettingsItem.class == selectedCorrector.getClass())
 			{
-				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectorSettingsItem) selectedCorrector, settingsController.getMainController().getPrimaryStage());
+				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectorSettingsItem) selectedCorrector, getPrimaryStage());
 			}
 			else
 			{
@@ -133,7 +133,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 
 		importCorrectorsButton.setOnAction((ActionEvent event) ->
 		{
-			Optional<ImportSettingItemsParameters> result = WatcherDialogs.showImportSettingItemsView(settingsController.getMainController().getPrimaryStage(), "Import correction rules");
+			Optional<ImportSettingItemsParameters> result = WatcherDialogs.showImportSettingItemsView(getPrimaryStage(), "Import correction rules");
 			if (result.isPresent())
 			{
 				ImportSettingItemsParameters params = result.get();
@@ -146,7 +146,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 						switch (params.getSourceType())
 						{
 							case DEFAULT_SETTINGS:
-								cfg = ConfigurationHelper.load(getSettingsController().getDefaultSettingsUrl());
+								cfg = ConfigurationHelper.load(parent.getDefaultSettingsUrl());
 								break;
 							case FILE:
 								cfg = ConfigurationHelper.load(params.getFile());
@@ -167,8 +167,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 						SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().update(cfg, params.isAddItems(), params.isReplaceItems(), params.isRemoveItems(), Objects::equals);
 					}
 				};
-				importCorrectorsTask.setOnFailed(FxActions.DEFAULT_TASK_FAILED_HANDLER);
-				getSettingsController().getMainController().getCommonExecutor().submit(importCorrectorsTask);
+				execute(importCorrectorsTask);
 			}
 		});
 

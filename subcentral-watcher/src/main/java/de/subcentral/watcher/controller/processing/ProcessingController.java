@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,16 +40,16 @@ import de.subcentral.core.name.PrintPropService;
 import de.subcentral.core.parse.MultiParsingService;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubController;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.settings.SettingsUtil;
 import de.subcentral.watcher.WatcherFxUtil;
-import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.controller.WatcherMainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.settings.CompatibilitySettingsItem;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
@@ -85,12 +86,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class ProcessingController extends Controller
+public class ProcessingController extends SubController<WatcherMainController>
 {
 	private static final Logger										log							= LogManager.getLogger(ProcessingController.class);
-
-	// Controlling properties
-	private final MainController									mainController;
 
 	// Processing Config
 	private final Binding<ProcessingConfig>							processingConfig			= initProcessingCfgBinding();
@@ -130,9 +128,9 @@ public class ProcessingController extends Controller
 	@FXML
 	private Button													removeAllBtn;
 
-	public ProcessingController(MainController mainController)
+	public ProcessingController(WatcherMainController watcherMainController)
 	{
-		this.mainController = Objects.requireNonNull(mainController, "mainController");
+		super(watcherMainController);
 	}
 
 	private static Binding<ProcessingConfig> initProcessingCfgBinding()
@@ -282,7 +280,7 @@ public class ProcessingController extends Controller
 		progressColumn.setCellFactory(ProgressBarTreeTableCell.forTreeTableColumn());
 
 		infoColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProcessingItem, ProcessingInfo> features) -> features.getValue().getValue().infoProperty());
-		infoColumn.setCellFactory((TreeTableColumn<ProcessingItem, ProcessingInfo> param) -> new InfoTreeTableCell(mainController.getCommonExecutor()));
+		infoColumn.setCellFactory((TreeTableColumn<ProcessingItem, ProcessingInfo> param) -> new InfoTreeTableCell(getExecutor()));
 
 		initProcessingTreeTableDnD();
 	}
@@ -442,11 +440,6 @@ public class ProcessingController extends Controller
 	}
 
 	// getter
-	public MainController getMainController()
-	{
-		return mainController;
-	}
-
 	public NamingService getNamingService()
 	{
 		return namingService;
@@ -668,7 +661,7 @@ public class ProcessingController extends Controller
 				Parent root = FxIO.loadView("DetailsView.fxml", detailsCtrl);
 				Scene scene = new Scene(root);
 
-				Stage owner = mainController.getPrimaryStage();
+				Stage owner = getPrimaryStage();
 				Stage stage = new Stage();
 				stage.initOwner(owner);
 				stage.getIcons().add(FxIO.loadImg("info_16.png"));
@@ -680,7 +673,7 @@ public class ProcessingController extends Controller
 			catch (IOException e)
 			{
 				log.error("Exception while opening details", e);
-				FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Exception occured", "Exception while opening details", e);
+				FxUtil.createExceptionAlert(getPrimaryStage(), "Exception occured", "Exception while opening details", e);
 			}
 		}
 	}
@@ -693,7 +686,7 @@ public class ProcessingController extends Controller
 			List<Path> files = item.getFiles();
 			if (!files.isEmpty())
 			{
-				FxActions.browse(files.get(0).getParent().toUri().toString(), mainController.getCommonExecutor());
+				FxActions.browse(files.get(0).getParent().toUri().toString(), getExecutor());
 			}
 		}
 	}
@@ -709,6 +702,10 @@ public class ProcessingController extends Controller
 			// Delete files on background thread and then create and execute new task
 			Task<Void> reprocessingTask = new Task<Void>()
 			{
+				{
+					updateTitle("Reprocessing " + task.getSourceFile());
+				}
+
 				@Override
 				protected Void call() throws IOException
 				{
@@ -736,10 +733,10 @@ public class ProcessingController extends Controller
 				{
 					Throwable e = getException();
 					log.error("Exception while deleting result files", e);
-					FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Exception occured", "Exception while deleting result files", e);
+					FxUtil.createExceptionAlert(getPrimaryStage(), "Exception occured", "Exception while deleting result files", e);
 				}
 			};
-			getProcessingExecutor().execute(reprocessingTask);
+			execute(reprocessingTask);
 		}
 	}
 
@@ -790,12 +787,12 @@ public class ProcessingController extends Controller
 		// processingTreeTable.getSelectionModel().clearSelection();
 		try
 		{
-			mainController.reloadProcessingPane();
+			parent.reloadProcessingPane();
 		}
 		catch (IOException e)
 		{
 			log.error("Exception while reloading processing pane", e);
-			FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Exception occured", "Exception while reloading processing pane", e);
+			FxUtil.createExceptionAlert(getPrimaryStage(), "Exception occured", "Exception while reloading processing pane", e);
 		}
 	}
 
@@ -870,9 +867,9 @@ public class ProcessingController extends Controller
 
 	private static class InfoTreeTableCell extends TreeTableCell<ProcessingItem, ProcessingInfo>
 	{
-		private final ExecutorService executor;
+		private final Executor executor;
 
-		private InfoTreeTableCell(ExecutorService executor)
+		private InfoTreeTableCell(Executor executor)
 		{
 			this.executor = Objects.requireNonNull(executor, "executor");
 		}

@@ -5,7 +5,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -17,9 +17,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -68,51 +66,36 @@ public class FxControlBindings
 		return bindToTextField(pathTxtFld, FxUtil.URL_STRING_CONVERTER);
 	}
 
-	public static Hyperlink createParentDirectoryHyperlink(Path file, ExecutorService executor)
-	{
-		return createParentDirectoryHyperlink(file, executor, FxActions.DEFAULT_TASK_FAILED_HANDLER);
-	}
-
-	public static Hyperlink createParentDirectoryHyperlink(Path file, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
+	public static Hyperlink createParentDirectoryHyperlink(Path file, Executor executor)
 	{
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
 		link.setTooltip(new Tooltip("Show " + file));
 		String uri = file.getParent().toUri().toString();
-		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor));
 		return link;
 	}
 
-	public static Hyperlink createFileHyperlink(Path file, ExecutorService executor)
-	{
-		return createFileHyperlink(file, executor, FxActions.DEFAULT_TASK_FAILED_HANDLER);
-	}
-
-	public static Hyperlink createFileHyperlink(Path file, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler)
+	public static Hyperlink createFileHyperlink(Path file, Executor executor)
 	{
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
 		link.setTooltip(new Tooltip("Open " + file));
 		String uri = file.toUri().toString();
-		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor));
 		return link;
 	}
 
-	public static Hyperlink createUrlHyperlink(URL url, ExecutorService executor) throws URISyntaxException
-	{
-		return createUrlHyperlink(url, executor, FxActions.DEFAULT_TASK_FAILED_HANDLER);
-	}
-
-	public static Hyperlink createUrlHyperlink(URL url, ExecutorService executor, EventHandler<WorkerStateEvent> onFailedHandler) throws URISyntaxException
+	public static Hyperlink createUrlHyperlink(URL url, Executor executor) throws URISyntaxException
 	{
 		String uri = url.toURI().toString();
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(url.toString());
 		link.setTooltip(new Tooltip("Open " + url));
-		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor, onFailedHandler));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor));
 		return link;
 	}
 

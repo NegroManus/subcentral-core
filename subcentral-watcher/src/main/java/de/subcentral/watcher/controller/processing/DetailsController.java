@@ -14,9 +14,9 @@ import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.StringUtil;
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
+import de.subcentral.fx.SubController;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.concurrent.Task;
@@ -41,27 +41,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class DetailsController extends Controller
+public class DetailsController extends SubController<ProcessingController>
 {
 	// Model
-	private final ProcessingTask		task;
+	private final ProcessingTask	task;
 
 	// View
 	@FXML
-	private Label						sourceFileLabel;
+	private Label					sourceFileLabel;
 	@FXML
-	private Accordion					sectionsAccordion;
+	private Accordion				sectionsAccordion;
 	@FXML
-	private ScrollPane					parsingDetailsRootPane;
+	private ScrollPane				parsingDetailsRootPane;
 	@FXML
-	private ScrollPane					releaseDetailsRootPane;
-
-	// Control
-	private final ProcessingController	processingController;
+	private ScrollPane				releaseDetailsRootPane;
 
 	public DetailsController(ProcessingController processingController, ProcessingTask task)
 	{
-		this.processingController = Objects.requireNonNull(processingController, "processingController");
+		super(processingController);
 		this.task = Objects.requireNonNull(task, "task");
 	}
 
@@ -211,8 +208,14 @@ public class DetailsController extends Controller
 		Release rls = subRls.getFirstMatchingRelease();
 
 		String[] keys = { "Computed name:", "Media:", "Release tags:", "Release group:", "Subtitle language:", "Subtitle tags:", "Subtitle source:", "Subtitle group:" };
-		String[] values = { printer.apply(subRls), printer.apply(rls.getMedia()), Tag.formatList(rls.getTags()), rls.getGroup() != null ? rls.getGroup().toString() : "",
-				sub.getLanguage() != null ? sub.getLanguage() : "", Tag.formatList(subRls.getTags()), sub.getSource() != null ? sub.getSource().getName() : "",
+		String[] values = {
+				printer.apply(subRls),
+				printer.apply(rls.getMedia()),
+				Tag.formatList(rls.getTags()),
+				rls.getGroup() != null ? rls.getGroup().toString() : "",
+				sub.getLanguage() != null ? sub.getLanguage() : "",
+				Tag.formatList(subRls.getTags()),
+				sub.getSource() != null ? sub.getSource().getName() : "",
 				sub.getGroup() != null ? sub.getGroup().toString() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
 		return pane;
@@ -348,7 +351,7 @@ public class DetailsController extends Controller
 		hbox.getChildren().add(lbl);
 		if (settingsSection != null)
 		{
-			Hyperlink settingsLink = WatcherFxUtil.createSettingsHyperlink(task.getController().getMainController().getSettingsController(), settingsSection, null);
+			Hyperlink settingsLink = WatcherFxUtil.createSettingsHyperlink(task.getController().getParent().getSettingsController(), settingsSection, null);
 			hbox.getChildren().add(settingsLink);
 		}
 		return hbox;
@@ -388,7 +391,7 @@ public class DetailsController extends Controller
 		hbox.getChildren().add(new Label(task.generateDisplayName(rls)));
 
 		// Info
-		WatcherFxUtil.addFurtherInfoHyperlink(hbox, rls, processingController.getMainController().getCommonExecutor());
+		WatcherFxUtil.addFurtherInfoHyperlink(hbox, rls, getExecutor());
 
 		// nuke
 		hbox.getChildren().addAll(WatcherFxUtil.createNukedLabels(rls));
@@ -434,7 +437,7 @@ public class DetailsController extends Controller
 					task.failed();
 				}
 			};
-			processingController.getMainController().getCommonExecutor().submit(addReleaseTask);
+			getExecutor().execute(addReleaseTask);
 		});
 		return btn;
 	}

@@ -55,9 +55,9 @@ public class ScopePageController extends AbstractPageController
 	// Control
 	private InitPageDataTask	initPageDataTask;
 
-	public ScopePageController(MainController mainController)
+	public ScopePageController(MigMainController migMainController)
 	{
-		super(mainController);
+		super(migMainController);
 	}
 
 	@Override

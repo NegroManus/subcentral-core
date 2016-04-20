@@ -8,11 +8,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubController;
 import de.subcentral.fx.settings.ListSettingsProperty;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
@@ -31,11 +31,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-public class WatchController extends Controller
+public class WatchController extends SubController<WatcherMainController>
 {
-	// Controlling properties
-	private final MainController	mainController;
-
 	// View
 	@FXML
 	private Button					startWatchButton;
@@ -45,20 +42,15 @@ public class WatchController extends Controller
 	private Label					watchStatusLabel;
 	@FXML
 	private HBox					watchDirectoriesHBox;
-
 	private final ImageView			watchImg	= new ImageView(FxIO.loadImg("iris_16.png"));
 
+	// Service
 	private DirectoryWatchService	watchService;
 	private ExecutorService			watchServiceExecutor;
 
-	public WatchController(MainController mainController)
+	public WatchController(WatcherMainController watcherMainController)
 	{
-		this.mainController = mainController;
-	}
-
-	public MainController getMainController()
-	{
-		return mainController;
+		super(watcherMainController);
 	}
 
 	@Override
@@ -138,7 +130,7 @@ public class WatchController extends Controller
 			{
 				dirsString.add(dir.toString());
 			}
-			Alert alert = FxUtil.createExceptionAlert(mainController.getPrimaryStage(), "Watch failed", "Failed to watch " + dirsString + ".", ex);
+			Alert alert = FxUtil.createExceptionAlert(getPrimaryStage(), "Watch failed", "Failed to watch " + dirsString + ".", ex);
 			alert.show();
 		});
 	}
@@ -154,9 +146,9 @@ public class WatchController extends Controller
 			link.setOnAction((ActionEvent evt) ->
 			{
 				// Open settings
-				mainController.selectTab(MainController.SETTINGS_TAB_INDEX);
-				mainController.getSettingsController().selectSection(SettingsController.WATCH_SECTION);
-				WatchSettingsController watchSettingsCtrl = (WatchSettingsController) mainController.getSettingsController().getSections().get(SettingsController.WATCH_SECTION).getController();
+				parent.selectTab(WatcherMainController.SETTINGS_TAB_INDEX);
+				parent.getSettingsController().selectSection(SettingsController.WATCH_SECTION);
+				WatchSettingsController watchSettingsCtrl = (WatchSettingsController) parent.getSettingsController().getSections().get(SettingsController.WATCH_SECTION).getController();
 				// Open directory chooser
 				watchSettingsCtrl.addWatchDirectory();
 			});
@@ -166,7 +158,7 @@ public class WatchController extends Controller
 		{
 			for (Path dir : watchDirs)
 			{
-				watchDirectoriesHBox.getChildren().add(FxControlBindings.createFileHyperlink(dir, mainController.getCommonExecutor()));
+				watchDirectoriesHBox.getChildren().add(FxControlBindings.createFileHyperlink(dir, getExecutor()));
 			}
 		}
 	}
@@ -175,7 +167,7 @@ public class WatchController extends Controller
 	{
 		watchServiceExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-WatchService"));
 
-		watchService = new DirectoryWatchService(this.mainController.getProcessingController()::handleFilesFromWatchDir);
+		watchService = new DirectoryWatchService(parent.getProcessingController()::handleFilesFromWatchDir);
 		watchService.setExecutor(watchServiceExecutor);
 		WatcherFxUtil.bindWatchDirectories(watchService, SettingsController.SETTINGS.getWatchDirectories().property());
 		watchService.setInitialScan(SettingsController.SETTINGS.getInitialScan().get());

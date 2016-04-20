@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
@@ -24,8 +23,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.NamedThreadFactory;
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxIO;
+import de.subcentral.fx.MainController;
+import de.subcentral.fx.TaskExecutor;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;
@@ -37,14 +37,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class MainController extends Controller
+public class WatcherMainController extends MainController
 {
-	private static final Logger		log						= LogManager.getLogger(MainController.class);
+	private static final Logger		log						= LogManager.getLogger(WatcherMainController.class);
 
 	public static final int			PROCESSING_TAB_INDEX	= 0;
 	public static final int			SETTINGS_TAB_INDEX		= 1;
-
-	private final Stage				primaryStage;
 
 	// View
 	// UI components are automatically injected before initialize()
@@ -66,17 +64,16 @@ public class MainController extends Controller
 	private WatchController			watchController;
 	private ProcessingController	processingController;
 	private SettingsController		settingsController;
-	private ExecutorService			commonExecutor;
 
-	public MainController(Stage primaryStage)
+	public WatcherMainController(Stage primaryStage)
 	{
-		this.primaryStage = primaryStage;
+		super(primaryStage);
 	}
 
 	@Override
 	protected void initialize() throws Exception
 	{
-		initCommonExecutor();
+		initExecutor();
 		initCloseHandling();
 
 		// initializing order important
@@ -87,7 +84,7 @@ public class MainController extends Controller
 		initSystemTray();
 	}
 
-	private void initCommonExecutor()
+	private void initExecutor()
 	{
 		int cpus = Runtime.getRuntime().availableProcessors();
 		int coreSize = 1 * cpus;
@@ -96,8 +93,9 @@ public class MainController extends Controller
 		BlockingQueue<Runnable> workQueue = new SynchronousQueue<Runnable>();
 		ThreadFactory threadFactory = new NamedThreadFactory("Watcher-Worker", false);
 		RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();
-		ThreadPoolExecutor pool = new ThreadPoolExecutor(coreSize, maxSize, idleTimeout, TimeUnit.SECONDS, workQueue, threadFactory, handler);
-		commonExecutor = pool;
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(coreSize, maxSize, idleTimeout, TimeUnit.SECONDS, workQueue, threadFactory, handler);
+		TaskExecutor taskExecutor = new TaskExecutor(executor, primaryStage);
+		initExecutor(taskExecutor);
 	}
 
 	private void initCloseHandling()
@@ -192,20 +190,10 @@ public class MainController extends Controller
 	}
 
 	// Public API
-	public Stage getPrimaryStage()
-	{
-		return primaryStage;
-	}
-
-	public ExecutorService getCommonExecutor()
-	{
-		return commonExecutor;
-	}
-
 	public WinRar getWinRar() throws UnsupportedOperationException
 	{
 		WinRar winRar = WinRar.getInstance();
-		winRar.setProcessExecutor(commonExecutor);
+		winRar.setProcessExecutor(executor);
 		return winRar;
 	}
 
@@ -294,12 +282,6 @@ public class MainController extends Controller
 		}
 	}
 
-	public void exit()
-	{
-		// Explicit exit: Causes Application.stop()
-		Platform.exit();
-	}
-
 	@Override
 	public void shutdown() throws Exception
 	{
@@ -307,11 +289,9 @@ public class MainController extends Controller
 		processingController.shutdown();
 		watchController.shutdown();
 		settingsController.shutdown();
-		if (commonExecutor != null)
-		{
-			commonExecutor.shutdown();
-			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
-		}
+
+		// shutdown executor
+		super.shutdown();
 
 		removeSystemTrayIcon();
 	}

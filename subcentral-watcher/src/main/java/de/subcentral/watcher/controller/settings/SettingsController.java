@@ -18,12 +18,12 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.SubController;
 import de.subcentral.watcher.WatcherApp;
-import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.controller.WatcherMainController;
 import de.subcentral.watcher.settings.WatcherSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -47,7 +47,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
-public class SettingsController extends Controller
+public class SettingsController extends SubController<WatcherMainController>
 {
 	private static final Logger					log										= LogManager.getLogger(SettingsController.class);
 
@@ -68,10 +68,6 @@ public class SettingsController extends Controller
 	public static final String					FILE_TRANSFORMATION_SECTION				= "filetransformation";
 	public static final String					UI_SECTION								= "ui";
 
-	// Controllers
-	private final MainController				mainController;
-	private final Map<String, SettingsSection>	sections;
-
 	// View
 	@FXML
 	private TreeView<SettingsSection>			sectionSelectionTreeView;
@@ -87,9 +83,12 @@ public class SettingsController extends Controller
 	private BooleanProperty						defaultSettingsLoaded					= new SimpleBooleanProperty();
 	private BooleanProperty						customSettingsExist						= new SimpleBooleanProperty();
 
-	public SettingsController(MainController mainController)
+	// Controllers
+	private final Map<String, SettingsSection>	sections;
+
+	public SettingsController(WatcherMainController watcherMainController)
 	{
-		this.mainController = mainController;
+		super(watcherMainController);
 		sections = initSections();
 	}
 
@@ -309,7 +308,7 @@ public class SettingsController extends Controller
 			else
 			{
 				sectionRootPane.getChildren().setAll(createLoadingIndicator());
-				mainController.getCommonExecutor().submit(createLoadSectionControllerTask(section));
+				execute(createLoadSectionControllerTask(section));
 			}
 		}
 		else
@@ -340,6 +339,10 @@ public class SettingsController extends Controller
 	{
 		return new Task<AbstractSettingsSectionController>()
 		{
+			{
+				updateTitle("Load settings section \"" + settingsSection.label + "\"");
+			}
+
 			@Override
 			protected AbstractSettingsSectionController call() throws Exception
 			{
@@ -369,11 +372,6 @@ public class SettingsController extends Controller
 		};
 	}
 
-	public MainController getMainController()
-	{
-		return mainController;
-	}
-
 	public Map<String, SettingsSection> getSections()
 	{
 		return sections;
@@ -394,7 +392,7 @@ public class SettingsController extends Controller
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		FxUtil.fixAlertHeight(alert);
-		alert.initOwner(mainController.getPrimaryStage());
+		alert.initOwner(getPrimaryStage());
 		alert.setTitle("Save settings?");
 		alert.setHeaderText("Do you want to save the current settings?");
 		alert.setContentText("The current settings will be stored at " + getCustomSettingsPath() + ".");
@@ -413,7 +411,7 @@ public class SettingsController extends Controller
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			FxUtil.fixAlertHeight(alert);
-			alert.initOwner(mainController.getPrimaryStage());
+			alert.initOwner(getPrimaryStage());
 			alert.setTitle("Save settings?");
 			alert.setHeaderText("Do you want to save the current settings?");
 			alert.setContentText("You have unsaved changes in the settings. Do you want to save them at " + getCustomSettingsPath() + "?");
@@ -435,7 +433,7 @@ public class SettingsController extends Controller
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		FxUtil.fixAlertHeight(alert);
-		alert.initOwner(mainController.getPrimaryStage());
+		alert.initOwner(getPrimaryStage());
 		alert.setTitle("Restore last saved settings?");
 		alert.setHeaderText("Do you want restore the last saved settings?");
 		alert.setContentText("The current settings will be replaced with the content of " + getCustomSettingsPath() + ".");
@@ -452,7 +450,7 @@ public class SettingsController extends Controller
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		FxUtil.fixAlertHeight(alert);
-		alert.initOwner(mainController.getPrimaryStage());
+		alert.initOwner(getPrimaryStage());
 		alert.setTitle("Restore default settings?");
 		alert.setHeaderText("Do you want to restore the default settings?");
 		alert.setContentText(

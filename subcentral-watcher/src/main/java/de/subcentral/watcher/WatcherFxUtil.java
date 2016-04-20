@@ -8,7 +8,7 @@ import java.nio.file.StandardWatchEventKinds;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +29,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxIO;
-import de.subcentral.watcher.controller.MainController;
+import de.subcentral.watcher.controller.WatcherMainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -101,7 +101,7 @@ public class WatcherFxUtil
 		return lbl;
 	}
 
-	public static Hyperlink createFurtherInfoHyperlink(Release rls, ExecutorService executorService)
+	public static Hyperlink createFurtherInfoHyperlink(Release rls, Executor executor)
 	{
 		if (rls.getFurtherInfoLinks().isEmpty())
 		{
@@ -114,7 +114,7 @@ public class WatcherFxUtil
 			Hyperlink hl = new Hyperlink(host, dbImg);
 			hl.setTooltip(new Tooltip("Show further info"));
 			hl.setVisited(true);
-			hl.setOnAction((ActionEvent evt) -> FxActions.browse(rls.getFurtherInfoLinks().get(0), executorService));
+			hl.setOnAction((ActionEvent evt) -> FxActions.browse(rls.getFurtherInfoLinks().get(0), executor));
 			return hl;
 		}
 		catch (MalformedURLException e)
@@ -124,9 +124,9 @@ public class WatcherFxUtil
 		}
 	}
 
-	public static void addFurtherInfoHyperlink(Pane pane, Release rls, ExecutorService executorService)
+	public static void addFurtherInfoHyperlink(Pane pane, Release rls, Executor executor)
 	{
-		Hyperlink link = createFurtherInfoHyperlink(rls, executorService);
+		Hyperlink link = createFurtherInfoHyperlink(rls, executor);
 		if (link != null)
 		{
 			pane.getChildren().add(link);
@@ -207,7 +207,7 @@ public class WatcherFxUtil
 		link.setVisited(true);
 		link.setOnAction((ActionEvent evt) ->
 		{
-			settingsCtrl.getMainController().selectTab(MainController.SETTINGS_TAB_INDEX);
+			settingsCtrl.getParent().selectTab(WatcherMainController.SETTINGS_TAB_INDEX);
 			settingsCtrl.selectSection(section);
 		});
 		return link;

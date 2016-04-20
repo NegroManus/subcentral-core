@@ -72,6 +72,10 @@ public class MetadataDbSettingsItem extends SimpleDeactivatableSettingsItem<Meta
 		availability.setValue(Availability.CHECKING);
 		Task<Availability> updateAvailibilityTask = new Task<Availability>()
 		{
+			{
+				updateTitle("Checking availability of " + item.getSite().getDisplayNameOrName());
+			}
+
 			@Override
 			protected Availability call() throws Exception
 			{

@@ -90,7 +90,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 
 		addStandardReleaseButton.setOnAction((ActionEvent event) ->
 		{
-			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseEditView(settingsController.getMainController().getPrimaryStage());
+			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseEditView(getPrimaryStage());
 			FxActions.handleDistinctAdd(standardReleasesTableView, result);
 		});
 
@@ -100,7 +100,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 		editStandardReleaseButton.setOnAction((ActionEvent event) ->
 		{
 			StandardRelease def = standardReleasesTableView.getSelectionModel().getSelectedItem();
-			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseEditView(def, settingsController.getMainController().getPrimaryStage());
+			Optional<StandardRelease> result = WatcherDialogs.showStandardReleaseEditView(def, getPrimaryStage());
 			FxActions.handleDistinctEdit(standardReleasesTableView, result);
 		});
 

@@ -1,22 +1,14 @@
 package de.subcentral.watcher.controller.settings;
 
-import de.subcentral.fx.Controller;
+import de.subcentral.fx.SubController;
 import javafx.scene.Node;
 
-public abstract class AbstractSettingsSectionController extends Controller
+public abstract class AbstractSettingsSectionController extends SubController<SettingsController>
 {
-	protected final SettingsController settingsController;
-
 	public AbstractSettingsSectionController(SettingsController settingsController)
 	{
-		this.settingsController = settingsController;
-	}
-
-	public SettingsController getSettingsController()
-	{
-		return settingsController;
+		super(settingsController);
 	}
 
 	public abstract Node getContentPane();
-
 }

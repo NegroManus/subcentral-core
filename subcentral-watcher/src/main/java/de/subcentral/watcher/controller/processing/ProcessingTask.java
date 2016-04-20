@@ -417,7 +417,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		List<Media> queryObj = rls.getMedia();
 
 		checkCancelled();
-		ListMultimap<MetadataDb, Release> queryResults = MetadataDbUtil.searchInAll(config.getReleaseDbs(), queryObj, Release.class, controller.getMainController().getCommonExecutor());
+		ListMultimap<MetadataDb, Release> queryResults = MetadataDbUtil.searchInAll(config.getReleaseDbs(), queryObj, Release.class, controller.getExecutor());
 
 		for (Map.Entry<MetadataDb, Collection<Release>> entry : queryResults.asMap().entrySet())
 		{
@@ -705,12 +705,12 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				switch (locateStrategy)
 				{
 					case SPECIFY:
-						packager = controller.getMainController().getWinRar().getPackager(config.getRarExe());
+						packager = controller.getParent().getWinRar().getPackager(config.getRarExe());
 						break;
 					case AUTO_LOCATE:
 						// fall through
 					default:
-						packager = controller.getMainController().getWinRar().getPackager();
+						packager = controller.getParent().getWinRar().getPackager();
 				}
 				WinRarPackConfig cfg = new WinRarPackConfig();
 				cfg.setCompressionMethod(CompressionMethod.BEST);
@@ -803,13 +803,13 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 	private void displaySystemTrayNotification(String caption, String text, MessageType messageType, BooleanProperty warningEnabledProperty)
 	{
-		if (controller.getMainController().isSystemTrayAvailable())
+		if (controller.getParent().isSystemTrayAvailable())
 		{
 			Platform.runLater(() ->
 			{
 				if (SettingsController.SETTINGS.getWarningsEnabled().get() && warningEnabledProperty.get())
 				{
-					controller.getMainController().displaySystemTrayNotification(caption, text, messageType);
+					controller.getParent().displaySystemTrayNotification(caption, text, messageType);
 				}
 			});
 		}

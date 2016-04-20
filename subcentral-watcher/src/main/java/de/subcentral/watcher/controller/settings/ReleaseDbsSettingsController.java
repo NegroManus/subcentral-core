@@ -79,7 +79,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		releaseDbsEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(releaseDbsEnabledColumn));
 
 		releaseDbsNameColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem, MetadataDbSettingsItem> param) -> FxBindings.immutableObservableValue(param.getValue()));
-		releaseDbsNameColumn.setCellFactory((TableColumn<MetadataDbSettingsItem, MetadataDbSettingsItem> param) -> new NameTableCell(settingsController.getMainController().getCommonExecutor()));
+		releaseDbsNameColumn.setCellFactory((TableColumn<MetadataDbSettingsItem, MetadataDbSettingsItem> param) -> new NameTableCell(getExecutor()));
 
 		releaseDbsAvailableColumn.setCellValueFactory((CellDataFeatures<MetadataDbSettingsItem, Availability> param) -> param.getValue().availabilityProperty());
 		releaseDbsAvailableColumn.setCellFactory((TableColumn<MetadataDbSettingsItem, Availability> param) -> new AvailableTableCell());
@@ -100,7 +100,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	{
 		for (MetadataDbSettingsItem releaseDb : releaseDbsTableView.getItems())
 		{
-			releaseDb.updateAvailability(settingsController.getMainController().getCommonExecutor());
+			releaseDb.updateAvailability(getExecutor());
 		}
 	}
 

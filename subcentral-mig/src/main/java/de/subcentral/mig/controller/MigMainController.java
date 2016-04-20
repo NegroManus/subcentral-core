@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import de.subcentral.core.util.NamedThreadFactory;
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxIO;
+import de.subcentral.fx.MainController;
+import de.subcentral.fx.TaskExecutor;
 import de.subcentral.mig.process.MigrationAssistance;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -30,7 +29,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class MainController extends Controller
+public class MigMainController extends MainController
 {
 	// Model
 	private MigrationAssistance	assistance	= new MigrationAssistance();
@@ -40,7 +39,6 @@ public class MainController extends Controller
 	private IntegerProperty		currentPage	= new SimpleIntegerProperty(this, "currentPage", -1);
 
 	// View
-	private final Stage			primaryStage;
 	// Content
 	@FXML
 	private Label				pageTitleLbl;
@@ -56,22 +54,9 @@ public class MainController extends Controller
 	@FXML
 	private Button				cancelBtn;
 
-	// Controller
-	private ExecutorService		commonExecutor;
-
-	public MainController(Stage primaryStage)
+	public MigMainController(Stage primaryStage)
 	{
-		this.primaryStage = primaryStage;
-	}
-
-	public Stage getPrimaryStage()
-	{
-		return primaryStage;
-	}
-
-	public ExecutorService getCommonExecutor()
-	{
-		return commonExecutor;
+		super(primaryStage);
 	}
 
 	public MigrationAssistance getAssistance()
@@ -84,16 +69,16 @@ public class MainController extends Controller
 	{
 		initPages();
 		initLowerButtonBar();
-		initCommonExecutor();
+		initExecutor();
 
 		currentPage.set(0);
 	}
 
 	private void initPages()
 	{
-		Page settingsPage = new Page(() -> new SettingsPageController(MainController.this), "SettingsPage.fxml");
-		Page configurePage = new Page(() -> new ScopePageController(MainController.this), "ConfigurePage.fxml");
-		Page migrationPage = new Page(() -> new MigrationPageController(MainController.this), "MigrationPage.fxml");
+		Page settingsPage = new Page(() -> new SettingsPageController(MigMainController.this), "SettingsPage.fxml");
+		Page configurePage = new Page(() -> new ScopePageController(MigMainController.this), "ConfigurePage.fxml");
+		Page migrationPage = new Page(() -> new MigrationPageController(MigMainController.this), "MigrationPage.fxml");
 		pages.add(settingsPage);
 		pages.add(configurePage);
 		pages.add(migrationPage);
@@ -159,9 +144,9 @@ public class MainController extends Controller
 		cancelBtn.setOnAction((ActionEvent evt) -> cancel());
 	}
 
-	private void initCommonExecutor()
+	private void initExecutor()
 	{
-		commonExecutor = Executors.newSingleThreadExecutor(new NamedThreadFactory("Worker"));
+		initExecutor(new TaskExecutor(Executors.newSingleThreadExecutor(new NamedThreadFactory("Worker")), primaryStage));
 	}
 
 	public void pageBack()
@@ -208,11 +193,8 @@ public class MainController extends Controller
 				page.controller.shutdown();
 			}
 		}
-		if (commonExecutor != null)
-		{
-			commonExecutor.shutdownNow();
-			commonExecutor.awaitTermination(10, TimeUnit.SECONDS);
-		}
+		// shutdown executor
+		super.shutdown();
 	}
 
 	private static final class Page
