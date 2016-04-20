@@ -8,6 +8,13 @@ public abstract class ExecutingController extends Controller
 
 	public void execute(Task<?> task)
 	{
-		getExecutor().execute(task);
+		if (getExecutor() != null)
+		{
+			getExecutor().execute(task);
+		}
+		else
+		{
+			new Thread(task).start();
+		}
 	}
 }
