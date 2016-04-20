@@ -67,7 +67,7 @@ public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>,
 		if (obj instanceof PatternToLanguageMapping)
 		{
 			PatternToLanguageMapping o = (PatternToLanguageMapping) obj;
-			return pattern.equals(o.pattern) && language.equals(language);
+			return pattern.equals(o.pattern);
 		}
 		return false;
 	}
@@ -75,7 +75,7 @@ public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>,
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(73, 113).append(pattern).append(language).toHashCode();
+		return new HashCodeBuilder(73, 113).append(pattern).toHashCode();
 	}
 
 	@Override

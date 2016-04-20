@@ -61,7 +61,7 @@ public final class LanguageToTextMapping implements Map.Entry<Locale, String>, C
 		if (obj instanceof LanguageToTextMapping)
 		{
 			LanguageToTextMapping o = (LanguageToTextMapping) obj;
-			return language.equals(o.language) && text.equals(o.text);
+			return language.equals(o.language);
 		}
 		return false;
 	}
@@ -69,7 +69,7 @@ public final class LanguageToTextMapping implements Map.Entry<Locale, String>, C
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(983, 133).append(language).append(text).toHashCode();
+		return new HashCodeBuilder(983, 133).append(language).toHashCode();
 	}
 
 	@Override
