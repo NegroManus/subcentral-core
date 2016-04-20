@@ -101,7 +101,7 @@ public class PropSequenceNameBuilder
 
 		public Config()
 		{
-			this(NamingDefaults.getDefaultPropToStringService(), null, ImmutableSet.of(), null);
+			this(NamingDefaults.getDefaultPrintPropService(), null, ImmutableSet.of(), null);
 		}
 
 		public Config(PrintPropService printPropService)

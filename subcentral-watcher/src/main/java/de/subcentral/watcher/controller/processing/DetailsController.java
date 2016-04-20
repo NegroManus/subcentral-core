@@ -13,6 +13,9 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.name.PrintPropService;
+import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
@@ -211,6 +214,8 @@ public class DetailsController extends SubController<ProcessingController>
 
 	private static Node createCorrectionsNode(List<Correction> corrections)
 	{
+		PrintPropService printer = NamingDefaults.getDefaultPrintPropService();
+
 		String[] keys = new String[corrections.size()];
 		String[] values = new String[corrections.size()];
 
@@ -225,10 +230,11 @@ public class DetailsController extends SubController<ProcessingController>
 			key.append(": ");
 			keys[i] = key.toString();
 
+			SimplePropDescriptor prop = new SimplePropDescriptor(c.getBean().getClass(), c.getPropertyName());
 			StringBuilder val = new StringBuilder();
-			val.append(c.getOldValue());
+			val.append(printer.print(prop, c.getOldValue()));
 			val.append(" -> ");
-			val.append(c.getNewValue());
+			val.append(printer.print(prop, c.getNewValue()));
 			values[i] = val.toString();
 		}
 
