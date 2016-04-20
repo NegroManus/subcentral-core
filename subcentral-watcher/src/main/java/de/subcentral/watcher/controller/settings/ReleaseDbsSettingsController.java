@@ -139,7 +139,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 					break;
 				case LIMITED:
 					setGraphic(new ImageView(FxIO.loadImg("warning_16.png")));
-					setTooltip(new Tooltip("Limited availibility: Reachable but not searchable"));
+					setTooltip(new Tooltip("Limited availibility: Reachable but probably not searchable"));
 					break;
 				case NOT_AVAILABLE:
 					setGraphic(new ImageView(FxIO.loadImg("cancel_16.png")));
