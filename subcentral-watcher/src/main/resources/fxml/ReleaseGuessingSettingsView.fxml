@@ -43,7 +43,7 @@
       <HBox spacing="5.0" GridPane.rowIndex="2">
          <children>
       		<CheckBox fx:id="enableGuessingCheckBox" minWidth="-Infinity" mnemonicParsing="false" text="Enable release guessing" />
-            <Label disable="true" text="(when no matching results were found in any release database)" />
+            <Label disable="true" text="(if no matching results were found in any release database)" />
          </children>
       </HBox>
 		<Label text="Standard releases" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
