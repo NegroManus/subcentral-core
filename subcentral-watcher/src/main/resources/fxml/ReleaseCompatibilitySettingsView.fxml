@@ -33,7 +33,7 @@
             <Font size="18.0" />
          </font>
 		</Label>
-		<CheckBox fx:id="compatibilityEnabledCheckBox" mnemonicParsing="false" text="Enable search for compatible releases" GridPane.rowIndex="2" />
+		<CheckBox fx:id="compatibilityEnabledCheckBox" mnemonicParsing="false" text="Check for compatible releases" GridPane.rowIndex="2" />
 		<Label disable="true" text="Releases of the same group are always compatible." GridPane.rowIndex="4" />
 		<Label text="Cross-group compatibilities" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
          <font>
