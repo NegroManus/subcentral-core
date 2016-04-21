@@ -91,7 +91,7 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public List<WbbBoard> getChildBoards(int boardId) throws SQLException
+	public List<WbbBoard> getBoardsByParent(int boardId) throws SQLException
 	{
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, title, description FROM wbb1_1_board WHERE parentID=?"))
 		{

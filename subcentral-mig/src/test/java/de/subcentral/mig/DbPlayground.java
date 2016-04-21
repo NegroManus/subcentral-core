@@ -23,11 +23,11 @@ public class DbPlayground
 			// System.out.println(post.getMessage());
 
 			System.out.println("Aktuelle Serien");
-			for (WbbBoard b : api.getChildBoards(160))
+			for (WbbBoard b : api.getBoardsByParent(160))
 			{
 				System.out.println(b.getTitle());
 			}
-			for (WbbBoard b : api.getChildBoards(170))
+			for (WbbBoard b : api.getBoardsByParent(170))
 			{
 				System.out.println(b.getTitle());
 			}
