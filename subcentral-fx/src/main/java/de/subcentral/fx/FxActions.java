@@ -40,7 +40,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
 
@@ -54,32 +53,30 @@ public class FxActions
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static void chooseDirectory(TextFormatter<Path> textFormatter, Stage stage, String title)
+	public static void chooseDirectory(TextFormatter<Path> textFormatter, Window window, String title)
 	{
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle(title);
-		Path currentValue = textFormatter.getValue();
-		if (currentValue != null && Files.isDirectory(currentValue, LinkOption.NOFOLLOW_LINKS))
+		Path currentVal = textFormatter.getValue();
+		if (currentVal != null && Files.isDirectory(currentVal, LinkOption.NOFOLLOW_LINKS))
 		{
-			dirChooser.setInitialDirectory(currentValue.toFile());
+			dirChooser.setInitialDirectory(currentVal.toFile());
 		}
-		File selectedDirectory = dirChooser.showDialog(stage);
-		if (selectedDirectory == null)
+		File selectedDir = dirChooser.showDialog(window);
+		if (selectedDir != null)
 		{
-			return;
+			textFormatter.setValue(selectedDir.toPath());
 		}
-		Path newTargetDir = selectedDirectory.toPath();
-		textFormatter.setValue(newTargetDir);
 	}
 
 	public static void chooseFile(TextFormatter<Path> textFormatter, Window owner, String title, ExtensionFilter... extensionFilters)
 	{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(title);
-		Path currentValue = textFormatter.getValue();
-		if (currentValue != null)
+		Path currentVal = textFormatter.getValue();
+		if (currentVal != null)
 		{
-			Path potentialParentDir = currentValue.getParent();
+			Path potentialParentDir = currentVal.getParent();
 			if (potentialParentDir != null && Files.isDirectory(potentialParentDir, LinkOption.NOFOLLOW_LINKS))
 			{
 				fileChooser.setInitialDirectory(potentialParentDir.toFile());
