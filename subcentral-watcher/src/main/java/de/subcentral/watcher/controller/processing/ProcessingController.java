@@ -116,7 +116,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 	@FXML
 	private Button													detailsBtn;
 	@FXML
-	private Button													openDirectoryBtn;
+	private Button													showInDirectoryBtn;
 	@FXML
 	private Button													reprocessBtn;
 	@FXML
@@ -408,7 +408,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 		detailsBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
 		detailsBtn.setOnAction((ActionEvent evt) -> showDetails());
 
-		openDirectoryBtn.disableProperty().bind(new BooleanBinding()
+		showInDirectoryBtn.disableProperty().bind(new BooleanBinding()
 		{
 			{
 				super.bind(processingTreeTable.getSelectionModel().selectedItemProperty());
@@ -421,7 +421,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 				return selectedItem == null || selectedItem.getValue().getFiles().isEmpty();
 			}
 		});
-		openDirectoryBtn.setOnAction((ActionEvent evt) -> openDirectory());
+		showInDirectoryBtn.setOnAction((ActionEvent evt) -> showInDirectory());
 
 		reprocessBtn.disableProperty().bind(noFinishedTaskSelectedBinding);
 		reprocessBtn.setOnAction((ActionEvent evt) -> reprocess());
@@ -678,7 +678,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 		}
 	}
 
-	public void openDirectory()
+	public void showInDirectory()
 	{
 		ProcessingItem item = getSelectedProcessingItem();
 		if (item != null)
@@ -686,7 +686,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 			List<Path> files = item.getFiles();
 			if (!files.isEmpty())
 			{
-				FxActions.browse(files.get(0).getParent().toUri().toString(), getExecutor());
+				FxActions.showInDirectory(files.get(0), getExecutor());
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 package de.subcentral.watcher.controller.settings;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -183,7 +182,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 					link.setMaxHeight(Double.MAX_VALUE);
 					hbox.getChildren().add(link);
 				}
-				catch (MalformedURLException | URISyntaxException e)
+				catch (MalformedURLException e)
 				{
 					log.warn("Could not create Hyperlink for release database " + item.getItem(), e);
 				}

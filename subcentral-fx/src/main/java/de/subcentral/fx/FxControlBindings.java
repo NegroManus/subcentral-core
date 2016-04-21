@@ -1,6 +1,5 @@
 package de.subcentral.fx;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Map;
@@ -66,36 +65,33 @@ public class FxControlBindings
 		return bindToTextField(pathTxtFld, FxUtil.URL_STRING_CONVERTER);
 	}
 
-	public static Hyperlink createParentDirectoryHyperlink(Path file, Executor executor)
+	public static Hyperlink createBrowseHyperlink(Path file, Executor executor)
 	{
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
-		link.setTooltip(new Tooltip("Show " + file));
-		String uri = file.getParent().toUri().toString();
-		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor));
+		link.setTooltip(new Tooltip("Open \"" + file + "\""));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(file, executor));
 		return link;
 	}
 
-	public static Hyperlink createFileHyperlink(Path file, Executor executor)
+	public static Hyperlink createShowInDirectoryHyperlink(Path file, Executor executor)
 	{
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
-		link.setTooltip(new Tooltip("Open " + file));
-		String uri = file.toUri().toString();
-		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor));
+		link.setTooltip(new Tooltip("Show \"" + file + "\" in explorer"));
+		link.setOnAction((ActionEvent evt) -> FxActions.showInDirectory(file, executor));
 		return link;
 	}
 
-	public static Hyperlink createUrlHyperlink(URL url, Executor executor) throws URISyntaxException
+	public static Hyperlink createUrlHyperlink(URL url, Executor executor)
 	{
-		String uri = url.toURI().toString();
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(url.toString());
 		link.setTooltip(new Tooltip("Open " + url));
-		link.setOnAction((ActionEvent evt) -> FxActions.browse(uri, executor));
+		link.setOnAction((ActionEvent evt) -> FxActions.browse(url, executor));
 		return link;
 	}
 

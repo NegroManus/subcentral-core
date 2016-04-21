@@ -4,14 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.SystemUtils;
+
+import de.subcentral.core.util.IOUtil;
+import de.subcentral.core.util.IOUtil.ProcessResult;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -37,6 +46,9 @@ import javafx.util.StringConverter;
 
 public class FxActions
 {
+	private static final TimeUnit	IO_TIMEOUT_UNIT		= TimeUnit.MINUTES;
+	private static final long		IO_TIMEOUT_VALUE	= 1;
+
 	private FxActions()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
@@ -86,22 +98,105 @@ public class FxActions
 		}
 	}
 
+	public static void browse(URI uri, Executor executor)
+	{
+		browse(uri, Function.identity(), executor);
+	}
+
 	public static void browse(String uri, Executor executor)
 	{
-		Task<Void> browseTask = new Task<Void>()
+		browse(uri, (String u) ->
+		{
+			try
+			{
+				return new URI(u);
+			}
+			catch (URISyntaxException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}, executor);
+	}
+
+	public static void browse(URL url, Executor executor)
+	{
+		browse(url, (URL u) ->
+		{
+			try
+			{
+				return u.toURI();
+			}
+			catch (URISyntaxException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}, executor);
+	}
+
+	public static void browse(Path path, Executor executor)
+	{
+		browse(path, Path::toUri, executor);
+	}
+
+	public static void browseParent(Path path, Executor executor)
+	{
+		Path parent = path.getParent();
+		if (parent != null)
+		{
+			browse(parent, Path::toUri, executor);
+		}
+		else
+		{
+			browse(path, Path::toUri, executor);
+		}
+	}
+
+	public static <T> void browse(T uri, Function<T, URI> uriConverter, Executor executor)
+	{
+		Task<Void> task = new Task<Void>()
 		{
 			{
 				updateTitle("Browsing " + uri);
 			}
 
 			@Override
-			protected Void call() throws IOException, URISyntaxException
+			protected Void call() throws IOException
 			{
-				java.awt.Desktop.getDesktop().browse(new URI(uri));
+				java.awt.Desktop.getDesktop().browse(uriConverter.apply(uri));
 				return null;
 			}
 		};
-		executor.execute(browseTask);
+		executor.execute(task);
+	}
+
+	public static void showInDirectory(Path path, Executor executor)
+	{
+		if (SystemUtils.IS_OS_WINDOWS)
+		{
+			showInWindowsExplorer(path, executor);
+		}
+		else
+		{
+			browseParent(path, executor);
+		}
+	}
+
+	public static void showInWindowsExplorer(Path path, Executor executor)
+	{
+		Task<ProcessResult> task = new Task<ProcessResult>()
+		{
+			{
+				updateTitle("Showing in windows explorer " + path);
+			}
+
+			@Override
+			protected ProcessResult call() throws IOException, InterruptedException, TimeoutException
+			{
+				List<String> command = Arrays.asList("explorer.exe", "/select,", path.toString());
+				return IOUtil.executeProcess(command, IO_TIMEOUT_VALUE, IO_TIMEOUT_UNIT);
+			}
+		};
+		executor.execute(task);
 	}
 
 	public static <E> E handleRemove(ObservableList<E> items, SelectionModel<E> selectionModel)

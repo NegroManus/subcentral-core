@@ -20,7 +20,7 @@
 						</ImageView>
 					</graphic>
 				</Button>
-				<Button fx:id="openDirectoryBtn" mnemonicParsing="false" text="Open folder">
+				<Button fx:id="showInDirectoryBtn" mnemonicParsing="false" text="Show in directory">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>

@@ -158,7 +158,7 @@ public class WatchController extends SubController<WatcherMainController>
 		{
 			for (Path dir : watchDirs)
 			{
-				watchDirectoriesHBox.getChildren().add(FxControlBindings.createFileHyperlink(dir, getExecutor()));
+				watchDirectoriesHBox.getChildren().add(FxControlBindings.createBrowseHyperlink(dir, getExecutor()));
 			}
 		}
 	}

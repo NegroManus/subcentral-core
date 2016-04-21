@@ -179,7 +179,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 				if (locatedRarExe != null)
 				{
 					ImageView img = new ImageView(FxIO.loadImg("checked_16.png"));
-					Hyperlink hl = FxControlBindings.createParentDirectoryHyperlink(locatedRarExe, getExecutor());
+					Hyperlink hl = FxControlBindings.createShowInDirectoryHyperlink(locatedRarExe, getExecutor());
 					hl.setMaxHeight(Double.MAX_VALUE);
 					locateRarResultRootPane.getChildren().setAll(img, hl);
 				}
