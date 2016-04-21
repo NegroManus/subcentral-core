@@ -91,6 +91,32 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
+	public List<WbbBoard> getChildBoards(int boardId) throws SQLException
+	{
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, title, description FROM wbb1_1_board WHERE parentID=?"))
+		{
+			stmt.setInt(1, boardId);
+			try (ResultSet rs = stmt.executeQuery())
+			{
+				ImmutableList.Builder<WbbBoard> boardList = ImmutableList.builder();
+				while (rs.next())
+				{
+					WbbBoard board = new WbbBoard();
+					board.id = rs.getInt(1);
+					board.title = rs.getString(2);
+					Reader msgReader = rs.getCharacterStream(3);
+					board.description = StringUtil.readerToString(msgReader);
+					boardList.add(board);
+				}
+				return boardList.build();
+			}
+			catch (IOException e)
+			{
+				throw new SQLException(e);
+			}
+		}
+	}
+
 	public List<WbbThread> getThreadsByBoard(int boardId) throws SQLException
 	{
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=?"))

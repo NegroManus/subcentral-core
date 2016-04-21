@@ -7,6 +7,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.junit.Test;
 
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
+import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbBoard;
 
 public class DbPlayground
 {
@@ -21,7 +22,15 @@ public class DbPlayground
 			// System.out.println(post.getTopic());
 			// System.out.println(post.getMessage());
 
-			api.getAttachment(182270);
+			System.out.println("Aktuelle Serien");
+			for (WbbBoard b : api.getChildBoards(160))
+			{
+				System.out.println(b.getTitle());
+			}
+			for (WbbBoard b : api.getChildBoards(170))
+			{
+				System.out.println(b.getTitle());
+			}
 		}
 	}
 }

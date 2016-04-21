@@ -32,9 +32,9 @@ public class MigTestUtil
 	public static Connection connect() throws SQLException, ConfigurationException
 	{
 		PropertiesConfiguration cfg = readPropertiesConfig("/de/subcentral/mig/migration-env-settings.properties");
-		String url = cfg.getString("sc.db.url");
-		String user = cfg.getString("sc.db.user");
-		String password = cfg.getString("sc.db.password");
+		String url = cfg.getString("source.db.url");
+		String user = cfg.getString("source.db.user");
+		String password = cfg.getString("source.db.password");
 		return DriverManager.getConnection(url, user, password);
 	}
 }

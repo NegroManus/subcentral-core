@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.jsoup.nodes.Document;
 import org.junit.Test;
 
+import de.subcentral.core.metadata.media.Series;
 import de.subcentral.mig.parse.SeriesListParser;
 import de.subcentral.mig.parse.SeriesListParser.SeriesListData;
 
@@ -19,5 +20,10 @@ public class SeriesListParserTest
 		SeriesListData cnt = parser.parseThreadPage(seriesListDoc);
 		System.out.println("Num of series: " + cnt.getSeries().size());
 		System.out.println("Num of networks: " + cnt.getNetworks().size());
+
+		for (Series series : cnt.getSeries())
+		{
+			System.out.println(series.getName());
+		}
 	}
 }
