@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.io.CharStreams;
 
 public class StringUtil
 {
@@ -132,19 +133,8 @@ public class StringUtil
 		{
 			return null;
 		}
-		StringBuilder builder = new StringBuilder();
-		int charsRead;
-		char[] chars = new char[1024];
-		do
-		{
-			charsRead = reader.read(chars, 0, chars.length);
-			// if we have valid chars, append them to end of string.
-			if (charsRead > 0)
-			{
-				builder.append(chars, 0, charsRead);
-			}
-		}
-		while (charsRead > 0);
-		return builder.toString();
+		String s = CharStreams.toString(reader);
+		reader.close();
+		return s;
 	}
 }
