@@ -14,6 +14,7 @@ public class StringUtil
 	public static final Joiner		COMMA_JOINER		= Joiner.on(", ").skipNulls();
 	public static final Splitter	COMMA_SPLITTER		= Splitter.on(',').omitEmptyStrings().trimResults();
 
+	public static final Joiner		SPACE_JOINER		= Joiner.on(" ").skipNulls();
 	public static final Splitter	WHITESPACE_SPLITTER	= Splitter.on(CharMatcher.WHITESPACE);
 
 	private StringUtil()

@@ -73,14 +73,12 @@ public class WatchController extends SubController<WatcherMainController>
 		startWatchButton.setOnAction(evt ->
 		{
 			watchService.restart();
-			evt.consume();
 		});
 
 		stopWatchButton.disableProperty().bind(watchService.runningProperty().not());
 		stopWatchButton.setOnAction(evt ->
 		{
 			watchService.cancel();
-			evt.consume();
 		});
 
 		watchStatusLabel.textProperty().bind(new StringBinding()

@@ -30,6 +30,7 @@ import de.subcentral.core.name.ConditionalNamingService.ConditionalNamingEntry;
 import de.subcentral.core.name.PropSequenceNameBuilder.Config;
 import de.subcentral.core.util.Predicates;
 import de.subcentral.core.util.Separation;
+import de.subcentral.core.util.StringUtil;
 
 public class NamingDefaults
 {
@@ -40,7 +41,7 @@ public class NamingDefaults
 	private static final Function<String, String>	SUBTITLE_RELEASE_NAME_FORMATTER					= initSubtitleReleaseNameFormatter();
 	private static final Function<String, String>	NORMALIZING_FORMATTER							= initNormalizingFormatter();
 
-	private static final SimplePrintPropService		PROP_TO_STRING_SERVICE							= new SimplePrintPropService();
+	private static final SimplePrintPropService		PRINT_PROP_SERVICE							= new SimplePrintPropService();
 
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
@@ -68,22 +69,23 @@ public class NamingDefaults
 
 		// PrintPropService
 		// Type to string
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("uuuu", Locale.US).format(y));
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(YearMonth.class, (YearMonth y) -> DateTimeFormatter.ofPattern("uuuu.MM", Locale.US).format(y));
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDate.class, (LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(LocalDateTime.class, (LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(ZonedDateTime.class, (ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(Iterable.class, (Iterable<?> i) -> StringUtil.SPACE_JOINER.join(i));
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("uuuu", Locale.US).format(y));
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(YearMonth.class, (YearMonth y) -> DateTimeFormatter.ofPattern("uuuu.MM", Locale.US).format(y));
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(LocalDate.class, (LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(LocalDateTime.class, (LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(ZonedDateTime.class, (ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
 
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Site.class, (Site s) -> s.getName());
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Network.class, (Network n) -> n.getName());
-		PROP_TO_STRING_SERVICE.getTypeToStringFns().put(Nuke.class, (Nuke n) -> n.getReason());
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(Site.class, (Site s) -> s.getName());
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(Network.class, (Network n) -> n.getName());
+		PRINT_PROP_SERVICE.getTypeToStringFns().put(Nuke.class, (Nuke n) -> n.getReason());
 
 		// Episode
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
+		PRINT_PROP_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
+		PRINT_PROP_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
+		PRINT_PROP_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
 		// Subtitle
-		PROP_TO_STRING_SERVICE.getPropToStringFns().put(SubtitleRelease.PROP_VERSION, (String rev) -> "V" + rev);
+		PRINT_PROP_SERVICE.getPropToStringFns().put(SubtitleRelease.PROP_VERSION, (String rev) -> "V" + rev);
 
 		ImmutableSet.Builder<Separation> sepsBuilder = ImmutableSet.builder();
 		sepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
@@ -99,10 +101,10 @@ public class NamingDefaults
 		multiEpisodeRangeSepsBuilder.add(Separation.betweenAny(MultiEpisodeNamer.SEPARATION_TYPE_RANGE, "-"));
 		ImmutableSet<Separation> multiEpisodeRangeSeparations = multiEpisodeRangeSepsBuilder.build();
 
-		Config config = new Config(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, separations, null);
-		Config configWithRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, ".", separations, RELEASE_NAME_FORMATTER);
-		Config configWithSubRlsNameFormatter = new Config(PROP_TO_STRING_SERVICE, ".", separations, SUBTITLE_RELEASE_NAME_FORMATTER);
-		Config configForMultiEpisodeRangeNamer = new Config(PROP_TO_STRING_SERVICE, Separation.DEFAULT_SEPARATOR, multiEpisodeRangeSeparations, null);
+		Config config = new Config(PRINT_PROP_SERVICE, Separation.DEFAULT_SEPARATOR, separations, null);
+		Config configWithRlsNameFormatter = new Config(PRINT_PROP_SERVICE, ".", separations, RELEASE_NAME_FORMATTER);
+		Config configWithSubRlsNameFormatter = new Config(PRINT_PROP_SERVICE, ".", separations, SUBTITLE_RELEASE_NAME_FORMATTER);
+		Config configForMultiEpisodeRangeNamer = new Config(PRINT_PROP_SERVICE, Separation.DEFAULT_SEPARATOR, multiEpisodeRangeSeparations, null);
 
 		// SeriesNamer
 		SERIES_NAMER = new SeriesNamer(config);
@@ -197,9 +199,9 @@ public class NamingDefaults
 		return SUBTITLE_RELEASE_NAME_FORMATTER;
 	}
 
-	public static PrintPropService getDefaultPropToStringService()
+	public static PrintPropService getDefaultPrintPropService()
 	{
-		return PROP_TO_STRING_SERVICE;
+		return PRINT_PROP_SERVICE;
 	}
 
 	public static NamingService getDefaultNamingService()

@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -60,25 +61,22 @@ public abstract class HttpMetadataDb extends AbstractMetadataDb
 	@Override
 	public State checkState()
 	{
+		String testQuery = getTestQuery();
 		try
 		{
-			search("test", getSupportedRecordTypes().iterator().next());
-			return State.AVAILABLE;
+			List<?> results = search(testQuery, getSupportedRecordTypes().iterator().next());
+			return results.isEmpty() ? State.AVAILABLE_LIMITED : State.AVAILABLE;
 		}
-		catch (UnsupportedOperationException | IOException e)
+		catch (Exception e)
 		{
-			log.warn("Metadata database " + this + " failed to connect with test search url", e);
+			log.warn("Metadata database " + this + " failed to execute test query '" + testQuery + "'", e);
+			return State.NOT_AVAILABLE;
 		}
-		try
-		{
-			getDocument(getHostUrl());
-			return State.AVAILABLE_LIMITED;
-		}
-		catch (IOException e)
-		{
-			log.warn("Metadata database " + this + " failed to connect with host url", e);
-		}
-		return State.NOT_AVAILABLE;
+	}
+
+	protected String getTestQuery()
+	{
+		return "Game of Thrones S01E01";
 	}
 
 	// Utility methods for child classes

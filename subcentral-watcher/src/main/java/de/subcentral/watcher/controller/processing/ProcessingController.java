@@ -252,7 +252,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 
 	private static PrintPropService initPropToStringService()
 	{
-		return NamingDefaults.getDefaultPropToStringService();
+		return NamingDefaults.getDefaultPrintPropService();
 	}
 
 	@Override

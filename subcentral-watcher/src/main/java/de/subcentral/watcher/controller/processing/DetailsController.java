@@ -13,6 +13,9 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.name.PrintPropService;
+import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
@@ -25,7 +28,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -50,8 +52,6 @@ public class DetailsController extends SubController<ProcessingController>
 	@FXML
 	private Label					sourceFileLabel;
 	@FXML
-	private Accordion				sectionsAccordion;
-	@FXML
 	private ScrollPane				parsingDetailsRootPane;
 	@FXML
 	private ScrollPane				releaseDetailsRootPane;
@@ -68,9 +68,6 @@ public class DetailsController extends SubController<ProcessingController>
 		updateHeader();
 		updateParsingDetailsSection();
 		updateReleaseDetailsSection();
-
-		// Expand release details
-		sectionsAccordion.setExpandedPane(sectionsAccordion.getPanes().get(1));
 	}
 
 	private void updateHeader()
@@ -208,14 +205,8 @@ public class DetailsController extends SubController<ProcessingController>
 		Release rls = subRls.getFirstMatchingRelease();
 
 		String[] keys = { "Computed name:", "Media:", "Release tags:", "Release group:", "Subtitle language:", "Subtitle tags:", "Subtitle source:", "Subtitle group:" };
-		String[] values = {
-				printer.apply(subRls),
-				printer.apply(rls.getMedia()),
-				Tag.formatList(rls.getTags()),
-				rls.getGroup() != null ? rls.getGroup().toString() : "",
-				sub.getLanguage() != null ? sub.getLanguage() : "",
-				Tag.formatList(subRls.getTags()),
-				sub.getSource() != null ? sub.getSource().getName() : "",
+		String[] values = { printer.apply(subRls), printer.apply(rls.getMedia()), Tag.formatList(rls.getTags()), rls.getGroup() != null ? rls.getGroup().toString() : "",
+				sub.getLanguage() != null ? sub.getLanguage() : "", Tag.formatList(subRls.getTags()), sub.getSource() != null ? sub.getSource().getName() : "",
 				sub.getGroup() != null ? sub.getGroup().toString() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
 		return pane;
@@ -223,6 +214,8 @@ public class DetailsController extends SubController<ProcessingController>
 
 	private static Node createCorrectionsNode(List<Correction> corrections)
 	{
+		PrintPropService printer = NamingDefaults.getDefaultPrintPropService();
+
 		String[] keys = new String[corrections.size()];
 		String[] values = new String[corrections.size()];
 
@@ -237,10 +230,11 @@ public class DetailsController extends SubController<ProcessingController>
 			key.append(": ");
 			keys[i] = key.toString();
 
+			SimplePropDescriptor prop = new SimplePropDescriptor(c.getBean().getClass(), c.getPropertyName());
 			StringBuilder val = new StringBuilder();
-			val.append(c.getOldValue());
+			val.append(printer.print(prop, c.getOldValue()));
 			val.append(" -> ");
-			val.append(c.getNewValue());
+			val.append(printer.print(prop, c.getNewValue()));
 			values[i] = val.toString();
 		}
 
