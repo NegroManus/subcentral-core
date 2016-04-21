@@ -85,7 +85,6 @@ public class FxActions
 		if (extensionFilters.length > 0)
 		{
 			fileChooser.getExtensionFilters().addAll(extensionFilters);
-			fileChooser.setSelectedExtensionFilter(extensionFilters[0]);
 		}
 
 		File selectedFile = fileChooser.showOpenDialog(owner);
