@@ -128,6 +128,10 @@ public class StringUtil
 
 	public static String readerToString(Reader reader) throws IOException
 	{
+		if (reader == null)
+		{
+			return null;
+		}
 		StringBuilder builder = new StringBuilder();
 		int charsRead;
 		char[] chars = new char[1024];
