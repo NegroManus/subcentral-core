@@ -1,7 +1,5 @@
 package de.subcentral.support.woltlab;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,8 +7,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-
-import de.subcentral.core.util.StringUtil;
 
 public class WoltlabBurningBoard extends AbstractSqlApi
 {
@@ -31,14 +27,9 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 					WbbBoard board = new WbbBoard();
 					board.id = boardId;
 					board.title = rs.getString(1);
-					Reader descriptionReader = rs.getCharacterStream(2);
-					board.description = StringUtil.readerToString(descriptionReader);
+					board.description = rs.getString(2);
 					return board;
 				}
-			}
-			catch (IOException e)
-			{
-				throw new SQLException(e);
 			}
 			return null;
 		}
@@ -78,14 +69,9 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 					WbbPost post = new WbbPost();
 					post.id = postId;
 					post.topic = rs.getString(1);
-					Reader msgReader = rs.getCharacterStream(2);
-					post.message = StringUtil.readerToString(msgReader);
+					post.message = rs.getString(2);
 					return post;
 				}
-			}
-			catch (IOException e)
-			{
-				throw new SQLException(e);
 			}
 			return null;
 		}
@@ -104,15 +90,10 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 					WbbBoard board = new WbbBoard();
 					board.id = rs.getInt(1);
 					board.title = rs.getString(2);
-					Reader msgReader = rs.getCharacterStream(3);
-					board.description = StringUtil.readerToString(msgReader);
+					board.description = rs.getString(2);
 					boardList.add(board);
 				}
 				return boardList.build();
-			}
-			catch (IOException e)
-			{
-				throw new SQLException(e);
 			}
 		}
 	}
@@ -194,15 +175,10 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 					WbbPost post = new WbbPost();
 					post.id = rs.getInt(1);
 					post.topic = rs.getString(2);
-					Reader msgReader = rs.getCharacterStream(3);
-					post.message = StringUtil.readerToString(msgReader);
+					post.message = rs.getString(3);
 					post.threadId = threadId;
 					return post;
 				}
-			}
-			catch (IOException e)
-			{
-				throw new SQLException(e);
 			}
 			return null;
 		}
