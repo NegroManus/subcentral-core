@@ -10,7 +10,7 @@ import de.subcentral.fx.settings.Settings;
 public class WatcherSettings extends Settings
 {
 	// Watch
-	private final ListSettingsProperty<Path>	watchDirectories				= new ListSettingsProperty<>("watch.directories.dir", ConfigurationPropertyHandlers.PATH_LIST_HANDLER);
+	private final ListSettingsProperty<Path>	watchDirectories				= new ListSettingsProperty<>("watch.directories.dir", ConfigurationPropertyHandlers.PATH_SORTED_LIST_HANDLER);
 	private final BooleanSettingsProperty		initialScan						= new BooleanSettingsProperty("watch.initialScan", true);
 	private final BooleanSettingsProperty		rejectAlreadyProcessedFiles		= new BooleanSettingsProperty("watch.rejectAlreadyProcessedFiles", true);
 

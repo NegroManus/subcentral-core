@@ -2,6 +2,8 @@ package de.subcentral.fx.settings;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +20,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import javafx.collections.FXCollections;
@@ -30,6 +33,8 @@ public class ConfigurationPropertyHandlers
 	public static final ConfigurationPropertyHandler<String>							STRING_HANDLER					= new StringConverterHandler<>(FxUtil.IDENTITY_STRING_CONVERTER);
 	public static final ConfigurationPropertyHandler<Path>								PATH_HANDLER					= new StringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
 	public static final ConfigurationPropertyHandler<ObservableList<Path>>				PATH_LIST_HANDLER				= new ListStringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<ObservableList<Path>>				PATH_SORTED_LIST_HANDLER		= new ListStringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER,
+			ObjectUtil.getDefaultOrdering());
 	public static final ConfigurationPropertyHandler<ObservableList<Tag>>				TAG_LIST_HANDLER				= new ListStringConverterHandler<>(SubCentralFxUtil.TAG_STRING_CONVERTER);
 	public static final ConfigurationPropertyHandler<ObservableList<StandardRelease>>	STANDARD_RELEASE_LIST_HANDLER	= new StandardReleaseListHandler();
 	public static final ConfigurationPropertyHandler<Locale>							LOCALE_HANDLER					= new LocaleHandler();
@@ -61,11 +66,18 @@ public class ConfigurationPropertyHandlers
 
 	public static class ListStringConverterHandler<E> implements ConfigurationPropertyHandler<ObservableList<E>>
 	{
-		private final StringConverter<E> stringConverter;
+		private final StringConverter<E>	stringConverter;
+		private Comparator<E>				comparator;
 
 		public ListStringConverterHandler(StringConverter<E> stringConverter)
 		{
+			this(stringConverter, null);
+		}
+
+		public ListStringConverterHandler(StringConverter<E> stringConverter, Comparator<E> comparator)
+		{
 			this.stringConverter = Objects.requireNonNull(stringConverter, "stringConverter");
+			this.comparator = comparator;
 		}
 
 		@Override
@@ -77,13 +89,27 @@ public class ConfigurationPropertyHandlers
 			{
 				items.add(stringConverter.fromString(s));
 			}
+			if (comparator != null)
+			{
+				Collections.sort(items, comparator);
+			}
 			return FXCollections.observableList(items);
 		}
 
 		@Override
 		public void add(Configuration cfg, String key, ObservableList<E> value)
 		{
-			for (E item : value)
+			List<E> list;
+			if (comparator == null)
+			{
+				list = value;
+			}
+			else
+			{
+				list = new ArrayList<>(value);
+				Collections.sort(list, comparator);
+			}
+			for (E item : list)
 			{
 				cfg.addProperty(key, stringConverter.toString(item));
 			}

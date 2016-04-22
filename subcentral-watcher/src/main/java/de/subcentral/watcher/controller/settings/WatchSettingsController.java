@@ -3,6 +3,7 @@ package de.subcentral.watcher.controller.settings;
 import java.io.File;
 import java.nio.file.Path;
 
+import de.subcentral.core.util.CollectionUtil;
 import de.subcentral.fx.FxActions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,13 +46,10 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	{
 		watchDirectoriesListView.setItems(SettingsController.SETTINGS.getWatchDirectories().property());
 
-		addWatchDirectoryButton.setOnAction((ActionEvent event) -> addWatchDirectory());
+		addWatchDirectoryButton.setOnAction((ActionEvent evt) -> addWatchDirectory());
 
 		removeWatchDirectoryButton.disableProperty().bind(watchDirectoriesListView.getSelectionModel().selectedItemProperty().isNull());
-		removeWatchDirectoryButton.setOnAction((ActionEvent event) ->
-		{
-			watchDirectoriesListView.getItems().remove(watchDirectoriesListView.getSelectionModel().getSelectedIndex());
-		});
+		removeWatchDirectoryButton.setOnAction((ActionEvent evt) -> FxActions.remove(watchDirectoriesListView));
 
 		FxActions.setStandardMouseAndKeyboardSupport(watchDirectoriesListView, addWatchDirectoryButton, removeWatchDirectoryButton);
 
@@ -69,15 +67,15 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 			return;
 		}
 		Path newWatchDir = selectedDirectory.toPath();
-		if (watchDirectoriesListView.getItems().contains(newWatchDir))
+		boolean added = CollectionUtil.addToSortedList(watchDirectoriesListView.getItems(), newWatchDir, true);
+		if (!added)
 		{
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Chosen directory already on watch list");
 			alert.setHeaderText("The chosen directory is already on the watch list.");
 			alert.setContentText("The directory " + newWatchDir + " is already on the watch list.");
 			alert.show();
-			return;
 		}
-		watchDirectoriesListView.getItems().add(newWatchDir);
+		return;
 	}
 }
