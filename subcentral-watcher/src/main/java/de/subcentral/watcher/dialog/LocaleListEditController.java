@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.subcentral.core.util.CollectionUtil;
 import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.dialog.BeanEditController;
@@ -86,30 +87,28 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 		addableLangsComboBox.setItems(initAddableLangList());
 		addableLangsComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
 
-		FxActions.bindMoveButtonsForSingleSelection(langsListView, moveUpLangBtn, moveDownLangBtn);
+		FxActions.bindMoveButtons(langsListView, moveUpLangBtn, moveDownLangBtn);
 
 		// Bindings
 		addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
 		addLangBtn.setOnAction((ActionEvent) ->
 		{
 			// remove lang from addable langs
-			Locale langToAdd = FxActions.handleRemove(addableLangsComboBox);
+			Locale langToAdd = FxActions.remove(addableLangsComboBox);
 			// add lang to lang list
-			FxActions.handleDistinctAdd(langsListView, Optional.of(langToAdd));
+			FxActions.addDistinct(langsListView, Optional.of(langToAdd));
 		});
 
 		removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
 		removeLangBtn.setOnAction((ActionEvent) ->
 		{
 			// remove lang from lang list
-			Locale removedLang = FxActions.handleRemove(langsListView);
+			Locale removedLang = FxActions.remove(langsListView);
 			// add lang to addable langs
-			addableLangsComboBox.getItems().add(removedLang);
-			// After adding a language to the addable language that list needs to be sorted again
-			addableLangsComboBox.getItems().sort(FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
+			CollectionUtil.addToSortedList(addableLangsComboBox.getItems(), removedLang, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 		});
 
-		FxActions.setStandardMouseAndKeyboardSupportForEditable(langsListView, addLangBtn, removeLangBtn);
+		FxActions.setStandardMouseAndKeyboardSupport(langsListView, addLangBtn, removeLangBtn);
 
 		// Set ResultConverter
 		dialog.setResultConverter(dialogButton ->

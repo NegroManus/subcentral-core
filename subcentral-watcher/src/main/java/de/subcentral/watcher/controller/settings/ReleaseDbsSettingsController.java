@@ -89,7 +89,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		// TODO: also on move up/move down but we can't distinguish that easily
 		releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());
 
-		FxActions.bindMoveButtonsForSingleSelection(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
+		FxActions.bindMoveButtons(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
 
 		// initial update
 		updateAvailibities();

@@ -16,6 +16,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.SystemUtils;
 
@@ -30,6 +31,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableView;
@@ -195,7 +197,17 @@ public class FxActions
 		executor.execute(task);
 	}
 
-	public static <E> E handleRemove(ObservableList<E> items, SelectionModel<E> selectionModel)
+	public static <E> E remove(ListView<E> list)
+	{
+		return remove(list.getItems(), list.getSelectionModel());
+	}
+
+	public static <E> E remove(ComboBox<E> comboBox)
+	{
+		return remove(comboBox.getItems(), comboBox.getSelectionModel());
+	}
+
+	public static <E> E remove(ObservableList<E> items, SelectionModel<E> selectionModel)
 	{
 		int selectedIndex = selectionModel.getSelectedIndex();
 		E removed = items.remove(selectedIndex);
@@ -207,17 +219,12 @@ public class FxActions
 		return removed;
 	}
 
-	public static <E> E handleRemove(ListView<E> list)
+	public static <E> E removeConfirmed(TableView<E> table, String elementType, StringConverter<E> elemToStringConverter)
 	{
-		return handleRemove(list.getItems(), list.getSelectionModel());
+		return removeConfirmed(table.getItems(), table.getSelectionModel(), elementType, elemToStringConverter);
 	}
 
-	public static <E> E handleRemove(ComboBox<E> comboBox)
-	{
-		return handleRemove(comboBox.getItems(), comboBox.getSelectionModel());
-	}
-
-	public static <E> E handleConfirmedRemove(ObservableList<E> items, SelectionModel<E> selectionModel, String elementType, StringConverter<E> elemToStringConverter)
+	public static <E> E removeConfirmed(ObservableList<E> items, SelectionModel<E> selectionModel, String elementType, StringConverter<E> elemToStringConverter)
 	{
 		E selectedElem = selectionModel.getSelectedItem();
 		if (selectedElem == null)
@@ -227,52 +234,47 @@ public class FxActions
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 		alert.setResizable(true);
-		alert.setTitle("Confirmation of removal of a " + elementType);
+		alert.setTitle("Remove this " + elementType + "?");
 		alert.setHeaderText("Do you really want to remove this " + elementType + "?");
 		alert.setContentText(elemToStringConverter.toString(selectedElem));
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.YES)
 		{
-			return handleRemove(items, selectionModel);
+			return remove(items, selectionModel);
 		}
 		return null;
 	}
 
-	public static <E> E handleConfirmedRemove(TableView<E> table, String elementType, StringConverter<E> elemToStringConverter)
+	public static <E, F> void addDistinct(ListView<E> list, Optional<F> addDialogResult, Function<F, E> converter)
 	{
-		return handleConfirmedRemove(table.getItems(), table.getSelectionModel(), elementType, elemToStringConverter);
+		addDistinct(list.getItems(), list.getSelectionModel(), addDialogResult, converter);
 	}
 
-	public static <E, F> void handleDistinctAdd(ListView<E> list, Optional<F> addDialogResult, Function<F, E> converter)
+	public static <E, F> void addDistinct(TableView<E> table, Optional<F> addDialogResult, Function<F, E> converter)
 	{
-		handleDistinctAdd(list.getItems(), list.getSelectionModel(), addDialogResult, converter);
+		addDistinct(table.getItems(), table.getSelectionModel(), addDialogResult, converter);
 	}
 
-	public static <E, F> void handleDistinctAdd(TableView<E> table, Optional<F> addDialogResult, Function<F, E> converter)
+	public static <E> void addDistinct(ListView<E> list, Optional<? extends E> addDialogResult)
 	{
-		handleDistinctAdd(table.getItems(), table.getSelectionModel(), addDialogResult, converter);
+		addDistinct(list.getItems(), list.getSelectionModel(), addDialogResult);
 	}
 
-	public static <E, F> void handleDistinctAdd(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<F> addDialogResult, Function<F, E> converter)
+	public static <E> void addDistinct(TableView<E> table, Optional<? extends E> addDialogResult)
+	{
+		addDistinct(table.getItems(), table.getSelectionModel(), addDialogResult);
+	}
+
+	public static <E, F> void addDistinct(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<F> addDialogResult, Function<F, E> converter)
 	{
 		if (addDialogResult.isPresent())
 		{
-			handleDistinctAdd(items, selectionModel, Optional.of(converter.apply(addDialogResult.get())));
+			addDistinct(items, selectionModel, Optional.of(converter.apply(addDialogResult.get())));
 		}
 	}
 
-	public static <E> void handleDistinctAdd(ListView<E> list, Optional<? extends E> addDialogResult)
-	{
-		handleDistinctAdd(list.getItems(), list.getSelectionModel(), addDialogResult);
-	}
-
-	public static <E> void handleDistinctAdd(TableView<E> table, Optional<? extends E> addDialogResult)
-	{
-		handleDistinctAdd(table.getItems(), table.getSelectionModel(), addDialogResult);
-	}
-
-	public static <E> void handleDistinctAdd(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<? extends E> addDialogResult)
+	public static <E> void addDistinct(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<? extends E> addDialogResult)
 	{
 		if (addDialogResult.isPresent())
 		{
@@ -296,35 +298,35 @@ public class FxActions
 		}
 	}
 
-	public static <E, F> void handleDistinctEdit(ListView<E> list, Optional<F> editDialogResult, Function<F, E> converter)
+	public static <E, F> void editDistinct(ListView<E> list, Optional<F> editDialogResult, Function<F, E> converter)
 	{
-		handleDistinctEdit(list.getItems(), list.getSelectionModel(), editDialogResult, converter);
+		editDistinct(list.getItems(), list.getSelectionModel(), editDialogResult, converter);
 	}
 
-	public static <E, F> void handleDistinctEdit(TableView<E> table, Optional<F> editDialogResult, Function<F, E> converter)
+	public static <E, F> void editDistinct(TableView<E> table, Optional<F> editDialogResult, Function<F, E> converter)
 	{
-		handleDistinctEdit(table.getItems(), table.getSelectionModel(), editDialogResult, converter);
+		editDistinct(table.getItems(), table.getSelectionModel(), editDialogResult, converter);
 	}
 
-	public static <E, F> void handleDistinctEdit(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<F> editDialogResult, Function<F, E> converter)
+	public static <E, F> void editDistinct(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<F> editDialogResult, Function<F, E> converter)
 	{
 		if (editDialogResult.isPresent())
 		{
-			handleDistinctEdit(items, selectionModel, Optional.of(converter.apply(editDialogResult.get())));
+			editDistinct(items, selectionModel, Optional.of(converter.apply(editDialogResult.get())));
 		}
 	}
 
-	public static <E> void handleDistinctEdit(ListView<E> list, Optional<? extends E> editDialogResult)
+	public static <E> void editDistinct(ListView<E> list, Optional<? extends E> editDialogResult)
 	{
-		handleDistinctEdit(list.getItems(), list.getSelectionModel(), editDialogResult);
+		editDistinct(list.getItems(), list.getSelectionModel(), editDialogResult);
 	}
 
-	public static <E> void handleDistinctEdit(TableView<E> table, Optional<? extends E> editDialogResult)
+	public static <E> void editDistinct(TableView<E> table, Optional<? extends E> editDialogResult)
 	{
-		handleDistinctEdit(table.getItems(), table.getSelectionModel(), editDialogResult);
+		editDistinct(table.getItems(), table.getSelectionModel(), editDialogResult);
 	}
 
-	public static <E> void handleDistinctEdit(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<? extends E> editDialogResult)
+	public static <E> void editDistinct(ObservableList<E> items, SelectionModel<E> selectionModel, Optional<? extends E> editDialogResult)
 	{
 		if (editDialogResult.isPresent())
 		{
@@ -348,16 +350,47 @@ public class FxActions
 		}
 	}
 
-	public static void setStandardMouseAndKeyboardSupport(final ListView<?> list, final ButtonBase addButton, final ButtonBase editButton, final ButtonBase removeButton)
+	/**
+	 * For a list of atomic, uneditable elements.
+	 * 
+	 * @param list
+	 * @param addButton
+	 * @param removeButton
+	 */
+	public static void setStandardMouseAndKeyboardSupport(ListView<?> list, ButtonBase addButton, ButtonBase removeButton)
 	{
-		list.setOnMouseClicked((MouseEvent evt) ->
+		setStandardMouseAndKeyboardSupport(list, addButton, null, removeButton, false, null);
+	}
+
+	public static void setStandardMouseAndKeyboardSupport(ListView<?> list, ButtonBase addButton, ButtonBase editButton, ButtonBase removeButton, boolean cellEditable)
+	{
+		setStandardMouseAndKeyboardSupport(list, addButton, editButton, removeButton, cellEditable, cellEditable ? ((ListView<?> lv) -> lv.getEditingIndex() != 0) : null);
+	}
+
+	public static void setStandardMouseAndKeyboardSupport(TableView<?> table, ButtonBase addButton, ButtonBase editButton, ButtonBase removeButton)
+	{
+		setStandardMouseAndKeyboardSupport(table, addButton, editButton, removeButton, false, null);
+	}
+
+	private static <T extends Control> void setStandardMouseAndKeyboardSupport(T control,
+			ButtonBase addButton,
+			ButtonBase editButton,
+			ButtonBase removeButton,
+			boolean cellEditable,
+			Predicate<T> isCellEditing)
+	{
+		// Mouse left double-click is already handled by the control if it is editable
+		if (editButton != null && !cellEditable)
 		{
-			if (evt.getButton() == MouseButton.PRIMARY && evt.getClickCount() == 2)
+			control.setOnMouseClicked((MouseEvent evt) ->
 			{
-				editButton.fire();
-			}
-		});
-		list.setOnKeyPressed((KeyEvent evt) ->
+				if (evt.getButton() == MouseButton.PRIMARY && evt.getClickCount() == 2)
+				{
+					editButton.fire();
+				}
+			});
+		}
+		control.setOnKeyPressed((KeyEvent evt) ->
 		{
 			switch (evt.getCode())
 			{
@@ -368,7 +401,8 @@ public class FxActions
 					}
 					break;
 				case ENTER:
-					if (editButton != null)
+					// ENTER is already handled by the control if it is editable
+					if (!cellEditable && editButton != null)
 					{
 						editButton.fire();
 					}
@@ -384,7 +418,7 @@ public class FxActions
 				// so we need to take actions ourselves
 				// -> If a cell is currently edited and the ESCAPE key is pressed, we consume the ESCAPE event
 				case ESCAPE:
-					if (list.getEditingIndex() >= 0)
+					if (cellEditable && isCellEditing.test(control))
 					{
 						evt.consume();
 					}
@@ -395,99 +429,17 @@ public class FxActions
 		});
 	}
 
-	public static void setStandardMouseAndKeyboardSupport(final TableView<?> table, final ButtonBase addButton, final ButtonBase editButton, final ButtonBase removeButton)
+	public static void bindMoveButtons(ListView<?> list, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
 	{
-		table.setOnMouseClicked((MouseEvent evt) ->
-		{
-			if (editButton != null && evt.getButton() == MouseButton.PRIMARY && evt.getClickCount() == 2)
-			{
-				editButton.fire();
-			}
-		});
-		table.setOnKeyPressed((KeyEvent evt) ->
-		{
-			switch (evt.getCode())
-			{
-				case INSERT:
-					if (addButton != null)
-					{
-						addButton.fire();
-					}
-					break;
-				case ENTER:
-					if (editButton != null)
-					{
-						editButton.fire();
-					}
-					break;
-				case DELETE:
-					if (removeButton != null)
-					{
-						removeButton.fire();
-					}
-					break;
-				// FIXFOR: Pressing the escape key when editing a cell cancels the edit but also closes the dialog.
-				// The KeyEvent sadly never reaches the KeyEvent handler in javafx.scene.control.cell.CellUtils.createTextField(Cell<T>, StringConverter<T>)
-				// so we need to take actions ourselves
-				// -> If a cell is currently edited and the ESCAPE key is pressed, we consume the ESCAPE event
-				case ESCAPE:
-					if (table.getEditingCell() != null)
-					{
-						evt.consume();
-					}
-					break;
-				default:
-					break;
-			}
-		});
+		bindMoveButtons(list.getItems(), list.getSelectionModel(), moveUpBtn, moveDownBtn);
 	}
 
-	public static void setStandardMouseAndKeyboardSupportForEditable(final ListView<?> list, final ButtonBase addButton, final ButtonBase removeButton)
+	public static void bindMoveButtons(TableView<?> table, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
 	{
-		// Mouse left double-click and ENTER are already handled by the ListView
-		list.setOnKeyPressed((KeyEvent evt) ->
-		{
-			switch (evt.getCode())
-			{
-				case INSERT:
-					if (addButton != null)
-					{
-						addButton.fire();
-					}
-					break;
-				case DELETE:
-					if (removeButton != null)
-					{
-						removeButton.fire();
-					}
-					break;
-				// FIXFOR: Pressing the escape key when editing a cell cancels the edit but also closes the dialog.
-				// The KeyEvent sadly never reaches the KeyEvent handler in javafx.scene.control.cell.CellUtils.createTextField(Cell<T>, StringConverter<T>)
-				// so we need to take actions ourselves
-				// -> If a cell is currently edited and the ESCAPE key is pressed, we consume the ESCAPE event
-				case ESCAPE:
-					if (list.getEditingIndex() >= 0)
-					{
-						evt.consume();
-					}
-					break;
-				default:
-					break;
-			}
-		});
+		bindMoveButtons(table.getItems(), table.getSelectionModel(), moveUpBtn, moveDownBtn);
 	}
 
-	public static void bindMoveButtonsForSingleSelection(ListView<?> list, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
-	{
-		bindMoveButtonsForSingleSelection(list.getItems(), list.getSelectionModel(), moveUpBtn, moveDownBtn);
-	}
-
-	public static void bindMoveButtonsForSingleSelection(TableView<?> table, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
-	{
-		bindMoveButtonsForSingleSelection(table.getItems(), table.getSelectionModel(), moveUpBtn, moveDownBtn);
-	}
-
-	public static void bindMoveButtonsForSingleSelection(ObservableList<?> items, SelectionModel<?> selectionModel, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
+	public static void bindMoveButtons(ObservableList<?> items, SelectionModel<?> selectionModel, ButtonBase moveUpBtn, ButtonBase moveDownBtn)
 	{
 		updateMoveBtnsDisabilityForSingleSelection(items, selectionModel, moveUpBtn, moveDownBtn);
 		selectionModel.selectedIndexProperty().addListener((Observable observable) -> updateMoveBtnsDisabilityForSingleSelection(items, selectionModel, moveUpBtn, moveDownBtn));

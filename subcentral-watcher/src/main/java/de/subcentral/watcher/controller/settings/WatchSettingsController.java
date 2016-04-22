@@ -53,7 +53,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 			watchDirectoriesListView.getItems().remove(watchDirectoriesListView.getSelectionModel().getSelectedIndex());
 		});
 
-		FxActions.setStandardMouseAndKeyboardSupportForEditable(watchDirectoriesListView, addWatchDirectoryButton, removeWatchDirectoryButton);
+		FxActions.setStandardMouseAndKeyboardSupport(watchDirectoriesListView, addWatchDirectoryButton, removeWatchDirectoryButton);
 
 		initialScanCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getInitialScan().property());
 		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getRejectAlreadyProcessedFiles().property());

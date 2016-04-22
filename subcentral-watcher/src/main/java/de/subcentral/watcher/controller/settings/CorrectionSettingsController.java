@@ -100,7 +100,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			{
 				result = Optional.empty();
 			}
-			FxActions.handleDistinctAdd(correctorsTableView, result);
+			FxActions.addDistinct(correctorsTableView, result);
 		});
 
 		final BooleanBinding noSelection = correctorsTableView.getSelectionModel().selectedItemProperty().isNull();
@@ -126,13 +126,13 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 			{
 				result = Optional.empty();
 			}
-			FxActions.handleDistinctEdit(correctorsTableView, result);
+			FxActions.editDistinct(correctorsTableView, result);
 		});
 
 		removeCorrectorButton.disableProperty().bind(noSelection);
 		removeCorrectorButton.setOnAction((ActionEvent event) ->
 		{
-			FxActions.handleConfirmedRemove(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
+			FxActions.removeConfirmed(correctorsTableView, "correction rule", new CorrectionRuleStringConverter());
 		});
 
 		importCorrectorsButton.setOnAction((ActionEvent event) ->
