@@ -11,6 +11,6 @@ public class Test
 		Pattern p1 = Pattern.compile("hello\\.\\d+", Pattern.CASE_INSENSITIVE);
 		Pattern p2 = Pattern.compile("hello\\.\\d+", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-		System.out.println(ObjectUtil.equalPatterns(p1, p2));
+		System.out.println(ObjectUtil.patternsEqual(p1, p2));
 	}
 }

@@ -76,6 +76,26 @@ public class CollectionUtil
 		return true;
 	}
 
+	public static <E> E setInSortedList(List<E> list, int index, E item, Comparator<? super E> comparator, boolean distinct)
+	{
+		if (distinct)
+		{
+			ListIterator<E> iter = list.listIterator();
+			while (iter.hasNext())
+			{
+				int currIndex = iter.nextIndex();
+				E currItem = iter.next();
+				if (index != currIndex && comparator.compare(currItem, item) == 0)
+				{
+					return null;
+				}
+			}
+		}
+		E previousItem = list.set(index, item);
+		list.sort(comparator);
+		return previousItem;
+	}
+
 	public static <E> void updateList(List<E> origList, Collection<? extends E> updateList)
 	{
 		updateList(origList, updateList, true, true, true, Objects::equals);

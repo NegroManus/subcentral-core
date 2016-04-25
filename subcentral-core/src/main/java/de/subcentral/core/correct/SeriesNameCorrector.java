@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
@@ -100,7 +98,7 @@ public class SeriesNameCorrector implements Corrector<Series>
 		if (obj instanceof SeriesNameCorrector)
 		{
 			SeriesNameCorrector o = (SeriesNameCorrector) obj;
-			return ObjectUtil.equalPatterns(namePattern, o.namePattern) && Objects.equals(nameReplacement, o.nameReplacement) && aliasNamesReplacement.equals(o.aliasNamesReplacement)
+			return ObjectUtil.patternsEqual(namePattern, o.namePattern) && Objects.equals(nameReplacement, o.nameReplacement) && aliasNamesReplacement.equals(o.aliasNamesReplacement)
 					&& Objects.equals(titleReplacement, o.titleReplacement);
 		}
 		return false;
@@ -109,7 +107,7 @@ public class SeriesNameCorrector implements Corrector<Series>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(97, 11).append(namePattern.pattern()).append(nameReplacement).append(aliasNamesReplacement).append(titleReplacement).toHashCode();
+		return Objects.hash(SeriesNameCorrector.class, ObjectUtil.patternHashCode(namePattern), nameReplacement, aliasNamesReplacement, titleReplacement);
 	}
 
 	@Override

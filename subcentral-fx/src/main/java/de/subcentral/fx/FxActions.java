@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -471,5 +472,35 @@ public class FxActions
 		int selectedIndex = selectionModel.getSelectedIndex();
 		moveUpBtn.setDisable(selectedIndex < 1);
 		moveDownBtn.setDisable(selectedIndex >= items.size() - 1 || selectedIndex < 0);
+	}
+
+	public static <E> Consumer<E> createAlreadyExistedInformer(Window owner, String itemType, StringConverter<E> itemConverter)
+	{
+		return (E item) ->
+		{
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.initOwner(owner);
+			alert.setTitle("The " + itemType + " already exists");
+			alert.setHeaderText("The " + itemType + " already exists in the list. No changes were made.");
+			alert.setContentText(itemConverter.toString(item));
+			alert.showAndWait();
+		};
+	}
+
+	public static <E> Predicate<E> createRemoveConfirmer(Window owner, String itemType, StringConverter<E> itemConverter)
+	{
+		return (E item) ->
+		{
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.initOwner(owner);
+			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+			alert.setResizable(true);
+			alert.setTitle("Remove this " + itemType + "?");
+			alert.setHeaderText("Do you really want to remove this " + itemType + "?");
+			alert.setContentText(itemConverter.toString(item));
+
+			Optional<ButtonType> result = alert.showAndWait();
+			return result.get() == ButtonType.YES;
+		};
 	}
 }

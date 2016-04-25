@@ -1,8 +1,11 @@
 package de.subcentral.watcher.settings;
 
+import com.google.common.collect.ComparisonChain;
+
 import de.subcentral.core.correct.ReleaseTagsCorrector;
 import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxBindings;
 import javafx.beans.value.ObservableValue;
@@ -74,5 +77,26 @@ public class ReleaseTagsCorrectorSettingsItem extends CorrectorSettingsItem<Rele
 		StringUtil.COMMA_JOINER.appendTo(sb, replacer.getReplacement());
 		sb.append(']');
 		return sb.toString();
+	}
+
+	@Override
+	public int compareTo(CorrectorSettingsItem<?, ?> o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		if (o instanceof ReleaseTagsCorrectorSettingsItem)
+		{
+			TagsReplacer r1 = getItem().getReplacer();
+			ReleaseTagsCorrector c = (ReleaseTagsCorrector) o.getItem();
+			TagsReplacer r2 = c.getReplacer();
+			return ComparisonChain.start().compare(r1.getSearchTags(), r2.getSearchTags(), Tag.TAGS_COMPARATOR).compare(r1.getSearchMode(), r2.getSearchMode()).result();
+		}
+		else
+		{
+			return super.compareTo(o);
+		}
 	}
 }

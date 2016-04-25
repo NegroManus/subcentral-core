@@ -1,25 +1,42 @@
 package de.subcentral.core.util;
 
+import java.text.Collator;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Ordering;
 
 public class ObjectUtil
 {
-	private static final Ordering<String> DEFAULT_STRING_ORDERING = getDefaultOrdering(String.CASE_INSENSITIVE_ORDER);
+	private static final Ordering<String>	DEFAULT_STRING_ORDERING		= getDefaultOrdering(Collator.getInstance());
+	private static final Ordering<Pattern>	DEFAULT_PATTERN_ORDERING	= getDefaultOrdering(initPatternComparator());
 
 	private ObjectUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static boolean equalPatterns(Pattern p1, Pattern p2)
+	private static Comparator<Pattern> initPatternComparator()
+	{
+		return (Pattern p1, Pattern p2) ->
+		{
+			return ComparisonChain.start().compare(p1.pattern(), p2.pattern()).compare(p1.flags(), p2.flags()).result();
+		};
+	}
+
+	public static boolean patternsEqual(Pattern p1, Pattern p2)
 	{
 		return (p1 == p2) || (p1 != null && p1.pattern().equals(p2.pattern()) && p1.flags() == p2.flags());
+	}
+
+	public static int patternHashCode(Pattern p)
+	{
+		return Objects.hash(Pattern.class, p.pattern(), p.flags());
 	}
 
 	public static <E> Collection<E> nullIfEmpty(Collection<E> c)
@@ -52,7 +69,7 @@ public class ObjectUtil
 		return Ordering.natural().nullsFirst();
 	}
 
-	public static <T> Ordering<T> getDefaultOrdering(Comparator<T> comparator)
+	public static <T> Ordering<T> getDefaultOrdering(Comparator<? super T> comparator)
 	{
 		return Ordering.from(comparator).nullsFirst();
 	}
@@ -60,5 +77,10 @@ public class ObjectUtil
 	public static Ordering<String> getDefaultStringOrdering()
 	{
 		return DEFAULT_STRING_ORDERING;
+	}
+
+	public static Ordering<Pattern> getDefaultPatternOrdering()
+	{
+		return DEFAULT_PATTERN_ORDERING;
 	}
 }

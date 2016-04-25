@@ -62,8 +62,8 @@
          </graphic></Label>
 		<TableView fx:id="standardReleasesTableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
 			<columns>
-				<TableColumn fx:id="standardReleasesTagsColumn" editable="false" maxWidth="15000.0" prefWidth="75.0" text="Tags" />
 				<TableColumn fx:id="standardReleasesGroupColumn" editable="false" maxWidth="8000.0" prefWidth="75.0" text="Group" />
+				<TableColumn fx:id="standardReleasesTagsColumn" editable="false" maxWidth="15000.0" prefWidth="75.0" text="Tags" />
 				<TableColumn fx:id="standardReleasesScopeColumn" editable="false" prefWidth="75.0" text="Scope" />
 			</columns>
 			<columnResizePolicy>

@@ -2,13 +2,14 @@ package de.subcentral.watcher.controller.settings;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Optional;
 
-import de.subcentral.core.util.CollectionUtil;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxActions;
-import javafx.event.ActionEvent;
+import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.action.AddAction;
+import de.subcentral.fx.action.RemoveAction;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
@@ -46,11 +47,22 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	{
 		watchDirectoriesListView.setItems(SettingsController.SETTINGS.getWatchDirectories().property());
 
-		addWatchDirectoryButton.setOnAction((ActionEvent evt) -> addWatchDirectory());
+		AddAction<Path> addAction = new AddAction<>(watchDirectoriesListView, () ->
+		{
+			DirectoryChooser dirChooser = new DirectoryChooser();
+			dirChooser.setTitle("Add watch directory");
+			File file = dirChooser.showDialog(getPrimaryStage());
+			return file != null ? Optional.of(file.toPath()) : Optional.empty();
+		});
+		addAction.setComparator(ObjectUtil.getDefaultOrdering());
+		addAction.setDistinct(true);
+		addAction.setAlreadyExistedInformer(FxActions.createAlreadyExistedInformer(getPrimaryStage(), "watch directory", FxUtil.PATH_STRING_CONVERTER));
+		addWatchDirectoryButton.setOnAction(addAction);
 
 		removeWatchDirectoryButton.disableProperty().bind(watchDirectoriesListView.getSelectionModel().selectedItemProperty().isNull());
-		removeWatchDirectoryButton.setOnAction((ActionEvent evt) -> FxActions.remove(watchDirectoriesListView));
-
+		RemoveAction<Path> removeAction = new RemoveAction<>(watchDirectoriesListView);
+		removeAction.setRemoveConfirmer(FxActions.createRemoveConfirmer(getPrimaryStage(), "watch directory", FxUtil.PATH_STRING_CONVERTER));
+		removeWatchDirectoryButton.setOnAction(removeAction);
 		FxActions.setStandardMouseAndKeyboardSupport(watchDirectoriesListView, addWatchDirectoryButton, removeWatchDirectoryButton);
 
 		initialScanCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getInitialScan().property());
@@ -59,23 +71,6 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 
 	public void addWatchDirectory()
 	{
-		DirectoryChooser dirChooser = new DirectoryChooser();
-		dirChooser.setTitle("Add watch directory");
-		File selectedDirectory = dirChooser.showDialog(getPrimaryStage());
-		if (selectedDirectory == null)
-		{
-			return;
-		}
-		Path newWatchDir = selectedDirectory.toPath();
-		boolean added = CollectionUtil.addToSortedList(watchDirectoriesListView.getItems(), newWatchDir, true);
-		if (!added)
-		{
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Chosen directory already on watch list");
-			alert.setHeaderText("The chosen directory is already on the watch list.");
-			alert.setContentText("The directory " + newWatchDir + " is already on the watch list.");
-			alert.show();
-		}
-		return;
+		addWatchDirectoryButton.fire();
 	}
 }

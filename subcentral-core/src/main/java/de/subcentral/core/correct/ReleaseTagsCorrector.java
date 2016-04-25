@@ -15,6 +15,12 @@ public class ReleaseTagsCorrector extends SinglePropertyCorrector<Release, List<
 	}
 
 	@Override
+	public TagsReplacer getReplacer()
+	{
+		return (TagsReplacer) super.getReplacer();
+	}
+
+	@Override
 	public String getPropertyName()
 	{
 		return Release.PROP_TAGS.getPropName();

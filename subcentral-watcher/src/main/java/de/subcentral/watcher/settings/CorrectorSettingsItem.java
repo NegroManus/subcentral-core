@@ -16,6 +16,7 @@ import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
 import de.subcentral.core.metadata.release.TagUtil.SearchMode;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.UserPattern.Mode;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
@@ -26,10 +27,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.StringConverter;
 
-public abstract class CorrectorSettingsItem<T, C extends Corrector<? super T>> extends SimpleSettingsItem<C>
+public abstract class CorrectorSettingsItem<T, C extends Corrector<? super T>> extends SimpleSettingsItem<C> implements Comparable<CorrectorSettingsItem<?, ?>>
 {
-	private static final ConfigurationPropertyHandler<ObservableList<CorrectorSettingsItem<?, ?>>>	HANDLER	= new ListConfigurationPropertyHandler();
+	public static final StringConverter<CorrectorSettingsItem<?, ?>>								TYPE_AND_RULE_STRING_CONVERTER	= new CorrectorTypeAndRuleStringConverter();
+	public static final StringConverter<Class<? extends CorrectorSettingsItem<?, ?>>>				TYPE_STRING_CONVERTER			= new CorrectorTypeStringConverter();
+
+	private static final ConfigurationPropertyHandler<ObservableList<CorrectorSettingsItem<?, ?>>>	HANDLER							= new ListConfigurationPropertyHandler();
 
 	protected final Class<T>																		beanType;
 	protected final BooleanProperty																	beforeQuerying;
@@ -82,6 +87,12 @@ public abstract class CorrectorSettingsItem<T, C extends Corrector<? super T>> e
 		this.afterQueryingProperty().set(afterQuerying);
 	}
 
+	@Override
+	public int compareTo(CorrectorSettingsItem<?, ?> o)
+	{
+		return ObjectUtil.getDefaultStringOrdering().compare(rule().getValue(), o.rule().getValue());
+	}
+
 	public static ObservableList<CorrectorSettingsItem<?, ?>> createObservableList()
 	{
 		return createObservableList(new ArrayList<>());
@@ -95,6 +106,56 @@ public abstract class CorrectorSettingsItem<T, C extends Corrector<? super T>> e
 	public static ConfigurationPropertyHandler<ObservableList<CorrectorSettingsItem<?, ?>>> getListConfigurationPropertyHandler()
 	{
 		return HANDLER;
+	}
+
+	private static class CorrectorTypeStringConverter extends StringConverter<Class<? extends CorrectorSettingsItem<?, ?>>>
+	{
+		@Override
+		public String toString(Class<? extends CorrectorSettingsItem<?, ?>> type)
+		{
+			if (type == null)
+			{
+				return "";
+			}
+			else if (type == SeriesNameCorrectorSettingsItem.class)
+			{
+				return SeriesNameCorrectorSettingsItem.getRuleType();
+			}
+			else if (type == ReleaseTagsCorrectorSettingsItem.class)
+			{
+				return ReleaseTagsCorrectorSettingsItem.getRuleType();
+			}
+			return type.getSimpleName();
+		}
+
+		@Override
+		public Class<? extends CorrectorSettingsItem<?, ?>> fromString(String string)
+		{
+			// not needed
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private static class CorrectorTypeAndRuleStringConverter extends StringConverter<CorrectorSettingsItem<?, ?>>
+	{
+		@Override
+		public String toString(CorrectorSettingsItem<?, ?> entry)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.append("Rule type: ");
+			sb.append(entry.ruleType().getValue());
+			sb.append("\n");
+			sb.append("Rule: ");
+			sb.append(entry.rule().getValue());
+			return sb.toString();
+		}
+
+		@Override
+		public CorrectorSettingsItem<?, ?> fromString(String string)
+		{
+			// not needed
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	private static class ListConfigurationPropertyHandler implements ConfigurationPropertyHandler<ObservableList<CorrectorSettingsItem<?, ?>>>

@@ -8,9 +8,10 @@ import java.util.Set;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableSet;
 
-public class CrossGroupCompatibility implements Compatibility
+public class CrossGroupCompatibility implements Compatibility, Comparable<CrossGroupCompatibility>
 {
 	private enum MatchDirection
 	{
@@ -135,5 +136,16 @@ public class CrossGroupCompatibility implements Compatibility
 		}
 		sb.append(compatibleGroup);
 		return sb.toString();
+	}
+
+	@Override
+	public int compareTo(CrossGroupCompatibility o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start().compare(sourceGroup, o.sourceGroup).compare(compatibleGroup, o.compatibleGroup).compareFalseFirst(symmetric, o.symmetric).result();
 	}
 }

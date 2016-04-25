@@ -6,8 +6,9 @@ import java.util.Objects;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ComparisonChain;
 
-public class StandardRelease
+public class StandardRelease implements Comparable<StandardRelease>
 {
 	public enum Scope
 	{
@@ -68,5 +69,16 @@ public class StandardRelease
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(StandardRelease.class).add("release", release).add("scope", scope).toString();
+	}
+
+	@Override
+	public int compareTo(StandardRelease o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start().compare(release, o.release).result();
 	}
 }

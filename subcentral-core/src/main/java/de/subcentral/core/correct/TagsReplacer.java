@@ -18,8 +18,8 @@ import de.subcentral.core.metadata.release.TagUtil.SearchMode;
 public class TagsReplacer implements UnaryOperator<List<Tag>>
 {
 	private final List<Tag>		searchTags;
-	private final List<Tag>		replacement;
 	private final SearchMode	searchMode;
+	private final List<Tag>		replacement;
 	private final ReplaceMode	replaceMode;
 	private final boolean		ignoreOrder;
 
@@ -31,8 +31,8 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 	public TagsReplacer(List<Tag> searchTags, List<Tag> replacement, SearchMode searchMode, ReplaceMode replaceMode, boolean ignoreOrder)
 	{
 		this.searchTags = ImmutableList.copyOf(searchTags);
-		this.replacement = ImmutableList.copyOf(replacement);
 		this.searchMode = Objects.requireNonNull(searchMode, "searchMode");
+		this.replacement = ImmutableList.copyOf(replacement);
 		this.replaceMode = Objects.requireNonNull(replaceMode, "replaceMode");
 		this.ignoreOrder = ignoreOrder;
 	}
@@ -42,14 +42,14 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 		return searchTags;
 	}
 
-	public List<Tag> getReplacement()
-	{
-		return replacement;
-	}
-
 	public SearchMode getSearchMode()
 	{
 		return searchMode;
+	}
+
+	public List<Tag> getReplacement()
+	{
+		return replacement;
 	}
 
 	public ReplaceMode getReplaceMode()
@@ -160,7 +160,7 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 		if (obj instanceof TagsReplacer)
 		{
 			TagsReplacer o = (TagsReplacer) obj;
-			return searchTags.equals(o.searchTags) && replacement.equals(o.replacement) && searchMode == o.searchMode && replaceMode == o.replaceMode && ignoreOrder == o.ignoreOrder;
+			return searchTags.equals(o.searchTags) && searchMode == o.searchMode && replacement.equals(o.replacement) && replaceMode == o.replaceMode && ignoreOrder == o.ignoreOrder;
 		}
 		return false;
 	}
@@ -168,7 +168,7 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(5643, 121).append(searchTags).append(replacement).append(searchMode).append(replaceMode).append(ignoreOrder).toHashCode();
+		return new HashCodeBuilder(5643, 121).append(searchTags).append(searchMode).append(replacement).append(replaceMode).append(ignoreOrder).toHashCode();
 	}
 
 	@Override
@@ -176,8 +176,8 @@ public class TagsReplacer implements UnaryOperator<List<Tag>>
 	{
 		return MoreObjects.toStringHelper(TagsReplacer.class)
 				.add("searchTags", searchTags)
-				.add("replacement", replacement)
 				.add("searchMode", searchMode)
+				.add("replacement", replacement)
 				.add("replaceMode", replaceMode)
 				.add("ignoreOrder", ignoreOrder)
 				.toString();

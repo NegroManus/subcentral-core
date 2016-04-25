@@ -424,7 +424,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 		if (obj instanceof Release)
 		{
 			Release o = (Release) obj;
-			return media.equals(o.media) && tags.equals(o.tags) && Objects.equals(group, o.group);
+			return media.equals(o.media) && Objects.equals(group, o.group) && tags.equals(o.tags);
 		}
 		return false;
 	}
@@ -440,7 +440,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(45, 7).append(media).append(tags).append(group).toHashCode();
+		return new HashCodeBuilder(45, 7).append(media).append(group).append(tags).toHashCode();
 	}
 
 	/**
@@ -456,8 +456,8 @@ public class Release extends MetadataBase implements Comparable<Release>
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
-				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
+				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
 				.result();
 	}
 
