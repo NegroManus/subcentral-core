@@ -143,23 +143,23 @@ public class CollectionUtil
 
 	public static <E extends Comparable<E>> void updateSortedList(List<E> origList, Collection<? extends E> updateList)
 	{
-		updateSortedList(origList, updateList, true, true, true, ObjectUtil.getDefaultOrdering());
+		updateSortedList(origList, updateList, true, true, true, Objects::equals, ObjectUtil.getDefaultOrdering());
 	}
 
 	public static <E extends Comparable<E>> void updateSortedList(List<E> origList, Collection<? extends E> updateList, boolean add, boolean replace, boolean remove)
 	{
-		updateSortedList(origList, updateList, add, replace, remove, ObjectUtil.getDefaultOrdering());
+		updateSortedList(origList, updateList, add, replace, remove, Objects::equals, ObjectUtil.getDefaultOrdering());
 	}
 
-	public static <E> void updateSortedList(List<E> origList, Collection<? extends E> updateList, boolean add, boolean replace, boolean remove, Comparator<? super E> comparator)
+	public static <E> void updateSortedList(List<E> origList,
+			Collection<? extends E> updateList,
+			boolean add,
+			boolean replace,
+			boolean remove,
+			BiPredicate<? super E, ? super E> equalTester,
+			Comparator<? super E> comparator)
 	{
-		updateList(origList,
-				updateList,
-				add,
-				replace,
-				remove,
-				(E e1, E e2) -> comparator.compare(e1, e2) == 0,
-				(List<E> list, Collection<? extends E> itemsToAdd) -> addAllToSortedList(list, itemsToAdd, comparator, null));
+		updateList(origList, updateList, add, replace, remove, equalTester, (List<E> list, Collection<? extends E> itemsToAdd) -> addAllToSortedList(list, itemsToAdd, comparator, null));
 	}
 
 	private static <E> void updateList(List<E> origList,
@@ -167,7 +167,7 @@ public class CollectionUtil
 			boolean add,
 			boolean replace,
 			boolean remove,
-			BiPredicate<? super E, ? super E> comparer,
+			BiPredicate<? super E, ? super E> equalTester,
 			BiConsumer<List<E>, Collection<? extends E>> adder)
 	{
 		List<E> itemsToRemove = null;
@@ -179,7 +179,7 @@ public class CollectionUtil
 			while (origIter.hasNext())
 			{
 				E orig = origIter.next();
-				if (comparer.test(orig, update))
+				if (equalTester.test(orig, update))
 				{
 					origListContainsUpdate = true;
 					if (remove)

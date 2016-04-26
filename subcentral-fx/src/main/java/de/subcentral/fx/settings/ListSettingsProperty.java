@@ -1,5 +1,6 @@
 package de.subcentral.fx.settings;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiPredicate;
 
@@ -27,13 +28,27 @@ public class ListSettingsProperty<E> extends ObjectSettingsPropertyBase<Observab
 		super(key, (Object bean, String name) -> new SimpleListProperty<>(bean, name, initialValue), handler);
 	}
 
-	public void update(ImmutableConfiguration cfg, boolean add, boolean replace, boolean remove, BiPredicate<? super E, ? super E> comparer)
+	public void update(ImmutableConfiguration cfg, boolean add, boolean replace, boolean remove, BiPredicate<? super E, ? super E> equalTester)
 	{
 		try
 		{
 			List<E> origList = property;
 			List<E> updateList = loadValue(cfg);
-			CollectionUtil.updateList(origList, updateList, add, replace, remove, comparer);
+			CollectionUtil.updateList(origList, updateList, add, replace, remove, equalTester);
+		}
+		catch (Exception e)
+		{
+			log.error("Exception while loading settings property [" + key + "] from configuration", e);
+		}
+	}
+
+	public void updateSorted(ImmutableConfiguration cfg, boolean add, boolean replace, boolean remove, BiPredicate<? super E, ? super E> equalTester, Comparator<? super E> comparator)
+	{
+		try
+		{
+			List<E> origList = property;
+			List<E> updateList = loadValue(cfg);
+			CollectionUtil.updateSortedList(origList, updateList, add, replace, remove, equalTester, comparator);
 		}
 		catch (Exception e)
 		{

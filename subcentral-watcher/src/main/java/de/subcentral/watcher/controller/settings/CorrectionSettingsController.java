@@ -162,7 +162,12 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 					protected void succeeded()
 					{
 						XMLConfiguration cfg = getValue();
-						SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().update(cfg, params.isAddItems(), params.isReplaceItems(), params.isRemoveItems(), Objects::equals);
+						SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().updateSorted(cfg,
+								params.isAddItems(),
+								params.isReplaceItems(),
+								params.isRemoveItems(),
+								Objects::equals,
+								ObjectUtil.getDefaultOrdering());
 					}
 				};
 				execute(importCorrectorsTask);
