@@ -7,15 +7,19 @@ import java.util.Objects;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.correct.LocaleLanguageReplacer.LanguagePattern;
+import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import javafx.util.StringConverter;
 
 public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>, Comparable<PatternToLanguageMapping>
 {
-	private final UserPattern	pattern;
-	private final Locale		language;
+	public static final StringConverter<PatternToLanguageMapping>	STRING_CONVERTER	= initStringConverter();
+
+	private final UserPattern										pattern;
+	private final Locale											language;
 
 	public PatternToLanguageMapping(UserPattern pattern, Locale language)
 	{
@@ -67,7 +71,7 @@ public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>,
 		if (obj instanceof PatternToLanguageMapping)
 		{
 			PatternToLanguageMapping o = (PatternToLanguageMapping) obj;
-			return pattern.equals(o.pattern);
+			return pattern.equals(o.pattern) && language.equals(language);
 		}
 		return false;
 	}
@@ -75,7 +79,13 @@ public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>,
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(73, 113).append(pattern).toHashCode();
+		return new HashCodeBuilder(73, 113).append(pattern).append(language).toHashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(PatternToLanguageMapping.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
 	}
 
 	@Override
@@ -86,16 +96,10 @@ public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>,
 		{
 			return 1;
 		}
-		return pattern.compareTo(o.pattern);
+		return ComparisonChain.start().compare(pattern, o.pattern).compare(language, o.language, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR).result();
 	}
 
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(PatternToLanguageMapping.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
-	}
-
-	public static StringConverter<PatternToLanguageMapping> createStringConverter()
+	private static StringConverter<PatternToLanguageMapping> initStringConverter()
 	{
 		return new StringConverter<PatternToLanguageMapping>()
 		{

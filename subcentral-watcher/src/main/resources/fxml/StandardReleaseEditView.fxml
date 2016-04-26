@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
@@ -17,10 +20,10 @@
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Tags:" />
-		<TextField fx:id="tagsTxtFld" prefWidth="250.0" promptText="tags (separated by comma)" GridPane.columnIndex="1" />
-		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Group:" GridPane.rowIndex="1" />
-		<TextField fx:id="groupTxtFld" prefWidth="200.0" promptText="group" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Group:" />
+		<TextField fx:id="groupTxtFld" prefWidth="200.0" promptText="group" GridPane.columnIndex="1" />
+		<Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Tags:" GridPane.rowIndex="1" />
+		<TextField fx:id="tagsTxtFld" prefWidth="250.0" promptText="tags (separated by comma)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 		<Label text="Scope (when to add it to the listed releases):" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
 		<VBox spacing="3.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
 			<children>

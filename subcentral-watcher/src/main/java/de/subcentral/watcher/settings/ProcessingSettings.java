@@ -1,12 +1,16 @@
 package de.subcentral.watcher.settings;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ImmutableConfiguration;
 
+import com.google.common.collect.ComparisonChain;
+
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.settings.BooleanSettingsProperty;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
 import de.subcentral.fx.settings.ConfigurationPropertyHandlers;
@@ -23,6 +27,16 @@ public class ProcessingSettings extends Settings
 	{
 		SPECIFY, AUTO_LOCATE;
 	}
+
+	public static final Comparator<StandardRelease>					STANDARD_RELEASE_COMPARATOR			= (StandardRelease r1, StandardRelease r2) ->
+																										{
+																											return ComparisonChain.start()
+																													.compare(r1.getRelease().getGroup(),
+																															r2.getRelease().getGroup(),
+																															ObjectUtil.getDefaultOrdering())
+																													.compare(r1.getRelease().getTags(), r2.getRelease().getTags(), Tag.TAGS_COMPARATOR)
+																													.result();
+																										};
 
 	private static final LocateStrategyHandler						LOCATE_STRATEGY_HANDLER				= new LocateStrategyHandler();
 	private static final DeletionModeHandler						DELETION_MODE_HANDLER				= new DeletionModeHandler();
@@ -49,9 +63,9 @@ public class ProcessingSettings extends Settings
 			ConfigurationPropertyHandlers.STANDARD_RELEASE_LIST_HANDLER);
 	// Metadata - Release - Compatibility
 	private final BooleanSettingsProperty							compatibilityEnabled				= new BooleanSettingsProperty("metadata.release.compatibility[@enabled]", true);
-	private final ListSettingsProperty<CompatibilitySettingsItem>	compatibilities						= new ListSettingsProperty<>("metadata.release.compatibility.compatibilities",
-			CompatibilitySettingsItem.getListConfigurationPropertyHandler(),
-			CompatibilitySettingsItem.createObservableList());
+	private final ListSettingsProperty<CrossGroupCompatibilitySettingsItem>	compatibilities						= new ListSettingsProperty<>("metadata.release.compatibility.compatibilities",
+			CrossGroupCompatibilitySettingsItem.getListConfigurationPropertyHandler(),
+			CrossGroupCompatibilitySettingsItem.createObservableList());
 	// Correction - Rules
 	private final ListSettingsProperty<CorrectorSettingsItem<?, ?>>	correctionRules						= new ListSettingsProperty<>("correction.rules",
 			CorrectorSettingsItem.getListConfigurationPropertyHandler(),
@@ -142,7 +156,7 @@ public class ProcessingSettings extends Settings
 		return compatibilityEnabled;
 	}
 
-	public ListSettingsProperty<CompatibilitySettingsItem> getCompatibilities()
+	public ListSettingsProperty<CrossGroupCompatibilitySettingsItem> getCompatibilities()
 	{
 		return compatibilities;
 	}

@@ -1,25 +1,23 @@
 package de.subcentral.watcher.controller.settings;
 
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxActions;
-import de.subcentral.fx.action.AddAction;
+import de.subcentral.fx.FxControlBindings;
+import de.subcentral.fx.action.ActionList;
 import de.subcentral.fx.settings.ConfigurationHelper;
 import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
 import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
-import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -70,9 +68,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	@Override
 	protected void initialize() throws Exception
 	{
-		// Correctors
-		correctorsTableView.setItems(SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().property());
-
+		// Correctors table
 		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleType());
 
 		correctorsRuleColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().rule());
@@ -83,75 +79,55 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 		correctorsAfterQueryingColumn.setCellFactory(CheckBoxTableCell.forTableColumn(correctorsAfterQueryingColumn));
 		correctorsAfterQueryingColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, Boolean> param) -> param.getValue().afterQueryingProperty());
 
+		ObservableList<CorrectorSettingsItem<?, ?>> correctors = SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().property();
+		SortedList<CorrectorSettingsItem<?, ?>> displayCorrectors = FxControlBindings.sortableTableView(correctorsTableView, correctors);
+
 		correctorTypeChoiceBox.getItems().add(SeriesNameCorrectorSettingsItem.class);
 		correctorTypeChoiceBox.getItems().add(ReleaseTagsCorrectorSettingsItem.class);
 		correctorTypeChoiceBox.setConverter(CorrectorSettingsItem.TYPE_STRING_CONVERTER);
 		correctorTypeChoiceBox.getSelectionModel().selectFirst();
 
-		Comparator<CorrectorSettingsItem<?, ?>> comparator = ObjectUtil.getDefaultOrdering();
-		boolean distinct = true;
-		Consumer<CorrectorSettingsItem<?, ?>> alreadyExistedInformer = FxActions.createAlreadyExistedInformer(getPrimaryStage(),
-				"correction rule",
-				CorrectorSettingsItem.TYPE_AND_RULE_STRING_CONVERTER);
-		Predicate<CorrectorSettingsItem<?, ?>> removeConfirmer = FxActions.createRemoveConfirmer(getPrimaryStage(), "correction rule", CorrectorSettingsItem.TYPE_AND_RULE_STRING_CONVERTER);
-
-		AddAction<CorrectorSettingsItem<?, ?>> addAction = new AddAction<>(correctorsTableView, new Supplier<Optional<CorrectorSettingsItem<?, ?>>>()
+		// Correctors table buttons
+		ActionList<CorrectorSettingsItem<?, ?>> correctorsActionList = new ActionList<>(correctors, correctorsTableView.getSelectionModel(), displayCorrectors);
+		correctorsActionList.setNewItemSupplier(() ->
 		{
-			@Override
-			public Optional<CorrectorSettingsItem<?, ?>> get()
+			Class<? extends CorrectorSettingsItem<?, ?>> selectedCorrectorType = correctorTypeChoiceBox.getSelectionModel().getSelectedItem();
+			if (SeriesNameCorrectorSettingsItem.class == selectedCorrectorType)
 			{
-				Class<? extends CorrectorSettingsItem<?, ?>> selectedCorrectorType = correctorTypeChoiceBox.getSelectionModel().getSelectedItem();
-				if (SeriesNameCorrectorSettingsItem.class == selectedCorrectorType)
-				{
-					Optional<SeriesNameCorrectorSettingsItem> r = WatcherDialogs.showSeriesNameCorrectionRuleEditView(getPrimaryStage());
-					return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
-				}
-				else if (ReleaseTagsCorrectorSettingsItem.class == selectedCorrectorType)
-				{
-					Optional<ReleaseTagsCorrectorSettingsItem> r = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(getPrimaryStage());
-					return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
-				}
-				return Optional.empty();
+				Optional<SeriesNameCorrectorSettingsItem> r = WatcherDialogs.showSeriesNameCorrectionRuleEditView(getPrimaryStage());
+				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
 			}
+			else if (ReleaseTagsCorrectorSettingsItem.class == selectedCorrectorType)
+			{
+				Optional<ReleaseTagsCorrectorSettingsItem> r = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(getPrimaryStage());
+				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
+			}
+			return Optional.empty();
 		});
-		addAction.setComparator(comparator);
-		addAction.setDistinct(distinct);
-		addAction.setAlreadyExistedInformer(alreadyExistedInformer);
-
-		addCorrectorButton.disableProperty().bind(correctorTypeChoiceBox.getSelectionModel().selectedItemProperty().isNull());
-		addCorrectorButton.setOnAction(addAction);
-
-		final BooleanBinding noSelection = correctorsTableView.getSelectionModel().selectedItemProperty().isNull();
-
-		editCorrectorButton.disableProperty().bind(noSelection);
-		editCorrectorButton.setOnAction((ActionEvent event) ->
+		correctorsActionList.setItemEditer((CorrectorSettingsItem<?, ?> item) ->
 		{
-			CorrectorSettingsItem<?, ?> selectedCorrector = correctorsTableView.getSelectionModel().getSelectedItem();
-			if (selectedCorrector == null)
+			if (SeriesNameCorrectorSettingsItem.class == item.getClass())
 			{
-				return;
+				Optional<SeriesNameCorrectorSettingsItem> r = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectorSettingsItem) item, getPrimaryStage());
+				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
 			}
-			Optional<? extends CorrectorSettingsItem<?, ?>> result;
-			if (SeriesNameCorrectorSettingsItem.class == selectedCorrector.getClass())
+			else if (ReleaseTagsCorrectorSettingsItem.class == item.getClass())
 			{
-				result = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectorSettingsItem) selectedCorrector, getPrimaryStage());
+				Optional<ReleaseTagsCorrectorSettingsItem> r = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectorSettingsItem) item, getPrimaryStage());
+				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
 			}
-			else if (ReleaseTagsCorrectorSettingsItem.class == selectedCorrector.getClass())
-			{
-				result = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectorSettingsItem) selectedCorrector, getPrimaryStage());
-			}
-			else
-			{
-				result = Optional.empty();
-			}
-			FxActions.editDistinct(correctorsTableView, result);
+			return Optional.empty();
 		});
+		correctorsActionList.setDistincter(Objects::equals);
+		correctorsActionList.setSorter(ObjectUtil.getDefaultOrdering());
+		correctorsActionList.setAlreadyContainedInformer(FxActions.createAlreadyContainedInformer(getPrimaryStage(), "correction rule", CorrectorSettingsItem.TYPE_AND_RULE_STRING_CONVERTER));
+		correctorsActionList.setRemoveConfirmer(FxActions.createRemoveConfirmer(getPrimaryStage(), "correction rule", CorrectorSettingsItem.TYPE_AND_RULE_STRING_CONVERTER));
 
-		removeCorrectorButton.disableProperty().bind(noSelection);
-		removeCorrectorButton.setOnAction((ActionEvent event) ->
-		{
-			FxActions.removeConfirmed(correctorsTableView, "correction rule", CorrectorSettingsItem.TYPE_AND_RULE_STRING_CONVERTER);
-		});
+		correctorsActionList.bindAddButton(addCorrectorButton);
+		correctorsActionList.bindEditButton(editCorrectorButton);
+		correctorsActionList.bindRemoveButton(removeCorrectorButton);
+
+		FxActions.setStandardMouseAndKeyboardSupport(correctorsTableView, addCorrectorButton, editCorrectorButton, removeCorrectorButton);
 
 		importCorrectorsButton.setOnAction((ActionEvent event) ->
 		{
@@ -192,7 +168,5 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 				execute(importCorrectorsTask);
 			}
 		});
-
-		FxActions.setStandardMouseAndKeyboardSupport(correctorsTableView, addCorrectorButton, editCorrectorButton, removeCorrectorButton);
 	}
 }

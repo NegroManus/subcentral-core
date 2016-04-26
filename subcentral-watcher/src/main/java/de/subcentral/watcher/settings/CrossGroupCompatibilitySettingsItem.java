@@ -17,29 +17,29 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 
-public class CompatibilitySettingsItem extends SimpleDeactivatableSettingsItem<CrossGroupCompatibility> implements Comparable<CompatibilitySettingsItem>
+public class CrossGroupCompatibilitySettingsItem extends SimpleDeactivatableSettingsItem<CrossGroupCompatibility> implements Comparable<CrossGroupCompatibilitySettingsItem>
 {
-	public static final StringConverter<CompatibilitySettingsItem>									STRING_CONVERTER	= initStringConverter();
+	public static final StringConverter<CrossGroupCompatibilitySettingsItem>									STRING_CONVERTER	= initStringConverter();
 
-	private static final ConfigurationPropertyHandler<ObservableList<CompatibilitySettingsItem>>	HANDLER				= new ListConfigurationPropertyHandler();
+	private static final ConfigurationPropertyHandler<ObservableList<CrossGroupCompatibilitySettingsItem>>	HANDLER				= new ListConfigurationPropertyHandler();
 
-	public CompatibilitySettingsItem(CrossGroupCompatibility value, boolean enabled)
+	public CrossGroupCompatibilitySettingsItem(CrossGroupCompatibility value, boolean enabled)
 	{
 		super(value, enabled);
 	}
 
-	private static StringConverter<CompatibilitySettingsItem> initStringConverter()
+	private static StringConverter<CrossGroupCompatibilitySettingsItem> initStringConverter()
 	{
-		return new StringConverter<CompatibilitySettingsItem>()
+		return new StringConverter<CrossGroupCompatibilitySettingsItem>()
 		{
 			@Override
-			public String toString(CompatibilitySettingsItem entry)
+			public String toString(CrossGroupCompatibilitySettingsItem entry)
 			{
 				return entry.getItem().toShortString();
 			}
 
 			@Override
-			public CompatibilitySettingsItem fromString(String string)
+			public CrossGroupCompatibilitySettingsItem fromString(String string)
 			{
 				throw new UnsupportedOperationException();
 			}
@@ -47,7 +47,7 @@ public class CompatibilitySettingsItem extends SimpleDeactivatableSettingsItem<C
 	}
 
 	@Override
-	public int compareTo(CompatibilitySettingsItem o)
+	public int compareTo(CrossGroupCompatibilitySettingsItem o)
 	{
 		// nulls first
 		if (o == null)
@@ -57,26 +57,26 @@ public class CompatibilitySettingsItem extends SimpleDeactivatableSettingsItem<C
 		return item.compareTo(o.item);
 	}
 
-	public static ObservableList<CompatibilitySettingsItem> createObservableList()
+	public static ObservableList<CrossGroupCompatibilitySettingsItem> createObservableList()
 	{
 		return createObservableList(new ArrayList<>());
 	}
 
-	public static ObservableList<CompatibilitySettingsItem> createObservableList(List<CompatibilitySettingsItem> list)
+	public static ObservableList<CrossGroupCompatibilitySettingsItem> createObservableList(List<CrossGroupCompatibilitySettingsItem> list)
 	{
-		return FXCollections.observableList(list, (CompatibilitySettingsItem item) -> new Observable[] { item.enabledProperty() });
+		return FXCollections.observableList(list, (CrossGroupCompatibilitySettingsItem item) -> new Observable[] { item.enabledProperty() });
 	}
 
-	public static ConfigurationPropertyHandler<ObservableList<CompatibilitySettingsItem>> getListConfigurationPropertyHandler()
+	public static ConfigurationPropertyHandler<ObservableList<CrossGroupCompatibilitySettingsItem>> getListConfigurationPropertyHandler()
 	{
 		return HANDLER;
 	}
 
-	private static class ListConfigurationPropertyHandler implements ConfigurationPropertyHandler<ObservableList<CompatibilitySettingsItem>>
+	private static class ListConfigurationPropertyHandler implements ConfigurationPropertyHandler<ObservableList<CrossGroupCompatibilitySettingsItem>>
 	{
 		@SuppressWarnings("unchecked")
 		@Override
-		public ObservableList<CompatibilitySettingsItem> get(ImmutableConfiguration cfg, String key)
+		public ObservableList<CrossGroupCompatibilitySettingsItem> get(ImmutableConfiguration cfg, String key)
 		{
 			if (cfg instanceof HierarchicalConfiguration<?>)
 			{
@@ -85,28 +85,28 @@ public class CompatibilitySettingsItem extends SimpleDeactivatableSettingsItem<C
 			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
 		}
 
-		private static ObservableList<CompatibilitySettingsItem> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+		private static ObservableList<CrossGroupCompatibilitySettingsItem> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 		{
 			// read GroupsCompatibilities
 			List<HierarchicalConfiguration<ImmutableNode>> groupsCompCfgs = cfg.configurationsAt(key + ".crossGroupCompatibility");
-			List<CompatibilitySettingsItem> compatibilities = new ArrayList<>(groupsCompCfgs.size());
+			List<CrossGroupCompatibilitySettingsItem> compatibilities = new ArrayList<>(groupsCompCfgs.size());
 			for (HierarchicalConfiguration<ImmutableNode> groupsCompCfg : groupsCompCfgs)
 			{
 				boolean enabled = groupsCompCfg.getBoolean("[@enabled]");
 				Group sourceGroup = Group.from(groupsCompCfg.getString("[@sourceGroup]"));
 				Group compatibleGroup = Group.from(groupsCompCfg.getString("[@compatibleGroup]"));
 				boolean symmetric = groupsCompCfg.getBoolean("[@symmetric]", false);
-				compatibilities.add(new CompatibilitySettingsItem(new CrossGroupCompatibility(sourceGroup, compatibleGroup, symmetric), enabled));
+				compatibilities.add(new CrossGroupCompatibilitySettingsItem(new CrossGroupCompatibility(sourceGroup, compatibleGroup, symmetric), enabled));
 			}
 			return createObservableList(compatibilities);
 		}
 
 		@Override
-		public void add(Configuration cfg, String key, ObservableList<CompatibilitySettingsItem> list)
+		public void add(Configuration cfg, String key, ObservableList<CrossGroupCompatibilitySettingsItem> list)
 		{
 			for (int i = 0; i < list.size(); i++)
 			{
-				CompatibilitySettingsItem item = list.get(i);
+				CrossGroupCompatibilitySettingsItem item = list.get(i);
 				CrossGroupCompatibility c = item.getItem();
 				cfg.addProperty(key + ".crossGroupCompatibility(" + i + ")[@enabled]", item.isEnabled());
 				cfg.addProperty(key + ".crossGroupCompatibility(" + i + ")[@sourceGroup]", c.getSourceGroup());

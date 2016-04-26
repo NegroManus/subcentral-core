@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -17,23 +18,45 @@ public class CollectionUtil
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
+	public static <E> int indexOf(List<E> c, E item, BiPredicate<? super E, ? super E> equalTester)
+	{
+		ListIterator<E> iter = c.listIterator();
+		while (iter.hasNext())
+		{
+			int index = iter.nextIndex();
+			if (equalTester.test(iter.next(), item))
+			{
+				return index;
+			}
+		}
+		return -1;
+	}
+
+	public static <E> boolean contains(Collection<E> c, E item, BiPredicate<? super E, ? super E> equalTester)
+	{
+		Iterator<E> iter = c.iterator();
+		while (iter.hasNext())
+		{
+			if (equalTester.test(iter.next(), item))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@SafeVarargs
 	public static <E> List<E> createArrayList(E... items)
 	{
 		return new ArrayList<>(Arrays.asList(items));
 	}
 
-	public static <E extends Comparable<E>> boolean addToSortedList(List<E> list, Collection<? extends E> itemsToAdd, boolean distinct)
-	{
-		return addToSortedList(list, itemsToAdd, ObjectUtil.getDefaultOrdering(), distinct);
-	}
-
-	public static <E> boolean addToSortedList(List<E> list, Collection<? extends E> itemsToAdd, Comparator<? super E> comparator, boolean distinct)
+	public static <E> boolean addAllToSortedList(List<E> list, Collection<? extends E> itemsToAdd, Comparator<? super E> comparator, BiPredicate<? super E, ? super E> distincter)
 	{
 		boolean changed = false;
 		for (E item : itemsToAdd)
 		{
-			if (addToSortedList(list, item, comparator, distinct))
+			if (addToSortedList(list, item, comparator, distincter))
 			{
 				changed = true;
 			}
@@ -41,51 +64,58 @@ public class CollectionUtil
 		return changed;
 	}
 
-	public static <E extends Comparable<E>> boolean addToSortedList(List<E> list, E item, boolean distinct)
-	{
-		return addToSortedList(list, item, ObjectUtil.getDefaultOrdering(), distinct);
-	}
-
-	public static <E> boolean addToSortedList(List<E> list, E item, Comparator<? super E> comparator, boolean distinct)
+	public static <E> boolean addToSortedList(List<E> list, E item, Comparator<? super E> comparator, BiPredicate<? super E, ? super E> distincter)
 	{
 		int addIndex = list.size();
-		for (int i = 0; i < list.size(); i++)
+		boolean foundAddIndex = false;
+		ListIterator<E> iter = list.listIterator();
+		while (iter.hasNext())
 		{
-			E orig = list.get(i);
-			int result = comparator.compare(orig, item);
-			if (result < 0)
+			int currIndex = iter.nextIndex();
+			E currItem = iter.next();
+			if (distincter != null && distincter.test(currItem, item))
 			{
-				continue;
+				return false;
 			}
-			else if (result > 0)
+			if (!foundAddIndex)
 			{
-				addIndex = i;
-				break;
-			}
-			else
-			{
-				if (distinct)
+				int comparison = comparator.compare(currItem, item);
+				if (comparison > 0)
 				{
-					return false;
+					addIndex = currIndex;
+					// if we don't have to check the remaining items for distinct we can break the loop now
+					if (distincter == null)
+					{
+						break;
+					}
+					foundAddIndex = true;
 				}
-				addIndex = i + 1;
-				break;
+				else if (comparison == 0)
+				{
+					addIndex = currIndex + 1;
+					// if we don't have to check the remaining items for distinct we can break the loop now
+					if (distincter == null)
+					{
+						break;
+					}
+					foundAddIndex = true;
+				}
 			}
 		}
 		list.add(addIndex, item);
 		return true;
 	}
 
-	public static <E> E setInSortedList(List<E> list, int index, E item, Comparator<? super E> comparator, boolean distinct)
+	public static <E> E setInSortedList(List<E> list, int index, E item, Comparator<? super E> comparator, BiPredicate<? super E, ? super E> distincter)
 	{
-		if (distinct)
+		if (distincter != null)
 		{
 			ListIterator<E> iter = list.listIterator();
 			while (iter.hasNext())
 			{
 				int currIndex = iter.nextIndex();
 				E currItem = iter.next();
-				if (index != currIndex && comparator.compare(currItem, item) == 0)
+				if (index != currIndex && distincter.test(currItem, item))
 				{
 					return null;
 				}
@@ -129,7 +159,7 @@ public class CollectionUtil
 				replace,
 				remove,
 				(E e1, E e2) -> comparator.compare(e1, e2) == 0,
-				(List<E> list, Collection<? extends E> itemsToAdd) -> addToSortedList(list, itemsToAdd, comparator, false));
+				(List<E> list, Collection<? extends E> itemsToAdd) -> addAllToSortedList(list, itemsToAdd, comparator, null));
 	}
 
 	private static <E> void updateList(List<E> origList,

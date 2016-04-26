@@ -50,7 +50,7 @@
 		</TableView>
       <HBox spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
          <children>
-				<Button fx:id="addCrossGroupCompatibility" mnemonicParsing="false" text="Add">
+				<Button fx:id="addCrossGroupCompatibilityBtn" mnemonicParsing="false" text="Add">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -58,7 +58,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-				<Button fx:id="editCrossGroupCompatibility" mnemonicParsing="false" text="Edit">
+				<Button fx:id="editCrossGroupCompatibilityBtn" mnemonicParsing="false" text="Edit">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -66,7 +66,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-				<Button fx:id="removeCrossGroupCompatibility" mnemonicParsing="false" text="Remove">
+				<Button fx:id="removeCrossGroupCompatibilityBtn" mnemonicParsing="false" text="Remove">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>

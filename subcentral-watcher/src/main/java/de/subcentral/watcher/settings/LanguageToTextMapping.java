@@ -1,25 +1,46 @@
 package de.subcentral.watcher.settings;
 
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ComparisonChain;
 
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxUtil;
 import javafx.util.StringConverter;
 
-public final class LanguageToTextMapping implements Map.Entry<Locale, String>, Comparable<LanguageToTextMapping>
+public final class LanguageToTextMapping implements Comparable<LanguageToTextMapping>
 {
-	final Locale	language;
-	final String	text;
+	public static final StringConverter<LanguageToTextMapping>	STRING_CONVERTER	= initStringConverter();
+
+	private final Locale										language;
+	private final String										text;
 
 	public LanguageToTextMapping(Locale language, String text)
 	{
 		this.language = Objects.requireNonNull(language, "language");
 		this.text = Objects.requireNonNull(text, "text");
+	}
+
+	private static StringConverter<LanguageToTextMapping> initStringConverter()
+	{
+		return new StringConverter<LanguageToTextMapping>()
+		{
+			@Override
+			public String toString(LanguageToTextMapping mapping)
+			{
+				return mapping.language.getDisplayName() + " -> " + mapping.text;
+			}
+
+			@Override
+			public LanguageToTextMapping fromString(String string)
+			{
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
 
 	public Locale getLanguage()
@@ -32,25 +53,6 @@ public final class LanguageToTextMapping implements Map.Entry<Locale, String>, C
 		return text;
 	}
 
-	// Map.Entry implementation
-	@Override
-	public Locale getKey()
-	{
-		return language;
-	}
-
-	@Override
-	public String getValue()
-	{
-		return text;
-	}
-
-	@Override
-	public String setValue(String value)
-	{
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -61,7 +63,7 @@ public final class LanguageToTextMapping implements Map.Entry<Locale, String>, C
 		if (obj instanceof LanguageToTextMapping)
 		{
 			LanguageToTextMapping o = (LanguageToTextMapping) obj;
-			return language.equals(o.language);
+			return language.equals(o.language) && text.equals(text);
 		}
 		return false;
 	}
@@ -69,7 +71,7 @@ public final class LanguageToTextMapping implements Map.Entry<Locale, String>, C
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(983, 133).append(language).toHashCode();
+		return new HashCodeBuilder(983, 133).append(language).append(text).toHashCode();
 	}
 
 	@Override
@@ -86,24 +88,6 @@ public final class LanguageToTextMapping implements Map.Entry<Locale, String>, C
 		{
 			return 1;
 		}
-		return FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR.compare(this.language, o.language);
-	}
-
-	public static StringConverter<LanguageToTextMapping> createStringConverter()
-	{
-		return new StringConverter<LanguageToTextMapping>()
-		{
-			@Override
-			public String toString(LanguageToTextMapping mapping)
-			{
-				return mapping.language.getDisplayName() + " -> " + mapping.text;
-			}
-
-			@Override
-			public LanguageToTextMapping fromString(String string)
-			{
-				throw new UnsupportedOperationException();
-			}
-		};
+		return ComparisonChain.start().compare(language, o.language, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR).compare(text, o.text, ObjectUtil.getDefaultStringOrdering()).result();
 	}
 }

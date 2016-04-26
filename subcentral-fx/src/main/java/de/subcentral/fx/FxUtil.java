@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import de.subcentral.core.util.ExceptionUtil;
+import de.subcentral.core.util.ObjectUtil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -198,7 +199,6 @@ public class FxUtil
 	{
 		return new Comparator<Locale>()
 		{
-
 			@Override
 			public int compare(Locale o1, Locale o2)
 			{
@@ -211,7 +211,7 @@ public class FxUtil
 				{
 					return 1;
 				}
-				return o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName());
+				return ObjectUtil.getDefaultStringOrdering().compare(o1.getDisplayName(), o2.getDisplayName());
 			}
 		};
 	}

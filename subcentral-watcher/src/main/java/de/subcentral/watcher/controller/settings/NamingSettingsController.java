@@ -8,6 +8,7 @@ import java.util.Objects;
 import de.subcentral.core.name.EpisodeNamer;
 import de.subcentral.core.name.ReleaseNamer;
 import de.subcentral.core.name.SubtitleNamer;
+import de.subcentral.fx.FxControlBindings;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.MapProperty;
@@ -16,6 +17,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -54,8 +56,10 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Naming parameters
-		// bind table items to settings
-		new NamingParamBinding(namingParamsTableView.getItems(), settings.getNamingParameters().property());
+		// bind naming params list to settings
+		ObservableList<NamingParam> namingParams = FXCollections.observableArrayList();
+		new NamingParamBinding(namingParams, settings.getNamingParameters().property());
+		FxControlBindings.sortableTableView(namingParamsTableView, namingParams);
 
 		namingParamsKeyColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyProperty());
 		namingParamsKeyColumn.setCellFactory((TableColumn<NamingParam, String> column) -> new KeyTableCell());

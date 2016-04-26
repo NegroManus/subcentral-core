@@ -474,14 +474,14 @@ public class FxActions
 		moveDownBtn.setDisable(selectedIndex >= items.size() - 1 || selectedIndex < 0);
 	}
 
-	public static <E> Consumer<E> createAlreadyExistedInformer(Window owner, String itemType, StringConverter<E> itemConverter)
+	public static <E> Consumer<E> createAlreadyContainedInformer(Window owner, String itemType, StringConverter<E> itemConverter)
 	{
 		return (E item) ->
 		{
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.initOwner(owner);
-			alert.setTitle("The " + itemType + " already exists");
-			alert.setHeaderText("The " + itemType + " already exists in the list. No changes were made.");
+			alert.setTitle("Conflict with existing " + itemType + "");
+			alert.setHeaderText("The " + itemType + " is in conflict with an existing " + itemType + ". No changes were made.");
 			alert.setContentText(itemConverter.toString(item));
 			alert.showAndWait();
 		};
@@ -496,7 +496,7 @@ public class FxActions
 			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 			alert.setResizable(true);
 			alert.setTitle("Remove this " + itemType + "?");
-			alert.setHeaderText("Do you really want to remove this " + itemType + "?");
+			alert.setHeaderText("Do you really want to remove the " + itemType + "?");
 			alert.setContentText(itemConverter.toString(item));
 
 			Optional<ButtonType> result = alert.showAndWait();

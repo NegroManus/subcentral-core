@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ComparisonChain;
@@ -82,5 +84,10 @@ public class ObjectUtil
 	public static Ordering<Pattern> getDefaultPatternOrdering()
 	{
 		return DEFAULT_PATTERN_ORDERING;
+	}
+
+	public static <T, U> Optional<U> convertOptional(Optional<T> opt, Function<T, U> converter)
+	{
+		return opt.isPresent() ? Optional.of(converter.apply(opt.get())) : Optional.empty();
 	}
 }

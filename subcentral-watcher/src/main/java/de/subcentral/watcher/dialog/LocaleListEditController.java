@@ -105,7 +105,7 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 			// remove lang from lang list
 			Locale removedLang = FxActions.remove(langsListView);
 			// add lang to addable langs
-			CollectionUtil.addToSortedList(addableLangsComboBox.getItems(), removedLang, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR, true);
+			CollectionUtil.addToSortedList(addableLangsComboBox.getItems(), removedLang, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR, Objects::equals);
 		});
 
 		FxActions.setStandardMouseAndKeyboardSupport(langsListView, addLangBtn, removeLangBtn);

@@ -51,7 +51,7 @@ import de.subcentral.fx.settings.SettingsUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.WatcherMainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
-import de.subcentral.watcher.settings.CompatibilitySettingsItem;
+import de.subcentral.watcher.settings.CrossGroupCompatibilitySettingsItem;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import javafx.application.Platform;
@@ -189,7 +189,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 	{
 		CompatibilityService service = new CompatibilityService();
 		service.getCompatibilities().add(new SameGroupCompatibility());
-		for (CompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCompatibilities().getValue())
+		for (CrossGroupCompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCompatibilities().getValue())
 		{
 			if (entry.isEnabled())
 			{

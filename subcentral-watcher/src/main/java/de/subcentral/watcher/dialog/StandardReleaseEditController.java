@@ -6,8 +6,8 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.dialog.BeanEditController;
 import javafx.beans.property.ListProperty;
@@ -60,7 +60,7 @@ public class StandardReleaseEditController extends BeanEditController<StandardRe
 	@Override
 	protected Node getDefaultFocusNode()
 	{
-		return tagsTxtFld;
+		return groupTxtFld;
 	}
 
 	@Override

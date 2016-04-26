@@ -456,8 +456,8 @@ public class Release extends MetadataBase implements Comparable<Release>
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
-				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
 				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
 				.result();
 	}
 

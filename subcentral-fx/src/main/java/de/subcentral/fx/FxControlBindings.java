@@ -16,8 +16,11 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Toggle;
@@ -148,6 +151,14 @@ public class FxControlBindings
 				}
 			}
 		};
+	}
+
+	public static <E> SortedList<E> sortableTableView(TableView<E> tableView, ObservableList<E> items)
+	{
+		SortedList<E> sortedItems = new SortedList<>(items);
+		sortedItems.comparatorProperty().bind(tableView.comparatorProperty());
+		tableView.setItems(sortedItems);
+		return sortedItems;
 	}
 
 	public static <E extends Enum<E>> ToggleEnumBinding<E> bindToggleGroupToEnumProp(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
