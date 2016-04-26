@@ -2,7 +2,6 @@ package de.subcentral.fx.settings;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,9 +15,6 @@ import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
-import de.subcentral.core.metadata.release.Group;
-import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxUtil;
@@ -30,17 +26,16 @@ import javafx.util.StringConverter;
 
 public class ConfigurationPropertyHandlers
 {
-	public static final ConfigurationPropertyHandler<String>							STRING_HANDLER					= new StringConverterHandler<>(FxUtil.IDENTITY_STRING_CONVERTER);
-	public static final ConfigurationPropertyHandler<Path>								PATH_HANDLER					= new StringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
-	public static final ConfigurationPropertyHandler<ObservableList<Path>>				PATH_LIST_HANDLER				= new ListStringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
-	public static final ConfigurationPropertyHandler<ObservableList<Path>>				PATH_SORTED_LIST_HANDLER		= new ListStringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER,
+	public static final ConfigurationPropertyHandler<String>						STRING_HANDLER					= new StringConverterHandler<>(FxUtil.IDENTITY_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<Path>							PATH_HANDLER					= new StringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<ObservableList<Path>>			PATH_LIST_HANDLER				= new ListStringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<ObservableList<Path>>			PATH_SORTED_LIST_HANDLER		= new ListStringConverterHandler<>(FxUtil.PATH_STRING_CONVERTER,
 			ObjectUtil.getDefaultOrdering());
-	public static final ConfigurationPropertyHandler<ObservableList<Tag>>				TAG_LIST_HANDLER				= new ListStringConverterHandler<>(SubCentralFxUtil.TAG_STRING_CONVERTER);
-	public static final ConfigurationPropertyHandler<ObservableList<StandardRelease>>	STANDARD_RELEASE_LIST_HANDLER	= new StandardReleaseListHandler();
-	public static final ConfigurationPropertyHandler<Locale>							LOCALE_HANDLER					= new LocaleHandler();
-	public static final ConfigurationPropertyHandler<ObservableList<Locale>>			LOCALE_LIST_HANDLER				= new LocaleListHandler();
-	public static final ConfigurationPropertyHandler<LanguageFormat>					LANGUAGE_FORMAT_HANDLER			= new LanguageFormatHandler();
-	public static final ConfigurationPropertyHandler<ObservableMap<String, Object>>		NAMING_PARAMETER_MAP_HANDLER	= new NamingParameterMapHandler();
+	public static final ConfigurationPropertyHandler<ObservableList<Tag>>			TAG_LIST_HANDLER				= new ListStringConverterHandler<>(SubCentralFxUtil.TAG_STRING_CONVERTER);
+	public static final ConfigurationPropertyHandler<Locale>						LOCALE_HANDLER					= new LocaleHandler();
+	public static final ConfigurationPropertyHandler<ObservableList<Locale>>		LOCALE_LIST_HANDLER				= new LocaleListHandler();
+	public static final ConfigurationPropertyHandler<LanguageFormat>				LANGUAGE_FORMAT_HANDLER			= new LanguageFormatHandler();
+	public static final ConfigurationPropertyHandler<ObservableMap<String, Object>>	NAMING_PARAMETER_MAP_HANDLER	= new NamingParameterMapHandler();
 
 	public static class StringConverterHandler<T> implements ConfigurationPropertyHandler<T>
 	{
@@ -91,7 +86,7 @@ public class ConfigurationPropertyHandlers
 			}
 			if (comparator != null)
 			{
-				Collections.sort(items, comparator);
+				items.sort(comparator);
 			}
 			return FXCollections.observableList(items);
 		}
@@ -99,60 +94,9 @@ public class ConfigurationPropertyHandlers
 		@Override
 		public void add(Configuration cfg, String key, ObservableList<E> value)
 		{
-			List<E> list;
-			if (comparator == null)
-			{
-				list = value;
-			}
-			else
-			{
-				list = new ArrayList<>(value);
-				Collections.sort(list, comparator);
-			}
-			for (E item : list)
+			for (E item : value)
 			{
 				cfg.addProperty(key, stringConverter.toString(item));
-			}
-		}
-	}
-
-	private static class StandardReleaseListHandler implements ConfigurationPropertyHandler<ObservableList<StandardRelease>>
-	{
-		@SuppressWarnings("unchecked")
-		@Override
-		public ObservableList<StandardRelease> get(ImmutableConfiguration cfg, String key)
-		{
-			if (cfg instanceof HierarchicalConfiguration<?>)
-			{
-				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
-			}
-			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
-		}
-
-		private static ObservableList<StandardRelease> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
-		{
-			ArrayList<StandardRelease> list = new ArrayList<>();
-			List<HierarchicalConfiguration<ImmutableNode>> rlsCfgs = cfg.configurationsAt(key + ".standardRelease");
-			for (HierarchicalConfiguration<ImmutableNode> rlsCfg : rlsCfgs)
-			{
-				List<Tag> tags = Tag.parseList(rlsCfg.getString("[@tags]"));
-				Group group = Group.from(rlsCfg.getString("[@group]"));
-				Scope scope = Scope.valueOf(rlsCfg.getString("[@scope]"));
-				list.add(new StandardRelease(tags, group, scope));
-			}
-			list.trimToSize();
-			return FXCollections.observableList(list);
-		}
-
-		@Override
-		public void add(Configuration cfg, String key, ObservableList<StandardRelease> list)
-		{
-			for (int i = 0; i < list.size(); i++)
-			{
-				StandardRelease stdRls = list.get(i);
-				cfg.addProperty(key + ".standardRelease(" + i + ")[@tags]", Tag.formatList(stdRls.getRelease().getTags()));
-				cfg.addProperty(key + ".standardRelease(" + i + ")[@group]", Group.toStringNullSafe(stdRls.getRelease().getGroup()));
-				cfg.addProperty(key + ".standardRelease(" + i + ")[@scope]", stdRls.getScope());
 			}
 		}
 	}

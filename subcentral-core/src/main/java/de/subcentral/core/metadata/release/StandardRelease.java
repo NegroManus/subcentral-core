@@ -79,6 +79,6 @@ public class StandardRelease implements Comparable<StandardRelease>
 		{
 			return 1;
 		}
-		return ComparisonChain.start().compare(release, o.release).result();
+		return ComparisonChain.start().compare(release, o.release).compare(scope, o.scope).result();
 	}
 }

@@ -19,7 +19,7 @@ import javafx.util.StringConverter;
 
 public class CrossGroupCompatibilitySettingsItem extends SimpleDeactivatableSettingsItem<CrossGroupCompatibility> implements Comparable<CrossGroupCompatibilitySettingsItem>
 {
-	public static final StringConverter<CrossGroupCompatibilitySettingsItem>									STRING_CONVERTER	= initStringConverter();
+	public static final StringConverter<CrossGroupCompatibilitySettingsItem>								STRING_CONVERTER	= initStringConverter();
 
 	private static final ConfigurationPropertyHandler<ObservableList<CrossGroupCompatibilitySettingsItem>>	HANDLER				= new ListConfigurationPropertyHandler();
 
@@ -98,6 +98,8 @@ public class CrossGroupCompatibilitySettingsItem extends SimpleDeactivatableSett
 				boolean symmetric = groupsCompCfg.getBoolean("[@symmetric]", false);
 				compatibilities.add(new CrossGroupCompatibilitySettingsItem(new CrossGroupCompatibility(sourceGroup, compatibleGroup, symmetric), enabled));
 			}
+			// Sort the cross-group compatibilities
+			compatibilities.sort(null);
 			return createObservableList(compatibilities);
 		}
 

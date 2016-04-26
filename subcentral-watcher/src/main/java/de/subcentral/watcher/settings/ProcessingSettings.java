@@ -1,14 +1,20 @@
 package de.subcentral.watcher.settings;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.ImmutableConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
 
 import com.google.common.collect.ComparisonChain;
 
+import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
+import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.settings.BooleanSettingsProperty;
@@ -20,6 +26,8 @@ import de.subcentral.fx.settings.ObjectSettingsProperty;
 import de.subcentral.fx.settings.Settings;
 import de.subcentral.fx.settings.StringSettingsProperty;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class ProcessingSettings extends Settings
 {
@@ -28,18 +36,8 @@ public class ProcessingSettings extends Settings
 		SPECIFY, AUTO_LOCATE;
 	}
 
-	public static final Comparator<StandardRelease>							STANDARD_RELEASE_COMPARATOR			= (StandardRelease r1, StandardRelease r2) ->
-																												{
-																													return ComparisonChain.start()
-																															.compare(r1.getRelease().getGroup(),
-																																	r2.getRelease().getGroup(),
-																																	ObjectUtil.getDefaultOrdering())
-																															.compare(r1.getRelease().getTags(),
-																																	r2.getRelease().getTags(),
-																																	Tag.TAGS_COMPARATOR)
-																															.result();
-																												};
-
+	public static final Comparator<StandardRelease>							STANDARD_RELEASE_COMPARATOR			= initStandardReleaseComparator();
+	private static final StandardReleaseListHandler							STANDARD_RELEASE_LIST_HANDLER		= new StandardReleaseListHandler();
 	private static final LocateStrategyHandler								LOCATE_STRATEGY_HANDLER				= new LocateStrategyHandler();
 	private static final DeletionModeHandler								DELETION_MODE_HANDLER				= new DeletionModeHandler();
 
@@ -62,7 +60,7 @@ public class ProcessingSettings extends Settings
 	// Metadata - Release - Guessing
 	private final BooleanSettingsProperty									guessingEnabled						= new BooleanSettingsProperty("metadata.release.guessing[@enabled]", true);
 	private final ListSettingsProperty<StandardRelease>						standardReleases					= new ListSettingsProperty<>("metadata.release.guessing.standardReleases",
-			ConfigurationPropertyHandlers.STANDARD_RELEASE_LIST_HANDLER);
+			STANDARD_RELEASE_LIST_HANDLER);
 	// Metadata - Release - Compatibility
 	private final BooleanSettingsProperty									compatibilityEnabled				= new BooleanSettingsProperty("metadata.release.compatibility[@enabled]", true);
 	private final ListSettingsProperty<CrossGroupCompatibilitySettingsItem>	crossGroupCompatibilities			= new ListSettingsProperty<>("metadata.release.compatibility.crossGroupCompatibilities",
@@ -116,6 +114,17 @@ public class ProcessingSettings extends Settings
 				rarExe,
 				winRarLocateStrategy,
 				packingSourceDeletionMode);
+	}
+
+	private static Comparator<StandardRelease> initStandardReleaseComparator()
+	{
+		return (StandardRelease r1, StandardRelease r2) ->
+		{
+			return ComparisonChain.start()
+					.compare(r1.getRelease().getGroup(), r2.getRelease().getGroup(), ObjectUtil.getDefaultOrdering())
+					.compare(r1.getRelease().getTags(), r2.getRelease().getTags(), Tag.TAGS_COMPARATOR)
+					.result();
+		};
 	}
 
 	public StringSettingsProperty getFilenamePatterns()
@@ -206,6 +215,49 @@ public class ProcessingSettings extends Settings
 	public ObjectSettingsProperty<DeletionMode> getPackingSourceDeletionMode()
 	{
 		return packingSourceDeletionMode;
+	}
+
+	private static class StandardReleaseListHandler implements ConfigurationPropertyHandler<ObservableList<StandardRelease>>
+	{
+		@SuppressWarnings("unchecked")
+		@Override
+		public ObservableList<StandardRelease> get(ImmutableConfiguration cfg, String key)
+		{
+			if (cfg instanceof HierarchicalConfiguration<?>)
+			{
+				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
+			}
+			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
+		}
+
+		private static ObservableList<StandardRelease> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+		{
+
+			List<HierarchicalConfiguration<ImmutableNode>> rlsCfgs = cfg.configurationsAt(key + ".standardRelease");
+			ArrayList<StandardRelease> list = new ArrayList<>(rlsCfgs.size());
+			for (HierarchicalConfiguration<ImmutableNode> rlsCfg : rlsCfgs)
+			{
+				List<Tag> tags = Tag.parseList(rlsCfg.getString("[@tags]"));
+				Group group = Group.from(rlsCfg.getString("[@group]"));
+				Scope scope = Scope.valueOf(rlsCfg.getString("[@scope]"));
+				list.add(new StandardRelease(tags, group, scope));
+			}
+			// sort the standard releases
+			list.sort(STANDARD_RELEASE_COMPARATOR);
+			return FXCollections.observableList(list);
+		}
+
+		@Override
+		public void add(Configuration cfg, String key, ObservableList<StandardRelease> list)
+		{
+			for (int i = 0; i < list.size(); i++)
+			{
+				StandardRelease stdRls = list.get(i);
+				cfg.addProperty(key + ".standardRelease(" + i + ")[@tags]", Tag.formatList(stdRls.getRelease().getTags()));
+				cfg.addProperty(key + ".standardRelease(" + i + ")[@group]", Group.toStringNullSafe(stdRls.getRelease().getGroup()));
+				cfg.addProperty(key + ".standardRelease(" + i + ")[@scope]", stdRls.getScope());
+			}
+		}
 	}
 
 	private static class LocateStrategyHandler implements ConfigurationPropertyHandler<LocateStrategy>

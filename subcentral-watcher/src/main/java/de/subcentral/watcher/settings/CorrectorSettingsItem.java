@@ -173,39 +173,41 @@ public abstract class CorrectorSettingsItem<T, C extends Corrector<? super T>> e
 
 		private static ObservableList<CorrectorSettingsItem<?, ?>> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 		{
-			List<HierarchicalConfiguration<ImmutableNode>> seriesStdzerCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule");
-			List<HierarchicalConfiguration<ImmutableNode>> rlsTagsStdzerCfgs = cfg.configurationsAt(key + ".releaseTagsCorrectionRule");
-			List<CorrectorSettingsItem<?, ?>> stdzers = new ArrayList<>(seriesStdzerCfgs.size() + rlsTagsStdzerCfgs.size());
-			for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : seriesStdzerCfgs)
+			List<HierarchicalConfiguration<ImmutableNode>> seriesCorrectorCfgs = cfg.configurationsAt(key + ".seriesNameCorrectionRule");
+			List<HierarchicalConfiguration<ImmutableNode>> rlsTagsCorrectorCfgs = cfg.configurationsAt(key + ".releaseTagsCorrectionRule");
+			List<CorrectorSettingsItem<?, ?>> correctors = new ArrayList<>(seriesCorrectorCfgs.size() + rlsTagsCorrectorCfgs.size());
+			for (HierarchicalConfiguration<ImmutableNode> correctorCfg : seriesCorrectorCfgs)
 			{
-				String namePatternStr = stdzerCfg.getString("[@namePattern]");
-				Mode namePatternMode = Mode.valueOf(stdzerCfg.getString("[@namePatternMode]"));
+				String namePatternStr = correctorCfg.getString("[@namePattern]");
+				Mode namePatternMode = Mode.valueOf(correctorCfg.getString("[@namePatternMode]"));
 				UserPattern nameUiPattern = new UserPattern(namePatternStr, namePatternMode);
-				String nameReplacement = stdzerCfg.getString("[@nameReplacement]");
-				List<HierarchicalConfiguration<ImmutableNode>> aliasNameCfgs = stdzerCfg.configurationsAt("aliasNames.aliasName");
+				String nameReplacement = correctorCfg.getString("[@nameReplacement]");
+				List<HierarchicalConfiguration<ImmutableNode>> aliasNameCfgs = correctorCfg.configurationsAt("aliasNames.aliasName");
 				List<String> aliasNameReplacements = new ArrayList<>(aliasNameCfgs.size());
 				for (HierarchicalConfiguration<ImmutableNode> aliasNameCfg : aliasNameCfgs)
 				{
 					aliasNameReplacements.add(aliasNameCfg.getString(""));
 				}
-				boolean enabledPreMetadataDb = stdzerCfg.getBoolean("[@beforeQuerying]");
-				boolean enabledPostMetadataDb = stdzerCfg.getBoolean("[@afterQuerying]");
-				stdzers.add(new SeriesNameCorrectorSettingsItem(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
+				boolean enabledPreMetadataDb = correctorCfg.getBoolean("[@beforeQuerying]");
+				boolean enabledPostMetadataDb = correctorCfg.getBoolean("[@afterQuerying]");
+				correctors.add(new SeriesNameCorrectorSettingsItem(nameUiPattern, nameReplacement, aliasNameReplacements, enabledPreMetadataDb, enabledPostMetadataDb));
 			}
 
-			for (HierarchicalConfiguration<ImmutableNode> stdzerCfg : rlsTagsStdzerCfgs)
+			for (HierarchicalConfiguration<ImmutableNode> correctorCfg : rlsTagsCorrectorCfgs)
 			{
-				List<Tag> queryTags = Tag.parseList(stdzerCfg.getString("[@searchTags]"));
-				List<Tag> replacement = Tag.parseList(stdzerCfg.getString("[@replacement]"));
-				SearchMode queryMode = SearchMode.valueOf(stdzerCfg.getString("[@searchMode]"));
-				ReplaceMode replaceMode = ReplaceMode.valueOf(stdzerCfg.getString("[@replaceMode]"));
-				boolean ignoreOrder = stdzerCfg.getBoolean("[@ignoreOrder]", false);
-				boolean beforeQuerying = stdzerCfg.getBoolean("[@beforeQuerying]");
-				boolean afterQuerying = stdzerCfg.getBoolean("[@afterQuerying]");
+				List<Tag> queryTags = Tag.parseList(correctorCfg.getString("[@searchTags]"));
+				List<Tag> replacement = Tag.parseList(correctorCfg.getString("[@replacement]"));
+				SearchMode queryMode = SearchMode.valueOf(correctorCfg.getString("[@searchMode]"));
+				ReplaceMode replaceMode = ReplaceMode.valueOf(correctorCfg.getString("[@replaceMode]"));
+				boolean ignoreOrder = correctorCfg.getBoolean("[@ignoreOrder]", false);
+				boolean beforeQuerying = correctorCfg.getBoolean("[@beforeQuerying]");
+				boolean afterQuerying = correctorCfg.getBoolean("[@afterQuerying]");
 				ReleaseTagsCorrector stdzer = new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceMode, ignoreOrder));
-				stdzers.add(new ReleaseTagsCorrectorSettingsItem(stdzer, beforeQuerying, afterQuerying));
+				correctors.add(new ReleaseTagsCorrectorSettingsItem(stdzer, beforeQuerying, afterQuerying));
 			}
-			return createObservableList(stdzers);
+			// Sort the correctors
+			correctors.sort(null);
+			return createObservableList(correctors);
 		}
 
 		@Override
