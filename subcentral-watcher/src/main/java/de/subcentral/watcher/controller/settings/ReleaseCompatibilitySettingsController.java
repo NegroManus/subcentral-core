@@ -62,7 +62,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.getCompatibilityEnabled().property());
 
 		// Cross-group compatibilities table
-		ObservableList<CrossGroupCompatibilitySettingsItem> comps = settings.getCompatibilities().property();
+		ObservableList<CrossGroupCompatibilitySettingsItem> comps = settings.getCrossGroupCompatibilities().property();
 		SortedList<CrossGroupCompatibilitySettingsItem> displayComps = FxControlBindings.sortableTableView(crossGroupCompatibilitiesTableView, comps);
 
 		crossGroupCompatibilitiesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilitiesEnabledColumn));

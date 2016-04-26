@@ -6,9 +6,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileBased;
@@ -56,18 +53,6 @@ public class ConfigurationHelper
 		catch (IOException e)
 		{
 			throw new ConfigurationException(e);
-		}
-	}
-
-	private static class IndentingXMLConfiguration extends XMLConfiguration
-	{
-		@Override
-		protected Transformer createTransformer() throws ConfigurationException
-		{
-			Transformer transformer = super.createTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-			return transformer;
 		}
 	}
 }

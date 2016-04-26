@@ -58,7 +58,7 @@ public abstract class SettableBase implements Settable
 	@Override
 	public void save(Path file, boolean resetChanged) throws ConfigurationException
 	{
-		XMLConfiguration cfg = new XMLConfiguration();
+		XMLConfiguration cfg = new IndentingXMLConfiguration();
 		save(cfg, resetChanged);
 		ConfigurationHelper.save(cfg, file);
 	}

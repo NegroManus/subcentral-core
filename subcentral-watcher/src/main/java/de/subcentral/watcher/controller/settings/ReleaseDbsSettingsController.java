@@ -52,9 +52,9 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	@FXML
 	private TableColumn<MetadataDbSettingsItem, Availability>			releaseDbsAvailableColumn;
 	@FXML
-	private Button														moveUpReleaseDbButton;
+	private Button														moveUpReleaseDbBtn;
 	@FXML
-	private Button														moveDownReleaseDbButton;
+	private Button														moveDownReleaseDbBtn;
 
 	public ReleaseDbsSettingsController(SettingsController settingsController)
 	{
@@ -89,7 +89,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		// TODO: also on move up/move down but we can't distinguish that easily
 		releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());
 
-		FxActions.bindMoveButtons(releaseDbsTableView, moveUpReleaseDbButton, moveDownReleaseDbButton);
+		FxActions.bindMoveButtons(releaseDbsTableView, moveUpReleaseDbBtn, moveDownReleaseDbBtn);
 
 		// initial update
 		updateAvailibities();

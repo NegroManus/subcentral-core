@@ -28,68 +28,70 @@ public class ProcessingSettings extends Settings
 		SPECIFY, AUTO_LOCATE;
 	}
 
-	public static final Comparator<StandardRelease>					STANDARD_RELEASE_COMPARATOR			= (StandardRelease r1, StandardRelease r2) ->
-																										{
-																											return ComparisonChain.start()
-																													.compare(r1.getRelease().getGroup(),
-																															r2.getRelease().getGroup(),
-																															ObjectUtil.getDefaultOrdering())
-																													.compare(r1.getRelease().getTags(), r2.getRelease().getTags(), Tag.TAGS_COMPARATOR)
-																													.result();
-																										};
+	public static final Comparator<StandardRelease>							STANDARD_RELEASE_COMPARATOR			= (StandardRelease r1, StandardRelease r2) ->
+																												{
+																													return ComparisonChain.start()
+																															.compare(r1.getRelease().getGroup(),
+																																	r2.getRelease().getGroup(),
+																																	ObjectUtil.getDefaultOrdering())
+																															.compare(r1.getRelease().getTags(),
+																																	r2.getRelease().getTags(),
+																																	Tag.TAGS_COMPARATOR)
+																															.result();
+																												};
 
-	private static final LocateStrategyHandler						LOCATE_STRATEGY_HANDLER				= new LocateStrategyHandler();
-	private static final DeletionModeHandler						DELETION_MODE_HANDLER				= new DeletionModeHandler();
+	private static final LocateStrategyHandler								LOCATE_STRATEGY_HANDLER				= new LocateStrategyHandler();
+	private static final DeletionModeHandler								DELETION_MODE_HANDLER				= new DeletionModeHandler();
 
 	// Parsing
-	private final StringSettingsProperty							filenamePatterns					= new StringSettingsProperty("parsing.filenamePatterns");
-	private final ListSettingsProperty<ParsingServiceSettingsItem>	filenameParsingServices				= new ListSettingsProperty<>("parsing.parsingServices",
+	private final StringSettingsProperty									filenamePatterns					= new StringSettingsProperty("parsing.filenamePatterns");
+	private final ListSettingsProperty<ParsingServiceSettingsItem>			filenameParsers						= new ListSettingsProperty<>("parsing.parsers",
 			ParsingServiceSettingsItem.getListConfigurationPropertyHandler(),
 			ParsingServiceSettingsItem.createObservableList());
 	// Metadata
 	// Metadata - Release
-	private final ListSettingsProperty<ParsingServiceSettingsItem>	releaseParsingServices				= new ListSettingsProperty<>("metadata.release.parsingServices",
+	private final ListSettingsProperty<ParsingServiceSettingsItem>			releaseParsers						= new ListSettingsProperty<>("metadata.release.parsers",
 			ParsingServiceSettingsItem.getListConfigurationPropertyHandler(),
 			ParsingServiceSettingsItem.createObservableList());
-	private final ListSettingsProperty<Tag>							releaseMetaTags						= new ListSettingsProperty<>("metadata.release.metaTags.tag",
+	private final ListSettingsProperty<Tag>									releaseMetaTags						= new ListSettingsProperty<>("metadata.release.metaTags.tag",
 			ConfigurationPropertyHandlers.TAG_LIST_HANDLER);
 	// Metadata - Release - Databases
-	private final ListSettingsProperty<MetadataDbSettingsItem>		releaseDbs							= new ListSettingsProperty<>("metadata.release.databases",
+	private final ListSettingsProperty<MetadataDbSettingsItem>				releaseDbs							= new ListSettingsProperty<>("metadata.release.databases",
 			MetadataDbSettingsItem.getListConfigurationPropertyHandler(),
 			MetadataDbSettingsItem.createObservableList());
 	// Metadata - Release - Guessing
-	private final BooleanSettingsProperty							guessingEnabled						= new BooleanSettingsProperty("metadata.release.guessing[@enabled]", true);
-	private final ListSettingsProperty<StandardRelease>				standardReleases					= new ListSettingsProperty<>("metadata.release.guessing.standardReleases",
+	private final BooleanSettingsProperty									guessingEnabled						= new BooleanSettingsProperty("metadata.release.guessing[@enabled]", true);
+	private final ListSettingsProperty<StandardRelease>						standardReleases					= new ListSettingsProperty<>("metadata.release.guessing.standardReleases",
 			ConfigurationPropertyHandlers.STANDARD_RELEASE_LIST_HANDLER);
 	// Metadata - Release - Compatibility
-	private final BooleanSettingsProperty							compatibilityEnabled				= new BooleanSettingsProperty("metadata.release.compatibility[@enabled]", true);
-	private final ListSettingsProperty<CrossGroupCompatibilitySettingsItem>	compatibilities						= new ListSettingsProperty<>("metadata.release.compatibility.compatibilities",
+	private final BooleanSettingsProperty									compatibilityEnabled				= new BooleanSettingsProperty("metadata.release.compatibility[@enabled]", true);
+	private final ListSettingsProperty<CrossGroupCompatibilitySettingsItem>	crossGroupCompatibilities			= new ListSettingsProperty<>("metadata.release.compatibility.crossGroupCompatibilities",
 			CrossGroupCompatibilitySettingsItem.getListConfigurationPropertyHandler(),
 			CrossGroupCompatibilitySettingsItem.createObservableList());
 	// Correction - Rules
-	private final ListSettingsProperty<CorrectorSettingsItem<?, ?>>	correctionRules						= new ListSettingsProperty<>("correction.rules",
+	private final ListSettingsProperty<CorrectorSettingsItem<?, ?>>			correctionRules						= new ListSettingsProperty<>("correction.rules",
 			CorrectorSettingsItem.getListConfigurationPropertyHandler(),
 			CorrectorSettingsItem.createObservableList());
 	// Correction - Subtitle language
-	private final LocaleLanguageReplacerSettings					subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
+	private final LocaleLanguageReplacerSettings							subtitleLanguageCorrectionSettings	= new LocaleLanguageReplacerSettings();
 
 	// Naming
-	private final MapSettingsProperty<String, Object>				namingParameters					= new MapSettingsProperty<>("naming.parameters",
+	private final MapSettingsProperty<String, Object>						namingParameters					= new MapSettingsProperty<>("naming.parameters",
 			ConfigurationPropertyHandlers.NAMING_PARAMETER_MAP_HANDLER);
 
 	// File Transformation
 	// File Transformation - General
-	private final ObjectSettingsProperty<Path>						targetDir							= new ObjectSettingsProperty<>("fileTransformation.targetDir",
+	private final ObjectSettingsProperty<Path>								targetDir							= new ObjectSettingsProperty<>("fileTransformation.targetDir",
 			ConfigurationPropertyHandlers.PATH_HANDLER);
-	private final BooleanSettingsProperty							deleteSource						= new BooleanSettingsProperty("fileTransformation.deleteSource", false);
+	private final BooleanSettingsProperty									deleteSource						= new BooleanSettingsProperty("fileTransformation.deleteSource", false);
 	// File Transformation - Packing
-	private final BooleanSettingsProperty							packingEnabled						= new BooleanSettingsProperty("fileTransformation.packing[@enabled]", true);
-	private final ObjectSettingsProperty<Path>						rarExe								= new ObjectSettingsProperty<>("fileTransformation.packing.winrar.rarExe",
+	private final BooleanSettingsProperty									packingEnabled						= new BooleanSettingsProperty("fileTransformation.packing[@enabled]", true);
+	private final ObjectSettingsProperty<Path>								rarExe								= new ObjectSettingsProperty<>("fileTransformation.packing.winrar.rarExe",
 			ConfigurationPropertyHandlers.PATH_HANDLER);
-	private final ObjectSettingsProperty<LocateStrategy>			winRarLocateStrategy				= new ObjectSettingsProperty<>("fileTransformation.packing.winrar.locateStrategy",
+	private final ObjectSettingsProperty<LocateStrategy>					winRarLocateStrategy				= new ObjectSettingsProperty<>("fileTransformation.packing.winrar.locateStrategy",
 			LOCATE_STRATEGY_HANDLER,
 			LocateStrategy.AUTO_LOCATE);
-	private final ObjectSettingsProperty<DeletionMode>				packingSourceDeletionMode			= new ObjectSettingsProperty<>("fileTransformation.packing.sourceDeletionMode",
+	private final ObjectSettingsProperty<DeletionMode>						packingSourceDeletionMode			= new ObjectSettingsProperty<>("fileTransformation.packing.sourceDeletionMode",
 			DELETION_MODE_HANDLER,
 			DeletionMode.DELETE);
 
@@ -97,14 +99,14 @@ public class ProcessingSettings extends Settings
 	ProcessingSettings()
 	{
 		initSettables(filenamePatterns,
-				filenameParsingServices,
-				releaseParsingServices,
+				filenameParsers,
+				releaseParsers,
 				releaseMetaTags,
 				releaseDbs,
 				guessingEnabled,
 				standardReleases,
 				compatibilityEnabled,
-				compatibilities,
+				crossGroupCompatibilities,
 				correctionRules,
 				subtitleLanguageCorrectionSettings,
 				namingParameters,
@@ -121,14 +123,14 @@ public class ProcessingSettings extends Settings
 		return filenamePatterns;
 	}
 
-	public ListSettingsProperty<ParsingServiceSettingsItem> getFilenameParsingServices()
+	public ListSettingsProperty<ParsingServiceSettingsItem> getFilenameParsers()
 	{
-		return filenameParsingServices;
+		return filenameParsers;
 	}
 
-	public ListSettingsProperty<ParsingServiceSettingsItem> getReleaseParsingServices()
+	public ListSettingsProperty<ParsingServiceSettingsItem> getReleaseParsers()
 	{
-		return releaseParsingServices;
+		return releaseParsers;
 	}
 
 	public ListSettingsProperty<Tag> getReleaseMetaTags()
@@ -156,9 +158,9 @@ public class ProcessingSettings extends Settings
 		return compatibilityEnabled;
 	}
 
-	public ListSettingsProperty<CrossGroupCompatibilitySettingsItem> getCompatibilities()
+	public ListSettingsProperty<CrossGroupCompatibilitySettingsItem> getCrossGroupCompatibilities()
 	{
-		return compatibilities;
+		return crossGroupCompatibilities;
 	}
 
 	public ListSettingsProperty<CorrectorSettingsItem<?, ?>> getCorrectionRules()

@@ -58,7 +58,7 @@ public class ParsingServiceSettingsItem extends SimpleDeactivatableSettingsItem<
 
 		private static ObservableList<ParsingServiceSettingsItem> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 		{
-			List<HierarchicalConfiguration<ImmutableNode>> parsingServiceCfgs = cfg.configurationsAt(key + ".parsingService");
+			List<HierarchicalConfiguration<ImmutableNode>> parsingServiceCfgs = cfg.configurationsAt(key + ".parser");
 			List<ParsingServiceSettingsItem> services = new ArrayList<>(parsingServiceCfgs.size());
 			for (HierarchicalConfiguration<ImmutableNode> parsingServiceCfg : parsingServiceCfgs)
 			{
@@ -94,8 +94,8 @@ public class ParsingServiceSettingsItem extends SimpleDeactivatableSettingsItem<
 			for (int i = 0; i < value.size(); i++)
 			{
 				ParsingServiceSettingsItem ps = value.get(i);
-				cfg.addProperty(key + ".parsingService(" + i + ")", ps.getItem().getDomain());
-				cfg.addProperty(key + ".parsingService(" + i + ")[@enabled]", ps.isEnabled());
+				cfg.addProperty(key + ".parser(" + i + ")", ps.getItem().getDomain());
+				cfg.addProperty(key + ".parser(" + i + ")[@enabled]", ps.isEnabled());
 			}
 		}
 	}

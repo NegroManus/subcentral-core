@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -11,11 +12,13 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <GridPane fx:id="rootPane" hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -29,7 +32,7 @@
 		<RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<Label text="Filename parsing">
+		<Label text="Filename parsing" GridPane.columnSpan="2147483647">
 			<font>
 				<Font size="18.0" />
 			</font>
@@ -41,25 +44,25 @@
 				</ImageView>
 			</graphic>
 		</Label>
-      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+      <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets bottom="10.0" />
          </GridPane.margin>
       </Separator>
-		<Label text="Subtitle filename patterns" GridPane.rowIndex="2">
+		<Label text="Subtitle filename patterns" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-		<TextField fx:id="filenamePatternsTextField" promptText="comma-separated filename patterns" GridPane.rowIndex="3" />
-		<TableView fx:id="parsingServicesTableView" editable="true" minHeight="100.0" prefHeight="150.0" GridPane.rowIndex="6">
+		<TextField fx:id="filenamePatternsTextField" promptText="comma-separated filename patterns" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+		<TableView fx:id="parsersTableView" editable="true" minHeight="100.0" prefHeight="150.0" GridPane.rowIndex="6">
 			<columns>
-				<TableColumn fx:id="parsingServicesEnabledColumn" prefWidth="60.0" sortable="false" text="Enabled" />
-				<TableColumn fx:id="parsingServicesNameColumn" editable="false" minWidth="25.0" prefWidth="100.0" sortable="false" text="Name" />
-				<TableColumn fx:id="parsingServicesExampleColumn" editable="false" minWidth="25.0" prefWidth="400.0" sortable="false" text="Filename example" />
+				<TableColumn fx:id="parsersEnabledColumn" prefWidth="60.0" sortable="false" text="Enabled" />
+				<TableColumn fx:id="parsersNameColumn" editable="false" minWidth="25.0" prefWidth="100.0" sortable="false" text="Name" />
+				<TableColumn fx:id="parsersExampleColumn" editable="false" minWidth="25.0" prefWidth="400.0" sortable="false" text="Filename example" />
 			</columns>
 		</TableView>
-		<Label disable="true" text="Separated by comma. * = any string. Leave empty to deny all." GridPane.rowIndex="4" />
-		<Label text="Filename parsers" GridPane.rowIndex="5">
+		<Label disable="true" text="Separated by comma. * = any string. Leave empty to deny all." GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+		<Label text="Filename parsers" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
          <GridPane.margin>
             <Insets top="25.0" />
          </GridPane.margin>
@@ -67,6 +70,28 @@
             <Font name="System Bold" size="12.0" />
          </font>
 		</Label>
+      <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <children>
+            <Button fx:id="moveUpParserBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move up">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/up_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="moveDownParserBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move down">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/down_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </VBox>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -155,9 +155,9 @@ public class ProcessingController extends SubController<WatcherMainController>
 					log.debug("Rebuilding ProcessingConfig due to changes in the processing settings");
 					final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 					cfg.setFilenamePattern(UserPattern.parseSimplePatterns(settings.getFilenamePatterns().getValue()));
-					cfg.setFilenameParsingService(new MultiParsingService("filename", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsingServices().getValue())));
+					cfg.setFilenameParsingService(new MultiParsingService("filename", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getFilenameParsers().getValue())));
 					cfg.setReleaseDbs(SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseDbs().getValue()));
-					cfg.setReleaseParsingService(new MultiParsingService("release", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseParsingServices().getValue())));
+					cfg.setReleaseParsingService(new MultiParsingService("release", SettingsUtil.getValuesOfEnabledSettingEntries(settings.getReleaseParsers().getValue())));
 					cfg.setGuessingEnabled(settings.getGuessingEnabled().get());
 					cfg.setReleaseMetaTags(ImmutableList.copyOf(settings.getReleaseMetaTags().getValue()));
 					cfg.setStandardReleases(ImmutableList.copyOf(settings.getStandardReleases().getValue()));
@@ -189,7 +189,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 	{
 		CompatibilityService service = new CompatibilityService();
 		service.getCompatibilities().add(new SameGroupCompatibility());
-		for (CrossGroupCompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCompatibilities().getValue())
+		for (CrossGroupCompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCrossGroupCompatibilities().getValue())
 		{
 			if (entry.isEnabled())
 			{

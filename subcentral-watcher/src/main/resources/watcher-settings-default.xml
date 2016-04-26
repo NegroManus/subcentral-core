@@ -11,18 +11,18 @@
 
 	<parsing>
 		<filenamePatterns>*.srt</filenamePatterns>
-		<parsingServices>
-			<parsingService enabled="true">addic7ed.com</parsingService>
-			<parsingService enabled="false">italiansubs.net</parsingService>
-			<parsingService enabled="false">subcentral.de</parsingService>
-		</parsingServices>
+		<parsers>
+			<parser enabled="true">addic7ed.com</parser>
+			<parser enabled="false">italiansubs.net</parser>
+			<parser enabled="false">subcentral.de</parser>
+		</parsers>
 	</parsing>
 
 	<metadata>
 		<release>
-			<parsingServices>
-				<parsingService enabled="true">release.scene</parsingService>
-			</parsingServices>
+			<parsers>
+				<parser enabled="true">release.scene</parser>
+			</parsers>
 			<metaTags>
 				<tag>REAL</tag>
 				<tag>PROPER</tag>
@@ -63,12 +63,12 @@
 				</standardReleases>
 			</guessing>
 			<compatibility enabled="true">
-				<compatibilities>
+				<crossGroupCompatibilities>
 					<crossGroupCompatibility enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
 					<crossGroupCompatibility enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
 					<crossGroupCompatibility enabled="true" sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />
 					<crossGroupCompatibility enabled="true" sourceGroup="REMARKABLE" compatibleGroup="EXCELLENCE" symmetric="true" />
-				</compatibilities>
+				</crossGroupCompatibilities>
 			</compatibility>
 		</release>
 	</metadata>
@@ -77,10 +77,10 @@
 		<rules>
 			<seriesNameCorrectionRule namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Childrens Hospital" namePatternMode="LITERAL" nameReplacement="Childrens Hospital" beforeQuerying="true" afterQuerying="false">
-                <aliasNames>
-                    <aliasName>Childrens Hospital (US)</aliasName>
-                </aliasNames>
-            </seriesNameCorrectionRule>
+				<aliasNames>
+					<aliasName>Childrens Hospital (US)</aliasName>
+				</aliasNames>
+			</seriesNameCorrectionRule>
 			<seriesNameCorrectionRule namePattern="Doctor Who" namePatternMode="LITERAL" nameReplacement="Doctor Who (2005)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="From Dusk Till Dawn*The Series" namePatternMode="SIMPLE" nameReplacement="From Dusk Till Dawn: The Series" beforeQuerying="true" afterQuerying="false">
 				<aliasNames>
