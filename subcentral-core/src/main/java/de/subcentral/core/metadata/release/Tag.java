@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.util.Objects;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -144,7 +142,7 @@ public class Tag implements Comparable<Tag>, Serializable
 		}
 		if (obj instanceof Tag)
 		{
-			return name.equalsIgnoreCase(((Tag) obj).name);
+			return ObjectUtil.stringEqualIgnoreCase(name, ((Tag) obj).name);
 		}
 		return false;
 	}
@@ -152,7 +150,7 @@ public class Tag implements Comparable<Tag>, Serializable
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(21, 47).append(name.toLowerCase(Locale.ENGLISH)).toHashCode();
+		return Objects.hash(Tag.class, ObjectUtil.stringHashCodeIgnoreCase(name));
 	}
 
 	@Override
@@ -164,6 +162,10 @@ public class Tag implements Comparable<Tag>, Serializable
 	@Override
 	public int compareTo(Tag o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

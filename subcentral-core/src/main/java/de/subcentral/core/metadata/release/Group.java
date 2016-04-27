@@ -1,9 +1,7 @@
 package de.subcentral.core.metadata.release;
 
 import java.io.Serializable;
-import java.util.Locale;
-
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.util.Objects;
 
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.ValidationUtil;
@@ -54,7 +52,7 @@ public class Group implements Comparable<Group>, Serializable
 		}
 		if (obj instanceof Group)
 		{
-			return name.equalsIgnoreCase(((Group) obj).name);
+			return ObjectUtil.stringEqualIgnoreCase(name, ((Group) obj).name);
 		}
 		return false;
 	}
@@ -62,7 +60,7 @@ public class Group implements Comparable<Group>, Serializable
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(31, 97).append(name.toLowerCase(Locale.ENGLISH)).toHashCode();
+		return Objects.hash(Group.class, ObjectUtil.stringHashCodeIgnoreCase(name));
 	}
 
 	@Override
@@ -74,6 +72,10 @@ public class Group implements Comparable<Group>, Serializable
 	@Override
 	public int compareTo(Group o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

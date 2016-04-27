@@ -2,11 +2,7 @@ package de.subcentral.core.metadata.subtitle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
@@ -363,7 +359,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 		if (obj instanceof Subtitle)
 		{
 			Subtitle o = (Subtitle) obj;
-			return Objects.equals(media, o.media) && StringUtils.equalsIgnoreCase(language, o.language) && Objects.equals(group, o.group) && Objects.equals(source, o.source);
+			return Objects.equals(media, o.media) && Objects.equals(language, o.language) && Objects.equals(group, o.group) && Objects.equals(source, o.source);
 		}
 		return false;
 	}
@@ -371,23 +367,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(37, 99).append(media).append(StringUtils.lowerCase(language, Locale.ENGLISH)).append(group).append(source).toHashCode();
-	}
-
-	@Override
-	public int compareTo(Subtitle o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ComparisonChain.start()
-				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_NAME_COMPARATOR)
-				.compare(language, o.language, ObjectUtil.getDefaultStringOrdering())
-				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
-				.compare(source, o.source, ObjectUtil.getDefaultOrdering())
-				.result();
+		return Objects.hash(Subtitle.class, media, language, group, source);
 	}
 
 	@Override
@@ -408,5 +388,25 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 				.add("ids", ObjectUtil.nullIfEmpty(ids))
 				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
+	}
+
+	@Override
+	public int compareTo(Subtitle o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start()
+				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_NAME_COMPARATOR)
+				.compare(language, o.language, ObjectUtil.getDefaultStringOrdering())
+				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
+				.compare(source, o.source, ObjectUtil.getDefaultOrdering())
+				.result();
 	}
 }

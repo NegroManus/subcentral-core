@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
@@ -230,7 +228,7 @@ public class Season extends MediaBase implements Comparable<Season>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(5, 13).append(series).append(number).append(title).toHashCode();
+		return Objects.hash(Season.class, series, number, title);
 	}
 
 	@Override
@@ -258,6 +256,10 @@ public class Season extends MediaBase implements Comparable<Season>
 	@Override
 	public int compareTo(Season o)
 	{
+		if (o == this)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

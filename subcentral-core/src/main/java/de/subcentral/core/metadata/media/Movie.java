@@ -3,8 +3,6 @@ package de.subcentral.core.metadata.media;
 import java.time.Year;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.PropNames;
@@ -82,12 +80,16 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(19, 201).append(name).toHashCode();
+		return Objects.hash(Movie.class, name);
 	}
 
 	@Override
 	public int compareTo(Movie o)
 	{
+		if (o == this)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

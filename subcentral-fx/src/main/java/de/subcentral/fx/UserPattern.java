@@ -8,10 +8,12 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Splitter;
+import com.google.common.collect.ComparisonChain;
+
+import de.subcentral.core.util.ObjectUtil;
+import de.subcentral.core.util.StringUtil;
 
 public class UserPattern implements Comparable<UserPattern>
 {
@@ -20,8 +22,11 @@ public class UserPattern implements Comparable<UserPattern>
 		LITERAL, SIMPLE, REGEX
 	}
 
-	private final String	pattern;
-	private final Mode		mode;
+	private static final int	LITERAL_FLAGS	= Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL;
+	private static final int	SIMPLE_FLAGS	= Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+
+	private final String		pattern;
+	private final Mode			mode;
 
 	public UserPattern(String pattern, Mode mode) throws PatternSyntaxException
 	{
@@ -49,7 +54,7 @@ public class UserPattern implements Comparable<UserPattern>
 		switch (mode)
 		{
 			case LITERAL:
-				return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
+				return Pattern.compile(pattern, LITERAL_FLAGS);
 			case SIMPLE:
 				return parseSimplePattern(pattern);
 			case REGEX:
@@ -65,7 +70,7 @@ public class UserPattern implements Comparable<UserPattern>
 		{
 			return null;
 		}
-		List<String> simplePatterns = Splitter.on(Pattern.compile("\\s*,\\s*")).omitEmptyStrings().splitToList(simplePatternsString);
+		List<String> simplePatterns = StringUtil.COMMA_SPLITTER.splitToList(simplePatternsString);
 		String[] convertedPatterns = new String[simplePatterns.size()];
 		for (int i = 0; i < simplePatterns.size(); i++)
 		{
@@ -73,7 +78,7 @@ public class UserPattern implements Comparable<UserPattern>
 		}
 		if (convertedPatterns.length == 1)
 		{
-			return Pattern.compile(convertedPatterns[0], Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+			return Pattern.compile(convertedPatterns[0], SIMPLE_FLAGS);
 		}
 		else
 		{
@@ -82,13 +87,13 @@ public class UserPattern implements Comparable<UserPattern>
 			{
 				strJoiner.add(p);
 			}
-			return Pattern.compile(strJoiner.toString(), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+			return Pattern.compile(strJoiner.toString(), SIMPLE_FLAGS);
 		}
 	}
 
 	public static Pattern parseSimplePattern(String simplePattern)
 	{
-		return Pattern.compile(convertToPattern(simplePattern), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+		return Pattern.compile(convertToPattern(simplePattern), SIMPLE_FLAGS);
 	}
 
 	private static String convertToPattern(String simplePattern)
@@ -115,17 +120,6 @@ public class UserPattern implements Comparable<UserPattern>
 	}
 
 	@Override
-	public int compareTo(UserPattern o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return pattern.compareToIgnoreCase(o.pattern);
-	}
-
-	@Override
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
@@ -143,12 +137,27 @@ public class UserPattern implements Comparable<UserPattern>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(731, 15).append(pattern).append(mode).toHashCode();
+		return Objects.hash(UserPattern.class, pattern, mode);
 	}
 
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(UserPattern.class).omitNullValues().add("pattern", pattern).add("mode", mode).toString();
+		return MoreObjects.toStringHelper(UserPattern.class).add("pattern", pattern).add("mode", mode).toString();
+	}
+
+	@Override
+	public int compareTo(UserPattern o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start().compare(pattern, o.pattern, ObjectUtil.getDefaultStringOrdering()).compare(mode, o.mode).result();
 	}
 }

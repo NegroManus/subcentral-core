@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
@@ -335,12 +333,16 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(7, 15).append(series).append(season).append(numberInSeason).append(numberInSeries).append(date).append(title).toHashCode();
+		return Objects.hash(Episode.class, series, season, numberInSeason, numberInSeries, date, title);
 	}
 
 	@Override
 	public int compareTo(Episode o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

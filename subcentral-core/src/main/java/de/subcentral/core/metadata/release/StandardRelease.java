@@ -3,8 +3,6 @@ package de.subcentral.core.metadata.release;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
@@ -62,7 +60,7 @@ public class StandardRelease implements Comparable<StandardRelease>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(53, 21).append(release).toHashCode();
+		return Objects.hash(StandardRelease.class, release);
 	}
 
 	@Override
@@ -74,6 +72,10 @@ public class StandardRelease implements Comparable<StandardRelease>
 	@Override
 	public int compareTo(StandardRelease o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

@@ -2,8 +2,6 @@ package de.subcentral.core.metadata.media;
 
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.PropNames;
@@ -88,18 +86,7 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(17, 23).append(name).toHashCode();
-	}
-
-	@Override
-	public int compareTo(GenericMedia o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
+		return Objects.hash(GenericMedia.class, name);
 	}
 
 	@Override
@@ -125,5 +112,20 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 				.add("ids", ids)
 				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
+	}
+
+	@Override
+	public int compareTo(GenericMedia o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 }

@@ -7,8 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
@@ -429,9 +427,17 @@ public class Release extends MetadataBase implements Comparable<Release>
 		return false;
 	}
 
-	public boolean equalsByName(Release other)
+	public boolean equalsByName(Object obj)
 	{
-		return other == null ? false : (name == null ? false : name.equalsIgnoreCase(other.name));
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof Release)
+		{
+			return ObjectUtil.stringEqualIgnoreCase(name, ((Release) obj).name);
+		}
+		return false;
 	}
 
 	/**
@@ -440,35 +446,12 @@ public class Release extends MetadataBase implements Comparable<Release>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(45, 7).append(media).append(group).append(tags).toHashCode();
+		return Objects.hash(Release.class, media, group, tags);
 	}
 
-	/**
-	 * Two releases are compared by their media, then their tags and then by their groups.
-	 */
-	@Override
-	public int compareTo(Release o)
+	public int hashCodeByName()
 	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ComparisonChain.start()
-				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
-				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
-				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
-				.result();
-	}
-
-	public int compareToByName(Release o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ComparisonChain.start().compare(name, o.name, ObjectUtil.getDefaultStringOrdering()).result();
+		return Objects.hash(Release.class, ObjectUtil.stringHashCodeIgnoreCase(name));
 	}
 
 	@Override
@@ -492,5 +475,41 @@ public class Release extends MetadataBase implements Comparable<Release>
 				.add("ids", ObjectUtil.nullIfEmpty(ids))
 				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
+	}
+
+	/**
+	 * Two releases are compared by their media, then their tags and then by their groups.
+	 */
+	@Override
+	public int compareTo(Release o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start()
+				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
+				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
+				.result();
+	}
+
+	public int compareToByName(Release o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start().compare(name, o.name, ObjectUtil.getDefaultStringOrdering()).result();
 	}
 }

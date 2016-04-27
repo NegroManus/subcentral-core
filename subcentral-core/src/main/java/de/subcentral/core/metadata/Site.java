@@ -2,8 +2,6 @@ package de.subcentral.core.metadata;
 
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.PropNames;
@@ -98,12 +96,22 @@ public class Site extends MetadataBase implements Comparable<Site>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(897, 53).append(name).toHashCode();
+		return Objects.hash(Site.class, name);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(Site.class).omitNullValues().add("name", name).add("displayName", displayName).add("link", link).add("ids", ObjectUtil.nullIfEmpty(ids)).toString();
 	}
 
 	@Override
 	public int compareTo(Site o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{
@@ -112,9 +120,4 @@ public class Site extends MetadataBase implements Comparable<Site>
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(Site.class).omitNullValues().add("name", name).add("displayName", displayName).add("link", link).add("ids", ObjectUtil.nullIfEmpty(ids)).toString();
-	}
 }

@@ -3,8 +3,6 @@ package de.subcentral.core.metadata;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
@@ -165,12 +163,16 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(63, 19).append(contributor).append(type).append(description).toHashCode();
+		return Objects.hash(Contribution.class, contributor, type, description);
 	}
 
 	@Override
 	public int compareTo(Contribution o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

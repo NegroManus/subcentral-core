@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.time.temporal.Temporal;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
@@ -76,7 +74,7 @@ public class Nuke implements Comparable<Nuke>, Serializable
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(9, 71).append(reason).append(date).append(unnuke).toHashCode();
+		return Objects.hash(Nuke.class, reason, date, unnuke);
 	}
 
 	@Override
@@ -88,6 +86,10 @@ public class Nuke implements Comparable<Nuke>, Serializable
 	@Override
 	public int compareTo(Nuke o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

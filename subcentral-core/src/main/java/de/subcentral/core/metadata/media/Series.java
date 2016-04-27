@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.PropNames;
@@ -355,12 +353,16 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(3, 11).append(name).toHashCode();
+		return Objects.hash(Series.class, name);
 	}
 
 	@Override
 	public int compareTo(Series o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{

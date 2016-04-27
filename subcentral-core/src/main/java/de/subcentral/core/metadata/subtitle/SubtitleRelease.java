@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
@@ -397,31 +395,28 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 		return false;
 	}
 
-	public boolean equalsByName(SubtitleRelease other)
+	public boolean equalsByName(Object obj)
 	{
-		return other == null ? false : name == null ? false : name.equals(other.name);
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj instanceof SubtitleRelease)
+		{
+			return ObjectUtil.stringEqualIgnoreCase(name, ((SubtitleRelease) obj).name);
+		}
+		return false;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(33, 51).append(subtitles).append(tags).append(matchingReleases).append(version).toHashCode();
+		return Objects.hash(SubtitleRelease.class, subtitles, tags, matchingReleases, version);
 	}
 
-	@Override
-	public int compareTo(SubtitleRelease o)
+	public int hashCodeByName()
 	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ComparisonChain.start()
-				.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
-				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
-				.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
-				.compare(version, version, ObjectUtil.getDefaultStringOrdering())
-				.result();
+		return Objects.hash(SubtitleRelease.class, ObjectUtil.stringHashCodeIgnoreCase(name));
 	}
 
 	@Override
@@ -442,5 +437,39 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 				.add("ids", ObjectUtil.nullIfEmpty(ids))
 				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.toString();
+	}
+
+	@Override
+	public int compareTo(SubtitleRelease o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start()
+				.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
+				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
+				.compare(version, version, ObjectUtil.getDefaultStringOrdering())
+				.result();
+	}
+
+	public int compareToByName(SubtitleRelease o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start().compare(name, o.name, ObjectUtil.getDefaultStringOrdering()).result();
 	}
 }

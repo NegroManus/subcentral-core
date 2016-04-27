@@ -2,8 +2,6 @@ package de.subcentral.core.metadata.media;
 
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 import de.subcentral.core.PropNames;
@@ -58,23 +56,27 @@ public class Network extends MetadataBase implements Comparable<Network>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(73, 897).append(name).toHashCode();
-	}
-
-	@Override
-	public int compareTo(Network o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
+		return Objects.hash(Network.class, name);
 	}
 
 	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).add("ids", ObjectUtil.nullIfEmpty(ids)).toString();
+	}
+
+	@Override
+	public int compareTo(Network o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 }

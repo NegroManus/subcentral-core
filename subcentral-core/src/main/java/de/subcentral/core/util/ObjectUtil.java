@@ -31,6 +31,16 @@ public class ObjectUtil
 		};
 	}
 
+	public static boolean stringEqualIgnoreCase(String s1, String s2)
+	{
+		return s1 != null ? s1.equalsIgnoreCase(s2) : s2 == null;
+	}
+
+	public static int stringHashCodeIgnoreCase(String s)
+	{
+		return s != null ? s.toLowerCase().hashCode() : 0;
+	}
+
 	public static boolean patternsEqual(Pattern p1, Pattern p2)
 	{
 		return (p1 == p2) || (p1 != null && p1.pattern().equals(p2.pattern()) && p1.flags() == p2.flags());
