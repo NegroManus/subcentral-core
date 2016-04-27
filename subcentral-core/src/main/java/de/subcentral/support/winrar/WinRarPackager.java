@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,9 +52,9 @@ public abstract class WinRarPackager
 	{
 		try
 		{
-			return IOUtil.executeProcess(buildValidateCommand(archive), 1, TimeUnit.MINUTES, winRar.getProcessExecutor()).getExitValue() == 0;
+			return IOUtil.executeProcess(buildValidateCommand(archive), winRar.getProcessExecutor()).getExitValue() == 0;
 		}
-		catch (IOException | InterruptedException | TimeoutException e)
+		catch (Exception e)
 		{
 			log.trace("Validation of archive " + archive + " failed", e);
 			return false;
@@ -80,9 +78,9 @@ public abstract class WinRarPackager
 		return ImmutableList.of(rarExecutable.toString(), "t", archive.toString());
 	}
 
-	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException, TimeoutException
+	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException
 	{
-		IOUtil.executeProcess(buildUnpackCommand(archive, targetDir), 10, TimeUnit.SECONDS, winRar.getProcessExecutor());
+		IOUtil.executeProcess(buildUnpackCommand(archive, targetDir), winRar.getProcessExecutor());
 	}
 
 	protected List<String> buildUnpackCommand(Path archive, Path targetDir)
@@ -134,7 +132,7 @@ public abstract class WinRarPackager
 					Files.delete(target);
 				}
 			}
-			ProcessResult result = IOUtil.executeProcess(buildPackCommand(source, target, cfg), cfg.getTimeoutValue(), cfg.getTimeoutUnit(), winRar.getProcessExecutor());
+			ProcessResult result = IOUtil.executeProcess(buildPackCommand(source, target, cfg), winRar.getProcessExecutor());
 			exitValue = result.getExitValue();
 			logMsg = result.getStdOut();
 			errMsg = result.getStdErr();
@@ -170,9 +168,9 @@ public abstract class WinRarPackager
 				return new WinRarPackResult(exitValue, flags, new IOException(errMsg), logMsg);
 			}
 		}
-		catch (IOException | InterruptedException | RuntimeException | TimeoutException e)
+		catch (Exception e)
 		{
-			log.warn("Exception while packing", e);
+			log.warn("Packing of " + source + " to " + target + " with config " + cfg + " failed", e);
 			return new WinRarPackResult(exitValue, flags, e, logMsg);
 		}
 	}

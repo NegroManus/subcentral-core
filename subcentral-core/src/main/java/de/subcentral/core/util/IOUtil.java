@@ -35,9 +35,9 @@ public class IOUtil
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit) throws IOException, InterruptedException, TimeoutException
+	public static ProcessResult executeProcess(List<String> command) throws IOException, InterruptedException
 	{
-		return executeProcess(command, timeoutValue, timeoutUnit, null);
+		return executeProcess(command, null);
 	}
 
 	/**
@@ -53,13 +53,13 @@ public class IOUtil
 	 * @throws InterruptedException
 	 * @throws TimeoutException
 	 */
-	public static ProcessResult executeProcess(List<String> command, long timeoutValue, TimeUnit timeoutUnit, ExecutorService executor) throws IOException, InterruptedException, TimeoutException
+	public static ProcessResult executeProcess(List<String> command, ExecutorService executor) throws IOException, InterruptedException
 	{
 		Process process = null;
 		try
 		{
 			ProcessBuilder processBuilder = new ProcessBuilder(command);
-			log.debug("Executing process {} with directory={}; environment={}; timeout={} {}", command, processBuilder.directory(), processBuilder.environment(), timeoutValue, timeoutUnit);
+			log.debug("Executing process {} with directory={}; environment={}", command, processBuilder.directory(), processBuilder.environment());
 			long start = System.nanoTime();
 			process = processBuilder.start();
 			process.getOutputStream().close();
@@ -80,14 +80,10 @@ public class IOUtil
 				new Thread(stdErrGobbler).start();
 			}
 
-			boolean exitedBeforeTimeout = process.waitFor(timeoutValue, timeoutUnit);
-			if (!exitedBeforeTimeout)
-			{
-				throw new TimeoutException("Process execution did not finish before timeout was reached. command=" + command + ", timeout=" + timeoutValue + " " + timeoutUnit);
-			}
+			int exitValue = process.waitFor();
 			String stdOut = StringUtils.stripToNull(stdOutStream.toString(Charset.defaultCharset().name()));
 			String stdErr = StringUtils.stripToNull(stdErrStream.toString(Charset.defaultCharset().name()));
-			ProcessResult result = new ProcessResult(process.exitValue(), stdOut, stdErr);
+			ProcessResult result = new ProcessResult(exitValue, stdOut, stdErr);
 			log.debug("Executed process {} in {} ms with result: {}", command, TimeUtil.durationMillis(start), result);
 			return result;
 		}

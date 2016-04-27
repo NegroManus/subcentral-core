@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -48,9 +47,6 @@ import javafx.util.StringConverter;
 
 public class FxActions
 {
-	private static final TimeUnit	IO_TIMEOUT_UNIT		= TimeUnit.MINUTES;
-	private static final long		IO_TIMEOUT_VALUE	= 1;
-
 	private FxActions()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
@@ -155,7 +151,7 @@ public class FxActions
 		Task<Void> task = new Task<Void>()
 		{
 			{
-				updateTitle("Browsing " + uri);
+				updateTitle("Browsing: " + uri);
 			}
 
 			@Override
@@ -185,14 +181,14 @@ public class FxActions
 		Task<ProcessResult> task = new Task<ProcessResult>()
 		{
 			{
-				updateTitle("Showing in windows explorer " + path);
+				updateTitle("Showing in windows explorer: " + path);
 			}
 
 			@Override
 			protected ProcessResult call() throws IOException, InterruptedException, TimeoutException
 			{
 				List<String> command = Arrays.asList("explorer.exe", "/select,", path.toString());
-				return IOUtil.executeProcess(command, IO_TIMEOUT_VALUE, IO_TIMEOUT_UNIT);
+				return IOUtil.executeProcess(command);
 			}
 		};
 		executor.execute(task);

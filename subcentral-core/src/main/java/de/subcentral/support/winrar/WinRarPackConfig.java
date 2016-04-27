@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class WinRarPackConfig extends WinRarCommandConfig
+public class WinRarPackConfig
 {
 	public enum CompressionMethod
 	{
@@ -179,7 +179,6 @@ public class WinRarPackConfig extends WinRarCommandConfig
 		return MoreObjects.toStringHelper(WinRarPackConfig.class)
 				.omitNullValues()
 				.add("compressionMethod", compressionMethod)
-				.add("timeout", timeoutValue + " " + timeoutUnit)
 				.add("targetOverwriteMode", targetOverwriteMode)
 				.add("sourceDeletionMode", sourceDeletionMode)
 				.toString();

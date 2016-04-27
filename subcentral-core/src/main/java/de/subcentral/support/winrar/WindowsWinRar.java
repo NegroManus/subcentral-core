@@ -3,7 +3,6 @@ package de.subcentral.support.winrar;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,7 +88,7 @@ public class WindowsWinRar extends WinRar
 		List<String> command = ImmutableList.of("reg", "query", "HKEY_LOCAL_MACHINE\\Software\\WinRAR");
 		try
 		{
-			ProcessResult result = IOUtil.executeProcess(command, 1, TimeUnit.MINUTES, processExecutor);
+			ProcessResult result = IOUtil.executeProcess(command, processExecutor);
 			if (result.getExitValue() != 0 || result.getStdErr() != null)
 			{
 				log.warn("Could not locate WinRAR installation directory using Windows registry: Command {} exited with value {} and standard error output was \"{}\". Returning null",

@@ -2,7 +2,6 @@ package de.subcentral.support.winrar;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
 
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
@@ -14,7 +13,6 @@ public class WinRarPlayGround
 	public static void main(String[] args) throws Exception
 	{
 		WinRarPackConfig cfg = new WinRarPackConfig();
-		cfg.setTimeout(15, TimeUnit.SECONDS);
 		cfg.setSourceDeletionMode(DeletionMode.KEEP);
 		cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
 		cfg.setCompressionMethod(CompressionMethod.BEST);
