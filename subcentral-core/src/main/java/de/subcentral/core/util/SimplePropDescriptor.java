@@ -5,8 +5,6 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.collect.ComparisonChain;
 
 /**
@@ -64,7 +62,7 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 		if (obj instanceof SimplePropDescriptor)
 		{
 			SimplePropDescriptor o = (SimplePropDescriptor) obj;
-			return beanClass.equals(o.beanClass) && propName.equals(o.propName);
+			return beanClass == o.beanClass && propName.equals(o.propName);
 		}
 		return false;
 	}
@@ -72,17 +70,25 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(11, 3).append(beanClass).append(propName).toHashCode();
+		return Objects.hash(SimplePropDescriptor.class, beanClass, propName);
 	}
 
 	@Override
 	public int compareTo(SimplePropDescriptor o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
 		if (o == null)
 		{
-			return -1;
+			return 1;
 		}
-		return ComparisonChain.start().compare(beanClass.getName(), o.beanClass.getName(), ObjectUtil.getDefaultStringOrdering()).compare(propName, o.propName, ObjectUtil.getDefaultStringOrdering()).result();
+		return ComparisonChain.start()
+				.compare(beanClass.getName(), o.beanClass.getName(), ObjectUtil.getDefaultStringOrdering())
+				.compare(propName, o.propName, ObjectUtil.getDefaultStringOrdering())
+				.result();
 	}
 
 	@Override
