@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,10 +35,10 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
-import de.subcentral.core.metadata.service.MetadataServiceUtil;
-import de.subcentral.core.metadata.service.MetadataService;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
+import de.subcentral.core.metadata.service.MetadataService;
+import de.subcentral.core.metadata.service.MetadataServiceUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.NamingUtil;
@@ -708,7 +707,6 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 				WinRarPackConfig cfg = new WinRarPackConfig();
 				cfg.setCompressionMethod(CompressionMethod.BEST);
 				cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);
-				cfg.setTimeout(10, TimeUnit.MINUTES);
 				cfg.setSourceDeletionMode(config.getPackingSourceDeletionMode());
 
 				checkCancelled();
