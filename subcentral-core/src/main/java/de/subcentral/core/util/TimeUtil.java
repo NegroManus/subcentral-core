@@ -1,12 +1,12 @@
 package de.subcentral.core.util;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 
 import org.apache.logging.log4j.LogManager;
@@ -59,9 +59,9 @@ public class TimeUtil
 		}
 		try
 		{
-			return Year.of(t.get(ChronoField.YEAR));
+			return Year.from(t);
 		}
-		catch (Exception e)
+		catch (DateTimeException e)
 		{
 			log.trace("Exception while getting Year of temporal " + t, e);
 			return null;
