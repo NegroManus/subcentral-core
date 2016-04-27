@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 
 public class MultiParsingService implements ParsingService
 {
-	private final String				domain;
+	private final String				name;
 	private final List<ParsingService>	parsingServices;
 
 	public MultiParsingService(String domain)
@@ -20,22 +20,22 @@ public class MultiParsingService implements ParsingService
 		this(domain, ImmutableList.of());
 	}
 
-	public MultiParsingService(String domain, ParsingService... parsingServices)
+	public MultiParsingService(String name, ParsingService... parsingServices)
 	{
-		this.domain = Objects.requireNonNull(domain, "domain");
+		this.name = Objects.requireNonNull(name, "name");
 		this.parsingServices = new CopyOnWriteArrayList<>(parsingServices);
 	}
 
 	public MultiParsingService(String domain, Collection<ParsingService> parsingServices)
 	{
-		this.domain = Objects.requireNonNull(domain, "domain");
+		this.name = Objects.requireNonNull(domain, "name");
 		this.parsingServices = new CopyOnWriteArrayList<>(parsingServices);
 	}
 
 	@Override
-	public String getDomain()
+	public String getName()
 	{
-		return domain;
+		return name;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class MultiParsingService implements ParsingService
 	}
 
 	@Override
-	public Object parse(String text) throws ParsingException
+	public Object parse(String text)
 	{
 		for (ParsingService ps : parsingServices)
 		{
@@ -64,7 +64,7 @@ public class MultiParsingService implements ParsingService
 	}
 
 	@Override
-	public <T> T parse(String text, Class<T> targetType) throws ParsingException
+	public <T> T parse(String text, Class<T> targetType)
 	{
 		for (ParsingService ps : parsingServices)
 		{
@@ -78,7 +78,7 @@ public class MultiParsingService implements ParsingService
 	}
 
 	@Override
-	public Object parse(String text, Set<Class<?>> targetTypes) throws ParsingException
+	public Object parse(String text, Set<Class<?>> targetTypes)
 	{
 		for (ParsingService ps : parsingServices)
 		{
@@ -94,6 +94,6 @@ public class MultiParsingService implements ParsingService
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(MultiParsingService.class).add("domain", domain).add("parsingServices", parsingServices).toString();
+		return MoreObjects.toStringHelper(MultiParsingService.class).add("name", name).add("parsingServices", parsingServices).toString();
 	}
 }

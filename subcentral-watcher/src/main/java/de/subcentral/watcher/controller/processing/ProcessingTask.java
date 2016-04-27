@@ -43,7 +43,6 @@ import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.NamingUtil;
-import de.subcentral.core.parse.ParsingException;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.util.Context;
 import de.subcentral.core.util.IOUtil;
@@ -573,28 +572,21 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		// Enrich
 		for (Release r : processedRlss)
 		{
-			try
+			// the info from the parsed name should overwrite the info from
+			// the release db
+			// because it matters how the series name is in the release (not
+			// how it is listed on tvrage or sth else)
+			// therefore overwrite=true
+			// For example a Series may be listed as "Good Wife" at XRel.to but the
+			// official release name is "The Good Wife" (another example is XRel title name: "From Dusk Till Dawn: The Series", series name in release "From.Dusk.Till.Dawn")
+			// on the other hand, different series name in the release and by the database
+			// can be corrected by standardizers
+			// TODO: sadly all the extra information about series and
+			// episodes (episode title) is overwritten if true
+			boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingService(), true);
+			if (!successful)
 			{
-				// the info from the parsed name should overwrite the info from
-				// the release db
-				// because it matters how the series name is in the release (not
-				// how it is listed on tvrage or sth else)
-				// therefore overwrite=true
-				// For example a Series may be listed as "Good Wife" at XRel.to but the
-				// official release name is "The Good Wife" (another example is XRel title name: "From Dusk Till Dawn: The Series", series name in release "From.Dusk.Till.Dawn")
-				// on the other hand, different series name in the release and by the database
-				// can be corrected by standardizers
-				// TODO: sadly all the extra information about series and
-				// episodes (episode title) is overwritten if true
-				boolean successful = ReleaseUtil.enrichByParsingName(r, config.getReleaseParsingService(), true);
-				if (!successful)
-				{
-					log.warn("Could not enrich " + r + " because no parser could parse the release name");
-				}
-			}
-			catch (ParsingException e)
-			{
-				log.warn("Could not enrich " + r + " due to an exception", e);
+				log.warn("Could not enrich " + r + " because no parser could parse the release name");
 			}
 		}
 		logReleases(Level.DEBUG, "Enriched releases:", processedRlss);

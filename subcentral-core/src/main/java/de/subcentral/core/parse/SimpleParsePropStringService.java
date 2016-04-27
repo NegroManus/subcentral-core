@@ -131,7 +131,7 @@ public class SimpleParsePropStringService implements ParsePropService
 	}
 
 	@Override
-	public <P> List<P> parseList(String propListString, SimplePropDescriptor propDescriptor, Class<P> elementClass) throws ParsingException
+	public <P> List<P> parseList(String propListString, SimplePropDescriptor propDescriptor, Class<P> elementClass)
 	{
 		if (propListString == null)
 		{
@@ -164,38 +164,31 @@ public class SimpleParsePropStringService implements ParsePropService
 	}
 
 	@Override
-	public <P> P parse(String propString, SimplePropDescriptor propDescriptor, Class<P> propClass) throws ParsingException
+	public <P> P parse(String propString, SimplePropDescriptor propDescriptor, Class<P> propClass)
 	{
 		if (propString == null)
 		{
 			return null;
 		}
-		try
+		Function<String, ?> fn = propFromStringFunctions.get(propDescriptor);
+		if (fn != null)
 		{
-			Function<String, ?> fn = propFromStringFunctions.get(propDescriptor);
-			if (fn != null)
-			{
-				return propClass.cast(fn.apply(propString));
-			}
-			fn = typeFromStringFunctions.get(propClass);
-			if (fn != null)
-			{
-				return propClass.cast(fn.apply(propString));
-			}
-			fn = DEFAULT_TYPE_FROM_STRING_FUNCTIONS.get(propClass);
-			if (fn != null)
-			{
-				return propClass.cast(fn.apply(propString));
-			}
-			if (propClass.equals(String.class))
-			{
-				return propClass.cast(propString);
-			}
-			throw new ParsingException(propString, propClass, "Could not parse property " + propDescriptor + ": no appropriate fromString function registered");
+			return propClass.cast(fn.apply(propString));
 		}
-		catch (Exception e)
+		fn = typeFromStringFunctions.get(propClass);
+		if (fn != null)
 		{
-			throw new ParsingException(propString, propClass, "Could not parse property " + propDescriptor, e);
+			return propClass.cast(fn.apply(propString));
 		}
+		fn = DEFAULT_TYPE_FROM_STRING_FUNCTIONS.get(propClass);
+		if (fn != null)
+		{
+			return propClass.cast(fn.apply(propString));
+		}
+		if (propClass.equals(String.class))
+		{
+			return propClass.cast(propString);
+		}
+		return null;
 	}
 }

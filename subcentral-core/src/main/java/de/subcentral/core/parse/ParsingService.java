@@ -1,14 +1,45 @@
 package de.subcentral.core.parse;
 
 import java.util.Set;
+import java.util.function.Function;
 
-public interface ParsingService extends Parser<Object>
+import de.subcentral.core.util.Service;
+
+public interface ParsingService extends Service, Function<String, Object>
 {
-	public String getDomain();
-
 	public Set<Class<?>> getSupportedTargetTypes();
 
-	public <T> T parse(String text, Class<T> targetType) throws ParsingException;
+	/**
+	 * 
+	 * @param text
+	 *            the text which should be parsed to an object
+	 * @return the parsed object or null if the text could not be parsed
+	 */
+	public Object parse(String text);
 
-	public Object parse(String text, Set<Class<?>> targetTypes) throws ParsingException;
+	/**
+	 * 
+	 * @param text
+	 *            the text which should be parsed to an object
+	 * @param targetType
+	 *            the type of the parsed object
+	 * @return the parsed object or null if the text could not be parsed
+	 */
+	public <T> T parse(String text, Class<T> targetType);
+
+	/**
+	 * 
+	 * @param text
+	 *            the text which should be parsed to an object
+	 * @param targetTypes
+	 *            the allowed types of the parsed object
+	 * @return the parsed object or null if the text could not be parsed
+	 */
+	public Object parse(String text, Set<Class<?>> targetTypes);
+
+	@Override
+	public default Object apply(String text)
+	{
+		return parse(text);
+	}
 }

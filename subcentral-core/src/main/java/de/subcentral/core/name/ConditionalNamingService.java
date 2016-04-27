@@ -14,8 +14,8 @@ import de.subcentral.core.util.Context;
  */
 public class ConditionalNamingService implements NamingService
 {
-	private final String							name;
-	private final List<ConditionalNamingEntry<?>>	entries	= new CopyOnWriteArrayList<>();
+	private final String				name;
+	private final List<NamerEntry<?>>	entries	= new CopyOnWriteArrayList<>();
 
 	public ConditionalNamingService(String name)
 	{
@@ -31,41 +31,16 @@ public class ConditionalNamingService implements NamingService
 	/**
 	 * Important:
 	 * <ul>
-	 * <li>The order of the elements is the order the conditions are tested. So more restricting conditions must be placed before more general conditions. The first ConditionalNamingEntry which
-	 * condition returns true will be taken.</li>
+	 * <li>The order of the elements is the order the conditions are tested. So more restricting conditions must be placed before more general conditions. The first NamerEntry which condition returns
+	 * true will be taken.</li>
 	 * <li>The order should also consider how often specific types are named. The types that are named most frequently should be at the top of the list.</li>
 	 * </ul>
 	 * 
 	 * @return
 	 */
-	public List<ConditionalNamingEntry<?>> getConditionalNamingEntries()
+	public List<NamerEntry<?>> getConditionalNamingEntries()
 	{
 		return entries;
-	}
-
-	@SuppressWarnings("unchecked")
-	public <V> ConditionalNamingEntry<V> getEntryFor(Namer<V> namer)
-	{
-		for (ConditionalNamingEntry<?> e : entries)
-		{
-			if (e.getNamer().equals(namer))
-			{
-				return (ConditionalNamingEntry<V>) e;
-			}
-		}
-		return null;
-	}
-
-	public ConditionalNamingEntry<?> getEntryFor(Predicate<Object> condition)
-	{
-		for (ConditionalNamingEntry<?> e : entries)
-		{
-			if (e.getCondition().equals(condition))
-			{
-				return e;
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -95,7 +70,7 @@ public class ConditionalNamingService implements NamingService
 		{
 			return null;
 		}
-		for (ConditionalNamingEntry<?> e : entries)
+		for (NamerEntry<?> e : entries)
 		{
 			if (e.test(candidate))
 			{
@@ -111,20 +86,20 @@ public class ConditionalNamingService implements NamingService
 		return MoreObjects.toStringHelper(ConditionalNamingService.class).add("name", name).toString();
 	}
 
-	public static class ConditionalNamingEntry<U> implements Predicate<Object>
+	public static class NamerEntry<U> implements Predicate<Object>
 	{
 		private final Predicate<Object>	condition;
 		private final Namer<U>			namer;
 
-		private ConditionalNamingEntry(Predicate<Object> condition, Namer<U> namer)
+		private NamerEntry(Predicate<Object> condition, Namer<U> namer)
 		{
 			this.condition = Objects.requireNonNull(condition, "condition");
 			this.namer = Objects.requireNonNull(namer, "namer");
 		}
 
-		public static <V> ConditionalNamingEntry<V> of(Predicate<Object> condition, Namer<V> namer)
+		public static <V> NamerEntry<V> of(Predicate<Object> condition, Namer<V> namer)
 		{
-			return new ConditionalNamingEntry<>(condition, namer);
+			return new NamerEntry<>(condition, namer);
 		}
 
 		public Predicate<Object> getCondition()
@@ -141,6 +116,12 @@ public class ConditionalNamingService implements NamingService
 		public boolean test(Object obj)
 		{
 			return condition.test(obj);
+		}
+
+		@Override
+		public String toString()
+		{
+			return MoreObjects.toStringHelper(NamerEntry.class).add("condition", condition).add("namer", namer).toString();
 		}
 	}
 }

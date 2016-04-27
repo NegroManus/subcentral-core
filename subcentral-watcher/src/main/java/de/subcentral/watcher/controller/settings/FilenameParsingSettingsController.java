@@ -59,25 +59,25 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 		parsersTableView.setItems(settings.getFilenameParsers().property());
 		parsersEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(parsersEnabledColumn));
 		parsersEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		parsersNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxBindings.immutableObservableValue(param.getValue().getItem().getDomain()));
+		parsersNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxBindings.immutableObservableValue(param.getValue().getItem().getName()));
 
 		parsersExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) ->
 		{
 			String example;
-			String domain = param.getValue().getItem().getDomain();
-			if (Addic7edCom.getParsingService().getDomain().equals(domain))
+			String domain = param.getValue().getItem().getName();
+			if (Addic7edCom.getParsingService().getName().equals(domain))
 			{
 				example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
 			}
-			else if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
+			else if (ItalianSubsNet.getParsingService().getName().equals(domain))
 			{
 				example = "Parks.And.Recreation.s07e01.sub.itasa";
 			}
-			else if (SubCentralDe.getParsingService().getDomain().equals(domain))
+			else if (SubCentralDe.getParsingService().getName().equals(domain))
 			{
 				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
 			}
-			else if (ReleaseScene.getParsingService().getDomain().equals(domain))
+			else if (ReleaseScene.getParsingService().getName().equals(domain))
 			{
 				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL";
 			}

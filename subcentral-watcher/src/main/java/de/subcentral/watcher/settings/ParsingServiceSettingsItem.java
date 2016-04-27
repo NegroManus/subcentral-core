@@ -64,19 +64,19 @@ public class ParsingServiceSettingsItem extends SimpleDeactivatableSettingsItem<
 			{
 				String domain = parsingServiceCfg.getString("");
 				boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
-				if (Addic7edCom.getParsingService().getDomain().equals(domain))
+				if (Addic7edCom.getParsingService().getName().equals(domain))
 				{
 					services.add(new ParsingServiceSettingsItem(Addic7edCom.getParsingService(), enabled));
 				}
-				else if (ItalianSubsNet.getParsingService().getDomain().equals(domain))
+				else if (ItalianSubsNet.getParsingService().getName().equals(domain))
 				{
 					services.add(new ParsingServiceSettingsItem(ItalianSubsNet.getParsingService(), enabled));
 				}
-				else if (ReleaseScene.getParsingService().getDomain().equals(domain))
+				else if (ReleaseScene.getParsingService().getName().equals(domain))
 				{
 					services.add(new ParsingServiceSettingsItem(ReleaseScene.getParsingService(), enabled));
 				}
-				else if (SubCentralDe.getParsingService().getDomain().equals(domain))
+				else if (SubCentralDe.getParsingService().getName().equals(domain))
 				{
 					services.add(new ParsingServiceSettingsItem(SubCentralDe.getParsingService(), enabled));
 				}
@@ -94,7 +94,7 @@ public class ParsingServiceSettingsItem extends SimpleDeactivatableSettingsItem<
 			for (int i = 0; i < value.size(); i++)
 			{
 				ParsingServiceSettingsItem ps = value.get(i);
-				cfg.addProperty(key + ".parser(" + i + ")", ps.getItem().getDomain());
+				cfg.addProperty(key + ".parser(" + i + ")", ps.getItem().getName());
 				cfg.addProperty(key + ".parser(" + i + ")[@enabled]", ps.isEnabled());
 			}
 		}

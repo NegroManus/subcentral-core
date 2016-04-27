@@ -1,6 +1,5 @@
 package de.subcentral.core.parse;
 
-import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.releasescene.ReleaseScene;
@@ -11,10 +10,7 @@ public class ParsingPerformanceTest
 
 	public static void main(String[] args)
 	{
-		final TypeBasedParsingService ps = new TypeBasedParsingService("default");
-		ps.getParserEntries().addAll(Addic7edCom.getParserEntries());
-		ps.getParserEntries().addAll(SubCentralDe.getParserEntries());
-		ps.getParserEntries().addAll(ReleaseScene.getParsersEntries());
+		final MultiParsingService ps = new MultiParsingService("multi", Addic7edCom.getParsingService(), SubCentralDe.getParsingService(), ReleaseScene.getParsingService());
 
 		String name = "Psych - 05x04 - Chivalry Is Not Dead...But Someone Is.FQM.English.C.orig.Addic7ed.com";
 		String name2 = "The.Blacklist.S02E05.720p.HDTV.X264-DIMENSION";

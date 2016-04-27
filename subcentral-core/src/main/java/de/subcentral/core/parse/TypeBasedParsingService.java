@@ -16,39 +16,39 @@ import com.google.common.base.MoreObjects;
  */
 public class TypeBasedParsingService implements ParsingService
 {
-	private final String				domain;
-	private final List<ParserEntry<?>>	parserEntries	= new CopyOnWriteArrayList<>();
+	private final String				name;
+	private final List<ParserEntry<?>>	parsers	= new CopyOnWriteArrayList<>();
 
-	public TypeBasedParsingService(String domain)
+	public TypeBasedParsingService(String name)
 	{
-		this.domain = Objects.requireNonNull(domain, "domain");
+		this.name = Objects.requireNonNull(name, "name");
 	}
 
 	@Override
-	public String getDomain()
+	public String getName()
 	{
-		return domain;
+		return name;
 	}
 
 	@Override
 	public Set<Class<?>> getSupportedTargetTypes()
 	{
-		return parserEntries.stream().map(ParserEntry::getTargetType).collect(Collectors.toSet());
+		return parsers.stream().map(ParserEntry::getTargetType).collect(Collectors.toSet());
 	}
 
 	public List<ParserEntry<?>> getParserEntries()
 	{
-		return parserEntries;
+		return parsers;
 	}
 
 	public List<Parser<?>> getParsers()
 	{
-		return parserEntries.stream().map(ParserEntry::getParser).collect(Collectors.toList());
+		return parsers.stream().map(ParserEntry::getParser).collect(Collectors.toList());
 	}
 
 	public <T> void register(Class<T> targetType, Parser<T> parser)
 	{
-		parserEntries.add(new ParserEntry<T>(parser, targetType));
+		parsers.add(new ParserEntry<T>(targetType, parser));
 	}
 
 	public <T> void registerAll(Class<T> targetType, Iterable<Parser<T>> parsers)
@@ -61,7 +61,7 @@ public class TypeBasedParsingService implements ParsingService
 
 	public boolean unregister(Parser<?> parser)
 	{
-		Iterator<ParserEntry<?>> iter = parserEntries.iterator();
+		Iterator<ParserEntry<?>> iter = parsers.iterator();
 		while (iter.hasNext())
 		{
 			ParserEntry<?> entry = iter.next();
@@ -89,13 +89,13 @@ public class TypeBasedParsingService implements ParsingService
 
 	public void unregisterAll()
 	{
-		parserEntries.clear();
+		parsers.clear();
 	}
 
 	@Override
-	public Object parse(String text) throws ParsingException
+	public Object parse(String text)
 	{
-		for (ParserEntry<?> entry : parserEntries)
+		for (ParserEntry<?> entry : parsers)
 		{
 			Object parsedObj = entry.parser.parse(text);
 			if (parsedObj != null)
@@ -107,10 +107,10 @@ public class TypeBasedParsingService implements ParsingService
 	}
 
 	@Override
-	public <T> T parse(String text, Class<T> targetType) throws ParsingException
+	public <T> T parse(String text, Class<T> targetType)
 	{
 		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use #parse(String).");
-		for (ParserEntry<?> entry : parserEntries)
+		for (ParserEntry<?> entry : parsers)
 		{
 			if (targetType.isAssignableFrom(entry.targetType))
 			{
@@ -128,13 +128,13 @@ public class TypeBasedParsingService implements ParsingService
 	}
 
 	@Override
-	public Object parse(String text, Set<Class<?>> targetTypes) throws ParsingException
+	public Object parse(String text, Set<Class<?>> targetTypes)
 	{
 		if (targetTypes.isEmpty())
 		{
 			return parse(text);
 		}
-		for (ParserEntry<?> entry : parserEntries)
+		for (ParserEntry<?> entry : parsers)
 		{
 			for (Class<?> targetType : targetTypes)
 			{
@@ -155,23 +155,18 @@ public class TypeBasedParsingService implements ParsingService
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(TypeBasedParsingService.class).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(TypeBasedParsingService.class).add("name", name).toString();
 	}
 
 	public static final class ParserEntry<T>
 	{
-		private final Parser<T>	parser;
 		private final Class<T>	targetType;
+		private final Parser<T>	parser;
 
-		private ParserEntry(Parser<T> parser, Class<T> targetType)
+		private ParserEntry(Class<T> targetType, Parser<T> parser)
 		{
-			this.parser = Objects.requireNonNull(parser, "parser");
 			this.targetType = Objects.requireNonNull(targetType, "targetType");
-		}
-
-		public Parser<T> getParser()
-		{
-			return parser;
+			this.parser = Objects.requireNonNull(parser, "parser");
 		}
 
 		public Class<T> getTargetType()
@@ -179,10 +174,15 @@ public class TypeBasedParsingService implements ParsingService
 			return targetType;
 		}
 
+		public Parser<T> getParser()
+		{
+			return parser;
+		}
+
 		@Override
 		public String toString()
 		{
-			return MoreObjects.toStringHelper(ParserEntry.class).add("parser", parser).add("targetType", targetType).toString();
+			return MoreObjects.toStringHelper(ParserEntry.class).add("targetType", targetType).add("parser", parser).toString();
 		}
 	}
 }

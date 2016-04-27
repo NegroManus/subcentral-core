@@ -96,12 +96,12 @@ public class ParsingPlayground
 
 		final long totalStart = System.nanoTime();
 
-		final TypeBasedParsingService ps = new TypeBasedParsingService("default");
 		// order is relevant. ReleaseScene matchers would also match SubCentralDe matchers
-		ps.getParserEntries().addAll(Addic7edCom.getParserEntries());
-		ps.getParserEntries().addAll(SubCentralDe.getParserEntries());
-		ps.getParserEntries().addAll(ReleaseScene.getParsersEntries());
-		ps.getParserEntries().addAll(ItalianSubsNet.getParserEntries());
+		final MultiParsingService ps = new MultiParsingService("multi",
+				Addic7edCom.getParsingService(),
+				SubCentralDe.getParsingService(),
+				ReleaseScene.getParsingService(),
+				ItalianSubsNet.getParsingService());
 
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
 

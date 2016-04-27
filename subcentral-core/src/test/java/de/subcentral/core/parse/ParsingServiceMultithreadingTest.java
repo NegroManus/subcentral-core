@@ -5,9 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import de.subcentral.core.parse.ParsingException;
-import de.subcentral.core.parse.TypeBasedParsingService;
-
 public class ParsingServiceMultithreadingTest
 {
 	private static final Logger log = LogManager.getLogger(ParsingServiceMultithreadingTest.class);
@@ -24,7 +21,7 @@ public class ParsingServiceMultithreadingTest
 			}
 			catch (Exception e)
 			{
-				throw new ParsingException(t, String.class, e);
+				throw new RuntimeException(e);
 			}
 			return t.toUpperCase();
 		});

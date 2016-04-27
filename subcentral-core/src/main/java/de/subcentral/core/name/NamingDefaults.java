@@ -26,7 +26,7 @@ import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.name.ConditionalNamingService.ConditionalNamingEntry;
+import de.subcentral.core.name.ConditionalNamingService.NamerEntry;
 import de.subcentral.core.name.PropSequenceNameBuilder.Config;
 import de.subcentral.core.util.Predicates;
 import de.subcentral.core.util.Separation;
@@ -137,21 +137,21 @@ public class NamingDefaults
 		SUBTITLE_RELEASE_NAMER = new SubtitleReleaseNamer(configWithSubRlsNameFormatter, RELEASE_NAMER);
 
 		// Add namers to the NamingService (ordered by number of times used)
-		List<ConditionalNamingEntry<?>> namers = new ArrayList<>(9);
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Episode.class), EPISODE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Release.class), RELEASE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(SubtitleRelease.class), SUBTITLE_RELEASE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Series.class), SERIES_NAMER));
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Season.class), SEASON_NAMER));
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Movie.class), MOVIE_NAMER));
-		namers.add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(Subtitle.class), SUBTITLE_NAMER));
-		namers.add(ConditionalNamingEntry.of(Predicates.instanceOf(NamedMedia.class), NAMED_MEDIA_NAMER));
+		List<NamerEntry<?>> namers = new ArrayList<>(9);
+		namers.add(NamerEntry.of(Predicates.instanceOf(Episode.class), EPISODE_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(Release.class), RELEASE_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(SubtitleRelease.class), SUBTITLE_RELEASE_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(Series.class), SERIES_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(Season.class), SEASON_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(Movie.class), MOVIE_NAMER));
+		namers.add(NamerEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(Subtitle.class), SUBTITLE_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(NamedMedia.class), NAMED_MEDIA_NAMER));
 		NAMING_SERVICE.getConditionalNamingEntries().addAll(namers);
 
 		// Add a special NamingService which formats the episode numbers different than the default NamingService
 		// for ex. S09E23-E24 instead of S09E23E24
-		MULTI_EPISODE_RANGE_NAMING_SERVICE.getConditionalNamingEntries().add(ConditionalNamingEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_RANGE_NAMER));
+		MULTI_EPISODE_RANGE_NAMING_SERVICE.getConditionalNamingEntries().add(NamerEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_RANGE_NAMER));
 	}
 
 	private NamingDefaults()

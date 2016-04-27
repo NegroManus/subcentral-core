@@ -20,7 +20,7 @@ public abstract class AbstractMappingParser<T> implements Parser<T>
 	}
 
 	@Override
-	public T parse(String text) throws ParsingException
+	public T parse(String text)
 	{
 		Map<SimplePropDescriptor, String> matchResult = matcher.match(text);
 		if (matchResult.isEmpty())

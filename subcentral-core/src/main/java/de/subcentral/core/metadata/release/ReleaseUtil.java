@@ -11,7 +11,6 @@ import java.util.function.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.parse.ParsingException;
 import de.subcentral.core.parse.ParsingService;
 
 public class ReleaseUtil
@@ -85,9 +84,8 @@ public class ReleaseUtil
 	 * @param parsingService
 	 * @param overwrite
 	 * @return {@code true} if parsing was successful, {@code false} otherwise
-	 * @throws ParsingException
 	 */
-	public static boolean enrichByParsingName(Release rls, ParsingService parsingService, boolean overwrite) throws ParsingException
+	public static boolean enrichByParsingName(Release rls, ParsingService parsingService, boolean overwrite)
 	{
 		if (rls == null)
 		{
