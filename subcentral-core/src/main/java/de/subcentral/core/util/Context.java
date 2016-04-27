@@ -1,29 +1,21 @@
 package de.subcentral.core.util;
 
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 
-public class Context
+public abstract class Context
 {
-	public static final Context			EMPTY	= new Context(ImmutableMap.of());
-
-	private final Map<String, Object>	data;
-
-	Context(Map<String, Object> data)
-	{
-		this.data = ImmutableMap.copyOf(data);
-	}
+	public static final Context EMPTY = new EmptyContext();
 
 	public static Context of(String key, Object value)
 	{
-		return new Context(ImmutableMap.of(key, value));
+		return new MapContext(ImmutableMap.of(key, value));
 	}
 
 	public static Context of(Map<String, Object> entries)
 	{
-		return new Context(entries);
+		return new MapContext(entries);
 	}
 
 	public static Builder builder()
@@ -31,49 +23,111 @@ public class Context
 		return new Builder();
 	}
 
-	public <T> T get(String key, Class<T> type)
+	public abstract <T> T get(String key, Class<T> type);
+
+	public abstract <T> T get(String key, Class<T> type, T defaultValue);
+
+	public abstract Boolean getBoolean(String key);
+
+	public abstract Boolean getBoolean(String key, Boolean defaultValue);
+
+	public abstract String getString(String key);
+
+	public abstract String getString(String key, String defaultValue);
+
+	public abstract Map<String, Object> asMap();
+
+	private static class MapContext extends Context
 	{
-		Object value = data.get(key);
-		if (type.isInstance(value))
+		private final Map<String, Object> data;
+
+		MapContext(Map<String, Object> data)
 		{
-			return type.cast(value);
+			this.data = ImmutableMap.copyOf(data);
 		}
-		return null;
-	}
 
-	public <T> T get(String key, Class<T> type, T defaultValue)
-	{
-		Object value = data.get(key);
-		if (type.isInstance(value))
+		public <T> T get(String key, Class<T> type)
 		{
-			return type.cast(value);
+			Object value = data.get(key);
+			if (type.isInstance(value))
+			{
+				return type.cast(value);
+			}
+			return null;
 		}
-		return defaultValue;
+
+		public <T> T get(String key, Class<T> type, T defaultValue)
+		{
+			Object value = data.get(key);
+			if (type.isInstance(value))
+			{
+				return type.cast(value);
+			}
+			return defaultValue;
+		}
+
+		public Boolean getBoolean(String key)
+		{
+			return get(key, Boolean.class);
+		}
+
+		public Boolean getBoolean(String key, Boolean defaultValue)
+		{
+			return get(key, Boolean.class, defaultValue);
+		}
+
+		public String getString(String key)
+		{
+			return get(key, String.class);
+		}
+
+		public String getString(String key, String defaultValue)
+		{
+			return get(key, String.class, defaultValue);
+		}
+
+		public Map<String, Object> asMap()
+		{
+			return data;
+		}
 	}
 
-	public Boolean getBoolean(String key)
+	private static class EmptyContext extends Context
 	{
-		return get(key, Boolean.class);
-	}
+		public <T> T get(String key, Class<T> type)
+		{
+			return null;
+		}
 
-	public Boolean getBoolean(String key, Boolean defaultValue)
-	{
-		return get(key, Boolean.class, defaultValue);
-	}
+		public <T> T get(String key, Class<T> type, T defaultValue)
+		{
+			return defaultValue;
+		}
 
-	public String getString(String key)
-	{
-		return get(key, String.class);
-	}
+		public Boolean getBoolean(String key)
+		{
+			return null;
+		}
 
-	public String getString(String key, String defaultValue)
-	{
-		return get(key, String.class, defaultValue);
-	}
+		public Boolean getBoolean(String key, Boolean defaultValue)
+		{
+			return defaultValue;
+		}
 
-	public Set<Map.Entry<String, Object>> entrySet()
-	{
-		return data.entrySet();
+		public String getString(String key)
+		{
+			return null;
+		}
+
+		public String getString(String key, String defaultValue)
+		{
+			return defaultValue;
+		}
+
+		public Map<String, Object> asMap()
+		{
+			return ImmutableMap.of();
+		}
 	}
 
 	public static class Builder
@@ -93,7 +147,7 @@ public class Context
 
 		public Builder setAll(Context ctx)
 		{
-			dataBuilder.putAll(ctx.data);
+			dataBuilder.putAll(ctx.asMap());
 			return this;
 		}
 
@@ -110,8 +164,7 @@ public class Context
 			{
 				return Context.EMPTY;
 			}
-			return new Context(data);
+			return new MapContext(data);
 		}
 	}
-
 }
