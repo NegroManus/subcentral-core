@@ -45,6 +45,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.NamingUtil;
 import de.subcentral.core.parse.ParsingException;
 import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.util.Context;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.winrar.WinRarPackConfig;
@@ -351,9 +352,9 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 			// Filter by Media
 			Function<Release, List<Media>> nestedObjRetriever = (Release rls) -> rls.getMedia();
-			Function<List<Media>, List<Map<String, Object>>> parameterGenerator = (List<Media> m) -> MediaUtil.generateNamingParametersForAllNames(m);
+			Function<List<Media>, List<Context>> ctxGenerator = (List<Media> m) -> MediaUtil.generateNamingContextsForAllNames(m);
 			List<Release> mediaFilteredFoundReleases = listedReleases.stream()
-					.filter(NamingUtil.filterByNestedName(srcRls, nestedObjRetriever, controller.getNamingServicesForFiltering(), parameterGenerator))
+					.filter(NamingUtil.filterByNestedName(srcRls, nestedObjRetriever, controller.getNamingServicesForFiltering(), ctxGenerator))
 					.collect(Collectors.toList());
 
 			// Filter by Release Tags and Group (matching releases)
@@ -769,7 +770,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 
 	public Set<String> generateFilteringDisplayNames(Object obj)
 	{
-		return NamingUtil.generateNames(obj, ImmutableList.of(controller.getNamingService()), MediaUtil.generateNamingParametersForAllNames(obj));
+		return NamingUtil.generateNames(obj, ImmutableList.of(controller.getNamingService()), MediaUtil.generateNamingContextsForAllNames(obj));
 	}
 
 	public void deleteSourceFile()

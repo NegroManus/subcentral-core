@@ -8,53 +8,46 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SimplePrintPropService implements PrintPropService
 {
-	private final Map<Class<?>, Function<?, String>>				typeToStringFns	= new HashMap<>();
-	private final Map<SimplePropDescriptor, Function<?, String>>	propToStringFns	= new HashMap<>();
+	private final Map<Class<?>, Function<?, String>>				typePrinter	= new HashMap<>();
+	private final Map<SimplePropDescriptor, Function<?, String>>	propPrinter	= new HashMap<>();
 
-	public Map<Class<?>, Function<?, String>> getTypeToStringFns()
+	public Map<Class<?>, Function<?, String>> getTypePrinter()
 	{
-		return typeToStringFns;
+		return typePrinter;
 	}
 
-	public Map<SimplePropDescriptor, Function<?, String>> getPropToStringFns()
+	public Map<SimplePropDescriptor, Function<?, String>> getPropPrinter()
 	{
-		return propToStringFns;
+		return propPrinter;
 	}
 
 	@Override
 	public String print(SimplePropDescriptor propDescriptor, Object propValue)
 	{
-		try
-		{
-			return doPrint(propDescriptor, propValue);
-		}
-		catch (RuntimeException e)
-		{
-			throw new NamingException(propValue, "Exception while converting property " + propDescriptor + " to string", e);
-		}
+		return printTyped(propDescriptor, propValue);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> String doPrint(SimplePropDescriptor propDescriptor, T propValue) throws ClassCastException
+	private <T> String printTyped(SimplePropDescriptor propDescriptor, T propValue)
 	{
 		if (propValue == null)
 		{
 			return "";
 		}
-		// Search for function registered for property
-		Function<?, String> toStringFn = propToStringFns.get(propDescriptor);
-		if (toStringFn != null)
+		// Search for printer registered for property
+		Function<?, String> printer = propPrinter.get(propDescriptor);
+		if (printer != null)
 		{
-			return ((Function<T, String>) toStringFn).apply(propValue);
+			return ((Function<T, String>) printer).apply(propValue);
 		}
-		// Search for function registered for type
-		toStringFn = typeToStringFns.get(propValue.getClass());
-		if (toStringFn != null)
+		// Search for printer registered for type
+		printer = typePrinter.get(propValue.getClass());
+		if (printer != null)
 		{
-			return ((Function<T, String>) toStringFn).apply(propValue);
+			return ((Function<T, String>) printer).apply(propValue);
 		}
-		// Search for function registered for super type
-		for (Map.Entry<Class<?>, Function<?, String>> entry : typeToStringFns.entrySet())
+		// Search for printer registered for super type
+		for (Map.Entry<Class<?>, Function<?, String>> entry : typePrinter.entrySet())
 		{
 			if (entry.getKey().isAssignableFrom(propValue.getClass()))
 			{

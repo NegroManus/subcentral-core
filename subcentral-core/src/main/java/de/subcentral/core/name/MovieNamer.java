@@ -1,8 +1,7 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
-
 import de.subcentral.core.metadata.media.Movie;
+import de.subcentral.core.util.Context;
 
 public class MovieNamer extends AbstractNamedMediaNamer<Movie>
 {
@@ -19,18 +18,18 @@ public class MovieNamer extends AbstractNamedMediaNamer<Movie>
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Movie mov, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Movie mov, Context ctx)
 	{
-		boolean includeYear = NamingUtil.readParameter(params, PARAM_INCLUDE_YEAR, Boolean.class, Boolean.FALSE);
+		boolean includeYear = ctx.getBoolean(PARAM_INCLUDE_YEAR, Boolean.FALSE);
 		if (includeYear)
 		{
-			String name = NamingUtil.readParameter(params, PARAM_NAME, String.class, mov.getTitleOrName());
+			String name = ctx.getString(PARAM_NAME, mov.getTitleOrName());
 			b.appendIfNotNull(Movie.PROP_NAME, name);
 			b.appendIfNotNull(Movie.PROP_DATE, mov.getYear());
 		}
 		else
 		{
-			String name = NamingUtil.readParameter(params, PARAM_NAME, String.class, mov.getName());
+			String name = ctx.getString(PARAM_NAME, mov.getName());
 			b.appendIfNotNull(Movie.PROP_NAME, name);
 		}
 	}

@@ -1,8 +1,9 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+
+import de.subcentral.core.util.Context;
 
 public class DelegatingNamer<T> implements Namer<T>
 {
@@ -26,8 +27,8 @@ public class DelegatingNamer<T> implements Namer<T>
 	}
 
 	@Override
-	public String name(T candidate, Map<String, Object> parameters) throws NamingException
+	public String name(T obj, Context ctx)
 	{
-		return finalFormatter.apply(delegate.name(candidate, parameters));
+		return finalFormatter.apply(delegate.name(obj, ctx));
 	}
 }

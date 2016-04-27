@@ -1,8 +1,7 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
-
 import de.subcentral.core.metadata.media.Episode;
+import de.subcentral.core.util.Context;
 
 public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 {
@@ -50,26 +49,26 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Episode epi, Context ctx)
 	{
 		// add series
-		if (epi.getSeries() != null && NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE))
+		if (epi.getSeries() != null && ctx.getBoolean(PARAM_INCLUDE_SERIES, Boolean.TRUE))
 		{
-			seriesNamer.appendName(b, epi.getSeries(), params);
+			seriesNamer.appendName(b, epi.getSeries(), ctx);
 		}
 
 		// add season
-		if (epi.isPartOfSeason() && NamingUtil.readParameter(params, PARAM_INCLUDE_SEASON, Boolean.class, Boolean.TRUE))
+		if (epi.isPartOfSeason() && ctx.getBoolean(PARAM_INCLUDE_SEASON, Boolean.TRUE))
 		{
 			// season namer must not include series as it was already used
 			// so just use buildOwnName
-			seasonNamer.appendOwnName(b, epi.getSeason(), params);
+			seasonNamer.appendOwnName(b, epi.getSeason(), ctx);
 		}
 
-		appendOwnName(b, epi, params);
+		appendOwnName(b, epi, ctx);
 	}
 
-	protected void appendOwnName(PropSequenceNameBuilder b, Episode epi, Map<String, Object> params)
+	protected void appendOwnName(PropSequenceNameBuilder b, Episode epi, Context ctx)
 	{
 		boolean sufficientlyNamed = false;
 		// add season
@@ -94,7 +93,7 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		}
 
 		// may add episode title
-		if (epi.isTitled() && (!sufficientlyNamed || NamingUtil.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE)))
+		if (epi.isTitled() && (!sufficientlyNamed || ctx.getBoolean(PARAM_ALWAYS_INCLUDE_TITLE, Boolean.FALSE)))
 		{
 			b.append(Episode.PROP_TITLE, epi.getTitle());
 		}

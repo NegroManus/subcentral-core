@@ -2,13 +2,12 @@ package de.subcentral.core.metadata.media;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.name.AbstractNamedMediaNamer;
+import de.subcentral.core.util.Context;
 
 public class MediaUtil
 {
@@ -68,18 +67,7 @@ public class MediaUtil
 		return null;
 	}
 
-	public static List<String> getAllNames(NamedMedia media)
-	{
-		ImmutableList.Builder<String> names = ImmutableList.builder();
-		if (media.getName() != null)
-		{
-			names.add(media.getName());
-		}
-		names.addAll(media.getAliasNames());
-		return names.build();
-	}
-
-	public static List<Map<String, Object>> generateNamingParametersForAllNames(Object obj)
+	public static List<Context> generateNamingContextsForAllNames(Object obj)
 	{
 		Media singleMedia = toSingletonMedia(obj);
 		if (singleMedia != null && obj instanceof NamedMedia)
@@ -87,26 +75,26 @@ public class MediaUtil
 			NamedMedia namedMedia = (NamedMedia) obj;
 			if (namedMedia.getName() != null)
 			{
-				return generateNamingParametersForMediaNames(namedMedia.getAllNames());
+				return generateNamingContextsForMediaNames(namedMedia.getAllNames());
 			}
 		}
 		MultiEpisodeHelper meHelper = MultiEpisodeHelper.of(obj);
 		if (meHelper != null && meHelper.getCommonSeries() != null && meHelper.getCommonSeries().getName() != null)
 		{
-			return generateNamingParametersForMediaNames(meHelper.getCommonSeries().getAllNames());
+			return generateNamingContextsForMediaNames(meHelper.getCommonSeries().getAllNames());
 		}
 
 		// The list has to at least contain 1 entry (an empty map) because otherwise no names are generated
-		return ImmutableList.of(ImmutableMap.of());
+		return ImmutableList.of(Context.EMPTY);
 	}
 
-	public static List<Map<String, Object>> generateNamingParametersForMediaNames(List<String> names)
+	public static List<Context> generateNamingContextsForMediaNames(List<String> names)
 	{
-		ImmutableList.Builder<Map<String, Object>> params = ImmutableList.builder();
+		ImmutableList.Builder<Context> list = ImmutableList.builder();
 		for (String name : names)
 		{
-			params.add(ImmutableMap.of(AbstractNamedMediaNamer.PARAM_NAME, name));
+			list.add(Context.of(AbstractNamedMediaNamer.PARAM_NAME, name));
 		}
-		return params.build();
+		return list.build();
 	}
 }

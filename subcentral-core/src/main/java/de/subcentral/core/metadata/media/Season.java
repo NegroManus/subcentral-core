@@ -234,21 +234,6 @@ public class Season extends MediaBase implements Comparable<Season>
 	}
 
 	@Override
-	public int compareTo(Season o)
-	{
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ComparisonChain.start()
-				.compare(series, o.series, ObjectUtil.getDefaultOrdering())
-				.compare(number, o.number, ObjectUtil.getDefaultOrdering())
-				.compare(title, o.title, ObjectUtil.getDefaultStringOrdering())
-				.result();
-	}
-
-	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(Season.class)
@@ -268,5 +253,20 @@ public class Season extends MediaBase implements Comparable<Season>
 				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
 				.add("episodes.size()", ObjectUtil.nullIfZero(episodes.size()))
 				.toString();
+	}
+
+	@Override
+	public int compareTo(Season o)
+	{
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ComparisonChain.start()
+				.compare(series, o.series, ObjectUtil.getDefaultOrdering())
+				.compare(number, o.number, ObjectUtil.getDefaultOrdering())
+				.compare(title, o.title, ObjectUtil.getDefaultStringOrdering())
+				.result();
 	}
 }

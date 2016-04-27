@@ -1,9 +1,9 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
 import java.util.Objects;
 
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.util.Context;
 
 public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 {
@@ -27,15 +27,15 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Release rls, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Release rls, Context ctx)
 	{
 		// read naming parameters
-		if (rls.getName() != null && NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE))
+		if (rls.getName() != null && ctx.getBoolean(PARAM_PREFER_NAME, Boolean.FALSE))
 		{
 			b.append(Release.PROP_NAME, rls.getName());
 			return;
 		}
-		b.appendRaw(Release.PROP_MEDIA, mediaNamingService.name(rls.getMedia(), params));
+		b.appendRaw(Release.PROP_MEDIA, mediaNamingService.name(rls.getMedia(), ctx));
 		b.appendAll(Release.PROP_TAGS, rls.getTags());
 		b.appendIfNotNull(Release.PROP_GROUP, rls.getGroup());
 	}

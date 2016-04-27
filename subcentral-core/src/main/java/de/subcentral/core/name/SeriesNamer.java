@@ -1,8 +1,7 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
-
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.util.Context;
 
 public class SeriesNamer extends AbstractNamedMediaNamer<Series>
 {
@@ -12,9 +11,9 @@ public class SeriesNamer extends AbstractNamedMediaNamer<Series>
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Series series, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Series series, Context ctx)
 	{
-		String name = NamingUtil.readParameter(params, PARAM_NAME, String.class, series.getName());
+		String name = ctx.getString(PARAM_NAME, series.getName());
 		b.appendIfNotNull(Series.PROP_NAME, name);
 	}
 }

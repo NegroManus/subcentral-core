@@ -1,26 +1,27 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import de.subcentral.core.util.Context;
+
 public class DelegatingNamingService implements NamingService
 {
-	private final String					domain;
+	private final String					name;
 	private final NamingService				delegate;
 	private final Function<String, String>	finalFormatter;
 
-	public DelegatingNamingService(String domain, NamingService delegate, Function<String, String> finalFormatter)
+	public DelegatingNamingService(String name, NamingService delegate, Function<String, String> finalFormatter)
 	{
-		this.domain = Objects.requireNonNull(domain, "domain");
+		this.name = Objects.requireNonNull(name, "name");
 		this.delegate = Objects.requireNonNull(delegate, "delegate");
 		this.finalFormatter = Objects.requireNonNull(finalFormatter, "finalFormatter");
 	}
 
 	@Override
-	public String getDomain()
+	public String getName()
 	{
-		return domain;
+		return name;
 	}
 
 	public NamingService getDelegate()
@@ -34,14 +35,8 @@ public class DelegatingNamingService implements NamingService
 	}
 
 	@Override
-	public String getDefaultSeparator()
+	public String name(Object obj, Context ctx)
 	{
-		return delegate.getDefaultSeparator();
-	}
-
-	@Override
-	public String name(Object candidate, Map<String, Object> parameters) throws NamingException
-	{
-		return finalFormatter.apply(delegate.name(candidate, parameters));
+		return finalFormatter.apply(delegate.name(obj, ctx));
 	}
 }

@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -36,6 +35,7 @@ import de.subcentral.core.name.EpisodeNamer;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.SeasonNamer;
+import de.subcentral.core.util.Context;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.parse.SeasonPostParser.SeasonPostData;
 import de.subcentral.mig.process.MigrationAssistance;
@@ -272,13 +272,14 @@ public class SeasonServlet extends HttpServlet
 	private String name(Object obj)
 	{
 		NamingService ns = NamingDefaults.getDefaultNamingService();
-		ImmutableMap.Builder<String, Object> np = ImmutableMap.builder();
-		np.put(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE);
-		np.put(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
-		np.put(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE);
-		np.put(EpisodeNamer.PARAM_INCLUDE_SEASON, Boolean.FALSE);
-		np.put(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
-		return ns.name(obj, np.build());
+		Context ctx = Context.builder()
+				.set(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)
+				.set(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)
+				.set(EpisodeNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)
+				.set(EpisodeNamer.PARAM_INCLUDE_SEASON, Boolean.FALSE)
+				.set(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)
+				.build();
+		return ns.name(obj, ctx);
 	}
 
 	private SeasonPostData readSeasonPostData(int seasonThreadId) throws SQLException

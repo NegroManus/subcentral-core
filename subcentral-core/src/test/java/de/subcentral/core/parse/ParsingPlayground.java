@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.correct.Correction;
 import de.subcentral.core.correct.CorrectionDefaults;
@@ -43,7 +42,7 @@ import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.NamingUtil;
 import de.subcentral.core.name.ReleaseNamer;
 import de.subcentral.core.name.SubtitleReleaseNamer;
-import de.subcentral.core.parse.TypeBasedParsingService;
+import de.subcentral.core.util.Context;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
@@ -226,7 +225,8 @@ public class ParsingPlayground
 							for (Release matchingRls : convertedAdj.getMatchingReleases())
 							{
 								start = System.nanoTime();
-								String newName = ns.name(convertedAdj, ImmutableMap.of(SubtitleReleaseNamer.PARAM_RELEASE, matchingRls, ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE));
+								String newName = ns.name(convertedAdj,
+										Context.builder().set(SubtitleReleaseNamer.PARAM_RELEASE, matchingRls).set(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE).build());
 								TimeUtil.logDurationMillisDouble("Naming", start);
 								System.out.println("New name:");
 								System.out.println(newName);

@@ -5,106 +5,85 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Media;
+import de.subcentral.core.util.Context;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.ObjectUtil;
 
 public class NamingUtil
 {
-	private static final Logger						log										= LogManager.getLogger(NamingUtil.class);
-
 	public static final Comparator<Media>			DEFAULT_MEDIA_NAME_COMPARATOR			= new MediaNameComparator(NamingDefaults.getDefaultNamingService());
 	public static final Comparator<Iterable<Media>>	DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR	= IterableComparator.create(DEFAULT_MEDIA_NAME_COMPARATOR);
-	private static final Map<String, Object>		DEFAULT_MEDIA_NAME_PARAMS				= ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
+	private static final Context					MEDIA_NAME_COMPARATOR_CTX				= Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE);
 
 	private NamingUtil()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static final <T> T readParameter(Map<String, Object> parameters, String key, Class<T> valueClass, T defaultValue)
+	public static <T> Predicate<T> filterByName(T obj, NamingService namingService, Context ctx)
 	{
-		return valueClass.cast(parameters.getOrDefault(key, defaultValue));
+		String requiredName = namingService.name(obj, ctx);
+		return filterByName(requiredName, namingService, ctx);
 	}
 
-	public static <T> Predicate<T> filterByName(T obj, NamingService namingService, Map<String, Object> parameters)
+	public static <T> Predicate<T> filterByName(String requiredName, NamingService namingService, Context ctx)
 	{
-		String requiredName = namingService.name(obj, parameters);
-		return filterByName(requiredName, namingService, parameters);
+		return (T obj) -> requiredName.isEmpty() ? true : requiredName.equals(namingService.name(obj, ctx));
 	}
 
-	public static <T> Predicate<T> filterByName(String requiredName, NamingService namingService, Map<String, Object> parameters)
-	{
-		return (T obj) ->
-		{
-			String nameOfCandidate = namingService.name(obj, parameters);
-			return requiredName.isEmpty() ? true : requiredName.equals(nameOfCandidate);
-		};
-	}
-
-	public static <T, U> Predicate<T> filterByNestedName(T obj, Function<T, U> nestedObjRetriever, NamingService namingService, Function<U, List<Map<String, Object>>> parameterGenerator)
+	public static <T, U> Predicate<T> filterByNestedName(T obj, Function<T, U> nestedObjRetriever, NamingService namingService, Function<U, ? extends Iterable<Context>> ctxGenerator)
 	{
 		// acceptedNames can be empty. Then no restriction is made and all names are valid
 		U nestedObj = nestedObjRetriever.apply(obj);
-		Set<String> requiredNames = generateNames(nestedObj, ImmutableList.of(namingService), parameterGenerator.apply(nestedObj));
-		return filterByNestedName(requiredNames, nestedObjRetriever, namingService, parameterGenerator);
+		Set<String> requiredNames = generateNames(nestedObj, ImmutableList.of(namingService), ctxGenerator.apply(nestedObj));
+		return filterByNestedName(requiredNames, nestedObjRetriever, namingService, ctxGenerator);
 	}
 
 	public static <T, U> Predicate<T> filterByNestedName(Set<String> requiredNames,
 			Function<T, U> nestedObjRetriever,
 			NamingService namingServices,
-			Function<U, List<Map<String, Object>>> parameterGenerator)
+			Function<U, ? extends Iterable<Context>> ctxGenerator)
 	{
 		return (T obj) ->
 		{
 			U nestedObj = nestedObjRetriever.apply(obj);
-			Set<String> candidateNames = generateNames(nestedObj, ImmutableList.of(namingServices), parameterGenerator.apply(nestedObj));
+			Set<String> candidateNames = generateNames(nestedObj, ImmutableList.of(namingServices), ctxGenerator.apply(nestedObj));
 			// If requiredNames is empty, all names are accepted. Otherwise return true, if any of the candidate's names matches a required name
 			return requiredNames.isEmpty() ? true : !Collections.disjoint(requiredNames, candidateNames);
 		};
 	}
 
-	public static Set<String> generateNames(Object obj, List<NamingService> namingServices, List<Map<String, Object>> parameters)
+	public static Set<String> generateNames(Object obj, Iterable<NamingService> namingServices, Iterable<Context> contexts)
 	{
 		// LinkedHashSet to keep insertion order
 		Set<String> names = new LinkedHashSet<>();
 		for (NamingService ns : namingServices)
 		{
-			try
+			for (Context ctx : contexts)
 			{
-				for (Map<String, Object> params : parameters)
+				String name = ns.name(obj, ctx);
+				if (StringUtils.isNotEmpty(name))
 				{
-					String name = ns.name(obj, params);
-					if (!name.isEmpty())
-					{
-						names.add(name);
-					}
+					names.add(name);
 				}
-			}
-			catch (NoNamerRegisteredException e)
-			{
-				// ignore
-				log.trace("NamingService " + ns + " could not name object " + obj, e);
 			}
 		}
 		return names;
 	}
 
-	public static <T> Function<T, List<Map<String, Object>>> getDefaultParameterGenerator()
+	public static <T> Function<T, List<Context>> getDefaultParameterGenerator()
 	{
-		return (T obj) -> ImmutableList.of(ImmutableMap.of());
+		return (T obj) -> ImmutableList.of(Context.EMPTY);
 	}
 
 	public static final class MediaNameComparator implements Comparator<Media>, Serializable
@@ -123,7 +102,7 @@ public class NamingUtil
 		public int compare(Media o1, Media o2)
 		{
 			// nulls first as naming of null results in an empty string "" and an empty string always comes first
-			return ObjectUtil.getDefaultStringOrdering().compare(namingService.name(o1, DEFAULT_MEDIA_NAME_PARAMS), namingService.name(o2, DEFAULT_MEDIA_NAME_PARAMS));
+			return ObjectUtil.getDefaultStringOrdering().compare(namingService.name(o1, MEDIA_NAME_COMPARATOR_CTX), namingService.name(o2, MEDIA_NAME_COMPARATOR_CTX));
 		}
 	}
 }

@@ -1,7 +1,8 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
 import java.util.Objects;
+
+import de.subcentral.core.util.Context;
 
 public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 {
@@ -18,23 +19,16 @@ public abstract class AbstractPropertySequenceNamer<T> implements Namer<T>
 	}
 
 	@Override
-	public String name(T obj, Map<String, Object> parameters) throws NamingException
+	public String name(T obj, Context ctx)
 	{
 		if (obj == null)
 		{
 			return "";
 		}
-		try
-		{
-			PropSequenceNameBuilder builder = new PropSequenceNameBuilder(config);
-			appendName(builder, obj, parameters);
-			return builder.toString();
-		}
-		catch (RuntimeException e)
-		{
-			throw new NamingException(obj, e);
-		}
+		PropSequenceNameBuilder builder = new PropSequenceNameBuilder(config);
+		appendName(builder, obj, ctx);
+		return builder.toString();
 	}
 
-	protected abstract void appendName(PropSequenceNameBuilder builder, T obj, Map<String, Object> parameters);
+	protected abstract void appendName(PropSequenceNameBuilder builder, T obj, Context ctx);
 }

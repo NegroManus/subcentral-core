@@ -1,11 +1,11 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
 import java.util.Objects;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
+import de.subcentral.core.util.Context;
 
 public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<SubtitleRelease>
 {
@@ -45,18 +45,18 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, SubtitleRelease subRls, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, SubtitleRelease subRls, Context ctx)
 	{
 		// read useName parameter
-		if (subRls.getName() != null && NamingUtil.readParameter(params, PARAM_PREFER_NAME, Boolean.class, Boolean.FALSE))
+		if (subRls.getName() != null && ctx.getBoolean(PARAM_PREFER_NAME, Boolean.FALSE))
 		{
 			b.append(SubtitleRelease.PROP_NAME, subRls.getName());
 			return;
 		}
 
 		// read other naming parameters
-		Release rls = NamingUtil.readParameter(params, PARAM_RELEASE, Release.class, subRls.getFirstMatchingRelease());
-		b.appendRaw(SubtitleRelease.PROP_MATCHING_RELEASES, releaseNamer.name(rls, params));
+		Release rls = ctx.get(PARAM_RELEASE, Release.class, subRls.getFirstMatchingRelease());
+		b.appendRaw(SubtitleRelease.PROP_MATCHING_RELEASES, releaseNamer.name(rls, ctx));
 
 		Subtitle sub = subRls.getFirstSubtitle();
 		if (sub != null)
@@ -68,11 +68,11 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 		if (sub != null)
 		{
 			// read includeGroup parameter
-			if (sub.getGroup() != null && NamingUtil.readParameter(params, PARAM_INCLUDE_GROUP, Boolean.class, Boolean.TRUE))
+			if (sub.getGroup() != null && ctx.getBoolean(PARAM_INCLUDE_GROUP, Boolean.TRUE))
 			{
 				b.append(Subtitle.PROP_GROUP, sub.getGroup());
 			}
-			else if (NamingUtil.readParameter(params, PARAM_INCLUDE_SOURCE, Boolean.class, Boolean.FALSE))
+			else if (ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE))
 			{
 				b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
 			}

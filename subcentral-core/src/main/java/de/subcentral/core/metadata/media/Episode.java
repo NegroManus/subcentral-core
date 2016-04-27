@@ -10,12 +10,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.PropNames;
 import de.subcentral.core.name.NamingDefaults;
-import de.subcentral.core.name.SeasonNamer;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
@@ -369,7 +367,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 				.omitNullValues()
 				.add("series.name", series != null ? series.name : null)
 				.add("numberInSeries", numberInSeries)
-				.add("season.name", season != null ? NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)) : null)
+				.add("season.name", season != null ? NamingDefaults.getDefaultSeasonNamer().name(season) : null)
 				.add("numberInSeason", numberInSeason)
 				.add("title", title)
 				.add("date", date)

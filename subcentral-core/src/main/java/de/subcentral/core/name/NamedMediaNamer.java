@@ -1,9 +1,8 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
-
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.NamedMedia;
+import de.subcentral.core.util.Context;
 
 /**
  * Generic Namer for NamedMedia instances.
@@ -16,9 +15,9 @@ public class NamedMediaNamer extends AbstractNamedMediaNamer<NamedMedia>
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, NamedMedia media, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, NamedMedia media, Context ctx)
 	{
-		String name = NamingUtil.readParameter(params, PARAM_NAME, String.class, media.getName());
+		String name = ctx.getString(PARAM_NAME, media.getName());
 		b.appendIfNotNull(Movie.PROP_NAME, name);
 	}
 }

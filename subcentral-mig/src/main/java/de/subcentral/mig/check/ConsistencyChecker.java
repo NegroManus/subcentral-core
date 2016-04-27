@@ -30,7 +30,6 @@ import org.jsoup.select.Elements;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
@@ -41,6 +40,7 @@ import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.ReleaseNamer;
 import de.subcentral.core.name.SeasonNamer;
+import de.subcentral.core.util.Context;
 import de.subcentral.mig.Migration;
 import de.subcentral.mig.parse.SeasonPostParser;
 import de.subcentral.mig.parse.SeasonPostParser.SeasonPostData;
@@ -645,12 +645,13 @@ public class ConsistencyChecker
 		{
 			if (first)
 			{
-				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season, Context.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 				first = false;
 			}
 			else
 			{
-				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE, SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)));
+				joiner.add(NamingDefaults.getDefaultSeasonNamer().name(season,
+						Context.builder().set(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE).set(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE).build()));
 			}
 		}
 		return joiner.toString();
@@ -659,7 +660,7 @@ public class ConsistencyChecker
 	private static String formatSubtitleFile(SubtitleRelease subFile)
 	{
 		return NamingDefaults.getDefaultNamingService().name(subFile.getSubtitles()) + " "
-				+ NamingDefaults.getDefaultNamingService().name(subFile.getMatchingReleases(), ImmutableMap.of(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE)) + " (attachmentID="
+				+ NamingDefaults.getDefaultNamingService().name(subFile.getMatchingReleases(), Context.of(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE)) + " (attachmentID="
 				+ subFile.getFirstAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID) + ")";
 	}
 

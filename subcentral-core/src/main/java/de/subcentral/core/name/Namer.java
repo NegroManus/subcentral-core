@@ -1,28 +1,25 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableMap;
+import de.subcentral.core.util.Context;
 
 public interface Namer<T> extends Function<T, String>
 {
-	public default String name(T obj) throws NamingException
+	public default String name(T obj)
 	{
-		return name(obj, ImmutableMap.of());
+		return name(obj, Context.EMPTY);
 	}
 
 	/**
 	 * 
 	 * @param obj
-	 *            The object to name. Can be null.
-	 * @param parameters
-	 *            The parameters for this naming. Not null, can be empty.
-	 * @return The generated name of the candidate or "" if the candidate was null.
-	 * @throws NamingException
-	 *             If an Exception occurs while naming. This Exception will be the {@link Exception#getCause() cause} of the thrown NamingException.
+	 *            the object to name (can be null)
+	 * @param ctx
+	 *            the context in which the object should be named
+	 * @return the generated name of the candidate or an empty string {@code ""} if the candidate was {@code null}
 	 */
-	public String name(T obj, Map<String, Object> parameters) throws NamingException;
+	public String name(T obj, Context ctx);
 
 	@Override
 	public default String apply(T obj)

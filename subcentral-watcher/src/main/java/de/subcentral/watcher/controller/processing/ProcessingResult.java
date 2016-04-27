@@ -3,8 +3,6 @@ package de.subcentral.watcher.controller.processing;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.name.SubtitleReleaseNamer;
+import de.subcentral.core.util.Context;
 import javafx.application.Platform;
 import javafx.beans.binding.Binding;
 import javafx.beans.property.DoubleProperty;
@@ -58,10 +57,8 @@ public class ProcessingResult implements ProcessingItem
 
 	private String generateName(Release rls)
 	{
-		Map<String, Object> effectiveParams = new HashMap<>();
-		effectiveParams.putAll(task.getConfig().getNamingParameters());
-		effectiveParams.put(SubtitleReleaseNamer.PARAM_RELEASE, rls);
-		return task.getController().getNamingService().name(task.getResultObject(), effectiveParams);
+		Context effectiveCtx = Context.builder().setAll(task.getConfig().getNamingParameters()).set(SubtitleReleaseNamer.PARAM_RELEASE, rls).build();
+		return task.getController().getNamingService().name(task.getResultObject(), effectiveCtx);
 	}
 
 	public ProcessingTask getTask()

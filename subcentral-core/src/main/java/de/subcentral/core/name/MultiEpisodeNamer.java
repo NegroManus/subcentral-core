@@ -1,12 +1,10 @@
 package de.subcentral.core.name;
 
 import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
+import de.subcentral.core.util.Context;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? extends Episode>>
@@ -36,7 +34,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, List<? extends Episode> episodes, Map<String, Object> params) throws NamingException
+	protected void appendName(PropSequenceNameBuilder b, List<? extends Episode> episodes, Context ctx)
 	{
 		if (episodes.isEmpty())
 		{
@@ -45,7 +43,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 		MultiEpisodeHelper me = new MultiEpisodeHelper(episodes);
 		List<Episode> epis = me.getEpisodes();
 		Episode firstEpi = epis.get(0);
-		episodeNamer.appendName(b, firstEpi, params);
+		episodeNamer.appendName(b, firstEpi, ctx);
 
 		if (me.getCommonSeries() != null)
 		{
@@ -68,7 +66,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 					for (int i = 1; i < epis.size(); i++)
 					{
 						Episode epi = epis.get(i);
-						episodeNamer.appendOwnName(b, epi, params);
+						episodeNamer.appendOwnName(b, epi, ctx);
 					}
 				}
 			}
@@ -92,7 +90,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 					for (int i = 1; i < epis.size(); i++)
 					{
 						Episode epi = epis.get(i);
-						episodeNamer.appendOwnName(b, epi, params);
+						episodeNamer.appendOwnName(b, epi, ctx);
 					}
 				}
 			}
@@ -102,7 +100,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 				for (int i = 1; i < epis.size(); i++)
 				{
 					Episode epi = epis.get(i);
-					episodeNamer.appendOwnName(b, epi, params);
+					episodeNamer.appendOwnName(b, epi, ctx);
 				}
 			}
 		}
@@ -112,7 +110,7 @@ public class MultiEpisodeNamer extends AbstractPropertySequenceNamer<List<? exte
 			for (int i = 1; i < epis.size(); i++)
 			{
 				Episode epi = epis.get(i);
-				String epiName = episodeNamer.name(epi, ImmutableMap.of());
+				String epiName = episodeNamer.name(epi, ctx);
 				b.appendRaw(PROP_EPISODES, epiName);
 			}
 		}

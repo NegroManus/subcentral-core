@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.correct.CorrectionService;
 import de.subcentral.core.metadata.db.MetadataDb;
@@ -13,6 +12,7 @@ import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.util.Context;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings.LocateStrategy;
 
@@ -37,14 +37,14 @@ class ProcessingConfig
 	private CorrectionService				beforeQueryingCorrectionService;
 	private CorrectionService				afterQueryingCorrectionService;
 	// naming
-	private ImmutableMap<String, Object>	namingParameters;
+	private Context							namingParameters;
 	// File Transformation - General
 	private Path							targetDir;
 	private boolean							deleteSource;
 	// File Transformation - Packing
 	private boolean							packingEnabled;
 	private Path							rarExe;
-	private LocateStrategy			locateStrategy;
+	private LocateStrategy					locateStrategy;
 	private DeletionMode					packingSourceDeletionMode;
 
 	// private
@@ -163,12 +163,12 @@ class ProcessingConfig
 		this.afterQueryingCorrectionService = afterQueryingStandardizingService;
 	}
 
-	ImmutableMap<String, Object> getNamingParameters()
+	Context getNamingParameters()
 	{
 		return namingParameters;
 	}
 
-	void setNamingParameters(ImmutableMap<String, Object> namingParameters)
+	void setNamingParameters(Context namingParameters)
 	{
 		this.namingParameters = namingParameters;
 	}

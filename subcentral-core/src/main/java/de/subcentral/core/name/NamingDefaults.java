@@ -69,23 +69,23 @@ public class NamingDefaults
 
 		// PrintPropService
 		// Type to string
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(Iterable.class, (Iterable<?> i) -> StringUtil.SPACE_JOINER.join(i));
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("uuuu", Locale.US).format(y));
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(YearMonth.class, (YearMonth y) -> DateTimeFormatter.ofPattern("uuuu.MM", Locale.US).format(y));
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(LocalDate.class, (LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(LocalDateTime.class, (LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(ZonedDateTime.class, (ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
+		PRINT_PROP_SERVICE.getTypePrinter().put(Iterable.class, (Iterable<?> i) -> StringUtil.SPACE_JOINER.join(i));
+		PRINT_PROP_SERVICE.getTypePrinter().put(Year.class, (Year y) -> DateTimeFormatter.ofPattern("uuuu", Locale.US).format(y));
+		PRINT_PROP_SERVICE.getTypePrinter().put(YearMonth.class, (YearMonth y) -> DateTimeFormatter.ofPattern("uuuu.MM", Locale.US).format(y));
+		PRINT_PROP_SERVICE.getTypePrinter().put(LocalDate.class, (LocalDate d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.US).format(d));
+		PRINT_PROP_SERVICE.getTypePrinter().put(LocalDateTime.class, (LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
+		PRINT_PROP_SERVICE.getTypePrinter().put(ZonedDateTime.class, (ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
 
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(Site.class, (Site s) -> s.getName());
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(Network.class, (Network n) -> n.getName());
-		PRINT_PROP_SERVICE.getTypeToStringFns().put(Nuke.class, (Nuke n) -> n.getReason());
+		PRINT_PROP_SERVICE.getTypePrinter().put(Site.class, (Site s) -> s.getName());
+		PRINT_PROP_SERVICE.getTypePrinter().put(Network.class, (Network n) -> n.getName());
+		PRINT_PROP_SERVICE.getTypePrinter().put(Nuke.class, (Nuke n) -> n.getReason());
 
 		// Episode
-		PRINT_PROP_SERVICE.getPropToStringFns().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
-		PRINT_PROP_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
-		PRINT_PROP_SERVICE.getPropToStringFns().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
+		PRINT_PROP_SERVICE.getPropPrinter().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
+		PRINT_PROP_SERVICE.getPropPrinter().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
+		PRINT_PROP_SERVICE.getPropPrinter().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
 		// Subtitle
-		PRINT_PROP_SERVICE.getPropToStringFns().put(SubtitleRelease.PROP_VERSION, (String rev) -> "V" + rev);
+		PRINT_PROP_SERVICE.getPropPrinter().put(SubtitleRelease.PROP_VERSION, (String rev) -> "V" + rev);
 
 		ImmutableSet.Builder<Separation> sepsBuilder = ImmutableSet.builder();
 		sepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
@@ -276,6 +276,6 @@ public class NamingDefaults
 
 	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)
 	{
-		return new DelegatingNamingService(namingService.getDomain() + "_normalizing", namingService, NORMALIZING_FORMATTER);
+		return new DelegatingNamingService(namingService.getName() + "_normalizing", namingService, NORMALIZING_FORMATTER);
 	}
 }

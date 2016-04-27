@@ -3,13 +3,12 @@ package de.subcentral.support.thetvdbcom;
 import java.io.IOException;
 import java.util.List;
 
-import com.google.common.collect.ImmutableMap;
-
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.name.EpisodeNamer;
 import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.util.Context;
 
 public class TheTvDbComPlayground
 {
@@ -45,7 +44,7 @@ public class TheTvDbComPlayground
 		System.out.println("Episodes:");
 		series.getEpisodes().stream().forEach((Episode epi) ->
 		{
-			System.out.println((epi.isSpecial() ? "[s] " : "[-] ") + NamingDefaults.getDefaultEpisodeNamer().name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+			System.out.println((epi.isSpecial() ? "[s] " : "[-] ") + NamingDefaults.getDefaultEpisodeNamer().name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 			// System.out.println(epi);
 		});
 	}

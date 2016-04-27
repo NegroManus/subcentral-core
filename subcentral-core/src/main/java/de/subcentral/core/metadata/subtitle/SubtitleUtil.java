@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.correct.Correction;
@@ -17,6 +16,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.SubtitleReleaseNamer;
+import de.subcentral.core.util.Context;
 
 public class SubtitleUtil
 {
@@ -34,7 +34,7 @@ public class SubtitleUtil
 		ImmutableSet.Builder<String> names = ImmutableSet.builder();
 		for (Release rls : subAdj.getMatchingReleases())
 		{
-			names.add(namingService.name(subAdj, ImmutableMap.of(SubtitleReleaseNamer.PARAM_RELEASE, rls)));
+			names.add(namingService.name(subAdj, Context.of(SubtitleReleaseNamer.PARAM_RELEASE, rls)));
 		}
 		return names.build();
 	}

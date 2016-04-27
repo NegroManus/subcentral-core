@@ -1,34 +1,31 @@
 package de.subcentral.core.name;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import com.google.common.base.MoreObjects;
 
-import de.subcentral.core.util.Separation;
+import de.subcentral.core.util.Context;
 
 /**
  * {@code Thread-safe}
  */
 public class ConditionalNamingService implements NamingService
 {
-	private final String							domain;
-	private final List<ConditionalNamingEntry<?>>	entries				= new CopyOnWriteArrayList<>();
-	private final AtomicReference<String>			defaultSeparator	= new AtomicReference<>(Separation.DEFAULT_SEPARATOR);
+	private final String							name;
+	private final List<ConditionalNamingEntry<?>>	entries	= new CopyOnWriteArrayList<>();
 
-	public ConditionalNamingService(String domain)
+	public ConditionalNamingService(String name)
 	{
-		this.domain = Objects.requireNonNull(domain, "domain");
+		this.name = Objects.requireNonNull(name, "name");
 	}
 
 	@Override
-	public String getDomain()
+	public String getName()
 	{
-		return domain;
+		return name;
 	}
 
 	/**
@@ -72,18 +69,27 @@ public class ConditionalNamingService implements NamingService
 	}
 
 	@Override
-	public String getDefaultSeparator()
+	public String name(Object obj, Context ctx)
 	{
-		return defaultSeparator.get();
+		return nameTyped(obj, ctx);
 	}
 
-	public void setDefaultSeparator(String defaultSeparator)
+	private final <T> String nameTyped(T obj, Context ctx)
 	{
-		this.defaultSeparator.set(defaultSeparator != null ? defaultSeparator : Separation.DEFAULT_SEPARATOR);
+		Namer<? super T> namer = getNamer(obj);
+		if (namer != null)
+		{
+			return namer.name(obj, ctx);
+		}
+		if (obj instanceof Iterable)
+		{
+			return nameAll((Iterable<?>) obj, ctx);
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Namer<? super T> getNamer(T candidate) throws ClassCastException
+	private <T> Namer<? super T> getNamer(T candidate)
 	{
 		if (candidate == null)
 		{
@@ -100,32 +106,12 @@ public class ConditionalNamingService implements NamingService
 	}
 
 	@Override
-	public String name(Object candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
-	{
-		return doName(candidate, parameters);
-	}
-
-	private final <T> String doName(T candidate, Map<String, Object> parameters) throws NoNamerRegisteredException, NamingException
-	{
-		Namer<? super T> namer = getNamer(candidate);
-		if (namer != null)
-		{
-			return namer.name(candidate, parameters);
-		}
-		if (candidate instanceof Iterable)
-		{
-			return nameAll((Iterable<?>) candidate, parameters);
-		}
-		throw new NoNamerRegisteredException(candidate, "No ConditionalNamingEntry's condition returned true for the candidate");
-	}
-
-	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(ConditionalNamingService.class).add("domain", domain).toString();
+		return MoreObjects.toStringHelper(ConditionalNamingService.class).add("name", name).toString();
 	}
 
-	public static class ConditionalNamingEntry<U>
+	public static class ConditionalNamingEntry<U> implements Predicate<Object>
 	{
 		private final Predicate<Object>	condition;
 		private final Namer<U>			namer;
@@ -138,7 +124,6 @@ public class ConditionalNamingService implements NamingService
 
 		public static <V> ConditionalNamingEntry<V> of(Predicate<Object> condition, Namer<V> namer)
 		{
-			Objects.requireNonNull(condition, "condition");
 			return new ConditionalNamingEntry<>(condition, namer);
 		}
 
@@ -152,6 +137,7 @@ public class ConditionalNamingService implements NamingService
 			return namer;
 		}
 
+		@Override
 		public boolean test(Object obj)
 		{
 			return condition.test(obj);

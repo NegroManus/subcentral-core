@@ -1,9 +1,9 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
 import java.util.Objects;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
+import de.subcentral.core.util.Context;
 
 public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 {
@@ -32,22 +32,22 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Subtitle sub, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Subtitle sub, Context ctx)
 	{
 		// media
-		b.appendRaw(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), params));
+		b.appendRaw(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), ctx));
 
 		// language
 		b.appendIfNotNull(Subtitle.PROP_LANGUAGE, sub.getLanguage());
 
 		// group / source
 		// read includeGroup parameter
-		boolean includeGroup = NamingUtil.readParameter(params, PARAM_INCLUDE_GROUP, Boolean.class, Boolean.TRUE);
+		boolean includeGroup = ctx.getBoolean(PARAM_INCLUDE_GROUP, Boolean.TRUE);
 		if (includeGroup && sub.getGroup() != null)
 		{
 			b.append(Subtitle.PROP_GROUP, sub.getGroup());
 		}
-		else if (NamingUtil.readParameter(params, PARAM_INCLUDE_SOURCE, Boolean.class, Boolean.FALSE))
+		else if (ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE))
 		{
 			b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
 		}

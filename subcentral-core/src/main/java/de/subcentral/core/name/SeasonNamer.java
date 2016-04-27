@@ -1,8 +1,7 @@
 package de.subcentral.core.name;
 
-import java.util.Map;
-
 import de.subcentral.core.metadata.media.Season;
+import de.subcentral.core.util.Context;
 
 public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 {
@@ -37,27 +36,27 @@ public class SeasonNamer extends AbstractPropertySequenceNamer<Season>
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Season season, Map<String, Object> params)
+	protected void appendName(PropSequenceNameBuilder b, Season season, Context ctx)
 	{
 		// read naming parameters
-		boolean includeSeries = NamingUtil.readParameter(params, PARAM_INCLUDE_SERIES, Boolean.class, Boolean.TRUE);
+		boolean includeSeries = ctx.getBoolean(PARAM_INCLUDE_SERIES, Boolean.TRUE);
 
 		// add series
 		if (includeSeries && season.getSeries() != null)
 		{
-			seriesNamer.appendName(b, season.getSeries(), params);
+			seriesNamer.appendName(b, season.getSeries(), ctx);
 		}
 
-		appendOwnName(b, season, params);
+		appendOwnName(b, season, ctx);
 	}
 
-	protected void appendOwnName(PropSequenceNameBuilder b, Season season, Map<String, Object> params)
+	protected void appendOwnName(PropSequenceNameBuilder b, Season season, Context ctx)
 	{
 		// add season
 		if (season.isNumbered())
 		{
 			b.append(Season.PROP_NUMBER, season.getNumber());
-			boolean alwaysIncludeTitle = NamingUtil.readParameter(params, PARAM_ALWAYS_INCLUDE_TITLE, Boolean.class, Boolean.FALSE);
+			boolean alwaysIncludeTitle = ctx.getBoolean(PARAM_ALWAYS_INCLUDE_TITLE, Boolean.FALSE);
 			b.appendIf(Season.PROP_TITLE, season.getTitle(), alwaysIncludeTitle && season.isTitled());
 		}
 		else

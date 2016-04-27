@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.Season;
@@ -17,11 +15,7 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.name.EpisodeNamer;
-import de.subcentral.core.name.MovieNamer;
-import de.subcentral.core.name.Namer;
-import de.subcentral.core.name.NamingDefaults;
-import de.subcentral.core.name.SeasonNamer;
+import de.subcentral.core.util.Context;
 
 public class NamingTest
 {
@@ -46,10 +40,10 @@ public class NamingTest
 		Movie movie = new Movie(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Release rel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
-		String name = NamingDefaults.getDefaultReleaseNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
+		String name = NamingDefaults.getDefaultReleaseNamer().name(rel, Context.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		assertEquals(MOVIE_REL_NAME, name);
-		assertEquals(MOVIE_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+		assertEquals(MOVIE_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, Context.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
 	}
 
 	@Test
@@ -82,10 +76,10 @@ public class NamingTest
 
 		Release mediaRel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
 		SubtitleRelease rel = SubtitleRelease.create(mediaRel, "de", "SubCentral");
-		String name = NamingDefaults.getDefaultSubtitleReleaseNamer().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
+		String name = NamingDefaults.getDefaultSubtitleReleaseNamer().name(rel, Context.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE));
 		System.out.println(name);
 		assertEquals(MOVIE_SUB_REL_NAME, name);
-		assertEquals(MOVIE_SUB_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, ImmutableMap.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
+		assertEquals(MOVIE_SUB_REL_NAME, NamingDefaults.getDefaultNamingService().name(rel, Context.of(MovieNamer.PARAM_INCLUDE_YEAR, Boolean.TRUE)));
 	}
 
 	/**
@@ -152,7 +146,7 @@ public class NamingTest
 
 		epi.setTitle("Pilot");
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 		// series Sxx Exx
 		// series Sxx epititle
@@ -172,7 +166,7 @@ public class NamingTest
 
 		epi.setTitle("Pilot");
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 		// series seasontitle Exx
 		// series seasontitle epititle
@@ -192,7 +186,7 @@ public class NamingTest
 
 		epi.setTitle("Pilot");
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 		// series seasonnum Exx
 		// series seasonnum epititle
@@ -213,7 +207,7 @@ public class NamingTest
 
 		epi.setTitle("Pilot");
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 		// series seasonnum seasontitle Exx
 		// series seasonnum seasontitle epititle
@@ -223,22 +217,22 @@ public class NamingTest
 		epi.setNumberInSeason(null);
 		epi.setTitle(null);
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 		epi.setTitle("Pilot");
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 		epi.setNumberInSeason(1);
 		epi.setTitle(null);
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 
 		epi.setTitle("Pilot");
 		names.add(namer.name(epi));
-		names.add(namer.name(epi, ImmutableMap.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
-		names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
-		names.add(namer.name(epi, ImmutableMap.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE, EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+		names.add(namer.name(epi, Context.builder().set(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE).set(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE).build()));
 
 		for (String name : names)
 		{

@@ -14,10 +14,8 @@ import com.google.common.collect.ImmutableSet;
 import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.name.NamingDefaults;
-import de.subcentral.core.name.NamingException;
 import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.NamingUtil;
-import de.subcentral.core.name.NoNamerRegisteredException;
 
 public abstract class AbstractMetadataDb implements MetadataDb
 {
@@ -51,18 +49,14 @@ public abstract class AbstractMetadataDb implements MetadataDb
 		return searchByObjectsName(queryObj, recordType);
 	}
 
-	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException, NamingException
+	protected <T> List<T> searchByObjectsName(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
 	{
 		if (queryObj == null)
 		{
 			return ImmutableList.of();
 		}
 		ImmutableList.Builder<T> results = ImmutableList.builder();
-		Set<String> names = NamingUtil.generateNames(queryObj, namingServices, MediaUtil.generateNamingParametersForAllNames(queryObj));
-		if (names.isEmpty())
-		{
-			throw new NoNamerRegisteredException(queryObj, "None of the NamingServices " + namingServices + " had an appropriate namer registered");
-		}
+		Set<String> names = NamingUtil.generateNames(queryObj, namingServices, MediaUtil.generateNamingContextsForAllNames(queryObj));
 		log.debug("Searching for records of type {} with generated names {} for query object {} of type {}", recordType.getName(), names, queryObj, queryObj.getClass().getName());
 		for (String name : names)
 		{

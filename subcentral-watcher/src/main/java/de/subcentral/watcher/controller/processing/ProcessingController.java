@@ -24,7 +24,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import de.subcentral.core.correct.CorrectionDefaults;
 import de.subcentral.core.correct.TypeBasedCorrectionService;
@@ -38,6 +37,7 @@ import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.PrintPropService;
 import de.subcentral.core.parse.MultiParsingService;
+import de.subcentral.core.util.Context;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.fx.FxActions;
@@ -51,8 +51,8 @@ import de.subcentral.fx.settings.SettingsUtil;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.WatcherMainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
-import de.subcentral.watcher.settings.CrossGroupCompatibilitySettingsItem;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
+import de.subcentral.watcher.settings.CrossGroupCompatibilitySettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -165,7 +165,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 					cfg.setCompatibilityService(createCompatibilityService(settings));
 					cfg.setBeforeQueryingStandardizingService(createBeforeQueryingStandardizingService(settings));
 					cfg.setAfterQueryingStandardizingService(createAfterQueryingStandardizingService(settings));
-					cfg.setNamingParameters(ImmutableMap.copyOf(settings.getNamingParameters().getValue()));
+					cfg.setNamingParameters(Context.of(settings.getNamingParameters().getValue()));
 					cfg.setTargetDir(settings.getTargetDir().getValue());
 					cfg.setDeleteSource(settings.getDeleteSource().get());
 					cfg.setPackingEnabled(settings.getPackingEnabled().get());
