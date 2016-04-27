@@ -138,7 +138,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 		return new ObjectBinding<ProcessingConfig>()
 		{
 			{
-				super.bind(SettingsController.SETTINGS.getProcessingSettings().changedProperty());
+				super.bind(SettingsController.SETTINGS.getProcessingSettings());
 			}
 
 			@Override
