@@ -2,18 +2,17 @@ package de.subcentral.core.correct;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 
 /**
  * 
@@ -75,7 +74,7 @@ public class TypeBasedCorrectionService implements CorrectionService
 		List<Correction> corrections = new ArrayList<>();
 		// keep track which beans were already corrected
 		// to not end in an infinite loop because two beans had a bidirectional relationship
-		Set<Object> alreadyCorrectedBeans = Sets.newIdentityHashSet();
+		IdentityHashMap<Object, Object> alreadyCorrectedBeans = new IdentityHashMap<>();
 
 		Queue<Object> beansToCorrect = new ArrayDeque<>();
 		beansToCorrect.add(bean);
@@ -83,7 +82,7 @@ public class TypeBasedCorrectionService implements CorrectionService
 		while ((beanToCorrect = beansToCorrect.poll()) != null)
 		{
 			correct(beanToCorrect, corrections);
-			alreadyCorrectedBeans.add(beanToCorrect);
+			alreadyCorrectedBeans.put(beanToCorrect, beanToCorrect);
 			addNestedBeans(beanToCorrect, beansToCorrect, alreadyCorrectedBeans);
 		}
 		return corrections;
@@ -102,14 +101,14 @@ public class TypeBasedCorrectionService implements CorrectionService
 		}
 	}
 
-	private <T> void addNestedBeans(T bean, Queue<Object> queue, Set<Object> alreadyCorrectedBeans)
+	private <T> void addNestedBeans(T bean, Queue<Object> queue, IdentityHashMap<Object, Object> alreadyCorrectedBeans)
 	{
 		Function<? super T, List<? extends Object>> nestedBeanRetriever = getNestedBeansRetriever(bean);
 		if (nestedBeanRetriever != null)
 		{
 			for (Object nestedBean : nestedBeanRetriever.apply(bean))
 			{
-				if (nestedBean != null && !alreadyCorrectedBeans.contains(nestedBean))
+				if (nestedBean != null && !alreadyCorrectedBeans.containsKey(nestedBean))
 				{
 					queue.add(nestedBean);
 				}
