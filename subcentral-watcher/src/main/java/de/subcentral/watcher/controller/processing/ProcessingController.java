@@ -533,12 +533,12 @@ public class ProcessingController extends SubController<WatcherMainController>
 		Pattern pattern = UserPattern.parseSimplePatterns(SettingsController.SETTINGS.getProcessingSettings().getFilenamePatterns().getValue());
 		if (pattern == null)
 		{
-			log.debug("Rejecting {} because no pattern is specified", file);
+			log.debug("Rejecting {} because no filename pattern is specified", file);
 			return false;
 		}
 		if (!pattern.matcher(file.getFileName().toString()).matches())
 		{
-			log.debug("Rejecting {} because its name does not match the required pattern {}", file, pattern);
+			log.debug("Rejecting {} because its name does not match the required filename pattern {}", file, pattern);
 			return false;
 		}
 		return true;
@@ -552,14 +552,14 @@ public class ProcessingController extends SubController<WatcherMainController>
 			ProcessingTask task = (ProcessingTask) sourceTreeItem.getValue();
 			if (task.getSourceFile().equals(file))
 			{
+				if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING))
+				{
+					log.info("Rejecting {} because that file is already being processed currently", file);
+					return false;
+				}
 				if (rejectAlreadyProcessedFiles)
 				{
 					log.info("Rejecting {} because that file is already present in the processing list and 'rejectAlreadyProcessedFiles' is enabled", file);
-					return false;
-				}
-				if ((task.getState() == State.READY || task.getState() == State.SCHEDULED || task.getState() == State.RUNNING))
-				{
-					log.info("Rejecting {} because that file is already currently processed", file);
 					return false;
 				}
 			}
