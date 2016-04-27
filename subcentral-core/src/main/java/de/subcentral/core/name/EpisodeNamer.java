@@ -34,8 +34,8 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	public EpisodeNamer(PropSequenceNameBuilder.Config config, SeriesNamer seriesNamer, SeasonNamer seasonNamer)
 	{
 		super(config);
-		this.seriesNamer = seriesNamer != null ? seriesNamer : new SeriesNamer(config);
-		this.seasonNamer = seasonNamer != null ? seasonNamer : new SeasonNamer(config);
+		this.seriesNamer = (seriesNamer != null ? seriesNamer : new SeriesNamer(config));
+		this.seasonNamer = (seasonNamer != null ? seasonNamer : new SeasonNamer(config));
 	}
 
 	public SeriesNamer getSeriesNamer()
@@ -71,7 +71,7 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	protected void appendOwnName(PropSequenceNameBuilder b, Episode epi, Context ctx)
 	{
 		boolean sufficientlyNamed = false;
-		// add season
+		// add num in season
 		if (epi.isPartOfSeason())
 		{
 			if (epi.isNumberedInSeason())
@@ -80,13 +80,13 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 				sufficientlyNamed = true;
 			}
 		}
-		// add episode number / date
+		// add num in series / date
 		else if (epi.isNumberedInSeries())
 		{
 			b.append(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries());
 			sufficientlyNamed = true;
 		}
-		else if (epi.getDate() != null)
+		else if (epi.isDated())
 		{
 			b.append(Episode.PROP_DATE, epi.getDate());
 			sufficientlyNamed = true;

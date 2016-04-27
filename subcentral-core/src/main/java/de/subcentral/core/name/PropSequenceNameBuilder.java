@@ -89,7 +89,7 @@ public class PropSequenceNameBuilder
 
 	public static final class Config
 	{
-		private final PrintPropService		printPropService;
+		private final PrintPropService			printPropService;
 		private final String					defaultSeparator;
 		private final Set<Separation>			separations;
 		private final Function<String, String>	finalFormatter;
