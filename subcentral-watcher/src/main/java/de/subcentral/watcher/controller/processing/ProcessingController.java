@@ -147,10 +147,8 @@ public class ProcessingController extends SubController<WatcherMainController>
 				final ProcessingConfig cfg = new ProcessingConfig();
 				FxUtil.runAndWait(() ->
 				{
-					// processingConfig.getValue() has to be executed in JavaFX
-					// Application Thread for concurrency reasons
-					// (all access to watcher settings has to be in JavaFX
-					// Application Thread)
+					// processingConfig.getValue() has to be executed in JavaFX Application Thread for concurrency reasons
+					// (all access to watcher settings has to be in JavaFX Application Thread)
 					long start = System.nanoTime();
 					log.debug("Rebuilding ProcessingConfig due to changes in the processing settings");
 					final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
