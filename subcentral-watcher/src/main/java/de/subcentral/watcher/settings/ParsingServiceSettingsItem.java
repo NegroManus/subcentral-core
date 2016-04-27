@@ -2,11 +2,14 @@ package de.subcentral.watcher.settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
+
+import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
@@ -62,30 +65,34 @@ public class ParsingServiceSettingsItem extends SimpleDeactivatableSettingsItem<
 			List<ParsingServiceSettingsItem> services = new ArrayList<>(parsingServiceCfgs.size());
 			for (HierarchicalConfiguration<ImmutableNode> parsingServiceCfg : parsingServiceCfgs)
 			{
-				String domain = parsingServiceCfg.getString("");
-				boolean enabled = parsingServiceCfg.getBoolean("[@enabled]");
-				if (Addic7edCom.getParsingService().getName().equals(domain))
+				String name = parsingServiceCfg.getString("");
+				ParsingService service = null;
+				for (ParsingService s : getAvailableParsingServices())
 				{
-					services.add(new ParsingServiceSettingsItem(Addic7edCom.getParsingService(), enabled));
+					if (s.getName().equals(name))
+					{
+						service = s;
+						break;
+					}
 				}
-				else if (ItalianSubsNet.getParsingService().getName().equals(domain))
+				if (service == null)
 				{
-					services.add(new ParsingServiceSettingsItem(ItalianSubsNet.getParsingService(), enabled));
+					throw new IllegalArgumentException("Unknown parsing service: " + name);
 				}
-				else if (ReleaseScene.getParsingService().getName().equals(domain))
-				{
-					services.add(new ParsingServiceSettingsItem(ReleaseScene.getParsingService(), enabled));
-				}
-				else if (SubCentralDe.getParsingService().getName().equals(domain))
-				{
-					services.add(new ParsingServiceSettingsItem(SubCentralDe.getParsingService(), enabled));
-				}
-				else
-				{
-					throw new IllegalArgumentException("Unknown parsing service domain: " + domain);
-				}
+				boolean enabled = parsingServiceCfg.getBoolean("[@enabled]", true);
+				services.add(new ParsingServiceSettingsItem(service, enabled));
 			}
 			return createObservableList(services);
+		}
+
+		private static Set<ParsingService> getAvailableParsingServices()
+		{
+			ImmutableSet.Builder<ParsingService> services = ImmutableSet.builder();
+			services.add(Addic7edCom.getParsingService());
+			services.add(ItalianSubsNet.getParsingService());
+			services.add(ReleaseScene.getParsingService());
+			services.add(SubCentralDe.getParsingService());
+			return services.build();
 		}
 
 		@Override

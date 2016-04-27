@@ -1,12 +1,13 @@
-package de.subcentral.core.metadata.db;
+package de.subcentral.core.metadata.service;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
 import de.subcentral.core.metadata.Site;
+import de.subcentral.core.util.Service;
 
-public interface MetadataDb
+public interface MetadataService extends Service
 {
 	public enum State
 	{
@@ -15,6 +16,12 @@ public interface MetadataDb
 
 	// Metadata
 	public Site getSite();
+
+	@Override
+	public default String getName()
+	{
+		return getSite().getName();
+	}
 
 	public Set<Class<?>> getSupportedRecordTypes();
 

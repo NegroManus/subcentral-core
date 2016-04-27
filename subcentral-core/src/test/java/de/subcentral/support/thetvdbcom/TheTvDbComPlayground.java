@@ -22,15 +22,13 @@ public class TheTvDbComPlayground
 	public static void main(String[] args) throws IllegalArgumentException, IOException
 	{
 		// A3ACA9D28A27792D
-
-		TheTvDbComMetadataDb db = new TheTvDbComMetadataDb();
-		db.setApiKey("A3ACA9D28A27792D");
+		TheTvDbComMetadataService db = TheTvDbCom.getMetadataService("A3ACA9D28A27792D");
 		List<Series> results = db.searchByObject(new Series("lost"), Series.class);
 		System.out.println("Search results:");
 		results.stream().forEach((Object obj) -> System.out.println(obj));
 		System.out.println();
 
-		Series series = db.get(results.get(0).getId(TheTvDbCom.SITE), Series.class);
+		Series series = db.get(results.get(0).getId(TheTvDbCom.getSite()), Series.class);
 		System.out.println("Series:");
 		System.out.println(series);
 		System.out.println();

@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.Site;
-import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.media.Media;
@@ -39,24 +38,30 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
+import de.subcentral.core.metadata.service.HttpMetadataService;
 import de.subcentral.core.util.ByteUtil;
 
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PreDbMeMetadataDb extends HttpMetadataDb
+public class PreDbMeMetadataService extends HttpMetadataService
 {
-	private static final Logger	log			= LogManager.getLogger(PreDbMeMetadataDb.class);
+	private static final Logger	log			= LogManager.getLogger(PreDbMeMetadataService.class);
 
 	/**
 	 * The release dates are in UTC.
 	 */
 	private static final ZoneId	TIME_ZONE	= ZoneId.of("UTC");
 
+	PreDbMeMetadataService()
+	{
+		// package-protected
+	}
+
 	@Override
 	public Site getSite()
 	{
-		return PreDbMe.SITE;
+		return PreDbMe.getSite();
 	}
 
 	@Override
@@ -302,7 +307,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 		Release rls = new Release();
 
 		String id = rlsDiv.attr("id");
-		rls.setId(PreDbMe.SITE, id);
+		rls.setId(PreDbMe.getSite(), id);
 
 		// the url where more details can be retrieved. Filled and used later
 		String detailsUrl = null;
@@ -321,7 +326,7 @@ public class PreDbMeMetadataDb extends HttpMetadataDb
 			rls.setName(title);
 
 			detailsUrl = titleAnchor.absUrl("href");
-			rls.setId(PreDbMe.SITE, parseId(titleAnchor));
+			rls.setId(PreDbMe.getSite(), parseId(titleAnchor));
 		}
 
 		/**

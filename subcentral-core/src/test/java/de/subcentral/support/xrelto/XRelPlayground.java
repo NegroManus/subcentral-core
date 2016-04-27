@@ -15,7 +15,7 @@ public class XRelPlayground
 
 	public static void main(String[] args) throws Exception
 	{
-		XRelToMetadataDb db = new XRelToMetadataDb();
+		XRelToMetadataService db = new XRelToMetadataService();
 
 		URL url = Resources.getResource("de/subcentral/support/xrelto/psych.s05e06.html");
 		Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost());

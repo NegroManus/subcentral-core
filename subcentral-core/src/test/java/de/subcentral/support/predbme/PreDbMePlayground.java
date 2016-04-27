@@ -9,7 +9,7 @@ public class PreDbMePlayground
 
 	public static void main(String[] args) throws Exception
 	{
-		PreDbMeMetadataDb db = new PreDbMeMetadataDb();
+		PreDbMeMetadataService db = new PreDbMeMetadataService();
 
 		// URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");
 		// Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost().toExternalForm());

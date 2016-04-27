@@ -26,7 +26,6 @@ import de.subcentral.core.correct.Correction;
 import de.subcentral.core.correct.CorrectionDefaults;
 import de.subcentral.core.correct.SeriesNameCorrector;
 import de.subcentral.core.correct.TypeBasedCorrectionService;
-import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
@@ -35,6 +34,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.SameGroupCompatibility;
+import de.subcentral.core.metadata.service.MetadataService;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.NamingDefaults;
@@ -46,7 +46,6 @@ import de.subcentral.core.util.Context;
 import de.subcentral.core.util.TimeUtil;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
-import de.subcentral.support.orlydbcom.OrlyDbComMetadataDb;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.winrar.WinRar;
@@ -55,6 +54,7 @@ import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackager;
+import de.subcentral.support.xrelto.XRelTo;
 
 public class ParsingPlayground
 {
@@ -105,7 +105,7 @@ public class ParsingPlayground
 
 		final NamingService ns = NamingDefaults.getDefaultNamingService();
 
-		final MetadataDb rlsInfoDb = new OrlyDbComMetadataDb();
+		final MetadataService rlsInfoDb = XRelTo.getMetadataService();
 		final NamingService mediaNsForFiltering = NamingDefaults.getDefaultNormalizingNamingService();
 
 		final CompatibilityService compService = new CompatibilityService();

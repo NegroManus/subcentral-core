@@ -28,8 +28,6 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.subcentral.core.correct.Correction;
-import de.subcentral.core.metadata.db.MetadataDb;
-import de.subcentral.core.metadata.db.MetadataDbUtil;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.MediaUtil;
 import de.subcentral.core.metadata.release.CompatibilityService;
@@ -38,6 +36,8 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
+import de.subcentral.core.metadata.service.MetadataServiceUtil;
+import de.subcentral.core.metadata.service.MetadataService;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
 import de.subcentral.core.metadata.subtitle.Subtitle;
@@ -319,7 +319,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 	{
 		// Querying
 		Release srcRls = parsedObject.getFirstMatchingRelease();
-		ListMultimap<MetadataDb, Release> queryResults = query(srcRls);
+		ListMultimap<MetadataService, Release> queryResults = query(srcRls);
 		updateProgress(0.5d, 1d);
 
 		// Process query results
@@ -390,24 +390,24 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		updateProgress(0.75d, 1d);
 	}
 
-	private ListMultimap<MetadataDb, Release> query(Release rls) throws InterruptedException
+	private ListMultimap<MetadataService, Release> query(Release rls) throws InterruptedException
 	{
 		if (config.getReleaseDbs().isEmpty())
 		{
 			log.info("No release databases configured");
-			ImmutableListMultimap.Builder<MetadataDb, Release> builder = ImmutableListMultimap.builder();
+			ImmutableListMultimap.Builder<MetadataService, Release> builder = ImmutableListMultimap.builder();
 			// FOR DEBUGGING without available db, activate the following lines
 			// for (StandardRelease stdRls : config.getStandardReleases())
 			// {
 			// Release r = new Release(rls.getMedia(), stdRls.getRelease().getTags(), stdRls.getRelease().getGroup());
-			// builder.put(new XRelToMetadataDb(), r);
+			// builder.put(new XRelToMetadataService(), r);
 			// }
 			// /FOR DEBUGGING
 			return builder.build();
 		}
 
 		StringJoiner rlsDbs = new StringJoiner(", ");
-		for (MetadataDb rlsDb : config.getReleaseDbs())
+		for (MetadataService rlsDb : config.getReleaseDbs())
 		{
 			rlsDbs.add(rlsDb.getSite().getDisplayName());
 		}
@@ -417,9 +417,9 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 		List<Media> queryObj = rls.getMedia();
 
 		checkCancelled();
-		ListMultimap<MetadataDb, Release> queryResults = MetadataDbUtil.searchInAll(config.getReleaseDbs(), queryObj, Release.class, controller.getExecutor());
+		ListMultimap<MetadataService, Release> queryResults = MetadataServiceUtil.searchInAll(config.getReleaseDbs(), queryObj, Release.class, controller.getExecutor());
 
-		for (Map.Entry<MetadataDb, Collection<Release>> entry : queryResults.asMap().entrySet())
+		for (Map.Entry<MetadataService, Collection<Release>> entry : queryResults.asMap().entrySet())
 		{
 			log.debug("Results of {}", entry.getKey().getSite().getName());
 			entry.getValue().stream().forEach((r) -> log.debug(r));

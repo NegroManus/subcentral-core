@@ -2,6 +2,7 @@ package de.subcentral.watcher.settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.configuration2.Configuration;
@@ -9,15 +10,14 @@ import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
-import de.subcentral.core.metadata.db.MetadataDb;
+import com.google.common.collect.ImmutableSet;
+
+import de.subcentral.core.metadata.service.MetadataService;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
 import de.subcentral.fx.settings.SimpleDeactivatableSettingsItem;
 import de.subcentral.support.orlydbcom.OrlyDbCom;
-import de.subcentral.support.orlydbcom.OrlyDbComMetadataDb;
 import de.subcentral.support.predbme.PreDbMe;
-import de.subcentral.support.predbme.PreDbMeMetadataDb;
 import de.subcentral.support.xrelto.XRelTo;
-import de.subcentral.support.xrelto.XRelToMetadataDb;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,15 +25,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
-public class MetadataDbSettingsItem extends SimpleDeactivatableSettingsItem<MetadataDb>
+public class MetadataServiceSettingsItem extends SimpleDeactivatableSettingsItem<MetadataService>
 {
-	private static final ConfigurationPropertyHandler<ObservableList<MetadataDbSettingsItem>> HANDLER = new ListConfigurationPropertyHandler();
+	private static final ConfigurationPropertyHandler<ObservableList<MetadataServiceSettingsItem>> HANDLER = new ListConfigurationPropertyHandler();
 
 	public static enum Availability
 	{
 		UNKNOWN, CHECKING, AVAILABLE, LIMITED, NOT_AVAILABLE;
 
-		public static Availability of(MetadataDb.State state)
+		public static Availability of(MetadataService.State state)
 		{
 			switch (state)
 			{
@@ -52,7 +52,7 @@ public class MetadataDbSettingsItem extends SimpleDeactivatableSettingsItem<Meta
 
 	private final Property<Availability> availability = new SimpleObjectProperty<>(this, "availability", Availability.UNKNOWN);
 
-	public MetadataDbSettingsItem(MetadataDb database, boolean enabled)
+	public MetadataServiceSettingsItem(MetadataService database, boolean enabled)
 	{
 		super(database, enabled);
 	}
@@ -91,26 +91,26 @@ public class MetadataDbSettingsItem extends SimpleDeactivatableSettingsItem<Meta
 		executor.submit(updateAvailibilityTask);
 	}
 
-	public static ObservableList<MetadataDbSettingsItem> createObservableList()
+	public static ObservableList<MetadataServiceSettingsItem> createObservableList()
 	{
 		return createObservableList(new ArrayList<>());
 	}
 
-	public static ObservableList<MetadataDbSettingsItem> createObservableList(List<MetadataDbSettingsItem> list)
+	public static ObservableList<MetadataServiceSettingsItem> createObservableList(List<MetadataServiceSettingsItem> list)
 	{
-		return FXCollections.observableList(list, (MetadataDbSettingsItem item) -> new Observable[] { item.enabledProperty() });
+		return FXCollections.observableList(list, (MetadataServiceSettingsItem item) -> new Observable[] { item.enabledProperty() });
 	}
 
-	public static ConfigurationPropertyHandler<ObservableList<MetadataDbSettingsItem>> getListConfigurationPropertyHandler()
+	public static ConfigurationPropertyHandler<ObservableList<MetadataServiceSettingsItem>> getListConfigurationPropertyHandler()
 	{
 		return HANDLER;
 	}
 
-	private static class ListConfigurationPropertyHandler implements ConfigurationPropertyHandler<ObservableList<MetadataDbSettingsItem>>
+	private static class ListConfigurationPropertyHandler implements ConfigurationPropertyHandler<ObservableList<MetadataServiceSettingsItem>>
 	{
 		@SuppressWarnings("unchecked")
 		@Override
-		public ObservableList<MetadataDbSettingsItem> get(ImmutableConfiguration cfg, String key)
+		public ObservableList<MetadataServiceSettingsItem> get(ImmutableConfiguration cfg, String key)
 		{
 			if (cfg instanceof HierarchicalConfiguration<?>)
 			{
@@ -119,42 +119,49 @@ public class MetadataDbSettingsItem extends SimpleDeactivatableSettingsItem<Meta
 			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
 		}
 
-		private static ObservableList<MetadataDbSettingsItem> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
+		private static ObservableList<MetadataServiceSettingsItem> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
 		{
 			List<HierarchicalConfiguration<ImmutableNode>> rlsDbCfgs = cfg.configurationsAt(key + ".db");
-			List<MetadataDbSettingsItem> dbs = new ArrayList<>(rlsDbCfgs.size());
-			for (HierarchicalConfiguration<ImmutableNode> rlsDbCfg : rlsDbCfgs)
+			List<MetadataServiceSettingsItem> services = new ArrayList<>(rlsDbCfgs.size());
+			for (HierarchicalConfiguration<ImmutableNode> serviceCfg : rlsDbCfgs)
 			{
-				String name = rlsDbCfg.getString("");
-				boolean enabled = rlsDbCfg.getBoolean("[@enabled]");
-				if (PreDbMe.SITE.getName().equals(name))
+				String name = serviceCfg.getString("");
+				MetadataService service = null;
+				for (MetadataService s : getAvailableMetadataServices())
 				{
-					dbs.add(new MetadataDbSettingsItem(new PreDbMeMetadataDb(), enabled));
+					if (s.getName().equals(name))
+					{
+						service = s;
+						break;
+					}
 				}
-				else if (XRelTo.SITE.getName().equals(name))
+				if (service == null)
 				{
-					dbs.add(new MetadataDbSettingsItem(new XRelToMetadataDb(), enabled));
+					throw new IllegalArgumentException("Unknown metadata service: " + name);
 				}
-				else if (OrlyDbCom.SITE.getName().equals(name))
-				{
-					dbs.add(new MetadataDbSettingsItem(new OrlyDbComMetadataDb(), enabled));
-				}
-				else
-				{
-					throw new IllegalArgumentException("Unknown metadata database: " + name);
-				}
+				boolean enabled = serviceCfg.getBoolean("[@enabled]", true);
+				services.add(new MetadataServiceSettingsItem(service, enabled));
 			}
-			return createObservableList(dbs);
+			return createObservableList(services);
+		}
+
+		private static Set<MetadataService> getAvailableMetadataServices()
+		{
+			ImmutableSet.Builder<MetadataService> services = ImmutableSet.builder();
+			services.add(PreDbMe.getMetadataService());
+			services.add(XRelTo.getMetadataService());
+			services.add(OrlyDbCom.getMetadataService());
+			return services.build();
 		}
 
 		@Override
-		public void add(Configuration cfg, String key, ObservableList<MetadataDbSettingsItem> value)
+		public void add(Configuration cfg, String key, ObservableList<MetadataServiceSettingsItem> value)
 		{
 			for (int i = 0; i < value.size(); i++)
 			{
-				MetadataDbSettingsItem db = value.get(i);
-				cfg.addProperty(key + ".db(" + i + ")", db.getItem().getSite().getName());
-				cfg.addProperty(key + ".db(" + i + ")[@enabled]", db.isEnabled());
+				MetadataServiceSettingsItem service = value.get(i);
+				cfg.addProperty(key + ".db(" + i + ")", service.getItem().getName());
+				cfg.addProperty(key + ".db(" + i + ")[@enabled]", service.isEnabled());
 			}
 		}
 	}

@@ -14,14 +14,14 @@ public class StandardSites
 	public static final Site	ADDIC7ED_COM	= Addic7edCom.SITE;
 	public static final Site	IMDB_COM		= new Site("imdb.com", "IMDb.com", "http://www.imdb.com/");
 	public static final Site	ITALIANSUBS_NET	= ItalianSubsNet.SITE;
-	public static final Site	ORLYDB_COM		= OrlyDbCom.SITE;
-	public static final Site	PREDB_ME		= PreDbMe.SITE;
+	public static final Site	ORLYDB_COM		= OrlyDbCom.getSite();
+	public static final Site	PREDB_ME		= PreDbMe.getSite();
 	public static final Site	SUBCENTRAL_DE	= SubCentralDe.SITE;
 	public static final Site	SUBHD_COM		= new Site("subhd.com", "SubHD.com", "http://subhd.com/");
-	public static final Site	THETVDB_COM		= TheTvDbCom.SITE;
+	public static final Site	THETVDB_COM		= TheTvDbCom.getSite();
 	public static final Site	THEMOVIEDB_ORG	= new Site("themoviedb.org", "themoviedb.org", "https://www.themoviedb.org/");
 	public static final Site	TV4USER_DE		= new Site("tv4user.de", "TV4User.de", "http://board.tv4user.de/");
-	public static final Site	XREL_TO			= XRelTo.SITE;
+	public static final Site	XREL_TO			= XRelTo.getSite();
 	public static final Site	ZAP2IT_COM		= new Site("zap2it.com", "zap2it.com", "http://zap2it.com/");
 
 	private StandardSites()

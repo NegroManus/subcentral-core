@@ -23,21 +23,21 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.Site;
-import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.service.HttpMetadataService;
 import de.subcentral.core.util.ByteUtil;
 
 /**
  * @implSpec #immutable #thread-safe
  */
-public class XRelToMetadataDb extends HttpMetadataDb
+public class XRelToMetadataService extends HttpMetadataService
 {
-	private static final Logger				log					= LogManager.getLogger(XRelToMetadataDb.class);
+	private static final Logger				log					= LogManager.getLogger(XRelToMetadataService.class);
 
 	/**
 	 * The date format is a German date and time string. Example: "09.01.14 04:14 Uhr"
@@ -52,7 +52,7 @@ public class XRelToMetadataDb extends HttpMetadataDb
 	@Override
 	public Site getSite()
 	{
-		return XRelTo.SITE;
+		return XRelTo.getSite();
 	}
 
 	@Override

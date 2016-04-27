@@ -54,9 +54,9 @@ public class ProcessingSettings extends Settings
 	private final ListSettingsProperty<Tag>									releaseMetaTags						= new ListSettingsProperty<>("metadata.release.metaTags.tag",
 			ConfigurationPropertyHandlers.TAG_LIST_HANDLER);
 	// Metadata - Release - Databases
-	private final ListSettingsProperty<MetadataDbSettingsItem>				releaseDbs							= new ListSettingsProperty<>("metadata.release.databases",
-			MetadataDbSettingsItem.getListConfigurationPropertyHandler(),
-			MetadataDbSettingsItem.createObservableList());
+	private final ListSettingsProperty<MetadataServiceSettingsItem>				releaseDbs							= new ListSettingsProperty<>("metadata.release.databases",
+			MetadataServiceSettingsItem.getListConfigurationPropertyHandler(),
+			MetadataServiceSettingsItem.createObservableList());
 	// Metadata - Release - Guessing
 	private final BooleanSettingsProperty									guessingEnabled						= new BooleanSettingsProperty("metadata.release.guessing[@enabled]", true);
 	private final ListSettingsProperty<StandardRelease>						standardReleases					= new ListSettingsProperty<>("metadata.release.guessing.standardReleases",
@@ -147,7 +147,7 @@ public class ProcessingSettings extends Settings
 		return releaseMetaTags;
 	}
 
-	public ListSettingsProperty<MetadataDbSettingsItem> getReleaseDbs()
+	public ListSettingsProperty<MetadataServiceSettingsItem> getReleaseDbs()
 	{
 		return releaseDbs;
 	}

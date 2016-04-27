@@ -26,18 +26,18 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.Metadata;
 import de.subcentral.core.metadata.Site;
-import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.MediaBase;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.service.HttpMetadataService;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.util.TemporalComparator;
 import de.subcentral.support.StandardSites;
 
-public class TheTvDbComMetadataDb extends HttpMetadataDb
+public class TheTvDbComMetadataService extends HttpMetadataService
 {
 	/**
 	 * An unsigned integer indicating the season number this episode comes after. This field is only available for special episodes. Can be null.
@@ -59,28 +59,24 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	public static final String		IMAGE_TYPE_POSTER				= "poster";
 	public static final String		IMAGE_TYPE_EPISODE_IMAGE		= "episode_image";
 
-	private static final Logger		log								= LogManager.getLogger(TheTvDbComMetadataDb.class);
+	private static final Logger		log								= LogManager.getLogger(TheTvDbComMetadataService.class);
 
 	private static final String		API_SUB_PATH					= "/api/";
 	private static final String		IMG_SUB_PATH					= "/banners/";
 	private static final Splitter	LIST_SPLITTER					= Splitter.on('|').trimResults().omitEmptyStrings();
 
-	private String					apiKey;
+	private final String			apiKey;
 
-	public String getApiKey()
+	TheTvDbComMetadataService(String apiKey)
 	{
-		return apiKey;
-	}
-
-	public void setApiKey(String apiKey)
-	{
+		// package-protected
 		this.apiKey = apiKey;
 	}
 
 	@Override
 	public Site getSite()
 	{
-		return TheTvDbCom.SITE;
+		return TheTvDbCom.getSite();
 	}
 
 	@Override
@@ -99,6 +95,11 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	public Set<Site> getSupportedExternalSites()
 	{
 		return ImmutableSet.of(StandardSites.IMDB_COM, StandardSites.ZAP2IT_COM);
+	}
+
+	public String getApiKey()
+	{
+		return apiKey;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -289,7 +290,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		{
 			Series series = new Series();
 
-			addId(series, seriesElem, "seriesid", TheTvDbCom.SITE);
+			addId(series, seriesElem, "seriesid", TheTvDbCom.getSite());
 
 			series.setName(getTextFromChild(seriesElem, "seriesname"));
 
@@ -384,7 +385,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 		Series series = new Series();
 
-		addId(series, seriesElem, "id", TheTvDbCom.SITE);
+		addId(series, seriesElem, "id", TheTvDbCom.getSite());
 
 		series.setContentRating(getTextFromChild(seriesElem, "contentrating"));
 
@@ -401,7 +402,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 		addDescription(series, seriesElem, "overview");
 
-		addRating(series, seriesElem, "rating", TheTvDbCom.SITE);
+		addRating(series, seriesElem, "rating", TheTvDbCom.getSite());
 
 		String runtimeTxt = getTextFromChild(seriesElem, "runtime");
 		int runtime = Integer.parseInt(runtimeTxt);
@@ -525,7 +526,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 			{
 				Season possiblyNewSeason = series.newSeason(epi.getSeason().getNumber());
 				// Check whether this season is already stored, if yes, return it, if no return the new season
-				Season season = seasons.computeIfAbsent(epi.getSeason().getId(TheTvDbCom.SITE), (String key) -> possiblyNewSeason);
+				Season season = seasons.computeIfAbsent(epi.getSeason().getId(TheTvDbCom.getSite()), (String key) -> possiblyNewSeason);
 				epi.setSeason(season);
 			}
 			// May add to special episode list
@@ -561,7 +562,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 	private Episode parseBaseEpisodeRecord(Element epiElem)
 	{
 		Series series = new Series();
-		addId(series, epiElem, "seriesid", TheTvDbCom.SITE);
+		addId(series, epiElem, "seriesid", TheTvDbCom.getSite());
 
 		Episode epi = series.newEpisode();
 
@@ -590,13 +591,13 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 		else
 		{
 			Season season = new Season(series, seasonNum);
-			addId(season, epiElem, "seasonid", TheTvDbCom.SITE);
+			addId(season, epiElem, "seasonid", TheTvDbCom.getSite());
 
 			epi.setSeason(season);
 			epi.setNumberInSeason(getIntegerFromChild(epiElem, "episodenumber"));
 		}
 		// add rest of the properties
-		addId(epi, epiElem, "id", TheTvDbCom.SITE);
+		addId(epi, epiElem, "id", TheTvDbCom.getSite());
 
 		epi.setTitle(getTextFromChild(epiElem, "episodename"));
 
@@ -606,7 +607,7 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 		addDescription(epi, epiElem, "overview");
 
-		addRating(epi, epiElem, "rating", TheTvDbCom.SITE);
+		addRating(epi, epiElem, "rating", TheTvDbCom.getSite());
 
 		addImage(epi, epiElem, "filename", IMAGE_TYPE_EPISODE_IMAGE);
 
@@ -721,6 +722,10 @@ public class TheTvDbComMetadataDb extends HttpMetadataDb
 
 	private String getApiSubPathWithKey()
 	{
+		if (apiKey == null)
+		{
+			throw new IllegalStateException("No API key set");
+		}
 		return new StringBuilder(API_SUB_PATH).append(apiKey).append('/').toString();
 	}
 

@@ -7,10 +7,10 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.correct.CorrectionService;
-import de.subcentral.core.metadata.db.MetadataDb;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.service.MetadataService;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.util.Context;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
@@ -25,7 +25,7 @@ class ProcessingConfig
 	// release
 	private ImmutableList<Tag>				releaseMetaTags;
 	// release - dbs
-	private ImmutableList<MetadataDb>		releaseDbs;
+	private ImmutableList<MetadataService>		releaseDbs;
 	private ParsingService					releaseParsingService;
 	// release - guessing
 	private boolean							guessingEnabled;
@@ -73,12 +73,12 @@ class ProcessingConfig
 		this.filenameParsingService = filenameParsingService;
 	}
 
-	ImmutableList<MetadataDb> getReleaseDbs()
+	ImmutableList<MetadataService> getReleaseDbs()
 	{
 		return releaseDbs;
 	}
 
-	void setReleaseDbs(ImmutableList<MetadataDb> releaseDbs)
+	void setReleaseDbs(ImmutableList<MetadataService> releaseDbs)
 	{
 		this.releaseDbs = releaseDbs;
 	}

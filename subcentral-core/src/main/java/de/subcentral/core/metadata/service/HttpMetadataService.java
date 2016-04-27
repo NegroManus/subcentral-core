@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.db;
+package de.subcentral.core.metadata.service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,9 +17,9 @@ import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.NetUtil;
 
-public abstract class HttpMetadataDb extends AbstractMetadataDb
+public abstract class HttpMetadataService extends AbstractMetadataService
 {
-	private static final Logger	log				= LogManager.getLogger(HttpMetadataDb.class);
+	private static final Logger	log				= LogManager.getLogger(HttpMetadataService.class);
 
 	/**
 	 * Default timeout: 10 seconds.

@@ -1,4 +1,4 @@
-package de.subcentral.core.metadata.db;
+package de.subcentral.core.metadata.service;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,9 +17,9 @@ import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.name.NamingService;
 import de.subcentral.core.name.NamingUtil;
 
-public abstract class AbstractMetadataDb implements MetadataDb
+public abstract class AbstractMetadataService implements MetadataService
 {
-	private static final Logger			log				= LogManager.getLogger(AbstractMetadataDb.class);
+	private static final Logger			log				= LogManager.getLogger(AbstractMetadataService.class);
 
 	private final List<NamingService>	namingServices	= initNamingServices();
 

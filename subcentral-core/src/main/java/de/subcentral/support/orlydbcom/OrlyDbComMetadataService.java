@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.Site;
-import de.subcentral.core.metadata.db.HttpMetadataDb;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.service.HttpMetadataService;
 import de.subcentral.core.util.ByteUtil;
 
 /**
@@ -32,9 +32,9 @@ import de.subcentral.core.util.ByteUtil;
  * @implSpec #immutable #thread-safe
  *
  */
-public class OrlyDbComMetadataDb extends HttpMetadataDb
+public class OrlyDbComMetadataService extends HttpMetadataService
 {
-	private static final Logger				log					= LogManager.getLogger(OrlyDbComMetadataDb.class);
+	private static final Logger				log					= LogManager.getLogger(OrlyDbComMetadataService.class);
 
 	/**
 	 * The release dates are ISO-formatted (without the 'T').
@@ -46,10 +46,15 @@ public class OrlyDbComMetadataDb extends HttpMetadataDb
 	 */
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
 
+	OrlyDbComMetadataService()
+	{
+		// package-protected
+	}
+
 	@Override
 	public Site getSite()
 	{
-		return OrlyDbCom.SITE;
+		return OrlyDbCom.getSite();
 	}
 
 	@Override
