@@ -1,4 +1,4 @@
-package de.subcentral.fx;
+package de.subcentral.fx.ctrl;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.subcentral.fx.FxUtil;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.concurrent.WorkerStateEvent;

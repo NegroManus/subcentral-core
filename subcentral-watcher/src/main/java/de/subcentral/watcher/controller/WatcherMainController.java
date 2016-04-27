@@ -24,8 +24,8 @@ import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxIO;
-import de.subcentral.fx.MainController;
-import de.subcentral.fx.TaskExecutor;
+import de.subcentral.fx.ctrl.MainController;
+import de.subcentral.fx.ctrl.TaskExecutor;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.watcher.controller.processing.ProcessingController;
 import de.subcentral.watcher.controller.settings.SettingsController;

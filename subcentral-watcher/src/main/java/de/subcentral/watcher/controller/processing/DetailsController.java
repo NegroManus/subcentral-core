@@ -19,7 +19,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.StringUtil;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
-import de.subcentral.fx.SubController;
+import de.subcentral.fx.ctrl.SubController;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import javafx.concurrent.Task;

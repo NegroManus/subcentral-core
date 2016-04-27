@@ -1,4 +1,4 @@
-package de.subcentral.fx;
+package de.subcentral.fx.ctrl;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;

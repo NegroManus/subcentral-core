@@ -1,7 +1,7 @@
 package de.subcentral.watcher.controller.settings;
 
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxBindings;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.releasescene.ReleaseScene;

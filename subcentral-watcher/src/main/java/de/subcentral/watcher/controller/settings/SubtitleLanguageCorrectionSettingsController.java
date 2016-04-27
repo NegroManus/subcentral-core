@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.util.ObjectUtil;
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.UserPattern;
 import de.subcentral.fx.action.ActionList;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.LanguageToTextMapping;
 import de.subcentral.watcher.settings.LocaleLanguageReplacerSettings;

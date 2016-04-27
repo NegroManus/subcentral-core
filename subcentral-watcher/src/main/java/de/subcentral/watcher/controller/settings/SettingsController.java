@@ -21,7 +21,7 @@ import com.google.common.io.Resources;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.SubController;
+import de.subcentral.fx.ctrl.SubController;
 import de.subcentral.watcher.WatcherApp;
 import de.subcentral.watcher.controller.WatcherMainController;
 import de.subcentral.watcher.settings.WatcherSettings;

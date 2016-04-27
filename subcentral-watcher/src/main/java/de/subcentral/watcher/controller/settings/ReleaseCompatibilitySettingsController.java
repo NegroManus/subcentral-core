@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import de.subcentral.core.metadata.release.CrossGroupCompatibility;
 import de.subcentral.core.util.ObjectUtil;
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.action.ActionList;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.watcher.dialog.WatcherDialogs;
 import de.subcentral.watcher.settings.CrossGroupCompatibilitySettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;

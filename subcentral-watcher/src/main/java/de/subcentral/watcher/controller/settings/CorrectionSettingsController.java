@@ -7,9 +7,9 @@ import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import de.subcentral.core.util.ObjectUtil;
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.action.ActionList;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.fx.settings.ConfigurationHelper;
 import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.WatcherDialogs;

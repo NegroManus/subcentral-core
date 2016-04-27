@@ -2,10 +2,10 @@ package de.subcentral.watcher.dialog;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.fx.dialog.BeanEditController;
 import de.subcentral.watcher.settings.SeriesNameCorrectorSettingsItem;
 import javafx.beans.binding.Binding;

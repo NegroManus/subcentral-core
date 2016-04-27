@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxIO;
-import de.subcentral.fx.MainController;
-import de.subcentral.fx.TaskExecutor;
+import de.subcentral.fx.ctrl.MainController;
+import de.subcentral.fx.ctrl.TaskExecutor;
 import de.subcentral.mig.process.MigrationAssistance;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;

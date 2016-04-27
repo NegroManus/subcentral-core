@@ -9,11 +9,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.core.metadata.service.MetadataService;
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxNodes;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.watcher.settings.MetadataServiceSettingsItem;
 import de.subcentral.watcher.settings.MetadataServiceSettingsItem.Availability;
 import de.subcentral.watcher.settings.ProcessingSettings;

@@ -2,8 +2,8 @@ package de.subcentral.mig.controller;
 
 import java.nio.file.Path;
 
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.action.FxActions;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

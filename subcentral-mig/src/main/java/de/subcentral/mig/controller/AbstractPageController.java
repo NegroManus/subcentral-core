@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.SubController;
+import de.subcentral.fx.ctrl.SubController;
 import de.subcentral.mig.process.MigrationAssistance;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ObservableValue;

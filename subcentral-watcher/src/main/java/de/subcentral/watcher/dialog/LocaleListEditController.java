@@ -6,8 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.subcentral.core.util.CollectionUtil;
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxUtil;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.fx.dialog.BeanEditController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -6,9 +6,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.subcentral.core.util.ObjectUtil;
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.action.ActionList;
+import de.subcentral.fx.action.FxActions;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;

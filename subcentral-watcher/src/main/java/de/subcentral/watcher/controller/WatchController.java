@@ -12,7 +12,7 @@ import de.subcentral.fx.DirectoryWatchService;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.FxUtil;
-import de.subcentral.fx.SubController;
+import de.subcentral.fx.ctrl.SubController;
 import de.subcentral.fx.settings.ListSettingsProperty;
 import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.settings.SettingsController;

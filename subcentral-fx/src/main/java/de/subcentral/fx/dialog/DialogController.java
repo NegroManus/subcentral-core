@@ -1,7 +1,7 @@
 package de.subcentral.fx.dialog;
 
-import de.subcentral.fx.Controller;
 import de.subcentral.fx.FxIO;
+import de.subcentral.fx.ctrl.Controller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;

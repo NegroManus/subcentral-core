@@ -4,8 +4,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxControlBindings;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.fx.dialog.DialogController;
 import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters;
 import de.subcentral.watcher.dialog.ImportSettingItemsController.ImportSettingItemsParameters.SourceType;

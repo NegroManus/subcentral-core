@@ -7,10 +7,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.subcentral.fx.FxActions;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.SubCentralFxUtil;
+import de.subcentral.fx.action.FxActions;
 import de.subcentral.support.winrar.WinRar;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings;

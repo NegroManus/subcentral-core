@@ -1,4 +1,4 @@
-package de.subcentral.fx;
+package de.subcentral.fx.action;
 
 import java.io.File;
 import java.io.IOException;

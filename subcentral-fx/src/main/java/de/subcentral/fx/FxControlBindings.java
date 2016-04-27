@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.subcentral.fx.UserPattern.Mode;
+import de.subcentral.fx.action.FxActions;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.Property;

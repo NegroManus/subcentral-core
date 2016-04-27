@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import de.subcentral.core.util.CollectionUtil;
-import de.subcentral.fx.FxActions;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.TransformationList;
