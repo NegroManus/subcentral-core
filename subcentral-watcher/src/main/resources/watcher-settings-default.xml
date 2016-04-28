@@ -141,9 +141,9 @@
 	<naming>
 		<parameters>
 			<param key="de.subcentral.core.name.EpisodeNamer.alwaysIncludeTitle" value="false" />
-			<param key="de.subcentral.core.name.ReleaseNamer.preferName" value="true" />
-			<param key="de.subcentral.core.name.SubtitleNamer.includeGroup" value="true" />
-			<param key="de.subcentral.core.name.SubtitleNamer.includeSource" value="false" />
+ 			<param key="de.subcentral.core.name.ReleaseNamer.preferName" value="true" />
+ 			<param key="de.subcentral.core.name.SubtitleNamer.includeGroup" value="true" />
+ 			<param key="de.subcentral.core.name.SubtitleNamer.includeSource" value="false" />
 		</parameters>
 	</naming>
 

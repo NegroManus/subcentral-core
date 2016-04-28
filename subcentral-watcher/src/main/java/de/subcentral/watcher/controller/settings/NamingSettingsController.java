@@ -1,6 +1,7 @@
 package de.subcentral.watcher.controller.settings;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -8,12 +9,13 @@ import java.util.Objects;
 import de.subcentral.core.name.EpisodeNamer;
 import de.subcentral.core.name.ReleaseNamer;
 import de.subcentral.core.name.SubtitleNamer;
+import de.subcentral.core.util.CollectionUtil;
+import de.subcentral.core.util.ObjectUtil;
+import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.MapProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -61,31 +63,31 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		new NamingParamBinding(namingParams, settings.getNamingParameters().property());
 		FxControlBindings.sortableTableView(namingParamsTableView, namingParams);
 
-		namingParamsKeyColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyProperty());
+		namingParamsKeyColumn.setCellValueFactory((CellDataFeatures<NamingParam, String> param) -> param.getValue().keyObservable());
 		namingParamsKeyColumn.setCellFactory((TableColumn<NamingParam, String> column) -> new KeyTableCell());
 		namingParamsValueColumn.setCellValueFactory((CellDataFeatures<NamingParam, Boolean> param) -> param.getValue().valueProperty());
 		namingParamsValueColumn.setCellFactory(CheckBoxTableCell.forTableColumn(namingParamsValueColumn));
 	}
 
-	private static class NamingParam
+	private static class NamingParam implements Comparable<NamingParam>
 	{
-		private final ReadOnlyStringWrapper	key;
-		private final BooleanProperty		value;
+		private final ObservableValue<String>	key;
+		private final BooleanProperty			value;
 
 		private NamingParam(String key, boolean value)
 		{
-			this.key = new ReadOnlyStringWrapper(this, "key", key);
+			this.key = FxBindings.immutableObservableValue(key);
 			this.value = new SimpleBooleanProperty(this, "item", value);
 		}
 
 		public String getKey()
 		{
-			return key.get();
+			return key.getValue();
 		}
 
-		public ReadOnlyStringProperty keyProperty()
+		public ObservableValue<String> keyObservable()
 		{
-			return key.getReadOnlyProperty();
+			return key;
 		}
 
 		public boolean getValue()
@@ -101,6 +103,42 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		public BooleanProperty valueProperty()
 		{
 			return value;
+		}
+
+		// Object methods
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (obj instanceof NamingParam)
+			{
+				return Objects.equals(getKey(), ((NamingParam) obj).getKey());
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(NamingParam.class, getKey());
+		}
+
+		@Override
+		public int compareTo(NamingParam o)
+		{
+			// nulls first
+			if (this == o)
+			{
+				return 0;
+			}
+			if (o == null)
+			{
+				return 1;
+			}
+			return ObjectUtil.getDefaultStringOrdering().compare(getKey(), o.getKey());
 		}
 	}
 
@@ -174,13 +212,32 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 					updating = true;
 					try
 					{
-						if (change.wasAdded())
+						if (change.wasAdded() && change.wasRemoved())
 						{
 							for (NamingParam param : list)
 							{
-								if (change.getKey().equals(param.getKey()))
+								if (param.getKey().equals(change.getKey()))
 								{
 									param.setValue((Boolean) change.getValueAdded());
+									break;
+								}
+							}
+						}
+						else if (change.wasAdded())
+						{
+							NamingParam newItem = new NamingParam(change.getKey(), (Boolean) change.getValueAdded());
+							CollectionUtil.addToSortedList(list, newItem, ObjectUtil.getDefaultOrdering(), Object::equals);
+							newItem.valueProperty().addListener(listItemValueListener);
+						}
+						else if (change.wasRemoved())
+						{
+							Iterator<NamingParam> iter = list.iterator();
+							while (iter.hasNext())
+							{
+								if (iter.next().getKey().equals(change.getKey()))
+								{
+									iter.remove();
+									break;
 								}
 							}
 						}

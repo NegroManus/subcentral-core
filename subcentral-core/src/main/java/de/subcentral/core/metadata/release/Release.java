@@ -12,6 +12,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.PropNames;
 import de.subcentral.core.metadata.MetadataBase;
+import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.name.NamingUtil;
 import de.subcentral.core.util.ObjectUtil;
@@ -59,6 +60,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 	// Normally there are 2 to 4 Tags per Release
 	private final List<Tag>						tags					= new ArrayList<>(4);
 	private Group								group;
+	private Site								source;
 	private final List<String>					languages				= new ArrayList<>(1);
 	private String								category;
 	private Temporal							date;
@@ -226,6 +228,21 @@ public class Release extends MetadataBase implements Comparable<Release>
 	public void setGroup(Group group)
 	{
 		this.group = group;
+	}
+
+	/**
+	 * The source of this release. Typically a site that distributed the release. {@code null} if unknown.
+	 * 
+	 * @return the source (may be {@code null})
+	 */
+	public Site getSource()
+	{
+		return source;
+	}
+
+	public void setSource(Site source)
+	{
+		this.source = source;
 	}
 
 	/**
@@ -463,6 +480,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 				.add("media", ObjectUtil.nullIfEmpty(media))
 				.add("tags", ObjectUtil.nullIfEmpty(tags))
 				.add("group", group)
+				.add("source", source)
 				.add("languages", ObjectUtil.nullIfEmpty(languages))
 				.add("date", date)
 				.add("category", category)

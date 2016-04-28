@@ -67,14 +67,13 @@ public class SubtitleReleaseNamer extends AbstractPropertySequenceNamer<Subtitle
 		b.appendIfNotNull(SubtitleRelease.PROP_VERSION, subRls.getVersion());
 		if (sub != null)
 		{
-			// read includeGroup parameter
 			if (sub.getGroup() != null && ctx.getBoolean(PARAM_INCLUDE_GROUP, Boolean.TRUE))
 			{
 				b.append(Subtitle.PROP_GROUP, sub.getGroup());
 			}
-			else if (ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE))
+			if (sub.getSource() != null && ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE))
 			{
-				b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
+				b.append(Subtitle.PROP_SOURCE, sub.getSource());
 			}
 		}
 	}

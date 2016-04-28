@@ -21,9 +21,9 @@ import com.google.common.collect.ImmutableList;
  */
 public class TypeBasedCorrectionService implements CorrectionService
 {
-	private final String												name;
-	private final List<CorrectorEntry<?>>								correctorEntries		= new CopyOnWriteArrayList<>();
-	private final Map<Class<?>, Function<?, List<? extends Object>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
+	private final String											name;
+	private final List<CorrectorEntry<?>>							correctorEntries		= new CopyOnWriteArrayList<>();
+	private final Map<Class<?>, Function<?, ? extends Iterable<?>>>	nestedBeansRetrievers	= new ConcurrentHashMap<>(8);
 
 	public TypeBasedCorrectionService(String name)
 	{
@@ -59,7 +59,7 @@ public class TypeBasedCorrectionService implements CorrectionService
 		return false;
 	}
 
-	public <T> void registerNestedBeansRetriever(Class<T> beanType, Function<? super T, List<?>> retriever)
+	public <T> void registerNestedBeansRetriever(Class<T> beanType, Function<? super T, ? extends Iterable<?>> retriever)
 	{
 		nestedBeansRetrievers.put(beanType, retriever);
 	}
@@ -103,7 +103,7 @@ public class TypeBasedCorrectionService implements CorrectionService
 
 	private <T> void addNestedBeans(T bean, Queue<Object> queue, IdentityHashMap<Object, Object> alreadyCorrectedBeans)
 	{
-		Function<? super T, List<? extends Object>> nestedBeanRetriever = getNestedBeansRetriever(bean);
+		Function<? super T, ? extends Iterable<?>> nestedBeanRetriever = getNestedBeansRetriever(bean);
 		if (nestedBeanRetriever != null)
 		{
 			for (Object nestedBean : nestedBeanRetriever.apply(bean))
@@ -117,9 +117,9 @@ public class TypeBasedCorrectionService implements CorrectionService
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> Function<? super T, List<? extends Object>> getNestedBeansRetriever(T bean)
+	private <T> Function<? super T, ? extends Iterable<?>> getNestedBeansRetriever(T bean)
 	{
-		return (Function<? super T, List<? extends Object>>) nestedBeansRetrievers.get(bean.getClass());
+		return (Function<? super T, ? extends Iterable<?>>) nestedBeansRetrievers.get(bean.getClass());
 	}
 
 	@Override

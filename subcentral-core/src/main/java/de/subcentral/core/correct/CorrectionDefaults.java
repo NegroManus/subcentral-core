@@ -53,12 +53,12 @@ public class CorrectionDefaults
 		return DEFAULT_CORRECTION_SERVICE;
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(Series series)
+	public static Iterable<?> retrieveNestedBeans(Series series)
 	{
 		return series.getNetworks();
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(Season season)
+	public static Iterable<?> retrieveNestedBeans(Season season)
 	{
 		if (season.getSeries() != null)
 		{
@@ -67,7 +67,7 @@ public class CorrectionDefaults
 		return ImmutableList.of();
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(Episode epi)
+	public static Iterable<?> retrieveNestedBeans(Episode epi)
 	{
 		List<Object> nestedBeans = new ArrayList<>(2);
 		if (epi.getSeries() != null)
@@ -81,12 +81,12 @@ public class CorrectionDefaults
 		return nestedBeans;
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(Release rls)
+	public static Iterable<?> retrieveNestedBeans(Release rls)
 	{
 		return rls.getMedia();
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(Subtitle sub)
+	public static Iterable<?> retrieveNestedBeans(Subtitle sub)
 	{
 		if (sub.getMedia() != null)
 		{
@@ -95,7 +95,7 @@ public class CorrectionDefaults
 		return ImmutableList.of();
 	}
 
-	public static List<? extends Object> retrieveNestedBeans(SubtitleRelease subAdj)
+	public static Iterable<?> retrieveNestedBeans(SubtitleRelease subAdj)
 	{
 		List<Object> nestedBeans = new ArrayList<>(subAdj.getSubtitles().size() + subAdj.getMatchingReleases().size());
 		nestedBeans.addAll(subAdj.getSubtitles());
