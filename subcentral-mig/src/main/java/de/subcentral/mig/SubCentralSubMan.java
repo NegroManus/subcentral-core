@@ -41,7 +41,7 @@ public class SubCentralSubMan extends AbstractSqlApi
 
 	public void insertSeriesFromSeriesList(Series series) throws SQLException
 	{
-		String id = series.getId(SubCentralDe.SITE);
+		String id = series.getId(SubCentralDe.getSite());
 		if (id != null)
 		{
 			log.debug("The series {} already has the id {}. It will not be inserted", series, id);
@@ -57,7 +57,7 @@ public class SubCentralSubMan extends AbstractSqlApi
 			if (!series.getNetworks().isEmpty())
 			{
 				Network network = series.getNetworks().get(0);
-				networkId = network.getId(SubCentralDe.SITE);
+				networkId = network.getId(SubCentralDe.getSite());
 				if (networkId == null)
 				{
 
@@ -83,7 +83,7 @@ public class SubCentralSubMan extends AbstractSqlApi
 				int affectedRows = stmt.executeUpdate();
 				checkUpdated(series, affectedRows);
 				int generatedId = getGeneratedId(stmt);
-				series.setId(SubCentralDe.SITE, Integer.toString(generatedId));
+				series.setId(SubCentralDe.getSite(), Integer.toString(generatedId));
 			}
 		}
 		catch (SQLException e)

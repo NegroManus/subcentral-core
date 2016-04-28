@@ -34,15 +34,10 @@ import de.subcentral.support.releasescene.ReleaseScene;
 
 public class SubCentralDe
 {
-	public static final Site						SITE			= new Site("subcentral.de", "SubCentral.de", "https://www.subcentral.de/");
-
 	private static final Logger						log				= LogManager.getLogger(SubCentralDe.class.getName());
-	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE.getName());
 
-	static
-	{
-		PARSING_SERVICE.registerAll(SubtitleRelease.class, initParsers());
-	}
+	private static final Site						SITE			= new Site("subcentral.de", "SubCentral.de", "https://www.subcentral.de/");
+	private static final TypeBasedParsingService	PARSING_SERVICE	= initParsingService();
 
 	private SubCentralDe()
 	{
@@ -50,7 +45,7 @@ public class SubCentralDe
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<Parser<SubtitleRelease>> initParsers()
+	private static TypeBasedParsingService initParsingService()
 	{
 		ImmutableList.Builder<Parser<SubtitleRelease>> parsers = ImmutableList.builder();
 
@@ -86,7 +81,9 @@ public class SubCentralDe
 			}
 		}
 
-		return parsers.build();
+		TypeBasedParsingService service = new TypeBasedParsingService(SITE.getName());
+		service.registerAll(SubtitleRelease.class, parsers.build());
+		return service;
 	}
 
 	private static MappingMatcher<SimplePropDescriptor> buildMatcherBasedOnSceneMatcher(MappingMatcher<SimplePropDescriptor> sceneMatcher)
@@ -158,6 +155,11 @@ public class SubCentralDe
 		matchers.add(m105);
 
 		return new MultiMappingMatcher<>(matchers.build());
+	}
+
+	public static Site getSite()
+	{
+		return SITE;
 	}
 
 	public static ParsingService getParsingService()

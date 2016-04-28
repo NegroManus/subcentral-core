@@ -44,7 +44,7 @@ public class SubberListParser
 
 	public SubberListData parsePost(String postMessage)
 	{
-		Document doc = Jsoup.parse(postMessage, SubCentralDe.SITE.getLink());
+		Document doc = Jsoup.parse(postMessage, SubCentralDe.getSite().getLink());
 
 		final Pattern userIdPattern = Pattern.compile("page=User&userID=(\\d+)");
 		final SortedSet<ScContributor> subberList = new TreeSet<>();

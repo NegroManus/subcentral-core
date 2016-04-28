@@ -16,7 +16,6 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.parse.MappingMatcher;
 import de.subcentral.core.parse.MultiMappingMatcher;
-import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.parse.PatternMappingMatcher;
@@ -27,24 +26,18 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ItalianSubsNet
 {
-	public static final Site						SITE			= new Site("italiansubs.net", "italiansubs.net", "http://www.italiansubs.net/");
-
-	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SITE.getName());
-
-	static
-	{
-		PARSING_SERVICE.registerAll(SubtitleRelease.class, initParsers());
-	}
+	private static final Site						SITE			= new Site("italiansubs.net", "italiansubs.net", "http://www.italiansubs.net/");
+	private static final TypeBasedParsingService	PARSING_SERVICE	= initParsingService();
 
 	private ItalianSubsNet()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	private static List<Parser<SubtitleRelease>> initParsers()
+	private static TypeBasedParsingService initParsingService()
 	{
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
-		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, SITE.getName());
+		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, getSite().getName());
 		commonPredefMatchesBuilder.put(Subtitle.PROP_LANGUAGE, Locale.ITALIAN.toString());
 		ImmutableMap<SimplePropDescriptor, String> commonPredefMatches = commonPredefMatchesBuilder.build();
 
@@ -114,7 +107,15 @@ public class ItalianSubsNet
 
 		SubtitleReleaseParser multiEpisodeSubParser = new SubtitleReleaseParser(new MultiMappingMatcher<>(multiEpisodeMatchers.build()), ParsingDefaults.getDefaultMultiEpisodeMapper());
 
-		return ImmutableList.of(episodeSubParser, multiEpisodeSubParser);
+		TypeBasedParsingService service = new TypeBasedParsingService(SITE.getName());
+		service.register(SubtitleRelease.class, episodeSubParser);
+		service.register(SubtitleRelease.class, multiEpisodeSubParser);
+		return service;
+	}
+
+	public static Site getSite()
+	{
+		return SITE;
 	}
 
 	public static final ParsingService getParsingService()

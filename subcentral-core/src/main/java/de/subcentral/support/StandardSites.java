@@ -11,12 +11,12 @@ import de.subcentral.support.xrelto.XRelTo;
 
 public class StandardSites
 {
-	public static final Site	ADDIC7ED_COM	= Addic7edCom.SITE;
+	public static final Site	ADDIC7ED_COM	= Addic7edCom.getSite();
 	public static final Site	IMDB_COM		= new Site("imdb.com", "IMDb.com", "http://www.imdb.com/");
-	public static final Site	ITALIANSUBS_NET	= ItalianSubsNet.SITE;
+	public static final Site	ITALIANSUBS_NET	= ItalianSubsNet.getSite();
 	public static final Site	ORLYDB_COM		= OrlyDbCom.getSite();
 	public static final Site	PREDB_ME		= PreDbMe.getSite();
-	public static final Site	SUBCENTRAL_DE	= SubCentralDe.SITE;
+	public static final Site	SUBCENTRAL_DE	= SubCentralDe.getSite();
 	public static final Site	SUBHD_COM		= new Site("subhd.com", "SubHD.com", "http://subhd.com/");
 	public static final Site	THETVDB_COM		= TheTvDbCom.getSite();
 	public static final Site	THEMOVIEDB_ORG	= new Site("themoviedb.org", "themoviedb.org", "https://www.themoviedb.org/");

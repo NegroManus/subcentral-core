@@ -29,9 +29,8 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Addic7edCom
 {
-	public static final Site						SITE						= new Site("addic7ed.com", "Addic7ed.com", "http://www.addic7ed.com/");
-
-	private static final TypeBasedParsingService	PARSING_SERVICE				= createParsingService();
+	private static final Site						SITE						= new Site("addic7ed.com", "Addic7ed.com", "http://www.addic7ed.com/");
+	private static final TypeBasedParsingService	PARSING_SERVICE				= initParsingService();
 	private static final String						LANG_PATTERN				= "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian\\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
 	private static final String						TAGS_PATTERN				= "(.+)";
 	private static final String						LANG_TAGS_SOURCE_PATTERN	= "\\." + LANG_PATTERN + "\\." + TAGS_PATTERN + "\\.Addic7ed\\.com";
@@ -42,7 +41,7 @@ public class Addic7edCom
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	private static TypeBasedParsingService createParsingService()
+	private static TypeBasedParsingService initParsingService()
 	{
 		TypeBasedParsingService service = new TypeBasedParsingService(SITE.getName());
 		service.register(SubtitleRelease.class, createEpisodeSubtitleReleaseParser());
@@ -66,7 +65,7 @@ public class Addic7edCom
 		groups.put(8, GroupEntry.ofKey(Subtitle.PROP_LANGUAGE));
 		groups.put(9, GroupEntry.ofKey(SubtitleRelease.PROP_TAGS));
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMatches = ImmutableMap.builder();
-		predefMatches.put(Subtitle.PROP_SOURCE, SITE.getName());
+		predefMatches.put(Subtitle.PROP_SOURCE, getSite().getName());
 		predefMatches.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
 		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(pattern, groups.build(), predefMatches.build());
 
@@ -183,7 +182,7 @@ public class Addic7edCom
 		groups.put(4, GroupEntry.ofKey(Subtitle.PROP_LANGUAGE));
 		groups.put(5, GroupEntry.ofKey(SubtitleRelease.PROP_TAGS));
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMatches = ImmutableMap.builder();
-		predefMatches.put(Subtitle.PROP_SOURCE, SITE.getName());
+		predefMatches.put(Subtitle.PROP_SOURCE, getSite().getName());
 		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(pattern, groups.build(), predefMatches.build());
 
 		return new SubtitleReleaseParser(matcher, ParsingDefaults.getDefaultSingletonListMovieMapper());
@@ -208,6 +207,11 @@ public class Addic7edCom
 		matchers.add(matcher202);
 
 		return new MultiMappingMatcher<>(matchers.build());
+	}
+
+	public static Site getSite()
+	{
+		return SITE;
 	}
 
 	public static final ParsingService getParsingService()

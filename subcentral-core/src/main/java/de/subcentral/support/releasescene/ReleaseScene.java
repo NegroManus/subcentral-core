@@ -25,7 +25,6 @@ import de.subcentral.core.parse.MappingMatcher;
 import de.subcentral.core.parse.MovieMapper;
 import de.subcentral.core.parse.MultiEpisodeMapper;
 import de.subcentral.core.parse.MultiMappingMatcher;
-import de.subcentral.core.parse.Parser;
 import de.subcentral.core.parse.ParsingDefaults;
 import de.subcentral.core.parse.ParsingService;
 import de.subcentral.core.parse.PatternMappingMatcher;
@@ -37,20 +36,15 @@ import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseScene
 {
-	public static final String						SOURCE_ID		= "release.scene";
-	private static final TypeBasedParsingService	PARSING_SERVICE	= new TypeBasedParsingService(SOURCE_ID);
-
-	static
-	{
-		PARSING_SERVICE.registerAll(Release.class, initParsers());
-	}
+	public static final String						PARSING_SERVICE_NAME	= "release.scene";
+	private static final TypeBasedParsingService	PARSING_SERVICE			= initParsingService();
 
 	private ReleaseScene()
 	{
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	private static List<Parser<Release>> initParsers()
+	private static TypeBasedParsingService initParsingService()
 	{
 		String knownTagPattern = buildKnownTagPattern();
 		String firstTagPattern = buildFirstTagPattern(knownTagPattern);
@@ -251,7 +245,11 @@ public class ReleaseScene
 
 		ReleaseParser movieRlsParser = new ReleaseParser(new MultiMappingMatcher<>(movieRlsMatchers.build()), ParsingDefaults.createSingletonListMapper(new MovieMapper(pps)));
 
-		return ImmutableList.of(epiRlsParser, multiEpiRlsParser, movieRlsParser);
+		TypeBasedParsingService service = new TypeBasedParsingService(PARSING_SERVICE_NAME);
+		service.register(Release.class, epiRlsParser);
+		service.register(Release.class, multiEpiRlsParser);
+		service.register(Release.class, movieRlsParser);
+		return service;
 	}
 
 	public static String buildKnownTagPattern()

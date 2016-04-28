@@ -221,7 +221,7 @@ public class SeasonPostParser
 	{
 		WorkData data = new WorkData();
 		data.postTopic = postTopic;
-		data.postContent = Jsoup.parse(postMessage, SubCentralDe.SITE.getLink());
+		data.postContent = Jsoup.parse(postMessage, SubCentralDe.getSite().getLink());
 
 		// Topic
 		parseTopic(data);
@@ -1183,7 +1183,7 @@ public class SeasonPostParser
 				{
 					if (Migration.SUBTITLE_LANGUAGE_GERMAN.equals(sub.getLanguage()))
 					{
-						sub.setSource(SubCentralDe.SITE);
+						sub.setSource(SubCentralDe.getSite());
 					}
 				}
 			}

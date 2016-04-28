@@ -54,7 +54,7 @@ public class SeriesListParser
 
 	public SeriesListData parsePost(String postMessage)
 	{
-		Document doc = Jsoup.parse(postMessage, SubCentralDe.SITE.getLink());
+		Document doc = Jsoup.parse(postMessage, SubCentralDe.getSite().getLink());
 
 		final Pattern boardIdPattern = Pattern.compile("boardID=(\\d+)");
 		final Pattern threadIdPattern = Pattern.compile("threadID=(\\d+)");

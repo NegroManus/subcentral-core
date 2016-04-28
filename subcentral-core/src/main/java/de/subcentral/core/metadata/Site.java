@@ -17,7 +17,6 @@ public class Site extends NamedMetadataBase implements Comparable<Site>
 	public static final SimplePropDescriptor	PROP_LINK			= new SimplePropDescriptor(Site.class, PropNames.LINK);
 	public static final SimplePropDescriptor	PROP_IDS			= new SimplePropDescriptor(Site.class, PropNames.IDS);
 
-	private String								name;
 	private String								displayName;
 	private String								link;
 
