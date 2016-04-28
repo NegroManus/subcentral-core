@@ -33,8 +33,12 @@
             <Font size="18.0" />
          </font>
 		</Label>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
 		<CheckBox fx:id="compatibilityEnabledCheckBox" mnemonicParsing="false" text="Check for compatible releases" GridPane.rowIndex="2" />
-		<Label disable="true" text="Releases of the same group are always compatible." GridPane.rowIndex="4" />
 		<Label text="Cross-group compatibilities" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
          <font>
             <Font name="System Bold" />
@@ -42,6 +46,7 @@
          <GridPane.margin>
             <Insets top="25.0" />
          </GridPane.margin></Label>
+		<Label disable="true" text="Releases of the same group are always compatible." GridPane.rowIndex="4" />
 		<TableView fx:id="crossGroupCompatibilitiesTableView" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">
 			<columns>
 				<TableColumn fx:id="crossGroupCompatibilitiesEnabledColumn" prefWidth="60.0" text="Enabled" />
@@ -76,11 +81,6 @@
                </graphic></Button>
          </children>
       </HBox>
-      <Separator prefWidth="200.0" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets bottom="10.0" />
-         </GridPane.margin>
-      </Separator>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

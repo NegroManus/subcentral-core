@@ -30,6 +30,11 @@
 				</ImageView>
 			</graphic>
 		</Label>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="10.0" />
+         </GridPane.margin>
+      </Separator>
 		<Label text="Naming parameters" GridPane.rowIndex="2">
          <font>
             <Font name="System Bold" size="12.0" />
@@ -43,11 +48,6 @@
 				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
 			</columnResizePolicy>
 		</TableView>
-      <Separator prefWidth="200.0" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets bottom="10.0" />
-         </GridPane.margin>
-      </Separator>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

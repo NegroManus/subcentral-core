@@ -18,8 +18,28 @@
 		<RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES" />
 	</rowConstraints>
 	<children>
-		<ListView fx:id="langsListView" prefHeight="150.0" prefWidth="250.0" GridPane.rowIndex="1" />
 		<Label text="Languages:" GridPane.columnSpan="2147483647" />
+		<ListView fx:id="langsListView" prefHeight="150.0" prefWidth="250.0" GridPane.rowIndex="1" />
+      <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <Button fx:id="moveUpLangBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move up">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/up_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="moveDownLangBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move down">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/down_16.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+         </children>
+      </VBox>
 		<HBox spacing="5.0" GridPane.rowIndex="2">
 			<children>
 				<ComboBox fx:id="addableLangsComboBox" maxWidth="250.0" />
@@ -44,25 +64,5 @@
                </graphic></Button>
 			</children>
 		</HBox>
-      <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <children>
-            <Button fx:id="moveUpLangBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move up">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/up_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button fx:id="moveDownLangBtn" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move down">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/down_16.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-         </children>
-      </VBox>
 	</children>
 </GridPane>

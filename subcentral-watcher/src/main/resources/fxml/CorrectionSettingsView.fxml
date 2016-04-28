@@ -45,6 +45,15 @@
             <Font size="18.0" />
          </font>
 		</Label>
+      <Separator prefWidth="200.0" GridPane.rowIndex="1">
+         <padding>
+            <Insets bottom="10.0" />
+         </padding>
+      </Separator>
+      <Label text="Correction rules" GridPane.rowIndex="2">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
 		<Label disable="true" text="Add rules to correct the parsed data before querying the databases and to correct the query results after querying the databases." wrapText="true" GridPane.rowIndex="3" />
 		<TableView fx:id="correctorsTableView" editable="true" minHeight="100.0" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="4">
 			<columns>
@@ -100,15 +109,6 @@
             </Button>
 			</children>
 		</HBox>
-      <Separator prefWidth="200.0" GridPane.rowIndex="1">
-         <padding>
-            <Insets bottom="10.0" />
-         </padding>
-      </Separator>
-      <Label text="Correction rules" GridPane.rowIndex="2">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font></Label>
 	</children>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

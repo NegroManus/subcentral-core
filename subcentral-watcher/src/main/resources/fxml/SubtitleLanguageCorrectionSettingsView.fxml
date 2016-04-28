@@ -244,6 +244,7 @@
 				<RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
+            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" />
 				<Label text="Testing" GridPane.rowIndex="1">
 					<font>
 						<Font name="System Bold" />
@@ -253,10 +254,9 @@
                </GridPane.margin>
 				</Label>
 				<Label text="Input language text" GridPane.rowIndex="2" />
-				<Label text="Output language text" GridPane.rowIndex="3" />
 				<TextField fx:id="testingInputTxtFld" promptText="type in a language to test the correction" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+				<Label text="Output language text" GridPane.rowIndex="3" />
 				<TextField fx:id="testingOutputTxtFld" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" />
 			</children>
 			<BorderPane.margin>
 				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
