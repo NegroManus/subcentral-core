@@ -12,6 +12,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.parse.ParsingService;
+import de.subcentral.core.util.ServiceUtil;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
 import de.subcentral.fx.settings.SimpleDeactivatableSettingsItem;
 import de.subcentral.support.addic7edcom.Addic7edCom;
@@ -66,15 +67,7 @@ public class ParsingServiceSettingsItem extends SimpleDeactivatableSettingsItem<
 			for (HierarchicalConfiguration<ImmutableNode> parsingServiceCfg : parsingServiceCfgs)
 			{
 				String name = parsingServiceCfg.getString("");
-				ParsingService service = null;
-				for (ParsingService s : getAvailableParsingServices())
-				{
-					if (s.getName().equals(name))
-					{
-						service = s;
-						break;
-					}
-				}
+				ParsingService service = ServiceUtil.getService(getAvailableParsingServices(), name);
 				if (service == null)
 				{
 					throw new IllegalArgumentException("Unknown parsing service: " + name);

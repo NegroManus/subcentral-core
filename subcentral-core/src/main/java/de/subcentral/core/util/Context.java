@@ -46,6 +46,7 @@ public abstract class Context
 			this.data = ImmutableMap.copyOf(data);
 		}
 
+		@Override
 		public <T> T get(String key, Class<T> type)
 		{
 			Object value = data.get(key);
@@ -56,6 +57,7 @@ public abstract class Context
 			return null;
 		}
 
+		@Override
 		public <T> T get(String key, Class<T> type, T defaultValue)
 		{
 			Object value = data.get(key);
@@ -66,26 +68,31 @@ public abstract class Context
 			return defaultValue;
 		}
 
+		@Override
 		public Boolean getBoolean(String key)
 		{
 			return get(key, Boolean.class);
 		}
 
+		@Override
 		public Boolean getBoolean(String key, Boolean defaultValue)
 		{
 			return get(key, Boolean.class, defaultValue);
 		}
 
+		@Override
 		public String getString(String key)
 		{
 			return get(key, String.class);
 		}
 
+		@Override
 		public String getString(String key, String defaultValue)
 		{
 			return get(key, String.class, defaultValue);
 		}
 
+		@Override
 		public Map<String, Object> asMap()
 		{
 			return data;
@@ -94,36 +101,43 @@ public abstract class Context
 
 	private static class EmptyContext extends Context
 	{
+		@Override
 		public <T> T get(String key, Class<T> type)
 		{
 			return null;
 		}
 
+		@Override
 		public <T> T get(String key, Class<T> type, T defaultValue)
 		{
 			return defaultValue;
 		}
 
+		@Override
 		public Boolean getBoolean(String key)
 		{
 			return null;
 		}
 
+		@Override
 		public Boolean getBoolean(String key, Boolean defaultValue)
 		{
 			return defaultValue;
 		}
 
+		@Override
 		public String getString(String key)
 		{
 			return null;
 		}
 
+		@Override
 		public String getString(String key, String defaultValue)
 		{
 			return defaultValue;
 		}
 
+		@Override
 		public Map<String, Object> asMap()
 		{
 			return ImmutableMap.of();

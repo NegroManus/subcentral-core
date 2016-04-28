@@ -13,6 +13,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.service.MetadataService;
+import de.subcentral.core.util.ServiceUtil;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
 import de.subcentral.fx.settings.SimpleDeactivatableSettingsItem;
 import de.subcentral.support.orlydbcom.OrlyDbCom;
@@ -126,15 +127,7 @@ public class MetadataServiceSettingsItem extends SimpleDeactivatableSettingsItem
 			for (HierarchicalConfiguration<ImmutableNode> serviceCfg : rlsDbCfgs)
 			{
 				String name = serviceCfg.getString("");
-				MetadataService service = null;
-				for (MetadataService s : getAvailableMetadataServices())
-				{
-					if (s.getName().equals(name))
-					{
-						service = s;
-						break;
-					}
-				}
+				MetadataService service = ServiceUtil.getService(getAvailableMetadataServices(), name);
 				if (service == null)
 				{
 					throw new IllegalArgumentException("Unknown metadata service: " + name);
