@@ -107,7 +107,7 @@ public class SeriesNameCorrector implements Corrector<Series>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(SeriesNameCorrector.class, ObjectUtil.patternHashCode(namePattern), nameReplacement, aliasNamesReplacement, titleReplacement);
+		return Objects.hash(ObjectUtil.patternHashCode(namePattern), nameReplacement, aliasNamesReplacement, titleReplacement);
 	}
 
 	@Override

@@ -163,7 +163,7 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Contribution.class, contributor, type, description);
+		return Objects.hash(contributor, type, description);
 	}
 
 	@Override

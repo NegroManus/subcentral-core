@@ -353,7 +353,7 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Series.class, name);
+		return Objects.hashCode(name);
 	}
 
 	@Override

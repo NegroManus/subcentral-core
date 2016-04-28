@@ -1,7 +1,6 @@
 package de.subcentral.core.metadata.release;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.ValidationUtil;
@@ -60,7 +59,7 @@ public class Group implements Comparable<Group>, Serializable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Group.class, ObjectUtil.stringHashCodeIgnoreCase(name));
+		return ObjectUtil.stringHashCodeIgnoreCase(name);
 	}
 
 	@Override

@@ -70,7 +70,7 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(SimplePropDescriptor.class, beanClass, propName);
+		return Objects.hash(beanClass, propName);
 	}
 
 	@Override

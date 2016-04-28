@@ -8,7 +8,7 @@ import de.subcentral.core.PropNames;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Site extends MetadataBase implements Comparable<Site>
+public class Site extends NamedMetadataBase implements Comparable<Site>
 {
 	private static final long					serialVersionUID	= 1932132712639923592L;
 
@@ -41,16 +41,6 @@ public class Site extends MetadataBase implements Comparable<Site>
 		this.name = name;
 		this.displayName = displayName;
 		this.link = link;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
 	}
 
 	public String getDisplayName()
@@ -96,7 +86,7 @@ public class Site extends MetadataBase implements Comparable<Site>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Site.class, name);
+		return Objects.hashCode(name);
 	}
 
 	@Override

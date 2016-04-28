@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -150,7 +149,7 @@ public class Tag implements Comparable<Tag>, Serializable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Tag.class, ObjectUtil.stringHashCodeIgnoreCase(name));
+		return ObjectUtil.stringHashCodeIgnoreCase(name);
 	}
 
 	@Override

@@ -367,7 +367,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Subtitle.class, media, language, group, source);
+		return Objects.hash(media, language, group, source);
 	}
 
 	@Override

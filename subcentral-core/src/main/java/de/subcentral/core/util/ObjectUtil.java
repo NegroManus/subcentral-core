@@ -33,7 +33,7 @@ public class ObjectUtil
 
 	public static boolean stringEqualIgnoreCase(String s1, String s2)
 	{
-		return s1 != null ? s1.equalsIgnoreCase(s2) : s2 == null;
+		return (s1 == s2) || (s1 != null && s1.equalsIgnoreCase(s2));
 	}
 
 	public static int stringHashCodeIgnoreCase(String s)
@@ -48,7 +48,7 @@ public class ObjectUtil
 
 	public static int patternHashCode(Pattern p)
 	{
-		return Objects.hash(Pattern.class, p.pattern(), p.flags());
+		return Objects.hash(p.pattern(), p.flags());
 	}
 
 	public static <E> Collection<E> nullIfEmpty(Collection<E> c)

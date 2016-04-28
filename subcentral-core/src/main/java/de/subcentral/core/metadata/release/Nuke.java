@@ -74,7 +74,7 @@ public class Nuke implements Comparable<Nuke>, Serializable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Nuke.class, reason, date, unnuke);
+		return Objects.hash(reason, date, unnuke);
 	}
 
 	@Override

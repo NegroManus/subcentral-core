@@ -2,6 +2,8 @@ package de.subcentral.core.metadata.media;
 
 import java.util.List;
 
+import de.subcentral.core.metadata.NamedMetadata;
+
 /**
  * Some medias have explicit names (like {@link Movie} or {@link Series}).
  * 
@@ -58,15 +60,8 @@ import java.util.List;
  * </p>
  *
  */
-public interface NamedMedia extends Media
+public interface NamedMedia extends Media, NamedMetadata
 {
-	/**
-	 * The unique, primary name of this media.
-	 * 
-	 * @return the name
-	 */
-	public String getName();
-
 	/**
 	 * Alias names for this media. For example, "House of Cards (US)"'s alias name is "House of Cards (2013)".
 	 * 

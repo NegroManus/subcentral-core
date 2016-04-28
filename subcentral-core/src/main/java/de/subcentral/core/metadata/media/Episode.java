@@ -333,7 +333,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Episode.class, series, season, numberInSeason, numberInSeries, date, title);
+		return Objects.hash(series, season, numberInSeason, numberInSeries, date, title);
 	}
 
 	@Override
@@ -369,7 +369,7 @@ public class Episode extends MediaBase implements Comparable<Episode>
 				.omitNullValues()
 				.add("series.name", series != null ? series.name : null)
 				.add("numberInSeries", numberInSeries)
-				.add("season.name", season != null ? NamingDefaults.getDefaultSeasonNamer().name(season) : null)
+				.add("season.<name>", season != null ? NamingDefaults.getDefaultSeasonNamer().name(season) : null)
 				.add("numberInSeason", numberInSeason)
 				.add("title", title)
 				.add("date", date)

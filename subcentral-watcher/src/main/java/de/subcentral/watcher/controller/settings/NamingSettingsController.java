@@ -123,7 +123,7 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(NamingParam.class, getKey());
+			return Objects.hashCode(getKey());
 		}
 
 		@Override

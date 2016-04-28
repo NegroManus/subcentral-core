@@ -228,7 +228,7 @@ public class Season extends MediaBase implements Comparable<Season>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Season.class, series, number, title);
+		return Objects.hash(series, number, title);
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.PropNames;
-import de.subcentral.core.metadata.MetadataBase;
+import de.subcentral.core.metadata.NamedMetadataBase;
 import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.name.NamingUtil;
@@ -31,7 +31,7 @@ import de.subcentral.core.util.ValidationUtil;
  * So, every Release contains a set of media, has a list of release tags and is released by its release group.
  *
  */
-public class Release extends MetadataBase implements Comparable<Release>
+public class Release extends NamedMetadataBase implements Comparable<Release>
 {
 	private static final long					serialVersionUID		= 3021851008940378834L;
 
@@ -170,6 +170,7 @@ public class Release extends MetadataBase implements Comparable<Release>
 	 * 
 	 * @return the name
 	 */
+	@Override
 	public String getName()
 	{
 		return name;
@@ -463,12 +464,12 @@ public class Release extends MetadataBase implements Comparable<Release>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Release.class, media, group, tags);
+		return Objects.hash(media, group, tags);
 	}
 
 	public int hashCodeByName()
 	{
-		return Objects.hash(Release.class, ObjectUtil.stringHashCodeIgnoreCase(name));
+		return ObjectUtil.stringHashCodeIgnoreCase(name);
 	}
 
 	@Override
@@ -528,6 +529,6 @@ public class Release extends MetadataBase implements Comparable<Release>
 		{
 			return 1;
 		}
-		return ComparisonChain.start().compare(name, o.name, ObjectUtil.getDefaultStringOrdering()).result();
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 }

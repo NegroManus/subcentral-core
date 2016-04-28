@@ -86,7 +86,7 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(GenericMedia.class, name);
+		return Objects.hashCode(name);
 	}
 
 	@Override

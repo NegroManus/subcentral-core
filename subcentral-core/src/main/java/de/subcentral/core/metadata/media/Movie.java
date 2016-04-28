@@ -80,7 +80,7 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Movie.class, name);
+		return Objects.hashCode(name);
 	}
 
 	@Override

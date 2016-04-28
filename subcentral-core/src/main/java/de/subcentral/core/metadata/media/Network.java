@@ -56,7 +56,7 @@ public class Network extends MetadataBase implements Comparable<Network>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(Network.class, name);
+		return Objects.hashCode(name);
 	}
 
 	@Override

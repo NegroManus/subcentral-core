@@ -14,7 +14,7 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.PropNames;
 import de.subcentral.core.metadata.Contribution;
 import de.subcentral.core.metadata.Contributor;
-import de.subcentral.core.metadata.MetadataBase;
+import de.subcentral.core.metadata.NamedMetadataBase;
 import de.subcentral.core.metadata.Work;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
@@ -25,7 +25,7 @@ import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.ValidationUtil;
 
-public class SubtitleRelease extends MetadataBase implements Work, Comparable<SubtitleRelease>
+public class SubtitleRelease extends NamedMetadataBase implements Work, Comparable<SubtitleRelease>
 {
 	private static final long					serialVersionUID		= 3266903304683246434L;
 
@@ -82,7 +82,6 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 	 */
 	public static final String			CONTRIBUTION_TYPE_CUSTOMIZATION	= "CUSTOMIZATION";
 
-	private String						name;
 	// In 99% of the cases, there is only one subtitle, at most 2
 	private final List<Subtitle>		subtitles						= new ArrayList<>(1);
 	// Normally there are 0 extra tags
@@ -156,16 +155,6 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 		}
 		subAdjustment.getMatchingReleases().add(matchingRelease);
 		return subAdjustment;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
 	}
 
 	// Properties
@@ -411,12 +400,12 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(SubtitleRelease.class, subtitles, tags, matchingReleases, version);
+		return Objects.hash(subtitles, tags, matchingReleases, version);
 	}
 
 	public int hashCodeByName()
 	{
-		return Objects.hash(SubtitleRelease.class, ObjectUtil.stringHashCodeIgnoreCase(name));
+		return ObjectUtil.stringHashCodeIgnoreCase(name);
 	}
 
 	@Override
@@ -470,6 +459,6 @@ public class SubtitleRelease extends MetadataBase implements Work, Comparable<Su
 		{
 			return 1;
 		}
-		return ComparisonChain.start().compare(name, o.name, ObjectUtil.getDefaultStringOrdering()).result();
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 }

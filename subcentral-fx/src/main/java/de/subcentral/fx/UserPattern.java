@@ -137,7 +137,7 @@ public class UserPattern implements Comparable<UserPattern>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(UserPattern.class, pattern, mode);
+		return Objects.hash(pattern, mode);
 	}
 
 	@Override

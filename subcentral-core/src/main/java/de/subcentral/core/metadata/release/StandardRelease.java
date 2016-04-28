@@ -52,7 +52,8 @@ public class StandardRelease implements Comparable<StandardRelease>
 		}
 		if (obj instanceof StandardRelease)
 		{
-			return release.equals(((StandardRelease) obj).release);
+			StandardRelease o = (StandardRelease) obj;
+			return release.equals(o.release) && scope == o.scope;
 		}
 		return false;
 	}
@@ -60,7 +61,7 @@ public class StandardRelease implements Comparable<StandardRelease>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(StandardRelease.class, release);
+		return Objects.hash(release, scope);
 	}
 
 	@Override

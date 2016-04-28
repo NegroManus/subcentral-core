@@ -14,11 +14,11 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.correct.CorrectionDefaults;
+import de.subcentral.core.metadata.NamedMetadata;
 import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.media.MultiEpisodeHelper;
-import de.subcentral.core.metadata.media.NamedMedia;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
@@ -41,7 +41,7 @@ public class NamingDefaults
 	private static final Function<String, String>	SUBTITLE_RELEASE_NAME_FORMATTER					= initSubtitleReleaseNameFormatter();
 	private static final Function<String, String>	NORMALIZING_FORMATTER							= initNormalizingFormatter();
 
-	private static final SimplePrintPropService		PRINT_PROP_SERVICE							= new SimplePrintPropService();
+	private static final SimplePrintPropService		PRINT_PROP_SERVICE								= new SimplePrintPropService();
 
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
@@ -58,7 +58,7 @@ public class NamingDefaults
 	private static EpisodeNamer						EPISODE_NAMER;
 	private static MultiEpisodeNamer				MULTI_EPISODE_NAMER;
 	private static MultiEpisodeNamer				MULTI_EPISODE_RANGE_NAMER;
-	private static NamedMediaNamer					NAMED_MEDIA_NAMER;
+	private static NamedMetadataNamer				NAMED_MEDIA_NAMER;
 	private static ReleaseNamer						RELEASE_NAMER;
 	private static SubtitleNamer					SUBTITLE_NAMER;
 	private static SubtitleReleaseNamer				SUBTITLE_RELEASE_NAMER;
@@ -124,8 +124,8 @@ public class NamingDefaults
 		// MovieNamer
 		MOVIE_NAMER = new MovieNamer(config);
 
-		// NamedMediaNamer
-		NAMED_MEDIA_NAMER = new NamedMediaNamer(config);
+		// NamedMetadataNamer
+		NAMED_MEDIA_NAMER = new NamedMetadataNamer(config);
 
 		// ReleaseNamer
 		RELEASE_NAMER = new ReleaseNamer(configWithRlsNameFormatter, RELEASE_MEDIA_NAMING_SERVICE);
@@ -146,7 +146,7 @@ public class NamingDefaults
 		namers.add(NamerEntry.of(Predicates.instanceOf(Movie.class), MOVIE_NAMER));
 		namers.add(NamerEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
 		namers.add(NamerEntry.of(Predicates.instanceOf(Subtitle.class), SUBTITLE_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(NamedMedia.class), NAMED_MEDIA_NAMER));
+		namers.add(NamerEntry.of(Predicates.instanceOf(NamedMetadata.class), NAMED_MEDIA_NAMER));
 		NAMING_SERVICE.getConditionalNamingEntries().addAll(namers);
 
 		// Add a special NamingService which formats the episode numbers different than the default NamingService
