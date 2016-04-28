@@ -74,6 +74,12 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 	}
 
 	@Override
+	public String toString()
+	{
+		return getName();
+	}
+
+	@Override
 	public int compareTo(SimplePropDescriptor o)
 	{
 		if (this == o)
@@ -89,11 +95,5 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 				.compare(beanClass.getName(), o.beanClass.getName(), ObjectUtil.getDefaultStringOrdering())
 				.compare(propName, o.propName, ObjectUtil.getDefaultStringOrdering())
 				.result();
-	}
-
-	@Override
-	public String toString()
-	{
-		return getName();
 	}
 }
