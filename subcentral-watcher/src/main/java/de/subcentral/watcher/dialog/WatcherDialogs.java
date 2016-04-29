@@ -34,15 +34,15 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "StandardReleaseEditView.fxml");
 	}
 
-	public static Optional<CrossGroupCompatibilityRule> showCrossGroupCompatibilityEditView(Window window)
+	public static Optional<CrossGroupCompatibilityRule> showCrossGroupCompatibilityRuleEditView(Window window)
 	{
-		return showCrossGroupCompatibilityEditView(null, window);
+		return showCrossGroupCompatibilityRuleEditView(null, window);
 	}
 
-	public static Optional<CrossGroupCompatibilityRule> showCrossGroupCompatibilityEditView(CrossGroupCompatibilityRule crossGroupCompatibilityRule, Window window)
+	public static Optional<CrossGroupCompatibilityRule> showCrossGroupCompatibilityRuleEditView(CrossGroupCompatibilityRule crossGroupCompatibilityRule, Window window)
 	{
-		CrossGroupCompatibilityEditController ctrl = new CrossGroupCompatibilityEditController(crossGroupCompatibilityRule, window);
-		return showEditViewAndWait(ctrl, "CrossGroupCompatibilityEditView.fxml");
+		CrossGroupCompatibilityRuleEditController ctrl = new CrossGroupCompatibilityRuleEditController(crossGroupCompatibilityRule, window);
+		return showEditViewAndWait(ctrl, "CrossGroupCompatibilityRuleEditView.fxml");
 	}
 
 	public static Optional<SeriesNameCorrectorSettingsItem> showSeriesNameCorrectionRuleEditView(Window window)

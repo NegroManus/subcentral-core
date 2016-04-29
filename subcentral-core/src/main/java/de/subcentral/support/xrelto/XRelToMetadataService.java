@@ -356,7 +356,7 @@ public class XRelToMetadataService extends HttpMetadataService
 		}
 		catch (NumberFormatException e)
 		{
-			log.warn("Could not parse release size string '" + sizeSpan.text() + "' (URL=" + doc.baseUri() + ")", e);
+			log.warn("Could not parse release size string '" + sizeSpan.text() + "'; URL=" + doc.baseUri() + "); exception: " + e);
 		}
 
 		rls.getFurtherInfoLinks().add(doc.baseUri());

@@ -76,12 +76,12 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		ActionList<CrossGroupCompatibilityRuleSettingsItem> compsActionList = new ActionList<>(comps, crossGroupCompatibilityRulesTableView.getSelectionModel(), displayComps);
 		compsActionList.setNewItemSupplier(() ->
 		{
-			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityEditView(getPrimaryStage());
+			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityRuleEditView(getPrimaryStage());
 			return result.isPresent() ? Optional.of(new CrossGroupCompatibilityRuleSettingsItem(result.get(), true)) : Optional.empty();
 		});
 		compsActionList.setItemEditer((CrossGroupCompatibilityRuleSettingsItem item) ->
 		{
-			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityEditView(item.getItem(), getPrimaryStage());
+			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityRuleEditView(item.getItem(), getPrimaryStage());
 			return result.isPresent() ? Optional.of(new CrossGroupCompatibilityRuleSettingsItem(result.get(), item.isEnabled())) : Optional.empty();
 		});
 		compsActionList.setDistincter(Objects::equals);

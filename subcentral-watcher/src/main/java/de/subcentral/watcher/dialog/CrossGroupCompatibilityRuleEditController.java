@@ -13,7 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
-public class CrossGroupCompatibilityEditController extends BeanEditController<CrossGroupCompatibilityRule>
+public class CrossGroupCompatibilityRuleEditController extends BeanEditController<CrossGroupCompatibilityRule>
 {
 	@FXML
 	private TextField	compatibleGroupTxtFld;
@@ -22,7 +22,7 @@ public class CrossGroupCompatibilityEditController extends BeanEditController<Cr
 	@FXML
 	private CheckBox	symmetricCheckBox;
 
-	public CrossGroupCompatibilityEditController(CrossGroupCompatibilityRule bean, Window window)
+	public CrossGroupCompatibilityRuleEditController(CrossGroupCompatibilityRule bean, Window window)
 	{
 		super(bean, window);
 	}
