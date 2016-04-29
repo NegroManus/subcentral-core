@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableSet;
@@ -113,7 +111,7 @@ public class CrossGroupCompatibility implements Compatibility, Comparable<CrossG
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(13, 67).append(sourceGroup).append(compatibleGroup).append(symmetric).toHashCode();
+		return Objects.hash(sourceGroup, compatibleGroup, symmetric);
 	}
 
 	@Override
@@ -141,6 +139,10 @@ public class CrossGroupCompatibility implements Compatibility, Comparable<CrossG
 	@Override
 	public int compareTo(CrossGroupCompatibility o)
 	{
+		if (this == o)
+		{
+			return 0;
+		}
 		// nulls first
 		if (o == null)
 		{
