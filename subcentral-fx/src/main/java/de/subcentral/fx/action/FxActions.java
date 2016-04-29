@@ -22,6 +22,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.IOUtil.ProcessResult;
+import de.subcentral.fx.FxNodes;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -229,6 +230,7 @@ public class FxActions
 			return null;
 		}
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		FxNodes.fixAlertHeight(alert);
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 		alert.setResizable(true);
 		alert.setTitle("Remove this " + elementType + "?");
@@ -475,6 +477,7 @@ public class FxActions
 		return (E item) ->
 		{
 			Alert alert = new Alert(AlertType.INFORMATION);
+			FxNodes.fixAlertHeight(alert);
 			alert.initOwner(owner);
 			alert.setTitle("Conflict with existing " + itemType + "");
 			alert.setHeaderText("The " + itemType + " is in conflict with an existing " + itemType + ". No changes were made.");
@@ -488,6 +491,7 @@ public class FxActions
 		return (E item) ->
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
+			FxNodes.fixAlertHeight(alert);
 			alert.initOwner(owner);
 			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 			alert.setResizable(true);

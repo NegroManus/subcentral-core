@@ -391,7 +391,7 @@ public class SettingsController extends SubController<WatcherMainController>
 	public void confirmSaveSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
-		FxUtil.fixAlertHeight(alert);
+		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(getPrimaryStage());
 		alert.setTitle("Save settings?");
 		alert.setHeaderText("Do you want to save the current settings?");
@@ -410,7 +410,7 @@ public class SettingsController extends SubController<WatcherMainController>
 		if (defaultSettingsLoaded.get() || SettingsController.SETTINGS.changed())
 		{
 			Alert alert = new Alert(AlertType.CONFIRMATION);
-			FxUtil.fixAlertHeight(alert);
+			FxNodes.fixAlertHeight(alert);
 			alert.initOwner(getPrimaryStage());
 			alert.setTitle("Save settings?");
 			alert.setHeaderText("Do you want to save the current settings?");
@@ -432,7 +432,7 @@ public class SettingsController extends SubController<WatcherMainController>
 	public void confirmRestoreLastSavedSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
-		FxUtil.fixAlertHeight(alert);
+		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(getPrimaryStage());
 		alert.setTitle("Restore last saved settings?");
 		alert.setHeaderText("Do you want restore the last saved settings?");
@@ -449,7 +449,7 @@ public class SettingsController extends SubController<WatcherMainController>
 	public void confirmRestoreDefaultSettings()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
-		FxUtil.fixAlertHeight(alert);
+		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(getPrimaryStage());
 		alert.setTitle("Restore default settings?");
 		alert.setHeaderText("Do you want to restore the default settings?");

@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
-public class MapSettingsProperty<K, V> extends ObjectSettingsPropertyBase<ObservableMap<K, V>, MapProperty<K, V>>
+public final class MapSettingsProperty<K, V> extends ObjectSettingsPropertyBase<ObservableMap<K, V>, MapProperty<K, V>>
 {
 	public MapSettingsProperty(String key, ConfigurationPropertyHandler<ObservableMap<K, V>> handler)
 	{

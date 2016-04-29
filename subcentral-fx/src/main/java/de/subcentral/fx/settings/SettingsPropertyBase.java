@@ -3,6 +3,8 @@ package de.subcentral.fx.settings;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import com.google.common.base.MoreObjects;
+
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 
@@ -50,5 +52,11 @@ public abstract class SettingsPropertyBase<T, P extends Property<T>> extends Set
 	public void setValue(T value)
 	{
 		property.setValue(value);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(getClass()).add("key", key).add("property", property).toString();
 	}
 }

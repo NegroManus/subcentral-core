@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class StringSettingsProperty extends SettingsPropertyBase<String, StringProperty>
+public final class StringSettingsProperty extends SettingsPropertyBase<String, StringProperty>
 {
 	private static final Logger log = LogManager.getLogger(StringSettingsProperty.class);
 

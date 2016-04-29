@@ -1,5 +1,7 @@
 package de.subcentral.fx.settings;
 
+import com.google.common.base.MoreObjects;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -29,5 +31,11 @@ public class SimpleDeactivatableSettingsItem<T> extends SimpleSettingsItem<T> im
 	public final void setEnabled(final boolean enabled)
 	{
 		this.enabled.set(enabled);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(getClass()).add("item", item).add("enabled", enabled).toString();
 	}
 }

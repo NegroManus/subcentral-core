@@ -357,21 +357,6 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	}
 
 	@Override
-	public int compareTo(Series o)
-	{
-		if (this == o)
-		{
-			return 0;
-		}
-		// nulls first
-		if (o == null)
-		{
-			return 1;
-		}
-		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
-	}
-
-	@Override
 	public String toString()
 	{
 		return MoreObjects.toStringHelper(Series.class)
@@ -397,5 +382,20 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 				.add("episodes.size()", ObjectUtil.nullIfZero(episodes.size()))
 				.add("seasons.size()", ObjectUtil.nullIfZero(seasons.size()))
 				.toString();
+	}
+
+	@Override
+	public int compareTo(Series o)
+	{
+		if (this == o)
+		{
+			return 0;
+		}
+		// nulls first
+		if (o == null)
+		{
+			return 1;
+		}
+		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 }

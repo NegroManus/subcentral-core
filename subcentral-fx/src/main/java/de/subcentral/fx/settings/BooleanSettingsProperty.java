@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, BooleanProperty>
+public final class BooleanSettingsProperty extends SettingsPropertyBase<Boolean, BooleanProperty>
 {
 	private static final Logger log = LogManager.getLogger(BooleanSettingsProperty.class);
 

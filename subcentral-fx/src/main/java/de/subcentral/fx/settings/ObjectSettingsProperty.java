@@ -3,7 +3,7 @@ package de.subcentral.fx.settings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ObjectSettingsProperty<T> extends ObjectSettingsPropertyBase<T, Property<T>>
+public final class ObjectSettingsProperty<T> extends ObjectSettingsPropertyBase<T, Property<T>>
 {
 	public ObjectSettingsProperty(String key, ConfigurationPropertyHandler<T> handler)
 	{

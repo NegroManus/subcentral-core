@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import de.subcentral.core.util.NamedThreadFactory;
 import de.subcentral.fx.FxIO;
+import de.subcentral.fx.FxNodes;
 import de.subcentral.fx.ctrl.MainController;
 import de.subcentral.fx.ctrl.TaskExecutor;
 import de.subcentral.mig.process.MigrationAssistance;
@@ -170,6 +171,7 @@ public class MigMainController extends MainController
 	public void cancel()
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(primaryStage);
 		alert.setTitle("Cancel migration?");
 		alert.setHeaderText("Do you really want to cancel the migration?");

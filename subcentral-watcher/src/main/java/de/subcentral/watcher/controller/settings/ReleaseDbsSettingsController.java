@@ -17,7 +17,7 @@ import de.subcentral.fx.action.FxActions;
 import de.subcentral.watcher.settings.MetadataServiceSettingsItem;
 import de.subcentral.watcher.settings.MetadataServiceSettingsItem.Availability;
 import de.subcentral.watcher.settings.ProcessingSettings;
-import javafx.beans.Observable;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -37,24 +37,24 @@ import javafx.scene.layout.HBox;
 
 public class ReleaseDbsSettingsController extends AbstractSettingsSectionController
 {
-	private static final Logger											log	= LogManager.getLogger(ReleaseDbsSettingsController.class);
+	private static final Logger														log	= LogManager.getLogger(ReleaseDbsSettingsController.class);
 
 	@FXML
-	private GridPane													rootPane;
+	private GridPane																rootPane;
 	@FXML
-	private Button														recheckAvailabilitiesButton;
+	private Button																	recheckAvailabilitiesButton;
 	@FXML
-	private TableView<MetadataServiceSettingsItem>							releaseDbsTableView;
+	private TableView<MetadataServiceSettingsItem>									releaseDbsTableView;
 	@FXML
-	private TableColumn<MetadataServiceSettingsItem, Boolean>				releaseDbsEnabledColumn;
+	private TableColumn<MetadataServiceSettingsItem, Boolean>						releaseDbsEnabledColumn;
 	@FXML
 	private TableColumn<MetadataServiceSettingsItem, MetadataServiceSettingsItem>	releaseDbsNameColumn;
 	@FXML
-	private TableColumn<MetadataServiceSettingsItem, Availability>			releaseDbsAvailableColumn;
+	private TableColumn<MetadataServiceSettingsItem, Availability>					releaseDbsAvailableColumn;
 	@FXML
-	private Button														moveUpReleaseDbBtn;
+	private Button																	moveUpReleaseDbBtn;
 	@FXML
-	private Button														moveDownReleaseDbBtn;
+	private Button																	moveDownReleaseDbBtn;
 
 	public ReleaseDbsSettingsController(SettingsController settingsController)
 	{
@@ -85,9 +85,33 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 
 		recheckAvailabilitiesButton.setOnAction((ActionEvent event) -> updateAvailibities());
 
-		// if the items change update the availibilities (happens on load of settings)
-		// TODO: also on move up/move down but we can't distinguish that easily
-		releaseDbsTableView.getItems().addListener((Observable o) -> updateAvailibities());
+		// if the items change, update the availibilities
+		// * happens on load of settings
+		// TODO: * also happens on move up/move down (remove, add)
+		releaseDbsTableView.getItems().addListener(new ListChangeListener<MetadataServiceSettingsItem>()
+		{
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends MetadataServiceSettingsItem> c)
+			{
+				while (c.next())
+				{
+					if (c.wasUpdated())
+					{
+						for (int i = c.getFrom(); i < c.getTo(); ++i)
+						{
+							c.getList().get(i).updateAvailability(getExecutor());
+						}
+					}
+					else if (c.wasAdded())
+					{
+						for (MetadataServiceSettingsItem addItem : c.getAddedSubList())
+						{
+							addItem.updateAvailability(getExecutor());
+						}
+					}
+				}
+			}
+		});
 
 		FxActions.bindMoveButtons(releaseDbsTableView, moveUpReleaseDbBtn, moveDownReleaseDbBtn);
 

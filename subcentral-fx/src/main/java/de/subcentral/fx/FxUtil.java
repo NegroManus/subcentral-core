@@ -24,7 +24,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
 
@@ -278,7 +277,7 @@ public class FxUtil
 	public static Alert createExceptionAlert(Window owner, String title, String headerText, Throwable exception)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
-		fixAlertHeight(alert);
+		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(owner);
 		alert.setTitle(title);
 		alert.setHeaderText(headerText);
@@ -327,16 +326,5 @@ public class FxUtil
 			filteredLocales.sort(initialSortOrder);
 		}
 		return FXCollections.observableList(filteredLocales);
-	}
-
-	/**
-	 * Workaround for http://stackoverflow.com/questions/28937392/javafx-alerts-and-their-size;
-	 * 
-	 * @param alert
-	 *            the alert
-	 */
-	public static void fixAlertHeight(Alert alert)
-	{
-		alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
 	}
 }

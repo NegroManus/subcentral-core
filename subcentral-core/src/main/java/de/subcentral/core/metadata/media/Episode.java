@@ -337,6 +337,29 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	}
 
 	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(Episode.class)
+				.omitNullValues()
+				.add("series.name", series != null ? series.name : null)
+				.add("numberInSeries", numberInSeries)
+				.add("season.<name>", season != null ? NamingDefaults.getDefaultSeasonNamer().name(season) : null)
+				.add("numberInSeason", numberInSeason)
+				.add("title", title)
+				.add("date", date)
+				.add("special", special)
+				.add("runningTime", ObjectUtil.nullIfZero(runningTime))
+				.add("description", description)
+				.add("images", ObjectUtil.nullIfEmpty(images))
+				.add("contentRating", contentRating)
+				.add("ratings", ObjectUtil.nullIfEmpty(ratings))
+				.add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
+				.add("ids", ObjectUtil.nullIfEmpty(ids))
+				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
+				.toString();
+	}
+
+	@Override
 	public int compareTo(Episode o)
 	{
 		if (this == o)
@@ -360,29 +383,6 @@ public class Episode extends MediaBase implements Comparable<Episode>
 				.compare(date, o.date, TemporalComparator.INSTANCE)
 				.compare(title, o.title, ObjectUtil.getDefaultStringOrdering())
 				.result();
-	}
-
-	@Override
-	public String toString()
-	{
-		return MoreObjects.toStringHelper(Episode.class)
-				.omitNullValues()
-				.add("series.name", series != null ? series.name : null)
-				.add("numberInSeries", numberInSeries)
-				.add("season.<name>", season != null ? NamingDefaults.getDefaultSeasonNamer().name(season) : null)
-				.add("numberInSeason", numberInSeason)
-				.add("title", title)
-				.add("date", date)
-				.add("special", special)
-				.add("runningTime", ObjectUtil.nullIfZero(runningTime))
-				.add("description", description)
-				.add("images", ObjectUtil.nullIfEmpty(images))
-				.add("contentRating", contentRating)
-				.add("ratings", ObjectUtil.nullIfEmpty(ratings))
-				.add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
-				.add("ids", ObjectUtil.nullIfEmpty(ids))
-				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
-				.toString();
 	}
 
 	private Season requireSameSeries(Season season) throws IllegalArgumentException

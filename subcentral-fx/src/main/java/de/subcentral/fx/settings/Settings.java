@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ImmutableConfiguration;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import javafx.beans.binding.BooleanBinding;
@@ -88,5 +89,11 @@ public class Settings extends SettableBase implements Settable
 		{
 			s.save(cfg, resetChanged);
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(Settings.class).add("settables", settables).toString();
 	}
 }
