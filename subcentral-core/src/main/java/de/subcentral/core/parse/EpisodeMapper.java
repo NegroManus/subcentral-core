@@ -26,7 +26,7 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 	public Episode map(Map<SimplePropDescriptor, String> props)
 	{
 		Series series = new Series();
-		series.setType(parsePropService.parse(props, Series.PROP_TYPE, String.class));
+		series.setType(props.get(Series.PROP_TYPE));
 		String name = props.get(Series.PROP_NAME);
 		String title = props.get(Series.PROP_TITLE);
 		series.setName(name);
@@ -38,15 +38,16 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 		series.setCountries(parsePropService.parseList(props, Series.PROP_COUNTRIES, String.class));
 
 		Episode epi = new Episode(series);
-		epi.setNumberInSeries(parsePropService.parse(props, Episode.PROP_NUMBER_IN_SERIES, Integer.class));
 		epi.setNumberInSeason(parsePropService.parse(props, Episode.PROP_NUMBER_IN_SEASON, Integer.class));
-		epi.setTitle(props.get(Episode.PROP_TITLE));
+		epi.setNumberInSeries(parsePropService.parse(props, Episode.PROP_NUMBER_IN_SERIES, Integer.class));
 		epi.setDate(parsePropService.parse(props, Episode.PROP_DATE, LocalDate.class));
+		epi.setTitle(props.get(Episode.PROP_TITLE));
 
-		if (props.containsKey(Season.PROP_NUMBER))
+		if (props.containsKey(Season.PROP_NUMBER) || props.containsKey(Season.PROP_TITLE))
 		{
 			Season season = new Season(series);
 			season.setNumber(parsePropService.parse(props, Season.PROP_NUMBER, Integer.class));
+			season.setTitle(props.get(Season.PROP_TITLE));
 			epi.setSeason(season);
 		}
 

@@ -39,6 +39,7 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	public static final SimplePropDescriptor	PROP_MEDIA				= new SimplePropDescriptor(Release.class, PropNames.MEDIA);
 	public static final SimplePropDescriptor	PROP_TAGS				= new SimplePropDescriptor(Release.class, PropNames.TAGS);
 	public static final SimplePropDescriptor	PROP_GROUP				= new SimplePropDescriptor(Release.class, PropNames.GROUP);
+	public static final SimplePropDescriptor	PROP_SOURCE				= new SimplePropDescriptor(Release.class, PropNames.SOURCE);
 	public static final SimplePropDescriptor	PROP_LANGUAGES			= new SimplePropDescriptor(Release.class, PropNames.LANGUAGES);
 	public static final SimplePropDescriptor	PROP_CATEGORY			= new SimplePropDescriptor(Release.class, PropNames.CATEGORY);
 	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(Release.class, PropNames.DATE);
