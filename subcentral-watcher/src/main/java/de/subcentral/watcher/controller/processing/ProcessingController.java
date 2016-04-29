@@ -854,7 +854,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 				case FAILED:
 					ImageView errorImg = new ImageView(FxIO.loadImg("error_16.png"));
 					setGraphic(errorImg);
-					setTooltip(new Tooltip(item.getException().toString()));
+					setTooltip(new Tooltip(StringUtils.strip(item.getException().toString())));
 					break;
 				default:
 					setGraphic(null);
@@ -912,7 +912,7 @@ public class ProcessingController extends SubController<WatcherMainController>
 						// add nothing. MATCH is the standard type
 						break;
 					case COMPATIBLE:
-						hbox.getChildren().add(WatcherFxUtil.createCompatibilityLabel(resultInfo.getCompatibilityInfo(), (Release rls) -> result.getTask().generateDisplayName(rls), true));
+						hbox.getChildren().add(WatcherFxUtil.createCompatibleLabel(resultInfo.getCompatibility(), (Release rls) -> result.getTask().generateDisplayName(rls)));
 						break;
 					case MANUAL:
 						hbox.getChildren().add(WatcherFxUtil.createManualLabel());

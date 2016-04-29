@@ -213,38 +213,42 @@ public class WatcherFxUtil
 		return link;
 	}
 
-	public static Label createCompatibilityLabel(Compatibility info, Function<Release, String> releaseNamer, boolean withText)
+	public static Label createCompatibleLabel(Compatibility compatibility, Function<Release, String> releaseNamer)
 	{
-		String text;
-		if (withText)
-		{
-			StringBuilder sb = new StringBuilder();
-			CompatibilityRule c = info.getRule();
-			if (c instanceof SameGroupCompatibilityRule)
-			{
-				sb.append("Same group");
-			}
-			else if (c instanceof CrossGroupCompatibilityRule)
-			{
-				sb.append(((CrossGroupCompatibilityRule) c).toShortString());
-			}
-			text = sb.toString();
-		}
-		else
-		{
-			text = "";
-		}
-
 		ImageView compImg = new ImageView(FxIO.loadImg("couple_16.png"));
-		Label compLbl = new Label(text, compImg);
+		Label compLbl = new Label(null, compImg);
 
 		StringBuilder tooltip = new StringBuilder();
 		tooltip.append("Compatible to ");
-		tooltip.append(releaseNamer.apply(info.getSource()));
+		tooltip.append(releaseNamer.apply(compatibility.getSource()));
+		String rule = compatibilityRuleToString(compatibility.getRule());
+		if (!rule.isEmpty())
+		{
+			tooltip.append(" (");
+			tooltip.append(rule);
+			tooltip.append(')');
+		}
 
 		compLbl.setTooltip(new Tooltip(tooltip.toString()));
 
 		return compLbl;
+	}
+
+	private static String compatibilityRuleToString(CompatibilityRule rule)
+	{
+		if (rule == null)
+		{
+			return "";
+		}
+		if (rule instanceof SameGroupCompatibilityRule)
+		{
+			return "Same group";
+		}
+		if (rule instanceof CrossGroupCompatibilityRule)
+		{
+			return ((CrossGroupCompatibilityRule) rule).toShortString();
+		}
+		return rule.toString();
 	}
 
 	public static Label createGuessedLabel(StandardRelease stdRls, Function<Release, String> releaseNamer)

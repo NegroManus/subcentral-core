@@ -57,7 +57,7 @@ public class ProcessingResultInfo implements ProcessingInfo
 		return standardRelease;
 	}
 
-	public Compatibility getCompatibilityInfo()
+	public Compatibility getCompatibility()
 	{
 		return compatibility;
 	}

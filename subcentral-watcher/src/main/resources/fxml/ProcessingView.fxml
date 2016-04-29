@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<bottom>
 		<HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
@@ -84,11 +84,11 @@
 	<center>
 		<TreeTableView fx:id="processingTreeTable" showRoot="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
 			<columns>
-				<TreeTableColumn fx:id="nameColumn" prefWidth="350.0" text="Name" />
-				<TreeTableColumn fx:id="filesColumn" prefWidth="60.0" text="Files" />
-				<TreeTableColumn fx:id="statusColumn" prefWidth="130.0" text="Status" />
-				<TreeTableColumn fx:id="progressColumn" prefWidth="80.0" text="Progress" />
-				<TreeTableColumn fx:id="infoColumn" prefWidth="220.0" text="Info" />
+				<TreeTableColumn fx:id="nameColumn" prefWidth="400.0" text="Name" />
+				<TreeTableColumn fx:id="filesColumn" prefWidth="65.0" text="Files" />
+				<TreeTableColumn fx:id="statusColumn" prefWidth="165.0" text="Status" />
+				<TreeTableColumn fx:id="progressColumn" prefWidth="85.0" text="Progress" />
+				<TreeTableColumn fx:id="infoColumn" prefWidth="120.0" text="Info" />
 			</columns>
 		</TreeTableView>
 	</center>

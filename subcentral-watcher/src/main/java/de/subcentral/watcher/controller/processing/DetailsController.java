@@ -363,7 +363,7 @@ public class DetailsController extends SubController<ProcessingController>
 					resultTypeNode = WatcherFxUtil.createMatchLabel();
 					break;
 				case COMPATIBLE:
-					resultTypeNode = WatcherFxUtil.createCompatibilityLabel(info.getCompatibilityInfo(), (Release r) -> task.generateDisplayName(r), false);
+					resultTypeNode = WatcherFxUtil.createCompatibleLabel(info.getCompatibility(), (Release r) -> task.generateDisplayName(r));
 					break;
 				case MANUAL:
 					resultTypeNode = WatcherFxUtil.createManualLabel();
