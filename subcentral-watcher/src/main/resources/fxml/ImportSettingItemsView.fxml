@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -9,7 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="rootPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
@@ -36,6 +40,6 @@
          </GridPane.margin>
       </CheckBox>
       <CheckBox fx:id="replaceItemsCheckBox" mnemonicParsing="false" text="Replace existing items" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-      <CheckBox fx:id="removeItemsCheckBox" mnemonicParsing="false" text="Remove items that don't exist in the imported items" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+      <CheckBox fx:id="removeItemsCheckBox" mnemonicParsing="false" text="Remove existing items that don't exist in the imported items" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
 	</children>
 </GridPane>
