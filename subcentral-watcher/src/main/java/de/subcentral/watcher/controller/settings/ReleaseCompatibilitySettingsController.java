@@ -26,22 +26,22 @@ import javafx.scene.layout.GridPane;
 public class ReleaseCompatibilitySettingsController extends AbstractSettingsSectionController
 {
 	@FXML
-	private GridPane													rootPane;
+	private GridPane														rootPane;
 	@FXML
-	private CheckBox													compatibilityEnabledCheckBox;
+	private CheckBox														compatibilityEnabledCheckBox;
 	@FXML
-	private TableView<CrossGroupCompatibilityRuleSettingsItem>				crossGroupCompatibilitiesTableView;
+	private TableView<CrossGroupCompatibilityRuleSettingsItem>				crossGroupCompatibilityRulesTableView;
 	@FXML
-	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, Boolean>	crossGroupCompatibilitiesEnabledColumn;
+	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, Boolean>	crossGroupCompatibilityRulesEnabledColumn;
 	@FXML
-	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, String>	crossGroupCompatibilitiesCompatibilityColumn;
+	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, String>	crossGroupCompatibilityRulesCompatibilityColumn;
 
 	@FXML
-	private Button														addCrossGroupCompatibilityBtn;
+	private Button															addCrossGroupCompatibilityRuleBtn;
 	@FXML
-	private Button														editCrossGroupCompatibilityBtn;
+	private Button															editCrossGroupCompatibilityRuleBtn;
 	@FXML
-	private Button														removeCrossGroupCompatibilityBtn;
+	private Button															removeCrossGroupCompatibilityRuleBtn;
 
 	public ReleaseCompatibilitySettingsController(SettingsController settingsController)
 	{
@@ -63,17 +63,17 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 
 		// Cross-group compatibilities table
 		ObservableList<CrossGroupCompatibilityRuleSettingsItem> comps = settings.getCrossGroupCompatibilityRules().property();
-		SortedList<CrossGroupCompatibilityRuleSettingsItem> displayComps = FxControlBindings.sortableTableView(crossGroupCompatibilitiesTableView, comps);
+		SortedList<CrossGroupCompatibilityRuleSettingsItem> displayComps = FxControlBindings.sortableTableView(crossGroupCompatibilityRulesTableView, comps);
 
-		crossGroupCompatibilitiesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilitiesEnabledColumn));
-		crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		crossGroupCompatibilitiesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, String> param) ->
+		crossGroupCompatibilityRulesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilityRulesEnabledColumn));
+		crossGroupCompatibilityRulesEnabledColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
+		crossGroupCompatibilityRulesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, String> param) ->
 		{
 			return FxBindings.immutableObservableValue(((CrossGroupCompatibilityRule) param.getValue().getItem()).toShortString());
 		});
 
 		// Table buttons
-		ActionList<CrossGroupCompatibilityRuleSettingsItem> compsActionList = new ActionList<>(comps, crossGroupCompatibilitiesTableView.getSelectionModel(), displayComps);
+		ActionList<CrossGroupCompatibilityRuleSettingsItem> compsActionList = new ActionList<>(comps, crossGroupCompatibilityRulesTableView.getSelectionModel(), displayComps);
 		compsActionList.setNewItemSupplier(() ->
 		{
 			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityEditView(getPrimaryStage());
@@ -86,13 +86,17 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		});
 		compsActionList.setDistincter(Objects::equals);
 		compsActionList.setSorter(ObjectUtil.getDefaultOrdering());
-		compsActionList.setAlreadyContainedInformer(FxActions.createAlreadyContainedInformer(getPrimaryStage(), "cross-group compatibility", CrossGroupCompatibilityRuleSettingsItem.STRING_CONVERTER));
-		compsActionList.setRemoveConfirmer(FxActions.createRemoveConfirmer(getPrimaryStage(), "cross-group compatibility", CrossGroupCompatibilityRuleSettingsItem.STRING_CONVERTER));
+		compsActionList
+				.setAlreadyContainedInformer(FxActions.createAlreadyContainedInformer(getPrimaryStage(), "cross-group compatibility rule", CrossGroupCompatibilityRuleSettingsItem.STRING_CONVERTER));
+		compsActionList.setRemoveConfirmer(FxActions.createRemoveConfirmer(getPrimaryStage(), "cross-group compatibility rule", CrossGroupCompatibilityRuleSettingsItem.STRING_CONVERTER));
 
-		compsActionList.bindAddButton(addCrossGroupCompatibilityBtn);
-		compsActionList.bindEditButton(editCrossGroupCompatibilityBtn);
-		compsActionList.bindRemoveButton(removeCrossGroupCompatibilityBtn);
+		compsActionList.bindAddButton(addCrossGroupCompatibilityRuleBtn);
+		compsActionList.bindEditButton(editCrossGroupCompatibilityRuleBtn);
+		compsActionList.bindRemoveButton(removeCrossGroupCompatibilityRuleBtn);
 
-		FxActions.setStandardMouseAndKeyboardSupport(crossGroupCompatibilitiesTableView, addCrossGroupCompatibilityBtn, editCrossGroupCompatibilityBtn, removeCrossGroupCompatibilityBtn);
+		FxActions.setStandardMouseAndKeyboardSupport(crossGroupCompatibilityRulesTableView,
+				addCrossGroupCompatibilityRuleBtn,
+				editCrossGroupCompatibilityRuleBtn,
+				removeCrossGroupCompatibilityRuleBtn);
 	}
 }
