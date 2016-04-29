@@ -76,7 +76,7 @@ public abstract class HttpMetadataService extends AbstractMetadataService
 
 	protected String getTestQuery()
 	{
-		return "Game of Thrones S01E01";
+		return "Game of Thrones S06E01";
 	}
 
 	// Utility methods for child classes
