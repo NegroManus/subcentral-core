@@ -35,6 +35,6 @@ public class Compatibility
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(Compatibility.class).add("compatible", "source").add("source", source).add("rule", rule).toString();
+		return MoreObjects.toStringHelper(Compatibility.class).add("compatible", compatible).add("source", source).add("rule", rule).toString();
 	}
 }

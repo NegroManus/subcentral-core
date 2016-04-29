@@ -53,7 +53,7 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
 		Set<Release> compatibles = new HashSet<>(4);
 		for (Release possibleCompatible : possibleCompatibles)
 		{
-			if (matchesCompatibleRelease(possibleCompatible, md) && source.equals(possibleCompatible))
+			if (matchesCompatibleRelease(possibleCompatible, md) && !source.equals(possibleCompatible))
 			{
 				// Set.add() only adds if does not exist yet. That is what we want.
 				// Do not use ImmutableSet.Builder.add here as it allows the addition of duplicate entries but throws an exception at build time.

@@ -78,7 +78,7 @@ public class CompatibilityService
 					if (!source.equals(compatible))
 					{
 						// Only add the compatible Release if it was not found before
-						Compatibility previousValue = allCompatibilities.putIfAbsent(compatible, new Compatibility(compatible, currentSource, c));
+						Compatibility previousValue = allCompatibilities.putIfAbsent(compatible, new Compatibility(currentSource, compatible, c));
 						// If previousValue == null, the compatible is new.
 						// Then it should be checked for rules as well.
 						if (previousValue == null)
