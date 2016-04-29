@@ -75,6 +75,7 @@
 
 	<correction>
 		<rules>
+			<seriesNameCorrectionRule namePattern="Archer" namePatternMode="LITERAL" nameReplacement="Archer (2009)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Castle" namePatternMode="LITERAL" nameReplacement="Castle (2009)" beforeQuerying="true" afterQuerying="false" />
 			<seriesNameCorrectionRule namePattern="Childrens Hospital" namePatternMode="LITERAL" nameReplacement="Childrens Hospital" beforeQuerying="true" afterQuerying="false">
 				<aliasNames>
