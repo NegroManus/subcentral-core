@@ -80,20 +80,20 @@ public abstract class AbstractMetadataService implements MetadataService
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(this).add("site.name", getSite().getName()).toString();
+		return MoreObjects.toStringHelper(getClass()).add("site.name", getSite().getName()).toString();
 	}
 
-	protected UnsupportedOperationException newUnsupportedRecordTypeException(Class<?> unsupportedType)
+	protected UnsupportedOperationException createUnsupportedRecordTypeException(Class<?> unsupportedType)
 	{
 		return new UnsupportedOperationException("The record type is not supported: " + unsupportedType + " (supported record types: " + getSupportedRecordTypes() + ")");
 	}
 
-	protected UnsupportedOperationException newRecordTypeNotSearchableException(Class<?> unsupportedType)
+	protected UnsupportedOperationException createRecordTypeNotSearchableException(Class<?> unsupportedType)
 	{
 		return new UnsupportedOperationException("The record type is not searchable: " + unsupportedType + " (searchable record types: " + getSearchableRecordTypes() + ")");
 	}
 
-	protected UnsupportedOperationException newUnsupportedExternalSiteException(Site unsupportedExternalSite)
+	protected UnsupportedOperationException createUnsupportedExternalSiteException(Site unsupportedExternalSite)
 	{
 		return new UnsupportedOperationException("The external site is not supported: " + unsupportedExternalSite + " (supported external sites: " + getSupportedExternalSites() + ")");
 	}

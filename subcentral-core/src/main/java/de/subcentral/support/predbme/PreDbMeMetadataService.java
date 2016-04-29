@@ -80,7 +80,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
-		throw newRecordTypeNotSearchableException(recordType);
+		throw createRecordTypeNotSearchableException(recordType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -156,7 +156,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 			// Otherwise use the default implementation
 			return super.searchByObject(queryObj, recordType);
 		}
-		throw newRecordTypeNotSearchableException(recordType);
+		throw createRecordTypeNotSearchableException(recordType);
 	}
 
 	public List<Release> searchReleasesByEpisode(String seriesName, int seasonNumber, int episodeNumber) throws IOException
@@ -212,7 +212,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 			log.debug("Getting release with id {} using url {}", id, url);
 			return (T) parseReleaseRecord(getDocument(url));
 		}
-		throw newUnsupportedRecordTypeException(recordType);
+		throw createUnsupportedRecordTypeException(recordType);
 	}
 
 	// Not needed currently because searching with an explicit title yields strange results sometimes

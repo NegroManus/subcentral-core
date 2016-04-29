@@ -110,7 +110,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		{
 			return (List<T>) searchSeries(query);
 		}
-		throw newRecordTypeNotSearchableException(recordType);
+		throw createRecordTypeNotSearchableException(recordType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -131,7 +131,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 			// Otherwise use the default implementation
 			return super.searchByObject(queryObj, recordType);
 		}
-		throw newRecordTypeNotSearchableException(recordType);
+		throw createRecordTypeNotSearchableException(recordType);
 	}
 
 	public List<Series> searchSeries(String name) throws IOException
@@ -160,7 +160,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		{
 			return (List<T>) searchSeriesByExternalId(externalSite, externalId);
 		}
-		throw newUnsupportedRecordTypeException(recordType);
+		throw createUnsupportedRecordTypeException(recordType);
 	}
 
 	public List<Series> searchSeriesByExternalId(Site externalSite, String externalId) throws UnsupportedOperationException, IOException
@@ -181,7 +181,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		}
 		else
 		{
-			throw newUnsupportedExternalSiteException(externalSite);
+			throw createUnsupportedExternalSiteException(externalSite);
 		}
 		if (language != null)
 		{
@@ -206,7 +206,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		{
 			return (T) getEpisode(Integer.parseInt(id), null);
 		}
-		throw newUnsupportedRecordTypeException(recordType);
+		throw createUnsupportedRecordTypeException(recordType);
 	}
 
 	public Series getSeries(int id, boolean full, String language) throws IOException

@@ -71,7 +71,7 @@ public class XRelToMetadataService extends HttpMetadataService
 			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
 		}
-		throw newRecordTypeNotSearchableException(recordType);
+		throw createRecordTypeNotSearchableException(recordType);
 	}
 
 	/**
