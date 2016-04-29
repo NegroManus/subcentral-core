@@ -21,9 +21,16 @@ public class ReflectiveMapper<T> extends AbstractMapper<T>
 	}
 
 	@Override
-	public T doMap(Map<SimplePropDescriptor, String> props)
+	public T map(Map<SimplePropDescriptor, String> props)
 	{
-		return ParsingUtil.reflectiveMapping(beanType, props, parsePropService);
+		try
+		{
+			return ParsingUtil.reflectiveMapping(beanType, props, parsePropService);
+		}
+		catch (InstantiationException | IllegalAccessException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

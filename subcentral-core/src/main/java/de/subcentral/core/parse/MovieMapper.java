@@ -19,7 +19,7 @@ public class MovieMapper extends AbstractMapper<Movie>
 	}
 
 	@Override
-	public Movie doMap(Map<SimplePropDescriptor, String> props)
+	public Movie map(Map<SimplePropDescriptor, String> props)
 	{
 		Movie mov = new Movie();
 		mov.setName(props.get(Movie.PROP_NAME));

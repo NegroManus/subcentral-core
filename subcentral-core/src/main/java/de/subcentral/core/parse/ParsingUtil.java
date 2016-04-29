@@ -27,53 +27,46 @@ public class ParsingUtil
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static final <T> T reflectiveMapping(Class<T> targetType, Map<SimplePropDescriptor, String> props, ParsePropService parsePropService)
+	public static final <T> T reflectiveMapping(Class<T> targetType, Map<SimplePropDescriptor, String> props, ParsePropService parsePropService) throws InstantiationException, IllegalAccessException
 	{
 		Objects.requireNonNull(targetType, "targetType");
-		try
+		T bean = targetType.newInstance();
+		for (Map.Entry<SimplePropDescriptor, String> p : props.entrySet())
 		{
-			T bean = targetType.newInstance();
-			for (Map.Entry<SimplePropDescriptor, String> p : props.entrySet())
+			SimplePropDescriptor simplePropDescr = p.getKey();
+			if (targetType.equals(simplePropDescr.getBeanClass()))
 			{
-				SimplePropDescriptor simplePropDescr = p.getKey();
-				if (targetType.equals(simplePropDescr.getBeanClass()))
+				try
 				{
-					try
+					PropertyDescriptor propDescr = simplePropDescr.toPropertyDescriptor();
+					TypeToken<?> type = TypeToken.of(propDescr.getReadMethod().getGenericParameterTypes()[0]);
+					if (Collection.class.isAssignableFrom(type.getRawType()))
 					{
-						PropertyDescriptor propDescr = simplePropDescr.toPropertyDescriptor();
-						TypeToken<?> type = TypeToken.of(propDescr.getReadMethod().getGenericParameterTypes()[0]);
-						if (Collection.class.isAssignableFrom(type.getRawType()))
+						ParameterizedType genericType = (ParameterizedType) type.getType();
+						Class<?> itemClass = (Class<?>) genericType.getActualTypeArguments()[0];
+						List<?> value = parsePropService.parseList(p.getValue(), simplePropDescr, itemClass);
+						if (Set.class.isAssignableFrom(type.getRawType()))
 						{
-							ParameterizedType genericType = (ParameterizedType) type.getType();
-							Class<?> itemClass = (Class<?>) genericType.getActualTypeArguments()[0];
-							List<?> value = parsePropService.parseList(p.getValue(), simplePropDescr, itemClass);
-							if (Set.class.isAssignableFrom(type.getRawType()))
-							{
-								simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, ImmutableSet.copyOf(value));
-							}
-							else
-							{
-								simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, value);
-							}
+							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, ImmutableSet.copyOf(value));
 						}
 						else
 						{
-							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, parsePropService.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
+							simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, value);
 						}
-
 					}
-					catch (Exception e)
+					else
 					{
-						log.warn("Failed to map value " + p.getValue() + " to property " + p.getKey() + " of bean of type " + targetType, e);
+						simplePropDescr.toPropertyDescriptor().getWriteMethod().invoke(bean, parsePropService.parse(p.getValue(), simplePropDescr, type.wrap().getRawType()));
 					}
+
+				}
+				catch (Exception e)
+				{
+					log.warn("Failed to map value " + p.getValue() + " to property " + p.getKey() + " of bean of type " + targetType, e);
 				}
 			}
-			return bean;
 		}
-		catch (Exception e)
-		{
-			throw new MappingException(props, targetType, e);
-		}
+		return bean;
 	}
 
 	public static List<ParsingService> filterByTargetTypes(Iterable<ParsingService> parsingServices, Set<Class<?>> targetTypes)

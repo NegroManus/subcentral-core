@@ -19,7 +19,7 @@ public class SubtitleReleaseMapper extends AbstractMapper<SubtitleRelease>
 	}
 
 	@Override
-	public SubtitleRelease doMap(Map<SimplePropDescriptor, String> props)
+	public SubtitleRelease map(Map<SimplePropDescriptor, String> props)
 	{
 		SubtitleRelease subAdj = new SubtitleRelease();
 		subAdj.setName(props.get(SubtitleRelease.PROP_NAME));

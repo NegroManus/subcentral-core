@@ -23,7 +23,7 @@ public class EpisodeMapper extends AbstractMapper<Episode>
 	}
 
 	@Override
-	public Episode doMap(Map<SimplePropDescriptor, String> props)
+	public Episode map(Map<SimplePropDescriptor, String> props)
 	{
 		Series series = new Series();
 		series.setType(parsePropService.parse(props, Series.PROP_TYPE, String.class));

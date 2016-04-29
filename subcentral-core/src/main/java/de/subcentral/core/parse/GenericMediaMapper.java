@@ -10,7 +10,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
 public class GenericMediaMapper extends AbstractMapper<GenericMedia>
 {
 	@Override
-	public GenericMedia doMap(Map<SimplePropDescriptor, String> props)
+	public GenericMedia map(Map<SimplePropDescriptor, String> props)
 	{
 		GenericMedia media = new GenericMedia();
 		media.setName(props.get(Movie.PROP_NAME));

@@ -20,7 +20,7 @@ public class SubtitleMapper extends AbstractMapper<Subtitle>
 	}
 
 	@Override
-	public Subtitle doMap(Map<SimplePropDescriptor, String> props)
+	public Subtitle map(Map<SimplePropDescriptor, String> props)
 	{
 		Subtitle sub = new Subtitle();
 		sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));

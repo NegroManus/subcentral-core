@@ -45,24 +45,17 @@ public class MultiEpisodeMapper implements Mapper<List<Episode>>
 	@Override
 	public List<Episode> map(Map<SimplePropDescriptor, String> props)
 	{
-		try
+		List<Episode> media = parseMultiEpisode(props, Episode.PROP_NUMBER_IN_SERIES);
+		if (!media.isEmpty())
 		{
-			List<Episode> media = parseMultiEpisode(props, Episode.PROP_NUMBER_IN_SERIES);
-			if (!media.isEmpty())
-			{
-				return media;
-			}
-			media = parseMultiEpisode(props, Episode.PROP_NUMBER_IN_SEASON);
-			if (!media.isEmpty())
-			{
-				return media;
-			}
-			return ImmutableList.of();
+			return media;
 		}
-		catch (RuntimeException e)
+		media = parseMultiEpisode(props, Episode.PROP_NUMBER_IN_SEASON);
+		if (!media.isEmpty())
 		{
-			throw new MappingException(props, null, "Exception while mapping to a multi episode", e);
+			return media;
 		}
+		return ImmutableList.of();
 	}
 
 	private List<Episode> parseMultiEpisode(Map<SimplePropDescriptor, String> props, SimplePropDescriptor epiNumProp)

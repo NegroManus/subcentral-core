@@ -20,7 +20,7 @@ public class ReleaseMapper extends AbstractMapper<Release>
 	}
 
 	@Override
-	public Release doMap(Map<SimplePropDescriptor, String> props)
+	public Release map(Map<SimplePropDescriptor, String> props)
 	{
 		Release rls = new Release();
 		rls.setName(props.get(Release.PROP_NAME));
