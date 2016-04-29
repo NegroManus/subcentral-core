@@ -17,11 +17,11 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.metadata.release.Compatibility;
-import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.CompatibilityRule;
+import de.subcentral.core.metadata.release.CrossGroupCompatibilityRule;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.SameGroupCompatibility;
+import de.subcentral.core.metadata.release.SameGroupCompatibilityRule;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.release.TagUtil;
@@ -213,20 +213,20 @@ public class WatcherFxUtil
 		return link;
 	}
 
-	public static Label createCompatibilityLabel(CompatibilityInfo info, Function<Release, String> releaseNamer, boolean withText)
+	public static Label createCompatibilityLabel(Compatibility info, Function<Release, String> releaseNamer, boolean withText)
 	{
 		String text;
 		if (withText)
 		{
 			StringBuilder sb = new StringBuilder();
-			Compatibility c = info.getCompatibility();
-			if (c instanceof SameGroupCompatibility)
+			CompatibilityRule c = info.getRule();
+			if (c instanceof SameGroupCompatibilityRule)
 			{
 				sb.append("Same group");
 			}
-			else if (c instanceof CrossGroupCompatibility)
+			else if (c instanceof CrossGroupCompatibilityRule)
 			{
-				sb.append(((CrossGroupCompatibility) c).toShortString());
+				sb.append(((CrossGroupCompatibilityRule) c).toShortString());
 			}
 			text = sb.toString();
 		}

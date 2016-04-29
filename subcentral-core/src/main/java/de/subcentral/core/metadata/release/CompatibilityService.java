@@ -8,8 +8,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * 
@@ -18,110 +17,78 @@ import com.google.common.collect.ImmutableMap;
  */
 public class CompatibilityService
 {
-	private Set<Compatibility> compatibilities = new CopyOnWriteArraySet<>();
+	private Set<CompatibilityRule> rules = new CopyOnWriteArraySet<>();
 
-	public Set<Compatibility> getCompatibilities()
+	public Set<CompatibilityRule> getRules()
 	{
-		return compatibilities;
+		return rules;
 	}
 
-	public void setCompatibilities(Collection<? extends Compatibility> compatibilities)
+	public void setCompatibilities(Collection<? extends CompatibilityRule> rules)
 	{
-		this.compatibilities.clear();
-		this.compatibilities.addAll(compatibilities);
+		this.rules.clear();
+		this.rules.addAll(rules);
 	}
 
-	public Map<Release, CompatibilityInfo> findCompatibles(Collection<Release> rlss, Collection<Release> existingRlss)
+	public Set<Compatibility> findCompatibilities(Collection<Release> sources, Collection<Release> possibleCompatibles)
 	{
-		if (rlss.isEmpty())
-		{
-			return ImmutableMap.of();
-		}
 		// LinkedHashMap to maintain insertion order
-		Map<Release, CompatibilityInfo> allCompatibles = new LinkedHashMap<>(4);
-		for (Release rls : rlss)
+		Map<Release, Compatibility> allCompatibilities = new LinkedHashMap<>(4);
+		for (Release source : sources)
 		{
-			Map<Release, CompatibilityInfo> compatiblesForRls = findCompatibles(rls, existingRlss);
-			for (Map.Entry<Release, CompatibilityInfo> newCompatibleEntry : compatiblesForRls.entrySet())
+			Set<Compatibility> compatibilities = findCompatibilities(source, possibleCompatibles);
+			for (Compatibility compatibility : compatibilities)
 			{
 				// only add the compatible release if not contained in the original release list
 				// and not already in the list of found compatible releases
-				Release newCompatibleRls = newCompatibleEntry.getKey();
-				if (!rlss.contains(newCompatibleRls))
+				Release compatible = compatibility.getCompatible();
+				if (!sources.contains(compatible))
 				{
-					allCompatibles.putIfAbsent(newCompatibleRls, newCompatibleEntry.getValue());
-					// no need to check the newly found compatible release itself for compatibilities
-					// because that was already done in findCompatibles(Release, ...)
+					allCompatibilities.putIfAbsent(compatible, compatibility);
+					// no need to check the newly found compatible release itself for rules
+					// because that was already done in findCompatibles(Release, Collection<Release>)
 				}
 			}
 		}
-		return ImmutableMap.copyOf(allCompatibles);
+		return ImmutableSet.copyOf(allCompatibilities.values());
 	}
 
-	public Map<Release, CompatibilityInfo> findCompatibles(Release rls, Collection<Release> existingRlss)
+	public Set<Compatibility> findCompatibilities(Release source, Collection<Release> possibleCompatibles)
 	{
-		if (rls == null)
+		if (source == null)
 		{
-			return ImmutableMap.of();
+			return ImmutableSet.of();
 		}
 
 		// Do not use ImmutableMap.Builder here, as it has no putIfAbsent() method
 		// LinkedHashMap to maintain insertion order
-		Map<Release, CompatibilityInfo> allCompatibles = new LinkedHashMap<>(4);
+		Map<Release, Compatibility> allCompatibilities = new LinkedHashMap<>(4);
 
-		Queue<Release> rlssToCheck = new ArrayDeque<>(4);
-		rlssToCheck.add(rls);
-		Release rlsToCheck;
-		while ((rlsToCheck = rlssToCheck.poll()) != null)
+		Queue<Release> sources = new ArrayDeque<>(4);
+		sources.add(source);
+		Release currentSource;
+		while ((currentSource = sources.poll()) != null)
 		{
-			for (Compatibility c : compatibilities)
+			for (CompatibilityRule c : rules)
 			{
-				Set<Release> compatibles = c.findCompatibles(rlsToCheck, existingRlss);
+				Set<Release> compatibles = c.findCompatibles(currentSource, possibleCompatibles);
 				for (Release compatible : compatibles)
 				{
 					// Never add the source Release
-					if (!rls.equals(compatible))
+					if (!source.equals(compatible))
 					{
 						// Only add the compatible Release if it was not found before
-						CompatibilityInfo previousValue = allCompatibles.putIfAbsent(compatible, new CompatibilityInfo(rlsToCheck, c));
+						Compatibility previousValue = allCompatibilities.putIfAbsent(compatible, new Compatibility(compatible, currentSource, c));
 						// If previousValue == null, the compatible is new.
-						// Then it should be checked for compatibilities as well
+						// Then it should be checked for rules as well.
 						if (previousValue == null)
 						{
-							rlssToCheck.add(compatible);
+							sources.add(compatible);
 						}
 					}
 				}
 			}
 		}
-		return ImmutableMap.copyOf(allCompatibles);
-	}
-
-	public static class CompatibilityInfo
-	{
-		private final Release		source;
-		private final Compatibility	compatibility;
-
-		public CompatibilityInfo(Release source, Compatibility compatibility)
-		{
-			this.source = source;
-			this.compatibility = compatibility;
-		}
-
-		public Release getSource()
-		{
-			return source;
-		}
-
-		public Compatibility getCompatibility()
-		{
-			return compatibility;
-		}
-
-		@Override
-		public String toString()
-		{
-			return MoreObjects.toStringHelper(CompatibilityInfo.class).omitNullValues().add("source", source).add("compatibility", compatibility).toString();
-		}
+		return ImmutableSet.copyOf(allCompatibilities.values());
 	}
 }

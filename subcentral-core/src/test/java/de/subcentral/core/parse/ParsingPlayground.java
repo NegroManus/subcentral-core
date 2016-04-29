@@ -7,11 +7,9 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,13 +25,13 @@ import de.subcentral.core.correct.CorrectionDefaults;
 import de.subcentral.core.correct.SeriesNameCorrector;
 import de.subcentral.core.correct.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
-import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.CrossGroupCompatibilityRule;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
-import de.subcentral.core.metadata.release.SameGroupCompatibility;
+import de.subcentral.core.metadata.release.SameGroupCompatibilityRule;
 import de.subcentral.core.metadata.service.MetadataService;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
@@ -109,10 +107,10 @@ public class ParsingPlayground
 		final NamingService mediaNsForFiltering = NamingDefaults.getDefaultNormalizingNamingService();
 
 		final CompatibilityService compService = new CompatibilityService();
-		compService.getCompatibilities().add(new SameGroupCompatibility());
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("LOL"), new Group("DIMENSION"), true));
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("EXCELLENCE"), new Group("REMARKABLE"), true));
-		compService.getCompatibilities().add(new CrossGroupCompatibility(new Group("ASAP"), new Group("IMMERSE"), true));
+		compService.getRules().add(new SameGroupCompatibilityRule());
+		compService.getRules().add(new CrossGroupCompatibilityRule(new Group("LOL"), new Group("DIMENSION"), true));
+		compService.getRules().add(new CrossGroupCompatibilityRule(new Group("EXCELLENCE"), new Group("REMARKABLE"), true));
+		compService.getRules().add(new CrossGroupCompatibilityRule(new Group("ASAP"), new Group("IMMERSE"), true));
 
 		final WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.DELETE);
@@ -200,18 +198,13 @@ public class ParsingPlayground
 							filteredReleases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
-							Map<Release, CompatibilityInfo> compatibleRlss = new HashMap<>();
-							for (Release rls : filteredReleases)
-							{
-								Map<Release, CompatibilityInfo> rlss = compService.findCompatibles(rls, releases);
-								compatibleRlss.putAll(rlss);
-							}
+							Set<Compatibility> compatibilities = compService.findCompatibilities(filteredReleases, releases);
 							TimeUtil.logDurationMillisDouble("Build compatibilities", start);
-							compatibleRlss.entrySet().forEach(e -> System.out.println(e));
+							compatibilities.forEach(e -> System.out.println(e));
 
 							Set<Release> allMatchingRlss = new HashSet<>();
 							allMatchingRlss.addAll(filteredReleases);
-							allMatchingRlss.addAll(compatibleRlss.keySet());
+							allMatchingRlss.addAll(compatibilities.stream().map(Compatibility::getCompatible).collect(Collectors.toList()));
 
 							start = System.nanoTime();
 							Subtitle convertedSub = new Subtitle();

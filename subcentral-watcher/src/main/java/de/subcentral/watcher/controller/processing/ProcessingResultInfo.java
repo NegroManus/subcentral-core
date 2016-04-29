@@ -2,7 +2,7 @@ package de.subcentral.watcher.controller.processing;
 
 import java.util.Objects;
 
-import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
+import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.StandardRelease;
 
 public class ProcessingResultInfo implements ProcessingInfo
@@ -21,14 +21,14 @@ public class ProcessingResultInfo implements ProcessingInfo
 	private final SourceType		sourceType;
 	private final RelationType		relationType;
 	private final StandardRelease	standardRelease;
-	private final CompatibilityInfo	compatibilityInfo;
+	private final Compatibility	compatibility;
 
-	private ProcessingResultInfo(SourceType sourceType, RelationType relationType, StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
+	private ProcessingResultInfo(SourceType sourceType, RelationType relationType, StandardRelease standardRelease, Compatibility compatibility)
 	{
 		this.sourceType = Objects.requireNonNull(sourceType, "sourceType");
 		this.relationType = Objects.requireNonNull(relationType, "relationType");
 		this.standardRelease = standardRelease;
-		this.compatibilityInfo = compatibilityInfo;
+		this.compatibility = compatibility;
 	}
 
 	// package private
@@ -57,9 +57,9 @@ public class ProcessingResultInfo implements ProcessingInfo
 		return standardRelease;
 	}
 
-	public CompatibilityInfo getCompatibilityInfo()
+	public Compatibility getCompatibilityInfo()
 	{
-		return compatibilityInfo;
+		return compatibility;
 	}
 
 	public static ProcessingResultInfo listedMatching()
@@ -67,9 +67,9 @@ public class ProcessingResultInfo implements ProcessingInfo
 		return new ProcessingResultInfo(SourceType.LISTED, RelationType.MATCH, null, null);
 	}
 
-	public static ProcessingResultInfo listedCompatible(CompatibilityInfo compatibilityInfo)
+	public static ProcessingResultInfo listedCompatible(Compatibility compatibility)
 	{
-		return new ProcessingResultInfo(SourceType.LISTED, RelationType.COMPATIBLE, null, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
+		return new ProcessingResultInfo(SourceType.LISTED, RelationType.COMPATIBLE, null, Objects.requireNonNull(compatibility, "compatibility"));
 	}
 
 	public static ProcessingResultInfo listedManual()
@@ -82,8 +82,8 @@ public class ProcessingResultInfo implements ProcessingInfo
 		return new ProcessingResultInfo(SourceType.GUESSED, RelationType.MATCH, standardRelease, null);
 	}
 
-	public static ProcessingResultInfo guessedCompatible(StandardRelease standardRelease, CompatibilityInfo compatibilityInfo)
+	public static ProcessingResultInfo guessedCompatible(StandardRelease standardRelease, Compatibility compatibility)
 	{
-		return new ProcessingResultInfo(SourceType.GUESSED, RelationType.COMPATIBLE, standardRelease, Objects.requireNonNull(compatibilityInfo, "compatibilityInfo"));
+		return new ProcessingResultInfo(SourceType.GUESSED, RelationType.COMPATIBLE, standardRelease, Objects.requireNonNull(compatibility, "compatibility"));
 	}
 }

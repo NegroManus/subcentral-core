@@ -29,7 +29,7 @@ import de.subcentral.core.correct.CorrectionDefaults;
 import de.subcentral.core.correct.TypeBasedCorrectionService;
 import de.subcentral.core.metadata.release.CompatibilityService;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.SameGroupCompatibility;
+import de.subcentral.core.metadata.release.SameGroupCompatibilityRule;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.metadata.subtitle.SubtitleUtil;
@@ -52,7 +52,7 @@ import de.subcentral.watcher.WatcherFxUtil;
 import de.subcentral.watcher.controller.WatcherMainController;
 import de.subcentral.watcher.controller.settings.SettingsController;
 import de.subcentral.watcher.settings.CorrectorSettingsItem;
-import de.subcentral.watcher.settings.CrossGroupCompatibilitySettingsItem;
+import de.subcentral.watcher.settings.CrossGroupCompatibilityRuleSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -186,12 +186,12 @@ public class ProcessingController extends SubController<WatcherMainController>
 	private static CompatibilityService createCompatibilityService(ProcessingSettings settings)
 	{
 		CompatibilityService service = new CompatibilityService();
-		service.getCompatibilities().add(new SameGroupCompatibility());
-		for (CrossGroupCompatibilitySettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCrossGroupCompatibilities().getValue())
+		service.getRules().add(new SameGroupCompatibilityRule());
+		for (CrossGroupCompatibilityRuleSettingsItem entry : SettingsController.SETTINGS.getProcessingSettings().getCrossGroupCompatibilityRules().getValue())
 		{
 			if (entry.isEnabled())
 			{
-				service.getCompatibilities().add(entry.getItem());
+				service.getRules().add(entry.getItem());
 			}
 		}
 		return service;

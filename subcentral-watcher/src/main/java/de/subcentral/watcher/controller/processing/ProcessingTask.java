@@ -29,8 +29,8 @@ import com.google.common.collect.ListMultimap;
 import de.subcentral.core.correct.Correction;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.media.MediaUtil;
+import de.subcentral.core.metadata.release.Compatibility;
 import de.subcentral.core.metadata.release.CompatibilityService;
-import de.subcentral.core.metadata.release.CompatibilityService.CompatibilityInfo;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.release.StandardRelease;
@@ -477,9 +477,9 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			log.debug("Search for compatible releases enabled");
 			// Find compatibles
 			CompatibilityService compatibilityService = config.getCompatibilityService();
-			Map<Release, CompatibilityInfo> compatibleReleases = compatibilityService.findCompatibles(toReleaseList(matchingRlss), toReleaseList(listedRlss));
+			Set<Compatibility> compatibles = compatibilityService.findCompatibilities(toReleaseList(matchingRlss), toReleaseList(listedRlss));
 
-			if (compatibleReleases.isEmpty())
+			if (compatibles.isEmpty())
 			{
 				log.debug("No compatible releases found");
 				return false;
@@ -487,17 +487,17 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 			else
 			{
 				log.debug("Compatible releases:");
-				compatibleReleases.entrySet().forEach(e -> log.debug(e));
+				compatibles.forEach(e -> log.debug(e));
 
 				// Add compatible releases
-				for (Map.Entry<Release, CompatibilityInfo> entry : compatibleReleases.entrySet())
+				for (Compatibility compatible : compatibles)
 				{
 					ProcessingResultInfo info;
 
 					ProcessingResultInfo compatibleRlsResultInfo = null;
 					for (ReleaseAndInfo ri : listedRlss)
 					{
-						if (ri.release == entry.getKey())
+						if (ri.release == compatible.getCompatible())
 						{
 							compatibleRlsResultInfo = ri.info;
 							break;
@@ -506,16 +506,16 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem
 					switch (compatibleRlsResultInfo.getSourceType())
 					{
 						case LISTED:
-							info = ProcessingResultInfo.listedCompatible(entry.getValue());
+							info = ProcessingResultInfo.listedCompatible(compatible);
 							break;
 						case GUESSED:
-							info = ProcessingResultInfo.guessedCompatible(compatibleRlsResultInfo.getStandardRelease(), entry.getValue());
+							info = ProcessingResultInfo.guessedCompatible(compatibleRlsResultInfo.getStandardRelease(), compatible);
 							break;
 						default:
 							throw new AssertionError();
 					}
 
-					addReleaseToResult(entry.getKey(), info);
+					addReleaseToResult(compatible.getCompatible(), info);
 				}
 				return true;
 			}

@@ -9,7 +9,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableSet;
 
-public class CrossGroupCompatibility implements Compatibility, Comparable<CrossGroupCompatibility>
+public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparable<CrossGroupCompatibilityRule>
 {
 	private enum MatchDirection
 	{
@@ -20,7 +20,7 @@ public class CrossGroupCompatibility implements Compatibility, Comparable<CrossG
 	private final Group		compatibleGroup;
 	private final boolean	symmetric;
 
-	public CrossGroupCompatibility(Group sourceGroup, Group compatibleGroup, boolean symmetric)
+	public CrossGroupCompatibilityRule(Group sourceGroup, Group compatibleGroup, boolean symmetric)
 	{
 		this.sourceGroup = Objects.requireNonNull(sourceGroup, "sourceGroup");
 		this.compatibleGroup = Objects.requireNonNull(compatibleGroup, "compatibleGroup");
@@ -43,51 +43,51 @@ public class CrossGroupCompatibility implements Compatibility, Comparable<CrossG
 	}
 
 	@Override
-	public Set<Release> findCompatibles(Release rls, Collection<Release> existingRlss)
+	public Set<Release> findCompatibles(Release source, Collection<Release> possibleCompatibles)
 	{
-		MatchDirection md = matchSourceRelease(rls);
+		MatchDirection md = matchSourceRelease(source);
 		if (MatchDirection.NONE == md)
 		{
 			return ImmutableSet.of();
 		}
 		Set<Release> compatibles = new HashSet<>(4);
-		for (Release existingRls : existingRlss)
+		for (Release possibleCompatible : possibleCompatibles)
 		{
-			if (matchesCompatibleRelease(existingRls, md) && !rls.equals(existingRls))
+			if (matchesCompatibleRelease(possibleCompatible, md) && source.equals(possibleCompatible))
 			{
 				// Set.add() only adds if does not exist yet. That is what we want.
 				// Do not use ImmutableSet.Builder.add here as it allows the addition of duplicate entries but throws an exception at build time.
-				compatibles.add(existingRls);
+				compatibles.add(possibleCompatible);
 			}
 		}
 		return compatibles;
 	}
 
-	private MatchDirection matchSourceRelease(Release rls)
+	private MatchDirection matchSourceRelease(Release source)
 	{
-		if (rls == null)
+		if (source == null)
 		{
 			return MatchDirection.NONE;
 		}
-		if (sourceGroup.equals(rls.getGroup()))
+		if (sourceGroup.equals(source.getGroup()))
 		{
 			return MatchDirection.FORWARD;
 		}
-		if (symmetric && compatibleGroup.equals(rls.getGroup()))
+		if (symmetric && compatibleGroup.equals(source.getGroup()))
 		{
 			return MatchDirection.BACKWARD;
 		}
 		return MatchDirection.NONE;
 	}
 
-	private boolean matchesCompatibleRelease(Release compatibleRls, MatchDirection matchDirection)
+	private boolean matchesCompatibleRelease(Release possibleCompatible, MatchDirection matchDirection)
 	{
 		switch (matchDirection)
 		{
 			case FORWARD:
-				return compatibleGroup.equals(compatibleRls.getGroup());
+				return compatibleGroup.equals(possibleCompatible.getGroup());
 			case BACKWARD:
-				return sourceGroup.equals(compatibleRls.getGroup());
+				return sourceGroup.equals(possibleCompatible.getGroup());
 			default:
 				return false;
 		}
@@ -100,9 +100,9 @@ public class CrossGroupCompatibility implements Compatibility, Comparable<CrossG
 		{
 			return true;
 		}
-		if (obj instanceof CrossGroupCompatibility)
+		if (obj instanceof CrossGroupCompatibilityRule)
 		{
-			CrossGroupCompatibility o = (CrossGroupCompatibility) obj;
+			CrossGroupCompatibilityRule o = (CrossGroupCompatibilityRule) obj;
 			return sourceGroup.equals(o.sourceGroup) && compatibleGroup.equals(o.compatibleGroup) && symmetric == o.symmetric;
 		}
 		return false;
@@ -117,7 +117,7 @@ public class CrossGroupCompatibility implements Compatibility, Comparable<CrossG
 	@Override
 	public String toString()
 	{
-		return MoreObjects.toStringHelper(CrossGroupCompatibility.class).add("sourceGroup", sourceGroup).add("compatibleGroup", compatibleGroup).add("symmetric", symmetric).toString();
+		return MoreObjects.toStringHelper(CrossGroupCompatibilityRule.class).add("sourceGroup", sourceGroup).add("compatibleGroup", compatibleGroup).add("symmetric", symmetric).toString();
 	}
 
 	public String toShortString()
@@ -137,7 +137,7 @@ public class CrossGroupCompatibility implements Compatibility, Comparable<CrossG
 	}
 
 	@Override
-	public int compareTo(CrossGroupCompatibility o)
+	public int compareTo(CrossGroupCompatibilityRule o)
 	{
 		if (this == o)
 		{

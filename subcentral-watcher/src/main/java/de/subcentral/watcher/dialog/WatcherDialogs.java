@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.CrossGroupCompatibilityRule;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.fx.FxIO;
 import de.subcentral.fx.dialog.DialogController;
@@ -34,14 +34,14 @@ public class WatcherDialogs
 		return showEditViewAndWait(ctrl, "StandardReleaseEditView.fxml");
 	}
 
-	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(Window window)
+	public static Optional<CrossGroupCompatibilityRule> showCrossGroupCompatibilityEditView(Window window)
 	{
 		return showCrossGroupCompatibilityEditView(null, window);
 	}
 
-	public static Optional<CrossGroupCompatibility> showCrossGroupCompatibilityEditView(CrossGroupCompatibility crossGroupCompatibility, Window window)
+	public static Optional<CrossGroupCompatibilityRule> showCrossGroupCompatibilityEditView(CrossGroupCompatibilityRule crossGroupCompatibilityRule, Window window)
 	{
-		CrossGroupCompatibilityEditController ctrl = new CrossGroupCompatibilityEditController(crossGroupCompatibility, window);
+		CrossGroupCompatibilityEditController ctrl = new CrossGroupCompatibilityEditController(crossGroupCompatibilityRule, window);
 		return showEditViewAndWait(ctrl, "CrossGroupCompatibilityEditView.fxml");
 	}
 

@@ -3,14 +3,14 @@ package de.subcentral.watcher.controller.settings;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.CrossGroupCompatibilityRule;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.action.ActionList;
 import de.subcentral.fx.action.FxActions;
 import de.subcentral.watcher.dialog.WatcherDialogs;
-import de.subcentral.watcher.settings.CrossGroupCompatibilitySettingsItem;
+import de.subcentral.watcher.settings.CrossGroupCompatibilityRuleSettingsItem;
 import de.subcentral.watcher.settings.ProcessingSettings;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -30,11 +30,11 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	@FXML
 	private CheckBox													compatibilityEnabledCheckBox;
 	@FXML
-	private TableView<CrossGroupCompatibilitySettingsItem>				crossGroupCompatibilitiesTableView;
+	private TableView<CrossGroupCompatibilityRuleSettingsItem>				crossGroupCompatibilitiesTableView;
 	@FXML
-	private TableColumn<CrossGroupCompatibilitySettingsItem, Boolean>	crossGroupCompatibilitiesEnabledColumn;
+	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, Boolean>	crossGroupCompatibilitiesEnabledColumn;
 	@FXML
-	private TableColumn<CrossGroupCompatibilitySettingsItem, String>	crossGroupCompatibilitiesCompatibilityColumn;
+	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, String>	crossGroupCompatibilitiesCompatibilityColumn;
 
 	@FXML
 	private Button														addCrossGroupCompatibilityBtn;
@@ -62,32 +62,32 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 		compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.getCompatibilityEnabled().property());
 
 		// Cross-group compatibilities table
-		ObservableList<CrossGroupCompatibilitySettingsItem> comps = settings.getCrossGroupCompatibilities().property();
-		SortedList<CrossGroupCompatibilitySettingsItem> displayComps = FxControlBindings.sortableTableView(crossGroupCompatibilitiesTableView, comps);
+		ObservableList<CrossGroupCompatibilityRuleSettingsItem> comps = settings.getCrossGroupCompatibilityRules().property();
+		SortedList<CrossGroupCompatibilityRuleSettingsItem> displayComps = FxControlBindings.sortableTableView(crossGroupCompatibilitiesTableView, comps);
 
 		crossGroupCompatibilitiesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilitiesEnabledColumn));
-		crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilitySettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		crossGroupCompatibilitiesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilitySettingsItem, String> param) ->
+		crossGroupCompatibilitiesEnabledColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
+		crossGroupCompatibilitiesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, String> param) ->
 		{
-			return FxBindings.immutableObservableValue(((CrossGroupCompatibility) param.getValue().getItem()).toShortString());
+			return FxBindings.immutableObservableValue(((CrossGroupCompatibilityRule) param.getValue().getItem()).toShortString());
 		});
 
 		// Table buttons
-		ActionList<CrossGroupCompatibilitySettingsItem> compsActionList = new ActionList<>(comps, crossGroupCompatibilitiesTableView.getSelectionModel(), displayComps);
+		ActionList<CrossGroupCompatibilityRuleSettingsItem> compsActionList = new ActionList<>(comps, crossGroupCompatibilitiesTableView.getSelectionModel(), displayComps);
 		compsActionList.setNewItemSupplier(() ->
 		{
-			Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView(getPrimaryStage());
-			return result.isPresent() ? Optional.of(new CrossGroupCompatibilitySettingsItem(result.get(), true)) : Optional.empty();
+			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityEditView(getPrimaryStage());
+			return result.isPresent() ? Optional.of(new CrossGroupCompatibilityRuleSettingsItem(result.get(), true)) : Optional.empty();
 		});
-		compsActionList.setItemEditer((CrossGroupCompatibilitySettingsItem item) ->
+		compsActionList.setItemEditer((CrossGroupCompatibilityRuleSettingsItem item) ->
 		{
-			Optional<CrossGroupCompatibility> result = WatcherDialogs.showCrossGroupCompatibilityEditView(item.getItem(), getPrimaryStage());
-			return result.isPresent() ? Optional.of(new CrossGroupCompatibilitySettingsItem(result.get(), item.isEnabled())) : Optional.empty();
+			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityEditView(item.getItem(), getPrimaryStage());
+			return result.isPresent() ? Optional.of(new CrossGroupCompatibilityRuleSettingsItem(result.get(), item.isEnabled())) : Optional.empty();
 		});
 		compsActionList.setDistincter(Objects::equals);
 		compsActionList.setSorter(ObjectUtil.getDefaultOrdering());
-		compsActionList.setAlreadyContainedInformer(FxActions.createAlreadyContainedInformer(getPrimaryStage(), "cross-group compatibility", CrossGroupCompatibilitySettingsItem.STRING_CONVERTER));
-		compsActionList.setRemoveConfirmer(FxActions.createRemoveConfirmer(getPrimaryStage(), "cross-group compatibility", CrossGroupCompatibilitySettingsItem.STRING_CONVERTER));
+		compsActionList.setAlreadyContainedInformer(FxActions.createAlreadyContainedInformer(getPrimaryStage(), "cross-group compatibility", CrossGroupCompatibilityRuleSettingsItem.STRING_CONVERTER));
+		compsActionList.setRemoveConfirmer(FxActions.createRemoveConfirmer(getPrimaryStage(), "cross-group compatibility", CrossGroupCompatibilityRuleSettingsItem.STRING_CONVERTER));
 
 		compsActionList.bindAddButton(addCrossGroupCompatibilityBtn);
 		compsActionList.bindEditButton(editCrossGroupCompatibilityBtn);

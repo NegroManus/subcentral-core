@@ -132,7 +132,7 @@ public class SettingsController extends SubController<WatcherMainController>
 		ctrls.put(releaseGuessingSection.getName(), releaseGuessingSection);
 
 		SettingsSection releaseCompatibilitySection = new SettingsSection(RELEASE_COMPATIBILITY_SECTION);
-		releaseCompatibilitySection.setLabel("Compatibility");
+		releaseCompatibilitySection.setLabel("CompatibilityRule");
 		releaseCompatibilitySection.setImage("couple_16.png");
 		releaseCompatibilitySection.setControllerConstructor(() -> new ReleaseCompatibilitySettingsController(this));
 		releaseCompatibilitySection.setFxml("ReleaseCompatibilitySettingsView.fxml");

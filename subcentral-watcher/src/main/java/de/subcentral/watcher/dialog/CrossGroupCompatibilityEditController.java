@@ -1,6 +1,6 @@
 package de.subcentral.watcher.dialog;
 
-import de.subcentral.core.metadata.release.CrossGroupCompatibility;
+import de.subcentral.core.metadata.release.CrossGroupCompatibilityRule;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.dialog.BeanEditController;
@@ -13,7 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
-public class CrossGroupCompatibilityEditController extends BeanEditController<CrossGroupCompatibility>
+public class CrossGroupCompatibilityEditController extends BeanEditController<CrossGroupCompatibilityRule>
 {
 	@FXML
 	private TextField	compatibleGroupTxtFld;
@@ -22,7 +22,7 @@ public class CrossGroupCompatibilityEditController extends BeanEditController<Cr
 	@FXML
 	private CheckBox	symmetricCheckBox;
 
-	public CrossGroupCompatibilityEditController(CrossGroupCompatibility bean, Window window)
+	public CrossGroupCompatibilityEditController(CrossGroupCompatibilityRule bean, Window window)
 	{
 		super(bean, window);
 	}
@@ -99,7 +99,7 @@ public class CrossGroupCompatibilityEditController extends BeanEditController<Cr
 				Group sourceGrp = sourceGroup.getValue();
 				Group compatibleGrp = compatibleGroup.getValue();
 				boolean symmetric = symmetricCheckBox.isSelected();
-				return new CrossGroupCompatibility(sourceGrp, compatibleGrp, symmetric);
+				return new CrossGroupCompatibilityRule(sourceGrp, compatibleGrp, symmetric);
 			}
 			return null;
 		});

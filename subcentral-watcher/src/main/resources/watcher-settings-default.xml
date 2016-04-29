@@ -63,12 +63,12 @@
 				</standardReleases>
 			</guessing>
 			<compatibility enabled="true">
-				<crossGroupCompatibilities>
-					<crossGroupCompatibility enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />
-					<crossGroupCompatibility enabled="true" sourceGroup="REMARKABLE" compatibleGroup="EXCELLENCE" symmetric="true" />
-				</crossGroupCompatibilities>
+				<crossGroupCompatibilityRules>
+					<crossGroupCompatibilityRule enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
+					<crossGroupCompatibilityRule enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
+					<crossGroupCompatibilityRule enabled="true" sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />
+					<crossGroupCompatibilityRule enabled="true" sourceGroup="REMARKABLE" compatibleGroup="EXCELLENCE" symmetric="true" />
+				</crossGroupCompatibilityRules>
 			</compatibility>
 		</release>
 	</metadata>
