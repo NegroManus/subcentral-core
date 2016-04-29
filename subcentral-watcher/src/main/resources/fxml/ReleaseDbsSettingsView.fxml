@@ -51,7 +51,7 @@
          </GridPane.margin>
       </Separator>
 		<Label disable="true" text="Ordered by priority." GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-		<TableView fx:id="releaseDbsTableView" editable="true" prefHeight="200.0" GridPane.rowIndex="3">
+		<TableView fx:id="releaseDbsTableView" editable="true" prefHeight="150.0" GridPane.rowIndex="3">
 			<columns>
 				<TableColumn fx:id="releaseDbsEnabledColumn" maxWidth="1000.0" prefWidth="60.0" sortable="false" text="Enabled" />
 				<TableColumn fx:id="releaseDbsNameColumn" editable="false" maxWidth="7500.0" prefWidth="250.0" sortable="false" text="Release database" />
