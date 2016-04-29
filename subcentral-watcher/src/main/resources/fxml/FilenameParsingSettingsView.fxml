@@ -55,7 +55,7 @@
             <Insets bottom="10.0" />
          </GridPane.margin>
       </Separator>
-		<Label text="Subtitle filename patterns" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+		<Label text="Filename patterns" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
