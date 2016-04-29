@@ -34,7 +34,7 @@ public class LocaleLanguageReplacerSettings extends Settings
 
 	private final ListSettingsProperty<Locale>						parsingLanguages							= new ListSettingsProperty<>("correction.subtitleLanguage.parsingLanguages",
 			ConfigurationPropertyHandlers.LOCALE_LIST_HANDLER);
-	private final ObjectSettingsProperty<LanguageFormat>			outputLanguageFormat						= new ObjectSettingsProperty<>("correction.subtitleLanguage.outputLanguageFormat",
+	private final ObjectSettingsProperty<LanguageFormat>			outputFormat								= new ObjectSettingsProperty<>("correction.subtitleLanguage.outputFormat",
 			ConfigurationPropertyHandlers.LANGUAGE_FORMAT_HANDLER,
 			LanguageFormat.ISO2);
 	private final ObjectSettingsProperty<Locale>					outputLanguage								= new ObjectSettingsProperty<>("correction.subtitleLanguage.outputLanguage",
@@ -50,7 +50,7 @@ public class LocaleLanguageReplacerSettings extends Settings
 	// package protected (should only be instantiated by WatcherSettings)
 	LocaleLanguageReplacerSettings()
 	{
-		initSettables(parsingLanguages, outputLanguageFormat, outputLanguage, customLanguagePatterns, customLanguageTextMappings);
+		initSettables(parsingLanguages, outputFormat, outputLanguage, customLanguagePatterns, customLanguageTextMappings);
 	}
 
 	private Binding<SubtitleLanguageCorrector> initSubtitleLanguageStandardizerBinding()
@@ -74,8 +74,7 @@ public class LocaleLanguageReplacerSettings extends Settings
 				{
 					langTextMappings.put(mapping.getLanguage(), mapping.getText());
 				}
-				return new SubtitleLanguageCorrector(
-						new LocaleLanguageReplacer(parsingLanguages.getValue(), outputLanguageFormat.getValue(), outputLanguage.getValue(), langPatterns, langTextMappings));
+				return new SubtitleLanguageCorrector(new LocaleLanguageReplacer(parsingLanguages.getValue(), outputFormat.getValue(), outputLanguage.getValue(), langPatterns, langTextMappings));
 			}
 		};
 	}
@@ -85,9 +84,9 @@ public class LocaleLanguageReplacerSettings extends Settings
 		return parsingLanguages;
 	}
 
-	public ObjectSettingsProperty<LanguageFormat> getOutputLanguageFormat()
+	public ObjectSettingsProperty<LanguageFormat> getOutputFormat()
 	{
-		return outputLanguageFormat;
+		return outputFormat;
 	}
 
 	public ObjectSettingsProperty<Locale> getOutputLanguage()

@@ -57,10 +57,10 @@
 		<Label disable="true" text="Add rules to correct the parsed data before querying the databases and to correct the query results after querying the databases." wrapText="true" GridPane.rowIndex="3" />
 		<TableView fx:id="correctorsTableView" editable="true" minHeight="100.0" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="4">
 			<columns>
-				<TableColumn fx:id="correctorsTypeColumn" editable="false" prefWidth="80.0" text="Rule type" />
-				<TableColumn fx:id="correctorsRuleColumn" editable="false" maxWidth="20000.0" text="Rule" />
-				<TableColumn fx:id="correctorsBeforeQueryingColumn" prefWidth="100.0" text="Before querying" />
-				<TableColumn fx:id="correctorsAfterQueryingColumn" prefWidth="100.0" text="After querying" />
+				<TableColumn fx:id="correctorsTypeColumn" editable="false" maxWidth="1500.0" prefWidth="80.0" text="Rule type" />
+				<TableColumn fx:id="correctorsRuleColumn" editable="false" maxWidth="5500.0" prefWidth="150.0" text="Rule" />
+				<TableColumn fx:id="correctorsBeforeQueryingColumn" maxWidth="1500.0" prefWidth="100.0" text="Before querying" />
+				<TableColumn fx:id="correctorsAfterQueryingColumn" maxWidth="1500.0" prefWidth="100.0" text="After querying" />
 			</columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

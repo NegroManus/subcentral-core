@@ -34,7 +34,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	@FXML
 	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, Boolean>	crossGroupCompatibilityRulesEnabledColumn;
 	@FXML
-	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, String>	crossGroupCompatibilityRulesCompatibilityColumn;
+	private TableColumn<CrossGroupCompatibilityRuleSettingsItem, String>	crossGroupCompatibilityRulesRuleColumn;
 
 	@FXML
 	private Button															addCrossGroupCompatibilityRuleBtn;
@@ -67,7 +67,7 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 
 		crossGroupCompatibilityRulesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilityRulesEnabledColumn));
 		crossGroupCompatibilityRulesEnabledColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		crossGroupCompatibilityRulesCompatibilityColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, String> param) ->
+		crossGroupCompatibilityRulesRuleColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, String> param) ->
 		{
 			return FxBindings.immutableObservableValue(((CrossGroupCompatibilityRule) param.getValue().getItem()).toShortString());
 		});

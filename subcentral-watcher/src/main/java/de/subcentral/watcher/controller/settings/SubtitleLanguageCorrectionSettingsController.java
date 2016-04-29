@@ -60,7 +60,7 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 	@FXML
 	private Button												moveDownTextLangMappingBtn;
 	@FXML
-	private ChoiceBox<LanguageFormat>							outputLangFormatChoiceBox;
+	private ChoiceBox<LanguageFormat>							outputFormatChoiceBox;
 	@FXML
 	private ComboBox<Locale>									outputLangComboBox;
 	@FXML
@@ -115,9 +115,9 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		initTextLangMappingTableView();
 
 		// OutputLangFormat
-		outputLangFormatChoiceBox.getItems().setAll(LanguageFormat.values());
-		outputLangFormatChoiceBox.setConverter(SubCentralFxUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
-		outputLangFormatChoiceBox.valueProperty().bindBidirectional(settings.getOutputLanguageFormat().property());
+		outputFormatChoiceBox.getItems().setAll(LanguageFormat.values());
+		outputFormatChoiceBox.setConverter(SubCentralFxUtil.LANGUAGE_FORMAT_STRING_CONVERTER);
+		outputFormatChoiceBox.valueProperty().bindBidirectional(settings.getOutputFormat().property());
 
 		// OutputLang
 		outputLangComboBox.setItems(FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
@@ -126,17 +126,17 @@ public class SubtitleLanguageCorrectionSettingsController extends AbstractSettin
 		outputLangComboBox.disableProperty().bind(new BooleanBinding()
 		{
 			{
-				super.bind(outputLangFormatChoiceBox.valueProperty());
+				super.bind(outputFormatChoiceBox.valueProperty());
 			}
 
 			@Override
 			protected boolean computeValue()
 			{
-				if (outputLangFormatChoiceBox.getValue() == null)
+				if (outputFormatChoiceBox.getValue() == null)
 				{
 					return true;
 				}
-				switch (outputLangFormatChoiceBox.getValue())
+				switch (outputFormatChoiceBox.getValue())
 				{
 					case NAME:
 						// fall through
