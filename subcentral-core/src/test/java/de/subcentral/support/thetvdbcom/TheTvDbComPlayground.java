@@ -42,7 +42,7 @@ public class TheTvDbComPlayground
 		System.out.println("Episodes:");
 		series.getEpisodes().stream().forEach((Episode epi) ->
 		{
-			System.out.println((epi.isSpecial() ? "[s] " : "[-] ") + NamingDefaults.getDefaultEpisodeNamer().name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
+			System.out.println((epi.isSpecial() ? "[s] " : "[ ] ") + NamingDefaults.getDefaultEpisodeNamer().name(epi, Context.of(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 			// System.out.println(epi);
 		});
 	}
