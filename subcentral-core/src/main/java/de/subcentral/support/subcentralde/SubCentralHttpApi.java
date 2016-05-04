@@ -155,11 +155,12 @@ public class SubCentralHttpApi implements SubCentralApi
 	public void logout() throws IOException
 	{
 		// TODO
-		HttpsURLConnection conn = openConnection(new URL(host, "index.php?action=UserLogout&t=" + "logoutId"));
+		// <a href="index.php?action=UserLogout&t=3b544a6570f7faad547354dfe1f7900fb2fb3753"><img src="wcf/icon/logoutS.png" alt=""> <span>Abmelden</span></a>
+		HttpsURLConnection conn = openConnection(new URL(host, "index.php?action=UserLogout"));
 		conn.connect();
 		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
 		{
-			throw new IllegalStateException("Logout failed. Server did not return response code 200: " + conn.getHeaderField(null));
+			log.warn("Logout failed. Server did not return response code 200: " + conn.getHeaderField(null));
 		}
 		String oldCookies = cookies;
 		cookies = null;
