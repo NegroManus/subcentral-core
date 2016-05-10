@@ -16,10 +16,10 @@ import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.parse.DelegatingMappingMatcher;
-import de.subcentral.core.parse.DelegatingMappingMatcher.GroupEntry;
-import de.subcentral.core.parse.DelegatingMappingMatcher.KeyEntry;
-import de.subcentral.core.parse.DelegatingMappingMatcher.MatcherEntry;
+import de.subcentral.core.parse.CompoundMappingMatcher;
+import de.subcentral.core.parse.CompoundMappingMatcher.GroupEntry;
+import de.subcentral.core.parse.CompoundMappingMatcher.KeyEntry;
+import de.subcentral.core.parse.CompoundMappingMatcher.MatcherEntry;
 import de.subcentral.core.parse.Mapper;
 import de.subcentral.core.parse.MappingMatcher;
 import de.subcentral.core.parse.MultiMappingMatcher;
@@ -110,7 +110,7 @@ public class SubCentralDe
 		g101.put(2, subRlsVersionEntry);
 		g101.put(3, subLangEntry);
 		g101.put(4, subGroupEntry);
-		MappingMatcher<SimplePropDescriptor> m101 = new DelegatingMappingMatcher<>(p101, g101.build());
+		MappingMatcher<SimplePropDescriptor> m101 = new CompoundMappingMatcher<>(p101, g101.build());
 		matchers.add(m101);
 
 		// Language, Version, (Group)?
@@ -121,7 +121,7 @@ public class SubCentralDe
 		g102.put(2, subLangEntry);
 		g102.put(3, subRlsVersionEntry);
 		g102.put(4, subGroupEntry);
-		MappingMatcher<SimplePropDescriptor> m2 = new DelegatingMappingMatcher<>(p102, g102.build());
+		MappingMatcher<SimplePropDescriptor> m2 = new CompoundMappingMatcher<>(p102, g102.build());
 		matchers.add(m2);
 
 		// Language, Group, (Version)?
@@ -132,7 +132,7 @@ public class SubCentralDe
 		g103.put(2, subLangEntry);
 		g103.put(3, subGroupEntry);
 		g103.put(4, subRlsVersionEntry);
-		MappingMatcher<SimplePropDescriptor> m103 = new DelegatingMappingMatcher<>(p103, g103.build());
+		MappingMatcher<SimplePropDescriptor> m103 = new CompoundMappingMatcher<>(p103, g103.build());
 		matchers.add(m103);
 
 		// Language, (Group)?
@@ -142,7 +142,7 @@ public class SubCentralDe
 		g104.put(1, sceneMatcherEntry);
 		g104.put(2, subLangEntry);
 		g104.put(3, subGroupEntry);
-		MappingMatcher<SimplePropDescriptor> m104 = new DelegatingMappingMatcher<>(p104, g104.build());
+		MappingMatcher<SimplePropDescriptor> m104 = new CompoundMappingMatcher<>(p104, g104.build());
 		matchers.add(m104);
 
 		// Version
@@ -151,7 +151,7 @@ public class SubCentralDe
 		g105.put(0, subRlsNameEntry);
 		g105.put(1, sceneMatcherEntry);
 		g105.put(2, subRlsVersionEntry);
-		MappingMatcher<SimplePropDescriptor> m105 = new DelegatingMappingMatcher<>(p105, g105.build());
+		MappingMatcher<SimplePropDescriptor> m105 = new CompoundMappingMatcher<>(p105, g105.build());
 		matchers.add(m105);
 
 		return new MultiMappingMatcher<>(matchers.build());
@@ -169,7 +169,7 @@ public class SubCentralDe
 
 	public static List<ParserEntry<?>> getParserEntries()
 	{
-		return PARSING_SERVICE.getParserEntries();
+		return PARSING_SERVICE.getEntries();
 	}
 
 	public static void registerSubtitleLanguageCorrectors(TypeBasedCorrectionService service)

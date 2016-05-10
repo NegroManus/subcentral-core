@@ -10,18 +10,18 @@ import java.util.regex.Pattern;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
-public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
+public class CompoundMappingMatcher<K> implements MappingMatcher<K>
 {
 	private final Pattern						pattern;
 	private final Map<Integer, GroupEntry<K>>	groups;
 	private final Map<K, String>				predefinedMatches;
 
-	public DelegatingMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups)
+	public CompoundMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups)
 	{
 		this(pattern, groups, ImmutableMap.of());
 	}
 
-	public DelegatingMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups, Map<K, String> predefinedMatches)
+	public CompoundMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups, Map<K, String> predefinedMatches)
 	{
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.groups = ImmutableMap.copyOf(new TreeMap<>(groups)); // TreeMap to sort; includes null checks
@@ -87,7 +87,7 @@ public class DelegatingMappingMatcher<K> implements MappingMatcher<K>
 
 	public abstract static class GroupEntry<K>
 	{
-		// Private constructor so that there can be no sub classes outside the DelegatingMappingMatcher class
+		// Private constructor so that there can be no sub classes outside the CompoundMappingMatcher class
 		private GroupEntry()
 		{
 

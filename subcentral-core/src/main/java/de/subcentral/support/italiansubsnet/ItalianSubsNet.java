@@ -125,6 +125,6 @@ public class ItalianSubsNet
 
 	public static List<ParserEntry<?>> getParserEntries()
 	{
-		return PARSING_SERVICE.getParserEntries();
+		return PARSING_SERVICE.getEntries();
 	}
 }

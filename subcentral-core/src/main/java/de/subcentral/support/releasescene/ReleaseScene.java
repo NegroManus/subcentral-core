@@ -293,6 +293,6 @@ public class ReleaseScene
 
 	public static List<ParserEntry<?>> getParsersEntries()
 	{
-		return PARSING_SERVICE.getParserEntries();
+		return PARSING_SERVICE.getEntries();
 	}
 }

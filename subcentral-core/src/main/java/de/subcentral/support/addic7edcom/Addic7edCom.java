@@ -14,8 +14,8 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.parse.DelegatingMappingMatcher;
-import de.subcentral.core.parse.DelegatingMappingMatcher.GroupEntry;
+import de.subcentral.core.parse.CompoundMappingMatcher;
+import de.subcentral.core.parse.CompoundMappingMatcher.GroupEntry;
 import de.subcentral.core.parse.MappingMatcher;
 import de.subcentral.core.parse.MultiMappingMatcher;
 import de.subcentral.core.parse.Parser;
@@ -67,7 +67,7 @@ public class Addic7edCom
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMatches = ImmutableMap.builder();
 		predefMatches.put(Subtitle.PROP_SOURCE, getSite().getName());
 		predefMatches.put(Series.PROP_TYPE, Series.TYPE_SEASONED);
-		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(pattern, groups.build(), predefMatches.build());
+		MappingMatcher<SimplePropDescriptor> matcher = new CompoundMappingMatcher<>(pattern, groups.build(), predefMatches.build());
 
 		return new SubtitleReleaseParser(matcher, ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 	}
@@ -183,7 +183,7 @@ public class Addic7edCom
 		groups.put(5, GroupEntry.ofKey(SubtitleRelease.PROP_TAGS));
 		ImmutableMap.Builder<SimplePropDescriptor, String> predefMatches = ImmutableMap.builder();
 		predefMatches.put(Subtitle.PROP_SOURCE, getSite().getName());
-		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(pattern, groups.build(), predefMatches.build());
+		MappingMatcher<SimplePropDescriptor> matcher = new CompoundMappingMatcher<>(pattern, groups.build(), predefMatches.build());
 
 		return new SubtitleReleaseParser(matcher, ParsingDefaults.getDefaultSingletonListMovieMapper());
 	}
@@ -221,6 +221,6 @@ public class Addic7edCom
 
 	public static List<ParserEntry<?>> getParserEntries()
 	{
-		return PARSING_SERVICE.getParserEntries();
+		return PARSING_SERVICE.getEntries();
 	}
 }

@@ -38,9 +38,14 @@ public class ConditionalNamingService implements NamingService
 	 * 
 	 * @return
 	 */
-	public List<NamerEntry<?>> getConditionalNamingEntries()
+	public List<NamerEntry<?>> getEntries()
 	{
 		return entries;
+	}
+
+	public <U> void register(Predicate<Object> condition, Namer<U> namer)
+	{
+		entries.add(new NamerEntry<U>(condition, namer));
 	}
 
 	@Override

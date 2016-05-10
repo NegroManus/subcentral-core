@@ -17,7 +17,7 @@ import com.google.common.base.MoreObjects;
 public class TypeBasedParsingService implements ParsingService
 {
 	private final String				name;
-	private final List<ParserEntry<?>>	parsers	= new CopyOnWriteArrayList<>();
+	private final List<ParserEntry<?>>	entries	= new CopyOnWriteArrayList<>();
 
 	public TypeBasedParsingService(String name)
 	{
@@ -30,25 +30,25 @@ public class TypeBasedParsingService implements ParsingService
 		return name;
 	}
 
+	public List<ParserEntry<?>> getEntries()
+	{
+		return entries;
+	}
+
 	@Override
 	public Set<Class<?>> getSupportedTargetTypes()
 	{
-		return parsers.stream().map(ParserEntry::getTargetType).collect(Collectors.toSet());
-	}
-
-	public List<ParserEntry<?>> getParserEntries()
-	{
-		return parsers;
+		return entries.stream().map(ParserEntry::getTargetType).collect(Collectors.toSet());
 	}
 
 	public List<Parser<?>> getParsers()
 	{
-		return parsers.stream().map(ParserEntry::getParser).collect(Collectors.toList());
+		return entries.stream().map(ParserEntry::getParser).collect(Collectors.toList());
 	}
 
 	public <T> void register(Class<T> targetType, Parser<T> parser)
 	{
-		parsers.add(new ParserEntry<T>(targetType, parser));
+		entries.add(new ParserEntry<T>(targetType, parser));
 	}
 
 	public <T> void registerAll(Class<T> targetType, Iterable<Parser<T>> parsers)
@@ -61,7 +61,7 @@ public class TypeBasedParsingService implements ParsingService
 
 	public boolean unregister(Parser<?> parser)
 	{
-		Iterator<ParserEntry<?>> iter = parsers.iterator();
+		Iterator<ParserEntry<?>> iter = entries.iterator();
 		while (iter.hasNext())
 		{
 			ParserEntry<?> entry = iter.next();
@@ -89,13 +89,13 @@ public class TypeBasedParsingService implements ParsingService
 
 	public void unregisterAll()
 	{
-		parsers.clear();
+		entries.clear();
 	}
 
 	@Override
 	public Object parse(String text)
 	{
-		for (ParserEntry<?> entry : parsers)
+		for (ParserEntry<?> entry : entries)
 		{
 			Object parsedObj = entry.parser.parse(text);
 			if (parsedObj != null)
@@ -110,7 +110,7 @@ public class TypeBasedParsingService implements ParsingService
 	public <T> T parse(String text, Class<T> targetType)
 	{
 		Objects.requireNonNull(targetType, "targetType cannot be null. For untyped parsing use #parse(String).");
-		for (ParserEntry<?> entry : parsers)
+		for (ParserEntry<?> entry : entries)
 		{
 			if (targetType.isAssignableFrom(entry.targetType))
 			{
@@ -134,7 +134,7 @@ public class TypeBasedParsingService implements ParsingService
 		{
 			return parse(text);
 		}
-		for (ParserEntry<?> entry : parsers)
+		for (ParserEntry<?> entry : entries)
 		{
 			for (Class<?> targetType : targetTypes)
 			{

@@ -6,7 +6,6 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
@@ -26,7 +25,6 @@ import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
-import de.subcentral.core.name.ConditionalNamingService.NamerEntry;
 import de.subcentral.core.name.PropSequenceNameBuilder.Config;
 import de.subcentral.core.util.Predicates;
 import de.subcentral.core.util.Separation;
@@ -46,12 +44,12 @@ public class NamingDefaults
 	// NamingService has to be instantiated first because it is referenced in
 	// some namers
 	private static final ConditionalNamingService	NAMING_SERVICE									= new ConditionalNamingService(DEFAULT_DOMAIN);
-	private static final DelegatingNamingService	RELEASE_MEDIA_NAMING_SERVICE					= new DelegatingNamingService(DEFAULT_DOMAIN + "_release_media",
+	private static final DecoratingNamingService	RELEASE_MEDIA_NAMING_SERVICE					= new DecoratingNamingService(DEFAULT_DOMAIN + "_release_media",
 			NAMING_SERVICE,
 			RELEASE_MEDIA_FORMATTER);
-	private static final DelegatingNamingService	NORMALIZING_NAMING_SERVICE						= createNormalizingNamingService(NAMING_SERVICE);
+	private static final DecoratingNamingService	NORMALIZING_NAMING_SERVICE						= createNormalizingNamingService(NAMING_SERVICE);
 	private static final ConditionalNamingService	MULTI_EPISODE_RANGE_NAMING_SERVICE				= new ConditionalNamingService("multiepisode_range");;
-	private static final DelegatingNamingService	MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(MULTI_EPISODE_RANGE_NAMING_SERVICE);
+	private static final DecoratingNamingService	MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE	= createNormalizingNamingService(MULTI_EPISODE_RANGE_NAMING_SERVICE);
 	private static MovieNamer						MOVIE_NAMER;
 	private static SeriesNamer						SERIES_NAMER;
 	private static SeasonNamer						SEASON_NAMER;
@@ -136,22 +134,20 @@ public class NamingDefaults
 		// SubtitleReleaseNamer
 		SUBTITLE_RELEASE_NAMER = new SubtitleReleaseNamer(configWithSubRlsNameFormatter, RELEASE_NAMER);
 
-		// Add namers to the NamingService (ordered by number of times used)
-		List<NamerEntry<?>> namers = new ArrayList<>(9);
-		namers.add(NamerEntry.of(Predicates.instanceOf(Episode.class), EPISODE_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(Release.class), RELEASE_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(SubtitleRelease.class), SUBTITLE_RELEASE_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(Series.class), SERIES_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(Season.class), SEASON_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(Movie.class), MOVIE_NAMER));
-		namers.add(NamerEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(Subtitle.class), SUBTITLE_NAMER));
-		namers.add(NamerEntry.of(Predicates.instanceOf(NamedMetadata.class), NAMED_MEDIA_NAMER));
-		NAMING_SERVICE.getConditionalNamingEntries().addAll(namers);
+		// Add namers to the NamingService (mutual excluding conditions are ordered by estimated number of times used)
+		NAMING_SERVICE.register(Predicates.instanceOf(Episode.class), EPISODE_NAMER);
+		NAMING_SERVICE.register(Predicates.instanceOf(Release.class), RELEASE_NAMER);
+		NAMING_SERVICE.register(Predicates.instanceOf(SubtitleRelease.class), SUBTITLE_RELEASE_NAMER);
+		NAMING_SERVICE.register(Predicates.instanceOf(Series.class), SERIES_NAMER);
+		NAMING_SERVICE.register(Predicates.instanceOf(Season.class), SEASON_NAMER);
+		NAMING_SERVICE.register(Predicates.instanceOf(Movie.class), MOVIE_NAMER);
+		NAMING_SERVICE.register(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_NAMER);
+		NAMING_SERVICE.register(Predicates.instanceOf(Subtitle.class), SUBTITLE_NAMER);
+		NAMING_SERVICE.register(Predicates.instanceOf(NamedMetadata.class), NAMED_MEDIA_NAMER);
 
 		// Add a special NamingService which formats the episode numbers different than the default NamingService
 		// for ex. S09E23-E24 instead of S09E23E24
-		MULTI_EPISODE_RANGE_NAMING_SERVICE.getConditionalNamingEntries().add(NamerEntry.of(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_RANGE_NAMER));
+		MULTI_EPISODE_RANGE_NAMING_SERVICE.register(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_RANGE_NAMER);
 	}
 
 	private NamingDefaults()
@@ -209,7 +205,7 @@ public class NamingDefaults
 		return NAMING_SERVICE;
 	}
 
-	public static DelegatingNamingService getDefaultReleaseMediaNamingService()
+	public static DecoratingNamingService getDefaultReleaseMediaNamingService()
 	{
 		return RELEASE_MEDIA_NAMING_SERVICE;
 	}
@@ -219,12 +215,12 @@ public class NamingDefaults
 		return MULTI_EPISODE_RANGE_NAMING_SERVICE;
 	}
 
-	public static DelegatingNamingService getDefaultNormalizingNamingService()
+	public static DecoratingNamingService getDefaultNormalizingNamingService()
 	{
 		return NORMALIZING_NAMING_SERVICE;
 	}
 
-	public static DelegatingNamingService getMultiEpisodeRangeNormalizingNamingService()
+	public static DecoratingNamingService getMultiEpisodeRangeNormalizingNamingService()
 	{
 		return MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE;
 	}
@@ -274,8 +270,8 @@ public class NamingDefaults
 		return SUBTITLE_RELEASE_NAMER;
 	}
 
-	public static DelegatingNamingService createNormalizingNamingService(NamingService namingService)
+	public static DecoratingNamingService createNormalizingNamingService(NamingService namingService)
 	{
-		return new DelegatingNamingService(namingService.getName() + "_normalizing", namingService, NORMALIZING_FORMATTER);
+		return new DecoratingNamingService(namingService.getName() + "_normalizing", namingService, NORMALIZING_FORMATTER);
 	}
 }

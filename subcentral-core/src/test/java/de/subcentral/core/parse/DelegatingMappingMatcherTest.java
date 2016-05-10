@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.subcentral.core.parse.DelegatingMappingMatcher.GroupEntry;
+import de.subcentral.core.parse.CompoundMappingMatcher.GroupEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class DelegatingMappingMatcherTest
@@ -42,7 +42,7 @@ public class DelegatingMappingMatcherTest
 		groups.put(1, GroupEntry.ofKey(startProp));
 		groups.put(2, GroupEntry.ofMatcher(new MultiMappingMatcher<>(middleMatcher1, middleMatcher2)));
 		groups.put(3, GroupEntry.ofKey(endProp));
-		MappingMatcher<SimplePropDescriptor> matcher = new DelegatingMappingMatcher<>(Pattern.compile("(\\w+)-(.*)-(\\w+)"), groups);
+		MappingMatcher<SimplePropDescriptor> matcher = new CompoundMappingMatcher<>(Pattern.compile("(\\w+)-(.*)-(\\w+)"), groups);
 
 		// Execution
 		Map<SimplePropDescriptor, String> actual = matcher.match(s1);
