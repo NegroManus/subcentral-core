@@ -50,7 +50,7 @@ public class SettingsPageController extends AbstractPageController
 
 		parsingSettingsFileTxtFld.setTextFormatter(parsingSettingsFileTextFormatter);
 		ExtensionFilter xmlExtFilter = new ExtensionFilter("XML file", "*.xml");
-		chooseEnvSettingsFileBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(parsingSettingsFileTextFormatter, getPrimaryStage(), "Choose parsing settings file", xmlExtFilter));
+		chooseParsingSettingsFileBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(parsingSettingsFileTextFormatter, getPrimaryStage(), "Choose parsing settings file", xmlExtFilter));
 
 		nextButtonDisableBinding = new BooleanBinding()
 		{
