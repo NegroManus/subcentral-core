@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -128,7 +130,7 @@ public class SeasonServlet extends HttpServlet
 			{
 				writer.println("<h3>" + name(data.getSeries()) + "</h3>");
 				writer.println("<code>");
-				writer.println(data.getSeries());
+				writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(data.getSeries())));
 				writer.println("</code>");
 			}
 			writer.println("</div>");
@@ -144,7 +146,7 @@ public class SeasonServlet extends HttpServlet
 				{
 					writer.println("<div><h3>" + name(season) + "</h3>");
 					writer.println("<code>");
-					writer.println(season);
+					writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(season)));
 					writer.println("</code>");
 					writer.println("</div>");
 				}
@@ -161,7 +163,7 @@ public class SeasonServlet extends HttpServlet
 				{
 					writer.println("<h3>" + name(epi) + "</h3>");
 					writer.println("<code>");
-					writer.println(epi);
+					writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(epi)));
 					writer.println("</code>");
 					writer.println("<br/><br/>");
 					printSubs(writer, subs, unmatchedSubtitleReleases, epi);
