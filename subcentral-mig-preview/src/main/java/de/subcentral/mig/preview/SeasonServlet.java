@@ -79,8 +79,17 @@ public class SeasonServlet extends HttpServlet
 			String contextPath = request.getContextPath();
 
 			int seasonThreadId = Integer.parseInt(request.getParameter("threadId"));
+			if (seasonThreadId < 1)
+			{
+				throw new IllegalArgumentException("illegal parameter threadId: " + seasonThreadId + ". Needs to be a positive integer");
+			}
 
 			SeasonPostData data = readSeasonPostData(seasonThreadId);
+			if (data == null)
+			{
+				throw new IllegalArgumentException("Season thread with the id " + seasonThreadId + " could not be read. Maybe no thread with this id exists?");
+			}
+
 			// Keep a list of the subtitle releases that could not be matched with episodes
 			List<SubtitleRelease> unmatchedSubtitleReleases = new ArrayList<>(data.getSubtitleReleases());
 			// Group the subtitle releases by their subtitles

@@ -2,5 +2,5 @@ package de.subcentral.mig.preview;
 
 public class MigrationPreview
 {
-	public static final String ENV_SETTINGS_PATH = "E:\\Dropbox\\SubCentral\\Submanager\\mig\\migration-env-settings.properties";
+	public static final String ENV_SETTINGS_PATH = "E:\\Java\\SubCentral\\migration\\migration-env-settings.properties";
 }
