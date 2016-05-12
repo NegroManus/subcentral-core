@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
-			<version>56.1</version>
+			<version>57.1</version>
 		</dependency>
 
 		<!-- Database connection -->
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.38</version>
+			<version>6.0.2</version>
 		</dependency>
 
 		<!-- Test -->
