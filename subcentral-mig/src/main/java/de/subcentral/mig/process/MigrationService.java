@@ -120,6 +120,10 @@ public class MigrationService implements AutoCloseable
 		{
 			WoltlabBurningBoard board = new WoltlabBurningBoard(conn);
 			WbbPost post = board.getFirstPost(seasonThreadId);
+			if (post == null)
+			{
+				return null;
+			}
 			SeasonPostParser parser = new SeasonPostParser();
 			SeasonPostData data = parser.parsePost(post);
 			long duration = System.currentTimeMillis() - start;

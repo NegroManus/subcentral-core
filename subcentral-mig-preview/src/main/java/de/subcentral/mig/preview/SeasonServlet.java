@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,8 +81,17 @@ public class SeasonServlet extends HttpServlet
 			String contextPath = request.getContextPath();
 
 			int seasonThreadId = Integer.parseInt(request.getParameter("threadId"));
+			if (seasonThreadId < 1)
+			{
+				throw new IllegalArgumentException("illegal parameter threadId: " + seasonThreadId + ". Needs to be a positive integer");
+			}
 
 			SeasonPostData data = readSeasonPostData(seasonThreadId);
+			if (data == null)
+			{
+				throw new IllegalArgumentException("Season thread with the id " + seasonThreadId + " could not be read. Maybe no thread with this id exists?");
+			}
+
 			// Keep a list of the subtitle releases that could not be matched with episodes
 			List<SubtitleRelease> unmatchedSubtitleReleases = new ArrayList<>(data.getSubtitleReleases());
 			// Group the subtitle releases by their subtitles
@@ -119,7 +130,7 @@ public class SeasonServlet extends HttpServlet
 			{
 				writer.println("<h3>" + name(data.getSeries()) + "</h3>");
 				writer.println("<code>");
-				writer.println(data.getSeries());
+				writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(data.getSeries())));
 				writer.println("</code>");
 			}
 			writer.println("</div>");
@@ -135,7 +146,7 @@ public class SeasonServlet extends HttpServlet
 				{
 					writer.println("<div><h3>" + name(season) + "</h3>");
 					writer.println("<code>");
-					writer.println(season);
+					writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(season)));
 					writer.println("</code>");
 					writer.println("</div>");
 				}
@@ -152,7 +163,7 @@ public class SeasonServlet extends HttpServlet
 				{
 					writer.println("<h3>" + name(epi) + "</h3>");
 					writer.println("<code>");
-					writer.println(epi);
+					writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(epi)));
 					writer.println("</code>");
 					writer.println("<br/><br/>");
 					printSubs(writer, subs, unmatchedSubtitleReleases, epi);
