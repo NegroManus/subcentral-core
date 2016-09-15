@@ -26,17 +26,14 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.MoreObjects;
 
-public class IOUtil
-{
+public class IOUtil {
 	private static final Logger log = LogManager.getLogger(IOUtil.class);
 
-	private IOUtil()
-	{
+	private IOUtil() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static ProcessResult executeProcess(List<String> command) throws IOException, InterruptedException
-	{
+	public static ProcessResult executeProcess(List<String> command) throws IOException, InterruptedException {
 		return executeProcess(command, null);
 	}
 
@@ -53,11 +50,9 @@ public class IOUtil
 	 * @throws InterruptedException
 	 * @throws TimeoutException
 	 */
-	public static ProcessResult executeProcess(List<String> command, ExecutorService executor) throws IOException, InterruptedException
-	{
+	public static ProcessResult executeProcess(List<String> command, ExecutorService executor) throws IOException, InterruptedException {
 		Process process = null;
-		try
-		{
+		try {
 			ProcessBuilder processBuilder = new ProcessBuilder(command);
 			log.debug("Executing process {} with directory={}; environment={}", command, processBuilder.directory(), processBuilder.environment());
 			long start = System.nanoTime();
@@ -69,13 +64,11 @@ public class IOUtil
 			StreamGobbler stdOutGobbler = new StreamGobbler(process.getInputStream(), stdOutStream);
 			ByteArrayOutputStream stdErrStream = new ByteArrayOutputStream();
 			StreamGobbler stdErrGobbler = new StreamGobbler(process.getErrorStream(), stdErrStream);
-			if (executor != null)
-			{
+			if (executor != null) {
 				executor.submit(stdOutGobbler);
 				executor.submit(stdErrGobbler);
 			}
-			else
-			{
+			else {
 				new Thread(stdOutGobbler).start();
 				new Thread(stdErrGobbler).start();
 			}
@@ -84,14 +77,23 @@ public class IOUtil
 			String stdOut = StringUtils.stripToNull(stdOutStream.toString(Charset.defaultCharset().name()));
 			String stdErr = StringUtils.stripToNull(stdErrStream.toString(Charset.defaultCharset().name()));
 			ProcessResult result = new ProcessResult(exitValue, stdOut, stdErr);
-			log.debug("Executed process {} in {} ms with result: {}", command, TimeUtil.durationMillis(start), result);
+			if (result.exitValue == 0) {
+				if (log.isTraceEnabled()) {
+					log.debug("Successfully executed process {} in {} ms (result: {})", command, TimeUtil.durationMillis(start), result);
+				}
+				else if (log.isDebugEnabled()) {
+					log.debug("Successfully executed process {} in {} ms", command, TimeUtil.durationMillis(start));
+				}
+			}
+			else {
+				log.info("Failed to execute process {} ({} ms, result: {})", command, TimeUtil.durationMillis(start), result);
+			}
+
 			return result;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			// Clean up
-			if (process != null)
-			{
+			if (process != null) {
 				process.destroy();
 			}
 			throw e;
@@ -104,70 +106,54 @@ public class IOUtil
 	 * @param is
 	 * @return
 	 */
-	public static String drainToString(InputStream is)
-	{
-		if (is == null)
-		{
+	public static String drainToString(InputStream is) {
+		if (is == null) {
 			return "";
 		}
-		try (Scanner s = new Scanner(is, Charset.defaultCharset().name()))
-		{
+		try (Scanner s = new Scanner(is, Charset.defaultCharset().name())) {
 			return s.useDelimiter("\\A").hasNext() ? s.next() : "";
 		}
 	}
 
-	public static String[] splitIntoFilenameAndExtension(String filename)
-	{
-		if (filename == null)
-		{
+	public static String[] splitIntoFilenameAndExtension(String filename) {
+		if (filename == null) {
 			return new String[] { "", "" };
 		}
 		int indexOfLastDot = filename.lastIndexOf('.');
-		if (indexOfLastDot == -1)
-		{
+		if (indexOfLastDot == -1) {
 			return new String[] { filename, "" };
 		}
 		return new String[] { filename.substring(0, indexOfLastDot), filename.substring(indexOfLastDot, filename.length()) };
 	}
 
-	public static boolean isCompletelyWritten(Path file)
-	{
-		try (RandomAccessFile raf = new RandomAccessFile(file.toFile(), "rw"))
-		{
+	public static boolean isCompletelyWritten(Path file) {
+		try (RandomAccessFile raf = new RandomAccessFile(file.toFile(), "rw")) {
 			return true;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			log.trace("File is not completely written yet", e);
 			return false;
 		}
 	}
 
-	public static boolean isLocked(Path file) throws IOException
-	{
-		try (SeekableByteChannel channel = Files.newByteChannel(file, StandardOpenOption.WRITE))
-		{
+	public static boolean isLocked(Path file) throws IOException {
+		try (SeekableByteChannel channel = Files.newByteChannel(file, StandardOpenOption.WRITE)) {
 			return false;
 		}
-		catch (FileSystemException e)
-		{
+		catch (FileSystemException e) {
 			log.trace("File is locked", e);
 			return true;
 		}
 	}
 
-	public static boolean waitUntilUnlocked(Path file, long timeout, TimeUnit timeoutUnit) throws IOException, TimeoutException, InterruptedException
-	{
+	public static boolean waitUntilUnlocked(Path file, long timeout, TimeUnit timeoutUnit) throws IOException, TimeoutException, InterruptedException {
 		long start = System.currentTimeMillis();
 		boolean waited = false;
-		while (isLocked(file))
-		{
-			if (waited == false)
-			{
+		while (isLocked(file)) {
+			if (waited == false) {
 				waited = true;
 			}
-			if (System.currentTimeMillis() >= start + timeoutUnit.toMillis(timeout))
-			{
+			if (System.currentTimeMillis() >= start + timeoutUnit.toMillis(timeout)) {
 				throw new TimeoutException("Timed out after " + timeout + " " + timeoutUnit + " while waiting for file " + file + " to become unlocked");
 			}
 			log.debug("Waiting on file {} to be written", file);
@@ -176,27 +162,22 @@ public class IOUtil
 		return waited;
 	}
 
-	public static boolean waitUntilSizeRemainsUnchanged(Path file, long checkPeriod, long timeout, TimeUnit timeoutUnit) throws IOException, TimeoutException, InterruptedException
-	{
+	public static boolean waitUntilSizeRemainsUnchanged(Path file, long checkPeriod, long timeout, TimeUnit timeoutUnit) throws IOException, TimeoutException, InterruptedException {
 		long start = System.currentTimeMillis();
 		boolean waited = false;
-		for (;;)
-		{
-			if (System.currentTimeMillis() >= start + timeoutUnit.toMillis(timeout))
-			{
+		for (;;) {
+			if (System.currentTimeMillis() >= start + timeoutUnit.toMillis(timeout)) {
 				throw new TimeoutException("Timed out after " + timeout + " " + timeoutUnit + " while waiting for file size of " + file + " to remain unchanged for " + checkPeriod + " ms");
 			}
 
 			long oldSize = Files.size(file);
 			Thread.sleep(checkPeriod);
 			long newSize = Files.size(file);
-			if (oldSize == newSize)
-			{
+			if (oldSize == newSize) {
 				break;
 			}
 
-			if (!waited)
-			{
+			if (!waited) {
 				waited = true;
 			}
 			log.debug("Waiting until file size of {} remains unchanged for {} ms", file, checkPeriod);
@@ -204,57 +185,45 @@ public class IOUtil
 		return waited;
 	}
 
-	public static void unzip(Path archive, Path targetDir, boolean flat) throws IOException
-	{
+	public static void unzip(Path archive, Path targetDir, boolean flat) throws IOException {
 		byte[] buffer = new byte[1024];
 
 		ZipInputStream zis = null;
-		try
-		{
+		try {
 			// get the zip file content
 			zis = new ZipInputStream(Files.newInputStream(archive));
 			// get the zipped file list entry
 			ZipEntry ze;
-			while ((ze = zis.getNextEntry()) != null)
-			{
+			while ((ze = zis.getNextEntry()) != null) {
 				Path filePath = Paths.get(ze.getName());
 				Path filename = filePath.getFileName();
 				Path extractedFile = targetDir.resolve(flat ? filename : filePath);
 
-				if (ze.isDirectory())
-				{
-					if (!flat)
-					{
+				if (ze.isDirectory()) {
+					if (!flat) {
 						// create all non exists folders
 						// else you will hit FileNotFoundException for compressed folder
 						Files.createDirectories(extractedFile);
 					}
 				}
-				else
-				{
-					try (OutputStream fos = Files.newOutputStream(extractedFile);)
-					{
+				else {
+					try (OutputStream fos = Files.newOutputStream(extractedFile);) {
 						int len;
-						while ((len = zis.read(buffer)) > 0)
-						{
+						while ((len = zis.read(buffer)) > 0) {
 							fos.write(buffer, 0, len);
 						}
 					}
 				}
 			}
 		}
-		finally
-		{
-			try
-			{
-				if (zis != null)
-				{
+		finally {
+			try {
+				if (zis != null) {
 					zis.closeEntry();
 					zis.close();
 				}
 			}
-			catch (IOException e)
-			{
+			catch (IOException e) {
 				log.warn("Exception while closing ZipInputStream", e);
 			}
 		}
@@ -267,36 +236,30 @@ public class IOUtil
 	 *            string
 	 * @return string without leading UTF-8 BOM
 	 */
-	public static String removeUTF8BOM(String s)
-	{
-		if (s == null)
-		{
+	public static String removeUTF8BOM(String s) {
+		if (s == null) {
 			return null;
 		}
 		// FEFF because this is the Unicode char represented by the UTF-8 byte order mark (EF BB BF).
 		final String utf8BOM = "\uFEFF";
-		if (s.startsWith(utf8BOM))
-		{
+		if (s.startsWith(utf8BOM)) {
 			return s.substring(1);
 		}
 		return s;
 	}
 
-	public static final class ProcessResult
-	{
+	public static final class ProcessResult {
 		private final int		exitValue;
 		private final String	stdOut;
 		private final String	stdErr;
 
-		private ProcessResult(int exitValue, String logMessage, String errorMessage)
-		{
+		private ProcessResult(int exitValue, String logMessage, String errorMessage) {
 			this.exitValue = exitValue;
 			this.stdOut = logMessage;
 			this.stdErr = errorMessage;
 		}
 
-		public int getExitValue()
-		{
+		public int getExitValue() {
 			return exitValue;
 		}
 
@@ -304,8 +267,7 @@ public class IOUtil
 		 * 
 		 * @return the standard output or <code>null</code> if none
 		 */
-		public String getStdOut()
-		{
+		public String getStdOut() {
 			return stdOut;
 		}
 
@@ -313,14 +275,12 @@ public class IOUtil
 		 * 
 		 * @return the standard error output or <code>null</code> if none
 		 */
-		public String getStdErr()
-		{
+		public String getStdErr() {
 			return stdErr;
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return MoreObjects.toStringHelper(ProcessResult.class).omitNullValues().add("exitValue", exitValue).add("stdOut", stdOut).add("stdErr", stdErr).toString();
 		}
 	}
