@@ -43,8 +43,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class DetailsController extends SubController<ProcessingController>
-{
+public class DetailsController extends SubController<ProcessingController> {
 	// Model
 	private final ProcessingTask	task;
 
@@ -56,28 +55,24 @@ public class DetailsController extends SubController<ProcessingController>
 	@FXML
 	private ScrollPane				releaseDetailsRootPane;
 
-	public DetailsController(ProcessingController processingController, ProcessingTask task)
-	{
+	public DetailsController(ProcessingController processingController, ProcessingTask task) {
 		super(processingController);
 		this.task = Objects.requireNonNull(task, "task");
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		updateHeader();
 		updateParsingDetailsSection();
 		updateReleaseDetailsSection();
 	}
 
-	private void updateHeader()
-	{
+	private void updateHeader() {
 		sourceFileLabel.setText(task.getSourceFile().getFileName().toString());
 		sourceFileLabel.setTooltip(new Tooltip(task.getSourceFile().toString()));
 	}
 
-	private void updateParsingDetailsSection()
-	{
+	private void updateParsingDetailsSection() {
 		VBox vbox = createVBox();
 
 		// Parsed object
@@ -85,26 +80,22 @@ public class DetailsController extends SubController<ProcessingController>
 
 		vbox.getChildren().add(createHeadline("Parsed subtitle", SettingsController.FILENAME_PARSING_SECTION));
 
-		if (parsedObj != null)
-		{
+		if (parsedObj != null) {
 			Node parsedSubNode = createParsedSubtitleNode(parsedObj, task::generateDisplayName);
 			vbox.getChildren().add(parsedSubNode);
 
 			// Corrections
 			vbox.getChildren().add(createSeparator(true));
 			vbox.getChildren().add(createHeadline("Corrections", SettingsController.CORRECTION_SECTION));
-			if (task.getParsingCorrections().isEmpty())
-			{
+			if (task.getParsingCorrections().isEmpty()) {
 				vbox.getChildren().add(new Label("No corrections"));
 			}
-			else
-			{
+			else {
 				Node correctionsNode = createCorrectionsNode(task.getParsingCorrections());
 				vbox.getChildren().add(correctionsNode);
 			}
 		}
-		else
-		{
+		else {
 			vbox.getChildren().add(new Label("Filename could not be parsed"));
 		}
 
@@ -112,10 +103,8 @@ public class DetailsController extends SubController<ProcessingController>
 		parsingDetailsRootPane.setContent(vbox);
 	}
 
-	private void updateReleaseDetailsSection()
-	{
-		if (task.getParsedObject() != null)
-		{
+	private void updateReleaseDetailsSection() {
+		if (task.getParsedObject() != null) {
 			VBox vbox = createVBox();
 
 			List<ProcessingResult> results = new ArrayList<>(task.getResults());
@@ -128,8 +117,7 @@ public class DetailsController extends SubController<ProcessingController>
 
 			vbox.getChildren().add(new Label(
 					task.getListedReleases().size() + " release(s) were found for " + StringUtil.COMMA_JOINER.join(mediaNames.stream().map((String name) -> StringUtil.quoteString(name)).iterator())));
-			if (!task.getListedReleases().isEmpty())
-			{
+			if (!task.getListedReleases().isEmpty()) {
 				vbox.getChildren().add(createSeparator(false));
 				vbox.getChildren().add(new Label("Match criteria:"));
 				vbox.getChildren().add(createMatchCriteriaNode(queryRls, mediaNames));
@@ -139,16 +127,13 @@ public class DetailsController extends SubController<ProcessingController>
 				int rows = task.getListedReleases().size();
 				Release[] releases = new Release[rows];
 				ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
-				for (int i = 0; i < rows; i++)
-				{
+				for (int i = 0; i < rows; i++) {
 					Release rls = task.getListedReleases().get(i);
 					ProcessingResultInfo info = null;
 					ListIterator<ProcessingResult> iter = results.listIterator();
-					while (iter.hasNext())
-					{
+					while (iter.hasNext()) {
 						ProcessingResult r = iter.next();
-						if (rls.equals(r.getRelease()))
-						{
+						if (rls.equals(r.getRelease())) {
 							info = (ProcessingResultInfo) r.getInfo();
 							iter.remove();
 							break;
@@ -160,22 +145,18 @@ public class DetailsController extends SubController<ProcessingController>
 				vbox.getChildren().add(createReleaseListGridPane(releases, infos));
 			}
 
-			if (!results.isEmpty())
-			{
+			if (!results.isEmpty()) {
 				// Guessed releases
 				vbox.getChildren().add(createSeparator(true));
 				vbox.getChildren().add(createHeadline("Guessed releases", SettingsController.RELEASE_GUESSING_SECTION));
-				if (!task.getConfig().isGuessingEnabled())
-				{
+				if (!task.getConfig().isGuessingEnabled()) {
 					vbox.getChildren().add(new Label("Guessing disabled"));
 				}
-				else
-				{
+				else {
 					int rows = results.size();
 					Release[] releases = new Release[rows];
 					ProcessingResultInfo[] infos = new ProcessingResultInfo[rows];
-					for (int i = 0; i < rows; i++)
-					{
+					for (int i = 0; i < rows; i++) {
 						ProcessingResult result = results.get(i);
 						releases[i] = result.getRelease();
 						infos[i] = (ProcessingResultInfo) result.getInfo();
@@ -186,41 +167,42 @@ public class DetailsController extends SubController<ProcessingController>
 
 			releaseDetailsRootPane.setContent(vbox);
 		}
-		else
-		{
+		else {
 			parsingDetailsRootPane.setContent(new Label("Filename could not be parsed"));
 		}
 	}
 
-	private static VBox createVBox()
-	{
+	private static VBox createVBox() {
 		VBox vbox = new VBox();
 		vbox.setSpacing(3d);
 		return vbox;
 	}
 
-	private static Node createParsedSubtitleNode(SubtitleRelease subRls, Function<Object, String> printer)
-	{
+	private static Node createParsedSubtitleNode(SubtitleRelease subRls, Function<Object, String> printer) {
 		Subtitle sub = subRls.getFirstSubtitle();
 		Release rls = subRls.getFirstMatchingRelease();
 
 		String[] keys = { "Computed name:", "Media:", "Release tags:", "Release group:", "Subtitle language:", "Subtitle tags:", "Subtitle source:", "Subtitle group:" };
-		String[] values = { printer.apply(subRls), printer.apply(rls.getMedia()), Tag.formatList(rls.getTags()), rls.getGroup() != null ? rls.getGroup().toString() : "",
-				sub.getLanguage() != null ? sub.getLanguage() : "", Tag.formatList(subRls.getTags()), sub.getSource() != null ? sub.getSource().getName() : "",
-				sub.getGroup() != null ? sub.getGroup().toString() : "" };
+		String[] values = {
+				printer.apply(subRls),
+				printer.apply(rls.getMedia()),
+				Tag.formatList(rls.getTags()),
+				rls.getGroup() != null ? rls.getGroup().getName() : "",
+				sub.getLanguage() != null ? sub.getLanguage() : "",
+				Tag.formatList(subRls.getTags()),
+				sub.getSource() != null ? sub.getSource().getName() : "",
+				sub.getGroup() != null ? sub.getGroup().getName() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
 		return pane;
 	}
 
-	private static Node createCorrectionsNode(List<Correction> corrections)
-	{
+	private static Node createCorrectionsNode(List<Correction> corrections) {
 		PrintPropService printer = NamingDefaults.getDefaultPrintPropService();
 
 		String[] keys = new String[corrections.size()];
 		String[] values = new String[corrections.size()];
 
-		for (int i = 0; i < corrections.size(); i++)
-		{
+		for (int i = 0; i < corrections.size(); i++) {
 			Correction c = corrections.get(i);
 
 			StringBuilder key = new StringBuilder();
@@ -242,8 +224,7 @@ public class DetailsController extends SubController<ProcessingController>
 		return pane;
 	}
 
-	private static Node createMatchCriteriaNode(Release rls, Set<String> mediaNames)
-	{
+	private static Node createMatchCriteriaNode(Release rls, Set<String> mediaNames) {
 		int rows = 2 + mediaNames.size();
 		String[] keys = new String[rows];
 		String[] values = new String[rows];
@@ -253,8 +234,7 @@ public class DetailsController extends SubController<ProcessingController>
 		keys[index] = "Media:";
 		values[index] = namesIter.hasNext() ? namesIter.next() : "";
 		index++;
-		while (namesIter.hasNext())
-		{
+		while (namesIter.hasNext()) {
 			keys[index] = "";
 			values[index] = namesIter.next();
 			index++;
@@ -270,8 +250,7 @@ public class DetailsController extends SubController<ProcessingController>
 		return createKeyValueGridPane(keys, values);
 	}
 
-	private static GridPane createKeyValueGridPane(String[] keys, String[] values)
-	{
+	private static GridPane createKeyValueGridPane(String[] keys, String[] values) {
 		GridPane gridPane = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setHgrow(Priority.NEVER);
@@ -283,16 +262,14 @@ public class DetailsController extends SubController<ProcessingController>
 		gridPane.setHgap(6d);
 
 		int rowIndex = 0;
-		for (int i = 0; i < keys.length; i++)
-		{
+		for (int i = 0; i < keys.length; i++) {
 			addKeyValueRow(gridPane, rowIndex++, keys[i], values[i]);
 		}
 
 		return gridPane;
 	}
 
-	private GridPane createReleaseListGridPane(Release[] releases, ProcessingResultInfo[] infos)
-	{
+	private GridPane createReleaseListGridPane(Release[] releases, ProcessingResultInfo[] infos) {
 		GridPane gridPane = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setHgrow(Priority.NEVER);
@@ -305,60 +282,50 @@ public class DetailsController extends SubController<ProcessingController>
 		gridPane.setHgap(3d);
 
 		int rowIndex = 0;
-		for (int i = 0; i < releases.length; i++)
-		{
+		for (int i = 0; i < releases.length; i++) {
 			addReleaseRow(gridPane, rowIndex++, releases[i], infos[i]);
 		}
 
 		return gridPane;
 	}
 
-	private static void addKeyValueRow(GridPane gridPane, int rowIndex, String key, String value)
-	{
+	private static void addKeyValueRow(GridPane gridPane, int rowIndex, String key, String value) {
 		gridPane.add(createKeyLabel(key), 0, rowIndex);
 		gridPane.add(new Label(value), 1, rowIndex);
 	}
 
-	private static Label createKeyLabel(String key)
-	{
+	private static Label createKeyLabel(String key) {
 		Label lbl = new Label(key);
 		lbl.setTextFill(Color.GRAY);
 		return lbl;
 	}
 
-	private Separator createSeparator(boolean topMargin)
-	{
+	private Separator createSeparator(boolean topMargin) {
 		Separator sep = new Separator();
-		if (topMargin)
-		{
+		if (topMargin) {
 			VBox.setMargin(sep, new Insets(15d, 0d, 0d, 0d));
 		}
 		return sep;
 	}
 
-	private Node createHeadline(String headline, String settingsSection)
-	{
+	private Node createHeadline(String headline, String settingsSection) {
 		HBox hbox = FxNodes.createDefaultHBox();
 		Label lbl = new Label(headline);
 		lbl.setUnderline(true);
 		lbl.setFont(Font.font(null, FontWeight.BOLD, -1d));
 		hbox.getChildren().add(lbl);
-		if (settingsSection != null)
-		{
+		if (settingsSection != null) {
 			Hyperlink settingsLink = WatcherFxUtil.createSettingsHyperlink(task.getController().getParent().getSettingsController(), settingsSection, null);
 			hbox.getChildren().add(settingsLink);
 		}
 		return hbox;
 	}
 
-	private void addReleaseRow(GridPane gridPane, int rowIndex, Release rls, ProcessingResultInfo info)
-	{
+	private void addReleaseRow(GridPane gridPane, int rowIndex, Release rls, ProcessingResultInfo info) {
 		// Result type
 		Node resultTypeNode;
-		if (info != null)
-		{
-			switch (info.getRelationType())
-			{
+		if (info != null) {
+			switch (info.getRelationType()) {
 				case MATCH:
 					resultTypeNode = WatcherFxUtil.createMatchLabel();
 					break;
@@ -372,8 +339,7 @@ public class DetailsController extends SubController<ProcessingController>
 					resultTypeNode = new Label(info.getRelationType().toString());
 			}
 		}
-		else
-		{
+		else {
 			resultTypeNode = createAddListedManuallyLink(rls);
 		}
 		gridPane.add(resultTypeNode, 0, rowIndex);
@@ -396,37 +362,31 @@ public class DetailsController extends SubController<ProcessingController>
 		gridPane.add(hbox, 1, rowIndex);
 	}
 
-	private Node createAddListedManuallyLink(Release release)
-	{
+	private Node createAddListedManuallyLink(Release release) {
 		Hyperlink btn = new Hyperlink("", new ImageView(FxIO.loadImg("add_16.png")));
 		btn.setUnderline(false);
 		btn.setOpacity(0.5d);
 		btn.setTooltip(new Tooltip("Add this release to the matching releases"));
-		btn.setOnAction((ActionEvent evt) ->
-		{
+		btn.setOnAction((ActionEvent evt) -> {
 			btn.setDisable(true);
 			btn.setText("\u2026");
 			btn.setGraphic(null);
-			Task<Void> addReleaseTask = new Task<Void>()
-			{
+			Task<Void> addReleaseTask = new Task<Void>() {
 				@Override
-				protected Void call() throws Exception
-				{
+				protected Void call() throws Exception {
 					// Thread.sleep(2000L);
 					task.addReleaseToResult(release, ProcessingResultInfo.listedManual());
 					return null;
 				}
 
 				@Override
-				protected void succeeded()
-				{
+				protected void succeeded() {
 					updateReleaseDetailsSection();
 					task.succeeded();
 				}
 
 				@Override
-				protected void failed()
-				{
+				protected void failed() {
 					btn.setDisable(false);
 					task.failed();
 				}

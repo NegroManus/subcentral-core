@@ -7,6 +7,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.name.NamingDefaults;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.Property;
@@ -17,8 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
-public class SubCentralFxUtil
-{
+public class SubCentralFxUtil {
 	public static final String									DEFAULT_TAGS_PROMPT_TEXT			= "tags (separated by comma)";
 	public static final String									DEFAULT_GROUP_PROMPT_TEXT			= "group";
 
@@ -29,77 +29,59 @@ public class SubCentralFxUtil
 	public static final StringConverter<LanguageFormat>			LANGUAGE_FORMAT_STRING_CONVERTER	= initLanguageFormatStringConverter();
 	public static final StringConverter<StandardRelease>		STANDARD_RELEASE_STRING_CONVERTER	= initStandardReleaseStringConverter();
 
-	private static StringConverter<Tag> initTagStringConverter()
-	{
-		return new StringConverter<Tag>()
-		{
+	private static StringConverter<Tag> initTagStringConverter() {
+		return new StringConverter<Tag>() {
 			@Override
-			public String toString(Tag tag)
-			{
-				if (tag != null)
-				{
+			public String toString(Tag tag) {
+				if (tag != null) {
 					return tag.getName();
 				}
 				return "";
 			}
 
 			@Override
-			public Tag fromString(String s)
-			{
-				return Tag.from(s);
+			public Tag fromString(String s) {
+				return Tag.ofOrNull(s);
 			}
 		};
 	}
 
-	private static StringConverter<ObservableList<Tag>> initObservableTagsStringConverter()
-	{
-		return new StringConverter<ObservableList<Tag>>()
-		{
+	private static StringConverter<ObservableList<Tag>> initObservableTagsStringConverter() {
+		return new StringConverter<ObservableList<Tag>>() {
 			@Override
-			public String toString(ObservableList<Tag> tags)
-			{
+			public String toString(ObservableList<Tag> tags) {
 				return Tag.formatList(tags);
 			}
 
 			@Override
-			public ObservableList<Tag> fromString(String tagList)
-			{
+			public ObservableList<Tag> fromString(String tagList) {
 				return FXCollections.observableList(Tag.parseList(tagList));
 			}
 		};
 	}
 
-	private static StringConverter<Group> initGroupStringConverter()
-	{
-		return new StringConverter<Group>()
-		{
+	private static StringConverter<Group> initGroupStringConverter() {
+		return new StringConverter<Group>() {
 			@Override
-			public String toString(Group group)
-			{
-				return Group.toStringNullSafe(group);
+			public String toString(Group group) {
+				return ObjectUtil.toString(group);
 			}
 
 			@Override
-			public Group fromString(String group)
-			{
-				return Group.from(group);
+			public Group fromString(String group) {
+				return Group.ofOrNull(group);
 			}
 		};
 	}
 
-	private static StringConverter<DeletionMode> initDeletionModeStringConverter()
-	{
-		return new StringConverter<DeletionMode>()
-		{
+	private static StringConverter<DeletionMode> initDeletionModeStringConverter() {
+		return new StringConverter<DeletionMode>() {
 			@Override
-			public String toString(DeletionMode mode)
-			{
-				if (mode == null)
-				{
+			public String toString(DeletionMode mode) {
+				if (mode == null) {
 					return "";
 				}
-				switch (mode)
-				{
+				switch (mode) {
 					case KEEP:
 						return "Keep files";
 					case RECYCLE:
@@ -112,26 +94,20 @@ public class SubCentralFxUtil
 			}
 
 			@Override
-			public DeletionMode fromString(String string)
-			{
+			public DeletionMode fromString(String string) {
 				throw new UnsupportedOperationException();
 			}
 		};
 	}
 
-	public static StringConverter<LanguageFormat> initLanguageFormatStringConverter()
-	{
-		return new StringConverter<LanguageFormat>()
-		{
+	public static StringConverter<LanguageFormat> initLanguageFormatStringConverter() {
+		return new StringConverter<LanguageFormat>() {
 			@Override
-			public String toString(LanguageFormat format)
-			{
-				if (format == null)
-				{
+			public String toString(LanguageFormat format) {
+				if (format == null) {
 					return "";
 				}
-				switch (format)
-				{
+				switch (format) {
 					case NAME:
 						return "Java language tag (includes country)";
 					case LANGUAGE_TAG:
@@ -150,41 +126,33 @@ public class SubCentralFxUtil
 			}
 
 			@Override
-			public LanguageFormat fromString(String string)
-			{
+			public LanguageFormat fromString(String string) {
 				throw new UnsupportedOperationException();
 			}
 		};
 	}
 
-	public static StringConverter<StandardRelease> initStandardReleaseStringConverter()
-	{
-		return new StringConverter<StandardRelease>()
-		{
+	public static StringConverter<StandardRelease> initStandardReleaseStringConverter() {
+		return new StringConverter<StandardRelease>() {
 
 			@Override
-			public String toString(StandardRelease rls)
-			{
+			public String toString(StandardRelease rls) {
 				return NamingDefaults.getDefaultReleaseNamer().name(rls.getRelease()) + " (" + rls.getScope() + ")";
 			}
 
 			@Override
-			public StandardRelease fromString(String string)
-			{
+			public StandardRelease fromString(String string) {
 				throw new UnsupportedOperationException();
 			}
 		};
 	}
 
-	public static ListProperty<Tag> tagPropertyForTextField(TextField tagsTxtFld, List<Tag> initialValue)
-	{
+	public static ListProperty<Tag> tagPropertyForTextField(TextField tagsTxtFld, List<Tag> initialValue) {
 		ObservableList<Tag> initialTags;
-		if (initialValue instanceof ObservableList)
-		{
+		if (initialValue instanceof ObservableList) {
 			initialTags = (ObservableList<Tag>) initialValue;
 		}
-		else
-		{
+		else {
 			initialTags = FXCollections.observableArrayList(initialValue);
 		}
 		ListProperty<Tag> tags = new SimpleListProperty<>(initialTags);
@@ -192,29 +160,25 @@ public class SubCentralFxUtil
 		return tags;
 	}
 
-	public static void bindTagsToTextField(TextField tagsTxtFld, ListProperty<Tag> tags)
-	{
+	public static void bindTagsToTextField(TextField tagsTxtFld, ListProperty<Tag> tags) {
 		TextFormatter<ObservableList<Tag>> tagsFormatter = new TextFormatter<>(SubCentralFxUtil.OBSERVABLE_TAGS_STRING_CONVERTER);
 		tagsFormatter.valueProperty().bindBidirectional(tags);
 		tagsTxtFld.setTextFormatter(tagsFormatter);
 	}
 
-	public static Property<Group> groupPropertyForTextField(TextField groupTxtFld, Group initialValue)
-	{
+	public static Property<Group> groupPropertyForTextField(TextField groupTxtFld, Group initialValue) {
 		TextFormatter<Group> groupFormatter = new TextFormatter<>(GROUP_STRING_CONVERTER, initialValue);
 		groupTxtFld.setTextFormatter(groupFormatter);
 		return groupFormatter.valueProperty();
 	}
 
-	public static void bindGroupToTextField(TextField groupTxtFld, Property<Group> group)
-	{
+	public static void bindGroupToTextField(TextField groupTxtFld, Property<Group> group) {
 		TextFormatter<Group> groupFormatter = new TextFormatter<>(GROUP_STRING_CONVERTER);
 		groupFormatter.valueProperty().bindBidirectional(group);
 		groupTxtFld.setTextFormatter(groupFormatter);
 	}
 
-	private SubCentralFxUtil()
-	{
+	private SubCentralFxUtil() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

@@ -2,82 +2,76 @@ package de.subcentral.core.metadata.release;
 
 import java.io.Serializable;
 
+import com.google.common.base.MoreObjects;
+
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.ValidationUtil;
 
 /**
+ * Value object.
  * 
- * @implSpec #immutable #thread-safe
+ * @implSpec #value-object #immutable #thread-safe
  */
-public class Group implements Comparable<Group>, Serializable
-{
+public class Group implements Comparable<Group>, Serializable {
 	private static final long	serialVersionUID	= -8704261988899599068L;
 
 	private final String		name;
 
-	public Group(String name) throws IllegalArgumentException
-	{
+	private Group(String name) {
 		this.name = ValidationUtil.requireNotBlankAndStrip(name, "name cannot be blank");
 	}
 
-	public static Group from(String group)
-	{
-		try
-		{
-			return new Group(group);
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static Group of(String name) {
+		return new Group(name);
+	}
+
+	public static Group ofOrNull(String name) {
+		try {
+			return of(name);
 		}
-		catch (IllegalArgumentException e)
-		{
+		catch (IllegalArgumentException e) {
 			return null;
 		}
 	}
 
-	public static String toStringNullSafe(Group group)
-	{
-		return group != null ? group.toString() : "";
-	}
-
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Group)
-		{
+		if (obj instanceof Group) {
 			return ObjectUtil.stringEqualIgnoreCase(name, ((Group) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return ObjectUtil.stringHashCodeIgnoreCase(name);
 	}
 
 	@Override
-	public String toString()
-	{
-		return name;
+	public String toString() {
+		return MoreObjects.toStringHelper(this.getClass()).add("name", name).toString();
 	}
 
 	@Override
-	public int compareTo(Group o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Group o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);

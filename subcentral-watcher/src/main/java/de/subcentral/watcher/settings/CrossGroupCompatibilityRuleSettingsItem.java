@@ -93,8 +93,8 @@ public class CrossGroupCompatibilityRuleSettingsItem extends SimpleDeactivatable
 			for (HierarchicalConfiguration<ImmutableNode> groupsCompCfg : groupsCompCfgs)
 			{
 				boolean enabled = groupsCompCfg.getBoolean("[@enabled]");
-				Group sourceGroup = Group.from(groupsCompCfg.getString("[@sourceGroup]"));
-				Group compatibleGroup = Group.from(groupsCompCfg.getString("[@compatibleGroup]"));
+				Group sourceGroup = Group.ofOrNull(groupsCompCfg.getString("[@sourceGroup]"));
+				Group compatibleGroup = Group.ofOrNull(groupsCompCfg.getString("[@compatibleGroup]"));
 				boolean symmetric = groupsCompCfg.getBoolean("[@symmetric]", false);
 				compatibilities.add(new CrossGroupCompatibilityRuleSettingsItem(new CrossGroupCompatibilityRule(sourceGroup, compatibleGroup, symmetric), enabled));
 			}

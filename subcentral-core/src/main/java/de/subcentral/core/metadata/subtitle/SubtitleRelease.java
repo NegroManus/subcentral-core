@@ -25,8 +25,7 @@ import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.ValidationUtil;
 
-public class SubtitleRelease extends NamedMetadataBase implements Work, Comparable<SubtitleRelease>
-{
+public class SubtitleRelease extends NamedMetadataBase implements Work, Comparable<SubtitleRelease> {
 	private static final long					serialVersionUID		= 3266903304683246434L;
 
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(SubtitleRelease.class, PropNames.NAME);
@@ -45,10 +44,9 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	/**
 	 * The hearing impaired tag (HI). It marks a sub to contain transcription for the hearing impaired. Also known as "closed captioning (CC)".
 	 */
-	public static final Tag						HEARING_IMPAIRED_TAG	= new Tag("HI", "Hearing Impaired");
+	public static final Tag						HEARING_IMPAIRED_TAG	= Tag.of("HI");
 
-	public enum ForeignParts
-	{
+	public enum ForeignParts {
 		/**
 		 * No foreign parts in the media item. Therefore none can be included or excluded. Foreign parts are irrelevant.
 		 */
@@ -97,74 +95,106 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	// In 99% of the cases, there is only one adjustment contribution
 	private final List<Contribution>	contributions					= new ArrayList<>(1);
 
-	public SubtitleRelease()
-	{
+	public SubtitleRelease() {
 		// default constructor
 	}
 
-	public SubtitleRelease(Subtitle subtitle, Release matchingRelease)
-	{
-		this(null, subtitle, matchingRelease);
+	public SubtitleRelease(Subtitle subtitle, Release matchingRelease) {
+		this.subtitles.add(subtitle);
+		this.matchingReleases.add(matchingRelease);
 	}
 
-	public SubtitleRelease(String name, Subtitle subtitle, Release matchingRelease)
-	{
+	public SubtitleRelease(String name, Subtitle subtitle, Release matchingRelease) {
 		this.name = name;
 		this.subtitles.add(subtitle);
 		this.matchingReleases.add(matchingRelease);
 	}
 
-	public SubtitleRelease(Subtitle subtitle, Collection<Release> matchingReleases)
-	{
-		this(null, subtitle, matchingReleases);
+	public SubtitleRelease(String name, Subtitle subtitle, Release matchingRelease, List<Tag> tags) {
+		this.name = name;
+		this.subtitles.add(subtitle);
+		this.matchingReleases.add(matchingRelease);
+		this.tags.addAll(tags);
 	}
 
-	public SubtitleRelease(String name, Subtitle subtitle, Collection<Release> matchingReleases)
-	{
+	public SubtitleRelease(Subtitle subtitle, Collection<Release> matchingReleases) {
+		this.subtitles.add(subtitle);
+		this.matchingReleases.addAll(matchingReleases);
+	}
+
+	public SubtitleRelease(String name, Subtitle subtitle, Collection<Release> matchingReleases) {
 		this.name = name;
 		this.subtitles.add(subtitle);
 		this.matchingReleases.addAll(matchingReleases);
 	}
 
-	public SubtitleRelease(List<Subtitle> subtitles, Release matchingRelease)
-	{
+	public SubtitleRelease(String name, Subtitle subtitle, Collection<Release> matchingReleases, List<Tag> tags) {
+		this.name = name;
+		this.subtitles.add(subtitle);
+		this.matchingReleases.addAll(matchingReleases);
+		this.tags.addAll(tags);
+	}
+
+	public SubtitleRelease(List<Subtitle> subtitles, Release matchingRelease) {
 		this.subtitles.addAll(subtitles);
 		this.matchingReleases.add(matchingRelease);
 	}
 
-	public SubtitleRelease(List<Subtitle> subtitles, Collection<Release> matchingReleases)
-	{
+	public SubtitleRelease(String name, List<Subtitle> subtitles, Release matchingRelease) {
+		this.name = name;
+		this.subtitles.addAll(subtitles);
+		this.matchingReleases.add(matchingRelease);
+	}
+
+	public SubtitleRelease(List<Subtitle> subtitles, Collection<Release> matchingReleases) {
 		this.subtitles.addAll(subtitles);
 		this.matchingReleases.addAll(matchingReleases);
 	}
 
-	public static SubtitleRelease create(Release matchingRelease, String language, String group)
-	{
-		SubtitleRelease subAdjustment = new SubtitleRelease();
-		Group grp = Group.from(group);
-		for (Media media : matchingRelease.getMedia())
-		{
+	public SubtitleRelease(String name, List<Subtitle> subtitles, Collection<Release> matchingReleases) {
+		this.name = name;
+		this.subtitles.addAll(subtitles);
+		this.matchingReleases.addAll(matchingReleases);
+	}
+
+	public SubtitleRelease(String name, List<Subtitle> subtitles, Collection<Release> matchingReleases, List<Tag> tags) {
+		this.name = name;
+		this.subtitles.addAll(subtitles);
+		this.matchingReleases.addAll(matchingReleases);
+		this.tags.addAll(tags);
+	}
+
+	public static SubtitleRelease create(Release matchingRelease, String language, String group, String... tags) {
+		return create(null, matchingRelease, language, group, tags);
+	}
+
+	public static SubtitleRelease create(String name, Release matchingRelease, String language, String group, String... tags) {
+		SubtitleRelease subRls = new SubtitleRelease();
+		subRls.name = name;
+		Group grp = group != null ? Group.of(group) : null;
+		for (Media media : matchingRelease.getMedia()) {
 			Subtitle sub = new Subtitle();
 			sub.setMedia(media);
 			sub.setLanguage(language);
-			if (grp != null)
-			{
+			if (grp != null) {
 				sub.setGroup(grp);
 			}
-			subAdjustment.getSubtitles().add(sub);
+			subRls.subtitles.add(sub);
 		}
-		subAdjustment.getMatchingReleases().add(matchingRelease);
-		return subAdjustment;
+		if (tags.length > 0) {
+			// use addAll and do not add separately so that the list is trimmed to the right size
+			subRls.tags.addAll(Tag.list(tags));
+		}
+		subRls.matchingReleases.add(matchingRelease);
+		return subRls;
 	}
 
 	// Properties
-	public List<Subtitle> getSubtitles()
-	{
+	public List<Subtitle> getSubtitles() {
 		return subtitles;
 	}
 
-	public void setSubtitles(List<Subtitle> subtitles)
-	{
+	public void setSubtitles(List<Subtitle> subtitles) {
 		this.subtitles.clear();
 		this.subtitles.addAll(subtitles);
 	}
@@ -181,24 +211,20 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	 * 
 	 * @return the tags (never {@code null}, may be empty)
 	 */
-	public List<Tag> getTags()
-	{
+	public List<Tag> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<Tag> tags)
-	{
+	public void setTags(List<Tag> tags) {
 		this.tags.clear();
 		this.tags.addAll(tags);
 	}
 
-	public Set<Release> getMatchingReleases()
-	{
+	public Set<Release> getMatchingReleases() {
 		return matchingReleases;
 	}
 
-	public void setMatchingReleases(Collection<? extends Release> matchingReleases)
-	{
+	public void setMatchingReleases(Collection<? extends Release> matchingReleases) {
 		this.matchingReleases.clear();
 		this.matchingReleases.addAll(matchingReleases);
 	}
@@ -220,33 +246,32 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	 * 
 	 * @return the version string (may be {@code null})
 	 */
-	public String getVersion()
-	{
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version)
-	{
+	public void setVersion(String version) {
 		this.version = version;
 	}
 
-	public Temporal getDate()
-	{
+	public Temporal getDate() {
 		return date;
 	}
 
-	public void setDate(Temporal date) throws IllegalArgumentException
-	{
+	/**
+	 * 
+	 * @param date
+	 * @throws IllegalArgumentException
+	 */
+	public void setDate(Temporal date) {
 		this.date = ValidationUtil.validateTemporalClass(date);
 	}
 
-	public long getSize()
-	{
+	public long getSize() {
 		return size;
 	}
 
-	public void setSize(long size)
-	{
+	public void setSize(long size) {
 		this.size = size;
 	}
 
@@ -255,13 +280,11 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	 * 
 	 * @return the NFO
 	 */
-	public String getNfo()
-	{
+	public String getNfo() {
 		return nfo;
 	}
 
-	public void setNfo(String nfo)
-	{
+	public void setNfo(String nfo) {
 		this.nfo = nfo;
 	}
 
@@ -271,44 +294,36 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	 * @return the link to the NFO
 	 * @see #getNfo()
 	 */
-	public String getNfoLink()
-	{
+	public String getNfoLink() {
 		return nfoLink;
 	}
 
-	public void setNfoLink(String nfoLink)
-	{
+	public void setNfoLink(String nfoLink) {
 		this.nfoLink = nfoLink;
 	}
 
 	@Override
-	public List<Contribution> getContributions()
-	{
+	public List<Contribution> getContributions() {
 		return contributions;
 	}
 
-	public void setContributions(List<Contribution> contributions)
-	{
+	public void setContributions(List<Contribution> contributions) {
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}
 
 	// Convenience
-	public boolean containsSingleSubtitle()
-	{
+	public boolean containsSingleSubtitle() {
 		return subtitles.size() == 1;
 	}
 
-	public Subtitle getFirstSubtitle()
-	{
+	public Subtitle getFirstSubtitle() {
 		return subtitles.isEmpty() ? null : subtitles.get(0);
 	}
 
-	public void setSingleSubtitle(Subtitle subtitle)
-	{
+	public void setSingleSubtitle(Subtitle subtitle) {
 		this.subtitles.clear();
-		if (subtitle != null)
-		{
+		if (subtitle != null) {
 			this.subtitles.add(subtitle);
 		}
 	}
@@ -318,8 +333,7 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	 * 
 	 * @return true if the tags contain the HI tag, false otherwise
 	 */
-	public boolean isHearingImpaired()
-	{
+	public boolean isHearingImpaired() {
 		return tags.contains(HEARING_IMPAIRED_TAG);
 	}
 
@@ -329,88 +343,70 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	 * @param hearingImpaired
 	 *            whether to add or remove the hearing impaired tag from the tags
 	 */
-	public void setHearingImpaired(boolean hearingImpaired)
-	{
-		if (hearingImpaired)
-		{
-			if (!tags.contains(HEARING_IMPAIRED_TAG))
-			{
+	public void setHearingImpaired(boolean hearingImpaired) {
+		if (hearingImpaired) {
+			if (!tags.contains(HEARING_IMPAIRED_TAG)) {
 				tags.add(HEARING_IMPAIRED_TAG);
 			}
 		}
-		else
-		{
+		else {
 			tags.remove(HEARING_IMPAIRED_TAG);
 		}
 	}
 
-	public boolean matchesSingleRelease()
-	{
+	public boolean matchesSingleRelease() {
 		return matchingReleases.size() == 1;
 	}
 
-	public Release getFirstMatchingRelease()
-	{
+	public Release getFirstMatchingRelease() {
 		return matchingReleases.isEmpty() ? null : matchingReleases.iterator().next();
 	}
 
-	public void setSingleMatchingRelease(Release matchingRelease)
-	{
+	public void setSingleMatchingRelease(Release matchingRelease) {
 		this.matchingReleases.clear();
-		if (matchingRelease != null)
-		{
+		if (matchingRelease != null) {
 			this.matchingReleases.add(matchingRelease);
 		}
 	}
 
-	public void addAdjuster(Contributor adjuster)
-	{
+	public void addAdjuster(Contributor adjuster) {
 		contributions.add(new Contribution(adjuster, CONTRIBUTION_TYPE_ADJUSTMENT));
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof SubtitleRelease)
-		{
+		if (obj instanceof SubtitleRelease) {
 			SubtitleRelease o = (SubtitleRelease) obj;
 			return subtitles.equals(o.subtitles) && tags.equals(o.tags) && matchingReleases.equals(o.matchingReleases) && Objects.equals(version, o.version);
 		}
 		return false;
 	}
 
-	public boolean equalsByName(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equalsByName(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof SubtitleRelease)
-		{
+		if (obj instanceof SubtitleRelease) {
 			return ObjectUtil.stringEqualIgnoreCase(name, ((SubtitleRelease) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(subtitles, tags, matchingReleases, version);
 	}
 
-	public int hashCodeByName()
-	{
+	public int hashCodeByName() {
 		return ObjectUtil.stringHashCodeIgnoreCase(name);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(SubtitleRelease.class)
 				.omitNullValues()
 				.add("name", name)
@@ -429,15 +425,12 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 	}
 
 	@Override
-	public int compareTo(SubtitleRelease o)
-	{
-		if (this == o)
-		{
+	public int compareTo(SubtitleRelease o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start()
@@ -448,15 +441,12 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 				.result();
 	}
 
-	public int compareToByName(SubtitleRelease o)
-	{
-		if (this == o)
-		{
+	public int compareToByName(SubtitleRelease o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);

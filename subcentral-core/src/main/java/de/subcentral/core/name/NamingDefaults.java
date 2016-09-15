@@ -21,8 +21,10 @@ import de.subcentral.core.metadata.media.MultiEpisodeHelper;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
+import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
+import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.PropSequenceNameBuilder.Config;
@@ -30,8 +32,7 @@ import de.subcentral.core.util.Predicates;
 import de.subcentral.core.util.Separation;
 import de.subcentral.core.util.StringUtil;
 
-public class NamingDefaults
-{
+public class NamingDefaults {
 	public static final String						DEFAULT_DOMAIN									= "default";
 
 	private static final Function<String, String>	RELEASE_NAME_FORMATTER							= initReleaseNameFormatter();
@@ -61,8 +62,7 @@ public class NamingDefaults
 	private static SubtitleNamer					SUBTITLE_NAMER;
 	private static SubtitleReleaseNamer				SUBTITLE_RELEASE_NAMER;
 
-	static
-	{
+	static {
 		// Configure namers
 
 		// PrintPropService
@@ -74,9 +74,11 @@ public class NamingDefaults
 		PRINT_PROP_SERVICE.getTypePrinter().put(LocalDateTime.class, (LocalDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
 		PRINT_PROP_SERVICE.getTypePrinter().put(ZonedDateTime.class, (ZonedDateTime d) -> DateTimeFormatter.ofPattern("uuuu.MM.dd_HH.mm.ss", Locale.US).format(d));
 
+		PRINT_PROP_SERVICE.getTypePrinter().put(Tag.class, (Tag t) -> t.getName());
+		PRINT_PROP_SERVICE.getTypePrinter().put(Group.class, (Group g) -> g.getName());
+		PRINT_PROP_SERVICE.getTypePrinter().put(Nuke.class, (Nuke n) -> n.getReason());
 		PRINT_PROP_SERVICE.getTypePrinter().put(Site.class, (Site s) -> s.getName());
 		PRINT_PROP_SERVICE.getTypePrinter().put(Network.class, (Network n) -> n.getName());
-		PRINT_PROP_SERVICE.getTypePrinter().put(Nuke.class, (Nuke n) -> n.getReason());
 
 		// Episode
 		PRINT_PROP_SERVICE.getPropPrinter().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
@@ -150,128 +152,103 @@ public class NamingDefaults
 		MULTI_EPISODE_RANGE_NAMING_SERVICE.register(MultiEpisodeHelper::isMultiEpisode, MULTI_EPISODE_RANGE_NAMER);
 	}
 
-	private NamingDefaults()
-	{
+	private NamingDefaults() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	private static Function<String, String> initReleaseNameFormatter()
-	{
+	private static Function<String, String> initReleaseNameFormatter() {
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER).andThen(CorrectionDefaults.HYPHEN_CLEANER);
 	}
 
-	private static Function<String, String> initReleaseMediaFormatter()
-	{
+	private static Function<String, String> initReleaseMediaFormatter() {
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_DOT_HYPEN_REPLACER).andThen(CorrectionDefaults.HYPHEN_CLEANER);
 	}
 
-	private static Function<String, String> initSubtitleReleaseNameFormatter()
-	{
+	private static Function<String, String> initSubtitleReleaseNameFormatter() {
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.ALNUM_DOT_UNDERSCORE_HYPHEN_REPLACER).andThen(CorrectionDefaults.HYPHEN_CLEANER);
 	}
 
-	private static Function<String, String> initNormalizingFormatter()
-	{
+	private static Function<String, String> initNormalizingFormatter() {
 		return CorrectionDefaults.ACCENT_REPLACER.andThen(CorrectionDefaults.AND_REPLACER).andThen(CorrectionDefaults.ALNUM_BLANK_REPLACER).andThen(CorrectionDefaults.TO_LOWERCASE_REPLACER);
 	}
 
-	public static Function<String, String> getDefaultNormalizingFormatter()
-	{
+	public static Function<String, String> getDefaultNormalizingFormatter() {
 		return NORMALIZING_FORMATTER;
 	}
 
-	public static Function<String, String> getDefaultReleaseNameFormatter()
-	{
+	public static Function<String, String> getDefaultReleaseNameFormatter() {
 		return RELEASE_NAME_FORMATTER;
 	}
 
-	public static Function<String, String> getDefaultReleaseMediaFormatter()
-	{
+	public static Function<String, String> getDefaultReleaseMediaFormatter() {
 		return RELEASE_MEDIA_FORMATTER;
 	}
 
-	public static Function<String, String> getDefaultSubtitleReleaseNameFormatter()
-	{
+	public static Function<String, String> getDefaultSubtitleReleaseNameFormatter() {
 		return SUBTITLE_RELEASE_NAME_FORMATTER;
 	}
 
-	public static PrintPropService getDefaultPrintPropService()
-	{
+	public static PrintPropService getDefaultPrintPropService() {
 		return PRINT_PROP_SERVICE;
 	}
 
-	public static NamingService getDefaultNamingService()
-	{
+	public static NamingService getDefaultNamingService() {
 		return NAMING_SERVICE;
 	}
 
-	public static DecoratingNamingService getDefaultReleaseMediaNamingService()
-	{
+	public static DecoratingNamingService getDefaultReleaseMediaNamingService() {
 		return RELEASE_MEDIA_NAMING_SERVICE;
 	}
 
-	public static ConditionalNamingService getMultiEpisodeRangeNamingService()
-	{
+	public static ConditionalNamingService getMultiEpisodeRangeNamingService() {
 		return MULTI_EPISODE_RANGE_NAMING_SERVICE;
 	}
 
-	public static DecoratingNamingService getDefaultNormalizingNamingService()
-	{
+	public static DecoratingNamingService getDefaultNormalizingNamingService() {
 		return NORMALIZING_NAMING_SERVICE;
 	}
 
-	public static DecoratingNamingService getMultiEpisodeRangeNormalizingNamingService()
-	{
+	public static DecoratingNamingService getMultiEpisodeRangeNormalizingNamingService() {
 		return MULTI_EPISODE_RANGE_NORMALIZING_NAMING_SERVICE;
 	}
 
-	public static Namer<Movie> getDefaultMovieNamer()
-	{
+	public static Namer<Movie> getDefaultMovieNamer() {
 		return MOVIE_NAMER;
 	}
 
-	public static Namer<Episode> getDefaultEpisodeNamer()
-	{
+	public static Namer<Episode> getDefaultEpisodeNamer() {
 		return EPISODE_NAMER;
 	}
 
-	public static Namer<Series> getDefaultSeriesNamer()
-	{
+	public static Namer<Series> getDefaultSeriesNamer() {
 		return SERIES_NAMER;
 	}
 
-	public static Namer<Season> getDefaultSeasonNamer()
-	{
+	public static Namer<Season> getDefaultSeasonNamer() {
 		return SEASON_NAMER;
 	}
 
-	public static Namer<List<? extends Episode>> getDefaultMultiEpisodeNamer()
-	{
+	public static Namer<List<? extends Episode>> getDefaultMultiEpisodeNamer() {
 		return MULTI_EPISODE_NAMER;
 	}
 
-	public static Namer<List<? extends Episode>> getMultiEpisodeRangeNamer()
-	{
+	public static Namer<List<? extends Episode>> getMultiEpisodeRangeNamer() {
 		return MULTI_EPISODE_RANGE_NAMER;
 	}
 
-	public static Namer<Release> getDefaultReleaseNamer()
-	{
+	public static Namer<Release> getDefaultReleaseNamer() {
 		return RELEASE_NAMER;
 	}
 
-	public static Namer<Subtitle> getDefaultSubtitleNamer()
-	{
+	public static Namer<Subtitle> getDefaultSubtitleNamer() {
 		return SUBTITLE_NAMER;
 	}
 
-	public static Namer<SubtitleRelease> getDefaultSubtitleReleaseNamer()
-	{
+	public static Namer<SubtitleRelease> getDefaultSubtitleReleaseNamer() {
 		return SUBTITLE_RELEASE_NAMER;
 	}
 
-	public static DecoratingNamingService createNormalizingNamingService(NamingService namingService)
-	{
+	public static DecoratingNamingService createNormalizingNamingService(NamingService namingService) {
 		return new DecoratingNamingService(namingService.getName() + "_normalizing", namingService, NORMALIZING_FORMATTER);
 	}
 }

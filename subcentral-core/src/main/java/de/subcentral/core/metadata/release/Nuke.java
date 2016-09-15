@@ -11,60 +11,73 @@ import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.TemporalComparator;
 import de.subcentral.core.util.ValidationUtil;
 
-public class Nuke implements Comparable<Nuke>, Serializable
-{
+/**
+ * Value object.
+ * 
+ * @implSpec #value-object #immutable #thread-safe
+ */
+public class Nuke implements Comparable<Nuke>, Serializable {
 	private static final long	serialVersionUID	= 8172872894931232487L;
 
 	private final String		reason;
 	private final Temporal		date;
 	private final boolean		unnuke;
 
-	public Nuke(String reason)
-	{
-		this(reason, null, false);
-	}
-
-	public Nuke(String reason, Temporal date)
-	{
-		this(reason, date, false);
-	}
-
-	public Nuke(String reason, boolean unnuke)
-	{
-		this(reason, null, unnuke);
-	}
-
-	public Nuke(String reason, Temporal date, boolean unnuke) throws IllegalArgumentException
-	{
+	private Nuke(String reason, Temporal date, boolean unnuke) {
 		this.reason = reason;
 		this.date = ValidationUtil.validateTemporalClass(date);
 		this.unnuke = unnuke;
 	}
 
-	public String getReason()
-	{
+	public static Nuke of(String reason) {
+		return new Nuke(reason, null, false);
+	}
+
+	/**
+	 * 
+	 * @param reason
+	 * @param date
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static Nuke of(String reason, Temporal date) {
+		return new Nuke(reason, date, false);
+	}
+
+	public static Nuke of(String reason, boolean unnuke) {
+		return new Nuke(reason, null, unnuke);
+	}
+
+	/**
+	 * 
+	 * @param reason
+	 * @param date
+	 * @param unnuke
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static Nuke of(String reason, Temporal date, boolean unnuke) {
+		return new Nuke(reason, date, unnuke);
+	}
+
+	public String getReason() {
 		return reason;
 	}
 
-	public Temporal getDate()
-	{
+	public Temporal getDate() {
 		return date;
 	}
 
-	public boolean isUnnuke()
-	{
+	public boolean isUnnuke() {
 		return unnuke;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Nuke)
-		{
+		if (obj instanceof Nuke) {
 			Nuke o = (Nuke) obj;
 			return Objects.equals(reason, o.reason) && Objects.equals(date, o.date) && unnuke == o.unnuke;
 		}
@@ -72,27 +85,22 @@ public class Nuke implements Comparable<Nuke>, Serializable
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(reason, date, unnuke);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(this.getClass()).omitNullValues().add("reason", reason).add("date", date).add("unnuke", unnuke).toString();
 	}
 
 	@Override
-	public int compareTo(Nuke o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Nuke o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		// sort by date, then reason

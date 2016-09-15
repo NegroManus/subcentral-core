@@ -54,8 +54,7 @@ import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackager;
 import de.subcentral.support.xrelto.XRelTo;
 
-public class ParsingPlayground
-{
+public class ParsingPlayground {
 	private static final Logger log = LogManager.getLogger(ParsingPlayground.class);
 
 	/**
@@ -70,8 +69,7 @@ public class ParsingPlayground
 	 * @param args
 	 *            the arguments
 	 */
-	public static void main(String[] args) throws Exception
-	{
+	public static void main(String[] args) throws Exception {
 		JavaLookup debugJavaLookup = new JavaLookup();
 		log.info("Runtime: {}", debugJavaLookup.getRuntime());
 		log.info("Virtual machine: {}", debugJavaLookup.getVirtualMachine());
@@ -80,15 +78,12 @@ public class ParsingPlayground
 		log.info("Hardware: {}", debugJavaLookup.getHardware());
 
 		Path watchFolder = null;
-		for (String arg : args)
-		{
-			if (arg.startsWith("watchFolder="))
-			{
+		for (String arg : args) {
+			if (arg.startsWith("watchFolder=")) {
 				watchFolder = Paths.get(arg.substring(12));
 			}
 		}
-		if (watchFolder == null)
-		{
+		if (watchFolder == null) {
 			watchFolder = Paths.get(System.getProperty("user.home"), "Downloads");
 		}
 
@@ -108,9 +103,9 @@ public class ParsingPlayground
 
 		final CompatibilityService compService = new CompatibilityService();
 		compService.getRules().add(new SameGroupCompatibilityRule());
-		compService.getRules().add(new CrossGroupCompatibilityRule(new Group("LOL"), new Group("DIMENSION"), true));
-		compService.getRules().add(new CrossGroupCompatibilityRule(new Group("EXCELLENCE"), new Group("REMARKABLE"), true));
-		compService.getRules().add(new CrossGroupCompatibilityRule(new Group("ASAP"), new Group("IMMERSE"), true));
+		compService.getRules().add(new CrossGroupCompatibilityRule(Group.of("LOL"), Group.of("DIMENSION"), true));
+		compService.getRules().add(new CrossGroupCompatibilityRule(Group.of("EXCELLENCE"), Group.of("REMARKABLE"), true));
+		compService.getRules().add(new CrossGroupCompatibilityRule(Group.of("ASAP"), Group.of("IMMERSE"), true));
 
 		final WinRarPackConfig packCfg = new WinRarPackConfig();
 		packCfg.setSourceDeletionMode(DeletionMode.DELETE);
@@ -132,16 +127,12 @@ public class ParsingPlayground
 		TimeUtil.logDurationMillisDouble("Initialization", totalStart);
 
 		log.debug(watchFolder);
-		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(watchFolder))
-		{
-			for (Path path : directoryStream)
-			{
+		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(watchFolder)) {
+			for (Path path : directoryStream) {
 				Path fileName = path.getFileName();
-				if (Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && fileName.toString().toLowerCase(Locale.getDefault()).endsWith(".srt"))
-				{
+				if (Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && fileName.toString().toLowerCase(Locale.getDefault()).endsWith(".srt")) {
 					long startTotalFile = System.nanoTime();
-					try
-					{
+					try {
 						System.out.println(fileName);
 						String name = fileName.toString().substring(0, fileName.toString().length() - 4);
 						System.out.println(name);
@@ -163,8 +154,7 @@ public class ParsingPlayground
 						parsedChanges.forEach(c -> System.out.println("Changed: " + c));
 						TimeUtil.logDurationMillisDouble("Standardizing parsed", start);
 
-						if (parsed instanceof SubtitleRelease)
-						{
+						if (parsed instanceof SubtitleRelease) {
 							SubtitleRelease subAdj = (SubtitleRelease) parsed;
 							Release subAdjRls = subAdj.getFirstMatchingRelease();
 							System.out.println("Querying release info db ...");
@@ -175,8 +165,7 @@ public class ParsingPlayground
 							releases.forEach(r -> System.out.println(r));
 
 							start = System.nanoTime();
-							releases.forEach(r ->
-							{
+							releases.forEach(r -> {
 								List<Correction> rlsChanges = infoDbToCustomStdzService.correct(r);
 								rlsChanges.forEach(c -> System.out.println("Changed: " + c));
 							});
@@ -215,8 +204,7 @@ public class ParsingPlayground
 							SubtitleRelease convertedAdj = new SubtitleRelease(convertedSub, allMatchingRlss);
 							convertedAdj.setHearingImpaired(subAdj.isHearingImpaired());
 							TimeUtil.logDurationMillisDouble("Converting releases", start);
-							for (Release matchingRls : convertedAdj.getMatchingReleases())
-							{
+							for (Release matchingRls : convertedAdj.getMatchingReleases()) {
 								start = System.nanoTime();
 								String newName = ns.name(convertedAdj,
 										Context.builder().set(SubtitleReleaseNamer.PARAM_RELEASE, matchingRls).set(ReleaseNamer.PARAM_PREFER_NAME, Boolean.TRUE).build());
@@ -238,8 +226,7 @@ public class ParsingPlayground
 							}
 						}
 					}
-					catch (RuntimeException e)
-					{
+					catch (RuntimeException e) {
 						System.err.println("Exception while processing " + path);
 						e.printStackTrace();
 					}
@@ -249,8 +236,7 @@ public class ParsingPlayground
 				}
 			}
 		}
-		catch (IOException ex)
-		{
+		catch (IOException ex) {
 			ex.printStackTrace();
 		}
 		TimeUtil.logDurationMillisDouble("total", totalStart);

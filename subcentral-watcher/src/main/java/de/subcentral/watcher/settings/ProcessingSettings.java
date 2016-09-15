@@ -29,10 +29,8 @@ import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class ProcessingSettings extends Settings
-{
-	public static enum LocateStrategy
-	{
+public class ProcessingSettings extends Settings {
+	public static enum LocateStrategy {
 		SPECIFY, AUTO_LOCATE;
 	}
 
@@ -63,7 +61,7 @@ public class ProcessingSettings extends Settings
 			STANDARD_RELEASE_LIST_HANDLER);
 	// Metadata - Release - CompatibilityRule
 	private final BooleanSettingsProperty										compatibilityEnabled				= new BooleanSettingsProperty("metadata.release.compatibility[@enabled]", true);
-	private final ListSettingsProperty<CrossGroupCompatibilityRuleSettingsItem>	crossGroupCompatibilityRules			= new ListSettingsProperty<>(
+	private final ListSettingsProperty<CrossGroupCompatibilityRuleSettingsItem>	crossGroupCompatibilityRules		= new ListSettingsProperty<>(
 			"metadata.release.compatibility.crossGroupCompatibilityRules",
 			CrossGroupCompatibilityRuleSettingsItem.getListConfigurationPropertyHandler(),
 			CrossGroupCompatibilityRuleSettingsItem.createObservableList());
@@ -95,8 +93,7 @@ public class ProcessingSettings extends Settings
 			DeletionMode.DELETE);
 
 	// package protected (should only be instantiated by WatcherSettings)
-	ProcessingSettings()
-	{
+	ProcessingSettings() {
 		initSettables(filenamePatterns,
 				filenameParsers,
 				releaseParsers,
@@ -117,10 +114,8 @@ public class ProcessingSettings extends Settings
 				packingSourceDeletionMode);
 	}
 
-	private static Comparator<StandardRelease> initStandardReleaseComparator()
-	{
-		return (StandardRelease r1, StandardRelease r2) ->
-		{
+	private static Comparator<StandardRelease> initStandardReleaseComparator() {
+		return (StandardRelease r1, StandardRelease r2) -> {
 			return ComparisonChain.start()
 					.compare(r1.getRelease().getGroup(), r2.getRelease().getGroup(), ObjectUtil.getDefaultOrdering())
 					.compare(r1.getRelease().getTags(), r2.getRelease().getTags(), Tag.TAGS_COMPARATOR)
@@ -128,118 +123,95 @@ public class ProcessingSettings extends Settings
 		};
 	}
 
-	public StringSettingsProperty getFilenamePatterns()
-	{
+	public StringSettingsProperty getFilenamePatterns() {
 		return filenamePatterns;
 	}
 
-	public ListSettingsProperty<ParsingServiceSettingsItem> getFilenameParsers()
-	{
+	public ListSettingsProperty<ParsingServiceSettingsItem> getFilenameParsers() {
 		return filenameParsers;
 	}
 
-	public ListSettingsProperty<ParsingServiceSettingsItem> getReleaseParsers()
-	{
+	public ListSettingsProperty<ParsingServiceSettingsItem> getReleaseParsers() {
 		return releaseParsers;
 	}
 
-	public ListSettingsProperty<Tag> getReleaseMetaTags()
-	{
+	public ListSettingsProperty<Tag> getReleaseMetaTags() {
 		return releaseMetaTags;
 	}
 
-	public ListSettingsProperty<MetadataServiceSettingsItem> getReleaseDbs()
-	{
+	public ListSettingsProperty<MetadataServiceSettingsItem> getReleaseDbs() {
 		return releaseDbs;
 	}
 
-	public BooleanSettingsProperty getGuessingEnabled()
-	{
+	public BooleanSettingsProperty getGuessingEnabled() {
 		return guessingEnabled;
 	}
 
-	public ListSettingsProperty<StandardRelease> getStandardReleases()
-	{
+	public ListSettingsProperty<StandardRelease> getStandardReleases() {
 		return standardReleases;
 	}
 
-	public BooleanSettingsProperty getCompatibilityEnabled()
-	{
+	public BooleanSettingsProperty getCompatibilityEnabled() {
 		return compatibilityEnabled;
 	}
 
-	public ListSettingsProperty<CrossGroupCompatibilityRuleSettingsItem> getCrossGroupCompatibilityRules()
-	{
+	public ListSettingsProperty<CrossGroupCompatibilityRuleSettingsItem> getCrossGroupCompatibilityRules() {
 		return crossGroupCompatibilityRules;
 	}
 
-	public ListSettingsProperty<CorrectorSettingsItem<?, ?>> getCorrectionRules()
-	{
+	public ListSettingsProperty<CorrectorSettingsItem<?, ?>> getCorrectionRules() {
 		return correctionRules;
 	}
 
-	public LocaleLanguageReplacerSettings getSubtitleLanguageCorrectionSettings()
-	{
+	public LocaleLanguageReplacerSettings getSubtitleLanguageCorrectionSettings() {
 		return subtitleLanguageCorrectionSettings;
 	}
 
-	public MapSettingsProperty<String, Object> getNamingParameters()
-	{
+	public MapSettingsProperty<String, Object> getNamingParameters() {
 		return namingParameters;
 	}
 
-	public ObjectSettingsProperty<Path> getTargetDir()
-	{
+	public ObjectSettingsProperty<Path> getTargetDir() {
 		return targetDir;
 	}
 
-	public BooleanSettingsProperty getDeleteSource()
-	{
+	public BooleanSettingsProperty getDeleteSource() {
 		return deleteSource;
 	}
 
-	public BooleanSettingsProperty getPackingEnabled()
-	{
+	public BooleanSettingsProperty getPackingEnabled() {
 		return packingEnabled;
 	}
 
-	public ObjectSettingsProperty<Path> getRarExe()
-	{
+	public ObjectSettingsProperty<Path> getRarExe() {
 		return rarExe;
 	}
 
-	public ObjectSettingsProperty<LocateStrategy> getWinRarLocateStrategy()
-	{
+	public ObjectSettingsProperty<LocateStrategy> getWinRarLocateStrategy() {
 		return winRarLocateStrategy;
 	}
 
-	public ObjectSettingsProperty<DeletionMode> getPackingSourceDeletionMode()
-	{
+	public ObjectSettingsProperty<DeletionMode> getPackingSourceDeletionMode() {
 		return packingSourceDeletionMode;
 	}
 
-	private static class StandardReleaseListHandler implements ConfigurationPropertyHandler<ObservableList<StandardRelease>>
-	{
+	private static class StandardReleaseListHandler implements ConfigurationPropertyHandler<ObservableList<StandardRelease>> {
 		@SuppressWarnings("unchecked")
 		@Override
-		public ObservableList<StandardRelease> get(ImmutableConfiguration cfg, String key)
-		{
-			if (cfg instanceof HierarchicalConfiguration<?>)
-			{
+		public ObservableList<StandardRelease> get(ImmutableConfiguration cfg, String key) {
+			if (cfg instanceof HierarchicalConfiguration<?>) {
 				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
 			}
 			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
 		}
 
-		private static ObservableList<StandardRelease> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
-		{
+		private static ObservableList<StandardRelease> get(HierarchicalConfiguration<ImmutableNode> cfg, String key) {
 
 			List<HierarchicalConfiguration<ImmutableNode>> rlsCfgs = cfg.configurationsAt(key + ".standardRelease");
 			ArrayList<StandardRelease> list = new ArrayList<>(rlsCfgs.size());
-			for (HierarchicalConfiguration<ImmutableNode> rlsCfg : rlsCfgs)
-			{
+			for (HierarchicalConfiguration<ImmutableNode> rlsCfg : rlsCfgs) {
 				List<Tag> tags = Tag.parseList(rlsCfg.getString("[@tags]"));
-				Group group = Group.from(rlsCfg.getString("[@group]"));
+				Group group = Group.ofOrNull(rlsCfg.getString("[@group]"));
 				Scope scope = Scope.valueOf(rlsCfg.getString("[@scope]"));
 				list.add(new StandardRelease(tags, group, scope));
 			}
@@ -249,44 +221,36 @@ public class ProcessingSettings extends Settings
 		}
 
 		@Override
-		public void add(Configuration cfg, String key, ObservableList<StandardRelease> list)
-		{
-			for (int i = 0; i < list.size(); i++)
-			{
+		public void add(Configuration cfg, String key, ObservableList<StandardRelease> list) {
+			for (int i = 0; i < list.size(); i++) {
 				StandardRelease stdRls = list.get(i);
 				cfg.addProperty(key + ".standardRelease(" + i + ")[@tags]", Tag.formatList(stdRls.getRelease().getTags()));
-				cfg.addProperty(key + ".standardRelease(" + i + ")[@group]", Group.toStringNullSafe(stdRls.getRelease().getGroup()));
+				cfg.addProperty(key + ".standardRelease(" + i + ")[@group]", ObjectUtil.toString(stdRls.getRelease().getGroup()));
 				cfg.addProperty(key + ".standardRelease(" + i + ")[@scope]", stdRls.getScope());
 			}
 		}
 	}
 
-	private static class LocateStrategyHandler implements ConfigurationPropertyHandler<LocateStrategy>
-	{
+	private static class LocateStrategyHandler implements ConfigurationPropertyHandler<LocateStrategy> {
 		@Override
-		public LocateStrategy get(ImmutableConfiguration cfg, String key)
-		{
+		public LocateStrategy get(ImmutableConfiguration cfg, String key) {
 			return LocateStrategy.valueOf(cfg.getString(key));
 		}
 
 		@Override
-		public void add(Configuration cfg, String key, LocateStrategy value)
-		{
+		public void add(Configuration cfg, String key, LocateStrategy value) {
 			cfg.addProperty(key, value.name());
 		}
 	}
 
-	private static class DeletionModeHandler implements ConfigurationPropertyHandler<DeletionMode>
-	{
+	private static class DeletionModeHandler implements ConfigurationPropertyHandler<DeletionMode> {
 		@Override
-		public DeletionMode get(ImmutableConfiguration cfg, String key)
-		{
+		public DeletionMode get(ImmutableConfiguration cfg, String key) {
 			return DeletionMode.valueOf(cfg.getString(key));
 		}
 
 		@Override
-		public void add(Configuration cfg, String key, DeletionMode value)
-		{
+		public void add(Configuration cfg, String key, DeletionMode value) {
 			cfg.addProperty(key, value.name());
 		}
 	}

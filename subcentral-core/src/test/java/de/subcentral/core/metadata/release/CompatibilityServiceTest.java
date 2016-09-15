@@ -12,17 +12,15 @@ import org.junit.Test;
 
 import de.subcentral.core.metadata.media.Episode;
 
-public class CompatibilityServiceTest
-{
+public class CompatibilityServiceTest {
 	@Test
-	public void testFindCompatibles()
-	{
+	public void testFindCompatibles() {
 		Episode epi = Episode.createSeasonedEpisode("Psych", 1, 1);
 		Release sourceRls = Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264");
 
 		CompatibilityService compService = new CompatibilityService();
 		compService.getRules().add(new SameGroupCompatibilityRule());
-		compService.getRules().add(new CrossGroupCompatibilityRule(new Group("LOL"), new Group("DIMENSION"), true));
+		compService.getRules().add(new CrossGroupCompatibilityRule(Group.of("LOL"), Group.of("DIMENSION"), true));
 		List<Release> existingRlss = new ArrayList<>(4);
 		existingRlss.add(Release.create("Psych.S01E01.HDTV.x264-LOL", epi, "LOL", "HDTV", "x264"));
 		existingRlss.add(Release.create("Psych.S01E01.PROPER.HDTV.x264-LOL", epi, "LOL", "PROPER", "HDTV", "x264"));

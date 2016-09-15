@@ -2,9 +2,9 @@ package de.subcentral.watcher.controller.settings;
 
 import java.util.Objects;
 
-import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxControlBindings;
 import de.subcentral.fx.SubCentralFxUtil;
@@ -22,8 +22,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 
-public class ReleaseGuessingSettingsController extends AbstractSettingsSectionController
-{
+public class ReleaseGuessingSettingsController extends AbstractSettingsSectionController {
 	@FXML
 	private GridPane								rootPane;
 	@FXML
@@ -44,38 +43,31 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 	@FXML
 	private Button									removeStandardReleaseButton;
 
-	public ReleaseGuessingSettingsController(SettingsController settingsController)
-	{
+	public ReleaseGuessingSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		enableGuessingCheckBox.selectedProperty().bindBidirectional(settings.getGuessingEnabled().property());
 
 		// Standard releases table
-		standardReleasesGroupColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
-		{
-			return FxBindings.immutableObservableValue(Group.toStringNullSafe(param.getValue().getRelease().getGroup()));
+		standardReleasesGroupColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
+			return FxBindings.immutableObservableValue(ObjectUtil.toString(param.getValue().getRelease().getGroup()));
 		});
-		standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
-		{
+		standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
 			return FxBindings.immutableObservableValue(Tag.formatList(param.getValue().getRelease().getTags()));
 		});
-		standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) ->
-		{
+		standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
 			String value;
-			switch (param.getValue().getScope())
-			{
+			switch (param.getValue().getScope()) {
 				case IF_GUESSING:
 					value = "If guessing";
 					break;

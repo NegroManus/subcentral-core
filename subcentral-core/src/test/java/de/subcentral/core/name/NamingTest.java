@@ -17,16 +17,14 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.Context;
 
-public class NamingTest
-{
+public class NamingTest {
 	private static final String	MOVIE_NAME			= "The Lord of the Rings: The Fellowship of the Ring";
 	private static final String	MOVIE_REL_NAME		= "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.EXTENDED.PL.1080p.BluRay.X264-AiHD";
 	private static final String	MOVIE_SUB_NAME		= "The Lord of the Rings: The Fellowship of the Ring de";
 	private static final String	MOVIE_SUB_REL_NAME	= "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.EXTENDED.PL.1080p.BluRay.X264-AiHD.de-SubCentral";
 
 	@Test
-	public void testMovieNaming()
-	{
+	public void testMovieNaming() {
 		Movie movie = new Movie(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		String name = NamingDefaults.getDefaultMovieNamer().name(movie);
@@ -35,8 +33,7 @@ public class NamingTest
 	}
 
 	@Test
-	public void testMediaReleaseNaming()
-	{
+	public void testMediaReleaseNaming() {
 		Movie movie = new Movie(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Release rel = Release.create(MOVIE_REL_NAME, movie, "AiHD", "EXTENDED", "PL", "1080p", "BluRay", "X264");
@@ -47,8 +44,7 @@ public class NamingTest
 	}
 
 	@Test
-	public void testWeirdReleaseNaming()
-	{
+	public void testWeirdReleaseNaming() {
 		Release rls = Release.create(Episode.createMiniSeriesEpisode("''Don't you die!", 1), "LOL&DIM", "..Tags..And.More.Tags-.");
 		String name = NamingDefaults.getDefaultReleaseNamer().name(rls);
 		System.out.println(name);
@@ -56,8 +52,7 @@ public class NamingTest
 	}
 
 	@Test
-	public void testSubtitleNaming()
-	{
+	public void testSubtitleNaming() {
 		Movie movie = new Movie(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 		Subtitle sub = new Subtitle(movie);
@@ -69,8 +64,7 @@ public class NamingTest
 	}
 
 	@Test
-	public void testSubtitleReleaseNaming()
-	{
+	public void testSubtitleReleaseNaming() {
 		Movie movie = new Movie(MOVIE_NAME);
 		movie.setDate(Year.of(2001));
 
@@ -86,8 +80,7 @@ public class NamingTest
 	 * Checks all possible combinations if series, season and episode are included.
 	 */
 	@Test
-	public void testEpisodeNaming()
-	{
+	public void testEpisodeNaming() {
 		List<String> expectedNames = new ArrayList<>();
 		expectedNames.add("Psych");
 		expectedNames.add("Psych Pilot");
@@ -123,8 +116,7 @@ public class NamingTest
 		assertEpisodeNames(epiNamer, expectedNames);
 	}
 
-	private void assertEpisodeNames(Namer<Episode> namer, List<String> expectedNames)
-	{ // series, season, episode
+	private void assertEpisodeNames(Namer<Episode> namer, List<String> expectedNames) { // series, season, episode
 
 		List<String> names = new ArrayList<>();
 
@@ -234,19 +226,16 @@ public class NamingTest
 		names.add(namer.name(epi, Context.of(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE)));
 		names.add(namer.name(epi, Context.builder().set(SeasonNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE).set(EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE, Boolean.TRUE).build()));
 
-		for (String name : names)
-		{
+		for (String name : names) {
 			System.out.println(name);
 		}
-		for (int i = 0; i < expectedNames.size(); i++)
-		{
+		for (int i = 0; i < expectedNames.size(); i++) {
 			assertEquals(expectedNames.get(i), names.get(i));
 		}
 	}
 
 	@Test
-	public void testMultiEpisodeNaming()
-	{
+	public void testMultiEpisodeNaming() {
 		Namer<List<? extends Episode>> meNamer = NamingDefaults.getDefaultMultiEpisodeNamer();
 
 		List<String> expectedNames = new ArrayList<>(5);
@@ -264,8 +253,7 @@ public class NamingTest
 		names.add(meNamer.name(me1));
 
 		List<Episode> me2 = new ArrayList<>(24);
-		for (int i = 1; i < 25; i++)
-		{
+		for (int i = 1; i < 25; i++) {
 			me2.add(Episode.createSeasonedEpisode("How I Met Your Mother", 9, i));
 		}
 		names.add(meNamer.name(me2));
@@ -291,12 +279,10 @@ public class NamingTest
 		me5.add(Episode.createSeasonedEpisode("How I Met Your Mother", 9, 24));
 		names.add(meNamer.name(me5));
 
-		for (String name : names)
-		{
+		for (String name : names) {
 			System.out.println(name);
 		}
-		for (int i = 0; i < expectedNames.size(); i++)
-		{
+		for (int i = 0; i < expectedNames.size(); i++) {
 			assertEquals(expectedNames.get(i), names.get(i));
 		}
 	}

@@ -35,8 +35,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class XRelToMetadataService extends HttpMetadataService
-{
+public class XRelToMetadataService extends HttpMetadataService {
 	private static final Logger				log					= LogManager.getLogger(XRelToMetadataService.class);
 
 	/**
@@ -50,23 +49,19 @@ public class XRelToMetadataService extends HttpMetadataService
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("Europe/Berlin");
 
 	@Override
-	public Site getSite()
-	{
+	public Site getSite() {
 		return XRelTo.getSite();
 	}
 
 	@Override
-	public Set<Class<?>> getSupportedRecordTypes()
-	{
+	public Set<Class<?>> getSupportedRecordTypes() {
 		return ImmutableSet.of(Release.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (Release.class.equals(recordType))
-		{
+	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (Release.class.equals(recordType)) {
 			URL url = buildRelativeUrl("/search.html", "xrel_search_query", query);
 			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
@@ -88,13 +83,11 @@ public class XRelToMetadataService extends HttpMetadataService
 	 * @param doc
 	 * @return
 	 */
-	protected List<Release> parseReleaseSearchResults(Document doc)
-	{
+	protected List<Release> parseReleaseSearchResults(Document doc) {
 		// Search for elements with tag "div" and class "release_item" on the doc
 		Elements rlsDivs = doc.select("div.release_item");
 		ImmutableList.Builder<Release> results = ImmutableList.builder();
-		for (Element rlsDiv : rlsDivs)
-		{
+		for (Element rlsDiv : rlsDivs) {
 			Release rls = parseReleaseSearchResult(doc, rlsDiv);
 			results.add(rls);
 		}
@@ -151,8 +144,7 @@ public class XRelToMetadataService extends HttpMetadataService
 	 * @param rlsDiv
 	 * @return
 	 */
-	private Release parseReleaseSearchResult(Document doc, Element rlsDiv)
-	{
+	private Release parseReleaseSearchResult(Document doc, Element rlsDiv) {
 		Release rls = new Release();
 
 		/**
@@ -177,19 +169,16 @@ public class XRelToMetadataService extends HttpMetadataService
 		 * </pre>
 		 */
 		Element dateDiv = rlsDiv.getElementsByClass("release_date").first();
-		if (dateDiv != null)
-		{
+		if (dateDiv != null) {
 			String dateStr = dateDiv.ownText().trim();
 			Element timeSpan = dateDiv.getElementsByTag("span").first();
 			String timeStr = timeSpan.text().trim();
 			String dateTimeString = dateStr + " " + timeStr;
-			try
-			{
+			try {
 				ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER), TIME_ZONE);
 				rls.setDate(dateTime);
 			}
-			catch (DateTimeParseException e)
-			{
+			catch (DateTimeParseException e) {
 				log.warn("Could not parse release date string '" + dateTimeString + "'", e);
 			}
 		}
@@ -228,12 +217,10 @@ public class XRelToMetadataService extends HttpMetadataService
 		// if nuked, a nuke icon is present
 		Element nukeImg = titleDiv.select("img._nuke_icon").first();
 
-		if (nukeImg != null)
-		{
+		if (nukeImg != null) {
 			String nukeReason = null;
 			Element nukeReasonSpan = titleDiv.select("span._nuke_icon_dummy").first();
-			if (nukeReasonSpan != null)
-			{
+			if (nukeReasonSpan != null) {
 				nukeReason = nukeReasonSpan.attr("title");
 			}
 			rls.nuke(nukeReason);
@@ -245,8 +232,7 @@ public class XRelToMetadataService extends HttpMetadataService
 		Pattern mediaSectionPattern = Pattern.compile("/([^/]+)/.*");
 		Matcher mMediaSection = mediaSectionPattern.matcher(mediaUrl);
 		String mediaSection = null;
-		if (mMediaSection.matches())
-		{
+		if (mMediaSection.matches()) {
 			mediaSection = mMediaSection.group(1);
 		}
 		String mediaTitle = mediaAnchor.text();
@@ -256,11 +242,9 @@ public class XRelToMetadataService extends HttpMetadataService
 		Pattern seasonAndEpisodeNumsPattern = Pattern.compile("\\(S(\\d{2}) E(\\d{2})\\)");
 		String seasonNumber = null;
 		String episodeNumber = null;
-		for (Element span : spans)
-		{
+		for (Element span : spans) {
 			Matcher mSeasonEpisode = seasonAndEpisodeNumsPattern.matcher(span.text());
-			if (mSeasonEpisode.matches())
-			{
+			if (mSeasonEpisode.matches()) {
 				seasonNumber = mSeasonEpisode.group(1);
 				episodeNumber = mSeasonEpisode.group(2);
 				break;
@@ -273,12 +257,10 @@ public class XRelToMetadataService extends HttpMetadataService
 		Element titleIdSpan = titleDiv.select("span[id^=_title]").first();
 		// If the title is too long, it is truncated and the full title is in tile attribute.
 		String title;
-		if (titleIdSpan.hasClass("truncd"))
-		{
+		if (titleIdSpan.hasClass("truncd")) {
 			title = titleIdSpan.attr("title");
 		}
-		else
-		{
+		else {
 			title = titleIdSpan.text();
 		}
 
@@ -296,8 +278,7 @@ public class XRelToMetadataService extends HttpMetadataService
 		 * </pre>
 		 */
 		Element optionsDiv = rlsDiv.select("div.release_options").first();
-		if (optionsDiv != null)
-		{
+		if (optionsDiv != null) {
 			Element nfoAnchor = optionsDiv.getElementsByTag("a").first();
 			String nfoUrl = nfoAnchor.absUrl("href");
 			rls.setNfoLink(nfoUrl);
@@ -335,27 +316,22 @@ public class XRelToMetadataService extends HttpMetadataService
 		Element groupDiv = rlsDiv.select("div.release_grp").first();
 		Element groupAnchor = groupDiv.getElementsByTag("a").first();
 		// if no group is specified, there is no anchor
-		if (groupAnchor != null)
-		{
+		if (groupAnchor != null) {
 			// If the group name is too long, the text in the groupAnchor is truncated
 			// and the full name is in the "title" attribute of the groupAnchor.
 			String groupName = groupAnchor.attr("title");
-			if (groupName.isEmpty())
-			{
+			if (groupName.isEmpty()) {
 				groupName = groupAnchor.text();
 			}
-			Group group = new Group(groupName);
-			rls.setGroup(group);
+			rls.setGroup(Group.of(groupName));
 		}
 		// size
 		Element sizeSpan = groupDiv.getElementsByTag("span").first();
-		try
-		{
+		try {
 			long size = ByteUtil.parseBytes(sizeSpan.text());
 			rls.setSize(size);
 		}
-		catch (NumberFormatException e)
-		{
+		catch (NumberFormatException e) {
 			log.warn("Could not parse release size string '" + sizeSpan.text() + "'; URL=" + doc.baseUri() + "); exception: " + e);
 		}
 
@@ -364,14 +340,11 @@ public class XRelToMetadataService extends HttpMetadataService
 		return rls;
 	}
 
-	private static Media createMedia(String releaseCategory, String mediaSection, String title, String seasonNumber, String episodeNumber)
-	{
-		if (seasonNumber != null && episodeNumber != null)
-		{
+	private static Media createMedia(String releaseCategory, String mediaSection, String title, String seasonNumber, String episodeNumber) {
+		if (seasonNumber != null && episodeNumber != null) {
 			return Episode.createSeasonedEpisode(title, Integer.parseInt(seasonNumber), Integer.parseInt(episodeNumber));
 		}
-		else if ("movie".equals(mediaSection))
-		{
+		else if ("movie".equals(mediaSection)) {
 			return new Movie(title);
 		}
 		return new GenericMedia(title);

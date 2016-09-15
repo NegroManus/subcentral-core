@@ -31,8 +31,7 @@ import de.subcentral.core.util.ValidationUtil;
  * So, every Release contains a set of media, has a list of release tags and is released by its release group.
  *
  */
-public class Release extends NamedMetadataBase implements Comparable<Release>
-{
+public class Release extends NamedMetadataBase implements Comparable<Release> {
 	private static final long					serialVersionUID		= 3021851008940378834L;
 
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Release.class, PropNames.NAME);
@@ -72,54 +71,46 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	private String								nfoLink;
 	private final List<String>					furtherInfoLinks		= new ArrayList<>(4);
 
-	public Release()
-	{
+	public Release() {
 		// default constructor
 	}
 
-	public Release(String name)
-	{
+	public Release(String name) {
 		this.name = name;
 	}
 
-	public Release(List<Tag> tags, Group group)
-	{
+	public Release(List<Tag> tags, Group group) {
 		this.tags.addAll(tags);
 		this.group = group;
 	}
 
-	public Release(Media media, List<Tag> tags, Group group)
-	{
+	public Release(Media media, List<Tag> tags, Group group) {
 		this.media.add(media);
 		this.tags.addAll(tags);
 		this.group = group;
 	}
 
-	public Release(List<Media> media, List<Tag> tags, Group group)
-	{
+	public Release(List<Media> media, List<Tag> tags, Group group) {
 		this.media.addAll(media);
 		this.tags.addAll(tags);
 		this.group = group;
 	}
 
-	public Release(String name, Media media, List<Tag> tags, Group group)
-	{
+	public Release(String name, Media media, List<Tag> tags, Group group) {
 		this.name = name;
 		this.media.add(media);
 		this.tags.addAll(tags);
 		this.group = group;
 	}
 
-	public Release(String name, List<Media> media, List<Tag> tags, Group group)
-	{
+	public Release(String name, List<Media> media, List<Tag> tags, Group group) {
 		this.name = name;
 		this.media.addAll(media);
 		this.tags.addAll(tags);
 		this.group = group;
 	}
 
-	public Release(Release rls)
-	{
+	public Release(Release rls) {
 		this.name = rls.name;
 		// just the media references are copied into the new list, no deep copy
 		this.media.addAll(rls.media);
@@ -135,30 +126,24 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 		this.nfoLink = rls.nfoLink;
 	}
 
-	public static Release create(String group, String... tags)
-	{
+	public static Release create(String group, String... tags) {
 		return create(null, null, group, tags);
 	}
 
-	public static Release create(Media media, String group, String... tags)
-	{
+	public static Release create(Media media, String group, String... tags) {
 		return create(null, media, group, tags);
 	}
 
-	public static Release create(String name, Media media, String group, String... tags)
-	{
+	public static Release create(String name, Media media, String group, String... tags) {
 		Release rls = new Release();
 		rls.name = name;
-		if (media != null)
-		{
+		if (media != null) {
 			rls.media.add(media);
 		}
-		if (group != null)
-		{
-			rls.group = new Group(group);
+		if (group != null) {
+			rls.group = Group.of(group);
 		}
-		if (tags.length > 0)
-		{
+		if (tags.length > 0) {
 			// use addAll and do not add separately so that the list is trimmed to the right size
 			rls.tags.addAll(Tag.list(tags));
 		}
@@ -172,13 +157,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * @return the name
 	 */
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -189,13 +172,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * @return the contained media
 	 */
 
-	public List<Media> getMedia()
-	{
+	public List<Media> getMedia() {
 		return media;
 	}
 
-	public void setMedia(Collection<? extends Media> media)
-	{
+	public void setMedia(Collection<? extends Media> media) {
 		this.media.clear();
 		this.media.addAll(media);
 	}
@@ -205,13 +186,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the tags
 	 */
-	public List<Tag> getTags()
-	{
+	public List<Tag> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<Tag> tags)
-	{
+	public void setTags(List<Tag> tags) {
 		this.tags.clear();
 		this.tags.addAll(tags);
 	}
@@ -222,13 +201,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * @return the release group
 	 * @see #getSource()
 	 */
-	public Group getGroup()
-	{
+	public Group getGroup() {
 		return group;
 	}
 
-	public void setGroup(Group group)
-	{
+	public void setGroup(Group group) {
 		this.group = group;
 	}
 
@@ -237,13 +214,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the source (may be {@code null})
 	 */
-	public Site getSource()
-	{
+	public Site getSource() {
 		return source;
 	}
 
-	public void setSource(Site source)
-	{
+	public void setSource(Site source) {
 		this.source = source;
 	}
 
@@ -252,13 +227,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the languages.
 	 */
-	public List<String> getLanguages()
-	{
+	public List<String> getLanguages() {
 		return languages;
 	}
 
-	public void setLanguages(List<String> languages)
-	{
+	public void setLanguages(List<String> languages) {
 		this.languages.clear();
 		this.languages.addAll(languages);
 	}
@@ -268,13 +241,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the category
 	 */
-	public String getCategory()
-	{
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category)
-	{
+	public void setCategory(String category) {
 		this.category = category;
 	}
 
@@ -283,13 +254,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the date.
 	 */
-	public Temporal getDate()
-	{
+	public Temporal getDate() {
 		return date;
 	}
 
-	public void setDate(Temporal date) throws IllegalArgumentException
-	{
+	public void setDate(Temporal date) throws IllegalArgumentException {
 		this.date = ValidationUtil.validateTemporalClass(date);
 	}
 
@@ -299,13 +268,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * @return the file size
 	 */
 
-	public long getSize()
-	{
+	public long getSize() {
 		return size;
 	}
 
-	public void setSize(long size)
-	{
+	public void setSize(long size) {
 		this.size = size;
 	}
 
@@ -314,13 +281,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the file count
 	 */
-	public int getFileCount()
-	{
+	public int getFileCount() {
 		return fileCount;
 	}
 
-	public void setFileCount(int fileCount)
-	{
+	public void setFileCount(int fileCount) {
 		this.fileCount = fileCount;
 	}
 
@@ -329,13 +294,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the nukes
 	 */
-	public List<Nuke> getNukes()
-	{
+	public List<Nuke> getNukes() {
 		return nukes;
 	}
 
-	public void setNukes(Collection<Nuke> nukes)
-	{
+	public void setNukes(Collection<Nuke> nukes) {
 		this.nukes.clear();
 		this.nukes.addAll(nukes);
 	}
@@ -345,13 +308,11 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * 
 	 * @return the NFO
 	 */
-	public String getNfo()
-	{
+	public String getNfo() {
 		return nfo;
 	}
 
-	public void setNfo(String nfo)
-	{
+	public void setNfo(String nfo) {
 		this.nfo = nfo;
 	}
 
@@ -361,70 +322,57 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * @return the link to the NFO
 	 * @see #getNfo()
 	 */
-	public String getNfoLink()
-	{
+	public String getNfoLink() {
 		return nfoLink;
 	}
 
-	public void setNfoLink(String nfoLink)
-	{
+	public void setNfoLink(String nfoLink) {
 		this.nfoLink = nfoLink;
 	}
 
-	public List<String> getFurtherInfoLinks()
-	{
+	public List<String> getFurtherInfoLinks() {
 		return furtherInfoLinks;
 	}
 
-	public void setFurtherInfoLinks(Collection<String> furtherInfoLinks)
-	{
+	public void setFurtherInfoLinks(Collection<String> furtherInfoLinks) {
 		this.furtherInfoLinks.clear();
 		this.furtherInfoLinks.addAll(furtherInfoLinks);
 	}
 
 	// Convenience
-	public boolean containsSingleMedia()
-	{
+	public boolean containsSingleMedia() {
 		return media.size() == 1;
 	}
 
-	public Media getFirstMedia()
-	{
+	public Media getFirstMedia() {
 		return media.isEmpty() ? null : media.get(0);
 	}
 
-	public void setSingleMedia(Media media)
-	{
+	public void setSingleMedia(Media media) {
 		this.media.clear();
-		if (media != null)
-		{
+		if (media != null) {
 			this.media.add(media);
 		}
 	}
 
-	public boolean isNuked()
-	{
+	public boolean isNuked() {
 		return !nukes.isEmpty();
 	}
 
-	public void nuke(String nukeReason)
-	{
-		nukes.add(new Nuke(nukeReason));
+	public void nuke(String nukeReason) {
+		nukes.add(Nuke.of(nukeReason));
 	}
 
-	public void nuke(String nukeReason, Temporal date)
-	{
-		nukes.add(new Nuke(nukeReason, date));
+	public void nuke(String nukeReason, Temporal date) {
+		nukes.add(Nuke.of(nukeReason, date));
 	}
 
-	public void unnuke(String unnukeReason)
-	{
-		nukes.add(new Nuke(unnukeReason, true));
+	public void unnuke(String unnukeReason) {
+		nukes.add(Nuke.of(unnukeReason, true));
 	}
 
-	public void unnuke(String unnukeReason, Temporal date)
-	{
-		nukes.add(new Nuke(unnukeReason, date, true));
+	public void unnuke(String unnukeReason, Temporal date) {
+		nukes.add(Nuke.of(unnukeReason, date, true));
 	}
 
 	// Object methods
@@ -432,28 +380,22 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * Compared by their {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
 	 */
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Release)
-		{
+		if (obj instanceof Release) {
 			Release o = (Release) obj;
 			return media.equals(o.media) && Objects.equals(group, o.group) && tags.equals(o.tags);
 		}
 		return false;
 	}
 
-	public boolean equalsByName(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equalsByName(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Release)
-		{
+		if (obj instanceof Release) {
 			return ObjectUtil.stringEqualIgnoreCase(name, ((Release) obj).name);
 		}
 		return false;
@@ -463,19 +405,16 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * Calculated from its {@link #getMedia() media}, {@link #getTags() tags} and {@link #getGroup() group}.
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(media, group, tags);
 	}
 
-	public int hashCodeByName()
-	{
+	public int hashCodeByName() {
 		return ObjectUtil.stringHashCodeIgnoreCase(name);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Release.class)
 				.omitNullValues()
 				.add("name", name)
@@ -501,15 +440,12 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 	 * Two releases are compared by their media, then their tags and then by their groups.
 	 */
 	@Override
-	public int compareTo(Release o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Release o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start()
@@ -519,15 +455,12 @@ public class Release extends NamedMetadataBase implements Comparable<Release>
 				.result();
 	}
 
-	public int compareToByName(Release o)
-	{
-		if (this == o)
-		{
+	public int compareToByName(Release o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);

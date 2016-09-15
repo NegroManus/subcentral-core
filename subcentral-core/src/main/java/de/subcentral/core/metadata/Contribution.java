@@ -8,8 +8,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.subcentral.core.util.ObjectUtil;
 
-public class Contribution implements Serializable, Comparable<Contribution>
-{
+public class Contribution implements Comparable<Contribution>, Serializable {
 	private static final long	serialVersionUID		= 8988760112562101666L;
 
 	public static final int		AMOUNT_NOT_MEASURABLE	= 0;
@@ -20,34 +19,29 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	private int					amount					= 1;
 	private float				progress				= 1.0f;
 
-	public Contribution()
-	{
+	public Contribution() {
 		// default constructor
 	}
 
-	public Contribution(Contributor contributor, String type)
-	{
+	public Contribution(Contributor contributor, String type) {
 		this.contributor = contributor;
 		this.type = type;
 	}
 
-	public Contribution(Contributor contributor, String type, String description)
-	{
+	public Contribution(Contributor contributor, String type, String description) {
 		this.contributor = contributor;
 		this.type = type;
 		this.description = description;
 	}
 
-	public Contribution(Contributor contributor, String type, String description, int amount)
-	{
+	public Contribution(Contributor contributor, String type, String description, int amount) {
 		this.contributor = contributor;
 		this.type = type;
 		this.description = description;
 		setAmount(amount);
 	}
 
-	public Contribution(Contributor contributor, String type, String description, int amount, float progress)
-	{
+	public Contribution(Contributor contributor, String type, String description, int amount, float progress) {
 		this.contributor = contributor;
 		this.type = type;
 		this.description = description;
@@ -60,13 +54,11 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	 * 
 	 * @return the contributor
 	 */
-	public Contributor getContributor()
-	{
+	public Contributor getContributor() {
 		return contributor;
 	}
 
-	public void setContributor(Contributor contributor)
-	{
+	public void setContributor(Contributor contributor) {
 		this.contributor = contributor;
 	}
 
@@ -75,13 +67,11 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	 * 
 	 * @return the contribution type
 	 */
-	public String getType()
-	{
+	public String getType() {
 		return type;
 	}
 
-	public void setType(String type)
-	{
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -90,13 +80,11 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	 * 
 	 * @return the description
 	 */
-	public String getDescription()
-	{
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
@@ -105,15 +93,12 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	 * 
 	 * @return the amount (a zero or positive int)
 	 */
-	public int getAmount()
-	{
+	public int getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) throws IllegalArgumentException
-	{
-		if (amount < 0)
-		{
+	public void setAmount(int amount) throws IllegalArgumentException {
+		if (amount < 0) {
 			throw new IllegalArgumentException("amount must be zero or positive");
 		}
 		this.amount = amount;
@@ -124,8 +109,7 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	 * 
 	 * @return the progress (0.0f - 1.0f)
 	 */
-	public float getProgress()
-	{
+	public float getProgress() {
 		return progress;
 	}
 
@@ -135,10 +119,8 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	 * @throws IllegalArgumentException
 	 *             if progress is smaller than 0 or greater than 1
 	 */
-	public void setProgress(float progress) throws IllegalArgumentException
-	{
-		if (progress < 0.0f || progress > 1.0f)
-		{
+	public void setProgress(float progress) throws IllegalArgumentException {
+		if (progress < 0.0f || progress > 1.0f) {
 			throw new IllegalArgumentException("progress must be between 0.0 and 1.0 inclusively");
 		}
 		this.progress = progress;
@@ -146,14 +128,11 @@ public class Contribution implements Serializable, Comparable<Contribution>
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Contribution)
-		{
+		if (obj instanceof Contribution) {
 			Contribution o = (Contribution) obj;
 			return Objects.equals(contributor, o.contributor) && Objects.equals(type, o.type) && Objects.equals(description, o.description);
 		}
@@ -161,21 +140,17 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(contributor, type, description);
 	}
 
 	@Override
-	public int compareTo(Contribution o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Contribution o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start()
@@ -186,8 +161,7 @@ public class Contribution implements Serializable, Comparable<Contribution>
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Contribution.class)
 				.omitNullValues()
 				.add("contributor", contributor)

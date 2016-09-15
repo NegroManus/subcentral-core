@@ -44,8 +44,7 @@ import de.subcentral.core.util.ByteUtil;
 /**
  * @implSpec #immutable #thread-safe
  */
-public class PreDbMeMetadataService extends HttpMetadataService
-{
+public class PreDbMeMetadataService extends HttpMetadataService {
 	private static final Logger	log			= LogManager.getLogger(PreDbMeMetadataService.class);
 
 	/**
@@ -53,29 +52,24 @@ public class PreDbMeMetadataService extends HttpMetadataService
 	 */
 	private static final ZoneId	TIME_ZONE	= ZoneId.of("UTC");
 
-	PreDbMeMetadataService()
-	{
+	PreDbMeMetadataService() {
 		// package-protected
 	}
 
 	@Override
-	public Site getSite()
-	{
+	public Site getSite() {
 		return PreDbMe.getSite();
 	}
 
 	@Override
-	public Set<Class<?>> getSupportedRecordTypes()
-	{
+	public Set<Class<?>> getSupportedRecordTypes() {
 		return ImmutableSet.of(Release.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (recordType.isAssignableFrom(Release.class))
-		{
+	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (recordType.isAssignableFrom(Release.class)) {
 			URL url = buildRelativeUrl("search", query);
 			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
@@ -85,66 +79,51 @@ public class PreDbMeMetadataService extends HttpMetadataService
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (Release.class.equals(recordType))
-		{
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (Release.class.equals(recordType)) {
 			// Check whether the queryObj is a Media or an Iterable of a single Media
 			Media media = MediaUtil.toSingletonMedia(queryObj);
-			if (media != null)
-			{
-				if (media instanceof Episode)
-				{
+			if (media != null) {
+				if (media instanceof Episode) {
 					Episode epi = (Episode) media;
 					// Only if series name, season number and episode number are set
 					// Otherwise predb.me mostly does not parse the release name properly
-					if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered())
-					{
+					if (epi.getSeries() != null && epi.getSeries().getName() != null && epi.isNumberedInSeason() && epi.isPartOfSeason() && epi.getSeason().isNumbered()) {
 						List<Release> results = new ArrayList<>();
-						for (String seriesName : epi.getSeries().getAllNames())
-						{
+						for (String seriesName : epi.getSeries().getAllNames()) {
 							List<Release> newResults = searchReleasesByEpisode(seriesName, epi.getSeason().getNumber(), epi.getNumberInSeason());
 							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
 						return (List<T>) ImmutableList.copyOf(results);
 					}
 				}
-				else if (media instanceof Season)
-				{
+				else if (media instanceof Season) {
 					Season season = (Season) media;
-					if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered())
-					{
+					if (season.getSeries() != null && season.getSeries().getName() != null && season.isNumbered()) {
 						List<Release> results = new ArrayList<>();
-						for (String seriesName : season.getSeries().getAllNames())
-						{
+						for (String seriesName : season.getSeries().getAllNames()) {
 							List<Release> newResults = searchReleasesBySeason(seriesName, season.getNumber());
 							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
 						return (List<T>) ImmutableList.copyOf(results);
 					}
 				}
-				else if (media instanceof Series)
-				{
+				else if (media instanceof Series) {
 					Series series = (Series) media;
-					if (series.getName() != null)
-					{
+					if (series.getName() != null) {
 						List<Release> results = new ArrayList<>();
-						for (String seriesName : series.getAllNames())
-						{
+						for (String seriesName : series.getAllNames()) {
 							List<Release> newResults = searchReleasesBySeries(seriesName);
 							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
 						return (List<T>) ImmutableList.copyOf(results);
 					}
 				}
-				else if (media instanceof Movie)
-				{
+				else if (media instanceof Movie) {
 					Movie mov = (Movie) media;
-					if (mov.getName() != null)
-					{
+					if (mov.getName() != null) {
 						List<Release> results = new ArrayList<>();
-						for (String movName : mov.getAllNames())
-						{
+						for (String movName : mov.getAllNames()) {
 							List<Release> newResults = searchReleasesByMovie(movName);
 							ReleaseUtil.addAllDistinctByName(results, newResults);
 						}
@@ -159,8 +138,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		throw createRecordTypeNotSearchableException(recordType);
 	}
 
-	public List<Release> searchReleasesByEpisode(String seriesName, int seasonNumber, int episodeNumber) throws IOException
-	{
+	public List<Release> searchReleasesByEpisode(String seriesName, int seasonNumber, int episodeNumber) throws IOException {
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		// IMPORTANT: DO NOT use "title" instead of search
 		// because if the title is not matched exactly, predb.me just shows the main page which lists all recent results
@@ -172,8 +150,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		return parseReleaseSearchResults(getDocument(url));
 	}
 
-	public List<Release> searchReleasesBySeason(String seriesName, int seasonNumber) throws IOException
-	{
+	public List<Release> searchReleasesBySeason(String seriesName, int seasonNumber) throws IOException {
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		query.put("search", seriesName);
 		query.put("season", Integer.toString(seasonNumber));
@@ -182,8 +159,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		return parseReleaseSearchResults(getDocument(url));
 	}
 
-	public List<Release> searchReleasesBySeries(String seriesName) throws IOException
-	{
+	public List<Release> searchReleasesBySeries(String seriesName) throws IOException {
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		query.put("search", seriesName);
 		query.put("cats", "tv");
@@ -192,8 +168,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		return parseReleaseSearchResults(getDocument(url));
 	}
 
-	public List<Release> searchReleasesByMovie(String movieName) throws IOException
-	{
+	public List<Release> searchReleasesByMovie(String movieName) throws IOException {
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		query.put("search", movieName);
 		query.put("cats", "movie");
@@ -204,10 +179,8 @@ public class PreDbMeMetadataService extends HttpMetadataService
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(String id, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (recordType.isAssignableFrom(Release.class))
-		{
+	public <T> T get(String id, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (recordType.isAssignableFrom(Release.class)) {
 			URL url = buildRelativeUrl("post", id);
 			log.debug("Getting release with id {} using url {}", id, url);
 			return (T) parseReleaseRecord(getDocument(url));
@@ -241,12 +214,10 @@ public class PreDbMeMetadataService extends HttpMetadataService
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	protected List<Release> parseReleaseSearchResults(Document doc)
-	{
+	protected List<Release> parseReleaseSearchResults(Document doc) {
 		Elements rlsDivs = doc.getElementsByClass("post");
 		ImmutableList.Builder<Release> results = ImmutableList.builder();
-		for (Element rlsDiv : rlsDivs)
-		{
+		for (Element rlsDiv : rlsDivs) {
 			Release rls = parseReleaseSearchResult(rlsDiv);
 			results.add(rls);
 		}
@@ -290,7 +261,8 @@ public class PreDbMeMetadataService extends HttpMetadataService
 	 * 					<h2>
 	 * 						<a class="p-title" href="http://predb.me?post=4097303">Psych.S06E05.HDTV.XviD-P0W4</a>
 	 * 					</h2>
-	 * 					<span rel="nofollow" class="tb tb-nuked" title="Nuked: contains.promo.38m.57s.to.39m.17s_get.FQM.proper"></span><a rel="nofollow" href="http://predb.me?post=4097303" class="tb tb-perma"
+	 * 					<span rel="nofollow" class="tb tb-nuked" title="Nuked: contains.promo.38m.57s.to.39m.17s_get.FQM.proper"></span><a rel="nofollow" href="http://predb.me?post=4097303" class=
+	"tb tb-perma"
 	 * 						title="Visit the permanent page for this release."></a>
 	 * 				</div>
 	 * 			</div>
@@ -302,8 +274,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private Release parseReleaseSearchResult(Element rlsDiv)
-	{
+	private Release parseReleaseSearchResult(Element rlsDiv) {
 		Release rls = new Release();
 
 		String id = rlsDiv.attr("id");
@@ -320,8 +291,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		rls.setCategory(parseReleaseCategory(catSpan));
 
 		Element titleAnchor = rlsDiv.select("a[class*=title]").first();
-		if (titleAnchor != null)
-		{
+		if (titleAnchor != null) {
 			String title = titleAnchor.text();
 			rls.setName(title);
 
@@ -340,19 +310,16 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		 * </pre>
 		 */
 		Element nukedSpan = rlsDiv.select("span[class*=nuked]").first();
-		if (nukedSpan != null)
-		{
+		if (nukedSpan != null) {
 			String nukeSpanTitle = nukedSpan.attr("title");
 			Pattern pUnnukeReason = Pattern.compile("Unnuked:\\s*(.+)", Pattern.CASE_INSENSITIVE);
 			Matcher mUnnukeReason = pUnnukeReason.matcher(nukeSpanTitle);
-			if (mUnnukeReason.matches())
-			{
+			if (mUnnukeReason.matches()) {
 				rls.unnuke(mUnnukeReason.group(1));
 			}
 			Pattern pNukeReason = Pattern.compile("Nuked:\\s*(.+)", Pattern.CASE_INSENSITIVE);
 			Matcher mNukeReason = pNukeReason.matcher(nukeSpanTitle);
-			if (mNukeReason.matches())
-			{
+			if (mNukeReason.matches()) {
 				rls.nuke(mNukeReason.group(1));
 			}
 		}
@@ -391,8 +358,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 	 * @return
 	 * @throws IOException
 	 */
-	protected Release parseReleaseRecord(Document doc)
-	{
+	protected Release parseReleaseRecord(Document doc) {
 		Release rls = new Release();
 
 		/**
@@ -426,8 +392,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		 */
 		String mediaImageUrl = null;
 		Element mediaImg = doc.select("img.pb-img").first();
-		if (mediaImg != null)
-		{
+		if (mediaImg != null) {
 			mediaImageUrl = mediaImg.attr("src");
 		}
 
@@ -437,35 +402,27 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		String plot = null;
 		List<String> genres = null;
 		List<String> links = null;
-		for (Element keyValueDiv : keyValueDivs)
-		{
+		for (Element keyValueDiv : keyValueDivs) {
 			Element keyDiv = keyValueDiv.getElementsByClass("pb-l").first();
 			Element valueDiv = keyValueDiv.getElementsByClass("pb-d").first();
-			if (keyDiv != null && valueDiv != null)
-			{
+			if (keyDiv != null && valueDiv != null) {
 				String key = keyDiv.text();
 				String value = valueDiv.text();
-				if ("Rlsname".equals(key))
-				{
+				if ("Rlsname".equals(key)) {
 					rls.setName(value);
 				}
-				else if ("Group".equals(key))
-				{
-					Group grp = new Group(value);
-					rls.setGroup(grp);
+				else if ("Group".equals(key)) {
+					rls.setGroup(Group.of(value));
 				}
 				// Don't parse "Tags" because they are predb.me specific tags and not the release tags
-				else if ("Lang".equals(key))
-				{
+				else if ("Lang".equals(key)) {
 					rls.getLanguages().add(value);
 				}
-				else if ("Size".equals(key))
-				{
+				else if ("Size".equals(key)) {
 					String sizeTxt = value;
 					Pattern pSize = Pattern.compile("([\\d\\.\\w\\s]+)\\s+in\\s+(\\d+)\\s+files");
 					Matcher mSize = pSize.matcher(sizeTxt);
-					if (mSize.find())
-					{
+					if (mSize.find()) {
 						// no NumberFormatExceptions can occur because then the pattern would not match in the first place
 						long size = ByteUtil.parseBytes(mSize.group(1));
 						rls.setSize(size);
@@ -473,8 +430,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 						rls.setFileCount(fileCount);
 					}
 				}
-				else if ("Nukes".equals(key))
-				{
+				else if ("Nukes".equals(key)) {
 					/**
 					 * <pre>
 					 * <div class="pb-r "> <div class="pb-c  pb-l">Nukes</div> <div class="pb-c  pb-d">
@@ -495,54 +451,44 @@ public class PreDbMeMetadataService extends HttpMetadataService
 					 */
 
 					Element nukeListOl = valueDiv.getElementsByClass("nuke-list").first();
-					if (nukeListOl != null)
-					{
+					if (nukeListOl != null) {
 						Elements nukeLis = nukeListOl.getElementsByTag("li");
 						List<Nuke> nukes = new ArrayList<>(nukeLis.size());
-						for (Element nukeLi : nukeLis)
-						{
+						for (Element nukeLi : nukeLis) {
 							String nukeReason = null;
 							Element nukedSpan = nukeLi.getElementsByClass("nuked").first();
-							if (nukedSpan != null)
-							{
+							if (nukedSpan != null) {
 								nukeReason = nukedSpan.text();
 							}
 							String unnukeReason = null;
 							Element unnukedSpan = nukeLi.getElementsByClass("unnuked").first();
-							if (unnukedSpan != null)
-							{
+							if (unnukedSpan != null) {
 								unnukeReason = unnukedSpan.text();
 							}
 
 							ZonedDateTime nukeDate = null;
 							Element nukeTimeElem = nukeLi.getElementsByClass("nuke-time").first();
-							if (nukeTimeElem != null)
-							{
+							if (nukeTimeElem != null) {
 								nukeDate = parseTimestamp(nukeTimeElem.attr("data"));
 							}
 
-							if (nukeReason != null)
-							{
-								nukes.add(new Nuke(nukeReason, nukeDate));
+							if (nukeReason != null) {
+								nukes.add(Nuke.of(nukeReason, nukeDate));
 							}
-							else if (unnukeReason != null)
-							{
-								nukes.add(new Nuke(unnukeReason, nukeDate, true));
+							else if (unnukeReason != null) {
+								nukes.add(Nuke.of(unnukeReason, nukeDate, true));
 							}
-							else
-							{
+							else {
 								log.warn("No nuke reason given: " + nukeLi);
 							}
 						}
 						rls.setNukes(nukes);
 					}
 				}
-				else if ("Title".equals(key))
-				{
+				else if ("Title".equals(key)) {
 					mediaTitle = value;
 				}
-				else if ("Episode".equals(key))
-				{
+				else if ("Episode".equals(key)) {
 					/**
 					 * <pre>
 					 * <div class="pb-c  pb-l">Episode</div> <div class="pb-c  pb-d"> (
@@ -555,44 +501,36 @@ public class PreDbMeMetadataService extends HttpMetadataService
 					String seasonEpisodeTxt = value;
 					Pattern pSeason = Pattern.compile("S(\\d+)");
 					Matcher mSeason = pSeason.matcher(seasonEpisodeTxt);
-					if (mSeason.find())
-					{
+					if (mSeason.find()) {
 						Season season = new Season(series, Integer.parseInt(mSeason.group(1)));
 						epi.setSeason(season);
 					}
 					Pattern pEpi = Pattern.compile("E(\\d+)");
 					Matcher mEpi = pEpi.matcher(seasonEpisodeTxt);
-					if (mEpi.find())
-					{
+					if (mEpi.find()) {
 						epi.setNumberInSeason(Integer.parseInt(mEpi.group(1)));
 					}
 					// Episode title and furtherInfo
 					Element episodeTitleAnchor = valueDiv.select("a.ext-link").first();
-					if (episodeTitleAnchor != null)
-					{
+					if (episodeTitleAnchor != null) {
 						epi.setTitle(episodeTitleAnchor.text());
 						epi.getFurtherInfoLinks().add(episodeTitleAnchor.attr("href"));
 					}
 					Element airdateElement = valueDiv.getElementsByClass("airdate").first();
-					if (airdateElement != null)
-					{
-						try
-						{
+					if (airdateElement != null) {
+						try {
 							epi.setDate(LocalDate.parse(airdateElement.text()));
 						}
-						catch (DateTimeParseException e)
-						{
+						catch (DateTimeParseException e) {
 							log.warn("Could not parse episode date string '" + airdateElement.text() + "'", e);
 						}
 					}
 					media = epi;
 				}
-				else if ("Plot".equals(key))
-				{
+				else if ("Plot".equals(key)) {
 					plot = value;
 				}
-				else if ("Genres".equals(key))
-				{
+				else if ("Genres".equals(key)) {
 					/**
 					 * <pre>
 					 * <div class="pb-c  pb-l">Genres</div> <div class= "pb-c  pb-d" > <a class='term t-gn' href='http://predb.me/?genre=trance'>Trance</a> </div> </div>
@@ -600,13 +538,11 @@ public class PreDbMeMetadataService extends HttpMetadataService
 					 */
 					Elements genreAnchors = valueDiv.getElementsByTag("a");
 					genres = new ArrayList<>(genreAnchors.size());
-					for (Element genreAnchor : genreAnchors)
-					{
+					for (Element genreAnchor : genreAnchors) {
 						genres.add(genreAnchor.text());
 					}
 				}
-				else if ("Links".equals(key))
-				{
+				else if ("Links".equals(key)) {
 					/**
 					 * <pre>
 					 * <div class="pb-c  pb-l">Links</div> <div class=
@@ -616,8 +552,7 @@ public class PreDbMeMetadataService extends HttpMetadataService
 					 */
 					Elements extLinksAnchors = valueDiv.select("a.ext-link");
 					links = new ArrayList<>(extLinksAnchors.size());
-					for (Element extLinkAnchor : extLinksAnchors)
-					{
+					for (Element extLinkAnchor : extLinksAnchors) {
 						links.add(extLinkAnchor.attr("href"));
 					}
 				}
@@ -625,80 +560,64 @@ public class PreDbMeMetadataService extends HttpMetadataService
 		}
 
 		// If no name could be parsed, this document is no valid release record HTML
-		if (rls.getName() == null)
-		{
+		if (rls.getName() == null) {
 			log.warn("The parsed document did not contain valid release record HTML");
 			return null;
 		}
 
 		// If media was not determined yet (e.g. Episode),
 		// try to determine it via the section (category)
-		if (media == null && rls.getCategory() != null)
-		{
+		if (media == null && rls.getCategory() != null) {
 			String section = rls.getCategory();
-			if (section.startsWith("movies"))
-			{
+			if (section.startsWith("movies")) {
 				Movie movie = new Movie(mediaTitle);
 				media = movie;
 			}
-			else if (section.startsWith("music"))
-			{
+			else if (section.startsWith("music")) {
 				GenericMedia genericMedia = new GenericMedia(mediaTitle);
 				genericMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_AUDIO);
 				media = genericMedia;
 			}
-			else if (section.startsWith("tv"))
-			{
+			else if (section.startsWith("tv")) {
 				GenericMedia genericMedia = new GenericMedia(mediaTitle);
 				genericMedia.setMediaContentType(Media.MEDIA_CONTENT_TYPE_VIDEO);
 				media = genericMedia;
 			}
-			else
-			{
+			else {
 				media = new GenericMedia(mediaTitle);
 			}
 		}
 
 		// set plot, genres and furtherInfoUrls if available
-		if (media instanceof Episode)
-		{
+		if (media instanceof Episode) {
 			Episode epi = (Episode) media;
-			if (plot != null)
-			{
+			if (plot != null) {
 				epi.setDescription(plot);
 			}
-			if (genres != null)
-			{
+			if (genres != null) {
 				epi.getSeries().getGenres().addAll(genres);
 			}
-			if (links != null)
-			{
+			if (links != null) {
 				// the ext-links for episode releases belong to the series
 				epi.getSeries().getFurtherInfoLinks().addAll(links);
 			}
-			if (mediaImageUrl != null)
-			{
+			if (mediaImageUrl != null) {
 				epi.getSeries().getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_HORIZONTAL, mediaImageUrl);
 			}
 		}
 		// For both Movie and GenericMedia
-		else if (media instanceof StandaloneMedia)
-		{
+		else if (media instanceof StandaloneMedia) {
 			StandaloneMedia regularMediaItem = (StandaloneMedia) media;
-			if (plot != null)
-			{
+			if (plot != null) {
 				regularMediaItem.setDescription(plot);
 			}
-			if (genres != null)
-			{
+			if (genres != null) {
 				regularMediaItem.getGenres().addAll(genres);
 			}
-			if (links != null)
-			{
+			if (links != null) {
 				regularMediaItem.getFurtherInfoLinks().addAll(links);
 			}
-			if (mediaImageUrl != null)
-			{
+			if (mediaImageUrl != null) {
 				regularMediaItem.getImages().put(Media.MEDIA_IMAGE_TYPE_POSTER_VERTICAL, mediaImageUrl);
 			}
 		}
@@ -711,35 +630,28 @@ public class PreDbMeMetadataService extends HttpMetadataService
 	/**
 	 * <a rel="nofollow" href="http://predb.me?post=4097303" class="tb tb-perma" title="Visit the permanent page for this release."></a>
 	 */
-	private static String parseId(Element postAnchor)
-	{
-		if (postAnchor != null)
-		{
+	private static String parseId(Element postAnchor) {
+		if (postAnchor != null) {
 			String postLink = postAnchor.attr("href");
 			return postLink.substring(postLink.indexOf("post=") + 5); // 5 = length of string "post="
 		}
 		return null;
 	}
 
-	private static ZonedDateTime parseReleaseDate(Element timeSpan)
-	{
-		if (timeSpan != null)
-		{
+	private static ZonedDateTime parseReleaseDate(Element timeSpan) {
+		if (timeSpan != null) {
 			return parseTimestamp(timeSpan.attr("data"));
 		}
 		return null;
 	}
 
-	private static ZonedDateTime parseTimestamp(String epochSecond)
-	{
-		try
-		{
+	private static ZonedDateTime parseTimestamp(String epochSecond) {
+		try {
 			double epochSecs = Double.parseDouble(epochSecond);
 			long epochMillis = (long) epochSecs * 1000L;
 			return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), TIME_ZONE);
 		}
-		catch (NullPointerException | NumberFormatException | DateTimeException e)
-		{
+		catch (NullPointerException | NumberFormatException | DateTimeException e) {
 			log.warn("Could not parse epoch seconds string '" + epochSecond + "'", e);
 			return null;
 		}
@@ -754,25 +666,20 @@ public class PreDbMeMetadataService extends HttpMetadataService
 	 * 				</div>
 	 * </pre>
 	 */
-	private static String parseReleaseCategory(Element catSpan)
-	{
+	private static String parseReleaseCategory(Element catSpan) {
 		Element childCatAnchor = catSpan.select("a[class=c-child]").first();
 		String cat = parseCategory(childCatAnchor);
-		if (cat != null)
-		{
+		if (cat != null) {
 			return cat;
 		}
-		else
-		{
+		else {
 			Element adultCatAnchor = catSpan.select("a[class=c-adult]").first();
 			return parseCategory(adultCatAnchor);
 		}
 	}
 
-	private static String parseCategory(Element categoryAnchor)
-	{
-		if (categoryAnchor != null)
-		{
+	private static String parseCategory(Element categoryAnchor) {
+		if (categoryAnchor != null) {
 			String catLink = categoryAnchor.attr("href");
 			return catLink.substring(catLink.indexOf("cats=") + 5); // 5 = length of string "cats="
 		}
