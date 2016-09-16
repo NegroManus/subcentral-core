@@ -387,7 +387,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem {
 	private void guess(List<ReleaseAndInfo> mediaFilteredFoundReleases) throws Exception {
 		Release srcRls = parsedObject.getFirstMatchingRelease();
 		if (config.isGuessingEnabled()) {
-			log.info("Guessing enabled");
+			log.trace("Guessing enabled");
 			displaySystemTrayNotification("Guessing release", getSourceFile().getFileName().toString(), MessageType.WARNING, SettingsController.SETTINGS.getGuessingWarningEnabled().property());
 
 			List<StandardRelease> stdRlss = config.getStandardReleases();
@@ -400,7 +400,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem {
 				addReleaseToResult(entry);
 			}
 
-			log.debug("Searching for compatible releases among the listed releases");
+			log.trace("Searching for compatible releases among the listed releases");
 			boolean foundCompatibleListedReleases = addCompatibleReleases(guessedRlssWithInfos, mediaFilteredFoundReleases);
 			if (!foundCompatibleListedReleases) {
 				log.debug("No compatible releases found among the listed releases. Searching for compatible releases among the standard releases");
@@ -420,7 +420,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem {
 
 	private boolean addCompatibleReleases(Collection<ReleaseAndInfo> matchingRlss, Collection<ReleaseAndInfo> listedRlss) throws Exception {
 		if (config.isCompatibilityEnabled()) {
-			log.debug("Search for compatible releases enabled");
+			log.trace("Search for compatible releases enabled");
 			// Find compatibles
 			CompatibilityService compatibilityService = config.getCompatibilityService();
 			Set<Compatibility> compatibles = compatibilityService.findCompatibilities(toReleaseList(matchingRlss), toReleaseList(listedRlss));

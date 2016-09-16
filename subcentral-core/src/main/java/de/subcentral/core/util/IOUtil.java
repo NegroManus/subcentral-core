@@ -54,7 +54,13 @@ public class IOUtil {
 		Process process = null;
 		try {
 			ProcessBuilder processBuilder = new ProcessBuilder(command);
-			log.debug("Executing process {} with directory={}; environment={}", command, processBuilder.directory(), processBuilder.environment());
+			if (log.isTraceEnabled()) {
+				log.debug("Executing process {} with directory={}; environment={}", command, processBuilder.directory(), processBuilder.environment());
+			}
+			else if (log.isDebugEnabled()) {
+				log.debug("Executing process {}", command);
+			}
+
 			long start = System.nanoTime();
 			process = processBuilder.start();
 			process.getOutputStream().close();
