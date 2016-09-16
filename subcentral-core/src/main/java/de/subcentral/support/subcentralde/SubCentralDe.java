@@ -32,37 +32,30 @@ import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.support.releasescene.ReleaseScene;
 
-public class SubCentralDe
-{
+public class SubCentralDe {
 	private static final Logger						log				= LogManager.getLogger(SubCentralDe.class.getName());
 
 	private static final Site						SITE			= new Site("subcentral.de", "SubCentral.de", "https://www.subcentral.de/");
 	private static final TypeBasedParsingService	PARSING_SERVICE	= initParsingService();
 
-	private SubCentralDe()
-	{
+	private SubCentralDe() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
 	@SuppressWarnings("unchecked")
-	private static TypeBasedParsingService initParsingService()
-	{
+	private static TypeBasedParsingService initParsingService() {
 		ImmutableList.Builder<Parser<SubtitleRelease>> parsers = ImmutableList.builder();
 
-		for (ParserEntry<?> sceneParserEntry : ReleaseScene.getParsersEntries())
-		{
+		for (ParserEntry<?> sceneParserEntry : ReleaseScene.getParsersEntries()) {
 			Parser<?> sceneParser = sceneParserEntry.getParser();
-			if (sceneParser instanceof ReleaseParser)
-			{
+			if (sceneParser instanceof ReleaseParser) {
 				ReleaseParser sceneRlsParser = (ReleaseParser) sceneParser;
 
 				Mapper<List<Media>> mediaMapper;
-				try
-				{
+				try {
 					mediaMapper = (Mapper<List<Media>>) sceneRlsParser.getMediaMapper();
 				}
-				catch (ClassCastException e)
-				{
+				catch (ClassCastException e) {
 					log.warn("Parser will be ignored because its media mapper does not map to List<Media>: {}", sceneRlsParser.getMediaMapper());
 					continue;
 				}
@@ -75,8 +68,7 @@ public class SubCentralDe
 				SubtitleReleaseParser parser = new SubtitleReleaseParser(scMatcher, mediaMapper);
 				parsers.add(parser);
 			}
-			else
-			{
+			else {
 				log.warn("Parser will be ignored because it is not an instance of ReleaseParser: {}", sceneParser);
 			}
 		}
@@ -86,8 +78,7 @@ public class SubCentralDe
 		return service;
 	}
 
-	private static MappingMatcher<SimplePropDescriptor> buildMatcherBasedOnSceneMatcher(MappingMatcher<SimplePropDescriptor> sceneMatcher)
-	{
+	private static MappingMatcher<SimplePropDescriptor> buildMatcherBasedOnSceneMatcher(MappingMatcher<SimplePropDescriptor> sceneMatcher) {
 		String release = "(.*)";
 		String lang = "\\W(de|ger|german|deutsch|VO|en|eng|english)";
 		String group = "\\W([\\w&_]+)";
@@ -157,23 +148,19 @@ public class SubCentralDe
 		return new MultiMappingMatcher<>(matchers.build());
 	}
 
-	public static Site getSite()
-	{
+	public static Site getSite() {
 		return SITE;
 	}
 
-	public static ParsingService getParsingService()
-	{
+	public static ParsingService getParsingService() {
 		return PARSING_SERVICE;
 	}
 
-	public static List<ParserEntry<?>> getParserEntries()
-	{
+	public static List<ParserEntry<?>> getParserEntries() {
 		return PARSING_SERVICE.getEntries();
 	}
 
-	public static void registerSubtitleLanguageCorrectors(TypeBasedCorrectionService service)
-	{
+	public static void registerSubtitleLanguageCorrectors(TypeBasedCorrectionService service) {
 		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(en|eng|english)", Pattern.CASE_INSENSITIVE), "VO")));
 		service.registerCorrector(Subtitle.class, new SubtitleLanguageCorrector(new PatternStringReplacer(Pattern.compile("(ger|german|deu|deutsch)", Pattern.CASE_INSENSITIVE), "de")));
 	}

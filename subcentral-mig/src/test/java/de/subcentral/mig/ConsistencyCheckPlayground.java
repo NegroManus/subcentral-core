@@ -9,11 +9,9 @@ import com.google.common.io.Resources;
 import de.subcentral.mig.check.ConsistencyChecker;
 import de.subcentral.mig.process.MigrationAssistance;
 
-public class ConsistencyCheckPlayground
-{
+public class ConsistencyCheckPlayground {
 	@Test
-	public void testConsistencyCheck() throws Exception
-	{
+	public void testConsistencyCheck() throws Exception {
 		MigrationAssistance assistance = new MigrationAssistance();
 		assistance.setEnvironmentSettingsFile(Paths.get(Resources.getResource(ConsistencyCheckPlayground.class, "/de/subcentral/mig/migration-env-settings.properties").toURI()));
 		assistance.loadEnvironmentSettingsFromFile();

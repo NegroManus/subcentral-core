@@ -5,8 +5,7 @@ import java.util.Set;
 
 import com.google.common.base.MoreObjects;
 
-public class WinRarPackResult
-{
+public class WinRarPackResult {
 	public static final int	EXIT_CODE_SUCCESSFUL							= 0;
 	public static final int	EXIT_CODE_WARNING								= 1;
 	public static final int	EXIT_CODE_FATAL_ERROR							= 2;
@@ -21,8 +20,7 @@ public class WinRarPackResult
 	public static final int	EXIT_CODE_WRONG_PASSWORD						= 11;
 	public static final int	EXIT_CODE_USER_BREAK							= 255;
 
-	public enum Flag
-	{
+	public enum Flag {
 		TARGET_EXISTED, TARGET_UPDATED, TARGET_REPLACED, SOURCE_DELETED;
 	}
 
@@ -31,31 +29,26 @@ public class WinRarPackResult
 	private final Exception		exception;
 	private final String		log;
 
-	WinRarPackResult(int exitCode, EnumSet<Flag> flags, String log)
-	{
+	WinRarPackResult(int exitCode, EnumSet<Flag> flags, String log) {
 		this(exitCode, flags, null, log);
 	}
 
-	WinRarPackResult(int exitCode, EnumSet<Flag> flags, Exception exception, String log)
-	{
+	WinRarPackResult(int exitCode, EnumSet<Flag> flags, Exception exception, String log) {
 		this.exitCode = exitCode;
 		this.flags = EnumSet.copyOf(flags); // performs null check
 		this.exception = exception;
 		this.log = log;
 	}
 
-	public int getExitCode()
-	{
+	public int getExitCode() {
 		return exitCode;
 	}
 
-	public Set<Flag> getFlags()
-	{
+	public Set<Flag> getFlags() {
 		return flags;
 	}
 
-	public Exception getException()
-	{
+	public Exception getException() {
 		return exception;
 	}
 
@@ -63,25 +56,21 @@ public class WinRarPackResult
 	 * 
 	 * @return the execution log
 	 */
-	public String getLog()
-	{
+	public String getLog() {
 		return log;
 	}
 
 	// Convenience
-	public String getExitCodeDescription()
-	{
+	public String getExitCodeDescription() {
 		return getExitCodeDescription(exitCode);
 	}
 
-	public boolean failed()
-	{
+	public boolean failed() {
 		return exception != null;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(WinRarPackResult.class).omitNullValues().add("exitCode", exitCode).add("flags", flags).add("exception", exception).add("log", "<omitted>").toString();
 	}
 
@@ -113,10 +102,8 @@ public class WinRarPackResult
 	 * @param exitCode
 	 * @return
 	 */
-	public static String getExitCodeDescription(int exitCode)
-	{
-		switch (exitCode)
-		{
+	public static String getExitCodeDescription(int exitCode) {
+		switch (exitCode) {
 			case EXIT_CODE_SUCCESSFUL:
 				return "Successful operation.";
 			case EXIT_CODE_WARNING:

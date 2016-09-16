@@ -21,23 +21,20 @@ import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 import de.subcentral.support.winrar.WinRarPackResult.Flag;
 
-public abstract class WinRarPackager
-{
+public abstract class WinRarPackager {
 	private static final Logger	log	= LogManager.getLogger(WinRarPackager.class.getName());
 
 	protected final WinRar		winRar;
 	protected final Path		rarExecutable;
 
-	WinRarPackager(WinRar winRar, Path rarExecutable)
-	{
+	WinRarPackager(WinRar winRar, Path rarExecutable) {
 		this.winRar = Objects.requireNonNull(winRar, "winRar");
 		// do not validate because it can be a non-absolute path
 		this.rarExecutable = Objects.requireNonNull(rarExecutable, "rarExecutable");
 		log.debug("Using RAR executable at {}", this.rarExecutable);
 	}
 
-	public Path getRarExecutable()
-	{
+	public Path getRarExecutable() {
 		return rarExecutable;
 	}
 
@@ -48,21 +45,17 @@ public abstract class WinRarPackager
 	 */
 	protected abstract boolean isRecyclingSupported();
 
-	public boolean validate(Path archive)
-	{
-		try
-		{
+	public boolean validate(Path archive) {
+		try {
 			return IOUtil.executeProcess(buildValidateCommand(archive), winRar.getProcessExecutor()).getExitValue() == 0;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			log.trace("Validation of archive " + archive + " failed", e);
 			return false;
 		}
 	}
 
-	protected List<String> buildValidateCommand(Path archive)
-	{
+	protected List<String> buildValidateCommand(Path archive) {
 		/**
 		 * Using command t
 		 * 
@@ -78,13 +71,11 @@ public abstract class WinRarPackager
 		return ImmutableList.of(rarExecutable.toString(), "t", archive.toString());
 	}
 
-	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException
-	{
+	public void unpack(Path archive, Path targetDir) throws IOException, InterruptedException {
 		IOUtil.executeProcess(buildUnpackCommand(archive, targetDir), winRar.getProcessExecutor());
 	}
 
-	protected List<String> buildUnpackCommand(Path archive, Path targetDir)
-	{
+	protected List<String> buildUnpackCommand(Path archive, Path targetDir) {
 		/**
 		 * <pre>
 		 *  e       Extract files without archived paths.
@@ -110,8 +101,7 @@ public abstract class WinRarPackager
 	 *            the packaging configuration, not null
 	 * @return the result of the packaging operation
 	 */
-	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg)
-	{
+	public WinRarPackResult pack(Path source, Path target, WinRarPackConfig cfg) {
 		Objects.requireNonNull(source, "source");
 		Objects.requireNonNull(target, "target");
 		Objects.requireNonNull(cfg, "cfg");
@@ -120,15 +110,12 @@ public abstract class WinRarPackager
 		int exitValue = -1;
 		String logMsg = null;
 		String errMsg = null;
-		try
-		{
+		try {
 			long startTime = System.currentTimeMillis();
 			boolean targetExisted = Files.exists(target, LinkOption.NOFOLLOW_LINKS);
-			if (targetExisted)
-			{
+			if (targetExisted) {
 				flags.add(Flag.TARGET_EXISTED);
-				if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode())
-				{
+				if (OverwriteMode.REPLACE == cfg.getTargetOverwriteMode()) {
 					Files.delete(target);
 				}
 			}
@@ -138,10 +125,8 @@ public abstract class WinRarPackager
 			errMsg = result.getStdErr();
 
 			// may add tags
-			if (targetExisted && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime)
-			{
-				switch (cfg.getTargetOverwriteMode())
-				{
+			if (targetExisted && Files.getLastModifiedTime(target, LinkOption.NOFOLLOW_LINKS).toMillis() > startTime) {
+				switch (cfg.getTargetOverwriteMode()) {
 					case UPDATE:
 						flags.add(Flag.TARGET_UPDATED);
 						break;
@@ -153,30 +138,25 @@ public abstract class WinRarPackager
 				}
 			}
 			// if DeletionMode.DELETE || DeletionMode.RECYCLE and it really was deleted
-			if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source))
-			{
+			if (cfg.getSourceDeletionMode() != DeletionMode.KEEP && Files.notExists(source)) {
 				flags.add(Flag.SOURCE_DELETED);
 			}
 
 			// return result
-			if (result.getStdErr() == null)
-			{
+			if (result.getStdErr() == null) {
 				return new WinRarPackResult(exitValue, flags, logMsg);
 			}
-			else
-			{
+			else {
 				return new WinRarPackResult(exitValue, flags, new IOException(errMsg), logMsg);
 			}
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			log.warn("Packing of " + source + " to " + target + " with config " + cfg + " failed", e);
 			return new WinRarPackResult(exitValue, flags, e, logMsg);
 		}
 	}
 
-	protected List<String> buildPackCommand(Path source, Path target, WinRarPackConfig cfg)
-	{
+	protected List<String> buildPackCommand(Path source, Path target, WinRarPackConfig cfg) {
 		List<String> args = new ArrayList<>(8);
 
 		// WinRAR command
@@ -186,8 +166,7 @@ public abstract class WinRarPackager
 		args.add("-ep"); // -EP - exclude paths from names
 		args.add("-m" + cfg.getCompressionMethod().getCode()); // -M<n> - set compression method
 		args.add("-y"); // -Y - assume Yes on all queries
-		switch (cfg.getTargetOverwriteMode())
-		{
+		switch (cfg.getTargetOverwriteMode()) {
 			case SKIP:
 				// "-o- Skip existing files."
 				args.add("-o-");
@@ -204,21 +183,18 @@ public abstract class WinRarPackager
 			default:
 				throw new AssertionError();
 		}
-		switch (cfg.getSourceDeletionMode())
-		{
+		switch (cfg.getSourceDeletionMode()) {
 			case KEEP:
 				// don't add a delete switch
 				break;
 			case RECYCLE:
-				if (isRecyclingSupported())
-				{
+				if (isRecyclingSupported()) {
 					// "-dr Delete files to Recycle Bin
 					// Delete files after archiving and place them to Recycle Bin.
 					// Available in Windows version only."
 					args.add("-dr");
 				}
-				else
-				{
+				else {
 					log.warn("Configuration value sourceDelectionMode={} is ignored. This option is not available on this operating system. Files are kept.", DeletionMode.RECYCLE);
 				}
 				break;

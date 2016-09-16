@@ -5,11 +5,9 @@ import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.releasescene.ReleaseScene;
 import de.subcentral.support.subcentralde.SubCentralDe;
 
-public class ParsingPerformanceTest
-{
+public class ParsingPerformanceTest {
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		final MultiParsingService ps = new MultiParsingService("multi", Addic7edCom.getParsingService(), SubCentralDe.getParsingService(), ReleaseScene.getParsingService());
 
 		String name = "Psych - 05x04 - Chivalry Is Not Dead...But Someone Is.FQM.English.C.orig.Addic7ed.com";
@@ -18,8 +16,7 @@ public class ParsingPerformanceTest
 
 		long start = System.nanoTime();
 		int times = 100_000;
-		for (int i = 0; i < times; i++)
-		{
+		for (int i = 0; i < times; i++) {
 			Object o = ps.parse(name);
 			Object o2 = ps.parse(name2);
 			Object o3 = ps.parse(name3);

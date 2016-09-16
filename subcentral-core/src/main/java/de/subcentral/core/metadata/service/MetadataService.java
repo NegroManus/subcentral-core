@@ -7,10 +7,8 @@ import java.util.Set;
 import de.subcentral.core.metadata.Site;
 import de.subcentral.core.util.Service;
 
-public interface MetadataService extends Service
-{
-	public enum State
-	{
+public interface MetadataService extends Service {
+	public enum State {
 		AVAILABLE, AVAILABLE_LIMITED, NOT_AVAILABLE
 	}
 
@@ -18,15 +16,13 @@ public interface MetadataService extends Service
 	public Site getSite();
 
 	@Override
-	public default String getName()
-	{
+	public default String getName() {
 		return getSite().getName();
 	}
 
 	public Set<Class<?>> getSupportedRecordTypes();
 
-	public default Set<Class<?>> getSearchableRecordTypes()
-	{
+	public default Set<Class<?>> getSearchableRecordTypes() {
 		return getSupportedRecordTypes();
 	}
 

@@ -23,38 +23,32 @@ import de.subcentral.mig.process.MigrationAssistance;
 import de.subcentral.mig.process.MigrationService;
 
 @WebServlet("/overview")
-public class OverviewServlet extends HttpServlet
-{
+public class OverviewServlet extends HttpServlet {
 	private static final long	serialVersionUID	= -468235743950296120L;
 	private static final Logger	log					= LogManager.getLogger(OverviewServlet.class);
 
 	private MigrationAssistance	assistance;
 
 	@Override
-	public void init() throws ServletException
-	{
-		try
-		{
+	public void init() throws ServletException {
+		try {
 			// Do required initialization
 			assistance = new MigrationAssistance();
 			assistance.setEnvironmentSettingsFile(Paths.get(MigrationPreview.ENV_SETTINGS_PATH));
 			assistance.loadEnvironmentSettingsFromFile();
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Set response content type
 		response.setContentType("text/html");
 
 		// Actual logic goes here.
-		try
-		{
+		try {
 			SeriesListData data = readSeriesListData();
 			PrintWriter writer = response.getWriter();
 
@@ -73,14 +67,11 @@ public class OverviewServlet extends HttpServlet
 			writer.println("<form id=\"seasonselectform\" action=\"season\">");
 			writer.println("<p><select name=\"threadId\" onchange=\"this.form.submit();\">");
 			writer.print("<option value=\"\">Staffel wählen</option>");
-			for (Series series : data.getSeries())
-			{
-				for (Season season : series.getSeasons())
-				{
+			for (Series series : data.getSeries()) {
+				for (Season season : series.getSeasons()) {
 					writer.print("<option value=\"");
 					Integer seasonThreadId = season.getFirstAttributeValue(Migration.SEASON_ATTR_THREAD_ID);
-					if (seasonThreadId == null)
-					{
+					if (seasonThreadId == null) {
 						seasonThreadId = -1;
 					}
 					writer.print(seasonThreadId.toString());
@@ -96,23 +87,19 @@ public class OverviewServlet extends HttpServlet
 			writer.println("</html>");
 			writer.flush();
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
 
-	public SeriesListData readSeriesListData() throws SQLException
-	{
-		try (MigrationService service = assistance.createMigrationService())
-		{
+	public SeriesListData readSeriesListData() throws SQLException {
+		try (MigrationService service = assistance.createMigrationService()) {
 			return service.readSeriesList();
 		}
 	}
 
 	@Override
-	public void destroy()
-	{
+	public void destroy() {
 
 	}
 }

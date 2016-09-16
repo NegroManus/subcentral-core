@@ -8,41 +8,33 @@ import com.google.common.collect.ImmutableList;
 
 import de.subcentral.core.util.Context;
 
-public class MultiNamingService implements NamingService
-{
+public class MultiNamingService implements NamingService {
 	private final String				name;
 	private final List<NamingService>	services;
 
-	public MultiNamingService(String name, NamingService... services)
-	{
+	public MultiNamingService(String name, NamingService... services) {
 		this(name, ImmutableList.copyOf(services));
 	}
 
-	public MultiNamingService(String name, Iterable<? extends NamingService> services)
-	{
+	public MultiNamingService(String name, Iterable<? extends NamingService> services) {
 		this.name = Objects.requireNonNull(name, "name");
 		this.services = ImmutableList.copyOf(services);
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public List<NamingService> getServices()
-	{
+	public List<NamingService> getServices() {
 		return services;
 	}
 
 	@Override
-	public String name(Object obj, Context ctx)
-	{
-		for (NamingService service : services)
-		{
+	public String name(Object obj, Context ctx) {
+		for (NamingService service : services) {
 			String objName = service.name(obj, ctx);
-			if (objName != null)
-			{
+			if (objName != null) {
 				return objName;
 			}
 		}
@@ -50,8 +42,7 @@ public class MultiNamingService implements NamingService
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(DecoratingNamingService.class).add("name", name).add("services", services).toString();
 	}
 }

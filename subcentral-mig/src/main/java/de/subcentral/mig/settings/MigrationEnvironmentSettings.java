@@ -10,8 +10,7 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 
-public class MigrationEnvironmentSettings
-{
+public class MigrationEnvironmentSettings {
 	private static final String	KEY_LOG_DIR						= "log.dir";
 	private static final String	KEY_SOURCE_DB_DRIVERCLASS		= "source.db.driverclass";
 	private static final String	KEY_SOURCE_DB_URL				= "source.db.url";
@@ -53,156 +52,126 @@ public class MigrationEnvironmentSettings
 	// Other
 	private Path				targetSubsDir;
 
-	public Path getLogDir()
-	{
+	public Path getLogDir() {
 		return logDir;
 	}
 
-	public void setLogDir(Path logDir)
-	{
+	public void setLogDir(Path logDir) {
 		this.logDir = logDir;
 	}
 
-	public String getSourceDbDriverClass()
-	{
+	public String getSourceDbDriverClass() {
 		return sourceDbDriverClass;
 	}
 
-	public void setSourceDbDriverClass(String sourceDbDriverClass)
-	{
+	public void setSourceDbDriverClass(String sourceDbDriverClass) {
 		this.sourceDbDriverClass = sourceDbDriverClass;
 	}
 
-	public String getSourceDbUrl()
-	{
+	public String getSourceDbUrl() {
 		return sourceDbUrl;
 	}
 
-	public void setSourceDbUrl(String sourceDbUrl)
-	{
+	public void setSourceDbUrl(String sourceDbUrl) {
 		this.sourceDbUrl = sourceDbUrl;
 	}
 
-	public String getSourceDbUser()
-	{
+	public String getSourceDbUser() {
 		return sourceDbUser;
 	}
 
-	public void setSourceDbUser(String sourceDbUser)
-	{
+	public void setSourceDbUser(String sourceDbUser) {
 		this.sourceDbUser = sourceDbUser;
 	}
 
-	public String getSourceDbPassword()
-	{
+	public String getSourceDbPassword() {
 		return sourceDbPassword;
 	}
 
-	public void setSourceDbPassword(String sourceDbPassword)
-	{
+	public void setSourceDbPassword(String sourceDbPassword) {
 		this.sourceDbPassword = sourceDbPassword;
 	}
 
-	public int getSourceSeriesListPostId()
-	{
+	public int getSourceSeriesListPostId() {
 		return sourceSeriesListPostId;
 	}
 
-	public void setSourceSeriesListPostId(int sourceSeriesListPostId)
-	{
+	public void setSourceSeriesListPostId(int sourceSeriesListPostId) {
 		this.sourceSeriesListPostId = sourceSeriesListPostId;
 	}
 
-	public int getSourceSubberListPostId()
-	{
+	public int getSourceSubberListPostId() {
 		return sourceSubberListPostId;
 	}
 
-	public void setSourceSubberListPostId(int sourceSubberListPostId)
-	{
+	public void setSourceSubberListPostId(int sourceSubberListPostId) {
 		this.sourceSubberListPostId = sourceSubberListPostId;
 	}
 
-	public int getSourceSubRepoBoardId()
-	{
+	public int getSourceSubRepoBoardId() {
 		return sourceSubRepoBoardId;
 	}
 
-	public void setSourceSubRepoBoardId(int sourceSubRepoBoardId)
-	{
+	public void setSourceSubRepoBoardId(int sourceSubRepoBoardId) {
 		this.sourceSubRepoBoardId = sourceSubRepoBoardId;
 	}
 
-	public Path getSourceAttachmentsDir()
-	{
+	public Path getSourceAttachmentsDir() {
 		return sourceAttachmentsDir;
 	}
 
-	public void setSourceAttachmentsDir(Path sourceAttachmentsDir)
-	{
+	public void setSourceAttachmentsDir(Path sourceAttachmentsDir) {
 		this.sourceAttachmentsDir = sourceAttachmentsDir;
 	}
 
-	public String getTargetDbDriverClass()
-	{
+	public String getTargetDbDriverClass() {
 		return targetDbDriverClass;
 	}
 
-	public void setTargetDbDriverClass(String targetDbDriverClass)
-	{
+	public void setTargetDbDriverClass(String targetDbDriverClass) {
 		this.targetDbDriverClass = targetDbDriverClass;
 	}
 
-	public String getTargetDbUrl()
-	{
+	public String getTargetDbUrl() {
 		return targetDbUrl;
 	}
 
-	public void setTargetDbUrl(String targetDbUrl)
-	{
+	public void setTargetDbUrl(String targetDbUrl) {
 		this.targetDbUrl = targetDbUrl;
 	}
 
-	public String getTargetDbUser()
-	{
+	public String getTargetDbUser() {
 		return targetDbUser;
 	}
 
-	public void setTargetDbUser(String targetDbUser)
-	{
+	public void setTargetDbUser(String targetDbUser) {
 		this.targetDbUser = targetDbUser;
 	}
 
-	public String getTargetDbPassword()
-	{
+	public String getTargetDbPassword() {
 		return targetDbPassword;
 	}
 
-	public void setTargetDbPassword(String targetDbPassword)
-	{
+	public void setTargetDbPassword(String targetDbPassword) {
 		this.targetDbPassword = targetDbPassword;
 	}
 
-	public Path getTargetSubsDir()
-	{
+	public Path getTargetSubsDir() {
 		return targetSubsDir;
 	}
 
-	public void setTargetSubsDir(Path targetSubsDir)
-	{
+	public void setTargetSubsDir(Path targetSubsDir) {
 		this.targetSubsDir = targetSubsDir;
 	}
 
-	public void load(Path file) throws IOException, ConfigurationException
-	{
+	public void load(Path file) throws IOException, ConfigurationException {
 		PropertiesConfiguration cfg = new PropertiesConfiguration();
 		FileHandler fileHandler = new FileHandler(cfg);
 		fileHandler.load(Files.newBufferedReader(file, Charset.forName("UTF-8")));
 		load(cfg);
 	}
 
-	public void load(PropertiesConfiguration cfg)
-	{
+	public void load(PropertiesConfiguration cfg) {
 		logDir = Paths.get(cfg.getString(KEY_LOG_DIR));
 
 		sourceDbDriverClass = cfg.getString(KEY_SOURCE_DB_DRIVERCLASS);

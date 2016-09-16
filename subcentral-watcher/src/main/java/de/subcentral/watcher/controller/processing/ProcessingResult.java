@@ -27,8 +27,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Worker;
 
-public class ProcessingResult implements ProcessingItem
-{
+public class ProcessingResult implements ProcessingItem {
 	private static final Logger				log			= LogManager.getLogger(ProcessingResult.class);
 
 	private final ProcessingTask			task;
@@ -45,8 +44,7 @@ public class ProcessingResult implements ProcessingItem
 	/**
 	 * package protected
 	 */
-	ProcessingResult(ProcessingTask task, Release release, ProcessingResultInfo info)
-	{
+	ProcessingResult(ProcessingTask task, Release release, ProcessingResultInfo info) {
 		this.task = Objects.requireNonNull(task, "task");
 		this.release = Objects.requireNonNull(release, "release");
 		info.setResult(this);
@@ -55,117 +53,95 @@ public class ProcessingResult implements ProcessingItem
 		this.name = new SimpleStringProperty(this, "name", generateName(release));
 	}
 
-	private String generateName(Release rls)
-	{
+	private String generateName(Release rls) {
 		Context effectiveCtx = Context.builder().setAll(task.getConfig().getNamingParameters()).set(SubtitleReleaseNamer.PARAM_RELEASE, rls).build();
 		return task.getController().getNamingService().name(task.getResultObject(), effectiveCtx);
 	}
 
-	public ProcessingTask getTask()
-	{
+	public ProcessingTask getTask() {
 		return task;
 	}
 
-	public Release getRelease()
-	{
+	public Release getRelease() {
 		return release;
 	}
 
 	@Override
-	public ReadOnlyStringProperty nameProperty()
-	{
+	public ReadOnlyStringProperty nameProperty() {
 		return name;
 	}
 
 	@Override
-	public ListProperty<Path> getFiles()
-	{
+	public ListProperty<Path> getFiles() {
 		return files;
 	}
 
-	void addFile(Path file)
-	{
-		Platform.runLater(() ->
-		{
+	void addFile(Path file) {
+		Platform.runLater(() -> {
 			files.add(file);
 		});
 	}
 
-	void removeFile(Path file)
-	{
-		Platform.runLater(() ->
-		{
+	void removeFile(Path file) {
+		Platform.runLater(() -> {
 			files.remove(file);
 		});
 	}
 
 	@Override
-	public ReadOnlyProperty<Worker.State> stateProperty()
-	{
+	public ReadOnlyProperty<Worker.State> stateProperty() {
 		return state;
 	}
 
-	void updateState(final Worker.State state)
-	{
+	void updateState(final Worker.State state) {
 		Platform.runLater(() -> ProcessingResult.this.state.setValue(state));
 	}
 
 	@Override
-	public ReadOnlyStringProperty messageProperty()
-	{
+	public ReadOnlyStringProperty messageProperty() {
 		return message;
 	}
 
-	void updateMessage(final String message)
-	{
+	void updateMessage(final String message) {
 		Platform.runLater(() -> ProcessingResult.this.message.set(message));
 	}
 
 	@Override
-	public ReadOnlyDoubleProperty progressProperty()
-	{
+	public ReadOnlyDoubleProperty progressProperty() {
 		return progress;
 	}
 
-	void updateProgress(final double progress)
-	{
+	void updateProgress(final double progress) {
 		Platform.runLater(() -> ProcessingResult.this.progress.set(progress));
 	}
 
 	@Override
-	public ReadOnlyProperty<ProcessingInfo> infoProperty()
-	{
+	public ReadOnlyProperty<ProcessingInfo> infoProperty() {
 		return info;
 	}
 
 	@Override
-	public ProcessingResultInfo getInfo()
-	{
+	public ProcessingResultInfo getInfo() {
 		return (ProcessingResultInfo) info.getValue();
 	}
 
 	@Override
-	public ReadOnlyProperty<Throwable> exceptionProperty()
-	{
+	public ReadOnlyProperty<Throwable> exceptionProperty() {
 		return exception;
 	}
 
-	void updateException(final Throwable exception)
-	{
+	void updateException(final Throwable exception) {
 		Platform.runLater(() -> ProcessingResult.this.exception.setValue(exception));
 	}
 
 	@Override
-	public Binding<WorkerStatus> statusBinding()
-	{
+	public Binding<WorkerStatus> statusBinding() {
 		return status;
 	}
 
-	public void deleteFiles() throws IOException
-	{
+	public void deleteFiles() throws IOException {
 		log.debug("Deleting files of {}", this);
-		for (Path file : files)
-		{
+		for (Path file : files) {
 			log.debug("Deleting {}", file);
 			Files.deleteIfExists(file);
 		}

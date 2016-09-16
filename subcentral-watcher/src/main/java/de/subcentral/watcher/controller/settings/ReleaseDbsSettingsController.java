@@ -35,8 +35,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
-public class ReleaseDbsSettingsController extends AbstractSettingsSectionController
-{
+public class ReleaseDbsSettingsController extends AbstractSettingsSectionController {
 	private static final Logger														log	= LogManager.getLogger(ReleaseDbsSettingsController.class);
 
 	@FXML
@@ -56,20 +55,17 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 	@FXML
 	private Button																	moveDownReleaseDbBtn;
 
-	public ReleaseDbsSettingsController(SettingsController settingsController)
-	{
+	public ReleaseDbsSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		releaseDbsTableView.setItems(settings.getReleaseDbs().property());
@@ -88,24 +84,17 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		// if the items change, update the availibilities
 		// * happens on load of settings
 		// TODO: * also happens on move up/move down (remove, add)
-		releaseDbsTableView.getItems().addListener(new ListChangeListener<MetadataServiceSettingsItem>()
-		{
+		releaseDbsTableView.getItems().addListener(new ListChangeListener<MetadataServiceSettingsItem>() {
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends MetadataServiceSettingsItem> c)
-			{
-				while (c.next())
-				{
-					if (c.wasUpdated())
-					{
-						for (int i = c.getFrom(); i < c.getTo(); ++i)
-						{
+			public void onChanged(ListChangeListener.Change<? extends MetadataServiceSettingsItem> c) {
+				while (c.next()) {
+					if (c.wasUpdated()) {
+						for (int i = c.getFrom(); i < c.getTo(); ++i) {
 							c.getList().get(i).updateAvailability(getExecutor());
 						}
 					}
-					else if (c.wasAdded())
-					{
-						for (MetadataServiceSettingsItem addItem : c.getAddedSubList())
-						{
+					else if (c.wasAdded()) {
+						for (MetadataServiceSettingsItem addItem : c.getAddedSubList()) {
 							addItem.updateAvailability(getExecutor());
 						}
 					}
@@ -119,32 +108,26 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		updateAvailibities();
 	}
 
-	private void updateAvailibities()
-	{
-		for (MetadataServiceSettingsItem releaseDb : releaseDbsTableView.getItems())
-		{
+	private void updateAvailibities() {
+		for (MetadataServiceSettingsItem releaseDb : releaseDbsTableView.getItems()) {
 			releaseDb.updateAvailability(getExecutor());
 		}
 	}
 
-	private static class AvailableTableCell extends TableCell<MetadataServiceSettingsItem, Availability>
-	{
+	private static class AvailableTableCell extends TableCell<MetadataServiceSettingsItem, Availability> {
 		{
 			// center the cell content
 			super.setAlignment(Pos.CENTER);
 		}
 
-		protected void updateItem(MetadataServiceSettingsItem.Availability item, boolean empty)
-		{
+		protected void updateItem(MetadataServiceSettingsItem.Availability item, boolean empty) {
 			super.updateItem(item, empty);
-			if (empty || item == null)
-			{
+			if (empty || item == null) {
 				setGraphic(null);
 				setTooltip(null);
 				return;
 			}
-			switch (item)
-			{
+			switch (item) {
 				case UNKNOWN:
 					setGraphic(null);
 					setTooltip(new Tooltip("Unknown"));
@@ -175,39 +158,32 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
 		}
 	}
 
-	private static class NameTableCell extends TableCell<MetadataServiceSettingsItem, MetadataServiceSettingsItem>
-	{
+	private static class NameTableCell extends TableCell<MetadataServiceSettingsItem, MetadataServiceSettingsItem> {
 		private final ExecutorService executor;
 
-		private NameTableCell(ExecutorService executor)
-		{
+		private NameTableCell(ExecutorService executor) {
 			this.executor = Objects.requireNonNull(executor, "executor");
 		}
 
 		@Override
-		public void updateItem(MetadataServiceSettingsItem item, boolean empty)
-		{
+		public void updateItem(MetadataServiceSettingsItem item, boolean empty) {
 			super.updateItem(item, empty);
-			if (empty || item == null)
-			{
+			if (empty || item == null) {
 				setGraphic(null);
 			}
-			else
-			{
+			else {
 				MetadataService db = item.getItem();
 
 				HBox hbox = FxNodes.createDefaultHBox();
 				Label name = new Label(db.getSite().getDisplayName());
 				hbox.getChildren().add(name);
-				try
-				{
+				try {
 					URL host = new URL(db.getSite().getLink());
 					Hyperlink link = FxControlBindings.createUrlHyperlink(host, executor);
 					link.setMaxHeight(Double.MAX_VALUE);
 					hbox.getChildren().add(link);
 				}
-				catch (MalformedURLException e)
-				{
+				catch (MalformedURLException e) {
 					log.warn("Could not create Hyperlink for release database " + item.getItem(), e);
 				}
 				setGraphic(hbox);

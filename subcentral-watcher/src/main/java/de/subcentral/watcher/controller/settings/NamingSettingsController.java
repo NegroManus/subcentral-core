@@ -30,8 +30,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
 
-public class NamingSettingsController extends AbstractSettingsSectionController
-{
+public class NamingSettingsController extends AbstractSettingsSectionController {
 	@FXML
 	private GridPane							rootPane;
 	@FXML
@@ -41,20 +40,17 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 	@FXML
 	private TableColumn<NamingParam, Boolean>	namingParamsValueColumn;
 
-	public NamingSettingsController(SettingsController settingsController)
-	{
+	public NamingSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Naming parameters
@@ -69,96 +65,79 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		namingParamsValueColumn.setCellFactory(CheckBoxTableCell.forTableColumn(namingParamsValueColumn));
 	}
 
-	private static class NamingParam implements Comparable<NamingParam>
-	{
+	private static class NamingParam implements Comparable<NamingParam> {
 		private final ObservableValue<String>	key;
 		private final BooleanProperty			value;
 
-		private NamingParam(String key, boolean value)
-		{
+		private NamingParam(String key, boolean value) {
 			this.key = FxBindings.immutableObservableValue(key);
 			this.value = new SimpleBooleanProperty(this, "item", value);
 		}
 
-		public String getKey()
-		{
+		public String getKey() {
 			return key.getValue();
 		}
 
-		public ObservableValue<String> keyObservable()
-		{
+		public ObservableValue<String> keyObservable() {
 			return key;
 		}
 
-		public boolean getValue()
-		{
+		public boolean getValue() {
 			return value.get();
 		}
 
-		public void setValue(boolean value)
-		{
+		public void setValue(boolean value) {
 			this.value.set(value);
 		}
 
-		public BooleanProperty valueProperty()
-		{
+		public BooleanProperty valueProperty() {
 			return value;
 		}
 
 		// Object methods
 		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
+		public boolean equals(Object obj) {
+			if (this == obj) {
 				return true;
 			}
-			if (obj instanceof NamingParam)
-			{
+			if (obj instanceof NamingParam) {
 				return Objects.equals(getKey(), ((NamingParam) obj).getKey());
 			}
 			return false;
 		}
 
 		@Override
-		public int hashCode()
-		{
+		public int hashCode() {
 			return Objects.hashCode(getKey());
 		}
 
 		@Override
-		public int compareTo(NamingParam o)
-		{
+		public int compareTo(NamingParam o) {
 			// nulls first
-			if (this == o)
-			{
+			if (this == o) {
 				return 0;
 			}
-			if (o == null)
-			{
+			if (o == null) {
 				return 1;
 			}
 			return ObjectUtil.getDefaultStringOrdering().compare(getKey(), o.getKey());
 		}
 	}
 
-	private static class NamingParamBinding
-	{
+	private static class NamingParamBinding {
 		private final ObservableList<NamingParam>		list;
 		private final MapProperty<String, Object>		map;
 		private final ChangeListener<Boolean>			listItemValueListener;
 		private final MapChangeListener<String, Object>	mapListener;
 		private boolean									updating;
 
-		private NamingParamBinding(ObservableList<NamingParam> list, MapProperty<String, Object> map)
-		{
+		private NamingParamBinding(ObservableList<NamingParam> list, MapProperty<String, Object> map) {
 			this.list = Objects.requireNonNull(list, "list");
 			this.map = Objects.requireNonNull(map, "map");
 
 			// set initial item
 			List<NamingParam> namingParams = new ArrayList<>();
-			for (Map.Entry<String, Object> entries : map.entrySet())
-			{
+			for (Map.Entry<String, Object> entries : map.entrySet()) {
 				namingParams.add(new NamingParam(entries.getKey(), (Boolean) entries.getValue()));
 			}
 			list.setAll(namingParams);
@@ -166,84 +145,64 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 			// init listeners and add them
 			listItemValueListener = createListItemValueListener();
 			mapListener = createMapListener();
-			for (NamingParam param : list)
-			{
+			for (NamingParam param : list) {
 				param.valueProperty().addListener(listItemValueListener);
 			}
 			map.addListener(mapListener);
 		}
 
 		// not currently used because NamingParamBinding is initialized once and never removed
-		private void unbind()
-		{
-			for (NamingParam param : list)
-			{
+		private void unbind() {
+			for (NamingParam param : list) {
 				param.valueProperty().removeListener(listItemValueListener);
 			}
 			map.removeListener(mapListener);
 		}
 
-		private ChangeListener<Boolean> createListItemValueListener()
-		{
-			return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-			{
-				if (!updating)
-				{
+		private ChangeListener<Boolean> createListItemValueListener() {
+			return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+				if (!updating) {
 					updating = true;
-					try
-					{
+					try {
 						NamingParam param = (NamingParam) ((BooleanProperty) observable).getBean();
 						map.put(param.getKey(), param.getValue());
 					}
-					finally
-					{
+					finally {
 						updating = false;
 					}
 				}
 			};
 		}
 
-		private MapChangeListener<String, Object> createMapListener()
-		{
-			return (MapChangeListener.Change<? extends String, ? extends Object> change) ->
-			{
-				if (!updating)
-				{
+		private MapChangeListener<String, Object> createMapListener() {
+			return (MapChangeListener.Change<? extends String, ? extends Object> change) -> {
+				if (!updating) {
 					updating = true;
-					try
-					{
-						if (change.wasAdded() && change.wasRemoved())
-						{
-							for (NamingParam param : list)
-							{
-								if (param.getKey().equals(change.getKey()))
-								{
+					try {
+						if (change.wasAdded() && change.wasRemoved()) {
+							for (NamingParam param : list) {
+								if (param.getKey().equals(change.getKey())) {
 									param.setValue((Boolean) change.getValueAdded());
 									break;
 								}
 							}
 						}
-						else if (change.wasAdded())
-						{
+						else if (change.wasAdded()) {
 							NamingParam newItem = new NamingParam(change.getKey(), (Boolean) change.getValueAdded());
 							CollectionUtil.addToSortedList(list, newItem, ObjectUtil.getDefaultOrdering(), Object::equals);
 							newItem.valueProperty().addListener(listItemValueListener);
 						}
-						else if (change.wasRemoved())
-						{
+						else if (change.wasRemoved()) {
 							Iterator<NamingParam> iter = list.iterator();
-							while (iter.hasNext())
-							{
-								if (iter.next().getKey().equals(change.getKey()))
-								{
+							while (iter.hasNext()) {
+								if (iter.next().getKey().equals(change.getKey())) {
 									iter.remove();
 									break;
 								}
 							}
 						}
 					}
-					finally
-					{
+					finally {
 						updating = false;
 					}
 				}
@@ -251,36 +210,27 @@ public class NamingSettingsController extends AbstractSettingsSectionController
 		}
 	}
 
-	private static class KeyTableCell extends TableCell<NamingParam, String>
-	{
+	private static class KeyTableCell extends TableCell<NamingParam, String> {
 		@Override
-		public void updateItem(String item, boolean empty)
-		{
+		public void updateItem(String item, boolean empty) {
 			super.updateItem(item, empty);
-			if (empty || item == null)
-			{
+			if (empty || item == null) {
 				setText(null);
 			}
-			else
-			{
-				if (EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE.equals(item))
-				{
+			else {
+				if (EpisodeNamer.PARAM_ALWAYS_INCLUDE_TITLE.equals(item)) {
 					setText("Episode: Always include episode title");
 				}
-				else if (ReleaseNamer.PARAM_PREFER_NAME.equals(item))
-				{
+				else if (ReleaseNamer.PARAM_PREFER_NAME.equals(item)) {
 					setText("Release: Prefer release name over computed name");
 				}
-				else if (SubtitleNamer.PARAM_INCLUDE_GROUP.equals(item))
-				{
+				else if (SubtitleNamer.PARAM_INCLUDE_GROUP.equals(item)) {
 					setText("Subtitle: Include group (such as \"SubCentral\")");
 				}
-				else if (SubtitleNamer.PARAM_INCLUDE_SOURCE.equals(item))
-				{
+				else if (SubtitleNamer.PARAM_INCLUDE_SOURCE.equals(item)) {
 					setText("Subtitle: Include source (such as \"Addic7ed.com\")");
 				}
-				else
-				{
+				else {
 					setText(item);
 				}
 			}

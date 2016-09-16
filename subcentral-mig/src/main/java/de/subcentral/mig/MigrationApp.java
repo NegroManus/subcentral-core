@@ -14,8 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class MigrationApp extends Application
-{
+public class MigrationApp extends Application {
 	private static final Logger	log					= LogManager.getLogger(MigrationApp.class);
 
 	public static final String	APP_NAME			= "SubCentral Migration Tool";
@@ -28,11 +27,10 @@ public class MigrationApp extends Application
 	private BorderPane			mainView;
 
 	// Control
-	private MigMainController		migMainController;
+	private MigMainController	migMainController;
 
 	@Override
-	public void init() throws Exception
-	{
+	public void init() throws Exception {
 		log.info("Initializing {} ...", APP_INFO);
 		long start = System.nanoTime();
 
@@ -47,8 +45,7 @@ public class MigrationApp extends Application
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception
-	{
+	public void start(Stage primaryStage) throws Exception {
 		log.debug("Starting {} ...", APP_INFO);
 		long start = System.nanoTime();
 
@@ -62,27 +59,23 @@ public class MigrationApp extends Application
 		log.info("Started {} in {} ms", APP_INFO, TimeUtil.durationMillis(start));
 	}
 
-	private void initPrimaryStage()
-	{
+	private void initPrimaryStage() {
 		primaryStage.setTitle(APP_INFO);
 	}
 
-	private void initMainController() throws IOException
-	{
+	private void initMainController() throws IOException {
 		this.migMainController = new MigMainController(primaryStage);
 		mainView = FxIO.loadView("MainView.fxml", migMainController);
 	}
 
-	private void initSceneAndShow()
-	{
+	private void initSceneAndShow() {
 		Scene scene = new Scene(mainView);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 
 	@Override
-	public void stop() throws Exception
-	{
+	public void stop() throws Exception {
 		log.debug("Stopping {} ...", APP_INFO);
 		long start = System.nanoTime();
 
@@ -93,8 +86,7 @@ public class MigrationApp extends Application
 		// Platform.exit();
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		launch(args);
 	}
 }

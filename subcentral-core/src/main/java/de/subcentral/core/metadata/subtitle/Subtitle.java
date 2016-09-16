@@ -21,8 +21,7 @@ import de.subcentral.core.name.NamingUtil;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
-{
+public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle> {
 	private static final long					serialVersionUID				= -7018711191807995379L;
 
 	public static final SimplePropDescriptor	PROP_MEDIA						= new SimplePropDescriptor(Subtitle.class, PropNames.MEDIA);
@@ -75,8 +74,7 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 */
 	public static final String					PRODUCTION_TYPE_MACHINE			= "MACHINE";
 
-	public enum TranslationType
-	{
+	public enum TranslationType {
 		/**
 		 * It is unknown whether the subtitle is an original revision or a translation.
 		 */
@@ -126,31 +124,26 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	// More than 4 contributions per subtitle is very rare
 	private final List<Contribution>	contributions					= new ArrayList<>(4);
 
-	public Subtitle()
-	{
+	public Subtitle() {
 
 	}
 
-	public Subtitle(Media media)
-	{
+	public Subtitle(Media media) {
 		this.media = media;
 	}
 
-	public Subtitle(Media media, String language)
-	{
+	public Subtitle(Media media, String language) {
 		this.media = media;
 		this.language = language;
 	}
 
-	public Subtitle(Media media, String language, Group group)
-	{
+	public Subtitle(Media media, String language, Group group) {
 		this.media = media;
 		this.language = language;
 		this.group = group;
 	}
 
-	public Subtitle(Media media, String language, Site source)
-	{
+	public Subtitle(Media media, String language, Site source) {
 		this.media = media;
 		this.language = language;
 		this.source = source;
@@ -161,13 +154,11 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the media (may be {@code null})
 	 */
-	public Media getMedia()
-	{
+	public Media getMedia() {
 		return media;
 	}
 
-	public void setMedia(Media media)
-	{
+	public void setMedia(Media media) {
 		this.media = media;
 	}
 
@@ -176,13 +167,11 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the language (may be {@code null})
 	 */
-	public String getLanguage()
-	{
+	public String getLanguage() {
 		return language;
 	}
 
-	public void setLanguage(String language)
-	{
+	public void setLanguage(String language) {
 		this.language = language;
 	}
 
@@ -192,13 +181,11 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * @return the release group (may be {@code null})
 	 * @see #getSource()
 	 */
-	public Group getGroup()
-	{
+	public Group getGroup() {
 		return group;
 	}
 
-	public void setGroup(Group group)
-	{
+	public void setGroup(Group group) {
 		this.group = group;
 	}
 
@@ -207,23 +194,19 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the source (may be {@code null})
 	 */
-	public Site getSource()
-	{
+	public Site getSource() {
 		return source;
 	}
 
-	public void setSource(Site source)
-	{
+	public void setSource(Site source) {
 		this.source = source;
 	}
 
-	public String getState()
-	{
+	public String getState() {
 		return state;
 	}
 
-	public void setState(String state)
-	{
+	public void setState(String state) {
 		this.state = state;
 	}
 
@@ -232,13 +215,11 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the production type (may be null)
 	 */
-	public String getProductionType()
-	{
+	public String getProductionType() {
 		return productionType;
 	}
 
-	public void setProductionType(String productionType)
-	{
+	public void setProductionType(String productionType) {
 		this.productionType = productionType;
 	}
 
@@ -247,15 +228,12 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the basis
 	 */
-	public Subtitle getBasis()
-	{
+	public Subtitle getBasis() {
 		return basis;
 	}
 
-	public void setBasis(Subtitle basis) throws IllegalArgumentException
-	{
-		if (this == basis)
-		{
+	public void setBasis(Subtitle basis) throws IllegalArgumentException {
+		if (this == basis) {
 			throw new IllegalArgumentException("cannot be based on itself");
 		}
 		this.basis = basis;
@@ -266,13 +244,11 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * 
 	 * @return the NFO
 	 */
-	public String getNfo()
-	{
+	public String getNfo() {
 		return nfo;
 	}
 
-	public void setNfo(String nfo)
-	{
+	public void setNfo(String nfo) {
 		this.nfo = nfo;
 	}
 
@@ -282,52 +258,42 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	 * @return the link to the NFO
 	 * @see #getNfo()
 	 */
-	public String getNfoLink()
-	{
+	public String getNfoLink() {
 		return nfoLink;
 	}
 
-	public void setNfoLink(String nfoLink)
-	{
+	public void setNfoLink(String nfoLink) {
 		this.nfoLink = nfoLink;
 	}
 
 	@Override
-	public List<Contribution> getContributions()
-	{
+	public List<Contribution> getContributions() {
 		return contributions;
 	}
 
-	public void setContributions(List<Contribution> contributions)
-	{
+	public void setContributions(List<Contribution> contributions) {
 		this.contributions.clear();
 		this.contributions.addAll(contributions);
 	}
 
 	// convenience / complex
-	public TranslationType determineTranslationType()
-	{
-		if (media == null || language == null)
-		{
+	public TranslationType determineTranslationType() {
+		if (media == null || language == null) {
 			return TranslationType.UNKNOWN;
 		}
 		String primaryLangOfMedia = media.getPrimaryOriginalLanguage();
-		if (primaryLangOfMedia == null)
-		{
+		if (primaryLangOfMedia == null) {
 			return TranslationType.UNKNOWN;
 		}
 		return language.equals(primaryLangOfMedia) ? TranslationType.ORIGINAL : TranslationType.TRANSLATION;
 	}
 
-	public boolean isBasedOnOther()
-	{
+	public boolean isBasedOnOther() {
 		return basis != null;
 	}
 
-	public List<Contribution> getAllContributions()
-	{
-		if (isBasedOnOther())
-		{
+	public List<Contribution> getAllContributions() {
+		if (isBasedOnOther()) {
 			ImmutableList.Builder<Contribution> cList = ImmutableList.builder();
 			cList.addAll(basis.getAllContributions());
 			cList.addAll(contributions);
@@ -336,10 +302,8 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 		return contributions;
 	}
 
-	public ListMultimap<Subtitle, Contribution> getAllContributionsAsMap()
-	{
-		if (isBasedOnOther())
-		{
+	public ListMultimap<Subtitle, Contribution> getAllContributionsAsMap() {
+		if (isBasedOnOther()) {
 			ImmutableListMultimap.Builder<Subtitle, Contribution> cMap = ImmutableListMultimap.builder();
 			cMap.putAll(basis.getAllContributionsAsMap());
 			cMap.putAll(this, contributions);
@@ -350,14 +314,11 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Subtitle)
-		{
+		if (obj instanceof Subtitle) {
 			Subtitle o = (Subtitle) obj;
 			return Objects.equals(media, o.media) && Objects.equals(language, o.language) && Objects.equals(group, o.group) && Objects.equals(source, o.source);
 		}
@@ -365,14 +326,12 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(media, language, group, source);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Subtitle.class)
 				.omitNullValues()
 				.add("media", media)
@@ -391,15 +350,12 @@ public class Subtitle extends MetadataBase implements Work, Comparable<Subtitle>
 	}
 
 	@Override
-	public int compareTo(Subtitle o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Subtitle o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start()

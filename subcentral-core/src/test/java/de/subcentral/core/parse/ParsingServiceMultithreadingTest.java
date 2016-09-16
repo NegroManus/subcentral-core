@@ -5,43 +5,35 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-public class ParsingServiceMultithreadingTest
-{
+public class ParsingServiceMultithreadingTest {
 	private static final Logger log = LogManager.getLogger(ParsingServiceMultithreadingTest.class);
 
 	@Test
-	public void testParsingServiceMultithreading() throws InterruptedException
-	{
+	public void testParsingServiceMultithreading() throws InterruptedException {
 		TypeBasedParsingService ps = new TypeBasedParsingService("test");
-		ps.register(String.class, t ->
-		{
-			try
-			{
+		ps.register(String.class, t -> {
+			try {
 				Thread.sleep(100);
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 			return t.toUpperCase();
 		});
 
-		Runnable parse = () ->
-		{
+		Runnable parse = () -> {
 			// log.info("Parsing ...");
 			String s = ps.parse("hallo", String.class);
 			// log.info("Parsed: " + s);
 		};
 
-		Runnable unregister = () ->
-		{
+		Runnable unregister = () -> {
 			log.info("Unregistering ...");
 			ps.unregisterAll();
 			log.info("Unregistered!");
 		};
 
-		Runnable register = () ->
-		{
+		Runnable register = () -> {
 			log.info("Registering ...");
 			ps.register(String.class, t -> StringUtils.capitalize(t));
 			log.info("Registered!");
@@ -50,8 +42,7 @@ public class ParsingServiceMultithreadingTest
 		Thread t1 = new Thread(parse, "Parsing-Thread#1");
 		Thread t2 = new Thread(register, "Registering-Thread");
 		Thread[] moreParsingThreads = new Thread[4096];
-		for (int i = 0; i < moreParsingThreads.length; i++)
-		{
+		for (int i = 0; i < moreParsingThreads.length; i++) {
 			moreParsingThreads[i] = new Thread(parse, "Parsing-Thread#" + (i + 2));
 		}
 
@@ -59,15 +50,13 @@ public class ParsingServiceMultithreadingTest
 		Thread.sleep(200);
 		t2.start();
 		Thread.sleep(200);
-		for (Thread t : moreParsingThreads)
-		{
+		for (Thread t : moreParsingThreads) {
 			t.start();
 		}
 
 		t1.join();
 		t2.join();
-		for (Thread t : moreParsingThreads)
-		{
+		for (Thread t : moreParsingThreads) {
 			t.join();
 		}
 		Thread tn = new Thread(parse, "Parsing-Thread#n");

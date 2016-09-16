@@ -8,82 +8,67 @@ import java.util.Set;
 import de.subcentral.core.metadata.Contributor;
 import de.subcentral.core.metadata.media.Media;
 
-public class Project
-{
+public class Project {
 	private Media				object;
 	private String				state;
 	private String				vacancies;
 	private List<Membership>	members	= new ArrayList<>();
 
-	public Media getObject()
-	{
+	public Media getObject() {
 		return object;
 	}
 
-	public void setObject(Media object)
-	{
+	public void setObject(Media object) {
 		this.object = object;
 	}
 
-	public String getState()
-	{
+	public String getState() {
 		return state;
 	}
 
-	public void setState(String state)
-	{
+	public void setState(String state) {
 		this.state = state;
 	}
 
-	public String getVacancies()
-	{
+	public String getVacancies() {
 		return vacancies;
 	}
 
-	public void setVacancies(String vacancies)
-	{
+	public void setVacancies(String vacancies) {
 		this.vacancies = vacancies;
 	}
 
-	public List<Membership> getMembers()
-	{
+	public List<Membership> getMembers() {
 		return members;
 	}
 
-	public void setMembers(List<Membership> members)
-	{
+	public void setMembers(List<Membership> members) {
 		this.members.clear();
 		this.members.addAll(members);
 	}
 
-	public class Membership
-	{
+	public class Membership {
 		private final Contributor	member;
 		private Set<String>			roles	= new HashSet<>();
 
-		public Membership(Contributor member)
-		{
+		public Membership(Contributor member) {
 			this.member = member;
 		}
 
-		public Contributor getMember()
-		{
+		public Contributor getMember() {
 			return member;
 		}
 
-		public Set<String> getRoles()
-		{
+		public Set<String> getRoles() {
 			return roles;
 		}
 
-		public void setRoles(Set<String> roles)
-		{
+		public void setRoles(Set<String> roles) {
 			this.roles.clear();
 			this.roles.addAll(roles);
 		}
 
-		public Project getProject()
-		{
+		public Project getProject() {
 			return Project.this;
 		}
 	}

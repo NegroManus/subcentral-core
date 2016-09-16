@@ -6,10 +6,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class HTTPS
-{
-	public static void main(String[] args) throws IOException
-	{
+public class HTTPS {
+	public static void main(String[] args) throws IOException {
 		URL url = new URL(args[0]);
 		URLConnection conn = url.openConnection();
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));

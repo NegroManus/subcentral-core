@@ -8,17 +8,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
-{
+public abstract class SinglePropertyCorrector<T, P> implements Corrector<T> {
 	protected final Function<P, P> replacer;
 
-	public SinglePropertyCorrector(Function<P, P> replacer)
-	{
+	public SinglePropertyCorrector(Function<P, P> replacer) {
 		this.replacer = Objects.requireNonNull(replacer, "replacer");
 	}
 
-	public Function<P, P> getReplacer()
-	{
+	public Function<P, P> getReplacer() {
 		return replacer;
 	}
 
@@ -29,12 +26,10 @@ public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
 	protected abstract void setValue(T bean, P value);
 
 	@Override
-	public void correct(T bean, List<Correction> changes)
-	{
+	public void correct(T bean, List<Correction> changes) {
 		P oldValue = getValue(bean);
 		P newValue = replacer.apply(oldValue);
-		if (!Objects.equals(oldValue, newValue))
-		{
+		if (!Objects.equals(oldValue, newValue)) {
 			P oldValueClone = cloneValue(oldValue);
 			P newValueClone = cloneValue(newValue);
 			setValue(bean, newValue);
@@ -53,24 +48,19 @@ public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
 	 *            the value to clone
 	 * @return the cloned value
 	 */
-	protected P cloneValue(P value)
-	{
+	protected P cloneValue(P value) {
 		return value;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj == null)
-		{
+		if (obj == null) {
 			return false;
 		}
-		if (getClass().equals(obj.getClass()))
-		{
+		if (getClass().equals(obj.getClass())) {
 			SinglePropertyCorrector<?, ?> o = (SinglePropertyCorrector<?, ?>) obj;
 			return replacer.equals(o.replacer);
 		}
@@ -78,14 +68,12 @@ public abstract class SinglePropertyCorrector<T, P> implements Corrector<T>
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return new HashCodeBuilder(977, 11).append(getClass()).append(replacer).toHashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(getClass()).add("replacer", replacer).toString();
 	}
 }

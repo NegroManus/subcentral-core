@@ -13,8 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
-public class CrossGroupCompatibilityRuleEditController extends BeanEditController<CrossGroupCompatibilityRule>
-{
+public class CrossGroupCompatibilityRuleEditController extends BeanEditController<CrossGroupCompatibilityRule> {
 	@FXML
 	private TextField	compatibleGroupTxtFld;
 	@FXML
@@ -22,51 +21,42 @@ public class CrossGroupCompatibilityRuleEditController extends BeanEditControlle
 	@FXML
 	private CheckBox	symmetricCheckBox;
 
-	public CrossGroupCompatibilityRuleEditController(CrossGroupCompatibilityRule bean, Window window)
-	{
+	public CrossGroupCompatibilityRuleEditController(CrossGroupCompatibilityRule bean, Window window) {
 		super(bean, window);
 	}
 
 	@Override
-	protected String getTitle()
-	{
-		if (bean == null)
-		{
+	protected String getTitle() {
+		if (bean == null) {
 			return "Add cross-group compatibility";
 		}
-		else
-		{
+		else {
 			return "Edit cross-group compatibility";
 		}
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "couple_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
+	protected Node getDefaultFocusNode() {
 		return sourceGroupTxtFld;
 	}
 
 	@Override
-	protected void initComponents()
-	{
+	protected void initComponents() {
 		// Set initial values
 		Group initialSourceGroup;
 		Group initialCompatibleGroup;
 		boolean initialSymmetric;
-		if (bean == null)
-		{
+		if (bean == null) {
 			initialSourceGroup = null;
 			initialCompatibleGroup = null;
 			initialSymmetric = false;
 		}
-		else
-		{
+		else {
 			initialSourceGroup = bean.getSourceGroup();
 			initialCompatibleGroup = bean.getCompatibleGroup();
 			initialSymmetric = bean.isSymmetric();
@@ -77,25 +67,21 @@ public class CrossGroupCompatibilityRuleEditController extends BeanEditControlle
 
 		// Do Bindings
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(new BooleanBinding()
-		{
+		applyButton.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(compatibleGroup, sourceGroup);
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				// Both groups need to be specified and not equal to each other
 				return sourceGroup.getValue() == null || compatibleGroup.getValue() == null || sourceGroup.getValue().equals(compatibleGroup.getValue());
 			}
 		});
 
 		// Set ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
 				Group sourceGrp = sourceGroup.getValue();
 				Group compatibleGrp = compatibleGroup.getValue();
 				boolean symmetric = symmetricCheckBox.isSelected();

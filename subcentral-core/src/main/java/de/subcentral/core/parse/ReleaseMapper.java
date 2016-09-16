@@ -8,21 +8,17 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class ReleaseMapper extends AbstractMapper<Release>
-{
-	public ReleaseMapper()
-	{
+public class ReleaseMapper extends AbstractMapper<Release> {
+	public ReleaseMapper() {
 		// default constructor
 	}
 
-	public ReleaseMapper(ParsePropService parsePropService)
-	{
+	public ReleaseMapper(ParsePropService parsePropService) {
 		super(parsePropService);
 	}
 
 	@Override
-	public Release map(Map<SimplePropDescriptor, String> props)
-	{
+	public Release map(Map<SimplePropDescriptor, String> props) {
 		Release rls = new Release();
 		rls.setName(props.get(Release.PROP_NAME));
 		rls.getTags().addAll(parsePropService.parseList(props, Release.PROP_TAGS, Tag.class));
@@ -33,8 +29,7 @@ public class ReleaseMapper extends AbstractMapper<Release>
 	}
 
 	@Override
-	protected Class<?> getTargetType()
-	{
+	protected Class<?> getTargetType() {
 		return Release.class;
 	}
 }

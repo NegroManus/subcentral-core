@@ -12,43 +12,36 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public abstract class DialogController<T> extends Controller
-{
+public abstract class DialogController<T> extends Controller {
 	// View
 	protected final Dialog<T>	dialog	= new Dialog<>();
 	@FXML
 	protected Node				rootPane;
 
-	public DialogController(Window owner)
-	{
+	public DialogController(Window owner) {
 		this.dialog.initOwner(owner);
 	}
 
-	public Dialog<T> getDialog()
-	{
+	public Dialog<T> getDialog() {
 		return dialog;
 	}
 
 	@Override
-	public Stage getPrimaryStage()
-	{
+	public Stage getPrimaryStage() {
 		return (Stage) dialog.getDialogPane().getScene().getWindow();
 	}
 
 	@Override
-	public final void initialize()
-	{
+	public final void initialize() {
 		initDialog();
 		initComponents();
 	}
 
-	protected void initDialog()
-	{
+	protected void initDialog() {
 		String title = getTitle();
 		dialog.setTitle(title);
 		String imgPath = getImagePath();
-		if (imgPath != null)
-		{
+		if (imgPath != null) {
 			dialog.setGraphic(new ImageView(FxIO.loadImg(imgPath)));
 		}
 		dialog.setHeaderText(title);
@@ -63,13 +56,11 @@ public abstract class DialogController<T> extends Controller
 
 	protected abstract String getTitle();
 
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return null;
 	}
 
-	protected ButtonType[] getButtonTypes()
-	{
+	protected ButtonType[] getButtonTypes() {
 		return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
 	}
 

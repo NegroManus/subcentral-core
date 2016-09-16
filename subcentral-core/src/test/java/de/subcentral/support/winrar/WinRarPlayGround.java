@@ -8,10 +8,8 @@ import de.subcentral.support.winrar.WinRarPackConfig.CompressionMethod;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.support.winrar.WinRarPackConfig.OverwriteMode;
 
-public class WinRarPlayGround
-{
-	public static void main(String[] args) throws Exception
-	{
+public class WinRarPlayGround {
+	public static void main(String[] args) throws Exception {
 		WinRarPackConfig cfg = new WinRarPackConfig();
 		cfg.setSourceDeletionMode(DeletionMode.KEEP);
 		cfg.setTargetOverwriteMode(OverwriteMode.REPLACE);

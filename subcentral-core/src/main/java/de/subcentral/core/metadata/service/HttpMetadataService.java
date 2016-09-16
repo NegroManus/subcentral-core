@@ -17,8 +17,7 @@ import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.NetUtil;
 
-public abstract class HttpMetadataService extends AbstractMetadataService
-{
+public abstract class HttpMetadataService extends AbstractMetadataService {
 	private static final Logger	log				= LogManager.getLogger(HttpMetadataService.class);
 
 	/**
@@ -29,79 +28,64 @@ public abstract class HttpMetadataService extends AbstractMetadataService
 	protected int				timeout			= DEFAULT_TIMEOUT;
 
 	// Metadata
-	public String getHost()
-	{
+	public String getHost() {
 		return getSite().getLink();
 	}
 
-	public URL getHostUrl()
-	{
-		try
-		{
+	public URL getHostUrl() {
+		try {
 			return new URL(getHost());
 		}
-		catch (MalformedURLException e)
-		{
+		catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	// Config
-	public int getTimeout()
-	{
+	public int getTimeout() {
 		return timeout;
 	}
 
-	public void setTimeout(int timeout)
-	{
+	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
 
 	// State
 	@Override
-	public State checkState()
-	{
+	public State checkState() {
 		String testQuery = getTestQuery();
-		try
-		{
+		try {
 			List<?> results = search(testQuery, getSupportedRecordTypes().iterator().next());
 			return results.isEmpty() ? State.AVAILABLE_LIMITED : State.AVAILABLE;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			log.warn("Metadata database " + this + " failed to execute test query '" + testQuery + "'", e);
 			return State.NOT_AVAILABLE;
 		}
 	}
 
-	protected String getTestQuery()
-	{
+	protected String getTestQuery() {
 		return "Game of Thrones S06E01";
 	}
 
 	// Utility methods for child classes
-	protected URL buildRelativeUrl(String path) throws IllegalArgumentException
-	{
+	protected URL buildRelativeUrl(String path) throws IllegalArgumentException {
 		return buildRelativeUrlImpl(path, null);
 	}
 
-	protected URL buildRelativeUrl(String queryKey, String queryValue) throws IllegalArgumentException
-	{
+	protected URL buildRelativeUrl(String queryKey, String queryValue) throws IllegalArgumentException {
 		return buildRelativeUrlImpl(null, NetUtil.formatQueryString(queryKey, queryValue));
 	}
 
-	protected URL buildRelativeUrl(Map<String, String> queryKeyValuePairs) throws IllegalArgumentException
-	{
+	protected URL buildRelativeUrl(Map<String, String> queryKeyValuePairs) throws IllegalArgumentException {
 		return buildRelativeUrlImpl(null, NetUtil.formatQueryString(queryKeyValuePairs));
 	}
 
-	protected URL buildRelativeUrl(String path, String queryKey, String queryValue) throws IllegalArgumentException
-	{
+	protected URL buildRelativeUrl(String path, String queryKey, String queryValue) throws IllegalArgumentException {
 		return buildRelativeUrlImpl(path, NetUtil.formatQueryString(queryKey, queryValue));
 	}
 
-	protected URL buildRelativeUrl(String path, Map<String, String> queryKeyValuePairs) throws IllegalArgumentException
-	{
+	protected URL buildRelativeUrl(String path, Map<String, String> queryKeyValuePairs) throws IllegalArgumentException {
 		return buildRelativeUrlImpl(path, NetUtil.formatQueryString(queryKeyValuePairs));
 	}
 
@@ -116,22 +100,18 @@ public abstract class HttpMetadataService extends AbstractMetadataService
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 */
-	private URL buildRelativeUrlImpl(String path, String query) throws IllegalArgumentException
-	{
-		try
-		{
+	private URL buildRelativeUrlImpl(String path, String query) throws IllegalArgumentException {
+		try {
 			URI uri = new URI(getHost());
 			uri = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, query, uri.getFragment());
 			return uri.toURL();
 		}
-		catch (URISyntaxException | MalformedURLException e)
-		{
+		catch (URISyntaxException | MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
 
-	protected Document getDocument(URL url) throws IOException
-	{
+	protected Document getDocument(URL url) throws IOException {
 		return NetUtil.getDocument(url, this::setupConnection);
 	}
 
@@ -145,8 +125,7 @@ public abstract class HttpMetadataService extends AbstractMetadataService
 	 *            thr url to connect to
 	 * @return a connection
 	 */
-	protected Connection setupConnection(URL url)
-	{
+	protected Connection setupConnection(URL url) {
 		// Because XRel.to blocks Java userAgents, we have to spoof it
 		String userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0";
 		return Jsoup.connect(url.toExternalForm()).timeout(timeout).userAgent(userAgent);

@@ -10,26 +10,22 @@ import java.util.regex.Pattern;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
-public class CompoundMappingMatcher<K> implements MappingMatcher<K>
-{
+public class CompoundMappingMatcher<K> implements MappingMatcher<K> {
 	private final Pattern						pattern;
 	private final Map<Integer, GroupEntry<K>>	groups;
 	private final Map<K, String>				predefinedMatches;
 
-	public CompoundMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups)
-	{
+	public CompoundMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups) {
 		this(pattern, groups, ImmutableMap.of());
 	}
 
-	public CompoundMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups, Map<K, String> predefinedMatches)
-	{
+	public CompoundMappingMatcher(Pattern pattern, Map<Integer, GroupEntry<K>> groups, Map<K, String> predefinedMatches) {
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.groups = ImmutableMap.copyOf(new TreeMap<>(groups)); // TreeMap to sort; includes null checks
 		this.predefinedMatches = ImmutableMap.copyOf(predefinedMatches); // includes null checks
 	}
 
-	public Pattern getPattern()
-	{
+	public Pattern getPattern() {
 		return pattern;
 	}
 
@@ -42,35 +38,28 @@ public class CompoundMappingMatcher<K> implements MappingMatcher<K>
 	 * 
 	 * @return
 	 */
-	public Map<Integer, GroupEntry<K>> getGroups()
-	{
+	public Map<Integer, GroupEntry<K>> getGroups() {
 		return groups;
 	}
 
-	public Map<K, String> getPredefinedMatches()
-	{
+	public Map<K, String> getPredefinedMatches() {
 		return predefinedMatches;
 	}
 
 	@Override
-	public Map<K, String> match(String text) throws IndexOutOfBoundsException
-	{
-		if (text == null)
-		{
+	public Map<K, String> match(String text) throws IndexOutOfBoundsException {
+		if (text == null) {
 			return ImmutableMap.of();
 		}
 		Matcher m = pattern.matcher(text);
-		if (m.matches())
-		{
+		if (m.matches()) {
 			Map<K, String> mappedGroups = new HashMap<>(groups.size() + predefinedMatches.size());
 			mappedGroups.putAll(predefinedMatches);
-			for (Map.Entry<Integer, GroupEntry<K>> entry : groups.entrySet())
-			{
+			for (Map.Entry<Integer, GroupEntry<K>> entry : groups.entrySet()) {
 				GroupEntry<K> groupEntry = entry.getValue();
 				String groupValue = m.group(entry.getKey());
 				// groupVal can be null for optional groups
-				if (groupValue != null)
-				{
+				if (groupValue != null) {
 					groupEntry.mergeGroupValue(mappedGroups, groupValue);
 				}
 			}
@@ -80,33 +69,27 @@ public class CompoundMappingMatcher<K> implements MappingMatcher<K>
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(this).add("pattern", pattern).add("groups", groups).add("predefinedMatches", predefinedMatches).toString();
 	}
 
-	public abstract static class GroupEntry<K>
-	{
+	public abstract static class GroupEntry<K> {
 		// Private constructor so that there can be no sub classes outside the CompoundMappingMatcher class
-		private GroupEntry()
-		{
+		private GroupEntry() {
 
 		}
 
-		public static <K> KeyEntry<K> ofKey(K key)
-		{
+		public static <K> KeyEntry<K> ofKey(K key) {
 			return new KeyEntry<>(key);
 		}
 
-		public static <K> MatcherEntry<K> ofMatcher(MappingMatcher<K> matcher)
-		{
+		public static <K> MatcherEntry<K> ofMatcher(MappingMatcher<K> matcher) {
 			return new MatcherEntry<>(matcher);
 		}
 
 		protected abstract void mergeGroupValue(Map<K, String> mappedGroups, String value);
 
-		protected static <K> void mergeStringValues(Map<K, String> map, K key, String value)
-		{
+		protected static <K> void mergeStringValues(Map<K, String> map, K key, String value) {
 			// concat the values if multiple values have the same key
 			map.merge(key,
 					value,
@@ -117,47 +100,38 @@ public class CompoundMappingMatcher<K> implements MappingMatcher<K>
 		}
 	}
 
-	public static class KeyEntry<K> extends GroupEntry<K>
-	{
+	public static class KeyEntry<K> extends GroupEntry<K> {
 		private final K key;
 
-		private KeyEntry(K key)
-		{
+		private KeyEntry(K key) {
 			this.key = Objects.requireNonNull(key, "key");
 		}
 
-		public K getKey()
-		{
+		public K getKey() {
 			return key;
 		}
 
 		@Override
-		public void mergeGroupValue(Map<K, String> mappedGroups, String value)
-		{
+		public void mergeGroupValue(Map<K, String> mappedGroups, String value) {
 			GroupEntry.mergeStringValues(mappedGroups, key, value);
 		}
 	}
 
-	public static class MatcherEntry<K> extends GroupEntry<K>
-	{
+	public static class MatcherEntry<K> extends GroupEntry<K> {
 		private final MappingMatcher<K> matcher;
 
-		public MatcherEntry(MappingMatcher<K> matcher)
-		{
+		public MatcherEntry(MappingMatcher<K> matcher) {
 			this.matcher = Objects.requireNonNull(matcher, "matcher");
 		}
 
-		public MappingMatcher<K> getMatcher()
-		{
+		public MappingMatcher<K> getMatcher() {
 			return matcher;
 		}
 
 		@Override
-		public void mergeGroupValue(Map<K, String> mappedGroups, String value)
-		{
+		public void mergeGroupValue(Map<K, String> mappedGroups, String value) {
 			Map<K, String> result = matcher.match(value);
-			for (Map.Entry<K, String> entry : result.entrySet())
-			{
+			for (Map.Entry<K, String> entry : result.entrySet()) {
 				GroupEntry.mergeStringValues(mappedGroups, entry.getKey(), entry.getValue());
 			}
 		}

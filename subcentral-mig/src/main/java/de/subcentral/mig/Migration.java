@@ -2,8 +2,7 @@ package de.subcentral.mig;
 
 import java.util.Locale;
 
-public class Migration
-{
+public class Migration {
 	public static final String	SUBCENTRAL_HOST						= "https://www.subcentral.de/";
 
 	public static final Locale	LOCALE_GERMAN						= Locale.GERMAN;

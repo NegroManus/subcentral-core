@@ -1,6 +1,5 @@
 package de.subcentral.fx.settings;
 
-public interface SettingsItem<T>
-{
+public interface SettingsItem<T> {
 	T getItem();
 }

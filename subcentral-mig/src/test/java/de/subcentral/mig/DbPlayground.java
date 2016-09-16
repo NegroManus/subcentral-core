@@ -9,13 +9,10 @@ import org.junit.Test;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbBoard;
 
-public class DbPlayground
-{
+public class DbPlayground {
 	@Test
-	public void getConnection() throws SQLException, ConfigurationException
-	{
-		try (Connection conn = MigTestUtil.connect())
-		{
+	public void getConnection() throws SQLException, ConfigurationException {
+		try (Connection conn = MigTestUtil.connect()) {
 			WoltlabBurningBoard api = new WoltlabBurningBoard(conn);
 
 			// WbbPost post = api.getFirstPost(36734);
@@ -23,12 +20,10 @@ public class DbPlayground
 			// System.out.println(post.getMessage());
 
 			System.out.println("Aktuelle Serien");
-			for (WbbBoard b : api.getBoardsByParent(160))
-			{
+			for (WbbBoard b : api.getBoardsByParent(160)) {
 				System.out.println(b.getTitle());
 			}
-			for (WbbBoard b : api.getBoardsByParent(170))
-			{
+			for (WbbBoard b : api.getBoardsByParent(170)) {
 				System.out.println(b.getTitle());
 			}
 		}

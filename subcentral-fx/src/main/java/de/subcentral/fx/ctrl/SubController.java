@@ -4,29 +4,24 @@ import java.util.Objects;
 
 import javafx.stage.Stage;
 
-public abstract class SubController<C extends ExecutingController> extends ExecutingController
-{
+public abstract class SubController<C extends ExecutingController> extends ExecutingController {
 	protected final C parent;
 
-	protected SubController(C parentController)
-	{
+	protected SubController(C parentController) {
 		this.parent = Objects.requireNonNull(parentController, "parent");
 	}
 
-	public C getParent()
-	{
+	public C getParent() {
 		return parent;
 	}
 
 	@Override
-	public Stage getPrimaryStage()
-	{
+	public Stage getPrimaryStage() {
 		return parent.getPrimaryStage();
 	}
 
 	@Override
-	public TaskExecutor getExecutor()
-	{
+	public TaskExecutor getExecutor() {
 		return parent.getExecutor();
 	}
 }

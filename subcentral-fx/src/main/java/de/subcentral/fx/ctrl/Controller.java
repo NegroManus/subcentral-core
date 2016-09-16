@@ -6,8 +6,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
-public abstract class Controller
-{
+public abstract class Controller {
 	// location and resources are automatically injected before initialize()
 	@FXML
 	protected URL				location;
@@ -22,8 +21,7 @@ public abstract class Controller
 	@FXML
 	protected abstract void initialize() throws Exception;
 
-	public void shutdown() throws Exception
-	{
+	public void shutdown() throws Exception {
 
 	}
 }

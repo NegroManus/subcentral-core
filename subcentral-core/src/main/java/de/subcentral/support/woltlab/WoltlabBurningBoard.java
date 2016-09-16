@@ -8,22 +8,16 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-public class WoltlabBurningBoard extends AbstractSqlApi
-{
-	public WoltlabBurningBoard(Connection connection)
-	{
+public class WoltlabBurningBoard extends AbstractSqlApi {
+	public WoltlabBurningBoard(Connection connection) {
 		super(connection);
 	}
 
-	public WbbBoard getBoard(int boardId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT title, description FROM wbb1_1_board WHERE boardID=?"))
-		{
+	public WbbBoard getBoard(int boardId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT title, description FROM wbb1_1_board WHERE boardID=?")) {
 			stmt.setInt(1, boardId);
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				if (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
 					WbbBoard board = new WbbBoard();
 					board.id = boardId;
 					board.title = rs.getString(1);
@@ -35,15 +29,11 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public WbbThread getThread(int threadId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, topic, prefix, firstPostID FROM wbb1_1_thread WHERE threadID=?"))
-		{
+	public WbbThread getThread(int threadId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, topic, prefix, firstPostID FROM wbb1_1_thread WHERE threadID=?")) {
 			stmt.setInt(1, threadId);
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				if (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
 					WbbThread thread = new WbbThread();
 					thread.id = threadId;
 					thread.boardId = rs.getInt(1);
@@ -57,15 +47,11 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public WbbPost getPost(int postId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT subject, message FROM wbb1_1_post WHERE postID=?"))
-		{
+	public WbbPost getPost(int postId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT subject, message FROM wbb1_1_post WHERE postID=?")) {
 			stmt.setInt(1, postId);
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				if (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
 					WbbPost post = new WbbPost();
 					post.id = postId;
 					post.topic = rs.getString(1);
@@ -77,16 +63,12 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public List<WbbBoard> getBoardsByParent(int boardId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, title, description FROM wbb1_1_board WHERE parentID=?"))
-		{
+	public List<WbbBoard> getBoardsByParent(int boardId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT boardID, title, description FROM wbb1_1_board WHERE parentID=?")) {
 			stmt.setInt(1, boardId);
-			try (ResultSet rs = stmt.executeQuery())
-			{
+			try (ResultSet rs = stmt.executeQuery()) {
 				ImmutableList.Builder<WbbBoard> boardList = ImmutableList.builder();
-				while (rs.next())
-				{
+				while (rs.next()) {
 					WbbBoard board = new WbbBoard();
 					board.id = rs.getInt(1);
 					board.title = rs.getString(2);
@@ -98,16 +80,12 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public List<WbbThread> getThreadsByBoard(int boardId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=?"))
-		{
+	public List<WbbThread> getThreadsByBoard(int boardId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE boardID=?")) {
 			stmt.setInt(1, boardId);
-			try (ResultSet rs = stmt.executeQuery())
-			{
+			try (ResultSet rs = stmt.executeQuery()) {
 				ImmutableList.Builder<WbbThread> threadList = ImmutableList.builder();
-				while (rs.next())
-				{
+				while (rs.next()) {
 					WbbThread thread = new WbbThread();
 					thread.id = rs.getInt(1);
 					thread.boardId = boardId;
@@ -119,16 +97,12 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public List<WbbThread> getThreadsByPrefix(String prefix) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, boardID, topic FROM wbb1_1_thread WHERE prefix=?"))
-		{
+	public List<WbbThread> getThreadsByPrefix(String prefix) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, boardID, topic FROM wbb1_1_thread WHERE prefix=?")) {
 			stmt.setString(1, prefix);
 			ImmutableList.Builder<WbbThread> list = ImmutableList.builder();
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				while (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
 					WbbThread thread = new WbbThread();
 					thread.id = rs.getInt(1);
 					thread.boardId = rs.getInt(2);
@@ -141,16 +115,12 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public List<WbbThread> getStickyThreads(int boardId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE isSticky=1 AND boardID=?"))
-		{
+	public List<WbbThread> getStickyThreads(int boardId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT threadID, topic FROM wbb1_1_thread WHERE isSticky=1 AND boardID=?")) {
 			stmt.setInt(1, boardId);
 			ImmutableList.Builder<WbbThread> list = ImmutableList.builder();
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				while (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
 					WbbThread thread = new WbbThread();
 					thread.id = rs.getInt(1);
 					thread.boardId = boardId;
@@ -163,15 +133,11 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public WbbPost getFirstPost(int threadId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT p.postID, t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID"))
-		{
+	public WbbPost getFirstPost(int threadId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT p.postID, t.topic, p.message FROM wbb1_1_thread t, wbb1_1_post p WHERE t.threadID=? AND t.firstPostID=p.postID")) {
 			stmt.setInt(1, threadId);
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				if (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
 					WbbPost post = new WbbPost();
 					post.id = rs.getInt(1);
 					post.topic = rs.getString(2);
@@ -184,15 +150,11 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public WcfAttachment getAttachment(int attachmentId) throws SQLException
-	{
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT attachmentName, attachmentSize FROM wcf1_attachment WHERE attachmentID=?"))
-		{
+	public WcfAttachment getAttachment(int attachmentId) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT attachmentName, attachmentSize FROM wcf1_attachment WHERE attachmentID=?")) {
 			stmt.setInt(1, attachmentId);
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				if (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
 					WcfAttachment attachment = new WcfAttachment();
 					attachment.id = attachmentId;
 					attachment.name = rs.getString(1);
@@ -204,18 +166,14 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		return null;
 	}
 
-	public List<WcfAttachment> getAttachmentsByBoard(int boardId) throws SQLException
-	{
+	public List<WcfAttachment> getAttachmentsByBoard(int boardId) throws SQLException {
 		try (PreparedStatement stmt = connection.prepareStatement("SELECT a.attachmentID, a.attachmentName, a.attachmentSize" // line-break
 				+ " FROM ((wcf1_attachment a JOIN wbb1_1_post p) JOIN wbb1_1_thread t)"
-				+ " WHERE ((a.containerType = 'post') AND (a.containerID = p.postID) AND (p.threadID = t.threadID) AND (t.boardID = ?))"))
-		{
+				+ " WHERE ((a.containerType = 'post') AND (a.containerID = p.postID) AND (p.threadID = t.threadID) AND (t.boardID = ?))")) {
 			stmt.setInt(1, boardId);
 			ImmutableList.Builder<WcfAttachment> list = ImmutableList.builder();
-			try (ResultSet rs = stmt.executeQuery())
-			{
-				while (rs.next())
-				{
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
 					WcfAttachment att = new WcfAttachment();
 					att.id = rs.getInt(1);
 					att.name = rs.getString(2);
@@ -227,30 +185,25 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		}
 	}
 
-	public static class WbbBoard
-	{
+	public static class WbbBoard {
 		private int		id;
 		private String	title;
 		private String	description;
 
-		public int getId()
-		{
+		public int getId() {
 			return id;
 		}
 
-		public String getTitle()
-		{
+		public String getTitle() {
 			return title;
 		}
 
-		public String getDescription()
-		{
+		public String getDescription() {
 			return description;
 		}
 	}
 
-	public static class WbbThread
-	{
+	public static class WbbThread {
 		private int		id;
 		private int		boardId;
 		private String	topic;
@@ -258,83 +211,68 @@ public class WoltlabBurningBoard extends AbstractSqlApi
 		private boolean	sticky;
 		private int		firstPostId;
 
-		public int getId()
-		{
+		public int getId() {
 			return id;
 		}
 
-		public int getBoardId()
-		{
+		public int getBoardId() {
 			return boardId;
 		}
 
-		public String getTopic()
-		{
+		public String getTopic() {
 			return topic;
 		}
 
-		public String getPrefix()
-		{
+		public String getPrefix() {
 			return prefix;
 		}
 
-		public boolean isSticky()
-		{
+		public boolean isSticky() {
 			return sticky;
 		}
 
-		public int getFirstPostId()
-		{
+		public int getFirstPostId() {
 			return firstPostId;
 		}
 	}
 
-	public static class WbbPost
-	{
+	public static class WbbPost {
 		private int		id;
 		private String	topic;
 		private String	message;
 		private int		threadId;
 
-		public int getId()
-		{
+		public int getId() {
 			return id;
 		}
 
-		public String getTopic()
-		{
+		public String getTopic() {
 			return topic;
 		}
 
-		public String getMessage()
-		{
+		public String getMessage() {
 			return message;
 		}
 
-		public int getThreadId()
-		{
+		public int getThreadId() {
 			return threadId;
 		}
 	}
 
-	public static class WcfAttachment
-	{
+	public static class WcfAttachment {
 		private int		id;
 		private String	name;
 		private int		size;
 
-		public int getId()
-		{
+		public int getId() {
 			return id;
 		}
 
-		public String getName()
-		{
+		public String getName() {
 			return name;
 		}
 
-		public int getSize()
-		{
+		public int getSize() {
 			return size;
 		}
 	}

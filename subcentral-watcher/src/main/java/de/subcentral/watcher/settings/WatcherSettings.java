@@ -7,8 +7,7 @@ import de.subcentral.fx.settings.ConfigurationPropertyHandlers;
 import de.subcentral.fx.settings.ListSettingsProperty;
 import de.subcentral.fx.settings.Settings;
 
-public class WatcherSettings extends Settings
-{
+public class WatcherSettings extends Settings {
 	// Watch
 	private final ListSettingsProperty<Path>	watchDirectories				= new ListSettingsProperty<>("watch.directories.dir", ConfigurationPropertyHandlers.PATH_LIST_HANDLER);
 	private final BooleanSettingsProperty		initialScan						= new BooleanSettingsProperty("watch.initialScan", true);
@@ -25,8 +24,7 @@ public class WatcherSettings extends Settings
 	// UI - System Tray
 	private final BooleanSettingsProperty		systemTrayEnabled				= new BooleanSettingsProperty("ui.systemTray[@enabled]", true);
 
-	public WatcherSettings()
-	{
+	public WatcherSettings() {
 		initSettables(watchDirectories,
 				initialScan,
 				rejectAlreadyProcessedFiles,
@@ -38,48 +36,39 @@ public class WatcherSettings extends Settings
 				systemTrayEnabled);
 	}
 
-	public ListSettingsProperty<Path> getWatchDirectories()
-	{
+	public ListSettingsProperty<Path> getWatchDirectories() {
 		return watchDirectories;
 	}
 
-	public BooleanSettingsProperty getInitialScan()
-	{
+	public BooleanSettingsProperty getInitialScan() {
 		return initialScan;
 	}
 
-	public BooleanSettingsProperty getRejectAlreadyProcessedFiles()
-	{
+	public BooleanSettingsProperty getRejectAlreadyProcessedFiles() {
 		return rejectAlreadyProcessedFiles;
 	}
 
-	public ProcessingSettings getProcessingSettings()
-	{
+	public ProcessingSettings getProcessingSettings() {
 		return processingSettings;
 	}
 
-	public BooleanSettingsProperty getWarningsEnabled()
-	{
+	public BooleanSettingsProperty getWarningsEnabled() {
 		return warningsEnabled;
 	}
 
-	public BooleanSettingsProperty getGuessingWarningEnabled()
-	{
+	public BooleanSettingsProperty getGuessingWarningEnabled() {
 		return guessingWarningEnabled;
 	}
 
-	public BooleanSettingsProperty getReleaseMetaTaggedWarningEnabled()
-	{
+	public BooleanSettingsProperty getReleaseMetaTaggedWarningEnabled() {
 		return releaseMetaTaggedWarningEnabled;
 	}
 
-	public BooleanSettingsProperty getReleaseNukedWarningEnabled()
-	{
+	public BooleanSettingsProperty getReleaseNukedWarningEnabled() {
 		return releaseNukedWarningEnabled;
 	}
 
-	public BooleanSettingsProperty getSystemTrayEnabled()
-	{
+	public BooleanSettingsProperty getSystemTrayEnabled() {
 		return systemTrayEnabled;
 	}
 }

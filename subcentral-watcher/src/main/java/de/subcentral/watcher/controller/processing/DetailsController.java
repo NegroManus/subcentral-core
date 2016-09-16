@@ -183,14 +183,8 @@ public class DetailsController extends SubController<ProcessingController> {
 		Release rls = subRls.getFirstMatchingRelease();
 
 		String[] keys = { "Computed name:", "Media:", "Release tags:", "Release group:", "Subtitle language:", "Subtitle tags:", "Subtitle source:", "Subtitle group:" };
-		String[] values = {
-				printer.apply(subRls),
-				printer.apply(rls.getMedia()),
-				Tags.join(rls.getTags()),
-				rls.getGroup() != null ? rls.getGroup().getName() : "",
-				sub.getLanguage() != null ? sub.getLanguage() : "",
-				Tags.join(subRls.getTags()),
-				sub.getSource() != null ? sub.getSource().getName() : "",
+		String[] values = { printer.apply(subRls), printer.apply(rls.getMedia()), Tags.join(rls.getTags()), rls.getGroup() != null ? rls.getGroup().getName() : "",
+				sub.getLanguage() != null ? sub.getLanguage() : "", Tags.join(subRls.getTags()), sub.getSource() != null ? sub.getSource().getName() : "",
 				sub.getGroup() != null ? sub.getGroup().getName() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
 		return pane;

@@ -6,8 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 
-public class UserInterfaceSettingsController extends AbstractSettingsSectionController
-{
+public class UserInterfaceSettingsController extends AbstractSettingsSectionController {
 	@FXML
 	private GridPane	rootPane;
 	@FXML
@@ -21,20 +20,17 @@ public class UserInterfaceSettingsController extends AbstractSettingsSectionCont
 	@FXML
 	private CheckBox	systemTrayEnabledCheckBox;
 
-	public UserInterfaceSettingsController(SettingsController settingsController)
-	{
+	public UserInterfaceSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		WatcherSettings settings = SettingsController.SETTINGS;
 
 		warningsEnabledCheckBox.selectedProperty().bindBidirectional(settings.getWarningsEnabled().property());

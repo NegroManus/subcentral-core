@@ -31,27 +31,22 @@ import org.jsoup.nodes.Document;
 
 import com.google.common.base.Joiner;
 
-public class SubCentralHttpApi implements SubCentralApi
-{
+public class SubCentralHttpApi implements SubCentralApi {
 	private static final Logger		log		= LogManager.getLogger(SubCentralHttpApi.class);
 	private static final Charset	UTF_8	= Charset.forName("UTF-8");
 	private static final URL		host	= initHost();
 
-	private static URL initHost()
-	{
-		try
-		{
+	private static URL initHost() {
+		try {
 			return new URL("https://www.subcentral.de/");
 		}
-		catch (MalformedURLException e)
-		{
+		catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public static URL getHost()
-	{
+	public static URL getHost() {
 		return host;
 	}
 
@@ -63,8 +58,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	 * @see de.subcentral.support.subcentralde.SubCentralApi#login(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void login(String username, String password, boolean stayLoggedIn) throws IOException
-	{
+	public void login(String username, String password, boolean stayLoggedIn) throws IOException {
 		log.debug("Loggin in as {}", username);
 		URL loginUrl = new URL(host, "index.php?form=UserLogin");
 		StringBuilder body = new StringBuilder();
@@ -72,8 +66,7 @@ public class SubCentralHttpApi implements SubCentralApi
 		body.append(URLEncoder.encode(username, UTF_8.name()));
 		body.append("&loginPassword=");
 		body.append(URLEncoder.encode(password, UTF_8.name()));
-		if (stayLoggedIn)
-		{
+		if (stayLoggedIn) {
 			body.append("&useCookies=1");
 		}
 
@@ -85,18 +78,15 @@ public class SubCentralHttpApi implements SubCentralApi
 		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		conn.setRequestProperty("Content-Length", String.valueOf(body.length()));
 
-		try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), UTF_8);)
-		{
+		try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), UTF_8);) {
 			writer.write(body.toString());
 		}
 
-		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
-		{
+		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
 			throw new IllegalStateException("Login failed. Server did not return response code 200: " + conn.getHeaderField(null));
 		}
 		InputStream is = conn.getInputStream();
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is)))
-		{
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 			boolean success = false;
 			/**
 			 * <pre>
@@ -109,38 +99,31 @@ public class SubCentralHttpApi implements SubCentralApi
 			Matcher successMatcher = Pattern.compile("<div class=\"success\">").matcher("");
 			Matcher errorMatcher = Pattern.compile("<p class=\"error\">(.*?)</p>").matcher("");
 			String line;
-			while ((line = reader.readLine()) != null)
-			{
-				if (successMatcher.reset(line).find())
-				{
+			while ((line = reader.readLine()) != null) {
+				if (successMatcher.reset(line).find()) {
 					success = true;
 					break;
 
 				}
-				else if (errorMatcher.reset(line).find())
-				{
+				else if (errorMatcher.reset(line).find()) {
 					throw new IllegalArgumentException("Login failed: " + errorMatcher.group(1));
 				}
 			}
-			if (success == false)
-			{
+			if (success == false) {
 				throw new IllegalArgumentException("Login failed. No success message");
 			}
 		}
 
 		List<String> cookieList = new ArrayList<>(4);
 		Map<String, List<String>> map = conn.getHeaderFields();
-		for (Map.Entry<String, List<String>> entry : map.entrySet())
-		{
-			if ("Set-Cookie".equalsIgnoreCase(entry.getKey()))
-			{
+		for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+			if ("Set-Cookie".equalsIgnoreCase(entry.getKey())) {
 				cookieList.addAll(entry.getValue());
 			}
 		}
 
 		cookies = Joiner.on("; ").join(cookieList).replace("; HttpOnly", "");
-		if (cookies.isEmpty())
-		{
+		if (cookies.isEmpty()) {
 			throw new IllegalStateException("Login failed. Server failed to send session cookie.");
 		}
 		log.debug("Logged in as {} (Cookies: {})", username, cookies);
@@ -152,14 +135,12 @@ public class SubCentralHttpApi implements SubCentralApi
 	 * @see de.subcentral.support.subcentralde.SubCentralApi#logout()
 	 */
 	@Override
-	public void logout() throws IOException
-	{
+	public void logout() throws IOException {
 		// TODO
 		// <a href="index.php?action=UserLogout&t=3b544a6570f7faad547354dfe1f7900fb2fb3753"><img src="wcf/icon/logoutS.png" alt=""> <span>Abmelden</span></a>
 		HttpsURLConnection conn = openConnection(new URL(host, "index.php?action=UserLogout"));
 		conn.connect();
-		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
-		{
+		if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
 			log.warn("Logout failed. Server did not return response code 200: " + conn.getHeaderField(null));
 		}
 		String oldCookies = cookies;
@@ -168,8 +149,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	}
 
 	@Override
-	public Document getContent(String url) throws IOException
-	{
+	public Document getContent(String url) throws IOException {
 		log.debug("Getting content of {}", url);
 		HttpsURLConnection conn = openConnection(new URL(host, url));
 		Document doc = Jsoup.parse(conn.getInputStream(), StandardCharsets.UTF_8.name(), host.toExternalForm());
@@ -183,8 +163,7 @@ public class SubCentralHttpApi implements SubCentralApi
 	 * @see de.subcentral.support.subcentralde.SubCentralApi#downloadAttachment(int, java.nio.file.Path)
 	 */
 	@Override
-	public Path downloadAttachment(int attachmentId, Path directory) throws IOException
-	{
+	public Path downloadAttachment(int attachmentId, Path directory) throws IOException {
 		HttpsURLConnection conn = openConnection(new URL(host + "index.php?page=Attachment&attachmentID=" + attachmentId));
 
 		/**
@@ -205,12 +184,10 @@ public class SubCentralHttpApi implements SubCentralApi
 		 */
 		String filename = null;
 		String contentDisposition = conn.getHeaderField("Content-disposition");
-		if (contentDisposition != null)
-		{
+		if (contentDisposition != null) {
 			Pattern filenamePattern = Pattern.compile("filename=\"(.*?)\"");
 			Matcher filenameMatcher = filenamePattern.matcher(contentDisposition);
-			if (filenameMatcher.find())
-			{
+			if (filenameMatcher.find()) {
 				filename = filenameMatcher.group(1);
 			}
 		}
@@ -221,8 +198,7 @@ public class SubCentralHttpApi implements SubCentralApi
 		long start = System.currentTimeMillis();
 		ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
 		Path target = directory.resolve(filename);
-		try (FileOutputStream fos = new FileOutputStream(target.toFile());)
-		{
+		try (FileOutputStream fos = new FileOutputStream(target.toFile());) {
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		}
 		long duration = System.currentTimeMillis() - start;
@@ -230,11 +206,9 @@ public class SubCentralHttpApi implements SubCentralApi
 		return target;
 	}
 
-	private HttpsURLConnection openConnection(URL url) throws IOException
-	{
+	private HttpsURLConnection openConnection(URL url) throws IOException {
 		URLConnection conn = url.openConnection();
-		if (cookies != null)
-		{
+		if (cookies != null) {
 			conn.setRequestProperty("Cookie", cookies);
 		}
 		// fake mozilla user agent
@@ -242,11 +216,9 @@ public class SubCentralHttpApi implements SubCentralApi
 		return (HttpsURLConnection) conn;
 	}
 
-	private void printHeaders(URLConnection conn)
-	{
+	private void printHeaders(URLConnection conn) {
 		Map<String, List<String>> map = conn.getHeaderFields();
-		for (Map.Entry<String, List<String>> entry : map.entrySet())
-		{
+		for (Map.Entry<String, List<String>> entry : map.entrySet()) {
 			System.out.println("Key=" + entry.getKey() + ", Value=" + entry.getValue());
 		}
 	}

@@ -16,8 +16,7 @@ import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.TemporalComparator;
 
-public class Episode extends MediaBase implements Comparable<Episode>
-{
+public class Episode extends MediaBase implements Comparable<Episode> {
 	private static final long					serialVersionUID		= -5816825595994228543L;
 
 	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Episode.class, PropNames.SERIES);
@@ -46,107 +45,89 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	private boolean								special;
 	private int									runningTime;
 
-	public Episode()
-	{
+	public Episode() {
 		// default constructor
 	}
 
-	public Episode(Series series)
-	{
+	public Episode(Series series) {
 		setSeries(series);
 	}
 
-	public Episode(Series series, String title)
-	{
+	public Episode(Series series, String title) {
 		setSeries(series);
 		setTitle(title);
 	}
 
 	// Mini-series
-	public Episode(Series series, Integer numberInSeries)
-	{
+	public Episode(Series series, Integer numberInSeries) {
 		this(series, numberInSeries, null);
 	}
 
-	public Episode(Series series, Integer numberInSeries, String title)
-	{
+	public Episode(Series series, Integer numberInSeries, String title) {
 		setSeries(series);
 		setNumberInSeries(numberInSeries);
 		setTitle(title);
 	}
 
 	// Dated
-	public Episode(Series series, Temporal date)
-	{
+	public Episode(Series series, Temporal date) {
 		this(series, date, null);
 	}
 
-	public Episode(Series series, Temporal date, String title)
-	{
+	public Episode(Series series, Temporal date, String title) {
 		setSeries(series);
 		setDate(date);
 		setTitle(title);
 	}
 
 	// Seasoned
-	public Episode(Series series, Season season)
-	{
+	public Episode(Series series, Season season) {
 		this(series, season, null, null);
 	}
 
-	public Episode(Series series, Season season, int numberInSeason)
-	{
+	public Episode(Series series, Season season, int numberInSeason) {
 		this(series, season, numberInSeason, null);
 	}
 
-	public Episode(Series series, Season season, String title)
-	{
+	public Episode(Series series, Season season, String title) {
 		this(series, season, null, title);
 	}
 
-	public Episode(Series series, Season season, Integer numberInSeason, String title)
-	{
+	public Episode(Series series, Season season, Integer numberInSeason, String title) {
 		setSeries(series);
 		setSeason(season);
 		setNumberInSeason(numberInSeason);
 		setTitle(title);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber)
-	{
+	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber) {
 		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, null);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber, String episodeTitle)
-	{
+	public static Episode createSeasonedEpisode(String seriesName, Integer seasonNumber, Integer episodeNumber, String episodeTitle) {
 		return createSeasonedEpisode(seriesName, null, seasonNumber, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, String seasonTitle, Integer episodeNumber, String episodeTitle)
-	{
+	public static Episode createSeasonedEpisode(String seriesName, String seasonTitle, Integer episodeNumber, String episodeTitle) {
 		return createSeasonedEpisode(seriesName, null, null, seasonTitle, episodeNumber, episodeTitle);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber)
-	{
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber) {
 		return createSeasonedEpisode(seriesName, seriesTitle, seasonNumber, null, episodeNumber, null);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber, String episodeTitle)
-	{
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, Integer episodeNumber, String episodeTitle) {
 		return createSeasonedEpisode(seriesName, seriesTitle, seasonNumber, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, Integer episodeNumber, String episodeTitle)
-	{
+	public static Episode createSeasonedEpisode(String seriesName, String seriesTitle, Integer seasonNumber, String seasonTitle, Integer episodeNumber, String episodeTitle) {
 		Objects.requireNonNull(seriesName, "seriesName");
 		Series series = new Series();
 		series.setType(Series.TYPE_SEASONED);
 		series.setName(seriesName);
 		series.setTitle(seriesTitle);
 		Episode epi = new Episode(series);
-		if (seasonNumber != null || seasonTitle != null)
-		{
+		if (seasonNumber != null || seasonTitle != null) {
 			Season season = new Season(series);
 			season.setNumber(seasonNumber);
 			season.setTitle(seasonTitle);
@@ -157,18 +138,15 @@ public class Episode extends MediaBase implements Comparable<Episode>
 		return epi;
 	}
 
-	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber)
-	{
+	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber) {
 		return createMiniSeriesEpisode(seriesName, null, episodeNumber, null);
 	}
 
-	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber, String episodeTitle)
-	{
+	public static Episode createMiniSeriesEpisode(String seriesName, Integer episodeNumber, String episodeTitle) {
 		return createMiniSeriesEpisode(seriesName, null, episodeNumber, episodeTitle);
 	}
 
-	public static Episode createMiniSeriesEpisode(String seriesName, String seriesTitle, Integer episodeNumber, String episodeTitle)
-	{
+	public static Episode createMiniSeriesEpisode(String seriesName, String seriesTitle, Integer episodeNumber, String episodeTitle) {
 		Objects.requireNonNull(seriesName, "seriesName");
 		Series series = new Series();
 		series.setType(Series.TYPE_MINI_SERIES);
@@ -180,18 +158,15 @@ public class Episode extends MediaBase implements Comparable<Episode>
 		return epi;
 	}
 
-	public static Episode createDatedEpisode(String seriesName, Temporal date)
-	{
+	public static Episode createDatedEpisode(String seriesName, Temporal date) {
 		return createDatedEpisode(seriesName, null, date, null);
 	}
 
-	public static Episode createDatedEpisode(String seriesName, Temporal date, String episodeTitle)
-	{
+	public static Episode createDatedEpisode(String seriesName, Temporal date, String episodeTitle) {
 		return createDatedEpisode(seriesName, null, date, episodeTitle);
 	}
 
-	public static Episode createDatedEpisode(String seriesName, String seriesTitle, Temporal date, String episodeTitle)
-	{
+	public static Episode createDatedEpisode(String seriesName, String seriesTitle, Temporal date, String episodeTitle) {
 		Objects.requireNonNull(seriesName, "seriesName");
 		Series series = new Series();
 		series.setType(Series.TYPE_DATED);
@@ -203,55 +178,45 @@ public class Episode extends MediaBase implements Comparable<Episode>
 		return epi;
 	}
 
-	public Series getSeries()
-	{
+	public Series getSeries() {
 		return series;
 	}
 
-	public void setSeries(Series series)
-	{
+	public void setSeries(Series series) {
 		this.series = series;
 	}
 
-	public Season getSeason()
-	{
+	public Season getSeason() {
 		return season;
 	}
 
-	public void setSeason(Season season) throws IllegalArgumentException
-	{
+	public void setSeason(Season season) throws IllegalArgumentException {
 		this.season = requireSameSeries(season);
 	}
 
 	@Override
-	public String getMediaType()
-	{
+	public String getMediaType() {
 		return Media.MEDIA_TYPE_EPISODE;
 	}
 
 	@Override
-	public String getMediaContentType()
-	{
+	public String getMediaContentType() {
 		return Media.MEDIA_CONTENT_TYPE_VIDEO;
 	}
 
-	public Integer getNumberInSeries()
-	{
+	public Integer getNumberInSeries() {
 		return numberInSeries;
 	}
 
-	public void setNumberInSeries(Integer numberInSeries)
-	{
+	public void setNumberInSeries(Integer numberInSeries) {
 		this.numberInSeries = numberInSeries;
 	}
 
-	public Integer getNumberInSeason()
-	{
+	public Integer getNumberInSeason() {
 		return numberInSeason;
 	}
 
-	public void setNumberInSeason(Integer numberInSeason)
-	{
+	public void setNumberInSeason(Integer numberInSeason) {
 		this.numberInSeason = numberInSeason;
 	}
 
@@ -259,70 +224,57 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	 * 
 	 * @return whether the episode is a special (non-regular episode)
 	 */
-	public boolean isSpecial()
-	{
+	public boolean isSpecial() {
 		return special;
 	}
 
-	public void setSpecial(boolean special)
-	{
+	public void setSpecial(boolean special) {
 		this.special = special;
 	}
 
 	@Override
-	public int getRunningTime()
-	{
+	public int getRunningTime() {
 		return runningTime;
 	}
 
-	public void setRunningTime(int runningTime)
-	{
+	public void setRunningTime(int runningTime) {
 		this.runningTime = runningTime;
 	}
 
 	@Override
-	public Set<String> getGenres()
-	{
+	public Set<String> getGenres() {
 		return series != null ? series.getGenres() : ImmutableSet.of();
 	}
 
 	@Override
-	public List<String> getLanguages()
-	{
+	public List<String> getLanguages() {
 		return series != null ? series.getLanguages() : ImmutableList.of();
 	}
 
 	@Override
-	public List<String> getCountries()
-	{
+	public List<String> getCountries() {
 		return series != null ? series.getCountries() : ImmutableList.of();
 	}
 
 	// Convenience
-	public boolean isPartOfSeason()
-	{
+	public boolean isPartOfSeason() {
 		return season != null;
 	}
 
-	public boolean isNumberedInSeries()
-	{
+	public boolean isNumberedInSeries() {
 		return numberInSeries != null;
 	}
 
-	public boolean isNumberedInSeason()
-	{
+	public boolean isNumberedInSeason() {
 		return numberInSeason != null;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Episode)
-		{
+		if (obj instanceof Episode) {
 			Episode o = (Episode) obj;
 			return Objects.equals(series, o.series) && Objects.equals(season, o.season) && Objects.equals(numberInSeason, o.numberInSeason) && Objects.equals(numberInSeries, o.numberInSeries)
 					&& Objects.equals(date, o.date) && Objects.equals(title, o.title);
@@ -331,14 +283,12 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(series, season, numberInSeason, numberInSeries, date, title);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Episode.class)
 				.omitNullValues()
 				.add("series.name", series != null ? series.name : null)
@@ -360,15 +310,12 @@ public class Episode extends MediaBase implements Comparable<Episode>
 	}
 
 	@Override
-	public int compareTo(Episode o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Episode o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		// first sort criteria (apart from series) is (a) season, numberInSeason instead of (b) numberInSeries
@@ -385,10 +332,8 @@ public class Episode extends MediaBase implements Comparable<Episode>
 				.result();
 	}
 
-	private Season requireSameSeries(Season season) throws IllegalArgumentException
-	{
-		if (season != null && !Objects.equals(season.getSeries(), series))
-		{
+	private Season requireSameSeries(Season season) throws IllegalArgumentException {
+		if (season != null && !Objects.equals(season.getSeries(), series)) {
 			throw new IllegalArgumentException("The given season is not part of this episode's series: " + season + " is not part of " + series);
 		}
 		return season;

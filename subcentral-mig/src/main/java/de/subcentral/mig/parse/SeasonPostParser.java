@@ -41,16 +41,14 @@ import de.subcentral.mig.ScContributor;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
-public class SeasonPostParser
-{
+public class SeasonPostParser {
 	private static final Logger log = LogManager.getLogger(SeasonPostParser.class);
 
-	private enum ColumnType
-	{
+	private enum ColumnType {
 		UNKNOWN, EPISODE, SUBS, SUBS_GERMAN, SUBS_ENGLISH, TRANSLATION, REVISION, TIMINGS, ADJUSTMENT, SOURCE
 	};
 
-	private static final String						URL_TEMPLATE									= "http://subcentral.de/index.php?page=Thread&postID=%d";
+	private static final String						URL_TEMPLATE								= "http://subcentral.de/index.php?page=Thread&postID=%d";
 
 	private static final String						NO_VALUE									= "-";
 
@@ -151,18 +149,15 @@ public class SeasonPostParser
 
 	private final List<ContributorPattern>			contributorParsers;
 
-	public SeasonPostParser()
-	{
+	public SeasonPostParser() {
 		this(ImmutableList.of());
 	}
 
-	public SeasonPostParser(Iterable<ContributorPattern> contributorParsers)
-	{
+	public SeasonPostParser(Iterable<ContributorPattern> contributorParsers) {
 		this.contributorParsers = ImmutableList.copyOf(contributorParsers);
 	}
 
-	private static Map<Pattern, ColumnType> createColumnTypePatternMap()
-	{
+	private static Map<Pattern, ColumnType> createColumnTypePatternMap() {
 		ImmutableMap.Builder<Pattern, ColumnType> map = ImmutableMap.builder();
 		map.put(Pattern.compile("(Episode|Folge)(?:n)?"), ColumnType.EPISODE);
 		map.put(Pattern.compile(".*?flags/de\\.png.*"), ColumnType.SUBS_GERMAN);
@@ -179,23 +174,19 @@ public class SeasonPostParser
 		return map.build();
 	}
 
-	public List<ContributorPattern> getContributorParsers()
-	{
+	public List<ContributorPattern> getContributorParsers() {
 		return contributorParsers;
 	}
 
-	public SeasonPostData getAndParse(int postId) throws IOException
-	{
+	public SeasonPostData getAndParse(int postId) throws IOException {
 		return parseThreadPage(Jsoup.parse(new URL(String.format(URL_TEMPLATE, postId)), Migration.TIMEOUT_MILLIS));
 	}
 
-	public SeasonPostData parseThreadPage(Document threadHtml)
-	{
+	public SeasonPostData parseThreadPage(Document threadHtml) {
 		// Get topic and content of first post
 		Element postTopicDiv = threadHtml.getElementsByClass("messageTitle").first();
 		Element postContentDiv = threadHtml.getElementsByClass("messageBody").first();
-		if (postTopicDiv == null || postContentDiv == null)
-		{
+		if (postTopicDiv == null || postContentDiv == null) {
 			throw new IllegalArgumentException("Invalid thread html: No post found");
 		}
 		Element postTextDiv = postContentDiv.child(0);
@@ -203,13 +194,11 @@ public class SeasonPostParser
 		return parsePost(postTopicDiv.text(), postTextDiv.html());
 	}
 
-	public SeasonPostData parsePost(WbbPost post)
-	{
+	public SeasonPostData parsePost(WbbPost post) {
 		return parsePost(post.getTopic(), post.getMessage());
 	}
 
-	public SeasonPostData parsePostTopic(String postTopic)
-	{
+	public SeasonPostData parsePostTopic(String postTopic) {
 		WorkData data = new WorkData();
 		data.postTopic = postTopic;
 		parseTopic(data);
@@ -217,8 +206,7 @@ public class SeasonPostParser
 		return data.toSeasonPostData();
 	}
 
-	public SeasonPostData parsePost(String postTopic, String postMessage)
-	{
+	public SeasonPostData parsePost(String postTopic, String postMessage) {
 		WorkData data = new WorkData();
 		data.postTopic = postTopic;
 		data.postContent = Jsoup.parse(postMessage, SubCentralDe.getSite().getLink());
@@ -239,11 +227,9 @@ public class SeasonPostParser
 	/**
 	 * Trying to parse the post topic with the {@code PATTERN_POST_TOPIC*} patterns.
 	 */
-	private static void parseTopic(WorkData data)
-	{
+	private static void parseTopic(WorkData data) {
 		Matcher topicMatcher = PATTERN_POST_TOPIC_NUMBERED_SEASON.matcher(data.postTopic);
-		if (topicMatcher.matches())
-		{
+		if (topicMatcher.matches()) {
 			Series series = new Series(topicMatcher.group(1));
 			series.setType(Series.TYPE_SEASONED);
 			data.series = series;
@@ -256,8 +242,7 @@ public class SeasonPostParser
 
 		topicMatcher.reset();
 		topicMatcher.usePattern(PATTERN_POST_TOPIC_NUMBERED_TITLED_SEASON);
-		if (topicMatcher.matches())
-		{
+		if (topicMatcher.matches()) {
 			Series series = new Series(topicMatcher.group(1));
 			series.setType(Series.TYPE_SEASONED);
 			data.series = series;
@@ -272,15 +257,13 @@ public class SeasonPostParser
 
 		topicMatcher.reset();
 		topicMatcher.usePattern(PATTERN_POST_TOPIC_MULTIPLE_SEASONS);
-		if (topicMatcher.matches())
-		{
+		if (topicMatcher.matches()) {
 			Series series = new Series(topicMatcher.group(1));
 			series.setType(Series.TYPE_SEASONED);
 			data.series = series;
 			int firstSeasonNum = Integer.parseInt(topicMatcher.group(2));
 			int lastSeasonNum = Integer.parseInt(topicMatcher.group(3));
-			for (int i = firstSeasonNum; i <= lastSeasonNum; i++)
-			{
+			for (int i = firstSeasonNum; i <= lastSeasonNum; i++) {
 				Season season = series.newSeason(i);
 				data.seasons.put(season, season);
 			}
@@ -289,8 +272,7 @@ public class SeasonPostParser
 
 		topicMatcher.reset();
 		topicMatcher.usePattern(PATTERN_POST_TOPIC_SPECIAL_SEASON);
-		if (topicMatcher.matches())
-		{
+		if (topicMatcher.matches()) {
 			Series series = new Series(topicMatcher.group(1));
 			data.series = series;
 			Season season = series.newSeason();
@@ -317,14 +299,11 @@ public class SeasonPostParser
 	 * @param season
 	 * @param postContent
 	 */
-	private static void parseSeasonHeaderImage(WorkData data)
-	{
+	private static void parseSeasonHeaderImage(WorkData data) {
 		Element headerImg = data.postContent.select("div.tbild > img").first();
-		if (headerImg != null)
-		{
+		if (headerImg != null) {
 			String headerUrl = headerImg.absUrl("src");
-			for (Season season : data.seasons.keySet())
-			{
+			for (Season season : data.seasons.keySet()) {
 				season.getImages().put(Migration.SEASON_IMG_TYPE_HEADER, headerUrl);
 			}
 		}
@@ -350,36 +329,28 @@ public class SeasonPostParser
 	 * @param season
 	 * @param postContent
 	 */
-	private static void parseDescription(WorkData data)
-	{
+	private static void parseDescription(WorkData data) {
 		Elements descriptionDivs = data.postContent.select("div.inhalt, div.websites");
 		StringJoiner joiner = new StringJoiner("\n");
-		for (Element div : descriptionDivs)
-		{
+		for (Element div : descriptionDivs) {
 			joiner.add(div.html());
 		}
-		if (joiner.length() > 0)
-		{
+		if (joiner.length() > 0) {
 			String description = joiner.toString();
-			for (Season season : data.seasons.keySet())
-			{
+			for (Season season : data.seasons.keySet()) {
 				season.setDescription(description);
 			}
 		}
 	}
 
-	private static void parseSubtitleTable(WorkData data)
-	{
+	private static void parseSubtitleTable(WorkData data) {
 		Elements tables = data.postContent.getElementsByTag("table");
-		for (Element table : tables)
-		{
+		for (Element table : tables) {
 			data.currentTableNum++;
-			try
-			{
+			try {
 				parseStandardTable(data, table);
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				log.warn("Failed to to parse subtitle table as standard table. Parsing as non-standard table (post title: \"{}\", table number: {}, exception: {})",
 						data.postTopic,
 						data.currentTableNum,
@@ -389,27 +360,22 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseStandardTable(WorkData data, Element table)
-	{
-		if (!table.getElementsByClass("sclink").isEmpty())
-		{
+	private static void parseStandardTable(WorkData data, Element table) {
+		if (!table.getElementsByClass("sclink").isEmpty()) {
 			log.trace("Skipping link table (post topic: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
 			return;
 		}
 
 		Elements thElems = table.getElementsByTag("th");
-		if (thElems.isEmpty())
-		{
+		if (thElems.isEmpty()) {
 			throw new IllegalArgumentException("No th elements found");
 		}
 
 		ColumnType[] columns = new ColumnType[thElems.size()];
-		for (int i = 0; i < thElems.size(); i++)
-		{
+		for (int i = 0; i < thElems.size(); i++) {
 			Element th = thElems.get(i);
 			ColumnType colType = parseColumnType(th.html());
-			if (ColumnType.UNKNOWN.equals(colType))
-			{
+			if (ColumnType.UNKNOWN.equals(colType)) {
 				throw new IllegalArgumentException("Column type could not be determined. Unknown column head: " + th.toString());
 			}
 			columns[i] = colType;
@@ -417,70 +383,57 @@ public class SeasonPostParser
 
 		// Get rows and cells
 		Element tbody = table.getElementsByTag("tbody").first();
-		if (tbody == null)
-		{
+		if (tbody == null) {
 			throw new IllegalArgumentException("No tbody element found");
 		}
 
 		List<List<Element>> rows = new ArrayList<>();
-		for (Element tr : tbody.getElementsByTag("tr"))
-		{
+		for (Element tr : tbody.getElementsByTag("tr")) {
 			List<Element> tdElems = new ArrayList<>(tr.getElementsByTag("td"));
 			rows.add(tdElems);
 		}
-		if (rows.isEmpty())
-		{
+		if (rows.isEmpty()) {
 			throw new IllegalArgumentException("No tr elements found inside the tbody element");
 		}
 
 		cleanupTable(data, rows, columns.length);
 
-		for (List<Element> tdElems : rows)
-		{
+		for (List<Element> tdElems : rows) {
 			parseStandardTableRow(data, tdElems, columns);
 		}
 	}
 
-	private static ColumnType parseColumnType(String columnTitle)
-	{
-		for (Map.Entry<Pattern, ColumnType> entries : COLUMN_TYPE_PATTERNS.entrySet())
-		{
-			if (entries.getKey().matcher(columnTitle).matches())
-			{
+	private static ColumnType parseColumnType(String columnTitle) {
+		for (Map.Entry<Pattern, ColumnType> entries : COLUMN_TYPE_PATTERNS.entrySet()) {
+			if (entries.getKey().matcher(columnTitle).matches()) {
 				return entries.getValue();
 			}
 		}
 		return ColumnType.UNKNOWN;
 	}
 
-	private static void cleanupTable(WorkData data, List<List<Element>> rows, int numColumns)
-	{
+	private static void cleanupTable(WorkData data, List<List<Element>> rows, int numColumns) {
 		// Stores for each columnIndex the current Element which should span several rows
 		Element[] rowSpanCells = new Element[numColumns];
 		// Stores for each columnIndex the remaining rows which the Element should span
 		int[] rowspanRemainingRows = new int[numColumns];
 
 		ListIterator<List<Element>> rowIter = rows.listIterator();
-		while (rowIter.hasNext())
-		{
+		while (rowIter.hasNext()) {
 			List<Element> row = rowIter.next();
-			if (row.isEmpty())
-			{
+			if (row.isEmpty()) {
 				log.debug("Skipping empty row (post topic: \"{}\", table number: {})", data.postTopic, data.currentTableNum);
 				continue;
 			}
 
 			// Cleanup rowspan
-			for (int i = 0; i < numColumns; i++)
-			{
+			for (int i = 0; i < numColumns; i++) {
 				Element rowSpanCell = rowSpanCells[i];
-				if (rowSpanCell != null)
-				{
+				if (rowSpanCell != null) {
 					row.add(i, rowSpanCell);
 					int remainingRows = rowspanRemainingRows[i] - 1;
 					rowspanRemainingRows[i] = remainingRows;
-					if (remainingRows == 0)
-					{
+					if (remainingRows == 0) {
 						rowSpanCells[i] = null;
 					}
 				}
@@ -488,20 +441,17 @@ public class SeasonPostParser
 
 			ListIterator<Element> cellIter = row.listIterator();
 			int colIndex = 0;
-			while (cellIter.hasNext())
-			{
+			while (cellIter.hasNext()) {
 				Element cell = cellIter.next();
 
 				// Check for rowspan
 				int rowspan = 1;
 				String rowspanAttr = cell.attr("rowspan");
-				if (!rowspanAttr.isEmpty())
-				{
+				if (!rowspanAttr.isEmpty()) {
 					rowspan = Integer.parseInt(rowspanAttr);
 					cell.attr("rowspan", "1");
 				}
-				if (rowspan > 1)
-				{
+				if (rowspan > 1) {
 					rowSpanCells[colIndex] = cell.clone();
 					rowspanRemainingRows[colIndex] = rowspan - 1;
 				}
@@ -509,23 +459,20 @@ public class SeasonPostParser
 				// Check for colspan
 				int colspan = 1;
 				String colspanAttr = cell.attr("colspan");
-				if (!colspanAttr.isEmpty())
-				{
+				if (!colspanAttr.isEmpty()) {
 					colspan = Integer.parseInt(colspanAttr);
 					cell.attr("colspan", "1");
 				}
 
 				// Cleanup colspan
-				for (int i = 0; i < colspan - 1; i++)
-				{
+				for (int i = 0; i < colspan - 1; i++) {
 					cellIter.add(cell);
 				}
 
 				colIndex++;
 			}
 
-			if (row.size() < numColumns)
-			{
+			if (row.size() < numColumns) {
 				log.warn("Row does not have the expected number of columns (expected: {}, actual: {}; post topic: \"{}\", table number: {}, columns: {})",
 						numColumns,
 						row.size(),
@@ -536,8 +483,7 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseStandardTableRow(WorkData data, List<Element> tdElems, ColumnType[] columns)
-	{
+	private static void parseStandardTableRow(WorkData data, List<Element> tdElems, ColumnType[] columns) {
 		List<Episode> parsedEpis = new ArrayList<>();
 		// Each top-level list contains the columns,
 		// each 2nd-level list contains the subtitles within a column
@@ -549,12 +495,10 @@ public class SeasonPostParser
 		// Each top-level list contains the divisions inside the source column
 		List<MarkedValue<Site>> parsedSources = new ArrayList<>();
 
-		for (int i = 0; i < tdElems.size(); i++)
-		{
+		for (int i = 0; i < tdElems.size(); i++) {
 			Element td = tdElems.get(i);
 			ColumnType colType = columns[i];
-			switch (colType)
-			{
+			switch (colType) {
 				case EPISODE:
 					parseEpisodeCell(parsedEpis, data, td);
 					break;
@@ -585,12 +529,10 @@ public class SeasonPostParser
 
 		// Add episode (if not added yet)
 		ListIterator<Episode> parsedEpisIter = parsedEpis.listIterator();
-		while (parsedEpisIter.hasNext())
-		{
+		while (parsedEpisIter.hasNext()) {
 			Episode parsedEpi = parsedEpisIter.next();
 			Episode storedEpi = data.episodes.putIfAbsent(parsedEpi, parsedEpi);
-			if (storedEpi != null)
-			{
+			if (storedEpi != null) {
 				parsedEpisIter.set(storedEpi);
 			}
 		}
@@ -602,26 +544,20 @@ public class SeasonPostParser
 		// Add contributions to subtitles
 		List<MarkedValue<Contribution>> allContributions = collectAllContributions(parsedContributions);
 		// If any markers
-		if (MarkedValue.anyValueMarked(allContributions))
-		{
+		if (MarkedValue.anyValueMarked(allContributions)) {
 			MarkedValue.mapMarkedValues(allSubs, allContributions, SeasonPostParser::addContribution);
 		}
-		else
-		{
+		else {
 			// For each contribution column (each has a separate contribution type)
-			for (List<List<MarkedValue<Contribution>>> contributionsInColumn : parsedContributions)
-			{
+			for (List<List<MarkedValue<Contribution>>> contributionsInColumn : parsedContributions) {
 				int numContributionDivisions = contributionsInColumn.size();
 				// If number of contributionDivisions = 1
 				// -> map all contributions in that division to all subtitles
 				// [LOL][DIM] <-> [SubberA]
 				// [LOL][DIM] <-> [SubberA, SubberB]
-				if (numContributionDivisions == 1)
-				{
-					for (List<MarkedValue<SubtitleRelease>> subsInColumn : parsedSubs)
-					{
-						for (MarkedValue<SubtitleRelease> subAdj : subsInColumn)
-						{
+				if (numContributionDivisions == 1) {
+					for (List<MarkedValue<SubtitleRelease>> subsInColumn : parsedSubs) {
+						for (MarkedValue<SubtitleRelease> subAdj : subsInColumn) {
 							addContributions(subAdj.value, contributionsInColumn.get(0));
 						}
 					}
@@ -629,14 +565,11 @@ public class SeasonPostParser
 				// If number of subColumns == number of contributionDivisions
 				// -> map each contribution division to all subs in the corresponding subs column
 				// [LOL][DIM] <-> [SubberA | SubberB]
-				else if (numSubColumns == numContributionDivisions)
-				{
-					for (int i = 0; i < numSubColumns; i++)
-					{
+				else if (numSubColumns == numContributionDivisions) {
+					for (int i = 0; i < numSubColumns; i++) {
 						List<MarkedValue<SubtitleRelease>> subsInColumn = parsedSubs.get(i);
 						List<MarkedValue<Contribution>> contributionsInDivision = contributionsInColumn.get(i);
-						for (MarkedValue<SubtitleRelease> markedSub : subsInColumn)
-						{
+						for (MarkedValue<SubtitleRelease> markedSub : subsInColumn) {
 							addContributions(markedSub.value, contributionsInDivision);
 						}
 					}
@@ -645,10 +578,8 @@ public class SeasonPostParser
 				// -> map each contribution division to a sub
 				// [DIM | WEB-DL] <-> [SubberA | SubberB]
 				// [2HD] [PublicHD | DON] <-> [Grizzly | Eric | NegroManus]
-				else if (numSubs == contributionsInColumn.size())
-				{
-					for (int i = 0; i < numSubs; i++)
-					{
+				else if (numSubs == contributionsInColumn.size()) {
+					for (int i = 0; i < numSubs; i++) {
 						MarkedValue<SubtitleRelease> markedSub = allSubs.get(i);
 						List<MarkedValue<Contribution>> contributionsInDivision = contributionsInColumn.get(i);
 						addContributions(markedSub.value, contributionsInDivision);
@@ -658,27 +589,21 @@ public class SeasonPostParser
 				// -> Add the first contributionDivision to the subColumns from index 0 to n,
 				// where n is = numSubColumns - numContributionDivisions
 				// [720p][1080p][WEB-DL] <-> [SubberA | SubberB]
-				else if (numSubColumns > numContributionDivisions && numContributionDivisions > 1)
-				{
+				else if (numSubColumns > numContributionDivisions && numContributionDivisions > 1) {
 					int diff = numSubColumns - numContributionDivisions;
-					for (int i = 0; i < numSubColumns; i++)
-					{
+					for (int i = 0; i < numSubColumns; i++) {
 						List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
 						int contributionDivisionIndex = Math.max(0, i - diff);
 						List<MarkedValue<Contribution>> divisionContributions = contributionsInColumn.get(contributionDivisionIndex);
-						for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
-						{
+						for (MarkedValue<SubtitleRelease> subAdj : columnSubs) {
 							addContributions(subAdj.value, divisionContributions);
 						}
 					}
 				}
 				// Else: Add every contribution to every sub
-				else
-				{
-					for (MarkedValue<SubtitleRelease> markedSubAdj : allSubs)
-					{
-						for (List<MarkedValue<Contribution>> divisionContributions : contributionsInColumn)
-						{
+				else {
+					for (MarkedValue<SubtitleRelease> markedSubAdj : allSubs) {
+						for (List<MarkedValue<Contribution>> divisionContributions : contributionsInColumn) {
 							addContributions(markedSubAdj.value, divisionContributions);
 						}
 					}
@@ -687,20 +612,15 @@ public class SeasonPostParser
 		}
 
 		// Add sources to subtitles
-		if (!parsedSources.isEmpty())
-		{
+		if (!parsedSources.isEmpty()) {
 			// If any markers
-			if (MarkedValue.anyValueMarked(parsedSources))
-			{
+			if (MarkedValue.anyValueMarked(parsedSources)) {
 				MarkedValue.mapMarkedValues(allSubs, parsedSources, SeasonPostParser::addSource);
 			}
 			// If only one source, add it to all the subtitles
-			else if (parsedSources.size() == 1)
-			{
-				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
-				{
-					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
-					{
+			else if (parsedSources.size() == 1) {
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs) {
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs) {
 						addSource(markedSubAdj.value, parsedSources.get(0).value);
 					}
 				}
@@ -708,14 +628,11 @@ public class SeasonPostParser
 			// If number of sub columns == number of sources
 			// -> add each source to all subs in a column
 			// [DIM][WEB-DL] <-> [Addic7ed.com | SubCentral.de]
-			else if (numSubColumns == parsedSources.size())
-			{
-				for (int i = 0; i < numSubColumns; i++)
-				{
+			else if (numSubColumns == parsedSources.size()) {
+				for (int i = 0; i < numSubColumns; i++) {
 					List<MarkedValue<SubtitleRelease>> columnSubs = parsedSubs.get(i);
 					MarkedValue<Site> markedSource = parsedSources.get(i);
-					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
-					{
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs) {
 						addSource(markedSubAdj.value, markedSource.value);
 					}
 				}
@@ -723,13 +640,10 @@ public class SeasonPostParser
 			// If number of subs == number of contributionDivisions
 			// -> map each source to a sub
 			// [DIM | WEB-DL] <-> [Addic7ed.com | SubCentral.de]
-			else if (numSubs == parsedSources.size())
-			{
+			else if (numSubs == parsedSources.size()) {
 				int index = 0;
-				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
-				{
-					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
-					{
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs) {
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs) {
 						MarkedValue<Site> markedSource = parsedSources.get(index);
 						addSource(markedSubAdj.value, markedSource.value);
 						index++;
@@ -737,20 +651,16 @@ public class SeasonPostParser
 				}
 			}
 			// Else: Concat the sources and add the combined source to every sub
-			else
-			{
+			else {
 				StringJoiner combinedSourceJoiner = new StringJoiner(" & ");
-				for (MarkedValue<Site> markedSource : parsedSources)
-				{
+				for (MarkedValue<Site> markedSource : parsedSources) {
 					combinedSourceJoiner.add(markedSource.value.getName());
 				}
 				String combinedSourceName = combinedSourceJoiner.toString();
 				Site combinedSource = new Site(combinedSourceName);
 
-				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
-				{
-					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs)
-					{
+				for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs) {
+					for (MarkedValue<SubtitleRelease> markedSubAdj : columnSubs) {
 						addSource(markedSubAdj.value, combinedSource);
 					}
 				}
@@ -758,20 +668,16 @@ public class SeasonPostParser
 		}
 
 		// Add subtitles
-		for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs)
-		{
-			for (MarkedValue<SubtitleRelease> subAdj : columnSubs)
-			{
+		for (List<MarkedValue<SubtitleRelease>> columnSubs : parsedSubs) {
+			for (MarkedValue<SubtitleRelease> subAdj : columnSubs) {
 				Episode firstEpi = parsedEpis.get(0);
 				subAdj.value.getFirstSubtitle().setMedia(firstEpi);
 				data.subtitles.add(subAdj.value);
 
 				// In case of a multiple episodes in that row, for each more episode,
 				// add a clone of the parsed subtitle with that episode
-				if (parsedEpis.size() > 1)
-				{
-					for (int i = 1; i < parsedEpis.size(); i++)
-					{
+				if (parsedEpis.size() > 1) {
+					for (int i = 1; i < parsedEpis.size(); i++) {
 						SubtitleRelease copy = SerializationUtils.clone(subAdj.value);
 						Episode epi = parsedEpis.get(i);
 						copy.getFirstSubtitle().setMedia(epi);
@@ -782,23 +688,19 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseEpisodeCell(List<Episode> epis, WorkData data, Element td)
-	{
+	private static void parseEpisodeCell(List<Episode> epis, WorkData data, Element td) {
 		String text = removeBBCodes(td.text());
 		Matcher epiMatcher = PATTERN_EPISODE_MULTI.matcher(text);
-		if (epiMatcher.matches())
-		{
+		if (epiMatcher.matches()) {
 			Season season = null;
-			if (epiMatcher.group(1) != null)
-			{
+			if (epiMatcher.group(1) != null) {
 				Integer seasonNumber = Integer.valueOf(epiMatcher.group(1));
 				season = new Season(data.series, seasonNumber);
 			}
 			int firstEpiNum = Integer.parseInt(epiMatcher.group(2));
 			int lastEpiNum = Integer.parseInt(epiMatcher.group(3));
 			String title = epiMatcher.group(4);
-			for (int i = firstEpiNum; i <= lastEpiNum; i++)
-			{
+			for (int i = firstEpiNum; i <= lastEpiNum; i++) {
 				epis.add(new Episode(data.series, season, i, title));
 			}
 			return;
@@ -806,11 +708,9 @@ public class SeasonPostParser
 
 		epiMatcher.reset();
 		epiMatcher.usePattern(PATTERN_EPISODE_REGULAR);
-		if (epiMatcher.matches())
-		{
+		if (epiMatcher.matches()) {
 			Season season = null;
-			if (epiMatcher.group(1) != null)
-			{
+			if (epiMatcher.group(1) != null) {
 				Integer seasonNumber = Integer.valueOf(epiMatcher.group(1));
 				season = new Season(data.series, seasonNumber);
 			}
@@ -822,8 +722,7 @@ public class SeasonPostParser
 
 		epiMatcher.reset();
 		epiMatcher.usePattern(PATTERN_EPISODE_SPECIAL);
-		if (epiMatcher.matches())
-		{
+		if (epiMatcher.matches()) {
 			String title = epiMatcher.group(1);
 			Episode epi = new Episode(data.series, title);
 			epi.setSpecial(true);
@@ -833,11 +732,9 @@ public class SeasonPostParser
 
 		epiMatcher.reset();
 		epiMatcher.usePattern(PATTERN_EPISODE_ONLY_NUM);
-		if (epiMatcher.matches())
-		{
+		if (epiMatcher.matches()) {
 			Season season = null;
-			if (epiMatcher.group(1) != null)
-			{
+			if (epiMatcher.group(1) != null) {
 				Integer seasonNumber = Integer.valueOf(epiMatcher.group(1));
 				season = new Season(data.series, seasonNumber);
 			}
@@ -852,11 +749,9 @@ public class SeasonPostParser
 		return;
 	}
 
-	private static void parseSubtitlesCell(List<List<MarkedValue<SubtitleRelease>>> subs, Element td, ColumnType colType)
-	{
+	private static void parseSubtitlesCell(List<List<MarkedValue<SubtitleRelease>>> subs, Element td, ColumnType colType) {
 		String language;
-		switch (colType)
-		{
+		switch (colType) {
 			case SUBS_GERMAN:
 				language = Migration.SUBTITLE_LANGUAGE_GERMAN;
 				break;
@@ -871,14 +766,12 @@ public class SeasonPostParser
 		List<MarkedValue<SubtitleRelease>> subAdjs = new ArrayList<>();
 
 		Matcher subLinkMatcher = PATTERN_ATTACHMENT_ANCHOR_MARKED.matcher(cellContent);
-		while (subLinkMatcher.find())
-		{
+		while (subLinkMatcher.find()) {
 			handleMarkedSubtitleLinkMatch(subLinkMatcher, language, subAdjs);
 		}
 		subLinkMatcher.usePattern(PATTERN_ATTACHMENT_BBCODE_MARKED);
 		subLinkMatcher.reset();
-		while (subLinkMatcher.find())
-		{
+		while (subLinkMatcher.find()) {
 			handleMarkedSubtitleLinkMatch(subLinkMatcher, language, subAdjs);
 		}
 
@@ -886,20 +779,16 @@ public class SeasonPostParser
 		// because empty columns are not respected in the contributionDivisions
 		// F.e. [DIM][-][WEB-DL] <-> [- | Grollbringer] means that Grollbringer adjusted the WEB-DL,
 		// not the non-existing sub in the empty column
-		if (!subAdjs.isEmpty())
-		{
+		if (!subAdjs.isEmpty()) {
 			subs.add(subAdjs);
 		}
 	}
 
-	private static void handleMarkedSubtitleLinkMatch(Matcher matcher, String language, List<MarkedValue<SubtitleRelease>> subFiles)
-	{
+	private static void handleMarkedSubtitleLinkMatch(Matcher matcher, String language, List<MarkedValue<SubtitleRelease>> subFiles) {
 		String marker = null;
 		// Test all possible marker groups: 1,3,5,6
-		for (int i : new int[] { 1, 3, 5, 6 })
-		{
-			if (matcher.start(i) != -1)
-			{
+		for (int i : new int[] { 1, 3, 5, 6 }) {
+			if (matcher.start(i) != -1) {
 				marker = matcher.group(i);
 				break;
 			}
@@ -937,22 +826,17 @@ public class SeasonPostParser
 	 * Grollbringer | Negro & Sogge377
 	 * </pre>
 	 */
-	private static void parseContributorsCell(List<List<List<MarkedValue<Contribution>>>> contributions, Element td, ColumnType colType)
-	{
+	private static void parseContributorsCell(List<List<List<MarkedValue<Contribution>>>> contributions, Element td, ColumnType colType) {
 		String contributionType = contributionTypeFromColumnType(colType);
 		List<List<MarkedValue<Contribution>>> contributionsInColumn = new ArrayList<>();
 		String text = removeHtmlTagsAndBBCodes(td.text());
-		for (String division : SPLITTER_DIVISON.split(text))
-		{
-			if (division.isEmpty() || division.equals(NO_VALUE))
-			{
+		for (String division : SPLITTER_DIVISON.split(text)) {
+			if (division.isEmpty() || division.equals(NO_VALUE)) {
 				contributionsInColumn.add(ImmutableList.of());
 			}
-			else
-			{
+			else {
 				List<MarkedValue<Contribution>> contributionsInDiv = new ArrayList<>();
-				for (String contributorText : SPLITTER_LIST.split(division))
-				{
+				for (String contributorText : SPLITTER_LIST.split(division)) {
 					MarkedValue<String> markedContributor = MarkedValue.parse(contributorText);
 					ScContributor contributor = new ScContributor(ScContributor.Type.SUBBER);
 					contributor.setName(markedContributor.value);
@@ -965,10 +849,8 @@ public class SeasonPostParser
 		contributions.add(contributionsInColumn);
 	}
 
-	private static String contributionTypeFromColumnType(ColumnType colType)
-	{
-		switch (colType)
-		{
+	private static String contributionTypeFromColumnType(ColumnType colType) {
+		switch (colType) {
 			case TRANSLATION:
 				return Subtitle.CONTRIBUTION_TYPE_TRANSLATION;
 			case REVISION:
@@ -982,14 +864,11 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void parseSourcesCell(List<MarkedValue<Site>> sources, Element td)
-	{
+	private static void parseSourcesCell(List<MarkedValue<Site>> sources, Element td) {
 		String text = removeBBCodes(td.text());
 		Iterable<String> divisions = SPLITTER_DIVISON.split(text);
-		for (String division : divisions)
-		{
-			if (!division.isEmpty() && !NO_VALUE.equals(division))
-			{
+		for (String division : divisions) {
+			if (!division.isEmpty() && !NO_VALUE.equals(division)) {
 				MarkedValue<String> markedSourceName = MarkedValue.parse(division);
 				Site source = new Site(markedSourceName.value, markedSourceName.value);
 				MarkedValue<Site> markedSource = new MarkedValue<>(source, markedSourceName.marker);
@@ -998,74 +877,59 @@ public class SeasonPostParser
 		}
 	}
 
-	private static void addSource(SubtitleRelease subAdj, Site source)
-	{
+	private static void addSource(SubtitleRelease subAdj, Site source) {
 		subAdj.getFirstSubtitle().setSource(source);
 	}
 
-	private static void addContributions(SubtitleRelease subRls, List<MarkedValue<Contribution>> markedContributions)
-	{
-		for (MarkedValue<Contribution> mv : markedContributions)
-		{
+	private static void addContributions(SubtitleRelease subRls, List<MarkedValue<Contribution>> markedContributions) {
+		for (MarkedValue<Contribution> mv : markedContributions) {
 			addContribution(subRls, mv.value);
 		}
 	}
 
-	private static void addContribution(SubtitleRelease subRls, Contribution contribution)
-	{
+	private static void addContribution(SubtitleRelease subRls, Contribution contribution) {
 		if (Subtitle.CONTRIBUTION_TYPE_TRANSCRIPT.equals(contribution.getType()) || Subtitle.CONTRIBUTION_TYPE_TIMINGS.equals(contribution.getType())
-				|| Subtitle.CONTRIBUTION_TYPE_TRANSLATION.equals(contribution.getType()) || Subtitle.CONTRIBUTION_TYPE_REVISION.equals(contribution.getType()))
-		{
+				|| Subtitle.CONTRIBUTION_TYPE_TRANSLATION.equals(contribution.getType()) || Subtitle.CONTRIBUTION_TYPE_REVISION.equals(contribution.getType())) {
 			subRls.getFirstSubtitle().getContributions().add(contribution);
 		}
-		else
-		{
+		else {
 			subRls.getContributions().add(contribution);
 		}
 	}
 
-	private static List<MarkedValue<SubtitleRelease>> collectAllSubtitles(List<List<MarkedValue<SubtitleRelease>>> subs)
-	{
+	private static List<MarkedValue<SubtitleRelease>> collectAllSubtitles(List<List<MarkedValue<SubtitleRelease>>> subs) {
 		List<MarkedValue<SubtitleRelease>> allSubs = new ArrayList<>();
-		for (List<MarkedValue<SubtitleRelease>> subsInDivision : subs)
-		{
+		for (List<MarkedValue<SubtitleRelease>> subsInDivision : subs) {
 			allSubs.addAll(subsInDivision);
 		}
 		return allSubs;
 	}
 
-	private static List<MarkedValue<Contribution>> collectAllContributions(List<List<List<MarkedValue<Contribution>>>> contributions)
-	{
+	private static List<MarkedValue<Contribution>> collectAllContributions(List<List<List<MarkedValue<Contribution>>>> contributions) {
 		List<MarkedValue<Contribution>> allContributions = new ArrayList<>();
-		for (List<List<MarkedValue<Contribution>>> contributionsInColumn : contributions)
-		{
-			for (List<MarkedValue<Contribution>> contributionsInDivision : contributionsInColumn)
-			{
+		for (List<List<MarkedValue<Contribution>>> contributionsInColumn : contributions) {
+			for (List<MarkedValue<Contribution>> contributionsInDivision : contributionsInColumn) {
 				allContributions.addAll(contributionsInDivision);
 			}
 		}
 		return allContributions;
 	}
 
-	private static void parseNonStandardTable(WorkData data, Element table)
-	{
+	private static void parseNonStandardTable(WorkData data, Element table) {
 		// Just add all attachment links as subtitles
 		String content = table.html();
 		Matcher subLinkMatcher = PATTERN_ATTACHMENT_ANCHOR.matcher(content);
-		while (subLinkMatcher.find())
-		{
+		while (subLinkMatcher.find()) {
 			handleSubtitleLinkMatch(subLinkMatcher, data);
 		}
 		subLinkMatcher.usePattern(PATTERN_ATTACHMENT_BBCODE);
 		subLinkMatcher.reset();
-		while (subLinkMatcher.find())
-		{
+		while (subLinkMatcher.find()) {
 			handleSubtitleLinkMatch(subLinkMatcher, data);
 		}
 	}
 
-	private static void handleSubtitleLinkMatch(Matcher subLinkMatcher, WorkData data)
-	{
+	private static void handleSubtitleLinkMatch(Matcher subLinkMatcher, WorkData data) {
 		Integer attachmentId = Integer.valueOf(subLinkMatcher.group(1));
 		String label = removeHtmlTagsAndBBCodes(subLinkMatcher.group(2));
 
@@ -1076,51 +940,39 @@ public class SeasonPostParser
 		data.subtitles.add(subRls);
 	}
 
-	private static void cleanupData(WorkData data)
-	{
+	private static void cleanupData(WorkData data) {
 		// Add episodes to season
 		// For single-season threads
-		if (data.seasons.size() == 1)
-		{
+		if (data.seasons.size() == 1) {
 			Season season = data.seasons.keySet().iterator().next();
-			for (Episode epi : data.episodes.keySet())
-			{
+			for (Episode epi : data.episodes.keySet()) {
 				epi.setSeason(season);
 			}
 		}
 		// For multi-season threads
-		else
-		{
-			for (Episode epi : data.episodes.keySet())
-			{
-				if (epi.isPartOfSeason())
-				{
+		else {
+			for (Episode epi : data.episodes.keySet()) {
+				if (epi.isPartOfSeason()) {
 					boolean foundSeason = false;
-					for (Season season : data.seasons.keySet())
-					{
-						if (season.getNumber() != null && season.getNumber().equals(epi.getSeason().getNumber()))
-						{
+					for (Season season : data.seasons.keySet()) {
+						if (season.getNumber() != null && season.getNumber().equals(epi.getSeason().getNumber())) {
 							epi.setSeason(season);
 							foundSeason = true;
 						}
 					}
-					if (!foundSeason)
-					{
+					if (!foundSeason) {
 						Season newSeason = epi.getSeason();
 						epi.setSeason(newSeason);
 						data.seasons.put(newSeason, newSeason);
 					}
 				}
-				else
-				{
+				else {
 					Season newUnknownSeason = new Season(data.series);
 					Season alreadyStoredSeason = data.seasons.putIfAbsent(newUnknownSeason, newUnknownSeason);
-					if (alreadyStoredSeason != null)
-					{
+					if (alreadyStoredSeason != null) {
 						alreadyStoredSeason.addEpisode(epi);
 					}
-					else
-					{
+					else {
 						newUnknownSeason.addEpisode(epi);
 					}
 				}
@@ -1131,15 +983,12 @@ public class SeasonPostParser
 		// link the Subtitle of the first SubtitleAdjustment of those matching SubtitleAdjustments to all the other SubtitleAdjustments, too
 		// Because only for the first SubtitleAdjustment the Subtitle's contributions are specified. Not for all other SubtitleAdjustments
 		Map<Subtitle, Subtitle> distinctSubs = new HashMap<>();
-		for (SubtitleRelease subAdj : data.subtitles)
-		{
+		for (SubtitleRelease subAdj : data.subtitles) {
 			Subtitle sub = subAdj.getFirstSubtitle();
 			// sub can be null if parsed from non-standard-table
-			if (sub != null)
-			{
+			if (sub != null) {
 				Subtitle storedSub = distinctSubs.putIfAbsent(sub, sub);
-				if (storedSub != null)
-				{
+				if (storedSub != null) {
 					subAdj.setSingleSubtitle(storedSub);
 				}
 			}
@@ -1152,21 +1001,17 @@ public class SeasonPostParser
 		// Map<AttachmentID->first SubtitleAdjustment with that Attachment-ID>
 		Map<Integer, SubtitleRelease> mapAttachmentsToSubs = new HashMap<>();
 		ListIterator<SubtitleRelease> subAdjIter = data.subtitles.listIterator();
-		while (subAdjIter.hasNext())
-		{
+		while (subAdjIter.hasNext()) {
 			SubtitleRelease subAdj = subAdjIter.next();
 			Integer attachmentId = subAdj.getFirstAttributeValue(Migration.SUBTITLE_FILE_ATTR_ATTACHMENT_ID);
 			SubtitleRelease storedSubAdj = mapAttachmentsToSubs.putIfAbsent(attachmentId, subAdj);
-			if (storedSubAdj != null)
-			{
+			if (storedSubAdj != null) {
 				// a) Equal -> remove duplicate
-				if (subAdj.equals(storedSubAdj))
-				{
+				if (subAdj.equals(storedSubAdj)) {
 					subAdjIter.remove();
 				}
 				// a) differ in Subtitle -> add other Subtitle to first SubtitleAdjustment
-				else if (!subAdj.getSubtitles().isEmpty() && !subAdj.getFirstSubtitle().equals(storedSubAdj.getFirstSubtitle()))
-				{
+				else if (!subAdj.getSubtitles().isEmpty() && !subAdj.getFirstSubtitle().equals(storedSubAdj.getFirstSubtitle())) {
 					storedSubAdj.getSubtitles().add(subAdj.getFirstSubtitle());
 					subAdjIter.remove();
 				}
@@ -1175,14 +1020,10 @@ public class SeasonPostParser
 
 		// Cleanup sub.source
 		// add source=SubCentral.de to all german subs without a source
-		for (SubtitleRelease subAdj : data.subtitles)
-		{
-			for (Subtitle sub : subAdj.getSubtitles())
-			{
-				if (sub.getSource() == null)
-				{
-					if (Migration.SUBTITLE_LANGUAGE_GERMAN.equals(sub.getLanguage()))
-					{
+		for (SubtitleRelease subAdj : data.subtitles) {
+			for (Subtitle sub : subAdj.getSubtitles()) {
+				if (sub.getSource() == null) {
+					if (Migration.SUBTITLE_LANGUAGE_GERMAN.equals(sub.getLanguage())) {
 						sub.setSource(SubCentralDe.getSite());
 					}
 				}
@@ -1193,10 +1034,8 @@ public class SeasonPostParser
 		data.subtitles.sort(null);
 	}
 
-	private static String removeHtmlTagsAndBBCodes(String text)
-	{
-		if (text == null)
-		{
+	private static String removeHtmlTagsAndBBCodes(String text) {
+		if (text == null) {
 			return null;
 		}
 		String bbCodesRemoved = removeBBCodes(text);
@@ -1204,54 +1043,45 @@ public class SeasonPostParser
 		return bbCodesAndHtmlRemoved;
 	}
 
-	private static String removeBBCodes(String text)
-	{
-		if (text == null)
-		{
+	private static String removeBBCodes(String text) {
+		if (text == null) {
 			return null;
 		}
 		String bbCodesRemoved = PATTERN_BBCODE.matcher(text).replaceAll("$2");
 		return bbCodesRemoved;
 	}
 
-	public static final class SeasonPostData
-	{
+	public static final class SeasonPostData {
 		private final Series				series;
 		private final List<Season>			seasons;
 		private final List<Episode>			episodes;
 		private final List<SubtitleRelease>	subtitleReleases;
 
-		public SeasonPostData(Series series, Iterable<Season> seasons, Iterable<Episode> episodes, Iterable<SubtitleRelease> subtitleAdjustments)
-		{
+		public SeasonPostData(Series series, Iterable<Season> seasons, Iterable<Episode> episodes, Iterable<SubtitleRelease> subtitleAdjustments) {
 			this.series = series;
 			this.seasons = ImmutableList.copyOf(seasons);
 			this.episodes = ImmutableList.copyOf(episodes);
 			this.subtitleReleases = ImmutableList.copyOf(subtitleAdjustments);
 		}
 
-		public Series getSeries()
-		{
+		public Series getSeries() {
 			return series;
 		}
 
-		public List<Season> getSeasons()
-		{
+		public List<Season> getSeasons() {
 			return seasons;
 		}
 
-		public List<Episode> getEpisodes()
-		{
+		public List<Episode> getEpisodes() {
 			return episodes;
 		}
 
-		public List<SubtitleRelease> getSubtitleReleases()
-		{
+		public List<SubtitleRelease> getSubtitleReleases() {
 			return subtitleReleases;
 		}
 	}
 
-	private static class WorkData
-	{
+	private static class WorkData {
 		// input
 		private String								postTopic;
 		private Document							postContent;
@@ -1265,8 +1095,7 @@ public class SeasonPostParser
 		private final SortedMap<Episode, Episode>	episodes	= new TreeMap<>();
 		private final List<SubtitleRelease>			subtitles	= new ArrayList<>();
 
-		private SeasonPostData toSeasonPostData()
-		{
+		private SeasonPostData toSeasonPostData() {
 			return new SeasonPostData(series, seasons.keySet(), episodes.keySet(), subtitles);
 		}
 	}
@@ -1277,72 +1106,57 @@ public class SeasonPostParser
 	 * 
 	 * @param <T>
 	 */
-	private static class MarkedValue<T>
-	{
+	private static class MarkedValue<T> {
 		private static final char	MARKER_CHAR	= '*';
 
 		private final T				value;
 		private final String		marker;
 
-		private MarkedValue(T value, String marker)
-		{
+		private MarkedValue(T value, String marker) {
 			this.value = value;
 			this.marker = marker;
 		}
 
-		private boolean isMarked()
-		{
+		private boolean isMarked() {
 			return marker != null;
 		}
 
-		private static MarkedValue<String> parse(String s)
-		{
+		private static MarkedValue<String> parse(String s) {
 			StringBuilder marker = null;
 			// Get leading marker
-			for (int i = 0; i < s.length(); i++)
-			{
-				if (MARKER_CHAR != s.charAt(i))
-				{
+			for (int i = 0; i < s.length(); i++) {
+				if (MARKER_CHAR != s.charAt(i)) {
 					break;
 				}
-				else
-				{
-					if (marker == null)
-					{
+				else {
+					if (marker == null) {
 						marker = new StringBuilder(2);
 					}
 					marker.append(MARKER_CHAR);
 				}
 			}
-			if (marker != null)
-			{
+			if (marker != null) {
 				return new MarkedValue<String>(s.substring(marker.length()), marker.toString());
 			}
 			// if no leading marker, get trailing marker
-			for (int i = s.length() - 1; i >= 0; i--)
-			{
-				if (MARKER_CHAR != s.charAt(i))
-				{
+			for (int i = s.length() - 1; i >= 0; i--) {
+				if (MARKER_CHAR != s.charAt(i)) {
 					break;
 				}
-				else
-				{
-					if (marker == null)
-					{
+				else {
+					if (marker == null) {
 						marker = new StringBuilder(2);
 					}
 					marker.append(MARKER_CHAR);
 				}
 			}
-			if (marker != null)
-			{
+			if (marker != null) {
 				return new MarkedValue<String>(s.substring(0, s.length() - marker.length()), marker.toString());
 			}
 			return new MarkedValue<String>(s, null);
 		}
 
-		private static <U> boolean anyValueMarked(Collection<MarkedValue<U>> markedValues)
-		{
+		private static <U> boolean anyValueMarked(Collection<MarkedValue<U>> markedValues) {
 			return markedValues.stream().anyMatch(MarkedValue::isMarked);
 		}
 
@@ -1355,20 +1169,16 @@ public class SeasonPostParser
 		 * @param combiner
 		 *            combines the referencing value with the reference target
 		 */
-		private static <U, V> void mapMarkedValues(Iterable<MarkedValue<U>> referencingValues, Iterable<MarkedValue<V>> referenceTargets, BiConsumer<U, V> combiner)
-		{
+		private static <U, V> void mapMarkedValues(Iterable<MarkedValue<U>> referencingValues, Iterable<MarkedValue<V>> referenceTargets, BiConsumer<U, V> combiner) {
 			// Map<Marker->V>
 			Map<String, V> markerToRefTargetsMap = new HashMap<>(2);
-			for (MarkedValue<V> mv : referenceTargets)
-			{
+			for (MarkedValue<V> mv : referenceTargets) {
 				V storedVal = markerToRefTargetsMap.put(mv.marker, mv.value);
-				if (storedVal != null)
-				{
+				if (storedVal != null) {
 					throw new IllegalArgumentException("Multiple values marked with same marker " + mv.marker + ": " + storedVal + ", " + mv.value);
 				}
 			}
-			for (MarkedValue<U> mv : referencingValues)
-			{
+			for (MarkedValue<U> mv : referencingValues) {
 				combiner.accept(mv.value, markerToRefTargetsMap.get(mv.marker));
 			}
 		}

@@ -7,12 +7,9 @@ import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.TimeUtil;
 
-public class MediaTest
-{
-	public static void main(String[] args)
-	{
-		for (int i = 0; i < 1000; i++)
-		{
+public class MediaTest {
+	public static void main(String[] args) {
+		for (int i = 0; i < 1000; i++) {
 			List<Episode> media = new ArrayList<>();
 			media.add(Episode.createSeasonedEpisode("Psych", 2, 1));
 			media.add(Episode.createSeasonedEpisode("Psych", 2, 2));

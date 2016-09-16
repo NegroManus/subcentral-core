@@ -27,8 +27,7 @@ import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Addic7edCom
-{
+public class Addic7edCom {
 	private static final Site						SITE						= new Site("addic7ed.com", "Addic7ed.com", "http://www.addic7ed.com/");
 	private static final TypeBasedParsingService	PARSING_SERVICE				= initParsingService();
 	private static final String						LANG_PATTERN				= "(Albanian|Arabic|Armenian|Azerbaijani|Bengali|Bosnian|Bulgarian|Català|Chinese \\(Simplified\\)|Chinese \\(Traditional\\)|Croatian|Czech|Danish|Dutch|English|Euskera|Finnish|French|Galego|German|Greek|Hebrew|Hungarian|Indonesian|Italian|Japanese|Korean|Macedonian|Malay|Norwegian|Persian|Polish|Portuguese|Portuguese \\(Brazilian\\)|Romanian|Russian|Serbian \\(Cyrillic\\)|Serbian \\(Latin\\)|Slovak|Slovenian|Spanish|Spanish \\(Latin America\\)|Spanish \\(Spain\\)|Swedish|Thai|Turkish|Ukrainian|Vietnamese)";
@@ -36,21 +35,18 @@ public class Addic7edCom
 	private static final String						LANG_TAGS_SOURCE_PATTERN	= "\\." + LANG_PATTERN + "\\." + TAGS_PATTERN + "\\.Addic7ed\\.com";
 	private static final String						RLS_TAGS_PATTERN			= "(?:(?:DVD|WEB)[.-]?(?:DL|Rip)|INTERNAL)";
 
-	private Addic7edCom()
-	{
+	private Addic7edCom() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	private static TypeBasedParsingService initParsingService()
-	{
+	private static TypeBasedParsingService initParsingService() {
 		TypeBasedParsingService service = new TypeBasedParsingService(SITE.getName());
 		service.register(SubtitleRelease.class, createEpisodeSubtitleReleaseParser());
 		service.register(SubtitleRelease.class, createMovieSubtitleReleaseParser());
 		return service;
 	}
 
-	private static Parser<SubtitleRelease> createEpisodeSubtitleReleaseParser()
-	{
+	private static Parser<SubtitleRelease> createEpisodeSubtitleReleaseParser() {
 		// Series - 01x01 - (.*).English.C.orig.Addic7ed.com
 		Pattern pattern = Pattern.compile(ParsingDefaults.PATTERN_MEDIA_NAME + " - (\\d{2})x(\\d{2}) - (.*)" + LANG_TAGS_SOURCE_PATTERN);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> groups = ImmutableMap.builder();
@@ -72,8 +68,7 @@ public class Addic7edCom
 		return new SubtitleReleaseParser(matcher, ParsingDefaults.getDefaultSingletonListEpisodeMapper());
 	}
 
-	private static MappingMatcher<SimplePropDescriptor> createEpisodeTitleAndReleaseMatcher()
-	{
+	private static MappingMatcher<SimplePropDescriptor> createEpisodeTitleAndReleaseMatcher() {
 		String epiTitleAndDot = "(.+?)\\.";
 
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
@@ -170,8 +165,7 @@ public class Addic7edCom
 		return new MultiMappingMatcher<>(matchers.build());
 	}
 
-	private static Parser<SubtitleRelease> createMovieSubtitleReleaseParser()
-	{
+	private static Parser<SubtitleRelease> createMovieSubtitleReleaseParser() {
 		// Movie (YEAR) - 01x01 - (.*).English.C.orig.Addic7ed.com
 		Pattern pattern = Pattern.compile("(.*?)\\s+\\((\\d{4})\\)\\.(.*)" + LANG_TAGS_SOURCE_PATTERN);
 		ImmutableMap.Builder<Integer, GroupEntry<SimplePropDescriptor>> groups = ImmutableMap.builder();
@@ -188,8 +182,7 @@ public class Addic7edCom
 		return new SubtitleReleaseParser(matcher, ParsingDefaults.getDefaultSingletonListMovieMapper());
 	}
 
-	private static MappingMatcher<SimplePropDescriptor> createReleaseMatcher()
-	{
+	private static MappingMatcher<SimplePropDescriptor> createReleaseMatcher() {
 		ImmutableList.Builder<MappingMatcher<SimplePropDescriptor>> matchers = ImmutableList.builder();
 
 		// "Winter's Tale (2014).DVD-Rip.English.orig.Addic7ed.com"
@@ -209,18 +202,15 @@ public class Addic7edCom
 		return new MultiMappingMatcher<>(matchers.build());
 	}
 
-	public static Site getSite()
-	{
+	public static Site getSite() {
 		return SITE;
 	}
 
-	public static final ParsingService getParsingService()
-	{
+	public static final ParsingService getParsingService() {
 		return PARSING_SERVICE;
 	}
 
-	public static List<ParserEntry<?>> getParserEntries()
-	{
+	public static List<ParserEntry<?>> getParserEntries() {
 		return PARSING_SERVICE.getEntries();
 	}
 }

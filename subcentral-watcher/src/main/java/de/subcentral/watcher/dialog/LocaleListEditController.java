@@ -20,8 +20,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.stage.Window;
 
-public class LocaleListEditController extends BeanEditController<List<Locale>>
-{
+public class LocaleListEditController extends BeanEditController<List<Locale>> {
 	@FXML
 	private ListView<Locale>	langsListView;
 	@FXML
@@ -35,49 +34,39 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 	@FXML
 	private Button				removeLangBtn;
 
-	LocaleListEditController(List<Locale> bean, Window window)
-	{
+	LocaleListEditController(List<Locale> bean, Window window) {
 		super(Objects.requireNonNull(bean), window);
 	}
 
 	@Override
-	protected String getTitle()
-	{
+	protected String getTitle() {
 		return "Edit languages";
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "usa_flag_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
+	protected Node getDefaultFocusNode() {
 		return langsListView;
 	}
 
 	@Override
-	protected void initComponents()
-	{
+	protected void initComponents() {
 		// Set initial values
 		langsListView.setItems(initLangList());
-		langsListView.setCellFactory((ListView<Locale> param) ->
-		{
-			return new ListCell<Locale>()
-			{
+		langsListView.setCellFactory((ListView<Locale> param) -> {
+			return new ListCell<Locale>() {
 				@Override
-				protected void updateItem(Locale lang, boolean empty)
-				{
+				protected void updateItem(Locale lang, boolean empty) {
 					super.updateItem(lang, empty);
-					if (empty || lang == null)
-					{
+					if (empty || lang == null) {
 						setText(null);
 						setGraphic(null);
 					}
-					else
-					{
+					else {
 						setText(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER.toString(lang));
 					}
 				}
@@ -91,8 +80,7 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 
 		// Bindings
 		addLangBtn.disableProperty().bind(addableLangsComboBox.getSelectionModel().selectedItemProperty().isNull());
-		addLangBtn.setOnAction((ActionEvent) ->
-		{
+		addLangBtn.setOnAction((ActionEvent) -> {
 			// remove lang from addable langs
 			Locale langToAdd = FxActions.remove(addableLangsComboBox);
 			// add lang to lang list
@@ -100,8 +88,7 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 		});
 
 		removeLangBtn.disableProperty().bind(langsListView.getSelectionModel().selectedItemProperty().isNull());
-		removeLangBtn.setOnAction((ActionEvent) ->
-		{
+		removeLangBtn.setOnAction((ActionEvent) -> {
 			// remove lang from lang list
 			Locale removedLang = FxActions.remove(langsListView);
 			// add lang to addable langs
@@ -111,23 +98,19 @@ public class LocaleListEditController extends BeanEditController<List<Locale>>
 		FxActions.setStandardMouseAndKeyboardSupport(langsListView, addLangBtn, removeLangBtn);
 
 		// Set ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
 				return langsListView.getItems();
 			}
 			return null;
 		});
 	}
 
-	private ObservableList<Locale> initLangList()
-	{
+	private ObservableList<Locale> initLangList() {
 		return FXCollections.observableArrayList(bean);
 	}
 
-	private ObservableList<Locale> initAddableLangList()
-	{
+	private ObservableList<Locale> initAddableLangList() {
 		ObservableList<Locale> addableLangList = FxUtil.createListOfAvailableLocales(false, false, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR);
 		// already selected langs are not addable
 		addableLangList.removeAll(bean);

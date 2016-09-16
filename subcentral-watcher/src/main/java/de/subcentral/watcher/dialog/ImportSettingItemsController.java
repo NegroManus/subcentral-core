@@ -24,8 +24,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
-public class ImportSettingItemsController extends DialogController<ImportSettingItemsParameters>
-{
+public class ImportSettingItemsController extends DialogController<ImportSettingItemsParameters> {
 	private String		title;
 	@FXML
 	private RadioButton	defaultSettingsRadioBtn;
@@ -47,33 +46,28 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 	@FXML
 	private CheckBox	removeItemsCheckBox;
 
-	public ImportSettingItemsController(Window window, String title)
-	{
+	public ImportSettingItemsController(Window window, String title) {
 		super(window);
 		this.title = (title != null ? title : "Import settings items");
 	}
 
 	@Override
-	protected String getTitle()
-	{
+	protected String getTitle() {
 		return title;
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "upload_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
+	protected Node getDefaultFocusNode() {
 		return defaultSettingsRadioBtn;
 	}
 
 	@Override
-	protected void initComponents()
-	{
+	protected void initComponents() {
 		// Init
 		ToggleGroup sourceTypeToggleGrp = new ToggleGroup();
 		sourceTypeToggleGrp.getToggles().addAll(defaultSettingsRadioBtn, fileRadioBtn, urlRadioBtn);
@@ -89,8 +83,7 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 
 		// Bind apply button
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(new BooleanBinding()
-		{
+		applyButton.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(sourceTypeToggleGrp.selectedToggleProperty(),
 						fileFormatter.valueProperty(),
@@ -101,8 +94,7 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				Toggle sourceTypeToggle = sourceTypeToggleGrp.getSelectedToggle();
 				return (fileRadioBtn == sourceTypeToggle && fileFormatter.getValue() == null || urlRadioBtn == sourceTypeToggle && urlFormatter.getValue() == null)
 						|| (!addItemsCheckBox.isSelected() && !replaceItemsCheckBox.isSelected() && !removeItemsCheckBox.isSelected());
@@ -110,22 +102,17 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 		});
 
 		// Set ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
 				Toggle sourceTypeToggle = sourceTypeToggleGrp.getSelectedToggle();
 				SourceType sourceType;
-				if (fileRadioBtn == sourceTypeToggle)
-				{
+				if (fileRadioBtn == sourceTypeToggle) {
 					sourceType = SourceType.FILE;
 				}
-				else if (urlRadioBtn == sourceTypeToggle)
-				{
+				else if (urlRadioBtn == sourceTypeToggle) {
 					sourceType = SourceType.URL;
 				}
-				else
-				{
+				else {
 					sourceType = SourceType.DEFAULT_SETTINGS;
 				}
 				Path file = fileFormatter.getValue();
@@ -139,10 +126,8 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 		});
 	}
 
-	public static class ImportSettingItemsParameters
-	{
-		public enum SourceType
-		{
+	public static class ImportSettingItemsParameters {
+		public enum SourceType {
 			FILE, URL, DEFAULT_SETTINGS
 		}
 
@@ -153,16 +138,13 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 		private final boolean		replaceItems;
 		private final boolean		removeItems;
 
-		public ImportSettingItemsParameters(SourceType sourceType, Path file, URL url, boolean addItems, boolean replaceItems, boolean removeItems)
-		{
+		public ImportSettingItemsParameters(SourceType sourceType, Path file, URL url, boolean addItems, boolean replaceItems, boolean removeItems) {
 			this.sourceType = Objects.requireNonNull(sourceType, "sourceType");
-			if (SourceType.FILE == sourceType)
-			{
+			if (SourceType.FILE == sourceType) {
 				Objects.requireNonNull(file, "file");
 			}
 			this.file = file;
-			if (SourceType.URL == sourceType)
-			{
+			if (SourceType.URL == sourceType) {
 				Objects.requireNonNull(url, "url");
 			}
 			this.url = url;
@@ -171,33 +153,27 @@ public class ImportSettingItemsController extends DialogController<ImportSetting
 			this.removeItems = removeItems;
 		}
 
-		public SourceType getSourceType()
-		{
+		public SourceType getSourceType() {
 			return sourceType;
 		}
 
-		public Path getFile()
-		{
+		public Path getFile() {
 			return file;
 		}
 
-		public URL getUrl()
-		{
+		public URL getUrl() {
 			return url;
 		}
 
-		public boolean isAddItems()
-		{
+		public boolean isAddItems() {
 			return addItems;
 		}
 
-		public boolean isReplaceItems()
-		{
+		public boolean isReplaceItems() {
 			return replaceItems;
 		}
 
-		public boolean isRemoveItems()
-		{
+		public boolean isRemoveItems() {
 			return removeItems;
 		}
 	}

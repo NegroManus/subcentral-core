@@ -32,8 +32,7 @@ import de.subcentral.core.util.ByteUtil;
  * @implSpec #immutable #thread-safe
  *
  */
-public class OrlyDbComMetadataService extends HttpMetadataService
-{
+public class OrlyDbComMetadataService extends HttpMetadataService {
 	private static final Logger				log					= LogManager.getLogger(OrlyDbComMetadataService.class);
 
 	/**
@@ -46,29 +45,24 @@ public class OrlyDbComMetadataService extends HttpMetadataService
 	 */
 	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
 
-	OrlyDbComMetadataService()
-	{
+	OrlyDbComMetadataService() {
 		// package-protected
 	}
 
 	@Override
-	public Site getSite()
-	{
+	public Site getSite() {
 		return OrlyDbCom.getSite();
 	}
 
 	@Override
-	public Set<Class<?>> getSupportedRecordTypes()
-	{
+	public Set<Class<?>> getSupportedRecordTypes() {
 		return ImmutableSet.of(Release.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (Release.class.equals(recordType))
-		{
+	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (Release.class.equals(recordType)) {
 			URL url = buildSearchUrl(query);
 			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
 			return (List<T>) parseReleaseSearchResults(getDocument(url));
@@ -76,8 +70,7 @@ public class OrlyDbComMetadataService extends HttpMetadataService
 		throw createRecordTypeNotSearchableException(recordType);
 	}
 
-	private URL buildSearchUrl(String query)
-	{
+	private URL buildSearchUrl(String query) {
 		return buildRelativeUrl("q", query);
 	}
 
@@ -94,15 +87,12 @@ public class OrlyDbComMetadataService extends HttpMetadataService
 	 * @param doc
 	 * @return
 	 */
-	protected List<Release> parseReleaseSearchResults(Document doc)
-	{
+	protected List<Release> parseReleaseSearchResults(Document doc) {
 		Elements rlsDivs = doc.select("div#releases > div");
 		ImmutableList.Builder<Release> results = ImmutableList.builder();
-		for (Element rlsDiv : rlsDivs)
-		{
+		for (Element rlsDiv : rlsDivs) {
 			Release rls = parseReleaseSearchResult(doc, rlsDiv);
-			if (rls != null)
-			{
+			if (rls != null) {
 				results.add(rls);
 			}
 		}
@@ -128,46 +118,38 @@ public class OrlyDbComMetadataService extends HttpMetadataService
 	 * @param rlsDiv
 	 * @return
 	 */
-	private static Release parseReleaseSearchResult(Document doc, Element rlsDiv)
-	{
+	private static Release parseReleaseSearchResult(Document doc, Element rlsDiv) {
 		Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
 		Element sectionSpan = rlsDiv.getElementsByClass("section").first();
 		Element releaseSpan = rlsDiv.getElementsByClass("release").first();
 		Element infoSpan = rlsDiv.getElementsByClass("info").first();
 		Element nukeSpan = rlsDiv.getElementsByClass("nuke").first();
 
-		if (releaseSpan == null)
-		{
+		if (releaseSpan == null) {
 			return null;
 		}
 
 		Release rls = new Release();
 		rls.setName(releaseSpan.text());
-		if (sectionSpan != null)
-		{
+		if (sectionSpan != null) {
 			rls.setCategory(sectionSpan.text());
 		}
-		if (timestampSpan != null)
-		{
-			try
-			{
+		if (timestampSpan != null) {
+			try {
 				ZonedDateTime date = ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE);
 				rls.setDate(date);
 			}
-			catch (DateTimeParseException e)
-			{
+			catch (DateTimeParseException e) {
 				log.warn("Could not parse release date string '" + timestampSpan.text() + "'", e);
 			}
 		}
 
-		if (infoSpan != null)
-		{
+		if (infoSpan != null) {
 			String info = infoSpan.text();
 			// e.g. "349.3MB | 25F"
 			Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
 			Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
-			if (mSizeAndFiles.matches())
-			{
+			if (mSizeAndFiles.matches()) {
 				// no NumberFormatExceptions can occur because then the pattern would not match in the first place
 				long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
 				rls.setSize(size);
@@ -176,8 +158,7 @@ public class OrlyDbComMetadataService extends HttpMetadataService
 			}
 		}
 
-		if (nukeSpan != null)
-		{
+		if (nukeSpan != null) {
 			rls.nuke(nukeSpan.text());
 		}
 

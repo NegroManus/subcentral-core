@@ -23,8 +23,7 @@ import de.subcentral.support.predbme.PreDbMeMetadataService;
 import de.subcentral.support.xrelto.XRelTo;
 import de.subcentral.support.xrelto.XRelToMetadataService;
 
-public class MultiInfoDbPlayground
-{
+public class MultiInfoDbPlayground {
 
 	/**
 	 * <pre>
@@ -34,8 +33,7 @@ public class MultiInfoDbPlayground
 	 * @param args
 	 * @throws InterruptedException
 	 */
-	public static void main(String[] args) throws InterruptedException
-	{
+	public static void main(String[] args) throws InterruptedException {
 		PreDbMeMetadataService preDbMe = PreDbMe.getMetadataService();
 		XRelToMetadataService xrelTo = XRelTo.getMetadataService();
 		OrlyDbComMetadataService orlyDb = OrlyDbCom.getMetadataService();
@@ -55,8 +53,7 @@ public class MultiInfoDbPlayground
 		long start = System.nanoTime();
 		ListMultimap<MetadataService, Release> results = MetadataServiceUtil.searchInAll(dbs, query, Release.class, executor);
 		TimeUtil.logDurationMillisDouble("queryAll", start);
-		for (Map.Entry<MetadataService, Collection<Release>> entry : results.asMap().entrySet())
-		{
+		for (Map.Entry<MetadataService, Collection<Release>> entry : results.asMap().entrySet()) {
 			System.out.println("Results of " + entry.getKey().getSite());
 			entry.getValue().stream().forEach((r) -> System.out.println(r));
 			System.out.println();

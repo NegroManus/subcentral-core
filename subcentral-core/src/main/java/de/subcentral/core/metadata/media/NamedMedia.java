@@ -60,8 +60,7 @@ import de.subcentral.core.metadata.NamedMetadata;
  * </p>
  *
  */
-public interface NamedMedia extends Media, NamedMetadata
-{
+public interface NamedMedia extends Media, NamedMetadata {
 	/**
 	 * Alias names for this media. For example, "House of Cards (US)"'s alias name is "House of Cards (2013)".
 	 * 
@@ -85,13 +84,11 @@ public interface NamedMedia extends Media, NamedMetadata
 	 * 
 	 * @return the {@link #getTitle() title} if this media {@link #isTitled() is titled}, else the {@link #getName() name}
 	 */
-	public default String getTitleOrName()
-	{
+	public default String getTitleOrName() {
 		return isTitled() ? getTitle() : getName();
 	}
 
-	public default boolean hasAliases()
-	{
+	public default boolean hasAliases() {
 		return !getAliasNames().isEmpty();
 	}
 }

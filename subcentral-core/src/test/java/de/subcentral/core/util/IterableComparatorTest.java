@@ -9,34 +9,25 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class IterableComparatorTest
-{
+public class IterableComparatorTest {
 	@Test
-	public void testIterableComparator()
-	{
+	public void testIterableComparator() {
 		Comparator<Iterable<Integer>> c = IterableComparator.create();
 
-		List<Integer> list1 = Arrays.asList(new Integer[]
-		{ 1, 2, 3, 4, 5, 6 });
-		List<Integer> list2 = Arrays.asList(new Integer[]
-		{ 1, 2, 3, 4, 5, 6, 7 });
+		List<Integer> list1 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6 });
+		List<Integer> list2 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6, 7 });
 		assertTrue(c.compare(list1, list2) < 0);
 
-		list1 = Arrays.asList(new Integer[]
-		{ 1, 2, 4, 4, 5, 6 });
-		list2 = Arrays.asList(new Integer[]
-		{ 1, 2, 3, 4, 5, 6 });
+		list1 = Arrays.asList(new Integer[] { 1, 2, 4, 4, 5, 6 });
+		list2 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6 });
 		assertTrue(c.compare(list1, list2) > 0);
 
-		list1 = Arrays.asList(new Integer[]
-		{ 1 });
+		list1 = Arrays.asList(new Integer[] { 1 });
 		list2 = new ArrayList<>(0);
 		assertTrue(c.compare(list1, list2) > 0);
 
-		list1 = Arrays.asList(new Integer[]
-		{ 1, 2, 3, 4, 5, 6 });
-		list2 = Arrays.asList(new Integer[]
-		{ 1, 2, 3, 4, 5, 6 });
+		list1 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6 });
+		list2 = Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6 });
 		assertTrue(c.compare(list1, list2) == 0);
 
 		list1 = new ArrayList<>(0);

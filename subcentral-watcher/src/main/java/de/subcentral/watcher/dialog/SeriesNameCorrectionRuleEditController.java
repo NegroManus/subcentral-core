@@ -26,8 +26,7 @@ import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
-public class SeriesNameCorrectionRuleEditController extends BeanEditController<SeriesNameCorrectorSettingsItem>
-{
+public class SeriesNameCorrectionRuleEditController extends BeanEditController<SeriesNameCorrectorSettingsItem> {
 	@FXML
 	private RadioButton			literalRadioBtn;
 	@FXML
@@ -49,39 +48,32 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 	@FXML
 	private Button				removeNameBtn;
 
-	public SeriesNameCorrectionRuleEditController(SeriesNameCorrectorSettingsItem bean, Window window)
-	{
+	public SeriesNameCorrectionRuleEditController(SeriesNameCorrectorSettingsItem bean, Window window) {
 		super(bean, window);
 	}
 
 	@Override
-	protected String getTitle()
-	{
-		if (bean == null)
-		{
+	protected String getTitle() {
+		if (bean == null) {
 			return "Add correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
 		}
-		else
-		{
+		else {
 			return "Edit correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
 		}
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "edit_text_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
+	protected Node getDefaultFocusNode() {
 		return namePatternTxtFld;
 	}
 
 	@Override
-	protected void initComponents()
-	{
+	protected void initComponents() {
 		ToggleGroup patternModeToggleGrp = new ToggleGroup();
 		patternModeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
 
@@ -90,17 +82,14 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 		String initialNamePattern;
 		String initialNameReplacement;
 		ObservableList<String> aliasNamesReplacement;
-		if (bean == null)
-		{
+		if (bean == null) {
 			initialPatternMode = literalRadioBtn;
 			initialNamePattern = null;
 			initialNameReplacement = null;
 			aliasNamesReplacement = FXCollections.observableArrayList();
 		}
-		else
-		{
-			switch (bean.getNameUserPattern().getMode())
-			{
+		else {
+			switch (bean.getNameUserPattern().getMode()) {
 				case LITERAL:
 					initialPatternMode = literalRadioBtn;
 					break;
@@ -125,8 +114,7 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 		// replacement names
 		aliasNamesReplacementListView.setCellFactory(TextFieldListCell.forListView(FxUtil.REJECT_BLANK_STRING_CONVERTER));
 		aliasNamesReplacementListView.setItems(aliasNamesReplacement);
-		addNameBtn.setOnAction((ActionEvent evt) ->
-		{
+		addNameBtn.setOnAction((ActionEvent evt) -> {
 			String newAliasName = StringUtils.isBlank(nameReplacementTxtFld.getText()) ? "alias name" : nameReplacementTxtFld.getText();
 			aliasNamesReplacement.add(newAliasName);
 			aliasNamesReplacementListView.getSelectionModel().selectLast();
@@ -135,13 +123,11 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 		final BooleanBinding noSelection = aliasNamesReplacementListView.getSelectionModel().selectedItemProperty().isNull();
 
 		editNameBtn.disableProperty().bind(noSelection);
-		editNameBtn.setOnAction((ActionEvent evt) ->
-		{
+		editNameBtn.setOnAction((ActionEvent evt) -> {
 			aliasNamesReplacementListView.edit(aliasNamesReplacementListView.getSelectionModel().getSelectedIndex());
 		});
 		removeNameBtn.disableProperty().bind(noSelection);
-		removeNameBtn.setOnAction((ActionEvent evt) ->
-		{
+		removeNameBtn.setOnAction((ActionEvent evt) -> {
 			FxActions.remove(aliasNamesReplacementListView);
 		});
 
@@ -156,24 +142,20 @@ public class SeriesNameCorrectionRuleEditController extends BeanEditController<S
 				patternErrorTxt);
 
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(new BooleanBinding()
-		{
+		applyButton.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(namePatternBinding, nameReplacementTxtFld.textProperty());
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				return namePatternBinding.getValue() == null || StringUtils.isBlank(nameReplacementTxtFld.getText());
 			}
 		});
 
 		// ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
 				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
 				return new SeriesNameCorrectorSettingsItem(namePatternBinding.getValue(), nameReplacementTxtFld.getText(), aliasNamesReplacementListView.getItems(), beforeQuerying, afterQuerying);

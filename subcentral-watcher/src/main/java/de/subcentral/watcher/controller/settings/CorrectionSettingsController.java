@@ -29,8 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
 
-public class CorrectionSettingsController extends AbstractSettingsSectionController
-{
+public class CorrectionSettingsController extends AbstractSettingsSectionController {
 	@FXML
 	private GridPane												rootPane;
 	@FXML
@@ -54,20 +53,17 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 	@FXML
 	private Button													importCorrectorsButton;
 
-	public CorrectionSettingsController(SettingsController settingsController)
-	{
+	public CorrectionSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		// Correctors table
 		correctorsTypeColumn.setCellValueFactory((CellDataFeatures<CorrectorSettingsItem<?, ?>, String> param) -> param.getValue().ruleType());
 
@@ -89,30 +85,24 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 
 		// Correctors table buttons
 		ActionList<CorrectorSettingsItem<?, ?>> correctorsActionList = new ActionList<>(correctors, correctorsTableView.getSelectionModel(), displayCorrectors);
-		correctorsActionList.setNewItemSupplier(() ->
-		{
+		correctorsActionList.setNewItemSupplier(() -> {
 			Class<? extends CorrectorSettingsItem<?, ?>> selectedCorrectorType = correctorTypeChoiceBox.getSelectionModel().getSelectedItem();
-			if (SeriesNameCorrectorSettingsItem.class == selectedCorrectorType)
-			{
+			if (SeriesNameCorrectorSettingsItem.class == selectedCorrectorType) {
 				Optional<SeriesNameCorrectorSettingsItem> r = WatcherDialogs.showSeriesNameCorrectionRuleEditView(getPrimaryStage());
 				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
 			}
-			else if (ReleaseTagsCorrectorSettingsItem.class == selectedCorrectorType)
-			{
+			else if (ReleaseTagsCorrectorSettingsItem.class == selectedCorrectorType) {
 				Optional<ReleaseTagsCorrectorSettingsItem> r = WatcherDialogs.showReleaseTagsCorrectionRuleEditView(getPrimaryStage());
 				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
 			}
 			return Optional.empty();
 		});
-		correctorsActionList.setItemEditer((CorrectorSettingsItem<?, ?> item) ->
-		{
-			if (SeriesNameCorrectorSettingsItem.class == item.getClass())
-			{
+		correctorsActionList.setItemEditer((CorrectorSettingsItem<?, ?> item) -> {
+			if (SeriesNameCorrectorSettingsItem.class == item.getClass()) {
 				Optional<SeriesNameCorrectorSettingsItem> r = WatcherDialogs.showSeriesNameCorrectionRuleEditView((SeriesNameCorrectorSettingsItem) item, getPrimaryStage());
 				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
 			}
-			else if (ReleaseTagsCorrectorSettingsItem.class == item.getClass())
-			{
+			else if (ReleaseTagsCorrectorSettingsItem.class == item.getClass()) {
 				Optional<ReleaseTagsCorrectorSettingsItem> r = WatcherDialogs.showReleaseTagsCorrectionRuleEditView((ReleaseTagsCorrectorSettingsItem) item, getPrimaryStage());
 				return r.isPresent() ? Optional.of(r.get()) : Optional.empty();
 			}
@@ -129,20 +119,15 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 
 		FxActions.setStandardMouseAndKeyboardSupport(correctorsTableView, addCorrectorButton, editCorrectorButton, removeCorrectorButton);
 
-		importCorrectorsButton.setOnAction((ActionEvent event) ->
-		{
+		importCorrectorsButton.setOnAction((ActionEvent event) -> {
 			Optional<ImportSettingItemsParameters> result = WatcherDialogs.showImportSettingItemsView(getPrimaryStage(), "Import correction rules");
-			if (result.isPresent())
-			{
+			if (result.isPresent()) {
 				ImportSettingItemsParameters params = result.get();
-				Task<XMLConfiguration> importCorrectorsTask = new Task<XMLConfiguration>()
-				{
+				Task<XMLConfiguration> importCorrectorsTask = new Task<XMLConfiguration>() {
 					@Override
-					protected XMLConfiguration call() throws ConfigurationException
-					{
+					protected XMLConfiguration call() throws ConfigurationException {
 						XMLConfiguration cfg;
-						switch (params.getSourceType())
-						{
+						switch (params.getSourceType()) {
 							case DEFAULT_SETTINGS:
 								cfg = ConfigurationHelper.load(parent.getDefaultSettingsUrl());
 								break;
@@ -159,8 +144,7 @@ public class CorrectionSettingsController extends AbstractSettingsSectionControl
 					}
 
 					@Override
-					protected void succeeded()
-					{
+					protected void succeeded() {
 						XMLConfiguration cfg = getValue();
 						SettingsController.SETTINGS.getProcessingSettings().getCorrectionRules().updateSorted(cfg,
 								params.isAddItems(),

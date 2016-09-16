@@ -10,11 +10,9 @@ import org.junit.Test;
 import de.subcentral.core.parse.CompoundMappingMatcher.GroupEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class DelegatingMappingMatcherTest
-{
+public class DelegatingMappingMatcherTest {
 	@Test
-	public void testDelegatingMappingMatcher()
-	{
+	public void testDelegatingMappingMatcher() {
 		// Input data
 		String s1 = "A-x.y-O";
 		String s2 = "A-x:y-O";

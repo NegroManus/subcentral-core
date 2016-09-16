@@ -5,8 +5,7 @@ import java.nio.file.Path;
 
 import org.jsoup.nodes.Document;
 
-public interface SubCentralApi
-{
+public interface SubCentralApi {
 	public void login(String username, String password, boolean stayLoggedIn) throws IOException;
 
 	/**

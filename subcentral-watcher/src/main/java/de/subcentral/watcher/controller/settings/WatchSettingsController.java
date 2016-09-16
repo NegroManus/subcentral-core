@@ -16,8 +16,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 
-public class WatchSettingsController extends AbstractSettingsSectionController
-{
+public class WatchSettingsController extends AbstractSettingsSectionController {
 	@FXML
 	private GridPane		rootPane;
 	@FXML
@@ -31,26 +30,22 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 	@FXML
 	private CheckBox		rejectAlreadyProcessedFilesCheckBox;
 
-	public WatchSettingsController(SettingsController settingsController)
-	{
+	public WatchSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		// Watch directories list
 		watchDirectoriesListView.setItems(SettingsController.SETTINGS.getWatchDirectories().property());
 
 		ActionList<Path> dirsActionList = new ActionList<>(watchDirectoriesListView);
-		dirsActionList.setNewItemSupplier(() ->
-		{
+		dirsActionList.setNewItemSupplier(() -> {
 			DirectoryChooser dirChooser = new DirectoryChooser();
 			dirChooser.setTitle("Add watch directory");
 			File file = dirChooser.showDialog(getPrimaryStage());
@@ -71,8 +66,7 @@ public class WatchSettingsController extends AbstractSettingsSectionController
 		rejectAlreadyProcessedFilesCheckBox.selectedProperty().bindBidirectional(SettingsController.SETTINGS.getRejectAlreadyProcessedFiles().property());
 	}
 
-	public void addWatchDirectory()
-	{
+	public void addWatchDirectory() {
 		addWatchDirectoryButton.fire();
 	}
 }

@@ -8,11 +8,9 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
-public class CollectionUtilTest
-{
+public class CollectionUtilTest {
 	@Test
-	public void testUpdateSortedListNaturalOrder()
-	{
+	public void testUpdateSortedListNaturalOrder() {
 		// Input
 		List<Integer> origList = CollectionUtil.createArrayList(1, 2, 3, 4, 6);
 		List<Integer> updateList = ImmutableList.of(1, 2, 3, 4, 5, 6);

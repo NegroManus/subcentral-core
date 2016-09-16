@@ -8,16 +8,13 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.stage.Stage;
 
-public class TestApp2 extends Application
-{
-	public static void main(String[] args)
-	{
+public class TestApp2 extends Application {
+	public static void main(String[] args) {
 		Application.launch();
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception
-	{
+	public void start(Stage stage) throws Exception {
 
 		TreeView<String> treeView = new TreeView<String>();
 
@@ -32,26 +29,19 @@ public class TestApp2 extends Application
 		item1.getChildren().add(item1a);
 		root.getChildren().add(item1);
 
-		new Thread(new Runnable()
-		{
+		new Thread(new Runnable() {
 			@Override
-			public void run()
-			{
-				while (true)
-				{
-					try
-					{
+			public void run() {
+				while (true) {
+					try {
 						Thread.sleep(100);
 					}
-					catch (InterruptedException e)
-					{
+					catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					Platform.runLater(new Runnable()
-					{
+					Platform.runLater(new Runnable() {
 						@Override
-						public void run()
-						{
+						public void run() {
 							item1.getChildren().clear();
 							item1.getChildren().add(item1a);
 							System.gc();

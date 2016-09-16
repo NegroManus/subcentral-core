@@ -9,8 +9,7 @@ import de.subcentral.core.metadata.MetadataBase;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class Network extends MetadataBase implements Comparable<Network>
-{
+public class Network extends MetadataBase implements Comparable<Network> {
 	private static final long					serialVersionUID	= 6231096307092943124L;
 
 	public static final SimplePropDescriptor	PROP_NAME			= new SimplePropDescriptor(Network.class, PropNames.NAME);
@@ -18,63 +17,51 @@ public class Network extends MetadataBase implements Comparable<Network>
 
 	private String								name;
 
-	public Network()
-	{
+	public Network() {
 		// default constructor
 	}
 
-	public Network(String name)
-	{
+	public Network(String name) {
 		this.name = name;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Network)
-		{
+		if (obj instanceof Network) {
 			return Objects.equals(name, ((Network) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hashCode(name);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).add("ids", ObjectUtil.nullIfEmpty(ids)).toString();
 	}
 
 	@Override
-	public int compareTo(Network o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Network o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);

@@ -21,8 +21,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Window;
 
-public class StandardReleaseEditController extends BeanEditController<StandardRelease>
-{
+public class StandardReleaseEditController extends BeanEditController<StandardRelease> {
 	// View
 	@FXML
 	private TextField	tagsTxtFld;
@@ -33,39 +32,32 @@ public class StandardReleaseEditController extends BeanEditController<StandardRe
 	@FXML
 	private RadioButton	alwaysRadioBtn;
 
-	public StandardReleaseEditController(StandardRelease commonReleaseDef, Window window)
-	{
+	public StandardReleaseEditController(StandardRelease commonReleaseDef, Window window) {
 		super(commonReleaseDef, window);
 	}
 
 	@Override
-	protected String getTitle()
-	{
-		if (bean == null)
-		{
+	protected String getTitle() {
+		if (bean == null) {
 			return "Add standard release";
 		}
-		else
-		{
+		else {
 			return "Edit standard release";
 		}
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "release_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
+	protected Node getDefaultFocusNode() {
 		return groupTxtFld;
 	}
 
 	@Override
-	protected void initComponents()
-	{
+	protected void initComponents() {
 		ToggleGroup scopeToggleGrp = new ToggleGroup();
 		scopeToggleGrp.getToggles().addAll(ifGuessingRadioBtn, alwaysRadioBtn);
 
@@ -73,18 +65,15 @@ public class StandardReleaseEditController extends BeanEditController<StandardRe
 		List<Tag> initialTags;
 		Group initialGroup;
 		Toggle initialScope;
-		if (bean == null)
-		{
+		if (bean == null) {
 			initialTags = ImmutableList.of();
 			initialGroup = null;
 			initialScope = ifGuessingRadioBtn;
 		}
-		else
-		{
+		else {
 			initialTags = bean.getRelease().getTags();
 			initialGroup = bean.getRelease().getGroup();
-			switch (bean.getScope())
-			{
+			switch (bean.getScope()) {
 				case IF_GUESSING:
 					initialScope = ifGuessingRadioBtn;
 					break;
@@ -105,17 +94,13 @@ public class StandardReleaseEditController extends BeanEditController<StandardRe
 		applyButton.disableProperty().bind(tags.emptyProperty());
 
 		// ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
 				Scope scope;
-				if (scopeToggleGrp.getSelectedToggle() == alwaysRadioBtn)
-				{
+				if (scopeToggleGrp.getSelectedToggle() == alwaysRadioBtn) {
 					scope = Scope.ALWAYS;
 				}
-				else
-				{
+				else {
 					scope = Scope.IF_GUESSING;
 				}
 				return new StandardRelease(tags.get(), group.getValue(), scope);

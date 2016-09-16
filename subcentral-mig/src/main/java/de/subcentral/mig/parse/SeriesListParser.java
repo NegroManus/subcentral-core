@@ -31,29 +31,24 @@ import de.subcentral.mig.Migration;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
-public class SeriesListParser
-{
+public class SeriesListParser {
 	private static final Logger	log	= LogManager.getLogger(SeriesListParser.class);
 
 	private static final String	URL	= "http://subcentral.de/index.php?page=Thread&postID=29261";
 
-	public SeriesListData getAndParse() throws IOException
-	{
+	public SeriesListData getAndParse() throws IOException {
 		return parseThreadPage(Jsoup.parse(new URL(URL), Migration.TIMEOUT_MILLIS));
 	}
 
-	public SeriesListData parseThreadPage(Document thread)
-	{
+	public SeriesListData parseThreadPage(Document thread) {
 		return parsePost(thread.outerHtml());
 	}
 
-	public SeriesListData parsePost(WbbPost post)
-	{
+	public SeriesListData parsePost(WbbPost post) {
 		return parsePost(post.getMessage());
 	}
 
-	public SeriesListData parsePost(String postMessage)
-	{
+	public SeriesListData parsePost(String postMessage) {
 		Document doc = Jsoup.parse(postMessage, SubCentralDe.getSite().getLink());
 
 		final Pattern boardIdPattern = Pattern.compile("boardID=(\\d+)");
@@ -73,11 +68,9 @@ public class SeriesListParser
 
 		Element table = doc.getElementById("qltable");
 		Elements rows = table.getElementsByTag("tr");
-		for (Element row : rows)
-		{
+		for (Element row : rows) {
 			Elements cells = row.getElementsByTag("td");
-			if (!cells.isEmpty())
-			{
+			if (!cells.isEmpty()) {
 				Iterator<Element> iter = cells.iterator();
 				Series series = new Series();
 
@@ -93,12 +86,10 @@ public class SeriesListParser
 				series.setName(seriesCell.text());
 				String boardUrl = seriesCell.getElementsByTag("a").first().attr("href");
 				Matcher boardIdMatcher = boardIdPattern.matcher(boardUrl);
-				if (boardIdMatcher.find())
-				{
+				if (boardIdMatcher.find()) {
 					series.getAttributes().put(Migration.SERIES_ATTR_BOARD_ID, Integer.parseInt(boardIdMatcher.group(1)));
 				}
-				else
-				{
+				else {
 					log.warn("Couldn't find a board ID for series {}. Content of series cell: {}", series.getName(), seriesCell);
 				}
 				series.getImages().put(Migration.SERIES_IMG_TYPE_LOGO, seriesCell.getElementsByTag("img").attr("src"));
@@ -112,18 +103,15 @@ public class SeriesListParser
 				 */
 				Element yearsCell = iter.next();
 				Matcher yearsMatcher = yearsPattern.matcher(yearsCell.text());
-				if (yearsMatcher.find())
-				{
+				if (yearsMatcher.find()) {
 					String startYear = yearsMatcher.group(1);
 					series.setDate(Year.parse(startYear));
 					String endYear = yearsMatcher.group(2);
-					if (endYear != null)
-					{
+					if (endYear != null) {
 						series.setFinaleDate(Year.parse(endYear));
 					}
 				}
-				else
-				{
+				else {
 					log.warn("Couldn't parse years for series {}. Content of years cell: {}", series.getName(), yearsCell);
 				}
 
@@ -136,34 +124,27 @@ public class SeriesListParser
 				 */
 				Element seasonsCell = iter.next();
 				Elements seasonAnchors = seasonsCell.getElementsByTag("a");
-				for (Element seasonAnchor : seasonAnchors)
-				{
+				for (Element seasonAnchor : seasonAnchors) {
 					List<Season> seasonsInAnchor = new ArrayList<>();
 					String seasonLabel = seasonAnchor.text();
-					try
-					{
+					try {
 						seasonsInAnchor.add(series.newSeason(Integer.parseInt(seasonLabel)));
 					}
-					catch (NumberFormatException e)
-					{
+					catch (NumberFormatException e) {
 						// try to parse the season label
-						for (;;)
-						{
+						for (;;) {
 							Matcher seasonAdditionMatcher = seasonAdditionPattern.matcher(seasonLabel);
-							if (seasonAdditionMatcher.find())
-							{
+							if (seasonAdditionMatcher.find()) {
 								seasonsInAnchor.add(series.newSeason(Integer.parseInt(seasonAdditionMatcher.group(1))));
 								seasonsInAnchor.add(series.newSeason(Integer.parseInt(seasonAdditionMatcher.group(2))));
 								break;
 							}
 
 							Matcher seasonRangeMatcher = seasonRangePattern.matcher(seasonLabel);
-							if (seasonRangeMatcher.find())
-							{
+							if (seasonRangeMatcher.find()) {
 								int start = Integer.parseInt(seasonRangeMatcher.group(1));
 								int end = Integer.parseInt(seasonRangeMatcher.group(2));
-								for (int i = start; i <= end; i++)
-								{
+								for (int i = start; i <= end; i++) {
 									seasonsInAnchor.add(series.newSeason(i));
 								}
 								break;
@@ -176,16 +157,13 @@ public class SeriesListParser
 						}
 					}
 
-					for (Season season : seasonsInAnchor)
-					{
+					for (Season season : seasonsInAnchor) {
 						String threadUrl = seasonAnchor.attr("href");
 						Matcher threadIdMatcher = threadIdPattern.matcher(threadUrl);
-						if (threadIdMatcher.find())
-						{
+						if (threadIdMatcher.find()) {
 							season.getAttributes().put(Migration.SEASON_ATTR_THREAD_ID, Integer.parseInt(threadIdMatcher.group(1)));
 						}
-						else
-						{
+						else {
 							log.warn("Couldn't find a thread ID for season {}. Content of season anchor: {}", season, seasonAnchor);
 						}
 					}
@@ -217,8 +195,7 @@ public class SeriesListParser
 				 * </pre>
 				 */
 				Element networkCell = iter.next();
-				for (String networkName : listSplitter.split(networkCell.text()))
-				{
+				for (String networkName : listSplitter.split(networkCell.text())) {
 					Network network = new Network(networkName);
 					Network previousValue = networkList.putIfAbsent(network, network);
 					series.getNetworks().add(previousValue == null ? network : previousValue);
@@ -231,31 +208,26 @@ public class SeriesListParser
 		return new SeriesListData(seriesList, seasonList, networkList.keySet());
 	}
 
-	public static class SeriesListData
-	{
+	public static class SeriesListData {
 		private final List<Series>	series;
 		private final List<Season>	seasons;
 		private final List<Network>	networks;
 
-		public SeriesListData(Iterable<Series> series, Iterable<Season> seasons, Iterable<Network> networks)
-		{
+		public SeriesListData(Iterable<Series> series, Iterable<Season> seasons, Iterable<Network> networks) {
 			this.series = ImmutableList.copyOf(series);
 			this.seasons = ImmutableList.copyOf(seasons);
 			this.networks = ImmutableList.copyOf(networks);
 		}
 
-		public List<Series> getSeries()
-		{
+		public List<Series> getSeries() {
 			return series;
 		}
 
-		public List<Season> getSeasons()
-		{
+		public List<Season> getSeasons() {
 			return seasons;
 		}
 
-		public List<Network> getNetworks()
-		{
+		public List<Network> getNetworks() {
 			return networks;
 		}
 	}

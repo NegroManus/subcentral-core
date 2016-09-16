@@ -15,39 +15,33 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
-public class LanguageTextMappingEditController extends BeanEditController<LanguageToTextMapping>
-{
+public class LanguageTextMappingEditController extends BeanEditController<LanguageToTextMapping> {
 	@FXML
 	private ComboBox<Locale>	langComboBox;
 	@FXML
 	private TextField			textTxtFld;
 
-	public LanguageTextMappingEditController(LanguageToTextMapping bean, Window window)
-	{
+	public LanguageTextMappingEditController(LanguageToTextMapping bean, Window window) {
 		super(bean, window);
 	}
 
 	@Override
-	protected String getTitle()
-	{
+	protected String getTitle() {
 		return bean == null ? "Add language to text mapping" : "Edit language to text mapping";
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "usa_flag_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
+	protected Node getDefaultFocusNode() {
 		return textTxtFld;
 	}
 
 	@Override
-	protected void initComponents()
-	{
+	protected void initComponents() {
 		// Set initial values
 		langComboBox.setItems(FxUtil.createListOfAvailableLocales(true, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
 		langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
@@ -57,24 +51,20 @@ public class LanguageTextMappingEditController extends BeanEditController<Langua
 
 		// Bindings
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(new BooleanBinding()
-		{
+		applyButton.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(langComboBox.valueProperty(), textTxtFld.textProperty());
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				return langComboBox.getValue() == null || StringUtils.isBlank(textTxtFld.getText());
 			}
 		});
 
 		// Set ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
 				return new LanguageToTextMapping(langComboBox.getValue(), textTxtFld.getText());
 			}
 			return null;

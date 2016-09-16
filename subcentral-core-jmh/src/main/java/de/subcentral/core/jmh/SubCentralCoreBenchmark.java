@@ -81,8 +81,7 @@ import de.subcentral.support.subcentralde.SubCentralDe;
  * </pre>
  *
  */
-public class SubCentralCoreBenchmark
-{
+public class SubCentralCoreBenchmark {
 	private static final SubtitleRelease	SUB_RLS						= SubtitleRelease
 			.create(Release.create(Episode.createSeasonedEpisode("Psych (2001)", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
 
@@ -102,8 +101,7 @@ public class SubCentralCoreBenchmark
 			ADDIC7ED_PARSING_SERVICE);
 	private static final URL				SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
-	private static TypeBasedCorrectionService buildCorrectionService()
-	{
+	private static TypeBasedCorrectionService buildCorrectionService() {
 		TypeBasedCorrectionService service = new TypeBasedCorrectionService("testing");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
 		CorrectionDefaults.registerAllDefaultCorrectors(service);
@@ -121,56 +119,47 @@ public class SubCentralCoreBenchmark
 	@Benchmark
 	// @BenchmarkMode(Mode.Throughput)
 	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
-	public void testCorrect()
-	{
+	public void testCorrect() {
 		CORRECTION_SERVICE.correct(SUB_RLS);
 	}
 
 	@Benchmark
-	public void testNaming()
-	{
+	public void testNaming() {
 		NAMING_SERVICE.name(SUB_RLS);
 	}
 
 	// @Benchmark
-	public void testParsingAddic7ed()
-	{
+	public void testParsingAddic7ed() {
 		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
 	// @Benchmark
-	public void testParsingSubCentral()
-	{
+	public void testParsingSubCentral() {
 		SUBCENTRAL_PARSING_SERVICE.parse("Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI.de-SubCentral");
 	}
 
 	// @Benchmark
-	public void testParsingBestCase()
-	{
+	public void testParsingBestCase() {
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
 	// @Benchmark
-	public void testParsingWorstCase()
-	{
+	public void testParsingWorstCase() {
 		PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
 	}
 
 	@Benchmark
-	public void testParsingSubAdjBestCase()
-	{
+	public void testParsingSubAdjBestCase() {
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
 	}
 
 	// @Benchmark
-	public void testParsingSubAdjWorstCase()
-	{
+	public void testParsingSubAdjWorstCase() {
 		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
 	}
 
 	// @Benchmark
-	public void testParsingSubRipFile(Blackhole blackhole) throws IOException
-	{
+	public void testParsingSubRipFile(Blackhole blackhole) throws IOException {
 		SubtitleContent data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
 		blackhole.consume(data);
 	}
@@ -230,8 +219,7 @@ public class SubCentralCoreBenchmark
 	 * @param args
 	 * @throws RunnerException
 	 */
-	public static void main(String[] args) throws RunnerException
-	{
+	public static void main(String[] args) throws RunnerException {
 		Options opt = new OptionsBuilder().include(SubCentralCoreBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
 
 		new Runner(opt).run();

@@ -20,8 +20,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableView;
 
-public class ActionList<E>
-{
+public class ActionList<E> {
 	// required properties
 	private final ObservableList<E>				list;
 	private final TransformationList<E, E>		displayList;
@@ -39,240 +38,191 @@ public class ActionList<E>
 	private BooleanBinding						noIndexSelected;
 
 	// constructors
-	public ActionList(ComboBox<E> comboBox)
-	{
+	public ActionList(ComboBox<E> comboBox) {
 		this(comboBox.getItems(), comboBox.getSelectionModel(), null);
 	}
 
-	public ActionList(ListView<E> listView)
-	{
+	public ActionList(ListView<E> listView) {
 		this(listView.getItems(), listView.getSelectionModel(), null);
 	}
 
-	public ActionList(TableView<E> tableView)
-	{
+	public ActionList(TableView<E> tableView) {
 		this(tableView.getItems(), tableView.getSelectionModel(), null);
 	}
 
-	public ActionList(ObservableList<E> list, SelectionModel<E> selectionModel, TransformationList<E, E> displayList)
-	{
+	public ActionList(ObservableList<E> list, SelectionModel<E> selectionModel, TransformationList<E, E> displayList) {
 		this.list = Objects.requireNonNull(list, "list");
 		this.selectionModel = Objects.requireNonNull(selectionModel, "selectionModel");
 		this.displayList = displayList;
 	}
 
 	// properties
-	public ObservableList<E> getList()
-	{
+	public ObservableList<E> getList() {
 		return list;
 	}
 
-	public TransformationList<E, E> getDisplayList()
-	{
+	public TransformationList<E, E> getDisplayList() {
 		return displayList;
 	}
 
-	public SelectionModel<E> getSelectionModel()
-	{
+	public SelectionModel<E> getSelectionModel() {
 		return selectionModel;
 	}
 
-	public Supplier<Optional<E>> getNewItemSupplier()
-	{
+	public Supplier<Optional<E>> getNewItemSupplier() {
 		return newItemSupplier;
 	}
 
-	public void setNewItemSupplier(Supplier<Optional<E>> newItemSupplier)
-	{
+	public void setNewItemSupplier(Supplier<Optional<E>> newItemSupplier) {
 		this.newItemSupplier = newItemSupplier;
 	}
 
-	public Function<E, Optional<E>> getItemEditer()
-	{
+	public Function<E, Optional<E>> getItemEditer() {
 		return itemEditer;
 	}
 
-	public void setItemEditer(Function<E, Optional<E>> itemEditer)
-	{
+	public void setItemEditer(Function<E, Optional<E>> itemEditer) {
 		this.itemEditer = itemEditer;
 	}
 
-	public BiPredicate<? super E, ? super E> getDistincter()
-	{
+	public BiPredicate<? super E, ? super E> getDistincter() {
 		return distincter;
 	}
 
-	public void setDistincter(BiPredicate<? super E, ? super E> distincter)
-	{
+	public void setDistincter(BiPredicate<? super E, ? super E> distincter) {
 		this.distincter = distincter;
 	}
 
-	public Comparator<? super E> getSorter()
-	{
+	public Comparator<? super E> getSorter() {
 		return sorter;
 	}
 
-	public void setSorter(Comparator<? super E> sorter)
-	{
+	public void setSorter(Comparator<? super E> sorter) {
 		this.sorter = sorter;
 	}
 
-	public Consumer<? super E> getAlreadyContainedInformer()
-	{
+	public Consumer<? super E> getAlreadyContainedInformer() {
 		return alreadyContainedInformer;
 	}
 
-	public void setAlreadyContainedInformer(Consumer<? super E> alreadyContainedInformer)
-	{
+	public void setAlreadyContainedInformer(Consumer<? super E> alreadyContainedInformer) {
 		this.alreadyContainedInformer = alreadyContainedInformer;
 	}
 
-	public Predicate<? super E> getRemoveConfirmer()
-	{
+	public Predicate<? super E> getRemoveConfirmer() {
 		return removeConfirmer;
 	}
 
-	public void setRemoveConfirmer(Predicate<? super E> removeConfirmer)
-	{
+	public void setRemoveConfirmer(Predicate<? super E> removeConfirmer) {
 		this.removeConfirmer = removeConfirmer;
 	}
 
 	// functions
 	// binding
-	public void bindAddButton(ButtonBase addBtn)
-	{
+	public void bindAddButton(ButtonBase addBtn) {
 		addBtn.setOnAction((ActionEvent evt) -> add());
 	}
 
-	public void bindEditButton(ButtonBase editBtn)
-	{
+	public void bindEditButton(ButtonBase editBtn) {
 		editBtn.disableProperty().bind(getNoIndexSelectedBinding());
 		editBtn.setOnAction((ActionEvent evt) -> editSelected());
 	}
 
-	public void bindRemoveButton(ButtonBase removeBtn)
-	{
+	public void bindRemoveButton(ButtonBase removeBtn) {
 		removeBtn.disableProperty().bind(getNoIndexSelectedBinding());
 		removeBtn.setOnAction((ActionEvent evt) -> removeSelected());
 	}
 
-	public void bindMoveButtons(ButtonBase moveUpBtn, ButtonBase moveDownBtn)
-	{
+	public void bindMoveButtons(ButtonBase moveUpBtn, ButtonBase moveDownBtn) {
 		FxActions.bindMoveButtons(list, selectionModel, moveUpBtn, moveDownBtn);
 	}
 
 	// access
-	private int getSourceIndex(int index)
-	{
+	private int getSourceIndex(int index) {
 		return displayList == null ? index : displayList.getSourceIndexFor(list, index);
 	}
 
-	private int getSelectedSourceIndex()
-	{
+	private int getSelectedSourceIndex() {
 		return getSourceIndex(selectionModel.getSelectedIndex());
 	}
 
-	private ObservableList<E> getSelectableList()
-	{
+	private ObservableList<E> getSelectableList() {
 		return displayList == null ? list : displayList;
 	}
 
 	// modify
-	public boolean add()
-	{
-		if (newItemSupplier == null)
-		{
+	public boolean add() {
+		if (newItemSupplier == null) {
 			throw new UnsupportedOperationException("No newItemSupplier provided");
 		}
 		Optional<E> itemOpt = newItemSupplier.get();
-		if (itemOpt.isPresent())
-		{
-			if (sorter == null)
-			{
-				if (distincter == null || !CollectionUtil.contains(list, itemOpt.get(), distincter))
-				{
+		if (itemOpt.isPresent()) {
+			if (sorter == null) {
+				if (distincter == null || !CollectionUtil.contains(list, itemOpt.get(), distincter)) {
 					int addIndex = selectionModel.getSelectedIndex() >= 0 ? selectionModel.getSelectedIndex() + 1 : list.size();
 					list.add(getSourceIndex(addIndex), itemOpt.get());
 					selectionModel.select(addIndex);
 					return true;
 				}
 			}
-			else
-			{
-				if (CollectionUtil.addToSortedList(list, itemOpt.get(), sorter, distincter))
-				{
+			else {
+				if (CollectionUtil.addToSortedList(list, itemOpt.get(), sorter, distincter)) {
 					selectionModel.select(itemOpt.get());
 					return true;
 				}
 			}
-			if (alreadyContainedInformer != null)
-			{
+			if (alreadyContainedInformer != null) {
 				alreadyContainedInformer.accept(itemOpt.get());
 			}
 		}
 		return false;
 	}
 
-	public E editSelected()
-	{
-		if (itemEditer == null)
-		{
+	public E editSelected() {
+		if (itemEditer == null) {
 			throw new UnsupportedOperationException("No itemEditer provided");
 		}
-		if (selectionModel.getSelectedIndex() < 0)
-		{
+		if (selectionModel.getSelectedIndex() < 0) {
 			return null;
 		}
 		Optional<E> itemOpt = itemEditer.apply(selectionModel.getSelectedItem());
-		if (itemOpt.isPresent())
-		{
+		if (itemOpt.isPresent()) {
 			int selectedSourceIndex = getSelectedSourceIndex();
-			if (sorter == null)
-			{
-				if (distincter != null)
-				{
+			if (sorter == null) {
+				if (distincter != null) {
 					int sourceIndexOfExisting = CollectionUtil.indexOf(list, itemOpt.get(), distincter);
-					if (sourceIndexOfExisting < 0 || sourceIndexOfExisting == selectedSourceIndex)
-					{
+					if (sourceIndexOfExisting < 0 || sourceIndexOfExisting == selectedSourceIndex) {
 						return list.set(selectedSourceIndex, itemOpt.get());
 					}
 				}
-				else
-				{
+				else {
 					return list.set(selectedSourceIndex, itemOpt.get());
 				}
 			}
-			else
-			{
+			else {
 				E previousItem = CollectionUtil.setInSortedList(list, selectedSourceIndex, itemOpt.get(), sorter, distincter);
-				if (previousItem != null)
-				{
+				if (previousItem != null) {
 					// select the new item if the edit was successfull
 					selectionModel.select(itemOpt.get());
 					return previousItem;
 				}
 			}
-			if (alreadyContainedInformer != null)
-			{
+			if (alreadyContainedInformer != null) {
 				alreadyContainedInformer.accept(itemOpt.get());
 			}
 		}
 		return null;
 	}
 
-	public E removeSelected()
-	{
-		if (selectionModel.getSelectedIndex() < 0)
-		{
+	public E removeSelected() {
+		if (selectionModel.getSelectedIndex() < 0) {
 			return null;
 		}
-		if (removeConfirmer == null || removeConfirmer.test(selectionModel.getSelectedItem()))
-		{
+		if (removeConfirmer == null || removeConfirmer.test(selectionModel.getSelectedItem())) {
 			int selectedIndex = selectionModel.getSelectedIndex();
 			E removedItem = list.remove(getSelectedSourceIndex());
 			// Reselect the selectedIndex (standard behavior selects selectedIndex-1)
-			if (!getSelectableList().isEmpty() && selectedIndex < getSelectableList().size())
-			{
+			if (!getSelectableList().isEmpty() && selectedIndex < getSelectableList().size()) {
 				selectionModel.select(selectedIndex);
 			}
 			return removedItem;
@@ -281,11 +231,9 @@ public class ActionList<E>
 	}
 
 	// internal
-	private BooleanBinding getNoIndexSelectedBinding()
-	{
+	private BooleanBinding getNoIndexSelectedBinding() {
 		// only build this binding if it is needed
-		if (noIndexSelected == null)
-		{
+		if (noIndexSelected == null) {
 			noIndexSelected = selectionModel.selectedIndexProperty().lessThan(0);
 		}
 		return noIndexSelected;

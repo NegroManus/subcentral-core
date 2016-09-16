@@ -14,62 +14,51 @@ import de.subcentral.fx.FxUtil;
 import de.subcentral.fx.UserPattern;
 import javafx.util.StringConverter;
 
-public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>, Comparable<PatternToLanguageMapping>
-{
+public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>, Comparable<PatternToLanguageMapping> {
 	public static final StringConverter<PatternToLanguageMapping>	STRING_CONVERTER	= initStringConverter();
 
 	private final UserPattern										pattern;
 	private final Locale											language;
 
-	public PatternToLanguageMapping(UserPattern pattern, Locale language)
-	{
+	public PatternToLanguageMapping(UserPattern pattern, Locale language) {
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.language = Objects.requireNonNull(language, "language");
 	}
 
-	public UserPattern getPattern()
-	{
+	public UserPattern getPattern() {
 		return pattern;
 	}
 
-	public Locale getLanguage()
-	{
+	public Locale getLanguage() {
 		return language;
 	}
 
-	public LanguagePattern toLanguagePattern()
-	{
+	public LanguagePattern toLanguagePattern() {
 		return new LanguagePattern(pattern.toPattern(), language);
 	}
 
 	// Map.Entry implementation
 	@Override
-	public UserPattern getKey()
-	{
+	public UserPattern getKey() {
 		return pattern;
 	}
 
 	@Override
-	public Locale getValue()
-	{
+	public Locale getValue() {
 		return language;
 	}
 
 	@Override
-	public Locale setValue(Locale value)
-	{
+	public Locale setValue(Locale value) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof PatternToLanguageMapping)
-		{
+		if (obj instanceof PatternToLanguageMapping) {
 			PatternToLanguageMapping o = (PatternToLanguageMapping) obj;
 			return pattern.equals(o.pattern) && language.equals(language);
 		}
@@ -77,41 +66,33 @@ public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>,
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return new HashCodeBuilder(73, 113).append(pattern).append(language).toHashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(PatternToLanguageMapping.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
 	}
 
 	@Override
-	public int compareTo(PatternToLanguageMapping o)
-	{
+	public int compareTo(PatternToLanguageMapping o) {
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start().compare(pattern, o.pattern).compare(language, o.language, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR).result();
 	}
 
-	private static StringConverter<PatternToLanguageMapping> initStringConverter()
-	{
-		return new StringConverter<PatternToLanguageMapping>()
-		{
+	private static StringConverter<PatternToLanguageMapping> initStringConverter() {
+		return new StringConverter<PatternToLanguageMapping>() {
 			@Override
-			public String toString(PatternToLanguageMapping pattern)
-			{
+			public String toString(PatternToLanguageMapping pattern) {
 				return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
 			}
 
 			@Override
-			public PatternToLanguageMapping fromString(String string)
-			{
+			public PatternToLanguageMapping fromString(String string) {
 				throw new UnsupportedOperationException();
 			}
 		};

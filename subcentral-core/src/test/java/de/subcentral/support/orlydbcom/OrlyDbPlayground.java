@@ -11,10 +11,8 @@ import com.google.common.io.Resources;
 
 import de.subcentral.core.metadata.release.Release;
 
-public class OrlyDbPlayground
-{
-	public static void main(String[] args) throws IOException
-	{
+public class OrlyDbPlayground {
+	public static void main(String[] args) throws IOException {
 		OrlyDbComMetadataService db = new OrlyDbComMetadataService();
 
 		URL url = Resources.getResource("de/subcentral/support/orlydbcom/psych.s06e05.html");

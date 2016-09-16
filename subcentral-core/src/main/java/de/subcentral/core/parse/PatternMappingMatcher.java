@@ -9,8 +9,7 @@ import java.util.regex.Pattern;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
-public class PatternMappingMatcher<K> implements MappingMatcher<K>
-{
+public class PatternMappingMatcher<K> implements MappingMatcher<K> {
 	/**
 	 * This separator is used to separate multiple values for the same key. These values are concatenated, using this separator.
 	 */
@@ -20,20 +19,17 @@ public class PatternMappingMatcher<K> implements MappingMatcher<K>
 	private final Map<Integer, K>	groups;
 	private final Map<K, String>	predefinedMatches;
 
-	public PatternMappingMatcher(Pattern pattern, Map<Integer, K> groups)
-	{
+	public PatternMappingMatcher(Pattern pattern, Map<Integer, K> groups) {
 		this(pattern, groups, ImmutableMap.of());
 	}
 
-	public PatternMappingMatcher(Pattern pattern, Map<Integer, K> groups, Map<K, String> predefinedMatches)
-	{
+	public PatternMappingMatcher(Pattern pattern, Map<Integer, K> groups, Map<K, String> predefinedMatches) {
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.groups = ImmutableMap.copyOf(groups); // includes null checks
 		this.predefinedMatches = ImmutableMap.copyOf(predefinedMatches); // includes null checks
 	}
 
-	public Pattern getPattern()
-	{
+	public Pattern getPattern() {
 		return pattern;
 	}
 
@@ -46,13 +42,11 @@ public class PatternMappingMatcher<K> implements MappingMatcher<K>
 	 * 
 	 * @return
 	 */
-	public Map<Integer, K> getGroups()
-	{
+	public Map<Integer, K> getGroups() {
 		return groups;
 	}
 
-	public Map<K, String> getPredefinedMatches()
-	{
+	public Map<K, String> getPredefinedMatches() {
 		return predefinedMatches;
 	}
 
@@ -61,24 +55,19 @@ public class PatternMappingMatcher<K> implements MappingMatcher<K>
 	 *             if there is no capturing group in the {@link #getPattern() pattern} associated with an index specified in {@link #getGroups()}.
 	 */
 	@Override
-	public Map<K, String> match(String text) throws IndexOutOfBoundsException
-	{
-		if (text == null)
-		{
+	public Map<K, String> match(String text) throws IndexOutOfBoundsException {
+		if (text == null) {
 			return ImmutableMap.of();
 		}
 		Matcher m = pattern.matcher(text);
-		if (m.matches())
-		{
+		if (m.matches()) {
 			Map<K, String> mappedGroups = new HashMap<>(groups.size() + predefinedMatches.size());
 			mappedGroups.putAll(predefinedMatches);
-			for (Map.Entry<Integer, K> entry : groups.entrySet())
-			{
+			for (Map.Entry<Integer, K> entry : groups.entrySet()) {
 				K groupKey = entry.getValue();
 				String groupValue = m.group(entry.getKey());
 				// groupVal can be null for optional groups
-				if (groupValue != null)
-				{
+				if (groupValue != null) {
 					// concat the values if multiple groups have the same key
 					mappedGroups.merge(groupKey, groupValue, (String oldVal, String newVal) -> oldVal + VALUES_WITH_SAME_KEY_SEPARATOR + newVal);
 				}
@@ -89,8 +78,7 @@ public class PatternMappingMatcher<K> implements MappingMatcher<K>
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(this).omitNullValues().add("pattern", pattern).add("groups", groups).add("predefinedMatches", predefinedMatches).toString();
 	}
 }

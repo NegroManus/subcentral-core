@@ -3,8 +3,7 @@ package de.subcentral.core.parse;
 import java.util.Map;
 import java.util.function.Function;
 
-public interface MappingMatcher<K> extends Function<String, Map<K, String>>
-{
+public interface MappingMatcher<K> extends Function<String, Map<K, String>> {
 	/**
 	 * 
 	 * @param text
@@ -14,8 +13,7 @@ public interface MappingMatcher<K> extends Function<String, Map<K, String>>
 	public Map<K, String> match(String text);
 
 	@Override
-	public default Map<K, String> apply(String t)
-	{
+	public default Map<K, String> apply(String t) {
 		return match(t);
 	}
 }

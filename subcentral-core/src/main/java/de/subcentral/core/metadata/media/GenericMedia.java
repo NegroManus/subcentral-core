@@ -12,8 +12,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For any media type that has no own class, like a movie, or if the media type could not be determined.
  *
  */
-public class GenericMedia extends StandaloneMedia implements Comparable<GenericMedia>
-{
+public class GenericMedia extends StandaloneMedia implements Comparable<GenericMedia> {
 	private static final long					serialVersionUID		= 466506490140852772L;
 
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(GenericMedia.class, PropNames.NAME);
@@ -36,62 +35,51 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 	private String								mediaType;
 	private String								mediaContentType;
 
-	public GenericMedia()
-	{
+	public GenericMedia() {
 		// default constructor
 	}
 
-	public GenericMedia(String name)
-	{
+	public GenericMedia(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public String getMediaType()
-	{
+	public String getMediaType() {
 		return mediaType;
 	}
 
-	public void setMediaType(String mediaType)
-	{
+	public void setMediaType(String mediaType) {
 		this.mediaType = mediaType;
 	}
 
 	@Override
-	public String getMediaContentType()
-	{
+	public String getMediaContentType() {
 		return mediaContentType;
 	}
 
-	public void setMediaContentType(String mediaContentType)
-	{
+	public void setMediaContentType(String mediaContentType) {
 		this.mediaContentType = mediaContentType;
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof GenericMedia)
-		{
+		if (obj instanceof GenericMedia) {
 			return Objects.equals(name, ((GenericMedia) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hashCode(name);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(GenericMedia.class)
 				.omitNullValues()
 				.add("name", name)
@@ -115,15 +103,12 @@ public class GenericMedia extends StandaloneMedia implements Comparable<GenericM
 	}
 
 	@Override
-	public int compareTo(GenericMedia o)
-	{
-		if (this == o)
-		{
+	public int compareTo(GenericMedia o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);

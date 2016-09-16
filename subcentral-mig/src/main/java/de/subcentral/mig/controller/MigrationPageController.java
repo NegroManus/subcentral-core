@@ -10,8 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
-public class MigrationPageController extends AbstractPageController
-{
+public class MigrationPageController extends AbstractPageController {
 	// Model
 	private MigrationTask	task;
 
@@ -29,57 +28,47 @@ public class MigrationPageController extends AbstractPageController
 	@FXML
 	private Label			taskMessageLbl;
 
-	public MigrationPageController(MigMainController migMainController)
-	{
+	public MigrationPageController(MigMainController migMainController) {
 		super(migMainController);
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public String getTitle()
-	{
+	public String getTitle() {
 		return "Migration";
 	}
 
 	@Override
-	public Pane getRootPane()
-	{
+	public Pane getRootPane() {
 		return rootPane;
 	}
 
 	@Override
-	public Pane getContentPane()
-	{
+	public Pane getContentPane() {
 		return contentPane;
 	}
 
 	@Override
-	public void onEnter()
-	{
+	public void onEnter() {
 		MigrationScopeSettings scope = assistance.getSettings().getScopeSettings();
 		StringBuilder sb = new StringBuilder();
 		sb.append("Migrating ");
-		if (scope.getIncludeAllSeries())
-		{
+		if (scope.getIncludeAllSeries()) {
 			sb.append("all series");
 		}
-		else
-		{
+		else {
 			sb.append(scope.getIncludedSeries().size());
 			sb.append(" series");
 		}
-		if (scope.getIncludeSubtitles())
-		{
+		if (scope.getIncludeSubtitles()) {
 			sb.append(" (including the subtitles)");
 		}
-		else
-		{
+		else {
 			sb.append(" (excluding the subtitles)");
 		}
 		configLbl.setText(sb.toString());
@@ -96,28 +85,23 @@ public class MigrationPageController extends AbstractPageController
 	}
 
 	@Override
-	public void onExit()
-	{
+	public void onExit() {
 		cancelMigration();
 	}
 
-	private void cancelMigration()
-	{
-		if (task != null)
-		{
+	private void cancelMigration() {
+		if (task != null) {
 			task.cancel(true);
 		}
 	}
 
 	@Override
-	public BooleanBinding nextButtonDisableBinding()
-	{
+	public BooleanBinding nextButtonDisableBinding() {
 		return FxBindings.immutableBooleanBinding(true);
 	}
 
 	@Override
-	public void shutdown()
-	{
+	public void shutdown() {
 		onExit();
 	}
 }

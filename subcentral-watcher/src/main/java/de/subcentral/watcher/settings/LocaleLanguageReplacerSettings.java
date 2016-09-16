@@ -27,8 +27,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class LocaleLanguageReplacerSettings extends Settings
-{
+public class LocaleLanguageReplacerSettings extends Settings {
 	private static final PatternToLanguageMappingListHandler		PATTERN_TO_LANGUAGE_MAPPING_LIST_HANDLER	= new PatternToLanguageMappingListHandler();
 	private static final LanguageToTextMappingListHandler			LANGUAGE_TO_TEXT_MAPPING_LIST_HANDLER		= new LanguageToTextMappingListHandler();
 
@@ -48,30 +47,24 @@ public class LocaleLanguageReplacerSettings extends Settings
 	private final Binding<SubtitleLanguageCorrector>				subtitleLanguageStandardizerBinding			= initSubtitleLanguageStandardizerBinding();
 
 	// package protected (should only be instantiated by WatcherSettings)
-	LocaleLanguageReplacerSettings()
-	{
+	LocaleLanguageReplacerSettings() {
 		initSettables(parsingLanguages, outputFormat, outputLanguage, customLanguagePatterns, customLanguageTextMappings);
 	}
 
-	private Binding<SubtitleLanguageCorrector> initSubtitleLanguageStandardizerBinding()
-	{
-		return new ObjectBinding<SubtitleLanguageCorrector>()
-		{
+	private Binding<SubtitleLanguageCorrector> initSubtitleLanguageStandardizerBinding() {
+		return new ObjectBinding<SubtitleLanguageCorrector>() {
 			{
 				super.bind(LocaleLanguageReplacerSettings.this);
 			}
 
 			@Override
-			protected SubtitleLanguageCorrector computeValue()
-			{
+			protected SubtitleLanguageCorrector computeValue() {
 				List<LanguagePattern> langPatterns = new ArrayList<>(customLanguagePatterns.getValue().size());
-				for (PatternToLanguageMapping uiPattern : customLanguagePatterns.getValue())
-				{
+				for (PatternToLanguageMapping uiPattern : customLanguagePatterns.getValue()) {
 					langPatterns.add(uiPattern.toLanguagePattern());
 				}
 				Map<Locale, String> langTextMappings = new HashMap<>(customLanguageTextMappings.getValue().size());
-				for (LanguageToTextMapping mapping : customLanguageTextMappings.getValue())
-				{
+				for (LanguageToTextMapping mapping : customLanguageTextMappings.getValue()) {
 					langTextMappings.put(mapping.getLanguage(), mapping.getText());
 				}
 				return new SubtitleLanguageCorrector(new LocaleLanguageReplacer(parsingLanguages.getValue(), outputFormat.getValue(), outputLanguage.getValue(), langPatterns, langTextMappings));
@@ -79,55 +72,44 @@ public class LocaleLanguageReplacerSettings extends Settings
 		};
 	}
 
-	public ListSettingsProperty<Locale> getParsingLanguages()
-	{
+	public ListSettingsProperty<Locale> getParsingLanguages() {
 		return parsingLanguages;
 	}
 
-	public ObjectSettingsProperty<LanguageFormat> getOutputFormat()
-	{
+	public ObjectSettingsProperty<LanguageFormat> getOutputFormat() {
 		return outputFormat;
 	}
 
-	public ObjectSettingsProperty<Locale> getOutputLanguage()
-	{
+	public ObjectSettingsProperty<Locale> getOutputLanguage() {
 		return outputLanguage;
 	}
 
-	public ListSettingsProperty<PatternToLanguageMapping> getCustomLanguagePatterns()
-	{
+	public ListSettingsProperty<PatternToLanguageMapping> getCustomLanguagePatterns() {
 		return customLanguagePatterns;
 	}
 
-	public ListSettingsProperty<LanguageToTextMapping> getCustomLanguageTextMappings()
-	{
+	public ListSettingsProperty<LanguageToTextMapping> getCustomLanguageTextMappings() {
 		return customLanguageTextMappings;
 	}
 
-	public Binding<SubtitleLanguageCorrector> subtitleLanguageStandardizerBinding()
-	{
+	public Binding<SubtitleLanguageCorrector> subtitleLanguageStandardizerBinding() {
 		return subtitleLanguageStandardizerBinding;
 	}
 
-	private static class PatternToLanguageMappingListHandler implements ConfigurationPropertyHandler<ObservableList<PatternToLanguageMapping>>
-	{
+	private static class PatternToLanguageMappingListHandler implements ConfigurationPropertyHandler<ObservableList<PatternToLanguageMapping>> {
 		@SuppressWarnings("unchecked")
 		@Override
-		public ObservableList<PatternToLanguageMapping> get(ImmutableConfiguration cfg, String key)
-		{
-			if (cfg instanceof HierarchicalConfiguration<?>)
-			{
+		public ObservableList<PatternToLanguageMapping> get(ImmutableConfiguration cfg, String key) {
+			if (cfg instanceof HierarchicalConfiguration<?>) {
 				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
 			}
 			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
 		}
 
-		private static ObservableList<PatternToLanguageMapping> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
-		{
+		private static ObservableList<PatternToLanguageMapping> get(HierarchicalConfiguration<ImmutableNode> cfg, String key) {
 			List<HierarchicalConfiguration<ImmutableNode>> patternsCfgs = cfg.configurationsAt(key + ".languagePattern");
 			List<PatternToLanguageMapping> list = new ArrayList<>(patternsCfgs.size());
-			for (HierarchicalConfiguration<ImmutableNode> patternsCfg : patternsCfgs)
-			{
+			for (HierarchicalConfiguration<ImmutableNode> patternsCfg : patternsCfgs) {
 				UserPattern p = new UserPattern(patternsCfg.getString("[@pattern]"), Mode.valueOf(patternsCfg.getString("[@patternMode]")));
 				PatternToLanguageMapping langPattern = new PatternToLanguageMapping(p, Locale.forLanguageTag(patternsCfg.getString("[@languageTag]")));
 				list.add(langPattern);
@@ -136,10 +118,8 @@ public class LocaleLanguageReplacerSettings extends Settings
 		}
 
 		@Override
-		public void add(Configuration cfg, String key, ObservableList<PatternToLanguageMapping> list)
-		{
-			for (int i = 0; i < list.size(); i++)
-			{
+		public void add(Configuration cfg, String key, ObservableList<PatternToLanguageMapping> list) {
+			for (int i = 0; i < list.size(); i++) {
 				PatternToLanguageMapping pattern = list.get(i);
 				cfg.addProperty(key + ".languagePattern(" + i + ")[@pattern]", pattern.getPattern().getPattern());
 				cfg.addProperty(key + ".languagePattern(" + i + ")[@patternMode]", pattern.getPattern().getMode());
@@ -148,25 +128,20 @@ public class LocaleLanguageReplacerSettings extends Settings
 		}
 	}
 
-	private static class LanguageToTextMappingListHandler implements ConfigurationPropertyHandler<ObservableList<LanguageToTextMapping>>
-	{
+	private static class LanguageToTextMappingListHandler implements ConfigurationPropertyHandler<ObservableList<LanguageToTextMapping>> {
 		@SuppressWarnings("unchecked")
 		@Override
-		public ObservableList<LanguageToTextMapping> get(ImmutableConfiguration cfg, String key)
-		{
-			if (cfg instanceof HierarchicalConfiguration<?>)
-			{
+		public ObservableList<LanguageToTextMapping> get(ImmutableConfiguration cfg, String key) {
+			if (cfg instanceof HierarchicalConfiguration<?>) {
 				return get((HierarchicalConfiguration<ImmutableNode>) cfg, key);
 			}
 			throw new IllegalArgumentException("Configuration type not supported: " + cfg);
 		}
 
-		private static ObservableList<LanguageToTextMapping> get(HierarchicalConfiguration<ImmutableNode> cfg, String key)
-		{
+		private static ObservableList<LanguageToTextMapping> get(HierarchicalConfiguration<ImmutableNode> cfg, String key) {
 			List<HierarchicalConfiguration<ImmutableNode>> namesCfgs = cfg.configurationsAt(key + ".languageTextMapping");
 			List<LanguageToTextMapping> list = new ArrayList<>(namesCfgs.size());
-			for (HierarchicalConfiguration<ImmutableNode> namesCfg : namesCfgs)
-			{
+			for (HierarchicalConfiguration<ImmutableNode> namesCfg : namesCfgs) {
 				list.add(new LanguageToTextMapping(Locale.forLanguageTag(namesCfg.getString("[@languageTag]")), namesCfg.getString("[@text]")));
 			}
 			// sort the mappings
@@ -175,10 +150,8 @@ public class LocaleLanguageReplacerSettings extends Settings
 		}
 
 		@Override
-		public void add(Configuration cfg, String key, ObservableList<LanguageToTextMapping> list)
-		{
-			for (int i = 0; i < list.size(); i++)
-			{
+		public void add(Configuration cfg, String key, ObservableList<LanguageToTextMapping> list) {
+			for (int i = 0; i < list.size(); i++) {
 				LanguageToTextMapping mapping = list.get(i);
 				cfg.addProperty(key + ".languageTextMapping(" + i + ")[@languageTag]", mapping.getLanguage().toLanguageTag());
 				cfg.addProperty(key + ".languageTextMapping(" + i + ")[@text]", mapping.getText());

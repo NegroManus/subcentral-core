@@ -30,47 +30,39 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
-public class FxControlBindings
-{
+public class FxControlBindings {
 	private static final Logger log = LogManager.getLogger(FxControlBindings.class);
 
-	private FxControlBindings()
-	{
+	private FxControlBindings() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static <T> TextFormatter<T> bindToTextField(TextField txtFld, StringConverter<T> converter)
-	{
+	public static <T> TextFormatter<T> bindToTextField(TextField txtFld, StringConverter<T> converter) {
 		TextFormatter<T> formatter = new TextFormatter<T>(converter);
 		txtFld.setTextFormatter(formatter);
 		return formatter;
 	}
 
-	public static <T> TextFormatter<T> bindTextFieldToProperty(TextField txtFld, Property<T> prop, StringConverter<T> converter)
-	{
+	public static <T> TextFormatter<T> bindTextFieldToProperty(TextField txtFld, Property<T> prop, StringConverter<T> converter) {
 		TextFormatter<T> formatter = new TextFormatter<T>(converter);
 		formatter.valueProperty().bindBidirectional(prop);
 		txtFld.setTextFormatter(formatter);
 		return formatter;
 	}
 
-	public static TextFormatter<Path> bindTextFieldToPath(TextField pathTxtFld)
-	{
+	public static TextFormatter<Path> bindTextFieldToPath(TextField pathTxtFld) {
 		return bindToTextField(pathTxtFld, FxUtil.PATH_STRING_CONVERTER);
 	}
 
-	public static TextFormatter<Path> bindTextFieldToPath(TextField pathTxtFld, Property<Path> path)
-	{
+	public static TextFormatter<Path> bindTextFieldToPath(TextField pathTxtFld, Property<Path> path) {
 		return bindTextFieldToProperty(pathTxtFld, path, FxUtil.PATH_STRING_CONVERTER);
 	}
 
-	public static TextFormatter<URL> bindTextFieldToUrl(TextField pathTxtFld)
-	{
+	public static TextFormatter<URL> bindTextFieldToUrl(TextField pathTxtFld) {
 		return bindToTextField(pathTxtFld, FxUtil.URL_STRING_CONVERTER);
 	}
 
-	public static Hyperlink createBrowseHyperlink(Path file, Executor executor)
-	{
+	public static Hyperlink createBrowseHyperlink(Path file, Executor executor) {
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
@@ -79,8 +71,7 @@ public class FxControlBindings
 		return link;
 	}
 
-	public static Hyperlink createShowInDirectoryHyperlink(Path file, Executor executor)
-	{
+	public static Hyperlink createShowInDirectoryHyperlink(Path file, Executor executor) {
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(file.toString());
@@ -89,8 +80,7 @@ public class FxControlBindings
 		return link;
 	}
 
-	public static Hyperlink createUrlHyperlink(URL url, Executor executor)
-	{
+	public static Hyperlink createUrlHyperlink(URL url, Executor executor) {
 		Hyperlink link = new Hyperlink();
 		link.setVisited(true);
 		link.setText(url.toString());
@@ -104,46 +94,37 @@ public class FxControlBindings
 			Toggle simpleToggle,
 			Toggle regexToggle,
 			TextField patternTxtFld,
-			Text patternErrorTxt)
-	{
-		return new ObjectBinding<UserPattern>()
-		{
+			Text patternErrorTxt) {
+		return new ObjectBinding<UserPattern>() {
 			{
 				super.bind(patternModeToggleGrp.selectedToggleProperty(), patternTxtFld.textProperty());
 			}
 
 			@Override
-			protected UserPattern computeValue()
-			{
+			protected UserPattern computeValue() {
 				String pattern = patternTxtFld.getText();
-				if (StringUtils.isBlank(pattern))
-				{
+				if (StringUtils.isBlank(pattern)) {
 					patternErrorTxt.setText("");
 					return null;
 				}
 				Mode mode;
-				if (patternModeToggleGrp.getSelectedToggle() == simpleToggle)
-				{
+				if (patternModeToggleGrp.getSelectedToggle() == simpleToggle) {
 					mode = Mode.SIMPLE;
 				}
-				else if (patternModeToggleGrp.getSelectedToggle() == regexToggle)
-				{
+				else if (patternModeToggleGrp.getSelectedToggle() == regexToggle) {
 					mode = Mode.REGEX;
 				}
-				else
-				{
+				else {
 					mode = Mode.LITERAL;
 				}
-				try
-				{
+				try {
 					UserPattern p = new UserPattern(pattern, mode);
 					// try to convert -> may throw an exception
 					p.toPattern();
 					patternErrorTxt.setText("");
 					return p;
 				}
-				catch (Exception e)
-				{
+				catch (Exception e) {
 					log.debug("Could not compile UserPattern due to invalid pattern string. Exception: " + e);
 					// Only use the first line
 					String errorMsg = e.getMessage().split("(\\r)?\\n", 2)[0];
@@ -154,21 +135,18 @@ public class FxControlBindings
 		};
 	}
 
-	public static <E> SortedList<E> sortableTableView(TableView<E> tableView, ObservableList<E> items)
-	{
+	public static <E> SortedList<E> sortableTableView(TableView<E> tableView, ObservableList<E> items) {
 		SortedList<E> sortedItems = new SortedList<>(items);
 		sortedItems.comparatorProperty().bind(tableView.comparatorProperty());
 		tableView.setItems(sortedItems);
 		return sortedItems;
 	}
 
-	public static <E extends Enum<E>> ToggleEnumBinding<E> bindToggleGroupToEnumProp(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
-	{
+	public static <E extends Enum<E>> ToggleEnumBinding<E> bindToggleGroupToEnumProp(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping) {
 		return new ToggleEnumBinding<>(toggleGroup, enumProp, mapping);
 	}
 
-	public static class ToggleEnumBinding<E extends Enum<E>>
-	{
+	public static class ToggleEnumBinding<E extends Enum<E>> {
 		private final ToggleGroup				toggleGroup;
 		private final Property<E>				enumProp;
 		private final Map<Toggle, E>			mapping;
@@ -176,8 +154,7 @@ public class FxControlBindings
 		private final ChangeListener<E>			enumListener;
 		private boolean							updating;
 
-		private ToggleEnumBinding(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping)
-		{
+		private ToggleEnumBinding(ToggleGroup toggleGroup, Property<E> enumProp, Map<Toggle, E> mapping) {
 			this.toggleGroup = Objects.requireNonNull(toggleGroup, "toggleGroup");
 			this.enumProp = Objects.requireNonNull(enumProp, "enumProp");
 			this.mapping = Objects.requireNonNull(mapping, "mapping");
@@ -192,63 +169,48 @@ public class FxControlBindings
 			this.enumProp.addListener(enumListener);
 		}
 
-		public void unbind()
-		{
+		public void unbind() {
 			toggleGroup.selectedToggleProperty().removeListener(toggleListener);
 			enumProp.removeListener(enumListener);
 		}
 
-		private ChangeListener<Toggle> initToggleListener()
-		{
-			return (ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) ->
-			{
-				if (!updating)
-				{
-					try
-					{
+		private ChangeListener<Toggle> initToggleListener() {
+			return (ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) -> {
+				if (!updating) {
+					try {
 						updating = true;
 						enumProp.setValue(mapping.get(newValue));
 					}
-					finally
-					{
+					finally {
 						updating = false;
 					}
 				}
 			};
 		}
 
-		private ChangeListener<E> initEnumListener()
-		{
-			return (ObservableValue<? extends E> observable, E oldValue, E newValue) ->
-			{
-				if (!updating)
-				{
-					try
-					{
+		private ChangeListener<E> initEnumListener() {
+			return (ObservableValue<? extends E> observable, E oldValue, E newValue) -> {
+				if (!updating) {
+					try {
 						updating = true;
 						selectToggle(newValue);
 					}
-					finally
-					{
+					finally {
 						updating = false;
 					}
 				}
 			};
 		}
 
-		private void selectToggle(E enumValue)
-		{
-			for (Map.Entry<Toggle, E> entry : mapping.entrySet())
-			{
-				if (enumValue == entry.getValue())
-				{
+		private void selectToggle(E enumValue) {
+			for (Map.Entry<Toggle, E> entry : mapping.entrySet()) {
+				if (enumValue == entry.getValue()) {
 					toggleGroup.selectToggle(entry.getKey());
 					return;
 				}
 			}
 			// if non found, select default (which is the first)
-			if (!mapping.keySet().isEmpty())
-			{
+			if (!mapping.keySet().isEmpty()) {
 				toggleGroup.selectToggle(mapping.keySet().iterator().next());
 			}
 		}

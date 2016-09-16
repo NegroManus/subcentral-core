@@ -5,8 +5,7 @@ import java.util.Objects;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.util.Context;
 
-public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
-{
+public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle> {
 	/**
 	 * The name of the parameter "includeGroup" of type {@link Boolean}. If set to {@code true}, the group is included in the name. The default value is {@code true}.
 	 */
@@ -20,20 +19,17 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 
 	private final NamingService	mediaNamingService;
 
-	public SubtitleNamer(PropSequenceNameBuilder.Config config, NamingService mediaNamingService)
-	{
+	public SubtitleNamer(PropSequenceNameBuilder.Config config, NamingService mediaNamingService) {
 		super(config);
 		this.mediaNamingService = Objects.requireNonNull(mediaNamingService, "mediaNamingService");
 	}
 
-	public NamingService getMediaNamingService()
-	{
+	public NamingService getMediaNamingService() {
 		return mediaNamingService;
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Subtitle sub, Context ctx)
-	{
+	protected void appendName(PropSequenceNameBuilder b, Subtitle sub, Context ctx) {
 		// media
 		b.appendRaw(Subtitle.PROP_MEDIA, mediaNamingService.name(sub.getMedia(), ctx));
 
@@ -43,12 +39,10 @@ public class SubtitleNamer extends AbstractPropertySequenceNamer<Subtitle>
 		// group / source
 		// read includeGroup parameter
 		boolean includeGroup = ctx.getBoolean(PARAM_INCLUDE_GROUP, Boolean.TRUE);
-		if (includeGroup && sub.getGroup() != null)
-		{
+		if (includeGroup && sub.getGroup() != null) {
 			b.append(Subtitle.PROP_GROUP, sub.getGroup());
 		}
-		else if (ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE))
-		{
+		else if (ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE)) {
 			b.appendIfNotNull(Subtitle.PROP_SOURCE, sub.getSource());
 		}
 	}

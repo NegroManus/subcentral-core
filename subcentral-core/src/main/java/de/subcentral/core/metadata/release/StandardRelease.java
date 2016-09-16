@@ -6,10 +6,8 @@ import java.util.Objects;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 
-public class StandardRelease implements Comparable<StandardRelease>
-{
-	public enum Scope
-	{
+public class StandardRelease implements Comparable<StandardRelease> {
+	public enum Scope {
 		ALWAYS, IF_GUESSING
 	};
 
@@ -17,13 +15,11 @@ public class StandardRelease implements Comparable<StandardRelease>
 	private final Release	release;
 	private final Scope		scope;
 
-	public StandardRelease(Release release, Scope scope)
-	{
+	public StandardRelease(Release release, Scope scope) {
 		this(release.getTags(), release.getGroup(), scope);
 	}
 
-	public StandardRelease(List<Tag> tags, Group group, Scope scope)
-	{
+	public StandardRelease(List<Tag> tags, Group group, Scope scope) {
 		this.release = new Release(tags, group);
 		this.scope = Objects.requireNonNull(scope, "scope");
 	}
@@ -33,25 +29,20 @@ public class StandardRelease implements Comparable<StandardRelease>
 	 * 
 	 * @return the standard release
 	 */
-	public Release getRelease()
-	{
+	public Release getRelease() {
 		return release;
 	}
 
-	public Scope getScope()
-	{
+	public Scope getScope() {
 		return scope;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof StandardRelease)
-		{
+		if (obj instanceof StandardRelease) {
 			StandardRelease o = (StandardRelease) obj;
 			return release.equals(o.release) && scope == o.scope;
 		}
@@ -59,27 +50,22 @@ public class StandardRelease implements Comparable<StandardRelease>
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(release, scope);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(StandardRelease.class).add("release", release).add("scope", scope).toString();
 	}
 
 	@Override
-	public int compareTo(StandardRelease o)
-	{
-		if (this == o)
-		{
+	public int compareTo(StandardRelease o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start().compare(release, o.release).compare(scope, o.scope).result();

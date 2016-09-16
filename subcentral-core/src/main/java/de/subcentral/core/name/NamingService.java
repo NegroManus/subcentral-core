@@ -8,12 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 import de.subcentral.core.util.Context;
 import de.subcentral.core.util.Service;
 
-public interface NamingService extends Service, Function<Object, String>
-{
+public interface NamingService extends Service, Function<Object, String> {
 	public static String DEFAULT_SEPARATOR = " ";
 
-	public default String name(Object obj)
-	{
+	public default String name(Object obj) {
 		return name(obj, Context.EMPTY);
 	}
 
@@ -27,34 +25,27 @@ public interface NamingService extends Service, Function<Object, String>
 	 */
 	public String name(Object obj, Context ctx);
 
-	public default String nameAll(Iterable<?> objects)
-	{
+	public default String nameAll(Iterable<?> objects) {
 		return nameAll(objects, DEFAULT_SEPARATOR, Context.EMPTY);
 	}
 
-	public default String nameAll(Iterable<?> objects, String separator)
-	{
+	public default String nameAll(Iterable<?> objects, String separator) {
 		return nameAll(objects, separator, Context.EMPTY);
 	}
 
-	public default String nameAll(Iterable<?> objects, Context ctx)
-	{
+	public default String nameAll(Iterable<?> objects, Context ctx) {
 		return nameAll(objects, DEFAULT_SEPARATOR, ctx);
 	}
 
-	public default String nameAll(Iterable<?> objects, String separator, Context ctx)
-	{
+	public default String nameAll(Iterable<?> objects, String separator, Context ctx) {
 		StringBuilder fullName = new StringBuilder();
 		Iterator<?> iter = objects.iterator();
-		while (iter.hasNext())
-		{
+		while (iter.hasNext()) {
 			Object obj = iter.next();
 			String name = name(obj, ctx);
-			if (StringUtils.isNotEmpty(name))
-			{
+			if (StringUtils.isNotEmpty(name)) {
 				fullName.append(name);
-				if (iter.hasNext())
-				{
+				if (iter.hasNext()) {
 					fullName.append(separator);
 				}
 			}
@@ -63,8 +54,7 @@ public interface NamingService extends Service, Function<Object, String>
 	}
 
 	@Override
-	public default String apply(Object obj)
-	{
+	public default String apply(Object obj) {
 		return name(obj);
 	}
 }

@@ -21,8 +21,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
-public class TextLanguageMappingEditController extends BeanEditController<PatternToLanguageMapping>
-{
+public class TextLanguageMappingEditController extends BeanEditController<PatternToLanguageMapping> {
 	@FXML
 	private RadioButton			literalRadioBtn;
 	@FXML
@@ -36,32 +35,27 @@ public class TextLanguageMappingEditController extends BeanEditController<Patter
 	@FXML
 	private ComboBox<Locale>	langComboBox;
 
-	public TextLanguageMappingEditController(PatternToLanguageMapping bean, Window window)
-	{
+	public TextLanguageMappingEditController(PatternToLanguageMapping bean, Window window) {
 		super(bean, window);
 	}
 
 	@Override
-	protected String getTitle()
-	{
+	protected String getTitle() {
 		return bean == null ? "Add text to language mapping" : "Edit text to language mapping";
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "usa_flag_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
+	protected Node getDefaultFocusNode() {
 		return textTxtFld;
 	}
 
 	@Override
-	protected void initComponents()
-	{
+	protected void initComponents() {
 		// initialize
 		langComboBox.setItems(FxUtil.createListOfAvailableLocales(false, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
 		langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
@@ -71,10 +65,8 @@ public class TextLanguageMappingEditController extends BeanEditController<Patter
 		ToggleGroup modeToggleGrp = new ToggleGroup();
 		modeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
 
-		if (bean != null)
-		{
-			switch (bean.getPattern().getMode())
-			{
+		if (bean != null) {
+			switch (bean.getPattern().getMode()) {
 				case LITERAL:
 					modeToggleGrp.selectToggle(literalRadioBtn);
 					break;
@@ -90,33 +82,33 @@ public class TextLanguageMappingEditController extends BeanEditController<Patter
 			textTxtFld.setText(bean.getPattern().getPattern());
 			langComboBox.setValue(bean.getLanguage());
 		}
-		else
-		{
+		else {
 			modeToggleGrp.selectToggle(literalRadioBtn);
 		}
 
 		// Bindings
-		final Binding<UserPattern> patternBinding = FxControlBindings.createUiPatternTextFieldBinding(modeToggleGrp, literalRadioBtn, simplePatternRadioBtn, regexRadioBtn, textTxtFld, patternErrorTxt);
+		final Binding<UserPattern> patternBinding = FxControlBindings.createUiPatternTextFieldBinding(modeToggleGrp,
+				literalRadioBtn,
+				simplePatternRadioBtn,
+				regexRadioBtn,
+				textTxtFld,
+				patternErrorTxt);
 
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(new BooleanBinding()
-		{
+		applyButton.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(patternBinding, textTxtFld.textProperty(), langComboBox.valueProperty());
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				return patternBinding.getValue() == null || StringUtils.isBlank(textTxtFld.getText()) || langComboBox.getValue() == null;
 			}
 		});
 
 		// Set ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
 				return new PatternToLanguageMapping(patternBinding.getValue(), langComboBox.getValue());
 			}
 			return null;

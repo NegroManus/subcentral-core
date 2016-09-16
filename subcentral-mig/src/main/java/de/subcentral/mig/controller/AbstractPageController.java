@@ -21,20 +21,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public abstract class AbstractPageController extends SubController<MigMainController>
-{
+public abstract class AbstractPageController extends SubController<MigMainController> {
 	private static final Logger		log	= LogManager.getLogger(AbstractPageController.class);
 
 	protected MigrationAssistance	assistance;
 
-	public AbstractPageController(MigMainController migMainController)
-	{
+	public AbstractPageController(MigMainController migMainController) {
 		super(migMainController);
 		this.assistance = parent.getAssistance();
 	}
 
-	public MigrationAssistance getAssistance()
-	{
+	public MigrationAssistance getAssistance() {
 		return assistance;
 	}
 
@@ -50,8 +47,7 @@ public abstract class AbstractPageController extends SubController<MigMainContro
 
 	public abstract BooleanBinding nextButtonDisableBinding();
 
-	protected void executeBlockingTask(Task<?> task)
-	{
+	protected void executeBlockingTask(Task<?> task) {
 		VBox taskVBox = new VBox();
 		taskVBox.setAlignment(Pos.CENTER);
 		taskVBox.setSpacing(3d);
@@ -73,15 +69,12 @@ public abstract class AbstractPageController extends SubController<MigMainContro
 
 		getRootPane().getChildren().setAll(blockingPane);
 
-		task.stateProperty().addListener((ObservableValue<? extends State> observable, State oldValue, State newValue) ->
-		{
-			switch (newValue)
-			{
+		task.stateProperty().addListener((ObservableValue<? extends State> observable, State oldValue, State newValue) -> {
+			switch (newValue) {
 				case SUCCEEDED:
 					getRootPane().getChildren().setAll(getContentPane());
 					break;
-				case FAILED:
-				{
+				case FAILED: {
 					Throwable e = task.getException();
 					String msg = "Task \"" + task.getTitle() + "\" failed";
 					log.error(msg, e);
@@ -91,8 +84,7 @@ public abstract class AbstractPageController extends SubController<MigMainContro
 					parent.pageBack();
 					break;
 				}
-				case CANCELLED:
-				{
+				case CANCELLED: {
 					getRootPane().getChildren().clear();
 					break;
 				}

@@ -24,13 +24,11 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Release;
 
-public class CorrectionTest
-{
+public class CorrectionTest {
 	private CorrectionService service = CorrectionDefaults.getDefaultCorrectionService();
 
 	@Test
-	public void testDefaultCorrect01()
-	{
+	public void testDefaultCorrect01() {
 		Release rls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H", "264", "DD5", "1");
 		Release expectedRls = Release.create(Episode.createSeasonedEpisode("Psych", 5, 6), "CtrlHD", "720p", "WEB-DL", "H.264", "DD5.1");
 
@@ -40,8 +38,7 @@ public class CorrectionTest
 	}
 
 	@Test
-	public void testDefaultCorrect02()
-	{
+	public void testDefaultCorrect02() {
 		Release rls = Release.create("CtrlHD", "720p", "WEB-DL", "H", "264", "DD5", "1");
 		Release expectedRls = Release.create("CtrlHD", "720p", "WEB-DL", "H.264", "DD5.1");
 
@@ -51,14 +48,11 @@ public class CorrectionTest
 	}
 
 	@Test
-	public void testCustomCorrect()
-	{
+	public void testCustomCorrect() {
 		TypeBasedCorrectionService service = new TypeBasedCorrectionService("test");
 		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		service.registerCorrector(Episode.class, (e, corrections) ->
-		{
-			if (!e.isSpecial())
-			{
+		service.registerCorrector(Episode.class, (e, corrections) -> {
+			if (!e.isSpecial()) {
 				e.setSpecial(true);
 				corrections.add(new Correction(e, Episode.PROP_SPECIAL.getPropName(), false, true, null));
 			}
@@ -77,8 +71,7 @@ public class CorrectionTest
 	}
 
 	@Test
-	public void testCorrectReflectiveSuccess() throws IntrospectionException
-	{
+	public void testCorrectReflectiveSuccess() throws IntrospectionException {
 		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.PROP_NAME, (String name) -> StringUtils.upperCase(name), Function.identity());
 
 		Series series = new Series("Psych");
@@ -92,8 +85,7 @@ public class CorrectionTest
 	}
 
 	@Test(expected = IntrospectionException.class)
-	public void testCorrectReflectiveFail() throws IntrospectionException
-	{
+	public void testCorrectReflectiveFail() throws IntrospectionException {
 		Corrector<Series> stdzer = new ReflectiveCorrector<>(Series.class, "notExistingProp", (String s) -> s, Function.identity());
 		List<Correction> changes = new ArrayList<>();
 		stdzer.correct(new Series("Psych"), changes);

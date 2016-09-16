@@ -8,15 +8,11 @@ import java.util.function.BiConsumer;
 
 import de.subcentral.fx.DirectoryWatchService;
 
-public class DirectoryWatchServicePlayground
-{
-	public static void main(String[] args) throws Exception
-	{
-		DirectoryWatchService service = new DirectoryWatchService(new BiConsumer<Path, Collection<Path>>()
-		{
+public class DirectoryWatchServicePlayground {
+	public static void main(String[] args) throws Exception {
+		DirectoryWatchService service = new DirectoryWatchService(new BiConsumer<Path, Collection<Path>>() {
 			@Override
-			public void accept(Path dir, Collection<Path> files)
-			{
+			public void accept(Path dir, Collection<Path> files) {
 				System.out.println(dir + ": " + files);
 			}
 		});

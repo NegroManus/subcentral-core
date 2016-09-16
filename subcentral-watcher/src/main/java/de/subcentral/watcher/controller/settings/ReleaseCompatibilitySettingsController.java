@@ -23,8 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
 
-public class ReleaseCompatibilitySettingsController extends AbstractSettingsSectionController
-{
+public class ReleaseCompatibilitySettingsController extends AbstractSettingsSectionController {
 	@FXML
 	private GridPane														rootPane;
 	@FXML
@@ -43,20 +42,17 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 	@FXML
 	private Button															removeCrossGroupCompatibilityRuleBtn;
 
-	public ReleaseCompatibilitySettingsController(SettingsController settingsController)
-	{
+	public ReleaseCompatibilitySettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		compatibilityEnabledCheckBox.selectedProperty().bindBidirectional(settings.getCompatibilityEnabled().property());
@@ -67,20 +63,17 @@ public class ReleaseCompatibilitySettingsController extends AbstractSettingsSect
 
 		crossGroupCompatibilityRulesEnabledColumn.setCellFactory(CheckBoxTableCell.forTableColumn(crossGroupCompatibilityRulesEnabledColumn));
 		crossGroupCompatibilityRulesEnabledColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
-		crossGroupCompatibilityRulesRuleColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, String> param) ->
-		{
+		crossGroupCompatibilityRulesRuleColumn.setCellValueFactory((CellDataFeatures<CrossGroupCompatibilityRuleSettingsItem, String> param) -> {
 			return FxBindings.immutableObservableValue(((CrossGroupCompatibilityRule) param.getValue().getItem()).toShortString());
 		});
 
 		// Table buttons
 		ActionList<CrossGroupCompatibilityRuleSettingsItem> compsActionList = new ActionList<>(comps, crossGroupCompatibilityRulesTableView.getSelectionModel(), displayComps);
-		compsActionList.setNewItemSupplier(() ->
-		{
+		compsActionList.setNewItemSupplier(() -> {
 			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityRuleEditView(getPrimaryStage());
 			return result.isPresent() ? Optional.of(new CrossGroupCompatibilityRuleSettingsItem(result.get(), true)) : Optional.empty();
 		});
-		compsActionList.setItemEditer((CrossGroupCompatibilityRuleSettingsItem item) ->
-		{
+		compsActionList.setItemEditer((CrossGroupCompatibilityRuleSettingsItem item) -> {
 			Optional<CrossGroupCompatibilityRule> result = WatcherDialogs.showCrossGroupCompatibilityRuleEditView(item.getItem(), getPrimaryStage());
 			return result.isPresent() ? Optional.of(new CrossGroupCompatibilityRuleSettingsItem(result.get(), item.isEnabled())) : Optional.empty();
 		});

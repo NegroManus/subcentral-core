@@ -6,34 +6,27 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.MoreObjects;
 
-public class SimpleSettingsItem<T> implements SettingsItem<T>
-{
+public class SimpleSettingsItem<T> implements SettingsItem<T> {
 	protected final T item;
 
-	public SimpleSettingsItem(T item)
-	{
+	public SimpleSettingsItem(T item) {
 		this.item = Objects.requireNonNull(item, "item");
 	}
 
 	@Override
-	public T getItem()
-	{
+	public T getItem() {
 		return item;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj == null)
-		{
+		if (obj == null) {
 			return false;
 		}
-		if (getClass().equals(obj.getClass()))
-		{
+		if (getClass().equals(obj.getClass())) {
 			SimpleSettingsItem<?> o = (SimpleSettingsItem<?>) obj;
 			return item.equals(o.item);
 		}
@@ -41,14 +34,12 @@ public class SimpleSettingsItem<T> implements SettingsItem<T>
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return new HashCodeBuilder(71, 913).append(getClass()).append(item).toHashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(getClass()).add("item", item).toString();
 	}
 }

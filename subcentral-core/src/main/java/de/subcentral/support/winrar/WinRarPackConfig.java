@@ -4,10 +4,8 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class WinRarPackConfig
-{
-	public enum CompressionMethod
-	{
+public class WinRarPackConfig {
+	public enum CompressionMethod {
 		/**
 		 * Do not compress file when adding to archive.
 		 */
@@ -37,8 +35,7 @@ public class WinRarPackConfig
 		private final String	label;
 		private final String	description;
 
-		private CompressionMethod(int code, String label, String description)
-		{
+		private CompressionMethod(int code, String label, String description) {
 			this.code = code;
 			this.label = label;
 			this.description = description;
@@ -49,8 +46,7 @@ public class WinRarPackConfig
 		 * 
 		 * @return the code
 		 */
-		public final int getCode()
-		{
+		public final int getCode() {
 			return code;
 		}
 
@@ -59,8 +55,7 @@ public class WinRarPackConfig
 		 * 
 		 * @return the label
 		 */
-		public String getLabel()
-		{
+		public String getLabel() {
 			return label;
 		}
 
@@ -69,17 +64,13 @@ public class WinRarPackConfig
 		 * 
 		 * @return the description
 		 */
-		public final String getDescription()
-		{
+		public final String getDescription() {
 			return description;
 		}
 
-		public static final CompressionMethod of(int code) throws IllegalArgumentException
-		{
-			for (CompressionMethod m : values())
-			{
-				if (code == m.getCode())
-				{
+		public static final CompressionMethod of(int code) throws IllegalArgumentException {
+			for (CompressionMethod m : values()) {
+				if (code == m.getCode()) {
 					return m;
 				}
 			}
@@ -87,8 +78,7 @@ public class WinRarPackConfig
 		}
 	}
 
-	public enum DeletionMode
-	{
+	public enum DeletionMode {
 		/**
 		 * Keep files.
 		 */
@@ -106,8 +96,7 @@ public class WinRarPackConfig
 		DELETE;
 	}
 
-	public enum OverwriteMode
-	{
+	public enum OverwriteMode {
 		/**
 		 * Do not add already existing files to the archive.
 		 */
@@ -133,13 +122,11 @@ public class WinRarPackConfig
 	 * 
 	 * @return the compression method
 	 */
-	public CompressionMethod getCompressionMethod()
-	{
+	public CompressionMethod getCompressionMethod() {
 		return compressionMethod;
 	}
 
-	public void setCompressionMethod(CompressionMethod compressionMethod)
-	{
+	public void setCompressionMethod(CompressionMethod compressionMethod) {
 		this.compressionMethod = Objects.requireNonNull(compressionMethod, "compressionMethod");
 	}
 
@@ -148,13 +135,11 @@ public class WinRarPackConfig
 	 * 
 	 * @return the overwrite mode for the target package
 	 */
-	public OverwriteMode getTargetOverwriteMode()
-	{
+	public OverwriteMode getTargetOverwriteMode() {
 		return targetOverwriteMode;
 	}
 
-	public void setTargetOverwriteMode(OverwriteMode targetOverwriteMode)
-	{
+	public void setTargetOverwriteMode(OverwriteMode targetOverwriteMode) {
 		this.targetOverwriteMode = Objects.requireNonNull(targetOverwriteMode, "targetOverwriteMode");
 	}
 
@@ -163,19 +148,16 @@ public class WinRarPackConfig
 	 * 
 	 * @return the deletion mode for the source file
 	 */
-	public DeletionMode getSourceDeletionMode()
-	{
+	public DeletionMode getSourceDeletionMode() {
 		return sourceDeletionMode;
 	}
 
-	public void setSourceDeletionMode(DeletionMode sourceDeletionMode)
-	{
+	public void setSourceDeletionMode(DeletionMode sourceDeletionMode) {
 		this.sourceDeletionMode = Objects.requireNonNull(sourceDeletionMode, "sourceDeletionMode");
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(WinRarPackConfig.class)
 				.omitNullValues()
 				.add("compressionMethod", compressionMethod)

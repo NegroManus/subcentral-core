@@ -21,45 +21,36 @@ import de.subcentral.core.metadata.media.Series;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.woltlab.AbstractSqlApi;
 
-public class SubCentralSubMan extends AbstractSqlApi
-{
+public class SubCentralSubMan extends AbstractSqlApi {
 	private static final Logger log = LogManager.getLogger(SubCentralSubMan.class);
 
-	public SubCentralSubMan(Connection connection)
-	{
+	public SubCentralSubMan(Connection connection) {
 		super(connection);
 	}
 
-	public void clearData() throws SQLException
-	{
-		try (Statement stmt = connection.createStatement())
-		{
+	public void clearData() throws SQLException {
+		try (Statement stmt = connection.createStatement()) {
 			stmt.addBatch("DELETE FROM sc1_series");
 			int[] results = stmt.executeBatch();
 		}
 	}
 
-	public void insertSeriesFromSeriesList(Series series) throws SQLException
-	{
+	public void insertSeriesFromSeriesList(Series series) throws SQLException {
 		String id = series.getId(SubCentralDe.getSite());
-		if (id != null)
-		{
+		if (id != null) {
 			log.debug("The series {} already has the id {}. It will not be inserted", series, id);
 			return;
 		}
 
-		try
-		{
+		try {
 			connection.setAutoCommit(false);
 
 			// Get network Id
 			String networkId = null;
-			if (!series.getNetworks().isEmpty())
-			{
+			if (!series.getNetworks().isEmpty()) {
 				Network network = series.getNetworks().get(0);
 				networkId = network.getId(SubCentralDe.getSite());
-				if (networkId == null)
-				{
+				if (networkId == null) {
 
 				}
 			}
@@ -67,8 +58,7 @@ public class SubCentralSubMan extends AbstractSqlApi
 			// May insert genres
 			//
 			try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO sc1_series (name, boardID, type, start, end, networkID, logo) VALUES (?, ?, ?, ?, ?, ?);",
-					Statement.RETURN_GENERATED_KEYS))
-			{
+					Statement.RETURN_GENERATED_KEYS)) {
 				stmt.setString(1, series.getName());
 				setInteger(stmt, 2, series.getFirstAttributeValue(Migration.SERIES_ATTR_BOARD_ID));
 				stmt.setString(3, Series.TYPE_SEASONED);
@@ -86,61 +76,48 @@ public class SubCentralSubMan extends AbstractSqlApi
 				series.setId(SubCentralDe.getSite(), Integer.toString(generatedId));
 			}
 		}
-		catch (SQLException e)
-		{
+		catch (SQLException e) {
 			log.error("Exception while inserting series. Rolling back ", e);
 			connection.rollback();
 			throw e;
 		}
-		finally
-		{
+		finally {
 			connection.setAutoCommit(true);
 		}
 	}
 
-	private static void setInteger(PreparedStatement stmt, int index, Integer value) throws SQLException
-	{
-		if (value != null)
-		{
+	private static void setInteger(PreparedStatement stmt, int index, Integer value) throws SQLException {
+		if (value != null) {
 			stmt.setInt(index, value.intValue());
 		}
-		else
-		{
+		else {
 			stmt.setNull(index, Types.INTEGER);
 		}
 	}
 
-	private static Date convertYearToDate(Temporal temporal)
-	{
-		if (temporal == null)
-		{
+	private static Date convertYearToDate(Temporal temporal) {
+		if (temporal == null) {
 			return null;
 		}
 		Year year = Year.from(temporal);
 		return new Date(year.atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
 	}
 
-	private static String getFirstImage(Media media, String imageType)
-	{
+	private static String getFirstImage(Media media, String imageType) {
 		List<String> imgs = media.getImages().get(imageType);
-		if (imgs.isEmpty())
-		{
+		if (imgs.isEmpty()) {
 			return null;
 		}
 		return imgs.get(0);
 	}
 
-	private static int getGeneratedId(Statement stmt) throws SQLException
-	{
-		try (ResultSet generatedKeys = stmt.getGeneratedKeys())
-		{
-			if (generatedKeys.next())
-			{
+	private static int getGeneratedId(Statement stmt) throws SQLException {
+		try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+			if (generatedKeys.next()) {
 				int id = generatedKeys.getInt(1);
 				return id;
 			}
-			else
-			{
+			else {
 				throw new SQLException("UPDATE failed: No ID obtained");
 			}
 		}

@@ -7,11 +7,9 @@ import de.subcentral.core.metadata.media.GenericMedia;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class GenericMediaMapper extends AbstractMapper<GenericMedia>
-{
+public class GenericMediaMapper extends AbstractMapper<GenericMedia> {
 	@Override
-	public GenericMedia map(Map<SimplePropDescriptor, String> props)
-	{
+	public GenericMedia map(Map<SimplePropDescriptor, String> props) {
 		GenericMedia media = new GenericMedia();
 		media.setName(props.get(Movie.PROP_NAME));
 		media.setTitle(props.get(Movie.PROP_TITLE));
@@ -22,8 +20,7 @@ public class GenericMediaMapper extends AbstractMapper<GenericMedia>
 	}
 
 	@Override
-	protected Class<?> getTargetType()
-	{
+	protected Class<?> getTargetType() {
 		return GenericMedia.class;
 	}
 }

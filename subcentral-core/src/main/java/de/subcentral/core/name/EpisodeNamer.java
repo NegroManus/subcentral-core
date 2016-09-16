@@ -3,8 +3,7 @@ package de.subcentral.core.name;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.util.Context;
 
-public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
-{
+public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode> {
 	/**
 	 * The name of the parameter "includeSeries" of type {@link Boolean}. If set to {@code true}, the episode's series is included in the name, otherwise it is excluded. The default value is
 	 * {@code true}.
@@ -26,40 +25,33 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 	private final SeriesNamer	seriesNamer;
 	private final SeasonNamer	seasonNamer;
 
-	public EpisodeNamer(PropSequenceNameBuilder.Config config)
-	{
+	public EpisodeNamer(PropSequenceNameBuilder.Config config) {
 		this(config, null, null);
 	}
 
-	public EpisodeNamer(PropSequenceNameBuilder.Config config, SeriesNamer seriesNamer, SeasonNamer seasonNamer)
-	{
+	public EpisodeNamer(PropSequenceNameBuilder.Config config, SeriesNamer seriesNamer, SeasonNamer seasonNamer) {
 		super(config);
 		this.seriesNamer = (seriesNamer != null ? seriesNamer : new SeriesNamer(config));
 		this.seasonNamer = (seasonNamer != null ? seasonNamer : new SeasonNamer(config));
 	}
 
-	public SeriesNamer getSeriesNamer()
-	{
+	public SeriesNamer getSeriesNamer() {
 		return seriesNamer;
 	}
 
-	public SeasonNamer getSeasonNamer()
-	{
+	public SeasonNamer getSeasonNamer() {
 		return seasonNamer;
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Episode epi, Context ctx)
-	{
+	protected void appendName(PropSequenceNameBuilder b, Episode epi, Context ctx) {
 		// add series
-		if (epi.getSeries() != null && ctx.getBoolean(PARAM_INCLUDE_SERIES, Boolean.TRUE))
-		{
+		if (epi.getSeries() != null && ctx.getBoolean(PARAM_INCLUDE_SERIES, Boolean.TRUE)) {
 			seriesNamer.appendName(b, epi.getSeries(), ctx);
 		}
 
 		// add season
-		if (epi.isPartOfSeason() && ctx.getBoolean(PARAM_INCLUDE_SEASON, Boolean.TRUE))
-		{
+		if (epi.isPartOfSeason() && ctx.getBoolean(PARAM_INCLUDE_SEASON, Boolean.TRUE)) {
 			// season namer must not include series as it was already used
 			// so just use buildOwnName
 			seasonNamer.appendOwnName(b, epi.getSeason(), ctx);
@@ -68,33 +60,27 @@ public class EpisodeNamer extends AbstractPropertySequenceNamer<Episode>
 		appendOwnName(b, epi, ctx);
 	}
 
-	protected void appendOwnName(PropSequenceNameBuilder b, Episode epi, Context ctx)
-	{
+	protected void appendOwnName(PropSequenceNameBuilder b, Episode epi, Context ctx) {
 		boolean sufficientlyNamed = false;
 		// add num in season
-		if (epi.isPartOfSeason())
-		{
-			if (epi.isNumberedInSeason())
-			{
+		if (epi.isPartOfSeason()) {
+			if (epi.isNumberedInSeason()) {
 				b.append(Episode.PROP_NUMBER_IN_SEASON, epi.getNumberInSeason());
 				sufficientlyNamed = true;
 			}
 		}
 		// add num in series / date
-		else if (epi.isNumberedInSeries())
-		{
+		else if (epi.isNumberedInSeries()) {
 			b.append(Episode.PROP_NUMBER_IN_SERIES, epi.getNumberInSeries());
 			sufficientlyNamed = true;
 		}
-		else if (epi.isDated())
-		{
+		else if (epi.isDated()) {
 			b.append(Episode.PROP_DATE, epi.getDate());
 			sufficientlyNamed = true;
 		}
 
 		// may add episode title
-		if (epi.isTitled() && (!sufficientlyNamed || ctx.getBoolean(PARAM_ALWAYS_INCLUDE_TITLE, Boolean.FALSE)))
-		{
+		if (epi.isTitled() && (!sufficientlyNamed || ctx.getBoolean(PARAM_ALWAYS_INCLUDE_TITLE, Boolean.FALSE))) {
 			b.append(Episode.PROP_TITLE, epi.getTitle());
 		}
 	}

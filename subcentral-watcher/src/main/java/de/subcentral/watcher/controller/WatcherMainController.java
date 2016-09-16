@@ -37,8 +37,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class WatcherMainController extends MainController
-{
+public class WatcherMainController extends MainController {
 	private static final Logger		log						= LogManager.getLogger(WatcherMainController.class);
 
 	public static final int			PROCESSING_TAB_INDEX	= 0;
@@ -65,14 +64,12 @@ public class WatcherMainController extends MainController
 	private ProcessingController	processingController;
 	private SettingsController		settingsController;
 
-	public WatcherMainController(Stage primaryStage)
-	{
+	public WatcherMainController(Stage primaryStage) {
 		super(primaryStage);
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		initExecutor();
 		initCloseHandling();
 
@@ -84,8 +81,7 @@ public class WatcherMainController extends MainController
 		initSystemTray();
 	}
 
-	private void initExecutor()
-	{
+	private void initExecutor() {
 		int cpus = Runtime.getRuntime().availableProcessors();
 		int coreSize = 1 * cpus;
 		int maxSize = 8 * cpus;
@@ -98,15 +94,13 @@ public class WatcherMainController extends MainController
 		initExecutor(taskExecutor);
 	}
 
-	private void initCloseHandling()
-	{
+	private void initCloseHandling() {
 		// Explicit exit because application can be hidden and shown again
 		Platform.setImplicitExit(false);
 		primaryStage.setOnCloseRequest((WindowEvent) -> exit());
 	}
 
-	private void initSettingsController() throws IOException
-	{
+	private void initSettingsController() throws IOException {
 		settingsController = new SettingsController(this);
 		BorderPane settingsPane = FxIO.loadView("SettingsView.fxml", settingsController, "SettingsView", Locale.ENGLISH);
 		AnchorPane.setTopAnchor(settingsPane, 0.0d);
@@ -116,33 +110,26 @@ public class WatcherMainController extends MainController
 		settingsRootPane.getChildren().add(settingsPane);
 	}
 
-	private void initProcessingController() throws IOException
-	{
+	private void initProcessingController() throws IOException {
 		processingController = new ProcessingController(this);
 		reloadProcessingPane();
 	}
 
-	private void initWatchController() throws IOException
-	{
+	private void initWatchController() throws IOException {
 		watchController = new WatchController(this);
 		HBox watchPane = FxIO.loadView("WatchPane.fxml", watchController);
 		rootPane.setTop(watchPane);
 	}
 
-	private void initSystemTray()
-	{
-		if (SettingsController.SETTINGS.getSystemTrayEnabled().get())
-		{
-			SwingUtilities.invokeLater(() ->
-			{
+	private void initSystemTray() {
+		if (SettingsController.SETTINGS.getSystemTrayEnabled().get()) {
+			SwingUtilities.invokeLater(() -> {
 				// Check the SystemTray is supported
-				if (!SystemTray.isSupported())
-				{
+				if (!SystemTray.isSupported()) {
 					log.warn("System tray is not supported");
 					return;
 				}
-				try
-				{
+				try {
 					systemTray = SystemTray.getSystemTray();
 					ActionListener showHideListener = (ActionEvent e) -> Platform.runLater(this::toggleShowHide);
 
@@ -174,8 +161,7 @@ public class WatcherMainController extends MainController
 
 					systemTray.add(systemTrayIcon);
 				}
-				catch (Exception e)
-				{
+				catch (Exception e) {
 					log.warn("System tray icon could not be added", e);
 
 					// Clean up just in case. So that no uninitialized SystemTrayIcon is displayed
@@ -183,77 +169,62 @@ public class WatcherMainController extends MainController
 				}
 			});
 		}
-		else
-		{
+		else {
 			log.debug("Not adding system tray icon because setting " + SettingsController.SETTINGS.getSystemTrayEnabled().getKey() + " is false");
 		}
 	}
 
 	// Public API
-	public WinRar getWinRar() throws UnsupportedOperationException
-	{
+	public WinRar getWinRar() throws UnsupportedOperationException {
 		WinRar winRar = WinRar.getInstance();
 		winRar.setProcessExecutor(executor);
 		return winRar;
 	}
 
-	public WatchController getWatchController()
-	{
+	public WatchController getWatchController() {
 		return watchController;
 	}
 
-	public ProcessingController getProcessingController()
-	{
+	public ProcessingController getProcessingController() {
 		return processingController;
 	}
 
-	public SettingsController getSettingsController()
-	{
+	public SettingsController getSettingsController() {
 		return settingsController;
 	}
 
-	public void show()
-	{
-		if (!primaryStage.isShowing())
-		{
+	public void show() {
+		if (!primaryStage.isShowing()) {
 			showImpl();
 		}
 	}
 
-	public void hide()
-	{
-		if (primaryStage.isShowing())
-		{
+	public void hide() {
+		if (primaryStage.isShowing()) {
 			hideImpl();
 		}
 	}
 
-	public void toggleShowHide()
-	{
-		if (primaryStage.isShowing())
-		{
+	public void toggleShowHide() {
+		if (primaryStage.isShowing()) {
 			hideImpl();
 		}
-		else
-		{
+		else {
 			showImpl();
 		}
 	}
 
-	private void showImpl()
-	{
+	private void showImpl() {
 		primaryStage.show();
 		SwingUtilities.invokeLater(() -> systemTrayShowHideMenuItem.setLabel("Hide"));
 	}
 
-	private void hideImpl()
-	{
+	private void hideImpl() {
 		primaryStage.hide();
 		SwingUtilities.invokeLater(() -> systemTrayShowHideMenuItem.setLabel("Open"));
 	}
 
-	public void reloadProcessingPane() throws IOException
-	{
+	public void reloadProcessingPane() throws IOException {
 		// log.debug("Reloading the processing pane");
 		BorderPane processingPane = FxIO.loadView("ProcessingView.fxml", processingController, "ProcessingView", Locale.ENGLISH);
 		AnchorPane.setTopAnchor(processingPane, 0.0d);
@@ -263,28 +234,23 @@ public class WatcherMainController extends MainController
 		processingRootPane.getChildren().setAll(processingPane);
 	}
 
-	public void selectTab(int index)
-	{
+	public void selectTab(int index) {
 		tabPane.getSelectionModel().select(index);
 	}
 
-	public boolean isSystemTrayAvailable()
-	{
+	public boolean isSystemTrayAvailable() {
 		// if systemTrayIcon is not null, then systemTray and systemTrayIcon were successfully initialized
 		return systemTrayIcon != null;
 	}
 
-	public void displaySystemTrayNotification(String caption, String text, MessageType messageType)
-	{
-		if (isSystemTrayAvailable())
-		{
+	public void displaySystemTrayNotification(String caption, String text, MessageType messageType) {
+		if (isSystemTrayAvailable()) {
 			javax.swing.SwingUtilities.invokeLater(() -> systemTrayIcon.displayMessage(caption, text, messageType));
 		}
 	}
 
 	@Override
-	public void shutdown() throws Exception
-	{
+	public void shutdown() throws Exception {
 		// shutdown in reverse order
 		processingController.shutdown();
 		watchController.shutdown();
@@ -299,22 +265,16 @@ public class WatcherMainController extends MainController
 	/**
 	 * Removes the TrayIcon. Must be done on application shutdown because the SystemTrayIcon causes the AWT Event Dispatch Thread to keep running.
 	 */
-	private void removeSystemTrayIcon()
-	{
-		if (systemTray != null)
-		{
-			if (SwingUtilities.isEventDispatchThread())
-			{
+	private void removeSystemTrayIcon() {
+		if (systemTray != null) {
+			if (SwingUtilities.isEventDispatchThread()) {
 				systemTray.remove(systemTrayIcon);
 			}
-			else
-			{
-				try
-				{
+			else {
+				try {
 					SwingUtilities.invokeAndWait(() -> systemTray.remove(systemTrayIcon));
 				}
-				catch (InvocationTargetException | InterruptedException e)
-				{
+				catch (InvocationTargetException | InterruptedException e) {
 					log.warn("Exception while removing the system tray icon from the system tray", e);
 				}
 			}

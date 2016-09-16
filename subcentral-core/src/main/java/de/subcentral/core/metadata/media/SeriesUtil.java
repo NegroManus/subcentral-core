@@ -10,21 +10,16 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
-public class SeriesUtil
-{
-	private SeriesUtil()
-	{
+public class SeriesUtil {
+	private SeriesUtil() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
 	// Seasons and Episode
-	public List<Episode> filterEpisodesBySeason(List<Episode> episodes, Season season)
-	{
+	public List<Episode> filterEpisodesBySeason(List<Episode> episodes, Season season) {
 		ImmutableList.Builder<Episode> episInSeason = ImmutableList.builder();
-		for (Episode epi : episodes)
-		{
-			if (Objects.equals(season, epi.getSeason()))
-			{
+		for (Episode epi : episodes) {
+			if (Objects.equals(season, epi.getSeason())) {
 				episInSeason.add(epi);
 			}
 		}
@@ -41,21 +36,17 @@ public class SeriesUtil
 	 * @throws IllegalStateException
 	 *             if the season of an episode in the {@link #getEpisodes() episodes list} is not contained in the {@link #getSeasons() seasons list}
 	 */
-	public static Map<Season, List<Episode>> buildSeasonsToEpisodesMap(List<Season> seasons, List<Episode> episodes) throws IllegalStateException
-	{
+	public static Map<Season, List<Episode>> buildSeasonsToEpisodesMap(List<Season> seasons, List<Episode> episodes) throws IllegalStateException {
 		// preserve insertion order -> use a LinkedHashMap
 		Map<Season, List<Episode>> seasonsAndEpis = new LinkedHashMap<>(seasons.size());
-		for (Season s : seasons)
-		{
+		for (Season s : seasons) {
 			seasonsAndEpis.put(s, new ArrayList<>());
 		}
 		// for the Episodes without a Season
 		seasonsAndEpis.put(null, new ArrayList<>());
-		for (Episode epi : episodes)
-		{
+		for (Episode epi : episodes) {
 			List<Episode> seasonEpiList = seasonsAndEpis.get(epi.getSeason());
-			if (seasonEpiList == null)
-			{
+			if (seasonEpiList == null) {
 				throw new IllegalStateException("The seasons list of this series does not contain the season of the following episode: " + epi);
 			}
 			seasonEpiList.add(epi);
@@ -66,16 +57,14 @@ public class SeriesUtil
 	/**
 	 * @return the air date ({@link Episode#getDate()}) of the first episode of this series or <code>null</code> if this series has no episodes
 	 */
-	public static Temporal getDateOfFirstEpisode(List<Episode> episodes)
-	{
+	public static Temporal getDateOfFirstEpisode(List<Episode> episodes) {
 		return episodes.isEmpty() ? null : episodes.get(0).getDate();
 	}
 
 	/**
 	 * @return the air date ({@link Episode#getDate()}) of the last episode of this series or <code>null</code> if this series has no episodes
 	 */
-	public static Temporal getDateOfLastEpisode(List<Episode> episodes)
-	{
+	public static Temporal getDateOfLastEpisode(List<Episode> episodes) {
 		return episodes.isEmpty() ? null : episodes.get(episodes.size() - 1).getDate();
 	}
 }

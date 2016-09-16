@@ -11,10 +11,8 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.concurrent.CompletableFuture;
 
-public class MiniWatcher
-{
-	public static void main(String[] args) throws IOException
-	{
+public class MiniWatcher {
+	public static void main(String[] args) throws IOException {
 		Path watchDir = Paths.get(System.getProperty("user.home"), "Downloads");
 		WatchService watcher = FileSystems.getDefault().newWatchService();
 		WatchKey watchKey = watchDir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
@@ -37,22 +35,18 @@ public class MiniWatcher
 		// 2,
 		// TimeUnit.SECONDS);
 
-		for (;;)
-		{
+		for (;;) {
 			// wait for key to be signaled
 			WatchKey currentKey;
-			try
-			{
+			try {
 				currentKey = watcher.take();
 			}
-			catch (InterruptedException | ClosedWatchServiceException x)
-			{
+			catch (InterruptedException | ClosedWatchServiceException x) {
 				x.printStackTrace();
 				break;
 			}
 
-			for (WatchEvent<?> event : currentKey.pollEvents())
-			{
+			for (WatchEvent<?> event : currentKey.pollEvents()) {
 				WatchEvent.Kind<?> kind = event.kind();
 
 				// This key is registered only
@@ -60,8 +54,7 @@ public class MiniWatcher
 				// but an OVERFLOW event can
 				// occur regardless if events
 				// are lost or discarded.
-				if (kind == StandardWatchEventKinds.OVERFLOW)
-				{
+				if (kind == StandardWatchEventKinds.OVERFLOW) {
 					continue;
 				}
 
@@ -76,16 +69,14 @@ public class MiniWatcher
 			// receive further watch events. If the key is no longer valid,
 			// the directory is inaccessible so exit the loop.
 			boolean valid = currentKey.reset();
-			if (!valid)
-			{
+			if (!valid) {
 				System.err.println("Key was invalid, stopping watch");
 				break;
 			}
 		}
 	}
 
-	private static void processWatchEventAsync(WatchEvent<Path> watchEvent)
-	{
+	private static void processWatchEventAsync(WatchEvent<Path> watchEvent) {
 		CompletableFuture.supplyAsync(() -> watchEvent.context()).thenAccept(p -> System.out.println("New file: " + p));
 
 		System.out.println("done");

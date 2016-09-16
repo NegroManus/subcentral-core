@@ -13,8 +13,7 @@ import de.subcentral.core.util.SimplePropDescriptor;
  * For Movies.
  *
  */
-public class Movie extends StandaloneMedia implements Comparable<Movie>
-{
+public class Movie extends StandaloneMedia implements Comparable<Movie> {
 	private static final long					serialVersionUID		= -8383150114871587705L;
 
 	public static final SimplePropDescriptor	PROP_NAME				= new SimplePropDescriptor(Movie.class, PropNames.NAME);
@@ -34,73 +33,60 @@ public class Movie extends StandaloneMedia implements Comparable<Movie>
 	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Movie.class, PropNames.IDS);
 	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Movie.class, PropNames.ATTRIBUTES);
 
-	public Movie()
-	{
+	public Movie() {
 		// default constructor
 	}
 
-	public Movie(String name)
-	{
+	public Movie(String name) {
 		this.name = name;
 	}
 
-	public Movie(String name, Year year)
-	{
+	public Movie(String name, Year year) {
 		this.name = name;
 		this.date = year;
 	}
 
 	@Override
-	public String getMediaType()
-	{
+	public String getMediaType() {
 		return Media.MEDIA_TYPE_MOVIE;
 	}
 
 	@Override
-	public String getMediaContentType()
-	{
+	public String getMediaContentType() {
 		return Media.MEDIA_CONTENT_TYPE_VIDEO;
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Movie)
-		{
+		if (obj instanceof Movie) {
 			return Objects.equals(name, ((Movie) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hashCode(name);
 	}
 
 	@Override
-	public int compareTo(Movie o)
-	{
-		if (o == this)
-		{
+	public int compareTo(Movie o) {
+		if (o == this) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Movie.class)
 				.omitNullValues()
 				.add("name", name)

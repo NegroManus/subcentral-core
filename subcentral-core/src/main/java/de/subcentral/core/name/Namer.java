@@ -4,10 +4,8 @@ import java.util.function.Function;
 
 import de.subcentral.core.util.Context;
 
-public interface Namer<T> extends Function<T, String>
-{
-	public default String name(T obj)
-	{
+public interface Namer<T> extends Function<T, String> {
+	public default String name(T obj) {
 		return name(obj, Context.EMPTY);
 	}
 
@@ -22,8 +20,7 @@ public interface Namer<T> extends Function<T, String>
 	public String name(T obj, Context ctx);
 
 	@Override
-	public default String apply(T obj)
-	{
+	public default String apply(T obj) {
 		return name(obj);
 	}
 }

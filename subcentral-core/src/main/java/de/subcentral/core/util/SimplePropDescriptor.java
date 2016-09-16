@@ -12,55 +12,45 @@ import com.google.common.collect.ComparisonChain;
  * <code>SimplePropertyDescriptor</code> instances are not equal just because their write and read methods are equal due to inheritance - like it is the case with <code>PropertyDescriptor</code>.
  *
  */
-public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, Serializable
-{
+public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, Serializable {
 	private static final long	serialVersionUID	= 8306594862187006921L;
 
 	private final Class<?>		beanClass;
 	private final String		propName;
 
-	public SimplePropDescriptor(Class<?> beanClass, String propName)
-	{
+	public SimplePropDescriptor(Class<?> beanClass, String propName) {
 		this.beanClass = Objects.requireNonNull(beanClass, "beanClass");
 		this.propName = Objects.requireNonNull(propName, "propName");
 	}
 
-	public Class<?> getBeanClass()
-	{
+	public Class<?> getBeanClass() {
 		return beanClass;
 	}
 
-	public String getPropName()
-	{
+	public String getPropName() {
 		return propName;
 	}
 
 	// Convenience
-	public String getName()
-	{
+	public String getName() {
 		return beanClass.getName() + "." + propName;
 	}
 
-	public String getSimpleName()
-	{
+	public String getSimpleName() {
 		return beanClass.getSimpleName() + "." + propName;
 	}
 
-	public PropertyDescriptor toPropertyDescriptor() throws IntrospectionException
-	{
+	public PropertyDescriptor toPropertyDescriptor() throws IntrospectionException {
 		return new PropertyDescriptor(propName, beanClass);
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof SimplePropDescriptor)
-		{
+		if (obj instanceof SimplePropDescriptor) {
 			SimplePropDescriptor o = (SimplePropDescriptor) obj;
 			return beanClass == o.beanClass && propName.equals(o.propName);
 		}
@@ -68,27 +58,22 @@ public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, S
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(beanClass, propName);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getName();
 	}
 
 	@Override
-	public int compareTo(SimplePropDescriptor o)
-	{
-		if (this == o)
-		{
+	public int compareTo(SimplePropDescriptor o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start()

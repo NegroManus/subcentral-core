@@ -4,11 +4,9 @@ import java.util.List;
 
 import de.subcentral.core.metadata.release.Release;
 
-public class PreDbMePlayground
-{
+public class PreDbMePlayground {
 
-	public static void main(String[] args) throws Exception
-	{
+	public static void main(String[] args) throws Exception {
 		PreDbMeMetadataService db = new PreDbMeMetadataService();
 
 		// URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");

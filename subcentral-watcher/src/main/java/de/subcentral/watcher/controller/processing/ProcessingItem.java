@@ -9,12 +9,10 @@ import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.concurrent.Worker;
 
-public interface ProcessingItem
-{
+public interface ProcessingItem {
 	ReadOnlyStringProperty nameProperty();
 
-	default String getName()
-	{
+	default String getName() {
 		return nameProperty().get();
 	}
 
@@ -22,43 +20,37 @@ public interface ProcessingItem
 
 	ReadOnlyProperty<Worker.State> stateProperty();
 
-	default Worker.State getState()
-	{
+	default Worker.State getState() {
 		return stateProperty().getValue();
 	}
 
 	ReadOnlyStringProperty messageProperty();
 
-	default String getMessage()
-	{
+	default String getMessage() {
 		return messageProperty().get();
 	}
 
 	ReadOnlyDoubleProperty progressProperty();
 
-	default double getProgress()
-	{
+	default double getProgress() {
 		return progressProperty().get();
 	}
 
 	ReadOnlyProperty<ProcessingInfo> infoProperty();
 
-	default ProcessingInfo getInfo()
-	{
+	default ProcessingInfo getInfo() {
 		return infoProperty().getValue();
 	}
 
 	ReadOnlyProperty<Throwable> exceptionProperty();
 
-	default Throwable getException()
-	{
+	default Throwable getException() {
 		return exceptionProperty().getValue();
 	}
 
 	Binding<WorkerStatus> statusBinding();
 
-	default WorkerStatus getStatus()
-	{
+	default WorkerStatus getStatus() {
 		return statusBinding().getValue();
 	}
 }

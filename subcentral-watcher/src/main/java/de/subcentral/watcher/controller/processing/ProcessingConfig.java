@@ -17,15 +17,14 @@ import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
 import de.subcentral.watcher.settings.ProcessingSettings.LocateStrategy;
 
 // package private
-class ProcessingConfig
-{
+class ProcessingConfig {
 	// parsing
 	private Pattern							filenamePattern;
 	private ParsingService					filenameParsingService;
 	// release
 	private ImmutableList<Tag>				releaseMetaTags;
 	// release - dbs
-	private ImmutableList<MetadataService>		releaseDbs;
+	private ImmutableList<MetadataService>	releaseDbs;
 	private ParsingService					releaseParsingService;
 	// release - guessing
 	private boolean							guessingEnabled;
@@ -48,194 +47,156 @@ class ProcessingConfig
 	private DeletionMode					packingSourceDeletionMode;
 
 	// private
-	ProcessingConfig()
-	{
+	ProcessingConfig() {
 
 	}
 
-	Pattern getFilenamePattern()
-	{
+	Pattern getFilenamePattern() {
 		return filenamePattern;
 	}
 
-	void setFilenamePattern(Pattern filenamePattern)
-	{
+	void setFilenamePattern(Pattern filenamePattern) {
 		this.filenamePattern = filenamePattern;
 	}
 
-	ParsingService getFilenameParsingService()
-	{
+	ParsingService getFilenameParsingService() {
 		return filenameParsingService;
 	}
 
-	void setFilenameParsingService(ParsingService filenameParsingService)
-	{
+	void setFilenameParsingService(ParsingService filenameParsingService) {
 		this.filenameParsingService = filenameParsingService;
 	}
 
-	ImmutableList<MetadataService> getReleaseDbs()
-	{
+	ImmutableList<MetadataService> getReleaseDbs() {
 		return releaseDbs;
 	}
 
-	void setReleaseDbs(ImmutableList<MetadataService> releaseDbs)
-	{
+	void setReleaseDbs(ImmutableList<MetadataService> releaseDbs) {
 		this.releaseDbs = releaseDbs;
 	}
 
-	ParsingService getReleaseParsingService()
-	{
+	ParsingService getReleaseParsingService() {
 		return releaseParsingService;
 	}
 
-	void setReleaseParsingService(ParsingService releaseParsingService)
-	{
+	void setReleaseParsingService(ParsingService releaseParsingService) {
 		this.releaseParsingService = releaseParsingService;
 	}
 
-	boolean isGuessingEnabled()
-	{
+	boolean isGuessingEnabled() {
 		return guessingEnabled;
 	}
 
-	void setGuessingEnabled(boolean guessingEnabled)
-	{
+	void setGuessingEnabled(boolean guessingEnabled) {
 		this.guessingEnabled = guessingEnabled;
 	}
 
-	ImmutableList<Tag> getReleaseMetaTags()
-	{
+	ImmutableList<Tag> getReleaseMetaTags() {
 		return releaseMetaTags;
 	}
 
-	void setReleaseMetaTags(ImmutableList<Tag> releaseMetaTags)
-	{
+	void setReleaseMetaTags(ImmutableList<Tag> releaseMetaTags) {
 		this.releaseMetaTags = releaseMetaTags;
 	}
 
-	ImmutableList<StandardRelease> getStandardReleases()
-	{
+	ImmutableList<StandardRelease> getStandardReleases() {
 		return standardReleases;
 	}
 
-	void setStandardReleases(ImmutableList<StandardRelease> standardReleases)
-	{
+	void setStandardReleases(ImmutableList<StandardRelease> standardReleases) {
 		this.standardReleases = standardReleases;
 	}
 
-	boolean isCompatibilityEnabled()
-	{
+	boolean isCompatibilityEnabled() {
 		return compatibilityEnabled;
 	}
 
-	void setCompatibilityEnabled(boolean compatibilityEnabled)
-	{
+	void setCompatibilityEnabled(boolean compatibilityEnabled) {
 		this.compatibilityEnabled = compatibilityEnabled;
 	}
 
-	CompatibilityService getCompatibilityService()
-	{
+	CompatibilityService getCompatibilityService() {
 		return compatibilityService;
 	}
 
-	void setCompatibilityService(CompatibilityService compatibilityService)
-	{
+	void setCompatibilityService(CompatibilityService compatibilityService) {
 		this.compatibilityService = compatibilityService;
 	}
 
-	CorrectionService getBeforeQueryingCorrectionService()
-	{
+	CorrectionService getBeforeQueryingCorrectionService() {
 		return beforeQueryingCorrectionService;
 	}
 
-	void setBeforeQueryingStandardizingService(CorrectionService beforeQueryingStandardizingService)
-	{
+	void setBeforeQueryingStandardizingService(CorrectionService beforeQueryingStandardizingService) {
 		this.beforeQueryingCorrectionService = beforeQueryingStandardizingService;
 	}
 
-	CorrectionService getAfterQueryingCorrectionService()
-	{
+	CorrectionService getAfterQueryingCorrectionService() {
 		return afterQueryingCorrectionService;
 	}
 
-	void setAfterQueryingStandardizingService(CorrectionService afterQueryingStandardizingService)
-	{
+	void setAfterQueryingStandardizingService(CorrectionService afterQueryingStandardizingService) {
 		this.afterQueryingCorrectionService = afterQueryingStandardizingService;
 	}
 
-	Context getNamingParameters()
-	{
+	Context getNamingParameters() {
 		return namingParameters;
 	}
 
-	void setNamingParameters(Context namingParameters)
-	{
+	void setNamingParameters(Context namingParameters) {
 		this.namingParameters = namingParameters;
 	}
 
-	Path getTargetDir()
-	{
+	Path getTargetDir() {
 		return targetDir;
 	}
 
-	void setTargetDir(Path targetDir)
-	{
+	void setTargetDir(Path targetDir) {
 		this.targetDir = targetDir;
 	}
 
-	boolean isDeleteSource()
-	{
+	boolean isDeleteSource() {
 		return deleteSource;
 	}
 
-	void setDeleteSource(boolean deleteSource)
-	{
+	void setDeleteSource(boolean deleteSource) {
 		this.deleteSource = deleteSource;
 	}
 
-	boolean isPackingEnabled()
-	{
+	boolean isPackingEnabled() {
 		return packingEnabled;
 	}
 
-	void setPackingEnabled(boolean packingEnabled)
-	{
+	void setPackingEnabled(boolean packingEnabled) {
 		this.packingEnabled = packingEnabled;
 	}
 
-	Path getRarExe()
-	{
+	Path getRarExe() {
 		return rarExe;
 	}
 
-	void setRarExe(Path rarExe)
-	{
+	void setRarExe(Path rarExe) {
 		this.rarExe = rarExe;
 	}
 
-	LocateStrategy getWinRarLocateStrategy()
-	{
+	LocateStrategy getWinRarLocateStrategy() {
 		return locateStrategy;
 	}
 
-	void setWinRarLocateStrategy(LocateStrategy locateStrategy)
-	{
+	void setWinRarLocateStrategy(LocateStrategy locateStrategy) {
 		this.locateStrategy = locateStrategy;
 	}
 
-	DeletionMode getPackingSourceDeletionMode()
-	{
+	DeletionMode getPackingSourceDeletionMode() {
 		return packingSourceDeletionMode;
 	}
 
-	void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode)
-	{
+	void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode) {
 		this.packingSourceDeletionMode = packingSourceDeletionMode;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(ProcessingConfig.class)
 				.omitNullValues()
 				.add("filenamePattern", filenamePattern)

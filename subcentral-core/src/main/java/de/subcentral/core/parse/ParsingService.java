@@ -5,8 +5,7 @@ import java.util.function.Function;
 
 import de.subcentral.core.util.Service;
 
-public interface ParsingService extends Service, Function<String, Object>
-{
+public interface ParsingService extends Service, Function<String, Object> {
 	public Set<Class<?>> getSupportedTargetTypes();
 
 	/**
@@ -38,8 +37,7 @@ public interface ParsingService extends Service, Function<String, Object>
 	public Object parse(String text, Set<Class<?>> targetTypes);
 
 	@Override
-	public default Object apply(String text)
-	{
+	public default Object apply(String text) {
 		return parse(text);
 	}
 }

@@ -11,11 +11,9 @@ import org.junit.Test;
 
 import de.subcentral.core.metadata.subtitle.Subtitle;
 
-public class ContributionTest
-{
+public class ContributionTest {
 	@Test
-	public void testContributions()
-	{
+	public void testContributions() {
 		Contribution c1 = new Contribution();
 		c1.setType(Subtitle.CONTRIBUTION_TYPE_TRANSLATION);
 		c1.setAmount(50);

@@ -30,8 +30,7 @@ import com.google.common.collect.SetMultimap;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-public class DirectoryWatchService extends Service<Void>
-{
+public class DirectoryWatchService extends Service<Void> {
 	private static final Logger							log			= LogManager.getLogger(DirectoryWatchService.class);
 
 	private final Map<Path, WatchEntry>					watchDirs	= new HashMap<>();
@@ -40,29 +39,23 @@ public class DirectoryWatchService extends Service<Void>
 	private AtomicBoolean								watchActive	= new AtomicBoolean(false);
 	private AtomicBoolean								initialScan	= new AtomicBoolean(false);
 
-	public DirectoryWatchService(BiConsumer<Path, Collection<Path>> watchEventConsumer)
-	{
+	public DirectoryWatchService(BiConsumer<Path, Collection<Path>> watchEventConsumer) {
 		this.watchEventConsumer = Objects.requireNonNull(watchEventConsumer, "watchEventConsumer");
 	}
 
-	public boolean registerDirectory(Path dir, WatchEvent.Kind<?>... kinds) throws IOException
-	{
+	public boolean registerDirectory(Path dir, WatchEvent.Kind<?>... kinds) throws IOException {
 		Objects.requireNonNull(dir, "dir");
 		Objects.requireNonNull(kinds, "kinds");
-		synchronized (watchDirs)
-		{
-			if (watchDirs.containsKey(dir))
-			{
+		synchronized (watchDirs) {
+			if (watchDirs.containsKey(dir)) {
 				return false;
 			}
 			WatchEntry entry;
-			if (watchActive.get())
-			{
+			if (watchActive.get()) {
 				entry = new WatchEntry(dir.register(watchTask.watchService, kinds), kinds);
 				log.info("Registered directory while watching: {}", dir);
 			}
-			else
-			{
+			else {
 				entry = new WatchEntry(null, kinds);
 				log.info("Registered directory: {}", dir);
 			}
@@ -71,29 +64,22 @@ public class DirectoryWatchService extends Service<Void>
 		}
 	}
 
-	public boolean unregisterDirectory(Path dir)
-	{
+	public boolean unregisterDirectory(Path dir) {
 		Objects.requireNonNull(dir, "dir");
-		synchronized (watchDirs)
-		{
+		synchronized (watchDirs) {
 			WatchEntry entry = watchDirs.remove(dir);
-			if (entry != null)
-			{
-				if (entry.key != null)
-				{
+			if (entry != null) {
+				if (entry.key != null) {
 					entry.key.cancel();
 				}
-				if (watchActive.get())
-				{
+				if (watchActive.get()) {
 					log.info("Unregistered directory while watching: {}", dir);
-					if (watchDirs.isEmpty())
-					{
+					if (watchDirs.isEmpty()) {
 						log.info("No more directories to watch. Stopping");
 						cancel();
 					}
 				}
-				else
-				{
+				else {
 					log.info("Unregistered directory: {}", dir);
 				}
 				return true;
@@ -102,71 +88,57 @@ public class DirectoryWatchService extends Service<Void>
 		}
 	}
 
-	public Set<Path> getWatchDirectories()
-	{
-		synchronized (watchDirs)
-		{
+	public Set<Path> getWatchDirectories() {
+		synchronized (watchDirs) {
 			return ImmutableSet.copyOf(watchDirs.keySet());
 		}
 	}
 
-	public boolean getInitialScan()
-	{
+	public boolean getInitialScan() {
 		return initialScan.get();
 	}
 
-	public void setInitialScan(boolean initialScan)
-	{
+	public void setInitialScan(boolean initialScan) {
 		this.initialScan.set(initialScan);
 	}
 
 	@Override
-	protected Task<Void> createTask()
-	{
+	protected Task<Void> createTask() {
 		watchTask = new WatchTask();
 		return watchTask;
 	}
 
-	private class WatchTask extends Task<Void>
-	{
+	private class WatchTask extends Task<Void> {
 		private WatchService watchService;
 
 		@Override
-		protected Void call() throws Exception
-		{
-			try
-			{
-				synchronized (watchDirs)
-				{
-					if (watchDirs.isEmpty())
-					{
+		protected Void call() throws Exception {
+			try {
+				synchronized (watchDirs) {
+					if (watchDirs.isEmpty()) {
 						log.info("No directories to watch");
 						return null;
 					}
 					watchService = FileSystems.getDefault().newWatchService();
 					// register the dirs
-					for (Map.Entry<Path, WatchEntry> entry : watchDirs.entrySet())
-					{
+					for (Map.Entry<Path, WatchEntry> entry : watchDirs.entrySet()) {
 						Path dir = entry.getKey();
 						WatchEvent.Kind<?>[] kinds = entry.getValue().kinds;
 						watchDirs.put(dir, new WatchEntry(dir.register(watchService, kinds), kinds));
 					}
-					if (getInitialScan())
-					{
+					if (getInitialScan()) {
 						scanDirectories();
 					}
 					watchActive.set(true);
 				}
 				log.info("Watching {}", watchDirs.keySet());
-				while (!Thread.interrupted())
-				{
+				while (!Thread.interrupted()) {
 					// wait for key to be signaled
 					WatchKey currentKey = watchService.take();
 
 					// Use SetMultimap to not add multiple entries for one file
 					SetMultimap<Path, Path> newFiles = HashMultimap.create();
-					for (WatchEvent<?> event : currentKey.pollEvents())
-					{
+					for (WatchEvent<?> event : currentKey.pollEvents()) {
 						WatchEvent.Kind<?> kind = event.kind();
 
 						// This key is registered only
@@ -174,8 +146,7 @@ public class DirectoryWatchService extends Service<Void>
 						// but an OVERFLOW event can
 						// occur regardless if events
 						// are lost or discarded.
-						if (kind == StandardWatchEventKinds.OVERFLOW)
-						{
+						if (kind == StandardWatchEventKinds.OVERFLOW) {
 							log.info("Overflow event occured");
 							continue;
 						}
@@ -188,8 +159,7 @@ public class DirectoryWatchService extends Service<Void>
 						log.debug("New event in {}: file={}, eventKind={}, count={}", dir, evt.context(), evt.kind(), evt.count());
 						newFiles.put(dir, evt.context());
 					}
-					for (Map.Entry<Path, Collection<Path>> entry : newFiles.asMap().entrySet())
-					{
+					for (Map.Entry<Path, Collection<Path>> entry : newFiles.asMap().entrySet()) {
 						watchEventConsumer.accept(entry.getKey(), entry.getValue());
 					}
 
@@ -197,38 +167,29 @@ public class DirectoryWatchService extends Service<Void>
 					// receive further watch events. If the key is no longer valid,
 					// the directory is inaccessible so exit the loop.
 					boolean valid = currentKey.reset();
-					if (!valid)
-					{
+					if (!valid) {
 						log.debug("Key was invalid, canceling watch");
 						break;
 					}
 				}
 			}
-			catch (InterruptedException e)
-			{
-				if (!isCancelled())
-				{
+			catch (InterruptedException e) {
+				if (!isCancelled()) {
 					throw e;
 				}
 			}
-			catch (RuntimeException e)
-			{
+			catch (RuntimeException e) {
 				log.error("Exception while watching " + watchDirs.keySet(), e);
 				throw e;
 			}
-			finally
-			{
-				synchronized (watchDirs)
-				{
+			finally {
+				synchronized (watchDirs) {
 					watchActive.set(false);
-					if (watchService != null)
-					{
-						try
-						{
+					if (watchService != null) {
+						try {
 							watchService.close();
 						}
-						catch (IOException e)
-						{
+						catch (IOException e) {
 							log.warn("Exception while closing WatchService", e);
 						}
 					}
@@ -238,28 +199,21 @@ public class DirectoryWatchService extends Service<Void>
 			return null;
 		}
 
-		private void scanDirectories() throws IOException
-		{
-			for (Path dir : watchDirs.keySet())
-			{
-				if (isCancelled())
-				{
+		private void scanDirectories() throws IOException {
+			for (Path dir : watchDirs.keySet()) {
+				if (isCancelled()) {
 					return;
 				}
 				List<Path> files = new ArrayList<>();
-				try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir))
-				{
-					if (isCancelled())
-					{
+				try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+					if (isCancelled()) {
 						return;
 					}
-					for (Path file : directoryStream)
-					{
+					for (Path file : directoryStream) {
 						files.add(file);
 					}
 				}
-				catch (IOException ex)
-				{
+				catch (IOException ex) {
 					log.error("Exception while scanning directory " + dir, ex);
 					throw ex;
 				}
@@ -269,18 +223,15 @@ public class DirectoryWatchService extends Service<Void>
 	}
 
 	@Override
-	protected void cancelled()
-	{
+	protected void cancelled() {
 		log.debug("Watch was cancelled");
 	}
 
-	private static class WatchEntry
-	{
+	private static class WatchEntry {
 		private final WatchKey				key;
 		private final WatchEvent.Kind<?>[]	kinds;
 
-		public WatchEntry(WatchKey watchKey, Kind<?>[] kinds)
-		{
+		public WatchEntry(WatchKey watchKey, Kind<?>[] kinds) {
 			this.key = watchKey;
 			this.kinds = kinds;
 		}

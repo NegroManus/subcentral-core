@@ -13,8 +13,7 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class ParsingDefaults
-{
+public class ParsingDefaults {
 	/**
 	 * Pattern for media names like "The Lord of the Rings (2003)", "The Office (UK)".<br/>
 	 * Groups
@@ -40,68 +39,55 @@ public class ParsingDefaults
 	private static final SubtitleMapper					SUBTITLE_MAPPER						= new SubtitleMapper();
 	private static final SubtitleReleaseMapper			SUBTITLE_ADJUSTMENT_MAPPER			= new SubtitleReleaseMapper();
 
-	private ParsingDefaults()
-	{
+	private ParsingDefaults() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static SimpleParsePropStringService getDefaultPropFromStringService()
-	{
+	public static SimpleParsePropStringService getDefaultPropFromStringService() {
 		return PROP_FROM_STRING_SERVICE;
 	}
 
-	public static Mapper<Episode> getDefaultEpisodeMapper()
-	{
+	public static Mapper<Episode> getDefaultEpisodeMapper() {
 		return EPISODE_MAPPER;
 	}
 
-	public static Mapper<List<Episode>> getDefaultSingletonListEpisodeMapper()
-	{
+	public static Mapper<List<Episode>> getDefaultSingletonListEpisodeMapper() {
 		return SINGLETON_LIST_EPISODE_MAPPER;
 	}
 
-	public static Mapper<List<Episode>> getDefaultMultiEpisodeMapper()
-	{
+	public static Mapper<List<Episode>> getDefaultMultiEpisodeMapper() {
 		return MULTI_EPISODE_MAPPER;
 	}
 
-	public static final Mapper<Movie> getDefaultMovieMapper()
-	{
+	public static final Mapper<Movie> getDefaultMovieMapper() {
 		return MOVIE_MAPPER;
 	}
 
-	public static Mapper<List<Movie>> getDefaultSingletonListMovieMapper()
-	{
+	public static Mapper<List<Movie>> getDefaultSingletonListMovieMapper() {
 		return SINGLETON_LIST_MOVIE_MAPPER;
 	}
 
-	public static GenericMediaMapper getDefaultGenericMediaMapper()
-	{
+	public static GenericMediaMapper getDefaultGenericMediaMapper() {
 		return GENERIC_MEDIA_MAPPER;
 	}
 
-	public static Mapper<List<GenericMedia>> getDefaultSingletonListGenericMediaMapper()
-	{
+	public static Mapper<List<GenericMedia>> getDefaultSingletonListGenericMediaMapper() {
 		return SINGLETON_LIST_GENERIC_MEDIA_MAPPER;
 	}
 
-	public static final Mapper<Release> getDefaultReleaseMapper()
-	{
+	public static final Mapper<Release> getDefaultReleaseMapper() {
 		return RELEASE_MAPPER;
 	}
 
-	public static final Mapper<Subtitle> getDefaultSubtitleMapper()
-	{
+	public static final Mapper<Subtitle> getDefaultSubtitleMapper() {
 		return SUBTITLE_MAPPER;
 	}
 
-	public static final Mapper<SubtitleRelease> getDefaultSubtitleAdjustmentMapper()
-	{
+	public static final Mapper<SubtitleRelease> getDefaultSubtitleAdjustmentMapper() {
 		return SUBTITLE_ADJUSTMENT_MAPPER;
 	}
 
-	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper)
-	{
+	public static final <E> Mapper<List<E>> createSingletonListMapper(Mapper<E> elementMapper) {
 		return (Map<SimplePropDescriptor, String> props) -> ImmutableList.of(elementMapper.map(props));
 	}
 }

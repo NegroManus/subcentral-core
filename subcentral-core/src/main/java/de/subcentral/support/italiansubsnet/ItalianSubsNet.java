@@ -24,18 +24,15 @@ import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class ItalianSubsNet
-{
+public class ItalianSubsNet {
 	private static final Site						SITE			= new Site("italiansubs.net", "italiansubs.net", "http://www.italiansubs.net/");
 	private static final TypeBasedParsingService	PARSING_SERVICE	= initParsingService();
 
-	private ItalianSubsNet()
-	{
+	private ItalianSubsNet() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	private static TypeBasedParsingService initParsingService()
-	{
+	private static TypeBasedParsingService initParsingService() {
 		ImmutableMap.Builder<SimplePropDescriptor, String> commonPredefMatchesBuilder = ImmutableMap.builder();
 		commonPredefMatchesBuilder.put(Subtitle.PROP_SOURCE, getSite().getName());
 		commonPredefMatchesBuilder.put(Subtitle.PROP_LANGUAGE, Locale.ITALIAN.toString());
@@ -113,18 +110,15 @@ public class ItalianSubsNet
 		return service;
 	}
 
-	public static Site getSite()
-	{
+	public static Site getSite() {
 		return SITE;
 	}
 
-	public static final ParsingService getParsingService()
-	{
+	public static final ParsingService getParsingService() {
 		return PARSING_SERVICE;
 	}
 
-	public static List<ParserEntry<?>> getParserEntries()
-	{
+	public static List<ParserEntry<?>> getParserEntries() {
 		return PARSING_SERVICE.getEntries();
 	}
 }

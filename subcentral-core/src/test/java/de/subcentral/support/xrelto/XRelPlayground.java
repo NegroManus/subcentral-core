@@ -10,11 +10,9 @@ import com.google.common.io.Resources;
 
 import de.subcentral.core.metadata.release.Release;
 
-public class XRelPlayground
-{
+public class XRelPlayground {
 
-	public static void main(String[] args) throws Exception
-	{
+	public static void main(String[] args) throws Exception {
 		XRelToMetadataService db = new XRelToMetadataService();
 
 		URL url = Resources.getResource("de/subcentral/support/xrelto/psych.s05e06.html");

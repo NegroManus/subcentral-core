@@ -30,8 +30,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class MigMainController extends MainController
-{
+public class MigMainController extends MainController {
 	// Model
 	private MigrationAssistance	assistance	= new MigrationAssistance();
 
@@ -55,19 +54,16 @@ public class MigMainController extends MainController
 	@FXML
 	private Button				cancelBtn;
 
-	public MigMainController(Stage primaryStage)
-	{
+	public MigMainController(Stage primaryStage) {
 		super(primaryStage);
 	}
 
-	public MigrationAssistance getAssistance()
-	{
+	public MigrationAssistance getAssistance() {
 		return assistance;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		initPages();
 		initLowerButtonBar();
 		initExecutor();
@@ -75,8 +71,7 @@ public class MigMainController extends MainController
 		currentPage.set(0);
 	}
 
-	private void initPages()
-	{
+	private void initPages() {
 		Page settingsPage = new Page(() -> new SettingsPageController(MigMainController.this), "SettingsPage.fxml");
 		Page configurePage = new Page(() -> new ScopePageController(MigMainController.this), "ConfigurePage.fxml");
 		Page migrationPage = new Page(() -> new MigrationPageController(MigMainController.this), "MigrationPage.fxml");
@@ -84,20 +79,16 @@ public class MigMainController extends MainController
 		pages.add(configurePage);
 		pages.add(migrationPage);
 
-		currentPage.addListener(new ChangeListener<Number>()
-		{
+		currentPage.addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-			{
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				int oldIndex = oldValue.intValue();
 				int newIndex = newValue.intValue();
 				// At the beginning the index is -1
 				Page oldPage = oldIndex < 0 ? null : pages.get(oldIndex);
 				Page newPage = pages.get(newIndex);
-				if (newPage.isControllerNotLoaded())
-				{
-					try
-					{
+				if (newPage.isControllerNotLoaded()) {
+					try {
 						FxIO.loadView(newPage.fxmlFilename, newPage.loadController());
 						Pane contentPane = newPage.controller.getRootPane();
 						AnchorPane.setTopAnchor(contentPane, 0.0d);
@@ -105,8 +96,7 @@ public class MigMainController extends MainController
 						AnchorPane.setBottomAnchor(contentPane, 0.0d);
 						AnchorPane.setLeftAnchor(contentPane, 0.0d);
 					}
-					catch (IOException e)
-					{
+					catch (IOException e) {
 						throw new RuntimeException("Error while loading controller", e);
 					}
 				}
@@ -121,8 +111,7 @@ public class MigMainController extends MainController
 				nextBtn.disableProperty().bind(newPage.controller.nextButtonDisableBinding());
 
 				// Apply operations on page change
-				if (oldPage != null)
-				{
+				if (oldPage != null) {
 					oldPage.controller.onExit();
 				}
 				newPage.controller.onEnter();
@@ -133,8 +122,7 @@ public class MigMainController extends MainController
 		});
 	}
 
-	private void initLowerButtonBar()
-	{
+	private void initLowerButtonBar() {
 		backBtn.setOnAction((ActionEvent evt) -> pageBack());
 		// In order to remove it from the layout when invisible:
 		backBtn.managedProperty().bind(backBtn.visibleProperty());
@@ -145,31 +133,25 @@ public class MigMainController extends MainController
 		cancelBtn.setOnAction((ActionEvent evt) -> cancel());
 	}
 
-	private void initExecutor()
-	{
+	private void initExecutor() {
 		initExecutor(new TaskExecutor(Executors.newSingleThreadExecutor(new NamedThreadFactory("Worker")), primaryStage));
 	}
 
-	public void pageBack()
-	{
+	public void pageBack() {
 		int index = currentPage.get();
-		if (index > 0)
-		{
+		if (index > 0) {
 			currentPage.set(index - 1);
 		}
 	}
 
-	public void pageNext()
-	{
+	public void pageNext() {
 		int index = currentPage.get();
-		if (index < pages.size() - 1)
-		{
+		if (index < pages.size() - 1) {
 			currentPage.set(index + 1);
 		}
 	}
 
-	public void cancel()
-	{
+	public void cancel() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(primaryStage);
@@ -179,19 +161,15 @@ public class MigMainController extends MainController
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.YES)
-		{
+		if (result.get() == ButtonType.YES) {
 			Platform.exit();
 		}
 	}
 
 	@Override
-	public void shutdown() throws Exception
-	{
-		for (Page page : pages)
-		{
-			if (page.controller != null)
-			{
+	public void shutdown() throws Exception {
+		for (Page page : pages) {
+			if (page.controller != null) {
 				page.controller.shutdown();
 			}
 		}
@@ -199,25 +177,21 @@ public class MigMainController extends MainController
 		super.shutdown();
 	}
 
-	private static final class Page
-	{
+	private static final class Page {
 		private AbstractPageController					controller;
 		private final Supplier<AbstractPageController>	controllerConstructor;
 		private final String							fxmlFilename;
 
-		private Page(Supplier<AbstractPageController> controllerConstructor, String fxmlFilename)
-		{
+		private Page(Supplier<AbstractPageController> controllerConstructor, String fxmlFilename) {
 			this.controllerConstructor = controllerConstructor;
 			this.fxmlFilename = fxmlFilename;
 		}
 
-		private boolean isControllerNotLoaded()
-		{
+		private boolean isControllerNotLoaded() {
 			return controller == null;
 		}
 
-		private AbstractPageController loadController()
-		{
+		private AbstractPageController loadController() {
 			return controller = controllerConstructor.get();
 		}
 	}

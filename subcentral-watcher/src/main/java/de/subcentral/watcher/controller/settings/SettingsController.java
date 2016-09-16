@@ -47,8 +47,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
-public class SettingsController extends SubController<WatcherMainController>
-{
+public class SettingsController extends SubController<WatcherMainController> {
 	private static final Logger					log										= LogManager.getLogger(SettingsController.class);
 
 	public static final WatcherSettings			SETTINGS								= new WatcherSettings();
@@ -86,14 +85,12 @@ public class SettingsController extends SubController<WatcherMainController>
 	// Controllers
 	private final Map<String, SettingsSection>	sections;
 
-	public SettingsController(WatcherMainController watcherMainController)
-	{
+	public SettingsController(WatcherMainController watcherMainController) {
 		super(watcherMainController);
 		sections = initSections();
 	}
 
-	private Map<String, SettingsSection> initSections()
-	{
+	private Map<String, SettingsSection> initSections() {
 		Map<String, SettingsSection> ctrls = new HashMap<>();
 
 		SettingsSection watchSection = new SettingsSection(WATCH_SECTION);
@@ -177,15 +174,13 @@ public class SettingsController extends SubController<WatcherMainController>
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		loadSettings();
 		initSettingsTree();
 		initBottomButtonPane();
 	}
 
-	private void initSettingsTree()
-	{
+	private void initSettingsTree() {
 		final TreeItem<SettingsSection> root = new TreeItem<>();
 		sectionSelectionTreeView.setRoot(root);
 		sectionSelectionTreeView.setCellFactory((TreeView<SettingsSection> param) -> new SettingsSectionTreeCell());
@@ -231,14 +226,11 @@ public class SettingsController extends SubController<WatcherMainController>
 
 		sectionSelectionTreeView.getSelectionModel()
 				.selectedItemProperty()
-				.addListener((ObservableValue<? extends TreeItem<SettingsSection>> observable, TreeItem<SettingsSection> oldValue, TreeItem<SettingsSection> newValue) ->
-				{
-					if (newValue != null)
-					{
+				.addListener((ObservableValue<? extends TreeItem<SettingsSection>> observable, TreeItem<SettingsSection> oldValue, TreeItem<SettingsSection> newValue) -> {
+					if (newValue != null) {
 						showSection(newValue.getValue().getName());
 					}
-					else
-					{
+					else {
 						// no section was selected -> clear
 						sectionRootPane.getChildren().clear();
 					}
@@ -248,47 +240,40 @@ public class SettingsController extends SubController<WatcherMainController>
 		sectionSelectionTreeView.getSelectionModel().selectFirst();
 	}
 
-	private void initBottomButtonPane()
-	{
-		saveBtn.disableProperty().bind(new BooleanBinding()
-		{
+	private void initBottomButtonPane() {
+		saveBtn.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(SettingsController.SETTINGS.changedProperty(), customSettingsExist, defaultSettingsLoaded);
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				// disable if nothing has changed and there exist custom settings and the default settings were not loaded
 				return !SettingsController.SETTINGS.changed() && customSettingsExist.get() && !defaultSettingsLoaded.get();
 			}
 		});
 		saveBtn.setOnAction((ActionEvent e) -> confirmSaveSettings());
 
-		restoreLastSavedBtn.disableProperty().bind(new BooleanBinding()
-		{
+		restoreLastSavedBtn.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(SettingsController.SETTINGS.changedProperty(), customSettingsExist, defaultSettingsLoaded);
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				// disable if nothing has changed or no custom settings exist to restore
 				return !SettingsController.SETTINGS.changed() && !defaultSettingsLoaded.get() || !customSettingsExist.get();
 			}
 		});
 		restoreLastSavedBtn.setOnAction((ActionEvent e) -> confirmRestoreLastSavedSettings());
 
-		restoreDefaultsBtn.disableProperty().bind(new BooleanBinding()
-		{
+		restoreDefaultsBtn.disableProperty().bind(new BooleanBinding() {
 			{
 				super.bind(SettingsController.SETTINGS.changedProperty(), defaultSettingsLoaded);
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				// disable if nothing has changed and the default settings were not loaded
 				return !SettingsController.SETTINGS.changed() && defaultSettingsLoaded.get();
 			}
@@ -296,31 +281,25 @@ public class SettingsController extends SubController<WatcherMainController>
 		restoreDefaultsBtn.setOnAction((ActionEvent e) -> confirmRestoreDefaultSettings());
 	}
 
-	private void showSection(String sectionName)
-	{
+	private void showSection(String sectionName) {
 		SettingsSection section = sections.get(sectionName);
-		if (section != null && section.hasController())
-		{
-			if (section.isControllerLoaded())
-			{
+		if (section != null && section.hasController()) {
+			if (section.isControllerLoaded()) {
 				sectionRootPane.getChildren().setAll(section.getController().getContentPane());
 			}
-			else
-			{
+			else {
 				sectionRootPane.getChildren().setAll(createLoadingIndicator());
 				execute(createLoadSectionControllerTask(section));
 			}
 		}
-		else
-		{
+		else {
 			// no matching section or section has no controller (empty section)
 			// -> clear
 			sectionRootPane.getChildren().clear();
 		}
 	}
 
-	private StackPane createLoadingIndicator()
-	{
+	private StackPane createLoadingIndicator() {
 		StackPane loadingPane = new StackPane();
 		AnchorPane.setTopAnchor(loadingPane, 0.0d);
 		AnchorPane.setRightAnchor(loadingPane, 0.0d);
@@ -335,52 +314,43 @@ public class SettingsController extends SubController<WatcherMainController>
 		return loadingPane;
 	}
 
-	private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final SettingsSection settingsSection)
-	{
-		return new Task<AbstractSettingsSectionController>()
-		{
+	private Task<AbstractSettingsSectionController> createLoadSectionControllerTask(final SettingsSection settingsSection) {
+		return new Task<AbstractSettingsSectionController>() {
 			{
 				updateTitle("Load settings section \"" + settingsSection.label + "\"");
 			}
 
 			@Override
-			protected AbstractSettingsSectionController call() throws Exception
-			{
+			protected AbstractSettingsSectionController call() throws Exception {
 				return settingsSection.loadController();
 			}
 
 			@Override
-			protected void succeeded()
-			{
+			protected void succeeded() {
 				sectionRootPane.getChildren().setAll(getValue().getContentPane());
 			}
 
 			@Override
-			protected void failed()
-			{
+			protected void failed() {
 				Throwable e = getException();
 				log.error("Loading of settings section " + settingsSection + " failed", e);
 				sectionRootPane.getChildren().setAll(new Label("Loading of settings section " + settingsSection + " failed: " + e));
 			}
 
 			@Override
-			protected void cancelled()
-			{
+			protected void cancelled() {
 				log.error("Loading of settings section " + settingsSection + " was cancelled");
 				sectionRootPane.getChildren().setAll(new Label("Loading of settings section " + settingsSection + " was cancelled"));
 			}
 		};
 	}
 
-	public Map<String, SettingsSection> getSections()
-	{
+	public Map<String, SettingsSection> getSections() {
 		return sections;
 	}
 
-	public void selectSection(String section)
-	{
-		if (section == null)
-		{
+	public void selectSection(String section) {
+		if (section == null) {
 			sectionSelectionTreeView.getSelectionModel().clearSelection();
 		}
 		TreeItem<SettingsSection> itemToSelect = FxNodes.findTreeItem(sectionSelectionTreeView.getRoot(),
@@ -388,8 +358,7 @@ public class SettingsController extends SubController<WatcherMainController>
 		sectionSelectionTreeView.getSelectionModel().select(itemToSelect);
 	}
 
-	public void confirmSaveSettings()
-	{
+	public void confirmSaveSettings() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(getPrimaryStage());
@@ -399,16 +368,13 @@ public class SettingsController extends SubController<WatcherMainController>
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.YES)
-		{
+		if (result.get() == ButtonType.YES) {
 			saveSettings();
 		}
 	}
 
-	private void confirmSaveUnsavedSettings() throws ConfigurationException
-	{
-		if (defaultSettingsLoaded.get() || SettingsController.SETTINGS.changed())
-		{
+	private void confirmSaveUnsavedSettings() throws ConfigurationException {
+		if (defaultSettingsLoaded.get() || SettingsController.SETTINGS.changed()) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			FxNodes.fixAlertHeight(alert);
 			alert.initOwner(getPrimaryStage());
@@ -418,19 +384,16 @@ public class SettingsController extends SubController<WatcherMainController>
 			alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.YES)
-			{
+			if (result.get() == ButtonType.YES) {
 				saveSettings();
 			}
-			else
-			{
+			else {
 				log.debug("User chose not to save changed settings");
 			}
 		}
 	}
 
-	public void confirmRestoreLastSavedSettings()
-	{
+	public void confirmRestoreLastSavedSettings() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(getPrimaryStage());
@@ -440,14 +403,12 @@ public class SettingsController extends SubController<WatcherMainController>
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.YES)
-		{
+		if (result.get() == ButtonType.YES) {
 			loadSettings();
 		}
 	}
 
-	public void confirmRestoreDefaultSettings()
-	{
+	public void confirmRestoreDefaultSettings() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		FxNodes.fixAlertHeight(alert);
 		alert.initOwner(getPrimaryStage());
@@ -458,16 +419,13 @@ public class SettingsController extends SubController<WatcherMainController>
 		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
 
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.YES)
-		{
+		if (result.get() == ButtonType.YES) {
 			loadDefaultSettings();
 		}
 	}
 
-	public void saveSettings()
-	{
-		try
-		{
+	public void saveSettings() {
+		try {
 			Path settingsFile = getCustomSettingsPath();
 
 			// May create parent dir
@@ -477,24 +435,19 @@ public class SettingsController extends SubController<WatcherMainController>
 			defaultSettingsLoaded.set(false);
 			customSettingsExist.set(true);
 		}
-		catch (ConfigurationException | IOException e)
-		{
+		catch (ConfigurationException | IOException e) {
 			FxUtil.createExceptionAlert(null, "Failed to save settings", "Exception while saving settings to " + CUSTOM_SETTINGS_FILENAME, e).showAndWait();
 		}
 	}
 
-	public void loadSettings()
-	{
+	public void loadSettings() {
 		Path settingsFile = getCustomSettingsPath();
-		if (Files.exists(settingsFile, LinkOption.NOFOLLOW_LINKS))
-		{
-			try
-			{
+		if (Files.exists(settingsFile, LinkOption.NOFOLLOW_LINKS)) {
+			try {
 				loadCustomSettings(settingsFile);
 				return;
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				log.error("Failed to load custom settings from " + settingsFile + ". Default settings will be used", e);
 				FxUtil.createExceptionAlert(null,
 						"Failed to load custom settings",
@@ -503,8 +456,7 @@ public class SettingsController extends SubController<WatcherMainController>
 						e).showAndWait();
 			}
 		}
-		else
-		{
+		else {
 			log.debug("No custom settings found at {}. Default settings will be used", settingsFile);
 		}
 
@@ -512,49 +464,41 @@ public class SettingsController extends SubController<WatcherMainController>
 		loadDefaultSettings();
 	}
 
-	public void loadDefaultSettings()
-	{
-		try
-		{
+	public void loadDefaultSettings() {
+		try {
 			// A resource has to be loaded via URL
 			// because building a Path for a JAR intern resource file results in a FileSystem exception.
 			SettingsController.SETTINGS.load(getDefaultSettingsUrl());
 			defaultSettingsLoaded.set(true);
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			log.error("Exception while loading default settings", e);
 			FxUtil.createExceptionAlert(null, "Failed to load default settings", "Failed to load default settings from resource " + DEFAULT_SETTINGS_FILENAME, e).showAndWait();
 		}
 	}
 
-	public void loadCustomSettings(Path file) throws ConfigurationException
-	{
+	public void loadCustomSettings(Path file) throws ConfigurationException {
 		log.debug("Loading custom settings from {}", file);
 		SettingsController.SETTINGS.load(file);
 		defaultSettingsLoaded.set(false);
 		customSettingsExist.set(true);
 	}
 
-	public URL getDefaultSettingsUrl()
-	{
+	public URL getDefaultSettingsUrl() {
 		return Resources.getResource(DEFAULT_SETTINGS_FILENAME);
 	}
 
-	public Path getCustomSettingsPath()
-	{
+	public Path getCustomSettingsPath() {
 		Path localConfigDir = WatcherApp.getLocalConfigDirectory();
 		return localConfigDir.resolve(CUSTOM_SETTINGS_FILENAME).toAbsolutePath();
 	}
 
 	@Override
-	public void shutdown() throws Exception
-	{
+	public void shutdown() throws Exception {
 		confirmSaveUnsavedSettings();
 	}
 
-	public static class SettingsSection
-	{
+	public static class SettingsSection {
 		private final String											name;
 		private Supplier<? extends AbstractSettingsSectionController>	controllerConstructor;
 		private AbstractSettingsSectionController						controller;
@@ -563,28 +507,23 @@ public class SettingsController extends SubController<WatcherMainController>
 		private String													fxml;
 		private String													resourceBundle;
 
-		public SettingsSection(String name)
-		{
+		public SettingsSection(String name) {
 			this.name = name;
 		}
 
-		public String getName()
-		{
+		public String getName() {
 			return name;
 		}
 
-		public void setControllerConstructor(Supplier<? extends AbstractSettingsSectionController> controllerConstructor)
-		{
+		public void setControllerConstructor(Supplier<? extends AbstractSettingsSectionController> controllerConstructor) {
 			this.controllerConstructor = controllerConstructor;
 		}
 
-		public Supplier<? extends AbstractSettingsSectionController> getControllerConstructor()
-		{
+		public Supplier<? extends AbstractSettingsSectionController> getControllerConstructor() {
 			return controllerConstructor;
 		}
 
-		public boolean hasController()
-		{
+		public boolean hasController() {
 			return controllerConstructor != null;
 		}
 
@@ -592,8 +531,7 @@ public class SettingsController extends SubController<WatcherMainController>
 		 * 
 		 * @return the controller or null if it was not loaded yet
 		 */
-		public AbstractSettingsSectionController getController()
-		{
+		public AbstractSettingsSectionController getController() {
 			return controller;
 		}
 
@@ -602,20 +540,17 @@ public class SettingsController extends SubController<WatcherMainController>
 		 * 
 		 * @return
 		 */
-		public AbstractSettingsSectionController loadController() throws IOException
-		{
+		public AbstractSettingsSectionController loadController() throws IOException {
 			controller = controllerConstructor.get();
 			loadController(fxml, resourceBundle, controller);
 			return controller;
 		}
 
-		public boolean isControllerLoaded()
-		{
+		public boolean isControllerLoaded() {
 			return controller != null;
 		}
 
-		private void loadController(String fxmlFilename, String resourceBaseName, AbstractSettingsSectionController ctrl) throws IOException
-		{
+		private void loadController(String fxmlFilename, String resourceBaseName, AbstractSettingsSectionController ctrl) throws IOException {
 			Node sectionNode = FxIO.loadView(fxmlFilename, ctrl, resourceBaseName, Locale.ENGLISH);
 			AnchorPane.setTopAnchor(sectionNode, 0.0d);
 			AnchorPane.setRightAnchor(sectionNode, 0.0d);
@@ -623,67 +558,54 @@ public class SettingsController extends SubController<WatcherMainController>
 			AnchorPane.setLeftAnchor(sectionNode, 0.0d);
 		}
 
-		public String getLabel()
-		{
+		public String getLabel() {
 			return label;
 		}
 
-		public void setLabel(String label)
-		{
+		public void setLabel(String label) {
 			this.label = label;
 		}
 
-		public ImageView getImage()
-		{
+		public ImageView getImage() {
 			return image;
 		}
 
-		public void setImage(String image)
-		{
+		public void setImage(String image) {
 			this.image = new ImageView(FxIO.loadImg(image));
 		}
 
-		public String getFxml()
-		{
+		public String getFxml() {
 			return fxml;
 		}
 
-		public void setFxml(String fxml)
-		{
+		public void setFxml(String fxml) {
 			this.fxml = fxml;
 		}
 
-		public String getResourceBundle()
-		{
+		public String getResourceBundle() {
 			return resourceBundle;
 		}
 
-		public void setResourceBundle(String resourceBundle)
-		{
+		public void setResourceBundle(String resourceBundle) {
 			this.resourceBundle = resourceBundle;
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return MoreObjects.toStringHelper(SettingsSection.class).add("name", name).toString();
 		}
 	}
 
-	private static class SettingsSectionTreeCell extends TreeCell<SettingsSection>
-	{
+	private static class SettingsSectionTreeCell extends TreeCell<SettingsSection> {
 		@Override
-		protected void updateItem(SettingsSection item, boolean empty)
-		{
+		protected void updateItem(SettingsSection item, boolean empty) {
 			super.updateItem(item, empty);
 
-			if (empty || item == null)
-			{
+			if (empty || item == null) {
 				setText(null);
 				setGraphic(null);
 			}
-			else
-			{
+			else {
 				setText(item.getLabel());
 				setGraphic(item.getImage());
 			}

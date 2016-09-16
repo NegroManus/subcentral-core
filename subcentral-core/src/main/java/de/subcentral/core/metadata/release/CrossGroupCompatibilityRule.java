@@ -9,10 +9,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableSet;
 
-public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparable<CrossGroupCompatibilityRule>
-{
-	private enum MatchDirection
-	{
+public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparable<CrossGroupCompatibilityRule> {
+	private enum MatchDirection {
 		NONE, FORWARD, BACKWARD;
 	}
 
@@ -20,41 +18,33 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
 	private final Group		compatibleGroup;
 	private final boolean	symmetric;
 
-	public CrossGroupCompatibilityRule(Group sourceGroup, Group compatibleGroup, boolean symmetric)
-	{
+	public CrossGroupCompatibilityRule(Group sourceGroup, Group compatibleGroup, boolean symmetric) {
 		this.sourceGroup = Objects.requireNonNull(sourceGroup, "sourceGroup");
 		this.compatibleGroup = Objects.requireNonNull(compatibleGroup, "compatibleGroup");
 		this.symmetric = symmetric;
 	}
 
-	public Group getSourceGroup()
-	{
+	public Group getSourceGroup() {
 		return sourceGroup;
 	}
 
-	public Group getCompatibleGroup()
-	{
+	public Group getCompatibleGroup() {
 		return compatibleGroup;
 	}
 
-	public boolean isSymmetric()
-	{
+	public boolean isSymmetric() {
 		return symmetric;
 	}
 
 	@Override
-	public Set<Release> findCompatibles(Release source, Collection<Release> possibleCompatibles)
-	{
+	public Set<Release> findCompatibles(Release source, Collection<Release> possibleCompatibles) {
 		MatchDirection md = matchSourceRelease(source);
-		if (MatchDirection.NONE == md)
-		{
+		if (MatchDirection.NONE == md) {
 			return ImmutableSet.of();
 		}
 		Set<Release> compatibles = new HashSet<>(4);
-		for (Release possibleCompatible : possibleCompatibles)
-		{
-			if (matchesCompatibleRelease(possibleCompatible, md) && !source.equals(possibleCompatible))
-			{
+		for (Release possibleCompatible : possibleCompatibles) {
+			if (matchesCompatibleRelease(possibleCompatible, md) && !source.equals(possibleCompatible)) {
 				// Set.add() only adds if does not exist yet. That is what we want.
 				// Do not use ImmutableSet.Builder.add here as it allows the addition of duplicate entries but throws an exception at build time.
 				compatibles.add(possibleCompatible);
@@ -63,27 +53,21 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
 		return compatibles;
 	}
 
-	private MatchDirection matchSourceRelease(Release source)
-	{
-		if (source == null)
-		{
+	private MatchDirection matchSourceRelease(Release source) {
+		if (source == null) {
 			return MatchDirection.NONE;
 		}
-		if (sourceGroup.equals(source.getGroup()))
-		{
+		if (sourceGroup.equals(source.getGroup())) {
 			return MatchDirection.FORWARD;
 		}
-		if (symmetric && compatibleGroup.equals(source.getGroup()))
-		{
+		if (symmetric && compatibleGroup.equals(source.getGroup())) {
 			return MatchDirection.BACKWARD;
 		}
 		return MatchDirection.NONE;
 	}
 
-	private boolean matchesCompatibleRelease(Release possibleCompatible, MatchDirection matchDirection)
-	{
-		switch (matchDirection)
-		{
+	private boolean matchesCompatibleRelease(Release possibleCompatible, MatchDirection matchDirection) {
+		switch (matchDirection) {
 			case FORWARD:
 				return compatibleGroup.equals(possibleCompatible.getGroup());
 			case BACKWARD:
@@ -94,14 +78,11 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof CrossGroupCompatibilityRule)
-		{
+		if (obj instanceof CrossGroupCompatibilityRule) {
 			CrossGroupCompatibilityRule o = (CrossGroupCompatibilityRule) obj;
 			return sourceGroup.equals(o.sourceGroup) && compatibleGroup.equals(o.compatibleGroup) && symmetric == o.symmetric;
 		}
@@ -109,27 +90,22 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(sourceGroup, compatibleGroup, symmetric);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(CrossGroupCompatibilityRule.class).add("sourceGroup", sourceGroup).add("compatibleGroup", compatibleGroup).add("symmetric", symmetric).toString();
 	}
 
-	public String toShortString()
-	{
+	public String toShortString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(sourceGroup);
-		if (symmetric)
-		{
+		if (symmetric) {
 			sb.append(" <-> ");
 		}
-		else
-		{
+		else {
 			sb.append(" -> ");
 		}
 		sb.append(compatibleGroup);
@@ -137,15 +113,12 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
 	}
 
 	@Override
-	public int compareTo(CrossGroupCompatibilityRule o)
-	{
-		if (this == o)
-		{
+	public int compareTo(CrossGroupCompatibilityRule o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start().compare(sourceGroup, o.sourceGroup).compare(compatibleGroup, o.compatibleGroup).compareFalseFirst(symmetric, o.symmetric).result();

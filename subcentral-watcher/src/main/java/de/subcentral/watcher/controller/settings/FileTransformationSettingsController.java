@@ -34,8 +34,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-public class FileTransformationSettingsController extends AbstractSettingsSectionController
-{
+public class FileTransformationSettingsController extends AbstractSettingsSectionController {
 	private static final Logger		log				= LogManager.getLogger(FileTransformationSettingsController.class);
 
 	// Model
@@ -69,20 +68,17 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 	@FXML
 	private ChoiceBox<DeletionMode>	packingSourceDeletionModeChoiceBox;
 
-	public FileTransformationSettingsController(SettingsController settingsController)
-	{
+	public FileTransformationSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		final TextFormatter<Path> targetDirFormatter = FxControlBindings.bindTextFieldToPath(targetDirTxtFld, settings.getTargetDir().property());
@@ -103,8 +99,7 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		final TextFormatter<Path> specifiedRarFormatter = FxControlBindings.bindTextFieldToPath(specifiedRarTxtFld, settings.getRarExe().property());
 
 		rememberRarLocationBtn.setDisable(true);
-		rememberRarLocationBtn.setOnAction((ActionEvent evt) ->
-		{
+		rememberRarLocationBtn.setOnAction((ActionEvent evt) -> {
 			winRarLocateStrategy.selectToggle(specifyRadioBtn);
 			specifiedRarFormatter.setValue(locatedRarExe);
 		});
@@ -122,69 +117,57 @@ public class FileTransformationSettingsController extends AbstractSettingsSectio
 		locateWinRar();
 	}
 
-	private ExtensionFilter[] getRarExtensionFilter()
-	{
-		try
-		{
+	private ExtensionFilter[] getRarExtensionFilter() {
+		try {
 			return new ExtensionFilter[] { new ExtensionFilter("RAR executable", parent.getParent().getWinRar().getRarExecutableFilename().toString()) };
 		}
-		catch (UnsupportedOperationException e)
-		{
+		catch (UnsupportedOperationException e) {
 			return new ExtensionFilter[] {};
 		}
 	}
 
-	private void locateWinRar()
-	{
+	private void locateWinRar() {
 		ProgressIndicator progressIndicator = new ProgressIndicator();
 		progressIndicator.setPrefWidth(16d);
 		progressIndicator.setPrefHeight(16d);
 		locateRarResultRootPane.getChildren().setAll(progressIndicator);
-		Task<Path> locateWinRarTask = new Task<Path>()
-		{
+		Task<Path> locateWinRarTask = new Task<Path>() {
 			{
 				updateTitle("Locating Rar executable");
 			}
 
 			@Override
-			protected Path call() throws Exception
-			{
+			protected Path call() throws Exception {
 				return WinRar.getInstance().locateRarExecutable();
 			}
 
 			@Override
-			protected void succeeded()
-			{
+			protected void succeeded() {
 				locatedRarExe = getValue();
 				updateUi();
 			}
 
 			@Override
-			protected void cancelled()
-			{
+			protected void cancelled() {
 				locatedRarExe = null;
 				updateUi();
 			}
 
 			@Override
-			protected void failed()
-			{
+			protected void failed() {
 				log.error("Exception while locating WinRAR", getException());
 				locatedRarExe = null;
 				updateUi();
 			}
 
-			private void updateUi()
-			{
-				if (locatedRarExe != null)
-				{
+			private void updateUi() {
+				if (locatedRarExe != null) {
 					ImageView img = new ImageView(FxIO.loadImg("checked_16.png"));
 					Hyperlink hl = FxControlBindings.createShowInDirectoryHyperlink(locatedRarExe, getExecutor());
 					hl.setMaxHeight(Double.MAX_VALUE);
 					locateRarResultRootPane.getChildren().setAll(img, hl);
 				}
-				else
-				{
+				else {
 					ImageView img = new ImageView(FxIO.loadImg("cross_16.png"));
 					Label lbl = new Label("Could not locate WinRar");
 					lbl.setMaxHeight(Double.MAX_VALUE);

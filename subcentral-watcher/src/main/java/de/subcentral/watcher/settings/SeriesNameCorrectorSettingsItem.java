@@ -9,48 +9,40 @@ import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.UserPattern;
 import javafx.beans.value.ObservableValue;
 
-public class SeriesNameCorrectorSettingsItem extends CorrectorSettingsItem<Series, SeriesNameCorrector>
-{
+public class SeriesNameCorrectorSettingsItem extends CorrectorSettingsItem<Series, SeriesNameCorrector> {
 	private static final ObservableValue<String>	ruleType	= FxBindings.immutableObservableValue("Series name");
 	private final ObservableValue<String>			rule;
 	private final UserPattern						nameUserPattern;
 
-	public SeriesNameCorrectorSettingsItem(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying)
-	{
+	public SeriesNameCorrectorSettingsItem(UserPattern nameUiPattern, String nameReplacement, List<String> aliasNamesReplacement, boolean beforeQuerying, boolean afterQuerying) {
 		super(Series.class, buildCorrector(nameUiPattern, nameReplacement, aliasNamesReplacement), beforeQuerying, afterQuerying);
 		rule = FxBindings.immutableObservableValue(formatRule(item, nameUiPattern));
 		this.nameUserPattern = nameUiPattern;
 	}
 
 	@Override
-	public ObservableValue<String> ruleType()
-	{
+	public ObservableValue<String> ruleType() {
 		return ruleType;
 	}
 
-	public static String getRuleType()
-	{
+	public static String getRuleType() {
 		return ruleType.getValue();
 	}
 
 	@Override
-	public ObservableValue<String> rule()
-	{
+	public ObservableValue<String> rule() {
 		return rule;
 	}
 
-	public UserPattern getNameUserPattern()
-	{
+	public UserPattern getNameUserPattern() {
 		return nameUserPattern;
 	}
 
-	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement, List<String> aliasNamesReplacement)
-	{
+	private static SeriesNameCorrector buildCorrector(UserPattern namePattern, String nameReplacement, List<String> aliasNamesReplacement) {
 		return new SeriesNameCorrector(namePattern.toPattern(), nameReplacement, aliasNamesReplacement, null);
 	}
 
-	private static String formatRule(SeriesNameCorrector corrector, UserPattern nameUserPattern)
-	{
+	private static String formatRule(SeriesNameCorrector corrector, UserPattern nameUserPattern) {
 		StringBuilder sb = new StringBuilder();
 		sb.append('"');
 		sb.append(nameUserPattern.getPattern());
@@ -58,8 +50,7 @@ public class SeriesNameCorrectorSettingsItem extends CorrectorSettingsItem<Serie
 		sb.append(nameUserPattern.getMode().name().charAt(0));
 		sb.append(") -> ");
 		sb.append(StringUtil.quoteString(corrector.getNameReplacement()));
-		if (!corrector.getAliasNamesReplacement().isEmpty())
-		{
+		if (!corrector.getAliasNamesReplacement().isEmpty()) {
 			sb.append(" (aka ");
 			StringUtil.COMMA_JOINER.appendTo(sb, corrector.getAliasNamesReplacement().stream().map((String alias) -> StringUtil.quoteString(alias)).iterator());
 			sb.append(')');
@@ -68,19 +59,15 @@ public class SeriesNameCorrectorSettingsItem extends CorrectorSettingsItem<Serie
 	}
 
 	@Override
-	public int compareTo(CorrectorSettingsItem<?, ?> o)
-	{
+	public int compareTo(CorrectorSettingsItem<?, ?> o) {
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
-		if (o instanceof SeriesNameCorrectorSettingsItem)
-		{
+		if (o instanceof SeriesNameCorrectorSettingsItem) {
 			return nameUserPattern.compareTo(((SeriesNameCorrectorSettingsItem) o).nameUserPattern);
 		}
-		else
-		{
+		else {
 			return super.compareTo(o);
 		}
 	}

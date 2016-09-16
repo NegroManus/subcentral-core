@@ -7,49 +7,40 @@ import com.google.common.base.MoreObjects;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.name.NamingDefaults;
 
-public class GenreKey
-{
+public class GenreKey {
 	private final String name;
 
-	public GenreKey(Network network)
-	{
+	public GenreKey(Network network) {
 		this(network.getName());
 	}
 
-	public GenreKey(String name)
-	{
+	public GenreKey(String name) {
 		this.name = NamingDefaults.getDefaultNormalizingFormatter().apply(name);
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof GenreKey)
-		{
+		if (obj instanceof GenreKey) {
 			return this.name.equals(((GenreKey) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return new HashCodeBuilder(71, 967).append(name).toHashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(GenreKey.class).add("name", name).toString();
 	}
 }

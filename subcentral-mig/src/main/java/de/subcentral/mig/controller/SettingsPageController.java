@@ -15,8 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-public class SettingsPageController extends AbstractPageController
-{
+public class SettingsPageController extends AbstractPageController {
 	// Model
 	private final TextFormatter<Path>	envSettingsFileTextFormatter		= new TextFormatter<>(FxUtil.PATH_STRING_CONVERTER);
 	private final TextFormatter<Path>	parsingSettingsFileTextFormatter	= new TextFormatter<>(FxUtil.PATH_STRING_CONVERTER);
@@ -36,14 +35,12 @@ public class SettingsPageController extends AbstractPageController
 	@FXML
 	private Button						chooseParsingSettingsFileBtn;
 
-	public SettingsPageController(MigMainController migMainController)
-	{
+	public SettingsPageController(MigMainController migMainController) {
 		super(migMainController);
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		envSettingsFileTxtFld.setTextFormatter(envSettingsFileTextFormatter);
 		ExtensionFilter propertiesExtFilter = new ExtensionFilter("Properties file", "*.properties");
 		chooseEnvSettingsFileBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(envSettingsFileTextFormatter, getPrimaryStage(), "Choose environment settings file", propertiesExtFilter));
@@ -52,54 +49,46 @@ public class SettingsPageController extends AbstractPageController
 		ExtensionFilter xmlExtFilter = new ExtensionFilter("XML file", "*.xml");
 		chooseParsingSettingsFileBtn.setOnAction((ActionEvent evt) -> FxActions.chooseFile(parsingSettingsFileTextFormatter, getPrimaryStage(), "Choose parsing settings file", xmlExtFilter));
 
-		nextButtonDisableBinding = new BooleanBinding()
-		{
+		nextButtonDisableBinding = new BooleanBinding() {
 			{
 				super.bind(envSettingsFileTextFormatter.valueProperty(), parsingSettingsFileTextFormatter.valueProperty());
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
+			protected boolean computeValue() {
 				return envSettingsFileTextFormatter.getValue() == null || parsingSettingsFileTextFormatter.getValue() == null;
 			}
 		};
 	}
 
 	@Override
-	public String getTitle()
-	{
+	public String getTitle() {
 		return "Load settings";
 	}
 
 	@Override
-	public Pane getRootPane()
-	{
+	public Pane getRootPane() {
 		return rootPane;
 	}
 
 	@Override
-	public Pane getContentPane()
-	{
+	public Pane getContentPane() {
 		return contentPane;
 	}
 
 	@Override
-	public void onEnter()
-	{
+	public void onEnter() {
 		// nothing todo
 	}
 
 	@Override
-	public void onExit()
-	{
+	public void onExit() {
 		assistance.setEnvironmentSettingsFile(envSettingsFileTextFormatter.getValue());
 		assistance.setParsingSettingsFile(parsingSettingsFileTextFormatter.getValue());
 	}
 
 	@Override
-	public BooleanBinding nextButtonDisableBinding()
-	{
+	public BooleanBinding nextButtonDisableBinding() {
 		return nextButtonDisableBinding;
 	}
 }

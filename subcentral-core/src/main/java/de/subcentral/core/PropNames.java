@@ -1,7 +1,6 @@
 package de.subcentral.core;
 
-public class PropNames
-{
+public class PropNames {
 	public static final String	ALIAS_NAMES				= "aliasNames";
 	public static final String	ATTRIBUTES				= "attributes";
 	public static final String	BASIS					= "basis";
@@ -53,8 +52,7 @@ public class PropNames
 	public static final String	UNNUKES					= "unnukes";
 	public static final String	VERSION					= "version";
 
-	private PropNames()
-	{
+	private PropNames() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 }

@@ -15,10 +15,8 @@ import com.google.common.collect.ComparisonChain;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.StringUtil;
 
-public class UserPattern implements Comparable<UserPattern>
-{
-	public enum Mode
-	{
+public class UserPattern implements Comparable<UserPattern> {
+	public enum Mode {
 		LITERAL, SIMPLE, REGEX
 	}
 
@@ -28,31 +26,25 @@ public class UserPattern implements Comparable<UserPattern>
 	private final String		pattern;
 	private final Mode			mode;
 
-	public UserPattern(String pattern, Mode mode) throws PatternSyntaxException
-	{
+	public UserPattern(String pattern, Mode mode) throws PatternSyntaxException {
 		this.pattern = Objects.requireNonNull(pattern, "pattern");
 		this.mode = Objects.requireNonNull(mode, "mode");
 	}
 
-	public String getPattern()
-	{
+	public String getPattern() {
 		return pattern;
 	}
 
-	public Mode getMode()
-	{
+	public Mode getMode() {
 		return mode;
 	}
 
-	public Pattern toPattern() throws PatternSyntaxException
-	{
+	public Pattern toPattern() throws PatternSyntaxException {
 		return compilePattern();
 	}
 
-	private Pattern compilePattern() throws PatternSyntaxException
-	{
-		switch (mode)
-		{
+	private Pattern compilePattern() throws PatternSyntaxException {
+		switch (mode) {
 			case LITERAL:
 				return Pattern.compile(pattern, LITERAL_FLAGS);
 			case SIMPLE:
@@ -64,70 +56,56 @@ public class UserPattern implements Comparable<UserPattern>
 		}
 	}
 
-	public static Pattern parseSimplePatterns(String simplePatternsString)
-	{
-		if (StringUtils.isBlank(simplePatternsString))
-		{
+	public static Pattern parseSimplePatterns(String simplePatternsString) {
+		if (StringUtils.isBlank(simplePatternsString)) {
 			return null;
 		}
 		List<String> simplePatterns = StringUtil.COMMA_SPLITTER.splitToList(simplePatternsString);
 		String[] convertedPatterns = new String[simplePatterns.size()];
-		for (int i = 0; i < simplePatterns.size(); i++)
-		{
+		for (int i = 0; i < simplePatterns.size(); i++) {
 			convertedPatterns[i] = convertToPattern(simplePatterns.get(i));
 		}
-		if (convertedPatterns.length == 1)
-		{
+		if (convertedPatterns.length == 1) {
 			return Pattern.compile(convertedPatterns[0], SIMPLE_FLAGS);
 		}
-		else
-		{
+		else {
 			StringJoiner strJoiner = new StringJoiner("|", "(", ")");
-			for (String p : convertedPatterns)
-			{
+			for (String p : convertedPatterns) {
 				strJoiner.add(p);
 			}
 			return Pattern.compile(strJoiner.toString(), SIMPLE_FLAGS);
 		}
 	}
 
-	public static Pattern parseSimplePattern(String simplePattern)
-	{
+	public static Pattern parseSimplePattern(String simplePattern) {
 		return Pattern.compile(convertToPattern(simplePattern), SIMPLE_FLAGS);
 	}
 
-	private static String convertToPattern(String simplePattern)
-	{
+	private static String convertToPattern(String simplePattern) {
 		StringBuilder convertedPattern = new StringBuilder();
 		Matcher mAsterisk = Pattern.compile("\\*").matcher(simplePattern);
 		int index = 0;
-		while (mAsterisk.find())
-		{
+		while (mAsterisk.find()) {
 			String head = simplePattern.substring(index, mAsterisk.start());
-			if (!head.isEmpty())
-			{
+			if (!head.isEmpty()) {
 				convertedPattern.append(Pattern.quote(head));
 			}
 			convertedPattern.append(".*");
 			index = mAsterisk.end();
 		}
 		String tail = simplePattern.substring(index);
-		if (!tail.isEmpty())
-		{
+		if (!tail.isEmpty()) {
 			convertedPattern.append(Pattern.quote(tail));
 		}
 		return convertedPattern.toString();
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof UserPattern)
-		{
+		if (obj instanceof UserPattern) {
 			UserPattern o = (UserPattern) obj;
 			return pattern.equals(o.pattern) && mode.equals(o.mode);
 		}
@@ -135,27 +113,22 @@ public class UserPattern implements Comparable<UserPattern>
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(pattern, mode);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(UserPattern.class).add("pattern", pattern).add("mode", mode).toString();
 	}
 
 	@Override
-	public int compareTo(UserPattern o)
-	{
-		if (this == o)
-		{
+	public int compareTo(UserPattern o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ComparisonChain.start().compare(pattern, o.pattern, ObjectUtil.getDefaultStringOrdering()).compare(mode, o.mode).result();

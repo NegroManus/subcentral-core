@@ -44,8 +44,7 @@ import de.subcentral.mig.process.MigrationAssistance;
 import de.subcentral.mig.process.MigrationService;
 
 @WebServlet("/season")
-public class SeasonServlet extends HttpServlet
-{
+public class SeasonServlet extends HttpServlet {
 	private static final long	serialVersionUID	= -3990408720731314570L;
 	private static final Logger	log					= LogManager.getLogger(SeasonServlet.class);
 
@@ -54,41 +53,34 @@ public class SeasonServlet extends HttpServlet
 	private MigrationAssistance	assistance;
 
 	@Override
-	public void init() throws ServletException
-	{
-		try
-		{
+	public void init() throws ServletException {
+		try {
 			// Do required initialization
 			assistance = new MigrationAssistance();
 			assistance.setEnvironmentSettingsFile(Paths.get(MigrationPreview.ENV_SETTINGS_PATH));
 			assistance.loadEnvironmentSettingsFromFile();
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Set response content type
 		response.setContentType("text/html");
 
 		// Actual logic goes here.
-		try
-		{
+		try {
 			String contextPath = request.getContextPath();
 
 			int seasonThreadId = Integer.parseInt(request.getParameter("threadId"));
-			if (seasonThreadId < 1)
-			{
+			if (seasonThreadId < 1) {
 				throw new IllegalArgumentException("illegal parameter threadId: " + seasonThreadId + ". Needs to be a positive integer");
 			}
 
 			SeasonPostData data = readSeasonPostData(seasonThreadId);
-			if (data == null)
-			{
+			if (data == null) {
 				throw new IllegalArgumentException("Season thread with the id " + seasonThreadId + " could not be read. Maybe no thread with this id exists?");
 			}
 
@@ -97,16 +89,12 @@ public class SeasonServlet extends HttpServlet
 			// Group the subtitle releases by their subtitles
 			// LinkedListMultimap maintains ordering for both keys and values
 			Multimap<Subtitle, SubtitleRelease> subs = LinkedListMultimap.create();
-			for (SubtitleRelease subRls : data.getSubtitleReleases())
-			{
-				if (subRls.getSubtitles().isEmpty())
-				{
+			for (SubtitleRelease subRls : data.getSubtitleReleases()) {
+				if (subRls.getSubtitles().isEmpty()) {
 					subs.put(null, subRls);
 				}
-				else
-				{
-					for (Subtitle sub : subRls.getSubtitles())
-					{
+				else {
+					for (Subtitle sub : subRls.getSubtitles()) {
 						subs.put(sub, subRls);
 					}
 				}
@@ -122,12 +110,10 @@ public class SeasonServlet extends HttpServlet
 
 			writer.println("<p>");
 			writer.println("<div><h2>Serie</h2>");
-			if (data.getSeries() == null)
-			{
+			if (data.getSeries() == null) {
 				writer.println("Keine Serie vorhanden");
 			}
-			else
-			{
+			else {
 				writer.println("<h3>" + name(data.getSeries()) + "</h3>");
 				writer.println("<code>");
 				writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(data.getSeries())));
@@ -136,14 +122,11 @@ public class SeasonServlet extends HttpServlet
 			writer.println("</div>");
 
 			writer.println("<div><h2>Staffeln</h2>");
-			if (data.getSeasons().isEmpty())
-			{
+			if (data.getSeasons().isEmpty()) {
 				writer.println("Keine Staffeln vorhanden");
 			}
-			else
-			{
-				for (Season season : data.getSeasons())
-				{
+			else {
+				for (Season season : data.getSeasons()) {
 					writer.println("<div><h3>" + name(season) + "</h3>");
 					writer.println("<code>");
 					writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(season)));
@@ -153,14 +136,11 @@ public class SeasonServlet extends HttpServlet
 			}
 
 			writer.println("<div><h2>Episoden</h2>");
-			if (data.getEpisodes().isEmpty())
-			{
+			if (data.getEpisodes().isEmpty()) {
 				writer.println("Keine Episoden vorhanden");
 			}
-			else
-			{
-				for (Episode epi : data.getEpisodes())
-				{
+			else {
+				for (Episode epi : data.getEpisodes()) {
 					writer.println("<h3>" + name(epi) + "</h3>");
 					writer.println("<code>");
 					writer.println(StringEscapeUtils.escapeHtml4(Objects.toString(epi)));
@@ -172,12 +152,10 @@ public class SeasonServlet extends HttpServlet
 			writer.println("</div>");
 
 			writer.println("<div><h2>Unzugeordnete Untertitel</h2>");
-			if (unmatchedSubtitleReleases.isEmpty())
-			{
+			if (unmatchedSubtitleReleases.isEmpty()) {
 				writer.println("Keine unzugeordneten Untertitel vorhanden");
 			}
-			else
-			{
+			else {
 				printSubs(writer, subs, unmatchedSubtitleReleases, null);
 			}
 			writer.println("</div>");
@@ -188,24 +166,19 @@ public class SeasonServlet extends HttpServlet
 			writer.println("</html>");
 			writer.flush();
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
 
-	private static void printSubs(PrintWriter writer, Multimap<Subtitle, SubtitleRelease> subs, List<SubtitleRelease> unmatchedSubtitleReleases, Episode epi)
-	{
-		for (Map.Entry<Subtitle, Collection<SubtitleRelease>> entry : subs.asMap().entrySet())
-		{
+	private static void printSubs(PrintWriter writer, Multimap<Subtitle, SubtitleRelease> subs, List<SubtitleRelease> unmatchedSubtitleReleases, Episode epi) {
+		for (Map.Entry<Subtitle, Collection<SubtitleRelease>> entry : subs.asMap().entrySet()) {
 			Subtitle sub = entry.getKey();
-			if (sub == null || epi == null || epi.equals(sub.getMedia()))
-			{
+			if (sub == null || epi == null || epi.equals(sub.getMedia())) {
 				writer.println(printSubtitle(sub));
 
 				writer.println("<ul>");
-				for (SubtitleRelease subRls : entry.getValue())
-				{
+				for (SubtitleRelease subRls : entry.getValue()) {
 					// If the the subRls could be matched, remove it from the unmatched list
 					unmatchedSubtitleReleases.remove(subRls);
 
@@ -224,31 +197,24 @@ public class SeasonServlet extends HttpServlet
 		}
 	}
 
-	private static String printSubtitle(Subtitle sub)
-	{
-		if (sub != null)
-		{
+	private static String printSubtitle(Subtitle sub) {
+		if (sub != null) {
 			return languageToHtml(sub.getLanguage()) + " " + printSource(sub.getSource()) + " " + printContributionsByType(sub.getContributions());
 		}
 		return "";
 	}
 
-	private static String printSource(Site source)
-	{
+	private static String printSource(Site source) {
 		return source != null ? source.getDisplayNameOrName() : "";
 	}
 
-	private static String printReleases(Collection<Release> releases)
-	{
+	private static String printReleases(Collection<Release> releases) {
 		return releases.stream().map(Release::getName).collect(Collectors.joining(", "));
 	}
 
-	private static String languageToHtml(String language)
-	{
-		if (language != null)
-		{
-			switch (language)
-			{
+	private static String languageToHtml(String language) {
+		if (language != null) {
+			switch (language) {
 				case Migration.SUBTITLE_LANGUAGE_GERMAN:
 					return "<img src=\"img/de.png\" alt=\"" + language + "\" title=\"" + language + "\" />";
 				case Migration.SUBTITLE_LANGUAGE_ENGLISH:
@@ -260,28 +226,23 @@ public class SeasonServlet extends HttpServlet
 		return "";
 	}
 
-	private static String printContributionsByType(Collection<Contribution> contributions)
-	{
-		if (contributions.isEmpty())
-		{
+	private static String printContributionsByType(Collection<Contribution> contributions) {
+		if (contributions.isEmpty()) {
 			return "";
 		}
 		Set<Map.Entry<String, Collection<Contribution>>> contributionsByType = ContributionUtil.groupByType(contributions).asMap().entrySet();
 		return "(" + contributionsByType.stream().map(SeasonServlet::printContributionTypeContributions).collect(Collectors.joining("; ")) + ")";
 	}
 
-	private static String printContributionTypeContributions(Map.Entry<String, Collection<Contribution>> entry)
-	{
+	private static String printContributionTypeContributions(Map.Entry<String, Collection<Contribution>> entry) {
 		return entry.getKey() + ": " + entry.getValue().stream().map(SeasonServlet::printContributorName).collect(Collectors.joining(", "));
 	}
 
-	private static String printContributorName(Contribution c)
-	{
+	private static String printContributorName(Contribution c) {
 		return c.getContributor().getName();
 	}
 
-	private String name(Object obj)
-	{
+	private String name(Object obj) {
 		NamingService ns = NamingDefaults.getDefaultNamingService();
 		Context ctx = Context.builder()
 				.set(SeasonNamer.PARAM_INCLUDE_SERIES, Boolean.FALSE)
@@ -293,17 +254,14 @@ public class SeasonServlet extends HttpServlet
 		return ns.name(obj, ctx);
 	}
 
-	private SeasonPostData readSeasonPostData(int seasonThreadId) throws SQLException
-	{
-		try (MigrationService service = assistance.createMigrationService())
-		{
+	private SeasonPostData readSeasonPostData(int seasonThreadId) throws SQLException {
+		try (MigrationService service = assistance.createMigrationService()) {
 			return service.readSeasonPost(seasonThreadId);
 		}
 	}
 
 	@Override
-	public void destroy()
-	{
+	public void destroy() {
 
 	}
 }

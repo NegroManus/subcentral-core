@@ -14,8 +14,7 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.util.IOUtil;
 import de.subcentral.core.util.IOUtil.ProcessResult;
 
-public class WindowsWinRar extends WinRar
-{
+public class WindowsWinRar extends WinRar {
 	private static final Logger	log						= LogManager.getLogger(WindowsWinRar.class.getName());
 
 	/**
@@ -24,37 +23,31 @@ public class WindowsWinRar extends WinRar
 	private static final Path	RAR_EXECUTABLE_FILENAME	= Paths.get("Rar.exe");
 
 	@Override
-	public Path getRarExecutableFilename()
-	{
+	public Path getRarExecutableFilename() {
 		return RAR_EXECUTABLE_FILENAME;
 	}
 
 	@Override
-	public Path locateRarExecutable() throws IllegalStateException
-	{
+	public Path locateRarExecutable() throws IllegalStateException {
 		// 1. try the standard dirs
 		Path rarExe = searchRarExeInStandardDirs();
-		if (rarExe != null)
-		{
+		if (rarExe != null) {
 			return rarExe;
 		}
 		// 2. try the os-specific strategy
 		rarExe = queryWindowsRegistryForRarExe();
-		if (rarExe != null)
-		{
+		if (rarExe != null) {
 			return rarExe;
 		}
 		return null;
 	}
 
 	@Override
-	public WinRarPackager getPackager(Path rarExecutable)
-	{
+	public WinRarPackager getPackager(Path rarExecutable) {
 		return new WindowsWinRarPackager(this, rarExecutable);
 	}
 
-	private Path searchRarExeInStandardDirs()
-	{
+	private Path searchRarExeInStandardDirs() {
 		List<Path> standardDirs = ImmutableList.of(Paths.get("C:\\Program Files\\WinRAR"), Paths.get("C:\\Program Files (x86)\\WinRAR"));
 		log.debug("Trying to locate RAR executable in standard installation directories: {}", standardDirs);
 		return returnFirstValidRarExecutable(standardDirs);
@@ -83,14 +76,11 @@ public class WindowsWinRar extends WinRar
 	 * 
 	 * @return
 	 */
-	private Path queryWindowsRegistryForRarExe()
-	{
+	private Path queryWindowsRegistryForRarExe() {
 		List<String> command = ImmutableList.of("reg", "query", "HKEY_LOCAL_MACHINE\\Software\\WinRAR");
-		try
-		{
+		try {
 			ProcessResult result = IOUtil.executeProcess(command, processExecutor);
-			if (result.getExitValue() != 0 || result.getStdErr() != null)
-			{
+			if (result.getExitValue() != 0 || result.getStdErr() != null) {
 				log.warn("Could not locate WinRAR installation directory using Windows registry: Command {} exited with value {} and standard error output was \"{}\". Returning null",
 						command,
 						result.getExitValue(),
@@ -99,46 +89,38 @@ public class WindowsWinRar extends WinRar
 			}
 			Pattern pExeEntry = Pattern.compile("^\\s*exe(?:\\d+)?\\s+REG_SZ\\s+(.*?)\\s*$", Pattern.MULTILINE);
 			Matcher mExeEntry = pExeEntry.matcher(result.getStdOut());
-			if (mExeEntry.find())
-			{
+			if (mExeEntry.find()) {
 				String exePath = mExeEntry.group(1);
 				Path winRarExe = Paths.get(exePath);
 				Path rarExe = winRarExe.resolveSibling(RAR_EXECUTABLE_FILENAME);
-				try
-				{
+				try {
 					validateRarExecutable(rarExe);
 					log.debug("Found RAR executable using Windows registry at {}", rarExe);
 					return rarExe;
 				}
-				catch (Exception e)
-				{
+				catch (Exception e) {
 					log.warn("Could not locate WinRAR installation directory using Windows registry: " + rarExe + " is not a valid rar executable", e);
 					return null;
 				}
 			}
-			else
-			{
+			else {
 				log.warn("Could not locate WinRAR installation directory using Windows registry: Output of command {} could not be parsed. Output was: \"{}\"", command, result.getStdOut());
 				return null;
 			}
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			log.warn("Could not locate WinRAR installation directory using Windows registry: Execution of command " + command + " failed", e);
 			return null;
 		}
 	}
 
-	private static class WindowsWinRarPackager extends WinRarPackager
-	{
-		private WindowsWinRarPackager(WindowsWinRar winRar, Path rarExecutable)
-		{
+	private static class WindowsWinRarPackager extends WinRarPackager {
+		private WindowsWinRarPackager(WindowsWinRar winRar, Path rarExecutable) {
 			super(winRar, rarExecutable);
 		}
 
 		@Override
-		protected boolean isRecyclingSupported()
-		{
+		protected boolean isRecyclingSupported() {
 			return true;
 		}
 	}

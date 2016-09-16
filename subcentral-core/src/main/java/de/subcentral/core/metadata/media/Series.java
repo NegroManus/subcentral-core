@@ -15,8 +15,7 @@ import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.ValidationUtil;
 
-public class Series extends NamedMediaBase implements Comparable<Series>
-{
+public class Series extends NamedMediaBase implements Comparable<Series> {
 	private static final long					serialVersionUID			= -3817853387927606602L;
 
 	public static final SimplePropDescriptor	PROP_NAME					= new SimplePropDescriptor(Series.class, PropNames.NAME);
@@ -69,41 +68,34 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	private final List<Episode>					episodes					= new ArrayList<>(0);
 	private final List<Season>					seasons						= new ArrayList<>(0);
 
-	public Series()
-	{
+	public Series() {
 		// default constructor
 	}
 
-	public Series(String name)
-	{
+	public Series(String name) {
 		this(name, null);
 	}
 
-	public Series(String name, String title)
-	{
+	public Series(String name, String title) {
 		setName(name);
 		setTitle(title);
 	}
 
 	@Override
-	public String getMediaType()
-	{
+	public String getMediaType() {
 		return Media.MEDIA_TYPE_SERIES;
 	}
 
 	@Override
-	public String getMediaContentType()
-	{
+	public String getMediaContentType() {
 		return Media.MEDIA_CONTENT_TYPE_VIDEO;
 	}
 
-	public String getType()
-	{
+	public String getType() {
 		return type;
 	}
 
-	public void setType(String type)
-	{
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -121,36 +113,30 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	 * 
 	 * @return the date of the finale
 	 */
-	public Temporal getFinaleDate()
-	{
+	public Temporal getFinaleDate() {
 		return finaleDate;
 	}
 
-	public void setFinaleDate(Temporal finaleDate)
-	{
+	public void setFinaleDate(Temporal finaleDate) {
 		this.finaleDate = ValidationUtil.validateTemporalClass(finaleDate);
 	}
 
 	@Override
-	public List<String> getLanguages()
-	{
+	public List<String> getLanguages() {
 		return languages;
 	}
 
-	public void setLanguages(List<String> originalLanguages)
-	{
+	public void setLanguages(List<String> originalLanguages) {
 		this.languages.clear();
 		this.languages.addAll(originalLanguages);
 	}
 
 	@Override
-	public List<String> getCountries()
-	{
+	public List<String> getCountries() {
 		return countries;
 	}
 
-	public void setCountries(List<String> countriesOfOrigin)
-	{
+	public void setCountries(List<String> countriesOfOrigin) {
 		this.countries.clear();
 		this.countries.addAll(countriesOfOrigin);
 	}
@@ -160,205 +146,170 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	 * 
 	 * @return the regular running time in minutes, <code>0</code> if unknown
 	 */
-	public int getRegularRunningTime()
-	{
+	public int getRegularRunningTime() {
 		return regularRunningTime;
 	}
 
-	public void setRegularRunningTime(int regularRunningTime)
-	{
+	public void setRegularRunningTime(int regularRunningTime) {
 		this.regularRunningTime = regularRunningTime;
 	}
 
 	@Override
-	public int getRunningTime()
-	{
+	public int getRunningTime() {
 		return 0;
 	}
 
 	@Override
-	public Set<String> getGenres()
-	{
+	public Set<String> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(Collection<? extends String> genres)
-	{
+	public void setGenres(Collection<? extends String> genres) {
 		this.genres.clear();
 		this.genres.addAll(genres);
 	}
 
-	public List<Network> getNetworks()
-	{
+	public List<Network> getNetworks() {
 		return networks;
 	}
 
-	public void setNetworks(Collection<? extends Network> networks)
-	{
+	public void setNetworks(Collection<? extends Network> networks) {
 		this.networks.clear();
 		this.networks.addAll(networks);
 	}
 
 	// Convenience
 	@Override
-	public String getPrimaryOriginalLanguage()
-	{
+	public String getPrimaryOriginalLanguage() {
 		return languages.isEmpty() ? null : languages.get(0);
 	}
 
 	@Override
-	public String getPrimaryCountryOfOrigin()
-	{
+	public String getPrimaryCountryOfOrigin() {
 		return countries.isEmpty() ? null : countries.get(0);
 	}
 
 	// == newEpisode() methods ==
 	// Generic
-	public Episode newEpisode()
-	{
+	public Episode newEpisode() {
 		return new Episode(this);
 	}
 
-	public Episode newEpisode(String title)
-	{
+	public Episode newEpisode(String title) {
 		return new Episode(this, title);
 	}
 
 	// Seasoned
-	public Episode newEpisode(Season season)
-	{
+	public Episode newEpisode(Season season) {
 		return new Episode(this, season);
 	}
 
-	public Episode newEpisode(Season season, Integer numberInSeason)
-	{
+	public Episode newEpisode(Season season, Integer numberInSeason) {
 		return new Episode(this, season, numberInSeason);
 	}
 
-	public Episode newEpisode(Season season, String title)
-	{
+	public Episode newEpisode(Season season, String title) {
 		return new Episode(this, season, title);
 	}
 
-	public Episode newEpisode(Season season, Integer numberInSeason, String title)
-	{
+	public Episode newEpisode(Season season, Integer numberInSeason, String title) {
 		return new Episode(this, season, numberInSeason, title);
 	}
 
 	// Mini-series
-	public Episode newEpisode(Integer numberInSeries)
-	{
+	public Episode newEpisode(Integer numberInSeries) {
 		return new Episode(this, numberInSeries);
 	}
 
-	public Episode newEpisode(Integer numberInSeries, String title)
-	{
+	public Episode newEpisode(Integer numberInSeries, String title) {
 		return new Episode(this, numberInSeries, title);
 	}
 
 	// Dated
-	public Episode newEpisode(Temporal date)
-	{
+	public Episode newEpisode(Temporal date) {
 		return new Episode(this, date);
 	}
 
-	public Episode newEpisode(Temporal date, String title)
-	{
+	public Episode newEpisode(Temporal date, String title) {
 		return new Episode(this, date, title);
 	}
 
 	// Seasons
-	public Season newSeason()
-	{
+	public Season newSeason() {
 		return new Season(this);
 	}
 
-	public Season newSeason(Integer number)
-	{
+	public Season newSeason(Integer number) {
 		return new Season(this, number);
 	}
 
-	public Season newSeason(String title)
-	{
+	public Season newSeason(String title) {
 		return new Season(this, title);
 	}
 
 	/*
 	 * Episodes, Seasons
 	 */
-	public List<Episode> getEpisodes()
-	{
+	public List<Episode> getEpisodes() {
 		return episodes;
 	}
 
-	public void setEpisodes(Collection<Episode> episodes)
-	{
+	public void setEpisodes(Collection<Episode> episodes) {
 		this.episodes.clear();
 		this.episodes.addAll(episodes);
 	}
 
-	public List<Season> getSeasons()
-	{
+	public List<Season> getSeasons() {
 		return seasons;
 	}
 
-	public void setSeasons(Collection<Season> seasons)
-	{
+	public void setSeasons(Collection<Season> seasons) {
 		this.seasons.clear();
 		this.seasons.addAll(seasons);
 	}
 
 	// Convenience
-	public Episode addEpisode()
-	{
+	public Episode addEpisode() {
 		Episode epi = new Episode(this);
 		episodes.add(epi);
 		return epi;
 	}
 
-	public void addEpisode(Episode epi)
-	{
+	public void addEpisode(Episode epi) {
 		episodes.add(epi);
 		epi.setSeries(this);
 	}
 
-	public Season addSeason()
-	{
+	public Season addSeason() {
 		Season season = new Season(this);
 		seasons.add(season);
 		return season;
 	}
 
-	public void addSeason(Season season)
-	{
+	public void addSeason(Season season) {
 		seasons.add(season);
 		season.setSeries(this);
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof Series)
-		{
+		if (obj instanceof Series) {
 			return Objects.equals(name, ((Series) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hashCode(name);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Series.class)
 				.omitNullValues()
 				.add("name", name)
@@ -385,15 +336,12 @@ public class Series extends NamedMediaBase implements Comparable<Series>
 	}
 
 	@Override
-	public int compareTo(Series o)
-	{
-		if (this == o)
-		{
+	public int compareTo(Series o) {
+		if (this == o) {
 			return 0;
 		}
 		// nulls first
-		if (o == null)
-		{
+		if (o == null) {
 			return 1;
 		}
 		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);

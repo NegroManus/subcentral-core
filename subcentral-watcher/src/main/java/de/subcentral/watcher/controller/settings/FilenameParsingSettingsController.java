@@ -17,12 +17,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
 
-public class FilenameParsingSettingsController extends AbstractSettingsSectionController
-{
+public class FilenameParsingSettingsController extends AbstractSettingsSectionController {
 	@FXML
-	private GridPane									rootPane;
+	private GridPane											rootPane;
 	@FXML
-	private TextField									filenamePatternsTextField;
+	private TextField											filenamePatternsTextField;
 	@FXML
 	private TableView<ParsingServiceSettingsItem>				parsersTableView;
 	@FXML
@@ -32,24 +31,21 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 	@FXML
 	private TableColumn<ParsingServiceSettingsItem, String>		parsersExampleColumn;
 	@FXML
-	private Button										moveUpParserBtn;
+	private Button												moveUpParserBtn;
 	@FXML
-	private Button										moveDownParserBtn;
+	private Button												moveDownParserBtn;
 
-	public FilenameParsingSettingsController(SettingsController settingsController)
-	{
+	public FilenameParsingSettingsController(SettingsController settingsController) {
 		super(settingsController);
 	}
 
 	@Override
-	public GridPane getContentPane()
-	{
+	public GridPane getContentPane() {
 		return rootPane;
 	}
 
 	@Override
-	protected void initialize() throws Exception
-	{
+	protected void initialize() throws Exception {
 		final ProcessingSettings settings = SettingsController.SETTINGS.getProcessingSettings();
 
 		// Filename patterns
@@ -61,28 +57,22 @@ public class FilenameParsingSettingsController extends AbstractSettingsSectionCo
 		parsersEnabledColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, Boolean> param) -> param.getValue().enabledProperty());
 		parsersNameColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> FxBindings.immutableObservableValue(param.getValue().getItem().getName()));
 
-		parsersExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) ->
-		{
+		parsersExampleColumn.setCellValueFactory((CellDataFeatures<ParsingServiceSettingsItem, String> param) -> {
 			String example;
 			String domain = param.getValue().getItem().getName();
-			if (Addic7edCom.getParsingService().getName().equals(domain))
-			{
+			if (Addic7edCom.getParsingService().getName().equals(domain)) {
 				example = "Parks and Recreation - 07x01 - 2017.LOL.English.C.orig.Addic7ed.com";
 			}
-			else if (ItalianSubsNet.getParsingService().getName().equals(domain))
-			{
+			else if (ItalianSubsNet.getParsingService().getName().equals(domain)) {
 				example = "Parks.And.Recreation.s07e01.sub.itasa";
 			}
-			else if (SubCentralDe.getParsingService().getName().equals(domain))
-			{
+			else if (SubCentralDe.getParsingService().getName().equals(domain)) {
 				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL.de-SubCentral";
 			}
-			else if (ReleaseScene.getParsingService().getName().equals(domain))
-			{
+			else if (ReleaseScene.getParsingService().getName().equals(domain)) {
 				example = "Parks.and.Recreation.S07E01.HDTV.x264-LOL";
 			}
-			else
-			{
+			else {
 				example = "";
 			}
 			return FxBindings.immutableObservableValue(example);

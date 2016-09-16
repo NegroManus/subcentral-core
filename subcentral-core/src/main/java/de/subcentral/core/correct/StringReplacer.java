@@ -7,10 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.MoreObjects;
 
-public class StringReplacer implements UnaryOperator<String>
-{
-	public enum Mode
-	{
+public class StringReplacer implements UnaryOperator<String> {
+	public enum Mode {
 		ALL_OCCURENCES, COMPLETE
 	}
 
@@ -19,43 +17,35 @@ public class StringReplacer implements UnaryOperator<String>
 
 	private final Mode		mode;
 
-	public StringReplacer(String searchString, String replacement)
-	{
+	public StringReplacer(String searchString, String replacement) {
 		this(searchString, replacement, Mode.ALL_OCCURENCES);
 	}
 
-	public StringReplacer(String searchString, String replacement, Mode mode)
-	{
+	public StringReplacer(String searchString, String replacement, Mode mode) {
 		this.searchString = searchString;
 		this.replacement = replacement;
 		this.mode = Objects.requireNonNull(mode, "mode");
 	}
 
-	public String getSearchString()
-	{
+	public String getSearchString() {
 		return searchString;
 	}
 
-	public String getReplacement()
-	{
+	public String getReplacement() {
 		return replacement;
 	}
 
-	public Mode getMode()
-	{
+	public Mode getMode() {
 		return mode;
 	}
 
 	@Override
-	public String apply(String text)
-	{
-		switch (mode)
-		{
+	public String apply(String text) {
+		switch (mode) {
 			case ALL_OCCURENCES:
 				return StringUtils.replace(text, searchString, replacement);
 			case COMPLETE:
-				if (Objects.equals(text, searchString))
-				{
+				if (Objects.equals(text, searchString)) {
 					return replacement;
 				}
 				return text;
@@ -65,8 +55,7 @@ public class StringReplacer implements UnaryOperator<String>
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(StringReplacer.class).add("searchString", searchString).add("replacement", replacement).add("mode", mode).toString();
 	}
 }

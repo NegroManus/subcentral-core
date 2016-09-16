@@ -24,37 +24,31 @@ import de.subcentral.mig.settings.MigrationSettings;
 import de.subcentral.support.woltlab.WoltlabBurningBoard;
 import de.subcentral.support.woltlab.WoltlabBurningBoard.WbbPost;
 
-public class MigrationService implements AutoCloseable
-{
+public class MigrationService implements AutoCloseable {
 	private static final Logger		log	= LogManager.getLogger(MigrationService.class);
 
 	private final MigrationSettings	settings;
 	private final DataSource		sourceDataSource;
 	private final DataSource		targetDataSource;
 
-	public MigrationService(MigrationSettings settings)
-	{
+	public MigrationService(MigrationSettings settings) {
 		this.settings = Objects.requireNonNull(settings, "settings");
 		this.sourceDataSource = createSourceDataSource();
 		this.targetDataSource = createTargetDataSource();
 	}
 
-	private DataSource createSourceDataSource()
-	{
+	private DataSource createSourceDataSource() {
 		MigrationEnvironmentSettings env = settings.getEnvironmentSettings();
 		return createDataSource(env.getSourceDbDriverClass(), env.getSourceDbUrl(), env.getSourceDbUser(), env.getSourceDbPassword());
 	}
 
-	private DataSource createTargetDataSource()
-	{
+	private DataSource createTargetDataSource() {
 		MigrationEnvironmentSettings env = settings.getEnvironmentSettings();
 		return createDataSource(env.getTargetDbDriverClass(), env.getTargetDbUrl(), env.getTargetDbUser(), env.getTargetDbPassword());
 	}
 
-	private static DataSource createDataSource(String driverClass, String url, String user, String password)
-	{
-		try
-		{
+	private static DataSource createDataSource(String driverClass, String url, String user, String password) {
+		try {
 			ComboPooledDataSource ds = new ComboPooledDataSource();
 			ds.setDriverClass(driverClass);
 			ds.setJdbcUrl(url);
@@ -62,28 +56,23 @@ public class MigrationService implements AutoCloseable
 			ds.setPassword(password);
 			return ds;
 		}
-		catch (PropertyVetoException e)
-		{
+		catch (PropertyVetoException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
 
-	public DataSource getSourceDataSource()
-	{
+	public DataSource getSourceDataSource() {
 		return sourceDataSource;
 	}
 
-	public DataSource getTargetDataSource()
-	{
+	public DataSource getTargetDataSource() {
 		return targetDataSource;
 	}
 
-	public SeriesListData readSeriesList() throws SQLException
-	{
+	public SeriesListData readSeriesList() throws SQLException {
 		log.debug("Reading series list");
 		long start = System.currentTimeMillis();
-		try (Connection conn = sourceDataSource.getConnection())
-		{
+		try (Connection conn = sourceDataSource.getConnection()) {
 			WoltlabBurningBoard board = new WoltlabBurningBoard(conn);
 			int postId = settings.getEnvironmentSettings().getSourceSeriesListPostId();
 			WbbPost post = board.getPost(postId);
@@ -95,12 +84,10 @@ public class MigrationService implements AutoCloseable
 		}
 	}
 
-	public SubberListData readSubberList() throws SQLException
-	{
+	public SubberListData readSubberList() throws SQLException {
 		log.debug("Reading subber list");
 		long start = System.currentTimeMillis();
-		try (Connection conn = sourceDataSource.getConnection())
-		{
+		try (Connection conn = sourceDataSource.getConnection()) {
 			WoltlabBurningBoard board = new WoltlabBurningBoard(conn);
 			int postId = settings.getEnvironmentSettings().getSourceSubberListPostId();
 			WbbPost post = board.getPost(postId);
@@ -112,16 +99,13 @@ public class MigrationService implements AutoCloseable
 		}
 	}
 
-	public SeasonPostData readSeasonPost(int seasonThreadId) throws SQLException
-	{
+	public SeasonPostData readSeasonPost(int seasonThreadId) throws SQLException {
 		log.debug("Reading season post");
 		long start = System.currentTimeMillis();
-		try (Connection conn = sourceDataSource.getConnection())
-		{
+		try (Connection conn = sourceDataSource.getConnection()) {
 			WoltlabBurningBoard board = new WoltlabBurningBoard(conn);
 			WbbPost post = board.getFirstPost(seasonThreadId);
-			if (post == null)
-			{
+			if (post == null) {
 				return null;
 			}
 			SeasonPostParser parser = new SeasonPostParser();
@@ -133,8 +117,7 @@ public class MigrationService implements AutoCloseable
 	}
 
 	@Override
-	public void close() throws SQLException
-	{
+	public void close() throws SQLException {
 		DataSources.destroy(sourceDataSource);
 		DataSources.destroy(targetDataSource);
 	}

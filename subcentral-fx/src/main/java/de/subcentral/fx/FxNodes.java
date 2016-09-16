@@ -9,32 +9,25 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
-public class FxNodes
-{
-	private FxNodes()
-	{
+public class FxNodes {
+	private FxNodes() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	public static HBox createDefaultHBox()
-	{
+	public static HBox createDefaultHBox() {
 		HBox hbox = new HBox();
 		hbox.setSpacing(5d);
 		hbox.setAlignment(Pos.CENTER_LEFT);
 		return hbox;
 	}
 
-	public static <T> TreeItem<T> findTreeItem(TreeItem<T> treeItem, Predicate<TreeItem<T>> predicate)
-	{
-		if (predicate.test(treeItem))
-		{
+	public static <T> TreeItem<T> findTreeItem(TreeItem<T> treeItem, Predicate<TreeItem<T>> predicate) {
+		if (predicate.test(treeItem)) {
 			return treeItem;
 		}
-		for (TreeItem<T> child : treeItem.getChildren())
-		{
+		for (TreeItem<T> child : treeItem.getChildren()) {
 			TreeItem<T> matchingItem = findTreeItem(child, predicate);
-			if (matchingItem != null)
-			{
+			if (matchingItem != null) {
 				return matchingItem;
 			}
 		}
@@ -47,8 +40,7 @@ public class FxNodes
 	 * @param alert
 	 *            the alert
 	 */
-	public static void fixAlertHeight(Alert alert)
-	{
+	public static void fixAlertHeight(Alert alert) {
 		alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
 	}
 }

@@ -11,8 +11,7 @@ import com.google.common.collect.ImmutableList;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 
-public class Settings extends SettableBase implements Settable
-{
+public class Settings extends SettableBase implements Settable {
 	private List<Settable> settables;
 
 	{
@@ -27,39 +26,31 @@ public class Settings extends SettableBase implements Settable
 		// });
 	}
 
-	protected void initSettables(Settable... settables)
-	{
+	protected void initSettables(Settable... settables) {
 		this.settables = ImmutableList.copyOf(settables);
 		bindToSettables();
 	}
 
-	protected void initSettables(Iterable<? extends Settable> settables)
-	{
+	protected void initSettables(Iterable<? extends Settable> settables) {
 		this.settables = ImmutableList.copyOf(settables);
 		bindToSettables();
 	}
 
-	private void bindToSettables()
-	{
+	private void bindToSettables() {
 		helper.getDependencies().addAll(settables);
 		ReadOnlyBooleanProperty[] changedProps = new ReadOnlyBooleanProperty[settables.size()];
-		for (int i = 0; i < changedProps.length; i++)
-		{
+		for (int i = 0; i < changedProps.length; i++) {
 			changedProps[i] = settables.get(i).changedProperty();
 		}
-		changed.bind(new BooleanBinding()
-		{
+		changed.bind(new BooleanBinding() {
 			{
 				super.bind(changedProps);
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
-				for (Settable s : settables)
-				{
-					if (s.changed())
-					{
+			protected boolean computeValue() {
+				for (Settable s : settables) {
+					if (s.changed()) {
 						return true;
 					}
 				}
@@ -68,32 +59,26 @@ public class Settings extends SettableBase implements Settable
 		});
 	}
 
-	public List<Settable> getSettables()
-	{
+	public List<Settable> getSettables() {
 		return settables;
 	}
 
 	@Override
-	public void load(ImmutableConfiguration cfg, boolean resetChanged)
-	{
-		for (Settable s : settables)
-		{
+	public void load(ImmutableConfiguration cfg, boolean resetChanged) {
+		for (Settable s : settables) {
 			s.load(cfg, resetChanged);
 		}
 	}
 
 	@Override
-	public void save(Configuration cfg, boolean resetChanged)
-	{
-		for (Settable s : settables)
-		{
+	public void save(Configuration cfg, boolean resetChanged) {
+		for (Settable s : settables) {
 			s.save(cfg, resetChanged);
 		}
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(Settings.class).add("settables", settables).toString();
 	}
 }

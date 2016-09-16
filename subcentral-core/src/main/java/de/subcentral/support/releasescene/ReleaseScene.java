@@ -34,18 +34,15 @@ import de.subcentral.core.parse.TypeBasedParsingService;
 import de.subcentral.core.parse.TypeBasedParsingService.ParserEntry;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class ReleaseScene
-{
+public class ReleaseScene {
 	public static final String						PARSING_SERVICE_NAME	= "release.scene";
 	private static final TypeBasedParsingService	PARSING_SERVICE			= initParsingService();
 
-	private ReleaseScene()
-	{
+	private ReleaseScene() {
 		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
 	}
 
-	private static TypeBasedParsingService initParsingService()
-	{
+	private static TypeBasedParsingService initParsingService() {
 		String knownTagPattern = buildKnownTagPattern();
 		String firstTagPattern = buildFirstTagPattern(knownTagPattern);
 
@@ -252,8 +249,7 @@ public class ReleaseScene
 		return service;
 	}
 
-	public static String buildKnownTagPattern()
-	{
+	public static String buildKnownTagPattern() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("(?:REAL|PROPER|REPACK|DiRFIX|NFOFIX|READNFO|");
 		sb.append(Joiner.on('|').join(getAllLanguageTags()));
@@ -262,37 +258,31 @@ public class ReleaseScene
 		return sb.toString();
 	}
 
-	public static String buildFirstTagPattern(String knownTagPattern)
-	{
+	public static String buildFirstTagPattern(String knownTagPattern) {
 		StringBuilder tagPattern = new StringBuilder();
 		tagPattern.append(knownTagPattern);
 		return tagPattern.toString();
 	}
 
-	private static Set<String> getAllLanguageTags()
-	{
+	private static Set<String> getAllLanguageTags() {
 		Locale[] allLocales = Locale.getAvailableLocales();
 		Set<String> allLangs = new HashSet<>(allLocales.length / 4);
 		allLangs.add("MULTi");
 		allLangs.add("FLEMISH");
-		for (Locale l : allLocales)
-		{
+		for (Locale l : allLocales) {
 			String displayLang = l.getDisplayLanguage(Locale.ENGLISH);
-			if (!StringUtils.isEmpty(displayLang))
-			{
+			if (!StringUtils.isEmpty(displayLang)) {
 				allLangs.add(displayLang);
 			}
 		}
 		return allLangs;
 	}
 
-	public static ParsingService getParsingService()
-	{
+	public static ParsingService getParsingService() {
 		return PARSING_SERVICE;
 	}
 
-	public static List<ParserEntry<?>> getParsersEntries()
-	{
+	public static List<ParserEntry<?>> getParsersEntries() {
 		return PARSING_SERVICE.getEntries();
 	}
 }

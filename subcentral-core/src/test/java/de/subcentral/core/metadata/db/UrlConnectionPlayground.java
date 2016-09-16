@@ -4,10 +4,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-class UrlConnectionPlayground
-{
-	public static void main(String[] args) throws Exception
-	{
+class UrlConnectionPlayground {
+	public static void main(String[] args) throws Exception {
 		URL url = new URL("https://www.xrel.to");
 		URLConnection urlc = url.openConnection();
 		urlc.setRequestProperty("User-Agent", "Mozilla 5.0 (Windows; U; " + "Windows NT 5.1; en-US; rv:1.8.0.11) ");
@@ -18,8 +16,7 @@ class UrlConnectionPlayground
 
 		InputStream is = urlc.getInputStream();
 		int c;
-		while ((c = is.read()) != -1)
-		{
+		while ((c = is.read()) != -1) {
 			System.out.print((char) c);
 		}
 	}

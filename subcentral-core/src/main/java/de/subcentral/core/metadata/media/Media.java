@@ -18,8 +18,7 @@ import de.subcentral.core.util.TimeUtil;
  * @implSpec All implementations should implement {@link Comparable}.
  *
  */
-public interface Media extends Metadata
-{
+public interface Media extends Metadata {
 	public static final String	MEDIA_TYPE_EPISODE					= "episode";
 	public static final String	MEDIA_TYPE_SERIES					= "series";
 	public static final String	MEDIA_TYPE_SEASON					= "season";
@@ -143,8 +142,7 @@ public interface Media extends Metadata
 	 * 
 	 * @return {@code true} if this media has a title, {@code false} otherwise
 	 */
-	public default boolean isTitled()
-	{
+	public default boolean isTitled() {
 		return getTitle() != null;
 	}
 
@@ -152,8 +150,7 @@ public interface Media extends Metadata
 	 * 
 	 * @return {@code true} if this media has a date, {@code false} otherwise
 	 */
-	public default boolean isDated()
-	{
+	public default boolean isDated() {
 		return getDate() != null;
 	}
 
@@ -161,8 +158,7 @@ public interface Media extends Metadata
 	 * 
 	 * @return the year of the {@link #getDate() date} or <code>null</code> if the date is <code>null</code> or the year cannot be retrieved
 	 */
-	public default Year getYear()
-	{
+	public default Year getYear() {
 		return TimeUtil.getYear(getDate());
 	}
 
@@ -170,8 +166,7 @@ public interface Media extends Metadata
 	 * 
 	 * @return the primary language or <code>null</code> if no languages
 	 */
-	public default String getPrimaryOriginalLanguage()
-	{
+	public default String getPrimaryOriginalLanguage() {
 		return !getLanguages().isEmpty() ? getLanguages().get(0) : null;
 	}
 
@@ -179,8 +174,7 @@ public interface Media extends Metadata
 	 * 
 	 * @return the primary country or <code>null</code> if no countries
 	 */
-	public default String getPrimaryCountryOfOrigin()
-	{
+	public default String getPrimaryCountryOfOrigin() {
 		return !getCountries().isEmpty() ? getCountries().get(0) : null;
 	}
 }

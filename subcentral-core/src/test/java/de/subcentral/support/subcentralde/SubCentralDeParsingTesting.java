@@ -8,11 +8,9 @@ import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 
-public class SubCentralDeParsingTesting
-{
+public class SubCentralDeParsingTesting {
 	@Test
-	public void testEpisode01()
-	{
+	public void testEpisode01() {
 		String name = "Game.of.Thrones.S05E01.HDTV.XviD-AFG.de-SubCentral";
 		Episode epi = Episode.createSeasonedEpisode("Game.of.Thrones", 5, 1);
 		Release rls = Release.create(epi, "AFG", "HDTV", "XviD");
@@ -21,8 +19,7 @@ public class SubCentralDeParsingTesting
 	}
 
 	@Test
-	public void testEpisode02()
-	{
+	public void testEpisode02() {
 		String name = "Game.of.Thrones.S05E01.HDTV.XviD-AFG.de";
 		Episode epi = Episode.createSeasonedEpisode("Game.of.Thrones", 5, 1);
 		Release rls = Release.create(epi, "AFG", "HDTV", "XviD");
@@ -31,8 +28,7 @@ public class SubCentralDeParsingTesting
 	}
 
 	@Test
-	public void testEpisode03()
-	{
+	public void testEpisode03() {
 		String name = "Prison.Break.S04E18.720p.HDTV.X264-DIMENSION.de.SubCentral.V2";
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 18);
 		Release rls = Release.create(epi, "DIMENSION", "720p", "HDTV", "X264");
@@ -42,8 +38,7 @@ public class SubCentralDeParsingTesting
 	}
 
 	@Test
-	public void testEpisode04()
-	{
+	public void testEpisode04() {
 		String name = "Prison.Break.S04E19.HDTV.XviD-LOL.V2";
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 19);
 		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
@@ -53,8 +48,7 @@ public class SubCentralDeParsingTesting
 	}
 
 	@Test
-	public void testEpisode05()
-	{
+	public void testEpisode05() {
 		String name = "Prison.Break.S04E20.HDTV.XviD-LOL.VO.V2";
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 20);
 		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
@@ -64,8 +58,7 @@ public class SubCentralDeParsingTesting
 	}
 
 	@Test
-	public void testEpisode06()
-	{
+	public void testEpisode06() {
 		String name = "Prison.Break.S04E18.HDTV.XviD-LOL.V2.de.SubCentral";
 		Episode epi = Episode.createSeasonedEpisode("Prison.Break", 4, 18);
 		Release rls = Release.create(epi, "LOL", "HDTV", "XviD");
@@ -75,8 +68,7 @@ public class SubCentralDeParsingTesting
 	}
 
 	@Test
-	public void testEpisode07()
-	{
+	public void testEpisode07() {
 		String name = "Salem.S02E04.Book.of.Shadows.1080p.WEB-DL.DD5.1.H264-ABH.de-SubCentral";
 		Episode epi = Episode.createSeasonedEpisode("Salem", 2, 4, "Book.of.Shadows");
 		Release rls = Release.create(epi, "ABH", "1080p", "WEB-DL", "DD5", "1", "H264");
@@ -84,8 +76,7 @@ public class SubCentralDeParsingTesting
 		testParsingResult(name, subAdj);
 	}
 
-	private void testParsingResult(String name, Object expectedResult)
-	{
+	private void testParsingResult(String name, Object expectedResult) {
 		Object parsed = SubCentralDe.getParsingService().parse(name);
 		System.out.println(parsed);
 		assertEquals(expectedResult, parsed);

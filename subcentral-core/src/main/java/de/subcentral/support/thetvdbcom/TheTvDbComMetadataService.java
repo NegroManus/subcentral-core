@@ -37,8 +37,7 @@ import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.util.TemporalComparator;
 import de.subcentral.support.StandardSites;
 
-public class TheTvDbComMetadataService extends HttpMetadataService
-{
+public class TheTvDbComMetadataService extends HttpMetadataService {
 	/**
 	 * An unsigned integer indicating the season number this episode comes after. This field is only available for special episodes. Can be null.
 	 */
@@ -67,47 +66,39 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 
 	private final String			apiKey;
 
-	TheTvDbComMetadataService(String apiKey)
-	{
+	TheTvDbComMetadataService(String apiKey) {
 		// package-protected
 		this.apiKey = apiKey;
 	}
 
 	@Override
-	public Site getSite()
-	{
+	public Site getSite() {
 		return TheTvDbCom.getSite();
 	}
 
 	@Override
-	public Set<Class<?>> getSupportedRecordTypes()
-	{
+	public Set<Class<?>> getSupportedRecordTypes() {
 		return ImmutableSet.of(Series.class, Episode.class);
 	}
 
 	@Override
-	public Set<Class<?>> getSearchableRecordTypes()
-	{
+	public Set<Class<?>> getSearchableRecordTypes() {
 		return ImmutableSet.of(Series.class);
 	}
 
 	@Override
-	public Set<Site> getSupportedExternalSites()
-	{
+	public Set<Site> getSupportedExternalSites() {
 		return ImmutableSet.of(StandardSites.IMDB_COM, StandardSites.ZAP2IT_COM);
 	}
 
-	public String getApiKey()
-	{
+	public String getApiKey() {
 		return apiKey;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (Series.class.equals(recordType))
-		{
+	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (Series.class.equals(recordType)) {
 			return (List<T>) searchSeries(query);
 		}
 		throw createRecordTypeNotSearchableException(recordType);
@@ -115,15 +106,11 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (Series.class.equals(recordType))
-		{
-			if (queryObj instanceof Series)
-			{
+	public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (Series.class.equals(recordType)) {
+			if (queryObj instanceof Series) {
 				Series series = (Series) queryObj;
-				if (series.getName() != null)
-				{
+				if (series.getName() != null) {
 					return (List<T>) searchSeries(series.getName());
 				}
 			}
@@ -134,17 +121,14 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		throw createRecordTypeNotSearchableException(recordType);
 	}
 
-	public List<Series> searchSeries(String name) throws IOException
-	{
+	public List<Series> searchSeries(String name) throws IOException {
 		return searchSeries(name, null);
 	}
 
-	public List<Series> searchSeries(String name, String language) throws IOException
-	{
+	public List<Series> searchSeries(String name, String language) throws IOException {
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
 		query.put("seriesname", formatSeriesNameQueryValue(name));
-		if (language != null)
-		{
+		if (language != null) {
 			query.put("language", language);
 		}
 		URL url = buildRelativeUrl(API_SUB_PATH + "GetSeries.php", query.build());
@@ -154,37 +138,29 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> searchByExternalId(Site externalSite, String externalId, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (recordType.isAssignableFrom(Series.class))
-		{
+	public <T> List<T> searchByExternalId(Site externalSite, String externalId, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (recordType.isAssignableFrom(Series.class)) {
 			return (List<T>) searchSeriesByExternalId(externalSite, externalId);
 		}
 		throw createUnsupportedRecordTypeException(recordType);
 	}
 
-	public List<Series> searchSeriesByExternalId(Site externalSite, String externalId) throws UnsupportedOperationException, IOException
-	{
+	public List<Series> searchSeriesByExternalId(Site externalSite, String externalId) throws UnsupportedOperationException, IOException {
 		return searchSeriesByExternalId(externalSite, externalId, null);
 	}
 
-	public List<Series> searchSeriesByExternalId(Site externalSite, String externalId, String language) throws UnsupportedOperationException, IOException
-	{
+	public List<Series> searchSeriesByExternalId(Site externalSite, String externalId, String language) throws UnsupportedOperationException, IOException {
 		ImmutableMap.Builder<String, String> query = ImmutableMap.builder();
-		if (StandardSites.IMDB_COM.equals(externalSite))
-		{
+		if (StandardSites.IMDB_COM.equals(externalSite)) {
 			query.put("imdbid", externalId);
 		}
-		else if (StandardSites.ZAP2IT_COM.equals(externalSite))
-		{
+		else if (StandardSites.ZAP2IT_COM.equals(externalSite)) {
 			query.put("zap2it", externalId);
 		}
-		else
-		{
+		else {
 			throw createUnsupportedExternalSiteException(externalSite);
 		}
-		if (language != null)
-		{
+		if (language != null) {
 			query.put("language", language);
 		}
 		URL url = buildRelativeUrl(API_SUB_PATH + "GetSeriesByRemoteID.php", query.build());
@@ -196,33 +172,27 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(String id, Class<T> recordType) throws UnsupportedOperationException, IOException
-	{
-		if (Series.class.equals(recordType))
-		{
+	public <T> T get(String id, Class<T> recordType) throws UnsupportedOperationException, IOException {
+		if (Series.class.equals(recordType)) {
 			return (T) getSeries(Integer.parseInt(id), true, null);
 		}
-		else if (Episode.class.equals(recordType))
-		{
+		else if (Episode.class.equals(recordType)) {
 			return (T) getEpisode(Integer.parseInt(id), null);
 		}
 		throw createUnsupportedRecordTypeException(recordType);
 	}
 
-	public Series getSeries(int id, boolean full, String language) throws IOException
-	{
+	public Series getSeries(int id, boolean full, String language) throws IOException {
 		StringBuilder path = new StringBuilder();
 		path.append(getApiSubPathWithKey());
 		path.append("series/");
 		path.append(id);
 		path.append('/');
-		if (full)
-		{
+		if (full) {
 			path.append("all/");
 		}
 
-		if (language != null)
-		{
+		if (language != null) {
 			path.append(language);
 			path.append(".xml");
 		}
@@ -232,15 +202,13 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		return parseSeriesRecord(getDocument(url));
 	}
 
-	public Episode getEpisode(int id, String language) throws IOException
-	{
+	public Episode getEpisode(int id, String language) throws IOException {
 		StringBuilder path = new StringBuilder();
 		path.append(getApiSubPathWithKey());
 		path.append("episodes/");
 		path.append(id);
 		path.append('/');
-		if (language != null)
-		{
+		if (language != null) {
 			path.append(language);
 			path.append(".xml");
 		}
@@ -250,13 +218,11 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		return parseEpisodeRecord(getDocument(url));
 	}
 
-	private String formatSeriesNameQueryValue(String name)
-	{
+	private String formatSeriesNameQueryValue(String name) {
 		return NamingDefaults.getDefaultNormalizingFormatter().apply(name);
 	}
 
-	private List<Series> parseSeriesSearchResults(Document doc)
-	{
+	private List<Series> parseSeriesSearchResults(Document doc) {
 		/**
 		 * <pre>
 		 * <mirrorpath>/api/GetSeries.php?seriesname=<seriesname>
@@ -286,8 +252,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 
 		Elements seriesElems = doc.getElementsByTag("series");
 		ImmutableList.Builder<Series> results = ImmutableList.builder();
-		for (Element seriesElem : seriesElems)
-		{
+		for (Element seriesElem : seriesElems) {
 			Series series = new Series();
 
 			addId(series, seriesElem, "seriesid", TheTvDbCom.getSite());
@@ -295,8 +260,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 			series.setName(getTextFromChild(seriesElem, "seriesname"));
 
 			String aliasNamesTxt = getTextFromChild(seriesElem, "aliasnames");
-			if (aliasNamesTxt != null)
-			{
+			if (aliasNamesTxt != null) {
 				List<String> aliasNames = LIST_SPLITTER.splitToList(aliasNamesTxt);
 				series.setAliasNames(aliasNames);
 			}
@@ -317,22 +281,18 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		return results.build();
 	}
 
-	protected Series parseSeriesRecord(Document doc)
-	{
+	protected Series parseSeriesRecord(Document doc) {
 		Series series = parseBaseSeriesRecord(doc);
-		if (series == null)
-		{
+		if (series == null) {
 			return null;
 		}
 		parseBaseEpisodeRecords(doc, series);
 		return series;
 	}
 
-	protected Episode parseEpisodeRecord(Document doc)
-	{
+	protected Episode parseEpisodeRecord(Document doc) {
 		Element epiElem = doc.getElementsByTag("episode").first();
-		if (epiElem == null)
-		{
+		if (epiElem == null) {
 			return null;
 		}
 		return parseBaseEpisodeRecord(epiElem);
@@ -374,12 +334,10 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 	 *  }
 	 * </pre>
 	 */
-	private Series parseBaseSeriesRecord(Element superElem)
-	{
+	private Series parseBaseSeriesRecord(Element superElem) {
 		Element seriesElem = superElem.getElementsByTag("series").first();
 
-		if (seriesElem == null)
-		{
+		if (seriesElem == null) {
 			return null;
 		}
 
@@ -503,8 +461,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 	 * }
 	 * </pre>
 	 */
-	private void parseBaseEpisodeRecords(Element superElem, Series series)
-	{
+	private void parseBaseEpisodeRecords(Element superElem, Series series) {
 		Elements epiElems = superElem.getElementsByTag("episode");
 		// using a map for the seasons to allow using special map methods
 		// use LinkedHashMap to keep insertion order
@@ -514,32 +471,28 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		// a list only for specials, as they are sorted into the complete episode list afterwards
 		List<SpecialEpisodeRecord> specials = new ArrayList<>();
 
-		for (Element epiElem : epiElems)
-		{
+		for (Element epiElem : epiElems) {
 			Episode epi = parseBaseEpisodeRecord(epiElem);
 
 			// Overwrite series
 			epi.setSeries(series);
 
 			// Overwrite season
-			if (epi.getSeason() != null)
-			{
+			if (epi.getSeason() != null) {
 				Season possiblyNewSeason = series.newSeason(epi.getSeason().getNumber());
 				// Check whether this season is already stored, if yes, return it, if no return the new season
 				Season season = seasons.computeIfAbsent(epi.getSeason().getId(TheTvDbCom.getSite()), (String key) -> possiblyNewSeason);
 				epi.setSeason(season);
 			}
 			// May add to special episode list
-			if (epi.isSpecial())
-			{
+			if (epi.isSpecial()) {
 				SpecialEpisodeRecord specialEpi = new SpecialEpisodeRecord(epi,
 						epi.getFirstAttributeValue(ATTRIBUTE_AIRSAFTER_SEASON),
 						epi.getFirstAttributeValue(ATTRIBUTE_AIRSBEFORE_EPISODE),
 						epi.getFirstAttributeValue(ATTRIBUTE_AIRSBEFORE_SEASON));
 				specials.add(specialEpi);
 			}
-			else
-			{
+			else {
 				episodes.add(epi);
 			}
 		}
@@ -559,8 +512,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 
 	}
 
-	private Episode parseBaseEpisodeRecord(Element epiElem)
-	{
+	private Episode parseBaseEpisodeRecord(Element epiElem) {
 		Series series = new Series();
 		addId(series, epiElem, "seriesid", TheTvDbCom.getSite());
 
@@ -569,27 +521,22 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		// Episode number
 		int seasonNum = getIntegerFromChild(epiElem, "seasonnumber");
 		// special episodes are in season 0
-		if (seasonNum == 0)
-		{
+		if (seasonNum == 0) {
 			epi.setSpecial(true);
 			Integer airsAfterSeason = getIntegerFromChild(epiElem, "airsafter_season");
-			if (airsAfterSeason != null)
-			{
+			if (airsAfterSeason != null) {
 				epi.getAttributes().put(ATTRIBUTE_AIRSAFTER_SEASON, airsAfterSeason);
 			}
 			Integer airsBeforeEpisode = getIntegerFromChild(epiElem, "airsbefore_episode");
-			if (airsBeforeEpisode != null)
-			{
+			if (airsBeforeEpisode != null) {
 				epi.getAttributes().put(ATTRIBUTE_AIRSBEFORE_EPISODE, airsBeforeEpisode);
 			}
 			Integer airsBeforeSeason = getIntegerFromChild(epiElem, "airsbefore_season");
-			if (airsBeforeSeason != null)
-			{
+			if (airsBeforeSeason != null) {
 				epi.getAttributes().put(ATTRIBUTE_AIRSBEFORE_SEASON, airsBeforeSeason);
 			}
 		}
-		else
-		{
+		else {
 			Season season = new Season(series, seasonNum);
 			addId(season, epiElem, "seasonid", TheTvDbCom.getSite());
 
@@ -617,32 +564,25 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		return epi;
 	}
 
-	private void insertSpecials(List<Episode> episodes, List<SpecialEpisodeRecord> specials)
-	{
-		if (episodes.isEmpty())
-		{
+	private void insertSpecials(List<Episode> episodes, List<SpecialEpisodeRecord> specials) {
+		if (episodes.isEmpty()) {
 			// if no regular episodes, just add the specials at the end
-			for (SpecialEpisodeRecord special : specials)
-			{
+			for (SpecialEpisodeRecord special : specials) {
 				episodes.add(special.episode);
 			}
 			return;
 		}
 		// insert specials at the right position in the episode list
-		for (SpecialEpisodeRecord special : specials)
-		{
+		for (SpecialEpisodeRecord special : specials) {
 			boolean added = false;
 			// "airsAfter_season" is just used alone
-			if (special.airsAfterSeason != null)
-			{
+			if (special.airsAfterSeason != null) {
 				// add it after the last episode of the season
 				ListIterator<Episode> iter = episodes.listIterator(episodes.size());
-				while (iter.hasPrevious())
-				{
+				while (iter.hasPrevious()) {
 					Episode currentEpi = iter.previous();
 					// if current epi is part the season to add after, add it after that episode
-					if (currentEpi.isPartOfSeason() && special.airsAfterSeason.equals(currentEpi.getSeason().getNumber()))
-					{
+					if (currentEpi.isPartOfSeason() && special.airsAfterSeason.equals(currentEpi.getSeason().getNumber())) {
 						special.episode.setSeason(currentEpi.getSeason());
 						// advance past the last episode of this season and add the episode there
 						iter.next();
@@ -653,16 +593,13 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 				}
 			}
 			// "airsBefore_season" may be used alone
-			else if (special.airsBeforeSeason != null && special.airsBeforeEpisode == null)
-			{
+			else if (special.airsBeforeSeason != null && special.airsBeforeEpisode == null) {
 				// add it right before the first episode of the next season
 				ListIterator<Episode> iter = episodes.listIterator();
-				while (iter.hasNext())
-				{
+				while (iter.hasNext()) {
 					Episode currentEpi = iter.next();
 					// if current epi is part of the next season, add it before current episode
-					if (currentEpi.isPartOfSeason() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()))
-					{
+					if (currentEpi.isPartOfSeason() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber())) {
 						special.episode.setSeason(currentEpi.getSeason());
 						iter.previous();
 						iter.add(special.episode);
@@ -672,17 +609,14 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 				}
 			}
 			// "airsBefore_season" should be used in conjunction with "airsBefore_episode"
-			else if (special.airsBeforeSeason != null && special.airsBeforeEpisode != null)
-			{
+			else if (special.airsBeforeSeason != null && special.airsBeforeEpisode != null) {
 				// add it before the season
 				ListIterator<Episode> iter = episodes.listIterator(episodes.size());
-				while (iter.hasPrevious())
-				{
+				while (iter.hasPrevious()) {
 					Episode currentEpi = iter.previous();
 					// if previous episode was the denoted episode by "airsBefore_season" and "airsBefore_episode"
 					// Note: all regular episodes have a season number and a episode number
-					if (!currentEpi.isSpecial() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()) && special.airsBeforeEpisode.equals(currentEpi.getNumberInSeason()))
-					{
+					if (!currentEpi.isSpecial() && special.airsBeforeSeason.equals(currentEpi.getSeason().getNumber()) && special.airsBeforeEpisode.equals(currentEpi.getNumberInSeason())) {
 						special.episode.setSeason(currentEpi.getSeason());
 						iter.add(special.episode);
 						added = true;
@@ -692,17 +626,13 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 			}
 
 			// if could not find the right position in a season to add, try to add it by date
-			if (!added)
-			{
-				if (special.episode.isDated())
-				{
+			if (!added) {
+				if (special.episode.isDated()) {
 					ListIterator<Episode> iter = episodes.listIterator();
-					while (iter.hasNext())
-					{
+					while (iter.hasNext()) {
 						Episode currentEpi = iter.next();
 						// if special is before
-						if (currentEpi.isDated() && TemporalComparator.INSTANCE.compare(special.episode.getDate(), currentEpi.getDate()) < 0)
-						{
+						if (currentEpi.isDated() && TemporalComparator.INSTANCE.compare(special.episode.getDate(), currentEpi.getDate()) < 0) {
 							iter.previous();
 							iter.add(special.episode);
 							added = true;
@@ -713,98 +643,79 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 			}
 
 			// if every sorting method fails, just add it at the end
-			if (!added)
-			{
+			if (!added) {
 				episodes.add(special.episode);
 			}
 		}
 	}
 
-	private String getApiSubPathWithKey()
-	{
-		if (apiKey == null)
-		{
+	private String getApiSubPathWithKey() {
+		if (apiKey == null) {
 			throw new IllegalStateException("No API key set");
 		}
 		return new StringBuilder(API_SUB_PATH).append(apiKey).append('/').toString();
 	}
 
-	private static String getTextFromChild(Element parentElem, String tag)
-	{
+	private static String getTextFromChild(Element parentElem, String tag) {
 		Elements elems = parentElem.getElementsByTag(tag);
-		if (elems.isEmpty())
-		{
+		if (elems.isEmpty()) {
 			return null;
 		}
 		return StringUtils.trimToNull(elems.first().text());
 	}
 
-	private static Integer getIntegerFromChild(Element parentElem, String tag)
-	{
+	private static Integer getIntegerFromChild(Element parentElem, String tag) {
 		String txt = getTextFromChild(parentElem, tag);
-		if (txt == null)
-		{
+		if (txt == null) {
 			return null;
 		}
 		return Integer.parseInt(txt);
 	}
 
-	private static void addId(Metadata metadata, Element parentElem, String tag, Site site)
-	{
+	private static void addId(Metadata metadata, Element parentElem, String tag, Site site) {
 		String idTxt = getTextFromChild(parentElem, tag);
-		if (idTxt != null)
-		{
+		if (idTxt != null) {
 			metadata.setId(site, idTxt);
 		}
 	}
 
-	private void addImage(Media media, Element parentElem, String tag, String mediaImageType)
-	{
+	private void addImage(Media media, Element parentElem, String tag, String mediaImageType) {
 		String imgTxt = getTextFromChild(parentElem, tag);
-		if (imgTxt != null)
-		{
+		if (imgTxt != null) {
 			String img = buildRelativeUrl(IMG_SUB_PATH + imgTxt).toExternalForm();
 			media.getImages().put(mediaImageType, img);
 		}
 	}
 
-	private static void addDateAsLocaleDate(MediaBase media, Element parentElem, String tag)
-	{
+	private static void addDateAsLocaleDate(MediaBase media, Element parentElem, String tag) {
 		String dateTxt = getTextFromChild(parentElem, tag);
-		if (dateTxt != null)
-		{
+		if (dateTxt != null) {
 			LocalDate date = LocalDate.parse(dateTxt);
 			media.setDate(date);
 		}
 	}
 
-	private static void addDescription(MediaBase media, Element parentElem, String tag)
-	{
+	private static void addDescription(MediaBase media, Element parentElem, String tag) {
 		media.setDescription(getTextFromChild(parentElem, tag));
 	}
 
-	private static void addNetwork(Series series, Element parentElem, String tag)
-	{
+	private static void addNetwork(Series series, Element parentElem, String tag) {
 		String networkTxt = getTextFromChild(parentElem, tag);
-		if (networkTxt != null)
-		{
+		if (networkTxt != null) {
 			Network network = new Network(networkTxt);
 			series.getNetworks().add(network);
 		}
 	}
 
-	private static void addRating(Media media, Element parentElem, String tag, Site site)
-	{
+	private static void addRating(Media media, Element parentElem, String tag, Site site) {
 		String ratingTxt = getTextFromChild(parentElem, tag);
-		if (ratingTxt != null)
-		{
+		if (ratingTxt != null) {
 			float rating = Float.parseFloat(ratingTxt);
 			media.getRatings().put(site, rating);
 		}
 	}
 
-	private static class SpecialEpisodeRecord
-	{
+	private static class SpecialEpisodeRecord {
 		private final Episode	episode;
 		/**
 		 * An unsigned integer indicating the season number this episode comes after. This field is only available for special episodes. Can be null
@@ -822,8 +733,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService
 		 */
 		private final Integer	airsBeforeSeason;
 
-		public SpecialEpisodeRecord(Episode episode, Integer airsAfterSeason, Integer airsBeforeEpisode, Integer airsBeforeSeason)
-		{
+		public SpecialEpisodeRecord(Episode episode, Integer airsAfterSeason, Integer airsBeforeEpisode, Integer airsBeforeSeason) {
 			this.episode = Objects.requireNonNull(episode, "episode");
 			this.airsAfterSeason = airsAfterSeason;
 			this.airsBeforeEpisode = airsBeforeEpisode;

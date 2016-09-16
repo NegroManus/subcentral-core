@@ -6,21 +6,17 @@ import java.util.Map;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.util.SimplePropDescriptor;
 
-public class MovieMapper extends AbstractMapper<Movie>
-{
-	public MovieMapper()
-	{
+public class MovieMapper extends AbstractMapper<Movie> {
+	public MovieMapper() {
 		// default constructor
 	}
 
-	public MovieMapper(ParsePropService parsePropService)
-	{
+	public MovieMapper(ParsePropService parsePropService) {
 		super(parsePropService);
 	}
 
 	@Override
-	public Movie map(Map<SimplePropDescriptor, String> props)
-	{
+	public Movie map(Map<SimplePropDescriptor, String> props) {
 		Movie mov = new Movie();
 		mov.setName(props.get(Movie.PROP_NAME));
 		mov.setTitle(props.get(Movie.PROP_TITLE));
@@ -29,8 +25,7 @@ public class MovieMapper extends AbstractMapper<Movie>
 	}
 
 	@Override
-	protected Class<?> getTargetType()
-	{
+	protected Class<?> getTargetType() {
 		return Movie.class;
 	}
 }

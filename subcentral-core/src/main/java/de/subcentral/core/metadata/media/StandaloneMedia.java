@@ -8,8 +8,7 @@ import java.util.Set;
 /**
  * For any media type stands alone, like a movie.
  */
-public abstract class StandaloneMedia extends NamedMediaBase
-{
+public abstract class StandaloneMedia extends NamedMediaBase {
 	private static final long		serialVersionUID	= -136233241033139839L;
 
 	protected final List<String>	languages			= new ArrayList<>(1);
@@ -17,60 +16,50 @@ public abstract class StandaloneMedia extends NamedMediaBase
 	protected final Set<String>		genres				= new HashSet<>(3);
 	protected int					runningTime			= 0;
 
-	public StandaloneMedia()
-	{
+	public StandaloneMedia() {
 
 	}
 
-	public StandaloneMedia(String name)
-	{
+	public StandaloneMedia(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public List<String> getLanguages()
-	{
+	public List<String> getLanguages() {
 		return languages;
 	}
 
-	public void setLanguages(List<String> originalLanguages)
-	{
+	public void setLanguages(List<String> originalLanguages) {
 		this.languages.clear();
 		this.languages.addAll(originalLanguages);
 	}
 
 	@Override
-	public List<String> getCountries()
-	{
+	public List<String> getCountries() {
 		return countries;
 	}
 
-	public void setCountries(List<String> countriesOfOrigin)
-	{
+	public void setCountries(List<String> countriesOfOrigin) {
 		this.countries.clear();
 		this.countries.addAll(countriesOfOrigin);
 	}
 
 	@Override
-	public Set<String> getGenres()
-	{
+	public Set<String> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(Set<String> genres)
-	{
+	public void setGenres(Set<String> genres) {
 		this.genres.clear();
 		this.genres.addAll(genres);
 	}
 
 	@Override
-	public int getRunningTime()
-	{
+	public int getRunningTime() {
 		return runningTime;
 	}
 
-	public void setRunningTime(int runningTime)
-	{
+	public void setRunningTime(int runningTime) {
 		this.runningTime = runningTime;
 	}
 }

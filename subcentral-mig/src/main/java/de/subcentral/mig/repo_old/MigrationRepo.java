@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class MigrationRepo
-{
+public class MigrationRepo {
 	// Series->ID
 	private Map<SeriesKey, Integer>		series			= new HashMap<>();
 	// Season->ID
@@ -21,23 +20,19 @@ public class MigrationRepo
 	// <Hash->SubtitleFileID>
 	private Map<Long, Integer>			subtitleFiles	= new HashMap<>();
 
-	public Map<SeriesKey, Integer> getSeries()
-	{
+	public Map<SeriesKey, Integer> getSeries() {
 		return series;
 	}
 
-	public Map<SeasonKey, Integer> getSeasons()
-	{
+	public Map<SeasonKey, Integer> getSeasons() {
 		return seasons;
 	}
 
-	public Map<EpisodeKey, Integer> getEpisodes()
-	{
+	public Map<EpisodeKey, Integer> getEpisodes() {
 		return episodes;
 	}
 
-	public Map<NetworkKey, Integer> getNetworks()
-	{
+	public Map<NetworkKey, Integer> getNetworks() {
 		return networks;
 	}
 }

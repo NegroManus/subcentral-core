@@ -1,23 +1,19 @@
 package de.subcentral.mig.settings;
 
-public class MigrationSettings
-{
+public class MigrationSettings {
 	private MigrationEnvironmentSettings	environmentSettings	= new MigrationEnvironmentSettings();
 	private MigrationParsingSettings		parsingSettings		= new MigrationParsingSettings();
 	private MigrationScopeSettings			scopeSettings		= new MigrationScopeSettings();
 
-	public MigrationEnvironmentSettings getEnvironmentSettings()
-	{
+	public MigrationEnvironmentSettings getEnvironmentSettings() {
 		return environmentSettings;
 	}
 
-	public MigrationParsingSettings getParsingSettings()
-	{
+	public MigrationParsingSettings getParsingSettings() {
 		return parsingSettings;
 	}
 
-	public MigrationScopeSettings getScopeSettings()
-	{
+	public MigrationScopeSettings getScopeSettings() {
 		return scopeSettings;
 	}
 }

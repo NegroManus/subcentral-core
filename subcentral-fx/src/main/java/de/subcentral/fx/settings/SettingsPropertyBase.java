@@ -8,13 +8,11 @@ import com.google.common.base.MoreObjects;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 
-public abstract class SettingsPropertyBase<T, P extends Property<T>> extends SettableBase implements SettingsProperty<T, P>
-{
+public abstract class SettingsPropertyBase<T, P extends Property<T>> extends SettableBase implements SettingsProperty<T, P> {
 	protected final String	key;
 	protected final P		property;
 
-	protected SettingsPropertyBase(String key, BiFunction<Object, String, P> propertyCreator)
-	{
+	protected SettingsPropertyBase(String key, BiFunction<Object, String, P> propertyCreator) {
 		this.key = Objects.requireNonNull(key, "key");
 		this.property = Objects.requireNonNull(propertyCreator, "propertyCreator").apply(this, "property");
 		this.helper.getDependencies().add(this.property);
@@ -31,32 +29,27 @@ public abstract class SettingsPropertyBase<T, P extends Property<T>> extends Set
 		// });
 	}
 
-	public String getKey()
-	{
+	public String getKey() {
 		return key;
 	}
 
 	@Override
-	public P property()
-	{
+	public P property() {
 		return property;
 	}
 
 	@Override
-	public T getValue()
-	{
+	public T getValue() {
 		return property.getValue();
 	}
 
 	@Override
-	public void setValue(T value)
-	{
+	public void setValue(T value) {
 		property.setValue(value);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(getClass()).add("key", key).add("property", property).toString();
 	}
 }

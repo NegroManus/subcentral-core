@@ -7,49 +7,40 @@ import com.google.common.base.MoreObjects;
 import de.subcentral.core.metadata.media.Network;
 import de.subcentral.core.name.NamingDefaults;
 
-public class NetworkKey
-{
+public class NetworkKey {
 	private final String name;
 
-	public NetworkKey(Network network)
-	{
+	public NetworkKey(Network network) {
 		this(network.getName());
 	}
 
-	public NetworkKey(String name)
-	{
+	public NetworkKey(String name) {
 		this.name = NamingDefaults.getDefaultNormalizingFormatter().apply(name);
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
 	// Object methods
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof NetworkKey)
-		{
+		if (obj instanceof NetworkKey) {
 			return this.name.equals(((NetworkKey) obj).name);
 		}
 		return false;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return new HashCodeBuilder(761, 131).append(name).toHashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(NetworkKey.class).add("name", name).toString();
 	}
 }
