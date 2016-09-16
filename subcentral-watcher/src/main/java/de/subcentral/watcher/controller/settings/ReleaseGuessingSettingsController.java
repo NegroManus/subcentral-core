@@ -3,7 +3,7 @@ package de.subcentral.watcher.controller.settings;
 import java.util.Objects;
 
 import de.subcentral.core.metadata.release.StandardRelease;
-import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.FxBindings;
 import de.subcentral.fx.FxControlBindings;
@@ -63,7 +63,7 @@ public class ReleaseGuessingSettingsController extends AbstractSettingsSectionCo
 			return FxBindings.immutableObservableValue(ObjectUtil.toString(param.getValue().getRelease().getGroup()));
 		});
 		standardReleasesTagsColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
-			return FxBindings.immutableObservableValue(Tag.formatList(param.getValue().getRelease().getTags()));
+			return FxBindings.immutableObservableValue(Tags.join(param.getValue().getRelease().getTags()));
 		});
 		standardReleasesScopeColumn.setCellValueFactory((CellDataFeatures<StandardRelease, String> param) -> {
 			String value;

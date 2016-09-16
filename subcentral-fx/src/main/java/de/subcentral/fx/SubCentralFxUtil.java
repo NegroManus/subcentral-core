@@ -6,6 +6,7 @@ import de.subcentral.core.correct.LocaleLanguageReplacer.LanguageFormat;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.name.NamingDefaults;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.support.winrar.WinRarPackConfig.DeletionMode;
@@ -50,12 +51,12 @@ public class SubCentralFxUtil {
 		return new StringConverter<ObservableList<Tag>>() {
 			@Override
 			public String toString(ObservableList<Tag> tags) {
-				return Tag.formatList(tags);
+				return Tags.join(tags);
 			}
 
 			@Override
 			public ObservableList<Tag> fromString(String tagList) {
-				return FXCollections.observableList(Tag.parseList(tagList));
+				return FXCollections.observableList(Tags.split(tagList));
 			}
 		};
 	}

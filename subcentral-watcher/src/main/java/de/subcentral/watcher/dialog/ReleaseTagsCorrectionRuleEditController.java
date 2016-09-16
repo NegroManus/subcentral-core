@@ -7,9 +7,8 @@ import com.google.common.collect.ImmutableList;
 import de.subcentral.core.correct.ReleaseTagsCorrector;
 import de.subcentral.core.correct.TagsReplacer;
 import de.subcentral.core.metadata.release.Tag;
-import de.subcentral.core.metadata.release.TagUtil;
-import de.subcentral.core.metadata.release.TagUtil.ReplaceMode;
-import de.subcentral.core.metadata.release.TagUtil.SearchMode;
+import de.subcentral.core.util.CollectionUtil.ReplaceMode;
+import de.subcentral.core.util.CollectionUtil.SearchMode;
 import de.subcentral.fx.SubCentralFxUtil;
 import de.subcentral.fx.dialog.BeanEditController;
 import de.subcentral.watcher.settings.ReleaseTagsCorrectorSettingsItem;
@@ -24,14 +23,13 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Window;
 
-public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<ReleaseTagsCorrectorSettingsItem>
-{
+public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<ReleaseTagsCorrectorSettingsItem> {
 	@FXML
 	private RadioButton	containRadioBtn;
 	@FXML
 	private RadioButton	equalRadioBtn;
 	@FXML
-	private TextField	queryTagsTxtFld;
+	private TextField	searchTagsTxtFld;
 	@FXML
 	private CheckBox	ignoreOrderCheckBox;
 	@FXML
@@ -41,139 +39,118 @@ public class ReleaseTagsCorrectionRuleEditController extends BeanEditController<
 	@FXML
 	private TextField	replacementTxtFld;
 
-	public ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectorSettingsItem bean, Window window)
-	{
+	public ReleaseTagsCorrectionRuleEditController(ReleaseTagsCorrectorSettingsItem bean, Window window) {
 		super(bean, window);
 	}
 
 	@Override
-	protected String getTitle()
-	{
-		if (bean == null)
-		{
+	protected String getTitle() {
+		if (bean == null) {
 			return "Add correction rule for: " + ReleaseTagsCorrectorSettingsItem.getRuleType();
 		}
-		else
-		{
+		else {
 			return "Edit correction rule for: " + ReleaseTagsCorrectorSettingsItem.getRuleType();
 		}
 	}
 
 	@Override
-	protected String getImagePath()
-	{
+	protected String getImagePath() {
 		return "edit_text_16.png";
 	}
 
 	@Override
-	protected Node getDefaultFocusNode()
-	{
-		return queryTagsTxtFld;
+	protected Node getDefaultFocusNode() {
+		return searchTagsTxtFld;
 	}
 
 	@Override
-	protected void initComponents()
-	{
-		ToggleGroup queryModeToggleGrp = new ToggleGroup();
-		queryModeToggleGrp.getToggles().addAll(containRadioBtn, equalRadioBtn);
+	protected void initComponents() {
+		ToggleGroup searchModeToggleGrp = new ToggleGroup();
+		searchModeToggleGrp.getToggles().addAll(containRadioBtn, equalRadioBtn);
 
-		ToggleGroup replaceWithToggleGrp = new ToggleGroup();
-		replaceWithToggleGrp.getToggles().addAll(matchRadioBtn, completeRadioBtn);
+		ToggleGroup replaceModeToggleGrp = new ToggleGroup();
+		replaceModeToggleGrp.getToggles().addAll(matchRadioBtn, completeRadioBtn);
 
 		// Initial values
-		Toggle initialQueryModeToggle;
-		List<Tag> initialQueryTags;
+		Toggle initialSearchModeToggle;
+		List<Tag> initialSearchTags;
 		boolean initialIgnoreOrder;
-		Toggle initialReplaceWithToggle;
+		Toggle initialReplaceModeToggle;
 		List<Tag> initialReplacement;
-		if (bean == null)
-		{
-			initialQueryModeToggle = containRadioBtn;
-			initialQueryTags = ImmutableList.of();
+		if (bean == null) {
+			initialSearchModeToggle = containRadioBtn;
+			initialSearchTags = ImmutableList.of();
 			initialIgnoreOrder = false;
-			initialReplaceWithToggle = matchRadioBtn;
+			initialReplaceModeToggle = matchRadioBtn;
 			initialReplacement = ImmutableList.of();
 		}
-		else
-		{
+		else {
 			TagsReplacer replacer = (TagsReplacer) bean.getItem().getReplacer();
-			switch (replacer.getSearchMode())
-			{
+			switch (replacer.getSearchMode()) {
 				case CONTAIN:
-					initialQueryModeToggle = containRadioBtn;
+					initialSearchModeToggle = containRadioBtn;
 					break;
 				case EQUAL:
-					initialQueryModeToggle = equalRadioBtn;
+					initialSearchModeToggle = equalRadioBtn;
 					break;
 				default:
-					initialQueryModeToggle = containRadioBtn;
+					initialSearchModeToggle = containRadioBtn;
 			}
-			initialQueryTags = replacer.getSearchTags();
+			initialSearchTags = replacer.getSearchTags();
 			initialIgnoreOrder = replacer.getIgnoreOrder();
-			switch (replacer.getReplaceMode())
-			{
+			switch (replacer.getReplaceMode()) {
 				case MATCHED_SEQUENCE:
-					initialReplaceWithToggle = matchRadioBtn;
+					initialReplaceModeToggle = matchRadioBtn;
 					break;
 				case COMPLETE_LIST:
-					initialReplaceWithToggle = completeRadioBtn;
+					initialReplaceModeToggle = completeRadioBtn;
 					break;
 				default:
-					initialReplaceWithToggle = matchRadioBtn;
+					initialReplaceModeToggle = matchRadioBtn;
 			}
 			initialReplacement = replacer.getReplacement();
 		}
-		queryModeToggleGrp.selectToggle(initialQueryModeToggle);
+		searchModeToggleGrp.selectToggle(initialSearchModeToggle);
 		ignoreOrderCheckBox.setSelected(initialIgnoreOrder);
-		replaceWithToggleGrp.selectToggle(initialReplaceWithToggle);
-		ListProperty<Tag> queryTags = SubCentralFxUtil.tagPropertyForTextField(queryTagsTxtFld, initialQueryTags);
+		replaceModeToggleGrp.selectToggle(initialReplaceModeToggle);
+		ListProperty<Tag> searchTags = SubCentralFxUtil.tagPropertyForTextField(searchTagsTxtFld, initialSearchTags);
 		ListProperty<Tag> replacement = SubCentralFxUtil.tagPropertyForTextField(replacementTxtFld, initialReplacement);
 
 		// Bindings
 		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(queryTags.emptyProperty());
+		applyButton.disableProperty().bind(searchTags.emptyProperty());
 
-		ignoreOrderCheckBox.disableProperty().bind(queryTags.sizeProperty().lessThan(2));
+		ignoreOrderCheckBox.disableProperty().bind(searchTags.sizeProperty().lessThan(2));
 
 		matchRadioBtn.setDisable(equalRadioBtn.isSelected());
-		equalRadioBtn.selectedProperty().addListener((observable, oldValue, newValue) ->
-		{
+		equalRadioBtn.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			matchRadioBtn.setDisable(newValue);
-			if (newValue)
-			{
-				replaceWithToggleGrp.selectToggle(completeRadioBtn);
+			if (newValue) {
+				replaceModeToggleGrp.selectToggle(completeRadioBtn);
 			}
 		});
 
 		// ResultConverter
-		dialog.setResultConverter(dialogButton ->
-		{
-			if (dialogButton == ButtonType.APPLY)
-			{
-				TagUtil.SearchMode queryMode;
-				if (queryModeToggleGrp.getSelectedToggle() == equalRadioBtn)
-				{
-					queryMode = SearchMode.EQUAL;
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == ButtonType.APPLY) {
+				SearchMode searchMode;
+				if (searchModeToggleGrp.getSelectedToggle() == equalRadioBtn) {
+					searchMode = SearchMode.EQUAL;
 				}
-				else
-				{
-					queryMode = SearchMode.CONTAIN;
+				else {
+					searchMode = SearchMode.CONTAIN;
 				}
-				ReplaceMode replaceWith;
-				if (replaceWithToggleGrp.getSelectedToggle() == completeRadioBtn)
-				{
-					replaceWith = ReplaceMode.COMPLETE_LIST;
+				ReplaceMode replaceMode;
+				if (replaceModeToggleGrp.getSelectedToggle() == completeRadioBtn) {
+					replaceMode = ReplaceMode.COMPLETE_LIST;
 				}
-				else
-				{
-					replaceWith = ReplaceMode.MATCHED_SEQUENCE;
+				else {
+					replaceMode = ReplaceMode.MATCHED_SEQUENCE;
 				}
 				boolean ignoreOrder = ignoreOrderCheckBox.isSelected();
 				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
 				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-				return new ReleaseTagsCorrectorSettingsItem(new ReleaseTagsCorrector(new TagsReplacer(queryTags, replacement, queryMode, replaceWith, ignoreOrder)),
-						beforeQuerying,
-						afterQuerying);
+				return new ReleaseTagsCorrectorSettingsItem(new ReleaseTagsCorrector(new TagsReplacer(searchTags, replacement, searchMode, replaceMode, ignoreOrder)), beforeQuerying, afterQuerying);
 			}
 			return null;
 		});

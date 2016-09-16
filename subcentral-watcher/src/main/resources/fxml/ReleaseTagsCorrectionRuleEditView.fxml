@@ -34,7 +34,7 @@
 			</children>
 		</VBox>
 		<Label text="the tag sequence" GridPane.rowIndex="2" />
-		<TextField fx:id="queryTagsTxtFld" prefWidth="300.0" promptText="tags (separated by comma)" GridPane.rowIndex="3" />
+		<TextField fx:id="searchTagsTxtFld" prefWidth="300.0" promptText="tags (separated by comma)" GridPane.rowIndex="3" />
 		<CheckBox fx:id="ignoreOrderCheckBox" mnemonicParsing="false" text="in any order" GridPane.rowIndex="4" />
 		<Label text="then" GridPane.rowIndex="5">
          <GridPane.margin>

@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import de.subcentral.core.correct.Correction;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.NamingDefaults;
@@ -186,10 +186,10 @@ public class DetailsController extends SubController<ProcessingController> {
 		String[] values = {
 				printer.apply(subRls),
 				printer.apply(rls.getMedia()),
-				Tag.formatList(rls.getTags()),
+				Tags.join(rls.getTags()),
 				rls.getGroup() != null ? rls.getGroup().getName() : "",
 				sub.getLanguage() != null ? sub.getLanguage() : "",
-				Tag.formatList(subRls.getTags()),
+				Tags.join(subRls.getTags()),
 				sub.getSource() != null ? sub.getSource().getName() : "",
 				sub.getGroup() != null ? sub.getGroup().getName() : "" };
 		GridPane pane = createKeyValueGridPane(keys, values);
@@ -241,11 +241,11 @@ public class DetailsController extends SubController<ProcessingController> {
 		}
 
 		keys[index] = "Release tags:";
-		values[index] = Tag.formatList(rls.getTags());
+		values[index] = Tags.join(rls.getTags());
 
 		index++;
 		keys[index] = "Release group:";
-		values[index] = rls.getGroup() != null ? rls.getGroup().toString() : "";
+		values[index] = rls.getGroup() != null ? rls.getGroup().getName() : "";
 
 		return createKeyValueGridPane(keys, values);
 	}

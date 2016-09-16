@@ -12,7 +12,7 @@ import de.subcentral.core.metadata.media.Season;
 import de.subcentral.core.metadata.media.Series;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 
@@ -52,7 +52,7 @@ public class NamingPlayground {
 		rel.setName("Psych.S01E01.HDTV.XviD-LOL");
 		rel.setMedia(ImmutableList.of(movie));
 		rel.setGroup(Group.of("DIMENSION"));
-		rel.setTags(Tag.list("720p", "HDTV", "x264"));
+		rel.setTags(Tags.of("720p", "HDTV", "x264"));
 
 		// Subtitle
 		Subtitle sub1 = new Subtitle();
@@ -63,7 +63,7 @@ public class NamingPlayground {
 		// Subtitle release
 		SubtitleRelease subAdj = new SubtitleRelease();
 		subAdj.setSingleSubtitle(sub1);
-		subAdj.setTags(Tag.list("orig", "C"));
+		subAdj.setTags(Tags.of("orig", "C"));
 		subAdj.setSingleMatchingRelease(rel);
 
 		System.out.println(NamingDefaults.getDefaultNamingService().name(rel));

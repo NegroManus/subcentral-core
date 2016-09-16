@@ -15,7 +15,7 @@ import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.media.Episode;
 import de.subcentral.core.metadata.media.Movie;
 import de.subcentral.core.metadata.release.Release;
-import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 
@@ -31,7 +31,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, null, "WEB-DL", "x264", "AAC");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode01", subRls, name);
 	}
@@ -44,7 +44,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "EVOLVE");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode02", subRls, name);
 	}
@@ -70,7 +70,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "EXCELLENCE", "HDTV", "x264");
 		Subtitle sub = new Subtitle(epi, "Dutch");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("orig"));
 
 		compare("testEpisode04", subRls, name);
 	}
@@ -83,7 +83,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "2HD", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode05", subRls, name);
 	}
@@ -97,7 +97,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "mSD", "480p", "WEB-DL", "x264");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode06", subRls, name);
 	}
@@ -110,7 +110,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("orig"));
 
 		compare("testEpisode07", subRls, name);
 	}
@@ -123,7 +123,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "FQM");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode08", subRls, name);
 	}
@@ -137,7 +137,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "LOL");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("orig"));
 
 		compare("testEpisode09", subRls, name);
 	}
@@ -151,7 +151,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "LOL");
 		Subtitle sub = new Subtitle(epi, "German");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "updated"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "updated"));
 
 		compare("testEpisode10", subRls, name);
 	}
@@ -164,7 +164,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, null, "WEB-DL");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("orig"));
 
 		compare("testEpisode11", subRls, name);
 	}
@@ -218,7 +218,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "TOPAZ", "DVDRip");
 		Subtitle sub = new Subtitle(epi, "French");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("orig"));
 
 		compare("testEpisode15", subRls, name);
 	}
@@ -232,7 +232,7 @@ public class Addic7edParsingTest {
 		Release rls2 = Release.create(epi, "MSD");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, ImmutableSet.of(rls1, rls2), Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, ImmutableSet.of(rls1, rls2), Tags.of("C", "orig"));
 
 		compare("testEpisode16", subRls, name);
 	}
@@ -245,7 +245,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "FoV", "HDTV", "720p");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode17", subRls, name);
 	}
@@ -258,7 +258,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "TVC", "HDTV");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode18", subRls, name);
 	}
@@ -271,7 +271,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, null, "WEB-DL");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("HI", "C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("HI", "C", "orig"));
 
 		compare("testEpisode19", subRls, name);
 	}
@@ -284,7 +284,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, null, "WEBRip");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode20", subRls, name);
 	}
@@ -297,7 +297,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "2HD", "Webrip");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode21", subRls, name);
 	}
@@ -309,7 +309,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(epi, "DIMENSION");
 		Subtitle sub = new Subtitle(epi, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testEpisode22", subRls, name);
 	}
@@ -321,7 +321,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(mov, "CBFM");
 		Subtitle sub = new Subtitle(mov, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("C", "orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("C", "orig"));
 
 		compare("testMovie01", subRls, name);
 	}
@@ -333,7 +333,7 @@ public class Addic7edParsingTest {
 		Release rls = Release.create(mov, null, "DVD-Rip");
 		Subtitle sub = new Subtitle(mov, "English");
 		sub.setSource(ADDIC7ED_SITE_WITH_ONLY_NAME);
-		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tag.list("orig"));
+		SubtitleRelease subRls = new SubtitleRelease(name, sub, rls, Tags.of("orig"));
 
 		compare("testMovie02", subRls, name);
 	}

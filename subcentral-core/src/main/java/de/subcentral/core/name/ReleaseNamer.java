@@ -6,8 +6,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.util.Context;
 
-public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
-{
+public class ReleaseNamer extends AbstractPropertySequenceNamer<Release> {
 	/**
 	 * The name of the parameter "preferName" of type {@link Boolean}. If set to {@code true} and the {@link Release#getName() release's name} is not {@code null}, that name is returned, otherwise the
 	 * computed name is returned. The default value is {@code false}.
@@ -22,31 +21,26 @@ public class ReleaseNamer extends AbstractPropertySequenceNamer<Release>
 
 	private final NamingService	mediaNamingService;
 
-	public ReleaseNamer(PropSequenceNameBuilder.Config config, NamingService mediaNamingService)
-	{
+	public ReleaseNamer(PropSequenceNameBuilder.Config config, NamingService mediaNamingService) {
 		super(config);
 		this.mediaNamingService = Objects.requireNonNull(mediaNamingService, "mediaNamingService");
 	}
 
-	public NamingService getMediaNamingService()
-	{
+	public NamingService getMediaNamingService() {
 		return mediaNamingService;
 	}
 
 	@Override
-	protected void appendName(PropSequenceNameBuilder b, Release rls, Context ctx)
-	{
+	protected void appendName(PropSequenceNameBuilder b, Release rls, Context ctx) {
 		// read naming parameters
-		if (rls.getName() != null && ctx.getBoolean(PARAM_PREFER_NAME, Boolean.FALSE))
-		{
+		if (rls.getName() != null && ctx.getBoolean(PARAM_PREFER_NAME, Boolean.FALSE)) {
 			b.append(Release.PROP_NAME, rls.getName());
 			return;
 		}
 		b.appendRaw(Release.PROP_MEDIA, mediaNamingService.name(rls.getMedia(), ctx));
-		b.appendAll(Release.PROP_TAGS, rls.getTags());
+		b.append(Release.PROP_TAGS, rls.getTags());
 		b.appendIfNotNull(Release.PROP_GROUP, rls.getGroup());
-		if (rls.getSource() != null && ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE))
-		{
+		if (rls.getSource() != null && ctx.getBoolean(PARAM_INCLUDE_SOURCE, Boolean.FALSE)) {
 			b.append(Subtitle.PROP_SOURCE, rls.getSource());
 		}
 	}

@@ -20,6 +20,7 @@ import de.subcentral.core.metadata.media.Media;
 import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
@@ -183,7 +184,7 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 		}
 		if (tags.length > 0) {
 			// use addAll and do not add separately so that the list is trimmed to the right size
-			subRls.tags.addAll(Tag.list(tags));
+			subRls.tags.addAll(Tags.of(tags));
 		}
 		subRls.matchingReleases.add(matchingRelease);
 		return subRls;
@@ -435,7 +436,7 @@ public class SubtitleRelease extends NamedMetadataBase implements Work, Comparab
 		}
 		return ComparisonChain.start()
 				.compare(subtitles, o.subtitles, IterableComparator.<Subtitle> create())
-				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.compare(tags, o.tags, Tags.COMPARATOR)
 				.compare(matchingReleases, matchingReleases, IterableComparator.<Release> create())
 				.compare(version, version, ObjectUtil.getDefaultStringOrdering())
 				.result();

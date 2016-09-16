@@ -16,6 +16,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.StandardRelease;
 import de.subcentral.core.metadata.release.StandardRelease.Scope;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.fx.settings.BooleanSettingsProperty;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
@@ -118,7 +119,7 @@ public class ProcessingSettings extends Settings {
 		return (StandardRelease r1, StandardRelease r2) -> {
 			return ComparisonChain.start()
 					.compare(r1.getRelease().getGroup(), r2.getRelease().getGroup(), ObjectUtil.getDefaultOrdering())
-					.compare(r1.getRelease().getTags(), r2.getRelease().getTags(), Tag.TAGS_COMPARATOR)
+					.compare(r1.getRelease().getTags(), r2.getRelease().getTags(), Tags.COMPARATOR)
 					.result();
 		};
 	}
@@ -210,7 +211,7 @@ public class ProcessingSettings extends Settings {
 			List<HierarchicalConfiguration<ImmutableNode>> rlsCfgs = cfg.configurationsAt(key + ".standardRelease");
 			ArrayList<StandardRelease> list = new ArrayList<>(rlsCfgs.size());
 			for (HierarchicalConfiguration<ImmutableNode> rlsCfg : rlsCfgs) {
-				List<Tag> tags = Tag.parseList(rlsCfg.getString("[@tags]"));
+				List<Tag> tags = Tags.split(rlsCfg.getString("[@tags]"));
 				Group group = Group.ofOrNull(rlsCfg.getString("[@group]"));
 				Scope scope = Scope.valueOf(rlsCfg.getString("[@scope]"));
 				list.add(new StandardRelease(tags, group, scope));
@@ -224,7 +225,7 @@ public class ProcessingSettings extends Settings {
 		public void add(Configuration cfg, String key, ObservableList<StandardRelease> list) {
 			for (int i = 0; i < list.size(); i++) {
 				StandardRelease stdRls = list.get(i);
-				cfg.addProperty(key + ".standardRelease(" + i + ")[@tags]", Tag.formatList(stdRls.getRelease().getTags()));
+				cfg.addProperty(key + ".standardRelease(" + i + ")[@tags]", Tags.join(stdRls.getRelease().getTags()));
 				cfg.addProperty(key + ".standardRelease(" + i + ")[@group]", ObjectUtil.toString(stdRls.getRelease().getGroup()));
 				cfg.addProperty(key + ".standardRelease(" + i + ")[@scope]", stdRls.getScope());
 			}

@@ -145,7 +145,7 @@ public class Release extends NamedMetadataBase implements Comparable<Release> {
 		}
 		if (tags.length > 0) {
 			// use addAll and do not add separately so that the list is trimmed to the right size
-			rls.tags.addAll(Tag.list(tags));
+			rls.tags.addAll(Tags.of(tags));
 		}
 		return rls;
 	}
@@ -450,7 +450,7 @@ public class Release extends NamedMetadataBase implements Comparable<Release> {
 		}
 		return ComparisonChain.start()
 				.compare(media, o.media, NamingUtil.DEFAULT_MEDIA_ITERABLE_NAME_COMPARATOR)
-				.compare(tags, o.tags, Tag.TAGS_COMPARATOR)
+				.compare(tags, o.tags, Tags.COMPARATOR)
 				.compare(group, o.group, ObjectUtil.getDefaultOrdering())
 				.result();
 	}

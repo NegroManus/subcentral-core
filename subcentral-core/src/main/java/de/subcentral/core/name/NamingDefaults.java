@@ -25,6 +25,7 @@ import de.subcentral.core.metadata.release.Group;
 import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.Tag;
+import de.subcentral.core.metadata.release.Tags;
 import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.metadata.subtitle.SubtitleRelease;
 import de.subcentral.core.name.PropSequenceNameBuilder.Config;
@@ -84,8 +85,12 @@ public class NamingDefaults {
 		PRINT_PROP_SERVICE.getPropPrinter().put(Season.PROP_NUMBER, (Integer n) -> String.format("S%02d", n));
 		PRINT_PROP_SERVICE.getPropPrinter().put(Episode.PROP_NUMBER_IN_SERIES, (Integer n) -> String.format("E%02d", n));
 		PRINT_PROP_SERVICE.getPropPrinter().put(Episode.PROP_NUMBER_IN_SEASON, (Integer n) -> String.format("E%02d", n));
+		// Release
+		PRINT_PROP_SERVICE.getPropPrinter().put(Release.PROP_TAGS, (List<Tag> l) -> Tags.join(l));
 		// Subtitle
-		PRINT_PROP_SERVICE.getPropPrinter().put(SubtitleRelease.PROP_VERSION, (String rev) -> "V" + rev);
+		PRINT_PROP_SERVICE.getPropPrinter().put(SubtitleRelease.PROP_VERSION, (String rev) -> "v" + rev);
+		// SubtitleRelease
+		PRINT_PROP_SERVICE.getPropPrinter().put(SubtitleRelease.PROP_TAGS, (List<Tag> l) -> Tags.join(l));
 
 		ImmutableSet.Builder<Separation> sepsBuilder = ImmutableSet.builder();
 		sepsBuilder.add(Separation.between(Season.PROP_NUMBER, Episode.PROP_NUMBER_IN_SEASON, ""));
