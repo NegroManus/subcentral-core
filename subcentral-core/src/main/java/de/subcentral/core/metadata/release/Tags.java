@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
-import de.subcentral.core.util.CollectionUtil;
 import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.StringUtil;
 
@@ -34,7 +34,7 @@ public class Tags {
 	}
 
 	public static List<Tag> of(Stream<String> tagNames) {
-		return tagNames.map(Tag::of).collect(CollectionUtil.collectToImmutableList());
+		return tagNames.map(Tag::of).collect(Collectors.toList());
 	}
 
 	public static List<Tag> split(String tagNames) {
