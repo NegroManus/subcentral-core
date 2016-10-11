@@ -13,58 +13,58 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public abstract class DialogController<T> extends Controller {
-	// View
-	protected final Dialog<T>	dialog	= new Dialog<>();
-	@FXML
-	protected Node				rootPane;
+    // View
+    protected final Dialog<T> dialog = new Dialog<>();
+    @FXML
+    protected Node            rootPane;
 
-	public DialogController(Window owner) {
-		this.dialog.initOwner(owner);
-	}
+    public DialogController(Window owner) {
+        this.dialog.initOwner(owner);
+    }
 
-	public Dialog<T> getDialog() {
-		return dialog;
-	}
+    public Dialog<T> getDialog() {
+        return dialog;
+    }
 
-	@Override
-	public Stage getPrimaryStage() {
-		return (Stage) dialog.getDialogPane().getScene().getWindow();
-	}
+    @Override
+    public Stage getPrimaryStage() {
+        return (Stage) dialog.getDialogPane().getScene().getWindow();
+    }
 
-	@Override
-	public final void initialize() {
-		initDialog();
-		initComponents();
-	}
+    @Override
+    public final void initialize() {
+        initDialog();
+        initComponents();
+    }
 
-	protected void initDialog() {
-		String title = getTitle();
-		dialog.setTitle(title);
-		String imgPath = getImagePath();
-		if (imgPath != null) {
-			dialog.setGraphic(new ImageView(FxIO.loadImg(imgPath)));
-		}
-		dialog.setHeaderText(title);
-		dialog.setResizable(true);
+    protected void initDialog() {
+        String title = getTitle();
+        dialog.setTitle(title);
+        String imgPath = getImagePath();
+        if (imgPath != null) {
+            dialog.setGraphic(new ImageView(FxIO.loadImg(imgPath)));
+        }
+        dialog.setHeaderText(title);
+        dialog.setResizable(true);
 
-		dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
-		dialog.getDialogPane().setContent(rootPane);
-		dialog.getDialogPane().setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        dialog.getDialogPane().getButtonTypes().addAll(getButtonTypes());
+        dialog.getDialogPane().setContent(rootPane);
+        dialog.getDialogPane().setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
-		Platform.runLater(() -> getDefaultFocusNode().requestFocus());
-	}
+        Platform.runLater(() -> getDefaultFocusNode().requestFocus());
+    }
 
-	protected abstract String getTitle();
+    protected abstract String getTitle();
 
-	protected String getImagePath() {
-		return null;
-	}
+    protected String getImagePath() {
+        return null;
+    }
 
-	protected ButtonType[] getButtonTypes() {
-		return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
-	}
+    protected ButtonType[] getButtonTypes() {
+        return new ButtonType[] { ButtonType.APPLY, ButtonType.CANCEL };
+    }
 
-	protected abstract Node getDefaultFocusNode();
+    protected abstract Node getDefaultFocusNode();
 
-	protected abstract void initComponents();
+    protected abstract void initComponents();
 }

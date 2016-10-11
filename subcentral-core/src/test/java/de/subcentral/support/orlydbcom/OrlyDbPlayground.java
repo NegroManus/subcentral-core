@@ -12,13 +12,13 @@ import com.google.common.io.Resources;
 import de.subcentral.core.metadata.release.Release;
 
 public class OrlyDbPlayground {
-	public static void main(String[] args) throws IOException {
-		OrlyDbComMetadataService db = new OrlyDbComMetadataService();
+    public static void main(String[] args) throws IOException {
+        OrlyDbComMetadataService db = new OrlyDbComMetadataService();
 
-		URL url = Resources.getResource("de/subcentral/support/orlydbcom/psych.s06e05.html");
-		Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost());
+        URL url = Resources.getResource("de/subcentral/support/orlydbcom/psych.s06e05.html");
+        Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost());
 
-		List<Release> rlss = db.parseReleaseSearchResults(doc);
-		rlss.stream().forEach((Release r) -> System.out.println(r));
-	}
+        List<Release> rlss = db.parseReleaseSearchResults(doc);
+        rlss.stream().forEach((Release r) -> System.out.println(r));
+    }
 }

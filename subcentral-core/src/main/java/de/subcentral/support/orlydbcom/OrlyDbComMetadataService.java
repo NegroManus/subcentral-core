@@ -33,137 +33,137 @@ import de.subcentral.core.util.ByteUtil;
  *
  */
 public class OrlyDbComMetadataService extends HttpMetadataService {
-	private static final Logger				log					= LogManager.getLogger(OrlyDbComMetadataService.class);
+    private static final Logger            log                 = LogManager.getLogger(OrlyDbComMetadataService.class);
 
-	/**
-	 * The release dates are ISO-formatted (without the 'T').
-	 */
-	private static final DateTimeFormatter	DATE_TIME_FORMATTER	= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+    /**
+     * The release dates are ISO-formatted (without the 'T').
+     */
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-	/**
-	 * The release dates are in UTC.
-	 */
-	private static final ZoneId				TIME_ZONE			= ZoneId.of("UTC");
+    /**
+     * The release dates are in UTC.
+     */
+    private static final ZoneId            TIME_ZONE           = ZoneId.of("UTC");
 
-	OrlyDbComMetadataService() {
-		// package-protected
-	}
+    OrlyDbComMetadataService() {
+        // package-protected
+    }
 
-	@Override
-	public Site getSite() {
-		return OrlyDbCom.getSite();
-	}
+    @Override
+    public Site getSite() {
+        return OrlyDbCom.getSite();
+    }
 
-	@Override
-	public Set<Class<?>> getSupportedRecordTypes() {
-		return ImmutableSet.of(Release.class);
-	}
+    @Override
+    public Set<Class<?>> getSupportedRecordTypes() {
+        return ImmutableSet.of(Release.class);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException {
-		if (Release.class.equals(recordType)) {
-			URL url = buildSearchUrl(query);
-			log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
-			return (List<T>) parseReleaseSearchResults(getDocument(url));
-		}
-		throw createRecordTypeNotSearchableException(recordType);
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> search(String query, Class<T> recordType) throws UnsupportedOperationException, IOException {
+        if (Release.class.equals(recordType)) {
+            URL url = buildSearchUrl(query);
+            log.debug("Searching for releases with text query \"{}\" using url {}", query, url);
+            return (List<T>) parseReleaseSearchResults(getDocument(url));
+        }
+        throw createRecordTypeNotSearchableException(recordType);
+    }
 
-	private URL buildSearchUrl(String query) {
-		return buildRelativeUrl("q", query);
-	}
+    private URL buildSearchUrl(String query) {
+        return buildRelativeUrl("q", query);
+    }
 
-	/**
-	 * <pre>
-	 * <div id="releases">
-	 * 		<div>
-	 * 		...
-	 * 		</div>
-	 * ...
-	 * </div>
-	 * </pre>
-	 * 
-	 * @param doc
-	 * @return
-	 */
-	protected List<Release> parseReleaseSearchResults(Document doc) {
-		Elements rlsDivs = doc.select("div#releases > div");
-		ImmutableList.Builder<Release> results = ImmutableList.builder();
-		for (Element rlsDiv : rlsDivs) {
-			Release rls = parseReleaseSearchResult(doc, rlsDiv);
-			if (rls != null) {
-				results.add(rls);
-			}
-		}
-		return results.build();
-	}
+    /**
+     * <pre>
+     * <div id="releases">
+     * 		<div>
+     * 		...
+     * 		</div>
+     * ...
+     * </div>
+     * </pre>
+     * 
+     * @param doc
+     * @return
+     */
+    protected List<Release> parseReleaseSearchResults(Document doc) {
+        Elements rlsDivs = doc.select("div#releases > div");
+        ImmutableList.Builder<Release> results = ImmutableList.builder();
+        for (Element rlsDiv : rlsDivs) {
+            Release rls = parseReleaseSearchResult(doc, rlsDiv);
+            if (rls != null) {
+                results.add(rls);
+            }
+        }
+        return results.build();
+    }
 
-	/**
-	 * <pre>
-	 * <div>
-	 * 	<span class="timestamp">2011-11-10 04:16:48</span>
-	 * 	<span class="section"><a href="/s/tv-xvid">TV-XVID</a></span>
-	 * 	<span class="release">Psych.S06E05.HDTV.XviD-P0W4</span>
-	 * 	<a href="/dl/Psych.S06E05.HDTV.XviD-P0W4/" class="dlright"><span class="dl">DL</span></a>
-	 * 	
-	 * 		<span class="inforight"><span class="info">349.3MB | 25F</span></span>
-	 * 	
-	 * 	
-	 * 		<span class="nukeright"><span class="nuke">contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></span>
-	 * 	
-	 * </div>
-	 * </pre>
-	 * 
-	 * @param rlsDiv
-	 * @return
-	 */
-	private static Release parseReleaseSearchResult(Document doc, Element rlsDiv) {
-		Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
-		Element sectionSpan = rlsDiv.getElementsByClass("section").first();
-		Element releaseSpan = rlsDiv.getElementsByClass("release").first();
-		Element infoSpan = rlsDiv.getElementsByClass("info").first();
-		Element nukeSpan = rlsDiv.getElementsByClass("nuke").first();
+    /**
+     * <pre>
+     * <div>
+     * 	<span class="timestamp">2011-11-10 04:16:48</span>
+     * 	<span class="section"><a href="/s/tv-xvid">TV-XVID</a></span>
+     * 	<span class="release">Psych.S06E05.HDTV.XviD-P0W4</span>
+     * 	<a href="/dl/Psych.S06E05.HDTV.XviD-P0W4/" class="dlright"><span class="dl">DL</span></a>
+     * 	
+     * 		<span class="inforight"><span class="info">349.3MB | 25F</span></span>
+     * 	
+     * 	
+     * 		<span class="nukeright"><span class="nuke">contains.promo.38m.57s.to.39m.17s_get.FQM.proper</span></span>
+     * 	
+     * </div>
+     * </pre>
+     * 
+     * @param rlsDiv
+     * @return
+     */
+    private static Release parseReleaseSearchResult(Document doc, Element rlsDiv) {
+        Element timestampSpan = rlsDiv.getElementsByClass("timestamp").first();
+        Element sectionSpan = rlsDiv.getElementsByClass("section").first();
+        Element releaseSpan = rlsDiv.getElementsByClass("release").first();
+        Element infoSpan = rlsDiv.getElementsByClass("info").first();
+        Element nukeSpan = rlsDiv.getElementsByClass("nuke").first();
 
-		if (releaseSpan == null) {
-			return null;
-		}
+        if (releaseSpan == null) {
+            return null;
+        }
 
-		Release rls = new Release();
-		rls.setName(releaseSpan.text());
-		if (sectionSpan != null) {
-			rls.setCategory(sectionSpan.text());
-		}
-		if (timestampSpan != null) {
-			try {
-				ZonedDateTime date = ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE);
-				rls.setDate(date);
-			}
-			catch (DateTimeParseException e) {
-				log.warn("Could not parse release date string '" + timestampSpan.text() + "'", e);
-			}
-		}
+        Release rls = new Release();
+        rls.setName(releaseSpan.text());
+        if (sectionSpan != null) {
+            rls.setCategory(sectionSpan.text());
+        }
+        if (timestampSpan != null) {
+            try {
+                ZonedDateTime date = ZonedDateTime.of(LocalDateTime.parse(timestampSpan.text(), DATE_TIME_FORMATTER), TIME_ZONE);
+                rls.setDate(date);
+            }
+            catch (DateTimeParseException e) {
+                log.warn("Could not parse release date string '" + timestampSpan.text() + "'", e);
+            }
+        }
 
-		if (infoSpan != null) {
-			String info = infoSpan.text();
-			// e.g. "349.3MB | 25F"
-			Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
-			Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
-			if (mSizeAndFiles.matches()) {
-				// no NumberFormatExceptions can occur because then the pattern would not match in the first place
-				long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
-				rls.setSize(size);
-				int fileCount = Integer.parseInt(mSizeAndFiles.group(2));
-				rls.setFileCount(fileCount);
-			}
-		}
+        if (infoSpan != null) {
+            String info = infoSpan.text();
+            // e.g. "349.3MB | 25F"
+            Pattern sizeAndFilesPattern = Pattern.compile("(\\d+\\.\\d+MB)\\s*\\|\\s*(\\d+)F");
+            Matcher mSizeAndFiles = sizeAndFilesPattern.matcher(info);
+            if (mSizeAndFiles.matches()) {
+                // no NumberFormatExceptions can occur because then the pattern would not match in the first place
+                long size = ByteUtil.parseBytes(mSizeAndFiles.group(1));
+                rls.setSize(size);
+                int fileCount = Integer.parseInt(mSizeAndFiles.group(2));
+                rls.setFileCount(fileCount);
+            }
+        }
 
-		if (nukeSpan != null) {
-			rls.nuke(nukeSpan.text());
-		}
+        if (nukeSpan != null) {
+            rls.nuke(nukeSpan.text());
+        }
 
-		rls.getFurtherInfoLinks().add(doc.baseUri());
+        rls.getFurtherInfoLinks().add(doc.baseUri());
 
-		return rls;
-	}
+        return rls;
+    }
 }

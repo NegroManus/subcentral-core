@@ -5,5 +5,5 @@ import java.util.Set;
 
 @FunctionalInterface
 public interface CompatibilityRule {
-	public Set<Release> findCompatibles(Release source, Collection<Release> possibleCompatibles);
+    public Set<Release> findCompatibles(Release source, Collection<Release> possibleCompatibles);
 }

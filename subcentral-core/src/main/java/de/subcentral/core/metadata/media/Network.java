@@ -10,60 +10,60 @@ import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class Network extends MetadataBase implements Comparable<Network> {
-	private static final long					serialVersionUID	= 6231096307092943124L;
+    private static final long                serialVersionUID = 6231096307092943124L;
 
-	public static final SimplePropDescriptor	PROP_NAME			= new SimplePropDescriptor(Network.class, PropNames.NAME);
-	public static final SimplePropDescriptor	PROP_IDS			= new SimplePropDescriptor(Network.class, PropNames.IDS);
+    public static final SimplePropDescriptor PROP_NAME        = new SimplePropDescriptor(Network.class, PropNames.NAME);
+    public static final SimplePropDescriptor PROP_IDS         = new SimplePropDescriptor(Network.class, PropNames.IDS);
 
-	private String								name;
+    private String                           name;
 
-	public Network() {
-		// default constructor
-	}
+    public Network() {
+        // default constructor
+    }
 
-	public Network(String name) {
-		this.name = name;
-	}
+    public Network(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	// Object methods
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof Network) {
-			return Objects.equals(name, ((Network) obj).name);
-		}
-		return false;
-	}
+    // Object methods
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Network) {
+            return Objects.equals(name, ((Network) obj).name);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(name);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).add("ids", ObjectUtil.nullIfEmpty(ids)).toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(Network.class).omitNullValues().add("name", name).add("ids", ObjectUtil.nullIfEmpty(ids)).toString();
+    }
 
-	@Override
-	public int compareTo(Network o) {
-		if (this == o) {
-			return 0;
-		}
-		// nulls first
-		if (o == null) {
-			return 1;
-		}
-		return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
-	}
+    @Override
+    public int compareTo(Network o) {
+        if (this == o) {
+            return 0;
+        }
+        // nulls first
+        if (o == null) {
+            return 1;
+        }
+        return ObjectUtil.getDefaultStringOrdering().compare(name, o.name);
+    }
 }

@@ -7,13 +7,13 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class HTTPS {
-	public static void main(String[] args) throws IOException {
-		URL url = new URL(args[0]);
-		URLConnection conn = url.openConnection();
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		int c = 0;
+    public static void main(String[] args) throws IOException {
+        URL url = new URL(args[0]);
+        URLConnection conn = url.openConnection();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        int c = 0;
 
-		while ((c = rd.read()) != -1)
-			System.out.print((char) c);
-	}
+        while ((c = rd.read()) != -1)
+            System.out.print((char) c);
+    }
 }

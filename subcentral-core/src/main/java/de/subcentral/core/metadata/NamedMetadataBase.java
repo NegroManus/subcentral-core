@@ -1,16 +1,16 @@
 package de.subcentral.core.metadata;
 
 public abstract class NamedMetadataBase extends MetadataBase implements NamedMetadata {
-	private static final long	serialVersionUID	= 4769019113412042360L;
+    private static final long serialVersionUID = 4769019113412042360L;
 
-	protected String			name;
+    protected String          name;
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 }

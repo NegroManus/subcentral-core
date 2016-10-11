@@ -13,45 +13,45 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public abstract class SettableBase implements Settable {
-	protected final ObservableHelper	helper	= new ObservableHelper(this);
-	protected final BooleanProperty		changed	= new SimpleBooleanProperty(this, "changed");
+    protected final ObservableHelper helper  = new ObservableHelper(this);
+    protected final BooleanProperty  changed = new SimpleBooleanProperty(this, "changed");
 
-	@Override
-	public void addListener(InvalidationListener listener) {
-		helper.addListener(listener);
-	}
+    @Override
+    public void addListener(InvalidationListener listener) {
+        helper.addListener(listener);
+    }
 
-	@Override
-	public void removeListener(InvalidationListener listener) {
-		helper.removeListener(listener);
-	}
+    @Override
+    public void removeListener(InvalidationListener listener) {
+        helper.removeListener(listener);
+    }
 
-	@Override
-	public ReadOnlyBooleanProperty changedProperty() {
-		return changed;
-	}
+    @Override
+    public ReadOnlyBooleanProperty changedProperty() {
+        return changed;
+    }
 
-	@Override
-	public boolean changed() {
-		return changed.get();
-	}
+    @Override
+    public boolean changed() {
+        return changed.get();
+    }
 
-	@Override
-	public void load(URL file, boolean resetChanged) throws ConfigurationException {
-		XMLConfiguration cfg = ConfigurationHelper.load(file);
-		load(cfg, resetChanged);
-	}
+    @Override
+    public void load(URL file, boolean resetChanged) throws ConfigurationException {
+        XMLConfiguration cfg = ConfigurationHelper.load(file);
+        load(cfg, resetChanged);
+    }
 
-	@Override
-	public void load(Path file, boolean resetChanged) throws ConfigurationException {
-		XMLConfiguration cfg = ConfigurationHelper.load(file);
-		load(cfg, resetChanged);
-	}
+    @Override
+    public void load(Path file, boolean resetChanged) throws ConfigurationException {
+        XMLConfiguration cfg = ConfigurationHelper.load(file);
+        load(cfg, resetChanged);
+    }
 
-	@Override
-	public void save(Path file, boolean resetChanged) throws ConfigurationException {
-		XMLConfiguration cfg = new IndentingXMLConfiguration();
-		save(cfg, resetChanged);
-		ConfigurationHelper.save(cfg, file);
-	}
+    @Override
+    public void save(Path file, boolean resetChanged) throws ConfigurationException {
+        XMLConfiguration cfg = new IndentingXMLConfiguration();
+        save(cfg, resetChanged);
+        ConfigurationHelper.save(cfg, file);
+    }
 }

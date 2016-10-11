@@ -27,141 +27,141 @@ import javafx.scene.text.Text;
 import javafx.stage.Window;
 
 public class SeriesNameCorrectionRuleEditController extends BeanEditController<SeriesNameCorrectorSettingsItem> {
-	@FXML
-	private RadioButton			literalRadioBtn;
-	@FXML
-	private RadioButton			simplePatternRadioBtn;
-	@FXML
-	private RadioButton			regexRadioBtn;
-	@FXML
-	private TextField			namePatternTxtFld;
-	@FXML
-	private Text				patternErrorTxt;
-	@FXML
-	private TextField			nameReplacementTxtFld;
-	@FXML
-	private ListView<String>	aliasNamesReplacementListView;
-	@FXML
-	private Button				addNameBtn;
-	@FXML
-	private Button				editNameBtn;
-	@FXML
-	private Button				removeNameBtn;
+    @FXML
+    private RadioButton      literalRadioBtn;
+    @FXML
+    private RadioButton      simplePatternRadioBtn;
+    @FXML
+    private RadioButton      regexRadioBtn;
+    @FXML
+    private TextField        namePatternTxtFld;
+    @FXML
+    private Text             patternErrorTxt;
+    @FXML
+    private TextField        nameReplacementTxtFld;
+    @FXML
+    private ListView<String> aliasNamesReplacementListView;
+    @FXML
+    private Button           addNameBtn;
+    @FXML
+    private Button           editNameBtn;
+    @FXML
+    private Button           removeNameBtn;
 
-	public SeriesNameCorrectionRuleEditController(SeriesNameCorrectorSettingsItem bean, Window window) {
-		super(bean, window);
-	}
+    public SeriesNameCorrectionRuleEditController(SeriesNameCorrectorSettingsItem bean, Window window) {
+        super(bean, window);
+    }
 
-	@Override
-	protected String getTitle() {
-		if (bean == null) {
-			return "Add correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
-		}
-		else {
-			return "Edit correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
-		}
-	}
+    @Override
+    protected String getTitle() {
+        if (bean == null) {
+            return "Add correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
+        }
+        else {
+            return "Edit correction rule for: " + SeriesNameCorrectorSettingsItem.getRuleType();
+        }
+    }
 
-	@Override
-	protected String getImagePath() {
-		return "edit_text_16.png";
-	}
+    @Override
+    protected String getImagePath() {
+        return "edit_text_16.png";
+    }
 
-	@Override
-	protected Node getDefaultFocusNode() {
-		return namePatternTxtFld;
-	}
+    @Override
+    protected Node getDefaultFocusNode() {
+        return namePatternTxtFld;
+    }
 
-	@Override
-	protected void initComponents() {
-		ToggleGroup patternModeToggleGrp = new ToggleGroup();
-		patternModeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
+    @Override
+    protected void initComponents() {
+        ToggleGroup patternModeToggleGrp = new ToggleGroup();
+        patternModeToggleGrp.getToggles().setAll(literalRadioBtn, simplePatternRadioBtn, regexRadioBtn);
 
-		// Initial values
-		Toggle initialPatternMode;
-		String initialNamePattern;
-		String initialNameReplacement;
-		ObservableList<String> aliasNamesReplacement;
-		if (bean == null) {
-			initialPatternMode = literalRadioBtn;
-			initialNamePattern = null;
-			initialNameReplacement = null;
-			aliasNamesReplacement = FXCollections.observableArrayList();
-		}
-		else {
-			switch (bean.getNameUserPattern().getMode()) {
-				case LITERAL:
-					initialPatternMode = literalRadioBtn;
-					break;
-				case SIMPLE:
-					initialPatternMode = simplePatternRadioBtn;
-					break;
-				case REGEX:
-					initialPatternMode = regexRadioBtn;
-					break;
-				default:
-					initialPatternMode = literalRadioBtn;
-			}
-			initialNamePattern = bean.getNameUserPattern().getPattern();
-			initialNameReplacement = bean.getItem().getNameReplacement();
-			aliasNamesReplacement = FXCollections.observableArrayList(bean.getItem().getAliasNamesReplacement());
-		}
-		patternModeToggleGrp.selectToggle(initialPatternMode);
-		namePatternTxtFld.setText(initialNamePattern);
+        // Initial values
+        Toggle initialPatternMode;
+        String initialNamePattern;
+        String initialNameReplacement;
+        ObservableList<String> aliasNamesReplacement;
+        if (bean == null) {
+            initialPatternMode = literalRadioBtn;
+            initialNamePattern = null;
+            initialNameReplacement = null;
+            aliasNamesReplacement = FXCollections.observableArrayList();
+        }
+        else {
+            switch (bean.getNameUserPattern().getMode()) {
+                case LITERAL:
+                    initialPatternMode = literalRadioBtn;
+                    break;
+                case SIMPLE:
+                    initialPatternMode = simplePatternRadioBtn;
+                    break;
+                case REGEX:
+                    initialPatternMode = regexRadioBtn;
+                    break;
+                default:
+                    initialPatternMode = literalRadioBtn;
+            }
+            initialNamePattern = bean.getNameUserPattern().getPattern();
+            initialNameReplacement = bean.getItem().getNameReplacement();
+            aliasNamesReplacement = FXCollections.observableArrayList(bean.getItem().getAliasNamesReplacement());
+        }
+        patternModeToggleGrp.selectToggle(initialPatternMode);
+        namePatternTxtFld.setText(initialNamePattern);
 
-		nameReplacementTxtFld.setText(initialNameReplacement);
+        nameReplacementTxtFld.setText(initialNameReplacement);
 
-		// replacement names
-		aliasNamesReplacementListView.setCellFactory(TextFieldListCell.forListView(FxUtil.REJECT_BLANK_STRING_CONVERTER));
-		aliasNamesReplacementListView.setItems(aliasNamesReplacement);
-		addNameBtn.setOnAction((ActionEvent evt) -> {
-			String newAliasName = StringUtils.isBlank(nameReplacementTxtFld.getText()) ? "alias name" : nameReplacementTxtFld.getText();
-			aliasNamesReplacement.add(newAliasName);
-			aliasNamesReplacementListView.getSelectionModel().selectLast();
-		});
+        // replacement names
+        aliasNamesReplacementListView.setCellFactory(TextFieldListCell.forListView(FxUtil.REJECT_BLANK_STRING_CONVERTER));
+        aliasNamesReplacementListView.setItems(aliasNamesReplacement);
+        addNameBtn.setOnAction((ActionEvent evt) -> {
+            String newAliasName = StringUtils.isBlank(nameReplacementTxtFld.getText()) ? "alias name" : nameReplacementTxtFld.getText();
+            aliasNamesReplacement.add(newAliasName);
+            aliasNamesReplacementListView.getSelectionModel().selectLast();
+        });
 
-		final BooleanBinding noSelection = aliasNamesReplacementListView.getSelectionModel().selectedItemProperty().isNull();
+        final BooleanBinding noSelection = aliasNamesReplacementListView.getSelectionModel().selectedItemProperty().isNull();
 
-		editNameBtn.disableProperty().bind(noSelection);
-		editNameBtn.setOnAction((ActionEvent evt) -> {
-			aliasNamesReplacementListView.edit(aliasNamesReplacementListView.getSelectionModel().getSelectedIndex());
-		});
-		removeNameBtn.disableProperty().bind(noSelection);
-		removeNameBtn.setOnAction((ActionEvent evt) -> {
-			FxActions.remove(aliasNamesReplacementListView);
-		});
+        editNameBtn.disableProperty().bind(noSelection);
+        editNameBtn.setOnAction((ActionEvent evt) -> {
+            aliasNamesReplacementListView.edit(aliasNamesReplacementListView.getSelectionModel().getSelectedIndex());
+        });
+        removeNameBtn.disableProperty().bind(noSelection);
+        removeNameBtn.setOnAction((ActionEvent evt) -> {
+            FxActions.remove(aliasNamesReplacementListView);
+        });
 
-		FxActions.setStandardMouseAndKeyboardSupport(aliasNamesReplacementListView, addNameBtn, editNameBtn, removeNameBtn, true);
+        FxActions.setStandardMouseAndKeyboardSupport(aliasNamesReplacementListView, addNameBtn, editNameBtn, removeNameBtn, true);
 
-		// Bindings
-		Binding<UserPattern> namePatternBinding = FxControlBindings.createUiPatternTextFieldBinding(patternModeToggleGrp,
-				literalRadioBtn,
-				simplePatternRadioBtn,
-				regexRadioBtn,
-				namePatternTxtFld,
-				patternErrorTxt);
+        // Bindings
+        Binding<UserPattern> namePatternBinding = FxControlBindings.createUiPatternTextFieldBinding(patternModeToggleGrp,
+                literalRadioBtn,
+                simplePatternRadioBtn,
+                regexRadioBtn,
+                namePatternTxtFld,
+                patternErrorTxt);
 
-		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(new BooleanBinding() {
-			{
-				super.bind(namePatternBinding, nameReplacementTxtFld.textProperty());
-			}
+        Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+        applyButton.disableProperty().bind(new BooleanBinding() {
+            {
+                super.bind(namePatternBinding, nameReplacementTxtFld.textProperty());
+            }
 
-			@Override
-			protected boolean computeValue() {
-				return namePatternBinding.getValue() == null || StringUtils.isBlank(nameReplacementTxtFld.getText());
-			}
-		});
+            @Override
+            protected boolean computeValue() {
+                return namePatternBinding.getValue() == null || StringUtils.isBlank(nameReplacementTxtFld.getText());
+            }
+        });
 
-		// ResultConverter
-		dialog.setResultConverter(dialogButton -> {
-			if (dialogButton == ButtonType.APPLY) {
-				boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
-				boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
-				return new SeriesNameCorrectorSettingsItem(namePatternBinding.getValue(), nameReplacementTxtFld.getText(), aliasNamesReplacementListView.getItems(), beforeQuerying, afterQuerying);
-			}
-			return null;
-		});
+        // ResultConverter
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.APPLY) {
+                boolean beforeQuerying = (bean == null ? true : bean.isBeforeQuerying());
+                boolean afterQuerying = (bean == null ? true : bean.isAfterQuerying());
+                return new SeriesNameCorrectorSettingsItem(namePatternBinding.getValue(), nameReplacementTxtFld.getText(), aliasNamesReplacementListView.getItems(), beforeQuerying, afterQuerying);
+            }
+            return null;
+        });
 
-	}
+    }
 }

@@ -15,67 +15,67 @@ import de.subcentral.mig.settings.MigrationSettings;
 import javafx.concurrent.Task;
 
 class MigrationTask extends Task<Void> {
-	private static final Logger		log	= LogManager.getLogger(MigrationTask.class);
+    private static final Logger     log = LogManager.getLogger(MigrationTask.class);
 
-	private final MigrationSettings	settings;
-	private MigrationService		service;
+    private final MigrationSettings settings;
+    private MigrationService        service;
 
-	public MigrationTask(MigrationSettings settings) {
-		this.settings = Objects.requireNonNull(settings, "settings");
-	}
+    public MigrationTask(MigrationSettings settings) {
+        this.settings = Objects.requireNonNull(settings, "settings");
+    }
 
-	@Override
-	protected Void call() throws Exception {
-		updateTitle("Migration");
-		try {
-			service = new MigrationService(settings);
-			migrate();
-			return null;
-		}
-		finally {
-			if (service != null) {
-				service.close();
-			}
-		}
-	}
+    @Override
+    protected Void call() throws Exception {
+        updateTitle("Migration");
+        try {
+            service = new MigrationService(settings);
+            migrate();
+            return null;
+        }
+        finally {
+            if (service != null) {
+                service.close();
+            }
+        }
+    }
 
-	private void migrate() throws Exception {
-		List<Series> includedSeries = getIncludedSeries();
-		insertSeries(includedSeries);
-	}
+    private void migrate() throws Exception {
+        List<Series> includedSeries = getIncludedSeries();
+        insertSeries(includedSeries);
+    }
 
-	@Override
-	protected void succeeded() {
-		updateMessage("Done");
-		updateProgress(1L, 1L);
-	}
+    @Override
+    protected void succeeded() {
+        updateMessage("Done");
+        updateProgress(1L, 1L);
+    }
 
-	@Override
-	protected void cancelled() {
-		updateMessage("Cancelled");
-		updateProgress(1L, 1L);
-	}
+    @Override
+    protected void cancelled() {
+        updateMessage("Cancelled");
+        updateProgress(1L, 1L);
+    }
 
-	@Override
-	protected void failed() {
-		updateMessage("Failed");
-		updateProgress(1L, 1L);
-	}
+    @Override
+    protected void failed() {
+        updateMessage("Failed");
+        updateProgress(1L, 1L);
+    }
 
-	private List<Series> getIncludedSeries() throws SQLException {
-		if (settings.getScopeSettings().getIncludeAllSeries()) {
-			return service.readSeriesList().getSeries();
-		}
-		return settings.getScopeSettings().getIncludedSeries();
-	}
+    private List<Series> getIncludedSeries() throws SQLException {
+        if (settings.getScopeSettings().getIncludeAllSeries()) {
+            return service.readSeriesList().getSeries();
+        }
+        return settings.getScopeSettings().getIncludedSeries();
+    }
 
-	private void insertSeries(List<Series> series) throws SQLException {
-		log.info("Inserting {} series into the target database", series.size());
-		try (Connection conn = service.getTargetDataSource().getConnection()) {
-			SubCentralSubMan subMan = new SubCentralSubMan(conn);
-			for (Series s : series) {
-				subMan.insertSeriesFromSeriesList(s);
-			}
-		}
-	}
+    private void insertSeries(List<Series> series) throws SQLException {
+        log.info("Inserting {} series into the target database", series.size());
+        try (Connection conn = service.getTargetDataSource().getConnection()) {
+            SubCentralSubMan subMan = new SubCentralSubMan(conn);
+            for (Series s : series) {
+                subMan.insertSeriesFromSeriesList(s);
+            }
+        }
+    }
 }

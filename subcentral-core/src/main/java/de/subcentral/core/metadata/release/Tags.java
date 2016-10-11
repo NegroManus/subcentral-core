@@ -15,41 +15,41 @@ import de.subcentral.core.util.IterableComparator;
 import de.subcentral.core.util.StringUtil;
 
 public class Tags {
-	public static final Comparator<Iterable<Tag>> COMPARATOR = IterableComparator.create();
+    public static final Comparator<Iterable<Tag>> COMPARATOR = IterableComparator.create();
 
-	private Tags() {
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
+    private Tags() {
+        throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+    }
 
-	public static List<Tag> of(String... tagNames) {
-		return of(Arrays.stream(tagNames));
-	}
+    public static List<Tag> of(String... tagNames) {
+        return of(Arrays.stream(tagNames));
+    }
 
-	public static List<Tag> of(Collection<String> tagNames) {
-		return of(tagNames.stream());
-	}
+    public static List<Tag> of(Collection<String> tagNames) {
+        return of(tagNames.stream());
+    }
 
-	public static List<Tag> of(Iterable<String> tagNames) {
-		return of(StreamSupport.stream(tagNames.spliterator(), false));
-	}
+    public static List<Tag> of(Iterable<String> tagNames) {
+        return of(StreamSupport.stream(tagNames.spliterator(), false));
+    }
 
-	public static List<Tag> of(Stream<String> tagNames) {
-		return tagNames.map(Tag::of).collect(Collectors.toList());
-	}
+    public static List<Tag> of(Stream<String> tagNames) {
+        return tagNames.map(Tag::of).collect(Collectors.toList());
+    }
 
-	public static List<Tag> split(String tagNames) {
-		return split(tagNames, StringUtil.COMMA_SPLITTER);
-	}
+    public static List<Tag> split(String tagNames) {
+        return split(tagNames, StringUtil.COMMA_SPLITTER);
+    }
 
-	public static List<Tag> split(String tagNames, Splitter splitter) {
-		return Tags.of(splitter.split(tagNames));
-	}
+    public static List<Tag> split(String tagNames, Splitter splitter) {
+        return Tags.of(splitter.split(tagNames));
+    }
 
-	public static String join(List<Tag> tags) {
-		return join(tags, StringUtil.COMMA_JOINER);
-	}
+    public static String join(List<Tag> tags) {
+        return join(tags, StringUtil.COMMA_JOINER);
+    }
 
-	public static String join(List<Tag> tags, Joiner joiner) {
-		return joiner.join(tags.stream().map(Tag::getName).iterator());
-	}
+    public static String join(List<Tag> tags, Joiner joiner) {
+        return joiner.join(tags.stream().map(Tag::getName).iterator());
+    }
 }

@@ -13,72 +13,72 @@ import com.google.common.collect.ComparisonChain;
  *
  */
 public class SimplePropDescriptor implements Comparable<SimplePropDescriptor>, Serializable {
-	private static final long	serialVersionUID	= 8306594862187006921L;
+    private static final long serialVersionUID = 8306594862187006921L;
 
-	private final Class<?>		beanClass;
-	private final String		propName;
+    private final Class<?>    beanClass;
+    private final String      propName;
 
-	public SimplePropDescriptor(Class<?> beanClass, String propName) {
-		this.beanClass = Objects.requireNonNull(beanClass, "beanClass");
-		this.propName = Objects.requireNonNull(propName, "propName");
-	}
+    public SimplePropDescriptor(Class<?> beanClass, String propName) {
+        this.beanClass = Objects.requireNonNull(beanClass, "beanClass");
+        this.propName = Objects.requireNonNull(propName, "propName");
+    }
 
-	public Class<?> getBeanClass() {
-		return beanClass;
-	}
+    public Class<?> getBeanClass() {
+        return beanClass;
+    }
 
-	public String getPropName() {
-		return propName;
-	}
+    public String getPropName() {
+        return propName;
+    }
 
-	// Convenience
-	public String getName() {
-		return beanClass.getName() + "." + propName;
-	}
+    // Convenience
+    public String getName() {
+        return beanClass.getName() + "." + propName;
+    }
 
-	public String getSimpleName() {
-		return beanClass.getSimpleName() + "." + propName;
-	}
+    public String getSimpleName() {
+        return beanClass.getSimpleName() + "." + propName;
+    }
 
-	public PropertyDescriptor toPropertyDescriptor() throws IntrospectionException {
-		return new PropertyDescriptor(propName, beanClass);
-	}
+    public PropertyDescriptor toPropertyDescriptor() throws IntrospectionException {
+        return new PropertyDescriptor(propName, beanClass);
+    }
 
-	// Object methods
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof SimplePropDescriptor) {
-			SimplePropDescriptor o = (SimplePropDescriptor) obj;
-			return beanClass == o.beanClass && propName.equals(o.propName);
-		}
-		return false;
-	}
+    // Object methods
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof SimplePropDescriptor) {
+            SimplePropDescriptor o = (SimplePropDescriptor) obj;
+            return beanClass == o.beanClass && propName.equals(o.propName);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(beanClass, propName);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(beanClass, propName);
+    }
 
-	@Override
-	public String toString() {
-		return getName();
-	}
+    @Override
+    public String toString() {
+        return getName();
+    }
 
-	@Override
-	public int compareTo(SimplePropDescriptor o) {
-		if (this == o) {
-			return 0;
-		}
-		// nulls first
-		if (o == null) {
-			return 1;
-		}
-		return ComparisonChain.start()
-				.compare(beanClass.getName(), o.beanClass.getName(), ObjectUtil.getDefaultStringOrdering())
-				.compare(propName, o.propName, ObjectUtil.getDefaultStringOrdering())
-				.result();
-	}
+    @Override
+    public int compareTo(SimplePropDescriptor o) {
+        if (this == o) {
+            return 0;
+        }
+        // nulls first
+        if (o == null) {
+            return 1;
+        }
+        return ComparisonChain.start()
+                .compare(beanClass.getName(), o.beanClass.getName(), ObjectUtil.getDefaultStringOrdering())
+                .compare(propName, o.propName, ObjectUtil.getDefaultStringOrdering())
+                .result();
+    }
 }

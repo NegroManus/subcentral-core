@@ -18,205 +18,205 @@ import de.subcentral.watcher.settings.ProcessingSettings.LocateStrategy;
 
 // package private
 class ProcessingConfig {
-	// parsing
-	private Pattern							filenamePattern;
-	private ParsingService					filenameParsingService;
-	// release
-	private ImmutableList<Tag>				releaseMetaTags;
-	// release - dbs
-	private ImmutableList<MetadataService>	releaseDbs;
-	private ParsingService					releaseParsingService;
-	// release - guessing
-	private boolean							guessingEnabled;
-	private ImmutableList<StandardRelease>	standardReleases;
-	// release - compatibility
-	private boolean							compatibilityEnabled;
-	private CompatibilityService			compatibilityService;
-	// standardizing
-	private CorrectionService				beforeQueryingCorrectionService;
-	private CorrectionService				afterQueryingCorrectionService;
-	// naming
-	private Context							namingParameters;
-	// File Transformation - General
-	private Path							targetDir;
-	private boolean							deleteSource;
-	// File Transformation - Packing
-	private boolean							packingEnabled;
-	private Path							rarExe;
-	private LocateStrategy					locateStrategy;
-	private DeletionMode					packingSourceDeletionMode;
+    // parsing
+    private Pattern                        filenamePattern;
+    private ParsingService                 filenameParsingService;
+    // release
+    private ImmutableList<Tag>             releaseMetaTags;
+    // release - dbs
+    private ImmutableList<MetadataService> releaseDbs;
+    private ParsingService                 releaseParsingService;
+    // release - guessing
+    private boolean                        guessingEnabled;
+    private ImmutableList<StandardRelease> standardReleases;
+    // release - compatibility
+    private boolean                        compatibilityEnabled;
+    private CompatibilityService           compatibilityService;
+    // standardizing
+    private CorrectionService              beforeQueryingCorrectionService;
+    private CorrectionService              afterQueryingCorrectionService;
+    // naming
+    private Context                        namingParameters;
+    // File Transformation - General
+    private Path                           targetDir;
+    private boolean                        deleteSource;
+    // File Transformation - Packing
+    private boolean                        packingEnabled;
+    private Path                           rarExe;
+    private LocateStrategy                 locateStrategy;
+    private DeletionMode                   packingSourceDeletionMode;
 
-	// private
-	ProcessingConfig() {
+    // private
+    ProcessingConfig() {
 
-	}
+    }
 
-	Pattern getFilenamePattern() {
-		return filenamePattern;
-	}
+    Pattern getFilenamePattern() {
+        return filenamePattern;
+    }
 
-	void setFilenamePattern(Pattern filenamePattern) {
-		this.filenamePattern = filenamePattern;
-	}
+    void setFilenamePattern(Pattern filenamePattern) {
+        this.filenamePattern = filenamePattern;
+    }
 
-	ParsingService getFilenameParsingService() {
-		return filenameParsingService;
-	}
+    ParsingService getFilenameParsingService() {
+        return filenameParsingService;
+    }
 
-	void setFilenameParsingService(ParsingService filenameParsingService) {
-		this.filenameParsingService = filenameParsingService;
-	}
+    void setFilenameParsingService(ParsingService filenameParsingService) {
+        this.filenameParsingService = filenameParsingService;
+    }
 
-	ImmutableList<MetadataService> getReleaseDbs() {
-		return releaseDbs;
-	}
+    ImmutableList<MetadataService> getReleaseDbs() {
+        return releaseDbs;
+    }
 
-	void setReleaseDbs(ImmutableList<MetadataService> releaseDbs) {
-		this.releaseDbs = releaseDbs;
-	}
+    void setReleaseDbs(ImmutableList<MetadataService> releaseDbs) {
+        this.releaseDbs = releaseDbs;
+    }
 
-	ParsingService getReleaseParsingService() {
-		return releaseParsingService;
-	}
+    ParsingService getReleaseParsingService() {
+        return releaseParsingService;
+    }
 
-	void setReleaseParsingService(ParsingService releaseParsingService) {
-		this.releaseParsingService = releaseParsingService;
-	}
+    void setReleaseParsingService(ParsingService releaseParsingService) {
+        this.releaseParsingService = releaseParsingService;
+    }
 
-	boolean isGuessingEnabled() {
-		return guessingEnabled;
-	}
+    boolean isGuessingEnabled() {
+        return guessingEnabled;
+    }
 
-	void setGuessingEnabled(boolean guessingEnabled) {
-		this.guessingEnabled = guessingEnabled;
-	}
+    void setGuessingEnabled(boolean guessingEnabled) {
+        this.guessingEnabled = guessingEnabled;
+    }
 
-	ImmutableList<Tag> getReleaseMetaTags() {
-		return releaseMetaTags;
-	}
+    ImmutableList<Tag> getReleaseMetaTags() {
+        return releaseMetaTags;
+    }
 
-	void setReleaseMetaTags(ImmutableList<Tag> releaseMetaTags) {
-		this.releaseMetaTags = releaseMetaTags;
-	}
+    void setReleaseMetaTags(ImmutableList<Tag> releaseMetaTags) {
+        this.releaseMetaTags = releaseMetaTags;
+    }
 
-	ImmutableList<StandardRelease> getStandardReleases() {
-		return standardReleases;
-	}
+    ImmutableList<StandardRelease> getStandardReleases() {
+        return standardReleases;
+    }
 
-	void setStandardReleases(ImmutableList<StandardRelease> standardReleases) {
-		this.standardReleases = standardReleases;
-	}
+    void setStandardReleases(ImmutableList<StandardRelease> standardReleases) {
+        this.standardReleases = standardReleases;
+    }
 
-	boolean isCompatibilityEnabled() {
-		return compatibilityEnabled;
-	}
+    boolean isCompatibilityEnabled() {
+        return compatibilityEnabled;
+    }
 
-	void setCompatibilityEnabled(boolean compatibilityEnabled) {
-		this.compatibilityEnabled = compatibilityEnabled;
-	}
+    void setCompatibilityEnabled(boolean compatibilityEnabled) {
+        this.compatibilityEnabled = compatibilityEnabled;
+    }
 
-	CompatibilityService getCompatibilityService() {
-		return compatibilityService;
-	}
+    CompatibilityService getCompatibilityService() {
+        return compatibilityService;
+    }
 
-	void setCompatibilityService(CompatibilityService compatibilityService) {
-		this.compatibilityService = compatibilityService;
-	}
+    void setCompatibilityService(CompatibilityService compatibilityService) {
+        this.compatibilityService = compatibilityService;
+    }
 
-	CorrectionService getBeforeQueryingCorrectionService() {
-		return beforeQueryingCorrectionService;
-	}
+    CorrectionService getBeforeQueryingCorrectionService() {
+        return beforeQueryingCorrectionService;
+    }
 
-	void setBeforeQueryingStandardizingService(CorrectionService beforeQueryingStandardizingService) {
-		this.beforeQueryingCorrectionService = beforeQueryingStandardizingService;
-	}
+    void setBeforeQueryingStandardizingService(CorrectionService beforeQueryingStandardizingService) {
+        this.beforeQueryingCorrectionService = beforeQueryingStandardizingService;
+    }
 
-	CorrectionService getAfterQueryingCorrectionService() {
-		return afterQueryingCorrectionService;
-	}
+    CorrectionService getAfterQueryingCorrectionService() {
+        return afterQueryingCorrectionService;
+    }
 
-	void setAfterQueryingStandardizingService(CorrectionService afterQueryingStandardizingService) {
-		this.afterQueryingCorrectionService = afterQueryingStandardizingService;
-	}
+    void setAfterQueryingStandardizingService(CorrectionService afterQueryingStandardizingService) {
+        this.afterQueryingCorrectionService = afterQueryingStandardizingService;
+    }
 
-	Context getNamingParameters() {
-		return namingParameters;
-	}
+    Context getNamingParameters() {
+        return namingParameters;
+    }
 
-	void setNamingParameters(Context namingParameters) {
-		this.namingParameters = namingParameters;
-	}
+    void setNamingParameters(Context namingParameters) {
+        this.namingParameters = namingParameters;
+    }
 
-	Path getTargetDir() {
-		return targetDir;
-	}
+    Path getTargetDir() {
+        return targetDir;
+    }
 
-	void setTargetDir(Path targetDir) {
-		this.targetDir = targetDir;
-	}
+    void setTargetDir(Path targetDir) {
+        this.targetDir = targetDir;
+    }
 
-	boolean isDeleteSource() {
-		return deleteSource;
-	}
+    boolean isDeleteSource() {
+        return deleteSource;
+    }
 
-	void setDeleteSource(boolean deleteSource) {
-		this.deleteSource = deleteSource;
-	}
+    void setDeleteSource(boolean deleteSource) {
+        this.deleteSource = deleteSource;
+    }
 
-	boolean isPackingEnabled() {
-		return packingEnabled;
-	}
+    boolean isPackingEnabled() {
+        return packingEnabled;
+    }
 
-	void setPackingEnabled(boolean packingEnabled) {
-		this.packingEnabled = packingEnabled;
-	}
+    void setPackingEnabled(boolean packingEnabled) {
+        this.packingEnabled = packingEnabled;
+    }
 
-	Path getRarExe() {
-		return rarExe;
-	}
+    Path getRarExe() {
+        return rarExe;
+    }
 
-	void setRarExe(Path rarExe) {
-		this.rarExe = rarExe;
-	}
+    void setRarExe(Path rarExe) {
+        this.rarExe = rarExe;
+    }
 
-	LocateStrategy getWinRarLocateStrategy() {
-		return locateStrategy;
-	}
+    LocateStrategy getWinRarLocateStrategy() {
+        return locateStrategy;
+    }
 
-	void setWinRarLocateStrategy(LocateStrategy locateStrategy) {
-		this.locateStrategy = locateStrategy;
-	}
+    void setWinRarLocateStrategy(LocateStrategy locateStrategy) {
+        this.locateStrategy = locateStrategy;
+    }
 
-	DeletionMode getPackingSourceDeletionMode() {
-		return packingSourceDeletionMode;
-	}
+    DeletionMode getPackingSourceDeletionMode() {
+        return packingSourceDeletionMode;
+    }
 
-	void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode) {
-		this.packingSourceDeletionMode = packingSourceDeletionMode;
-	}
+    void setPackingSourceDeletionMode(DeletionMode packingSourceDeletionMode) {
+        this.packingSourceDeletionMode = packingSourceDeletionMode;
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(ProcessingConfig.class)
-				.omitNullValues()
-				.add("filenamePattern", filenamePattern)
-				.add("filenameParsingService", filenameParsingService)
-				.add("releaseMetaTags", releaseMetaTags)
-				.add("releaseDbs", releaseDbs)
-				.add("releaseParsingService", releaseParsingService)
-				.add("guessingEnabled", guessingEnabled)
-				.add("standardReleases", standardReleases)
-				.add("compatibilityEnabled", compatibilityEnabled)
-				.add("compatibilityService", compatibilityService)
-				.add("beforeQueryingCorrectionService", beforeQueryingCorrectionService)
-				.add("afterQueryingCorrectionService", afterQueryingCorrectionService)
-				.add("namingParameters", namingParameters)
-				.add("targetDir", targetDir)
-				.add("deleteSource", deleteSource)
-				.add("packingEnabled", packingEnabled)
-				.add("rarExe", rarExe)
-				.add("locateStrategy", locateStrategy)
-				.add("packingSourceDeletionMode", packingSourceDeletionMode)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(ProcessingConfig.class)
+                .omitNullValues()
+                .add("filenamePattern", filenamePattern)
+                .add("filenameParsingService", filenameParsingService)
+                .add("releaseMetaTags", releaseMetaTags)
+                .add("releaseDbs", releaseDbs)
+                .add("releaseParsingService", releaseParsingService)
+                .add("guessingEnabled", guessingEnabled)
+                .add("standardReleases", standardReleases)
+                .add("compatibilityEnabled", compatibilityEnabled)
+                .add("compatibilityService", compatibilityService)
+                .add("beforeQueryingCorrectionService", beforeQueryingCorrectionService)
+                .add("afterQueryingCorrectionService", afterQueryingCorrectionService)
+                .add("namingParameters", namingParameters)
+                .add("targetDir", targetDir)
+                .add("deleteSource", deleteSource)
+                .add("packingEnabled", packingEnabled)
+                .add("rarExe", rarExe)
+                .add("locateStrategy", locateStrategy)
+                .add("packingSourceDeletionMode", packingSourceDeletionMode)
+                .toString();
+    }
 }

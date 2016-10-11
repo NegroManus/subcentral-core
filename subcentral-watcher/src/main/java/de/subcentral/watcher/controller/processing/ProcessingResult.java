@@ -28,122 +28,122 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Worker;
 
 public class ProcessingResult implements ProcessingItem {
-	private static final Logger				log			= LogManager.getLogger(ProcessingResult.class);
+    private static final Logger            log       = LogManager.getLogger(ProcessingResult.class);
 
-	private final ProcessingTask			task;
-	private final Release					release;
-	private final StringProperty			name;
-	private final ListProperty<Path>		files		= new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
-	private final Property<Worker.State>	state		= new SimpleObjectProperty<>(this, "state", Worker.State.READY);
-	private final StringProperty			message		= new SimpleStringProperty(this, "message");
-	private final DoubleProperty			progress	= new SimpleDoubleProperty(this, "progress");
-	private final Property<ProcessingInfo>	info		= new SimpleObjectProperty<>(this, "info");
-	private final Property<Throwable>		exception	= new SimpleObjectProperty<>(this, "exception");
-	private final WorkerStatus				status		= new WorkerStatus(stateProperty(), messageProperty(), exceptionProperty());
+    private final ProcessingTask           task;
+    private final Release                  release;
+    private final StringProperty           name;
+    private final ListProperty<Path>       files     = new SimpleListProperty<>(this, "files", FXCollections.observableArrayList());
+    private final Property<Worker.State>   state     = new SimpleObjectProperty<>(this, "state", Worker.State.READY);
+    private final StringProperty           message   = new SimpleStringProperty(this, "message");
+    private final DoubleProperty           progress  = new SimpleDoubleProperty(this, "progress");
+    private final Property<ProcessingInfo> info      = new SimpleObjectProperty<>(this, "info");
+    private final Property<Throwable>      exception = new SimpleObjectProperty<>(this, "exception");
+    private final WorkerStatus             status    = new WorkerStatus(stateProperty(), messageProperty(), exceptionProperty());
 
-	/**
-	 * package protected
-	 */
-	ProcessingResult(ProcessingTask task, Release release, ProcessingResultInfo info) {
-		this.task = Objects.requireNonNull(task, "task");
-		this.release = Objects.requireNonNull(release, "release");
-		info.setResult(this);
-		this.info.setValue(info);
+    /**
+     * package protected
+     */
+    ProcessingResult(ProcessingTask task, Release release, ProcessingResultInfo info) {
+        this.task = Objects.requireNonNull(task, "task");
+        this.release = Objects.requireNonNull(release, "release");
+        info.setResult(this);
+        this.info.setValue(info);
 
-		this.name = new SimpleStringProperty(this, "name", generateName(release));
-	}
+        this.name = new SimpleStringProperty(this, "name", generateName(release));
+    }
 
-	private String generateName(Release rls) {
-		Context effectiveCtx = Context.builder().setAll(task.getConfig().getNamingParameters()).set(SubtitleReleaseNamer.PARAM_RELEASE, rls).build();
-		return task.getController().getNamingService().name(task.getResultObject(), effectiveCtx);
-	}
+    private String generateName(Release rls) {
+        Context effectiveCtx = Context.builder().setAll(task.getConfig().getNamingParameters()).set(SubtitleReleaseNamer.PARAM_RELEASE, rls).build();
+        return task.getController().getNamingService().name(task.getResultObject(), effectiveCtx);
+    }
 
-	public ProcessingTask getTask() {
-		return task;
-	}
+    public ProcessingTask getTask() {
+        return task;
+    }
 
-	public Release getRelease() {
-		return release;
-	}
+    public Release getRelease() {
+        return release;
+    }
 
-	@Override
-	public ReadOnlyStringProperty nameProperty() {
-		return name;
-	}
+    @Override
+    public ReadOnlyStringProperty nameProperty() {
+        return name;
+    }
 
-	@Override
-	public ListProperty<Path> getFiles() {
-		return files;
-	}
+    @Override
+    public ListProperty<Path> getFiles() {
+        return files;
+    }
 
-	void addFile(Path file) {
-		Platform.runLater(() -> {
-			files.add(file);
-		});
-	}
+    void addFile(Path file) {
+        Platform.runLater(() -> {
+            files.add(file);
+        });
+    }
 
-	void removeFile(Path file) {
-		Platform.runLater(() -> {
-			files.remove(file);
-		});
-	}
+    void removeFile(Path file) {
+        Platform.runLater(() -> {
+            files.remove(file);
+        });
+    }
 
-	@Override
-	public ReadOnlyProperty<Worker.State> stateProperty() {
-		return state;
-	}
+    @Override
+    public ReadOnlyProperty<Worker.State> stateProperty() {
+        return state;
+    }
 
-	void updateState(final Worker.State state) {
-		Platform.runLater(() -> ProcessingResult.this.state.setValue(state));
-	}
+    void updateState(final Worker.State state) {
+        Platform.runLater(() -> ProcessingResult.this.state.setValue(state));
+    }
 
-	@Override
-	public ReadOnlyStringProperty messageProperty() {
-		return message;
-	}
+    @Override
+    public ReadOnlyStringProperty messageProperty() {
+        return message;
+    }
 
-	void updateMessage(final String message) {
-		Platform.runLater(() -> ProcessingResult.this.message.set(message));
-	}
+    void updateMessage(final String message) {
+        Platform.runLater(() -> ProcessingResult.this.message.set(message));
+    }
 
-	@Override
-	public ReadOnlyDoubleProperty progressProperty() {
-		return progress;
-	}
+    @Override
+    public ReadOnlyDoubleProperty progressProperty() {
+        return progress;
+    }
 
-	void updateProgress(final double progress) {
-		Platform.runLater(() -> ProcessingResult.this.progress.set(progress));
-	}
+    void updateProgress(final double progress) {
+        Platform.runLater(() -> ProcessingResult.this.progress.set(progress));
+    }
 
-	@Override
-	public ReadOnlyProperty<ProcessingInfo> infoProperty() {
-		return info;
-	}
+    @Override
+    public ReadOnlyProperty<ProcessingInfo> infoProperty() {
+        return info;
+    }
 
-	@Override
-	public ProcessingResultInfo getInfo() {
-		return (ProcessingResultInfo) info.getValue();
-	}
+    @Override
+    public ProcessingResultInfo getInfo() {
+        return (ProcessingResultInfo) info.getValue();
+    }
 
-	@Override
-	public ReadOnlyProperty<Throwable> exceptionProperty() {
-		return exception;
-	}
+    @Override
+    public ReadOnlyProperty<Throwable> exceptionProperty() {
+        return exception;
+    }
 
-	void updateException(final Throwable exception) {
-		Platform.runLater(() -> ProcessingResult.this.exception.setValue(exception));
-	}
+    void updateException(final Throwable exception) {
+        Platform.runLater(() -> ProcessingResult.this.exception.setValue(exception));
+    }
 
-	@Override
-	public Binding<WorkerStatus> statusBinding() {
-		return status;
-	}
+    @Override
+    public Binding<WorkerStatus> statusBinding() {
+        return status;
+    }
 
-	public void deleteFiles() throws IOException {
-		log.debug("Deleting files of {}", this);
-		for (Path file : files) {
-			log.debug("Deleting {}", file);
-			Files.deleteIfExists(file);
-		}
-	}
+    public void deleteFiles() throws IOException {
+        log.debug("Deleting files of {}", this);
+        for (Path file : files) {
+            log.debug("Deleting {}", file);
+            Files.deleteIfExists(file);
+        }
+    }
 }

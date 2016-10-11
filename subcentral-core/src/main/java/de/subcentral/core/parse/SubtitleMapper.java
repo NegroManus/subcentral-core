@@ -8,25 +8,25 @@ import de.subcentral.core.metadata.subtitle.Subtitle;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class SubtitleMapper extends AbstractMapper<Subtitle> {
-	public SubtitleMapper() {
-		// default constructor
-	}
+    public SubtitleMapper() {
+        // default constructor
+    }
 
-	public SubtitleMapper(ParsePropService parsePropService) {
-		super(parsePropService);
-	}
+    public SubtitleMapper(ParsePropService parsePropService) {
+        super(parsePropService);
+    }
 
-	@Override
-	public Subtitle map(Map<SimplePropDescriptor, String> props) {
-		Subtitle sub = new Subtitle();
-		sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));
-		sub.setGroup(parsePropService.parse(props, Subtitle.PROP_GROUP, Group.class));
-		sub.setSource(parsePropService.parse(props, Subtitle.PROP_SOURCE, Site.class));
-		return sub;
-	}
+    @Override
+    public Subtitle map(Map<SimplePropDescriptor, String> props) {
+        Subtitle sub = new Subtitle();
+        sub.setLanguage(props.get(Subtitle.PROP_LANGUAGE));
+        sub.setGroup(parsePropService.parse(props, Subtitle.PROP_GROUP, Group.class));
+        sub.setSource(parsePropService.parse(props, Subtitle.PROP_SOURCE, Site.class));
+        return sub;
+    }
 
-	@Override
-	protected Class<?> getTargetType() {
-		return Subtitle.class;
-	}
+    @Override
+    protected Class<?> getTargetType() {
+        return Subtitle.class;
+    }
 }

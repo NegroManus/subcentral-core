@@ -15,86 +15,86 @@ import de.subcentral.fx.UserPattern;
 import javafx.util.StringConverter;
 
 public class PatternToLanguageMapping implements Map.Entry<UserPattern, Locale>, Comparable<PatternToLanguageMapping> {
-	public static final StringConverter<PatternToLanguageMapping>	STRING_CONVERTER	= initStringConverter();
+    public static final StringConverter<PatternToLanguageMapping> STRING_CONVERTER = initStringConverter();
 
-	private final UserPattern										pattern;
-	private final Locale											language;
+    private final UserPattern                                     pattern;
+    private final Locale                                          language;
 
-	public PatternToLanguageMapping(UserPattern pattern, Locale language) {
-		this.pattern = Objects.requireNonNull(pattern, "pattern");
-		this.language = Objects.requireNonNull(language, "language");
-	}
+    public PatternToLanguageMapping(UserPattern pattern, Locale language) {
+        this.pattern = Objects.requireNonNull(pattern, "pattern");
+        this.language = Objects.requireNonNull(language, "language");
+    }
 
-	public UserPattern getPattern() {
-		return pattern;
-	}
+    public UserPattern getPattern() {
+        return pattern;
+    }
 
-	public Locale getLanguage() {
-		return language;
-	}
+    public Locale getLanguage() {
+        return language;
+    }
 
-	public LanguagePattern toLanguagePattern() {
-		return new LanguagePattern(pattern.toPattern(), language);
-	}
+    public LanguagePattern toLanguagePattern() {
+        return new LanguagePattern(pattern.toPattern(), language);
+    }
 
-	// Map.Entry implementation
-	@Override
-	public UserPattern getKey() {
-		return pattern;
-	}
+    // Map.Entry implementation
+    @Override
+    public UserPattern getKey() {
+        return pattern;
+    }
 
-	@Override
-	public Locale getValue() {
-		return language;
-	}
+    @Override
+    public Locale getValue() {
+        return language;
+    }
 
-	@Override
-	public Locale setValue(Locale value) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public Locale setValue(Locale value) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof PatternToLanguageMapping) {
-			PatternToLanguageMapping o = (PatternToLanguageMapping) obj;
-			return pattern.equals(o.pattern) && language.equals(language);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof PatternToLanguageMapping) {
+            PatternToLanguageMapping o = (PatternToLanguageMapping) obj;
+            return pattern.equals(o.pattern) && language.equals(language);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder(73, 113).append(pattern).append(language).toHashCode();
-	}
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(73, 113).append(pattern).append(language).toHashCode();
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(PatternToLanguageMapping.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(PatternToLanguageMapping.class).omitNullValues().add("pattern", pattern).add("language", language).toString();
+    }
 
-	@Override
-	public int compareTo(PatternToLanguageMapping o) {
-		// nulls first
-		if (o == null) {
-			return 1;
-		}
-		return ComparisonChain.start().compare(pattern, o.pattern).compare(language, o.language, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR).result();
-	}
+    @Override
+    public int compareTo(PatternToLanguageMapping o) {
+        // nulls first
+        if (o == null) {
+            return 1;
+        }
+        return ComparisonChain.start().compare(pattern, o.pattern).compare(language, o.language, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR).result();
+    }
 
-	private static StringConverter<PatternToLanguageMapping> initStringConverter() {
-		return new StringConverter<PatternToLanguageMapping>() {
-			@Override
-			public String toString(PatternToLanguageMapping pattern) {
-				return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
-			}
+    private static StringConverter<PatternToLanguageMapping> initStringConverter() {
+        return new StringConverter<PatternToLanguageMapping>() {
+            @Override
+            public String toString(PatternToLanguageMapping pattern) {
+                return pattern.pattern.getPattern() + " (" + pattern.pattern.getMode() + ") -> " + pattern.language.getDisplayName();
+            }
 
-			@Override
-			public PatternToLanguageMapping fromString(String string) {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+            @Override
+            public PatternToLanguageMapping fromString(String string) {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
 }

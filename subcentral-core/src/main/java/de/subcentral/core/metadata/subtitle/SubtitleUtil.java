@@ -19,56 +19,56 @@ import de.subcentral.core.name.SubtitleReleaseNamer;
 import de.subcentral.core.util.Context;
 
 public class SubtitleUtil {
-	private SubtitleUtil() {
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
+    private SubtitleUtil() {
+        throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+    }
 
-	public static Set<String> buildNamesForMatchingReleases(SubtitleRelease subAdj, NamingService namingService) {
-		if (subAdj == null || subAdj.getMatchingReleases().isEmpty()) {
-			return ImmutableSet.of();
-		}
-		ImmutableSet.Builder<String> names = ImmutableSet.builder();
-		for (Release rls : subAdj.getMatchingReleases()) {
-			names.add(namingService.name(subAdj, Context.of(SubtitleReleaseNamer.PARAM_RELEASE, rls)));
-		}
-		return names.build();
-	}
+    public static Set<String> buildNamesForMatchingReleases(SubtitleRelease subAdj, NamingService namingService) {
+        if (subAdj == null || subAdj.getMatchingReleases().isEmpty()) {
+            return ImmutableSet.of();
+        }
+        ImmutableSet.Builder<String> names = ImmutableSet.builder();
+        for (Release rls : subAdj.getMatchingReleases()) {
+            names.add(namingService.name(subAdj, Context.of(SubtitleReleaseNamer.PARAM_RELEASE, rls)));
+        }
+        return names.build();
+    }
 
-	public static List<Media> getMediaFromSubtitles(SubtitleRelease subAdj) {
-		if (subAdj == null || subAdj.getSubtitles().isEmpty()) {
-			return ImmutableList.of();
-		}
-		ImmutableList.Builder<Media> media = ImmutableList.builder();
-		for (Subtitle sub : subAdj.getSubtitles()) {
-			media.add(sub.getMedia());
-		}
-		return media.build();
-	}
+    public static List<Media> getMediaFromSubtitles(SubtitleRelease subAdj) {
+        if (subAdj == null || subAdj.getSubtitles().isEmpty()) {
+            return ImmutableList.of();
+        }
+        ImmutableList.Builder<Media> media = ImmutableList.builder();
+        for (Subtitle sub : subAdj.getSubtitles()) {
+            media.add(sub.getMedia());
+        }
+        return media.build();
+    }
 
-	public static void standardizeTags(SubtitleRelease subAdj, List<Correction> changes) {
-		if (subAdj == null || subAdj.getTags().isEmpty()) {
-			return;
-		}
-		boolean tagsChanged = false;
-		List<Tag> oldTags = ImmutableList.copyOf(subAdj.getTags());
+    public static void standardizeTags(SubtitleRelease subAdj, List<Correction> changes) {
+        if (subAdj == null || subAdj.getTags().isEmpty()) {
+            return;
+        }
+        boolean tagsChanged = false;
+        List<Tag> oldTags = ImmutableList.copyOf(subAdj.getTags());
 
-		Matcher mVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE).matcher("");
-		ListIterator<Tag> iter = subAdj.getTags().listIterator();
-		while (iter.hasNext()) {
-			Tag tag = iter.next();
-			if (mVersion.reset(tag.getName()).matches()) {
-				String oldRev = subAdj.getVersion();
-				String newRev = mVersion.group(1);
-				subAdj.setVersion(newRev);
-				if (!Objects.equals(oldRev, newRev)) {
-					changes.add(new Correction(subAdj, SubtitleRelease.PROP_VERSION.getPropName(), oldRev, newRev, null));
-				}
-				iter.remove();
-				tagsChanged = true;
-			}
-		}
-		if (tagsChanged) {
-			changes.add(new Correction(subAdj, SubtitleRelease.PROP_TAGS.getPropName(), oldTags, subAdj.getTags(), null));
-		}
-	}
+        Matcher mVersion = Pattern.compile("V(\\d+)", Pattern.CASE_INSENSITIVE).matcher("");
+        ListIterator<Tag> iter = subAdj.getTags().listIterator();
+        while (iter.hasNext()) {
+            Tag tag = iter.next();
+            if (mVersion.reset(tag.getName()).matches()) {
+                String oldRev = subAdj.getVersion();
+                String newRev = mVersion.group(1);
+                subAdj.setVersion(newRev);
+                if (!Objects.equals(oldRev, newRev)) {
+                    changes.add(new Correction(subAdj, SubtitleRelease.PROP_VERSION.getPropName(), oldRev, newRev, null));
+                }
+                iter.remove();
+                tagsChanged = true;
+            }
+        }
+        if (tagsChanged) {
+            changes.add(new Correction(subAdj, SubtitleRelease.PROP_TAGS.getPropName(), oldTags, subAdj.getTags(), null));
+        }
+    }
 }

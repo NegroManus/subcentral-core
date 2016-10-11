@@ -12,54 +12,54 @@ import org.apache.commons.lang3.SystemUtils;
  * <b>Important:</b> This class cannot use logging because it is used to determine the log directory. So logging can only work after this class is initialized.
  */
 public class LocalConfig {
-	private LocalConfig() {
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
+    private LocalConfig() {
+        throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+    }
 
-	public static Path getLocalConfigDirectorySave() {
-		Path localConfigDir;
-		try {
-			localConfigDir = getLocalConfigDirectory();
-		}
-		catch (NoSuchFileException | UnsupportedOperationException e) {
-			localConfigDir = Paths.get(SystemUtils.USER_DIR);
-			// Cannot use logger here because this method may be called before the logger is instantiated
-			System.out.println("Could not find local configuration directory. Using user's current working directory to save settings: " + localConfigDir + ". Exception was:");
-			e.printStackTrace(System.out);
-		}
-		return localConfigDir;
-	}
+    public static Path getLocalConfigDirectorySave() {
+        Path localConfigDir;
+        try {
+            localConfigDir = getLocalConfigDirectory();
+        }
+        catch (NoSuchFileException | UnsupportedOperationException e) {
+            localConfigDir = Paths.get(SystemUtils.USER_DIR);
+            // Cannot use logger here because this method may be called before the logger is instantiated
+            System.out.println("Could not find local configuration directory. Using user's current working directory to save settings: " + localConfigDir + ". Exception was:");
+            e.printStackTrace(System.out);
+        }
+        return localConfigDir;
+    }
 
-	public static Path getLocalConfigDirectory() throws UnsupportedOperationException, NoSuchFileException {
-		Path localConfigDir;
-		if (SystemUtils.IS_OS_WINDOWS) {
-			localConfigDir = Paths.get(getWindowsAppData());
-		}
-		else if (SystemUtils.IS_OS_UNIX) {
-			localConfigDir = Paths.get(getUnixConfigHome());
-		}
-		else {
-			throw new UnsupportedOperationException("Your operating system is not supported:" + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
-		}
-		if (Files.notExists(localConfigDir)) {
-			throw new NoSuchFileException(localConfigDir.toString());
-		}
-		return localConfigDir;
-	}
+    public static Path getLocalConfigDirectory() throws UnsupportedOperationException, NoSuchFileException {
+        Path localConfigDir;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            localConfigDir = Paths.get(getWindowsAppData());
+        }
+        else if (SystemUtils.IS_OS_UNIX) {
+            localConfigDir = Paths.get(getUnixConfigHome());
+        }
+        else {
+            throw new UnsupportedOperationException("Your operating system is not supported:" + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " " + SystemUtils.OS_ARCH);
+        }
+        if (Files.notExists(localConfigDir)) {
+            throw new NoSuchFileException(localConfigDir.toString());
+        }
+        return localConfigDir;
+    }
 
-	public static String getWindowsAppData() {
-		String appData = System.getenv("AppData");
-		if (StringUtils.isEmpty(appData)) {
-			throw new UnsupportedOperationException("System environment variable 'AppData' is not set");
-		}
-		return appData;
-	}
+    public static String getWindowsAppData() {
+        String appData = System.getenv("AppData");
+        if (StringUtils.isEmpty(appData)) {
+            throw new UnsupportedOperationException("System environment variable 'AppData' is not set");
+        }
+        return appData;
+    }
 
-	public static String getUnixConfigHome() {
-		String configHome = System.getenv("XDG_CONFIG_HOME");
-		if (StringUtils.isEmpty(configHome)) {
-			configHome = System.getenv("HOME") + SystemUtils.FILE_SEPARATOR + ".config";
-		}
-		return configHome;
-	}
+    public static String getUnixConfigHome() {
+        String configHome = System.getenv("XDG_CONFIG_HOME");
+        if (StringUtils.isEmpty(configHome)) {
+            configHome = System.getenv("HOME") + SystemUtils.FILE_SEPARATOR + ".config";
+        }
+        return configHome;
+    }
 }

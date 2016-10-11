@@ -9,35 +9,35 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.util.SimplePropDescriptor;
 
 public class ReleaseParser extends AbstractMappingParser<Release> {
-	private final Mapper<? extends List<? extends Media>>	mediaMapper;
-	private final Mapper<Release>							releaseMapper;
+    private final Mapper<? extends List<? extends Media>> mediaMapper;
+    private final Mapper<Release>                         releaseMapper;
 
-	public ReleaseParser(MappingMatcher<SimplePropDescriptor> matcher, Mapper<? extends List<? extends Media>> mediaMapper) {
-		this(matcher, mediaMapper, ParsingDefaults.getDefaultReleaseMapper());
-	}
+    public ReleaseParser(MappingMatcher<SimplePropDescriptor> matcher, Mapper<? extends List<? extends Media>> mediaMapper) {
+        this(matcher, mediaMapper, ParsingDefaults.getDefaultReleaseMapper());
+    }
 
-	public ReleaseParser(MappingMatcher<SimplePropDescriptor> matcher, Mapper<? extends List<? extends Media>> mediaMapper, Mapper<Release> releaseMapper) {
-		super(matcher);
-		this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
-		this.releaseMapper = Objects.requireNonNull(releaseMapper, "releaseMapper");
-	}
+    public ReleaseParser(MappingMatcher<SimplePropDescriptor> matcher, Mapper<? extends List<? extends Media>> mediaMapper, Mapper<Release> releaseMapper) {
+        super(matcher);
+        this.mediaMapper = Objects.requireNonNull(mediaMapper, "mediaMapper");
+        this.releaseMapper = Objects.requireNonNull(releaseMapper, "releaseMapper");
+    }
 
-	public Mapper<? extends List<? extends Media>> getMediaMapper() {
-		return mediaMapper;
-	}
+    public Mapper<? extends List<? extends Media>> getMediaMapper() {
+        return mediaMapper;
+    }
 
-	public Mapper<Release> getReleaseMapper() {
-		return releaseMapper;
-	}
+    public Mapper<Release> getReleaseMapper() {
+        return releaseMapper;
+    }
 
-	@Override
-	protected Release map(Map<SimplePropDescriptor, String> props) {
-		// Media
-		List<? extends Media> media = mediaMapper.map(props);
+    @Override
+    protected Release map(Map<SimplePropDescriptor, String> props) {
+        // Media
+        List<? extends Media> media = mediaMapper.map(props);
 
-		// Release
-		Release rls = releaseMapper.map(props);
-		rls.setMedia(media);
-		return rls;
-	}
+        // Release
+        Release rls = releaseMapper.map(props);
+        rls.setMedia(media);
+        return rls;
+    }
 }

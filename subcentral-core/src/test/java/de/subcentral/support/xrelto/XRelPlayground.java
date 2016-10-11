@@ -12,14 +12,14 @@ import de.subcentral.core.metadata.release.Release;
 
 public class XRelPlayground {
 
-	public static void main(String[] args) throws Exception {
-		XRelToMetadataService db = new XRelToMetadataService();
+    public static void main(String[] args) throws Exception {
+        XRelToMetadataService db = new XRelToMetadataService();
 
-		URL url = Resources.getResource("de/subcentral/support/xrelto/psych.s05e06.html");
-		Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost());
+        URL url = Resources.getResource("de/subcentral/support/xrelto/psych.s05e06.html");
+        Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost());
 
-		List<Release> rlss = db.parseReleaseSearchResults(doc);
-		rlss.stream().forEach((Release r) -> System.out.println(r));
+        List<Release> rlss = db.parseReleaseSearchResults(doc);
+        rlss.stream().forEach((Release r) -> System.out.println(r));
 
-	}
+    }
 }

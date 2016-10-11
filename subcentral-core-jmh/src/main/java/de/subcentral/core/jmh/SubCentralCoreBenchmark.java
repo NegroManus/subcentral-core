@@ -82,146 +82,146 @@ import de.subcentral.support.subcentralde.SubCentralDe;
  *
  */
 public class SubCentralCoreBenchmark {
-	private static final SubtitleRelease	SUB_RLS						= SubtitleRelease
-			.create(Release.create(Episode.createSeasonedEpisode("Psych (2001)", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
+    private static final SubtitleRelease   SUB_RLS                    = SubtitleRelease
+            .create(Release.create(Episode.createSeasonedEpisode("Psych (2001)", 8, 1), "NtbHD", "720p", "WEB", "DL", "DD5", "1", "H", "264"), "English", "SubCentral");
 
-	private static final CorrectionService	CORRECTION_SERVICE			= buildCorrectionService();
-	private static final NamingService		NAMING_SERVICE				= NamingDefaults.getDefaultNamingService();
-	private static final ParsingService		ADDIC7ED_PARSING_SERVICE	= Addic7edCom.getParsingService();
-	private static final ParsingService		SUBCENTRAL_PARSING_SERVICE	= SubCentralDe.getParsingService();
-	private static final ParsingService		PARSING_SERVICE_BEST_CASE	= new MultiParsingService("bestcase",
-			ADDIC7ED_PARSING_SERVICE,
-			SUBCENTRAL_PARSING_SERVICE,
-			ItalianSubsNet.getParsingService(),
-			ReleaseScene.getParsingService());
-	private static final ParsingService		PARSING_SERVICE_WORST_CASE	= new MultiParsingService("worstcase",
-			ReleaseScene.getParsingService(),
-			ItalianSubsNet.getParsingService(),
-			SUBCENTRAL_PARSING_SERVICE,
-			ADDIC7ED_PARSING_SERVICE);
-	private static final URL				SUBRIP_TEST_FILE			= Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
+    private static final CorrectionService CORRECTION_SERVICE         = buildCorrectionService();
+    private static final NamingService     NAMING_SERVICE             = NamingDefaults.getDefaultNamingService();
+    private static final ParsingService    ADDIC7ED_PARSING_SERVICE   = Addic7edCom.getParsingService();
+    private static final ParsingService    SUBCENTRAL_PARSING_SERVICE = SubCentralDe.getParsingService();
+    private static final ParsingService    PARSING_SERVICE_BEST_CASE  = new MultiParsingService("bestcase",
+            ADDIC7ED_PARSING_SERVICE,
+            SUBCENTRAL_PARSING_SERVICE,
+            ItalianSubsNet.getParsingService(),
+            ReleaseScene.getParsingService());
+    private static final ParsingService    PARSING_SERVICE_WORST_CASE = new MultiParsingService("worstcase",
+            ReleaseScene.getParsingService(),
+            ItalianSubsNet.getParsingService(),
+            SUBCENTRAL_PARSING_SERVICE,
+            ADDIC7ED_PARSING_SERVICE);
+    private static final URL               SUBRIP_TEST_FILE           = Resources.getResource("Psych.S08E10.The.Break.Up.HDTV.x264-EXCELLENCE.de-SubCentral.srt");
 
-	private static TypeBasedCorrectionService buildCorrectionService() {
-		TypeBasedCorrectionService service = new TypeBasedCorrectionService("testing");
-		CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
-		CorrectionDefaults.registerAllDefaultCorrectors(service);
-		service.registerCorrector(Subtitle.class,
-				new SubtitleLanguageCorrector(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
-						LanguageFormat.NAME,
-						Locale.ENGLISH,
-						ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
-								new LanguagePattern(Pattern.compile("VF", Pattern.CASE_INSENSITIVE), Locale.FRENCH)),
-						ImmutableMap.of(Locale.ENGLISH, "VO"))));
-		service.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Psych\\s+\\(2001\\)"), "Psych"));
-		return service;
-	}
+    private static TypeBasedCorrectionService buildCorrectionService() {
+        TypeBasedCorrectionService service = new TypeBasedCorrectionService("testing");
+        CorrectionDefaults.registerAllDefaultNestedBeansRetrievers(service);
+        CorrectionDefaults.registerAllDefaultCorrectors(service);
+        service.registerCorrector(Subtitle.class,
+                new SubtitleLanguageCorrector(new LocaleLanguageReplacer(ImmutableList.of(Locale.ENGLISH),
+                        LanguageFormat.NAME,
+                        Locale.ENGLISH,
+                        ImmutableList.of(new LanguagePattern(Pattern.compile("VO", Pattern.CASE_INSENSITIVE), Locale.ENGLISH),
+                                new LanguagePattern(Pattern.compile("VF", Pattern.CASE_INSENSITIVE), Locale.FRENCH)),
+                        ImmutableMap.of(Locale.ENGLISH, "VO"))));
+        service.registerCorrector(Series.class, new SeriesNameCorrector(Pattern.compile("Psych\\s+\\(2001\\)"), "Psych"));
+        return service;
+    }
 
-	@Benchmark
-	// @BenchmarkMode(Mode.Throughput)
-	// @OutputTimeUnit(TimeUnit.NANOSECONDS)
-	public void testCorrect() {
-		CORRECTION_SERVICE.correct(SUB_RLS);
-	}
+    @Benchmark
+    // @BenchmarkMode(Mode.Throughput)
+    // @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public void testCorrect() {
+        CORRECTION_SERVICE.correct(SUB_RLS);
+    }
 
-	@Benchmark
-	public void testNaming() {
-		NAMING_SERVICE.name(SUB_RLS);
-	}
+    @Benchmark
+    public void testNaming() {
+        NAMING_SERVICE.name(SUB_RLS);
+    }
 
-	// @Benchmark
-	public void testParsingAddic7ed() {
-		ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
-	}
+    // @Benchmark
+    public void testParsingAddic7ed() {
+        ADDIC7ED_PARSING_SERVICE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
+    }
 
-	// @Benchmark
-	public void testParsingSubCentral() {
-		SUBCENTRAL_PARSING_SERVICE.parse("Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI.de-SubCentral");
-	}
+    // @Benchmark
+    public void testParsingSubCentral() {
+        SUBCENTRAL_PARSING_SERVICE.parse("Psych.S08E01.720p.WEB-DL.DD5.1.H.264-ECI.de-SubCentral");
+    }
 
-	// @Benchmark
-	public void testParsingBestCase() {
-		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
-	}
+    // @Benchmark
+    public void testParsingBestCase() {
+        PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
+    }
 
-	// @Benchmark
-	public void testParsingWorstCase() {
-		PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
-	}
+    // @Benchmark
+    public void testParsingWorstCase() {
+        PARSING_SERVICE_WORST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com");
+    }
 
-	@Benchmark
-	public void testParsingSubAdjBestCase() {
-		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
-	}
+    @Benchmark
+    public void testParsingSubAdjBestCase() {
+        PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
+    }
 
-	// @Benchmark
-	public void testParsingSubAdjWorstCase() {
-		PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
-	}
+    // @Benchmark
+    public void testParsingSubAdjWorstCase() {
+        PARSING_SERVICE_BEST_CASE.parse("Psych - 08x01 - Episode Title.720p.WEB-DL.DD5.1H.264.English.C.orig.Addic7ed.com", SubtitleRelease.class);
+    }
 
-	// @Benchmark
-	public void testParsingSubRipFile(Blackhole blackhole) throws IOException {
-		SubtitleContent data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
-		blackhole.consume(data);
-	}
+    // @Benchmark
+    public void testParsingSubRipFile(Blackhole blackhole) throws IOException {
+        SubtitleContent data = SubRip.INSTANCE.read(SUBRIP_TEST_FILE.openStream(), Charset.forName("Cp1252"));
+        blackhole.consume(data);
+    }
 
-	/**
-	 * http://openjdk.java.net/projects/code-tools/jmh/
-	 * 
-	 * Current results:
-	 * 
-	 * <pre>
-	 * PC pre staged parsing:
-	 * Benchmark                                            Mode  Cnt       Score      Error  Units
-	 * SubCentralCoreBenchmark.testCorrect                 thrpt   50  738975,442 ± 7549,334  ops/s
-	 * SubCentralCoreBenchmark.testNaming                  thrpt   50  109221,338 ±  850,699  ops/s
-	 * SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50   95612,261 ± 1746,317  ops/s
-	 * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  101606,717 ±  410,947  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  101273,923 ±  361,929  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  101443,277 ±  592,526  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubCentral       n/a
-	 * SubCentralCoreBenchmark.testParsingSubRipFile       thrpt   50     813,695 ±    1,770  ops/s
-	 * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50    5167,747 ±   25,768  ops/s
-	 * 
-	 * post staged parsing:
-	 * 2016-03-03
-	 * Benchmark                                            Mode  Cnt       Score      Error  Units
-	 * SubCentralCoreBenchmark.testCorrect                 thrpt   50  773152,490 ± 7952,730  ops/s
-	 * SubCentralCoreBenchmark.testNaming                  thrpt   50   91232,717 ± 1923,164  ops/s
-	 * SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50  143362,037 ± 1614,703  ops/s
-	 * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  142242,328 ± 2011,900  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  134674,239 ± 5283,817  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  143176,704 ± 1365,734  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubCentral       thrpt   50  138436,330 ±  836,144  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubRipFile  	   thrpt   50     810,357 ±    6,985  ops/s
-	 * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50   13854,392 ±  151,023  ops/s
-	 * 
-	 * post naming params: Map<String, Object> -> Context
-	 * Benchmark                                            Mode  Cnt       Score      Error  Units
-	 * SubCentralCoreBenchmark.testCorrect                 thrpt   50  792105,532 ± 3911,179  ops/s
-	 * SubCentralCoreBenchmark.testNaming                  thrpt   50   92945,218 ±  835,927  ops/s
-	 * SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50  144659,201 ± 1640,541  ops/s
-	 * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  142362,358 ± 1124,666  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  140708,011 ± 2781,691  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  144226,567 ± 2233,784  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubCentral       thrpt   50  142603,853 ± 1296,332  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubRipFile       thrpt   50     830,522 ±    2,592  ops/s
-	 * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50   14127,372 ±  130,989  ops/s
-	 * 
-	 * Laptop:
-	 * Benchmark                                           Mode  Cnt       Score       Error  Units
-	 * SubCentralCoreBenchmark.testCorrect                thrpt   50  570.000
-	 * SubCentralCoreBenchmark.testNaming  				  thrpt   50  75225,548 ± 2985,000  ops/s
-	 * SubCentralCoreBenchmark.testParsingSubAdjBestCase  thrpt   50   80k
-	 * </pre>
-	 * 
-	 * 
-	 * 
-	 * @param args
-	 * @throws RunnerException
-	 */
-	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder().include(SubCentralCoreBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
+    /**
+     * http://openjdk.java.net/projects/code-tools/jmh/
+     * 
+     * Current results:
+     * 
+     * <pre>
+     * PC pre staged parsing:
+     * Benchmark                                            Mode  Cnt       Score      Error  Units
+     * SubCentralCoreBenchmark.testCorrect                 thrpt   50  738975,442 ± 7549,334  ops/s
+     * SubCentralCoreBenchmark.testNaming                  thrpt   50  109221,338 ±  850,699  ops/s
+     * SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50   95612,261 ± 1746,317  ops/s
+     * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  101606,717 ±  410,947  ops/s
+     * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  101273,923 ±  361,929  ops/s
+     * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  101443,277 ±  592,526  ops/s
+     * SubCentralCoreBenchmark.testParsingSubCentral       n/a
+     * SubCentralCoreBenchmark.testParsingSubRipFile       thrpt   50     813,695 ±    1,770  ops/s
+     * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50    5167,747 ±   25,768  ops/s
+     * 
+     * post staged parsing:
+     * 2016-03-03
+     * Benchmark                                            Mode  Cnt       Score      Error  Units
+     * SubCentralCoreBenchmark.testCorrect                 thrpt   50  773152,490 ± 7952,730  ops/s
+     * SubCentralCoreBenchmark.testNaming                  thrpt   50   91232,717 ± 1923,164  ops/s
+     * SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50  143362,037 ± 1614,703  ops/s
+     * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  142242,328 ± 2011,900  ops/s
+     * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  134674,239 ± 5283,817  ops/s
+     * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  143176,704 ± 1365,734  ops/s
+     * SubCentralCoreBenchmark.testParsingSubCentral       thrpt   50  138436,330 ±  836,144  ops/s
+     * SubCentralCoreBenchmark.testParsingSubRipFile  	   thrpt   50     810,357 ±    6,985  ops/s
+     * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50   13854,392 ±  151,023  ops/s
+     * 
+     * post naming params: Map<String, Object> -> Context
+     * Benchmark                                            Mode  Cnt       Score      Error  Units
+     * SubCentralCoreBenchmark.testCorrect                 thrpt   50  792105,532 ± 3911,179  ops/s
+     * SubCentralCoreBenchmark.testNaming                  thrpt   50   92945,218 ±  835,927  ops/s
+     * SubCentralCoreBenchmark.testParsingAddic7ed         thrpt   50  144659,201 ± 1640,541  ops/s
+     * SubCentralCoreBenchmark.testParsingBestCase         thrpt   50  142362,358 ± 1124,666  ops/s
+     * SubCentralCoreBenchmark.testParsingSubAdjBestCase   thrpt   50  140708,011 ± 2781,691  ops/s
+     * SubCentralCoreBenchmark.testParsingSubAdjWorstCase  thrpt   50  144226,567 ± 2233,784  ops/s
+     * SubCentralCoreBenchmark.testParsingSubCentral       thrpt   50  142603,853 ± 1296,332  ops/s
+     * SubCentralCoreBenchmark.testParsingSubRipFile       thrpt   50     830,522 ±    2,592  ops/s
+     * SubCentralCoreBenchmark.testParsingWorstCase        thrpt   50   14127,372 ±  130,989  ops/s
+     * 
+     * Laptop:
+     * Benchmark                                           Mode  Cnt       Score       Error  Units
+     * SubCentralCoreBenchmark.testCorrect                thrpt   50  570.000
+     * SubCentralCoreBenchmark.testNaming  				  thrpt   50  75225,548 ± 2985,000  ops/s
+     * SubCentralCoreBenchmark.testParsingSubAdjBestCase  thrpt   50   80k
+     * </pre>
+     * 
+     * 
+     * 
+     * @param args
+     * @throws RunnerException
+     */
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder().include(SubCentralCoreBenchmark.class.getSimpleName()).forks(5).warmupIterations(15).measurementIterations(10).build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 }

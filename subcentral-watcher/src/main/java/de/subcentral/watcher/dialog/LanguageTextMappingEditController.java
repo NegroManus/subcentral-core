@@ -16,58 +16,58 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 public class LanguageTextMappingEditController extends BeanEditController<LanguageToTextMapping> {
-	@FXML
-	private ComboBox<Locale>	langComboBox;
-	@FXML
-	private TextField			textTxtFld;
+    @FXML
+    private ComboBox<Locale> langComboBox;
+    @FXML
+    private TextField        textTxtFld;
 
-	public LanguageTextMappingEditController(LanguageToTextMapping bean, Window window) {
-		super(bean, window);
-	}
+    public LanguageTextMappingEditController(LanguageToTextMapping bean, Window window) {
+        super(bean, window);
+    }
 
-	@Override
-	protected String getTitle() {
-		return bean == null ? "Add language to text mapping" : "Edit language to text mapping";
-	}
+    @Override
+    protected String getTitle() {
+        return bean == null ? "Add language to text mapping" : "Edit language to text mapping";
+    }
 
-	@Override
-	protected String getImagePath() {
-		return "usa_flag_16.png";
-	}
+    @Override
+    protected String getImagePath() {
+        return "usa_flag_16.png";
+    }
 
-	@Override
-	protected Node getDefaultFocusNode() {
-		return textTxtFld;
-	}
+    @Override
+    protected Node getDefaultFocusNode() {
+        return textTxtFld;
+    }
 
-	@Override
-	protected void initComponents() {
-		// Set initial values
-		langComboBox.setItems(FxUtil.createListOfAvailableLocales(true, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
-		langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
-		langComboBox.setValue(bean != null ? bean.getLanguage() : null);
+    @Override
+    protected void initComponents() {
+        // Set initial values
+        langComboBox.setItems(FxUtil.createListOfAvailableLocales(true, true, FxUtil.LOCALE_DISPLAY_NAME_COMPARATOR));
+        langComboBox.setConverter(FxUtil.LOCALE_DISPLAY_NAME_CONVERTER);
+        langComboBox.setValue(bean != null ? bean.getLanguage() : null);
 
-		textTxtFld.setText(bean != null ? bean.getText() : "");
+        textTxtFld.setText(bean != null ? bean.getText() : "");
 
-		// Bindings
-		Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
-		applyButton.disableProperty().bind(new BooleanBinding() {
-			{
-				super.bind(langComboBox.valueProperty(), textTxtFld.textProperty());
-			}
+        // Bindings
+        Node applyButton = dialog.getDialogPane().lookupButton(ButtonType.APPLY);
+        applyButton.disableProperty().bind(new BooleanBinding() {
+            {
+                super.bind(langComboBox.valueProperty(), textTxtFld.textProperty());
+            }
 
-			@Override
-			protected boolean computeValue() {
-				return langComboBox.getValue() == null || StringUtils.isBlank(textTxtFld.getText());
-			}
-		});
+            @Override
+            protected boolean computeValue() {
+                return langComboBox.getValue() == null || StringUtils.isBlank(textTxtFld.getText());
+            }
+        });
 
-		// Set ResultConverter
-		dialog.setResultConverter(dialogButton -> {
-			if (dialogButton == ButtonType.APPLY) {
-				return new LanguageToTextMapping(langComboBox.getValue(), textTxtFld.getText());
-			}
-			return null;
-		});
-	}
+        // Set ResultConverter
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.APPLY) {
+                return new LanguageToTextMapping(langComboBox.getValue(), textTxtFld.getText());
+            }
+            return null;
+        });
+    }
 }

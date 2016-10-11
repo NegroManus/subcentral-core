@@ -6,17 +6,17 @@ import de.subcentral.core.metadata.release.Release;
 
 public class PreDbMePlayground {
 
-	public static void main(String[] args) throws Exception {
-		PreDbMeMetadataService db = new PreDbMeMetadataService();
+    public static void main(String[] args) throws Exception {
+        PreDbMeMetadataService db = new PreDbMeMetadataService();
 
-		// URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");
-		// Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost().toExternalForm());
-		//
-		// Release rls = db.parseRecord(doc, Release.class);
-		// System.out.println(rls);
+        // URL url = Resources.getResource("de/subcentral/support/predbme/psych.s06e05_p0w4.html");
+        // Document doc = Jsoup.parse(url.openStream(), "UTF-8", db.getHost().toExternalForm());
+        //
+        // Release rls = db.parseRecord(doc, Release.class);
+        // System.out.println(rls);
 
-		List<Release> rlss = db.searchReleasesBySeries("psych");
-		rlss.stream().forEach((Release r) -> System.out.println(r));
+        List<Release> rlss = db.searchReleasesBySeries("psych");
+        rlss.stream().forEach((Release r) -> System.out.println(r));
 
-	}
+    }
 }

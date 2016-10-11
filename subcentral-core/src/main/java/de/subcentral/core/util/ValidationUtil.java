@@ -10,39 +10,39 @@ import java.time.temporal.Temporal;
 import org.apache.commons.lang3.StringUtils;
 
 public class ValidationUtil {
-	private ValidationUtil() {
-		throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
-	}
+    private ValidationUtil() {
+        throw new AssertionError(getClass() + " is an utility class and therefore cannot be instantiated");
+    }
 
-	/**
-	 * 
-	 * @param s
-	 * @param message
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
-	public static String requireNotBlankAndStrip(String s, String message) {
-		String trimmed = StringUtils.stripToNull(s);
-		if (trimmed != null) {
-			return trimmed;
-		}
-		throw new IllegalArgumentException(message);
-	}
+    /**
+     * 
+     * @param s
+     * @param message
+     * @return
+     * @throws IllegalArgumentException
+     */
+    public static String requireNotBlankAndStrip(String s, String message) {
+        String trimmed = StringUtils.stripToNull(s);
+        if (trimmed != null) {
+            return trimmed;
+        }
+        throw new IllegalArgumentException(message);
+    }
 
-	/**
-	 * 
-	 * @param date
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
-	public static Temporal validateTemporalClass(Temporal date) {
-		if (date == null) {
-			return null;
-		}
-		Class<? extends Temporal> clazz = date.getClass();
-		if (ZonedDateTime.class == clazz || LocalDateTime.class == clazz || LocalDate.class == clazz || YearMonth.class == clazz || Year.class == clazz) {
-			return date;
-		}
-		throw new IllegalArgumentException("The date has to be an instance of java.time.ZonedDateTime, java.time.LocalDateTime, java.time.LocalDate, java.time.YearMonth or java.time.Year.");
-	}
+    /**
+     * 
+     * @param date
+     * @return
+     * @throws IllegalArgumentException
+     */
+    public static Temporal validateTemporalClass(Temporal date) {
+        if (date == null) {
+            return null;
+        }
+        Class<? extends Temporal> clazz = date.getClass();
+        if (ZonedDateTime.class == clazz || LocalDateTime.class == clazz || LocalDate.class == clazz || YearMonth.class == clazz || Year.class == clazz) {
+            return date;
+        }
+        throw new IllegalArgumentException("The date has to be an instance of java.time.ZonedDateTime, java.time.LocalDateTime, java.time.LocalDate, java.time.YearMonth or java.time.Year.");
+    }
 }

@@ -10,47 +10,47 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.concurrent.Worker;
 
 public interface ProcessingItem {
-	ReadOnlyStringProperty nameProperty();
+    ReadOnlyStringProperty nameProperty();
 
-	default String getName() {
-		return nameProperty().get();
-	}
+    default String getName() {
+        return nameProperty().get();
+    }
 
-	ListProperty<Path> getFiles();
+    ListProperty<Path> getFiles();
 
-	ReadOnlyProperty<Worker.State> stateProperty();
+    ReadOnlyProperty<Worker.State> stateProperty();
 
-	default Worker.State getState() {
-		return stateProperty().getValue();
-	}
+    default Worker.State getState() {
+        return stateProperty().getValue();
+    }
 
-	ReadOnlyStringProperty messageProperty();
+    ReadOnlyStringProperty messageProperty();
 
-	default String getMessage() {
-		return messageProperty().get();
-	}
+    default String getMessage() {
+        return messageProperty().get();
+    }
 
-	ReadOnlyDoubleProperty progressProperty();
+    ReadOnlyDoubleProperty progressProperty();
 
-	default double getProgress() {
-		return progressProperty().get();
-	}
+    default double getProgress() {
+        return progressProperty().get();
+    }
 
-	ReadOnlyProperty<ProcessingInfo> infoProperty();
+    ReadOnlyProperty<ProcessingInfo> infoProperty();
 
-	default ProcessingInfo getInfo() {
-		return infoProperty().getValue();
-	}
+    default ProcessingInfo getInfo() {
+        return infoProperty().getValue();
+    }
 
-	ReadOnlyProperty<Throwable> exceptionProperty();
+    ReadOnlyProperty<Throwable> exceptionProperty();
 
-	default Throwable getException() {
-		return exceptionProperty().getValue();
-	}
+    default Throwable getException() {
+        return exceptionProperty().getValue();
+    }
 
-	Binding<WorkerStatus> statusBinding();
+    Binding<WorkerStatus> statusBinding();
 
-	default WorkerStatus getStatus() {
-		return statusBinding().getValue();
-	}
+    default WorkerStatus getStatus() {
+        return statusBinding().getValue();
+    }
 }

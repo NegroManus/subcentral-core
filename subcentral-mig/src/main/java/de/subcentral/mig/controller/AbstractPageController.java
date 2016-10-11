@@ -22,76 +22,76 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public abstract class AbstractPageController extends SubController<MigMainController> {
-	private static final Logger		log	= LogManager.getLogger(AbstractPageController.class);
+    private static final Logger   log = LogManager.getLogger(AbstractPageController.class);
 
-	protected MigrationAssistance	assistance;
+    protected MigrationAssistance assistance;
 
-	public AbstractPageController(MigMainController migMainController) {
-		super(migMainController);
-		this.assistance = parent.getAssistance();
-	}
+    public AbstractPageController(MigMainController migMainController) {
+        super(migMainController);
+        this.assistance = parent.getAssistance();
+    }
 
-	public MigrationAssistance getAssistance() {
-		return assistance;
-	}
+    public MigrationAssistance getAssistance() {
+        return assistance;
+    }
 
-	public abstract String getTitle();
+    public abstract String getTitle();
 
-	public abstract Pane getRootPane();
+    public abstract Pane getRootPane();
 
-	public abstract Pane getContentPane();
+    public abstract Pane getContentPane();
 
-	public abstract void onEnter();
+    public abstract void onEnter();
 
-	public abstract void onExit();
+    public abstract void onExit();
 
-	public abstract BooleanBinding nextButtonDisableBinding();
+    public abstract BooleanBinding nextButtonDisableBinding();
 
-	protected void executeBlockingTask(Task<?> task) {
-		VBox taskVBox = new VBox();
-		taskVBox.setAlignment(Pos.CENTER);
-		taskVBox.setSpacing(3d);
-		Label titleLbl = new Label();
-		titleLbl.setFont(Font.font(null, FontWeight.BOLD, -1));
-		titleLbl.textProperty().bind(task.titleProperty());
-		ProgressBar progressBar = new ProgressBar();
-		progressBar.progressProperty().bind(task.progressProperty());
-		Label messageLbl = new Label();
-		messageLbl.textProperty().bind(task.messageProperty());
-		taskVBox.getChildren().addAll(titleLbl, progressBar, messageLbl);
+    protected void executeBlockingTask(Task<?> task) {
+        VBox taskVBox = new VBox();
+        taskVBox.setAlignment(Pos.CENTER);
+        taskVBox.setSpacing(3d);
+        Label titleLbl = new Label();
+        titleLbl.setFont(Font.font(null, FontWeight.BOLD, -1));
+        titleLbl.textProperty().bind(task.titleProperty());
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        Label messageLbl = new Label();
+        messageLbl.textProperty().bind(task.messageProperty());
+        taskVBox.getChildren().addAll(titleLbl, progressBar, messageLbl);
 
-		StackPane blockingPane = new StackPane();
-		AnchorPane.setTopAnchor(blockingPane, 0.0d);
-		AnchorPane.setRightAnchor(blockingPane, 0.0d);
-		AnchorPane.setBottomAnchor(blockingPane, 0.0d);
-		AnchorPane.setLeftAnchor(blockingPane, 0.0d);
-		blockingPane.getChildren().add(taskVBox);
+        StackPane blockingPane = new StackPane();
+        AnchorPane.setTopAnchor(blockingPane, 0.0d);
+        AnchorPane.setRightAnchor(blockingPane, 0.0d);
+        AnchorPane.setBottomAnchor(blockingPane, 0.0d);
+        AnchorPane.setLeftAnchor(blockingPane, 0.0d);
+        blockingPane.getChildren().add(taskVBox);
 
-		getRootPane().getChildren().setAll(blockingPane);
+        getRootPane().getChildren().setAll(blockingPane);
 
-		task.stateProperty().addListener((ObservableValue<? extends State> observable, State oldValue, State newValue) -> {
-			switch (newValue) {
-				case SUCCEEDED:
-					getRootPane().getChildren().setAll(getContentPane());
-					break;
-				case FAILED: {
-					Throwable e = task.getException();
-					String msg = "Task \"" + task.getTitle() + "\" failed";
-					log.error(msg, e);
-					Alert alert = FxUtil.createExceptionAlert(getPrimaryStage(), msg, msg + ": " + e.toString(), e);
-					alert.show();
-					getRootPane().getChildren().clear();
-					parent.pageBack();
-					break;
-				}
-				case CANCELLED: {
-					getRootPane().getChildren().clear();
-					break;
-				}
-				default:
-					break;
-			}
-		});
-		execute(task);
-	}
+        task.stateProperty().addListener((ObservableValue<? extends State> observable, State oldValue, State newValue) -> {
+            switch (newValue) {
+                case SUCCEEDED:
+                    getRootPane().getChildren().setAll(getContentPane());
+                    break;
+                case FAILED: {
+                    Throwable e = task.getException();
+                    String msg = "Task \"" + task.getTitle() + "\" failed";
+                    log.error(msg, e);
+                    Alert alert = FxUtil.createExceptionAlert(getPrimaryStage(), msg, msg + ": " + e.toString(), e);
+                    alert.show();
+                    getRootPane().getChildren().clear();
+                    parent.pageBack();
+                    break;
+                }
+                case CANCELLED: {
+                    getRootPane().getChildren().clear();
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
+        execute(task);
+    }
 }

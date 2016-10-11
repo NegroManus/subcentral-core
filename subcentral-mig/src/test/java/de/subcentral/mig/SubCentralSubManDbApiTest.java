@@ -11,19 +11,19 @@ import de.subcentral.support.subcentralde.SubCentralDe;
 
 public class SubCentralSubManDbApiTest {
 
-	@Test
-	public void testInsertSeries() throws SQLException, ConfigurationException {
-		Series series = new Series("Psych");
-		series.setType(Series.TYPE_SEASONED);
+    @Test
+    public void testInsertSeries() throws SQLException, ConfigurationException {
+        Series series = new Series("Psych");
+        series.setType(Series.TYPE_SEASONED);
 
-		try (Connection conn = MigTestUtil.connect()) {
-			SubCentralSubMan api = new SubCentralSubMan(conn);
-			api.insertSeriesFromSeriesList(series);
+        try (Connection conn = MigTestUtil.connect()) {
+            SubCentralSubMan api = new SubCentralSubMan(conn);
+            api.insertSeriesFromSeriesList(series);
 
-			System.out.println(series.getId(SubCentralDe.getSite()));
+            System.out.println(series.getId(SubCentralDe.getSite()));
 
-			api.clearData();
-		}
+            api.clearData();
+        }
 
-	}
+    }
 }

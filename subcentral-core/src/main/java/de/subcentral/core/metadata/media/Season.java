@@ -18,219 +18,219 @@ import de.subcentral.core.util.SimplePropDescriptor;
 import de.subcentral.core.util.ValidationUtil;
 
 public class Season extends MediaBase implements Comparable<Season> {
-	private static final long					serialVersionUID		= -2449905100119202184L;
+    private static final long                serialVersionUID        = -2449905100119202184L;
 
-	public static final SimplePropDescriptor	PROP_SERIES				= new SimplePropDescriptor(Season.class, PropNames.SERIES);
-	public static final SimplePropDescriptor	PROP_NUMBER				= new SimplePropDescriptor(Season.class, PropNames.NUMBER);
-	public static final SimplePropDescriptor	PROP_TITLE				= new SimplePropDescriptor(Season.class, PropNames.TITLE);
-	public static final SimplePropDescriptor	PROP_SPECIAL			= new SimplePropDescriptor(Season.class, PropNames.SPECIAL);
-	public static final SimplePropDescriptor	PROP_DATE				= new SimplePropDescriptor(Season.class, PropNames.DATE);
-	public static final SimplePropDescriptor	PROP_FINALE_DATE		= new SimplePropDescriptor(Season.class, PropNames.FINALE_DATE);
-	public static final SimplePropDescriptor	PROP_DESCRIPTION		= new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
-	public static final SimplePropDescriptor	PROP_IMAGES				= new SimplePropDescriptor(Season.class, PropNames.IMAGES);
-	public static final SimplePropDescriptor	PROP_RATINGS			= new SimplePropDescriptor(Season.class, PropNames.RATINGS);
-	public static final SimplePropDescriptor	PROP_CONTENT_RATING		= new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
-	public static final SimplePropDescriptor	PROP_FURTHER_INFO_LINKS	= new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO_LINKS);
-	public static final SimplePropDescriptor	PROP_IDS				= new SimplePropDescriptor(Season.class, PropNames.IDS);
-	public static final SimplePropDescriptor	PROP_ATTRIBUTES			= new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
+    public static final SimplePropDescriptor PROP_SERIES             = new SimplePropDescriptor(Season.class, PropNames.SERIES);
+    public static final SimplePropDescriptor PROP_NUMBER             = new SimplePropDescriptor(Season.class, PropNames.NUMBER);
+    public static final SimplePropDescriptor PROP_TITLE              = new SimplePropDescriptor(Season.class, PropNames.TITLE);
+    public static final SimplePropDescriptor PROP_SPECIAL            = new SimplePropDescriptor(Season.class, PropNames.SPECIAL);
+    public static final SimplePropDescriptor PROP_DATE               = new SimplePropDescriptor(Season.class, PropNames.DATE);
+    public static final SimplePropDescriptor PROP_FINALE_DATE        = new SimplePropDescriptor(Season.class, PropNames.FINALE_DATE);
+    public static final SimplePropDescriptor PROP_DESCRIPTION        = new SimplePropDescriptor(Season.class, PropNames.DESCRIPTION);
+    public static final SimplePropDescriptor PROP_IMAGES             = new SimplePropDescriptor(Season.class, PropNames.IMAGES);
+    public static final SimplePropDescriptor PROP_RATINGS            = new SimplePropDescriptor(Season.class, PropNames.RATINGS);
+    public static final SimplePropDescriptor PROP_CONTENT_RATING     = new SimplePropDescriptor(Season.class, PropNames.CONTENT_RATING);
+    public static final SimplePropDescriptor PROP_FURTHER_INFO_LINKS = new SimplePropDescriptor(Season.class, PropNames.FURTHER_INFO_LINKS);
+    public static final SimplePropDescriptor PROP_IDS                = new SimplePropDescriptor(Season.class, PropNames.IDS);
+    public static final SimplePropDescriptor PROP_ATTRIBUTES         = new SimplePropDescriptor(Season.class, PropNames.ATTRIBUTES);
 
-	private Series								series;
-	private Integer								number;
-	private boolean								special;
-	private Temporal							finaleDate;
+    private Series                           series;
+    private Integer                          number;
+    private boolean                          special;
+    private Temporal                         finaleDate;
 
-	private final List<Episode>					episodes				= new ArrayList<>(0);
+    private final List<Episode>              episodes                = new ArrayList<>(0);
 
-	public Season() {
-		// default constructor
-	}
+    public Season() {
+        // default constructor
+    }
 
-	public Season(Series series) {
-		setSeries(series);
-	}
+    public Season(Series series) {
+        setSeries(series);
+    }
 
-	public Season(Series series, Integer number) {
-		setSeries(series);
-		setNumber(number);
-	}
+    public Season(Series series, Integer number) {
+        setSeries(series);
+        setNumber(number);
+    }
 
-	public Season(Series series, String title) {
-		setSeries(series);
-		setTitle(title);
-	}
+    public Season(Series series, String title) {
+        setSeries(series);
+        setTitle(title);
+    }
 
-	public Series getSeries() {
-		return series;
-	}
+    public Series getSeries() {
+        return series;
+    }
 
-	public void setSeries(Series series) {
-		this.series = series;
-	}
+    public void setSeries(Series series) {
+        this.series = series;
+    }
 
-	@Override
-	public String getMediaType() {
-		return Media.MEDIA_TYPE_SEASON;
-	}
+    @Override
+    public String getMediaType() {
+        return Media.MEDIA_TYPE_SEASON;
+    }
 
-	@Override
-	public String getMediaContentType() {
-		return Media.MEDIA_CONTENT_TYPE_VIDEO;
-	}
+    @Override
+    public String getMediaContentType() {
+        return Media.MEDIA_CONTENT_TYPE_VIDEO;
+    }
 
-	public Integer getNumber() {
-		return number;
-	}
+    public Integer getNumber() {
+        return number;
+    }
 
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
 
-	public boolean isSpecial() {
-		return special;
-	}
+    public boolean isSpecial() {
+        return special;
+    }
 
-	public void setSpecial(boolean special) {
-		this.special = special;
-	}
+    public void setSpecial(boolean special) {
+        this.special = special;
+    }
 
-	public Temporal getFinaleDate() {
-		return finaleDate;
-	}
+    public Temporal getFinaleDate() {
+        return finaleDate;
+    }
 
-	public void setFinaleDate(Temporal finaleDate) {
-		ValidationUtil.validateTemporalClass(finaleDate);
-		this.finaleDate = finaleDate;
-	}
+    public void setFinaleDate(Temporal finaleDate) {
+        ValidationUtil.validateTemporalClass(finaleDate);
+        this.finaleDate = finaleDate;
+    }
 
-	@Override
-	public Set<String> getGenres() {
-		return series != null ? series.getGenres() : ImmutableSet.of();
-	}
+    @Override
+    public Set<String> getGenres() {
+        return series != null ? series.getGenres() : ImmutableSet.of();
+    }
 
-	@Override
-	public List<String> getLanguages() {
-		return series != null ? series.getLanguages() : ImmutableList.of();
-	}
+    @Override
+    public List<String> getLanguages() {
+        return series != null ? series.getLanguages() : ImmutableList.of();
+    }
 
-	@Override
-	public List<String> getCountries() {
-		return series != null ? series.getCountries() : ImmutableList.of();
-	}
+    @Override
+    public List<String> getCountries() {
+        return series != null ? series.getCountries() : ImmutableList.of();
+    }
 
-	@Override
-	public int getRunningTime() {
-		return 0;
-	}
+    @Override
+    public int getRunningTime() {
+        return 0;
+    }
 
-	// Convenience / Complex
-	public boolean isPartOfSeries() {
-		return series != null;
-	}
+    // Convenience / Complex
+    public boolean isPartOfSeries() {
+        return series != null;
+    }
 
-	public boolean isNumbered() {
-		return number != null;
-	}
+    public boolean isNumbered() {
+        return number != null;
+    }
 
-	public Episode newEpisode() {
-		return new Episode(series, this);
-	}
+    public Episode newEpisode() {
+        return new Episode(series, this);
+    }
 
-	public Episode newEpisode(Integer numberInSeason) {
-		return new Episode(series, this, numberInSeason);
-	}
+    public Episode newEpisode(Integer numberInSeason) {
+        return new Episode(series, this, numberInSeason);
+    }
 
-	public Episode newEpisode(Integer numberInSeason, String title) {
-		return new Episode(series, this, numberInSeason, title);
-	}
+    public Episode newEpisode(Integer numberInSeason, String title) {
+        return new Episode(series, this, numberInSeason, title);
+    }
 
-	/*
-	 * Episodes, Seasons
-	 */
-	public List<Episode> getEpisodes() {
-		return episodes;
-	}
+    /*
+     * Episodes, Seasons
+     */
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
 
-	public void setEpisodes(Collection<Episode> episodes) {
-		this.episodes.clear();
-		this.episodes.addAll(episodes);
-	}
+    public void setEpisodes(Collection<Episode> episodes) {
+        this.episodes.clear();
+        this.episodes.addAll(episodes);
+    }
 
-	// Convenience
-	public Episode addEpisode() {
-		Episode epi = new Episode(series, this);
-		episodes.add(epi);
-		return epi;
-	}
+    // Convenience
+    public Episode addEpisode() {
+        Episode epi = new Episode(series, this);
+        episodes.add(epi);
+        return epi;
+    }
 
-	public Episode addEpisode(Integer numberInSeason) {
-		Episode epi = new Episode(series, this, numberInSeason);
-		episodes.add(epi);
-		return epi;
-	}
+    public Episode addEpisode(Integer numberInSeason) {
+        Episode epi = new Episode(series, this, numberInSeason);
+        episodes.add(epi);
+        return epi;
+    }
 
-	public Episode addEpisode(Integer numberInSeason, String title) {
-		Episode epi = new Episode(series, this, numberInSeason, title);
-		episodes.add(epi);
-		return epi;
-	}
+    public Episode addEpisode(Integer numberInSeason, String title) {
+        Episode epi = new Episode(series, this, numberInSeason, title);
+        episodes.add(epi);
+        return epi;
+    }
 
-	public void addEpisode(Episode epi) {
-		episodes.add(epi);
-		epi.setSeason(this);
-	}
+    public void addEpisode(Episode epi) {
+        episodes.add(epi);
+        epi.setSeason(this);
+    }
 
-	// Object methods
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof Season) {
-			Season o = (Season) obj;
-			return Objects.equals(series, o.series) && Objects.equals(number, o.number) && Objects.equals(title, o.title);
-		}
-		return false;
-	}
+    // Object methods
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Season) {
+            Season o = (Season) obj;
+            return Objects.equals(series, o.series) && Objects.equals(number, o.number) && Objects.equals(title, o.title);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(series, number, title);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(series, number, title);
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(Season.class)
-				.omitNullValues()
-				.add("series.name", series != null ? series.name : null)
-				.add("number", number)
-				.add("title", title)
-				.add("special", special)
-				.add("date", date)
-				.add("finaleDate", finaleDate)
-				.add("description", description)
-				.add("ratings", ObjectUtil.nullIfEmpty(ratings))
-				.add("contentRating", contentRating)
-				.add("images", ObjectUtil.nullIfEmpty(images))
-				.add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
-				.add("ids", ObjectUtil.nullIfEmpty(ids))
-				.add("attributes", ObjectUtil.nullIfEmpty(attributes))
-				.add("episodes.size()", ObjectUtil.nullIfZero(episodes.size()))
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(Season.class)
+                .omitNullValues()
+                .add("series.name", series != null ? series.name : null)
+                .add("number", number)
+                .add("title", title)
+                .add("special", special)
+                .add("date", date)
+                .add("finaleDate", finaleDate)
+                .add("description", description)
+                .add("ratings", ObjectUtil.nullIfEmpty(ratings))
+                .add("contentRating", contentRating)
+                .add("images", ObjectUtil.nullIfEmpty(images))
+                .add("furtherInfoLinks", ObjectUtil.nullIfEmpty(furtherInfoLinks))
+                .add("ids", ObjectUtil.nullIfEmpty(ids))
+                .add("attributes", ObjectUtil.nullIfEmpty(attributes))
+                .add("episodes.size()", ObjectUtil.nullIfZero(episodes.size()))
+                .toString();
+    }
 
-	@Override
-	public int compareTo(Season o) {
-		if (o == this) {
-			return 0;
-		}
-		// nulls first
-		if (o == null) {
-			return 1;
-		}
-		return ComparisonChain.start()
-				.compare(series, o.series, ObjectUtil.getDefaultOrdering())
-				.compare(number, o.number, ObjectUtil.getDefaultOrdering())
-				.compare(title, o.title, ObjectUtil.getDefaultStringOrdering())
-				.result();
-	}
+    @Override
+    public int compareTo(Season o) {
+        if (o == this) {
+            return 0;
+        }
+        // nulls first
+        if (o == null) {
+            return 1;
+        }
+        return ComparisonChain.start()
+                .compare(series, o.series, ObjectUtil.getDefaultOrdering())
+                .compare(number, o.number, ObjectUtil.getDefaultOrdering())
+                .compare(title, o.title, ObjectUtil.getDefaultStringOrdering())
+                .result();
+    }
 }
