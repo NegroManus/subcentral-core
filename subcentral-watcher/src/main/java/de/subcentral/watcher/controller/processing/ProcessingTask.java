@@ -436,8 +436,8 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem {
 
 					ProcessingResultInfo compatibleRlsResultInfo = null;
 					for (ReleaseAndInfo ri : listedRlss) {
-						if (ri.release == compatible.getCompatible()) {
-							compatibleRlsResultInfo = ri.info;
+						if (ri.getRelease() == compatible.getCompatible()) {
+							compatibleRlsResultInfo = ri.getInfo();
 							break;
 						}
 					}
@@ -465,7 +465,7 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem {
 
 	// protected: also callable from DetailsController
 	protected void addReleaseToResult(ReleaseAndInfo rlsAndInfo) throws Exception {
-		addReleaseToResult(rlsAndInfo.release, rlsAndInfo.info);
+		addReleaseToResult(rlsAndInfo.getRelease(), rlsAndInfo.getInfo());
 	}
 
 	protected void addReleaseToResult(Release rls, ProcessingResultInfo info) throws Exception {
@@ -712,13 +712,21 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem {
 		private final ProcessingResultInfo	info;
 
 		public ReleaseAndInfo(Release release, ProcessingResultInfo info) {
-			this.release = release;
-			this.info = info;
+			this.release = Objects.requireNonNull(release, "release");
+			this.info = Objects.requireNonNull(info, "info");
+		}
+
+		private Release getRelease() {
+			return release;
+		}
+
+		private ProcessingResultInfo getInfo() {
+			return info;
 		}
 	}
 
 	private static List<Release> toReleaseList(Collection<ReleaseAndInfo> collection) {
-		return collection.stream().map((ReleaseAndInfo ri) -> ri.release).collect(Collectors.toList());
+		return collection.stream().map(ReleaseAndInfo::getRelease).collect(Collectors.toList());
 	}
 
 	private static <T> List<ReleaseAndInfo> toReleaseAndInfoList(Collection<T> collection, Function<T, ReleaseAndInfo> converter) {
