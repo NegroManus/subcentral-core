@@ -311,8 +311,8 @@ public class ProcessingTask extends Task<Void> implements ProcessingItem {
 			listedReleases = processReleases(existingRlss);
 
 			// Filter by Media
-			Function<Release, List<Media>> nestedObjRetriever = (Release rls) -> rls.getMedia();
-			Function<List<Media>, List<Context>> ctxGenerator = (List<Media> m) -> MediaUtil.generateNamingContextsForAllNames(m);
+			Function<Release, List<Media>> nestedObjRetriever = Release::getMedia;
+			Function<List<Media>, List<Context>> ctxGenerator = MediaUtil::generateNamingContextsForAllNames;
 			List<Release> mediaFilteredFoundReleases = listedReleases.stream()
 					.filter(NamingUtil.filterByNestedName(srcRls, nestedObjRetriever, controller.getNamingServicesForFiltering(), ctxGenerator))
 					.collect(Collectors.toList());
