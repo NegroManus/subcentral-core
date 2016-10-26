@@ -415,7 +415,7 @@ public class ProcessingController extends SubController<WatcherMainController> {
 
     private ExecutorService getProcessingExecutor() {
         if (processingExecutor == null || processingExecutor.isShutdown()) {
-            processingExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-File-Processor"));
+            processingExecutor = Executors.newSingleThreadExecutor((Runnable r) -> new Thread(r, "Watcher-FileProcessor"));
         }
         return processingExecutor;
     }
