@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
@@ -241,7 +239,7 @@ public class MultiEpisodeHelper {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(11, 3).append(episodes).toHashCode();
+        return episodes.hashCode();
     }
 
     @Override

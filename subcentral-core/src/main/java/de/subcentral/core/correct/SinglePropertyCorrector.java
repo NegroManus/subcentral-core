@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 
 public abstract class SinglePropertyCorrector<T, P> implements Corrector<T> {
@@ -69,7 +67,7 @@ public abstract class SinglePropertyCorrector<T, P> implements Corrector<T> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(977, 11).append(getClass()).append(replacer).toHashCode();
+        return replacer.hashCode();
     }
 
     @Override

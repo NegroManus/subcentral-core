@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -183,9 +181,9 @@ public class LocaleLanguageReplacer implements UnaryOperator<String> {
         private final Pattern pattern;
         private final Locale  language;
 
-        public LanguagePattern(Pattern pattern, Locale lang) {
+        public LanguagePattern(Pattern pattern, Locale language) {
             this.pattern = Objects.requireNonNull(pattern, "pattern");
-            this.language = Objects.requireNonNull(lang, "language");
+            this.language = Objects.requireNonNull(language, "language");
         }
 
         public Pattern getPattern() {
@@ -209,7 +207,7 @@ public class LocaleLanguageReplacer implements UnaryOperator<String> {
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder(983, 133).append(pattern).toHashCode();
+            return pattern.hashCode();
         }
 
         @Override

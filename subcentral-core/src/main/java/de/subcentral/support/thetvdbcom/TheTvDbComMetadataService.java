@@ -661,7 +661,7 @@ public class TheTvDbComMetadataService extends HttpMetadataService {
         if (elems.isEmpty()) {
             return null;
         }
-        return StringUtils.trimToNull(elems.first().text());
+        return StringUtils.stripToNull(elems.first().text());
     }
 
     private static Integer getIntegerFromChild(Element parentElem, String tag) {

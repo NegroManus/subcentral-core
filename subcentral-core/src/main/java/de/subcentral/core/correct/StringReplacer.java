@@ -3,8 +3,6 @@ package de.subcentral.core.correct;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.MoreObjects;
 
 public class StringReplacer implements UnaryOperator<String> {
@@ -43,7 +41,7 @@ public class StringReplacer implements UnaryOperator<String> {
     public String apply(String text) {
         switch (mode) {
             case ALL_OCCURENCES:
-                return StringUtils.replace(text, searchString, replacement);
+                return text != null ? text.replace(searchString, replacement) : null;
             case COMPLETE:
                 if (Objects.equals(text, searchString)) {
                     return replacement;
@@ -52,6 +50,23 @@ public class StringReplacer implements UnaryOperator<String> {
             default:
                 throw new AssertionError();
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof StringReplacer) {
+            StringReplacer o = (StringReplacer) obj;
+            return Objects.equals(searchString, o.searchString) && Objects.equals(replacement, o.replacement) && mode == o.mode;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(searchString, replacement, mode);
     }
 
     @Override

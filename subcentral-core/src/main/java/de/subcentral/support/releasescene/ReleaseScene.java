@@ -271,7 +271,7 @@ public class ReleaseScene {
         allLangs.add("FLEMISH");
         for (Locale l : allLocales) {
             String displayLang = l.getDisplayLanguage(Locale.ENGLISH);
-            if (!StringUtils.isEmpty(displayLang)) {
+            if (StringUtils.isNotEmpty(displayLang)) {
                 allLangs.add(displayLang);
             }
         }

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
@@ -137,7 +135,7 @@ public class TagsReplacer implements UnaryOperator<List<Tag>> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(5643, 121).append(searchTags).append(searchMode).append(replacement).append(replaceMode).append(ignoreOrder).toHashCode();
+        return Objects.hash(searchTags, searchMode, replacement, replaceMode, ignoreOrder);
     }
 
     @Override
