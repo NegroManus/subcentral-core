@@ -45,12 +45,15 @@
 					<standardRelease tags="HDTV, x264" group="2HD" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, XviD" group="AFG" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="ASAP" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="AVS" scope="IF_GUESSING" />
 					<standardRelease tags="1080p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="BATV" scope="IF_GUESSING" />
 					<standardRelease tags="1080i, HDTV, MPEG2, DD5.1" group="CtrlHD" scope="IF_GUESSING" />
 					<standardRelease tags="1080p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="DIMENSION" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="DON" scope="IF_GUESSING" />
+					<standardRelease tags="720p, HDTV, x264" group="FoV" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="FoV" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, XviD" group="FUM" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV x264" group="IMMERSE" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="LOL" scope="IF_GUESSING" />
@@ -58,12 +61,12 @@
 					<standardRelease tags="HDTV, x264" group="KILLERS" scope="IF_GUESSING" />
 					<standardRelease tags="HDTV, x264" group="EXCELLENCE" scope="IF_GUESSING" />
 					<standardRelease tags="720p, HDTV, x264" group="REMARKABLE" scope="IF_GUESSING" />
-					<standardRelease tags="720p, HDTV, x264" group="FoV" scope="IF_GUESSING" />
-					<standardRelease tags="HDTV, x264" group="FoV" scope="IF_GUESSING" />
+					<standardRelease tags="HDTV, x264" group="SVA" scope="IF_GUESSING" />
 				</standardReleases>
 			</guessing>
 			<compatibility enabled="true">
 				<crossGroupCompatibilityRules>
+					<crossGroupCompatibilityRule enabled="true" sourceGroup="AVS" compatibleGroup="SVA" symmetric="true" />
 					<crossGroupCompatibilityRule enabled="true" sourceGroup="CtrlHD" compatibleGroup="DON" symmetric="true" />
 					<crossGroupCompatibilityRule enabled="true" sourceGroup="DIMENSION" compatibleGroup="LOL" symmetric="true" />
 					<crossGroupCompatibilityRule enabled="true" sourceGroup="IMMERSE" compatibleGroup="ASAP" symmetric="true" />

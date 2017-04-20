@@ -84,7 +84,8 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
         }
         if (obj instanceof CrossGroupCompatibilityRule) {
             CrossGroupCompatibilityRule o = (CrossGroupCompatibilityRule) obj;
-            return sourceGroup.equals(o.sourceGroup) && compatibleGroup.equals(o.compatibleGroup) && symmetric == o.symmetric;
+            return sourceGroup.equals(o.sourceGroup) && compatibleGroup.equals(o.compatibleGroup)
+                    && symmetric == o.symmetric;
         }
         return false;
     }
@@ -96,19 +97,23 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(CrossGroupCompatibilityRule.class).add("sourceGroup", sourceGroup).add("compatibleGroup", compatibleGroup).add("symmetric", symmetric).toString();
+        return MoreObjects.toStringHelper(CrossGroupCompatibilityRule.class)
+                .add("sourceGroup", sourceGroup)
+                .add("compatibleGroup", compatibleGroup)
+                .add("symmetric", symmetric)
+                .toString();
     }
 
     public String toShortString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(sourceGroup);
+        sb.append(sourceGroup.getName());
         if (symmetric) {
             sb.append(" <-> ");
         }
         else {
             sb.append(" -> ");
         }
-        sb.append(compatibleGroup);
+        sb.append(compatibleGroup.getName());
         return sb.toString();
     }
 
@@ -121,6 +126,10 @@ public class CrossGroupCompatibilityRule implements CompatibilityRule, Comparabl
         if (o == null) {
             return 1;
         }
-        return ComparisonChain.start().compare(sourceGroup, o.sourceGroup).compare(compatibleGroup, o.compatibleGroup).compareFalseFirst(symmetric, o.symmetric).result();
+        return ComparisonChain.start()
+                .compare(sourceGroup, o.sourceGroup)
+                .compare(compatibleGroup, o.compatibleGroup)
+                .compareFalseFirst(symmetric, o.symmetric)
+                .result();
     }
 }

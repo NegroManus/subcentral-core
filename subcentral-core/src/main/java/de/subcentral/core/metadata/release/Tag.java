@@ -2,8 +2,6 @@ package de.subcentral.core.metadata.release;
 
 import java.io.Serializable;
 
-import com.google.common.base.MoreObjects;
-
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.ValidationUtil;
 
@@ -81,7 +79,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this.getClass()).omitNullValues().add("name", name).toString();
+        return name;
     }
 
     @Override

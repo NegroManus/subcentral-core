@@ -2,8 +2,6 @@ package de.subcentral.core.metadata.release;
 
 import java.io.Serializable;
 
-import com.google.common.base.MoreObjects;
-
 import de.subcentral.core.util.ObjectUtil;
 import de.subcentral.core.util.ValidationUtil;
 
@@ -40,6 +38,10 @@ public class Group implements Comparable<Group>, Serializable {
         }
     }
 
+    public static String getName(Group group) {
+        return group != null ? group.name : "";
+    }
+
     public String getName() {
         return name;
     }
@@ -62,7 +64,7 @@ public class Group implements Comparable<Group>, Serializable {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this.getClass()).add("name", name).toString();
+        return name;
     }
 
     @Override
