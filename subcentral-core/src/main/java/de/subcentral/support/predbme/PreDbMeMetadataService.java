@@ -3,8 +3,6 @@ package de.subcentral.support.predbme;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.DateTimeException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,6 +38,7 @@ import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.release.ReleaseUtil;
 import de.subcentral.core.metadata.service.HttpMetadataService;
 import de.subcentral.core.util.ByteUtil;
+import de.subcentral.core.util.TimeUtil;
 
 /**
  * @implSpec #immutable #thread-safe
@@ -469,7 +468,7 @@ public class PreDbMeMetadataService extends HttpMetadataService {
                             ZonedDateTime nukeDate = null;
                             Element nukeTimeElem = nukeLi.getElementsByClass("nuke-time").first();
                             if (nukeTimeElem != null) {
-                                nukeDate = parseTimestamp(nukeTimeElem.attr("data"));
+                                nukeDate = TimeUtil.parseZonedDateTimeFromEpochSeond(nukeTimeElem.attr("data"), TIME_ZONE);
                             }
 
                             if (nukeReason != null) {
@@ -640,21 +639,9 @@ public class PreDbMeMetadataService extends HttpMetadataService {
 
     private static ZonedDateTime parseReleaseDate(Element timeSpan) {
         if (timeSpan != null) {
-            return parseTimestamp(timeSpan.attr("data"));
+            return TimeUtil.parseZonedDateTimeFromEpochSeond(timeSpan.attr("data"), TIME_ZONE);
         }
         return null;
-    }
-
-    private static ZonedDateTime parseTimestamp(String epochSecond) {
-        try {
-            double epochSecs = Double.parseDouble(epochSecond);
-            long epochMillis = (long) epochSecs * 1000L;
-            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), TIME_ZONE);
-        }
-        catch (NullPointerException | NumberFormatException | DateTimeException e) {
-            log.warn("Could not parse epoch seconds string '" + epochSecond + "'", e);
-            return null;
-        }
     }
 
     /**

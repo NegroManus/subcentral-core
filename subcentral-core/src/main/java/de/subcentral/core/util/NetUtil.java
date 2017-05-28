@@ -40,17 +40,22 @@ public class NetUtil {
     }
 
     private static StringBuilder appendToQueryBuilder(StringBuilder builder, String key, String value) {
+        builder.append(key);
+        builder.append('=');
+        // URLEncoder is just for encoding queries, not for the whole URL
+        if (value != null) {
+            builder.append(encodeUrlFormValue(value));
+        }
+        return builder;
+    }
+
+    public static String encodeUrlFormValue(String str) {
         try {
-            builder.append(key);
-            builder.append('=');
-            // URLEncoder is just for encoding queries, not for the whole URL
-            if (value != null) {
-                builder.append(URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
-            }
-            return builder;
+            return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
         }
         catch (UnsupportedEncodingException e) {
-            throw new UnsupportedOperationException(e);
+            log.warn(e);
+            return str;
         }
     }
 

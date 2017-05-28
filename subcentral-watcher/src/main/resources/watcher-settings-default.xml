@@ -34,6 +34,7 @@
 			</metaTags>
 			<databases>
 				<db enabled="true">predb.me</db>
+				<db enabled="true">predb.org</db>
 				<db enabled="true">xrel.to</db>
 				<db enabled="false">orlydb.com</db>
 			</databases>

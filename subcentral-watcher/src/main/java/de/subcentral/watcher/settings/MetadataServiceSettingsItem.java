@@ -18,6 +18,7 @@ import de.subcentral.fx.settings.ConfigurationPropertyHandler;
 import de.subcentral.fx.settings.SimpleDeactivatableSettingsItem;
 import de.subcentral.support.orlydbcom.OrlyDbCom;
 import de.subcentral.support.predbme.PreDbMe;
+import de.subcentral.support.predborg.PreDbOrg;
 import de.subcentral.support.xrelto.XRelTo;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
@@ -121,6 +122,7 @@ public class MetadataServiceSettingsItem extends SimpleDeactivatableSettingsItem
         private static Set<MetadataService> getAvailableMetadataServices() {
             ImmutableSet.Builder<MetadataService> services = ImmutableSet.builder();
             services.add(PreDbMe.getMetadataService());
+            services.add(PreDbOrg.getMetadataService());
             services.add(XRelTo.getMetadataService());
             services.add(OrlyDbCom.getMetadataService());
             return services.build();

@@ -5,6 +5,7 @@ import de.subcentral.support.addic7edcom.Addic7edCom;
 import de.subcentral.support.italiansubsnet.ItalianSubsNet;
 import de.subcentral.support.orlydbcom.OrlyDbCom;
 import de.subcentral.support.predbme.PreDbMe;
+import de.subcentral.support.predborg.PreDbOrg;
 import de.subcentral.support.subcentralde.SubCentralDe;
 import de.subcentral.support.thetvdbcom.TheTvDbCom;
 import de.subcentral.support.xrelto.XRelTo;
@@ -15,6 +16,7 @@ public class StandardSites {
     public static final Site ITALIANSUBS_NET = ItalianSubsNet.getSite();
     public static final Site ORLYDB_COM      = OrlyDbCom.getSite();
     public static final Site PREDB_ME        = PreDbMe.getSite();
+    public static final Site PREDB_ORG       = PreDbOrg.getSite();
     public static final Site SUBCENTRAL_DE   = SubCentralDe.getSite();
     public static final Site SUBHD_COM       = new Site("subhd.com", "SubHD.com", "http://subhd.com/");
     public static final Site THETVDB_COM     = TheTvDbCom.getSite();

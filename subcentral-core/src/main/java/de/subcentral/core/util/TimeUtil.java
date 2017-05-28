@@ -1,10 +1,12 @@
 package de.subcentral.core.util;
 
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
@@ -86,6 +88,18 @@ public class TimeUtil {
         }
         catch (Exception e) {
             throw new DateTimeParseException("Text '" + s + "' could not be parsed to any temporal type", s, 0);
+        }
+    }
+
+    public static ZonedDateTime parseZonedDateTimeFromEpochSeond(String epochSecond, ZoneId zone) {
+        try {
+            double epochSecs = Double.parseDouble(epochSecond);
+            long epochMillis = (long) epochSecs * 1000L;
+            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), zone);
+        }
+        catch (NullPointerException | NumberFormatException | DateTimeException e) {
+            log.warn("Could not parse epoch seconds string '" + epochSecond + "'", e);
+            return null;
         }
     }
 }
