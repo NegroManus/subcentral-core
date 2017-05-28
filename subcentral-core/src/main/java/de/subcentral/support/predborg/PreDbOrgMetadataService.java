@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.Site;
 import de.subcentral.core.metadata.release.Group;
+import de.subcentral.core.metadata.release.Nuke;
 import de.subcentral.core.metadata.release.Release;
 import de.subcentral.core.metadata.service.HttpMetadataService;
 import de.subcentral.core.util.NetUtil;
@@ -28,12 +31,14 @@ import de.subcentral.core.util.TimeUtil;
  * @implSpec #immutable #thread-safe
  */
 public class PreDbOrgMetadataService extends HttpMetadataService {
-    private static final Logger log       = LogManager.getLogger(PreDbOrgMetadataService.class);
+    private static final Logger  log       = LogManager.getLogger(PreDbOrgMetadataService.class);
+
+    private static final Pattern NUKED_RGX = Pattern.compile("^\\s*Nuked:?\\s*", Pattern.CASE_INSENSITIVE);
 
     /**
      * The release dates are in UTC.
      */
-    private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
+    private static final ZoneId  TIME_ZONE = ZoneId.of("UTC");
 
     PreDbOrgMetadataService() {
         // package-protected
@@ -116,7 +121,7 @@ public class PreDbOrgMetadataService extends HttpMetadataService {
      * @throws IOException
      * @throws MalformedURLException
      */
-    protected List<Release> parseReleaseSearchResults(Document doc) {
+    protected List<Release> parseReleaseSearchResults(Document doc) throws IOException {
         Elements rlsTrs = doc.getElementsByClass("post");
         ImmutableList.Builder<Release> results = ImmutableList.builder();
         for (Element rlsTr : rlsTrs) {
@@ -139,31 +144,36 @@ public class PreDbOrgMetadataService extends HttpMetadataService {
      * </pre>
      * 
      * 
-     * @param rlsDiv
+     * @param rlsTr
      * @return
      * @throws IOException
      * @throws MalformedURLException
      */
-    private Release parseReleaseSearchResult(Element rlsTr) {
+    private Release parseReleaseSearchResult(Element rlsTr) throws IOException {
         Release rls = new Release();
 
         String id = parseId(rlsTr);
         rls.setId(PreDbOrg.getSite(), id);
 
-        Element preTimeTd = rlsTr.select("td[class*=pretime]").first();
+        Element preTimeTd = rlsTr.select("td[class=pretime]").first();
         rls.setDate(parseReleaseDate(preTimeTd));
 
-        Element catTd = rlsTr.select("td[class*=cat]").first();
+        Element catTd = rlsTr.select("td[class=cat]").first();
         rls.setCategory(parseReleaseCategory(catTd));
 
-        Element grpTd = rlsTr.select("td[class*=grp]").first();
+        Element grpTd = rlsTr.select("td[class=grp]").first();
         rls.setGroup(parseReleaseGroup(grpTd));
 
-        Element rlsTd = rlsTr.select("td[class*=rls]").first();
+        Element rlsTd = rlsTr.select("td[class=rls]").first();
         rls.setName(parseReleaseName(rlsTd));
         String postUrl = parsePostUrl(rlsTd);
         if (postUrl != null) {
             rls.getFurtherInfoLinks().add(postUrl);
+            Document post = getDocument(new URL(postUrl));
+            Nuke nuke = parseNuke(post);
+            if (nuke != null) {
+                rls.getNukes().add(nuke);
+            }
         }
 
         return rls;
@@ -179,6 +189,33 @@ public class PreDbOrgMetadataService extends HttpMetadataService {
      */
     protected Release parseReleaseRecord(Document doc) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@code  
+     * 
+    <p>
+     * <span class="sub-title"><font color="#FF0000">Nuked</font<:</span> contains.promo.38m.57s.to.39m.17s_get.FQM.proper</font>
+     * 
+    </p>
+     * }
+     * 
+     * @param postId
+     * @return
+     * @throws IOException
+     */
+    private Nuke parseNuke(Document doc) {
+        Elements subTitleSpans = doc.select("span[class=sub-title]");
+        Matcher nukedMatcher = NUKED_RGX.matcher("");
+        for (Element subTitleSpan : subTitleSpans) {
+            String text = subTitleSpan.text();
+            nukedMatcher.reset(text);
+            if (nukedMatcher.find()) {
+                String reason = text.substring(nukedMatcher.end());
+                return Nuke.of(reason);
+            }
+        }
+        return null;
     }
 
     private static String parseId(Element rlsTr) {
