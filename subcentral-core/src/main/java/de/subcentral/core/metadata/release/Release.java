@@ -54,7 +54,6 @@ public class Release extends NamedMetadataBase implements Comparable<Release> {
 
     public static final Comparator<Release>  NAME_COMPARATOR         = (Release r1, Release r2) -> r1 == null ? (r2 == null ? 0 : -1) : r1.compareToByName(r2);
 
-    private String                           name;
     // In 99% of the cases, there is only one Media per Release
     private final List<Media>                media                   = new ArrayList<>(1);
     // Normally there are 2 to 4 Tags per Release
@@ -151,6 +150,8 @@ public class Release extends NamedMetadataBase implements Comparable<Release> {
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * The unique name of this release. E.g. "Psych.S08E01.HDTV.x264-EXCELLENCE". Consisting of the name of the {@link #getMedia() media} ( "Psych S08E01"), the {@link #getTags() tags} (HDTV, x264)
      * and the {@link #getGroup() group} ("EXCELLENCE").
      * 
@@ -158,11 +159,8 @@ public class Release extends NamedMetadataBase implements Comparable<Release> {
      */
     @Override
     public String getName() {
+        // overriden to add javadoc
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**
