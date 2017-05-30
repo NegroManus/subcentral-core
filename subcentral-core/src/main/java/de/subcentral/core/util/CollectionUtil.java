@@ -16,11 +16,11 @@ import java.util.stream.Collector.Characteristics;
 import com.google.common.collect.ImmutableList;
 
 public class CollectionUtil {
-    public static enum SearchMode {
+    public enum SearchMode {
         CONTAIN, EQUAL
     };
 
-    public static enum ReplaceMode {
+    public enum ReplaceMode {
         COMPLETE_LIST, MATCHED_SEQUENCE
     };
 

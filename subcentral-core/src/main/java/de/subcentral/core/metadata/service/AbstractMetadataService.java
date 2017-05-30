@@ -35,11 +35,6 @@ public abstract class AbstractMetadataService implements MetadataService {
     }
 
     @Override
-    public State checkState() {
-        return State.AVAILABLE;
-    }
-
-    @Override
     public <T> List<T> searchByObject(Object queryObj, Class<T> recordType) throws UnsupportedOperationException, IOException {
         return searchByObjectsName(queryObj, recordType);
     }

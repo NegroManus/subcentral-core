@@ -21,6 +21,7 @@ import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -127,7 +128,7 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
                 setTooltip(null);
                 return;
             }
-            switch (item) {
+            switch (item.getCode()) {
                 case UNKNOWN:
                     setGraphic(null);
                     setTooltip(new Tooltip("Unknown"));
@@ -140,21 +141,32 @@ public class ReleaseDbsSettingsController extends AbstractSettingsSectionControl
                     setTooltip(null);
                     break;
                 case AVAILABLE:
-                    setGraphic(new ImageView(FxIO.loadImg("checked_16.png")));
-                    setTooltip(new Tooltip("Available: Accessible and searchable"));
+                    setGraphic(createSymbolAndTextGraphic("checked_16.png", item));
+                    setTooltip(new Tooltip("Available: Reachable and searchable"));
                     break;
                 case LIMITED:
-                    setGraphic(new ImageView(FxIO.loadImg("warning_16.png")));
-                    setTooltip(new Tooltip("Limited availibility: Reachable but probably not searchable"));
+                    setGraphic(createSymbolAndTextGraphic("warning_16.png", item));
+                    setTooltip(new Tooltip("Limited availability: Reachable but probably not searchable"));
                     break;
                 case NOT_AVAILABLE:
-                    setGraphic(new ImageView(FxIO.loadImg("cancel_16.png")));
+                    setGraphic(createSymbolAndTextGraphic("cancel_16.png", item));
                     setTooltip(new Tooltip("Not available: Not reachable"));
                     break;
                 default:
-                    setGraphic(new Label(item.name()));
+                    setGraphic(new Label(item.toString()));
                     setTooltip(null);
             }
+        }
+
+        private static Node createSymbolAndTextGraphic(String img, MetadataServiceSettingsItem.Availability availability) {
+            ImageView imgView = new ImageView(FxIO.loadImg(img));
+            if (availability.getStatus() != null && availability.getStatus().getResponseTime() >= 0) {
+                Label lbl = new Label("(" + availability.getStatus().getResponseTime() + " ms)");
+                HBox hbox = new HBox(imgView, lbl);
+                hbox.setSpacing(5d);
+                return hbox;
+            }
+            return imgView;
         }
     }
 

@@ -16,16 +16,21 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.subcentral.core.util.NetUtil;
+import de.subcentral.core.util.Service.Status.Code;
 
 public abstract class HttpMetadataService extends AbstractMetadataService {
-    private static final Logger log             = LogManager.getLogger(HttpMetadataService.class);
+    private static final Logger   log                = LogManager.getLogger(HttpMetadataService.class);
 
     /**
      * Default timeout: 10 seconds.
      */
-    public static final int     DEFAULT_TIMEOUT = 10_000;
+    public static final int       DEFAULT_TIMEOUT    = 10_000;
+    /**
+     * Default test query: {@value #DEFAULT_TEST_QUERY}.
+     */
+    protected static final String DEFAULT_TEST_QUERY = "Game of Thrones S06E01";
 
-    protected int               timeout         = DEFAULT_TIMEOUT;
+    protected int                 timeout            = DEFAULT_TIMEOUT;
 
     // Metadata
     public String getHost() {
@@ -50,22 +55,26 @@ public abstract class HttpMetadataService extends AbstractMetadataService {
         this.timeout = timeout;
     }
 
-    // State
+    // Status
     @Override
-    public State checkState() {
+    public Status checkStatus() {
         String testQuery = getTestQuery();
+        Code code;
+        long start = System.currentTimeMillis();
         try {
             List<?> results = search(testQuery, getSupportedRecordTypes().iterator().next());
-            return results.isEmpty() ? State.AVAILABLE_LIMITED : State.AVAILABLE;
+            code = results.isEmpty() ? Code.LIMITED : Code.AVAILABLE;
         }
         catch (Exception e) {
             log.warn("Metadata database " + this + " failed to execute test query '" + testQuery + "'", e);
-            return State.NOT_AVAILABLE;
+            code = Code.NOT_AVAILABLE;
         }
+        long responseTime = System.currentTimeMillis() - start;
+        return Status.of(code, responseTime);
     }
 
     protected String getTestQuery() {
-        return "Game of Thrones S06E01";
+        return DEFAULT_TEST_QUERY;
     }
 
     // Utility methods for child classes

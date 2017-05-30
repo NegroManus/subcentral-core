@@ -8,10 +8,6 @@ import de.subcentral.core.metadata.Site;
 import de.subcentral.core.util.Service;
 
 public interface MetadataService extends Service {
-    public enum State {
-        AVAILABLE, AVAILABLE_LIMITED, NOT_AVAILABLE
-    }
-
     // Metadata
     public Site getSite();
 
@@ -27,9 +23,6 @@ public interface MetadataService extends Service {
     }
 
     public Set<Site> getSupportedExternalSites();
-
-    // State
-    public State checkState();
 
     // Search records
     // Search by Text

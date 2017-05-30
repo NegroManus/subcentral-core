@@ -2,6 +2,7 @@ package de.subcentral.watcher.settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -13,6 +14,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 import com.google.common.collect.ImmutableSet;
 
 import de.subcentral.core.metadata.service.MetadataService;
+import de.subcentral.core.util.Service;
 import de.subcentral.core.util.ServiceUtil;
 import de.subcentral.fx.settings.ConfigurationPropertyHandler;
 import de.subcentral.fx.settings.SimpleDeactivatableSettingsItem;
@@ -30,25 +32,50 @@ import javafx.concurrent.Task;
 public class MetadataServiceSettingsItem extends SimpleDeactivatableSettingsItem<MetadataService> {
     private static final ConfigurationPropertyHandler<ObservableList<MetadataServiceSettingsItem>> HANDLER = new ListConfigurationPropertyHandler();
 
-    public static enum Availability {
-        UNKNOWN, CHECKING, AVAILABLE, LIMITED, NOT_AVAILABLE;
+    public static class Availability {
+        public enum Code {
+            UNKNOWN, CHECKING, AVAILABLE, LIMITED, NOT_AVAILABLE;
+        }
 
-        public static Availability of(MetadataService.State state) {
-            switch (state) {
+        private final Code           code;
+        private final Service.Status status;
+
+        public static Availability unknown() {
+            return new Availability(Code.UNKNOWN, null);
+        }
+
+        public static Availability checking() {
+            return new Availability(Code.CHECKING, null);
+        }
+
+        public static Availability ofServiceStatus(Service.Status status) {
+            switch (status.getCode()) {
                 case AVAILABLE:
-                    return Availability.AVAILABLE;
-                case AVAILABLE_LIMITED:
-                    return Availability.LIMITED;
+                    return new Availability(Code.AVAILABLE, status);
+                case LIMITED:
+                    return new Availability(Code.LIMITED, status);
                 case NOT_AVAILABLE:
-                    return Availability.NOT_AVAILABLE;
+                    return new Availability(Code.NOT_AVAILABLE, status);
                 default:
-                    return Availability.UNKNOWN;
-
+                    throw new IllegalArgumentException("Illegal service status: " + status);
             }
+        }
+
+        private Availability(Code code, Service.Status status) {
+            this.code = Objects.requireNonNull(code, "code");
+            this.status = status;
+        }
+
+        public Code getCode() {
+            return code;
+        }
+
+        public Service.Status getStatus() {
+            return status;
         }
     }
 
-    private final Property<Availability> availability = new SimpleObjectProperty<>(this, "availability", Availability.UNKNOWN);
+    private final Property<Availability> availability = new SimpleObjectProperty<>(this, "availability", Availability.unknown());
 
     public MetadataServiceSettingsItem(MetadataService database, boolean enabled) {
         super(database, enabled);
@@ -63,7 +90,7 @@ public class MetadataServiceSettingsItem extends SimpleDeactivatableSettingsItem
     }
 
     public void updateAvailability(ExecutorService executor) {
-        availability.setValue(Availability.CHECKING);
+        availability.setValue(Availability.checking());
         Task<Availability> updateAvailibilityTask = new Task<Availability>() {
             {
                 updateTitle("Checking availability of " + item.getSite().getDisplayNameOrName());
@@ -71,7 +98,7 @@ public class MetadataServiceSettingsItem extends SimpleDeactivatableSettingsItem
 
             @Override
             protected Availability call() throws Exception {
-                return Availability.of(item.checkState());
+                return Availability.ofServiceStatus(item.checkStatus());
             }
 
             @Override
